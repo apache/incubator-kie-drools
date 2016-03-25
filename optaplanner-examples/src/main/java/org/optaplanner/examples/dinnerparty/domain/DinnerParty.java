@@ -22,7 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -46,12 +46,12 @@ public class DinnerParty extends AbstractPersistable {
     @XStreamConverter(value = XStreamScoreConverter.class, types = {SimpleScoreDefinition.class})
     private SimpleScore score;
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public EnumSet<Hobby> getHobbySet() {
         return EnumSet.allOf(Hobby.class);
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Job> getJobList() {
         return jobList;
     }
@@ -60,12 +60,12 @@ public class DinnerParty extends AbstractPersistable {
         this.jobList = jobList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public EnumSet<JobType> getJobSet() {
         return EnumSet.allOf(JobType.class);
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Guest> getGuestList() {
         return guestList;
     }
@@ -74,7 +74,7 @@ public class DinnerParty extends AbstractPersistable {
         this.guestList = guestList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<HobbyPractician> getHobbyPracticianList() {
         return hobbyPracticianList;
     }
@@ -83,7 +83,7 @@ public class DinnerParty extends AbstractPersistable {
         this.hobbyPracticianList = hobbyPracticianList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Table> getTableList() {
         return tableList;
     }
@@ -93,7 +93,7 @@ public class DinnerParty extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "seatRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Seat> getSeatList() {
         return seatList;
     }

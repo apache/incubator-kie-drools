@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.testdata.domain.entityproviding;
 
 import org.optaplanner.core.api.domain.solution.*;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
@@ -68,7 +68,7 @@ public class TestdataEntityProvidingSolution extends TestdataObject {
     // Complex methods
     // ************************************************************************
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public Collection<TestdataValue> getProblemFacts() {
         Set<TestdataValue> valueSet = new HashSet<>();
         for (TestdataEntityProvidingEntity entity : entityList) {

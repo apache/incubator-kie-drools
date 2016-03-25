@@ -21,7 +21,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -52,7 +52,7 @@ public class NQueens extends AbstractPersistable {
         this.n = n;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Column> getColumnList() {
         return columnList;
     }
@@ -62,7 +62,7 @@ public class NQueens extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "rowRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Row> getRowList() {
         return rowList;
     }

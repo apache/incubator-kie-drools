@@ -21,7 +21,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -53,7 +53,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardMediumSoftScoreDefinition.class})
     private HardMediumSoftScore score;
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Specialism> getSpecialismList() {
         return specialismList;
     }
@@ -62,7 +62,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.specialismList = specialismList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Equipment> getEquipmentList() {
         return equipmentList;
     }
@@ -71,7 +71,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.equipmentList = equipmentList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Department> getDepartmentList() {
         return departmentList;
     }
@@ -80,7 +80,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.departmentList = departmentList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<DepartmentSpecialism> getDepartmentSpecialismList() {
         return departmentSpecialismList;
     }
@@ -89,7 +89,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.departmentSpecialismList = departmentSpecialismList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Room> getRoomList() {
         return roomList;
     }
@@ -98,7 +98,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.roomList = roomList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<RoomSpecialism> getRoomSpecialismList() {
         return roomSpecialismList;
     }
@@ -107,7 +107,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.roomSpecialismList = roomSpecialismList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<RoomEquipment> getRoomEquipmentList() {
         return roomEquipmentList;
     }
@@ -117,7 +117,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "bedRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Bed> getBedList() {
         return bedList;
     }
@@ -126,7 +126,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.bedList = bedList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Night> getNightList() {
         return nightList;
     }
@@ -135,7 +135,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.nightList = nightList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Patient> getPatientList() {
         return patientList;
     }
@@ -144,7 +144,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.patientList = patientList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<AdmissionPart> getAdmissionPartList() {
         return admissionPartList;
     }
@@ -153,7 +153,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.admissionPartList = admissionPartList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<RequiredPatientEquipment> getRequiredPatientEquipmentList() {
         return requiredPatientEquipmentList;
     }
@@ -162,7 +162,7 @@ public class PatientAdmissionSchedule extends AbstractPersistable {
         this.requiredPatientEquipmentList = requiredPatientEquipmentList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<PreferredPatientEquipment> getPreferredPatientEquipmentList() {
         return preferredPatientEquipmentList;
     }

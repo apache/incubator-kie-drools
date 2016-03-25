@@ -21,7 +21,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -34,14 +34,14 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 @XStreamAlias("TaTaskAssigningSolution")
 public class TaskAssigningSolution extends AbstractPersistable {
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<Skill> skillList;
     @ValueRangeProvider(id = "employeeRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<Employee> employeeList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<TaskType> taskTypeList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<Customer> customerList;
 
     @PlanningEntityCollectionProperty

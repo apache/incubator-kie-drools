@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.testdata.domain.extended;
 
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class TestdataExtendedSolution extends TestdataSolution {
@@ -35,7 +35,7 @@ public class TestdataExtendedSolution extends TestdataSolution {
         this.extraObject = extraObject;
     }
 
-    @PlanningFactProperty
+    @ProblemFactProperty
     public Object getExtraObject() {
         return extraObject;
     }

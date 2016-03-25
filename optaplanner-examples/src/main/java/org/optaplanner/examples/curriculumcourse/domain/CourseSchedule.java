@@ -22,7 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -61,7 +61,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.name = name;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Teacher> getTeacherList() {
         return teacherList;
     }
@@ -70,7 +70,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.teacherList = teacherList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Curriculum> getCurriculumList() {
         return curriculumList;
     }
@@ -79,7 +79,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.curriculumList = curriculumList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Course> getCourseList() {
         return courseList;
     }
@@ -88,7 +88,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.courseList = courseList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Day> getDayList() {
         return dayList;
     }
@@ -97,7 +97,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.dayList = dayList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Timeslot> getTimeslotList() {
         return timeslotList;
     }
@@ -107,7 +107,7 @@ public class CourseSchedule extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "periodRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Period> getPeriodList() {
         return periodList;
     }
@@ -117,7 +117,7 @@ public class CourseSchedule extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "roomRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Room> getRoomList() {
         return roomList;
     }
@@ -126,7 +126,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.roomList = roomList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<UnavailablePeriodPenalty> getUnavailablePeriodPenaltyList() {
         return unavailablePeriodPenaltyList;
     }
@@ -157,7 +157,7 @@ public class CourseSchedule extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<CourseConflict> getCourseConflictList() {
         List<CourseConflict> courseConflictList = new ArrayList<CourseConflict>();
         for (Course leftCourse : courseList) {

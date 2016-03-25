@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier;
 
 import org.optaplanner.core.api.domain.solution.*;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -84,7 +84,7 @@ public class TestdataAccessModifierSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "valueRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<TestdataValue> getValueList() {
         return valueList;
     }

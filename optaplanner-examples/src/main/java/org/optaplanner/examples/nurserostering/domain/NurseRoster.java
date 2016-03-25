@@ -21,8 +21,8 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -45,38 +45,38 @@ public class NurseRoster extends AbstractPersistable {
 
     private String code;
 
-    @PlanningFactProperty
+    @ProblemFactProperty
     private NurseRosterParametrization nurseRosterParametrization;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<Skill> skillList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<ShiftType> shiftTypeList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<Pattern> patternList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<Contract> contractList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<ContractLine> contractLineList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<PatternContractLine> patternContractLineList;
     @ValueRangeProvider(id = "employeeRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<Employee> employeeList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<SkillProficiency> skillProficiencyList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<ShiftDate> shiftDateList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<Shift> shiftList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<DayOffRequest> dayOffRequestList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<DayOnRequest> dayOnRequestList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<ShiftOffRequest> shiftOffRequestList;
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<ShiftOnRequest> shiftOnRequestList;
 
     @PlanningEntityCollectionProperty

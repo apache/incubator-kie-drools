@@ -18,12 +18,10 @@ package org.optaplanner.core.api.domain.solution.drools;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.util.Collection;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
@@ -32,18 +30,18 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Specifies that a property (or a field) on a {@link PlanningSolution} class is a {@link Collection} of problem facts.
+ * Specifies that a property (or a field) on a {@link PlanningSolution} class is a problem fact.
  * A problem fact must not change during solving (except through {@link ProblemFactChange} event).
  * <p>
- * The problem facts will be added as facts in the {@link KieSession} of the {@link DroolsScoreDirector},
- * so the score rules can use them.
+ * The problem fact will be added as a fact in the {@link KieSession} of the {@link DroolsScoreDirector},
+ * so the score rules can use it.
  * <p>
  * Do not annotate {@link PlanningEntity planning entities} as problem facts:
  * they are automatically inserted into the {@link KieSession}.
- * @see PlanningFactProperty
+ * @see ProblemFactCollectionProperty
  */
 @Target({METHOD, FIELD})
 @Retention(RUNTIME)
-public @interface PlanningFactCollectionProperty {
+public @interface ProblemFactProperty {
 
 }

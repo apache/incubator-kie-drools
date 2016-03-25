@@ -21,7 +21,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -46,7 +46,7 @@ public class MeetingSchedule extends AbstractPersistable {
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardMediumSoftScoreDefinition.class})
     private HardMediumSoftScore score;
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Meeting> getMeetingList() {
         return meetingList;
     }
@@ -55,7 +55,7 @@ public class MeetingSchedule extends AbstractPersistable {
         this.meetingList = meetingList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Day> getDayList() {
         return dayList;
     }
@@ -65,7 +65,7 @@ public class MeetingSchedule extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "timeGrainRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<TimeGrain> getTimeGrainList() {
         return timeGrainList;
     }
@@ -75,7 +75,7 @@ public class MeetingSchedule extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "roomRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Room> getRoomList() {
         return roomList;
     }
@@ -84,7 +84,7 @@ public class MeetingSchedule extends AbstractPersistable {
         this.roomList = roomList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Person> getPersonList() {
         return personList;
     }
@@ -93,7 +93,7 @@ public class MeetingSchedule extends AbstractPersistable {
         this.personList = personList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Attendance> getAttendanceList() {
         return attendanceList;
     }

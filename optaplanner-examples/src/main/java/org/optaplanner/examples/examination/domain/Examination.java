@@ -22,8 +22,8 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -52,7 +52,7 @@ public class Examination extends AbstractPersistable {
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
     private HardSoftScore score;
 
-    @PlanningFactProperty
+    @ProblemFactProperty
     public InstitutionParametrization getInstitutionParametrization() {
         return institutionParametrization;
     }
@@ -69,7 +69,7 @@ public class Examination extends AbstractPersistable {
         this.studentList = studentList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Topic> getTopicList() {
         return topicList;
     }
@@ -79,7 +79,7 @@ public class Examination extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "periodRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Period> getPeriodList() {
         return periodList;
     }
@@ -89,7 +89,7 @@ public class Examination extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "roomRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Room> getRoomList() {
         return roomList;
     }
@@ -98,7 +98,7 @@ public class Examination extends AbstractPersistable {
         this.roomList = roomList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<PeriodPenalty> getPeriodPenaltyList() {
         return periodPenaltyList;
     }
@@ -107,7 +107,7 @@ public class Examination extends AbstractPersistable {
         this.periodPenaltyList = periodPenaltyList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<RoomPenalty> getRoomPenaltyList() {
         return roomPenaltyList;
     }
@@ -138,7 +138,7 @@ public class Examination extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<TopicConflict> getTopicConflictList() {
         List<TopicConflict> topicConflictList = new ArrayList<TopicConflict>();
         for (Topic leftTopic : topicList) {

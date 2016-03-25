@@ -20,7 +20,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -40,7 +40,7 @@ public class TennisSolution extends AbstractPersistable {
     private HardMediumSoftScore score;
 
     @ValueRangeProvider(id = "teamRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Team> getTeamList() {
         return teamList;
     }
@@ -49,7 +49,7 @@ public class TennisSolution extends AbstractPersistable {
         this.teamList = teamList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Day> getDayList() {
         return dayList;
     }
@@ -58,7 +58,7 @@ public class TennisSolution extends AbstractPersistable {
         this.dayList = dayList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<UnavailabilityPenalty> getUnavailabilityPenaltyList() {
         return unavailabilityPenaltyList;
     }

@@ -21,7 +21,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
@@ -45,7 +45,7 @@ public class Schedule extends AbstractPersistable {
     @XStreamConverter(value = XStreamScoreConverter.class, types = {BendableScoreDefinition.class}, ints = {1, 2})
     private BendableScore score;
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Project> getProjectList() {
         return projectList;
     }
@@ -54,7 +54,7 @@ public class Schedule extends AbstractPersistable {
         this.projectList = projectList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Job> getJobList() {
         return jobList;
     }
@@ -63,7 +63,7 @@ public class Schedule extends AbstractPersistable {
         this.jobList = jobList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<ExecutionMode> getExecutionModeList() {
         return executionModeList;
     }
@@ -72,7 +72,7 @@ public class Schedule extends AbstractPersistable {
         this.executionModeList = executionModeList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Resource> getResourceList() {
         return resourceList;
     }
@@ -81,7 +81,7 @@ public class Schedule extends AbstractPersistable {
         this.resourceList = resourceList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<ResourceRequirement> getResourceRequirementList() {
         return resourceRequirementList;
     }

@@ -21,8 +21,8 @@ import java.lang.annotation.Target;
 
 import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
@@ -43,8 +43,8 @@ import static java.lang.annotation.RetentionPolicy.*;
  * Each planning solution must have at least 1 {@link PlanningEntityCollectionProperty}
  * or {@link PlanningEntityProperty} property.
  * <p>
- * Each planning solution used with Drools score calculation must have at least 1 {@link PlanningFactCollectionProperty}
- * or {@link PlanningFactProperty} property.
+ * Each planning solution used with Drools score calculation must have at least 1 {@link ProblemFactCollectionProperty}
+ * or {@link ProblemFactProperty} property.
  * <p>
  * The class should have a public no-arg constructor, so it can be cloned
  * (unless the {@link #solutionCloner()} is specified).

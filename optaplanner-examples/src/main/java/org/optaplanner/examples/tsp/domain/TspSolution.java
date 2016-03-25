@@ -23,8 +23,8 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -74,7 +74,7 @@ public class TspSolution extends AbstractPersistable {
         this.distanceUnitOfMeasurement = distanceUnitOfMeasurement;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Location> getLocationList() {
         return locationList;
     }
@@ -83,7 +83,7 @@ public class TspSolution extends AbstractPersistable {
         this.locationList = locationList;
     }
 
-    @PlanningFactProperty
+    @ProblemFactProperty
     public Domicile getDomicile() {
         return domicile;
     }

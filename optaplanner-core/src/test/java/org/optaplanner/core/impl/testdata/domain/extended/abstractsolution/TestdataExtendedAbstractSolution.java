@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.testdata.domain.extended.abstractsolution;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -40,7 +40,7 @@ public class TestdataExtendedAbstractSolution extends AbstractSolution {
         super();
     }
 
-    @PlanningFactProperty
+    @ProblemFactProperty
     public Object getExtraObject() {
         return extraObject;
     }

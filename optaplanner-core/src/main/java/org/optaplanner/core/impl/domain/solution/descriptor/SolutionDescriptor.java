@@ -36,8 +36,8 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
@@ -156,12 +156,12 @@ public class SolutionDescriptor<Solution_> {
         boolean hasFactAnnotation = !(this.factCollectionPropertyAccessorMap.isEmpty() && this.factPropertyAccessorMap.isEmpty());
         if (hasFactAnnotation) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") must not have any PlanningFactProperty or PlanningFactCollectionProperty annotations when " +
+                    + ") must not have any ProblemFactProperty or ProblemFactCollectionProperty annotations when " +
                     "implementing the legacy Solution interface.");
         } else {
             try {
                 Method getProblemFactsMethod = solutionClass.getMethod("getProblemFacts");
-                registerFactPropertyAccessor(PlanningFactCollectionProperty.class,
+                registerFactPropertyAccessor(ProblemFactCollectionProperty.class,
                         new MethodMemberAccessor(getProblemFactsMethod));
             } catch (NoSuchMethodException e) {
                 throw new IllegalStateException("Impossible thing just happened. Implementation of Solution " +
@@ -317,7 +317,7 @@ public class SolutionDescriptor<Solution_> {
     }
 
     private Class<? extends Annotation> extractFactPropertyAnnotationClass(AnnotatedElement member) {
-        return extractAnnotationClass(member, PlanningFactProperty.class, PlanningFactCollectionProperty.class);
+        return extractAnnotationClass(member, ProblemFactProperty.class, ProblemFactCollectionProperty.class);
     }
 
     private Class<? extends Annotation> extractScoreAnnotationClass(AnnotatedElement member) {
@@ -351,7 +351,7 @@ public class SolutionDescriptor<Solution_> {
     private void registerFactPropertyAccessor(Class<? extends Annotation> factPropertyAnnotationClass,
                                                 MemberAccessor memberAccessor) {
         registerPropertyAccessor(factPropertyAnnotationClass, memberAccessor, factPropertyAccessorMap,
-                factCollectionPropertyAccessorMap, PlanningFactProperty.class, PlanningFactCollectionProperty.class);
+                factCollectionPropertyAccessorMap, ProblemFactProperty.class, ProblemFactCollectionProperty.class);
     }
 
     private void registerScoreAccessor(MemberAccessor memberAccessor) {

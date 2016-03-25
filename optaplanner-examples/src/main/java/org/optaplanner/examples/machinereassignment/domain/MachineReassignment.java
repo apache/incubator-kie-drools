@@ -22,8 +22,8 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -52,7 +52,7 @@ public class MachineReassignment extends AbstractPersistable {
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftLongScoreDefinition.class})
     private HardSoftLongScore score;
 
-    @PlanningFactProperty
+    @ProblemFactProperty
     public MrGlobalPenaltyInfo getGlobalPenaltyInfo() {
         return globalPenaltyInfo;
     }
@@ -61,7 +61,7 @@ public class MachineReassignment extends AbstractPersistable {
         this.globalPenaltyInfo = globalPenaltyInfo;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<MrResource> getResourceList() {
         return resourceList;
     }
@@ -70,7 +70,7 @@ public class MachineReassignment extends AbstractPersistable {
         this.resourceList = resourceList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<MrNeighborhood> getNeighborhoodList() {
         return neighborhoodList;
     }
@@ -79,7 +79,7 @@ public class MachineReassignment extends AbstractPersistable {
         this.neighborhoodList = neighborhoodList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<MrLocation> getLocationList() {
         return locationList;
     }
@@ -89,7 +89,7 @@ public class MachineReassignment extends AbstractPersistable {
     }
 
     @ValueRangeProvider(id = "machineRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<MrMachine> getMachineList() {
         return machineList;
     }
@@ -98,7 +98,7 @@ public class MachineReassignment extends AbstractPersistable {
         this.machineList = machineList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<MrMachineCapacity> getMachineCapacityList() {
         return machineCapacityList;
     }
@@ -107,7 +107,7 @@ public class MachineReassignment extends AbstractPersistable {
         this.machineCapacityList = machineCapacityList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<MrService> getServiceList() {
         return serviceList;
     }
@@ -116,7 +116,7 @@ public class MachineReassignment extends AbstractPersistable {
         this.serviceList = serviceList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<MrProcess> getProcessList() {
         return processList;
     }
@@ -125,7 +125,7 @@ public class MachineReassignment extends AbstractPersistable {
         this.processList = processList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<MrBalancePenalty> getBalancePenaltyList() {
         return balancePenaltyList;
     }
@@ -156,7 +156,7 @@ public class MachineReassignment extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     private List<MrServiceDependency> getServiceDependencyList() {
         List<MrServiceDependency> serviceDependencyList = new ArrayList<MrServiceDependency>(serviceList.size() * 5);
         for (MrService service : serviceList) {

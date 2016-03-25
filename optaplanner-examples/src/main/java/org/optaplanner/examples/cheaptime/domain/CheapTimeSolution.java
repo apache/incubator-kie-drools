@@ -21,8 +21,8 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -76,13 +76,13 @@ public class CheapTimeSolution extends AbstractPersistable {
         this.globalPeriodRangeTo = globalPeriodRangeTo;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Resource> getResourceList() {
         return resourceList;
     }
 
     @ValueRangeProvider(id = "machineRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Machine> getMachineList() {
         return machineList;
     }
@@ -95,7 +95,7 @@ public class CheapTimeSolution extends AbstractPersistable {
         this.resourceList = resourceList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<MachineCapacity> getMachineCapacityList() {
         return machineCapacityList;
     }
@@ -104,7 +104,7 @@ public class CheapTimeSolution extends AbstractPersistable {
         this.machineCapacityList = machineCapacityList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Task> getTaskList() {
         return taskList;
     }
@@ -113,7 +113,7 @@ public class CheapTimeSolution extends AbstractPersistable {
         this.taskList = taskList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<TaskRequirement> getTaskRequirementList() {
         return taskRequirementList;
     }
@@ -122,7 +122,7 @@ public class CheapTimeSolution extends AbstractPersistable {
         this.taskRequirementList = taskRequirementList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<PeriodPowerPrice> getPeriodPowerPriceList() {
         return periodPowerPriceList;
     }
@@ -153,7 +153,7 @@ public class CheapTimeSolution extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
-    @PlanningFactProperty
+    @ProblemFactProperty
     public CheapTimeSolution getCheapTimeSolution() {
         return this;
     }

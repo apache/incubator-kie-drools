@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.testdata.domain.chained.rich;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -48,7 +48,7 @@ public class TestdataRichChainedSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "chainedAnchorRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<TestdataRichChainedAnchor> getChainedAnchorList() {
         return chainedAnchorList;
     }

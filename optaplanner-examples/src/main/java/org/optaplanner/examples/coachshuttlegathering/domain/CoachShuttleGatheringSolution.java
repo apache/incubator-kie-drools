@@ -23,8 +23,8 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -56,7 +56,7 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable {
         this.name = name;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<RoadLocation> getLocationList() {
         return locationList;
     }
@@ -95,7 +95,7 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable {
         this.stopList = stopList;
     }
 
-    @PlanningFactProperty
+    @ProblemFactProperty
     public BusHub getHub() {
         return hub;
     }

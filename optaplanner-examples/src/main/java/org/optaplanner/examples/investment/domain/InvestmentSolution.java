@@ -23,8 +23,8 @@ import java.util.Map;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
@@ -50,7 +50,7 @@ public class InvestmentSolution extends AbstractPersistable {
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftLongScoreDefinition.class})
     private HardSoftLongScore score;
 
-    @PlanningFactProperty
+    @ProblemFactProperty
     public InvestmentParametrization getParametrization() {
         return parametrization;
     }
@@ -59,7 +59,7 @@ public class InvestmentSolution extends AbstractPersistable {
         this.parametrization = parametrization;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Region> getRegionList() {
         return regionList;
     }
@@ -68,7 +68,7 @@ public class InvestmentSolution extends AbstractPersistable {
         this.regionList = regionList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Sector> getSectorList() {
         return sectorList;
     }
@@ -77,7 +77,7 @@ public class InvestmentSolution extends AbstractPersistable {
         this.sectorList = sectorList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<AssetClass> getAssetClassList() {
         return assetClassList;
     }

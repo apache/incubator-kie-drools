@@ -23,7 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -78,7 +78,7 @@ public class VehicleRoutingSolution extends AbstractPersistable {
         this.distanceUnitOfMeasurement = distanceUnitOfMeasurement;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Location> getLocationList() {
         return locationList;
     }
@@ -87,7 +87,7 @@ public class VehicleRoutingSolution extends AbstractPersistable {
         this.locationList = locationList;
     }
 
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<Depot> getDepotList() {
         return depotList;
     }

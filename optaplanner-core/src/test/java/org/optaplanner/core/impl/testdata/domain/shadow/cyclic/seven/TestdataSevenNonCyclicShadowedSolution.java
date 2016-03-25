@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.testdata.domain.shadow.cyclic.seven;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -49,7 +49,7 @@ public class TestdataSevenNonCyclicShadowedSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "valueRange")
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     public List<TestdataValue> getValueList() {
         return valueList;
     }

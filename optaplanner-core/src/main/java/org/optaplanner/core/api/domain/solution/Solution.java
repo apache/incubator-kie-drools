@@ -17,8 +17,8 @@
 package org.optaplanner.core.api.domain.solution;
 
 import org.kie.api.runtime.KieSession;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
@@ -42,7 +42,7 @@ import java.util.Collection;
  * But the planning solution class must also be annotated with {@link PlanningSolution}
  * describes declarative properties.
  * @param <S> the {@link Score} type used by this use case
- * @deprecated In favor of {@link PlanningScore}, {@link PlanningFactCollectionProperty} and {@link PlanningFactProperty}.
+ * @deprecated In favor of {@link PlanningScore}, {@link ProblemFactCollectionProperty} and {@link ProblemFactProperty}.
  */
 @Deprecated
 public interface Solution<S extends Score> {

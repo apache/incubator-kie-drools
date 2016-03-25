@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
-import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -54,7 +54,7 @@ public abstract class AbstractSolution<S extends Score> implements Serializable 
      *
      * @return All entities from anywhere in this class' hierarchy.
      */
-    @PlanningFactCollectionProperty
+    @ProblemFactCollectionProperty
     protected Collection<?> getProblemFacts() {
         Class<? extends AbstractSolution> instanceClass = getClass();
         return getProblemFactsFromClass(instanceClass);
