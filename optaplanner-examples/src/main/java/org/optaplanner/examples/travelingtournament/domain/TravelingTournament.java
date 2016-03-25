@@ -23,7 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;

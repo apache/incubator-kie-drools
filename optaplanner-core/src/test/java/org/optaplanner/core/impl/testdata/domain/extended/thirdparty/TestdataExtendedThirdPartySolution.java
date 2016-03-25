@@ -17,12 +17,12 @@
 package org.optaplanner.core.impl.testdata.domain.extended.thirdparty;
 
 import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-import java.util.Collection;
 import java.util.List;
 
 @PlanningSolution

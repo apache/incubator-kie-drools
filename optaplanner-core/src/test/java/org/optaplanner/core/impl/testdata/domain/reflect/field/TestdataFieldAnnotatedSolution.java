@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.testdata.domain.reflect.field;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;

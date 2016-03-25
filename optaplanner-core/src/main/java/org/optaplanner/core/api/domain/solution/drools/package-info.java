@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,20 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.api.domain.solution;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 /**
- * Specifies that a property (or a field) on a {@link PlanningSolution} class is a planning fact.
+ * Domain annotations and support classes for a planning solution that is used with Drools score calculation.
  */
-@Target({METHOD, FIELD})
-@Retention(RUNTIME)
-public @interface PlanningFactProperty {
-
-}
+package org.optaplanner.core.api.domain.solution.drools;

@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.impl.testdata.domain.extended;
 
-import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class TestdataExtendedSolution extends TestdataSolution {

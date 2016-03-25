@@ -17,11 +17,10 @@
 // This file is copy pasted to another package in the KieContainer test to avoid false positive tests
 package testdata.kjar;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;

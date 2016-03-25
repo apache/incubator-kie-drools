@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.testdata.domain.problemfacts;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;

@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.testdata.domain.entityproviding;
 
 import org.optaplanner.core.api.domain.solution.*;
+import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
