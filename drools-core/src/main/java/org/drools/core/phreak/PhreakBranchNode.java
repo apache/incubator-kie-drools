@@ -26,7 +26,6 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.spi.Salience;
-import org.drools.core.spi.Tuple;
 
 
 public class PhreakBranchNode {
@@ -40,7 +39,7 @@ public class PhreakBranchNode {
                        RuleExecutor executor) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(branchNode, cbm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
+            doLeftDeletes(branchNode, cbm, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
@@ -223,6 +222,7 @@ public class PhreakBranchNode {
 
     public void doLeftDeletes(ConditionalBranchNode branchNode,
                               ConditionalBranchMemory cbm,
+                              LeftTupleSink sink,
                               InternalWorkingMemory wm,
                               TupleSets<LeftTuple> srcLeftTuples,
                               TupleSets<LeftTuple> trgLeftTuples,
@@ -231,8 +231,25 @@ public class PhreakBranchNode {
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            Tuple rtnLeftTuple = (Tuple) leftTuple.getContextObject();
-            LeftTuple mainLeftTuple = leftTuple.getFirstChild();
+            LeftTuple rtnLeftTuple = null;
+            LeftTuple mainLeftTuple = null;
+            LeftTuple child = leftTuple.getFirstChild();
+            if ( child != null ) {
+                // assigns the correct main or rtn LeftTuple based on the identified sink
+                if ( child.getTupleSink() == sink ) {
+                    mainLeftTuple = child;
+                } else {
+                    rtnLeftTuple = child;
+                }
+                child = child.getHandleNext();
+                if ( child != null ) {
+                    if ( child.getTupleSink() == sink ) {
+                        mainLeftTuple = child;
+                    } else {
+                        rtnLeftTuple = child;
+                    }
+                }
+            }
 
             if (rtnLeftTuple != null) {
                 if ( rtnLeftTuple.getMemory() != null ) {
