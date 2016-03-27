@@ -29,6 +29,7 @@ import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScop
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.mockito.Mockito.*;
 
@@ -36,16 +37,16 @@ public class DefaultExhaustiveSearchPhaseTest {
 
     @Test
     public void restoreWorkingSolution() {
-        ExhaustiveSearchPhaseScope phaseScope = mock(ExhaustiveSearchPhaseScope.class);
-        ExhaustiveSearchStepScope lastCompletedStepScope = mock(ExhaustiveSearchStepScope.class);
+        ExhaustiveSearchPhaseScope<TestdataSolution> phaseScope = mock(ExhaustiveSearchPhaseScope.class);
+        ExhaustiveSearchStepScope<TestdataSolution> lastCompletedStepScope = mock(ExhaustiveSearchStepScope.class);
         when(phaseScope.getLastCompletedStepScope()).thenReturn(lastCompletedStepScope);
-        ExhaustiveSearchStepScope stepScope = mock(ExhaustiveSearchStepScope.class);
+        ExhaustiveSearchStepScope<TestdataSolution> stepScope = mock(ExhaustiveSearchStepScope.class);
         when(stepScope.getPhaseScope()).thenReturn(phaseScope);
-        AbstractSolution workingSolution = mock(AbstractSolution.class);
+        TestdataSolution workingSolution = new TestdataSolution();
         when(phaseScope.getWorkingSolution()).thenReturn(workingSolution);
 
-        SolutionDescriptor sd = mock(SolutionDescriptor.class);
-        when(phaseScope.getSolutionDescriptor()).thenReturn(sd);
+        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+        when(phaseScope.getSolutionDescriptor()).thenReturn(solutionDescriptor);
 
         ExhaustiveSearchLayer layer0 = new ExhaustiveSearchLayer(0, mock(Object.class), 100);
         ExhaustiveSearchLayer layer1 = new ExhaustiveSearchLayer(1, mock(Object.class), 99);
@@ -78,7 +79,7 @@ public class DefaultExhaustiveSearchPhaseTest {
         when(lastCompletedStepScope.getExpandingNode()).thenReturn(node3A);
         when(stepScope.getExpandingNode()).thenReturn(node4B);
 
-        DefaultExhaustiveSearchPhase phase = new DefaultExhaustiveSearchPhase();
+        DefaultExhaustiveSearchPhase<TestdataSolution> phase = new DefaultExhaustiveSearchPhase<>();
         phase.setEntitySelector(mock(EntitySelector.class));
         phase.setDecider(mock(ExhaustiveSearchDecider.class));
         phase.restoreWorkingSolution(stepScope);

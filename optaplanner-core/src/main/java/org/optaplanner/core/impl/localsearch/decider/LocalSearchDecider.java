@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch.decider;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
@@ -31,7 +32,10 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LocalSearchDecider {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public class LocalSearchDecider<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -87,30 +91,30 @@ public class LocalSearchDecider {
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         moveSelector.solvingStarted(solverScope);
         acceptor.solvingStarted(solverScope);
         forager.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope<Solution_> phaseScope) {
         moveSelector.phaseStarted(phaseScope);
         acceptor.phaseStarted(phaseScope);
         forager.phaseStarted(phaseScope);
     }
 
-    public void stepStarted(LocalSearchStepScope stepScope) {
+    public void stepStarted(LocalSearchStepScope<Solution_> stepScope) {
         moveSelector.stepStarted(stepScope);
         acceptor.stepStarted(stepScope);
         forager.stepStarted(stepScope);
     }
 
-    public void decideNextStep(LocalSearchStepScope stepScope) {
+    public void decideNextStep(LocalSearchStepScope<Solution_> stepScope) {
         InnerScoreDirector scoreDirector = stepScope.getScoreDirector();
         scoreDirector.setAllChangesWillBeUndoneBeforeStepEnds(true);
         int moveIndex = 0;
         for (Move move : moveSelector) {
-            LocalSearchMoveScope moveScope = new LocalSearchMoveScope(stepScope);
+            LocalSearchMoveScope<Solution_> moveScope = new LocalSearchMoveScope<>(stepScope);
             moveScope.setMoveIndex(moveIndex);
             moveIndex++;
             moveScope.setMove(move);
@@ -128,7 +132,7 @@ public class LocalSearchDecider {
             }
         }
         scoreDirector.setAllChangesWillBeUndoneBeforeStepEnds(false);
-        LocalSearchMoveScope pickedMoveScope = forager.pickMove(stepScope);
+        LocalSearchMoveScope<Solution_> pickedMoveScope = forager.pickMove(stepScope);
         if (pickedMoveScope != null) {
             Move step = pickedMoveScope.getMove();
             stepScope.setStep(step);
@@ -140,7 +144,7 @@ public class LocalSearchDecider {
         }
     }
 
-    private void doMove(LocalSearchMoveScope moveScope) {
+    private void doMove(LocalSearchMoveScope<Solution_> moveScope) {
         ScoreDirector scoreDirector = moveScope.getScoreDirector();
         Move move = moveScope.getMove();
         Move undoMove = move.createUndoMove(scoreDirector);
@@ -149,7 +153,7 @@ public class LocalSearchDecider {
         processMove(moveScope);
         undoMove.doMove(scoreDirector);
         if (assertExpectedUndoMoveScore) {
-            LocalSearchPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
+            LocalSearchPhaseScope<Solution_> phaseScope = moveScope.getStepScope().getPhaseScope();
             phaseScope.assertExpectedUndoMoveScore(move, undoMove, phaseScope.getLastCompletedStepScope().getScore());
         }
         logger.trace("        Move index ({}), score ({}), accepted ({}), move ({}).",
@@ -157,7 +161,7 @@ public class LocalSearchDecider {
                 moveScope.getMove());
     }
 
-    private void processMove(LocalSearchMoveScope moveScope) {
+    private void processMove(LocalSearchMoveScope<Solution_> moveScope) {
         Score score = moveScope.getStepScope().getPhaseScope().calculateScore();
         if (assertMoveScoreFromScratch) {
             moveScope.getStepScope().getPhaseScope().assertWorkingScoreFromScratch(score, moveScope.getMove());
@@ -168,19 +172,19 @@ public class LocalSearchDecider {
         forager.addMove(moveScope);
     }
 
-    public void stepEnded(LocalSearchStepScope stepScope) {
+    public void stepEnded(LocalSearchStepScope<Solution_> stepScope) {
         moveSelector.stepEnded(stepScope);
         acceptor.stepEnded(stepScope);
         forager.stepEnded(stepScope);
     }
 
-    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope<Solution_> phaseScope) {
         moveSelector.phaseEnded(phaseScope);
         acceptor.phaseEnded(phaseScope);
         forager.phaseEnded(phaseScope);
     }
 
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         moveSelector.solvingEnded(solverScope);
         acceptor.solvingEnded(solverScope);
         forager.solvingEnded(solverScope);

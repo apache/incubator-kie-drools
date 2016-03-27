@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.localsearch;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListener;
@@ -26,20 +27,21 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * Default implementation of {@link LocalSearchPhase}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class DefaultLocalSearchPhase extends AbstractPhase implements LocalSearchPhase,
-        LocalSearchPhaseLifecycleListener {
+public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_> implements LocalSearchPhase<Solution_>,
+        LocalSearchPhaseLifecycleListener<Solution_> {
 
-    protected LocalSearchDecider decider;
+    protected LocalSearchDecider<Solution_> decider;
 
     protected boolean assertStepScoreFromScratch = false;
     protected boolean assertExpectedStepScore = false;
 
-    public LocalSearchDecider getDecider() {
+    public LocalSearchDecider<Solution_> getDecider() {
         return decider;
     }
 
-    public void setDecider(LocalSearchDecider decider) {
+    public void setDecider(LocalSearchDecider<Solution_> decider) {
         this.decider = decider;
     }
 
@@ -60,12 +62,12 @@ public class DefaultLocalSearchPhase extends AbstractPhase implements LocalSearc
     // Worker methods
     // ************************************************************************
 
-    public void solve(DefaultSolverScope solverScope) {
-        LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
+    public void solve(DefaultSolverScope<Solution_> solverScope) {
+        LocalSearchPhaseScope<Solution_> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         phaseStarted(phaseScope);
 
         while (!termination.isPhaseTerminated(phaseScope)) {
-            LocalSearchStepScope stepScope = new LocalSearchStepScope(phaseScope);
+            LocalSearchStepScope<Solution_> stepScope = new LocalSearchStepScope<>(phaseScope);
             stepScope.setTimeGradient(termination.calculatePhaseTimeGradient(phaseScope));
             stepStarted(stepScope);
             decider.decideNextStep(stepScope);
@@ -95,8 +97,8 @@ public class DefaultLocalSearchPhase extends AbstractPhase implements LocalSearc
         phaseEnded(phaseScope);
     }
 
-    private void doStep(LocalSearchStepScope stepScope) {
-        LocalSearchPhaseScope phaseScope = stepScope.getPhaseScope();
+    private void doStep(LocalSearchStepScope<Solution_> stepScope) {
+        LocalSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         Move nextStep = stepScope.getStep();
         nextStep.doMove(stepScope.getScoreDirector());
         // there is no need to recalculate the score, but we still need to set it
@@ -111,24 +113,24 @@ public class DefaultLocalSearchPhase extends AbstractPhase implements LocalSearc
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         decider.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(LocalSearchPhaseScope phaseScope) {
+    public void phaseStarted(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         decider.phaseStarted(phaseScope);
         // TODO maybe this restriction should be lifted to allow LocalSearch to initialize a solution too?
         assertWorkingSolutionInitialized(phaseScope);
     }
 
-    public void stepStarted(LocalSearchStepScope stepScope) {
+    public void stepStarted(LocalSearchStepScope<Solution_> stepScope) {
         super.stepStarted(stepScope);
         decider.stepStarted(stepScope);
     }
 
-    public void stepEnded(LocalSearchStepScope stepScope) {
+    public void stepEnded(LocalSearchStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
         decider.stepEnded(stepScope);
         LocalSearchPhaseScope phaseScope = stepScope.getPhaseScope();
@@ -145,7 +147,7 @@ public class DefaultLocalSearchPhase extends AbstractPhase implements LocalSearc
         }
     }
 
-    public void phaseEnded(LocalSearchPhaseScope phaseScope) {
+    public void phaseEnded(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
         logger.info("Local Search phase ({}) ended: step total ({}), time spent ({}), best score ({}).",
@@ -156,7 +158,7 @@ public class DefaultLocalSearchPhase extends AbstractPhase implements LocalSearc
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         super.solvingEnded(solverScope);
         decider.solvingEnded(solverScope);
     }

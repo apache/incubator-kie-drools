@@ -41,7 +41,6 @@ public abstract class AbstractPhaseScope<Solution_> {
     protected final DefaultSolverScope<Solution_> solverScope;
 
     protected long startingSystemTimeMillis;
-
     protected Score startingScore;
 
     protected int bestSolutionStepIndex;

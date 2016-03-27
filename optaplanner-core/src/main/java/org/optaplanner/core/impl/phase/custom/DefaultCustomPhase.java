@@ -33,12 +33,12 @@ import java.util.List;
  */
 public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> implements CustomPhase<Solution_> {
 
-    protected List<CustomPhaseCommand> customPhaseCommandList;
+    protected List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
     protected boolean forceUpdateBestSolution;
 
     protected boolean assertStepScoreFromScratch = false;
 
-    public void setCustomPhaseCommandList(List<CustomPhaseCommand> customPhaseCommandList) {
+    public void setCustomPhaseCommandList(List<CustomPhaseCommand<Solution_>> customPhaseCommandList) {
         this.customPhaseCommandList = customPhaseCommandList;
     }
 
@@ -64,9 +64,10 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
         phaseStarted(phaseScope);
 
         CustomStepScope<Solution_> stepScope = new CustomStepScope<>(phaseScope);
-        Iterator<CustomPhaseCommand> commandIterator = customPhaseCommandList.iterator();
-        while (!termination.isPhaseTerminated(phaseScope) && commandIterator.hasNext()) {
-            CustomPhaseCommand customPhaseCommand = commandIterator.next();
+        for (CustomPhaseCommand<Solution_> customPhaseCommand : customPhaseCommandList) {
+            if (termination.isPhaseTerminated(phaseScope)) {
+                break;
+            }
             stepStarted(stepScope);
             doStep(stepScope, customPhaseCommand);
             stepEnded(stepScope);
@@ -84,7 +85,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
         super.stepStarted(stepScope);
     }
 
-    private void doStep(CustomStepScope<Solution_> stepScope, CustomPhaseCommand customPhaseCommand) {
+    private void doStep(CustomStepScope<Solution_> stepScope, CustomPhaseCommand<Solution_> customPhaseCommand) {
         InnerScoreDirector<Solution_> scoreDirector = stepScope.getScoreDirector();
         customPhaseCommand.changeWorkingSolution(scoreDirector);
         int uninitializedVariableCount = scoreDirector.getSolutionDescriptor()
