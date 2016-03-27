@@ -32,9 +32,10 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * instead use {@link Solver#addProblemFactChange(ProblemFactChange)} for that.
  * <p>
  * An implementation must extend {@link AbstractCustomPhaseCommand} to ensure backwards compatibility in future versions.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see AbstractCustomPhaseCommand
  */
-public interface CustomPhaseCommand {
+public interface CustomPhaseCommand<Solution_> {
 
     /**
      * Called during {@link SolverFactory#buildSolver()}.
@@ -55,6 +56,6 @@ public interface CustomPhaseCommand {
      * to ensure all shadow variables are updated.
      * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes.
      */
-    void changeWorkingSolution(ScoreDirector scoreDirector);
+    void changeWorkingSolution(ScoreDirector<Solution_> scoreDirector);
 
 }

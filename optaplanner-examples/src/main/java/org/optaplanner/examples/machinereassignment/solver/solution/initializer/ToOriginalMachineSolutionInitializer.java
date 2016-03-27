@@ -25,16 +25,16 @@ import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ToOriginalMachineSolutionInitializer extends AbstractCustomPhaseCommand {
+public class ToOriginalMachineSolutionInitializer extends AbstractCustomPhaseCommand<MachineReassignment> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    public void changeWorkingSolution(ScoreDirector scoreDirector) {
-        MachineReassignment machineReassignment = (MachineReassignment) scoreDirector.getWorkingSolution();
+    public void changeWorkingSolution(ScoreDirector<MachineReassignment> scoreDirector) {
+        MachineReassignment machineReassignment = scoreDirector.getWorkingSolution();
         initializeProcessAssignmentList(scoreDirector, machineReassignment);
     }
 
-    private void initializeProcessAssignmentList(ScoreDirector scoreDirector,
+    private void initializeProcessAssignmentList(ScoreDirector<MachineReassignment> scoreDirector,
             MachineReassignment machineReassignment) {
         for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
             MrMachine originalMachine = processAssignment.getOriginalMachine();

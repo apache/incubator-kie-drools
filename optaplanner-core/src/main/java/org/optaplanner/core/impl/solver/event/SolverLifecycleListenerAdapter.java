@@ -16,15 +16,21 @@
 
 package org.optaplanner.core.impl.solver.event;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public abstract class SolverLifecycleListenerAdapter implements SolverLifecycleListener {
+/**
+ * An adapter for {@link SolverLifecycleListener}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public abstract class SolverLifecycleListenerAdapter<Solution_> implements SolverLifecycleListener<Solution_> {
 
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         // Hook method
     }
 
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         // Hook method
     }
 

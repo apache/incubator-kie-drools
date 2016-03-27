@@ -81,26 +81,26 @@ public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
         ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class PickedMoveTypeBestScoreDiffSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class PickedMoveTypeBestScoreDiffSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
 
         private Score oldBestScore = null;
 
         @Override
-        public void phaseStarted(AbstractPhaseScope phaseScope) {
+        public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
             if (phaseScope instanceof LocalSearchPhaseScope) {
                 oldBestScore = phaseScope.getBestScore();
             }
         }
 
         @Override
-        public void phaseEnded(AbstractPhaseScope phaseScope) {
+        public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
             if (phaseScope instanceof LocalSearchPhaseScope) {
                 oldBestScore = null;
             }
         }
 
         @Override
-        public void stepEnded(AbstractStepScope stepScope) {
+        public void stepEnded(AbstractStepScope<Solution_> stepScope) {
             if (stepScope instanceof LocalSearchStepScope) {
                 localSearchStepEnded((LocalSearchStepScope<Solution_>) stepScope);
             }

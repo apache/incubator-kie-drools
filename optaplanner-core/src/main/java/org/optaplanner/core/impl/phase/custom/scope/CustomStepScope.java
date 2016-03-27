@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
  */
 public class CustomStepScope<Solution_> extends AbstractStepScope<Solution_> {
 
-    private final CustomPhaseScope phaseScope;
+    private final CustomPhaseScope<Solution_> phaseScope;
 
     private int uninitializedVariableCount = -1;
 

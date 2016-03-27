@@ -88,9 +88,9 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         logger.trace("Benchmark inputSolution has been read for subSingleBenchmarkResult ({}).",
                 subSingleBenchmarkResult);
 
-        SolverConfig<Solution_> solverConfig = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig();
+        SolverConfig solverConfig = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig();
         if (subSingleBenchmarkResult.getSingleBenchmarkResult().getSubSingleCount() > 1) {
-            solverConfig = new SolverConfig<>(solverConfig);
+            solverConfig = new SolverConfig(solverConfig);
             solverConfig.offerRandomSeedFromSubSingleIndex((long) subSingleBenchmarkResult.getSubSingleBenchmarkIndex());
         }
         // Intentionally create a fresh solver for every SingleBenchmarkResult to reset Random, tabu lists, ...

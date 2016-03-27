@@ -18,12 +18,14 @@ package org.optaplanner.core.impl.phase.custom;
 
 import java.util.Map;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Abstract superclass for {@link CustomPhaseCommand}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public abstract class AbstractCustomPhaseCommand implements CustomPhaseCommand {
+public abstract class AbstractCustomPhaseCommand<Solution_> implements CustomPhaseCommand<Solution_> {
 
     @Override
     public void applyCustomProperties(Map<String, String> customPropertyMap) {

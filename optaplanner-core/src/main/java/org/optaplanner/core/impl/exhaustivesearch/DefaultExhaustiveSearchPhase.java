@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.exhaustivesearch;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;
@@ -34,12 +35,14 @@ import java.util.*;
 
 /**
  * Default implementation of {@link ExhaustiveSearchPhase}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class DefaultExhaustiveSearchPhase extends AbstractPhase implements ExhaustiveSearchPhase {
+public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solution_>
+        implements ExhaustiveSearchPhase<Solution_> {
 
     protected Comparator<ExhaustiveSearchNode> nodeComparator;
     protected EntitySelector entitySelector;
-    protected ExhaustiveSearchDecider decider;
+    protected ExhaustiveSearchDecider<Solution_> decider;
 
     protected boolean assertWorkingSolutionScoreFromScratch = false;
     protected boolean assertExpectedWorkingSolutionScore = false;
@@ -60,11 +63,11 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
         this.entitySelector = entitySelector;
     }
 
-    public ExhaustiveSearchDecider getDecider() {
+    public ExhaustiveSearchDecider<Solution_> getDecider() {
         return decider;
     }
 
-    public void setDecider(ExhaustiveSearchDecider decider) {
+    public void setDecider(ExhaustiveSearchDecider<Solution_> decider) {
         this.decider = decider;
     }
 
@@ -85,14 +88,14 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
     // Worker methods
     // ************************************************************************
 
-    public void solve(DefaultSolverScope solverScope) {
+    public void solve(DefaultSolverScope<Solution_> solverScope) {
         SortedSet<ExhaustiveSearchNode> expandableNodeQueue = new TreeSet<ExhaustiveSearchNode>(nodeComparator);
-        ExhaustiveSearchPhaseScope phaseScope = new ExhaustiveSearchPhaseScope(solverScope);
+        ExhaustiveSearchPhaseScope<Solution_> phaseScope = new ExhaustiveSearchPhaseScope<>(solverScope);
         phaseScope.setExpandableNodeQueue(expandableNodeQueue);
         phaseStarted(phaseScope);
 
         while (!expandableNodeQueue.isEmpty() && !termination.isPhaseTerminated(phaseScope)) {
-            ExhaustiveSearchStepScope stepScope = new ExhaustiveSearchStepScope(phaseScope);
+            ExhaustiveSearchStepScope<Solution_> stepScope = new ExhaustiveSearchStepScope<>(phaseScope);
             ExhaustiveSearchNode node = expandableNodeQueue.last();
             expandableNodeQueue.remove(node);
             stepScope.setExpandingNode(node);
@@ -106,13 +109,13 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         entitySelector.solvingStarted(solverScope);
         decider.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(ExhaustiveSearchPhaseScope phaseScope) {
+    public void phaseStarted(ExhaustiveSearchPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         entitySelector.phaseStarted(phaseScope);
         decider.phaseStarted(phaseScope);
@@ -120,8 +123,8 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
         initStartNode(phaseScope);
     }
 
-    private void fillLayerList(ExhaustiveSearchPhaseScope phaseScope) {
-        ExhaustiveSearchStepScope stepScope = new ExhaustiveSearchStepScope(phaseScope);
+    private void fillLayerList(ExhaustiveSearchPhaseScope<Solution_> phaseScope) {
+        ExhaustiveSearchStepScope<Solution_> stepScope = new ExhaustiveSearchStepScope<>(phaseScope);
         entitySelector.stepStarted(stepScope);
         long entitySize = entitySelector.getSize();
         if (entitySize > (long) Integer.MAX_VALUE) {
@@ -154,7 +157,7 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
         phaseScope.setLayerList(layerList);
     }
 
-    private void initStartNode(ExhaustiveSearchPhaseScope phaseScope) {
+    private void initStartNode(ExhaustiveSearchPhaseScope<Solution_> phaseScope) {
         ExhaustiveSearchLayer startLayer = phaseScope.getLayerList().get(0);
         ExhaustiveSearchNode startNode = new ExhaustiveSearchNode(startLayer, null);
 
@@ -174,14 +177,14 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
         phaseScope.getLastCompletedStepScope().setExpandingNode(startNode);
     }
 
-    public void stepStarted(ExhaustiveSearchStepScope stepScope) {
+    public void stepStarted(ExhaustiveSearchStepScope<Solution_> stepScope) {
         super.stepStarted(stepScope);
         // Skip entitySelector.stepStarted(stepScope)
         decider.stepStarted(stepScope);
     }
 
-    protected void restoreWorkingSolution(ExhaustiveSearchStepScope stepScope) {
-        ExhaustiveSearchPhaseScope phaseScope = stepScope.getPhaseScope();
+    protected void restoreWorkingSolution(ExhaustiveSearchStepScope<Solution_> stepScope) {
+        ExhaustiveSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         ExhaustiveSearchNode oldNode = phaseScope.getLastCompletedStepScope().getExpandingNode();
         ExhaustiveSearchNode newNode = stepScope.getExpandingNode();
         List<Move> oldMoveList = new ArrayList<Move>(oldNode.getDepth());
@@ -221,12 +224,12 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
         }
     }
 
-    public void stepEnded(ExhaustiveSearchStepScope stepScope) {
+    public void stepEnded(ExhaustiveSearchStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
         // Skip entitySelector.stepEnded(stepScope)
         decider.stepEnded(stepScope);
         if (logger.isDebugEnabled()) {
-            ExhaustiveSearchPhaseScope phaseScope = stepScope.getPhaseScope();
+            ExhaustiveSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
             long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpent();
             logger.debug("    ES step ({}), time spent ({}), treeId ({}), {} best score ({}), selected move count ({}).",
                     stepScope.getStepIndex(), timeMillisSpent,
@@ -237,7 +240,7 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
         }
     }
 
-    public void phaseEnded(ExhaustiveSearchPhaseScope phaseScope) {
+    public void phaseEnded(ExhaustiveSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         entitySelector.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
@@ -249,7 +252,7 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         entitySelector.solvingEnded(solverScope);
         decider.solvingEnded(solverScope);

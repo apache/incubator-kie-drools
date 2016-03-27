@@ -16,18 +16,22 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.event;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchPhaseScope;
 import org.optaplanner.core.impl.exhaustivesearch.scope.ExhaustiveSearchStepScope;
 import org.optaplanner.core.impl.solver.event.SolverLifecycleListener;
 
-public interface ExhaustiveSearchPhaseLifecycleListener extends SolverLifecycleListener {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public interface ExhaustiveSearchPhaseLifecycleListener<Solution_> extends SolverLifecycleListener<Solution_> {
 
-    void phaseStarted(ExhaustiveSearchPhaseScope phaseScope);
+    void phaseStarted(ExhaustiveSearchPhaseScope<Solution_> phaseScope);
 
-    void stepStarted(ExhaustiveSearchStepScope stepScope);
+    void stepStarted(ExhaustiveSearchStepScope<Solution_> stepScope);
 
-    void stepEnded(ExhaustiveSearchStepScope stepScope);
+    void stepEnded(ExhaustiveSearchStepScope<Solution_> stepScope);
 
-    void phaseEnded(ExhaustiveSearchPhaseScope phaseScope);
+    void phaseEnded(ExhaustiveSearchPhaseScope<Solution_> phaseScope);
 
 }

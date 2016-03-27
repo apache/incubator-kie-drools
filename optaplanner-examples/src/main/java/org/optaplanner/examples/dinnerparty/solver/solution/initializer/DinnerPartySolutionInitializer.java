@@ -30,16 +30,16 @@ import org.optaplanner.examples.dinnerparty.domain.SeatDesignation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DinnerPartySolutionInitializer extends AbstractCustomPhaseCommand {
+public class DinnerPartySolutionInitializer extends AbstractCustomPhaseCommand<DinnerParty> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    public void changeWorkingSolution(ScoreDirector scoreDirector) {
-        DinnerParty dinnerParty = (DinnerParty) scoreDirector.getWorkingSolution();
+    public void changeWorkingSolution(ScoreDirector<DinnerParty> scoreDirector) {
+        DinnerParty dinnerParty = scoreDirector.getWorkingSolution();
         initializeSeatDesignationList(scoreDirector, dinnerParty);
     }
 
-    private void initializeSeatDesignationList(ScoreDirector scoreDirector, DinnerParty dinnerParty) {
+    private void initializeSeatDesignationList(ScoreDirector<DinnerParty> scoreDirector, DinnerParty dinnerParty) {
         // Assign one guest at a time
         List<Seat> undesignatedSeatList = new ArrayList<Seat>(dinnerParty.getSeatList());
         for (SeatDesignation seatDesignation : dinnerParty.getSeatDesignationList()) {

@@ -16,26 +16,31 @@
 
 package org.optaplanner.core.impl.phase.event;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.event.SolverLifecycleListenerAdapter;
 
-public abstract class PhaseLifecycleListenerAdapter extends SolverLifecycleListenerAdapter
-        implements PhaseLifecycleListener {
+/**
+ * An adapter for {@link PhaseLifecycleListener}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public abstract class PhaseLifecycleListenerAdapter<Solution_> extends SolverLifecycleListenerAdapter<Solution_>
+        implements PhaseLifecycleListener<Solution_> {
 
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         // Hook method
     }
 
-    public void stepStarted(AbstractStepScope stepScope) {
+    public void stepStarted(AbstractStepScope<Solution_> stepScope) {
         // Hook method
     }
 
-    public void stepEnded(AbstractStepScope stepScope) {
+    public void stepEnded(AbstractStepScope<Solution_> stepScope) {
         // Hook method
     }
 
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         // Hook method
     }
 

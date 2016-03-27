@@ -193,9 +193,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * @param configContext never null
      * @return never null
      */
-    public Solver buildSolver(SolverConfigContext configContext) {
+    public <Solution_> Solver<Solution_> buildSolver(SolverConfigContext configContext) {
         configContext.validate();
-        DefaultSolver solver = new DefaultSolver();
+        DefaultSolver<Solution_> solver = new DefaultSolver<>();
         EnvironmentMode environmentMode_ = determineEnvironmentMode();
         solver.setEnvironmentMode(environmentMode_);
         boolean daemon_ = defaultIfNull(daemon, false);
@@ -203,11 +203,11 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         solver.setBasicPlumbingTermination(basicPlumbingTermination);
 
         solver.setRandomFactory(buildRandomFactory(environmentMode_));
-        SolutionDescriptor solutionDescriptor = buildSolutionDescriptor(configContext);
+        SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(configContext);
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_
                 = scoreDirectorFactoryConfig == null ? new ScoreDirectorFactoryConfig()
                 : scoreDirectorFactoryConfig;
-        InnerScoreDirectorFactory scoreDirectorFactory = scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
+        InnerScoreDirectorFactory<Solution_> scoreDirectorFactory = scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
                 configContext, environmentMode_, solutionDescriptor);
         solver.setConstraintMatchEnabledPreference(environmentMode_.isAsserted());
         solver.setScoreDirectorFactory(scoreDirectorFactory);
@@ -217,7 +217,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 : terminationConfig;
         Termination termination = terminationConfig_.buildTermination(configPolicy, basicPlumbingTermination);
         solver.setTermination(termination);
-        BestSolutionRecaller bestSolutionRecaller = buildBestSolutionRecaller(environmentMode_);
+        BestSolutionRecaller<Solution_> bestSolutionRecaller = buildBestSolutionRecaller(environmentMode_);
         solver.setBestSolutionRecaller(bestSolutionRecaller);
         solver.setPhaseList(buildPhaseList(configPolicy, bestSolutionRecaller, termination));
         return solver;
@@ -244,7 +244,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return randomFactory;
     }
 
-    protected SolutionDescriptor buildSolutionDescriptor(SolverConfigContext configContext) {
+    protected <Solution_> SolutionDescriptor buildSolutionDescriptor(SolverConfigContext configContext) {
         if (scanAnnotatedClassesConfig != null) {
             if (solutionClass != null || entityClassList != null) {
                 throw new IllegalArgumentException("The solver configuration with scanAnnotatedClasses ("
@@ -267,8 +267,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         }
     }
 
-    protected BestSolutionRecaller buildBestSolutionRecaller(EnvironmentMode environmentMode) {
-        BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
+    protected <Solution_> BestSolutionRecaller<Solution_> buildBestSolutionRecaller(EnvironmentMode environmentMode) {
+        BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecaller<>();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             bestSolutionRecaller.setAssertInitialScoreFromScratch(true);
             bestSolutionRecaller.setAssertShadowVariablesAreNotStale(true);

@@ -20,23 +20,27 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class ExhaustiveSearchPhaseScope extends AbstractPhaseScope {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public class ExhaustiveSearchPhaseScope<Solution_> extends AbstractPhaseScope<Solution_> {
 
     private List<ExhaustiveSearchLayer> layerList;
     private SortedSet<ExhaustiveSearchNode> expandableNodeQueue;
     private Score bestPessimisticBound;
 
-    private ExhaustiveSearchStepScope lastCompletedStepScope;
+    private ExhaustiveSearchStepScope<Solution_> lastCompletedStepScope;
 
-    public ExhaustiveSearchPhaseScope(DefaultSolverScope solverScope) {
+    public ExhaustiveSearchPhaseScope(DefaultSolverScope<Solution_> solverScope) {
         super(solverScope);
-        lastCompletedStepScope = new ExhaustiveSearchStepScope(this, -1);
+        lastCompletedStepScope = new ExhaustiveSearchStepScope<>(this, -1);
     }
 
     public List<ExhaustiveSearchLayer> getLayerList() {
@@ -63,11 +67,11 @@ public class ExhaustiveSearchPhaseScope extends AbstractPhaseScope {
         this.bestPessimisticBound = bestPessimisticBound;
     }
 
-    public ExhaustiveSearchStepScope getLastCompletedStepScope() {
+    public ExhaustiveSearchStepScope<Solution_> getLastCompletedStepScope() {
         return lastCompletedStepScope;
     }
 
-    public void setLastCompletedStepScope(ExhaustiveSearchStepScope lastCompletedStepScope) {
+    public void setLastCompletedStepScope(ExhaustiveSearchStepScope<Solution_> lastCompletedStepScope) {
         this.lastCompletedStepScope = lastCompletedStepScope;
     }
 

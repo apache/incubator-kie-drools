@@ -26,39 +26,39 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 /**
  * Internal API.
  */
-public class PhaseLifecycleSupport extends AbstractEventSupport<PhaseLifecycleListener> {
+public class PhaseLifecycleSupport<Solution_> extends AbstractEventSupport<PhaseLifecycleListener<Solution_>> {
 
-    public void fireSolvingStarted(DefaultSolverScope solverScope) {
+    public void fireSolvingStarted(DefaultSolverScope<Solution_> solverScope) {
         for (PhaseLifecycleListener phaseLifecycleListener : eventListenerSet) {
             phaseLifecycleListener.solvingStarted(solverScope);
         }
     }
 
-    public void firePhaseStarted(AbstractPhaseScope phaseScope) {
+    public void firePhaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         for (PhaseLifecycleListener phaseLifecycleListener : eventListenerSet) {
             phaseLifecycleListener.phaseStarted(phaseScope);
         }
     }
 
-    public void fireStepStarted(AbstractStepScope stepScope) {
+    public void fireStepStarted(AbstractStepScope<Solution_> stepScope) {
         for (PhaseLifecycleListener phaseLifecycleListener : eventListenerSet) {
             phaseLifecycleListener.stepStarted(stepScope);
         }
     }
 
-    public void fireStepEnded(AbstractStepScope stepScope) {
+    public void fireStepEnded(AbstractStepScope<Solution_> stepScope) {
         for (PhaseLifecycleListener phaseLifecycleListener : eventListenerSet) {
             phaseLifecycleListener.stepEnded(stepScope);
         }
     }
 
-    public void firePhaseEnded(AbstractPhaseScope phaseScope) {
+    public void firePhaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         for (PhaseLifecycleListener phaseLifecycleListener : eventListenerSet) {
             phaseLifecycleListener.phaseEnded(phaseScope);
         }
     }
 
-    public void fireSolvingEnded(DefaultSolverScope solverScope) {
+    public void fireSolvingEnded(DefaultSolverScope<Solution_> solverScope) {
         for (PhaseLifecycleListener phaseLifecycleListener : eventListenerSet) {
             phaseLifecycleListener.solvingEnded(solverScope);
         }

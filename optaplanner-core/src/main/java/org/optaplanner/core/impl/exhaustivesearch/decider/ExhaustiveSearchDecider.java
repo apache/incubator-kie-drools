@@ -34,11 +34,11 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExhaustiveSearchDecider implements ExhaustiveSearchPhaseLifecycleListener {
+public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhaseLifecycleListener<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected final BestSolutionRecaller bestSolutionRecaller;
+    protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
     protected final Termination termination;
     protected final ManualEntityMimicRecorder manualEntityMimicRecorder;
     protected final MoveSelector moveSelector;
@@ -48,7 +48,7 @@ public class ExhaustiveSearchDecider implements ExhaustiveSearchPhaseLifecycleLi
     protected boolean assertMoveScoreFromScratch = false;
     protected boolean assertExpectedUndoMoveScore = false;
 
-    public ExhaustiveSearchDecider(BestSolutionRecaller bestSolutionRecaller, Termination termination,
+    public ExhaustiveSearchDecider(BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination,
             ManualEntityMimicRecorder manualEntityMimicRecorder, MoveSelector moveSelector,
             boolean scoreBounderEnabled, ScoreBounder scoreBounder) {
         this.bestSolutionRecaller = bestSolutionRecaller;
@@ -87,31 +87,31 @@ public class ExhaustiveSearchDecider implements ExhaustiveSearchPhaseLifecycleLi
     // Worker methods
     // ************************************************************************
 
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         moveSelector.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(ExhaustiveSearchPhaseScope phaseScope) {
+    public void phaseStarted(ExhaustiveSearchPhaseScope<Solution_> phaseScope) {
         moveSelector.phaseStarted(phaseScope);
     }
 
-    public void stepStarted(ExhaustiveSearchStepScope stepScope) {
+    public void stepStarted(ExhaustiveSearchStepScope<Solution_> stepScope) {
         moveSelector.stepStarted(stepScope);
     }
 
-    public void stepEnded(ExhaustiveSearchStepScope stepScope) {
+    public void stepEnded(ExhaustiveSearchStepScope<Solution_> stepScope) {
         moveSelector.stepEnded(stepScope);
     }
 
-    public void phaseEnded(ExhaustiveSearchPhaseScope phaseScope) {
+    public void phaseEnded(ExhaustiveSearchPhaseScope<Solution_> phaseScope) {
         moveSelector.phaseEnded(phaseScope);
     }
 
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         moveSelector.solvingEnded(solverScope);
     }
 
-    public void expandNode(ExhaustiveSearchStepScope stepScope) {
+    public void expandNode(ExhaustiveSearchStepScope<Solution_> stepScope) {
         ExhaustiveSearchNode expandingNode = stepScope.getExpandingNode();
         manualEntityMimicRecorder.setRecordedEntity(expandingNode.getEntity());
         stepScope.setBestScoreImproved(false);
@@ -132,7 +132,7 @@ public class ExhaustiveSearchDecider implements ExhaustiveSearchPhaseLifecycleLi
         stepScope.setSelectedMoveCount((long) moveIndex);
     }
 
-    private void doMove(ExhaustiveSearchStepScope stepScope, ExhaustiveSearchNode moveNode) {
+    private void doMove(ExhaustiveSearchStepScope<Solution_> stepScope, ExhaustiveSearchNode moveNode) {
         ScoreDirector scoreDirector = stepScope.getScoreDirector();
         Move move = moveNode.getMove();
         Move undoMove = move.createUndoMove(scoreDirector);
@@ -151,8 +151,8 @@ public class ExhaustiveSearchDecider implements ExhaustiveSearchPhaseLifecycleLi
                 moveNode.getTreeId(), moveNode.getScore(), moveNode.isExpandable(), moveNode.getMove());
     }
 
-    private void processMove(ExhaustiveSearchStepScope stepScope, ExhaustiveSearchNode moveNode) {
-        ExhaustiveSearchPhaseScope phaseScope = stepScope.getPhaseScope();
+    private void processMove(ExhaustiveSearchStepScope<Solution_> stepScope, ExhaustiveSearchNode moveNode) {
+        ExhaustiveSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         int uninitializedVariableCount = moveNode.getUninitializedVariableCount();
         boolean lastLayer = moveNode.isLastLayer();
         if (!scoreBounderEnabled) {

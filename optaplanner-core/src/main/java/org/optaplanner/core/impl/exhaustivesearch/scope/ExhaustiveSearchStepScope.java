@@ -16,28 +16,32 @@
 
 package org.optaplanner.core.impl.exhaustivesearch.scope;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchNode;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
-public class ExhaustiveSearchStepScope extends AbstractStepScope {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public class ExhaustiveSearchStepScope<Solution_> extends AbstractStepScope<Solution_> {
 
-    private final ExhaustiveSearchPhaseScope phaseScope;
+    private final ExhaustiveSearchPhaseScope<Solution_> phaseScope;
 
     private ExhaustiveSearchNode expandingNode;
     private Long selectedMoveCount = null;
 
-    public ExhaustiveSearchStepScope(ExhaustiveSearchPhaseScope phaseScope) {
+    public ExhaustiveSearchStepScope(ExhaustiveSearchPhaseScope<Solution_> phaseScope) {
         this(phaseScope, phaseScope.getNextStepIndex());
     }
 
-    public ExhaustiveSearchStepScope(ExhaustiveSearchPhaseScope phaseScope, int stepIndex) {
+    public ExhaustiveSearchStepScope(ExhaustiveSearchPhaseScope<Solution_> phaseScope, int stepIndex) {
         super(stepIndex);
         this.phaseScope = phaseScope;
     }
 
     @Override
-    public ExhaustiveSearchPhaseScope getPhaseScope() {
+    public ExhaustiveSearchPhaseScope<Solution_> getPhaseScope() {
         return phaseScope;
     }
 

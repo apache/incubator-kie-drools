@@ -38,7 +38,7 @@ import java.util.Iterator;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see DefaultLocalSearchPhase
  */
-public abstract class AbstractPhase<Solution_> implements Phase {
+public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -47,7 +47,7 @@ public abstract class AbstractPhase<Solution_> implements Phase {
     protected Termination termination;
     protected BestSolutionRecaller<Solution_> bestSolutionRecaller;
 
-    protected PhaseLifecycleSupport phaseLifecycleSupport = new PhaseLifecycleSupport();
+    protected PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
 
     public Termination getTermination() {
         return termination;
@@ -76,21 +76,21 @@ public abstract class AbstractPhase<Solution_> implements Phase {
     // ************************************************************************
 
     @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         // bestSolutionRecaller.solvingStarted(...) is called by DefaultSolver
         termination.solvingStarted(solverScope);
         phaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         // bestSolutionRecaller.solvingEnded(...) is called by DefaultSolver
         termination.solvingEnded(solverScope);
         phaseLifecycleSupport.fireSolvingEnded(solverScope);
     }
 
     @Override
-    public void phaseStarted(AbstractPhaseScope phaseScope) {
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         phaseScope.reset();
         bestSolutionRecaller.phaseStarted(phaseScope);
         termination.phaseStarted(phaseScope);
@@ -98,33 +98,33 @@ public abstract class AbstractPhase<Solution_> implements Phase {
     }
 
     @Override
-    public void stepStarted(AbstractStepScope stepScope) {
+    public void stepStarted(AbstractStepScope<Solution_> stepScope) {
         bestSolutionRecaller.stepStarted(stepScope);
         termination.stepStarted(stepScope);
         phaseLifecycleSupport.fireStepStarted(stepScope);
     }
 
     @Override
-    public void stepEnded(AbstractStepScope stepScope) {
+    public void stepEnded(AbstractStepScope<Solution_> stepScope) {
         bestSolutionRecaller.stepEnded(stepScope);
         termination.stepEnded(stepScope);
         phaseLifecycleSupport.fireStepEnded(stepScope);
     }
 
     @Override
-    public void phaseEnded(AbstractPhaseScope phaseScope) {
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         bestSolutionRecaller.phaseEnded(phaseScope);
         termination.phaseEnded(phaseScope);
         phaseLifecycleSupport.firePhaseEnded(phaseScope);
     }
 
     @Override
-    public void addPhaseLifecycleListener(PhaseLifecycleListener phaseLifecycleListener) {
+    public void addPhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener) {
         phaseLifecycleSupport.addEventListener(phaseLifecycleListener);
     }
 
     @Override
-    public void removePhaseLifecycleListener(PhaseLifecycleListener phaseLifecycleListener) {
+    public void removePhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener) {
         phaseLifecycleSupport.removeEventListener(phaseLifecycleListener);
     }
 

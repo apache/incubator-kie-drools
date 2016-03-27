@@ -83,12 +83,12 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class ConstraintMatchTotalBestScoreSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class ConstraintMatchTotalBestScoreSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
 
         private boolean constraintMatchEnabled;
 
         @Override
-        public void phaseStarted(AbstractPhaseScope phaseScope) {
+        public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
             InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
             constraintMatchEnabled = scoreDirector.isConstraintMatchEnabled();
             if (!constraintMatchEnabled) {
@@ -98,7 +98,7 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
         }
 
         @Override
-        public void stepEnded(AbstractStepScope stepScope) {
+        public void stepEnded(AbstractStepScope<Solution_> stepScope) {
             if (stepScope instanceof LocalSearchStepScope) {
                 localSearchStepEnded((LocalSearchStepScope<Solution_>) stepScope);
             }
@@ -120,7 +120,7 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
         }
 
         @Override
-        public void phaseEnded(AbstractPhaseScope phaseScope) {
+        public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
             if (phaseScope instanceof LocalSearchPhaseScope) {
                 if (constraintMatchEnabled && !pointList.isEmpty()) {
                     // Draw horizontal lines from the last new best step to how long the solver actually ran

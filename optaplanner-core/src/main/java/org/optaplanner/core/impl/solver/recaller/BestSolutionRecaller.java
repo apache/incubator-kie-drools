@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * Remembers the {@link PlanningSolution best solution} that a {@link Solver} encounters.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapter {
+public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapter<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -63,7 +63,7 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
     // ************************************************************************
 
     @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         // Starting bestSolution is already set by Solver.solve(Solution)
         InnerScoreDirector<Solution_> scoreDirector = solverScope.getScoreDirector();
         int uninitializedVariableCount = scoreDirector.countWorkingSolutionUninitializedVariables();
@@ -87,10 +87,10 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
     }
 
     public void processWorkingSolutionDuringStep(AbstractStepScope<Solution_> stepScope) {
-        AbstractPhaseScope phaseScope = stepScope.getPhaseScope();
+        AbstractPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         int uninitializedVariableCount = stepScope.getUninitializedVariableCount();
         Score score = stepScope.getScore();
-        DefaultSolverScope solverScope = phaseScope.getSolverScope();
+        DefaultSolverScope<Solution_> solverScope = phaseScope.getSolverScope();
         int bestUninitializedVariableCount = solverScope.getBestUninitializedVariableCount();
         Score bestScore = solverScope.getBestScore();
         boolean bestScoreImproved;

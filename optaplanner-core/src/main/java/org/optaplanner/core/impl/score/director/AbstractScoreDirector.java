@@ -50,7 +50,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     protected final Factory_ scoreDirectorFactory;
     protected final boolean constraintMatchEnabledPreference;
-    protected final VariableListenerSupport variableListenerSupport;
+    protected final VariableListenerSupport<Solution_> variableListenerSupport;
 
     protected Solution_ workingSolution;
     protected long workingEntityListRevision = 0L;
@@ -62,7 +62,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     protected AbstractScoreDirector(Factory_ scoreDirectorFactory, boolean constraintMatchEnabledPreference) {
         this.scoreDirectorFactory = scoreDirectorFactory;
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
-        variableListenerSupport = new VariableListenerSupport(this);
+        variableListenerSupport = new VariableListenerSupport<>(this);
         variableListenerSupport.linkVariableListeners();
     }
 
@@ -185,11 +185,11 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         calculateCount++;
     }
 
-    public AbstractScoreDirector clone() {
+    public AbstractScoreDirector<Solution_, Factory_> clone() {
         // Breaks incremental score calculation.
         // Subclasses should overwrite this method to avoid breaking it if possible.
-        AbstractScoreDirector clone = (AbstractScoreDirector) scoreDirectorFactory.buildScoreDirector(
-                constraintMatchEnabledPreference);
+        AbstractScoreDirector<Solution_, Factory_> clone = (AbstractScoreDirector<Solution_, Factory_>)
+                scoreDirectorFactory.buildScoreDirector(constraintMatchEnabledPreference);
         clone.setWorkingSolution(cloneWorkingSolution());
         return clone;
     }

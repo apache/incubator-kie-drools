@@ -29,7 +29,7 @@ public class CustomPhaseScope<Solution_> extends AbstractPhaseScope<Solution_> {
 
     public CustomPhaseScope(DefaultSolverScope<Solution_> solverScope) {
         super(solverScope);
-        lastCompletedStepScope = new CustomStepScope(this, -1);
+        lastCompletedStepScope = new CustomStepScope<>(this, -1);
     }
 
     public CustomStepScope<Solution_> getLastCompletedStepScope() {

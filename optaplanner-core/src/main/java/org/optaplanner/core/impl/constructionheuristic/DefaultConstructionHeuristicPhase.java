@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<Solution_>
-        implements ConstructionHeuristicPhase {
+        implements ConstructionHeuristicPhase<Solution_> {
 
     protected EntityPlacer entityPlacer;
     protected ConstructionHeuristicDecider decider;
@@ -65,7 +65,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     // ************************************************************************
 
     @Override
-    public void solve(DefaultSolverScope solverScope) {
+    public void solve(DefaultSolverScope<Solution_> solverScope) {
         ConstructionHeuristicPhaseScope<Solution_> phaseScope = new ConstructionHeuristicPhaseScope<>(solverScope);
         phaseStarted(phaseScope);
 
@@ -116,7 +116,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     }
 
     @Override
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         entityPlacer.solvingStarted(solverScope);
         decider.solvingStarted(solverScope);
@@ -127,7 +127,6 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
         entityPlacer.phaseStarted(phaseScope);
         decider.phaseStarted(phaseScope);
     }
-
 
     public void stepStarted(ConstructionHeuristicStepScope<Solution_> stepScope) {
         super.stepStarted(stepScope);
@@ -167,7 +166,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     }
 
     @Override
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         super.solvingStarted(solverScope);
         entityPlacer.solvingEnded(solverScope);
         decider.solvingEnded(solverScope);

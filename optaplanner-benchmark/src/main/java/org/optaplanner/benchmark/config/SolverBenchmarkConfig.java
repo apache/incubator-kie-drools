@@ -32,7 +32,7 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
     private String name = null;
 
     @XStreamAlias("solver")
-    private SolverConfig<Solution_> solverConfig = null;
+    private SolverConfig solverConfig = null;
 
     @XStreamAlias("problemBenchmarks")
     private ProblemBenchmarksConfig problemBenchmarksConfig = null;
@@ -47,11 +47,11 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
         this.name = name;
     }
 
-    public SolverConfig<Solution_> getSolverConfig() {
+    public SolverConfig getSolverConfig() {
         return solverConfig;
     }
 
-    public void setSolverConfig(SolverConfig<Solution_> solverConfig) {
+    public void setSolverConfig(SolverConfig solverConfig) {
         this.solverConfig = solverConfig;
     }
 

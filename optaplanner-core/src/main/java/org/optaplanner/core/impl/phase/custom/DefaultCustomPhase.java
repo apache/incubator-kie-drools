@@ -31,7 +31,7 @@ import java.util.List;
  * Default implementation of {@link CustomPhase}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> implements CustomPhase {
+public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> implements CustomPhase<Solution_> {
 
     protected List<CustomPhaseCommand> customPhaseCommandList;
     protected boolean forceUpdateBestSolution;
@@ -59,11 +59,11 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
     // Worker methods
     // ************************************************************************
 
-    public void solve(DefaultSolverScope solverScope) {
-        CustomPhaseScope phaseScope = new CustomPhaseScope(solverScope);
+    public void solve(DefaultSolverScope<Solution_> solverScope) {
+        CustomPhaseScope<Solution_> phaseScope = new CustomPhaseScope<>(solverScope);
         phaseStarted(phaseScope);
 
-        CustomStepScope stepScope = new CustomStepScope(phaseScope);
+        CustomStepScope<Solution_> stepScope = new CustomStepScope<>(phaseScope);
         Iterator<CustomPhaseCommand> commandIterator = customPhaseCommandList.iterator();
         while (!termination.isPhaseTerminated(phaseScope) && commandIterator.hasNext()) {
             CustomPhaseCommand customPhaseCommand = commandIterator.next();
@@ -71,7 +71,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
             doStep(stepScope, customPhaseCommand);
             stepEnded(stepScope);
             phaseScope.setLastCompletedStepScope(stepScope);
-            stepScope = new CustomStepScope(phaseScope);
+            stepScope = new CustomStepScope<>(phaseScope);
         }
         phaseEnded(phaseScope);
     }

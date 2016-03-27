@@ -81,7 +81,8 @@ public class IncrementalScoreDirector<Solution_>
             throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
                     + ") is disabled, this method should not be called.");
         }
-        return ((ConstraintMatchAwareIncrementalScoreCalculator) incrementalScoreCalculator).getConstraintMatchTotals();
+        return ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
+                .getConstraintMatchTotals();
     }
 
     // ************************************************************************

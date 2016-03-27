@@ -60,12 +60,12 @@ public class MemoryUseSubSingleStatistic<Solution_>
         ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class MemoryUseSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class MemoryUseSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
 
         private long nextTimeMillisThreshold = timeMillisThresholdInterval;
 
         @Override
-        public void stepEnded(AbstractStepScope stepScope) {
+        public void stepEnded(AbstractStepScope<Solution_> stepScope) {
             long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
             if (timeMillisSpent >= nextTimeMillisThreshold) {
                 pointList.add(new MemoryUseStatisticPoint(timeMillisSpent, MemoryUseMeasurement.create()));

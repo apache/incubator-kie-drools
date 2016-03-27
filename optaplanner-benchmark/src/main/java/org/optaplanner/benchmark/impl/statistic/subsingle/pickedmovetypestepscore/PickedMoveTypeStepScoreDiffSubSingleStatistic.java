@@ -81,26 +81,26 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
         ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class PickedMoveTypeStepScoreDiffSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class PickedMoveTypeStepScoreDiffSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
 
         private Score oldStepScore = null;
 
         @Override
-        public void phaseStarted(AbstractPhaseScope phaseScope) {
+        public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
             if (phaseScope instanceof LocalSearchPhaseScope) {
                 oldStepScore = phaseScope.getStartingScore();
             }
         }
 
         @Override
-        public void phaseEnded(AbstractPhaseScope phaseScope) {
+        public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
             if (phaseScope instanceof LocalSearchPhaseScope) {
                 oldStepScore = null;
             }
         }
 
         @Override
-        public void stepEnded(AbstractStepScope stepScope) {
+        public void stepEnded(AbstractStepScope<Solution_> stepScope) {
             if (stepScope instanceof LocalSearchStepScope) {
                 localSearchStepEnded((LocalSearchStepScope<Solution_>) stepScope);
             }

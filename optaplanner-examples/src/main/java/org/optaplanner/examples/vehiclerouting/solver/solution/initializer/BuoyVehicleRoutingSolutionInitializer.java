@@ -35,12 +35,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 // TODO PLANNER-380 Delete this class. Temporary implementation until BUOY_FIT is implemented as a Construction Heuristic
-public class BuoyVehicleRoutingSolutionInitializer extends AbstractCustomPhaseCommand {
+public class BuoyVehicleRoutingSolutionInitializer extends AbstractCustomPhaseCommand<VehicleRoutingSolution> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    public void changeWorkingSolution(ScoreDirector scoreDirector) {
-        VehicleRoutingSolution solution = (VehicleRoutingSolution) scoreDirector.getWorkingSolution();
+    public void changeWorkingSolution(ScoreDirector<VehicleRoutingSolution> scoreDirector) {
+        VehicleRoutingSolution solution = scoreDirector.getWorkingSolution();
         List<Vehicle> vehicleList = solution.getVehicleList();
         List<Customer> customerList = solution.getCustomerList();
         List<Standstill> standstillList = new ArrayList<Standstill>(vehicleList.size() + customerList.size());

@@ -61,17 +61,17 @@ public class CalculateCountSubSingleStatistic<Solution_>
         ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class CalculateCountSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class CalculateCountSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
 
         private long nextTimeMillisThreshold = timeMillisThresholdInterval;
         private long lastTimeMillisSpent = 0L;
         private long lastCalculateCount = 0L;
 
         @Override
-        public void stepEnded(AbstractStepScope stepScope) {
+        public void stepEnded(AbstractStepScope<Solution_> stepScope) {
             long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
             if (timeMillisSpent >= nextTimeMillisThreshold) {
-                DefaultSolverScope solverScope = stepScope.getPhaseScope().getSolverScope();
+                DefaultSolverScope<Solution_> solverScope = stepScope.getPhaseScope().getSolverScope();
                 long calculateCount = solverScope.getCalculateCount();
                 long calculateCountInterval = calculateCount - lastCalculateCount;
                 long timeMillisSpentInterval = timeMillisSpent - lastTimeMillisSpent;

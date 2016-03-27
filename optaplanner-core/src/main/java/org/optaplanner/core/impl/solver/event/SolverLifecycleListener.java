@@ -16,14 +16,19 @@
 
 package org.optaplanner.core.impl.solver.event;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 import java.util.EventListener;
 
-public interface SolverLifecycleListener extends EventListener {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @see SolverLifecycleListenerAdapter
+ */
+public interface SolverLifecycleListener<Solution_> extends EventListener {
 
-    void solvingStarted(DefaultSolverScope solverScope);
+    void solvingStarted(DefaultSolverScope<Solution_> solverScope);
 
-    void solvingEnded(DefaultSolverScope solverScope);
+    void solvingEnded(DefaultSolverScope<Solution_> solverScope);
 
 }

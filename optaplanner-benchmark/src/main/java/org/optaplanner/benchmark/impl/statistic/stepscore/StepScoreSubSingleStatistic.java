@@ -49,10 +49,10 @@ public class StepScoreSubSingleStatistic<Solution_>
         ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class StepScoreSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class StepScoreSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
 
         @Override
-        public void stepEnded(AbstractStepScope stepScope) {
+        public void stepEnded(AbstractStepScope<Solution_> stepScope) {
             if (stepScope.hasNoUninitializedVariables()) {
                 long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
                 pointList.add(new StepScoreStatisticPoint(timeMillisSpent, stepScope.getScore()));
