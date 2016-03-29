@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -50,21 +51,25 @@ public abstract class AbstractSolution<S extends Score> implements Serializable 
     }
 
     /**
-     * Convenience method for tests.
-     *
-     * @return All entities from anywhere in this class' hierarchy.
+     * @return a list with every problem fact that is in a field of this class
+     * (directly or indirectly as an element of a {@link Collection} or {@link Map} field)
      */
     @ProblemFactCollectionProperty
-    protected Collection<?> getProblemFacts() {
-        Class<? extends AbstractSolution> instanceClass = getClass();
-        return getProblemFactsFromClass(instanceClass);
+    protected List<Object> getProblemFactList() {
+        List<Object> factList = new ArrayList<Object>();
+        addProblemFactsFromClass(factList, getClass());
+        return factList;
     }
 
-    private Collection<Object> getProblemFactsFromClass(Class<?> instanceClass) {
-        Collection<Object> factList = new ArrayList<>();
+    /**
+     * Adds to an existing to {@link List} to avoid copying the entire list with {@link List#addAll(Collection)}.
+     * @param factList never null
+     * @param instanceClass never null
+     */
+    private void addProblemFactsFromClass(List<Object> factList, Class<?> instanceClass) {
         if (instanceClass.equals(AbstractSolution.class)) {
             // The field score should not be included
-            return factList;
+            return;
         }
         for (Field field : instanceClass.getDeclaredFields()) {
             field.setAccessible(true);
@@ -91,9 +96,8 @@ public abstract class AbstractSolution<S extends Score> implements Serializable 
         }
         Class<?> superclass = instanceClass.getSuperclass();
         if (superclass != null) {
-            factList.addAll(getProblemFactsFromClass(superclass));
+            addProblemFactsFromClass(factList, superclass);
         }
-        return factList;
     }
 
     private boolean isFieldAPlanningEntityPropertyOrPlanningEntityCollectionProperty(Field field,

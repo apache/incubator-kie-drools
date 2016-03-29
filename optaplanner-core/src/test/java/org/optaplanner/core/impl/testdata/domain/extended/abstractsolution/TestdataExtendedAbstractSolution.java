@@ -19,11 +19,14 @@ package org.optaplanner.core.impl.testdata.domain.extended.abstractsolution;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
 public class TestdataExtendedAbstractSolution extends AbstractSolution {
@@ -32,12 +35,23 @@ public class TestdataExtendedAbstractSolution extends AbstractSolution {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedAbstractSolution.class, TestdataEntity.class);
     }
 
+    private List<TestdataValue> valueList;
     private Object extraObject;
 
     private List<TestdataEntity> entityList;
 
     public TestdataExtendedAbstractSolution(String code) {
         super();
+    }
+
+    @ValueRangeProvider(id = "valueRange")
+    @ProblemFactCollectionProperty
+    public List<TestdataValue> getValueList() {
+        return valueList;
+    }
+
+    public void setValueList(List<TestdataValue> valueList) {
+        this.valueList = valueList;
     }
 
     @ProblemFactProperty

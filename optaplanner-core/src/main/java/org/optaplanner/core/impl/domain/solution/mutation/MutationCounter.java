@@ -49,7 +49,7 @@ public class MutationCounter<Solution_> {
             for (Iterator aIt = aEntities.iterator(), bIt = bEntities.iterator(); aIt.hasNext() && bIt.hasNext(); ) {
                 Object aEntity =  aIt.next();
                 Object bEntity =  bIt.next();
-                for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
+                for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
                     // TODO broken if the value is an entity, because then it's never the same
                     // But we don't want to depend on value/entity equals() => use surrogate entity id's to compare
                     // https://issues.jboss.org/browse/PLANNER-170
@@ -70,4 +70,5 @@ public class MutationCounter<Solution_> {
     public String toString() {
         return "MutationCounter(" + solutionDescriptor + ")";
     }
+
 }

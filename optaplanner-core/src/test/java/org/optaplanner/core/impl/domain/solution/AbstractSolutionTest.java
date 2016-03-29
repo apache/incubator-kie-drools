@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.domain.solution;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -63,7 +62,7 @@ public class AbstractSolutionTest {
         solution.setSingleEntity(singleEntity);
         SimpleScore score = SimpleScore.valueOf(-10);
         solution.setScore(score);
-        assertCollectionContainsExactly((Collection<Object>) solution.getProblemFacts(), singleValue, v1, v2, v3);
+        assertCollectionContainsExactly(solution.getProblemFactList(), singleValue, v1, v2, v3);
     }
 
     @Test
@@ -78,7 +77,7 @@ public class AbstractSolutionTest {
         solution.setEntityList(null);
         solution.setSingleEntity(null);
         solution.setScore(null);
-        assertCollectionContainsExactly((Collection<Object>) solution.getProblemFacts(), v1, v2, v3);
+        assertCollectionContainsExactly(solution.getProblemFactList(), v1, v2, v3);
     }
 
     public static class TestdataAbstractSolutionBasedSolution extends AbstractSolution<SimpleScore> {
