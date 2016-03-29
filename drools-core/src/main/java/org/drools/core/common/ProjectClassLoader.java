@@ -359,38 +359,53 @@ public class ProjectClassLoader extends ClassLoader {
 
         private final ProjectClassLoader projectClassLoader;
 
-        private DefaultInternalTypesClassLoader(ProjectClassLoader projectClassLoader) {
-            super(projectClassLoader.getParent());
+        private DefaultInternalTypesClassLoader( ProjectClassLoader projectClassLoader ) {
+            super( projectClassLoader.getParent() );
             this.projectClassLoader = projectClassLoader;
         }
 
-        public Class<?> defineClass(String name, byte[] bytecode) {
+        public Class<?> defineClass( String name, byte[] bytecode ) {
             int lastDot = name.lastIndexOf( '.' );
-            if (lastDot > 0) {
+            if ( lastDot > 0 ) {
                 String pkgName = name.substring( 0, lastDot );
-                if (getPackage( pkgName ) == null) {
+                if ( getPackage( pkgName ) == null ) {
                     definePackage( pkgName, "", "", "", "", "", "", null );
                 }
             }
-            return defineClass(name, bytecode, 0, bytecode.length);
+            return defineClass( name, bytecode, 0, bytecode.length );
         }
 
-        protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        protected Class<?> loadClass( String name, boolean resolve ) throws ClassNotFoundException {
             try {
-                return loadType(name, resolve);
+                return loadType( name, resolve );
             } catch (ClassNotFoundException cnfe) {
-                synchronized(projectClassLoader) {
+                synchronized (projectClassLoader) {
                     try {
-                        return projectClassLoader.internalLoadClass(name, resolve);
+                        return projectClassLoader.internalLoadClass( name, resolve );
                     } catch (ClassNotFoundException cnfe2) {
-                        return projectClassLoader.tryDefineType(name, cnfe);
+                        return projectClassLoader.tryDefineType( name, cnfe );
                     }
                 }
             }
         }
 
-        public Class<?> loadType(String name, boolean resolve) throws ClassNotFoundException {
-            return super.loadClass(name, resolve);
+        public Class<?> loadType( String name, boolean resolve ) throws ClassNotFoundException {
+            return super.loadClass( name, resolve );
+        }
+
+        @Override
+        public URL getResource( String name ) {
+            return projectClassLoader.getResource( name );
+        }
+
+        @Override
+        public InputStream getResourceAsStream(String name) {
+            return projectClassLoader.getResourceAsStream( name );
+        }
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+            return projectClassLoader.getResources( name );
         }
     }
 
