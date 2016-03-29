@@ -419,7 +419,9 @@ public class DTCellValue52 {
     }
 
     private boolean isNumeric() {
-        if ( dataType.equals( DataTypes.NUMERIC_BIGDECIMAL ) ) {
+        if ( dataType.equals( DataTypes.NUMERIC ) ) {
+            return true;
+        } else if ( dataType.equals( DataTypes.NUMERIC_BIGDECIMAL ) ) {
             return true;
         } else if ( dataType.equals( DataTypes.NUMERIC_BIGINTEGER ) ) {
             return true;

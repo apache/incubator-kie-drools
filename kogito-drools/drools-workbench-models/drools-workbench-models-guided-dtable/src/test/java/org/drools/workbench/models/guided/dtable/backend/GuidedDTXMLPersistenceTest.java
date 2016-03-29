@@ -16,7 +16,10 @@
 
 package org.drools.workbench.models.guided.dtable.backend;
 
+import org.assertj.core.api.Assertions;
+import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.guided.dtable.backend.util.DataUtilities;
+import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.junit.Before;
 import org.junit.Test;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionInsertFactCol52;
@@ -30,6 +33,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -92,7 +96,7 @@ public class GuidedDTXMLPersistenceTest {
     }
 
     @Test
-    public void testBackwardsCompatability() throws Exception {
+    public void testBackwardsCompatibility() throws Exception {
         String xml = loadResource( "ExistingDecisionTable.xml" );
         GuidedDecisionTable52 dt_ = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
         assertNotNull( dt_ );
@@ -115,6 +119,39 @@ public class GuidedDTXMLPersistenceTest {
                       asf.getFactField() );
         assertEquals( false,
                       asf.isUpdate() );
+    }
+
+    @Test
+    public void testUnmarshallLegacyNumericType() {
+        // NUMERIC type is used in version 5.x and it still needs to be supported (e.g. for jcr2vfs migration)
+        String guidedDTableXml = "<decision-table52>\n" +
+                "  <tableName>Some rules</tableName>\n" +
+                "  <rowNumberCol>\n" +
+                "    <hideColumn>false</hideColumn>\n" +
+                "    <width>24</width>\n" +
+                "  </rowNumberCol>\n" +
+                "  <metadataCols/>\n" +
+                "  <attributeCols/>\n" +
+                "  <conditionPatterns/>\n" +
+                "  <actionCols/>\n" +
+                "  <data>\n" +
+                "    <list>\n" +
+                "      <value>\n" +
+                "        <valueNumeric>1</valueNumeric>\n" +
+                "        <dataType>NUMERIC</dataType>\n" + // this is the legacy type
+                "        <isOtherwise>false</isOtherwise>\n" +
+                "      </value>\n" +
+                "    </list>\n" +
+                "  </data>\n" +
+                "</decision-table52>";
+        GuidedDecisionTable52 guidedDTable = GuidedDTXMLPersistence.getInstance().unmarshal(guidedDTableXml);
+        List<List<DTCellValue52>> dataList = guidedDTable.getData();
+        Assertions.assertThat(dataList).hasSize(1);
+        List<DTCellValue52> cellValueList = dataList.get(0);
+        Assertions.assertThat(cellValueList).hasSize(1);
+        // NUMERIC gets upgraded/migrated to NUMERIC_INTEGER
+        Assertions.assertThat(cellValueList.get(0).getDataType()).isEqualTo(DataType.DataTypes.NUMERIC_INTEGER);
+        Assertions.assertThat(cellValueList.get(0).getNumericValue().intValue()).isEqualTo(1);
     }
 
     public static String loadResource( final String name ) throws Exception {

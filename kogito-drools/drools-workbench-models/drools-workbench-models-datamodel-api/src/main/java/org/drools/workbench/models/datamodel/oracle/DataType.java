@@ -60,7 +60,9 @@ public class DataType {
     }
 
     public static boolean isNumeric( final String type ) {
-        if ( type.equals( TYPE_NUMERIC_BIGDECIMAL ) ) {
+        if ( type.equals( TYPE_NUMERIC ) ) {
+            return true;
+        } else if ( type.equals( TYPE_NUMERIC_BIGDECIMAL ) ) {
             return true;
         } else if ( type.equals( TYPE_NUMERIC_BIGINTEGER ) ) {
             return true;
