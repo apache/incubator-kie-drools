@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -33,12 +34,15 @@ import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescriptor {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVariableDescriptor<Solution_> {
 
-    protected VariableDescriptor sourceVariableDescriptor;
+    protected VariableDescriptor<Solution_> sourceVariableDescriptor;
     protected boolean singleton;
 
-    public InverseRelationShadowVariableDescriptor(EntityDescriptor entityDescriptor,
+    public InverseRelationShadowVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor,
             MemberAccessor variableMemberAccessor) {
         super(entityDescriptor, variableMemberAccessor);
     }
@@ -90,7 +94,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
             masterClass = variablePropertyType;
             singleton = true;
         }
-        EntityDescriptor sourceEntityDescriptor = getEntityDescriptor().getSolutionDescriptor()
+        EntityDescriptor<Solution_> sourceEntityDescriptor = getEntityDescriptor().getSolutionDescriptor()
                 .findEntityDescriptor(masterClass);
         if (sourceEntityDescriptor == null) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
@@ -135,7 +139,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
     }
 
     @Override
-    public List<VariableDescriptor> getSourceVariableDescriptorList() {
+    public List<VariableDescriptor<Solution_>> getSourceVariableDescriptorList() {
         return Collections.singletonList(sourceVariableDescriptor);
     }
 
@@ -153,7 +157,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
     }
 
     @Override
-    public VariableListener buildVariableListener(InnerScoreDirector scoreDirector) {
+    public VariableListener buildVariableListener(InnerScoreDirector<Solution_> scoreDirector) {
         if (singleton) {
             return new SingletonInverseVariableListener(this, sourceVariableDescriptor);
         } else {

@@ -19,19 +19,23 @@ package org.optaplanner.core.impl.domain.variable.descriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 
-public abstract class VariableDescriptor {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public abstract class VariableDescriptor<Solution_> {
 
-    protected final EntityDescriptor entityDescriptor;
+    protected final EntityDescriptor<Solution_> entityDescriptor;
 
     protected final MemberAccessor variableMemberAccessor;
     protected final String variableName;
 
-    protected List<ShadowVariableDescriptor> sinkVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
+    protected List<ShadowVariableDescriptor<Solution_>> sinkVariableDescriptorList = new ArrayList<>(4);
 
-    public VariableDescriptor(EntityDescriptor entityDescriptor, MemberAccessor variableMemberAccessor) {
+    public VariableDescriptor(EntityDescriptor<Solution_> entityDescriptor, MemberAccessor variableMemberAccessor) {
         this.entityDescriptor = entityDescriptor;
         this.variableMemberAccessor = variableMemberAccessor;
         variableName = variableMemberAccessor.getName();
@@ -41,7 +45,7 @@ public abstract class VariableDescriptor {
     // Worker methods
     // ************************************************************************
 
-    public EntityDescriptor getEntityDescriptor() {
+    public EntityDescriptor<Solution_> getEntityDescriptor() {
         return entityDescriptor;
     }
 
@@ -61,7 +65,7 @@ public abstract class VariableDescriptor {
     // Shadows
     // ************************************************************************
 
-    public void registerSinkVariableDescriptor(ShadowVariableDescriptor shadowVariableDescriptor) {
+    public void registerSinkVariableDescriptor(ShadowVariableDescriptor<Solution_> shadowVariableDescriptor) {
         sinkVariableDescriptorList.add(shadowVariableDescriptor);
     }
 
@@ -69,7 +73,7 @@ public abstract class VariableDescriptor {
      * Inverse of {@link ShadowVariableDescriptor#getSourceVariableDescriptorList()}.
      * @return never null, only direct shadow variables that are affected by this variable
      */
-    public List<ShadowVariableDescriptor> getSinkVariableDescriptorList() {
+    public List<ShadowVariableDescriptor<Solution_>> getSinkVariableDescriptorList() {
         return sinkVariableDescriptorList;
     }
 

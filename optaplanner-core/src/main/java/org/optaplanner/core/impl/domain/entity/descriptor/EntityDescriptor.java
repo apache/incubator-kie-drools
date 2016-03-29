@@ -68,12 +68,12 @@ public class EntityDescriptor<Solution_> {
 
     // Only declared variable descriptors, excludes inherited variable descriptors
     private Map<String, GenuineVariableDescriptor<Solution_>> declaredGenuineVariableDescriptorMap;
-    private Map<String, ShadowVariableDescriptor> declaredShadowVariableDescriptorMap;
+    private Map<String, ShadowVariableDescriptor<Solution_>> declaredShadowVariableDescriptorMap;
 
     // Caches the inherited and declared variable descriptors
     private Map<String, GenuineVariableDescriptor<Solution_>> effectiveGenuineVariableDescriptorMap;
-    private Map<String, ShadowVariableDescriptor> effectiveShadowVariableDescriptorMap;
-    private Map<String, VariableDescriptor> effectiveVariableDescriptorMap;
+    private Map<String, ShadowVariableDescriptor<Solution_>> effectiveShadowVariableDescriptorMap;
+    private Map<String, VariableDescriptor<Solution_>> effectiveVariableDescriptorMap;
 
     public EntityDescriptor(SolutionDescriptor<Solution_> solutionDescriptor, Class<?> entityClass) {
         this.solutionDescriptor = solutionDescriptor;
@@ -127,13 +127,13 @@ public class EntityDescriptor<Solution_> {
         if (difficultyComparatorClass != null) {
             Comparator<Object> difficultyComparator = ConfigUtils.newInstance(this,
                     "difficultyComparatorClass", difficultyComparatorClass);
-            decreasingDifficultySorter = new ComparatorSelectionSorter(
+            decreasingDifficultySorter = new ComparatorSelectionSorter<Solution_, Object>(
                     difficultyComparator, SelectionSorterOrder.DESCENDING);
         }
         if (difficultyWeightFactoryClass != null) {
-            SelectionSorterWeightFactory difficultyWeightFactory = ConfigUtils.newInstance(this,
+            SelectionSorterWeightFactory<Solution_, Object> difficultyWeightFactory = ConfigUtils.newInstance(this,
                     "difficultyWeightFactoryClass", difficultyWeightFactoryClass);
-            decreasingDifficultySorter = new WeightFactorySelectionSorter(
+            decreasingDifficultySorter = new WeightFactorySelectionSorter<Solution_, Object>(
                     difficultyWeightFactory, SelectionSorterOrder.DESCENDING);
         }
     }
@@ -219,7 +219,7 @@ public class EntityDescriptor<Solution_> {
         String memberName = memberAccessor.getName();
         if (declaredGenuineVariableDescriptorMap.containsKey(memberName)
                 || declaredShadowVariableDescriptorMap.containsKey(memberName)) {
-            VariableDescriptor duplicate = declaredGenuineVariableDescriptorMap.get(memberName);
+            VariableDescriptor<Solution_> duplicate = declaredGenuineVariableDescriptorMap.get(memberName);
             if (duplicate == null) {
                 duplicate = declaredShadowVariableDescriptorMap.get(memberName);
             }
@@ -235,17 +235,17 @@ public class EntityDescriptor<Solution_> {
             declaredGenuineVariableDescriptorMap.put(memberName, variableDescriptor);
             variableDescriptor.processAnnotations(descriptorPolicy);
         } else if (variableAnnotationClass.equals(InverseRelationShadowVariable.class)) {
-            ShadowVariableDescriptor variableDescriptor = new InverseRelationShadowVariableDescriptor(
+            ShadowVariableDescriptor<Solution_> variableDescriptor = new InverseRelationShadowVariableDescriptor<>(
                     this, memberAccessor);
             declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
             variableDescriptor.processAnnotations(descriptorPolicy);
         } else if (variableAnnotationClass.equals(AnchorShadowVariable.class)) {
-            ShadowVariableDescriptor variableDescriptor = new AnchorShadowVariableDescriptor(
+            ShadowVariableDescriptor<Solution_> variableDescriptor = new AnchorShadowVariableDescriptor<>(
                     this, memberAccessor);
             declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
             variableDescriptor.processAnnotations(descriptorPolicy);
         } else if (variableAnnotationClass.equals(CustomShadowVariable.class)) {
-            ShadowVariableDescriptor variableDescriptor = new CustomShadowVariableDescriptor(
+            ShadowVariableDescriptor<Solution_> variableDescriptor = new CustomShadowVariableDescriptor<>(
                     this, memberAccessor);
             declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
             variableDescriptor.processAnnotations(descriptorPolicy);
@@ -272,8 +272,8 @@ public class EntityDescriptor<Solution_> {
     }
 
     private void linkInherited(Class<?> investigateClass) {
-        EntityDescriptor<Solution_> superEntityDescriptor =
-                solutionDescriptor.getEntityDescriptorStrict(investigateClass);
+        EntityDescriptor<Solution_> superEntityDescriptor = solutionDescriptor.getEntityDescriptorStrict(
+                investigateClass);
         if (superEntityDescriptor != null) {
             inheritedEntityDescriptorList.add(superEntityDescriptor);
         } else {
@@ -282,7 +282,7 @@ public class EntityDescriptor<Solution_> {
     }
 
     public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
-        for (ShadowVariableDescriptor shadowVariableDescriptor : declaredShadowVariableDescriptorMap.values()) {
+        for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : declaredShadowVariableDescriptorMap.values()) {
             shadowVariableDescriptor.linkShadowSources(descriptorPolicy);
         }
     }
@@ -359,11 +359,11 @@ public class EntityDescriptor<Solution_> {
         return effectiveGenuineVariableDescriptorMap.get(variableName);
     }
 
-    public Map<String, ShadowVariableDescriptor> getShadowVariableDescriptorMap() {
+    public Map<String, ShadowVariableDescriptor<Solution_>> getShadowVariableDescriptorMap() {
         return effectiveShadowVariableDescriptorMap;
     }
 
-    public Collection<ShadowVariableDescriptor> getShadowVariableDescriptors() {
+    public Collection<ShadowVariableDescriptor<Solution_>> getShadowVariableDescriptors() {
         return effectiveShadowVariableDescriptorMap.values();
     }
 
@@ -371,15 +371,15 @@ public class EntityDescriptor<Solution_> {
         return effectiveShadowVariableDescriptorMap.containsKey(variableName);
     }
 
-    public ShadowVariableDescriptor getShadowVariableDescriptor(String variableName) {
+    public ShadowVariableDescriptor<Solution_> getShadowVariableDescriptor(String variableName) {
         return effectiveShadowVariableDescriptorMap.get(variableName);
     }
 
-    public Map<String, VariableDescriptor> getVariableDescriptorMap() {
+    public Map<String, VariableDescriptor<Solution_>> getVariableDescriptorMap() {
         return effectiveVariableDescriptorMap;
     }
 
-    public Collection<VariableDescriptor> getVariableDescriptors() {
+    public Collection<VariableDescriptor<Solution_>> getVariableDescriptors() {
         return effectiveVariableDescriptorMap.values();
     }
 
@@ -387,7 +387,7 @@ public class EntityDescriptor<Solution_> {
         return effectiveVariableDescriptorMap.containsKey(variableName);
     }
 
-    public VariableDescriptor getVariableDescriptor(String variableName) {
+    public VariableDescriptor<Solution_> getVariableDescriptor(String variableName) {
         return effectiveVariableDescriptorMap.get(variableName);
     }
 
@@ -395,12 +395,12 @@ public class EntityDescriptor<Solution_> {
         return declaredGenuineVariableDescriptorMap.values();
     }
 
-    public Collection<ShadowVariableDescriptor> getDeclaredShadowVariableDescriptors() {
+    public Collection<ShadowVariableDescriptor<Solution_>> getDeclaredShadowVariableDescriptors() {
         return declaredShadowVariableDescriptorMap.values();
     }
 
-    public Collection<VariableDescriptor> getDeclaredVariableDescriptors() {
-        Collection<VariableDescriptor> variableDescriptors = new ArrayList<VariableDescriptor>(
+    public Collection<VariableDescriptor<Solution_>> getDeclaredVariableDescriptors() {
+        Collection<VariableDescriptor<Solution_>> variableDescriptors = new ArrayList<>(
                 declaredGenuineVariableDescriptorMap.size() + declaredShadowVariableDescriptorMap.size());
         variableDescriptors.addAll(declaredGenuineVariableDescriptorMap.values());
         variableDescriptors.addAll(declaredShadowVariableDescriptorMap.values());
@@ -433,7 +433,7 @@ public class EntityDescriptor<Solution_> {
     }
 
     public boolean hasAnyChainedGenuineVariables() {
-        for (GenuineVariableDescriptor variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
             if (!variableDescriptor.isChained()) {
                 return true;
             }
@@ -482,7 +482,7 @@ public class EntityDescriptor<Solution_> {
 
     public int countReinitializableVariables(ScoreDirector<Solution_> scoreDirector, Object entity) {
         int count = 0;
-        for (GenuineVariableDescriptor variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
             if (variableDescriptor.isReinitializable(scoreDirector, entity)) {
                 count++;
             }

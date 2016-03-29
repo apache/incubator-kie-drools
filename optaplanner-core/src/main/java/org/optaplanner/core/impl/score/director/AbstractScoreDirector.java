@@ -315,7 +315,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
             Object entity = it.next();
             EntityDescriptor<Solution_> entityDescriptor
                     = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
-            Collection<ShadowVariableDescriptor> shadowVariableDescriptors = entityDescriptor.getShadowVariableDescriptors();
+            Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors = entityDescriptor.getShadowVariableDescriptors();
             Map<ShadowVariableDescriptor, Object> shadowVariableValuesMap
                     = new HashMap<>(shadowVariableDescriptors.size());
             for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptors) {
@@ -329,7 +329,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
             Object entity = it.next();
             EntityDescriptor<Solution_> entityDescriptor
                     = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
-            Collection<ShadowVariableDescriptor> shadowVariableDescriptors = entityDescriptor.getShadowVariableDescriptors();
+            Collection<ShadowVariableDescriptor<Solution_>> shadowVariableDescriptors = entityDescriptor.getShadowVariableDescriptors();
             Map<ShadowVariableDescriptor, Object> shadowVariableValuesMap = entityToShadowVariableValuesMap.get(entity);
             for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptors) {
                 Object newValue = shadowVariableDescriptor.getValue(entity);

@@ -40,7 +40,7 @@ public class CompositeValueRangeDescriptor<Solution_> extends AbstractValueRange
         super(variableDescriptor, addNullInValueRange);
         this.childValueRangeDescriptorList = childValueRangeDescriptorList;
         entityIndependent = true;
-        for (ValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
+        for (ValueRangeDescriptor<Solution_> valueRangeDescriptor : childValueRangeDescriptorList) {
             if (!valueRangeDescriptor.isCountable()) {
                 throw new IllegalStateException("The valueRangeDescriptor (" + this
                         + ") has a childValueRangeDescriptor (" + valueRangeDescriptor

@@ -62,7 +62,7 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
     }
 
     private void processValueRangeProviderAnnotation(ValueRangeProvider valueRangeProviderAnnotation) {
-        EntityDescriptor entityDescriptor = variableDescriptor.getEntityDescriptor();
+        EntityDescriptor<Solution_> entityDescriptor = variableDescriptor.getEntityDescriptor();
         Class<?> type = memberAccessor.getType();
         collectionWrapping = Collection.class.isAssignableFrom(type);
         if (!collectionWrapping && !ValueRange.class.isAssignableFrom(type)) {

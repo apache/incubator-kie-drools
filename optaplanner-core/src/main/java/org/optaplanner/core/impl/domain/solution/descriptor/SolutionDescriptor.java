@@ -76,10 +76,10 @@ public class SolutionDescriptor<Solution_> {
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(Class<Solution_> solutionClass,
             List<Class<?>> entityClassList) {
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
-        SolutionDescriptor<Solution_> solutionDescriptor = new SolutionDescriptor(solutionClass);
+        SolutionDescriptor<Solution_> solutionDescriptor = new SolutionDescriptor<>(solutionClass);
         solutionDescriptor.processAnnotations(descriptorPolicy);
         for (Class<?> entityClass : sortEntityClassList(entityClassList)) {
-            EntityDescriptor entityDescriptor = new EntityDescriptor(solutionDescriptor, entityClass);
+            EntityDescriptor<Solution_> entityDescriptor = new EntityDescriptor<>(solutionDescriptor, entityClass);
             solutionDescriptor.addEntityDescriptor(entityDescriptor);
             entityDescriptor.processAnnotations(descriptorPolicy);
         }
@@ -406,10 +406,10 @@ public class SolutionDescriptor<Solution_> {
     }
 
     public void afterAnnotationsProcessed(DescriptorPolicy descriptorPolicy) {
-        for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
+        for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             entityDescriptor.linkInheritedEntityDescriptors(descriptorPolicy);
         }
-        for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
+        for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             entityDescriptor.linkShadowSources(descriptorPolicy);
         }
         determineGlobalShadowOrder();
@@ -418,7 +418,7 @@ public class SolutionDescriptor<Solution_> {
             for (Map.Entry<Class<?>, EntityDescriptor<Solution_>> entry : entityDescriptorMap.entrySet()) {
                 EntityDescriptor<Solution_> entityDescriptor = entry.getValue();
                 logger.trace("        Entity {}:", entityDescriptor.getEntityClass().getSimpleName());
-                for (VariableDescriptor variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
+                for (VariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
                     logger.trace("            Variable {} ({})", variableDescriptor.getVariableName(),
                             variableDescriptor instanceof GenuineVariableDescriptor ? "genuine" : "shadow");
                 }
@@ -432,7 +432,7 @@ public class SolutionDescriptor<Solution_> {
         Map<ShadowVariableDescriptor, Pair<ShadowVariableDescriptor, Integer>> shadowToPairMap
                 = new HashMap<ShadowVariableDescriptor, Pair<ShadowVariableDescriptor, Integer>>();
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
-            for (ShadowVariableDescriptor shadow : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
+            for (ShadowVariableDescriptor<Solution_> shadow : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
                 int sourceSize = shadow.getSourceVariableDescriptorList().size();
                 Pair<ShadowVariableDescriptor, Integer> pair = MutablePair.of(shadow, sourceSize);
                 pairList.add(pair);
@@ -440,8 +440,8 @@ public class SolutionDescriptor<Solution_> {
             }
         }
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
-            for (GenuineVariableDescriptor genuine : entityDescriptor.getDeclaredGenuineVariableDescriptors()) {
-                for (ShadowVariableDescriptor sink : genuine.getSinkVariableDescriptorList()) {
+            for (GenuineVariableDescriptor<Solution_> genuine : entityDescriptor.getDeclaredGenuineVariableDescriptors()) {
+                for (ShadowVariableDescriptor<Solution_> sink : genuine.getSinkVariableDescriptorList()) {
                     Pair<ShadowVariableDescriptor, Integer> sinkPair = shadowToPairMap.get(sink);
                     sinkPair.setValue(sinkPair.getValue() - 1);
                 }
@@ -451,7 +451,7 @@ public class SolutionDescriptor<Solution_> {
         while (!pairList.isEmpty()) {
             Collections.sort(pairList, (a, b) -> Integer.compare(a.getValue(), b.getValue()));
             Pair<ShadowVariableDescriptor, Integer> pair = pairList.remove(0);
-            ShadowVariableDescriptor shadow = pair.getKey();
+            ShadowVariableDescriptor<Solution_> shadow = pair.getKey();
             if (pair.getValue() != 0) {
                 if (pair.getValue() < 0) {
                     throw new IllegalStateException("Impossible state because the shadowVariable ("
@@ -463,7 +463,7 @@ public class SolutionDescriptor<Solution_> {
                         + ") because it must be later than its sources (" + shadow.getSourceVariableDescriptorList()
                         + ") and also earlier than its sinks (" + shadow.getSinkVariableDescriptorList() + ").");
             }
-            for (ShadowVariableDescriptor sink : shadow.getSinkVariableDescriptorList()) {
+            for (ShadowVariableDescriptor<Solution_> sink : shadow.getSinkVariableDescriptorList()) {
                 Pair<ShadowVariableDescriptor, Integer> sinkPair = shadowToPairMap.get(sink);
                 sinkPair.setValue(sinkPair.getValue() - 1);
             }
@@ -539,7 +539,7 @@ public class SolutionDescriptor<Solution_> {
     }
 
     public boolean hasEntityDescriptor(Class<?> entitySubclass) {
-        EntityDescriptor entityDescriptor = findEntityDescriptor(entitySubclass);
+        EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptor(entitySubclass);
         return entityDescriptor != null;
     }
 
@@ -585,14 +585,14 @@ public class SolutionDescriptor<Solution_> {
         return variableDescriptor;
     }
 
-    public VariableDescriptor findVariableDescriptor(Object entity, String variableName) {
-        EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+    public VariableDescriptor<Solution_> findVariableDescriptor(Object entity, String variableName) {
+        EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
         return entityDescriptor.getVariableDescriptor(variableName);
     }
 
-    public VariableDescriptor findVariableDescriptorOrFail(Object entity, String variableName) {
-        EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-        VariableDescriptor variableDescriptor = entityDescriptor.getVariableDescriptor(variableName);
+    public VariableDescriptor<Solution_> findVariableDescriptorOrFail(Object entity, String variableName) {
+        EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+        VariableDescriptor<Solution_> variableDescriptor = entityDescriptor.getVariableDescriptor(variableName);
         if (variableDescriptor == null) {
             throw new IllegalArgumentException(entityDescriptor.buildInvalidVariableNameExceptionMessage(variableName));
         }
@@ -681,7 +681,7 @@ public class SolutionDescriptor<Solution_> {
         long variableCount = 0L;
         for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
             Object entity = it.next();
-            EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+            EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
             variableCount += entityDescriptor.getGenuineVariableCount();
         }
         return variableCount;
@@ -725,7 +725,7 @@ public class SolutionDescriptor<Solution_> {
         long problemScale = 0L;
         for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
             Object entity = it.next();
-            EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+            EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
             problemScale += entityDescriptor.getProblemScale(solution, entity);
         }
         return problemScale;
@@ -735,7 +735,7 @@ public class SolutionDescriptor<Solution_> {
         int count = 0;
         for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
             Object entity = it.next();
-            EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+            EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
             count += entityDescriptor.countUninitializedVariables(entity);
         }
         return count;
@@ -747,7 +747,7 @@ public class SolutionDescriptor<Solution_> {
      * @return true if the entity is initialized or immovable
      */
     public boolean isEntityInitializedOrImmovable(ScoreDirector scoreDirector, Object entity) {
-        EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+        EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
         return entityDescriptor.isInitialized(entity) || !entityDescriptor.isMovable(scoreDirector, entity);
     }
 
@@ -755,7 +755,7 @@ public class SolutionDescriptor<Solution_> {
         int count = 0;
         for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
             Object entity = it.next();
-            EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+            EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
             count += entityDescriptor.countReinitializableVariables(scoreDirector, entity);
         }
         return count;

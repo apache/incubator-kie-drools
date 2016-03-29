@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -33,14 +34,17 @@ import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDescriptor<Solution_> {
 
-    protected CustomShadowVariableDescriptor refVariableDescriptor;
+    protected CustomShadowVariableDescriptor<Solution_> refVariableDescriptor;
 
     protected Class<? extends VariableListener> variableListenerClass;
-    protected List<VariableDescriptor> sourceVariableDescriptorList;
+    protected List<VariableDescriptor<Solution_>> sourceVariableDescriptorList;
 
-    public CustomShadowVariableDescriptor(EntityDescriptor entityDescriptor,
+    public CustomShadowVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor,
             MemberAccessor variableMemberAccessor) {
         super(entityDescriptor, variableMemberAccessor);
     }
@@ -101,7 +105,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
             variableListenerRef = null;
         }
         if (variableListenerRef != null) {
-            EntityDescriptor refEntityDescriptor;
+            EntityDescriptor<Solution_> refEntityDescriptor;
             Class<?> refEntityClass = variableListenerRef.entityClass();
             if (refEntityClass.equals(PlanningVariableReference.NullEntityClass.class)) {
                 refEntityDescriptor = entityDescriptor;
@@ -116,7 +120,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
                 }
             }
             String refVariableName = variableListenerRef.variableName();
-            VariableDescriptor uncastRefVariableDescriptor = refEntityDescriptor.getVariableDescriptor(refVariableName);
+            VariableDescriptor<Solution_> uncastRefVariableDescriptor = refEntityDescriptor.getVariableDescriptor(refVariableName);
             if (uncastRefVariableDescriptor == null) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + CustomShadowVariable.class.getSimpleName()
@@ -143,9 +147,9 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
             refVariableDescriptor.registerSinkVariableDescriptor(this);
         } else {
             CustomShadowVariable.Source[] sources = shadowVariableAnnotation.sources();
-            sourceVariableDescriptorList = new ArrayList<VariableDescriptor>(sources.length);
+            sourceVariableDescriptorList = new ArrayList<>(sources.length);
             for (CustomShadowVariable.Source source : sources) {
-                EntityDescriptor sourceEntityDescriptor;
+                EntityDescriptor<Solution_> sourceEntityDescriptor;
                 Class<?> sourceEntityClass = source.entityClass();
                 if (sourceEntityClass.equals(CustomShadowVariable.Source.NullEntityClass.class)) {
                     sourceEntityDescriptor = entityDescriptor;
@@ -161,7 +165,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
                     }
                 }
                 String sourceVariableName = source.variableName();
-                VariableDescriptor sourceVariableDescriptor = sourceEntityDescriptor.getVariableDescriptor(
+                VariableDescriptor<Solution_> sourceVariableDescriptor = sourceEntityDescriptor.getVariableDescriptor(
                         sourceVariableName);
                 if (sourceVariableDescriptor == null) {
                     throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
@@ -179,9 +183,9 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
     }
 
     @Override
-    public List<VariableDescriptor> getSourceVariableDescriptorList() {
+    public List<VariableDescriptor<Solution_>> getSourceVariableDescriptorList() {
         if (refVariableDescriptor != null) {
-            return Collections.<VariableDescriptor>singletonList(refVariableDescriptor);
+            return Collections.singletonList(refVariableDescriptor);
         }
         return sourceVariableDescriptorList;
     }

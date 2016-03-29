@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.domain.variable.anchor;
 import java.util.Collections;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -32,11 +33,14 @@ import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public class AnchorShadowVariableDescriptor extends ShadowVariableDescriptor {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public class AnchorShadowVariableDescriptor<Solution_> extends ShadowVariableDescriptor<Solution_> {
 
-    protected VariableDescriptor sourceVariableDescriptor;
+    protected VariableDescriptor<Solution_> sourceVariableDescriptor;
 
-    public AnchorShadowVariableDescriptor(EntityDescriptor entityDescriptor,
+    public AnchorShadowVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor,
             MemberAccessor variableMemberAccessor) {
         super(entityDescriptor, variableMemberAccessor);
     }
@@ -74,7 +78,7 @@ public class AnchorShadowVariableDescriptor extends ShadowVariableDescriptor {
     }
 
     @Override
-    public List<VariableDescriptor> getSourceVariableDescriptorList() {
+    public List<VariableDescriptor<Solution_>> getSourceVariableDescriptorList() {
         return Collections.singletonList(sourceVariableDescriptor);
     }
 
@@ -88,7 +92,7 @@ public class AnchorShadowVariableDescriptor extends ShadowVariableDescriptor {
     }
 
     @Override
-    public VariableListener buildVariableListener(InnerScoreDirector scoreDirector) {
+    public VariableListener buildVariableListener(InnerScoreDirector<Solution_> scoreDirector) {
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
                 .demand(new SingletonInverseVariableDemand(sourceVariableDescriptor));
         return new AnchorVariableListener(this, sourceVariableDescriptor, inverseVariableSupply);

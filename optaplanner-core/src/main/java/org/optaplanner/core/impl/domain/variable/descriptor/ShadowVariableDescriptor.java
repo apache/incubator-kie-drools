@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.domain.variable.descriptor;
 
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
@@ -25,11 +26,14 @@ import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public abstract class ShadowVariableDescriptor extends VariableDescriptor {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescriptor<Solution_> {
 
     private int globalShadowOrder = Integer.MAX_VALUE;
 
-    public ShadowVariableDescriptor(EntityDescriptor entityDescriptor,
+    public ShadowVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor,
             MemberAccessor variableMemberAccessor) {
         super(entityDescriptor, variableMemberAccessor);
     }
@@ -42,7 +46,7 @@ public abstract class ShadowVariableDescriptor extends VariableDescriptor {
      * Inverse of {@link #getSinkVariableDescriptorList()}.
      * @return never null, only variables affect this shadow variable directly
      */
-    public abstract List<VariableDescriptor> getSourceVariableDescriptorList();
+    public abstract List<VariableDescriptor<Solution_>> getSourceVariableDescriptorList();
 
     public int getGlobalShadowOrder() {
         return globalShadowOrder;
@@ -69,7 +73,7 @@ public abstract class ShadowVariableDescriptor extends VariableDescriptor {
      * @param scoreDirector never null
      * @return never null
      */
-    public abstract VariableListener buildVariableListener(InnerScoreDirector scoreDirector);
+    public abstract VariableListener<Solution_> buildVariableListener(InnerScoreDirector<Solution_> scoreDirector);
 
     @Override
     public String toString() {

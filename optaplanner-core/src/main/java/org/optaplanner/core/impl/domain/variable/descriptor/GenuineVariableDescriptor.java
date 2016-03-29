@@ -40,7 +40,7 @@ import java.util.*;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor {
+public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Solution_> {
 
     private boolean chained;
 

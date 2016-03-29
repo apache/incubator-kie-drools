@@ -244,7 +244,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return randomFactory;
     }
 
-    protected <Solution_> SolutionDescriptor buildSolutionDescriptor(SolverConfigContext configContext) {
+    protected <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(SolverConfigContext configContext) {
         if (scanAnnotatedClassesConfig != null) {
             if (solutionClass != null || entityClassList != null) {
                 throw new IllegalArgumentException("The solver configuration with scanAnnotatedClasses ("
@@ -263,7 +263,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                         "The solver configuration must have at least 1 entityClass (" + entityClassList
                         + "), if it has no scanAnnotatedClasses (" + scanAnnotatedClassesConfig + ").");
             }
-            return SolutionDescriptor.buildSolutionDescriptor(solutionClass, entityClassList);
+            return SolutionDescriptor.buildSolutionDescriptor((Class<Solution_>) solutionClass, entityClassList);
         }
     }
 

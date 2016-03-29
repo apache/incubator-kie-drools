@@ -16,19 +16,24 @@
 
 package org.optaplanner.core.impl.domain.variable.anchor;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class AnchorVariableListener implements VariableListener<Object>, AnchorVariableSupply {
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
+public class AnchorVariableListener<Solution_> implements VariableListener<Object>, AnchorVariableSupply {
 
-    protected final AnchorShadowVariableDescriptor anchorShadowVariableDescriptor;
-    protected final VariableDescriptor previousVariableDescriptor;
+    protected final AnchorShadowVariableDescriptor<Solution_> anchorShadowVariableDescriptor;
+    protected final VariableDescriptor<Solution_> previousVariableDescriptor;
     protected final SingletonInverseVariableSupply nextVariableSupply;
 
-    public AnchorVariableListener(AnchorShadowVariableDescriptor anchorShadowVariableDescriptor,
-            VariableDescriptor previousVariableDescriptor, SingletonInverseVariableSupply nextVariableSupply) {
+    public AnchorVariableListener(AnchorShadowVariableDescriptor<Solution_> anchorShadowVariableDescriptor,
+            VariableDescriptor<Solution_> previousVariableDescriptor,
+            SingletonInverseVariableSupply nextVariableSupply) {
         this.anchorShadowVariableDescriptor = anchorShadowVariableDescriptor;
         this.previousVariableDescriptor = previousVariableDescriptor;
         this.nextVariableSupply = nextVariableSupply;
