@@ -22,6 +22,7 @@ import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
@@ -206,6 +207,11 @@ public class SequentialKnowledgeHelper
     @Override
     public InternalFactHandle bolster( Object object ) {
         return null;
+    }
+
+    @Override
+    public ClassLoader getProjectClassLoader() {
+        return ((InternalKnowledgeBase)getKieRuntime().getKieBase()).getRootClassLoader();
     }
 
     public void cancelRemainingPreviousLogicalDependencies() {
