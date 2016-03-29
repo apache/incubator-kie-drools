@@ -64,14 +64,15 @@ public class SerializedTimerRollbackTest extends JbpmTestCase {
     @Before
     public void setUp() throws Exception {
         super.setUp();
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
         try {
-            UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
             ut.begin();
             EntityManager em = getEmf().createEntityManager();
             em.createQuery("delete from SessionInfo").executeUpdate();
             em.close();
             ut.commit();
         } catch (Exception e) {
+            ut.rollback();
             logger.error("Something went wrong deleting the Session Info", e);
         }
 

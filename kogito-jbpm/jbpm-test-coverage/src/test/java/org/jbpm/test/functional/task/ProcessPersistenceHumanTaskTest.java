@@ -100,12 +100,17 @@ public class ProcessPersistenceHumanTaskTest extends JbpmTestCase {
         KieSession ksession = runtimeEngine.getKieSession();
         TaskService taskService = runtimeEngine.getTaskService();
 
+        long processId;
         UserTransaction ut = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
-        ut.begin();
-        ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
-        ut.rollback();
+        try {
+            ut.begin();
+            ProcessInstance processInstance = ksession.startProcess("com.sample.bpmn.hello");
+            processId = processInstance.getId();
+        } finally {
+            ut.rollback();
+        }
 
-        assertNull(ksession.getProcessInstance(processInstance.getId()));
+        assertNull(ksession.getProcessInstance(processId));
         List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         assertEquals(0, list.size());
     }

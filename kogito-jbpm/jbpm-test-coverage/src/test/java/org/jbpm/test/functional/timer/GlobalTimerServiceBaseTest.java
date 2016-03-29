@@ -387,12 +387,16 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         long ksessionId = ksession.getIdentifier();
-        
+
+        ProcessInstance processInstance;
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
-        ut.begin();
-        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
-        // roll back
-        ut.rollback();
+        try {
+            ut.begin();
+            processInstance = ksession.startProcess("IntermediateCatchEvent");
+        } finally {
+            ut.rollback();
+        }
+
         manager.disposeRuntimeEngine(runtime);
         try {
             // two types of checks as different managers will treat it differently
@@ -453,9 +457,12 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         TaskSummary task = tasks.get(0);
         runtime.getTaskService().start(task.getId(), "john");
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
-        ut.begin();
-        runtime.getTaskService().complete(task.getId(), "john", null);// roll back
-        ut.rollback();
+        try {
+            ut.begin();
+            runtime.getTaskService().complete(task.getId(), "john", null);
+        } finally {
+            ut.rollback();
+        }
         
         processInstance = ksession.getProcessInstance(processInstance.getId());
         Collection<NodeInstance> activeNodes = ((WorkflowProcessInstance)processInstance).getNodeInstances();
@@ -494,14 +501,17 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession = runtime.getKieSession();
         long ksessionId = ksession.getIdentifier();
-        
+
+        ProcessInstance processInstance;
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
-        ut.begin();
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("test", "john");
-        ProcessInstance processInstance = ksession.startProcess("PROCESS_1", params);
-        // roll back
-        ut.rollback();
+        try {
+            ut.begin();
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("test", "john");
+            processInstance = ksession.startProcess("PROCESS_1", params);
+        } finally {
+            ut.rollback();
+        }
         manager.disposeRuntimeEngine(runtime);
         try {
             // two types of checks as different managers will treat it differently
@@ -716,59 +726,78 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .userGroupCallback(userGroupCallback)
                 .get();
 
+        RuntimeEngine runtime;
+        KieSession ksession;
+        ProcessInstance processInstance;
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
-        ut.begin();
-        manager = getManager(environment, true);
-        
-        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
-        KieSession ksession = runtime.getKieSession();
+        try {
+            ut.begin();
+            manager = getManager(environment, true);
 
-        
-        
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("x", "R3/PT1S");
-        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent", params);
-        ut.commit();
+            runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+            ksession = runtime.getKieSession();
+
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("x", "R3/PT1S");
+            processInstance = ksession.startProcess("IntermediateCatchEvent", params);
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
+        }
+
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         
         
         
         ut = InitialContext.doLookup("java:comp/UserTransaction");
-        ut.begin();
-        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
-        ksession = runtime.getKieSession();
-        // get tasks
-        
-        List<Status> statuses = new ArrayList<Status>();
-        statuses.add(Status.Reserved);
-        List<TaskSummary> tasks = runtime.getTaskService().getTasksAssignedAsPotentialOwnerByStatus("john", statuses, "en-UK");
-        
-        assertNotNull(tasks);
-        assertEquals(1, tasks.size());        
-        
-        
-        for (TaskSummary task : tasks) {
-            runtime.getTaskService().start(task.getId(), "john");
-            runtime.getTaskService().complete(task.getId(), "john", null);
+        try {
+            ut.begin();
+            runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtime.getKieSession();
+            // get tasks
+
+            List<Status> statuses = new ArrayList<Status>();
+            statuses.add(Status.Reserved);
+            List<TaskSummary> tasks = runtime.getTaskService().getTasksAssignedAsPotentialOwnerByStatus("john", statuses, "en-UK");
+
+            assertNotNull(tasks);
+            assertEquals(1, tasks.size());
+
+
+            for (TaskSummary task : tasks) {
+                runtime.getTaskService().start(task.getId(), "john");
+                runtime.getTaskService().complete(task.getId(), "john", null);
+            }
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
         }
-        ut.commit();
+
         // now wait for 1 second for first timer to trigger
         countDownListener.waitTillCompleted();
         countDownListener.reset(1);
         
         ut = InitialContext.doLookup("java:comp/UserTransaction");
-        ut.begin();
         try {
-            runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
-            ksession = runtime.getKieSession();
-    
-            processInstance = ksession.getProcessInstance(processInstance.getId());  
-    
-            assertNull(processInstance);
-        } catch (SessionNotFoundException e) {
-            // expected for PerProcessInstanceManagers since process instance is completed
+            ut.begin();
+            try {
+                runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+                ksession = runtime.getKieSession();
+
+                processInstance = ksession.getProcessInstance(processInstance.getId());
+
+                assertNull(processInstance);
+            } catch (SessionNotFoundException e) {
+                // expected for PerProcessInstanceManagers since process instance is completed
+            }
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
         }
-        ut.commit();
+
         // let's wait to ensure no more timers are expired and triggered
         countDownListener.waitTillCompleted(3000);
         

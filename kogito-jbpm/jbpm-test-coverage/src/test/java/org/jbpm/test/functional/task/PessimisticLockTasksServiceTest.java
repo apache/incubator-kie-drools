@@ -123,12 +123,15 @@ public class PessimisticLockTasksServiceTest extends JbpmTestCase {
             public void run() {
                 try {
                     UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
-                    ut.begin();
-                    logger.info("Attempting to lock task instance");
-                    taskService.start(taskId, "salaboy");
-                    t2StartLockedTask.countDown();
-                    t1Continue.await();
-                    ut.rollback();
+                    try {
+                        ut.begin();
+                        logger.info("Attempting to lock task instance");
+                        taskService.start(taskId, "salaboy");
+                        t2StartLockedTask.countDown();
+                        t1Continue.await();
+                    } finally {
+                        ut.rollback();
+                    }
                 } catch (Exception e) {
                     logger.error("Error on thread ", e);
                 }
@@ -142,16 +145,19 @@ public class PessimisticLockTasksServiceTest extends JbpmTestCase {
             public void run() {
                 try {
                     UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
-                    ut.begin();
-                    t2StartLockedTask.await();
-                    logger.info("Trying to start locked task instance");
                     try {
-                        internalTaskService.start(taskId, "salaboy");
-                    } catch (Exception e) {
-                        logger.info("Abort failed with error {}", e.getMessage());
-                        exceptions.add(e);
+                        ut.begin();
+                        t2StartLockedTask.await();
+                        logger.info("Trying to start locked task instance");
+                        try {
+                            internalTaskService.start(taskId, "salaboy");
+                        } catch (Exception e) {
+                            logger.info("Abort failed with error {}", e.getMessage());
+                            exceptions.add(e);
+                        } finally {
+                            t1Continue.countDown();
+                        }
                     } finally {
-                        t1Continue.countDown();
                         ut.rollback();
                     }
                 } catch (Exception e) {
@@ -174,14 +180,17 @@ public class PessimisticLockTasksServiceTest extends JbpmTestCase {
 
         // complete task within user transaction to make sure no deadlock happens as both task service and ksession are under tx lock
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
-        ut.begin();
-        taskService.complete(salaboysTasks.get(0).getId(), "salaboy", null);
-        ut.commit();
-
+        try {
+            ut.begin();
+            taskService.complete(salaboysTasks.get(0).getId(), "salaboy", null);
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
+        }
 
         List<TaskSummary> pmsTasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         Assert.assertEquals(1, pmsTasks.size());
-
 
         List<TaskSummary> hrsTasks = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
         Assert.assertEquals(1, hrsTasks.size());

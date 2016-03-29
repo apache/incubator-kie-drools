@@ -176,16 +176,21 @@ public class ConcurrentGlobalTimerServiceTest extends TimerBaseTest {
 		
 		synchronized((SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) runtime.getKieSession()).getCommandService()) {
 			UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
-			ut.begin();
-			logger.debug("Starting process on ksession {}", runtime.getKieSession().getIdentifier());
-			Map<String, Object> params = new HashMap<String, Object>();
-			DateTime now = new DateTime();
-		    now.plus(1000);
+            try {
+                ut.begin();
+                logger.debug("Starting process on ksession {}", runtime.getKieSession().getIdentifier());
+                Map<String, Object> params = new HashMap<String, Object>();
+                DateTime now = new DateTime();
+                now.plus(1000);
 
-			params.put("x", "R2/" + wait + "/PT1S");
-			ProcessInstance processInstance = runtime.getKieSession().startProcess("IntermediateCatchEvent", params);
-			logger.debug("Started process instance {} on ksession {}", processInstance.getId(), runtime.getKieSession().getIdentifier());			
-			ut.commit();
+                params.put("x", "R2/" + wait + "/PT1S");
+                ProcessInstance processInstance = runtime.getKieSession().startProcess("IntermediateCatchEvent", params);
+                logger.debug("Started process instance {} on ksession {}", processInstance.getId(), runtime.getKieSession().getIdentifier());
+                ut.commit();
+            } catch (Exception ex) {
+                ut.rollback();
+                throw ex;
+            }
 		}
 		
 		

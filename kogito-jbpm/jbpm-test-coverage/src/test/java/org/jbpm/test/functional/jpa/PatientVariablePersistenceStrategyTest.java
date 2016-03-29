@@ -141,9 +141,14 @@ public class PatientVariablePersistenceStrategyTest extends JbpmTestCase {
         taskMedicalRecord.setDescription("Initial Description of the Medical Record - Updated");
         
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
-        ut.begin();
-        em.merge(taskMedicalRecord);
-        ut.commit();
+        try {
+            ut.begin();
+            em.merge(taskMedicalRecord);
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
+        }
         
         taskMedicalRecord = getTaskContent(runtimeEngine, doctorTasks.get(0));
         

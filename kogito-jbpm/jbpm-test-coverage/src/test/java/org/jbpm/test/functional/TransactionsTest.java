@@ -57,13 +57,19 @@ public class TransactionsTest extends JbpmTestCase {
     @Test(timeout = 60000)
     public void testStartProcessCommit() throws Exception {
         UserTransaction ut = getUserTransaction();
-        ut.begin();
+        long processId;
+        try {
+            ut.begin();
 
-        long processId = startProcess(ksession);
-        Assertions.assertThat(ksession.getProcessInstance(processId)).isNotNull();
-        Assertions.assertThat(ksession.getProcessInstance(processId).getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+            processId = startProcess(ksession);
+            Assertions.assertThat(ksession.getProcessInstance(processId)).isNotNull();
+            Assertions.assertThat(ksession.getProcessInstance(processId).getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);
 
-        ut.commit();
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
+        }
 
         ksession = restoreKSession(resources);
         assertProcessInstanceActive(processId);
@@ -72,12 +78,15 @@ public class TransactionsTest extends JbpmTestCase {
     @Test(timeout = 60000)
     public void testStartProcessRollback() throws Exception {
         UserTransaction ut = getUserTransaction();
-        ut.begin();
+        long processId;
+        try {
+            ut.begin();
 
-        long processId = startProcess(ksession);
-        assertProcessInstanceActive(processId);
-
-        ut.rollback();
+            processId = startProcess(ksession);
+            assertProcessInstanceActive(processId);
+        } finally {
+            ut.rollback();
+        }
 
         System.out.println(ksession.getId() + " " + ksession.toString());
         ksession = restoreKSession(resources);
@@ -98,11 +107,14 @@ public class TransactionsTest extends JbpmTestCase {
         assertProcessInstanceActive(processId);
 
         UserTransaction ut = getUserTransaction();
-        ut.begin();
-
-        ksession.abortProcessInstance(processId);
-
-        ut.commit();
+        try {
+            ut.begin();
+            ksession.abortProcessInstance(processId);
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
+        }
 
         ksession = restoreKSession(resources);
         assertProcessInstanceAborted(processId);
@@ -114,13 +126,14 @@ public class TransactionsTest extends JbpmTestCase {
         assertProcessInstanceActive(processId);
 
         UserTransaction ut = getUserTransaction();
-        ut.begin();
+        try {
+            ut.begin();
+            ksession.abortProcessInstance(processId);
+        } finally {
+            ut.rollback();
+        }
 
-        ksession.abortProcessInstance(processId);
-
-        ut.rollback();
         ksession = restoreKSession(resources);
-
         assertProcessInstanceActive(processId);
     }
 
@@ -132,26 +145,33 @@ public class TransactionsTest extends JbpmTestCase {
         long processId = startProcess(ksession);
 
         UserTransaction ut = getUserTransaction();
-        ut.begin();
+        try {
+            ut.begin();
 
-        ksession.signalEvent("start", "script", processId);
-        Assertions.assertThat(process.wasNodeLeft("script")).isTrue();
-
-        ut.rollback();
+            ksession.signalEvent("start", "script", processId);
+            Assertions.assertThat(process.wasNodeLeft("script")).isTrue();
+        } finally {
+            ut.rollback();
+        }
 
         process.clear();
         ksession = restoreKSession(resources);
         ksession.addEventListener(process);
 
-        ut = getUserTransaction();
-        ut.begin();
-
-        ksession.signalEvent("start", "script", processId);
         String scriptNodeName = "script";
-        assertTrue( "Node '" +  scriptNodeName + "' was not left on time!", process.waitForNodeToBeLeft(scriptNodeName, 1000));
+        ut = getUserTransaction();
+        try {
+            ut.begin();
 
-        Assertions.assertThat(ut.getStatus()).isEqualTo(Status.STATUS_ACTIVE);
-        ut.commit();
+            ksession.signalEvent("start", "script", processId);
+            assertTrue( "Node '" +  scriptNodeName + "' was not left on time!", process.waitForNodeToBeLeft(scriptNodeName, 1000));
+
+            Assertions.assertThat(ut.getStatus()).isEqualTo(Status.STATUS_ACTIVE);
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
+        }
 
         Assertions.assertThat(process.wasNodeLeft(scriptNodeName)).isTrue();
         ksession.signalEvent("finish", null, processId);
@@ -170,12 +190,15 @@ public class TransactionsTest extends JbpmTestCase {
         long processId = startProcess(ksession);
 
         UserTransaction ut = getUserTransaction();
-        ut.begin();
+        try {
+            ut.begin();
 
-        ksession.signalEvent("start", "rfg", processId);
-        Assertions.assertThat(process.wasNodeLeft("rfg")).isTrue();
+            ksession.signalEvent("start", "rfg", processId);
+            Assertions.assertThat(process.wasNodeLeft("rfg")).isTrue();
+        } finally {
+            ut.rollback();
+        }
 
-        ut.rollback();
         Thread.sleep(600);
 
         process.clear();
@@ -189,14 +212,19 @@ public class TransactionsTest extends JbpmTestCase {
         agenda.clear();
         process.clear();
 
-        ut = getUserTransaction();
-        ut.begin();
-
         String ruleFlowGroupNodeName = "rfg";
-        ksession.signalEvent("start", "rfg", processId);
-        assertTrue( "Node '" + ruleFlowGroupNodeName + "' was not left on time!", process.waitForNodeToBeLeft(ruleFlowGroupNodeName, 1000));
+        ut = getUserTransaction();
+        try {
+            ut.begin();
 
-        ut.commit();
+            ksession.signalEvent("start", "rfg", processId);
+            assertTrue( "Node '" + ruleFlowGroupNodeName + "' was not left on time!", process.waitForNodeToBeLeft(ruleFlowGroupNodeName, 1000));
+
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
+        }
 
         Assertions.assertThat(process.wasNodeLeft(ruleFlowGroupNodeName)).isTrue();
         ksession.signalEvent("finish", null, processId);
@@ -215,12 +243,14 @@ public class TransactionsTest extends JbpmTestCase {
         long processId = startProcess(ksession);
 
         UserTransaction ut = getUserTransaction();
-        ut.begin();
+        try {
+            ut.begin();
 
-        ksession.signalEvent("start", "timer", processId);
-        Assertions.assertThat(process.wasNodeLeft("timer")).isTrue();
-
-        ut.rollback();
+            ksession.signalEvent("start", "timer", processId);
+            Assertions.assertThat(process.wasNodeLeft("timer")).isTrue();
+        } finally {
+            ut.rollback();
+        }
 
         Thread.sleep(600);
 
@@ -229,10 +259,15 @@ public class TransactionsTest extends JbpmTestCase {
         ksession.addEventListener(process);
 
         ut = getUserTransaction();
-        ut.begin();
+        try {
+            ut.begin();
 
-        ksession.signalEvent("start", "timer", processId);
-        ut.commit();
+            ksession.signalEvent("start", "timer", processId);
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
+        }
 
         String timerNodeName = "timer";
         assertTrue( "Node '" + timerNodeName + "' was not left on time!", process.waitForNodeToBeLeft(timerNodeName, 1500));
@@ -257,13 +292,15 @@ public class TransactionsTest extends JbpmTestCase {
         long processId = startProcess(ksession);
 
         UserTransaction ut = getUserTransaction();
-        ut.begin();
+        try {
+            ut.begin();
 
-        ksession.signalEvent("start", "usertask", processId);
-        Assertions.assertThat(process.wasNodeLeft("usertask")).isTrue();
-        Assertions.assertThat(handler.getWorkItems()).hasSize(1);
-
-        ut.rollback();
+            ksession.signalEvent("start", "usertask", processId);
+            Assertions.assertThat(process.wasNodeLeft("usertask")).isTrue();
+            Assertions.assertThat(handler.getWorkItems()).hasSize(1);
+        } finally {
+            ut.rollback();
+        }
 
         // human tasks are not aborted (as that would not cause the task to be cancelled
         process.clear();
@@ -272,11 +309,16 @@ public class TransactionsTest extends JbpmTestCase {
         ksession.addEventListener(process);
 
         ut = getUserTransaction();
-        ut.begin();
+        try {
+            ut.begin();
 
-        ksession.signalEvent("start", "usertask", processId);
+            ksession.signalEvent("start", "usertask", processId);
 
-        ut.commit();
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
+        }
 
         String lastUserTaskNodeName = "User Task";
         assertTrue( "Node '" + lastUserTaskNodeName + "' was not left on time!", process.waitForNodeTobeTriggered(lastUserTaskNodeName, 1000));
@@ -298,26 +340,33 @@ public class TransactionsTest extends JbpmTestCase {
         params.put("collection", Arrays.asList("hello world", "25", "false", "1234567891011121314151617181920", ""));
         long processId = ksession.startProcess(TRANSACTIONS_ID, params).getId();
 
-        UserTransaction ut = getUserTransaction();
-        ut.begin();
-
         String forLoopNodeName = "forloop";
-        ksession.signalEvent("start", forLoopNodeName, processId);
-        assertTrue( "Node '" + forLoopNodeName + "' was not left on time!", process.waitForNodeToBeLeft(forLoopNodeName, 1000));
-        Assertions.assertThat(process.wasNodeLeft(forLoopNodeName)).isTrue();
+        UserTransaction ut = getUserTransaction();
+        try {
+            ut.begin();
 
-        ut.rollback();
+            ksession.signalEvent("start", forLoopNodeName, processId);
+            assertTrue( "Node '" + forLoopNodeName + "' was not left on time!", process.waitForNodeToBeLeft(forLoopNodeName, 1000));
+            Assertions.assertThat(process.wasNodeLeft(forLoopNodeName)).isTrue();
+        } finally {
+            ut.rollback();
+        }
 
         process.clear();
         ksession = restoreKSession(resources);
         ksession.addEventListener(process);
 
         ut = getUserTransaction();
-        ut.begin();
+        try {
+            ut.begin();
 
-        ksession.signalEvent("start", "forloop", processId);
+            ksession.signalEvent("start", "forloop", processId);
 
-        ut.commit();
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
+        }
 
         String multipleInstancesNode = "Multiple Instances";
         assertTrue( "Process did not complete on time!", process.waitForNodeToBeLeft(multipleInstancesNode, 1000));
@@ -335,24 +384,31 @@ public class TransactionsTest extends JbpmTestCase {
         long processId = startProcess(ksession);
 
         UserTransaction ut = getUserTransaction();
-        ut.begin();
+        try {
+            ut.begin();
 
-        ksession.signalEvent("start", "embedded", processId);
-        assertTrue( "Node 'embedded' was not left on time!", process.waitForNodeToBeLeft("embedded", 1000));
-        Assertions.assertThat(process.wasNodeLeft("embedded")).isTrue();
-
-        ut.rollback();
+            ksession.signalEvent("start", "embedded", processId);
+            assertTrue( "Node 'embedded' was not left on time!", process.waitForNodeToBeLeft("embedded", 1000));
+            Assertions.assertThat(process.wasNodeLeft("embedded")).isTrue();
+        } finally {
+            ut.rollback();
+        }
 
         process.clear();
         ksession = restoreKSession(resources);
         ksession.addEventListener(process);
 
         ut = getUserTransaction();
-        ut.begin();
+        try {
+            ut.begin();
 
-        ksession.signalEvent("start", "embedded", processId);
+            ksession.signalEvent("start", "embedded", processId);
 
-        ut.commit();
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
+        }
 
         assertTrue( "Node 'embedded' was not left on time!", process.waitForNodeToBeLeft("embedded", 1000));
 

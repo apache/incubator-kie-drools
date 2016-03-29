@@ -50,14 +50,20 @@ public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
         ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
         KieSession ksession = registerAsyncHandler(createKSession(ASYNC_EXECUTOR_2, ASYNC_DATA_EXECUTOR));
 
+        ProcessInstance pi;
         UserTransaction ut = getUserTransaction();
-        ut.begin();
+        try {
+            ut.begin();
 
-        Map<String, Object> pm = new HashMap<String, Object>();
-        pm.put("_command", USER_COMMAND);
-        ProcessInstance pi = ksession.startProcess(ASYNC_EXECUTOR_2_ID, pm);
+            Map<String, Object> pm = new HashMap<String, Object>();
+            pm.put("_command", USER_COMMAND);
+            pi = ksession.startProcess(ASYNC_EXECUTOR_2_ID, pm);
 
-        ut.commit();
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
+        }
 
         assertProcessInstanceCompleted(pi.getId());
 
@@ -69,18 +75,21 @@ public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
     public void testJobRollbackInAsyncExec() throws Exception {
         KieSession ksession = registerAsyncHandler(createKSession(ASYNC_EXECUTOR_2, ASYNC_DATA_EXECUTOR));
 
+        long processId;
         UserTransaction ut = getUserTransaction();
-        ut.begin();
+        try {
+            ut.begin();
 
-        Map<String, Object> pm = new HashMap<String, Object>();
-        pm.put("_command", USER_COMMAND);
-        ProcessInstance pi = ksession.startProcess(ASYNC_EXECUTOR_2_ID, pm);
+            Map<String, Object> pm = new HashMap<String, Object>();
+            pm.put("_command", USER_COMMAND);
+            ProcessInstance pi = ksession.startProcess(ASYNC_EXECUTOR_2_ID, pm);
+            processId = pi.getId();
+            assertProcessInstanceCompleted(processId);
+        } finally {
+            ut.rollback();
+        }
 
-        assertProcessInstanceCompleted(pi.getId());
-
-        ut.rollback();
-
-        assertProcessInstanceNeverRun(pi.getId());
+        assertProcessInstanceNeverRun(processId);
         Assertions.assertThat(getExecutorService().getCompletedRequests(new QueryContext())).hasSize(0);
     }
 
@@ -90,14 +99,20 @@ public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
         ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
         KieSession ksession = registerAsyncHandler(createKSession(ASYNC_DATA_EXECUTOR));
 
+        ProcessInstance pi;
         UserTransaction ut = getUserTransaction();
-        ut.begin();
+        try {
+            ut.begin();
 
-        Map<String, Object> pm = new HashMap<String, Object>();
-        pm.put("command", USER_COMMAND);
-        ProcessInstance pi = ksession.startProcess(ASYNC_DATA_EXECUTOR_ID, pm);
-        // the JobExecutor will act on the job only after commit
-        ut.commit();
+            Map<String, Object> pm = new HashMap<String, Object>();
+            pm.put("command", USER_COMMAND);
+            pi = ksession.startProcess(ASYNC_DATA_EXECUTOR_ID, pm);
+            // the JobExecutor will act on the job only after commit
+            ut.commit();
+        } catch (Exception ex) {
+            ut.rollback();
+            throw ex;
+        }
 
         countDownListener.waitTillCompleted();
         ProcessInstance processInstance = ksession.getProcessInstance(pi.getId());
@@ -110,15 +125,19 @@ public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
         KieSession ksession = registerAsyncHandler(createKSession(ASYNC_DATA_EXECUTOR));
 
         UserTransaction ut = getUserTransaction();
-        ut.begin();
+        long processId;
+        try {
+            ut.begin();
 
-        Map<String, Object> pm = new HashMap<String, Object>();
-        pm.put("_command", USER_FAILING_COMMAND);
-        ProcessInstance pi = ksession.startProcess(ASYNC_DATA_EXECUTOR_ID, pm);
+            Map<String, Object> pm = new HashMap<String, Object>();
+            pm.put("_command", USER_FAILING_COMMAND);
+            ProcessInstance pi = ksession.startProcess(ASYNC_DATA_EXECUTOR_ID, pm);
+            processId = pi.getId();
+        } finally {
+            ut.rollback();
+        }
 
-        ut.rollback();
-
-        assertProcessInstanceNeverRun(pi.getId());
+        assertProcessInstanceNeverRun(processId);
     }
 
     private UserTransaction getUserTransaction() throws Exception {
