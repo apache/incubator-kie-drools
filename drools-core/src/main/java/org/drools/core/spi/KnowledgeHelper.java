@@ -160,7 +160,9 @@ public interface KnowledgeHelper
 
     <T, K, X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait );
 
-    public InternalFactHandle bolster( Object object, Object value );
+    InternalFactHandle bolster( Object object, Object value );
 
-    public InternalFactHandle bolster( Object object );
+    InternalFactHandle bolster( Object object );
+
+    ClassLoader getProjectClassLoader();
 }
