@@ -308,7 +308,7 @@ public abstract class BetaNode extends LeftTupleSource
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
-            BetaMemory bm  = getBetaMemory( rightTuple.getTupleSink(), wm );
+            BetaMemory bm  = getBetaMemory( (BetaNode) rightTuple.getTupleSink(), wm );
             (( BetaNode ) rightTuple.getTupleSink()).doDeleteRightTuple( rightTuple, wm, bm );
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
