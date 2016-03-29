@@ -118,7 +118,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
         if (!randomSelection) {
             return cachedEntityList.iterator();
         } else {
-            return new CachedListRandomIterator<Object>(cachedEntityList, workingRandom);
+            return new CachedListRandomIterator<>(cachedEntityList, workingRandom);
         }
     }
 

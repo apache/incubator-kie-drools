@@ -62,7 +62,7 @@ public class DinnerPartyPanel extends SolutionPanel<DinnerParty> {
         gridLayout = new GridLayout(0, 1);
         setLayout(gridLayout);
         Hobby[] hobbies = Hobby.values();
-        hobbyImageIconMap = new HashMap<Hobby, ImageIcon>(hobbies.length);
+        hobbyImageIconMap = new HashMap<>(hobbies.length);
         for (Hobby hobby : hobbies) {
             String imageIconFilename;
             switch (hobby) {
@@ -86,8 +86,8 @@ public class DinnerPartyPanel extends SolutionPanel<DinnerParty> {
             }
             hobbyImageIconMap.put(hobby, new ImageIcon(getClass().getResource(imageIconFilename)));
         }
-        maleImageIconList = new ArrayList<ImageIcon>(MALE_FEMALE_ICON_VARIATION);
-        femaleImageIconList = new ArrayList<ImageIcon>(MALE_FEMALE_ICON_VARIATION);
+        maleImageIconList = new ArrayList<>(MALE_FEMALE_ICON_VARIATION);
+        femaleImageIconList = new ArrayList<>(MALE_FEMALE_ICON_VARIATION);
         for (int i = 0; i < MALE_FEMALE_ICON_VARIATION; i++) {
              maleImageIconList.add(new ImageIcon(getClass().getResource("guestMale" + i + ".png")));
              femaleImageIconList.add(new ImageIcon(getClass().getResource("guestFemale" + i + ".png")));
@@ -104,7 +104,7 @@ public class DinnerPartyPanel extends SolutionPanel<DinnerParty> {
         removeAll();
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         gridLayout.setColumns((int) Math.ceil(Math.sqrt(dinnerParty.getTableList().size())));
-        Map<Seat, SeatPanel> seatPanelMap = new HashMap<Seat, SeatPanel>(dinnerParty.getSeatList().size());
+        Map<Seat, SeatPanel> seatPanelMap = new HashMap<>(dinnerParty.getSeatList().size());
         SeatPanel unassignedPanel = new SeatPanel(null);
         seatPanelMap.put(null, unassignedPanel);
         for (Table table : dinnerParty.getTableList()) {

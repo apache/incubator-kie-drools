@@ -32,7 +32,7 @@ public abstract class CommonBenchmarkApp extends LoggingMain {
     private final Map<String, ArgOption> benchmarkArgumentMap;
 
     public CommonBenchmarkApp(ArgOption... argOptions) {
-        benchmarkArgumentMap = new LinkedHashMap<String, ArgOption>(argOptions.length);
+        benchmarkArgumentMap = new LinkedHashMap<>(argOptions.length);
         for (ArgOption argOption : argOptions) {
             benchmarkArgumentMap.put(argOption.getName(), argOption);
         }

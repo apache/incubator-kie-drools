@@ -76,7 +76,7 @@ public class RoadSegmentLocationTest {
     }
 
     private Map<HubSegmentLocation, Double> createHubTravelDistanceMap(Location fromLocation, HubSegmentLocation... toLocations) {
-        Map<HubSegmentLocation, Double> map = new LinkedHashMap<HubSegmentLocation, Double>(toLocations.length);
+        Map<HubSegmentLocation, Double> map = new LinkedHashMap<>(toLocations.length);
         for (HubSegmentLocation toLocation : toLocations) {
             map.put(toLocation, fromLocation.getAirDistanceDoubleTo(toLocation));
         }
@@ -85,7 +85,7 @@ public class RoadSegmentLocationTest {
 
     protected Map<RoadSegmentLocation, Double> createNearbyTravelDistanceMap(Location fromLocation,
             RoadSegmentLocation... toLocations) {
-        Map<RoadSegmentLocation, Double> map = new LinkedHashMap<RoadSegmentLocation, Double>(toLocations.length);
+        Map<RoadSegmentLocation, Double> map = new LinkedHashMap<>(toLocations.length);
         for (RoadSegmentLocation toLocation : toLocations) {
             map.put(toLocation, fromLocation.getAirDistanceDoubleTo(toLocation));
         }

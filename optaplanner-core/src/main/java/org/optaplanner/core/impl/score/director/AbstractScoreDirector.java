@@ -141,7 +141,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                         + "Check the " + SolutionCloner.class.getSimpleName() + ".");
             }
             List<Object> originalEntityList = solutionDescriptor.getEntityList(originalSolution);
-            Map<Object, Object> originalEntityMap = new IdentityHashMap<Object, Object>(originalEntityList.size());
+            Map<Object, Object> originalEntityMap = new IdentityHashMap<>(originalEntityList.size());
             for (Object originalEntity : originalEntityList) {
                 originalEntityMap.put(originalEntity, null);
             }
@@ -395,8 +395,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                 = uncorruptedScoreDirector.getConstraintMatchTotals();
 
         Map<List<Object>, ConstraintMatch> corruptedMap = createConstraintMatchMap(corruptedConstraintMatchTotals);
-        Map<List<Object>, ConstraintMatch> excessMap = new LinkedHashMap<List<Object>, ConstraintMatch>(
-                corruptedMap);
+        Map<List<Object>, ConstraintMatch> excessMap = new LinkedHashMap<>(corruptedMap);
         Map<List<Object>, ConstraintMatch> missingMap = createConstraintMatchMap(uncorruptedConstraintMatchTotals);
         excessMap.keySet().removeAll(missingMap.keySet()); // missingMap == uncorruptedMap
         missingMap.keySet().removeAll(corruptedMap.keySet());
@@ -445,8 +444,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     private Map<List<Object>, ConstraintMatch> createConstraintMatchMap(
             Collection<ConstraintMatchTotal> constraintMatchTotals) {
-        Map<List<Object>, ConstraintMatch> constraintMatchMap
-                = new LinkedHashMap<List<Object>, ConstraintMatch>(constraintMatchTotals.size() * 16);
+        Map<List<Object>, ConstraintMatch> constraintMatchMap = new LinkedHashMap<>(constraintMatchTotals.size() * 16);
         for (ConstraintMatchTotal constraintMatchTotal : constraintMatchTotals) {
             for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
                 ConstraintMatch previousConstraintMatch = constraintMatchMap.put(

@@ -135,7 +135,7 @@ public class KOptMove extends AbstractMove {
     }
 
     public Collection<? extends Object> getPlanningEntities() {
-        List<Object> allEntityList = new ArrayList<Object>(values.length + 1);
+        List<Object> allEntityList = new ArrayList<>(values.length + 1);
         allEntityList.add(entity);
         for (int i = 0; i < values.length; i++) {
             Object value = values[i];
@@ -145,7 +145,7 @@ public class KOptMove extends AbstractMove {
     }
 
     public Collection<? extends Object> getPlanningValues() {
-        List<Object> allValueList = new ArrayList<Object>(values.length + 1);
+        List<Object> allValueList = new ArrayList<>(values.length + 1);
         allValueList.add(variableDescriptor.getValue(entity));
         Collections.addAll(allValueList, values);
         return allValueList;

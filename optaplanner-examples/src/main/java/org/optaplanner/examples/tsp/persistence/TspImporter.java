@@ -118,7 +118,7 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
         private void readTspLibCityList() throws IOException {
             readConstantLine("NODE_COORD_SECTION");
             DistanceType distanceType = tspSolution.getDistanceType();
-            List<Location> locationList = new ArrayList<Location>(locationListSize);
+            List<Location> locationList = new ArrayList<>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line, 3, 4, false, true);
@@ -148,7 +148,7 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
                 readConstantLine("EDGE_WEIGHT_SECTION");
                 for (int i = 0; i < locationListSize; i++) {
                     RoadLocation location = (RoadLocation) locationList.get(i);
-                    Map<RoadLocation, Double> travelDistanceMap = new LinkedHashMap<RoadLocation, Double>(locationListSize);
+                    Map<RoadLocation, Double> travelDistanceMap = new LinkedHashMap<>(locationListSize);
                     String line = bufferedReader.readLine();
                     String[] lineTokens = splitBySpacesOrTabs(line.trim(), locationListSize);
                     for (int j = 0; j < locationListSize; j++) {
@@ -170,7 +170,7 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
 
         private void createVisitList() {
             List<Location> locationList = tspSolution.getLocationList();
-            List<Visit> visitList = new ArrayList<Visit>(locationList.size() - 1);
+            List<Visit> visitList = new ArrayList<>(locationList.size() - 1);
             int count = 0;
             for (Location location : locationList) {
                 if (count < 1) {
@@ -202,7 +202,7 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
                         + ") is not the domicile's id (" + domicile.getId() + ").");
             }
             int visitListSize = tspSolution.getVisitList().size();
-            Map<Long, Visit> idToVisitMap = new HashMap<Long, Visit>(visitListSize);
+            Map<Long, Visit> idToVisitMap = new HashMap<>(visitListSize);
             for (Visit visit : tspSolution.getVisitList()) {
                 idToVisitMap.put(visit.getId(), visit);
             }
@@ -224,7 +224,7 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
         // ************************************************************************
 
         private void readCourseraFormat() throws IOException {
-            List<Location> locationList = new ArrayList<Location>(locationListSize);
+            List<Location> locationList = new ArrayList<>(locationListSize);
             long id = 0;
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();

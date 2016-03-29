@@ -229,7 +229,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
      * @return sometimes null
      */
     public Termination buildTermination(HeuristicConfigPolicy configPolicy) {
-        List<Termination> terminationList = new ArrayList<Termination>();
+        List<Termination> terminationList = new ArrayList<>();
         if (terminationClass != null) {
             Termination termination = ConfigUtils.newInstance(this, "terminationClass", terminationClass);
             terminationList.add(termination);

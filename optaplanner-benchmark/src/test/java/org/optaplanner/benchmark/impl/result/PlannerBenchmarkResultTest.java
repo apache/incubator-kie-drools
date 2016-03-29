@@ -45,19 +45,19 @@ public class PlannerBenchmarkResultTest {
         SolverConfig p1SolverConfigX = new SolverConfig();
         p1SolverConfigX.setRandomType(RandomType.JDK);
         p1SolverX.setSolverConfig(p1SolverConfigX);
-        p1SolverX.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
+        p1SolverX.setSingleBenchmarkResultList(new ArrayList<>());
         SolverBenchmarkResult p1SolverY = new SolverBenchmarkResult(p1);
         p1SolverY.setName("Solver Y");
         SolverConfig p1SolverConfigY = new SolverConfig();
         p1SolverConfigY.setRandomType(RandomType.MERSENNE_TWISTER);
         p1SolverY.setSolverConfig(p1SolverConfigY);
-        p1SolverY.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
+        p1SolverY.setSingleBenchmarkResultList(new ArrayList<>());
         SolverBenchmarkResult p2SolverZ = new SolverBenchmarkResult(p2);
         p2SolverZ.setName("Solver Z");
         SolverConfig p2SolverConfigZ = new SolverConfig();
         p2SolverConfigZ.setRandomType(RandomType.WELL1024A);
         p2SolverZ.setSolverConfig(p2SolverConfigZ);
-        p2SolverZ.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
+        p2SolverZ.setSingleBenchmarkResultList(new ArrayList<>());
 
         ProblemBenchmarkResult p1ProblemA = new ProblemBenchmarkResult(p1);
         p1ProblemA.setInputSolutionFile(new File("problemA.xml"));
@@ -103,7 +103,7 @@ public class PlannerBenchmarkResultTest {
         solverBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         singleBenchmarkResult.setAverageScore(SimpleScore.valueOf(score));
-        singleBenchmarkResult.setSubSingleBenchmarkResultList(new ArrayList<SubSingleBenchmarkResult>(1));
+        singleBenchmarkResult.setSubSingleBenchmarkResultList(new ArrayList<>(1));
         createSubSingleBenchmarkResult(singleBenchmarkResult, 0);
         return singleBenchmarkResult;
     }

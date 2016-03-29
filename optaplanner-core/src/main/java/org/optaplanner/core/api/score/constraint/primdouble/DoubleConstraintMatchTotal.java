@@ -30,7 +30,7 @@ public class DoubleConstraintMatchTotal extends ConstraintMatchTotal {
 
     public DoubleConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
         super(constraintPackage, constraintName, scoreLevel);
-        constraintMatchSet = new LinkedHashSet<DoubleConstraintMatch>();
+        constraintMatchSet = new LinkedHashSet<>();
         weightTotal = 0;
     }
 

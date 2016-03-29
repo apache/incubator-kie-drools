@@ -66,15 +66,15 @@ public class MachineReassignmentIncrementalScoreCalculator
         softScore = 0L;
         globalPenaltyInfo = machineReassignment.getGlobalPenaltyInfo();
         List<MrService> serviceList = machineReassignment.getServiceList();
-        serviceScorePartMap = new HashMap<MrService, MrServiceScorePart>(serviceList.size());
+        serviceScorePartMap = new HashMap<>(serviceList.size());
         for (MrService service : serviceList) {
             serviceScorePartMap.put(service, new MrServiceScorePart(service));
         }
-        movedProcessCountToServiceCount = new HashMap<Integer, Integer>(serviceList.size());
+        movedProcessCountToServiceCount = new HashMap<>(serviceList.size());
         movedProcessCountToServiceCount.put(0, serviceList.size());
         serviceMoveCost = 0;
         List<MrMachine> machineList = machineReassignment.getMachineList();
-        machineScorePartMap = new HashMap<MrMachine, MrMachineScorePart>(machineList.size());
+        machineScorePartMap = new HashMap<>(machineList.size());
         for (MrMachine machine : machineList) {
             machineScorePartMap.put(machine, new MrMachineScorePart(machine));
         }
@@ -149,10 +149,10 @@ public class MachineReassignmentIncrementalScoreCalculator
 
         private MrServiceScorePart(MrService service) {
             this.service = service;
-            locationBag = new HashMap<MrLocation, Integer>(machineReassignment.getLocationList().size());
+            locationBag = new HashMap<>(machineReassignment.getLocationList().size());
             hardScore -= service.getLocationSpread();
             List<MrNeighborhood> neighborhoodList = machineReassignment.getNeighborhoodList();
-            neighborhoodBag = new HashMap<MrNeighborhood, Integer>(neighborhoodList.size());
+            neighborhoodBag = new HashMap<>(neighborhoodList.size());
             for (MrNeighborhood neighborhood : neighborhoodList) {
                 neighborhoodBag.put(neighborhood, 0);
             }
@@ -268,11 +268,11 @@ public class MachineReassignmentIncrementalScoreCalculator
         public MrMachineScorePart(MrMachine machine) {
             this.machine = machine;
             List<MrMachineCapacity> machineCapacityList = machine.getMachineCapacityList();
-            machineCapacityScorePartList = new ArrayList<MrMachineCapacityScorePart>(machineCapacityList.size());
+            machineCapacityScorePartList = new ArrayList<>(machineCapacityList.size());
             for (MrMachineCapacity machineCapacity : machineCapacityList) {
                 machineCapacityScorePartList.add(new MrMachineCapacityScorePart(machineCapacity));
             }
-            serviceBag = new HashMap<MrService, Integer>(10);
+            serviceBag = new HashMap<>(10);
             doBalancePenaltyCosts();
         }
 
@@ -537,7 +537,7 @@ public class MachineReassignmentIncrementalScoreCalculator
                     - globalPenaltyInfo.getServiceMoveCostWeight());
         }
 
-        List<ConstraintMatchTotal> constraintMatchTotalList = new ArrayList<ConstraintMatchTotal>(4);
+        List<ConstraintMatchTotal> constraintMatchTotalList = new ArrayList<>(4);
         constraintMatchTotalList.add(maximumCapacityMatchTotal);
         constraintMatchTotalList.add(serviceConflictMatchTotal);
         constraintMatchTotalList.add(serviceLocationSpreadMatchTotal);

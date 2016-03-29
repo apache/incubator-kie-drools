@@ -256,7 +256,7 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
     private MoveSelector applyFiltering(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             MoveSelector moveSelector) {
         if (hasFiltering()) {
-            List<SelectionFilter> filterList = new ArrayList<SelectionFilter>(filterClassList.size());
+            List<SelectionFilter> filterList = new ArrayList<>(filterClassList.size());
             for (Class<? extends SelectionFilter> filterClass : filterClassList) {
                 filterList.add(ConfigUtils.newInstance(this, "filterClass", filterClass));
             }

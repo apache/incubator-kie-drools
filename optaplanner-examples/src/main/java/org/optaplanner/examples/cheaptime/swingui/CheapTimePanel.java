@@ -111,7 +111,7 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
 
     private XYPlot createTaskAssignmentPlot(TangoColorFactory tangoColorFactory, CheapTimeSolution solution) {
         OHLCSeriesCollection seriesCollection = new OHLCSeriesCollection();
-        Map<Machine, OHLCSeries> machineSeriesMap = new LinkedHashMap<Machine, OHLCSeries>(
+        Map<Machine, OHLCSeries> machineSeriesMap = new LinkedHashMap<>(
                 solution.getMachineList().size());
         HighLowRenderer renderer = new HighLowRenderer();
         renderer.setTickLength(0.0);
@@ -130,7 +130,7 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
             renderer.setSeriesPaint(seriesIndex, tangoColorFactory.pickColor(machine));
             seriesIndex++;
         }
-        List<TaskAssignment> taskAssignmentList = new ArrayList<TaskAssignment>(solution.getTaskAssignmentList());
+        List<TaskAssignment> taskAssignmentList = new ArrayList<>(solution.getTaskAssignmentList());
         Collections.sort(taskAssignmentList,
                 groupByMachineCheckBox.isSelected() ? groupByMachineTaskAssignmentComparator
                         : stableTaskAssignmentComparator);
@@ -171,9 +171,9 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
 
     private XYPlot createAvailableCapacityPlot(TangoColorFactory tangoColorFactory, CheapTimeSolution solution) {
         Map<MachineCapacity, List<Integer>> availableMap
-                = new LinkedHashMap<MachineCapacity, List<Integer>>(solution.getMachineCapacityList().size());
+                = new LinkedHashMap<>(solution.getMachineCapacityList().size());
         for (MachineCapacity machineCapacity : solution.getMachineCapacityList()) {
-            List<Integer> machineAvailableList = new ArrayList<Integer>(
+            List<Integer> machineAvailableList = new ArrayList<>(
                     solution.getGlobalPeriodRangeTo());
             for (int period = 0; period < solution.getGlobalPeriodRangeTo(); period++) {
                 machineAvailableList.add(machineCapacity.getCapacity());

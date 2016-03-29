@@ -135,7 +135,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
         protected boolean stale;
 
         public RandomUnionMoveIterator() {
-            probabilityItemMap = new LinkedHashMap<Iterator<Move>, ProbabilityItem>(childMoveSelectorList.size());
+            probabilityItemMap = new LinkedHashMap<>(childMoveSelectorList.size());
             for (MoveSelector moveSelector : childMoveSelectorList) {
                 Iterator<Move> moveIterator = moveSelector.iterator();
                 ProbabilityItem probabilityItem = new ProbabilityItem();
@@ -150,7 +150,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
                 }
                 probabilityItemMap.put(moveIterator, probabilityItem);
             }
-            moveIteratorMap = new TreeMap<Double, Iterator<Move>>();
+            moveIteratorMap = new TreeMap<>();
             stale = true;
         }
 

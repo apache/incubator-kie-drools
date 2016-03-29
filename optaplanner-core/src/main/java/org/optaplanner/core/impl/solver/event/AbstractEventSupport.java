@@ -23,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class AbstractEventSupport<E extends EventListener> {
 
-    protected Set<E> eventListenerSet = new CopyOnWriteArraySet<E>();
+    protected Set<E> eventListenerSet = new CopyOnWriteArraySet<>();
 
     public void addEventListener(E eventListener) {
         eventListenerSet.add(eventListener);

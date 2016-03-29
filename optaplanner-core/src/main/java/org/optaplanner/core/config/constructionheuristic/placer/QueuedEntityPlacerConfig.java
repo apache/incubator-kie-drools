@@ -76,7 +76,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
         if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
             EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
             Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
-            List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<MoveSelectorConfig>(
+            List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(
                     variableDescriptors.size());
             for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
                 subMoveSelectorConfigList.add(buildChangeMoveSelectorConfig(
@@ -96,7 +96,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
         } else {
             moveSelectorConfigList_ = moveSelectorConfigList;
         }
-        List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList_.size());
+        List<MoveSelector> moveSelectorList = new ArrayList<>(moveSelectorConfigList_.size());
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList_) {
             moveSelectorList.add(moveSelectorConfig.buildMoveSelector(
                     configPolicy, SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL));

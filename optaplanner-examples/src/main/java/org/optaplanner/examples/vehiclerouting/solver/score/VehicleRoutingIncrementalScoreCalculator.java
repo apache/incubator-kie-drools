@@ -40,7 +40,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
     public void resetWorkingSolution(VehicleRoutingSolution solution) {
         timeWindowed = solution instanceof TimeWindowedVehicleRoutingSolution;
         List<Vehicle> vehicleList = solution.getVehicleList();
-        vehicleDemandMap = new HashMap<Vehicle, Integer>(vehicleList.size());
+        vehicleDemandMap = new HashMap<>(vehicleList.size());
         for (Vehicle vehicle : vehicleList) {
             vehicleDemandMap.put(vehicle, 0);
         }

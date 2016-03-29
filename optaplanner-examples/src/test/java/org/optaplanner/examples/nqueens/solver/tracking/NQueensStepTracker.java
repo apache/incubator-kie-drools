@@ -29,7 +29,7 @@ import java.util.List;
 public class NQueensStepTracker extends PhaseLifecycleListenerAdapter {
 
     private NQueens lastStepSolution = null;
-    private List<NQueensStepTracking> trackingList = new ArrayList<NQueensStepTracking>();
+    private List<NQueensStepTracking> trackingList = new ArrayList<>();
 
     public NQueensStepTracker() {
     }

@@ -62,7 +62,7 @@ public class EmployeePanel extends JPanel {
     private Map<Shift, JPanel> shiftPanelMap;
     private JLabel numberOfShiftAssignmentsLabel;
 
-    private Map<ShiftAssignment, JButton> shiftAssignmentButtonMap = new HashMap<ShiftAssignment, JButton>();
+    private Map<ShiftAssignment, JButton> shiftAssignmentButtonMap = new HashMap<>();
 
     public EmployeePanel(NurseRosteringPanel nurseRosteringPanel, List<ShiftDate> shiftDateList, List<Shift> shiftList,
             Employee employee) {
@@ -130,7 +130,7 @@ public class EmployeePanel extends JPanel {
         WeekendDefinition weekendDefinition = (employee == null) ? WeekendDefinition.SATURDAY_SUNDAY
                 : employee.getContract().getWeekendDefinition();
         shiftDateListPanel = new JPanel(new GridLayout(1, 0));
-        shiftDatePanelMap = new LinkedHashMap<ShiftDate, JPanel>(shiftDateList.size());
+        shiftDatePanelMap = new LinkedHashMap<>(shiftDateList.size());
         for (ShiftDate shiftDate : shiftDateList) {
             JPanel shiftDatePanel = new JPanel(new GridLayout(1, 0));
             Color backgroundColor = weekendDefinition.isWeekend(shiftDate.getDayOfWeek())
@@ -162,7 +162,7 @@ public class EmployeePanel extends JPanel {
                 shiftDateListPanel.add(shiftDatePanel);
             }
         }
-        shiftPanelMap = new LinkedHashMap<Shift, JPanel>(shiftList.size());
+        shiftPanelMap = new LinkedHashMap<>(shiftList.size());
         for (Shift shift : shiftList) {
             JPanel shiftDatePanel = shiftDatePanelMap.get(shift.getShiftDate());
             JPanel shiftPanel = new JPanel();

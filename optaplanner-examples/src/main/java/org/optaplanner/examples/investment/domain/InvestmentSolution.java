@@ -154,7 +154,7 @@ public class InvestmentSolution extends AbstractPersistable {
     }
 
     public Map<Region, Long> calculateRegionQuantityMillisTotalMap() {
-        Map<Region, Long> totalMap = new HashMap<Region, Long>(regionList.size());
+        Map<Region, Long> totalMap = new HashMap<>(regionList.size());
         for (Region region : regionList) {
             totalMap.put(region, 0L);
         }
@@ -169,7 +169,7 @@ public class InvestmentSolution extends AbstractPersistable {
     }
 
     public Map<Sector, Long> calculateSectorQuantityMillisTotalMap() {
-        Map<Sector, Long> totalMap = new HashMap<Sector, Long>(regionList.size());
+        Map<Sector, Long> totalMap = new HashMap<>(regionList.size());
         for (Sector sector : sectorList) {
             totalMap.put(sector, 0L);
         }

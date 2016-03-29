@@ -60,14 +60,14 @@ public class DefaultVehicleRoutingRestService implements VehicleRoutingRestServi
     protected JsonVehicleRoutingSolution convertToJsonVehicleRoutingSolution(VehicleRoutingSolution solution) {
         JsonVehicleRoutingSolution jsonSolution = new JsonVehicleRoutingSolution();
         jsonSolution.setName(solution.getName());
-        List<JsonCustomer> jsonCustomerList = new ArrayList<JsonCustomer>(solution.getCustomerList().size());
+        List<JsonCustomer> jsonCustomerList = new ArrayList<>(solution.getCustomerList().size());
         for (Customer customer : solution.getCustomerList()) {
             Location customerLocation = customer.getLocation();
             jsonCustomerList.add(new JsonCustomer(customerLocation.getName(),
                     customerLocation.getLatitude(), customerLocation.getLongitude(), customer.getDemand()));
         }
         jsonSolution.setCustomerList(jsonCustomerList);
-        List<JsonVehicleRoute> jsonVehicleRouteList = new ArrayList<JsonVehicleRoute>(solution.getVehicleList().size());
+        List<JsonVehicleRoute> jsonVehicleRouteList = new ArrayList<>(solution.getVehicleList().size());
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         for (Vehicle vehicle : solution.getVehicleList()) {
             JsonVehicleRoute jsonVehicleRoute = new JsonVehicleRoute();
@@ -81,7 +81,7 @@ public class DefaultVehicleRoutingRestService implements VehicleRoutingRestServi
                     String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()));
             Customer customer = vehicle.getNextCustomer();
             int demandTotal = 0;
-            List<JsonCustomer> jsonVehicleCustomerList = new ArrayList<JsonCustomer>();
+            List<JsonCustomer> jsonVehicleCustomerList = new ArrayList<>();
             while (customer != null) {
                 Location customerLocation = customer.getLocation();
                 demandTotal += customer.getDemand();

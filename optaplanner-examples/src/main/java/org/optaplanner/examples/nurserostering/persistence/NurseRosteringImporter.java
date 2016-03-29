@@ -146,8 +146,8 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 }
             }
             int shiftDateSize = maxDayIndex + 1;
-            List<ShiftDate> shiftDateList = new ArrayList<ShiftDate>(shiftDateSize);
-            shiftDateMap = new HashMap<String, ShiftDate>(shiftDateSize);
+            List<ShiftDate> shiftDateList = new ArrayList<>(shiftDateSize);
+            shiftDateMap = new HashMap<>(shiftDateSize);
             long id = 0L;
             int dayIndex = 0;
             calendar.setTime(startDate);
@@ -158,7 +158,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 String dateString = dateFormat.format(calendar.getTime());
                 shiftDate.setDateString(dateString);
                 shiftDate.setDayOfWeek(DayOfWeek.valueOfCalendar(calendar.get(Calendar.DAY_OF_WEEK)));
-                shiftDate.setShiftList(new ArrayList<Shift>());
+                shiftDate.setShiftList(new ArrayList<>());
                 shiftDateList.add(shiftDate);
                 shiftDateMap.put(dateString, shiftDate);
                 id++;
@@ -183,8 +183,8 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 skillList = Collections.emptyList();
             } else {
                 List<Element> skillElementList = (List<Element>) skillsElement.getChildren();
-                skillList = new ArrayList<Skill>(skillElementList.size());
-                skillMap = new HashMap<String, Skill>(skillElementList.size());
+                skillList = new ArrayList<>(skillElementList.size());
+                skillMap = new HashMap<>(skillElementList.size());
                 long id = 0L;
                 for (Element element : skillElementList) {
                     assertElementName(element, "Skill");
@@ -205,12 +205,12 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
 
         private void readShiftTypeList(NurseRoster nurseRoster, Element shiftTypesElement) throws JDOMException {
             List<Element> shiftTypeElementList = (List<Element>) shiftTypesElement.getChildren();
-            List<ShiftType> shiftTypeList = new ArrayList<ShiftType>(shiftTypeElementList.size());
-            shiftTypeMap = new HashMap<String, ShiftType>(shiftTypeElementList.size());
+            List<ShiftType> shiftTypeList = new ArrayList<>(shiftTypeElementList.size());
+            shiftTypeMap = new HashMap<>(shiftTypeElementList.size());
             long id = 0L;
             int index = 0;
             List<ShiftTypeSkillRequirement> shiftTypeSkillRequirementList
-                    = new ArrayList<ShiftTypeSkillRequirement>(shiftTypeElementList.size() * 2);
+                    = new ArrayList<>(shiftTypeElementList.size() * 2);
             long shiftTypeSkillRequirementId = 0L;
             for (Element element : shiftTypeElementList) {
                 assertElementName(element, "Shift");
@@ -260,9 +260,9 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private void generateShiftList(NurseRoster nurseRoster) throws JDOMException {
             List<ShiftType> shiftTypeList = nurseRoster.getShiftTypeList();
             int shiftListSize = shiftDateMap.size() * shiftTypeList.size();
-            List<Shift> shiftList = new ArrayList<Shift>(shiftListSize);
-            dateAndShiftTypeToShiftMap = new HashMap<List<String>, Shift>(shiftListSize);
-            dayOfWeekAndShiftTypeToShiftListMap = new HashMap<List<Object>, List<Shift>>(7 * shiftTypeList.size());
+            List<Shift> shiftList = new ArrayList<>(shiftListSize);
+            dateAndShiftTypeToShiftMap = new HashMap<>(shiftListSize);
+            dayOfWeekAndShiftTypeToShiftListMap = new HashMap<>(7 * shiftTypeList.size());
             long id = 0L;
             int index = 0;
             for (ShiftDate shiftDate : nurseRoster.getShiftDateList()) {
@@ -289,7 +289,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
             List<Object> key = Arrays.<Object>asList(shiftDate.getDayOfWeek(), shiftType);
             List<Shift> dayOfWeekAndShiftTypeToShiftList = dayOfWeekAndShiftTypeToShiftListMap.get(key);
             if (dayOfWeekAndShiftTypeToShiftList == null) {
-                dayOfWeekAndShiftTypeToShiftList = new ArrayList<Shift>((shiftDateMap.size() + 6) / 7);
+                dayOfWeekAndShiftTypeToShiftList = new ArrayList<>((shiftDateMap.size() + 6) / 7);
                 dayOfWeekAndShiftTypeToShiftListMap.put(key, dayOfWeekAndShiftTypeToShiftList);
             }
             dayOfWeekAndShiftTypeToShiftList.add(shift);
@@ -301,8 +301,8 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 patternList = Collections.emptyList();
             } else {
                 List<Element> patternElementList = (List<Element>) patternsElement.getChildren();
-                patternList = new ArrayList<Pattern>(patternElementList.size());
-                patternMap = new HashMap<String, Pattern>(patternElementList.size());
+                patternList = new ArrayList<>(patternElementList.size());
+                patternMap = new HashMap<>(patternElementList.size());
                 long id = 0L;
                 long patternEntryId = 0L;
                 for (Element element : patternElementList) {
@@ -523,13 +523,13 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private void readContractList(NurseRoster nurseRoster, Element contractsElement) throws JDOMException {
             int contractLineTypeListSize = ContractLineType.values().length;
             List<Element> contractElementList = (List<Element>) contractsElement.getChildren();
-            List<Contract> contractList = new ArrayList<Contract>(contractElementList.size());
-            contractMap = new HashMap<String, Contract>(contractElementList.size());
+            List<Contract> contractList = new ArrayList<>(contractElementList.size());
+            contractMap = new HashMap<>(contractElementList.size());
             long id = 0L;
-            List<ContractLine> contractLineList = new ArrayList<ContractLine>(
+            List<ContractLine> contractLineList = new ArrayList<>(
                     contractElementList.size() * contractLineTypeListSize);
             long contractLineId = 0L;
-            List<PatternContractLine> patternContractLineList = new ArrayList<PatternContractLine>(
+            List<PatternContractLine> patternContractLineList = new ArrayList<>(
                     contractElementList.size() * 3);
             long patternContractLineId = 0L;
             for (Element element : contractElementList) {
@@ -539,7 +539,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 contract.setCode(element.getAttribute("ID").getValue());
                 contract.setDescription(element.getChild("Description").getText());
 
-                List<ContractLine> contractLineListOfContract = new ArrayList<ContractLine>(contractLineTypeListSize);
+                List<ContractLine> contractLineListOfContract = new ArrayList<>(contractLineTypeListSize);
                 contractLineId = readBooleanContractLine(contract, contractLineList, contractLineListOfContract,
                         contractLineId, element.getChild("SingleAssignmentPerDay"),
                         ContractLineType.SINGLE_ASSIGNMENT_PER_DAY);
@@ -718,11 +718,11 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
 
         private void readEmployeeList(NurseRoster nurseRoster, Element employeesElement) throws JDOMException {
             List<Element> employeeElementList = (List<Element>) employeesElement.getChildren();
-            List<Employee> employeeList = new ArrayList<Employee>(employeeElementList.size());
-            employeeMap = new HashMap<String, Employee>(employeeElementList.size());
+            List<Employee> employeeList = new ArrayList<>(employeeElementList.size());
+            employeeMap = new HashMap<>(employeeElementList.size());
             long id = 0L;
             List<SkillProficiency> skillProficiencyList
-                    = new ArrayList<SkillProficiency>(employeeElementList.size() * 2);
+                    = new ArrayList<>(employeeElementList.size() * 2);
             long skillProficiencyId = 0L;
             for (Element element : employeeElementList) {
                 assertElementName(element, "Employee");
@@ -738,10 +738,10 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 }
                 employee.setContract(contract);
                 int estimatedRequestSize = (shiftDateMap.size() / employeeElementList.size()) + 1;
-                employee.setDayOffRequestMap(new HashMap<ShiftDate, DayOffRequest>(estimatedRequestSize));
-                employee.setDayOnRequestMap(new HashMap<ShiftDate, DayOnRequest>(estimatedRequestSize));
-                employee.setShiftOffRequestMap(new HashMap<Shift, ShiftOffRequest>(estimatedRequestSize));
-                employee.setShiftOnRequestMap(new HashMap<Shift, ShiftOnRequest>(estimatedRequestSize));
+                employee.setDayOffRequestMap(new HashMap<>(estimatedRequestSize));
+                employee.setDayOnRequestMap(new HashMap<>(estimatedRequestSize));
+                employee.setShiftOffRequestMap(new HashMap<>(estimatedRequestSize));
+                employee.setShiftOnRequestMap(new HashMap<>(estimatedRequestSize));
 
                 Element skillsElement = element.getChild("Skills");
                 if (skillsElement != null) {
@@ -837,7 +837,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 dayOffRequestList = Collections.emptyList();
             } else {
                 List<Element> dayOffElementList = (List<Element>) dayOffRequestsElement.getChildren();
-                dayOffRequestList = new ArrayList<DayOffRequest>(dayOffElementList.size());
+                dayOffRequestList = new ArrayList<>(dayOffElementList.size());
                 long id = 0L;
                 for (Element element : dayOffElementList) {
                     assertElementName(element, "DayOff");
@@ -876,7 +876,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 dayOnRequestList = Collections.emptyList();
             } else {
                 List<Element> dayOnElementList = (List<Element>) dayOnRequestsElement.getChildren();
-                dayOnRequestList = new ArrayList<DayOnRequest>(dayOnElementList.size());
+                dayOnRequestList = new ArrayList<>(dayOnElementList.size());
                 long id = 0L;
                 for (Element element : dayOnElementList) {
                     assertElementName(element, "DayOn");
@@ -915,7 +915,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 shiftOffRequestList = Collections.emptyList();
             } else {
                 List<Element> shiftOffElementList = (List<Element>) shiftOffRequestsElement.getChildren();
-                shiftOffRequestList = new ArrayList<ShiftOffRequest>(shiftOffElementList.size());
+                shiftOffRequestList = new ArrayList<>(shiftOffElementList.size());
                 long id = 0L;
                 for (Element element : shiftOffElementList) {
                     assertElementName(element, "ShiftOff");
@@ -956,7 +956,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
                 shiftOnRequestList = Collections.emptyList();
             } else {
                 List<Element> shiftOnElementList = (List<Element>) shiftOnRequestsElement.getChildren();
-                shiftOnRequestList = new ArrayList<ShiftOnRequest>(shiftOnElementList.size());
+                shiftOnRequestList = new ArrayList<>(shiftOnElementList.size());
                 long id = 0L;
                 for (Element element : shiftOnElementList) {
                     assertElementName(element, "ShiftOn");
@@ -993,7 +993,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
 
         private void createShiftAssignmentList(NurseRoster nurseRoster) {
             List<Shift> shiftList = nurseRoster.getShiftList();
-            List<ShiftAssignment> shiftAssignmentList = new ArrayList<ShiftAssignment>(shiftList.size());
+            List<ShiftAssignment> shiftAssignmentList = new ArrayList<>(shiftList.size());
             long id = 0L;
             for (Shift shift : shiftList) {
                 for (int i = 0; i < shift.getRequiredEmployeeSize(); i++) {

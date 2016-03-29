@@ -55,12 +55,12 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
                 .calculateSquaredStandardDeviationFemtosMaximum();
         squaredStandardDeviationFemtos = 0L;
         List<Region> regionList = solution.getRegionList();
-        regionQuantityTotalMap = new HashMap<Region, Long>();
+        regionQuantityTotalMap = new HashMap<>();
         for (Region region : regionList) {
             regionQuantityTotalMap.put(region, 0L);
         }
         List<Sector> sectorList = solution.getSectorList();
-        sectorQuantityTotalMap = new HashMap<Sector, Long>(sectorList.size());
+        sectorQuantityTotalMap = new HashMap<>(sectorList.size());
         for (Sector sector : sectorList) {
             sectorQuantityTotalMap.put(sector, 0L);
         }

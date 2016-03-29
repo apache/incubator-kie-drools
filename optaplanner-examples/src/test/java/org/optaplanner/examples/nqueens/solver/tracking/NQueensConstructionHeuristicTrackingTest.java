@@ -77,7 +77,7 @@ public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTra
 
     @Parameterized.Parameters(name = "ConstructionHeuristicType: {0}, EntitySorterManner: {1}, ValueSorterManner: {2}")
     public static Collection<Object[]> parameters() {
-        Collection<Object[]> params = new ArrayList<Object[]>();
+        Collection<Object[]> params = new ArrayList<>();
 
         params.add(new Object[]{ConstructionHeuristicType.FIRST_FIT, null, null, Arrays.asList(
                 new NQueensStepTracking(0, 0), new NQueensStepTracking(1, 2), new NQueensStepTracking(2, 4),

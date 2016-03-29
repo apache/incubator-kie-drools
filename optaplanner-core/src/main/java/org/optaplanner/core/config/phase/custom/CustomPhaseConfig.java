@@ -86,8 +86,7 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
             throw new IllegalArgumentException(
                     "Configure at least 1 <customPhaseCommandClass> in the <customPhase> configuration.");
         }
-        List<CustomPhaseCommand> customPhaseCommandList
-                = new ArrayList<CustomPhaseCommand>(customPhaseCommandClassList.size());
+        List<CustomPhaseCommand> customPhaseCommandList = new ArrayList<>(customPhaseCommandClassList.size());
         Map<String, String> customProperties_ = customProperties != null ? customProperties
                 : Collections.<String, String>emptyMap();
         for (Class<? extends CustomPhaseCommand> customPhaseCommandClass : customPhaseCommandClassList) {

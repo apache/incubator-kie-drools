@@ -99,7 +99,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
         private Move[] subSelections;
 
         public OriginalCartesianProductMoveIterator() {
-            moveIteratorList = new ArrayList<Iterator<Move>>(childMoveSelectorList.size());
+            moveIteratorList = new ArrayList<>(childMoveSelectorList.size());
             for (int i = 0; i < childMoveSelectorList.size(); i++) {
                 moveIteratorList.add(null);
             }
@@ -174,7 +174,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
         private Boolean empty;
 
         public RandomCartesianProductMoveIterator() {
-            moveIteratorList = new ArrayList<Iterator<Move>>(childMoveSelectorList.size());
+            moveIteratorList = new ArrayList<>(childMoveSelectorList.size());
             empty = null;
             for (MoveSelector moveSelector : childMoveSelectorList) {
                 moveIteratorList.add(moveSelector.iterator());
@@ -198,7 +198,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
         }
 
         public Move next() {
-            List<Move> moveList = new ArrayList<Move>(moveIteratorList.size());
+            List<Move> moveList = new ArrayList<>(moveIteratorList.size());
             for (int i = 0; i < moveIteratorList.size(); i++) {
                 Iterator<Move> moveIterator = moveIteratorList.get(i);
                 boolean skip = false;

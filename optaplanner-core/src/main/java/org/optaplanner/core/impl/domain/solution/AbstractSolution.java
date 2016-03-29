@@ -56,7 +56,7 @@ public abstract class AbstractSolution<S extends Score> implements Serializable 
      */
     @ProblemFactCollectionProperty
     protected List<Object> getProblemFactList() {
-        List<Object> factList = new ArrayList<Object>();
+        List<Object> factList = new ArrayList<>();
         addProblemFactsFromClass(factList, getClass());
         return factList;
     }

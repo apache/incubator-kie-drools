@@ -50,7 +50,7 @@ public class ExternalizedAnchorVariableSupply implements StatefulVariableListene
     public void resetWorkingSolution(ScoreDirector scoreDirector) {
         EntityDescriptor entityDescriptor = previousVariableDescriptor.getEntityDescriptor();
         List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
-        anchorMap = new IdentityHashMap<Object, Object>(entityList.size());
+        anchorMap = new IdentityHashMap<>(entityList.size());
         for (Object entity : entityList) {
             insert(scoreDirector, entity);
         }

@@ -47,7 +47,7 @@ public class ExternalizedSingletonInverseVariableSupply implements StatefulVaria
     public void resetWorkingSolution(ScoreDirector scoreDirector) {
         EntityDescriptor entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
         List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
-        inverseEntityMap = new IdentityHashMap<Object, Object>(entityList.size());
+        inverseEntityMap = new IdentityHashMap<>(entityList.size());
         for (Object entity : entityList) {
             insert(scoreDirector, entity);
         }

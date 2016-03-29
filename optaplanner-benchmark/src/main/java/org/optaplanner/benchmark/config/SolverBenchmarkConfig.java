@@ -81,7 +81,7 @@ public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBench
         solverBenchmarkResult.setName(name);
         solverBenchmarkResult.setSubSingleCount(ConfigUtils.inheritOverwritableProperty(subSingleCount, 1));
         solverBenchmarkResult.setSolverConfig(solverConfig);
-        solverBenchmarkResult.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
+        solverBenchmarkResult.setSingleBenchmarkResultList(new ArrayList<>());
         ProblemBenchmarksConfig problemBenchmarksConfig_
                 = problemBenchmarksConfig == null ? new ProblemBenchmarksConfig()
                 : problemBenchmarksConfig;

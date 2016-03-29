@@ -38,14 +38,14 @@ import org.optaplanner.examples.pas.solver.move.BedChangeMove;
 public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<PatientAdmissionSchedule> {
 
     public List<Move> createMoveList(PatientAdmissionSchedule patientAdmissionSchedule) {
-        Map<Bed, List<BedDesignation>> bedToBedDesignationList = new HashMap<Bed, List<BedDesignation>>(
+        Map<Bed, List<BedDesignation>> bedToBedDesignationList = new HashMap<>(
                 patientAdmissionSchedule.getBedList().size());
         for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
             List<BedDesignation> bedDesignationListPerBed = bedToBedDesignationList.get(bedDesignation.getBed());
             if (bedDesignationListPerBed == null) {
                 // Note: the initialCapacity is probably to high,
                 // which is bad for memory, but the opposite is bad for performance (which is worse)
-                bedDesignationListPerBed = new ArrayList<BedDesignation>(
+                bedDesignationListPerBed = new ArrayList<>(
                         patientAdmissionSchedule.getNightList().size());
                 bedToBedDesignationList.put(bedDesignation.getBed(), bedDesignationListPerBed);
             }
@@ -65,7 +65,7 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
         }
 
         List<Bed> bedList = patientAdmissionSchedule.getBedList();
-        List<Move> moveList = new ArrayList<Move>();
+        List<Move> moveList = new ArrayList<>();
 
         // For every 2 distinct beds
         for (ListIterator<Bed> leftBedIt = bedList.listIterator(); leftBedIt.hasNext();) {
@@ -88,7 +88,7 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
                     BedDesignation pillarPartBedDesignation = lowestIt.next();
                     // Note: the initialCapacity is probably to high,
                     // which is bad for memory, but the opposite is bad for performance (which is worse)
-                    List<Move> moveListByPillarPartDuo = new ArrayList<Move>(
+                    List<Move> moveListByPillarPartDuo = new ArrayList<>(
                             leftBedDesignationList.size() + rightBedDesignationList.size());
                     int lastNightIndex = pillarPartBedDesignation.getAdmissionPart().getLastNight().getIndex();
                     Bed otherBed;

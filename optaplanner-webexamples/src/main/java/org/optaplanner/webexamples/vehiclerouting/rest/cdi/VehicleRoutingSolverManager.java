@@ -58,8 +58,8 @@ public class VehicleRoutingSolverManager implements Serializable {
         solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
         executor = Executors.newFixedThreadPool(2); // Only 2 because the other examples have their own Executor
         // TODO these probably don't need to be thread-safe because all access is synchronized
-        sessionSolutionMap = new ConcurrentHashMap<String, VehicleRoutingSolution>();
-        sessionSolverMap = new ConcurrentHashMap<String, Solver<VehicleRoutingSolution>>();
+        sessionSolutionMap = new ConcurrentHashMap<>();
+        sessionSolverMap = new ConcurrentHashMap<>();
     }
 
     @PreDestroy

@@ -74,7 +74,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel<PatientAdmissio
         femaleIcon = new ImageIcon(getClass().getResource("female.png"));
         sameGenderIcon = new ImageIcon(getClass().getResource("sameGender.png"));
         setLayout(new BorderLayout());
-        timeTablePanel = new TimeTablePanel<Night, Bed>();
+        timeTablePanel = new TimeTablePanel<>();
         add(timeTablePanel, BorderLayout.CENTER);
     }
 
@@ -216,7 +216,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel<PatientAdmissio
         private PatientOrRoomIcon(Patient patient) {
             this.genderIcon = determinePatientGenderIcon(patient.getGender());
             List<RequiredPatientEquipment> equipmentList = patient.getRequiredPatientEquipmentList();
-            equipmentColorList = new ArrayList<Color>(equipmentList.size());
+            equipmentColorList = new ArrayList<>(equipmentList.size());
             for (RequiredPatientEquipment equipment : equipmentList) {
                 equipmentColorList.add(equipmentTangoColorFactory.pickColor(equipment.getEquipment()));
             }
@@ -225,7 +225,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel<PatientAdmissio
         private PatientOrRoomIcon(Room room) {
             this.genderIcon = determineRoomGenderIcon(room.getGenderLimitation());
             List<RoomEquipment> equipmentList = room.getRoomEquipmentList();
-            equipmentColorList = new ArrayList<Color>(equipmentList.size());
+            equipmentColorList = new ArrayList<>(equipmentList.size());
             for (RoomEquipment equipment : equipmentList) {
                 equipmentColorList.add(equipmentTangoColorFactory.pickColor(equipment.getEquipment()));
             }

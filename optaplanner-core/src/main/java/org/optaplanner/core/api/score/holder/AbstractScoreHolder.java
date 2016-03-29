@@ -52,8 +52,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
     protected AbstractScoreHolder(boolean constraintMatchEnabled) {
         this.constraintMatchEnabled = constraintMatchEnabled;
         // TODO Can we set the initial capacity of this map more accurately? For example: number of rules
-        constraintMatchTotalMap = constraintMatchEnabled
-                ? new LinkedHashMap<List<Object>, ConstraintMatchTotal>() : null;
+        constraintMatchTotalMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
     }
 
     public boolean isConstraintMatchEnabled() {
@@ -264,7 +263,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         public MultiLevelActivationUnMatchListener(int scoreLevel, ConstraintUndoListener constraintUndoListener) {
             // Most use cases use only 1 scoreLevel per score rule and there are likely many instances of this class,
             // so the initialCapacity is very memory conservative
-            scoreLevelToConstraintUndoListenerMap = new HashMap<Integer, ConstraintUndoListener>(INITIAL_MAP_CAPACITY);
+            scoreLevelToConstraintUndoListenerMap = new HashMap<>(INITIAL_MAP_CAPACITY);
             scoreLevelToConstraintUndoListenerMap.put(scoreLevel, constraintUndoListener);
         }
 

@@ -98,7 +98,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
 
         private void readResourceList() throws IOException {
             resourceListSize = readIntegerValue();
-            resourceList = new ArrayList<MrResource>(resourceListSize);
+            resourceList = new ArrayList<>(resourceListSize);
             long resourceId = 0L;
             for (int i = 0; i < resourceListSize; i++) {
                 String line = readStringValue();
@@ -116,13 +116,13 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
 
         private void readMachineList() throws IOException {
             int machineListSize = readIntegerValue();
-            List<MrNeighborhood> neighborhoodList = new ArrayList<MrNeighborhood>(machineListSize);
-            Map<Long, MrNeighborhood> idToNeighborhoodMap = new HashMap<Long, MrNeighborhood>(machineListSize);
-            List<MrLocation> locationList = new ArrayList<MrLocation>(machineListSize);
-            Map<Long, MrLocation> idToLocationMap = new HashMap<Long, MrLocation>(machineListSize);
-            machineList = new ArrayList<MrMachine>(machineListSize);
+            List<MrNeighborhood> neighborhoodList = new ArrayList<>(machineListSize);
+            Map<Long, MrNeighborhood> idToNeighborhoodMap = new HashMap<>(machineListSize);
+            List<MrLocation> locationList = new ArrayList<>(machineListSize);
+            Map<Long, MrLocation> idToLocationMap = new HashMap<>(machineListSize);
+            machineList = new ArrayList<>(machineListSize);
             long machineId = 0L;
-            List<MrMachineCapacity> machineCapacityList = new ArrayList<MrMachineCapacity>(machineListSize * resourceListSize);
+            List<MrMachineCapacity> machineCapacityList = new ArrayList<>(machineListSize * resourceListSize);
             long machineCapacityId = 0L;
             // 2 phases because service dependencies are not in low to high order
             for (int i = 0; i < machineListSize; i++) {
@@ -155,7 +155,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
                 }
                 machine.setLocation(location);
                 List<MrMachineCapacity> machineCapacityListOfMachine
-                        = new ArrayList<MrMachineCapacity>(resourceListSize);
+                        = new ArrayList<>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
                     MrMachineCapacity machineCapacity = new MrMachineCapacity();
                     machineCapacity.setId(machineCapacityId);
@@ -168,7 +168,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
                     machineCapacityId++;
                 }
                 machine.setMachineCapacityList(machineCapacityListOfMachine);
-                Map<MrMachine, Integer> machineMoveCostMap = new HashMap<MrMachine, Integer>(machineListSize);
+                Map<MrMachine, Integer> machineMoveCostMap = new HashMap<>(machineListSize);
                 for (int j = 0; j < machineListSize; j++) {
                     MrMachine toMachine = machineList.get(j);
                     int moveCost = Integer.parseInt(lineTokens[moveCostOffset + j]);
@@ -184,13 +184,13 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
 
         private void readServiceList() throws IOException {
             int serviceListSize = readIntegerValue();
-            serviceList = new ArrayList<MrService>(serviceListSize);
+            serviceList = new ArrayList<>(serviceListSize);
             long serviceId = 0L;
             // 2 phases because service dependencies are not in low to high order
             for (int i = 0; i < serviceListSize; i++) {
                 MrService service = new MrService();
                 service.setId(serviceId);
-                service.setFromDependencyServiceList(new ArrayList<MrService>(5));
+                service.setFromDependencyServiceList(new ArrayList<>(5));
                 serviceList.add(service);
                 serviceId++;
             }
@@ -200,7 +200,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
                 String[] lineTokens = splitBySpace(line);
                 service.setLocationSpread(Integer.parseInt(lineTokens[0]));
                 int serviceDependencyListSize = Integer.parseInt(lineTokens[1]);
-                List<MrService> toDependencyServiceList = new ArrayList<MrService>(serviceDependencyListSize);
+                List<MrService> toDependencyServiceList = new ArrayList<>(serviceDependencyListSize);
                 for (int j = 0; j < serviceDependencyListSize; j++) {
                     int toServiceIndex = Integer.parseInt(lineTokens[2 + j]);
                     if (toServiceIndex >= serviceList.size()) {
@@ -227,7 +227,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
 
         private void readProcessList() throws IOException {
             processListSize = readIntegerValue();
-            processList = new ArrayList<MrProcess>(processListSize);
+            processList = new ArrayList<>(processListSize);
             long processId = 0L;
             long processRequirementId = 0L;
             for (int i = 0; i < processListSize; i++) {
@@ -243,7 +243,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
                 MrService service = serviceList.get(serviceIndex);
                 process.setService(service);
                 List<MrProcessRequirement> processRequirementList
-                        = new ArrayList<MrProcessRequirement>(resourceListSize);
+                        = new ArrayList<>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
                     MrProcessRequirement processRequirement = new MrProcessRequirement();
                     processRequirement.setId(processRequirementId);
@@ -263,7 +263,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
 
         private void readBalancePenaltyList() throws IOException {
             int balancePenaltyListSize = readIntegerValue();
-            List<MrBalancePenalty> balancePenaltyList = new ArrayList<MrBalancePenalty>(balancePenaltyListSize);
+            List<MrBalancePenalty> balancePenaltyList = new ArrayList<>(balancePenaltyListSize);
             long balancePenaltyId = 0L;
             for (int i = 0; i < balancePenaltyListSize; i++) {
                 String line = readStringValue();
@@ -305,7 +305,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
         private void readProcessAssignmentList() {
             String line = readOriginalProcessAssignmentLine();
             String[] lineTokens = splitBySpace(line, processListSize);
-            List<MrProcessAssignment> processAssignmentList = new ArrayList<MrProcessAssignment>(processListSize);
+            List<MrProcessAssignment> processAssignmentList = new ArrayList<>(processListSize);
             long processAssignmentId = 0L;
             for (int i = 0; i < processListSize; i++) {
                 MrProcessAssignment processAssignment = new MrProcessAssignment();

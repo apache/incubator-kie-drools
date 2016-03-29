@@ -37,7 +37,7 @@ public class UnionMoveSelectorTest {
 
     @Test
     public void originSelection() {
-        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")));
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
@@ -65,7 +65,7 @@ public class UnionMoveSelectorTest {
 
     @Test
     public void emptyOriginSelection() {
-        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
         UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, false);
@@ -91,8 +91,8 @@ public class UnionMoveSelectorTest {
 
     @Test
     public void randomSelection() {
-        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
-        Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<MoveSelector, Double>();
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
+        Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")));
         fixedProbabilityWeightMap.put(childMoveSelectorList.get(0), 1000.0);
@@ -100,7 +100,7 @@ public class UnionMoveSelectorTest {
                 new DummyMove("b1"), new DummyMove("b2")));
         fixedProbabilityWeightMap.put(childMoveSelectorList.get(1), 20.0);
         UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, true,
-                new FixedSelectorProbabilityWeightFactory<MoveSelector>(fixedProbabilityWeightMap));
+                new FixedSelectorProbabilityWeightFactory<>(fixedProbabilityWeightMap));
 
         Random workingRandom = mock(Random.class);
         when(workingRandom.nextDouble()).thenReturn(1.0 / 1020.0, 1019.0 / 1020.0, 1000.0 / 1020.0, 0.0, 999.0 / 1020.0);
@@ -130,14 +130,14 @@ public class UnionMoveSelectorTest {
 
     @Test
     public void emptyRandomSelection() {
-        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
-        Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<MoveSelector, Double>();
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
+        Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
         fixedProbabilityWeightMap.put(childMoveSelectorList.get(0), 1000.0);
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
         fixedProbabilityWeightMap.put(childMoveSelectorList.get(1), 20.0);
         UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, true,
-                new FixedSelectorProbabilityWeightFactory<MoveSelector>(fixedProbabilityWeightMap));
+                new FixedSelectorProbabilityWeightFactory<>(fixedProbabilityWeightMap));
 
         Random workingRandom = mock(Random.class);
         when(workingRandom.nextDouble()).thenReturn(1.0);

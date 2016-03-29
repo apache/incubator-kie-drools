@@ -40,7 +40,7 @@ public abstract class PhaseTest<Solution_> extends LoggingTest {
 
     protected static <Solution_, Enum_ extends Enum> Collection<Object[]> buildParameters(
             SolutionDao<Solution_> solutionDao, Enum_[] types, String... unsolvedFileNames) {
-        List<Object[]> filesAsParameters = new ArrayList<Object[]>(unsolvedFileNames.length * types.length);
+        List<Object[]> filesAsParameters = new ArrayList<>(unsolvedFileNames.length * types.length);
         File dataDir = solutionDao.getDataDir();
         File unsolvedDataDir = new File(dataDir, "unsolved");
         for (String unsolvedFileName : unsolvedFileNames) {

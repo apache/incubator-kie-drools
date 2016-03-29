@@ -31,7 +31,7 @@ public class BigDecimalConstraintMatchTotal extends ConstraintMatchTotal {
 
     public BigDecimalConstraintMatchTotal(String constraintPackage, String constraintName, int scoreLevel) {
         super(constraintPackage, constraintName, scoreLevel);
-        constraintMatchSet = new LinkedHashSet<BigDecimalConstraintMatch>();
+        constraintMatchSet = new LinkedHashSet<>();
         weightTotal = BigDecimal.ZERO;
     }
 

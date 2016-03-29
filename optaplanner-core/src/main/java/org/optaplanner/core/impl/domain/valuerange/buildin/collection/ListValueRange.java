@@ -56,7 +56,7 @@ public class ListValueRange<T> extends AbstractCountableValueRange<T> {
 
     @Override
     public Iterator<T> createRandomIterator(Random workingRandom) {
-        return new CachedListRandomIterator<T>(list, workingRandom);
+        return new CachedListRandomIterator<>(list, workingRandom);
     }
 
 }

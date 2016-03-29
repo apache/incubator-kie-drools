@@ -99,8 +99,8 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
 
         private void readLocationList() throws IOException {
             File file = new File(inputFile.getParentFile(), "DistanceTimesCoordinates.csv");
-            latLongToLocationMap = new HashMap<List<Double>, RoadLocation>();
-            List<RoadLocation> locationList = new ArrayList<RoadLocation>();
+            latLongToLocationMap = new HashMap<>();
+            List<RoadLocation> locationList = new ArrayList<>();
             long locationId = 0L;
             BufferedReader subBufferedReader = null;
             try {
@@ -126,7 +126,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
             }
             solution.setLocationList(locationList);
             for (RoadLocation sourceLocation : locationList) {
-                LinkedHashMap<RoadLocation, RoadLocationArc> travelDistanceMap = new LinkedHashMap<RoadLocation, RoadLocationArc>(locationList.size());
+                LinkedHashMap<RoadLocation, RoadLocationArc> travelDistanceMap = new LinkedHashMap<>(locationList.size());
                 for (RoadLocation targetLocation : locationList) {
                     travelDistanceMap.put(targetLocation, new RoadLocationArc());
                 }
@@ -198,8 +198,8 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
 
         private void readBusList() throws IOException {
             File file = new File(inputFile.getParentFile(), "Fleet.csv");
-            List<Coach> coachList = new ArrayList<Coach>();
-            List<Shuttle> shuttleList = new ArrayList<Shuttle>();
+            List<Coach> coachList = new ArrayList<>();
+            List<Shuttle> shuttleList = new ArrayList<>();
             BufferedReader subBufferedReader = null;
             try {
                 subBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
@@ -265,7 +265,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
         }
 
         private void readBusStopList() throws IOException {
-            List<BusStop> busStopList = new ArrayList<BusStop>();
+            List<BusStop> busStopList = new ArrayList<>();
             bufferedReader.readLine(); // Ignore first line (comment)
             for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
                 if (line.isEmpty()) {
@@ -306,7 +306,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
                     for (Coach coach : solution.getCoachList()) {
                         coach.setDestination(hub);
                     }
-                    ArrayList<Shuttle> transferShuttleList = new ArrayList<Shuttle>(solution.getShuttleList().size());
+                    ArrayList<Shuttle> transferShuttleList = new ArrayList<>(solution.getShuttleList().size());
                     for (Shuttle shuttle : solution.getShuttleList()) {
                         // TODO Use a fixed value Construction Heuristic to initialize the destination variable
                         shuttle.setDestination(hub);
@@ -332,7 +332,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
                     busStop.setPassengerQuantity(Integer.parseInt(lineTokens[6]));
                     busStop.setTransportTimeLimit(Integer.parseInt(lineTokens[7]));
                     // Trade memory for performance (might not be desired if it is too memory hungry)
-                    busStop.setTransferShuttleList(new ArrayList<Shuttle>(solution.getShuttleList().size()));
+                    busStop.setTransferShuttleList(new ArrayList<>(solution.getShuttleList().size()));
                     busStopList.add(busStop);
                 } else {
                     throw new IllegalArgumentException("The bus stop with name (" +  name

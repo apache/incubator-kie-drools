@@ -100,7 +100,7 @@ public class NQueensGenerator extends LoggingMain {
 
     private List<Column> createColumnList(NQueens nQueens) {
         int n = nQueens.getN();
-        List<Column> columnList = new ArrayList<Column>(n);
+        List<Column> columnList = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
             Column column = new Column();
             column.setId((long) i);
@@ -112,7 +112,7 @@ public class NQueensGenerator extends LoggingMain {
 
     private List<Row> createRowList(NQueens nQueens) {
         int n = nQueens.getN();
-        List<Row> rowList = new ArrayList<Row>(n);
+        List<Row> rowList = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
             Row row = new Row();
             row.setId((long) i);
@@ -124,7 +124,7 @@ public class NQueensGenerator extends LoggingMain {
 
     private List<Queen> createQueenList(NQueens nQueens) {
         int n = nQueens.getN();
-        List<Queen> queenList = new ArrayList<Queen>(n);
+        List<Queen> queenList = new ArrayList<>(n);
         long id = 0;
         for (Column column : nQueens.getColumnList()) {
             Queen queen = new Queen();

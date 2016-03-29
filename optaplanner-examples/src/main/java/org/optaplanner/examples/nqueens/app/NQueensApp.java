@@ -99,7 +99,7 @@ public class NQueensApp extends CommonApp<NQueens> {
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setBestScoreLimit("0");
         solverConfig.setTerminationConfig(terminationConfig);
-        List<PhaseConfig> phaseConfigList = new ArrayList<PhaseConfig>();
+        List<PhaseConfig> phaseConfigList = new ArrayList<>();
 
         ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
         constructionHeuristicPhaseConfig.setConstructionHeuristicType(

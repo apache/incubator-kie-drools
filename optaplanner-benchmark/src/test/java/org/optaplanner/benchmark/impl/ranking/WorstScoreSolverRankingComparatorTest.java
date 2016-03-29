@@ -42,11 +42,11 @@ public class WorstScoreSolverRankingComparatorTest extends AbstractSolverRanking
     public void setUp() {
         benchmarkReport = mock(BenchmarkReport.class);
         comparator = new WorstScoreSolverRankingComparator();
-        solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
+        solverBenchmarkResultList = new ArrayList<>();
         a = new SolverBenchmarkResult(null);
         b = new SolverBenchmarkResult(null);
-        aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
-        bSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
+        aSingleBenchmarkResultList = new ArrayList<>();
+        bSingleBenchmarkResultList = new ArrayList<>();
     }
 
     @Test

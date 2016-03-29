@@ -32,7 +32,7 @@ public class EmployeeChangeMoveFactory implements MoveListFactory<NurseRoster> {
     private MovableShiftAssignmentSelectionFilter filter = new MovableShiftAssignmentSelectionFilter();
 
     public List<Move> createMoveList(NurseRoster nurseRoster) {
-        List<Move> moveList = new ArrayList<Move>();
+        List<Move> moveList = new ArrayList<>();
         List<Employee> employeeList = nurseRoster.getEmployeeList();
         for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
             if (filter.accept(nurseRoster, shiftAssignment)) {

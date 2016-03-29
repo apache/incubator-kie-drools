@@ -62,7 +62,7 @@ public class AbstractSolverFactory<Solution_> extends SolverFactory<Solution_> {
                     " call configure(...) first.");
         }
         SolverConfig solverConfigClone = new SolverConfig(solverConfig);
-        return new EmptySolverFactory<Solution_>(solverConfigContext, solverConfigClone);
+        return new EmptySolverFactory<>(solverConfigContext, solverConfigClone);
     }
 
 }

@@ -28,8 +28,8 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 public class DescriptorPolicy {
 
-    private Map<String, MemberAccessor> fromSolutionValueRangeProviderMap = new LinkedHashMap<String, MemberAccessor>();
-    private Map<String, MemberAccessor> fromEntityValueRangeProviderMap = new LinkedHashMap<String, MemberAccessor>();
+    private Map<String, MemberAccessor> fromSolutionValueRangeProviderMap = new LinkedHashMap<>();
+    private Map<String, MemberAccessor> fromEntityValueRangeProviderMap = new LinkedHashMap<>();
 
     public void addFromSolutionValueRangeProvider(MemberAccessor memberAccessor) {
         String id = extractValueRangeProviderId(memberAccessor);
@@ -84,7 +84,7 @@ public class DescriptorPolicy {
     }
 
     public Collection<String> getValueRangeProviderIds() {
-        List<String> valueRangeProviderIds = new ArrayList<String>(
+        List<String> valueRangeProviderIds = new ArrayList<>(
                 fromSolutionValueRangeProviderMap.size() + fromEntityValueRangeProviderMap.size());
         valueRangeProviderIds.addAll(fromSolutionValueRangeProviderMap.keySet());
         valueRangeProviderIds.addAll(fromEntityValueRangeProviderMap.keySet());

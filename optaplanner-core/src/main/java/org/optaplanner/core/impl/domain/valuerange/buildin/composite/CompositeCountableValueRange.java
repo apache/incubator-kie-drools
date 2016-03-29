@@ -76,7 +76,7 @@ public class CompositeCountableValueRange<T> extends AbstractCountableValueRange
 
     @Override
     public Iterator<T> createOriginalIterator() {
-        List<Iterator<T>> iteratorList = new ArrayList<Iterator<T>>(childValueRangeList.size());
+        List<Iterator<T>> iteratorList = new ArrayList<>(childValueRangeList.size());
         for (CountableValueRange<T> childValueRange : childValueRangeList) {
             iteratorList.add(childValueRange.createOriginalIterator());
         }

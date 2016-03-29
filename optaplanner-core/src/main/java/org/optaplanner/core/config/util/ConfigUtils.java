@@ -43,7 +43,7 @@ public class ConfigUtils {
 
     public static <C extends AbstractConfig<C>> List<C> inheritMergeableListConfig(List<C> originalList, List<C> inheritedList) {
         if (inheritedList != null) {
-            List<C> mergedList = new ArrayList<C>(inheritedList.size()
+            List<C> mergedList = new ArrayList<>(inheritedList.size()
                     + (originalList == null ? 0 : originalList.size()));
             // The inheritedList should be before the originalList
             for (C inherited : inheritedList) {
@@ -73,10 +73,10 @@ public class ConfigUtils {
             return originalList;
         } else if (originalList == null) {
             // Shallow clone due to XStream implicit elements and modifications after calling inherit
-            return new ArrayList<T>(inheritedList);
+            return new ArrayList<>(inheritedList);
         } else {
             // The inheritedList should be before the originalList
-            List<T> mergedList = new ArrayList<T>(inheritedList);
+            List<T> mergedList = new ArrayList<>(inheritedList);
             mergedList.addAll(originalList);
             return mergedList;
         }
@@ -89,7 +89,7 @@ public class ConfigUtils {
             return inheritedMap;
         } else {
             // The inheritedMap should be before the originalMap
-            Map<K, T> mergedMap = new LinkedHashMap<K, T>(inheritedMap);
+            Map<K, T> mergedMap = new LinkedHashMap<>(inheritedMap);
             mergedMap.putAll(originalMap);
             return mergedMap;
         }

@@ -38,7 +38,7 @@ public class MimicRecordingValueSelector extends AbstractValueSelector
     public MimicRecordingValueSelector(EntityIndependentValueSelector childValueSelector) {
         this.childValueSelector = childValueSelector;
         phaseLifecycleSupport.addEventListener(childValueSelector);
-        replayingValueSelectorList = new ArrayList<MimicReplayingValueSelector>();
+        replayingValueSelectorList = new ArrayList<>();
     }
 
     @Override

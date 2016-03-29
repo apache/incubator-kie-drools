@@ -140,7 +140,7 @@ public class Examination extends AbstractPersistable {
 
     @ProblemFactCollectionProperty
     private List<TopicConflict> getTopicConflictList() {
-        List<TopicConflict> topicConflictList = new ArrayList<TopicConflict>();
+        List<TopicConflict> topicConflictList = new ArrayList<>();
         for (Topic leftTopic : topicList) {
             for (Topic rightTopic : topicList) {
                 if (leftTopic.getId() < rightTopic.getId()) {

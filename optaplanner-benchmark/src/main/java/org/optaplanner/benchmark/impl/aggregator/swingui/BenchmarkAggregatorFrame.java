@@ -106,8 +106,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private final MillisecondsSpentNumberFormat millisecondsSpentNumberFormat;
 
     private List<PlannerBenchmarkResult> plannerBenchmarkResultList;
-    private Map<SingleBenchmarkResult, DefaultMutableTreeNode> resultCheckBoxMapping = new LinkedHashMap<SingleBenchmarkResult, DefaultMutableTreeNode>();
-    private Map<SolverBenchmarkResult, String> solverBenchmarkResultNameMapping = new HashMap<SolverBenchmarkResult, String>();
+    private Map<SingleBenchmarkResult, DefaultMutableTreeNode> resultCheckBoxMapping = new LinkedHashMap<>();
+    private Map<SolverBenchmarkResult, String> solverBenchmarkResultNameMapping = new HashMap<>();
 
     private CheckBoxTree checkBoxTree;
     private JTextArea detailTextArea;
@@ -255,7 +255,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
         }
 
         private void generateReport() {
-            List<SingleBenchmarkResult> singleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
+            List<SingleBenchmarkResult> singleBenchmarkResultList = new ArrayList<>();
             for (Map.Entry<SingleBenchmarkResult, DefaultMutableTreeNode> entry : resultCheckBoxMapping.entrySet()) {
                 if (((MixedCheckBox) entry.getValue().getUserObject()).getStatus() == MixedCheckBoxStatus.CHECKED) {
                     singleBenchmarkResultList.add(entry.getKey());
@@ -370,7 +370,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
             checkBoxTree.setModel(treeModel);
             treeModel.nodeStructureChanged(treeRoot);
             solverLevelFirst = !solverLevelFirst;
-            checkBoxTree.setSelectedSingleBenchmarkNodes(new HashSet<DefaultMutableTreeNode>());
+            checkBoxTree.setSelectedSingleBenchmarkNodes(new HashSet<>());
             for (Map.Entry<SingleBenchmarkResult, DefaultMutableTreeNode> entry : resultCheckBoxMapping.entrySet()) {
                 if (((MixedCheckBox) entry.getValue().getUserObject()).getStatus() == MixedCheckBoxStatus.CHECKED) {
                     checkBoxTree.getSelectedSingleBenchmarkNodes().add(entry.getValue());
@@ -645,9 +645,9 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     private void refresh() {
         initPlannerBenchmarkResultList();
-        solverBenchmarkResultNameMapping = new HashMap<SolverBenchmarkResult, String>();
-        resultCheckBoxMapping = new LinkedHashMap<SingleBenchmarkResult, DefaultMutableTreeNode>();
-        checkBoxTree.setSelectedSingleBenchmarkNodes(new HashSet<DefaultMutableTreeNode>());
+        solverBenchmarkResultNameMapping = new HashMap<>();
+        resultCheckBoxMapping = new LinkedHashMap<>();
+        checkBoxTree.setSelectedSingleBenchmarkNodes(new HashSet<>());
         DefaultMutableTreeNode newCheckBoxRootNode = initBenchmarkHierarchy(true);
         DefaultTreeModel treeModel = new DefaultTreeModel(newCheckBoxRootNode);
         checkBoxTree.setModel(treeModel);

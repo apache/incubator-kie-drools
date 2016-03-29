@@ -82,14 +82,14 @@ public abstract class CommonApp<Solution_> extends LoggingMain {
 
     public void init(Component centerForComponent, boolean exitOnClose) {
         solutionBusiness = createSolutionBusiness();
-        solverAndPersistenceFrame = new SolverAndPersistenceFrame<Solution_>(solutionBusiness, createSolutionPanel());
+        solverAndPersistenceFrame = new SolverAndPersistenceFrame<>(solutionBusiness, createSolutionPanel());
         solverAndPersistenceFrame.setDefaultCloseOperation(exitOnClose ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
         solverAndPersistenceFrame.init(centerForComponent);
         solverAndPersistenceFrame.setVisible(true);
     }
 
     public SolutionBusiness<Solution_> createSolutionBusiness() {
-        SolutionBusiness<Solution_> solutionBusiness = new SolutionBusiness<Solution_>(this);
+        SolutionBusiness<Solution_> solutionBusiness = new SolutionBusiness<>(this);
         solutionBusiness.setSolutionDao(createSolutionDao());
         solutionBusiness.setImporters(createSolutionImporters());
         solutionBusiness.setExporter(createSolutionExporter());

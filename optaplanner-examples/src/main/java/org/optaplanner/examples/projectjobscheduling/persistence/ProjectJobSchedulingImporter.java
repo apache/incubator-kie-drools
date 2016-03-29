@@ -79,8 +79,8 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
 
         private void readProjectList() throws IOException {
             projectListSize = readIntegerValue();
-            List<Project> projectList = new ArrayList<Project>(projectListSize);
-            projectFileMap = new LinkedHashMap<Project, File>(projectListSize);
+            List<Project> projectList = new ArrayList<>(projectListSize);
+            projectFileMap = new LinkedHashMap<>(projectListSize);
             for (int i = 0; i < projectListSize; i++) {
                 Project project = new Project();
                 project.setId(projectId);
@@ -95,14 +95,14 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
                 projectId++;
             }
             schedule.setProjectList(projectList);
-            schedule.setJobList(new ArrayList<Job>(projectListSize * 10));
-            schedule.setExecutionModeList(new ArrayList<ExecutionMode>(projectListSize * 10 * 5));
+            schedule.setJobList(new ArrayList<>(projectListSize * 10));
+            schedule.setExecutionModeList(new ArrayList<>(projectListSize * 10 * 5));
         }
 
         private void readResourceList() throws IOException {
             resourceListSize = readIntegerValue();
             String[] tokens = splitBySpacesOrTabs(readStringValue(), resourceListSize);
-            List<Resource> resourceList = new ArrayList<Resource>(resourceListSize * projectListSize * 10);
+            List<Resource> resourceList = new ArrayList<>(resourceListSize * projectListSize * 10);
             for (int i = 0; i < resourceListSize; i++) {
                 int capacity = Integer.parseInt(tokens[i]);
                 if (capacity != -1) {
@@ -115,7 +115,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
             }
             globalResourceListSize = resourceList.size();
             schedule.setResourceList(resourceList);
-            schedule.setResourceRequirementList(new ArrayList<ResourceRequirement>(
+            schedule.setResourceRequirementList(new ArrayList<>(
                     projectListSize * 10 * 5 * resourceListSize));
         }
 
@@ -193,7 +193,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
                     throw new IllegalArgumentException("The doublyConstrainedResourceSize ("
                             + doublyConstrainedResourceSize + ") should always be 0.");
                 }
-                List<LocalResource> localResourceList = new ArrayList<LocalResource>(
+                List<LocalResource> localResourceList = new ArrayList<>(
                         globalResourceListSize + renewableLocalResourceSize + nonrenewableLocalResourceSize);
                 for (int i = 0; i < renewableLocalResourceSize; i++) {
                     LocalResource localResource = new LocalResource();
@@ -235,7 +235,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
             private void readPrecedenceRelations() throws IOException {
                 readConstantLine("PRECEDENCE RELATIONS:");
                 readConstantLine("jobnr\\. +\\#modes +\\#successors +successors");
-                List<Job> jobList = new ArrayList<Job>(jobListSize);
+                List<Job> jobList = new ArrayList<>(jobListSize);
                 for (int i = 0; i < jobListSize; i++) {
                     Job job = new Job();
                     job.setId(jobId);
@@ -264,7 +264,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
                                 + ") index 0 should be " + (i + 1) + ".");
                     }
                     int executionModeListSize = Integer.parseInt(tokens[1]);
-                    List<ExecutionMode> executionModeList = new ArrayList<ExecutionMode>(executionModeListSize);
+                    List<ExecutionMode> executionModeList = new ArrayList<>(executionModeListSize);
                     for (int j = 0; j < executionModeListSize; j++) {
                         ExecutionMode executionMode = new ExecutionMode();
                         executionMode.setId(executionModeId);
@@ -279,7 +279,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
                         throw new IllegalArgumentException("The tokens (" + Arrays.toString(tokens)
                                 + ") should be " + (3 + successorJobListSize) + " in length.");
                     }
-                    List<Job> successorJobList = new ArrayList<Job>(successorJobListSize);
+                    List<Job> successorJobList = new ArrayList<>(successorJobListSize);
                     for (int j = 0; j < successorJobListSize; j++) {
                         int successorIndex = Integer.parseInt(tokens[3 + j]);
                         Job successorJob = project.getJobList().get(successorIndex - 1);
@@ -312,7 +312,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
                         }
                         int duration = Integer.parseInt(tokens[first ? 2 : 1]);
                         executionMode.setDuration(duration);
-                        List<ResourceRequirement> resourceRequirementList = new ArrayList<ResourceRequirement>(
+                        List<ResourceRequirement> resourceRequirementList = new ArrayList<>(
                                 resourceSize);
                         for (int k = 0; k < resourceSize; k++) {
                             int requirement = Integer.parseInt(tokens[(first ? 3 : 2) + k]);
@@ -358,9 +358,9 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
 
             private void detectPointlessSuccessor() {
                 for (Job baseJob : project.getJobList()) {
-                    Set<Job> baseSuccessorJobSet = new HashSet<Job>(baseJob.getSuccessorJobList());
-                    Set<Job> checkedSuccessorSet = new HashSet<Job>(project.getJobList().size());
-                    Queue<Job> uncheckedSuccessorQueue = new ArrayDeque<Job>(project.getJobList().size());
+                    Set<Job> baseSuccessorJobSet = new HashSet<>(baseJob.getSuccessorJobList());
+                    Set<Job> checkedSuccessorSet = new HashSet<>(project.getJobList().size());
+                    Queue<Job> uncheckedSuccessorQueue = new ArrayDeque<>(project.getJobList().size());
                     for (Job baseSuccessorJob : baseJob.getSuccessorJobList()) {
                         uncheckedSuccessorQueue.addAll(baseSuccessorJob.getSuccessorJobList());
                     }
@@ -388,16 +388,16 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
 
         private void createAllocationList() {
             List<Job> jobList = schedule.getJobList();
-            List<Allocation> allocationList = new ArrayList<Allocation>(jobList.size());
-            Map<Job, Allocation> jobToAllocationMap = new HashMap<Job, Allocation>(jobList.size());
-            Map<Project, Allocation> projectToSourceAllocationMap = new HashMap<Project, Allocation>(projectListSize);
-            Map<Project, Allocation> projectToSinkAllocationMap = new HashMap<Project, Allocation>(projectListSize);
+            List<Allocation> allocationList = new ArrayList<>(jobList.size());
+            Map<Job, Allocation> jobToAllocationMap = new HashMap<>(jobList.size());
+            Map<Project, Allocation> projectToSourceAllocationMap = new HashMap<>(projectListSize);
+            Map<Project, Allocation> projectToSinkAllocationMap = new HashMap<>(projectListSize);
             for (Job job : jobList) {
                 Allocation allocation = new Allocation();
                 allocation.setId(job.getId());
                 allocation.setJob(job);
-                allocation.setPredecessorAllocationList(new ArrayList<Allocation>(job.getSuccessorJobList().size()));
-                allocation.setSuccessorAllocationList(new ArrayList<Allocation>(job.getSuccessorJobList().size()));
+                allocation.setPredecessorAllocationList(new ArrayList<>(job.getSuccessorJobList().size()));
+                allocation.setSuccessorAllocationList(new ArrayList<>(job.getSuccessorJobList().size()));
                 // Uninitialized allocations take no time, but don't break the predecessorsDoneDate cascade to sink.
                 allocation.setPredecessorsDoneDate(job.getProject().getReleaseDate());
                 if (job.getJobType() == JobType.SOURCE) {

@@ -123,8 +123,7 @@ public abstract class AbstractConfig<C extends AbstractConfig> {
         if (variableNameIncludeList == null) {
             return variableDescriptorList;
         }
-        List<GenuineVariableDescriptor> resolvedVariableDescriptorList
-                = new ArrayList<GenuineVariableDescriptor>(variableDescriptorList.size());
+        List<GenuineVariableDescriptor> resolvedVariableDescriptorList = new ArrayList<>(variableDescriptorList.size());
         for (String variableNameInclude : variableNameIncludeList) {
             boolean found = false;
             for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {

@@ -23,7 +23,7 @@ public class FieldAccessingSolutionClonerTest extends AbstractSolutionClonerTest
     @Override
     protected <Solution_> FieldAccessingSolutionCloner<Solution_> createSolutionCloner(
             SolutionDescriptor solutionDescriptor) {
-        return new FieldAccessingSolutionCloner<Solution_>(solutionDescriptor);
+        return new FieldAccessingSolutionCloner<>(solutionDescriptor);
     }
 
 }

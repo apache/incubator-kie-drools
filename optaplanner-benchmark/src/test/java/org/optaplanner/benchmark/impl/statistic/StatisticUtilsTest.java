@@ -47,7 +47,7 @@ public class StatisticUtilsTest {
 
     @Test
     public void multipleDetermineStandardDeviationDoubles() throws Exception {
-        List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<SubSingleBenchmarkResult>(2);
+        List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<>(2);
         subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(SimpleScore.valueOf(-2), 0));
         subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(SimpleScore.valueOf(-4), 1));
         assertArrayEquals(new double[]{1d}, StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, SimpleScore.valueOf(-3), subSingleBenchmarkResultList.size()), DELTA);
@@ -56,7 +56,7 @@ public class StatisticUtilsTest {
     @Test
     public void largeDetermineStandardDeviationDoubles() throws Exception {
         long[] subSingleBenchmarkScores = new long[]{-19289560268L, -19345935795L, -19715516752L, -19589259253L, -19390707618L, -19641410518L};
-        List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<SubSingleBenchmarkResult>(6);
+        List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<>(6);
         SimpleLongScore averageScore = SimpleLongScore.valueOf(0);
         for (int i = 0; i < subSingleBenchmarkScores.length; i++) {
             SimpleLongScore current = SimpleLongScore.valueOf(subSingleBenchmarkScores[i]);

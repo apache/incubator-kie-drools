@@ -79,7 +79,7 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSol
             int width = image.getWidth();
             int height = image.getHeight();
             double[][] errorDiffusion = new double[width][height];
-            List<Location> locationList = new ArrayList<Location>(1000);
+            List<Location> locationList = new ArrayList<>(1000);
             long id = 0L;
             for (int y = 0; y < height; y++) {
                 for (int x = 0; x < width; x++) {
@@ -120,7 +120,7 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSol
 
         private void createVisitList() {
             List<Location> locationList = tspSolution.getLocationList();
-            List<Visit> visitList = new ArrayList<Visit>(locationList.size() - 1);
+            List<Visit> visitList = new ArrayList<>(locationList.size() - 1);
             int count = 0;
             for (Location location : locationList) {
                 if (count < 1) {

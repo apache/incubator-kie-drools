@@ -70,7 +70,7 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
     // ************************************************************************
 
     public void constructCache(DefaultSolverScope solverScope) {
-        cachedEntityMap = new TreeMap<Double, Object>();
+        cachedEntityMap = new TreeMap<>();
         ScoreDirector scoreDirector = solverScope.getScoreDirector();
         double probabilityWeightOffset = 0L;
         for (Object entity : childEntitySelector) {

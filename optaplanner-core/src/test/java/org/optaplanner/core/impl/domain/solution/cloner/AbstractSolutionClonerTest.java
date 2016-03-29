@@ -397,7 +397,7 @@ public abstract class AbstractSolutionClonerTest {
                 return b.getCode().compareTo(a.getCode()); // Reverse alphabetic
             }
         };
-        Set<TestdataValue> valueSet = new TreeSet<TestdataValue>(valueComparator);
+        Set<TestdataValue> valueSet = new TreeSet<>(valueComparator);
         valueSet.addAll(Arrays.asList(val1, val2, val3));
         original.setValueSet(valueSet);
         Comparator<TestdataSetBasedEntity> entityComparator = new Comparator<TestdataSetBasedEntity>() {
@@ -405,7 +405,7 @@ public abstract class AbstractSolutionClonerTest {
                 return b.getCode().compareTo(a.getCode()); // Reverse alphabetic
             }
         };
-        Set<TestdataSetBasedEntity> originalEntitySet = new TreeSet<TestdataSetBasedEntity>(entityComparator);
+        Set<TestdataSetBasedEntity> originalEntitySet = new TreeSet<>(entityComparator);
         originalEntitySet.addAll(Arrays.asList(a, b, c, d));
         original.setEntitySet(originalEntitySet);
 
@@ -456,25 +456,25 @@ public abstract class AbstractSolutionClonerTest {
         TestdataEntityCollectionPropertyEntity b = new TestdataEntityCollectionPropertyEntity("b", val1);
         TestdataEntityCollectionPropertyEntity c = new TestdataEntityCollectionPropertyEntity("c", val3);
         a.setEntityList(Arrays.asList(b, c));
-        a.setEntitySet(new HashSet<TestdataEntityCollectionPropertyEntity>(Arrays.asList(b, c)));
-        a.setStringToEntityMap(new HashMap<String, TestdataEntityCollectionPropertyEntity>());
+        a.setEntitySet(new HashSet<>(Arrays.asList(b, c)));
+        a.setStringToEntityMap(new HashMap<>());
         a.getStringToEntityMap().put("b", b);
         a.getStringToEntityMap().put("c", c);
-        a.setEntityToStringMap(new HashMap<TestdataEntityCollectionPropertyEntity, String>());
+        a.setEntityToStringMap(new HashMap<>());
         a.getEntityToStringMap().put(b, "b");
         a.getEntityToStringMap().put(c, "c");
-        a.setStringToEntityListMap(new HashMap<String, List<TestdataEntityCollectionPropertyEntity>>());
+        a.setStringToEntityListMap(new HashMap<>());
         a.getStringToEntityListMap().put("bc", Arrays.asList(b, c));
 
         b.setEntityList(Collections.<TestdataEntityCollectionPropertyEntity>emptyList());
-        b.setEntitySet(new HashSet<TestdataEntityCollectionPropertyEntity>());
-        b.setStringToEntityMap(new HashMap<String, TestdataEntityCollectionPropertyEntity>());
+        b.setEntitySet(new HashSet<>());
+        b.setStringToEntityMap(new HashMap<>());
         b.setEntityToStringMap(null);
         b.setStringToEntityListMap(null);
 
         c.setEntityList(Arrays.asList(a, c));
-        c.setEntitySet(new HashSet<TestdataEntityCollectionPropertyEntity>(Arrays.asList(a, c)));
-        c.setStringToEntityMap(new HashMap<String, TestdataEntityCollectionPropertyEntity>());
+        c.setEntitySet(new HashSet<>(Arrays.asList(a, c)));
+        c.setStringToEntityMap(new HashMap<>());
         c.getStringToEntityMap().put("a", a);
         c.getStringToEntityMap().put("c", c);
         c.setEntityToStringMap(null);
@@ -561,7 +561,7 @@ public abstract class AbstractSolutionClonerTest {
         List<String> aShadowVariableList = Arrays.asList("shadow a1", "shadow a2");
         a.setShadowVariableList(aShadowVariableList);
         TestdataDeepCloningEntity b = new TestdataDeepCloningEntity("b", val1);
-        Map<String, String> bShadowVariableMap = new HashMap<String, String>();
+        Map<String, String> bShadowVariableMap = new HashMap<>();
         bShadowVariableMap.put("shadow key b1", "shadow value b1");
         bShadowVariableMap.put("shadow key b2", "shadow value b2");
         b.setShadowVariableMap(bShadowVariableMap);
@@ -657,7 +657,7 @@ public abstract class AbstractSolutionClonerTest {
         List<String> aShadowVariableList = Arrays.asList("shadow a1", "shadow a2");
         a.setShadowVariableList(aShadowVariableList);
         TestdataFieldAnnotatedDeepCloningEntity b = new TestdataFieldAnnotatedDeepCloningEntity("b", val1);
-        Map<String, String> bShadowVariableMap = new HashMap<String, String>();
+        Map<String, String> bShadowVariableMap = new HashMap<>();
         bShadowVariableMap.put("shadow key b1", "shadow value b1");
         bShadowVariableMap.put("shadow key b2", "shadow value b2");
         b.setShadowVariableMap(bShadowVariableMap);

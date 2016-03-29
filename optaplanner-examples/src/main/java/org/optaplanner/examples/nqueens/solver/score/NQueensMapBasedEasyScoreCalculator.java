@@ -31,9 +31,9 @@ public class NQueensMapBasedEasyScoreCalculator implements EasyScoreCalculator<N
         int n = nQueens.getN();
         List<Queen> queenList = nQueens.getQueenList();
 
-        Map<Integer, Integer> rowIndexCountMap = new HashMap<Integer, Integer>(n);
-        Map<Integer, Integer> ascendingDiagonalIndexCountMap = new HashMap<Integer, Integer>(n);
-        Map<Integer, Integer> descendingDiagonalIndexCountMap = new HashMap<Integer, Integer>(n);
+        Map<Integer, Integer> rowIndexCountMap = new HashMap<>(n);
+        Map<Integer, Integer> ascendingDiagonalIndexCountMap = new HashMap<>(n);
+        Map<Integer, Integer> descendingDiagonalIndexCountMap = new HashMap<>(n);
         int score = 0;
         for (Queen queen : queenList) {
             if (queen.getRow() != null) {

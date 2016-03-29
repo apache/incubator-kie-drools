@@ -159,7 +159,7 @@ public class CourseSchedule extends AbstractPersistable {
 
     @ProblemFactCollectionProperty
     private List<CourseConflict> getCourseConflictList() {
-        List<CourseConflict> courseConflictList = new ArrayList<CourseConflict>();
+        List<CourseConflict> courseConflictList = new ArrayList<>();
         for (Course leftCourse : courseList) {
             for (Course rightCourse : courseList) {
                 if (leftCourse.getId() < rightCourse.getId()) {

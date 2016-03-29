@@ -29,7 +29,7 @@ import org.optaplanner.examples.cloudbalancing.solver.move.CloudComputerChangeMo
 public class CloudComputerChangeMoveFactory implements MoveListFactory<CloudBalance> {
 
     public List<Move> createMoveList(CloudBalance cloudBalance) {
-        List<Move> moveList = new ArrayList<Move>();
+        List<Move> moveList = new ArrayList<>();
         List<CloudComputer> cloudComputerList = cloudBalance.getComputerList();
         for (CloudProcess cloudProcess : cloudBalance.getProcessList()) {
             for (CloudComputer cloudComputer : cloudComputerList) {

@@ -36,7 +36,7 @@ public class RenewableResourceCapacityTracker extends ResourceCapacityTracker {
             throw new IllegalArgumentException("The resource (" + resource + ") is expected to be renewable.");
         }
         capacityEveryDay = resource.getCapacity();
-        usedPerDay = new HashMap<Integer, Integer>();
+        usedPerDay = new HashMap<>();
         hardScore = 0;
     }
 

@@ -52,7 +52,7 @@ public class InvestmentBiQuantityTransferMoveIteratorFactory implements MoveIter
     public Iterator<Move> createRandomMoveIterator(ScoreDirector scoreDirector, Random workingRandom) {
         InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
         List<AssetClassAllocation> allocationList = solution.getAssetClassAllocationList();
-        List<AssetClassAllocation> nonEmptyAllocationList = new ArrayList<AssetClassAllocation>(allocationList);
+        List<AssetClassAllocation> nonEmptyAllocationList = new ArrayList<>(allocationList);
         for (Iterator<AssetClassAllocation> it = nonEmptyAllocationList.iterator(); it.hasNext(); ) {
             AssetClassAllocation allocation = it.next();
             if (allocation.getQuantityMillis() == 0L) {

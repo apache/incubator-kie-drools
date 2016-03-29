@@ -41,7 +41,7 @@ public abstract class AbstractFinalistPodium extends LocalSearchPhaseLifecycleLi
     public void stepStarted(LocalSearchStepScope stepScope) {
         super.stepStarted(stepScope);
         finalistIsAccepted = false;
-        finalistList = new ArrayList<LocalSearchMoveScope>(1024);
+        finalistList = new ArrayList<>(1024);
     }
 
     public List<LocalSearchMoveScope> getFinalistList() {

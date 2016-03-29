@@ -71,10 +71,10 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
 
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
-        List<XYPlot> plotList = new ArrayList<XYPlot>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
+        List<XYPlot> plotList = new ArrayList<>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         int seriesIndex = 0;
         for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
-            List<XYSeries> seriesList = new ArrayList<XYSeries>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
+            List<XYSeries> seriesList = new ArrayList<>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
             if (singleBenchmarkResult.hasAllSuccess()) {
@@ -121,7 +121,7 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
             }
             seriesIndex++;
         }
-        graphFileList = new ArrayList<File>(plotList.size());
+        graphFileList = new ArrayList<>(plotList.size());
         for (int scoreLevelIndex = 0; scoreLevelIndex < plotList.size(); scoreLevelIndex++) {
             JFreeChart chart = new JFreeChart(
                     problemBenchmarkResult.getName() + " best score level " + scoreLevelIndex + " statistic",

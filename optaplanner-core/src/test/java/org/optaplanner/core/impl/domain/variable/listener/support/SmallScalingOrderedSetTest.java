@@ -26,7 +26,7 @@ public class SmallScalingOrderedSetTest {
 
     @Test
     public void addRemoveAroundThreshold() {
-        SmallScalingOrderedSet<String> set = new SmallScalingOrderedSet<String>();
+        SmallScalingOrderedSet<String> set = new SmallScalingOrderedSet<>();
         assertTrue(set.add("s1"));
         assertFalse(set.add("s1"));
         assertTrue(set.add("s2"));
@@ -73,7 +73,7 @@ public class SmallScalingOrderedSetTest {
 
     @Test
     public void addAllAroundThreshold() {
-        SmallScalingOrderedSet<String> set = new SmallScalingOrderedSet<String>();
+        SmallScalingOrderedSet<String> set = new SmallScalingOrderedSet<>();
         assertTrue(set.addAll(Arrays.asList("s1", "s2", "s3")));
         assertEquals(3, set.size());
         assertTrue(set.addAll(Arrays.asList("s1", "s3", "s4", "s5")));

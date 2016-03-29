@@ -42,9 +42,9 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
         int globalPeriodRangeTo = solution.getGlobalPeriodRangeTo();
         List<Machine> machineList = solution.getMachineList();
         Map<Machine, List<MachinePeriodPart>> machinePeriodListMap
-                = new LinkedHashMap<Machine, List<MachinePeriodPart>>(machineList.size());
+                = new LinkedHashMap<>(machineList.size());
         for (Machine machine : machineList) {
-            List<MachinePeriodPart> machinePeriodList = new ArrayList<MachinePeriodPart>(globalPeriodRangeTo);
+            List<MachinePeriodPart> machinePeriodList = new ArrayList<>(globalPeriodRangeTo);
             for (int period = 0; period < globalPeriodRangeTo; period++) {
                 machinePeriodList.add(new MachinePeriodPart(machine, period, resourceListSize));
             }
@@ -127,7 +127,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
             this.machine = machine;
             this.period = period;
             active = false;
-            resourceAvailableList = new ArrayList<Integer>(resourceListSize);
+            resourceAvailableList = new ArrayList<>(resourceListSize);
             for (int i = 0; i < resourceListSize; i++) {
                 resourceAvailableList.add(machine.getMachineCapacityList().get(i).getCapacity());
             }

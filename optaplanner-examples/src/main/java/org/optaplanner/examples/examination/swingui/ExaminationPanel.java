@@ -66,7 +66,7 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
     public ExaminationPanel() {
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
-        roomsPanel = new TimeTablePanel<Room, Period>();
+        roomsPanel = new TimeTablePanel<>();
         tabbedPane.add("Rooms", new JScrollPane(roomsPanel));
         add(tabbedPane, BorderLayout.CENTER);
         add(createFooterPanel(), BorderLayout.SOUTH);

@@ -55,7 +55,7 @@ public class TennisGenerator extends LoggingMain {
         TennisSolution tennisSolution = new TennisSolution();
         tennisSolution.setId(0L);
 
-        List<Team> teamList = new ArrayList<Team>();
+        List<Team> teamList = new ArrayList<>();
         teamList.add(new Team(0L, "Micha"));
         teamList.add(new Team(1L, "Angelika"));
         teamList.add(new Team(2L, "Katrin"));
@@ -65,13 +65,13 @@ public class TennisGenerator extends LoggingMain {
         teamList.add(new Team(6L, "Tobias"));
         tennisSolution.setTeamList(teamList);
 
-        List<Day> dayList = new ArrayList<Day>();
+        List<Day> dayList = new ArrayList<>();
         for (int i = 0; i < 18; i++) {
             dayList.add(new Day(i, i));
         }
         tennisSolution.setDayList(dayList);
 
-        List<UnavailabilityPenalty> unavailabilityPenaltyList = new ArrayList<UnavailabilityPenalty>();
+        List<UnavailabilityPenalty> unavailabilityPenaltyList = new ArrayList<>();
         unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(4), dayList.get(0)));
         unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(6), dayList.get(1)));
         unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(2), dayList.get(2)));
@@ -86,7 +86,7 @@ public class TennisGenerator extends LoggingMain {
         unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(5), dayList.get(15)));
         tennisSolution.setUnavailabilityPenaltyList(unavailabilityPenaltyList);
 
-        List<TeamAssignment> teamAssignmentList = new ArrayList<TeamAssignment>();
+        List<TeamAssignment> teamAssignmentList = new ArrayList<>();
         long id = 0L;
         for (Day day : dayList) {
             for (int i = 0; i < 4; i++) {

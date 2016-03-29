@@ -206,8 +206,8 @@ public class PlannerBenchmarkConfig {
                 : benchmarkReportConfig;
         plannerBenchmarkRunner.setBenchmarkReport(benchmarkReportConfig_.buildBenchmarkReport(plannerBenchmarkResult));
 
-        plannerBenchmarkResult.setUnifiedProblemBenchmarkResultList(new ArrayList<ProblemBenchmarkResult>());
-        plannerBenchmarkResult.setSolverBenchmarkResultList(new ArrayList<SolverBenchmarkResult>(
+        plannerBenchmarkResult.setUnifiedProblemBenchmarkResultList(new ArrayList<>());
+        plannerBenchmarkResult.setSolverBenchmarkResultList(new ArrayList<>(
                 effectiveSolverBenchmarkConfigList.size()));
         for (SolverBenchmarkConfig solverBenchmarkConfig : effectiveSolverBenchmarkConfigList) {
             solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmarkResult);
@@ -238,8 +238,8 @@ public class PlannerBenchmarkConfig {
 
     protected void generateSolverBenchmarkConfigNames() {
         if (solverBenchmarkConfigList != null) {
-            Set<String> nameSet = new HashSet<String>(solverBenchmarkConfigList.size());
-            Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet = new LinkedHashSet<SolverBenchmarkConfig>(solverBenchmarkConfigList.size());
+            Set<String> nameSet = new HashSet<>(solverBenchmarkConfigList.size());
+            Set<SolverBenchmarkConfig> noNameBenchmarkConfigSet = new LinkedHashSet<>(solverBenchmarkConfigList.size());
             for (SolverBenchmarkConfig solverBenchmarkConfig : solverBenchmarkConfigList) {
                 if (solverBenchmarkConfig.getName() != null) {
                     boolean unique = nameSet.add(solverBenchmarkConfig.getName());
@@ -265,7 +265,7 @@ public class PlannerBenchmarkConfig {
     }
 
     protected List<SolverBenchmarkConfig> buildEffectiveSolverBenchmarkConfigList() {
-        List<SolverBenchmarkConfig> effectiveSolverBenchmarkConfigList = new ArrayList<SolverBenchmarkConfig>(0);
+        List<SolverBenchmarkConfig> effectiveSolverBenchmarkConfigList = new ArrayList<>(0);
         if (solverBenchmarkConfigList != null) {
             effectiveSolverBenchmarkConfigList.addAll(solverBenchmarkConfigList);
         }

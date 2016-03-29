@@ -137,7 +137,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
 
     private JComponent createQuickOpenUnsolvedPanel() {
         quickOpenUnsolvedPanel = new JPanel();
-        quickOpenUnsolvedActionList = new ArrayList<Action>();
+        quickOpenUnsolvedActionList = new ArrayList<>();
         List<File> unsolvedFileList = solutionBusiness.getUnsolvedFileList();
         return createQuickOpenPanel(quickOpenUnsolvedPanel, "Unsolved dataset", quickOpenUnsolvedActionList,
                 unsolvedFileList);
@@ -145,7 +145,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
 
     private JComponent createQuickOpenSolvedPanel() {
         quickOpenSolvedPanel = new JPanel();
-        quickOpenSolvedActionList = new ArrayList<Action>();
+        quickOpenSolvedActionList = new ArrayList<>();
         List<File> solvedFileList = solutionBusiness.getSolvedFileList();
         return createQuickOpenPanel(quickOpenSolvedPanel, "Solved dataset", quickOpenSolvedActionList,
                 solvedFileList);

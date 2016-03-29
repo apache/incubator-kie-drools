@@ -34,14 +34,14 @@ import java.util.List;
 public abstract class UnsolvedDirSolveAllTurtleTest<Solution_> extends SolveAllTurtleTest<Solution_> {
 
     protected static <Solution_> Collection<Object[]> getUnsolvedDirFilesAsParameters(SolutionDao<Solution_> solutionDao) {
-        List<Object[]> filesAsParameters = new ArrayList<Object[]>();
+        List<Object[]> filesAsParameters = new ArrayList<>();
         File dataDir = solutionDao.getDataDir();
         File unsolvedDataDir = new File(dataDir, "unsolved");
         if (!unsolvedDataDir.exists()) {
             throw new IllegalStateException("The directory unsolvedDataDir (" + unsolvedDataDir.getAbsolutePath()
                     + ") does not exist.");
         } else {
-            List<File> fileList = new ArrayList<File>(
+            List<File> fileList = new ArrayList<>(
                     FileUtils.listFiles(unsolvedDataDir, new String[]{solutionDao.getFileExtension()}, true));
             Collections.sort(fileList, new ProblemFileComparator());
             for (File file : fileList) {

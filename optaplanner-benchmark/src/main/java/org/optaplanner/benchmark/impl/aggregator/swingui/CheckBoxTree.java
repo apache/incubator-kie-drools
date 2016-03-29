@@ -38,7 +38,7 @@ public class CheckBoxTree extends JTree {
 
     private static final Color TREE_SELECTION_COLOR = UIManager.getColor("Tree.selectionBackground");
 
-    private Set<DefaultMutableTreeNode> selectedSingleBenchmarkNodes = new HashSet<DefaultMutableTreeNode>();
+    private Set<DefaultMutableTreeNode> selectedSingleBenchmarkNodes = new HashSet<>();
 
     public CheckBoxTree(DefaultMutableTreeNode root) {
         super(root);

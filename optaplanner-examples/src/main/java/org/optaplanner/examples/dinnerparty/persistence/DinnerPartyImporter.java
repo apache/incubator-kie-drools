@@ -68,13 +68,13 @@ public class DinnerPartyImporter extends AbstractTxtSolutionImporter<DinnerParty
                 throws IOException {
             int tableListSize = readIntegerValue("Tables:");
             int seatsPerTable = readIntegerValue("SeatsPerTable:");
-            List<Table> tableList = new ArrayList<Table>(tableListSize);
-            List<Seat> seatList = new ArrayList<Seat>(tableListSize * seatsPerTable);
+            List<Table> tableList = new ArrayList<>(tableListSize);
+            List<Seat> seatList = new ArrayList<>(tableListSize * seatsPerTable);
             for (int i = 0; i < tableListSize; i++) {
                 Table table = new Table();
                 table.setId((long) i);
                 table.setTableIndex(i);
-                List<Seat> tableSeatList = new ArrayList<Seat>(seatsPerTable);
+                List<Seat> tableSeatList = new ArrayList<>(seatsPerTable);
                 Seat firstSeat = null;
                 Seat previousSeat = null;
                 for (int j = 0; j < seatsPerTable; j++) {
@@ -107,9 +107,9 @@ public class DinnerPartyImporter extends AbstractTxtSolutionImporter<DinnerParty
             readConstantLine("\\-+");
             int guestSize = dinnerParty.getSeatList().size();
 
-            List<Guest> guestList = new ArrayList<Guest>(guestSize);
-            List<HobbyPractician> hobbyPracticianList = new ArrayList<HobbyPractician>(guestSize * 3);
-            Map<String, Job> jobMap = new HashMap<String, Job>(JobType.values().length * 5);
+            List<Guest> guestList = new ArrayList<>(guestSize);
+            List<HobbyPractician> hobbyPracticianList = new ArrayList<>(guestSize * 3);
+            Map<String, Job> jobMap = new HashMap<>(JobType.values().length * 5);
             int jobNextId = 0;
             int hobbyPracticianJobId = 0;
             for (int i = 0; i < guestSize; i++) {
@@ -132,7 +132,7 @@ public class DinnerPartyImporter extends AbstractTxtSolutionImporter<DinnerParty
                 }
                 guest.setJob(job);
                 guest.setGender(Gender.valueOfCode(lineTokens[4]));
-                List<HobbyPractician> hobbyPracticianOfGuestList = new ArrayList<HobbyPractician>(lineTokens.length - 5);
+                List<HobbyPractician> hobbyPracticianOfGuestList = new ArrayList<>(lineTokens.length - 5);
                 for (int j = 5; j < lineTokens.length; j++) {
                     HobbyPractician hobbyPractician = new HobbyPractician();
                     hobbyPractician.setId((long) hobbyPracticianJobId);
@@ -145,14 +145,14 @@ public class DinnerPartyImporter extends AbstractTxtSolutionImporter<DinnerParty
                 guest.setHobbyPracticianList(hobbyPracticianOfGuestList);
                 guestList.add(guest);
             }
-            dinnerParty.setJobList(new ArrayList<Job>(jobMap.values()));
+            dinnerParty.setJobList(new ArrayList<>(jobMap.values()));
             dinnerParty.setGuestList(guestList);
             dinnerParty.setHobbyPracticianList(hobbyPracticianList);
         }
 
         private void createSeatDesignationList(DinnerParty dinnerParty) {
             List<Guest> guestList = dinnerParty.getGuestList();
-            List<SeatDesignation> seatDesignationList = new ArrayList<SeatDesignation>(guestList.size());
+            List<SeatDesignation> seatDesignationList = new ArrayList<>(guestList.size());
             long id = 0L;
             for (Guest guest : guestList) {
                 SeatDesignation seatDesignation = new SeatDesignation();

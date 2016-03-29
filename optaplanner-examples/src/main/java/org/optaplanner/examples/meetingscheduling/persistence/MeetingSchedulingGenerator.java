@@ -210,8 +210,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     }
 
     private void createMeetingListAndAttendanceList(MeetingSchedule meetingSchedule, int meetingListSize) {
-        List<Meeting> meetingList = new ArrayList<Meeting>(meetingListSize);
-        List<Attendance> globalAttendanceList = new ArrayList<Attendance>();
+        List<Meeting> meetingList = new ArrayList<>(meetingListSize);
+        List<Attendance> globalAttendanceList = new ArrayList<>();
         long attendanceId = 0L;
         for (int i = 0; i < meetingListSize; i++) {
             Meeting meeting = new Meeting();
@@ -223,7 +223,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
 
             int attendanceListSize = personsPerMeetingOptions[random.nextInt(personsPerMeetingOptions.length)];
             int requiredAttendanceListSize = Math.max(2, random.nextInt(attendanceListSize + 1));
-            List<RequiredAttendance> requiredAttendanceList = new ArrayList<RequiredAttendance>(requiredAttendanceListSize);
+            List<RequiredAttendance> requiredAttendanceList = new ArrayList<>(requiredAttendanceListSize);
             for (int j = 0; j < requiredAttendanceListSize; j++) {
                 RequiredAttendance attendance = new RequiredAttendance();
                 attendance.setId(attendanceId);
@@ -235,7 +235,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             }
             meeting.setRequiredAttendanceList(requiredAttendanceList);
             int preferredAttendanceListSize = attendanceListSize - requiredAttendanceListSize;
-            List<PreferredAttendance> preferredAttendanceList = new ArrayList<PreferredAttendance>(preferredAttendanceListSize);
+            List<PreferredAttendance> preferredAttendanceList = new ArrayList<>(preferredAttendanceListSize);
             for (int j = 0; j < preferredAttendanceListSize; j++) {
                 PreferredAttendance attendance = new PreferredAttendance();
                 attendance.setId(attendanceId);
@@ -258,10 +258,10 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     }
 
     private void createTimeGrainList(MeetingSchedule meetingSchedule, int timeGrainListSize) {
-        List<Day> dayList = new ArrayList<Day>(timeGrainListSize);
+        List<Day> dayList = new ArrayList<>(timeGrainListSize);
         long dayId = 0;
         Day day = null;
-        List<TimeGrain> timeGrainList = new ArrayList<TimeGrain>(timeGrainListSize);
+        List<TimeGrain> timeGrainList = new ArrayList<>(timeGrainListSize);
         for (int i = 0; i < timeGrainListSize; i++) {
             TimeGrain timeGrain = new TimeGrain();
             timeGrain.setId((long) i);
@@ -287,7 +287,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     }
 
     private void createRoomList(MeetingSchedule meetingSchedule, int roomListSize) {
-        List<Room> roomList = new ArrayList<Room>(roomListSize);
+        List<Room> roomList = new ArrayList<>(roomListSize);
         for (int i = 0; i < roomListSize; i++) {
             Room room = new Room();
             room.setId((long) i);
@@ -312,7 +312,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         }
         int personListSize = attendanceListSize * meetingSchedule.getRoomList().size() * 3
                 / (4 * meetingSchedule.getMeetingList().size());
-        List<Person> personList = new ArrayList<Person>(personListSize);
+        List<Person> personList = new ArrayList<>(personListSize);
         for (int i = 0; i < personListSize; i++) {
             Person person = new Person();
             person.setId((long) i);
@@ -327,7 +327,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
 
     private void linkAttendanceListToPersons(MeetingSchedule meetingSchedule) {
         for (Meeting meeting : meetingSchedule.getMeetingList()) {
-            List<Person> availablePersonList = new ArrayList<Person>(meetingSchedule.getPersonList());
+            List<Person> availablePersonList = new ArrayList<>(meetingSchedule.getPersonList());
             int attendanceListSize = meeting.getRequiredAttendanceList().size() + meeting.getPreferredAttendanceList().size();
             if (availablePersonList.size() < attendanceListSize) {
                 throw new IllegalStateException("The availablePersonList size (" + availablePersonList.size()
@@ -344,7 +344,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
 
     private void createMeetingAssignmentList(MeetingSchedule meetingSchedule) {
         List<Meeting> meetingList = meetingSchedule.getMeetingList();
-        List<MeetingAssignment> meetingAssignmentList = new ArrayList<MeetingAssignment>(meetingList.size());
+        List<MeetingAssignment> meetingAssignmentList = new ArrayList<>(meetingList.size());
         for (Meeting meeting : meetingList) {
             MeetingAssignment meetingAssignment = new MeetingAssignment();
             meetingAssignment.setId(meeting.getId());

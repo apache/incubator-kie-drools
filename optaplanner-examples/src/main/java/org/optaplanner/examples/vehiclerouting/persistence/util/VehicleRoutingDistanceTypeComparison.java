@@ -81,12 +81,12 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
 
     private void applyVariables(VehicleRoutingSolution inputSolution, VehicleRoutingSolution varSolution) {
         List<Vehicle> inputVehicleList = inputSolution.getVehicleList();
-        Map<Long, Vehicle> inputVehicleMap = new LinkedHashMap<Long, Vehicle>(inputVehicleList.size());
+        Map<Long, Vehicle> inputVehicleMap = new LinkedHashMap<>(inputVehicleList.size());
         for (Vehicle vehicle : inputVehicleList) {
             inputVehicleMap.put(vehicle.getId(), vehicle);
         }
         List<Customer> inputCustomerList = inputSolution.getCustomerList();
-        Map<Long, Customer> inputCustomerMap = new LinkedHashMap<Long, Customer>(inputCustomerList.size());
+        Map<Long, Customer> inputCustomerMap = new LinkedHashMap<>(inputCustomerList.size());
         for (Customer customer : inputCustomerList) {
             inputCustomerMap.put(customer.getId(), customer);
         }

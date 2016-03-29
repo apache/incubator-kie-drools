@@ -62,9 +62,9 @@ public class TennisPanel extends SolutionPanel<TennisSolution> {
     public TennisPanel() {
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
-        datesPanel = new TimeTablePanel<Day, Team>();
+        datesPanel = new TimeTablePanel<>();
         tabbedPane.add("Dates", new JScrollPane(datesPanel));
-        confrontationsPanel = new TimeTablePanel<Team, Team>();
+        confrontationsPanel = new TimeTablePanel<>();
         tabbedPane.add("Confrontations", new JScrollPane(confrontationsPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
@@ -150,7 +150,7 @@ public class TennisPanel extends SolutionPanel<TennisSolution> {
     }
 
     private Map<Team, Integer> extractTeamToDayCountMap(TennisSolution tennisSolution) {
-        Map<Team, Integer> teamToDayCountMap = new HashMap<Team, Integer>(tennisSolution.getTeamList().size());
+        Map<Team, Integer> teamToDayCountMap = new HashMap<>(tennisSolution.getTeamList().size());
         for (Team team : tennisSolution.getTeamList()) {
             teamToDayCountMap.put(team, 0);
         }
@@ -190,15 +190,15 @@ public class TennisPanel extends SolutionPanel<TennisSolution> {
     private void fillConfrontationCells(TennisSolution tennisSolution) {
         List<Team> teamList = tennisSolution.getTeamList();
         List<Day> dayList = tennisSolution.getDayList();
-        Map<Day, List<TeamAssignment>> dayToTeamAssignmentListMap = new HashMap<Day, List<TeamAssignment>>(
+        Map<Day, List<TeamAssignment>> dayToTeamAssignmentListMap = new HashMap<>(
                 dayList.size());
         for (Day day : dayList) {
-            dayToTeamAssignmentListMap.put(day, new ArrayList<TeamAssignment>());
+            dayToTeamAssignmentListMap.put(day, new ArrayList<>());
         }
         for (TeamAssignment teamAssignment : tennisSolution.getTeamAssignmentList()) {
             dayToTeamAssignmentListMap.get(teamAssignment.getDay()).add(teamAssignment);
         }
-        Map<List<Team>, Integer> teamPairToConfrontationCountMap = new HashMap<List<Team>, Integer>();
+        Map<List<Team>, Integer> teamPairToConfrontationCountMap = new HashMap<>();
         for (Team left : teamList) {
             for (Team right : teamList) {
                 if (left != right) {

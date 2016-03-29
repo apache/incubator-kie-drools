@@ -513,7 +513,7 @@ public class DefaultSubChainSelectorTest {
         Iterator<SubChain> iterator = subChainSelector.iterator();
         assertNotNull(iterator);
         int selectionSize = subChains.length;
-        Map<SubChain, Integer> subChainCountMap = new HashMap<SubChain, Integer>(selectionSize);
+        Map<SubChain, Integer> subChainCountMap = new HashMap<>(selectionSize);
         for (int i = 0; i < selectionSize * 10; i++) {
             collectNextSubChain(iterator, subChainCountMap);
         }

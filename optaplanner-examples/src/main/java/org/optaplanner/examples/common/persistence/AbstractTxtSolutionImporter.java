@@ -345,7 +345,7 @@ public abstract class AbstractTxtSolutionImporter<Solution_> extends AbstractSol
                 Integer minimumNumberOfTokens, Integer maximumNumberOfTokens, boolean trim, boolean removeQuotes) {
             String[] lineTokens = line.split(delimiterRegex);
             if (removeQuotes) {
-                List<String> lineTokenList = new ArrayList<String>(lineTokens.length);
+                List<String> lineTokenList = new ArrayList<>(lineTokens.length);
                 for (int i = 0; i < lineTokens.length; i++) {
                     String token = lineTokens[i];
                     while ((trim ? token.trim() : token).startsWith("\"") && !(trim ? token.trim() : token).endsWith("\"")) {

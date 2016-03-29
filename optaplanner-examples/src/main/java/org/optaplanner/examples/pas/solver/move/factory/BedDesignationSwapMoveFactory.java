@@ -30,7 +30,7 @@ public class BedDesignationSwapMoveFactory implements MoveListFactory<PatientAdm
 
     public List<Move> createMoveList(PatientAdmissionSchedule patientAdmissionSchedule) {
         List<BedDesignation> bedDesignationList = patientAdmissionSchedule.getBedDesignationList();
-        List<Move> moveList = new ArrayList<Move>();
+        List<Move> moveList = new ArrayList<>();
         for (ListIterator<BedDesignation> leftIt = bedDesignationList.listIterator(); leftIt.hasNext();) {
             BedDesignation leftBedDesignation = leftIt.next();
             for (ListIterator<BedDesignation> rightIt = bedDesignationList.listIterator(leftIt.nextIndex());

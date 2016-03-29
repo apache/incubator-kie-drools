@@ -130,7 +130,7 @@ public class QueuedEntityPlacerTest {
                 TestdataMultiVarEntity.class, "secondaryValue",
                 new TestdataValue("8"), new TestdataValue("9"));
 
-        List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(2);
+        List<MoveSelector> moveSelectorList = new ArrayList<>(2);
         moveSelectorList.add(new ChangeMoveSelector(
                 new MimicReplayingEntitySelector(recordingEntitySelector),
                 primaryValueSelector,
@@ -212,7 +212,7 @@ public class QueuedEntityPlacerTest {
                 TestdataMultiVarEntity.class, "secondaryValue",
                 new TestdataValue("8"), new TestdataValue("9"));
 
-        List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(2);
+        List<MoveSelector> moveSelectorList = new ArrayList<>(2);
         moveSelectorList.add(new ChangeMoveSelector(
                 new MimicReplayingEntitySelector(recordingEntitySelector),
                 primaryValueSelector,

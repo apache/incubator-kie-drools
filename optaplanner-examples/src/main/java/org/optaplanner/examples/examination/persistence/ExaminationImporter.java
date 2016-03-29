@@ -90,31 +90,31 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
         }
 
         private void readTopicListAndStudentList() throws IOException {
-            coincidenceMap = new LinkedHashMap<Topic, Set<Topic>>();
-            exclusionMap = new LinkedHashMap<Topic, Set<Topic>>();
-            afterMap = new LinkedHashMap<Topic, Set<Topic>>();
-            Map<Integer, Student> studentMap = new HashMap<Integer, Student>();
+            coincidenceMap = new LinkedHashMap<>();
+            exclusionMap = new LinkedHashMap<>();
+            afterMap = new LinkedHashMap<>();
+            Map<Integer, Student> studentMap = new HashMap<>();
             int examSize = readHeaderWithNumber("Exams");
-            List<Topic> topicList = new ArrayList<Topic>(examSize);
+            List<Topic> topicList = new ArrayList<>(examSize);
             for (int i = 0; i < examSize; i++) {
                 Topic topic = new Topic();
                 topic.setId((long) i);
                 String line = bufferedReader.readLine();
                 String[] lineTokens = line.split(SPLIT_REGEX);
                 topic.setDuration(Integer.parseInt(lineTokens[0]));
-                List<Student> topicStudentList = new ArrayList<Student>(lineTokens.length - 1);
+                List<Student> topicStudentList = new ArrayList<>(lineTokens.length - 1);
                 for (int j = 1; j < lineTokens.length; j++) {
                     topicStudentList.add(findOrCreateStudent(studentMap, Integer.parseInt(lineTokens[j])));
                 }
                 topic.setStudentList(topicStudentList);
                 topic.setFrontLoadLarge(false);
                 topicList.add(topic);
-                coincidenceMap.put(topic, new HashSet<Topic>());
-                exclusionMap.put(topic, new HashSet<Topic>());
-                afterMap.put(topic, new HashSet<Topic>());
+                coincidenceMap.put(topic, new HashSet<>());
+                exclusionMap.put(topic, new HashSet<>());
+                afterMap.put(topic, new HashSet<>());
             }
             examination.setTopicList(topicList);
-            List<Student> studentList = new ArrayList<Student>(studentMap.values());
+            List<Student> studentList = new ArrayList<>(studentMap.values());
             examination.setStudentList(studentList);
         }
 
@@ -130,7 +130,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
 
         private void readPeriodList() throws IOException {
             int periodSize = readHeaderWithNumber("Periods");
-            List<Period> periodList = new ArrayList<Period>(periodSize);
+            List<Period> periodList = new ArrayList<>(periodSize);
             // Everything is in the default timezone and the default locale.
             Calendar calendar = Calendar.getInstance();
             final DateFormat DATE_FORMAT = new SimpleDateFormat("dd:MM:yyyy HH:mm:ss");
@@ -179,7 +179,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
 
         private void readRoomList() throws IOException {
             int roomSize = readHeaderWithNumber("Rooms");
-            List<Room> roomList = new ArrayList<Room>(roomSize);
+            List<Room> roomList = new ArrayList<>(roomSize);
             for (int i = 0; i < roomSize; i++) {
                 Room room = new Room();
                 room.setId((long) i);
@@ -198,7 +198,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
         private void readPeriodPenaltyList() throws IOException {
             readConstantLine("\\[PeriodHardConstraints\\]");
             List<Topic> topicList = examination.getTopicList();
-            List<PeriodPenalty> periodPenaltyList = new ArrayList<PeriodPenalty>();
+            List<PeriodPenalty> periodPenaltyList = new ArrayList<>();
             String line = bufferedReader.readLine();
             int id = 0;
             while (!line.equals("[RoomHardConstraints]")) {
@@ -288,8 +288,8 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
             for (Map.Entry<Topic, Set<Topic>> entry : coincidenceMap.entrySet()) {
                 Topic leftTopic = entry.getKey();
                 Set<Topic> middleTopicSet = entry.getValue();
-                for (Topic middleTopic : new ArrayList<Topic>(middleTopicSet)) {
-                    for (Topic rightTopic : new ArrayList<Topic>(coincidenceMap.get(middleTopic))) {
+                for (Topic middleTopic : new ArrayList<>(middleTopicSet)) {
+                    for (Topic rightTopic : new ArrayList<>(coincidenceMap.get(middleTopic))) {
                         if (rightTopic != leftTopic
                                  && !middleTopicSet.contains(rightTopic)) {
                             PeriodPenalty indirectPeriodPenalty = new PeriodPenalty();
@@ -315,7 +315,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
             for (Map.Entry<Topic, Set<Topic>> entry : afterMap.entrySet()) {
                 Topic leftTopic = entry.getKey();
                 Set<Topic> afterLeftSet = entry.getValue();
-                Queue<Topic> queue = new ArrayDeque<Topic>();
+                Queue<Topic> queue = new ArrayDeque<>();
                 for (Topic topic : afterMap.get(leftTopic)) {
                     queue.add(topic);
                     queue.addAll(coincidenceMap.get(topic));
@@ -348,7 +348,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
 
         private void readRoomPenaltyList() throws IOException {
             List<Topic> topicList = examination.getTopicList();
-            List<RoomPenalty> roomPenaltyList = new ArrayList<RoomPenalty>();
+            List<RoomPenalty> roomPenaltyList = new ArrayList<>();
             String line = bufferedReader.readLine();
             int id = 0;
             while (!line.equals("[InstitutionalWeightings]")) {
@@ -408,7 +408,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
         }
 
         private void tagFrontLoadLargeTopics() {
-            List<Topic> sortedTopicList = new ArrayList<Topic>(examination.getTopicList());
+            List<Topic> sortedTopicList = new ArrayList<>(examination.getTopicList());
             Collections.sort(sortedTopicList, new Comparator<Topic>() {
                 public int compare(Topic a, Topic b) {
                     return new CompareToBuilder()
@@ -453,8 +453,8 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
 
         private void createExamList() {
             List<Topic> topicList = examination.getTopicList();
-            List<Exam> examList = new ArrayList<Exam>(topicList.size());
-            Map<Topic, LeadingExam> leadingTopicToExamMap = new HashMap<Topic, LeadingExam>(topicList.size());
+            List<Exam> examList = new ArrayList<>(topicList.size());
+            Map<Topic, LeadingExam> leadingTopicToExamMap = new HashMap<>(topicList.size());
             for (Topic topic : topicList) {
                 Exam exam;
                 Topic leadingTopic = topic;
@@ -465,7 +465,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                 }
                 if (leadingTopic == topic) {
                     LeadingExam leadingExam = new LeadingExam();
-                    leadingExam.setFollowingExamList(new ArrayList<FollowingExam>(10));
+                    leadingExam.setFollowingExamList(new ArrayList<>(10));
                     leadingTopicToExamMap.put(topic, leadingExam);
                     exam = leadingExam;
                 } else {

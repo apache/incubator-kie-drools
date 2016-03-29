@@ -103,7 +103,7 @@ public class EntityDependentSortingValueSelector extends AbstractValueSelector {
                     + ") with childSize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        List<Object> cachedValueList = new ArrayList<Object>((int) childSize);
+        List<Object> cachedValueList = new ArrayList<>((int) childSize);
         Iterators.addAll(cachedValueList, childValueSelector.iterator(entity));
         logger.trace("    Created cachedValueList: size ({}), valueSelector ({}).",
                 cachedValueList.size(), this);

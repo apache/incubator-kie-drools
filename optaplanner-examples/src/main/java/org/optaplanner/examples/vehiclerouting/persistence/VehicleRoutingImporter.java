@@ -171,10 +171,10 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
         private void readVrpWebLocationList() throws IOException {
             DistanceType distanceType = solution.getDistanceType();
             List<HubSegmentLocation> hubLocationList = null;
-            locationMap = new LinkedHashMap<Long, Location>(customerListSize);
+            locationMap = new LinkedHashMap<>(customerListSize);
             if (distanceType == DistanceType.SEGMENTED_ROAD_DISTANCE) {
                 int hubListSize = readIntegerValue("HUBS *:");
-                hubLocationList = new ArrayList<HubSegmentLocation>(hubListSize);
+                hubLocationList = new ArrayList<>(hubListSize);
                 readConstantLine("HUB_COORD_SECTION");
                 for (int i = 0; i < hubListSize; i++) {
                     String line = bufferedReader.readLine();
@@ -190,7 +190,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
                     locationMap.put(location.getId(), location);
                 }
             }
-            List<Location> customerLocationList = new ArrayList<Location>(customerListSize);
+            List<Location> customerLocationList = new ArrayList<>(customerListSize);
             readConstantLine("NODE_COORD_SECTION");
             for (int i = 0; i < customerListSize; i++) {
                 String line = bufferedReader.readLine();
@@ -224,7 +224,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
                 readConstantLine("EDGE_WEIGHT_SECTION");
                 for (int i = 0; i < customerListSize; i++) {
                     RoadLocation location = (RoadLocation) customerLocationList.get(i);
-                    Map<RoadLocation, Double> travelDistanceMap = new LinkedHashMap<RoadLocation, Double>(customerListSize);
+                    Map<RoadLocation, Double> travelDistanceMap = new LinkedHashMap<>(customerListSize);
                     String line = bufferedReader.readLine();
                     String[] lineTokens = splitBySpacesOrTabs(line.trim(), customerListSize);
                     for (int j = 0; j < customerListSize; j++) {
@@ -256,8 +256,8 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
                     if (location == null) {
                         throw new IllegalArgumentException("The location with id (" + id + ") of line (" + line + ") does not exist.");
                     }
-                    Map<HubSegmentLocation, Double> hubTravelDistanceMap = new LinkedHashMap<HubSegmentLocation, Double>(lineTokens.length / 2);
-                    Map<RoadSegmentLocation, Double> nearbyTravelDistanceMap = new LinkedHashMap<RoadSegmentLocation, Double>(lineTokens.length / 2);
+                    Map<HubSegmentLocation, Double> hubTravelDistanceMap = new LinkedHashMap<>(lineTokens.length / 2);
+                    Map<RoadSegmentLocation, Double> nearbyTravelDistanceMap = new LinkedHashMap<>(lineTokens.length / 2);
                     for (int j = 1; j < lineTokens.length; j += 2) {
                         Location otherLocation = locationMap.get(Long.parseLong(lineTokens[j]));
                         double travelDistance = Double.parseDouble(lineTokens[j + 1]);
@@ -280,7 +280,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
             }
             List<Location> locationList;
             if (distanceType == DistanceType.SEGMENTED_ROAD_DISTANCE) {
-                locationList = new ArrayList<Location>(hubLocationList.size() + customerListSize);
+                locationList = new ArrayList<>(hubLocationList.size() + customerListSize);
                 locationList.addAll(hubLocationList);
                 locationList.addAll(customerLocationList);
             } else {
@@ -291,8 +291,8 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
 
         private void readVrpWebCustomerList() throws IOException {
             readConstantLine("DEMAND_SECTION");
-            depotList = new ArrayList<Depot>(customerListSize);
-            List<Customer> customerList = new ArrayList<Customer>(customerListSize);
+            depotList = new ArrayList<>(customerListSize);
+            List<Customer> customerList = new ArrayList<>(customerListSize);
             for (int i = 0; i < customerListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), timewindowed ? 5 : 2);
@@ -379,7 +379,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
         }
 
         private void createVehicleList() {
-            List<Vehicle> vehicleList = new ArrayList<Vehicle>(vehicleListSize);
+            List<Vehicle> vehicleList = new ArrayList<>(vehicleListSize);
             long id = 0;
             for (int i = 0; i < vehicleListSize; i++) {
                 Vehicle vehicle = new Vehicle();
@@ -399,10 +399,10 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
         public void readCourseraFormat() throws IOException {
             solution.setDistanceType(DistanceType.AIR_DISTANCE);
             solution.setDistanceUnitOfMeasurement("distance");
-            List<Location> locationList = new ArrayList<Location>(customerListSize);
-            depotList = new ArrayList<Depot>(1);
-            List<Customer> customerList = new ArrayList<Customer>(customerListSize);
-            locationMap = new LinkedHashMap<Long, Location>(customerListSize);
+            List<Location> locationList = new ArrayList<>(customerListSize);
+            depotList = new ArrayList<>(1);
+            List<Customer> customerList = new ArrayList<>(customerListSize);
+            locationMap = new LinkedHashMap<>(customerListSize);
             for (int i = 0; i < customerListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 3, 4);
@@ -466,10 +466,10 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
         private void readTimeWindowedDepotAndCustomers() throws IOException {
             String line = bufferedReader.readLine();
             int locationListSizeEstimation = 25;
-            List<Location> locationList = new ArrayList<Location>(locationListSizeEstimation);
-            depotList = new ArrayList<Depot>(1);
+            List<Location> locationList = new ArrayList<>(locationListSizeEstimation);
+            depotList = new ArrayList<>(1);
             TimeWindowedDepot depot = null;
-            List<Customer> customerList = new ArrayList<Customer>(locationListSizeEstimation);
+            List<Customer> customerList = new ArrayList<>(locationListSizeEstimation);
             boolean first = true;
             while (line != null && !line.trim().isEmpty()) {
                 String[] lineTokens = splitBySpacesOrTabs(line.trim(), 7);

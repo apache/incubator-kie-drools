@@ -47,9 +47,9 @@ public class CheapTimePillarSlideMoveIteratorFactory implements MoveIteratorFact
     @Override
     public Iterator<Move> createRandomMoveIterator(ScoreDirector scoreDirector, Random workingRandom) {
         CheapTimeSolution cheapTimeSolution = (CheapTimeSolution) scoreDirector.getWorkingSolution();
-        Map<Machine, List<TaskAssignment>> positivePillarMap = new LinkedHashMap<Machine, List<TaskAssignment>>(
+        Map<Machine, List<TaskAssignment>> positivePillarMap = new LinkedHashMap<>(
                 cheapTimeSolution.getGlobalPeriodRangeTo());
-        Map<Machine, List<TaskAssignment>> negativePillarMap = new LinkedHashMap<Machine, List<TaskAssignment>>(
+        Map<Machine, List<TaskAssignment>> negativePillarMap = new LinkedHashMap<>(
                 cheapTimeSolution.getGlobalPeriodRangeTo());
         List<TaskAssignment> taskAssignmentList = cheapTimeSolution.getTaskAssignmentList();
         int pillarCapacity = (taskAssignmentList.size() * 2 / cheapTimeSolution.getMachineList().size()) + 1;
@@ -61,7 +61,7 @@ public class CheapTimePillarSlideMoveIteratorFactory implements MoveIteratorFact
                 if (startPeriod < task.getStartPeriodRangeTo() - 1) {
                     List<TaskAssignment> pillar = positivePillarMap.get(machine);
                     if (pillar == null) {
-                        pillar = new ArrayList<TaskAssignment>(pillarCapacity);
+                        pillar = new ArrayList<>(pillarCapacity);
                         positivePillarMap.put(machine, pillar);
                     }
                     pillar.add(taskAssignment);
@@ -69,20 +69,20 @@ public class CheapTimePillarSlideMoveIteratorFactory implements MoveIteratorFact
                 if (startPeriod > task.getStartPeriodRangeFrom()) {
                     List<TaskAssignment> pillar = negativePillarMap.get(machine);
                     if (pillar == null) {
-                        pillar = new ArrayList<TaskAssignment>(pillarCapacity);
+                        pillar = new ArrayList<>(pillarCapacity);
                         negativePillarMap.put(machine, pillar);
                     }
                     pillar.add(taskAssignment);
                 }
             }
         }
-        List<List<TaskAssignment>> positivePillarList = new ArrayList<List<TaskAssignment>>(positivePillarMap.size());
+        List<List<TaskAssignment>> positivePillarList = new ArrayList<>(positivePillarMap.size());
         for (List<TaskAssignment> pillar : positivePillarMap.values()) {
             if (pillar.size() > 1) {
                 positivePillarList.add(pillar);
             }
         }
-        List<List<TaskAssignment>> negativePillarList = new ArrayList<List<TaskAssignment>>(negativePillarMap.size());
+        List<List<TaskAssignment>> negativePillarList = new ArrayList<>(negativePillarMap.size());
         for (List<TaskAssignment> pillar : negativePillarMap.values()) {
             if (pillar.size() > 1) {
                 negativePillarList.add(pillar);
@@ -120,7 +120,7 @@ public class CheapTimePillarSlideMoveIteratorFactory implements MoveIteratorFact
             // Random sampling: See http://eyalsch.wordpress.com/2010/04/01/random-sample/
             // Used Swapping instead of Floyd because subPillarSize is large, to avoid hashCode() hit
             TaskAssignment[] sandboxPillar = basePillar.toArray(new TaskAssignment[0]); // Clone to avoid changing basePillar
-            List<TaskAssignment> subPillar = new ArrayList<TaskAssignment>(subPillarSize);
+            List<TaskAssignment> subPillar = new ArrayList<>(subPillarSize);
             int minimumAbsDiff = Integer.MAX_VALUE;
             for (int i = 0; i < subPillarSize; i++) {
                 int index = i + workingRandom.nextInt(basePillarSize - i);

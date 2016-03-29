@@ -45,9 +45,9 @@ public class MatchChainRotationsMove extends AbstractMove {
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        List<Match> inverseFirstMatchList = new ArrayList<Match>(firstMatchList);
+        List<Match> inverseFirstMatchList = new ArrayList<>(firstMatchList);
         Collections.reverse(inverseFirstMatchList);
-        List<Match> inverseSecondMatchList = new ArrayList<Match>(secondMatchList);
+        List<Match> inverseSecondMatchList = new ArrayList<>(secondMatchList);
         Collections.reverse(inverseSecondMatchList);
         return new MatchChainRotationsMove(inverseFirstMatchList, inverseSecondMatchList);
     }
@@ -74,14 +74,14 @@ public class MatchChainRotationsMove extends AbstractMove {
     }
 
     public Collection<? extends Object> getPlanningEntities() {
-        List<Match> entities = new ArrayList<Match>(firstMatchList.size() + secondMatchList.size());
+        List<Match> entities = new ArrayList<>(firstMatchList.size() + secondMatchList.size());
         entities.addAll(firstMatchList);
         entities.addAll(secondMatchList);
         return entities;
     }
 
     public Collection<? extends Object> getPlanningValues() {
-        List<Day> values = new ArrayList<Day>(firstMatchList.size() + secondMatchList.size());
+        List<Day> values = new ArrayList<>(firstMatchList.size() + secondMatchList.size());
         for (Match match : firstMatchList) {
             values.add(match.getDay());
         }

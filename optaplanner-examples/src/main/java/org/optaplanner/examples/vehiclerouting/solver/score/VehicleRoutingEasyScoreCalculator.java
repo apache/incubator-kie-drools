@@ -35,7 +35,7 @@ public class VehicleRoutingEasyScoreCalculator implements EasyScoreCalculator<Ve
         boolean timeWindowed = solution instanceof TimeWindowedVehicleRoutingSolution;
         List<Customer> customerList = solution.getCustomerList();
         List<Vehicle> vehicleList = solution.getVehicleList();
-        Map<Vehicle, Integer> vehicleDemandMap = new HashMap<Vehicle, Integer>(vehicleList.size());
+        Map<Vehicle, Integer> vehicleDemandMap = new HashMap<>(vehicleList.size());
         for (Vehicle vehicle : vehicleList) {
             vehicleDemandMap.put(vehicle, 0);
         }

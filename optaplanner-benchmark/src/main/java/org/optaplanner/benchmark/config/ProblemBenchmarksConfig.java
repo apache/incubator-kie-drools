@@ -110,7 +110,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         validate(solverBenchmarkResult);
         PlannerBenchmarkResult plannerBenchmarkResult = solverBenchmarkResult.getPlannerBenchmarkResult();
         SolutionFileIO solutionFileIO = buildSolutionFileIO();
-        List<ProblemBenchmarkResult> problemBenchmarkResultList = new ArrayList<ProblemBenchmarkResult>(inputSolutionFileList.size());
+        List<ProblemBenchmarkResult> problemBenchmarkResultList = new ArrayList<>(inputSolutionFileList.size());
         List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList
                 = plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList();
         for (File inputSolutionFile : inputSolutionFileList) {
@@ -168,7 +168,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         problemBenchmarkResult.setWriteOutputSolutionEnabled(
                 writeOutputSolutionEnabled == null ? false : writeOutputSolutionEnabled);
         problemBenchmarkResult.setInputSolutionFile(inputSolutionFile);
-        List<ProblemStatistic> problemStatisticList = new ArrayList<ProblemStatistic>(
+        List<ProblemStatistic> problemStatisticList = new ArrayList<>(
                 problemStatisticTypeList == null ? 0 : problemStatisticTypeList.size());
         if (problemStatisticTypeList != null) {
             for (ProblemStatisticType problemStatisticType : problemStatisticTypeList) {
@@ -185,7 +185,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
         buildSubSingleBenchmarks(singleBenchmarkResult, solverBenchmarkResult.getSubSingleCount());
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-            subSingleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<PureSubSingleStatistic>(
+            subSingleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<>(
                     singleStatisticTypeList == null ? 0 : singleStatisticTypeList.size()));
         }
         if (singleStatisticTypeList != null) {
@@ -201,7 +201,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     }
 
     private void buildSubSingleBenchmarks(SingleBenchmarkResult parent, int subSingleCount) {
-        List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<SubSingleBenchmarkResult>(subSingleCount);
+        List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<>(subSingleCount);
         for (int i = 0; i < subSingleCount; i++) {
             SubSingleBenchmarkResult subSingleBenchmarkResult = new SubSingleBenchmarkResult(parent, i);
             subSingleBenchmarkResultList.add(subSingleBenchmarkResult);

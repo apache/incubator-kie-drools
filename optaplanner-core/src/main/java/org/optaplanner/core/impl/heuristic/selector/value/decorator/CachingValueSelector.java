@@ -57,7 +57,7 @@ public class CachingValueSelector extends AbstractCachingValueSelector implement
         if (!randomSelection) {
             return cachedValueList.iterator();
         } else {
-            return new CachedListRandomIterator<Object>(cachedValueList, workingRandom);
+            return new CachedListRandomIterator<>(cachedValueList, workingRandom);
         }
     }
 

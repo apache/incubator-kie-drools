@@ -61,11 +61,11 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
     public CurriculumCoursePanel() {
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
-        roomsPanel = new TimeTablePanel<Room, Period>();
+        roomsPanel = new TimeTablePanel<>();
         tabbedPane.add("Rooms", new JScrollPane(roomsPanel));
-        teachersPanel = new TimeTablePanel<Teacher, Period>();
+        teachersPanel = new TimeTablePanel<>();
         tabbedPane.add("Teachers", new JScrollPane(teachersPanel));
-        curriculaPanel = new TimeTablePanel<Curriculum, Period>();
+        curriculaPanel = new TimeTablePanel<>();
         tabbedPane.add("Curricula", new JScrollPane(curriculaPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);

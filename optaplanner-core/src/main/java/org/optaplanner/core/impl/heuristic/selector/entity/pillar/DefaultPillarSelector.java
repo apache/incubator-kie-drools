@@ -134,21 +134,21 @@ public class DefaultPillarSelector extends AbstractSelector
                     + entitySelector + ") with entitySize (" + entitySize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        Map<List<Object>, List<Object>> valueStateToPillarMap = new LinkedHashMap<List<Object>, List<Object>>((int) entitySize);
+        Map<List<Object>, List<Object>> valueStateToPillarMap = new LinkedHashMap<>((int) entitySize);
         for (Object entity : entitySelector) {
-            List<Object> valueState = new ArrayList<Object>(variableDescriptors.size());
+            List<Object> valueState = new ArrayList<>(variableDescriptors.size());
             for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
                 Object value = variableDescriptor.getValue(entity);
                 valueState.add(value);
             }
             List<Object> pillar = valueStateToPillarMap.get(valueState);
             if (pillar == null) {
-                pillar = new ArrayList<Object>();
+                pillar = new ArrayList<>();
                 valueStateToPillarMap.put(valueState, pillar);
             }
             pillar.add(entity);
         }
-        cachedBasePillarList = new ArrayList<List<Object>>(valueStateToPillarMap.values());
+        cachedBasePillarList = new ArrayList<>(valueStateToPillarMap.values());
     }
 
     public void disposeCache(DefaultSolverScope solverScope) {
@@ -193,7 +193,7 @@ public class DefaultPillarSelector extends AbstractSelector
             }
         } else {
             if (!subPillarEnabled) {
-                return new CachedListRandomIterator<List<Object>>(cachedBasePillarList, workingRandom);
+                return new CachedListRandomIterator<>(cachedBasePillarList, workingRandom);
             } else {
                 return new RandomSubPillarIterator();
             }
@@ -256,7 +256,7 @@ public class DefaultPillarSelector extends AbstractSelector
             // Random sampling: See http://eyalsch.wordpress.com/2010/04/01/random-sample/
             // Used Swapping instead of Floyd because subPillarSize is large, to avoid hashCode() hit
             Object[] sandboxPillar = basePillar.toArray(); // Clone to avoid changing basePillar
-            List<Object> subPillar = new ArrayList<Object>(subPillarSize);
+            List<Object> subPillar = new ArrayList<>(subPillarSize);
             for (int i = 0; i < subPillarSize; i++) {
                 int index = i + workingRandom.nextInt(basePillarSize - i);
                 subPillar.add(sandboxPillar[index]);

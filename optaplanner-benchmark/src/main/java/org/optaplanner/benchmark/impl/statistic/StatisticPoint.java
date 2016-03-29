@@ -63,7 +63,7 @@ public abstract class StatisticPoint {
 
     public static List<String> parseCsvLine(String line) {
         String[] tokens = line.split(",");
-        List<String> csvLine = new ArrayList<String>(tokens.length);
+        List<String> csvLine = new ArrayList<>(tokens.length);
         for (int i = 0; i < tokens.length; i++) {
             String token = tokens[i];
             while (token.trim().startsWith("\"") && !token.trim().endsWith("\"")) {

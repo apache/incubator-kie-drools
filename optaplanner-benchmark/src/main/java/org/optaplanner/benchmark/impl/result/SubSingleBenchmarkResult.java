@@ -91,7 +91,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
 
     public void initSubSingleStatisticMap() {
         List<ProblemStatistic> problemStatisticList = singleBenchmarkResult.getProblemBenchmarkResult().getProblemStatisticList();
-        effectiveSubSingleStatisticMap = new HashMap<StatisticType, SubSingleStatistic>(
+        effectiveSubSingleStatisticMap = new HashMap<>(
                 problemStatisticList.size() + pureSubSingleStatisticList.size());
         for (ProblemStatistic problemStatistic : problemStatisticList) {
             SubSingleStatistic subSingleStatistic = problemStatistic.createSubSingleStatistic(this);
@@ -283,7 +283,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
 
     protected static SubSingleBenchmarkResult createMerge(SingleBenchmarkResult singleBenchmarkResult, SubSingleBenchmarkResult oldResult, int subSingleBenchmarkIndex) {
         SubSingleBenchmarkResult newResult = new SubSingleBenchmarkResult(singleBenchmarkResult, subSingleBenchmarkIndex);
-        newResult.pureSubSingleStatisticList = new ArrayList<PureSubSingleStatistic>(oldResult.pureSubSingleStatisticList.size());
+        newResult.pureSubSingleStatisticList = new ArrayList<>(oldResult.pureSubSingleStatisticList.size());
         for (PureSubSingleStatistic oldSubSingleStatistic : oldResult.pureSubSingleStatisticList) {
             newResult.pureSubSingleStatisticList.add(
                     oldSubSingleStatistic.getStatisticType().buildPureSubSingleStatistic(newResult));

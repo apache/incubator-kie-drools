@@ -113,7 +113,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
         unassignedPanel = new EmployeePanel(this, Collections.<ShiftDate>emptyList(), Collections.<Shift>emptyList(),
                 null);
         employeeListPanel.add(unassignedPanel);
-        employeeToPanelMap = new LinkedHashMap<Employee, EmployeePanel>();
+        employeeToPanelMap = new LinkedHashMap<>();
         employeeToPanelMap.put(null, unassignedPanel);
     }
 
@@ -144,7 +144,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
     public void updatePanel(NurseRoster nurseRoster) {
         List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
         List<Shift> shiftList = nurseRoster.getShiftList();
-        Set<Employee> deadEmployeeSet = new LinkedHashSet<Employee>(employeeToPanelMap.keySet());
+        Set<Employee> deadEmployeeSet = new LinkedHashSet<>(employeeToPanelMap.keySet());
         deadEmployeeSet.remove(null);
         for (Employee employee : nurseRoster.getEmployeeList()) {
             deadEmployeeSet.remove(employee);
@@ -199,7 +199,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
                 newShiftDate.setDateString(oldLastShiftDate.determineNextDateString());
                 newShiftDate.setDayOfWeek(oldLastShiftDate.getDayOfWeek().determineNextDayOfWeek());
                 List<Shift> refShiftList = planningWindowStart.getShiftList();
-                List<Shift> newShiftList = new ArrayList<Shift>(refShiftList.size());
+                List<Shift> newShiftList = new ArrayList<>(refShiftList.size());
                 newShiftDate.setShiftList(newShiftList);
                 nurseRoster.getShiftDateList().add(newShiftDate);
                 scoreDirector.afterProblemFactAdded(newShiftDate);
@@ -255,7 +255,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
                 scoreDirector.triggerVariableListeners();
                 // A SolutionCloner does not clone problem fact lists (such as employeeList)
                 // Shallow clone the employeeList so only workingSolution is affected, not bestSolution or guiSolution
-                nurseRoster.setEmployeeList(new ArrayList<Employee>(nurseRoster.getEmployeeList()));
+                nurseRoster.setEmployeeList(new ArrayList<>(nurseRoster.getEmployeeList()));
                 // Remove it the problem fact itself
                 for (Iterator<Employee> it = nurseRoster.getEmployeeList().iterator(); it.hasNext(); ) {
                     Employee workingEmployee = it.next();

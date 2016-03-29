@@ -64,7 +64,7 @@ public enum SolverBenchmarkBluePrintType {
 
     private List<SolverBenchmarkConfig> buildEveryConstructionHeuristicType() {
         ConstructionHeuristicType[] chTypes = ConstructionHeuristicType.getBluePrintTypes();
-        List<SolverBenchmarkConfig> solverBenchmarkConfigList = new ArrayList<SolverBenchmarkConfig>(chTypes.length);
+        List<SolverBenchmarkConfig> solverBenchmarkConfigList = new ArrayList<>(chTypes.length);
         for (ConstructionHeuristicType chType : chTypes) {
             solverBenchmarkConfigList.add(buildSolverBenchmarkConfig(chType, null));
         }
@@ -73,7 +73,7 @@ public enum SolverBenchmarkBluePrintType {
 
     private List<SolverBenchmarkConfig> buildEveryLocalSearchType() {
         LocalSearchType[] lsTypes = LocalSearchType.getBluePrintTypes();
-        List<SolverBenchmarkConfig> solverBenchmarkConfigList = new ArrayList<SolverBenchmarkConfig>(lsTypes.length);
+        List<SolverBenchmarkConfig> solverBenchmarkConfigList = new ArrayList<>(lsTypes.length);
         for (LocalSearchType lsType : lsTypes) {
             solverBenchmarkConfigList.add(buildSolverBenchmarkConfig(null, lsType));
         }
@@ -83,7 +83,7 @@ public enum SolverBenchmarkBluePrintType {
     private List<SolverBenchmarkConfig> buildEveryConstructionHeuristicTypeWithEveryLocalSearchType() {
         ConstructionHeuristicType[] chTypes = ConstructionHeuristicType.getBluePrintTypes();
         LocalSearchType[] lsTypes = LocalSearchType.getBluePrintTypes();
-        List<SolverBenchmarkConfig> solverBenchmarkConfigList = new ArrayList<SolverBenchmarkConfig>(
+        List<SolverBenchmarkConfig> solverBenchmarkConfigList = new ArrayList<>(
                 chTypes.length * lsTypes.length);
         for (ConstructionHeuristicType chType : chTypes) {
             for (LocalSearchType lsType : lsTypes) {
@@ -101,7 +101,7 @@ public enum SolverBenchmarkBluePrintType {
                 constructionHeuristicType.name() + "-" + localSearchType.name();
         solverBenchmarkConfig.setName(name);
         SolverConfig solverConfig = new SolverConfig();
-        List<PhaseConfig> phaseConfigList = new ArrayList<PhaseConfig>(2);
+        List<PhaseConfig> phaseConfigList = new ArrayList<>(2);
         ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
         if (constructionHeuristicType != null) {
             constructionHeuristicPhaseConfig.setConstructionHeuristicType(constructionHeuristicType);

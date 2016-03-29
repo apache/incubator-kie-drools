@@ -72,7 +72,7 @@ public abstract class AbstractCachingMoveSelector extends AbstractMoveSelector i
                     + ") with childSize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        cachedMoveList = new ArrayList<Move>((int) childSize);
+        cachedMoveList = new ArrayList<>((int) childSize);
         Iterators.addAll(cachedMoveList, childMoveSelector.iterator());
         logger.trace("    Created cachedMoveList: size ({}), moveSelector ({}).",
                 cachedMoveList.size(), this);

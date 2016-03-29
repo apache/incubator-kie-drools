@@ -59,7 +59,7 @@ public class CheapTimePillarSlideMove extends AbstractMove {
 
     public Collection<? extends Object> getPlanningValues() {
         // Presumes this method is always called after the move is done.
-        List<Integer> startPeriodList = new ArrayList<Integer>(pillar.size());
+        List<Integer> startPeriodList = new ArrayList<>(pillar.size());
         for (TaskAssignment taskAssignment : pillar) {
             startPeriodList.add(taskAssignment.getStartPeriod());
         }

@@ -69,7 +69,7 @@ public class CompositeAcceptorTest {
     }
 
     private boolean isCompositeAccepted(boolean... childAccepts) {
-        List<Acceptor> acceptorList = new ArrayList<Acceptor>(childAccepts.length);
+        List<Acceptor> acceptorList = new ArrayList<>(childAccepts.length);
         for (boolean childAccept : childAccepts) {
             Acceptor acceptor = mock(Acceptor.class);
             when(acceptor.isAccepted(any(LocalSearchMoveScope.class))).thenReturn(childAccept);

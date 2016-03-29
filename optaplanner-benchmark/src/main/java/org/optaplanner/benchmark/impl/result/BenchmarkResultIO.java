@@ -79,7 +79,7 @@ public class BenchmarkResultIO {
         }
         File[] benchmarkReportDirectories = benchmarkDirectory.listFiles((FileFilter) DirectoryFileFilter.INSTANCE);
         Arrays.sort(benchmarkReportDirectories);
-        List<PlannerBenchmarkResult> plannerBenchmarkResultList = new ArrayList<PlannerBenchmarkResult>(
+        List<PlannerBenchmarkResult> plannerBenchmarkResultList = new ArrayList<>(
                 benchmarkReportDirectories.length);
         for (File benchmarkReportDirectory : benchmarkReportDirectories) {
             File plannerBenchmarkResultFile = new File(benchmarkReportDirectory, PLANNER_BENCHMARK_RESULT_FILENAME);
@@ -126,7 +126,7 @@ public class BenchmarkResultIO {
         for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
             problemBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
             if (problemBenchmarkResult.getProblemStatisticList() == null) {
-                problemBenchmarkResult.setProblemStatisticList(new ArrayList<ProblemStatistic>(0));
+                problemBenchmarkResult.setProblemStatisticList(new ArrayList<>(0));
             }
             for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
                 problemStatistic.setProblemBenchmarkResult(problemBenchmarkResult);
@@ -141,7 +141,7 @@ public class BenchmarkResultIO {
                 singleBenchmarkResult.setSolverBenchmarkResult(solverBenchmarkResult);
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
                     if (subSingleBenchmarkResult.getPureSubSingleStatisticList() == null) {
-                        subSingleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<PureSubSingleStatistic>(0));
+                        subSingleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<>(0));
                     }
                 }
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {

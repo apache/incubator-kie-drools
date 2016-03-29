@@ -100,7 +100,7 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
     // ************************************************************************
 
     public void initPointList() {
-        pointList = new ArrayList<StatisticPoint_>();
+        pointList = new ArrayList<>();
     }
 
     protected abstract String getCsvHeader();
@@ -148,7 +148,7 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
                         + ") is expected to be the header line (" + getCsvHeader()
                         + ") for statisticType (" + getStatisticType() + ").");
             }
-            Map<String, String> stringDuplicationRemovalMap = new HashMap<String, String>(1024);
+            Map<String, String> stringDuplicationRemovalMap = new HashMap<>(1024);
             for (line = reader.readLine(); line != null && !line.isEmpty(); line = reader.readLine()) {
                 if (line.equals("Failed")) {
                     if (subSingleBenchmarkResult.hasAnyFailure()) {

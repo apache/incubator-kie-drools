@@ -88,7 +88,7 @@ public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
         if (!randomSelection) {
             return cachedMoveList.iterator();
         } else {
-            return new CachedListRandomIterator<Move>(cachedMoveList, workingRandom);
+            return new CachedListRandomIterator<>(cachedMoveList, workingRandom);
         }
     }
 

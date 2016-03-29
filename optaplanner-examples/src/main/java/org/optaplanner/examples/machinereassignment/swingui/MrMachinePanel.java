@@ -48,7 +48,7 @@ public class MrMachinePanel extends JPanel {
     private final MachineReassignmentPanel machineReassignmentPanel;
     private List<MrResource> resourceList;
     private MrMachine machine;
-    private List<MrProcessAssignment> processAssignmentList = new ArrayList<MrProcessAssignment>();
+    private List<MrProcessAssignment> processAssignmentList = new ArrayList<>();
 
     private JLabel machineLabel;
     private JPanel resourceListPanel = null;
@@ -125,7 +125,7 @@ public class MrMachinePanel extends JPanel {
             remove(resourceListPanel);
         }
         resourceListPanel = new JPanel(new GridLayout(1, resourceList.size()));
-        resourceFieldMap = new LinkedHashMap<MrResource, JTextField>(resourceList.size());
+        resourceFieldMap = new LinkedHashMap<>(resourceList.size());
         for (MrResource resource : resourceList) {
             long maximumCapacity = machine == null ? 0L : machine.getMachineCapacity(resource).getMaximumCapacity();
             JTextField resourceField = new JTextField("0 / " + maximumCapacity);

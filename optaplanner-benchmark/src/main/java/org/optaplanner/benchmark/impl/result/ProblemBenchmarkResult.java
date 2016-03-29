@@ -215,7 +215,7 @@ public class ProblemBenchmarkResult<Solution_> {
     }
 
     public Collection<SingleStatisticType> extractSingleStatisticTypeList() {
-        Set<SingleStatisticType> singleStatisticTypeSet = new LinkedHashSet<SingleStatisticType>();
+        Set<SingleStatisticType> singleStatisticTypeSet = new LinkedHashSet<>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
                 singleStatisticTypeSet.add(pureSubSingleStatistic.getStatisticType());
@@ -225,7 +225,7 @@ public class ProblemBenchmarkResult<Solution_> {
     }
 
     public List<PureSubSingleStatistic> extractPureSubSingleStatisticList(SingleStatisticType singleStatisticType) {
-        List<PureSubSingleStatistic> pureSubSingleStatisticList = new ArrayList<PureSubSingleStatistic>(
+        List<PureSubSingleStatistic> pureSubSingleStatisticList = new ArrayList<>(
                 singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
@@ -298,7 +298,7 @@ public class ProblemBenchmarkResult<Solution_> {
         maximumSubSingleCount = 0;
         long totalUsedMemoryAfterInputSolution = 0L;
         int usedMemoryAfterInputSolutionCount = 0;
-        List<SingleBenchmarkResult> successResultList = new ArrayList<SingleBenchmarkResult>(singleBenchmarkResultList);
+        List<SingleBenchmarkResult> successResultList = new ArrayList<>(singleBenchmarkResultList);
         // Do not rank a SingleBenchmarkResult that has a failure
         for (Iterator<SingleBenchmarkResult> it = successResultList.iterator(); it.hasNext(); ) {
             SingleBenchmarkResult singleBenchmarkResult = it.next();
@@ -423,23 +423,23 @@ public class ProblemBenchmarkResult<Solution_> {
             PlannerBenchmarkResult newPlannerBenchmarkResult, List<SingleBenchmarkResult> singleBenchmarkResultList) {
         // IdentityHashMap but despite that different ProblemBenchmarkResult instances are merged
         Map<ProblemBenchmarkResult, ProblemBenchmarkResult> mergeMap
-                = new IdentityHashMap<ProblemBenchmarkResult, ProblemBenchmarkResult>();
-        Map<File, ProblemBenchmarkResult> fileToNewResultMap = new HashMap<File, ProblemBenchmarkResult>();
+                = new IdentityHashMap<>();
+        Map<File, ProblemBenchmarkResult> fileToNewResultMap = new HashMap<>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             ProblemBenchmarkResult<Solution_> oldResult = singleBenchmarkResult.getProblemBenchmarkResult();
             if (!mergeMap.containsKey(oldResult)) {
                 ProblemBenchmarkResult<Solution_> newResult;
                 if (!fileToNewResultMap.containsKey(oldResult.inputSolutionFile)) {
-                    newResult = new ProblemBenchmarkResult<Solution_>(newPlannerBenchmarkResult);
+                    newResult = new ProblemBenchmarkResult<>(newPlannerBenchmarkResult);
                     newResult.name = oldResult.name;
                     newResult.inputSolutionFile = oldResult.inputSolutionFile;
                     // Skip oldResult.problemReportDirectory
-                    newResult.problemStatisticList = new ArrayList<ProblemStatistic>(oldResult.problemStatisticList.size());
+                    newResult.problemStatisticList = new ArrayList<>(oldResult.problemStatisticList.size());
                     for (ProblemStatistic oldProblemStatistic : oldResult.problemStatisticList) {
                         newResult.problemStatisticList.add(
                                 oldProblemStatistic.getProblemStatisticType().buildProblemStatistic(newResult));
                     }
-                    newResult.singleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>(
+                    newResult.singleBenchmarkResultList = new ArrayList<>(
                             oldResult.singleBenchmarkResultList.size());
                     newResult.entityCount = oldResult.entityCount;
                     newResult.variableCount = oldResult.variableCount;

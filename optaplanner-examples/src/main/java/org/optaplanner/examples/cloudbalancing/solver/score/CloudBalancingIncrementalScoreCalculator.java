@@ -37,10 +37,10 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
 
     public void resetWorkingSolution(CloudBalance cloudBalance) {
         int computerListSize = cloudBalance.getComputerList().size();
-        cpuPowerUsageMap = new HashMap<CloudComputer, Integer>(computerListSize);
-        memoryUsageMap = new HashMap<CloudComputer, Integer>(computerListSize);
-        networkBandwidthUsageMap = new HashMap<CloudComputer, Integer>(computerListSize);
-        processCountMap = new HashMap<CloudComputer, Integer>(computerListSize);
+        cpuPowerUsageMap = new HashMap<>(computerListSize);
+        memoryUsageMap = new HashMap<>(computerListSize);
+        networkBandwidthUsageMap = new HashMap<>(computerListSize);
+        processCountMap = new HashMap<>(computerListSize);
         for (CloudComputer computer : cloudBalance.getComputerList()) {
             cpuPowerUsageMap.put(computer, 0);
             memoryUsageMap.put(computer, 0);

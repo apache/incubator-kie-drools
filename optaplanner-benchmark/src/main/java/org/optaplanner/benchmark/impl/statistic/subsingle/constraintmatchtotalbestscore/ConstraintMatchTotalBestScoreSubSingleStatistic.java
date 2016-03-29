@@ -166,18 +166,18 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         List<Map<String, XYSeries>> constraintIdToWeightSeriesMapList
-                = new ArrayList<Map<String, XYSeries>>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
+                = new ArrayList<>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         for (ConstraintMatchTotalBestScoreStatisticPoint point : getPointList()) {
             int scoreLevel = point.getScoreLevel();
             if (scoreLevel >= BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE) {
                 continue;
             }
             while (scoreLevel >= constraintIdToWeightSeriesMapList.size()) {
-                constraintIdToWeightSeriesMapList.add(new LinkedHashMap<String, XYSeries>());
+                constraintIdToWeightSeriesMapList.add(new LinkedHashMap<>());
             }
             Map<String, XYSeries> constraintIdToWeightSeriesMap = constraintIdToWeightSeriesMapList.get(scoreLevel);
             if (constraintIdToWeightSeriesMap == null) {
-                constraintIdToWeightSeriesMap = new LinkedHashMap<String, XYSeries>();
+                constraintIdToWeightSeriesMap = new LinkedHashMap<>();
                 constraintIdToWeightSeriesMapList.set(scoreLevel, constraintIdToWeightSeriesMap);
             }
             String constraintId = point.getConstraintPackage() + ":" + point.getConstraintName();
@@ -189,7 +189,7 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
             long timeMillisSpent = point.getTimeMillisSpent();
             weightSeries.add(timeMillisSpent, point.getWeightTotal());
         }
-        graphFileList = new ArrayList<File>(constraintIdToWeightSeriesMapList.size());
+        graphFileList = new ArrayList<>(constraintIdToWeightSeriesMapList.size());
         for (int scoreLevelIndex = 0; scoreLevelIndex < constraintIdToWeightSeriesMapList.size(); scoreLevelIndex++) {
             XYPlot plot = createPlot(benchmarkReport, scoreLevelIndex);
             // No direct ascending lines between 2 points, but a stepping line instead

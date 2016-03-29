@@ -132,7 +132,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove {
     }
 
     public Collection<? extends Object> getPlanningEntities() {
-        List<Object> entities = new ArrayList<Object>(
+        List<Object> entities = new ArrayList<>(
                 leftPillar.size() + rightPillar.size());
         entities.addAll(leftPillar);
         entities.addAll(rightPillar);
@@ -140,7 +140,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove {
     }
 
     public Collection<? extends Object> getPlanningValues() {
-        List<Object> values = new ArrayList<Object>(variableDescriptors.size() * 2);
+        List<Object> values = new ArrayList<>(variableDescriptors.size() * 2);
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             values.add(variableDescriptor.getValue(leftPillar.get(0)));
             values.add(variableDescriptor.getValue(rightPillar.get(0)));

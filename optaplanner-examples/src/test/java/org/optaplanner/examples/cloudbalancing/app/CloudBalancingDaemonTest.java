@@ -46,7 +46,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
     private CountDownLatch stage2Latch = new CountDownLatch(1);
     private CountDownLatch stage3Latch = new CountDownLatch(1);
 
-    private Queue<CloudProcess> notYetAddedProcessQueue = new ArrayDeque<CloudProcess>();
+    private Queue<CloudProcess> notYetAddedProcessQueue = new ArrayDeque<>();
 
     @Test(timeout = 600000)
     public void daemon() throws InterruptedException {
@@ -151,7 +151,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
     private CloudBalance buildPlanningProblem(int computerListSize, int processListSize) {
         CloudBalance cloudBalance = new CloudBalancingGenerator().createCloudBalance(computerListSize, processListSize);
         notYetAddedProcessQueue.addAll(cloudBalance.getProcessList());
-        cloudBalance.setProcessList(new ArrayList<CloudProcess>(notYetAddedProcessQueue.size()));
+        cloudBalance.setProcessList(new ArrayList<>(notYetAddedProcessQueue.size()));
         return cloudBalance;
     }
 

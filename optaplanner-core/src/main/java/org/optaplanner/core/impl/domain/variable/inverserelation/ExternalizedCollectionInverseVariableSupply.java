@@ -48,7 +48,7 @@ public class ExternalizedCollectionInverseVariableSupply implements StatefulVari
     public void resetWorkingSolution(ScoreDirector scoreDirector) {
         EntityDescriptor entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
         List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
-        inverseEntitySetMap = new IdentityHashMap<Object, Set<Object>>(entityList.size());
+        inverseEntitySetMap = new IdentityHashMap<>(entityList.size());
         for (Object entity : entityList) {
             insert(scoreDirector, entity);
         }

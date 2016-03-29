@@ -33,7 +33,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
     protected final boolean daemon;
 
     protected boolean terminatedEarly = false;
-    protected BlockingQueue<ProblemFactChange> problemFactChangeQueue = new LinkedBlockingQueue<ProblemFactChange>();
+    protected BlockingQueue<ProblemFactChange> problemFactChangeQueue = new LinkedBlockingQueue<>();
 
     protected boolean problemFactChangesBeingProcessed = false;
 

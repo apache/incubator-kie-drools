@@ -66,7 +66,7 @@ public class WeightFactorySelectionSorter<Solution_, T> implements SelectionSort
      * of {@link PlanningEntity}, planningValue,  {@link Move} or {@link Selector}
      */
     public void sort(Solution_ solution, List<T> selectionList) {
-        SortedMap<Comparable, T> selectionMap = new TreeMap<Comparable, T>(appliedWeightComparator);
+        SortedMap<Comparable, T> selectionMap = new TreeMap<>(appliedWeightComparator);
         for (T selection : selectionList) {
             Comparable difficultyWeight = selectionSorterWeightFactory.createSorterWeight(solution, selection);
             T previous = selectionMap.put(difficultyWeight, selection);

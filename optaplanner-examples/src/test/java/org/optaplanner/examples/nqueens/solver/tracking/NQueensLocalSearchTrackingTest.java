@@ -70,7 +70,7 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
 
     @Parameterized.Parameters(name = "AcceptorType: {0}")
     public static Collection<Object[]> parameters() {
-        Collection<Object[]> params = new ArrayList<Object[]>();
+        Collection<Object[]> params = new ArrayList<>();
 
         AcceptorConfig acceptorConfig = new AcceptorConfig();
         LocalSearchForagerConfig localSearchForagerConfig = new LocalSearchForagerConfig();

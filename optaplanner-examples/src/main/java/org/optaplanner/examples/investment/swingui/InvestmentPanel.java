@@ -64,11 +64,11 @@ public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
         setLayout(new BorderLayout());
         add(createTableHeader(), BorderLayout.NORTH);
         JTabbedPane tabbedPane = new JTabbedPane();
-        assetClassPanel = new TimeTablePanel<AssetClass, AssetClass>();
+        assetClassPanel = new TimeTablePanel<>();
         tabbedPane.add("Asset classes", new JScrollPane(assetClassPanel));
-        regionPanel = new TimeTablePanel<Void, Region>();
+        regionPanel = new TimeTablePanel<>();
         tabbedPane.add("Regions", new JScrollPane(regionPanel));
-        sectorPanel = new TimeTablePanel<Void, Sector>();
+        sectorPanel = new TimeTablePanel<>();
         tabbedPane.add("Sectors", new JScrollPane(sectorPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);

@@ -31,7 +31,7 @@ public class NQueensBasicIncrementalScoreCalculator extends AbstractIncrementalS
     private int score;
 
     public void resetWorkingSolution(NQueens nQueens) {
-        insertedQueenList = new ArrayList<Queen>(nQueens.getN());
+        insertedQueenList = new ArrayList<>(nQueens.getN());
         score = 0;
         for (Queen queen : nQueens.getQueenList()) {
             insert(queen);

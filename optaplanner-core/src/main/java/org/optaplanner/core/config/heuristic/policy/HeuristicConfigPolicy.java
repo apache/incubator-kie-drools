@@ -41,9 +41,9 @@ public class HeuristicConfigPolicy {
     private boolean initializedChainedValueFilterEnabled = false;
 
     private Map<String, EntityMimicRecorder> entityMimicRecorderMap
-            = new HashMap<String, EntityMimicRecorder>();
+            = new HashMap<>();
     private Map<String, ValueMimicRecorder> valueMimicRecorderMap
-            = new HashMap<String, ValueMimicRecorder>();
+            = new HashMap<>();
 
     public HeuristicConfigPolicy(EnvironmentMode environmentMode, InnerScoreDirectorFactory scoreDirectorFactory) {
         this.environmentMode = environmentMode;

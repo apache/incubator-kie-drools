@@ -114,7 +114,7 @@ public class CompositeMove implements Move {
     // ************************************************************************
 
     public String getSimpleMoveTypeDescription() {
-        Set<String> childMoveTypeDescriptionSet = new TreeSet<String>();
+        Set<String> childMoveTypeDescriptionSet = new TreeSet<>();
         for (Move move : moves) {
             childMoveTypeDescriptionSet.add(move.getSimpleMoveTypeDescription());
         }
@@ -130,7 +130,7 @@ public class CompositeMove implements Move {
     }
 
     public Collection<? extends Object> getPlanningEntities() {
-        Set<Object> entities = new LinkedHashSet<Object>(moves.length * 2);
+        Set<Object> entities = new LinkedHashSet<>(moves.length * 2);
         for (Move move : moves) {
             entities.addAll(move.getPlanningEntities());
         }
@@ -138,7 +138,7 @@ public class CompositeMove implements Move {
     }
 
     public Collection<? extends Object> getPlanningValues() {
-        Set<Object> values = new LinkedHashSet<Object>(moves.length * 2);
+        Set<Object> values = new LinkedHashSet<>(moves.length * 2);
         for (Move move : moves) {
             values.addAll(move.getPlanningValues());
         }

@@ -50,7 +50,7 @@ public class CartesianProductMoveSelectorTest {
     }
 
     public void originSelection(boolean ignoreEmptyChildIterators) {
-        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")));
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
@@ -114,7 +114,7 @@ public class CartesianProductMoveSelectorTest {
         assertTrue(emptyFirst || emptySecond);
         MoveSelector nonEmptyChildMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")); // One side is not empty
-        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         childMoveSelectorList.add(emptyFirst
                 ? SelectorTestUtils.mockMoveSelector(DummyMove.class) : nonEmptyChildMoveSelector);
         childMoveSelectorList.add(emptySecond
@@ -156,7 +156,7 @@ public class CartesianProductMoveSelectorTest {
     }
 
     public void originSelection3ChildMoveSelectors(boolean ignoreEmptyChildIterators) {
-        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2")));
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
@@ -198,7 +198,7 @@ public class CartesianProductMoveSelectorTest {
     }
 
     public void emptyOriginSelection3ChildMoveSelectors(boolean ignoreEmptyChildIterators) {
-        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2")));
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
@@ -242,7 +242,7 @@ public class CartesianProductMoveSelectorTest {
     }
 
     public void classicRandomSelection(boolean ignoreEmptyChildIterators) {
-        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")));
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
@@ -280,7 +280,7 @@ public class CartesianProductMoveSelectorTest {
     }
 
     public void emptyRandomSelection(boolean ignoreEmptyChildIterators) {
-        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("b1"), new DummyMove("b2"))); // One side is not empty
@@ -321,7 +321,7 @@ public class CartesianProductMoveSelectorTest {
     }
 
     public void randomSelection3ChildMoveSelectors(boolean ignoreEmptyChildIterators) {
-        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2")));
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
@@ -361,7 +361,7 @@ public class CartesianProductMoveSelectorTest {
     }
 
     public void emptyRandomSelection3ChildMoveSelectors(boolean ignoreEmptyChildIterators) {
-        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
+        ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<>();
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class));
         childMoveSelectorList.add(SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("b1"), new DummyMove("b2")));
@@ -419,7 +419,7 @@ public class CartesianProductMoveSelectorTest {
                 TestdataMultiVarEntity.class, "secondaryValue",
                 new TestdataValue("8"), new TestdataValue("9"));
 
-        List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(2);
+        List<MoveSelector> moveSelectorList = new ArrayList<>(2);
         moveSelectorList.add(new ChangeMoveSelector(
                 recordingEntitySelector,
                 primaryValueSelector,
@@ -485,7 +485,7 @@ public class CartesianProductMoveSelectorTest {
                 TestdataMultiVarEntity.class, "secondaryValue",
                 new TestdataValue("8"), new TestdataValue("9"));
 
-        List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(2);
+        List<MoveSelector> moveSelectorList = new ArrayList<>(2);
         moveSelectorList.add(new ChangeMoveSelector(
                 recordingEntitySelector,
                 primaryValueSelector,

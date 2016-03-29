@@ -70,7 +70,7 @@ public class ProbabilityValueSelector extends AbstractValueSelector
     // ************************************************************************
 
     public void constructCache(DefaultSolverScope solverScope) {
-        cachedEntityMap = new TreeMap<Double, Object>();
+        cachedEntityMap = new TreeMap<>();
         ScoreDirector scoreDirector = solverScope.getScoreDirector();
         double probabilityWeightOffset = 0L;
         // TODO Fail-faster if a non FromSolutionPropertyValueSelector is used

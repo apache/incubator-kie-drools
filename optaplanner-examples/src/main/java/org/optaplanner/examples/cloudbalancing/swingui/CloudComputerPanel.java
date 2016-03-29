@@ -45,7 +45,7 @@ public class CloudComputerPanel extends JPanel {
 
     private final CloudBalancingPanel cloudBalancingPanel;
     private CloudComputer computer;
-    private List<CloudProcess> processList = new ArrayList<CloudProcess>();
+    private List<CloudProcess> processList = new ArrayList<>();
 
     private JLabel computerLabel;
     private JTextField cpuPowerField;
@@ -223,7 +223,7 @@ public class CloudComputerPanel extends JPanel {
 
     private static class CloudBar extends JPanel {
 
-        private List<Integer> processValues = new ArrayList<Integer>();
+        private List<Integer> processValues = new ArrayList<>();
         private int computerValue;
         private int maximumComputerValue;
 

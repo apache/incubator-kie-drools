@@ -32,7 +32,7 @@ public class ManualEntityMimicRecorder implements EntityMimicRecorder {
 
     public ManualEntityMimicRecorder(EntitySelector sourceEntitySelector) {
         this.sourceEntitySelector = sourceEntitySelector;
-        replayingEntitySelectorList = new ArrayList<MimicReplayingEntitySelector>();
+        replayingEntitySelectorList = new ArrayList<>();
     }
 
     @Override

@@ -109,8 +109,8 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
 
         private void readSpecialismList() throws IOException {
             readConstantLine("SPECIALISMS:");
-            List<Specialism> specialismList = new ArrayList<Specialism>(specialismListSize);
-            idToSpecialismMap = new HashMap<Long, Specialism>(specialismListSize);
+            List<Specialism> specialismList = new ArrayList<>(specialismListSize);
+            idToSpecialismMap = new HashMap<>(specialismListSize);
             for (int i = 0; i < specialismListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line, 2);
@@ -125,9 +125,9 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
 
         private void readDepartmentListAndDepartmentSpecialismList() throws IOException {
             readConstantLine("DEPARTMENTS:");
-            List<Department> departmentList = new ArrayList<Department>(departmentListSize);
-            idToDepartmentMap = new HashMap<Long, Department>(departmentListSize);
-            List<DepartmentSpecialism> departmentSpecialismList = new ArrayList<DepartmentSpecialism>(
+            List<Department> departmentList = new ArrayList<>(departmentListSize);
+            idToDepartmentMap = new HashMap<>(departmentListSize);
+            List<DepartmentSpecialism> departmentSpecialismList = new ArrayList<>(
                     departmentListSize * 5);
             long departmentSpecialismId = 0L;
             for (int i = 0; i < departmentListSize; i++) {
@@ -138,7 +138,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 Department department = new Department();
                 department.setId(Long.parseLong(departmentTokens[0]));
                 department.setName(departmentTokens[1]);
-                department.setRoomList(new ArrayList<Room>());
+                department.setRoomList(new ArrayList<>());
                 int minimumAge = Integer.parseInt(departmentTokens[2]);
                 if (minimumAge != 0) {
                     department.setMinimumAge(Integer.valueOf(minimumAge));
@@ -181,8 +181,8 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
 
         private void readEquipmentList() throws IOException {
             readConstantLine("ROOMPROPERTIES:");
-            List<Equipment> equipmentList = new ArrayList<Equipment>(equipmentListSize);
-            indexToEquipmentMap = new HashMap<Integer, Equipment>(equipmentListSize);
+            List<Equipment> equipmentList = new ArrayList<>(equipmentListSize);
+            indexToEquipmentMap = new HashMap<>(equipmentListSize);
             for (int i = 0; i < equipmentListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line, 2);
@@ -197,10 +197,10 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
 
         private void readRoomListAndRoomSpecialismListAndRoomEquipmentList() throws IOException {
             readConstantLine("ROOMS:");
-            List<Room> roomList = new ArrayList<Room>(roomListSize);
-            idToRoomMap = new HashMap<Long, Room>(roomListSize);
-            List<RoomSpecialism> roomSpecialismList = new ArrayList<RoomSpecialism>(roomListSize * 5);
-            List<RoomEquipment> roomEquipmentList = new ArrayList<RoomEquipment>(roomListSize * 2);
+            List<Room> roomList = new ArrayList<>(roomListSize);
+            idToRoomMap = new HashMap<>(roomListSize);
+            List<RoomSpecialism> roomSpecialismList = new ArrayList<>(roomListSize * 5);
+            List<RoomEquipment> roomEquipmentList = new ArrayList<>(roomListSize * 2);
             long roomSpecialismId = 0L;
             long roomEquipmentId = 0L;
             for (int i = 0; i < roomListSize; i++) {
@@ -216,7 +216,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                         Long.parseLong(lineTokens[2]));
                 room.setDepartment(department);
                 room.setGenderLimitation(GenderLimitation.valueOfCode(lineTokens[3]));
-                room.setBedList(new ArrayList<Bed>());
+                room.setBedList(new ArrayList<>());
                 roomList.add(room);
                 idToRoomMap.put(room.getId(), room);
                 department.getRoomList().add(room);
@@ -227,7 +227,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                             + ") is expected to contain even number of tokens (" + roomSpecialismTokens.length
                             + ") after 4th pipeline (|) separated by a space ( ).");
                 }
-                List<RoomSpecialism> roomSpecialismListOfRoom = new ArrayList<RoomSpecialism>(roomSpecialismTokens.length / 2);
+                List<RoomSpecialism> roomSpecialismListOfRoom = new ArrayList<>(roomSpecialismTokens.length / 2);
                 for (int j = 0; j < roomSpecialismTokens.length; j += 2) {
                     int priority = Integer.parseInt(roomSpecialismTokens[j]);
                     long specialismId = Long.parseLong(roomSpecialismTokens[j + 1]);
@@ -249,7 +249,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 }
                 room.setRoomSpecialismList(roomSpecialismListOfRoom);
 
-                List<RoomEquipment> roomEquipmentListOfRoom = new ArrayList<RoomEquipment>(equipmentListSize);
+                List<RoomEquipment> roomEquipmentListOfRoom = new ArrayList<>(equipmentListSize);
                 String[] roomEquipmentTokens = splitBySpace(lineTokens[5]);
                 if (roomEquipmentTokens.length != equipmentListSize) {
                     throw new IllegalArgumentException("Read line (" + line
@@ -288,8 +288,8 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
 
         private void readBedList() throws IOException {
             readConstantLine("BEDS:");
-            List<Bed> bedList = new ArrayList<Bed>(bedListSize);
-            Map<Room, Integer> roomToLastIndexInRoomMap = new HashMap<Room, Integer>(roomListSize);
+            List<Bed> bedList = new ArrayList<>(bedListSize);
+            Map<Room, Integer> roomToLastIndexInRoomMap = new HashMap<>(roomListSize);
             for (int i = 0; i < bedListSize; i++) {
                 String line = bufferedReader.readLine();
                 String[] lineTokens = splitBySpace(line, 2);
@@ -322,8 +322,8 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
         }
 
         private void generateNightList() {
-            List<Night> nightList = new ArrayList<Night>(nightListSize);
-            indexToNightMap = new HashMap<Integer, Night>(nightListSize);
+            List<Night> nightList = new ArrayList<>(nightListSize);
+            indexToNightMap = new HashMap<>(nightListSize);
             long nightId = 0L;
             for (int i = 0; i < nightListSize; i++) {
                 Night night = new Night();
@@ -338,10 +338,10 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
 
         private void readPatientListAndAdmissionPartListAndRequiredPatientEquipmentListAndPreferredPatientEquipmentList() throws IOException {
             readConstantLine("PATIENTS:");
-            List<Patient> patientList = new ArrayList<Patient>(patientListSize);
-            List<AdmissionPart> admissionPartList = new ArrayList<AdmissionPart>(patientListSize);
-            List<RequiredPatientEquipment> requiredPatientEquipmentList = new ArrayList<RequiredPatientEquipment>(patientListSize * equipmentListSize);
-            List<PreferredPatientEquipment> preferredPatientEquipmentList = new ArrayList<PreferredPatientEquipment>(patientListSize * equipmentListSize);
+            List<Patient> patientList = new ArrayList<>(patientListSize);
+            List<AdmissionPart> admissionPartList = new ArrayList<>(patientListSize);
+            List<RequiredPatientEquipment> requiredPatientEquipmentList = new ArrayList<>(patientListSize * equipmentListSize);
+            List<PreferredPatientEquipment> preferredPatientEquipmentList = new ArrayList<>(patientListSize * equipmentListSize);
             long admissionPartId = 0L;
             long requiredPatientEquipmentId = 0L;
             long preferredPatientEquipmentId = 0L;
@@ -433,7 +433,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                             + ") as equipmentListSize (" + equipmentListSize + ") after 4th pipeline (|).");
                 }
                 List<RequiredPatientEquipment> requiredPatientEquipmentOfPatientList
-                        = new ArrayList<RequiredPatientEquipment>(equipmentListSize);
+                        = new ArrayList<>(equipmentListSize);
                 for (int j = 0; j < requiredPatientEquipmentTokens.length; j++) {
                     int hasEquipment = Integer.parseInt(requiredPatientEquipmentTokens[j]);
                     if (hasEquipment == 1) {
@@ -459,7 +459,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                             + ") as equipmentListSize (" + equipmentListSize + ") after 5th pipeline (|).");
                 }
                 List<PreferredPatientEquipment> preferredPatientEquipmentOfPatientList
-                        = new ArrayList<PreferredPatientEquipment>(equipmentListSize);
+                        = new ArrayList<>(equipmentListSize);
                 for (int j = 0; j < preferredPatientEquipmentTokens.length; j++) {
                     int hasEquipment = Integer.parseInt(preferredPatientEquipmentTokens[j]);
                     if (hasEquipment == 1) {
@@ -509,7 +509,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
 
         private void createBedDesignationList() {
             List<AdmissionPart> admissionPartList = patientAdmissionSchedule.getAdmissionPartList();
-            List<BedDesignation> bedDesignationList = new ArrayList<BedDesignation>(admissionPartList.size());
+            List<BedDesignation> bedDesignationList = new ArrayList<>(admissionPartList.size());
             long id = 0L;
             for (AdmissionPart admissionPart : admissionPartList) {
                 BedDesignation bedDesignation = new BedDesignation();

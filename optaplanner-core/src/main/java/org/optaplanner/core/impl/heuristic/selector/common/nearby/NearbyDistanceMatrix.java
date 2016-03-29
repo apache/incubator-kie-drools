@@ -28,7 +28,7 @@ public final class NearbyDistanceMatrix {
 
     public NearbyDistanceMatrix(NearbyDistanceMeter nearbyDistanceMeter, int originSize) {
         this.nearbyDistanceMeter = nearbyDistanceMeter;
-        originToDestinationsMap = new HashMap<Object, Object[]>(originSize);
+        originToDestinationsMap = new HashMap<>(originSize);
     }
 
     public void addAllDestinations(Object origin, Iterator<Object> destinationIterator, int destinationSize) {

@@ -36,8 +36,8 @@ public class CoachShuttleGatheringEasyScoreCalculator implements EasyScoreCalcul
         long hardScore = 0L;
         long softScore = 0L;
         List<Bus> busList = solution.getBusList();
-        Map<Bus, Integer> busToPassengerTotalMap = new LinkedHashMap<Bus, Integer>(busList.size());
-        Map<Coach, Integer> coachToStopCountMap = new LinkedHashMap<Coach, Integer>(busList.size());
+        Map<Bus, Integer> busToPassengerTotalMap = new LinkedHashMap<>(busList.size());
+        Map<Coach, Integer> coachToStopCountMap = new LinkedHashMap<>(busList.size());
         for (BusStop stop : solution.getStopList()) {
             Bus bus = stop.getBus();
             if (bus != null) {

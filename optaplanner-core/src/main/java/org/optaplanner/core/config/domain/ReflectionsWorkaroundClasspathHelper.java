@@ -118,7 +118,7 @@ public abstract class ReflectionsWorkaroundClasspathHelper {
      * @return the collection of URLs, not null
      */
     public static Collection<URL> forResource(String resourceName, ClassLoader... classLoaders) {
-        final List<URL> result = new ArrayList<URL>();
+        final List<URL> result = new ArrayList<>();
         final ClassLoader[] loaders = classLoaders(classLoaders);
         for (ClassLoader classLoader : loaders) {
             try {
@@ -200,7 +200,7 @@ public abstract class ReflectionsWorkaroundClasspathHelper {
      * @return the collection of URLs, not null
      */
     public static Collection<URL> forClassLoader(ClassLoader... classLoaders) {
-        final Collection<URL> result = new ArrayList<URL>();
+        final Collection<URL> result = new ArrayList<>();
         final ClassLoader[] loaders = classLoaders(classLoaders);
         for (ClassLoader classLoader : loaders) {
             while (classLoader != null) {
@@ -226,7 +226,7 @@ public abstract class ReflectionsWorkaroundClasspathHelper {
      * @return the collection of URLs, not null
      */
     public static Collection<URL> forJavaClassPath() {
-        Collection<URL> urls = new ArrayList<URL>();
+        Collection<URL> urls = new ArrayList<>();
         String javaClassPath = System.getProperty("java.class.path");
         if (javaClassPath != null) {
             for (String path : javaClassPath.split(File.pathSeparator)) {
@@ -281,7 +281,7 @@ public abstract class ReflectionsWorkaroundClasspathHelper {
 
     //http://michaelscharf.blogspot.co.il/2006/11/javaneturlequals-and-hashcode-make.html
     private static Collection<URL> distinctUrls(Collection<URL> urls) {
-        Map<String, URL> distinct = new HashMap<String, URL>(urls.size());
+        Map<String, URL> distinct = new HashMap<>(urls.size());
         for (URL url : urls) {
             distinct.put(url.toExternalForm(), url);
         }

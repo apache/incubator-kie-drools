@@ -65,7 +65,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
         List<Field> fieldList = fieldListCache.get(clazz);
         if (fieldList == null) {
             Field[] fields = clazz.getDeclaredFields();
-            fieldList = new ArrayList<Field>(fields.length);
+            fieldList = new ArrayList<>(fields.length);
             for (Field field : fields) {
                 if (!Modifier.isStatic(field.getModifiers())) {
                     field.setAccessible(true);
@@ -178,8 +178,8 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
         protected Solution_ cloneSolution(Solution_ originalSolution) {
             int entityCount = solutionDescriptor.getEntityCount(originalSolution);
-            unprocessedQueue = new ArrayDeque<Unprocessed>(entityCount + 1);
-            originalToCloneMap = new IdentityHashMap<Object, Object>(
+            unprocessedQueue = new ArrayDeque<>(entityCount + 1);
+            originalToCloneMap = new IdentityHashMap<>(
                     entityCount + 1);
             Solution_ cloneSolution = clone(originalSolution);
             processQueue();
@@ -274,28 +274,28 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             // TODO Don't hardcode all standard collections
             if (originalCollection instanceof List) {
                 if (originalCollection instanceof ArrayList) {
-                    return new ArrayList<E>(originalCollection.size());
+                    return new ArrayList<>(originalCollection.size());
                 } else if (originalCollection instanceof LinkedList) {
-                    return new LinkedList<E>();
+                    return new LinkedList<>();
                 } else { // Default List
-                    return new ArrayList<E>(originalCollection.size());
+                    return new ArrayList<>(originalCollection.size());
                 }
             } else if (originalCollection instanceof Set) {
                 if (originalCollection instanceof SortedSet) {
                     Comparator<E> setComparator = ((SortedSet) originalCollection).comparator();
-                    return new TreeSet<E>(setComparator);
+                    return new TreeSet<>(setComparator);
                 } else if (originalCollection instanceof LinkedHashSet) {
-                    return new LinkedHashSet<E>(originalCollection.size());
+                    return new LinkedHashSet<>(originalCollection.size());
                 } else if (originalCollection instanceof HashSet) {
-                    return new HashSet<E>(originalCollection.size());
+                    return new HashSet<>(originalCollection.size());
                 } else { // Default Set
                     // Default to a LinkedHashSet to respect order
-                    return new LinkedHashSet<E>(originalCollection.size());
+                    return new LinkedHashSet<>(originalCollection.size());
                 }
             } else if (originalCollection instanceof Deque) {
-                return new ArrayDeque<E>(originalCollection.size());
+                return new ArrayDeque<>(originalCollection.size());
             } else { // Default collection
-                return new ArrayList<E>(originalCollection.size());
+                return new ArrayList<>(originalCollection.size());
             }
         }
 
@@ -319,14 +319,14 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             // Normally a Map will never be selected for cloning, but extending implementations might anyway
             if (originalMap instanceof SortedMap) {
                 Comparator<K> setComparator = ((SortedMap) originalMap).comparator();
-                return new TreeMap<K, V>(setComparator);
+                return new TreeMap<>(setComparator);
             } else if (originalMap instanceof LinkedHashMap) {
-                return new LinkedHashMap<K, V>(originalMap.size());
+                return new LinkedHashMap<>(originalMap.size());
             } else if (originalMap instanceof HashMap) {
-                return new HashMap<K, V>(originalMap.size());
+                return new HashMap<>(originalMap.size());
             } else { // Default Map
                 // Default to a LinkedHashMap to respect order
-                return new LinkedHashMap<K, V>(originalMap.size());
+                return new LinkedHashMap<>(originalMap.size());
             }
         }
 

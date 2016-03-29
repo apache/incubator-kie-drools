@@ -143,14 +143,14 @@ public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
     @Override
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         List<Map<String, XYIntervalSeries>> moveTypeToSeriesMapList
-                = new ArrayList<Map<String, XYIntervalSeries>>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
+                = new ArrayList<>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         for (PickedMoveTypeBestScoreDiffStatisticPoint point : getPointList()) {
             long timeMillisSpent = point.getTimeMillisSpent();
             String moveType = point.getMoveType();
             double[] levelValues = ScoreUtils.extractLevelDoubles(point.getBestScoreDiff());
             for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                 if (i >= moveTypeToSeriesMapList.size()) {
-                    moveTypeToSeriesMapList.add(new LinkedHashMap<String, XYIntervalSeries>());
+                    moveTypeToSeriesMapList.add(new LinkedHashMap<>());
                 }
                 Map<String, XYIntervalSeries> moveTypeToSeriesMap = moveTypeToSeriesMapList.get(i);
                 XYIntervalSeries series = moveTypeToSeriesMap.get(moveType);
@@ -164,7 +164,7 @@ public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
                         yValue, (yValue > 0.0) ? 0.0 : yValue, (yValue > 0.0) ? yValue : 0.0);
             }
         }
-        graphFileList = new ArrayList<File>(moveTypeToSeriesMapList.size());
+        graphFileList = new ArrayList<>(moveTypeToSeriesMapList.size());
         for (int scoreLevelIndex = 0; scoreLevelIndex < moveTypeToSeriesMapList.size(); scoreLevelIndex++) {
             XYPlot plot = createPlot(benchmarkReport, scoreLevelIndex);
             XYItemRenderer renderer = new YIntervalRenderer();

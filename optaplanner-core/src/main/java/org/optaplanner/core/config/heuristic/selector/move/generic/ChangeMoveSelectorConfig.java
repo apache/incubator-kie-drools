@@ -97,7 +97,7 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig<ChangeMoveSelec
         } else {
             entityDescriptors = configPolicy.getSolutionDescriptor().getGenuineEntityDescriptors();
         }
-        List<GenuineVariableDescriptor> variableDescriptorList = new ArrayList<GenuineVariableDescriptor>();
+        List<GenuineVariableDescriptor> variableDescriptorList = new ArrayList<>();
         for (EntityDescriptor entityDescriptor : entityDescriptors) {
             GenuineVariableDescriptor onlyVariableDescriptor = valueSelectorConfig == null ? null
                     : valueSelectorConfig.extractVariableDescriptor(configPolicy, entityDescriptor);
@@ -116,7 +116,7 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig<ChangeMoveSelec
 
     protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(
             List<GenuineVariableDescriptor> variableDescriptorList) {
-        List<MoveSelectorConfig> moveSelectorConfigList = new ArrayList<MoveSelectorConfig>(variableDescriptorList.size());
+        List<MoveSelectorConfig> moveSelectorConfigList = new ArrayList<>(variableDescriptorList.size());
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
             // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
             ChangeMoveSelectorConfig childMoveSelectorConfig = new ChangeMoveSelectorConfig();

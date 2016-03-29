@@ -107,7 +107,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         initBenchmarkDirectoryAndSubdirs();
         plannerBenchmarkResult.initSystemProperties();
         warmUpExecutorService = Executors.newFixedThreadPool(plannerBenchmarkResult.getParallelBenchmarkCount());
-        warmUpExecutorCompletionService = new ExecutorCompletionService<SubSingleBenchmarkRunner>(warmUpExecutorService);
+        warmUpExecutorCompletionService = new ExecutorCompletionService<>(warmUpExecutorService);
         executorService = Executors.newFixedThreadPool(plannerBenchmarkResult.getParallelBenchmarkCount());
         benchmarkResultIO = new BenchmarkResultIO();
         logger.info("Benchmarking started: parallelBenchmarkCount ({})"
@@ -140,9 +140,9 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         int cyclesCount = ConfigUtils.ceilDivide(solverBenchmarkResultCount, parallelBenchmarkCount);
         long timeLeftPerCycle = ConfigUtils.floorDivide(timeLeftTotal, cyclesCount);
         Map<ProblemBenchmarkResult, List<ProblemStatistic>> originalProblemStatisticMap
-                = new HashMap<ProblemBenchmarkResult, List<ProblemStatistic>>(plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList().size());
+                = new HashMap<>(plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList().size());
         ConcurrentMap<SolverBenchmarkResult, Integer> singleBenchmarkResultIndexMap
-                = new ConcurrentHashMap<SolverBenchmarkResult, Integer>(solverBenchmarkResultCount);
+                = new ConcurrentHashMap<>(solverBenchmarkResultCount);
 
         Map<SolverBenchmarkResult, WarmUpConfigBackup> warmUpConfigBackupMap = WarmUpConfigBackup.backupBenchmarkConfig(plannerBenchmarkResult, originalProblemStatisticMap);
         SolverBenchmarkResult[] solverBenchmarkResultCycle = new SolverBenchmarkResult[parallelBenchmarkCount];
@@ -155,7 +155,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 solverBenchmarkResultIndex++;
             }
             ConcurrentMap<Future<SubSingleBenchmarkRunner>, SubSingleBenchmarkRunner> futureMap
-                    = new ConcurrentHashMap<Future<SubSingleBenchmarkRunner>, SubSingleBenchmarkRunner>(parallelBenchmarkCount);
+                    = new ConcurrentHashMap<>(parallelBenchmarkCount);
             warmUpPopulate(futureMap, singleBenchmarkResultIndexMap, solverBenchmarkResultCycle, timeLeftPerCycle);
             warmUp(futureMap, singleBenchmarkResultIndexMap, timeCycleEnd);
         }
@@ -336,7 +336,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
 
         public WarmUpConfigBackup(TerminationConfig terminationConfig) {
             this.terminationConfig = terminationConfig;
-            this.pureSubSingleStatisticMap = new HashMap<SubSingleBenchmarkResult, List<PureSubSingleStatistic>>();
+            this.pureSubSingleStatisticMap = new HashMap<>();
         }
 
         public Map<SubSingleBenchmarkResult, List<PureSubSingleStatistic>> getPureSubSingleStatisticMap() {
@@ -368,7 +368,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         }
 
         private static Map<SolverBenchmarkResult, WarmUpConfigBackup> backupBenchmarkConfig(PlannerBenchmarkResult plannerBenchmarkResult, Map<ProblemBenchmarkResult, List<ProblemStatistic>> originalProblemStatisticMap) { // backup & remove stats, backup termination config
-            Map<SolverBenchmarkResult, WarmUpConfigBackup> warmUpConfigBackupMap = new HashMap<SolverBenchmarkResult, WarmUpConfigBackup>(plannerBenchmarkResult.getSolverBenchmarkResultList().size());
+            Map<SolverBenchmarkResult, WarmUpConfigBackup> warmUpConfigBackupMap = new HashMap<>(plannerBenchmarkResult.getSolverBenchmarkResultList().size());
             for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
                 TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
                 WarmUpConfigBackup warmUpConfigBackup = new WarmUpConfigBackup(originalTerminationConfig);

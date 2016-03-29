@@ -176,7 +176,7 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     private void createComputerList(CloudBalance cloudBalance, int computerListSize) {
-        List<CloudComputer> computerList = new ArrayList<CloudComputer>(computerListSize);
+        List<CloudComputer> computerList = new ArrayList<>(computerListSize);
         for (int i = 0; i < computerListSize; i++) {
             CloudComputer computer = new CloudComputer();
             computer.setId((long) i);
@@ -215,7 +215,7 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     private void createProcessList(CloudBalance cloudBalance, int processListSize) {
-        List<CloudProcess> processList = new ArrayList<CloudProcess>(processListSize);
+        List<CloudProcess> processList = new ArrayList<>(processListSize);
         for (int i = 0; i < processListSize; i++) {
             CloudProcess process = new CloudProcess();
             process.setId((long) i);

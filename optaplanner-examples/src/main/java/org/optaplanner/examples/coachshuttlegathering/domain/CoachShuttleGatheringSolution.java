@@ -123,7 +123,7 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable {
     }
 
     public List<Bus> getBusList() {
-        List<Bus> busList = new ArrayList<Bus>(coachList.size() + shuttleList.size());
+        List<Bus> busList = new ArrayList<>(coachList.size() + shuttleList.size());
         busList.addAll(coachList);
         busList.addAll(shuttleList);
         return busList;

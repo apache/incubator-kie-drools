@@ -57,7 +57,7 @@ public class ProjectJobSchedulingPanel extends SolutionPanel<Schedule> {
 
     private JFreeChart createChart(Schedule schedule) {
         YIntervalSeriesCollection seriesCollection = new YIntervalSeriesCollection();
-        Map<Project, YIntervalSeries> projectSeriesMap = new LinkedHashMap<Project, YIntervalSeries>(
+        Map<Project, YIntervalSeries> projectSeriesMap = new LinkedHashMap<>(
                 schedule.getProjectList().size());
         YIntervalRenderer renderer = new YIntervalRenderer();
         int maximumEndDate = 0;

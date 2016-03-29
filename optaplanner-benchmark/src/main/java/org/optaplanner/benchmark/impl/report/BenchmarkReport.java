@@ -273,7 +273,7 @@ public class BenchmarkReport {
     }
 
     protected void fillWarningList() {
-        warningList = new ArrayList<String>();
+        warningList = new ArrayList<>();
         String javaVmName = System.getProperty("java.vm.name");
         if (javaVmName != null && javaVmName.contains("Client VM")) {
             warningList.add("The Java VM (" + javaVmName + ") is the Client VM."
@@ -290,7 +290,7 @@ public class BenchmarkReport {
 
     private void writeBestScoreSummaryChart() {
         // Each scoreLevel has it's own dataset and chartFile
-        List<DefaultCategoryDataset> datasetList = new ArrayList<DefaultCategoryDataset>(CHARTED_SCORE_LEVEL_SIZE);
+        List<DefaultCategoryDataset> datasetList = new ArrayList<>(CHARTED_SCORE_LEVEL_SIZE);
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
@@ -306,7 +306,7 @@ public class BenchmarkReport {
                 }
             }
         }
-        bestScoreSummaryChartFileList = new ArrayList<File>(datasetList.size());
+        bestScoreSummaryChartFileList = new ArrayList<>(datasetList.size());
         int scoreLevelIndex = 0;
         for (DefaultCategoryDataset dataset : datasetList) {
             CategoryPlot plot = createBarChartPlot(dataset,
@@ -320,7 +320,7 @@ public class BenchmarkReport {
 
     private void writeBestScoreScalabilitySummaryChart() {
         // Each scoreLevel has it's own dataset and chartFile
-        List<List<XYSeries>> seriesListList = new ArrayList<List<XYSeries>>(
+        List<List<XYSeries>> seriesListList = new ArrayList<>(
                 CHARTED_SCORE_LEVEL_SIZE);
         int solverBenchmarkIndex = 0;
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
@@ -331,7 +331,7 @@ public class BenchmarkReport {
                     double[] levelValues = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getAverageScore());
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesListList.size()) {
-                            seriesListList.add(new ArrayList<XYSeries>(
+                            seriesListList.add(new ArrayList<>(
                                     plannerBenchmarkResult.getSolverBenchmarkResultList().size()));
                         }
                         List<XYSeries> seriesList = seriesListList.get(i);
@@ -344,7 +344,7 @@ public class BenchmarkReport {
             }
             solverBenchmarkIndex++;
         }
-        bestScoreScalabilitySummaryChartFileList = new ArrayList<File>(seriesListList.size());
+        bestScoreScalabilitySummaryChartFileList = new ArrayList<>(seriesListList.size());
         int scoreLevelIndex = 0;
         for (List<XYSeries> seriesList : seriesListList) {
             XYPlot plot = createScalabilityPlot(seriesList,
@@ -361,18 +361,18 @@ public class BenchmarkReport {
 
     private void writeBestScoreDistributionSummaryChart() {
         // Each scoreLevel has it's own dataset and chartFile
-        List<DefaultBoxAndWhiskerCategoryDataset> datasetList = new ArrayList<DefaultBoxAndWhiskerCategoryDataset>(CHARTED_SCORE_LEVEL_SIZE);
+        List<DefaultBoxAndWhiskerCategoryDataset> datasetList = new ArrayList<>(CHARTED_SCORE_LEVEL_SIZE);
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 String planningProblemLabel = singleBenchmarkResult.getProblemBenchmarkResult().getName();
                 if (singleBenchmarkResult.hasAllSuccess()) {
-                    List<List<Double>> distributionLevelList = new ArrayList<List<Double>>(CHARTED_SCORE_LEVEL_SIZE);
+                    List<List<Double>> distributionLevelList = new ArrayList<>(CHARTED_SCORE_LEVEL_SIZE);
                     for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
                         double[] levelValues = ScoreUtils.extractLevelDoubles(subSingleBenchmarkResult.getAverageScore());
                         for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                             if (i >= distributionLevelList.size()) {
-                                distributionLevelList.add(new ArrayList<Double>(singleBenchmarkResult.getSubSingleCount()));
+                                distributionLevelList.add(new ArrayList<>(singleBenchmarkResult.getSubSingleCount()));
                             }
                             distributionLevelList.get(i).add(levelValues[i]);
                         }
@@ -389,7 +389,7 @@ public class BenchmarkReport {
                 }
             }
         }
-        bestScoreDistributionSummaryChartFileList = new ArrayList<File>(datasetList.size());
+        bestScoreDistributionSummaryChartFileList = new ArrayList<>(datasetList.size());
         int scoreLevelIndex = 0;
         for (DefaultBoxAndWhiskerCategoryDataset dataset : datasetList) {
             CategoryPlot plot = createBoxAndWhiskerChartPlot(dataset,
@@ -403,7 +403,7 @@ public class BenchmarkReport {
 
     private void writeWinningScoreDifferenceSummaryChart() {
         // Each scoreLevel has it's own dataset and chartFile
-        List<DefaultCategoryDataset> datasetList = new ArrayList<DefaultCategoryDataset>(CHARTED_SCORE_LEVEL_SIZE);
+        List<DefaultCategoryDataset> datasetList = new ArrayList<>(CHARTED_SCORE_LEVEL_SIZE);
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
@@ -419,7 +419,7 @@ public class BenchmarkReport {
                 }
             }
         }
-        winningScoreDifferenceSummaryChartFileList = new ArrayList<File>(datasetList.size());
+        winningScoreDifferenceSummaryChartFileList = new ArrayList<>(datasetList.size());
         int scoreLevelIndex = 0;
         for (DefaultCategoryDataset dataset : datasetList) {
             CategoryPlot plot = createBarChartPlot(dataset,
@@ -435,7 +435,7 @@ public class BenchmarkReport {
 
     private void writeWorstScoreDifferencePercentageSummaryChart() {
         // Each scoreLevel has it's own dataset and chartFile
-        List<DefaultCategoryDataset> datasetList = new ArrayList<DefaultCategoryDataset>(CHARTED_SCORE_LEVEL_SIZE);
+        List<DefaultCategoryDataset> datasetList = new ArrayList<>(CHARTED_SCORE_LEVEL_SIZE);
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
@@ -451,7 +451,7 @@ public class BenchmarkReport {
                 }
             }
         }
-        worstScoreDifferencePercentageSummaryChartFileList = new ArrayList<File>(datasetList.size());
+        worstScoreDifferencePercentageSummaryChartFileList = new ArrayList<>(datasetList.size());
         int scoreLevelIndex = 0;
         for (DefaultCategoryDataset dataset : datasetList) {
             CategoryPlot plot = createBarChartPlot(dataset,
@@ -467,7 +467,7 @@ public class BenchmarkReport {
     }
 
     private void writeAverageCalculateCountPerSecondSummaryChart() {
-        List<XYSeries> seriesList = new ArrayList<XYSeries>(plannerBenchmarkResult.getSolverBenchmarkResultList().size());
+        List<XYSeries> seriesList = new ArrayList<>(plannerBenchmarkResult.getSolverBenchmarkResultList().size());
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
             XYSeries series = new XYSeries(solverLabel);
@@ -507,7 +507,7 @@ public class BenchmarkReport {
     }
 
     private void writeTimeSpentScalabilitySummaryChart() {
-        List<XYSeries> seriesList = new ArrayList<XYSeries>(plannerBenchmarkResult.getSolverBenchmarkResultList().size());
+        List<XYSeries> seriesList = new ArrayList<>(plannerBenchmarkResult.getSolverBenchmarkResultList().size());
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
             XYSeries series = new XYSeries(solverLabel);
@@ -530,7 +530,7 @@ public class BenchmarkReport {
 
     private void writeBestScorePerTimeSpentSummaryChart() {
         // Each scoreLevel has it's own dataset and chartFile
-        List<List<XYSeries>> seriesListList = new ArrayList<List<XYSeries>>(
+        List<List<XYSeries>> seriesListList = new ArrayList<>(
                 CHARTED_SCORE_LEVEL_SIZE);
         int solverBenchmarkIndex = 0;
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
@@ -541,7 +541,7 @@ public class BenchmarkReport {
                     double[] levelValues = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getAverageScore());
                     for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
                         if (i >= seriesListList.size()) {
-                            seriesListList.add(new ArrayList<XYSeries>(
+                            seriesListList.add(new ArrayList<>(
                                     plannerBenchmarkResult.getSolverBenchmarkResultList().size()));
                         }
                         List<XYSeries> seriesList = seriesListList.get(i);
@@ -554,7 +554,7 @@ public class BenchmarkReport {
             }
             solverBenchmarkIndex++;
         }
-        bestScorePerTimeSpentSummaryChartFileList = new ArrayList<File>(seriesListList.size());
+        bestScorePerTimeSpentSummaryChartFileList = new ArrayList<>(seriesListList.size());
         int scoreLevelIndex = 0;
         for (List<XYSeries> seriesList : seriesListList) {
             XYPlot plot = createScalabilityPlot(seriesList,
@@ -628,7 +628,7 @@ public class BenchmarkReport {
     }
 
     protected boolean useLogarithmicProblemScale(List<XYSeries> seriesList) {
-        NavigableSet<Double> xValueSet = new TreeSet<Double>();
+        NavigableSet<Double> xValueSet = new TreeSet<>();
         int xValueListSize = 0;
         for (XYSeries series : seriesList) {
             for (XYDataItem dataItem : (List<XYDataItem>) series.getItems()) {
@@ -729,7 +729,7 @@ public class BenchmarkReport {
         freemarkerCfg.setClassForTemplateLoading(BenchmarkReport.class, "");
 
         String templateFilename = "benchmarkReport.html.ftl";
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put("benchmarkReport", this);
         model.put("reportHelper", new ReportHelper());
 

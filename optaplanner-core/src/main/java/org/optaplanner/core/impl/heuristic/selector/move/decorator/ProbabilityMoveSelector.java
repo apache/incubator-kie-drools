@@ -69,7 +69,7 @@ public class ProbabilityMoveSelector extends AbstractMoveSelector implements Sel
     // ************************************************************************
 
     public void constructCache(DefaultSolverScope solverScope) {
-        cachedMoveMap = new TreeMap<Double, Move>();
+        cachedMoveMap = new TreeMap<>();
         ScoreDirector scoreDirector = solverScope.getScoreDirector();
         double probabilityWeightOffset = 0L;
         for (Move entity : childMoveSelector) {

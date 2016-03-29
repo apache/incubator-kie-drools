@@ -51,7 +51,7 @@ public class PredecessorsDoneDateUpdatingVariableListener implements VariableLis
     }
 
     protected void updateAllocation(ScoreDirector scoreDirector, Allocation originalAllocation) {
-        Queue<Allocation> uncheckedSuccessorQueue = new ArrayDeque<Allocation>();
+        Queue<Allocation> uncheckedSuccessorQueue = new ArrayDeque<>();
         uncheckedSuccessorQueue.addAll(originalAllocation.getSuccessorAllocationList());
         while (!uncheckedSuccessorQueue.isEmpty()) {
             Allocation allocation = uncheckedSuccessorQueue.remove();

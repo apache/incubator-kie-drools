@@ -222,7 +222,7 @@ public class SolverBenchmarkResult {
     }
 
     public List<Score> getScoreList() {
-        List<Score> scoreList = new ArrayList<Score>(singleBenchmarkResultList.size());
+        List<Score> scoreList = new ArrayList<>(singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             scoreList.add(singleBenchmarkResult.getAverageScore());
         }
@@ -342,8 +342,8 @@ public class SolverBenchmarkResult {
             PlannerBenchmarkResult newPlannerBenchmarkResult, List<SingleBenchmarkResult> singleBenchmarkResultList) {
         // IdentityHashMap because different SolverBenchmarkResult instances are never merged
         Map<SolverBenchmarkResult, SolverBenchmarkResult> mergeMap
-                = new IdentityHashMap<SolverBenchmarkResult, SolverBenchmarkResult>();
-        Map<String, Integer> nameCountMap = new HashMap<String, Integer>();
+                = new IdentityHashMap<>();
+        Map<String, Integer> nameCountMap = new HashMap<>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             SolverBenchmarkResult oldResult = singleBenchmarkResult.getSolverBenchmarkResult();
             if (!mergeMap.containsKey(oldResult)) {
@@ -357,7 +357,7 @@ public class SolverBenchmarkResult {
                 nameCountMap.put(oldResult.name, nameCount);
                 newResult.subSingleCount = oldResult.subSingleCount;
                 newResult.solverConfig = oldResult.solverConfig;
-                newResult.singleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>(
+                newResult.singleBenchmarkResultList = new ArrayList<>(
                         oldResult.singleBenchmarkResultList.size());
                 mergeMap.put(oldResult, newResult);
                 newPlannerBenchmarkResult.getSolverBenchmarkResultList().add(newResult);

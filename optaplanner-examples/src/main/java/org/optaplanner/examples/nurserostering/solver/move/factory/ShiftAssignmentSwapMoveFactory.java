@@ -34,7 +34,7 @@ public class ShiftAssignmentSwapMoveFactory implements MoveListFactory<NurseRost
 
     public List<Move> createMoveList(NurseRoster nurseRoster) {
         // Filter out every immovable ShiftAssignment
-        List<ShiftAssignment> shiftAssignmentList = new ArrayList<ShiftAssignment>(
+        List<ShiftAssignment> shiftAssignmentList = new ArrayList<>(
                 nurseRoster.getShiftAssignmentList());
         for (Iterator<ShiftAssignment> it = shiftAssignmentList.iterator(); it.hasNext(); ) {
             ShiftAssignment shiftAssignment = it.next();
@@ -42,7 +42,7 @@ public class ShiftAssignmentSwapMoveFactory implements MoveListFactory<NurseRost
                 it.remove();
             }
         }
-        List<Move> moveList = new ArrayList<Move>();
+        List<Move> moveList = new ArrayList<>();
         for (ListIterator<ShiftAssignment> leftIt = shiftAssignmentList.listIterator(); leftIt.hasNext();) {
             ShiftAssignment leftShiftAssignment = leftIt.next();
             for (ListIterator<ShiftAssignment> rightIt = shiftAssignmentList.listIterator(leftIt.nextIndex()); rightIt.hasNext();) {

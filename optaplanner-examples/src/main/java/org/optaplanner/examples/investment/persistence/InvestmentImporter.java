@@ -91,8 +91,8 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter<InvestmentS
             Row headerRow = sheet.getRow(0);
             assertCellConstant(headerRow.getCell(0), "Name");
             assertCellConstant(headerRow.getCell(1), "Quantity maximum");
-            List<Region> regionList = new ArrayList<Region>();
-            regionMap = new LinkedHashMap<String, Region>();
+            List<Region> regionList = new ArrayList<>();
+            regionMap = new LinkedHashMap<>();
             long id = 0L;
             for (Row row : sheet) {
                 if (row.getRowNum() < 1) {
@@ -117,8 +117,8 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter<InvestmentS
             Row headerRow = sheet.getRow(0);
             assertCellConstant(headerRow.getCell(0), "Name");
             assertCellConstant(headerRow.getCell(1), "Quantity maximum");
-            List<Sector> sectorList = new ArrayList<Sector>();
-            sectorMap = new LinkedHashMap<String, Sector>();
+            List<Sector> sectorList = new ArrayList<>();
+            sectorMap = new LinkedHashMap<>();
             long id = 0L;
             for (Row row : sheet) {
                 if (row.getRowNum() < 1) {
@@ -153,8 +153,8 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter<InvestmentS
             assertCellConstant(headerRow.getCell(5), "Standard deviation");
 
             int assetClassListSize = headerRow.getPhysicalNumberOfCells() - ASSET_CLASS_PROPERTIES_COUNT;
-            List<AssetClass> assetClassList = new ArrayList<AssetClass>(assetClassListSize);
-            Map<Long, AssetClass> idToAssetClassMap = new HashMap<Long, AssetClass>(assetClassListSize);
+            List<AssetClass> assetClassList = new ArrayList<>(assetClassListSize);
+            Map<Long, AssetClass> idToAssetClassMap = new HashMap<>(assetClassListSize);
             for (int i = 0; i < assetClassListSize; i++) {
                 AssetClass assetClass = new AssetClass();
                 assetClass.setId(readLongCell(headerRow.getCell(ASSET_CLASS_PROPERTIES_COUNT + i)));
@@ -200,7 +200,7 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter<InvestmentS
                 assetClass.setSector(sector);
                 assetClass.setExpectedReturnMillis(parsePercentageMillis(readDoubleCell(row.getCell(4))));
                 assetClass.setStandardDeviationRiskMillis(parsePercentageMillis(readDoubleCell(row.getCell(5))));
-                Map<AssetClass, Long> correlationMillisMap = new LinkedHashMap<AssetClass, Long>(assetClassListSize);
+                Map<AssetClass, Long> correlationMillisMap = new LinkedHashMap<>(assetClassListSize);
                 for (int i = 0; i < assetClassListSize; i++) {
                     AssetClass other = assetClassList.get(i);
                     long correlationMillis = parsePercentageMillis(readDoubleCell(row.getCell(ASSET_CLASS_PROPERTIES_COUNT + i)));
@@ -213,7 +213,7 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter<InvestmentS
 
         private void createAssetClassAllocationList() {
             List<AssetClass> assetClassList = solution.getAssetClassList();
-            List<AssetClassAllocation> assetClassAllocationList = new ArrayList<AssetClassAllocation>(assetClassList.size());
+            List<AssetClassAllocation> assetClassAllocationList = new ArrayList<>(assetClassList.size());
             for (AssetClass assetClass : assetClassList) {
                 AssetClassAllocation allocation = new AssetClassAllocation();
                 allocation.setId(assetClass.getId());

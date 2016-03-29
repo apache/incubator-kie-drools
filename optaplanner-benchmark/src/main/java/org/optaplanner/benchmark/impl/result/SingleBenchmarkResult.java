@@ -336,7 +336,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         if (subSingleBenchmarkResultList == null || subSingleBenchmarkResultList.isEmpty()) {
             throw new IllegalStateException("Cannot get representative subSingleBenchmarkResult from empty subSingleBenchmarkResultList.");
         }
-        List<SubSingleBenchmarkResult> subSingleBenchmarkResultListCopy = new ArrayList<SubSingleBenchmarkResult>(subSingleBenchmarkResultList);
+        List<SubSingleBenchmarkResult> subSingleBenchmarkResultListCopy = new ArrayList<>(subSingleBenchmarkResultList);
         // sort (according to ranking) so that the best subSingle is at index 0
         Collections.sort(subSingleBenchmarkResultListCopy, new Comparator<SubSingleBenchmarkResult>() {
             @Override
@@ -364,7 +364,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         uninitializedSolutionCount = 0;
         totalUninitializedVariableCount = 0;
         infeasibleScoreCount = 0;
-        List<SubSingleBenchmarkResult> successResultList = new ArrayList<SubSingleBenchmarkResult>(subSingleBenchmarkResultList);
+        List<SubSingleBenchmarkResult> successResultList = new ArrayList<>(subSingleBenchmarkResultList);
         // Do not rank a SubSingleBenchmarkResult that has a failure
         for (Iterator<SubSingleBenchmarkResult> it = successResultList.iterator(); it.hasNext(); ) {
             SubSingleBenchmarkResult subSingleBenchmarkResult = it.next();
@@ -418,7 +418,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     protected static SingleBenchmarkResult createMerge(SolverBenchmarkResult solverBenchmarkResult,
             ProblemBenchmarkResult problemBenchmarkResult, SingleBenchmarkResult oldResult) {
         SingleBenchmarkResult newResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
-        newResult.subSingleBenchmarkResultList = new ArrayList<SubSingleBenchmarkResult>(oldResult.getSubSingleBenchmarkResultList().size());
+        newResult.subSingleBenchmarkResultList = new ArrayList<>(oldResult.getSubSingleBenchmarkResultList().size());
         int subSingleBenchmarkIndex = 0;
         for (SubSingleBenchmarkResult oldSubResult : oldResult.subSingleBenchmarkResultList) {
             SubSingleBenchmarkResult.createMerge(newResult, oldSubResult, subSingleBenchmarkIndex);

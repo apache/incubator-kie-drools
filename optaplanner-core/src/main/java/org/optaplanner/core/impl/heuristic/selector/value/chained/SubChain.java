@@ -61,7 +61,7 @@ public class SubChain implements Serializable {
     }
 
     public SubChain reverse() {
-        List<Object> reversedEntityList = new ArrayList<Object>(entityList);
+        List<Object> reversedEntityList = new ArrayList<>(entityList);
         Collections.reverse(reversedEntityList);
         return new SubChain(reversedEntityList);
     }

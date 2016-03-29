@@ -139,7 +139,7 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
         vehicle.setDepot(depot);
         vehicle.setCapacity(locationList.size() * 10);
         vehicleRoutingSolution.setVehicleList(Collections.singletonList(vehicle));
-        List<Customer> customerList = new ArrayList<Customer>(locationList.size());
+        List<Customer> customerList = new ArrayList<>(locationList.size());
         for (org.optaplanner.examples.vehiclerouting.domain.location.Location location : locationList.subList(1, locationList.size())) {
             Customer customer = new Customer();
             customer.setId(location.getId());
@@ -163,7 +163,7 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
     }
 
     private static List<Location> convert(List<org.optaplanner.examples.tsp.domain.location.Location> tspLocationList) {
-        List<Location> locationList = new ArrayList<Location>(tspLocationList.size());
+        List<Location> locationList = new ArrayList<>(tspLocationList.size());
         for (org.optaplanner.examples.tsp.domain.location.Location tspLocation : tspLocationList) {
             Location location;
             if (tspLocation instanceof org.optaplanner.examples.tsp.domain.location.AirLocation) {
@@ -181,7 +181,7 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
         for (org.optaplanner.examples.tsp.domain.location.Location tspLocation : tspLocationList) {
             if (tspLocation instanceof org.optaplanner.examples.tsp.domain.location.RoadLocation) {
                 RoadLocation location = (RoadLocation) locationList.get(tspLocationList.indexOf(tspLocation));
-                Map<RoadLocation, Double> travelDistanceMap = new LinkedHashMap<RoadLocation, Double>(tspLocationList.size());
+                Map<RoadLocation, Double> travelDistanceMap = new LinkedHashMap<>(tspLocationList.size());
                 Map<org.optaplanner.examples.tsp.domain.location.RoadLocation, Double> tspTravelDistanceMap
                         = ((org.optaplanner.examples.tsp.domain.location.RoadLocation) tspLocation).getTravelDistanceMap();
                 for (Map.Entry<org.optaplanner.examples.tsp.domain.location.RoadLocation, Double> entry : tspTravelDistanceMap.entrySet()) {

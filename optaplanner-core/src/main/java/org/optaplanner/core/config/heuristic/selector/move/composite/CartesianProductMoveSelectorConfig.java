@@ -68,7 +68,7 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
 
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
+        List<MoveSelector> moveSelectorList = new ArrayList<>(moveSelectorConfigList.size());
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
             moveSelectorList.add(
                     moveSelectorConfig.buildMoveSelector(configPolicy,

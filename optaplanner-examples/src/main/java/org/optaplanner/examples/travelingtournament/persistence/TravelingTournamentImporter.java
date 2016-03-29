@@ -70,23 +70,23 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<Tra
         }
 
         private void readTeamList(TravelingTournament travelingTournament, int n) throws IOException {
-            List<Team> teamList = new ArrayList<Team>();
+            List<Team> teamList = new ArrayList<>();
             for (int i = 0; i < n; i++) {
                 Team team = new Team();
                 team.setId((long) i);
                 team.setName(bufferedReader.readLine());
-                team.setDistanceToTeamMap(new HashMap<Team, Integer>());
+                team.setDistanceToTeamMap(new HashMap<>());
                 teamList.add(team);
             }
             travelingTournament.setTeamList(teamList);
         }
 
         private List<List<Integer>> readOuterDistanceList(TravelingTournament travelingTournament) throws IOException {
-            List<List<Integer>> outerDistanceList = new ArrayList<List<Integer>>();
+            List<List<Integer>> outerDistanceList = new ArrayList<>();
             String line = bufferedReader.readLine();
             while (line != null && !line.replaceAll("\\s+", "").equals("")) {
                 StringTokenizer tokenizer = new StringTokenizer(line.replaceAll("\\s+", " ").trim());
-                List<Integer> innerDistanceList = new ArrayList<Integer>();
+                List<Integer> innerDistanceList = new ArrayList<>();
                 while (tokenizer.hasMoreTokens()) {
                     int distance = Integer.parseInt(tokenizer.nextToken());
                     innerDistanceList.add(distance);
@@ -98,7 +98,7 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<Tra
         }
 
         private void createDayList(TravelingTournament travelingTournament, int n) {
-            List<Day> dayList = new ArrayList<Day>();
+            List<Day> dayList = new ArrayList<>();
             int daySize = (n - 1) * 2; // Play vs each team (except itself) twice (home and away)
             Day previousDay = null;
             for (int i = 0; i < daySize; i++) {
@@ -117,7 +117,7 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<Tra
         private void createMatchListAndSetDistancesInTeamList(TravelingTournament travelingTournament,
                 List<List<Integer>> outerDistanceList) {
             List<Team> teamList = travelingTournament.getTeamList();
-            List<Match> matchList = new ArrayList<Match>();
+            List<Match> matchList = new ArrayList<>();
             int i = 0;
             long matchId = 0;
             for (Team homeTeam : teamList) {

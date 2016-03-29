@@ -89,7 +89,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
     // ************************************************************************
 
     public void solve(DefaultSolverScope<Solution_> solverScope) {
-        SortedSet<ExhaustiveSearchNode> expandableNodeQueue = new TreeSet<ExhaustiveSearchNode>(nodeComparator);
+        SortedSet<ExhaustiveSearchNode> expandableNodeQueue = new TreeSet<>(nodeComparator);
         ExhaustiveSearchPhaseScope<Solution_> phaseScope = new ExhaustiveSearchPhaseScope<>(solverScope);
         phaseScope.setExpandableNodeQueue(expandableNodeQueue);
         phaseStarted(phaseScope);
@@ -132,7 +132,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
                     + ") has an entitySize (" + entitySize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        List<ExhaustiveSearchLayer> layerList = new ArrayList<ExhaustiveSearchLayer>((int) entitySize);
+        List<ExhaustiveSearchLayer> layerList = new ArrayList<>((int) entitySize);
         int depth = 0;
         InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
         int uninitializedVariableCount = phaseScope.getSolutionDescriptor()
@@ -187,8 +187,8 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         ExhaustiveSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         ExhaustiveSearchNode oldNode = phaseScope.getLastCompletedStepScope().getExpandingNode();
         ExhaustiveSearchNode newNode = stepScope.getExpandingNode();
-        List<Move> oldMoveList = new ArrayList<Move>(oldNode.getDepth());
-        List<Move> newMoveList = new ArrayList<Move>(newNode.getDepth());
+        List<Move> oldMoveList = new ArrayList<>(oldNode.getDepth());
+        List<Move> newMoveList = new ArrayList<>(newNode.getDepth());
         while (oldNode != newNode) {
             int oldDepth = oldNode.getDepth();
             int newDepth = newNode.getDepth();
@@ -200,7 +200,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
                 oldNode = oldNode.getParent();
             }
         }
-        List<Move> restoreMoveList = new ArrayList<Move>(oldMoveList.size() + newMoveList.size());
+        List<Move> restoreMoveList = new ArrayList<>(oldMoveList.size() + newMoveList.size());
         restoreMoveList.addAll(oldMoveList);
         Collections.reverse(newMoveList);
         restoreMoveList.addAll(newMoveList);

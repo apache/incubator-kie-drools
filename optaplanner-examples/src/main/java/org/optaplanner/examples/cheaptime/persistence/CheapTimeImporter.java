@@ -166,7 +166,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
 
         private void readResourceList() throws IOException {
             resourceListSize = readIntegerValue();
-            List<Resource> resourceList = new ArrayList<Resource>(resourceListSize);
+            List<Resource> resourceList = new ArrayList<>(resourceListSize);
             for (int i = 0; i < resourceListSize; i++) {
                 Resource resource = new Resource();
                 resource.setId((long) i);
@@ -178,8 +178,8 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
 
         private void readMachineList() throws IOException {
             int machineListSize = readIntegerValue();
-            List<Machine> machineList = new ArrayList<Machine>(machineListSize);
-            List<MachineCapacity> machineCapacityList = new ArrayList<MachineCapacity>(
+            List<Machine> machineList = new ArrayList<>(machineListSize);
+            List<MachineCapacity> machineCapacityList = new ArrayList<>(
                     machineListSize * resourceListSize);
             long machineCapacityId = 0L;
             for (int i = 0; i < machineListSize; i++) {
@@ -191,7 +191,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
                 machine.setSpinUpDownCostMicros(CheapTimeCostCalculator.parseMicroCost(machineLineTokens[2])
                         + CheapTimeCostCalculator.parseMicroCost(machineLineTokens[3]));
                 String[] capacityLineTokens = splitBySpacesOrTabs(readStringValue(), resourceListSize);
-                List<MachineCapacity> machineCapacityListOfMachine = new ArrayList<MachineCapacity>(resourceListSize);
+                List<MachineCapacity> machineCapacityListOfMachine = new ArrayList<>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
                     MachineCapacity machineCapacity = new MachineCapacity();
                     machineCapacity.setId(machineCapacityId);
@@ -211,8 +211,8 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
 
         private void readTaskList() throws IOException {
             int taskListSize = readIntegerValue();
-            List<Task> taskList = new ArrayList<Task>(taskListSize);
-            List<TaskRequirement> taskRequirementList = new ArrayList<TaskRequirement>(taskListSize * resourceListSize);
+            List<Task> taskList = new ArrayList<>(taskListSize);
+            List<TaskRequirement> taskRequirementList = new ArrayList<>(taskListSize * resourceListSize);
             long taskRequirementId = 0L;
             for (int i = 0; i < taskListSize; i++) {
                 String[] taskLineTokens = splitBySpacesOrTabs(readStringValue(), 5);
@@ -246,7 +246,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
                 // (the fact that latestEnd is exclusive is irrelevant because start = end - duration)
                 task.setStartPeriodRangeTo(latestEnd - duration + 1);
                 String[] usageLineTokens = splitBySpacesOrTabs(readStringValue(), resourceListSize);
-                List<TaskRequirement> taskRequirementListOfTask = new ArrayList<TaskRequirement>(resourceListSize);
+                List<TaskRequirement> taskRequirementListOfTask = new ArrayList<>(resourceListSize);
                 for (int j = 0; j < resourceListSize; j++) {
                     TaskRequirement taskRequirement = new TaskRequirement();
                     taskRequirement.setId(taskRequirementId);
@@ -301,7 +301,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
                 long periodDurationPerHour = CheapTimeCostCalculator.divideTwoMicros(
                         CheapTimeCostCalculator.toMicroCost(1440),
                         CheapTimeCostCalculator.toMicroCost(periodListSize * 60L));
-                List<PeriodPowerPrice> periodPowerPriceList = new ArrayList<PeriodPowerPrice>(periodListSize);
+                List<PeriodPowerPrice> periodPowerPriceList = new ArrayList<>(periodListSize);
                 for (int i = 0; i < periodListSize; i++) {
                     String[] lineTokens = splitBySpacesOrTabs(readStringValue(), 2);
                     PeriodPowerPrice periodPowerPrice = new PeriodPowerPrice();
@@ -326,7 +326,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
 
         private void createTaskAssignmentList() {
             List<Task> taskList = solution.getTaskList();
-            List<TaskAssignment> taskAssignmentList = new ArrayList<TaskAssignment>(taskList.size());
+            List<TaskAssignment> taskAssignmentList = new ArrayList<>(taskList.size());
             for (Task task : taskList) {
                 TaskAssignment taskAssignment = new TaskAssignment();
                 taskAssignment.setId(task.getId());

@@ -71,7 +71,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
 
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
-        List<MoveSelector> moveSelectorList = new ArrayList<MoveSelector>(moveSelectorConfigList.size());
+        List<MoveSelector> moveSelectorList = new ArrayList<>(moveSelectorConfigList.size());
         for (MoveSelectorConfig moveSelectorConfig : moveSelectorConfigList) {
             moveSelectorList.add(
                     moveSelectorConfig.buildMoveSelector(configPolicy,
@@ -88,7 +88,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
             selectorProbabilityWeightFactory = ConfigUtils.newInstance(this,
                     "selectorProbabilityWeightFactoryClass", selectorProbabilityWeightFactoryClass);
         } else if (randomSelection) {
-            Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<MoveSelector, Double>(
+            Map<MoveSelector, Double> fixedProbabilityWeightMap = new HashMap<>(
                     moveSelectorConfigList.size());
             for (int i = 0; i < moveSelectorConfigList.size(); i++) {
                 MoveSelectorConfig moveSelectorConfig = moveSelectorConfigList.get(i);

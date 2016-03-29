@@ -37,16 +37,16 @@ public class NQueensAdvancedIncrementalScoreCalculator extends AbstractIncrement
 
     public void resetWorkingSolution(NQueens nQueens) {
         int n = nQueens.getN();
-        rowIndexMap = new HashMap<Integer, List<Queen>>(n);
-        ascendingDiagonalIndexMap = new HashMap<Integer, List<Queen>>(n * 2);
-        descendingDiagonalIndexMap = new HashMap<Integer, List<Queen>>(n * 2);
+        rowIndexMap = new HashMap<>(n);
+        ascendingDiagonalIndexMap = new HashMap<>(n * 2);
+        descendingDiagonalIndexMap = new HashMap<>(n * 2);
         for (int i = 0; i < n; i++) {
-            rowIndexMap.put(i, new ArrayList<Queen>(n));
-            ascendingDiagonalIndexMap.put(i, new ArrayList<Queen>(n));
-            descendingDiagonalIndexMap.put(i, new ArrayList<Queen>(n));
+            rowIndexMap.put(i, new ArrayList<>(n));
+            ascendingDiagonalIndexMap.put(i, new ArrayList<>(n));
+            descendingDiagonalIndexMap.put(i, new ArrayList<>(n));
             if (i != 0) {
-                ascendingDiagonalIndexMap.put(n - 1 + i, new ArrayList<Queen>(n));
-                descendingDiagonalIndexMap.put((-i), new ArrayList<Queen>(n));
+                ascendingDiagonalIndexMap.put(n - 1 + i, new ArrayList<>(n));
+                descendingDiagonalIndexMap.put((-i), new ArrayList<>(n));
             }
         }
         score = 0;

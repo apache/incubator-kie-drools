@@ -123,7 +123,7 @@ public class SwapMove<Solution_> extends AbstractMove {
     }
 
     public Collection<? extends Object> getPlanningValues() {
-        List<Object> values = new ArrayList<Object>(variableDescriptorList.size() * 2);
+        List<Object> values = new ArrayList<>(variableDescriptorList.size() * 2);
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
             values.add(variableDescriptor.getValue(leftEntity));
             values.add(variableDescriptor.getValue(rightEntity));

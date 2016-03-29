@@ -41,7 +41,7 @@ public class ShiftAssignmentSequenceSwitchLength3MoveFactory implements MoveList
         List<Employee> employeeList = nurseRoster.getEmployeeList();
         // This code assumes the shiftAssignmentList is sorted
         // Filter out every immovable ShiftAssignment
-        List<ShiftAssignment> shiftAssignmentList = new ArrayList<ShiftAssignment>(
+        List<ShiftAssignment> shiftAssignmentList = new ArrayList<>(
                 nurseRoster.getShiftAssignmentList());
         for (Iterator<ShiftAssignment> it = shiftAssignmentList.iterator(); it.hasNext(); ) {
             ShiftAssignment shiftAssignment = it.next();
@@ -52,11 +52,11 @@ public class ShiftAssignmentSequenceSwitchLength3MoveFactory implements MoveList
 
         // Hash the assignments per employee
         Map<Employee, List<AssignmentSequence>> employeeToAssignmentSequenceListMap
-                = new HashMap<Employee, List<AssignmentSequence>>(employeeList.size());
+                = new HashMap<>(employeeList.size());
         int assignmentSequenceCapacity = nurseRoster.getShiftDateList().size() + 1 / 2;
         for (Employee employee : employeeList) {
             employeeToAssignmentSequenceListMap.put(employee,
-                    new ArrayList<AssignmentSequence>(assignmentSequenceCapacity));
+                    new ArrayList<>(assignmentSequenceCapacity));
         }
         for (ShiftAssignment shiftAssignment : shiftAssignmentList) {
             Employee employee = shiftAssignment.getEmployee();
@@ -77,7 +77,7 @@ public class ShiftAssignmentSequenceSwitchLength3MoveFactory implements MoveList
         }
 
         // The create the move list
-        List<Move> moveList = new ArrayList<Move>();
+        List<Move> moveList = new ArrayList<>();
         // For every 2 distinct employees
         for (ListIterator<Employee> leftEmployeeIt = employeeList.listIterator(); leftEmployeeIt.hasNext();) {
             Employee leftEmployee = leftEmployeeIt.next();
@@ -98,7 +98,7 @@ public class ShiftAssignmentSequenceSwitchLength3MoveFactory implements MoveList
                             List<ShiftAssignment> rightShiftAssignmentList = rightAssignmentSequence.getShiftAssignmentList();
                             for (int rightIndex = 0; rightIndex <= rightShiftAssignmentList.size() - SWITCH_LENGTH; rightIndex++) {
 
-                                List<Move> subMoveList = new ArrayList<Move>(SWITCH_LENGTH * 2);
+                                List<Move> subMoveList = new ArrayList<>(SWITCH_LENGTH * 2);
                                 for (ShiftAssignment leftShiftAssignment : leftShiftAssignmentList
                                         .subList(leftIndex, leftIndex + SWITCH_LENGTH)) {
                                     subMoveList.add(new EmployeeChangeMove(leftShiftAssignment, rightEmployee));
@@ -127,7 +127,7 @@ public class ShiftAssignmentSequenceSwitchLength3MoveFactory implements MoveList
         private int lastDayIndex;
 
         private AssignmentSequence(ShiftAssignment shiftAssignment) {
-            shiftAssignmentList = new ArrayList<ShiftAssignment>();
+            shiftAssignmentList = new ArrayList<>();
             shiftAssignmentList.add(shiftAssignment);
             firstDayIndex = shiftAssignment.getShiftDateDayIndex();
             lastDayIndex = firstDayIndex;

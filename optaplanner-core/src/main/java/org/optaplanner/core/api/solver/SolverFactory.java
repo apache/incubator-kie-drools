@@ -50,7 +50,7 @@ public abstract class SolverFactory<Solution_> {
      * @return never null
      */
     public static <Solution_> SolverFactory<Solution_> createEmpty() {
-        return new EmptySolverFactory<Solution_>();
+        return new EmptySolverFactory<>();
     }
 
     /**
@@ -60,7 +60,7 @@ public abstract class SolverFactory<Solution_> {
      * @return never null
      */
     public static <Solution_> SolverFactory<Solution_> createEmpty(ClassLoader classLoader) {
-        return new EmptySolverFactory<Solution_>(new SolverConfigContext(classLoader));
+        return new EmptySolverFactory<>(new SolverConfigContext(classLoader));
     }
 
     /**

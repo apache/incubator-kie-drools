@@ -88,7 +88,7 @@ public class SolutionDescriptor<Solution_> {
     }
 
     private static List<Class<?>> sortEntityClassList(List<Class<?>> entityClassList) {
-        List<Class<?>> sortedEntityClassList = new ArrayList<Class<?>>(entityClassList.size());
+        List<Class<?>> sortedEntityClassList = new ArrayList<>(entityClassList.size());
         for (Class<?> entityClass : entityClassList) {
             boolean added = false;
             for (int i = 0; i < sortedEntityClassList.size(); i++) {
@@ -428,9 +428,9 @@ public class SolutionDescriptor<Solution_> {
 
     private void determineGlobalShadowOrder() {
         // Topological sorting with Kahn's algorithm
-        List<Pair<ShadowVariableDescriptor, Integer>> pairList = new ArrayList<Pair<ShadowVariableDescriptor, Integer>>();
+        List<Pair<ShadowVariableDescriptor, Integer>> pairList = new ArrayList<>();
         Map<ShadowVariableDescriptor, Pair<ShadowVariableDescriptor, Integer>> shadowToPairMap
-                = new HashMap<ShadowVariableDescriptor, Pair<ShadowVariableDescriptor, Integer>>();
+                = new HashMap<>();
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             for (ShadowVariableDescriptor<Solution_> shadow : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
                 int sourceSize = shadow.getSourceVariableDescriptorList().size();
@@ -637,7 +637,7 @@ public class SolutionDescriptor<Solution_> {
     }
 
     public List<Object> getEntityList(Solution_ solution) {
-        List<Object> entityList = new ArrayList<Object>();
+        List<Object> entityList = new ArrayList<>();
         for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extract(entityMemberAccessor, solution);
             if (entity != null) {
@@ -652,7 +652,7 @@ public class SolutionDescriptor<Solution_> {
     }
 
     public List<Object> getEntityListByEntityClass(Solution_ solution, Class<?> entityClass) {
-        List<Object> entityList = new ArrayList<Object>();
+        List<Object> entityList = new ArrayList<>();
         for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
             if (entityMemberAccessor.getType().isAssignableFrom(entityClass)) {
                 Object entity = extract(entityMemberAccessor, solution);
@@ -762,7 +762,7 @@ public class SolutionDescriptor<Solution_> {
     }
 
     public Iterator<Object> extractAllEntitiesIterator(Solution_ solution) {
-        List<Iterator<Object>> iteratorList = new ArrayList<Iterator<Object>>(
+        List<Iterator<Object>> iteratorList = new ArrayList<>(
                 entityPropertyAccessorMap.size() + entityCollectionPropertyAccessorMap.size());
         for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
             Object entity = extract(entityMemberAccessor, solution);

@@ -30,54 +30,54 @@ public class ListValueRangeTest {
 
     @Test
     public void getSize() {
-        assertEquals(4L, new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10)).getSize());
-        assertEquals(5L, new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8)).getSize());
-        assertEquals(3L, new ListValueRange<Integer>(Arrays.asList(-15, 25, 0)).getSize());
-        assertEquals(3L, new ListValueRange<String>(Arrays.asList("b", "z", "a")).getSize());
-        assertEquals(0L, new ListValueRange<String>(Collections.<String>emptyList()).getSize());
+        assertEquals(4L, new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).getSize());
+        assertEquals(5L, new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).getSize());
+        assertEquals(3L, new ListValueRange<>(Arrays.asList(-15, 25, 0)).getSize());
+        assertEquals(3L, new ListValueRange<>(Arrays.asList("b", "z", "a")).getSize());
+        assertEquals(0L, new ListValueRange<>(Collections.<String>emptyList()).getSize());
     }
 
     @Test
     public void get() {
-        assertEquals(5, new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10)).get(2L).intValue());
-        assertEquals(-120, new ListValueRange<Integer>(Arrays.asList(100, -120)).get(1L).intValue());
-        assertEquals("c", new ListValueRange<String>(Arrays.asList("b", "z", "a", "c", "g", "d")).get(3L));
+        assertEquals(5, new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).get(2L).intValue());
+        assertEquals(-120, new ListValueRange<>(Arrays.asList(100, -120)).get(1L).intValue());
+        assertEquals("c", new ListValueRange<>(Arrays.asList("b", "z", "a", "c", "g", "d")).get(3L));
     }
 
     @Test
     public void contains() {
-        assertEquals(true, new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10)).contains(5));
-        assertEquals(false, new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10)).contains(4));
-        assertEquals(false, new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10)).contains(null));
-        assertEquals(true, new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8)).contains(7));
-        assertEquals(false, new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8)).contains(9));
-        assertEquals(true, new ListValueRange<Integer>(Arrays.asList(-15, 25, 0)).contains(-15));
-        assertEquals(false, new ListValueRange<Integer>(Arrays.asList(-15, 25, 0)).contains(-14));
-        assertEquals(true, new ListValueRange<String>(Arrays.asList("b", "z", "a")).contains("a"));
-        assertEquals(false, new ListValueRange<String>(Arrays.asList("b", "z", "a")).contains("n"));
+        assertEquals(true, new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(5));
+        assertEquals(false, new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(4));
+        assertEquals(false, new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).contains(null));
+        assertEquals(true, new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).contains(7));
+        assertEquals(false, new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).contains(9));
+        assertEquals(true, new ListValueRange<>(Arrays.asList(-15, 25, 0)).contains(-15));
+        assertEquals(false, new ListValueRange<>(Arrays.asList(-15, 25, 0)).contains(-14));
+        assertEquals(true, new ListValueRange<>(Arrays.asList("b", "z", "a")).contains("a"));
+        assertEquals(false, new ListValueRange<>(Arrays.asList("b", "z", "a")).contains("n"));
     }
 
     @Test
     public void createOriginalIterator() {
-        assertAllElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10)).createOriginalIterator(), 0, 2, 5, 10);
-        assertAllElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8)).createOriginalIterator(), 100, 120, 5, 7, 8);
-        assertAllElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(-15, 25, 0)).createOriginalIterator(), -15, 25, 0);
-        assertAllElementsOfIterator(new ListValueRange<String>(Arrays.asList("b", "z", "a")).createOriginalIterator(), "b", "z", "a");
-        assertAllElementsOfIterator(new ListValueRange<String>(Collections.<String>emptyList()).createOriginalIterator());
+        assertAllElementsOfIterator(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).createOriginalIterator(), 0, 2, 5, 10);
+        assertAllElementsOfIterator(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).createOriginalIterator(), 100, 120, 5, 7, 8);
+        assertAllElementsOfIterator(new ListValueRange<>(Arrays.asList(-15, 25, 0)).createOriginalIterator(), -15, 25, 0);
+        assertAllElementsOfIterator(new ListValueRange<>(Arrays.asList("b", "z", "a")).createOriginalIterator(), "b", "z", "a");
+        assertAllElementsOfIterator(new ListValueRange<>(Collections.<String>emptyList()).createOriginalIterator());
     }
 
     @Test
     public void createRandomIterator() {
         Random workingRandom = mock(Random.class);
         when(workingRandom.nextInt(anyInt())).thenReturn(2, 0);
-        assertElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(0, 2, 5, 10)).createRandomIterator(workingRandom), 5, 0);
+        assertElementsOfIterator(new ListValueRange<>(Arrays.asList(0, 2, 5, 10)).createRandomIterator(workingRandom), 5, 0);
         when(workingRandom.nextInt(anyInt())).thenReturn(2, 0);
-        assertElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(100, 120, 5, 7, 8)).createRandomIterator(workingRandom), 5, 100);
+        assertElementsOfIterator(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8)).createRandomIterator(workingRandom), 5, 100);
         when(workingRandom.nextInt(anyInt())).thenReturn(2, 0);
-        assertElementsOfIterator(new ListValueRange<Integer>(Arrays.asList(-15, 25, 0)).createRandomIterator(workingRandom), 0, -15);
+        assertElementsOfIterator(new ListValueRange<>(Arrays.asList(-15, 25, 0)).createRandomIterator(workingRandom), 0, -15);
         when(workingRandom.nextInt(anyInt())).thenReturn(2, 0);
-        assertElementsOfIterator(new ListValueRange<String>(Arrays.asList("b", "z", "a")).createRandomIterator(workingRandom), "a", "b");
-        assertAllElementsOfIterator(new ListValueRange<String>(Collections.<String>emptyList()).createRandomIterator(workingRandom));
+        assertElementsOfIterator(new ListValueRange<>(Arrays.asList("b", "z", "a")).createRandomIterator(workingRandom), "a", "b");
+        assertAllElementsOfIterator(new ListValueRange<>(Collections.<String>emptyList()).createRandomIterator(workingRandom));
     }
 
 }

@@ -34,7 +34,7 @@ import org.optaplanner.examples.common.business.ProblemFileComparator;
 public abstract class SolutionDaoTest extends LoggingTest {
 
     protected static Collection<Object[]> getSolutionFilesAsParameters(SolutionDao solutionDao) {
-        List<File> fileList = new ArrayList<File>(0);
+        List<File> fileList = new ArrayList<>(0);
         File dataDir = solutionDao.getDataDir();
         File unsolvedDataDir = new File(dataDir, "unsolved");
         if (!unsolvedDataDir.exists()) {
@@ -49,7 +49,7 @@ public abstract class SolutionDaoTest extends LoggingTest {
                     FileUtils.listFiles(solvedDataDir, new String[]{solutionDao.getFileExtension()}, true));
         }
         Collections.sort(fileList, new ProblemFileComparator());
-        List<Object[]> filesAsParameters = new ArrayList<Object[]>();
+        List<Object[]> filesAsParameters = new ArrayList<>();
         for (File file : fileList) {
             filesAsParameters.add(new Object[]{file});
         }

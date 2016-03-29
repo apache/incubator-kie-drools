@@ -92,7 +92,7 @@ public abstract class ProblemStatistic {
 
     public List<SubSingleStatistic> getSubSingleStatisticList() {
         List<SingleBenchmarkResult> singleBenchmarkResultList = problemBenchmarkResult.getSingleBenchmarkResultList();
-        List<SubSingleStatistic> subSingleStatisticList = new ArrayList<SubSingleStatistic>(singleBenchmarkResultList.size());
+        List<SubSingleStatistic> subSingleStatisticList = new ArrayList<>(singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             if (singleBenchmarkResult.getSubSingleBenchmarkResultList().isEmpty()) {
                 continue;
@@ -110,7 +110,7 @@ public abstract class ProblemStatistic {
     // ************************************************************************
 
     public void accumulateResults(BenchmarkReport benchmarkReport) {
-        warningList = new ArrayList<String>();
+        warningList = new ArrayList<>();
         fillWarningList();
     }
 

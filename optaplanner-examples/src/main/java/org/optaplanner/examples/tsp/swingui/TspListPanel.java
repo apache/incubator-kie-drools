@@ -64,8 +64,8 @@ public class TspListPanel extends JPanel implements Scrollable {
         Domicile domicile = tspSolution.getDomicile();
         add(new JLabel(domicile.getLocation().toString()));
         // TODO If the model contains the nextVisit like in vehicle routing, use that instead
-        Map<Standstill, Visit> nextVisitMap = new LinkedHashMap<Standstill, Visit>();
-        List<Visit> unassignedVisitList = new ArrayList<Visit>();
+        Map<Standstill, Visit> nextVisitMap = new LinkedHashMap<>();
+        List<Visit> unassignedVisitList = new ArrayList<>();
         for (Visit visit : tspSolution.getVisitList()) {
             if (visit.getPreviousStandstill() != null) {
                 nextVisitMap.put(visit.getPreviousStandstill(), visit);

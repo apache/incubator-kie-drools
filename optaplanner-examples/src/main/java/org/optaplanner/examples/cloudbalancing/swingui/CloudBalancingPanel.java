@@ -166,7 +166,7 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
 
     private JPanel createComputersPanel() {
         computersPanel = new JPanel(new GridLayout(0, 1));
-        computerToPanelMap = new LinkedHashMap<CloudComputer, CloudComputerPanel>();
+        computerToPanelMap = new LinkedHashMap<>();
         return computersPanel;
     }
 
@@ -206,7 +206,7 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
 
     @Override
     public void updatePanel(CloudBalance cloudBalance) {
-        Set<CloudComputer> deadCloudComputerSet = new LinkedHashSet<CloudComputer>(computerToPanelMap.keySet());
+        Set<CloudComputer> deadCloudComputerSet = new LinkedHashSet<>(computerToPanelMap.keySet());
         deadCloudComputerSet.remove(null);
         for (CloudComputer computer : cloudBalance.getComputerList()) {
             deadCloudComputerSet.remove(computer);
@@ -250,7 +250,7 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
                 computer.setId(nextComputerId);
                 // A SolutionCloner does not clone problem fact lists (such as computerList)
                 // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
-                cloudBalance.setComputerList(new ArrayList<CloudComputer>(cloudBalance.getComputerList()));
+                cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
                 // Add the problem fact itself
                 scoreDirector.beforeProblemFactAdded(computer);
                 cloudBalance.getComputerList().add(computer);
@@ -275,7 +275,7 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
                 scoreDirector.triggerVariableListeners();
                 // A SolutionCloner does not clone problem fact lists (such as computerList)
                 // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
-                cloudBalance.setComputerList(new ArrayList<CloudComputer>(cloudBalance.getComputerList()));
+                cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
                 // Remove the problem fact itself
                 for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
                     CloudComputer workingComputer = it.next();

@@ -171,7 +171,7 @@ public class TspWorldPanel extends JPanel {
         if (domicileLocation.getName() != null && visitList.size() <= 500) {
             g.drawString(domicileLocation.getName(), domicileX + 3, domicileY - 3);
         }
-        Set<Visit> needsBackToDomicileLineSet = new HashSet<Visit>(visitList);
+        Set<Visit> needsBackToDomicileLineSet = new HashSet<>(visitList);
         for (Visit trailingVisit : visitList) {
             if (trailingVisit.getPreviousStandstill() instanceof Visit) {
                 needsBackToDomicileLineSet.remove(trailingVisit.getPreviousStandstill());

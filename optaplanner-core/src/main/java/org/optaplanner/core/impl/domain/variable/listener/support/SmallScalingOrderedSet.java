@@ -41,7 +41,7 @@ public final class SmallScalingOrderedSet<E> implements Set<E> {
 
     public SmallScalingOrderedSet() {
         belowThreshold = true;
-        list = new ArrayList<E>(LIST_SIZE_THRESHOLD);
+        list = new ArrayList<>(LIST_SIZE_THRESHOLD);
         set = null;
     }
 
@@ -101,7 +101,7 @@ public final class SmallScalingOrderedSet<E> implements Set<E> {
         if (belowThreshold) {
             int newSize = list.size() + 1;
             if (newSize > LIST_SIZE_THRESHOLD) {
-                set = new LinkedHashSet<E>(list);
+                set = new LinkedHashSet<>(list);
                 list = null;
                 belowThreshold = false;
                 return set.add(e);
@@ -121,7 +121,7 @@ public final class SmallScalingOrderedSet<E> implements Set<E> {
         if (belowThreshold) {
             int newSize = list.size() + c.size();
             if (newSize > LIST_SIZE_THRESHOLD) {
-                set = new LinkedHashSet<E>(newSize);
+                set = new LinkedHashSet<>(newSize);
                 set.addAll(list);
                 list = null;
                 belowThreshold = false;
@@ -149,7 +149,7 @@ public final class SmallScalingOrderedSet<E> implements Set<E> {
             int newSize = set.size() - 1;
             if (newSize <= LIST_SIZE_THRESHOLD) {
                 set.remove(o);
-                list = new ArrayList<E>(set);
+                list = new ArrayList<>(set);
                 set = null;
                 belowThreshold = true;
                 return true;
@@ -174,7 +174,7 @@ public final class SmallScalingOrderedSet<E> implements Set<E> {
         if (belowThreshold) {
             list.clear();
         } else {
-            list = new ArrayList<E>(LIST_SIZE_THRESHOLD);
+            list = new ArrayList<>(LIST_SIZE_THRESHOLD);
             set = null;
             belowThreshold = true;
         }

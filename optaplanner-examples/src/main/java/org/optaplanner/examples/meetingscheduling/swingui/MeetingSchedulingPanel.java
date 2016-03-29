@@ -61,9 +61,9 @@ public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
     public MeetingSchedulingPanel() {
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
-        roomsPanel = new TimeTablePanel<TimeGrain, Room>();
+        roomsPanel = new TimeTablePanel<>();
         tabbedPane.add("Rooms", new JScrollPane(roomsPanel));
-        personsPanel = new TimeTablePanel<TimeGrain, Pair<Person, Boolean>>();
+        personsPanel = new TimeTablePanel<>();
         tabbedPane.add("Persons", new JScrollPane(personsPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
@@ -148,8 +148,8 @@ public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
     }
 
     private void fillTimeGrainCells(MeetingSchedule meetingSchedule) {
-        Map<Day, TimeGrain> firstTimeGrainMap = new HashMap<Day, TimeGrain>(meetingSchedule.getDayList().size());
-        Map<Day, TimeGrain> lastTimeGrainMap = new HashMap<Day, TimeGrain>(meetingSchedule.getDayList().size());
+        Map<Day, TimeGrain> firstTimeGrainMap = new HashMap<>(meetingSchedule.getDayList().size());
+        Map<Day, TimeGrain> lastTimeGrainMap = new HashMap<>(meetingSchedule.getDayList().size());
         for (TimeGrain timeGrain : meetingSchedule.getTimeGrainList()) {
             Day day = timeGrain.getDay();
             TimeGrain firstTimeGrain = firstTimeGrainMap.get(day);

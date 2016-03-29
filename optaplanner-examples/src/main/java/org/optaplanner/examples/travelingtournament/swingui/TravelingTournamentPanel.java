@@ -54,7 +54,7 @@ public class TravelingTournamentPanel extends SolutionPanel<TravelingTournament>
     public TravelingTournamentPanel() {
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
-        teamsPanel = new TimeTablePanel<Team, Day>();
+        teamsPanel = new TimeTablePanel<>();
         tabbedPane.add("Teams", new JScrollPane(teamsPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);

@@ -253,7 +253,7 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
 
     public Acceptor buildAcceptor(HeuristicConfigPolicy configPolicy) {
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
-        List<Acceptor> acceptorList = new ArrayList<Acceptor>();
+        List<Acceptor> acceptorList = new ArrayList<>();
         if (acceptorClassList != null) {
             for (Class<? extends Acceptor> acceptorClass : acceptorClassList) {
                 Acceptor acceptor = ConfigUtils.newInstance(this, "acceptorClass", acceptorClass);

@@ -43,11 +43,11 @@ public class BuoyVehicleRoutingSolutionInitializer extends AbstractCustomPhaseCo
         VehicleRoutingSolution solution = scoreDirector.getWorkingSolution();
         List<Vehicle> vehicleList = solution.getVehicleList();
         List<Customer> customerList = solution.getCustomerList();
-        List<Standstill> standstillList = new ArrayList<Standstill>(vehicleList.size() + customerList.size());
+        List<Standstill> standstillList = new ArrayList<>(vehicleList.size() + customerList.size());
         standstillList.addAll(vehicleList);
         standstillList.addAll(customerList);
         logger.info("Starting sorting");
-        Map<Standstill, Customer[]> nearbyMap = new HashMap<Standstill, Customer[]>(standstillList.size());
+        Map<Standstill, Customer[]> nearbyMap = new HashMap<>(standstillList.size());
         for (final Standstill origin : standstillList) {
             Customer[] nearbyCustomers = customerList.toArray(new Customer[0]);
             Arrays.sort(nearbyCustomers, new Comparator<Standstill>() {
@@ -62,7 +62,7 @@ public class BuoyVehicleRoutingSolutionInitializer extends AbstractCustomPhaseCo
         }
         logger.info("Done sorting");
 
-        List<Standstill> buoyList = new ArrayList<Standstill>(vehicleList);
+        List<Standstill> buoyList = new ArrayList<>(vehicleList);
 
         int NEARBY_LIMIT = 40;
         while (true) {

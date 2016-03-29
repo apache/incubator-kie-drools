@@ -42,7 +42,7 @@ public class KeyAsElementMapConverter implements Converter {
     }
 
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-        Map<String, String> map = new LinkedHashMap<String, String>();
+        Map<String, String> map = new LinkedHashMap<>();
         while (reader.hasMoreChildren()) {
             reader.moveDown();
             map.put(reader.getNodeName(), reader.getValue());

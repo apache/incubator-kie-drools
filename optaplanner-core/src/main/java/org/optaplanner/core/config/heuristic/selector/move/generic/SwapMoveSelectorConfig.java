@@ -118,7 +118,7 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorC
 
     protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(
             Collection<EntityDescriptor> entityDescriptors) {
-        List<MoveSelectorConfig> moveSelectorConfigList = new ArrayList<MoveSelectorConfig>(entityDescriptors.size());
+        List<MoveSelectorConfig> moveSelectorConfigList = new ArrayList<>(entityDescriptors.size());
         for (EntityDescriptor entityDescriptor : entityDescriptors) {
             // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
             SwapMoveSelectorConfig childMoveSelectorConfig = new SwapMoveSelectorConfig();

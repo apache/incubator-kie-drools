@@ -76,8 +76,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         workingTabuSize = tabuSizeStrategy == null ? 0 : tabuSizeStrategy.determineTabuSize(lastCompletedStepScope);
         workingFadingTabuSize = fadingTabuSizeStrategy == null ? 0 : fadingTabuSizeStrategy.determineTabuSize(lastCompletedStepScope);
         int totalTabuListSize = workingTabuSize + workingFadingTabuSize; // is at least 1
-        tabuToStepIndexMap = new HashMap<Object, Integer>(totalTabuListSize);
-        tabuSequenceList = new LinkedList<Object>();
+        tabuToStepIndexMap = new HashMap<>(totalTabuListSize);
+        tabuSequenceList = new LinkedList<>();
     }
 
     @Override

@@ -37,7 +37,7 @@ import static org.junit.Assert.*;
 public abstract class AbstractBenchmarkConfigTest {
 
     protected static Collection<Object[]> getArgOptionsAsParameters(CommonBenchmarkApp benchmarkApp) {
-        List<Object[]> filesAsParameters = new ArrayList<Object[]>();
+        List<Object[]> filesAsParameters = new ArrayList<>();
         for (CommonBenchmarkApp.ArgOption argOption : benchmarkApp.getArgOptions()) {
             filesAsParameters.add(new Object[]{argOption});
         }

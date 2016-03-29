@@ -31,7 +31,7 @@ public class TspEasyScoreCalculator implements EasyScoreCalculator<TspSolution> 
 
     public SimpleLongScore calculateScore(TspSolution tspSolution) {
         List<Visit> visitList = tspSolution.getVisitList();
-        Set<Visit> tailVisitSet = new HashSet<Visit>(visitList);
+        Set<Visit> tailVisitSet = new HashSet<>(visitList);
         long score = 0L;
         for (Visit visit : visitList) {
             Standstill previousStandstill = visit.getPreviousStandstill();

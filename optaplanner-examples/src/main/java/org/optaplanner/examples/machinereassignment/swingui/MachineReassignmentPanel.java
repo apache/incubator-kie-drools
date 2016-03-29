@@ -72,7 +72,7 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
         machineListPanel = new JPanel(new GridLayout(0, 1));
         unassignedPanel = new MrMachinePanel(this, Collections.<MrResource>emptyList(), null);
         machineListPanel.add(unassignedPanel);
-        machineToPanelMap = new LinkedHashMap<MrMachine, MrMachinePanel>();
+        machineToPanelMap = new LinkedHashMap<>();
         machineToPanelMap.put(null, unassignedPanel);
     }
 
@@ -103,7 +103,7 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
                 machineListPanel.remove(tooBigLabel);
                 tooBigLabel = null;
             }
-            Set<MrMachine> deadMachineSet = new LinkedHashSet<MrMachine>(machineToPanelMap.keySet());
+            Set<MrMachine> deadMachineSet = new LinkedHashSet<>(machineToPanelMap.keySet());
             deadMachineSet.remove(null);
             for (MrMachine machine : machineReassignment.getMachineList()) {
                 deadMachineSet.remove(machine);
@@ -152,7 +152,7 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
                 scoreDirector.triggerVariableListeners();
                 // A SolutionCloner does not clone problem fact lists (such as machineList)
                 // Shallow clone the machineList so only workingSolution is affected, not bestSolution or guiSolution
-                machineReassignment.setMachineList(new ArrayList<MrMachine>(machineReassignment.getMachineList()));
+                machineReassignment.setMachineList(new ArrayList<>(machineReassignment.getMachineList()));
                 // Remove it the problem fact itself
                 for (Iterator<MrMachine> it = machineReassignment.getMachineList().iterator(); it.hasNext(); ) {
                     MrMachine workingMachine = it.next();

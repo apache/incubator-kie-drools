@@ -347,7 +347,7 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
             EntitySelector entitySelector) {
         EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
         if (hasFiltering(entityDescriptor)) {
-            List<SelectionFilter> filterList = new ArrayList<SelectionFilter>(
+            List<SelectionFilter> filterList = new ArrayList<>(
                     filterClassList == null ? 1 : filterClassList.size() + 1);
             if (filterClassList != null) {
                 for (Class<? extends SelectionFilter> filterClass : filterClassList) {

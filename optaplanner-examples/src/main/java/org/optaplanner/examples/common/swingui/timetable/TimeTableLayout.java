@@ -46,10 +46,10 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
     }
 
     public void reset() {
-        columns = new ArrayList<Column>();
-        rows = new ArrayList<Row>();
-        cells = new ArrayList<List<Cell>>();
-        spanMap = new HashMap<Component, ComponentSpan>();
+        columns = new ArrayList<>();
+        rows = new ArrayList<>();
+        cells = new ArrayList<>();
+        spanMap = new HashMap<>();
         stale = false;
         totalColumnWidth = 0;
         totalRowHeight = 0;
@@ -74,7 +74,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         int index = columns.size();
         Column column = new Column(index, autoWidth, baseWidth);
         columns.add(column);
-        cells.add(new ArrayList<Cell>());
+        cells.add(new ArrayList<>());
         return index;
     }
 
@@ -116,7 +116,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         spanMap.put(component, span);
         span.topLeftCell = cells.get(c.getX()).get(c.getY());
         span.bottomRightCell = cells.get(c.getXEnd() - 1).get(c.getYEnd() - 1);
-        Set<Integer> occupiedCollisionIndexes = new HashSet<Integer>();
+        Set<Integer> occupiedCollisionIndexes = new HashSet<>();
         for (int i = c.getX(); i < c.getXEnd(); i++) {
             for (int j = c.getY(); j < c.getYEnd(); j++) {
                 Cell cell = cells.get(i).get(j);
@@ -339,8 +339,8 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         private Column column;
         private Row row;
 
-        private Set<ComponentSpan> spans = new HashSet<ComponentSpan>();
-        private Set<Integer> occupiedCollisionIndexes = new HashSet<Integer>();
+        private Set<ComponentSpan> spans = new HashSet<>();
+        private Set<Integer> occupiedCollisionIndexes = new HashSet<>();
 
         private Cell(Column column, Row row) {
             this.column = column;
@@ -353,7 +353,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
 
         private Component component;
 
-        private Set<Cell> cells = new HashSet<Cell>();
+        private Set<Cell> cells = new HashSet<>();
         private Cell topLeftCell;
         private Cell bottomRightCell;
         private Integer collisionIndex;

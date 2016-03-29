@@ -75,7 +75,7 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
                     + ") with childSize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        cachedValueList = new ArrayList<Object>((int) childSize);
+        cachedValueList = new ArrayList<>((int) childSize);
         // TODO Fail-faster if a non FromSolutionPropertyValueSelector is used
         Iterators.addAll(cachedValueList, childValueSelector.iterator());
         logger.trace("    Created cachedValueList: size ({}), valueSelector ({}).",

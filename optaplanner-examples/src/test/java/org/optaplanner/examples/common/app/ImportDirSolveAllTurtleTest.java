@@ -34,13 +34,13 @@ import java.util.List;
 public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTurtleTest<Solution_> {
 
     protected static Collection<Object[]> getImportDirFilesAsParameters(AbstractSolutionImporter solutionImporter) {
-        List<Object[]> filesAsParameters = new ArrayList<Object[]>();
+        List<Object[]> filesAsParameters = new ArrayList<>();
         File importDataDir = solutionImporter.getInputDir();
         if (!importDataDir.exists()) {
             throw new IllegalStateException("The directory importDataDir (" + importDataDir.getAbsolutePath()
                     + ") does not exist.");
         } else {
-            List<File> fileList = new ArrayList<File>(
+            List<File> fileList = new ArrayList<>(
                     FileUtils.listFiles(importDataDir, new String[]{solutionImporter.getInputFileSuffix()}, true));
             Collections.sort(fileList, new ProblemFileComparator());
             for (File file : fileList) {

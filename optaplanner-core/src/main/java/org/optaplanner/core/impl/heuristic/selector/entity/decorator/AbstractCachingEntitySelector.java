@@ -73,7 +73,7 @@ public abstract class AbstractCachingEntitySelector extends AbstractEntitySelect
                     + ") with childSize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        cachedEntityList = new ArrayList<Object>((int) childSize);
+        cachedEntityList = new ArrayList<>((int) childSize);
         Iterators.addAll(cachedEntityList, childEntitySelector.iterator());
         logger.trace("    Created cachedEntityList: size ({}), entitySelector ({}).",
                 cachedEntityList.size(), this);

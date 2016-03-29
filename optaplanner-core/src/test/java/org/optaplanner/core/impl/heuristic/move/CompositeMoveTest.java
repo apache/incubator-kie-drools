@@ -56,7 +56,7 @@ public class CompositeMoveTest {
 
     @Test
     public void buildEmptyMove() {
-        assertInstanceOf(NoChangeMove.class, CompositeMove.buildMove(new ArrayList<Move>()));
+        assertInstanceOf(NoChangeMove.class, CompositeMove.buildMove(new ArrayList<>()));
         assertInstanceOf(NoChangeMove.class, CompositeMove.buildMove());
     }
 

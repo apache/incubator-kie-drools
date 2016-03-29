@@ -84,7 +84,7 @@ public class TangoColorFactory {
     private int nextColorCount;
 
     public TangoColorFactory() {
-        colorMap = new HashMap<Object, Color>();
+        colorMap = new HashMap<>();
         nextColorCount = 0;
     }
 

@@ -36,7 +36,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
     public MimicRecordingEntitySelector(EntitySelector childEntitySelector) {
         this.childEntitySelector = childEntitySelector;
         phaseLifecycleSupport.addEventListener(childEntitySelector);
-        replayingEntitySelectorList = new ArrayList<MimicReplayingEntitySelector>();
+        replayingEntitySelectorList = new ArrayList<>();
     }
 
     @Override

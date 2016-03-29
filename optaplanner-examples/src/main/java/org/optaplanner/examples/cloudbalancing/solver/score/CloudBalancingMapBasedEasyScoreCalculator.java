@@ -32,15 +32,15 @@ public class CloudBalancingMapBasedEasyScoreCalculator implements EasyScoreCalcu
 
     public HardSoftScore calculateScore(CloudBalance cloudBalance) {
         int computerListSize = cloudBalance.getComputerList().size();
-        Map<CloudComputer, Integer> cpuPowerUsageMap = new HashMap<CloudComputer, Integer>(computerListSize);
-        Map<CloudComputer, Integer> memoryUsageMap = new HashMap<CloudComputer, Integer>(computerListSize);
-        Map<CloudComputer, Integer> networkBandwidthUsageMap = new HashMap<CloudComputer, Integer>(computerListSize);
+        Map<CloudComputer, Integer> cpuPowerUsageMap = new HashMap<>(computerListSize);
+        Map<CloudComputer, Integer> memoryUsageMap = new HashMap<>(computerListSize);
+        Map<CloudComputer, Integer> networkBandwidthUsageMap = new HashMap<>(computerListSize);
         for (CloudComputer computer : cloudBalance.getComputerList()) {
             cpuPowerUsageMap.put(computer, 0);
             memoryUsageMap.put(computer, 0);
             networkBandwidthUsageMap.put(computer, 0);
         }
-        Set<CloudComputer> usedComputerSet = new HashSet<CloudComputer>(computerListSize);
+        Set<CloudComputer> usedComputerSet = new HashSet<>(computerListSize);
 
         visitProcessList(cpuPowerUsageMap, memoryUsageMap, networkBandwidthUsageMap,
                 usedComputerSet, cloudBalance.getProcessList());

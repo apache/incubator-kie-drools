@@ -51,7 +51,7 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
     public Iterator<Move> createRandomMoveIterator(ScoreDirector scoreDirector, Random workingRandom) {
         InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
         List<AssetClassAllocation> allocationList = solution.getAssetClassAllocationList();
-        NavigableMap<Long, AssetClassAllocation> quantityMillisIncrementToAllocationMap = new TreeMap<Long, AssetClassAllocation>();
+        NavigableMap<Long, AssetClassAllocation> quantityMillisIncrementToAllocationMap = new TreeMap<>();
         long quantityIncrementMillis = 0L;
         for (AssetClassAllocation allocation : allocationList) {
             long quantityMillis = allocation.getQuantityMillis();

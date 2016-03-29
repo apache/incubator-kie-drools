@@ -133,7 +133,7 @@ public class EntityDescriptor<Solution_> {
         if (difficultyWeightFactoryClass != null) {
             SelectionSorterWeightFactory<Solution_, Object> difficultyWeightFactory = ConfigUtils.newInstance(this,
                     "difficultyWeightFactoryClass", difficultyWeightFactoryClass);
-            decreasingDifficultySorter = new WeightFactorySelectionSorter<Solution_, Object>(
+            decreasingDifficultySorter = new WeightFactorySelectionSorter<>(
                     difficultyWeightFactory, SelectionSorterOrder.DESCENDING);
         }
     }

@@ -130,16 +130,16 @@ public class DefaultSubChainSelector extends AbstractSelector
                     + ") which is higher than Integer.MAX_VALUE.");
         }
         // Temporary LinkedList to avoid using a bad initialCapacity
-        List<Object> anchorList = new LinkedList<Object>();
+        List<Object> anchorList = new LinkedList<>();
         for (Object value : valueSelector) {
             if (variableDescriptor.isValuePotentialAnchor(value)) {
                 anchorList.add(value);
             }
         }
-        anchorTrailingChainList = new ArrayList<SubChain>(anchorList.size());
+        anchorTrailingChainList = new ArrayList<>(anchorList.size());
         int anchorChainInitialCapacity = ((int) valueSize / anchorList.size()) + 1;
         for (Object anchor : anchorList) {
-            List<Object> anchorChain = new ArrayList<Object>(anchorChainInitialCapacity);
+            List<Object> anchorChain = new ArrayList<>(anchorChainInitialCapacity);
             Object trailingEntity = inverseVariableSupply.getInverseSingleton(anchor);
             while (trailingEntity != null) {
                 anchorChain.add(trailingEntity);
