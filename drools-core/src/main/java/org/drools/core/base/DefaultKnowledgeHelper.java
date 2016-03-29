@@ -36,6 +36,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
@@ -610,5 +611,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         return workingMemory.don( this.activation, core, trait, b, modes );
     }
 
-
+    public ClassLoader getProjectClassLoader() {
+        return ((InternalKnowledgeBase)getKieRuntime().getKieBase()).getRootClassLoader();
+    }
 }

@@ -117,6 +117,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -8365,5 +8366,51 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals( 1, fired2 );
         ksession2.dispose();
+    }
+
+    @Test
+    public void testClassLoaderGetResourcesFromWithin() throws IOException {
+        // DROOLS-1108
+        KieServices kieServices = KieServices.Factory.get();
+        String drl1 = "package org.drools.testdrl;\n" +
+                      "global java.util.List list;\n" +
+                      "rule R when\n" +
+                      "then\n" +
+                      "   java.net.URL url = drools.getProjectClassLoader().getResource(\"META-INF/foo.xml\");\n" +
+                      "   if (url != null) list.add(url);\n" +
+                      "end\n";
+        org.kie.api.io.Resource resource1 = kieServices.getResources().newReaderResource( new StringReader( drl1), "UTF-8" );
+        resource1.setTargetPath("org/drools/testdrl/rules1.drl");
+
+        String foo = "<xyz/>\n";
+        org.kie.api.io.Resource resource2 = kieServices.getResources().newReaderResource( new StringReader( foo ), "UTF-8" );
+        resource2.setTargetPath( "META-INF/foo.xml" );
+
+        String kmodule = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                         "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                         "  <kbase name=\"testKbase\" packages=\"org.drools.testdrl\">\n" +
+                         "    <ksession name=\"testKsession\"/>\n" +
+                         "  </kbase>\n" +
+                         "</kmodule>";
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId = kieServices.newReleaseId( "org.kie", "test-delete", "1.0.0" );
+        createAndDeployJar( kieServices, kmodule, releaseId, resource1, resource2 );
+
+        KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+        ClassLoader classLoader = kieContainer.getClassLoader();
+        URL url = classLoader.getResource( "META-INF/foo.xml" );
+        assertNotNull( url );
+
+        KieSession ksession = kieContainer.newKieSession( "testKsession" );
+
+        List<URL> list = new ArrayList();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( url.getPath(), list.get(0).getPath() );
+        ksession.dispose();
     }
 }
