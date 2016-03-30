@@ -60,7 +60,7 @@ public class AgendaGroupQueueImpl
     private volatile              boolean hasRuleFlowLister;
 
     private Activation            lastRemoved;
-    private boolean               sequential;
+    private final boolean         sequential;
 
     private static final Activation visited = new VisitedAgendaGroup();
 
@@ -237,11 +237,8 @@ public class AgendaGroupQueueImpl
     }
 
     public boolean equals(final Object object) {
-        if ((object == null) || !(object instanceof AgendaGroupQueueImpl)) {
-            return false;
-        }
-
-        return ((AgendaGroupQueueImpl) object).name.equals( this.name );
+        return object instanceof AgendaGroupQueueImpl &&
+               ((AgendaGroupQueueImpl) object).name.equals( this.name );
     }
 
     public int hashCode() {

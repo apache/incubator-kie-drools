@@ -65,8 +65,8 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
      * The activation number
      */
     private           long                                           activationNumber;
-    private volatile  int                                            index;
-    private volatile  boolean                                        queued;
+    private           int                                            index;
+    private           boolean                                        queued;
     private           LinkedList<LogicalDependency<T>>  justified;
     private           LinkedList<LogicalDependency<SimpleMode>>      blocked;
     private           LinkedList<SimpleMode>                         blockers;

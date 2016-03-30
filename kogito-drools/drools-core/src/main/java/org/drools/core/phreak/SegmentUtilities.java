@@ -64,122 +64,118 @@ public class SegmentUtilities {
      */
     public static SegmentMemory createSegmentMemory(LeftTupleSource tupleSource,
                                                     final InternalWorkingMemory wm) {
-        // this synchronization is still necessary only because a segment memory could be also
-        // created during a query evaluation. TODO check if this can be removed
-        synchronized (wm) {
-            SegmentMemory smem = wm.getNodeMemory((MemoryFactory) tupleSource).getSegmentMemory();
-            if ( smem != null ) {
-                return smem; // this can happen when multiple threads are trying to initialize the segment
-            }
+        SegmentMemory smem = wm.getNodeMemory((MemoryFactory) tupleSource).getSegmentMemory();
+        if ( smem != null ) {
+            return smem; // this can happen when multiple threads are trying to initialize the segment
+        }
 
-            // find segment root
-            while (!SegmentUtilities.isRootNode(tupleSource, null)) {
-                tupleSource = tupleSource.getLeftTupleSource();
-            }
+        // find segment root
+        while (!SegmentUtilities.isRootNode(tupleSource, null)) {
+            tupleSource = tupleSource.getLeftTupleSource();
+        }
 
-            LeftTupleSource segmentRoot = tupleSource;
-            int nodeTypesInSegment = 0;
+        LeftTupleSource segmentRoot = tupleSource;
+        int nodeTypesInSegment = 0;
 
-            smem = restoreSegmentFromPrototype(wm, segmentRoot, nodeTypesInSegment);
-            if ( smem != null ) {
-                return smem;
-            }
-
-            smem = new SegmentMemory(segmentRoot);
-
-            // Iterate all nodes on the same segment, assigning their position as a bit mask value
-            // allLinkedTestMask is the resulting mask used to test if all nodes are linked in
-            long nodePosMask = 1;
-            long allLinkedTestMask = 0;
-            boolean updateNodeBit = true;  // nodes after a branch CE can notify, but they cannot impact linking
-
-            while (true) {
-                nodeTypesInSegment = updateNodeTypesMask(tupleSource, nodeTypesInSegment);
-                if (NodeTypeEnums.isBetaNode(tupleSource)) {
-                    allLinkedTestMask = processBetaNode((BetaNode)tupleSource, wm, smem, nodePosMask, allLinkedTestMask, updateNodeBit);
-                } else {
-                    switch (tupleSource.getType()) {
-                        case NodeTypeEnums.LeftInputAdapterNode:
-                            allLinkedTestMask = processLiaNode((LeftInputAdapterNode) tupleSource, wm, smem, nodePosMask, allLinkedTestMask);
-                            break;
-                        case NodeTypeEnums.EvalConditionNode:
-                            processEvalNode((EvalConditionNode) tupleSource, wm, smem);
-                            break;
-                        case NodeTypeEnums.ConditionalBranchNode:
-                            updateNodeBit = processBranchNode((ConditionalBranchNode) tupleSource, wm, smem);
-                            break;
-                        case NodeTypeEnums.FromNode:
-                            processFromNode((FromNode) tupleSource, wm, smem);
-                            break;
-                        case NodeTypeEnums.ReactiveFromNode:
-                            processReactiveFromNode((MemoryFactory) tupleSource, wm, smem, nodePosMask);
-                            break;
-                        case NodeTypeEnums.TimerConditionNode:
-                            processTimerNode((TimerNode) tupleSource, wm, smem, nodePosMask);
-                            break;
-                        case NodeTypeEnums.QueryElementNode:
-                            updateNodeBit = processQueryNode((QueryElementNode) tupleSource, wm, segmentRoot, smem, nodePosMask);
-                            break;
-                    }
-                }
-                nodePosMask = nodePosMask << 1;
-
-                if (tupleSource.getSinkPropagator().size() == 1) {
-                    LeftTupleSinkNode sink = tupleSource.getSinkPropagator().getFirstLeftTupleSink();
-                    if (NodeTypeEnums.isLeftTupleSource(sink)) {
-                        tupleSource = (LeftTupleSource) sink;
-                    } else {
-                        // rtn or rian
-                        // While not technically in a segment, we want to be able to iterate easily from the last node memory to the ria/rtn memory
-                        // we don't use createNodeMemory, as these may already have been created by, but not added, by the method updateRiaAndTerminalMemory
-                        Memory memory = wm.getNodeMemory((MemoryFactory) sink);
-                        if (sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
-                            PathMemory riaPmem = ((RiaNodeMemory)memory).getRiaPathMemory();
-                            smem.getNodeMemories().add( riaPmem );
-
-                            RightInputAdapterNode rian = ( RightInputAdapterNode ) sink;
-                            ObjectSink[] nodes = rian.getObjectSinkPropagator().getSinks();
-                            for ( ObjectSink node : nodes ) {
-                                if ( NodeTypeEnums.isLeftTupleSource(node) )  {
-                                    createSegmentMemory( (LeftTupleSource) node, wm );
-                                }
-                            }
-                        } else if (NodeTypeEnums.isTerminalNode(sink)) {
-                            smem.getNodeMemories().add(memory);
-                        }
-                        memory.setSegmentMemory(smem);
-                        smem.setTipNode(sink);
-                        break;
-                    }
-                } else {
-                    // not in same segment
-                    smem.setTipNode(tupleSource);
-                    break;
-                }
-            }
-            smem.setAllLinkedMaskTest(allLinkedTestMask);
-
-            // iterate to find root and determine the SegmentNodes position in the RuleSegment
-            LeftTupleSource pathRoot = segmentRoot;
-            int ruleSegmentPosMask = 1;
-            int counter = 0;
-            while (pathRoot.getType() != NodeTypeEnums.LeftInputAdapterNode) {
-                if (SegmentUtilities.isRootNode(pathRoot, null)) {
-                    // for each new found segment, increase the mask bit position
-                    ruleSegmentPosMask = ruleSegmentPosMask << 1;
-                    counter++;
-                }
-                pathRoot = pathRoot.getLeftTupleSource();
-            }
-            smem.setSegmentPosMaskBit(ruleSegmentPosMask);
-            smem.setPos(counter);
-
-            nodeTypesInSegment = updateRiaAndTerminalMemory(tupleSource, tupleSource, smem, wm, false, nodeTypesInSegment);
-
-            ((KnowledgeBaseImpl)wm.getKnowledgeBase()).registerSegmentPrototype(segmentRoot, smem);
-
+        smem = restoreSegmentFromPrototype(wm, segmentRoot, nodeTypesInSegment);
+        if ( smem != null ) {
             return smem;
         }
+
+        smem = new SegmentMemory(segmentRoot);
+
+        // Iterate all nodes on the same segment, assigning their position as a bit mask value
+        // allLinkedTestMask is the resulting mask used to test if all nodes are linked in
+        long nodePosMask = 1;
+        long allLinkedTestMask = 0;
+        boolean updateNodeBit = true;  // nodes after a branch CE can notify, but they cannot impact linking
+
+        while (true) {
+            nodeTypesInSegment = updateNodeTypesMask(tupleSource, nodeTypesInSegment);
+            if (NodeTypeEnums.isBetaNode(tupleSource)) {
+                allLinkedTestMask = processBetaNode((BetaNode)tupleSource, wm, smem, nodePosMask, allLinkedTestMask, updateNodeBit);
+            } else {
+                switch (tupleSource.getType()) {
+                    case NodeTypeEnums.LeftInputAdapterNode:
+                        allLinkedTestMask = processLiaNode((LeftInputAdapterNode) tupleSource, wm, smem, nodePosMask, allLinkedTestMask);
+                        break;
+                    case NodeTypeEnums.EvalConditionNode:
+                        processEvalNode((EvalConditionNode) tupleSource, wm, smem);
+                        break;
+                    case NodeTypeEnums.ConditionalBranchNode:
+                        updateNodeBit = processBranchNode((ConditionalBranchNode) tupleSource, wm, smem);
+                        break;
+                    case NodeTypeEnums.FromNode:
+                        processFromNode((FromNode) tupleSource, wm, smem);
+                        break;
+                    case NodeTypeEnums.ReactiveFromNode:
+                        processReactiveFromNode((MemoryFactory) tupleSource, wm, smem, nodePosMask);
+                        break;
+                    case NodeTypeEnums.TimerConditionNode:
+                        processTimerNode((TimerNode) tupleSource, wm, smem, nodePosMask);
+                        break;
+                    case NodeTypeEnums.QueryElementNode:
+                        updateNodeBit = processQueryNode((QueryElementNode) tupleSource, wm, segmentRoot, smem, nodePosMask);
+                        break;
+                }
+            }
+            nodePosMask = nodePosMask << 1;
+
+            if (tupleSource.getSinkPropagator().size() == 1) {
+                LeftTupleSinkNode sink = tupleSource.getSinkPropagator().getFirstLeftTupleSink();
+                if (NodeTypeEnums.isLeftTupleSource(sink)) {
+                    tupleSource = (LeftTupleSource) sink;
+                } else {
+                    // rtn or rian
+                    // While not technically in a segment, we want to be able to iterate easily from the last node memory to the ria/rtn memory
+                    // we don't use createNodeMemory, as these may already have been created by, but not added, by the method updateRiaAndTerminalMemory
+                    Memory memory = wm.getNodeMemory((MemoryFactory) sink);
+                    if (sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
+                        PathMemory riaPmem = ((RiaNodeMemory)memory).getRiaPathMemory();
+                        smem.getNodeMemories().add( riaPmem );
+
+                        RightInputAdapterNode rian = ( RightInputAdapterNode ) sink;
+                        ObjectSink[] nodes = rian.getObjectSinkPropagator().getSinks();
+                        for ( ObjectSink node : nodes ) {
+                            if ( NodeTypeEnums.isLeftTupleSource(node) )  {
+                                createSegmentMemory( (LeftTupleSource) node, wm );
+                            }
+                        }
+                    } else if (NodeTypeEnums.isTerminalNode(sink)) {
+                        smem.getNodeMemories().add(memory);
+                    }
+                    memory.setSegmentMemory(smem);
+                    smem.setTipNode(sink);
+                    break;
+                }
+            } else {
+                // not in same segment
+                smem.setTipNode(tupleSource);
+                break;
+            }
+        }
+        smem.setAllLinkedMaskTest(allLinkedTestMask);
+
+        // iterate to find root and determine the SegmentNodes position in the RuleSegment
+        LeftTupleSource pathRoot = segmentRoot;
+        int ruleSegmentPosMask = 1;
+        int counter = 0;
+        while (pathRoot.getType() != NodeTypeEnums.LeftInputAdapterNode) {
+            if (SegmentUtilities.isRootNode(pathRoot, null)) {
+                // for each new found segment, increase the mask bit position
+                ruleSegmentPosMask = ruleSegmentPosMask << 1;
+                counter++;
+            }
+            pathRoot = pathRoot.getLeftTupleSource();
+        }
+        smem.setSegmentPosMaskBit(ruleSegmentPosMask);
+        smem.setPos(counter);
+
+        nodeTypesInSegment = updateRiaAndTerminalMemory(tupleSource, tupleSource, smem, wm, false, nodeTypesInSegment);
+
+        ((KnowledgeBaseImpl)wm.getKnowledgeBase()).registerSegmentPrototype(segmentRoot, smem);
+
+        return smem;
     }
 
     private static SegmentMemory restoreSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource segmentRoot, int nodeTypesInSegment) {
@@ -470,10 +466,7 @@ public class SegmentUtilities {
         }
 
         LeftTupleNode parent = node.getLeftTupleSource();
-        if ( isTipNode(parent, removingRule) ) {
-            return true;
-        }
-        return false;
+        return isTipNode( parent, removingRule );
     }
 
     /**
@@ -492,7 +485,7 @@ public class SegmentUtilities {
         if (NodeTypeEnums.isEndNode(node)) {
             return true;
         }
-        LeftTupleSinkPropagator sinkPropagator = ((LeftTupleSource)node).getSinkPropagator();
+        LeftTupleSinkPropagator sinkPropagator = node.getSinkPropagator();
 
 
         if (removingRule == null) {

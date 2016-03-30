@@ -177,7 +177,7 @@ public interface InternalWorkingMemory
      * This method is called by the agenda before firing a new activation
      * to ensure the working memory is in a safe state to fire the activation.
      */
-    public void prepareToFireActivation();
+    void prepareToFireActivation();
     
     /**
      * This method is called by the agenda right after an activation was fired
@@ -205,6 +205,10 @@ public interface InternalWorkingMemory
     void flushPropagations();
     void flushPropagations(PropagationEntry propagationEntry);
     void flushNonMarshallablePropagations();
+
+    void activate();
+    void deactivate();
+    boolean tryDeactivate();
 
     void notifyEngineInactive();
 
