@@ -52,7 +52,6 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
     void readUnlock();
 
     void lock();
-    boolean tryLock();
     void unlock();
 
     void enqueueModification(Runnable modification);

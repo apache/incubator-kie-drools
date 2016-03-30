@@ -49,9 +49,9 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     // node memory
     protected TupleList        memory;
 
-    private LeftTuple            peer;
+    private LeftTuple          peer;
 
-    private volatile short       stagedTypeForQueries;
+    private short              stagedTypeForQueries;
 
     public BaseLeftTuple() {
         // constructor needed for serialisation

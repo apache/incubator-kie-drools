@@ -32,7 +32,7 @@ public class RuleAgendaItem extends AgendaItemImpl implements LinkedListNode<Rul
     public           RuleExecutor   executor;
     private          RuleAgendaItem previous;
     private          RuleAgendaItem next;
-    private volatile boolean        blocked;
+    private          boolean        blocked;
 
     public RuleAgendaItem() {
 

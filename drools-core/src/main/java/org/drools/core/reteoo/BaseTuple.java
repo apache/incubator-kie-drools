@@ -23,7 +23,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 
 public abstract class BaseTuple implements Tuple {
-    private volatile short       stagedType;
+    private short  stagedType;
 
     private Object contextObject;
 
