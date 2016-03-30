@@ -778,7 +778,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             startOperation();
 
             this.lock.lock();
-            this.kBase.readLock();
 
             this.kBase.executeQueuedActions();
             flushPropagations();
@@ -818,7 +817,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                          this,
                                          ( queryObject.getQuery() != null ) ? queryObject.getQuery().getParameters()  : new Declaration[0] );
         } finally {
-            this.kBase.readUnlock();
             this.lock.unlock();
             endOperation();
         }
@@ -840,7 +838,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         try {
             startOperation();
-            this.kBase.readLock();
             this.lock.lock();
 
             this.kBase.executeQueuedActions();
@@ -869,7 +866,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                       handle );
         } finally {
             this.lock.unlock();
-            this.kBase.readUnlock();
             endOperation();
         }
     }
@@ -911,27 +907,29 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         try {
             startOperation();
-            this.kBase.readLock();
             this.lock.lock();
+            agenda.executeCallable( new Callable<Void>() {
+                @Override
+                public Void call() throws Exception {
+                    LeftInputAdapterNode lian = factHandle.getFirstLeftTuple().getTupleSource();
+                    LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory(lian);
+                    SegmentMemory lsmem = lmem.getSegmentMemory();
 
-            LeftInputAdapterNode lian = factHandle.getFirstLeftTuple().getTupleSource();
-            LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory(lian);
-            SegmentMemory lsmem = lmem.getSegmentMemory();
+                    LeftTuple childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
+                    LeftInputAdapterNode.doDeleteObject( childLeftTuple, childLeftTuple.getPropagationContext(),  lsmem, StatefulKnowledgeSessionImpl.this, lian, false, lmem );
 
-            LeftTuple childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
-            LeftInputAdapterNode.doDeleteObject( childLeftTuple, childLeftTuple.getPropagationContext(),  lsmem, this, lian, false, lmem );
+                    for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
+                        RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getPathEndNode() );
+                        evaluator.getRuleExecutor().setDirty( true );
+                        evaluator.getRuleExecutor().evaluateNetworkAndFire( StatefulKnowledgeSessionImpl.this, null, 0, -1 );
+                    }
 
-            for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
-                RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getPathEndNode() );
-                evaluator.getRuleExecutor().setDirty( true );
-                evaluator.getRuleExecutor().evaluateNetworkAndFire( this, null, 0, -1 );
-            }
-
-            getFactHandleFactory().destroyFactHandle( factHandle );
-
+                    getFactHandleFactory().destroyFactHandle( factHandle );
+                    return null;
+                }
+            } );
         } finally {
             this.lock.unlock();
-            this.kBase.readUnlock();
             endOperation();
         }
     }
@@ -1305,10 +1303,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private int internalFireAllRules(AgendaFilter agendaFilter, int fireLimit) {
         int fireCount = 0;
         try {
-            kBase.readLock();
             fireCount = this.agenda.fireAllRules( agendaFilter, fireLimit );
         } finally {
-            kBase.readUnlock();
             if (kBase.flushModifications()) {
                 fireCount += internalFireAllRules(agendaFilter, fireLimit);
             }
@@ -1893,7 +1889,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void startBatchExecution(ExecutionResultImpl results) {
-        this.kBase.readLock();
         this.lock.lock();
         this.batchExecutionResult = results;
     }
@@ -1905,7 +1900,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public void endBatchExecution() {
         this.batchExecutionResult = null;
         this.lock.unlock();
-        this.kBase.readUnlock();
     }
 
     public InternalKnowledgeRuntime getKnowledgeRuntime() {
@@ -2044,23 +2038,43 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
+    @Override
     public void notifyWaitOnRest() {
         propagationList.notifyWaitOnRest();
     }
 
+    @Override
+    public void activate() {
+        agenda.activate();
+    }
+
+    @Override
+    public void deactivate() {
+        agenda.deactivate();
+    }
+
+    @Override
+    public boolean tryDeactivate() {
+        return agenda.tryDeactivate();
+    }
+
+    @Override
     public void flushNonMarshallablePropagations() {
         propagationList.flushNonMarshallable();
         executeQueuedActionsForRete();
     }
 
+    @Override
     public void notifyEngineInactive() {
         propagationList.onEngineInactive();
     }
 
+    @Override
     public boolean hasPendingPropagations() {
         return !propagationList.isEmpty();
     }
 
+    @Override
     public Iterator<? extends PropagationEntry> getActionsIterator() {
         return propagationList.iterator();
     }

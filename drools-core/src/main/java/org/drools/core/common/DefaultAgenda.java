@@ -127,13 +127,14 @@ public class DefaultAgenda
 
     private volatile ExecutionState                              currentState = ExecutionState.INACTIVE;
 
-    public enum ExecutionState {   // fireAllRule | fireUntilHalt | executeTask <-- required action
-        INACTIVE( false ),         // fire        | fire          | exec
-        FIRING_ALL_RULES( true ),  // do nothing  | wait + fire   | enqueue
-        FIRING_UNTIL_HALT( true ), // do nothing  | do nothing    | enqueue
-        HALTING( false ),          // wait + fire | wait + fire   | enqueue
-        EXECUTING_TASK( false ),   // wait + fire | wait + fire   | wait + exec
-        EXECUTING_CALLABLE( false );   // wait + fire | wait + fire   | wait + exec
+    public enum ExecutionState {     // fireAllRule | fireUntilHalt | executeTask <-- required action
+        INACTIVE( false ),           // fire        | fire          | exec
+        FIRING_ALL_RULES( true ),    // do nothing  | wait + fire   | enqueue
+        FIRING_UNTIL_HALT( true ),   // do nothing  | do nothing    | enqueue
+        HALTING( false ),            // wait + fire | wait + fire   | enqueue
+        EXECUTING_TASK( false ),     // wait + fire | wait + fire   | wait + exec
+        EXECUTING_CALLABLE( false ), // wait + fire | wait + fire   | wait + exec
+        DEACTIVATED( false );        // wait + fire | wait + fire   | wait + exec
 
         private final boolean firing;
 
@@ -824,6 +825,7 @@ public class DefaultAgenda
 
         eager.clear();
         activationCounter = 0;
+        currentState = ExecutionState.INACTIVE;
     }
 
     public void clearAndCancel() {
@@ -1449,6 +1451,28 @@ public class DefaultAgenda
                 immediateHalt();
             }
         }
+    }
+
+    public void activate() {
+        immediateHalt();
+    }
+
+    public void deactivate() {
+        synchronized (stateMachineLock) {
+            if ( currentState != ExecutionState.DEACTIVATED ) {
+                waitAndEnterExecutionState( ExecutionState.DEACTIVATED );
+            }
+        }
+    }
+
+    public boolean tryDeactivate() {
+        synchronized (stateMachineLock) {
+            if ( currentState == ExecutionState.INACTIVE ) {
+                setCurrentState( ExecutionState.DEACTIVATED );
+                return true;
+            }
+        }
+        return false;
     }
 
     public void halt() {

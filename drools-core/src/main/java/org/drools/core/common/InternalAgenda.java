@@ -284,6 +284,10 @@ public interface InternalAgenda
     void executeTask( ExecutableEntry executable );
     <T> T executeCallable( Callable<T> callable );
 
+    void activate();
+    void deactivate();
+    boolean tryDeactivate();
+
     void insertAndStageActivation(AgendaItem activation);
 
     void addAgendaItemToGroup(AgendaItem item);

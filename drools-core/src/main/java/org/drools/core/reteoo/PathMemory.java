@@ -23,7 +23,6 @@ import org.drools.core.common.Memory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.AtomicBitwiseLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +33,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     protected static final Logger log = LoggerFactory.getLogger(PathMemory.class);
     protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
 
-    private final    AtomicBitwiseLong linkedSegmentMask;
+    private          long              linkedSegmentMask;
     private          long              allLinkedMaskTest;
     private final    PathEndNode       pathEndNode;
     private          RuleAgendaItem    agendaItem;
@@ -43,7 +42,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public PathMemory(PathEndNode pathEndNode) {
         this.pathEndNode = pathEndNode;
-        this.linkedSegmentMask = new AtomicBitwiseLong();
+        this.linkedSegmentMask = 0L;
     }
 
     public PathEndNode getPathEndNode() {
@@ -59,7 +58,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public long getLinkedSegmentMask() {
-        return linkedSegmentMask.get();
+        return linkedSegmentMask;
     }
 
     public long getAllLinkedMaskTest() {
@@ -71,12 +70,12 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public void linkNodeWithoutRuleNotify(long mask) {
-        linkedSegmentMask.getAndBitwiseOr( mask );
+        linkedSegmentMask |= mask;
     }
 
     public void linkSegment(long mask,
                             InternalWorkingMemory wm) {
-        linkedSegmentMask.getAndBitwiseOr( mask );
+        linkedSegmentMask |= mask;
         if (isLogTraceEnabled) {
             if (NodeTypeEnums.isTerminalNode(getPathEndNode())) {
                 TerminalNode rtn = (TerminalNode) getPathEndNode();
@@ -158,7 +157,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     public void unlinkedSegment(long mask,
                                 InternalWorkingMemory wm) {
         boolean linkedRule =  isRuleLinked();
-        linkedSegmentMask.getAndBitwiseXor( mask );
+        linkedSegmentMask ^= mask;
         if (isLogTraceEnabled) {
             log.trace("  UnlinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask, this);
         }
@@ -168,7 +167,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public boolean isRuleLinked() {
-        return (linkedSegmentMask.get() & allLinkedMaskTest) == allLinkedMaskTest;
+        return (linkedSegmentMask & allLinkedMaskTest) == allLinkedMaskTest;
     }
 
     public boolean isDataDriven() {
@@ -205,6 +204,6 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public void reset() {
-        this.linkedSegmentMask.set(0);
+        this.linkedSegmentMask = 0L;
     }
 }

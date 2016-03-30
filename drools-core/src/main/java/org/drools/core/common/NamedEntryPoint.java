@@ -186,7 +186,6 @@ public class NamedEntryPoint
 
             
             try {
-                this.kBase.readLock();
                 this.lock.lock();
                 // check if the object already exists in the WM
                 handle = this.objectStore.getHandleForObject( object );
@@ -243,7 +242,6 @@ public class NamedEntryPoint
 
             } finally {
                 this.lock.unlock();
-                this.kBase.readUnlock();
             }
             return handle;
         } finally {
@@ -323,7 +321,6 @@ public class NamedEntryPoint
                                      final Class<?> modifiedClass,
                                      final Activation activation) {
         try {
-            this.kBase.readLock();
             this.lock.lock();
             this.wm.startOperation();
             this.kBase.executeQueuedActions();
@@ -405,7 +402,6 @@ public class NamedEntryPoint
         } finally {
             this.wm.endOperation();
             this.lock.unlock();
-            this.kBase.readUnlock();
         }
         return handle;
     }
@@ -459,7 +455,6 @@ public class NamedEntryPoint
         }
 
         try {
-            this.kBase.readLock();
             this.lock.lock();
             this.wm.startOperation();
             this.kBase.executeQueuedActions();
@@ -490,7 +485,6 @@ public class NamedEntryPoint
         } finally {
             this.wm.endOperation();
             this.lock.unlock();
-            this.kBase.readUnlock();
         }
     }
 

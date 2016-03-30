@@ -1484,6 +1484,21 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         throw new UnsupportedOperationException( "Cannot invoke executeCallable on ReteAgenda" );
     }
 
+    @Override
+    public void activate( ) {
+        throw new UnsupportedOperationException( "Cannot invoke activate on ReteAgenda" );
+    }
+
+    @Override
+    public void deactivate( ) {
+        throw new UnsupportedOperationException( "Cannot invoke deactivate on ReteAgenda" );
+    }
+
+    @Override
+    public boolean tryDeactivate( ) {
+        throw new UnsupportedOperationException( "Cannot invoke tryDeactivate on ReteAgenda" );
+    }
+
     public void halt() {
         this.halt.set( true );
         workingMemory.notifyWaitOnRest();
