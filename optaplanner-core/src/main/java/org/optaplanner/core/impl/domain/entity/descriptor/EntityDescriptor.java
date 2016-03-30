@@ -30,7 +30,6 @@ import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.MethodMemberAccessor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorShadowVariableDescriptor;
@@ -45,18 +44,21 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.*;
+
+import static org.optaplanner.core.config.util.ConfigUtils.MemberAccessorType.*;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class EntityDescriptor<Solution_> {
 
-    public static final List<Class<? extends Annotation>> VARIABLE_ANNOTATION_CLASSES = Arrays.asList(
+    public static final Class[] VARIABLE_ANNOTATION_CLASSES = {
             PlanningVariable.class,
             InverseRelationShadowVariable.class, AnchorShadowVariable.class,
-            CustomShadowVariable.class);
+            CustomShadowVariable.class};
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
@@ -140,21 +142,13 @@ public class EntityDescriptor<Solution_> {
 
     private void processValueRangeProviderAnnotations(DescriptorPolicy descriptorPolicy) {
         // Only iterate declared fields and methods, not inherited members, to avoid registering the same ValueRangeProvider twice
-        List<Field> fieldList = Arrays.asList(entityClass.getDeclaredFields());
-        Collections.sort(fieldList, new AlphabeticMemberComparator());
-        for (Field field : fieldList) {
-            if (field.isAnnotationPresent(ValueRangeProvider.class)) {
-                MemberAccessor memberAccessor = new FieldMemberAccessor(field);
-                descriptorPolicy.addFromEntityValueRangeProvider(memberAccessor);
-            }
-        }
-        List<Method> methodList = Arrays.asList(entityClass.getDeclaredMethods());
-        Collections.sort(methodList, new AlphabeticMemberComparator());
-        for (Method method : methodList) {
-            if (method.isAnnotationPresent(ValueRangeProvider.class)) {
-                ReflectionHelper.assertReadMethod(method, ValueRangeProvider.class);
-                MemberAccessor memberAccessor = new MethodMemberAccessor(method);
-                descriptorPolicy.addFromEntityValueRangeProvider(memberAccessor);
+        List<Member> memberList = ConfigUtils.getDeclaredMembers(entityClass);
+        for (Member member : memberList) {
+            if (((AnnotatedElement) member).isAnnotationPresent(ValueRangeProvider.class)) {
+                MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
+                        member, FIELD_OR_READ_METHOD, ValueRangeProvider.class);
+                descriptorPolicy.addFromEntityValueRangeProvider(
+                        memberAccessor);
             }
         }
     }
@@ -163,30 +157,14 @@ public class EntityDescriptor<Solution_> {
         declaredGenuineVariableDescriptorMap = new LinkedHashMap<>();
         declaredShadowVariableDescriptorMap = new LinkedHashMap<>();
         boolean noVariableAnnotation = true;
-        List<Field> fieldList = Arrays.asList(entityClass.getDeclaredFields());
-        Collections.sort(fieldList, new AlphabeticMemberComparator());
-        for (Field field : fieldList) {
-            Class<? extends Annotation> variableAnnotationClass = extractVariableAnnotationClass(field);
+        List<Member> memberList = ConfigUtils.getDeclaredMembers(entityClass);
+        for (Member member : memberList) {
+            Class<? extends Annotation> variableAnnotationClass = ConfigUtils.extractAnnotationClass(
+                    member, VARIABLE_ANNOTATION_CLASSES);
             if (variableAnnotationClass != null) {
                 noVariableAnnotation = false;
-                MemberAccessor memberAccessor = new FieldMemberAccessor(field);
-                registerVariableAccessor(descriptorPolicy, variableAnnotationClass, memberAccessor);
-            }
-        }
-        List<Method> methodList = Arrays.asList(entityClass.getDeclaredMethods());
-        Collections.sort(methodList, new AlphabeticMemberComparator());
-        for (Method method : methodList) {
-            Class<? extends Annotation> variableAnnotationClass = extractVariableAnnotationClass(method);
-            if (variableAnnotationClass != null) {
-                noVariableAnnotation = false;
-                ReflectionHelper.assertGetterMethod(method, variableAnnotationClass);
-                MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
-                if (!memberAccessor.supportSetter()) {
-                    throw new IllegalStateException("The entityClass (" + entityClass
-                            + ") has a " + variableAnnotationClass.getSimpleName()
-                            + " annotated getter method (" + method
-                            + "), but lacks a setter for that property (" + memberAccessor.getName() + ").");
-                }
+                MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
+                        member, FIELD_OR_GETTER_METHOD_WITH_SETTER, variableAnnotationClass);
                 registerVariableAccessor(descriptorPolicy, variableAnnotationClass, memberAccessor);
             }
         }
@@ -195,23 +173,6 @@ public class EntityDescriptor<Solution_> {
                     + ") should have at least 1 getter method or 1 field with a "
                     + PlanningVariable.class.getSimpleName() + " annotation or a shadow variable annotation.");
         }
-    }
-
-    private Class<? extends Annotation> extractVariableAnnotationClass(AnnotatedElement member) {
-        Class<? extends Annotation> annotationClass = null;
-        for (Class<? extends Annotation> detectedAnnotationClass : VARIABLE_ANNOTATION_CLASSES) {
-            if (member.isAnnotationPresent(detectedAnnotationClass)) {
-                if (annotationClass != null) {
-                    throw new IllegalStateException("The entityClass (" + entityClass
-                            + ") has a member (" + member + ") that has both a "
-                            + annotationClass.getSimpleName() + " annotation and a "
-                            + detectedAnnotationClass.getSimpleName() + " annotation.");
-                }
-                annotationClass = detectedAnnotationClass;
-                // Do not break early: check other annotations too
-            }
-        }
-        return annotationClass;
     }
 
     private void registerVariableAccessor(DescriptorPolicy descriptorPolicy,

@@ -17,8 +17,21 @@
 package org.optaplanner.core.config.util;
 
 import org.optaplanner.core.config.AbstractConfig;
+import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
+import org.optaplanner.core.impl.domain.common.ReflectionHelper;
+import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.MethodMemberAccessor;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ConfigUtils {
 
@@ -181,6 +194,86 @@ public class ConfigUtils {
         }
         return (dividend / divisor) + correction;
     }
+
+    // ************************************************************************
+    // Member and annotation methods
+    // ************************************************************************
+
+    /**
+     * @param clazz never null
+     * @return never null, sorted by type (fields before methods), then by {@link AlphabeticMemberComparator}.
+     */
+    public static List<Member> getDeclaredMembers(Class<?> clazz) {
+        Stream<Field> fieldStream = Stream.of(clazz.getDeclaredFields())
+                .sorted(new AlphabeticMemberComparator());
+        Stream<Method> methodStream = Stream.of(clazz.getDeclaredMethods())
+                .sorted(new AlphabeticMemberComparator());
+        return Stream.<Member>concat(fieldStream, methodStream)
+            .collect(Collectors.toList());
+    }
+
+    public static Class<? extends Annotation> extractAnnotationClass(Member member,
+            Class<? extends Annotation>... annotations) {
+        Class<? extends Annotation> annotationClass = null;
+        for (Class<? extends Annotation> detectedAnnotationClass : annotations) {
+            if (((AnnotatedElement) member).isAnnotationPresent(detectedAnnotationClass)) {
+                if (annotationClass != null) {
+                    throw new IllegalStateException("The class (" + member.getDeclaringClass()
+                            + ") has a member (" + member + ") that has both a "
+                            + annotationClass.getSimpleName() + " annotation and a "
+                            + detectedAnnotationClass.getSimpleName() + " annotation.");
+                }
+                annotationClass = detectedAnnotationClass;
+                // Do not break early: check other annotations too
+            }
+        }
+        return annotationClass;
+    }
+
+    public static MemberAccessor buildMemberAccessor(Member member, MemberAccessorType memberAccessorType, Class<? extends Annotation> annotationClass) {
+        if (member instanceof Field) {
+            Field field = (Field) member;
+            return new FieldMemberAccessor(field);
+        } else if (member instanceof Method) {
+            Method method = (Method) member;
+            MemberAccessor memberAccessor;
+            switch (memberAccessorType) {
+                case FIELD_OR_READ_METHOD:
+                    ReflectionHelper.assertReadMethod(method, annotationClass);
+                    memberAccessor = new MethodMemberAccessor(method);
+                    break;
+                case FIELD_OR_GETTER_METHOD:
+                case FIELD_OR_GETTER_METHOD_WITH_SETTER:
+                    ReflectionHelper.assertGetterMethod(method, annotationClass);
+                    memberAccessor = new BeanPropertyMemberAccessor(method);
+                    break;
+                default:
+                    throw new IllegalStateException("The memberAccessorType (" + memberAccessorType
+                            + ") is not implemented.");
+            }
+            if (memberAccessorType == MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER
+                    && !memberAccessor.supportSetter()) {
+                throw new IllegalStateException("The class (" + method.getDeclaringClass()
+                        + ") has a " + annotationClass.getSimpleName()
+                        + " annotated getter method (" + method
+                        + "), but lacks a setter for that property (" + memberAccessor.getName() + ").");
+            }
+            return memberAccessor;
+        } else {
+            throw new IllegalStateException("Impossible state: the member (" + member + ")'s type is not a "
+                    + Field.class.getSimpleName() + " or a " + Method.class.getSimpleName() + ".");
+        }
+    }
+
+    public enum MemberAccessorType {
+        FIELD_OR_READ_METHOD,
+        FIELD_OR_GETTER_METHOD,
+        FIELD_OR_GETTER_METHOD_WITH_SETTER
+    }
+
+    // ************************************************************************
+    // Private constructor
+    // ************************************************************************
 
     private ConfigUtils() {
     }
