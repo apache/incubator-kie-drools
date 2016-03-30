@@ -155,6 +155,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
@@ -224,7 +225,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     protected Map<String, WorkingMemoryEntryPoint> entryPoints;
 
-    protected volatile InternalFactHandle initialFactHandle;
+    protected InternalFactHandle initialFactHandle;
 
     protected PropagationContextFactory pctxFactory;
 
@@ -873,32 +874,37 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    protected BaseNode[] evalQuery(String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx) {
-        BaseNode[] tnodes = kBase.getReteooBuilder().getTerminalNodesForQuery( queryName);
-        if ( tnodes == null ) {
-            throw new RuntimeException( "Query '" + queryName + "' does not exist");
-        }
+    protected BaseNode[] evalQuery(final String queryName, final DroolsQuery queryObject, final InternalFactHandle handle, final PropagationContext pCtx) {
+        return agenda.executeCallable( new Callable<BaseNode[]>() {
+            @Override
+            public BaseNode[] call() throws Exception {
+                BaseNode[] tnodes = kBase.getReteooBuilder().getTerminalNodesForQuery( queryName );
+                if ( tnodes == null ) {
+                    throw new RuntimeException( "Query '" + queryName + "' does not exist" );
+                }
 
-        QueryTerminalNode tnode = ( QueryTerminalNode )  tnodes[0];
-        LeftTupleSource lts = tnode.getLeftTupleSource();
-        while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
-            lts = lts.getLeftTupleSource();
-        }
-        LeftInputAdapterNode lian = ( LeftInputAdapterNode ) lts;
-        LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory( lian );
-        if ( lmem.getSegmentMemory() == null) {
-            SegmentUtilities.createSegmentMemory(lts, this);
-        }
+                QueryTerminalNode tnode = (QueryTerminalNode) tnodes[0];
+                LeftTupleSource lts = tnode.getLeftTupleSource();
+                while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+                    lts = lts.getLeftTupleSource();
+                }
+                LeftInputAdapterNode lian = (LeftInputAdapterNode) lts;
+                LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory( lian );
+                if ( lmem.getSegmentMemory() == null ) {
+                    SegmentUtilities.createSegmentMemory( lts, StatefulKnowledgeSessionImpl.this );
+                }
 
-        LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, this, lmem, false, queryObject.isOpen() );
+                LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, StatefulKnowledgeSessionImpl.this, lmem, false, queryObject.isOpen() );
 
-        for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
-            RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getPathEndNode() );
-            evaluator.getRuleExecutor().setDirty( true );
-            evaluator.getRuleExecutor().evaluateNetworkAndFire( this, null, 0, -1 );
-        }
+                for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
+                    RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getPathEndNode() );
+                    evaluator.getRuleExecutor().setDirty( true );
+                    evaluator.getRuleExecutor().evaluateNetworkAndFire( StatefulKnowledgeSessionImpl.this, null, 0, -1 );
+                }
 
-        return tnodes;
+                return tnodes;
+            }
+        } );
     }
 
     public void closeLiveQuery(final InternalFactHandle factHandle) {

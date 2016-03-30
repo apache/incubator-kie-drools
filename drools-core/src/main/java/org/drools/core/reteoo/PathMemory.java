@@ -20,7 +20,6 @@ import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
-import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.util.AbstractBaseLinkedListNode;
@@ -35,10 +34,10 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     protected static final Logger log = LoggerFactory.getLogger(PathMemory.class);
     protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
 
-    private          AtomicBitwiseLong linkedSegmentMask;
+    private final    AtomicBitwiseLong linkedSegmentMask;
     private          long              allLinkedMaskTest;
-    private          PathEndNode pathEndNode;
-    private volatile RuleAgendaItem    agendaItem;
+    private final    PathEndNode       pathEndNode;
+    private          RuleAgendaItem    agendaItem;
     private          SegmentMemory[]   segmentMemories;
     private          SegmentMemory     segmentMemory;
 
@@ -57,10 +56,6 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     public RuleAgendaItem getRuleAgendaItem() {
         return agendaItem;
-    }
-
-    public void setlinkedSegmentMask(long mask) {
-        linkedSegmentMask.set( mask );
     }
 
     public long getLinkedSegmentMask() {
