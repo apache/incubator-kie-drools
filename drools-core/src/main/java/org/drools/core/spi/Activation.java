@@ -88,45 +88,45 @@ public interface Activation<T extends ModedAssertion<T>>
      */
     void remove();
     
-    public void addBlocked(final LogicalDependency<SimpleMode> node);
+    void addBlocked(final LogicalDependency<SimpleMode> node);
     
-    public LinkedList<LogicalDependency<SimpleMode>> getBlocked();
+    LinkedList<LogicalDependency<SimpleMode>> getBlocked();
 
-    public void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified);
+    void setBlocked(LinkedList<LogicalDependency<SimpleMode>> justified);
     
-    public LinkedList<SimpleMode> getBlockers();
+    LinkedList<SimpleMode> getBlockers();
     
-    public void addLogicalDependency(LogicalDependency<T> node);
+    void addLogicalDependency(LogicalDependency<T> node);
 
-    public LinkedList<LogicalDependency<T>> getLogicalDependencies();
+    LinkedList<LogicalDependency<T>> getLogicalDependencies();
 
-    public void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified);
+    void setLogicalDependencies(LinkedList<LogicalDependency<T>> justified);
 
-    public void setQueued(boolean activated);
+    void setQueued(boolean activated);
     
-    public boolean isQueued();
+    boolean isQueued();
 
-    public InternalAgendaGroup getAgendaGroup();
+    InternalAgendaGroup getAgendaGroup();
 
-    public ActivationGroupNode getActivationGroupNode();
+    ActivationGroupNode getActivationGroupNode();
 
-    public void setActivationGroupNode(ActivationGroupNode activationGroupNode);
+    void setActivationGroupNode(ActivationGroupNode activationGroupNode);
 
-    public ActivationNode getActivationNode();
+    ActivationNode getActivationNode();
 
-    public void setActivationNode(ActivationNode ruleFlowGroupNode);
+    void setActivationNode(ActivationNode ruleFlowGroupNode);
     
     InternalFactHandle getActivationFactHandle();
 
-    public boolean isMatched();
+    boolean isMatched();
 
-    public void setMatched(boolean matched);    
+    void setMatched(boolean matched);
 
-    public boolean isActive();
+    boolean isActive();
 
-    public void setActive(boolean active);
+    void setActive(boolean active);
 
-    public boolean isRuleAgendaItem();
+    boolean isRuleAgendaItem();
 
 
     void setQueueIndex(int index);

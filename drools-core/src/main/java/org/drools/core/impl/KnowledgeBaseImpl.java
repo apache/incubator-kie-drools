@@ -36,7 +36,14 @@ import org.drools.core.event.KieBaseEventSupport;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.management.DroolsManagementAgent;
-import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.KieComponentFactory;
+import org.drools.core.reteoo.LeftTupleNode;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.Rete;
+import org.drools.core.reteoo.ReteooBuilder;
+import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.DialectRuntimeRegistry;
@@ -49,8 +56,6 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashSet;
 import org.drools.core.util.TripleStore;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
@@ -102,7 +107,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
@@ -147,15 +151,10 @@ public class KnowledgeBaseImpl
 
     private KieBaseEventSupport eventSupport = new KieBaseEventSupport(this);
 
-    private transient ObjectHashSet statefulSessions;
+    private transient final Set<StatefulKnowledgeSession> statefulSessions = new HashSet<StatefulKnowledgeSession>();
 
     // lock for entire rulebase, used for dynamic updates
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-
-    /**
-     * This lock is used when adding to, or reading the <field>statefulSessions</field>
-     */
-    private final ReentrantLock statefulSessionLock = new ReentrantLock();
 
     private transient Map<String, TypeDeclaration> classTypeDeclaration;
 
@@ -178,6 +177,8 @@ public class KnowledgeBaseImpl
 
     private transient Queue<Runnable> kbaseModificationsQueue = new ConcurrentLinkedQueue<Runnable>();
 
+    private transient AtomicInteger sessionDeactivationsCounter = new AtomicInteger();
+
     public KnowledgeBaseImpl() { }
 
     public KnowledgeBaseImpl(final String id,
@@ -198,7 +199,6 @@ public class KnowledgeBaseImpl
         this.pkgs = new HashMap<String, InternalKnowledgePackage>();
         this.processes = new HashMap<String, Process>();
         this.globals = new HashMap<String, Class<?>>();
-        this.statefulSessions = new ObjectHashSet();
 
         this.classTypeDeclaration = new HashMap<String, TypeDeclaration>();
         this.partitionIDs = new CopyOnWriteArrayList<RuleBasePartitionId>();
@@ -298,14 +298,7 @@ public class KnowledgeBaseImpl
     }
     
     public Collection<StatefulKnowledgeSession> getStatefulKnowledgeSessions() {
-        Collection<StatefulKnowledgeSession> c = new ArrayList<StatefulKnowledgeSession>();
-        StatefulKnowledgeSessionImpl[] sss = getStatefulSessions();
-        if (sss != null) {
-            for (StatefulKnowledgeSession ss : sss) {
-                c.add( ss );
-            }
-        }
-        return c;
+        return statefulSessions;
     }
     
     public StatelessKnowledgeSession newStatelessKnowledgeSession() {
@@ -491,7 +484,6 @@ public class KnowledgeBaseImpl
 
         this.eventSupport = (KieBaseEventSupport) droolsStream.readObject();
         this.eventSupport.setKnowledgeBase(this);
-        this.statefulSessions = new ObjectHashSet();
 
         this.reteooBuilder = (ReteooBuilder) droolsStream.readObject();
         this.reteooBuilder.setRuleBase(this);
@@ -610,15 +602,11 @@ public class KnowledgeBaseImpl
     }
 
     public void disposeStatefulSession(StatefulKnowledgeSessionImpl statefulSession) {
-        statefulSessionLock.lock();
-
-        try {
+        synchronized (statefulSessions) {
             if (sessionsCache != null) {
                 sessionsCache.store(statefulSession);
             }
             this.statefulSessions.remove(statefulSession);
-        } finally {
-            statefulSessionLock.unlock();
         }
     }
 
@@ -681,21 +669,6 @@ public class KnowledgeBaseImpl
         }
     }
 
-    public boolean tryLock() {
-        // The lock is reentrant, so we need additional magic here to skip
-        // notifications for locked if this thread already has locked it.
-        boolean firstLock = !this.lock.isWriteLockedByCurrentThread();
-        if (firstLock) {
-            this.eventSupport.fireBeforeRuleBaseLocked();
-        }
-        // Always lock to increase the counter
-        boolean locked = this.lock.writeLock().tryLock();
-        if ( firstLock && locked ) {
-            this.eventSupport.fireAfterRuleBaseLocked();
-        }
-        return locked;
-    }
-
     public void unlock() {
         boolean lastUnlock = this.lock.getWriteHoldCount() == 1;
         if (lastUnlock) {
@@ -729,45 +702,109 @@ public class KnowledgeBaseImpl
             clonedPkgs.add(newPkg.deepCloneIfAlreadyInUse(rootClassLoader));
         }
 
-        if (lock.writeLock().tryLock()) {
-            try {
+        enqueueModification(new Runnable() {
+            @Override
+            public void run() {
                 internalAddPackages(clonedPkgs);
-            } finally {
-                unlock();
             }
-        } else {
-            enqueueModification(new Runnable() {
-                @Override
-                public void run() {
-                    internalAddPackages(clonedPkgs);
-                }
-            });
-        }
+        });
     }
 
     public void enqueueModification(Runnable modification) {
-        kbaseModificationsQueue.offer(modification);
+        if ( tryLockAndDeactivate() ) {
+            try {
+                modification.run();
+            } finally {
+                unlockAndActivate();
+            }
+        } else {
+            kbaseModificationsQueue.offer(modification);
+        }
     }
 
     public boolean flushModifications() {
-        if (!kbaseModificationsQueue.isEmpty() && lock.writeLock().tryLock()) {
-            try {
-                while (!kbaseModificationsQueue.isEmpty()) {
-                    kbaseModificationsQueue.poll().run();
-                }
-            } finally {
-                unlock();
+        if (kbaseModificationsQueue.isEmpty()) {
+            return false;
+        }
+
+        try {
+            lockAndDeactivate();
+            while (!kbaseModificationsQueue.isEmpty()) {
+                kbaseModificationsQueue.poll().run();
             }
+        } finally {
+            unlockAndActivate();
+        }
+        return true;
+    }
+
+    private void lockAndDeactivate() {
+        lock();
+        deactivateAllSessions();
+    }
+
+    private void unlockAndActivate() {
+        activateAllSessions();
+        unlock();
+    }
+
+    private boolean tryDeactivateAllSessions() {
+        if (statefulSessions.isEmpty()) {
             return true;
         }
-        return false;
+        List<InternalWorkingMemory> deactivatedWMs = new ArrayList<InternalWorkingMemory>();
+        for ( StatefulKnowledgeSession session : statefulSessions ) {
+            InternalWorkingMemory wm = (InternalWorkingMemory)session;
+            if (wm.tryDeactivate()) {
+                deactivatedWMs.add(wm);
+            } else {
+                for (InternalWorkingMemory deactivatedWM : deactivatedWMs) {
+                    deactivatedWM.activate();
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean tryLockAndDeactivate() {
+        if ( sessionDeactivationsCounter.incrementAndGet() > 1 ) {
+            this.lock.writeLock().lock();
+            return true;
+        }
+
+        boolean locked = this.lock.writeLock().tryLock();
+        if ( locked && !tryDeactivateAllSessions() ) {
+            this.lock.writeLock().unlock();
+            locked = false;
+        }
+
+        if (!locked) {
+            sessionDeactivationsCounter.decrementAndGet();
+        }
+
+        return locked;
+    }
+
+    private void deactivateAllSessions() {
+        if ( sessionDeactivationsCounter.incrementAndGet() < 2 ) {
+            for ( StatefulKnowledgeSession session : statefulSessions ) {
+                ( (InternalWorkingMemory) session ).deactivate();
+            }
+        }
+    }
+
+    private void activateAllSessions() {
+        if ( sessionDeactivationsCounter.decrementAndGet() == 0 ) {
+            for ( StatefulKnowledgeSession session : statefulSessions ) {
+                ( (InternalWorkingMemory) session ).activate();
+            }
+        }
     }
 
     private void internalAddPackages(List<InternalKnowledgePackage> clonedPkgs) {
-        Iterator sessionsIterator = statefulSessions.iterator();
-        for ( Object obj = sessionsIterator.next(); obj != null; obj = sessionsIterator.next() ) {
-            ObjectHashSet.ObjectEntry holder = (ObjectHashSet.ObjectEntry) obj;
-            ((InternalWorkingMemory)holder.getValue()).flushPropagations();
+        for ( StatefulKnowledgeSession session : statefulSessions ) {
+            ((InternalWorkingMemory)session).flushPropagations();
         }
 
         // we need to merge all byte[] first, so that the root classloader can resolve classes
@@ -1192,10 +1229,8 @@ public class KnowledgeBaseImpl
 
     public void removeGlobal(String identifier) {
         this.globals.remove( identifier );
-        Iterator sessionsIterator = statefulSessions.iterator();
-        for ( Object obj = sessionsIterator.next(); obj != null; obj = sessionsIterator.next() ) {
-            ObjectHashSet.ObjectEntry holder = (ObjectHashSet.ObjectEntry) obj;
-            ((InternalWorkingMemory)holder.getValue()).removeGlobal(identifier);
+        for ( StatefulKnowledgeSession session : statefulSessions ) {
+            ((InternalWorkingMemory)session).removeGlobal(identifier);
         }
     }
 
@@ -1560,41 +1595,29 @@ public class KnowledgeBaseImpl
 
     public void removeRule( final String packageName,
                             final String ruleName ) {
-        if (lock.writeLock().tryLock()) {
-            try {
-                internalRemoveRule(packageName, ruleName);
-            } finally {
-                unlock();
-            }
-        } else {
-            kbaseModificationsQueue.offer(new Runnable() {
-                @Override
-                public void run() {
-                    internalRemoveRule(packageName, ruleName);
+        enqueueModification(new Runnable() {
+            @Override
+            public void run() {
+                final InternalKnowledgePackage pkg = pkgs.get( packageName );
+                if (pkg == null) {
+                    throw new IllegalArgumentException( "Package name '" + packageName +
+                                                        "' does not exist for this Rule Base." );
                 }
-            });
-        }
-    }
 
-    private void internalRemoveRule(String packageName, String ruleName) {
-        final InternalKnowledgePackage pkg = this.pkgs.get( packageName );
-        if (pkg == null) {
-            throw new IllegalArgumentException( "Package name '" + packageName +
-                                                "' does not exist for this Rule Base." );
-        }
+                RuleImpl rule = pkg.getRule( ruleName );
+                if (rule == null) {
+                    throw new IllegalArgumentException( "Rule name '" + ruleName +
+                                                        "' does not exist in the Package '" +
+                                                        packageName +
+                                                        "'." );
+                }
 
-        RuleImpl rule = pkg.getRule( ruleName );
-        if (rule == null) {
-            throw new IllegalArgumentException( "Rule name '" + ruleName +
-                                                "' does not exist in the Package '" +
-                                                packageName +
-                                                "'." );
-        }
+                internalRemoveRule(pkg, rule);
 
-        removeRule( pkg,
-                    rule );
-        pkg.removeRule( rule );
-        addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
+                pkg.removeRule( rule );
+                addReloadDialectDatas( pkg.getDialectRuntimeRegistry() );
+            }
+        });
     }
 
     /**
@@ -1603,20 +1626,18 @@ public class KnowledgeBaseImpl
     // FIXME: removeTerminalNode(String, String) and removeTerminalNode(Package, Rule) do totally different things!
     public void removeRule( final InternalKnowledgePackage pkg,
                             final RuleImpl rule ) {
-        lock();
-        try {
-            this.eventSupport.fireBeforeRuleRemoved(pkg,
-                                                    rule);
-            removeRule(rule);
-            this.eventSupport.fireAfterRuleRemoved(pkg,
-                                                   rule);
-        } finally {
-            unlock();
-        }
+        enqueueModification(new Runnable() {
+            @Override
+            public void run() {
+                internalRemoveRule(pkg, rule);
+            }
+        });
     }
 
-    protected void removeRule(final RuleImpl rule) {
+    private void internalRemoveRule(InternalKnowledgePackage pkg, RuleImpl rule) {
+        this.eventSupport.fireBeforeRuleRemoved(pkg, rule);
         this.reteooBuilder.removeRule(rule);
+        this.eventSupport.fireAfterRuleRemoved(pkg, rule);
     }
 
     public void removeFunction( final String packageName,
@@ -1717,13 +1738,9 @@ public class KnowledgeBaseImpl
     }
 
     public void addStatefulSession( StatefulKnowledgeSessionImpl wm ) {
-        statefulSessionLock.lock();
-        try {
+        synchronized (statefulSessions) {
             this.statefulSessions.add( wm );
-        } finally {
-            statefulSessionLock.unlock();
         }
-
     }
 
     public InternalKnowledgePackage getPackage( final String name ) {
@@ -1731,24 +1748,14 @@ public class KnowledgeBaseImpl
     }
 
     public StatefulKnowledgeSessionImpl[] getStatefulSessions() {
-        statefulSessionLock.lock();
-        try {
-            final StatefulKnowledgeSessionImpl[] copyOfSessions = new StatefulKnowledgeSessionImpl[this.statefulSessions.size()];
-            this.statefulSessions.toArray( copyOfSessions );
-            return copyOfSessions;
-        } finally {
-            statefulSessionLock.unlock();
+        synchronized (statefulSessions) {
+            return statefulSessions.toArray( new StatefulKnowledgeSessionImpl[statefulSessions.size()] );
         }
     }
 
     public InternalWorkingMemory[] getWorkingMemories() {
-        statefulSessionLock.lock();
-        try {
-            final InternalWorkingMemory[] copyOfMemories = new InternalWorkingMemory[this.statefulSessions.size()];
-            this.statefulSessions.toArray( copyOfMemories );
-            return copyOfMemories;
-        } finally {
-            statefulSessionLock.unlock();
+        synchronized (statefulSessions) {
+            return statefulSessions.toArray( new InternalWorkingMemory[statefulSessions.size()] );
         }
     }
 
@@ -1842,13 +1849,12 @@ public class KnowledgeBaseImpl
         return this.getConfiguration().getComponentFactory().getTraitRegistry();
     }
 
-
     public boolean removeObjectsGeneratedFromResource(Resource resource) {
         boolean modified = false;
         for (InternalKnowledgePackage pkg : pkgs.values()) {
             List<RuleImpl> rulesToBeRemoved = pkg.removeRulesGeneratedFromResource(resource);
             for (RuleImpl rule : rulesToBeRemoved) {
-                removeRule(rule);
+                this.reteooBuilder.removeRule(rule);
             }
             List<Function> functionsToBeRemoved = pkg.removeFunctionsGeneratedFromResource(resource);
             for (Function function : functionsToBeRemoved) {
@@ -1856,15 +1862,11 @@ public class KnowledgeBaseImpl
             }
             List<Process> processesToBeRemoved = pkg.removeProcessesGeneratedFromResource(resource);
             for (Process process : processesToBeRemoved) {
-                removeProcess(process);
+                processes.remove(process.getId());
             }
             List<TypeDeclaration> removedTypes = pkg.removeTypesGeneratedFromResource(resource);
             modified |= !rulesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty() || !processesToBeRemoved.isEmpty() || !removedTypes.isEmpty();
         }
         return modified;
-    }
-
-    private void removeProcess(Process process) {
-        processes.remove(process.getId());
     }
 }
