@@ -22,5 +22,5 @@ create table QueryDefinitionStore (
 
 alter table QueryDefinitionStore 
         add constraint UK_4ry5gt77jvq0orfttsoghta2j unique (qName);
-        
-create sequence QUERY_DEF_ID_SEQ;        
+
+create sequence QUERY_DEF_ID_SEQ;
