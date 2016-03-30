@@ -21,10 +21,10 @@ package org.drools.compiler.commons.jci.compilers;
 
 /**
  * Most common denominator for JavaCompiler settings.
- * 
+ *
  * If you need more specific settings you have to provide
  * the native compiler configurations to the compilers.
- * Writing of a custom factory is suggested. 
+ * Writing of a custom factory is suggested.
  */
 public class JavaCompilerSettings {
 
@@ -35,7 +35,10 @@ public class JavaCompilerSettings {
     private boolean deprecations = false;
     private boolean debug = false;
 
+    private boolean retrieveTypeReferences = false;
+
     /** @deprecated */
+    @Deprecated
     private boolean verbose = false;
 
     public JavaCompilerSettings() {
@@ -102,12 +105,22 @@ public class JavaCompilerSettings {
         return debug;
     }
 
+    public boolean getRetrieveTypeReferences() {
+        return retrieveTypeReferences;
+    }
+
+    public void setRetrieveTypeReferences( boolean retrieveTypeReferences ) {
+        this.retrieveTypeReferences = retrieveTypeReferences;
+    }
+
     /** @deprecated */
+    @Deprecated
     public void setVerbose( final boolean pVerbose ) {
         verbose = pVerbose;
     }
 
     /** @deprecated */
+    @Deprecated
     public boolean isVerbose() {
         return verbose;
     }

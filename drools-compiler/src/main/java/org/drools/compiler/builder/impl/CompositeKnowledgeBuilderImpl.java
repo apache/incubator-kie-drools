@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -16,6 +16,7 @@
 package org.drools.compiler.builder.impl;
 
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
+import org.drools.compiler.compiler.PackageCompilationResult;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
@@ -29,6 +30,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.ChangeType;
+import org.kie.internal.builder.CompilationResult;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
@@ -98,19 +100,20 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         return resources;
     }
 
-    public void build() {
+    public CompilationResult build() {
         buildException = null;
         kBuilder.registerBuildResources(getResources());
         buildResources();
-        buildPackages();
+        ProjectCompilationResult compilationResult = buildPackages();
         buildOthers();
         resourcesByType.clear();
         if (buildException != null) {
             throw buildException;
         }
+        return compilationResult;
     }
 
-    private void buildPackages() {
+    private ProjectCompilationResult buildPackages() {
         Collection<CompositePackageDescr> packages = buildPackageDescr();
         initPackageRegistries(packages);
         normalizeTypeAnnotations( packages );
@@ -118,7 +121,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildEntryPoints( packages );
         buildOtherDeclarations(packages);
         normalizeRuleAnnotations( packages );
-        buildRules(packages);
+        return buildRules(packages);
     }
 
     private void normalizeTypeAnnotations( Collection<CompositePackageDescr> packages ) {
@@ -126,7 +129,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             kBuilder.normalizeTypeDeclarationAnnotations( packageDescr );
         }
     }
-      
+
     private void normalizeRuleAnnotations( Collection<CompositePackageDescr> packages ) {
         for (CompositePackageDescr packageDescr : packages) {
             kBuilder.normalizeRuleAnnotations( packageDescr );
@@ -253,13 +256,16 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private void buildRules(Collection<CompositePackageDescr> packages) {
+    private ProjectCompilationResult buildRules(Collection<CompositePackageDescr> packages) {
+        ProjectCompilationResult compilationResult = new ProjectCompilationResult();
         for (CompositePackageDescr packageDescr : packages) {
             kBuilder.setAssetFilter(packageDescr.getFilter());
             PackageRegistry pkgRegistry = kBuilder.getPackageRegistry(packageDescr.getNamespace());
-            kBuilder.compileAllRules(packageDescr, pkgRegistry);
+            PackageCompilationResult packageResult = kBuilder.compileAllRules(packageDescr, pkgRegistry);
+            compilationResult.addTypeReferences(packageResult);
             kBuilder.setAssetFilter(null);
         }
+        return compilationResult;
     }
 
     private void buildTypeDeclarations( Collection<CompositePackageDescr> packages ) {
@@ -374,11 +380,11 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
                 globalChangeType = null;
             }
         }
-        
+
         public KnowledgeBuilderImpl.AssetFilter getFilter() {
             return changeMap == null ? null : this.new ChangeSetAssetFilter();
         }
-        
+
         private class ChangeSetAssetFilter implements KnowledgeBuilderImpl.AssetFilter {
             @Override
             public Action accept(ResourceChange.Type type, String pkgName, String assetName) {

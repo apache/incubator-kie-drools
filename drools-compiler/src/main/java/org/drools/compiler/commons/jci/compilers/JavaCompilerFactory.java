@@ -26,7 +26,7 @@ import org.drools.core.util.ClassUtils;
 
 /**
  * Creates JavaCompilers
- * 
+ *
  * TODO use META-INF discovery mechanism
  */
 public final class JavaCompilerFactory {
@@ -34,13 +34,15 @@ public final class JavaCompilerFactory {
     /**
      * @deprecated will be remove after the next release, please create an instance yourself
      */
+    @Deprecated
     private static final JavaCompilerFactory INSTANCE = new JavaCompilerFactory();
 
     private final Map classCache = new HashMap();
-    
+
     /**
      * @deprecated will be remove after the next release, please create an instance yourself
      */
+    @Deprecated
     public static JavaCompilerFactory getInstance() {
         return JavaCompilerFactory.INSTANCE;
     }
@@ -48,27 +50,27 @@ public final class JavaCompilerFactory {
     /**
      * Tries to guess the class name by convention. So for compilers
      * following the naming convention
-     * 
+     *
      *   org.apache.commons.jci.compilers.SomeJavaCompiler
-     *   
+     *
      * you can use the short-hands "some"/"Some"/"SOME". Otherwise
      * you have to provide the full class name. The compiler is
      * getting instanciated via (cached) reflection.
-     * 
+     *
      * @param pHint
      * @return JavaCompiler or null
      */
     public JavaCompiler createCompiler(final String pHint) {
-        
+
         final String className;
         if (pHint.indexOf('.') < 0) {
             className = "org.drools.compiler.commons.jci.compilers." + ClassUtils.toJavaCasing(pHint) + "JavaCompiler";
         } else {
             className = pHint;
         }
-        
+
         Class clazz = (Class) classCache.get(className);
-        
+
         if (clazz == null) {
             try {
                 clazz = Class.forName(className);
@@ -81,7 +83,7 @@ public final class JavaCompilerFactory {
         if (clazz == null) {
             return null;
         }
-        
+
         try {
             return (JavaCompiler) clazz.newInstance();
         } catch (Throwable t) {
@@ -104,6 +106,9 @@ public final class JavaCompilerFactory {
             default : {
                 compiler = createCompiler( "eclipse" );
                 JavaCompilerSettings settings = compiler.createDefaultSettings();
+
+                boolean typeResolution = configuration.getPackageBuilderConfiguration().isTypeResolution();
+                settings.setRetrieveTypeReferences(typeResolution);
 
                 String lngLevel = configuration.getJavaLanguageLevel();
                 settings.setTargetVersion( lngLevel );

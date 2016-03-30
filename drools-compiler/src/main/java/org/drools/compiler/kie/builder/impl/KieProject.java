@@ -21,12 +21,13 @@ import org.kie.api.builder.model.KieSessionModel;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 public interface KieProject {
-    
+
     ReleaseId getGAV();
-    
+
     InternalKieModule getKieModuleForKBase(String kBaseName);
 
     Collection<String> getKieBaseNames();
@@ -41,8 +42,8 @@ public interface KieProject {
 
     KieSessionModel getDefaultStatelessKieSession();
 
-    void init();   
-    
+    void init();
+
     ClassLoader getClassLoader();
 
     ClassLoader getClonedClassLoader();
@@ -57,4 +58,6 @@ public interface KieProject {
     Set<String> getTransitiveIncludes(KieBaseModel kBaseModel);
 
     InputStream getPomAsStream();
+
+    Map<String, Set<String>> getTypeReferences();
 }

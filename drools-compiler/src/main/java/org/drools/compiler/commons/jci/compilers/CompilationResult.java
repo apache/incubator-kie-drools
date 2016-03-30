@@ -29,10 +29,11 @@ import org.drools.compiler.commons.jci.problems.CompilationProblem;
  * class files)
  */
 public final class CompilationResult {
-    
+
     private final CompilationProblem[] errors;
     private final CompilationProblem[] warnings;
-        
+    private String[] typeReferences = null;
+
     public CompilationResult( final CompilationProblem[] pProblems ) {
         final Collection errorsColl = new ArrayList();
         final Collection warningsColl = new ArrayList();
@@ -45,14 +46,14 @@ public final class CompilationResult {
                 warningsColl.add(problem);
             }
         }
-        
+
         errors = new CompilationProblem[errorsColl.size()];
         errorsColl.toArray(errors);
 
         warnings = new CompilationProblem[warningsColl.size()];
         warningsColl.toArray(warnings);
     }
-    
+
     public CompilationProblem[] getErrors() {
         final CompilationProblem[] res = new CompilationProblem[errors.length];
         System.arraycopy(errors, 0, res, 0, res.length);
@@ -63,5 +64,19 @@ public final class CompilationResult {
         final CompilationProblem[] res = new CompilationProblem[warnings.length];
         System.arraycopy(warnings, 0, res, 0, res.length);
         return res;
+    }
+
+    public String [] getTypeReferences() {
+       return typeReferences;
+    }
+
+    /**
+     * Package-scope setter method, because this information should *NOT* be set outside of the
+     * <code>org.drools.compiler.commons.jci.compilers</code> package.
+     *
+     * @param typeReferences
+     */
+    void setTypeReferences(String [] typeReferences) {
+       this.typeReferences = typeReferences;
     }
 }

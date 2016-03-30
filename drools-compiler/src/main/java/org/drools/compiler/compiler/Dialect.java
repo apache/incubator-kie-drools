@@ -96,7 +96,7 @@ public interface Dialect {
                                 final String text,
                                 final BoundIdentifiers availableIdentifiers);
 
-    void compileAll();
+    PackageCompilationResult compileAll();
 
     void addRule(final RuleBuildContext context);
 

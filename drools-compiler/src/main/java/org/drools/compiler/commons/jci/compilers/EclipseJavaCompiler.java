@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -50,7 +51,7 @@ import java.util.StringTokenizer;
  * Eclipse compiler implementation
  */
 public final class EclipseJavaCompiler extends AbstractJavaCompiler {
-    
+
     private String prefix = "";
 
     private final EclipseJavaCompilerSettings defaultSettings;
@@ -76,7 +77,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         if ( prefix.length() == 0 ) {
             return fullPath;
         }
-        
+
         if ( fullPath.charAt( 0 )  == '/') {
              return fullPath.substring( prefix.length() + 1 );
         } else {
@@ -94,9 +95,9 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
         CompilationUnit( final ResourceReader pReader, final String pSourceFile ) {
             reader = pReader;
-            
+
             clazzName = ClassUtils.convertResourceToClassName( getPathName( pSourceFile ) );
-            
+
             fileName = pSourceFile;
             int dot = clazzName.lastIndexOf('.');
             if (dot > 0) {
@@ -139,7 +140,6 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             return true;
         }
     }
-
 
     public org.drools.compiler.commons.jci.compilers.CompilationResult compile(
             final String[] pSourceFiles,
@@ -307,7 +307,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                 }
             }
 
-            private NameEnvironmentAnswer createNameEnvironmentAnswer(final String pClazzName, final byte[] clazzBytes) throws ClassFormatException {                
+            private NameEnvironmentAnswer createNameEnvironmentAnswer(final String pClazzName, final byte[] clazzBytes) throws ClassFormatException {
                 final char[] fileName = pClazzName.toCharArray();
                 final ClassFileReader classFileReader = new ClassFileReader(clazzBytes, fileName, true);
                 return new NameEnvironmentAnswer(classFileReader, null);
@@ -412,14 +412,42 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         final Map settingsMap = new EclipseJavaCompilerSettings(pSettings).toNativeSettings();
         CompilerOptions compilerOptions = new CompilerOptions(settingsMap);
         compilerOptions.parseLiteralExpressionsAsConstants = false;
-        
-        final Compiler compiler = new Compiler(nameEnvironment, policy, compilerOptions, compilerRequestor, problemFactory);
 
-        compiler.compile(compilationUnits);
+        final Compiler compiler;
+        List<char []> typeRefCharArrs = null;
+        if( pSettings.getRetrieveTypeReferences() ) {
+            final TypeReferenceNameCollector visitor = new TypeReferenceNameCollector();
+            compiler = new Compiler(nameEnvironment, policy, compilerOptions, compilerRequestor, problemFactory) {
+                @Override
+                public void process(org.eclipse.jdt.internal.compiler.ast.CompilationUnitDeclaration unit, int i) {
+                    super.process(unit, i);
+                    if (visitor != null
+                        // If there are problems, then not all types have been resolved, so we skip traversal
+                        && ! unit.compilationResult().hasProblems()) {
+                        unit.traverse(visitor, unit.scope);
+                    }
+                }
+            };
+            compiler.compile(compilationUnits);
+            typeRefCharArrs = visitor.getTypeReferenceNames();
+        } else {
+            compiler = new Compiler(nameEnvironment, policy, compilerOptions, compilerRequestor, problemFactory);
+            compiler.compile(compilationUnits);
+        }
 
         final CompilationProblem[] result = new CompilationProblem[problems.size()];
         problems.toArray(result);
-        return new org.drools.compiler.commons.jci.compilers.CompilationResult(result);
+        org.drools.compiler.commons.jci.compilers.CompilationResult compilationResult
+            = new org.drools.compiler.commons.jci.compilers.CompilationResult(result);
+        if( typeRefCharArrs != null ) {
+            String [] typeRefStrings = new String[typeRefCharArrs.size()];
+            int i = 0;
+            for( char [] charArr : typeRefCharArrs ) {
+                typeRefStrings[i++] = new String(charArr);
+            }
+            compilationResult.setTypeReferences(typeRefStrings);
+        }
+        return compilationResult;
     }
 
     public JavaCompilerSettings createDefaultSettings() {

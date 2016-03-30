@@ -56,10 +56,22 @@ public class DialectCompiletimeRegistry {
     /**
      * Instruct all registered dialects to compile what ever they have attempted to build.
      */
-    public void compileAll() {
+    public PackageCompilationResult compileAll() {
+        PackageCompilationResult result = null;
         for (Dialect dialect : this.map.values()) {
-            dialect.compileAll();
+            PackageCompilationResult dialectResult = dialect.compileAll();
+            if( dialectResult != null ) {
+                if( result == null ) {
+                    result = dialectResult;
+                } else {
+                    assert result.getPackageName().equals(dialectResult.getPackageName())
+                        : "New dialect result has different package name [" + dialectResult.getPackageName()
+                        + "] than expected [" + result.getPackageName() + "]";
+                    result.addTypeReferences(dialectResult);
+                }
+            }
         }
+        return result;
     }
 
     /**

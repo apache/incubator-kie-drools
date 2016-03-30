@@ -43,6 +43,7 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.AccumulateFunctionOption;
 import org.kie.internal.builder.conf.ClassLoaderCacheOption;
+import org.kie.internal.builder.conf.CompilerTypeResolutionOption;
 import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.builder.conf.DefaultPackageNameOption;
 import org.kie.internal.builder.conf.DumpDirOption;
@@ -88,12 +89,12 @@ import java.util.Set;
  * drools.accumulate.function.min = org.kie.base.accumulators.MinAccumulateFunction
  * drools.accumulate.function.count = org.kie.base.accumulators.CountAccumulateFunction
  * drools.accumulate.function.sum = org.kie.base.accumulators.SumAccumulateFunction
- * 
+ *
  * drools.parser.processStringEscapes = true|false
- * 
- * 
+ *
+ *
  * drools.problem.severity.<ident> = ERROR|WARNING|INFO
- * 
+ *
  */
 public class KnowledgeBuilderConfigurationImpl
         implements
@@ -135,6 +136,8 @@ public class KnowledgeBuilderConfigurationImpl
     private LanguageLevelOption               languageLevel           = DrlParser.DEFAULT_LANGUAGE_LEVEL;
 
     private CompilationCache                  compilationCache        = null;
+
+    private boolean                           typeResolution          = CompilerTypeResolutionOption.DEFAULT;
 
     private static final Logger log = LoggerFactory.getLogger(KnowledgeBuilderConfigurationImpl.class);
 
@@ -305,6 +308,8 @@ public class KnowledgeBuilderConfigurationImpl
             } catch (IllegalArgumentException e) {
                 log.warn("Invalid value " + value + " for option " + LanguageLevelOption.PROPERTY_NAME);
             }
+        }  else if (name.equals(CompilerTypeResolutionOption.PROPERTY_NAME)) {
+            setTypeResolution(Boolean.parseBoolean(value));
         }
     }
 
@@ -540,9 +545,10 @@ public class KnowledgeBuilderConfigurationImpl
     /**
      * This method is deprecated and will be removed 
      * @return
-     * 
+     *
      * @deprecated
      */
+    @Deprecated
     public Map<String, String> getAccumulateFunctionsMap() {
         Map<String, String> result = new HashMap<String, String>();
         for (Map.Entry<String, AccumulateFunction> entry : this.accumulateFunctions.entrySet()) {
@@ -814,4 +820,11 @@ public class KnowledgeBuilderConfigurationImpl
         return this.compilationCache != null;
     }
 
+    public boolean isTypeResolution() {
+        return typeResolution;
+    }
+
+    public void setTypeResolution(boolean useTypeResolution) {
+        this.typeResolution = useTypeResolution;
+    }
 }
