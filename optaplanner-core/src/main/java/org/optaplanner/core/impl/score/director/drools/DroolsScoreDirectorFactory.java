@@ -23,6 +23,7 @@ import org.kie.api.definition.rule.Global;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 
@@ -96,6 +97,12 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
                     + ") has no global field called " + DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY + ".\n"
                     + "Check if the rule files are found and if the global field is spelled correctly.");
         }
+    }
+
+    @Override
+    public void setSolutionDescriptor(SolutionDescriptor<Solution_> solutionDescriptor) {
+        super.setSolutionDescriptor(solutionDescriptor);
+        solutionDescriptor.checkIfProblemFactsExist();
     }
 
     public KieContainer getKieContainer() {

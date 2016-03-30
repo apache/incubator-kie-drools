@@ -208,7 +208,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         for (Move restoreMove : restoreMoveList) {
             restoreMove.doMove(scoreDirector);
         }
-        // there is no need to recalculate the score, but we still need to set it
+        // There is no need to recalculate the score, but we still need to set it
         phaseScope.getSolutionDescriptor().setScore(phaseScope.getWorkingSolution(), stepScope.getStartingStepScore());
         if (assertWorkingSolutionScoreFromScratch) {
             // In BRUTE_FORCE the stepScore can be null because it was not calculated

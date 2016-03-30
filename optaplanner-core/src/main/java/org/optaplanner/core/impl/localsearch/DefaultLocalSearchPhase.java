@@ -101,7 +101,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
         LocalSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         Move nextStep = stepScope.getStep();
         nextStep.doMove(stepScope.getScoreDirector());
-        // there is no need to recalculate the score, but we still need to set it
+        // There is no need to recalculate the score, but we still need to set it
         phaseScope.getSolutionDescriptor().setScore(phaseScope.getWorkingSolution(), stepScope.getScore());
         if (assertStepScoreFromScratch) {
             phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), nextStep);

@@ -32,9 +32,9 @@ public class SolutionDescriptorTest {
         SolutionDescriptor<TestdataExtendedAbstractSolution> descriptor
                 = TestdataExtendedAbstractSolution.buildSolutionDescriptor();
         Assert.assertEquals("Fact collection inherited from abstract class is not registered.",
-                1, descriptor.getFactCollectionPropertyAccessorMap().size());
+                1, descriptor.getProblemFactCollectionMemberAccessorMap().size());
         Assert.assertEquals("Private fact property from the solution class is not registered.",
-                1, descriptor.getFactPropertyAccessorMap().size());
+                1, descriptor.getProblemFactMemberAccessorMap().size());
     }
 
 }

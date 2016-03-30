@@ -102,12 +102,12 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             String fieldName = field.getName();
             // This assumes we're dealing with a simple getter/setter.
             // If that assumption is false, validateCloneSolution(...) fails-fast.
-            if (solutionDescriptor.getEntityPropertyAccessorMap().get(fieldName) != null) {
+            if (solutionDescriptor.getEntityMemberAccessorMap().get(fieldName) != null) {
                 return true;
             }
             // This assumes we're dealing with a simple getter/setter.
             // If that assumption is false, validateCloneSolution(...) fails-fast.
-            if (solutionDescriptor.getEntityCollectionPropertyAccessorMap().get(fieldName) != null) {
+            if (solutionDescriptor.getEntityCollectionMemberAccessorMap().get(fieldName) != null) {
                 return true;
             }
         }
@@ -353,7 +353,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
          */
         protected void validateCloneSolution(Solution_ originalSolution, Solution_ cloneSolution) {
             for (MemberAccessor memberAccessor
-                    : solutionDescriptor.getEntityPropertyAccessorMap().values()) {
+                    : solutionDescriptor.getEntityMemberAccessorMap().values()) {
                 Object originalProperty = memberAccessor.executeGetter(originalSolution);
                 if (originalProperty != null) {
                     Object cloneProperty = memberAccessor.executeGetter(cloneSolution);
@@ -366,7 +366,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
                 }
             }
             for (MemberAccessor memberAccessor
-                    : solutionDescriptor.getEntityCollectionPropertyAccessorMap().values()) {
+                    : solutionDescriptor.getEntityCollectionMemberAccessorMap().values()) {
                 Object originalProperty = memberAccessor.executeGetter(originalSolution);
                 if (originalProperty != null) {
                     Object cloneProperty = memberAccessor.executeGetter(cloneSolution);

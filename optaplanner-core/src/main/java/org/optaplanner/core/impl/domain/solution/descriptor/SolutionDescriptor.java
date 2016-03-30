@@ -36,13 +36,13 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -69,7 +69,7 @@ import org.slf4j.LoggerFactory;
 public class SolutionDescriptor<Solution_> {
 
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(Class<Solution_> solutionClass,
-            Class<?> ... entityClasses) {
+            Class<?>... entityClasses) {
         return buildSolutionDescriptor(solutionClass, Arrays.asList(entityClasses));
     }
 
@@ -115,13 +115,11 @@ public class SolutionDescriptor<Solution_> {
     private final Class<Solution_> solutionClass;
     private SolutionCloner<Solution_> solutionCloner;
 
-    private final Map<String, MemberAccessor> entityPropertyAccessorMap;
-    private final Map<String, MemberAccessor> entityCollectionPropertyAccessorMap;
-
-    private final Map<String, MemberAccessor> factPropertyAccessorMap;
-    private final Map<String, MemberAccessor> factCollectionPropertyAccessorMap;
-
-    private MemberAccessor scoreAccessor;
+    private final Map<String, MemberAccessor> problemFactMemberAccessorMap;
+    private final Map<String, MemberAccessor> problemFactCollectionMemberAccessorMap;
+    private final Map<String, MemberAccessor> entityMemberAccessorMap;
+    private final Map<String, MemberAccessor> entityCollectionMemberAccessorMap;
+    private MemberAccessor scoreMemberAccessor;
 
     private final Map<Class<?>, EntityDescriptor<Solution_>> entityDescriptorMap;
     private final List<Class<?>> reversedEntityClassList;
@@ -129,10 +127,10 @@ public class SolutionDescriptor<Solution_> {
 
     public SolutionDescriptor(Class<Solution_> solutionClass) {
         this.solutionClass = solutionClass;
-        factPropertyAccessorMap = new LinkedHashMap<>();
-        factCollectionPropertyAccessorMap = new LinkedHashMap<>();
-        entityPropertyAccessorMap = new LinkedHashMap<>();
-        entityCollectionPropertyAccessorMap = new LinkedHashMap<>();
+        problemFactMemberAccessorMap = new LinkedHashMap<>();
+        problemFactCollectionMemberAccessorMap = new LinkedHashMap<>();
+        entityMemberAccessorMap = new LinkedHashMap<>();
+        entityCollectionMemberAccessorMap = new LinkedHashMap<>();
         entityDescriptorMap = new LinkedHashMap<>();
         reversedEntityClassList = new ArrayList<>();
         lowestEntityDescriptorCache = new HashMap<>();
@@ -152,72 +150,95 @@ public class SolutionDescriptor<Solution_> {
         lowestEntityDescriptorCache.put(entityClass, entityDescriptor);
     }
 
-    private void processLegacySolution() {
-        boolean hasFactAnnotation = !(this.factCollectionPropertyAccessorMap.isEmpty() && this.factPropertyAccessorMap.isEmpty());
-        if (hasFactAnnotation) {
-            throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") must not have any ProblemFactProperty or ProblemFactCollectionProperty annotations when " +
-                    "implementing the legacy Solution interface.");
-        } else {
-            try {
-                Method getProblemFactsMethod = solutionClass.getMethod("getProblemFacts");
-                registerFactPropertyAccessor(ProblemFactCollectionProperty.class,
-                        new MethodMemberAccessor(getProblemFactsMethod));
-            } catch (NoSuchMethodException e) {
-                throw new IllegalStateException("Impossible thing just happened. Implementation of Solution " +
-                        "interface does not implement all of its methods.");
-            }
-        }
-        boolean hasScoreAnnotation = this.scoreAccessor != null;
-        if (hasScoreAnnotation) {
-            throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") must not have any PlanningScore annotation when implementing the legacy Solution interface.");
-        } else {
-            try {
-                Method getScoreMethod = solutionClass.getMethod("getScore");
-                registerScoreAccessor(new BeanPropertyMemberAccessor(getScoreMethod));
-            } catch (NoSuchMethodException e) {
-                throw new IllegalStateException("Impossible thing just happened. Implementation of Solution " +
-                        "interface does not implement all of its methods.");
-            }
-        }
-    }
-
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
         processSolutionAnnotations(descriptorPolicy);
         ClassBrowser.getAllVisibleFields(solutionClass).stream().sorted(new AlphabeticMemberComparator())
                 .forEach(field -> {
-            processScoreAnnotation(descriptorPolicy, field);
-            processValueRangeProviderAnnotation(descriptorPolicy, field);
-            processEntityPropertyAnnotation(descriptorPolicy, field);
-            processFactPropertyAnnotation(descriptorPolicy, field);
-        });
+                    processValueRangeProviderAnnotation(descriptorPolicy, field);
+                    processFactPropertyAnnotation(descriptorPolicy, field);
+                    processEntityPropertyAnnotation(descriptorPolicy, field);
+                    processScoreAnnotation(descriptorPolicy, field);
+                });
         ClassBrowser.getAllVisibleMethods(solutionClass).stream().sorted(new AlphabeticMemberComparator())
                 .forEach(method -> {
-            processScoreAnnotation(descriptorPolicy, method);
-            processValueRangeProviderAnnotation(descriptorPolicy, method);
-            processEntityPropertyAnnotation(descriptorPolicy, method);
-            processFactPropertyAnnotation(descriptorPolicy, method);
-        });
-        if (!hasEntityAnnotation()) {
+                    processValueRangeProviderAnnotation(descriptorPolicy, method);
+                    processFactPropertyAnnotation(descriptorPolicy, method);
+                    processEntityPropertyAnnotation(descriptorPolicy, method);
+                    processScoreAnnotation(descriptorPolicy, method);
+                });
+        if (entityCollectionMemberAccessorMap.isEmpty() && entityMemberAccessorMap.isEmpty()) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") should have at least 1 getter with a PlanningEntityCollectionProperty or PlanningEntityProperty"
-                    + " annotation.");
-        } else if (isLegacySolution()) {
-            // TODO delete when where're getting rid of Solution
-            processLegacySolution();
-        } else {
-            // the solution class does not implement Solution
-            if (scoreAccessor == null) {
-                throw new IllegalStateException("The solutionClass (" + solutionClass
-                        + ") must have either a Score-returning getter method annotated with PlanningScore annotation with"
-                        + " equivalent setter, or a field annotated the same.");
-            }
+                    + ") must have at least 1 member with a "
+                    + PlanningEntityCollectionProperty.class.getSimpleName() + " annotation or a "
+                    + PlanningEntityProperty.class.getSimpleName() + " annotation.");
+        }
+        if (Solution.class.isAssignableFrom(solutionClass)) {
+            processLegacySolution(descriptorPolicy);
+            return;
+        }
+        // Do not check if problemFactCollectionMemberAccessorMap and problemFactMemberAccessorMap are empty
+        // because they are only required for Drools score calculation.
+        if (scoreMemberAccessor == null) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") must have 1 member with a " + PlanningScore.class.getSimpleName() + " annotation.\n"
+                    + "Maybe add a getScore() method with a " + PlanningScore.class.getSimpleName() + " annotation.");
         }
     }
 
-    private boolean isLegacySolution() {
-        return Solution.class.isAssignableFrom(solutionClass);
+    private void processLegacySolution(DescriptorPolicy descriptorPolicy) {
+        if (!problemFactMemberAccessorMap.isEmpty()) {
+            MemberAccessor memberAccessor = problemFactMemberAccessorMap.values().iterator().next();
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") which implements the legacy interface " + Solution.class.getSimpleName()
+                    + ") must not have a member (" + memberAccessor.getName()
+                    + ") with a " + ProblemFactProperty.class.getSimpleName() + " annotation.\n"
+                    + "Maybe remove the use of the legacy interface.");
+        }
+        if (!problemFactCollectionMemberAccessorMap.isEmpty()) {
+            MemberAccessor memberAccessor = problemFactCollectionMemberAccessorMap.values().iterator().next();
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") which implements the legacy interface " + Solution.class.getSimpleName()
+                    + ") must not have a member (" + memberAccessor.getName()
+                    + ") with a " + ProblemFactCollectionProperty.class.getSimpleName() + " annotation.\n"
+                    + "Maybe remove the use of the legacy interface.");
+        }
+        try {
+            Method getProblemFactsMethod = solutionClass.getMethod("getProblemFacts");
+            registerProblemFactPropertyAccessor(ProblemFactCollectionProperty.class,
+                    new MethodMemberAccessor(getProblemFactsMethod));
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException("Impossible situation: the solutionClass (" + solutionClass
+                    + ") which implements the legacy interface " + Solution.class.getSimpleName()
+                    + ", lacks its getProblemFacts() method.", e);
+        }
+        if (scoreMemberAccessor != null) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") which implements the legacy interface " + Solution.class.getSimpleName()
+                    + ") must not have a member (" + scoreMemberAccessor.getName()
+                    + ") with a " + PlanningScore.class.getSimpleName() + " annotation.\n"
+                    + "Maybe remove the use of the legacy interface.");
+        }
+        try {
+            Method getScoreMethod = solutionClass.getMethod("getScore");
+            registerScoreAccessor(new BeanPropertyMemberAccessor(getScoreMethod));
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException("Impossible situation: the solutionClass (" + solutionClass
+                    + ") which implements the legacy interface " + Solution.class.getSimpleName()
+                    + ", lacks its getScore() method.", e);
+        }
+    }
+
+    /**
+     * Only called if Drools score calculation is used.
+     */
+    public void checkIfProblemFactsExist() {
+        if (problemFactCollectionMemberAccessorMap.isEmpty() && problemFactMemberAccessorMap.isEmpty()) {
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") must have at least 1 member with a "
+                    + ProblemFactCollectionProperty.class.getSimpleName() + " annotation or a "
+                    + ProblemFactProperty.class.getSimpleName() + " annotation"
+                    + " when used with Drools score calculation.");
+        }
     }
 
     private void processSolutionAnnotations(DescriptorPolicy descriptorPolicy) {
@@ -261,28 +282,11 @@ public class SolutionDescriptor<Solution_> {
         }
     }
 
-    private void processEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Field field) {
-        Class<? extends Annotation> entityPropertyAnnotationClass = extractEntityPropertyAnnotationClass(field);
-        if (entityPropertyAnnotationClass != null) {
-            MemberAccessor memberAccessor = new FieldMemberAccessor(field);
-            registerPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
-        }
-    }
-
-    private void processEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Method method) {
-        Class<? extends Annotation> entityPropertyAnnotationClass = extractEntityPropertyAnnotationClass(method);
-        if (entityPropertyAnnotationClass != null) {
-            ReflectionHelper.assertGetterMethod(method, entityPropertyAnnotationClass);
-            MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
-            registerPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
-        }
-    }
-
     private void processFactPropertyAnnotation(DescriptorPolicy descriptorPolicy, Field field) {
         Class<? extends Annotation> factPropertyAnnotationClass = extractFactPropertyAnnotationClass(field);
         if (factPropertyAnnotationClass != null) {
             MemberAccessor memberAccessor = new FieldMemberAccessor(field);
-            registerFactPropertyAccessor(factPropertyAnnotationClass, memberAccessor);
+            registerProblemFactPropertyAccessor(factPropertyAnnotationClass, memberAccessor);
         }
     }
 
@@ -291,7 +295,24 @@ public class SolutionDescriptor<Solution_> {
         if (factPropertyAnnotationClass != null) {
             ReflectionHelper.assertGetterMethod(method, factPropertyAnnotationClass);
             MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
-            registerFactPropertyAccessor(factPropertyAnnotationClass, memberAccessor);
+            registerProblemFactPropertyAccessor(factPropertyAnnotationClass, memberAccessor);
+        }
+    }
+
+    private void processEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Field field) {
+        Class<? extends Annotation> entityPropertyAnnotationClass = extractEntityPropertyAnnotationClass(field);
+        if (entityPropertyAnnotationClass != null) {
+            MemberAccessor memberAccessor = new FieldMemberAccessor(field);
+            registerPlanningEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
+        }
+    }
+
+    private void processEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Method method) {
+        Class<? extends Annotation> entityPropertyAnnotationClass = extractEntityPropertyAnnotationClass(method);
+        if (entityPropertyAnnotationClass != null) {
+            ReflectionHelper.assertGetterMethod(method, entityPropertyAnnotationClass);
+            MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
+            registerPlanningEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
         }
     }
 
@@ -326,7 +347,7 @@ public class SolutionDescriptor<Solution_> {
 
     private Class<? extends Annotation> extractAnnotationClass(AnnotatedElement member, Class<? extends Annotation>... annotations) {
         Class<? extends Annotation> annotationClass = null;
-        for (Class<? extends Annotation> detectedAnnotationClass : Arrays.asList(annotations)) {
+        for (Class<? extends Annotation> detectedAnnotationClass : annotations) {
             if (member.isAnnotationPresent(detectedAnnotationClass)) {
                 if (annotationClass != null) {
                     throw new IllegalStateException("The solutionClass (" + solutionClass
@@ -341,25 +362,25 @@ public class SolutionDescriptor<Solution_> {
         return annotationClass;
     }
 
-    private void registerPropertyAccessor(Class<? extends Annotation> entityPropertyAnnotationClass,
-                                          MemberAccessor memberAccessor) {
-        registerPropertyAccessor(entityPropertyAnnotationClass, memberAccessor, entityPropertyAccessorMap,
-                entityCollectionPropertyAccessorMap, PlanningEntityProperty.class,
+    private void registerPlanningEntityPropertyAccessor(Class<? extends Annotation> entityPropertyAnnotationClass,
+            MemberAccessor memberAccessor) {
+        registerPropertyAccessor(entityPropertyAnnotationClass, memberAccessor, entityMemberAccessorMap,
+                entityCollectionMemberAccessorMap, PlanningEntityProperty.class,
                 PlanningEntityCollectionProperty.class);
     }
 
-    private void registerFactPropertyAccessor(Class<? extends Annotation> factPropertyAnnotationClass,
-                                                MemberAccessor memberAccessor) {
-        registerPropertyAccessor(factPropertyAnnotationClass, memberAccessor, factPropertyAccessorMap,
-                factCollectionPropertyAccessorMap, ProblemFactProperty.class, ProblemFactCollectionProperty.class);
+    private void registerProblemFactPropertyAccessor(Class<? extends Annotation> factPropertyAnnotationClass,
+            MemberAccessor memberAccessor) {
+        registerPropertyAccessor(factPropertyAnnotationClass, memberAccessor, problemFactMemberAccessorMap,
+                problemFactCollectionMemberAccessorMap, ProblemFactProperty.class, ProblemFactCollectionProperty.class);
     }
 
     private void registerScoreAccessor(MemberAccessor memberAccessor) {
-        if (scoreAccessor != null) {
+        if (scoreMemberAccessor != null) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
                     + ") has a " + PlanningScore.class.getSimpleName()
                     + " annotated member (" + memberAccessor
-                    + ") that is duplicated by another member (" + scoreAccessor + ").\n"
+                    + ") that is duplicated by another member (" + scoreMemberAccessor + ").\n"
                     + "  Verify that the annotation is not defined on both the field and its getter.");
         } else if (!Score.class.isAssignableFrom(memberAccessor.getType())) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
@@ -370,15 +391,15 @@ public class SolutionDescriptor<Solution_> {
                     + ") has a " + PlanningScore.class.getSimpleName()
                     + " annotated member (" + memberAccessor + ") that has no equivalent setter.");
         }
-        scoreAccessor = memberAccessor;
+        scoreMemberAccessor = memberAccessor;
     }
 
     private void registerPropertyAccessor(Class<? extends Annotation> annotationClass,
-                                          MemberAccessor memberAccessor,
-                                          Map<String, MemberAccessor> propertyAccessorMap,
-                                          Map<String, MemberAccessor> collectionPropertyAccessorMap,
-                                          Class<? extends Annotation> propertyAnnotationClass,
-                                          Class<? extends Annotation> collectionPropertyAnnotationClass) {
+            MemberAccessor memberAccessor,
+            Map<String, MemberAccessor> propertyAccessorMap,
+            Map<String, MemberAccessor> collectionPropertyAccessorMap,
+            Class<? extends Annotation> propertyAnnotationClass,
+            Class<? extends Annotation> collectionPropertyAnnotationClass) {
         String memberName = memberAccessor.getName();
         if (propertyAccessorMap.containsKey(memberName)
                 || collectionPropertyAccessorMap.containsKey(memberName)) {
@@ -429,8 +450,7 @@ public class SolutionDescriptor<Solution_> {
     private void determineGlobalShadowOrder() {
         // Topological sorting with Kahn's algorithm
         List<Pair<ShadowVariableDescriptor, Integer>> pairList = new ArrayList<>();
-        Map<ShadowVariableDescriptor, Pair<ShadowVariableDescriptor, Integer>> shadowToPairMap
-                = new HashMap<>();
+        Map<ShadowVariableDescriptor, Pair<ShadowVariableDescriptor, Integer>> shadowToPairMap = new HashMap<>();
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             for (ShadowVariableDescriptor<Solution_> shadow : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
                 int sourceSize = shadow.getSourceVariableDescriptorList().size();
@@ -480,27 +500,27 @@ public class SolutionDescriptor<Solution_> {
      * @return the {@link Class} of {@link PlanningScore}
      */
     public Class<? extends Score> extractScoreClass() {
-        return (Class<? extends Score>) scoreAccessor.getType();
+        return (Class<? extends Score>) scoreMemberAccessor.getType();
     }
 
     public SolutionCloner<Solution_> getSolutionCloner() {
         return solutionCloner;
     }
 
-    public Map<String, MemberAccessor> getEntityPropertyAccessorMap() {
-        return entityPropertyAccessorMap;
+    public Map<String, MemberAccessor> getProblemFactMemberAccessorMap() {
+        return problemFactMemberAccessorMap;
     }
 
-    public Map<String, MemberAccessor> getEntityCollectionPropertyAccessorMap() {
-        return entityCollectionPropertyAccessorMap;
+    public Map<String, MemberAccessor> getProblemFactCollectionMemberAccessorMap() {
+        return problemFactCollectionMemberAccessorMap;
     }
 
-    public Map<String, MemberAccessor> getFactPropertyAccessorMap() {
-        return factPropertyAccessorMap;
+    public Map<String, MemberAccessor> getEntityMemberAccessorMap() {
+        return entityMemberAccessorMap;
     }
 
-    public Map<String, MemberAccessor> getFactCollectionPropertyAccessorMap() {
-        return factCollectionPropertyAccessorMap;
+    public Map<String, MemberAccessor> getEntityCollectionMemberAccessorMap() {
+        return entityCollectionMemberAccessorMap;
     }
 
     // ************************************************************************
@@ -516,8 +536,7 @@ public class SolutionDescriptor<Solution_> {
     }
 
     public Collection<EntityDescriptor<Solution_>> getGenuineEntityDescriptors() {
-        List<EntityDescriptor<Solution_>> genuineEntityDescriptorList = new ArrayList<>(
-                entityDescriptorMap.size());
+        List<EntityDescriptor<Solution_>> genuineEntityDescriptorList = new ArrayList<>(entityDescriptorMap.size());
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             if (entityDescriptor.hasAnyDeclaredGenuineVariableDescriptor()) {
                 genuineEntityDescriptorList.add(entityDescriptor);
@@ -532,10 +551,6 @@ public class SolutionDescriptor<Solution_> {
 
     public EntityDescriptor<Solution_> getEntityDescriptorStrict(Class<?> entityClass) {
         return entityDescriptorMap.get(entityClass);
-    }
-
-    private boolean hasEntityAnnotation() {
-        return !(this.entityCollectionPropertyAccessorMap.isEmpty() && this.entityPropertyAccessorMap.isEmpty());
     }
 
     public boolean hasEntityDescriptor(Class<?> entitySubclass) {
@@ -605,15 +620,15 @@ public class SolutionDescriptor<Solution_> {
 
     public Collection<Object> getAllFacts(Solution_ solution) {
         Collection<Object> facts = new ArrayList<>();
-        // will add both entities and facts
-        Arrays.asList(entityPropertyAccessorMap, factPropertyAccessorMap).forEach(map -> map.forEach((key, value) -> {
-            Object object = extract(value, solution);
+        // Adds both entities and facts
+        Arrays.asList(entityMemberAccessorMap, problemFactMemberAccessorMap).forEach(map -> map.forEach((key, memberAccessor) -> {
+            Object object = extractMemberObject(memberAccessor, solution);
             if (object != null) {
                 facts.add(object);
             }
         }));
-        Arrays.asList(entityCollectionPropertyAccessorMap, factCollectionPropertyAccessorMap).forEach(map ->
-                map.forEach((key, value) -> facts.addAll(extractCollection(value, solution))));
+        Arrays.asList(entityCollectionMemberAccessorMap, problemFactCollectionMemberAccessorMap).forEach(map ->
+                map.forEach((key, memberAccessor) -> facts.addAll(extractMemberCollection(memberAccessor, solution))));
         return facts;
     }
 
@@ -623,14 +638,14 @@ public class SolutionDescriptor<Solution_> {
      */
     public int getEntityCount(Solution_ solution) {
         int entityCount = 0;
-        for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
-            Object entity = extract(entityMemberAccessor, solution);
+        for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
+            Object entity = extractMemberObject(entityMemberAccessor, solution);
             if (entity != null) {
                 entityCount++;
             }
         }
-        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<Object> entityCollection = extractCollection(entityCollectionMemberAccessor, solution);
+        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
+            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution);
             entityCount += entityCollection.size();
         }
         return entityCount;
@@ -638,14 +653,14 @@ public class SolutionDescriptor<Solution_> {
 
     public List<Object> getEntityList(Solution_ solution) {
         List<Object> entityList = new ArrayList<>();
-        for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
-            Object entity = extract(entityMemberAccessor, solution);
+        for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
+            Object entity = extractMemberObject(entityMemberAccessor, solution);
             if (entity != null) {
                 entityList.add(entity);
             }
         }
-        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<Object> entityCollection = extractCollection(entityCollectionMemberAccessor, solution);
+        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
+            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution);
             entityList.addAll(entityCollection);
         }
         return entityList;
@@ -653,17 +668,17 @@ public class SolutionDescriptor<Solution_> {
 
     public List<Object> getEntityListByEntityClass(Solution_ solution, Class<?> entityClass) {
         List<Object> entityList = new ArrayList<>();
-        for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
+        for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
             if (entityMemberAccessor.getType().isAssignableFrom(entityClass)) {
-                Object entity = extract(entityMemberAccessor, solution);
+                Object entity = extractMemberObject(entityMemberAccessor, solution);
                 if (entity != null && entityClass.isInstance(entity)) {
                     entityList.add(entity);
                 }
             }
         }
-        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionPropertyAccessorMap.values()) {
+        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
             // TODO if (entityCollectionPropertyAccessor.getPropertyType().getElementType().isAssignableFrom(entityClass)) {
-            Collection<Object> entityCollection = extractCollection(entityCollectionMemberAccessor, solution);
+            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution);
             for (Object entity : entityCollection) {
                 if (entityClass.isInstance(entity)) {
                     entityList.add(entity);
@@ -679,28 +694,12 @@ public class SolutionDescriptor<Solution_> {
      */
     public long getGenuineVariableCount(Solution_ solution) {
         long variableCount = 0L;
-        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
+        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext(); ) {
             Object entity = it.next();
             EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
             variableCount += entityDescriptor.getGenuineVariableCount();
         }
         return variableCount;
-    }
-
-    /**
-     * @param solution never null
-     * @return Score of the given solution.
-     */
-    public Score getScore(Solution_ solution) {
-        return (Score)scoreAccessor.executeGetter(solution);
-    }
-
-    /**
-     * @param solution never null
-     * @param score
-     */
-    public void setScore(Solution_ solution, Score score) {
-        scoreAccessor.executeSetter(solution, score);
     }
 
     /**
@@ -723,7 +722,7 @@ public class SolutionDescriptor<Solution_> {
      */
     public long getProblemScale(Solution_ solution) {
         long problemScale = 0L;
-        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
+        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext(); ) {
             Object entity = it.next();
             EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
             problemScale += entityDescriptor.getProblemScale(solution, entity);
@@ -733,7 +732,7 @@ public class SolutionDescriptor<Solution_> {
 
     public int countUninitializedVariables(Solution_ solution) {
         int count = 0;
-        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
+        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext(); ) {
             Object entity = it.next();
             EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
             count += entityDescriptor.countUninitializedVariables(entity);
@@ -753,7 +752,7 @@ public class SolutionDescriptor<Solution_> {
 
     public int countReinitializableVariables(ScoreDirector scoreDirector, Solution_ solution) {
         int count = 0;
-        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
+        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext(); ) {
             Object entity = it.next();
             EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
             count += entityDescriptor.countReinitializableVariables(scoreDirector, entity);
@@ -763,38 +762,55 @@ public class SolutionDescriptor<Solution_> {
 
     public Iterator<Object> extractAllEntitiesIterator(Solution_ solution) {
         List<Iterator<Object>> iteratorList = new ArrayList<>(
-                entityPropertyAccessorMap.size() + entityCollectionPropertyAccessorMap.size());
-        for (MemberAccessor entityMemberAccessor : entityPropertyAccessorMap.values()) {
-            Object entity = extract(entityMemberAccessor, solution);
+                entityMemberAccessorMap.size() + entityCollectionMemberAccessorMap.size());
+        for (MemberAccessor entityMemberAccessor : entityMemberAccessorMap.values()) {
+            Object entity = extractMemberObject(entityMemberAccessor, solution);
             if (entity != null) {
                 iteratorList.add(Collections.singletonList(entity).iterator());
             }
         }
-        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionPropertyAccessorMap.values()) {
-            Collection<Object> entityCollection = extractCollection(entityCollectionMemberAccessor, solution);
+        for (MemberAccessor entityCollectionMemberAccessor : entityCollectionMemberAccessorMap.values()) {
+            Collection<Object> entityCollection = extractMemberCollection(entityCollectionMemberAccessor, solution);
             iteratorList.add(entityCollection.iterator());
         }
         return Iterators.concat(iteratorList.iterator());
     }
 
-    private Object extract(MemberAccessor memberAccessor, Solution_ solution) {
+    private Object extractMemberObject(MemberAccessor memberAccessor, Solution_ solution) {
         return memberAccessor.executeGetter(solution);
     }
 
-    private Collection<Object> extractCollection(MemberAccessor collectionMemberAccessor, Solution_ solution,
-                                                 boolean isFact) {
-        Collection<Object> entityCollection = (Collection<Object>) collectionMemberAccessor.executeGetter(solution);
-        if (entityCollection == null) {
-            String descr = isFact ? "factCollectionProperty" : "entityCollectionProperty";
+    private Collection<Object> extractMemberCollection(MemberAccessor collectionMemberAccessor, Solution_ solution,
+            boolean isFact) {
+        Collection<Object> collection = (Collection<Object>) collectionMemberAccessor.executeGetter(solution);
+        if (collection == null) {
             throw new IllegalArgumentException("The solutionClass (" + solutionClass
-                    + ")'s " + descr + " ("
-                    + collectionMemberAccessor.getName() + ") should never return null.");
+                    + ")'s " + (isFact ? "factCollectionProperty" : "entityCollectionProperty") + " ("
+                    + collectionMemberAccessor + ") should never return null.");
         }
-        return entityCollection;
+        return collection;
     }
 
-    private Collection<Object> extractCollection(MemberAccessor collectionMemberAccessor, Solution_ solution) {
-        return extractCollection(collectionMemberAccessor, solution, false);
+    private Collection<Object> extractMemberCollection(MemberAccessor collectionMemberAccessor, Solution_ solution) {
+        return extractMemberCollection(collectionMemberAccessor, solution, false);
+    }
+
+    /**
+     * @param solution never null
+     * @return sometimes null, if the {@link Score} hasn't been calculated yet
+     */
+    public Score getScore(Solution_ solution) {
+        return (Score) scoreMemberAccessor.executeGetter(solution);
+    }
+
+    /**
+     * Called when the {@link Score} has been calculated or predicted.
+     * @param solution never null
+     * @param score sometimes null, in rare occasions to indicate that the old {@link Score} is stale,
+     * but no new ones has been calculated
+     */
+    public void setScore(Solution_ solution, Score score) {
+        scoreMemberAccessor.executeSetter(solution, score);
     }
 
     @Override

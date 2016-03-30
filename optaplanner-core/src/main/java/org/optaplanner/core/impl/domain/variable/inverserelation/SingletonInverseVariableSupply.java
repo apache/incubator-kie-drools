@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
  * Currently only supported for chained variables,
  * which guarantee that no 2 entities use the same planningValue.
  * <p>
- * To get an instance, demand a{@link SingletonInverseVariableDemand} from {@link InnerScoreDirector#getSupplyManager()}.
+ * To get an instance, demand a {@link SingletonInverseVariableDemand} from {@link InnerScoreDirector#getSupplyManager()}.
  */
 public interface SingletonInverseVariableSupply extends Supply {
 
