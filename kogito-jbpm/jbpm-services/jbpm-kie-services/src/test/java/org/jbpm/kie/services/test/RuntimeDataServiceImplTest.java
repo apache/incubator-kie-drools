@@ -1326,7 +1326,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         statuses.add(Status.Reserved);
         
         String userId = "salaboy";
-        String varName = "TaskName";
+        String varName = "Comment";
         List<TaskSummary> tasksByVariable = runtimeDataService.taskSummaryQuery(userId)
                 .variableName(varName).build().getResultList();
         assertNotNull(tasksByVariable);
@@ -1349,7 +1349,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         statuses.add(Status.Reserved);
         
         String userId = "salaboy";
-        String varName = "TaskName";
+        String varName = "Comment";
         String varValue = "Write a Document";
         List<TaskSummary> tasksByVariable = runtimeDataService.taskSummaryQuery(userId)
                 .variableName(varName).and().variableValue(varValue).build().getResultList();
@@ -1386,7 +1386,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         assertEquals(1, tasks.size());
 
         String userId = "salaboy";
-        String varName = "TaskName";
+        String varName = "Comment";
         List<TaskSummary> tasksByVariable = runtimeDataService.getTasksByVariable(userId, varName, statuses, new QueryContext());
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
@@ -1428,7 +1428,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         assertEquals(1, tasks.size());
 
         String userId = "salaboy";
-        String varName = "TaskName";
+        String varName = "Comment";
         String varValue = "Write a Document";
         List<TaskSummary> tasksByVariable = runtimeDataService.getTasksByVariableAndValue(userId, varName, varValue, statuses, new QueryContext());
         assertNotNull(tasksByVariable);

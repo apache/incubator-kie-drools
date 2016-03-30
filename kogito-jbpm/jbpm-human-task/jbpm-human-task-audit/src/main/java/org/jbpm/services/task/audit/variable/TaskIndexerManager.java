@@ -37,7 +37,7 @@ public class TaskIndexerManager {
     
     private static ServiceLoader<TaskVariableIndexer> taskVariableIndexers = ServiceLoader.load(TaskVariableIndexer.class);
     
-    private static TaskIndexerManager INSTANCE;
+    private static TaskIndexerManager INSTANCE = new TaskIndexerManager();
     
     private List<TaskVariableIndexer> indexers = new ArrayList<TaskVariableIndexer>();
     
@@ -76,10 +76,6 @@ public class TaskIndexerManager {
     }
     
     public static TaskIndexerManager get() {
-        if (INSTANCE == null) {
-            INSTANCE = new TaskIndexerManager();
-        }
-        
         return INSTANCE;
     }
 }
