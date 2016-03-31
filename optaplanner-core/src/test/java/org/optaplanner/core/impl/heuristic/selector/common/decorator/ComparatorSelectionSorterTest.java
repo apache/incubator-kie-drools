@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 import org.junit.Test;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-import org.optaplanner.core.impl.testdata.domain.shadow.cyclic.seven.TestdataSevenNonCyclicShadowedSolution;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -20,8 +20,13 @@ import com.thoughtworks.xstream.XStream;
 import org.apache.commons.lang3.SerializationUtils;
 import org.mockito.AdditionalAnswers;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.DummySimpleScoreEasyScoreCalculator;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
@@ -29,10 +34,42 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
 
 import static org.mockito.Mockito.mock;
 
 public class PlannerTestUtils {
+
+    // ************************************************************************
+    // SolverFactory methods
+    // ************************************************************************
+
+    public static <Solution_> SolverFactory<Solution_> buildSolverFactoryWithEasyScoreDirector(
+            Class<Solution_> solutionClass, Class<?>... entityClasses) {
+        SolverFactory<Solution_> solverFactory = SolverFactory.createEmpty();
+        SolverConfig solverConfig = solverFactory.getSolverConfig();
+        solverConfig.setSolutionClass(solutionClass);
+        solverConfig.setEntityClassList(Arrays.asList(entityClasses));
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
+        scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(DummySimpleScoreEasyScoreCalculator.class);
+        solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
+        return solverFactory;
+    }
+
+    public static <Solution_> SolverFactory<Solution_> buildSolverFactoryWithDroolsScoreDirector(
+            Class<Solution_> solutionClass, Class<?>... entityClasses) {
+        SolverFactory<Solution_> solverFactory = SolverFactory.createEmpty();
+        SolverConfig solverConfig = solverFactory.getSolverConfig();
+        solverConfig.setSolutionClass(solutionClass);
+        solverConfig.setEntityClassList(Arrays.asList(entityClasses));
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        scoreDirectorFactoryConfig.setScoreDrlList(Collections.singletonList(
+                "org/optaplanner/core/impl/score/dummySimpleScoreDroolsScoreRules.drl"));
+        solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
+        return solverFactory;
+    }
 
     // ************************************************************************
     // ScoreDirector methods

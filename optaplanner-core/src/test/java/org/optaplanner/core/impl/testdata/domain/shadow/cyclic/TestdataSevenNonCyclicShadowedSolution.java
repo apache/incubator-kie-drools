@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.shadow.cyclic.reference;
+package org.optaplanner.core.impl.testdata.domain.shadow.cyclic;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
@@ -29,22 +29,22 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import java.util.List;
 
 @PlanningSolution
-public class TestdataCyclicReferencedShadowedSolution extends TestdataObject {
+public class TestdataSevenNonCyclicShadowedSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataCyclicReferencedShadowedSolution.class,
-                TestdataCyclicReferencedShadowedEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataSevenNonCyclicShadowedSolution.class,
+                TestdataSevenNonCyclicShadowedEntity.class);
     }
 
     private List<TestdataValue> valueList;
-    private List<TestdataCyclicReferencedShadowedEntity> entityList;
+    private List<TestdataSevenNonCyclicShadowedEntity> entityList;
 
     private SimpleScore score;
 
-    public TestdataCyclicReferencedShadowedSolution() {
+    public TestdataSevenNonCyclicShadowedSolution() {
     }
 
-    public TestdataCyclicReferencedShadowedSolution(String code) {
+    public TestdataSevenNonCyclicShadowedSolution(String code) {
         super(code);
     }
 
@@ -59,11 +59,11 @@ public class TestdataCyclicReferencedShadowedSolution extends TestdataObject {
     }
 
     @PlanningEntityCollectionProperty
-    public List<TestdataCyclicReferencedShadowedEntity> getEntityList() {
+    public List<TestdataSevenNonCyclicShadowedEntity> getEntityList() {
         return entityList;
     }
 
-    public void setEntityList(List<TestdataCyclicReferencedShadowedEntity> entityList) {
+    public void setEntityList(List<TestdataSevenNonCyclicShadowedEntity> entityList) {
         this.entityList = entityList;
     }
 

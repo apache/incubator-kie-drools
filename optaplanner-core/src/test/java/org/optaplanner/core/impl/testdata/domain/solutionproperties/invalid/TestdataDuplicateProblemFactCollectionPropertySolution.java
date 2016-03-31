@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,40 +14,44 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.shadow.cyclic;
+package org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid;
 
-import org.optaplanner.core.api.domain.solution.*;
+import java.util.List;
+
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-import java.util.List;
-
 @PlanningSolution
-public class TestdataCyclicShadowedSolution extends TestdataObject {
+public class TestdataDuplicateProblemFactCollectionPropertySolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataCyclicShadowedSolution.class,
-                TestdataCyclicShadowedEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(
+                TestdataDuplicateProblemFactCollectionPropertySolution.class, TestdataEntity.class);
     }
 
+    @ProblemFactCollectionProperty // Duplicate
     private List<TestdataValue> valueList;
-    private List<TestdataCyclicShadowedEntity> entityList;
+    private List<TestdataEntity> entityList;
 
     private SimpleScore score;
 
-    public TestdataCyclicShadowedSolution() {
+    public TestdataDuplicateProblemFactCollectionPropertySolution() {
     }
 
-    public TestdataCyclicShadowedSolution(String code) {
+    public TestdataDuplicateProblemFactCollectionPropertySolution(String code) {
         super(code);
     }
 
     @ValueRangeProvider(id = "valueRange")
-    @ProblemFactCollectionProperty
+    @ProblemFactCollectionProperty // Duplicate
     public List<TestdataValue> getValueList() {
         return valueList;
     }
@@ -57,11 +61,11 @@ public class TestdataCyclicShadowedSolution extends TestdataObject {
     }
 
     @PlanningEntityCollectionProperty
-    public List<TestdataCyclicShadowedEntity> getEntityList() {
+    public List<TestdataEntity> getEntityList() {
         return entityList;
     }
 
-    public void setEntityList(List<TestdataCyclicShadowedEntity> entityList) {
+    public void setEntityList(List<TestdataEntity> entityList) {
         this.entityList = entityList;
     }
 
@@ -73,9 +77,5 @@ public class TestdataCyclicShadowedSolution extends TestdataObject {
     public void setScore(SimpleScore score) {
         this.score = score;
     }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
 
 }

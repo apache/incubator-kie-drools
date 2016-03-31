@@ -34,6 +34,7 @@ import java.util.Set;
 import com.google.common.collect.Iterators;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
@@ -48,7 +49,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.MethodMemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
@@ -196,8 +196,9 @@ public class SolutionDescriptor<Solution_> {
         }
         try {
             Method getProblemFactsMethod = solutionClass.getMethod("getProblemFacts");
-            registerProblemFactPropertyAccessor(ProblemFactCollectionProperty.class,
-                    new MethodMemberAccessor(getProblemFactsMethod));
+            MemberAccessor problemFactsMemberAccessor = new BeanPropertyMemberAccessor(getProblemFactsMethod);
+            problemFactCollectionMemberAccessorMap.put(
+                    problemFactsMemberAccessor.getName(), problemFactsMemberAccessor);
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException("Impossible situation: the solutionClass (" + solutionClass
                     + ") which implements the legacy interface " + Solution.class.getSimpleName()
@@ -268,23 +269,75 @@ public class SolutionDescriptor<Solution_> {
     }
 
     private void processProblemFactPropertyAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
-        Class<? extends Annotation> factPropertyAnnotationClass = ConfigUtils.extractAnnotationClass(member,
+        Class<? extends Annotation> annotationClass = ConfigUtils.extractAnnotationClass(member,
                 ProblemFactProperty.class, ProblemFactCollectionProperty.class);
-        if (factPropertyAnnotationClass != null) {
+        if (annotationClass != null) {
             MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
-                    member, FIELD_OR_READ_METHOD, factPropertyAnnotationClass);
-            registerProblemFactPropertyAccessor(factPropertyAnnotationClass, memberAccessor);
+                    member, FIELD_OR_READ_METHOD, annotationClass);
+            assertUnexistingProblemFactOrPlanningEntityProperty(memberAccessor, annotationClass);
+            if (annotationClass == ProblemFactProperty.class) {
+                problemFactMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
+            } else if (annotationClass == ProblemFactCollectionProperty.class) {
+                if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
+                    throw new IllegalStateException("The solutionClass (" + solutionClass
+                            + ") has a " + ProblemFactCollectionProperty.class.getSimpleName()
+                            + " annotated member (" + member + ") that does not return a "
+                            + Collection.class.getSimpleName() + ".");
+                }
+                problemFactCollectionMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
+            }
         }
     }
 
     private void processPlanningEntityPropertyAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
-        Class<? extends Annotation> entityPropertyAnnotationClass = ConfigUtils.extractAnnotationClass(member,
+        Class<? extends Annotation> annotationClass = ConfigUtils.extractAnnotationClass(member,
                 PlanningEntityProperty.class, PlanningEntityCollectionProperty.class);
-        if (entityPropertyAnnotationClass != null) {
+        if (annotationClass != null) {
             MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
-                    member, FIELD_OR_GETTER_METHOD, entityPropertyAnnotationClass);
-            registerPlanningEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
+                    member, FIELD_OR_GETTER_METHOD, annotationClass);
+            assertUnexistingProblemFactOrPlanningEntityProperty(memberAccessor, annotationClass);
+            if (annotationClass == PlanningEntityProperty.class) {
+                entityMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
+            } else if (annotationClass == PlanningEntityCollectionProperty.class) {
+                if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
+                    throw new IllegalStateException("The solutionClass (" + solutionClass
+                            + ") has a " + PlanningEntityCollectionProperty.class.getSimpleName()
+                            + " annotated member (" + member + ") that does not return a "
+                            + Collection.class.getSimpleName() + ".");
+                }
+                entityCollectionMemberAccessorMap.put(memberAccessor.getName(), memberAccessor);
+            }
         }
+    }
+
+    private void assertUnexistingProblemFactOrPlanningEntityProperty(
+            MemberAccessor memberAccessor, Class<? extends Annotation> annotationClass) {
+        MemberAccessor duplicate;
+        Class<? extends Annotation> otherAnnotationClass;
+        String memberName = memberAccessor.getName();
+        if (problemFactMemberAccessorMap.containsKey(memberName)) {
+            duplicate = problemFactMemberAccessorMap.get(memberName);
+            otherAnnotationClass = ProblemFactProperty.class;
+        } else if (problemFactCollectionMemberAccessorMap.containsKey(memberName)) {
+            duplicate = problemFactCollectionMemberAccessorMap.get(memberName);
+            otherAnnotationClass = ProblemFactCollectionProperty.class;
+        } else if (entityMemberAccessorMap.containsKey(memberName)) {
+            duplicate = entityMemberAccessorMap.get(memberName);
+            otherAnnotationClass = PlanningEntityProperty.class;
+        } else if (entityCollectionMemberAccessorMap.containsKey(memberName)) {
+            duplicate = entityCollectionMemberAccessorMap.get(memberName);
+            otherAnnotationClass = PlanningEntityCollectionProperty.class;
+        } else {
+            return;
+        }
+        throw new IllegalStateException("The solutionClass (" + solutionClass
+                + ") has a " + annotationClass.getSimpleName()
+                + " annotated member (" + memberAccessor
+                + ") that is duplicated by a " + otherAnnotationClass.getSimpleName()
+                + " annotated member (" + duplicate + ").\n"
+                + (annotationClass.equals(otherAnnotationClass)
+                ? "Maybe the annotation is defined on both the field and its getter."
+                : "Maybe 2 mutually exclusive annotations are configured."));
     }
 
     private void processScoreAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
@@ -303,51 +356,6 @@ public class SolutionDescriptor<Solution_> {
                         + " annotated member (" + memberAccessor + ") that does not return a subtype of Score.");
             }
             scoreMemberAccessor = memberAccessor;
-        }
-    }
-
-    private void registerPlanningEntityPropertyAccessor(Class<? extends Annotation> entityPropertyAnnotationClass,
-            MemberAccessor memberAccessor) {
-        registerPropertyAccessor(entityPropertyAnnotationClass, memberAccessor, entityMemberAccessorMap,
-                entityCollectionMemberAccessorMap, PlanningEntityProperty.class,
-                PlanningEntityCollectionProperty.class);
-    }
-
-    private void registerProblemFactPropertyAccessor(Class<? extends Annotation> factPropertyAnnotationClass,
-            MemberAccessor memberAccessor) {
-        registerPropertyAccessor(factPropertyAnnotationClass, memberAccessor, problemFactMemberAccessorMap,
-                problemFactCollectionMemberAccessorMap, ProblemFactProperty.class, ProblemFactCollectionProperty.class);
-    }
-
-    private void registerPropertyAccessor(Class<? extends Annotation> annotationClass,
-            MemberAccessor memberAccessor,
-            Map<String, MemberAccessor> propertyAccessorMap,
-            Map<String, MemberAccessor> collectionPropertyAccessorMap,
-            Class<? extends Annotation> propertyAnnotationClass,
-            Class<? extends Annotation> collectionPropertyAnnotationClass) {
-        String memberName = memberAccessor.getName();
-        if (propertyAccessorMap.containsKey(memberName)
-                || collectionPropertyAccessorMap.containsKey(memberName)) {
-            MemberAccessor duplicate = propertyAccessorMap.get(memberName);
-            if (duplicate == null) {
-                duplicate = collectionPropertyAccessorMap.get(memberName);
-            }
-            throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") has a " + propertyAnnotationClass.getSimpleName()
-                    + " annotated member (" + memberAccessor
-                    + ") that is duplicated by another member (" + duplicate + ").\n"
-                    + "  Verify that the annotation is not defined on both the field and its getter.");
-        }
-        if (annotationClass.equals(propertyAnnotationClass)) {
-            propertyAccessorMap.put(memberName, memberAccessor);
-        } else if (annotationClass.equals(collectionPropertyAnnotationClass)) {
-            if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
-                throw new IllegalStateException("The solutionClass (" + solutionClass
-                        + ") has a " + collectionPropertyAnnotationClass.getSimpleName()
-                        + " annotated member (" + memberName + ") that does not return a "
-                        + Collection.class.getSimpleName() + ".");
-            }
-            collectionPropertyAccessorMap.put(memberName, memberAccessor);
         }
     }
 

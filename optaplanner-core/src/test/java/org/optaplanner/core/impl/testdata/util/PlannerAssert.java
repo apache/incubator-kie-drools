@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.testdata.util;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.ComparisonFailure;
@@ -89,6 +90,20 @@ public class PlannerAssert extends Assert {
             if (!collection.contains(elements[i])) {
                 fail("The asserted collection (" + collection
                         + ") does not contain expected element (" + elements[i] + ")");
+            }
+        }
+    }
+
+    public static <K, V> void assertMapContainsKeysExactly(Map<K, V> map, K... keys) {
+        assertMapContainsKeys(map, keys);
+        assertEquals(keys.length, map.size());
+    }
+
+    public static <K, V> void assertMapContainsKeys(Map<K, V> map, K... keys) {
+        for (int i = 0; i < keys.length; i++) {
+            if (!map.containsKey(keys[i])) {
+                fail("The asserted map (" + map
+                        + ") does not contain expected key (" + keys[i] + ")");
             }
         }
     }

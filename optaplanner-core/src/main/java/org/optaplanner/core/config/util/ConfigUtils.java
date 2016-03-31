@@ -239,8 +239,12 @@ public class ConfigUtils {
             MemberAccessor memberAccessor;
             switch (memberAccessorType) {
                 case FIELD_OR_READ_METHOD:
-                    ReflectionHelper.assertReadMethod(method, annotationClass);
-                    memberAccessor = new MethodMemberAccessor(method);
+                    if (ReflectionHelper.isGetterMethod(method)) {
+                        memberAccessor = new BeanPropertyMemberAccessor(method);
+                    } else {
+                        ReflectionHelper.assertReadMethod(method, annotationClass);
+                        memberAccessor = new MethodMemberAccessor(method);
+                    }
                     break;
                 case FIELD_OR_GETTER_METHOD:
                 case FIELD_OR_GETTER_METHOD_WITH_SETTER:

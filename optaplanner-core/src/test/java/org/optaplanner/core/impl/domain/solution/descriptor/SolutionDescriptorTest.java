@@ -17,15 +17,84 @@ package org.optaplanner.core.impl.domain.solution.descriptor;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolution;
-import org.optaplanner.core.impl.testdata.domain.problemfacts.TestdataInvalidProblemFactCollectionPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataProblemFactPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataReadMethodProblemFactCollectionPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicatePlanningEntityCollectionPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicateProblemFactCollectionPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataNoProblemFactPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactIsPlanningEntityCollectionPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactCollectionPropertyWithArgumentSolution;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SolutionDescriptorTest {
 
-    @Test(expected = IllegalStateException.class)
-    public void invalidProblemFactCollectionProperty() {
-        TestdataInvalidProblemFactCollectionPropertySolution.buildSolutionDescriptor();
+    // ************************************************************************
+    // Problem fact and planning entity properties
+    // ************************************************************************
+
+    @Test
+    public void problemFactProperty() {
+        SolutionDescriptor<TestdataProblemFactPropertySolution> solutionDescriptor
+                = TestdataProblemFactPropertySolution.buildSolutionDescriptor();
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap(),
+                "extraObject");
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
+                "valueList", "otherProblemFactList");
     }
+
+    @Test
+    public void readMethodProblemFactCollectionProperty() {
+        SolutionDescriptor<TestdataReadMethodProblemFactCollectionPropertySolution> solutionDescriptor
+                = TestdataReadMethodProblemFactCollectionPropertySolution.buildSolutionDescriptor();
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap());
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
+                "valueList", "createProblemFacts");
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void problemFactCollectionPropertyWithArgument() {
+        TestdataProblemFactCollectionPropertyWithArgumentSolution.buildSolutionDescriptor();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void duplicateProblemFactCollectionProperty() {
+        TestdataDuplicateProblemFactCollectionPropertySolution.buildSolutionDescriptor();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void duplicatePlanningEntityCollectionProperty() {
+        TestdataDuplicatePlanningEntityCollectionPropertySolution.buildSolutionDescriptor();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void problemFactIsPlanningEntityCollectionProperty() {
+        TestdataProblemFactIsPlanningEntityCollectionPropertySolution.buildSolutionDescriptor();
+    }
+
+    @Test
+    public void noProblemFactPropertyWithEasyScoreCalculation() {
+        SolverFactory<TestdataNoProblemFactPropertySolution> solverFactory
+                = PlannerTestUtils.buildSolverFactoryWithEasyScoreDirector(
+                        TestdataNoProblemFactPropertySolution.class, TestdataEntity.class);
+        solverFactory.buildSolver();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void noProblemFactPropertyWithDroolsScoreCalculation() {
+        SolverFactory<TestdataNoProblemFactPropertySolution> solverFactory
+                = PlannerTestUtils.buildSolverFactoryWithDroolsScoreDirector(
+                        TestdataNoProblemFactPropertySolution.class, TestdataEntity.class);
+        solverFactory.buildSolver();
+    }
+
+    // ************************************************************************
+    // Others
+    // ************************************************************************
 
     @Test
     public void extendedAbstractSolution() {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,37 +14,39 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.shadow.cyclic.seven;
-
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningScore;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.testdata.domain.TestdataObject;
-import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+package org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid;
 
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+
 @PlanningSolution
-public class TestdataSevenNonCyclicShadowedSolution extends TestdataObject {
+public class TestdataDuplicatePlanningEntityCollectionPropertySolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataSevenNonCyclicShadowedSolution.class,
-                TestdataSevenNonCyclicShadowedEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(
+                TestdataDuplicatePlanningEntityCollectionPropertySolution.class, TestdataEntity.class);
     }
 
     private List<TestdataValue> valueList;
-    private List<TestdataSevenNonCyclicShadowedEntity> entityList;
+    @PlanningEntityCollectionProperty // Duplicate
+    private List<TestdataEntity> entityList;
 
     private SimpleScore score;
 
-    public TestdataSevenNonCyclicShadowedSolution() {
+    public TestdataDuplicatePlanningEntityCollectionPropertySolution() {
     }
 
-    public TestdataSevenNonCyclicShadowedSolution(String code) {
+    public TestdataDuplicatePlanningEntityCollectionPropertySolution(String code) {
         super(code);
     }
 
@@ -58,12 +60,12 @@ public class TestdataSevenNonCyclicShadowedSolution extends TestdataObject {
         this.valueList = valueList;
     }
 
-    @PlanningEntityCollectionProperty
-    public List<TestdataSevenNonCyclicShadowedEntity> getEntityList() {
+    @PlanningEntityCollectionProperty // Duplicate
+    public List<TestdataEntity> getEntityList() {
         return entityList;
     }
 
-    public void setEntityList(List<TestdataSevenNonCyclicShadowedEntity> entityList) {
+    public void setEntityList(List<TestdataEntity> entityList) {
         this.entityList = entityList;
     }
 
@@ -75,9 +77,5 @@ public class TestdataSevenNonCyclicShadowedSolution extends TestdataObject {
     public void setScore(SimpleScore score) {
         this.score = score;
     }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
 
 }
