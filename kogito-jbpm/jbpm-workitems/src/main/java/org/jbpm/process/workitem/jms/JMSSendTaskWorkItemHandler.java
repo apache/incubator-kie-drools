@@ -49,6 +49,8 @@ public class JMSSendTaskWorkItemHandler extends AbstractLogOrThrowWorkItemHandle
     private ConnectionFactory connectionFactory;
     private Destination destination;
     
+    private boolean transacted = false;
+    
     public JMSSendTaskWorkItemHandler() {
         this.connectionFactoryName = "java:/JmsXA";
         this.destinationName = "queue/KIE.SIGNAL";
@@ -64,6 +66,20 @@ public class JMSSendTaskWorkItemHandler extends AbstractLogOrThrowWorkItemHandle
     public JMSSendTaskWorkItemHandler(ConnectionFactory connectionFactory, Destination destination) {
         this.connectionFactory = connectionFactory;
         this.destination = destination;
+        init();
+    }
+    
+    public JMSSendTaskWorkItemHandler(String connectionFactoryName, String destinationName, boolean transacted) {
+        this.connectionFactoryName = connectionFactoryName;
+        this.destinationName = destinationName;
+        this.transacted = transacted;
+        init();
+    }
+
+    public JMSSendTaskWorkItemHandler(ConnectionFactory connectionFactory, Destination destination, boolean transacted) {
+        this.connectionFactory = connectionFactory;
+        this.destination = destination;
+        this.transacted = transacted;
         init();
     }
     
@@ -122,7 +138,7 @@ public class JMSSendTaskWorkItemHandler extends AbstractLogOrThrowWorkItemHandle
         MessageProducer producer = null;
         try {
             connection = connectionFactory.createConnection();
-            session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+            session = connection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
                       
             Message message = createMessage(workItem, session);
             producer = session.createProducer(destination);            
