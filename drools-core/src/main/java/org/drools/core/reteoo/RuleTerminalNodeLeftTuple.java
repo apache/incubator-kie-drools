@@ -51,8 +51,8 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
      * The activation number
      */
     private           long                                           activationNumber;
-    private volatile  int                                            queueIndex;
-    private volatile  boolean                                        queued;
+    private           int                                            queueIndex;
+    private           boolean                                        queued;
     private           LinkedList<LogicalDependency<T>>               justified;
     private           LinkedList<LogicalDependency<SimpleMode>>      blocked;
     private           LinkedList<SimpleMode>                         blockers;

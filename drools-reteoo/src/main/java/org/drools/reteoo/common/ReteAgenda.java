@@ -78,6 +78,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -1476,6 +1477,26 @@ public class ReteAgenda<M extends ModedAssertion<M>>
                 this.halt.set( true );
             }
         }
+    }
+
+    @Override
+    public <T> T executeCallable( Callable<T> callable ) {
+        throw new UnsupportedOperationException( "Cannot invoke executeCallable on ReteAgenda" );
+    }
+
+    @Override
+    public void activate( ) {
+        throw new UnsupportedOperationException( "Cannot invoke activate on ReteAgenda" );
+    }
+
+    @Override
+    public void deactivate( ) {
+        throw new UnsupportedOperationException( "Cannot invoke deactivate on ReteAgenda" );
+    }
+
+    @Override
+    public boolean tryDeactivate( ) {
+        throw new UnsupportedOperationException( "Cannot invoke tryDeactivate on ReteAgenda" );
     }
 
     public void halt() {

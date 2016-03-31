@@ -23,7 +23,6 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
-import org.drools.core.util.AtomicBitwiseLong;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.slf4j.Logger;
@@ -41,16 +40,16 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     protected static final Logger log = LoggerFactory.getLogger(SegmentMemory.class);
     protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
 
-    private final    LeftTupleNode        rootNode;
-    private          LeftTupleNode        tipNode;
-    private          LinkedList<Memory> nodeMemories;
-    private          AtomicBitwiseLong  linkedNodeMask;
-    private          AtomicBitwiseLong  dirtyNodeMask;
+    private final    LeftTupleNode      rootNode;
+    private          LeftTupleNode      tipNode;
+    private final    LinkedList<Memory> nodeMemories;
+    private          long               linkedNodeMask;
+    private          long               dirtyNodeMask;
     private          long               allLinkedMaskTest;
-    private          List<PathMemory>   pathMemories;
+    private final    List<PathMemory>   pathMemories;
     private          long               segmentPosMaskBit;
     private          int                pos = -1;
-    private volatile TupleSets<LeftTuple> stagedLeftTuples;
+    private          TupleSets<LeftTuple> stagedLeftTuples;
     private          boolean            active;
     private          SegmentMemory      previous;
     private          SegmentMemory      next;
@@ -59,8 +58,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public SegmentMemory(LeftTupleNode rootNode) {
         this.rootNode = rootNode;
-        this.linkedNodeMask = new AtomicBitwiseLong();
-        this.dirtyNodeMask = new AtomicBitwiseLong();
+        this.linkedNodeMask = 0L;
+        this.dirtyNodeMask = 0L;
         this.pathMemories = new ArrayList<PathMemory>(1);
         this.nodeMemories = new LinkedList<Memory>();
         this.stagedLeftTuples = new TupleSetsImpl<LeftTuple>();
@@ -94,29 +93,27 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public long getLinkedNodeMask() {
-        return linkedNodeMask.get();
+        return linkedNodeMask;
     }
 
     public void setLinkedNodeMask(long linkedNodeMask) {
-        this.linkedNodeMask.set( linkedNodeMask );
-        //this.linkedNodeMask = linkedNodeMask;
+        this.linkedNodeMask = linkedNodeMask;
     }
 
     public long getDirtyNodeMask() {
-        return dirtyNodeMask.get();
+        return dirtyNodeMask;
     }
 
     public void resetDirtyNodeMask() {
-        dirtyNodeMask.set( 0 );
+        dirtyNodeMask = 0L;
     }
 
     public void updateDirtyNodeMask(long mask) {
-        dirtyNodeMask.getAndBitwiseOr(mask);
+        dirtyNodeMask |= mask;
     }
 
     public void updateCleanNodeMask(long mask) {
-        dirtyNodeMask.getAndBitwiseReset( mask );
-        //dirtyNodeMask = dirtyNodeMask & ~( 1 << mask );
+        dirtyNodeMask &= (~mask);
     }
 
 
@@ -134,7 +131,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public void linkNode(long mask,
                          InternalWorkingMemory wm) {
-        linkedNodeMask.getAndBitwiseOr( mask );
+        linkedNodeMask |= mask;
         //dirtyNodeMask = dirtyNodeMask | mask;
         if (isLogTraceEnabled) {
             log.trace("LinkNode notify=true nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
@@ -144,7 +141,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public void linkNodeWithoutRuleNotify(long mask) {
-        linkedNodeMask.getAndBitwiseOr( mask );
+        linkedNodeMask |= mask;
         //dirtyNodeMask = dirtyNodeMask | mask;
         if (isLogTraceEnabled) {
             log.trace("LinkNode notify=false nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
@@ -155,7 +152,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public void linkSegmentWithoutRuleNotify(InternalWorkingMemory wm, long mask) {
         //dirtyNodeMask = dirtyNodeMask | mask;
-        dirtyNodeMask.getAndBitwiseOr( mask );
+        dirtyNodeMask |= mask;
         linkSegmentWithoutRuleNotify();
     }
 
@@ -170,7 +167,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public void notifyRuleLinkSegment(InternalWorkingMemory wm, long mask) {
         //dirtyNodeMask = dirtyNodeMask | mask;
-        dirtyNodeMask.getAndBitwiseOr( mask );
+        dirtyNodeMask |= mask;
         notifyRuleLinkSegment(wm);
     }
 
@@ -191,8 +188,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                            InternalWorkingMemory wm) {
         boolean linked = isSegmentLinked();
         // some node unlinking does not unlink the segment, such as nodes after a Branch CE
-        linkedNodeMask.getAndBitwiseXor(mask);
-        dirtyNodeMask.getAndBitwiseOr( mask );
+        linkedNodeMask ^= mask;
+        dirtyNodeMask |= mask;
         //dirtyNodeMask = dirtyNodeMask | mask;
 
 
@@ -226,7 +223,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public void unlinkNodeWithoutRuleNotify(long mask) {
-        linkedNodeMask.getAndBitwiseXor( mask );
+        linkedNodeMask ^= mask;
         //dirtyNodeMask = dirtyNodeMask | mask;
         if (isLogTraceEnabled) {
             log.trace("UnlinkNode notify=false nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
@@ -242,7 +239,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public boolean isSegmentLinked() {
-        return (linkedNodeMask.get() & allLinkedMaskTest) == allLinkedMaskTest;
+        return (linkedNodeMask & allLinkedMaskTest) == allLinkedMaskTest;
     }
 
     public List<PathMemory> getPathMemories() {
@@ -359,8 +356,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public void reset(Prototype prototype) {
-        this.dirtyNodeMask.set(0);
-        this.linkedNodeMask.set( prototype != null ? prototype.linkedNodeMask : 0 );
+        this.dirtyNodeMask = 0L;
+        this.linkedNodeMask = prototype != null ? prototype.linkedNodeMask : 0L;
         stagedLeftTuples.resetAll();
     }
 
@@ -382,7 +379,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         private Prototype(SegmentMemory smem) {
             this.rootNode = smem.rootNode;
             this.tipNode = smem.tipNode;
-            this.linkedNodeMask = smem.linkedNodeMask.get();
+            this.linkedNodeMask = smem.linkedNodeMask;
             this.allLinkedMaskTest = smem.allLinkedMaskTest;
             this.segmentPosMaskBit = smem.segmentPosMaskBit;
             this.pos = smem.pos;
@@ -394,7 +391,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         public SegmentMemory newSegmentMemory(InternalWorkingMemory wm) {
             SegmentMemory smem = new SegmentMemory(rootNode);
             smem.tipNode = tipNode;
-            smem.linkedNodeMask = new AtomicBitwiseLong( linkedNodeMask );
+            smem.linkedNodeMask = linkedNodeMask;
             smem.allLinkedMaskTest = allLinkedMaskTest;
             smem.segmentPosMaskBit = segmentPosMaskBit;
             smem.pos = pos;
