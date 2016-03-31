@@ -32,6 +32,7 @@ import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
 
 /**
@@ -214,6 +215,10 @@ public class PhreakAccumulateNode {
         TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = accNode.getRawConstraints();
+
+        if (srcRightTuples.getInsertSize() > 32 && rtm instanceof AbstractHashTable ) {
+            ((AbstractHashTable) rtm).ensureCapacity(srcRightTuples.getInsertSize());
+        }
 
         for (RightTuple rightTuple = srcRightTuples.getInsertFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();

@@ -23,6 +23,8 @@ public interface TupleSets<T extends Tuple> {
     T getDeleteFirst();
     T getUpdateFirst();
 
+    int getInsertSize();
+
     void resetAll();
 
     /**

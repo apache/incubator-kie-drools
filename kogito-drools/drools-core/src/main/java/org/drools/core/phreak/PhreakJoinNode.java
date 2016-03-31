@@ -25,6 +25,7 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
 
 public class PhreakJoinNode {
@@ -136,6 +137,10 @@ public class PhreakJoinNode {
         TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = joinNode.getRawConstraints();
+
+        if (srcRightTuples.getInsertSize() > 32 && rtm instanceof AbstractHashTable ) {
+            ((AbstractHashTable) rtm).ensureCapacity(srcRightTuples.getInsertSize());
+        }
 
         for (RightTuple rightTuple = srcRightTuples.getInsertFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();

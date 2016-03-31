@@ -25,13 +25,20 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
     private T updateFirst;
     private T normalizedDeleteFirst;
 
+    private int insertSize;
+
     public TupleSetsImpl() { }
 
-    TupleSetsImpl( T insertFirst, T updateFirst, T deleteFirst, T normalizedDeleteFirst ) {
+    TupleSetsImpl( T insertFirst, T updateFirst, T deleteFirst, T normalizedDeleteFirst, int insertSize ) {
         this.insertFirst = insertFirst;
         this.updateFirst = updateFirst;
         this.deleteFirst = deleteFirst;
         this.normalizedDeleteFirst = normalizedDeleteFirst;
+        this.insertSize = insertSize;
+    }
+
+    public int getInsertSize() {
+        return insertSize;
     }
 
     public T getInsertFirst() {
@@ -71,6 +78,7 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
         setDeleteFirst( null );
         setUpdateFirst( null );
         setNormalizedDeleteFirst( null );
+        insertSize = 0;
     }
 
     public boolean addInsert(T tuple) {
@@ -82,11 +90,13 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
         setStagedType( tuple, Tuple.INSERT );
         if ( insertFirst == null ) {
             insertFirst = tuple;
+            insertSize = 1;
             return true;
         }
         setNextTuple( tuple, insertFirst );
         setPreviousTuple( insertFirst, tuple );
         insertFirst = tuple;
+        insertSize++;
         return false;
     }
 
@@ -158,6 +168,7 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
             setNextTuple( previous, next );
         }
         tuple.clearStaged();
+        insertSize--;
     }
 
     public void removeDelete(T tuple) {
@@ -203,6 +214,7 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
         if ( tupleSets.getInsertFirst() != null ) {
             if ( insertFirst == null ) {
                 setInsertFirst( tupleSets.getInsertFirst() );
+                insertSize = tupleSets.getInsertSize();
             } else {
                 T current = insertFirst;
                 T last = null;
@@ -213,6 +225,7 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
                 T tuple = tupleSets.getInsertFirst();
                 setNextTuple( last, tuple );
                 setPreviousTuple( tuple, last );
+                insertSize = insertSize + tupleSets.getInsertSize();
             }
             ( (TupleSetsImpl) tupleSets ).setInsertFirst( null );
         }
@@ -268,7 +281,7 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
 
     @Override
     public TupleSets<T> takeAll() {
-        TupleSets<T> clone = new TupleSetsImpl(insertFirst, updateFirst, deleteFirst, normalizedDeleteFirst);
+        TupleSets<T> clone = new TupleSetsImpl(insertFirst, updateFirst, deleteFirst, normalizedDeleteFirst, insertSize);
         resetAll();
         return clone;
     }
