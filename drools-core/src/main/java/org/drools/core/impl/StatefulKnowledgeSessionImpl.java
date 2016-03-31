@@ -1464,11 +1464,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public FactHandle insert(final Object object,
-                                             final Object tmsValue,
+                             final Object tmsValue,
                              final boolean dynamic,
-                                             boolean logical,
-                                             final RuleImpl rule,
-                                             final Activation activation) {
+                             boolean logical,
+                             final RuleImpl rule,
+                             final Activation activation) {
         checkAlive();
         return this.defaultEntryPoint.insert(object,
                                              dynamic,

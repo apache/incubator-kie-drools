@@ -721,7 +721,7 @@ public class KnowledgeBaseImpl
     }
 
     public void enqueueModification(Runnable modification) {
-        if ( tryDeactivateAndLock()) {
+        if ( tryLockAndDeactivate() ) {
             try {
                 modification.run();
             } finally {
@@ -738,8 +738,7 @@ public class KnowledgeBaseImpl
         }
 
         try {
-            lock();
-            deactivateAllSessions();
+            lockAndDeactivate();
             while (!kbaseModificationsQueue.isEmpty()) {
                 kbaseModificationsQueue.poll().run();
             }
@@ -747,6 +746,16 @@ public class KnowledgeBaseImpl
             unlockAndActivate();
         }
         return true;
+    }
+
+    private void lockAndDeactivate() {
+        lock();
+        deactivateAllSessions();
+    }
+
+    private void unlockAndActivate() {
+        activateAllSessions();
+        unlock();
     }
 
     private boolean tryDeactivateAllSessions() {
@@ -768,28 +777,27 @@ public class KnowledgeBaseImpl
         return true;
     }
 
-    private boolean tryDeactivateAndLock() {
-        if (sessionDeactivationsCounter.incrementAndGet() > 1) {
-            lock();
+    private boolean tryLockAndDeactivate() {
+        if ( sessionDeactivationsCounter.incrementAndGet() > 1 ) {
+            this.lock.writeLock().lock();
             return true;
         }
 
-        if (!tryDeactivateAllSessions()) {
-            sessionDeactivationsCounter.decrementAndGet();
-            return false;
+        boolean locked = this.lock.writeLock().tryLock();
+        if ( locked && !tryDeactivateAllSessions() ) {
+            this.lock.writeLock().unlock();
+            locked = false;
         }
 
-        lock();
-        return true;
-    }
+        if (!locked) {
+            sessionDeactivationsCounter.decrementAndGet();
+        }
 
-    private void unlockAndActivate() {
-        unlock();
-        activateAllSessions();
+        return locked;
     }
 
     private void deactivateAllSessions() {
-        if (sessionDeactivationsCounter.incrementAndGet() < 2) {
+        if ( sessionDeactivationsCounter.incrementAndGet() < 2 ) {
             for ( StatefulKnowledgeSession session : statefulSessions ) {
                 ( (InternalWorkingMemory) session ).deactivate();
             }
@@ -797,7 +805,7 @@ public class KnowledgeBaseImpl
     }
 
     private void activateAllSessions() {
-        if (sessionDeactivationsCounter.decrementAndGet() == 0) {
+        if ( sessionDeactivationsCounter.decrementAndGet() == 0 ) {
             for ( StatefulKnowledgeSession session : statefulSessions ) {
                 ( (InternalWorkingMemory) session ).activate();
             }
