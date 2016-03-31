@@ -29,14 +29,22 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.kie.internal.task.api.TaskVariable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @SequenceGenerator(name = "taskVarIdSeq", sequenceName = "TASK_VAR_ID_SEQ", allocationSize = 1)
 public class TaskVariableImpl implements TaskVariable, Serializable {
 
     private static final long serialVersionUID = 5388016330549830048L;
+    private static final Logger logger = LoggerFactory.getLogger(TaskVariableImpl.class);
+    
+    @Transient
+    private final int VARIABLE_LOG_LENGTH = Integer.parseInt(System.getProperty("org.jbpm.task.var.log.length", "4000"));
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "taskVarIdSeq")
@@ -114,6 +122,10 @@ public class TaskVariableImpl implements TaskVariable, Serializable {
     }
 
     public void setValue(String value) {
+        if (value != null && value.length() > VARIABLE_LOG_LENGTH) {
+            value = value.substring(0, VARIABLE_LOG_LENGTH);
+            logger.warn("Task variable '{}' content was trimmed as it was too long (more than {} characters)", name, VARIABLE_LOG_LENGTH);
+        }
         this.value = value;
     }
 
