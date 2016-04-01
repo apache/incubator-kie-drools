@@ -15,31 +15,19 @@
 
 package org.drools.decisiontable;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.agent.KnowledgeAgent;
-import org.kie.internal.agent.KnowledgeAgentFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.io.ResourceChangeScannerConfiguration;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class ChangeSetTest {
     
@@ -113,38 +101,4 @@ public class ChangeSetTest {
         assertEquals(1, kbase.getKnowledgePackages().size());
         assertEquals(3, kbase.getKnowledgePackages().iterator().next().getRules().size());
     }
-
-    @Test @Ignore
-    public void testCSVByKnowledgeAgent() {
-        KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("csv agent");
-        kagent.applyChangeSet(ResourceFactory.newClassPathResource("changeSetTestCSV.xml", getClass()));
-        KnowledgeBase kbase = kagent.getKnowledgeBase();
-        
-        assertEquals(1, kbase.getKnowledgePackages().size());
-        assertEquals(3, kbase.getKnowledgePackages().iterator().next().getRules().size());
-    }
-
-    @Test @Ignore
-    public void testCSVByKnowledgeAgentWithFileReader() throws IOException {
-
-        try {
-            File targetTestFilesDir = new File("target/testFiles");
-            targetTestFilesDir.mkdirs();
-            File changeSetFile = new File(targetTestFilesDir, "changeSetTestCSV.xml");
-            FileUtils.copyURLToFile(getClass().getResource("changeSetTestCSV.xml"), changeSetFile);
-
-            KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent("csv agent");
-            kagent.applyChangeSet(ResourceFactory.newFileResource(changeSetFile));
-            KnowledgeBase kbase = kagent.getKnowledgeBase();
-
-            assertEquals(1, kbase.getKnowledgePackages().size());
-            assertEquals(3, kbase.getKnowledgePackages().iterator().next().getRules().size());
-
-        } catch(Throwable t) {
-            t.printStackTrace();
-            fail( t.getMessage() );
-        } finally {
-        }
-    }
-
 }

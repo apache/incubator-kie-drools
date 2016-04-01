@@ -302,11 +302,11 @@ public class KnowledgeBaseImpl
     }
     
     public StatelessKnowledgeSession newStatelessKnowledgeSession() {
-        return new StatelessKnowledgeSessionImpl( this, null, null );
+        return new StatelessKnowledgeSessionImpl( this, null );
     }
     
     public StatelessKnowledgeSession newStatelessKnowledgeSession(KieSessionConfiguration conf) {
-        return new StatelessKnowledgeSessionImpl( this, null, conf );
+        return new StatelessKnowledgeSessionImpl( this, conf );
     }
 
     public void removeKnowledgePackage(String packageName) {
