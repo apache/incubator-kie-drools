@@ -29,6 +29,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
@@ -59,12 +60,9 @@ public class FilteringEntitySelectorTest {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
 
-        SelectionFilter<TestdataEntity> filter = new SelectionFilter<TestdataEntity>() {
-            public boolean accept(ScoreDirector scoreDirector, TestdataEntity entity) {
-                return !entity.getCode().equals("e3");
-            }
-        };
-        List<SelectionFilter> filterList = Arrays.<SelectionFilter>asList(filter);
+        SelectionFilter<TestdataSolution, TestdataEntity> filter
+                = (scoreDirector, entity) -> !entity.getCode().equals("e3");
+        List<SelectionFilter> filterList = Arrays.asList(filter);
         EntitySelector entitySelector = new FilteringEntitySelector(childEntitySelector, filterList);
         if (cacheType.isCached()) {
             entitySelector = new CachingEntitySelector(entitySelector, cacheType, false);

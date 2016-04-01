@@ -20,10 +20,11 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFi
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.travelingtournament.domain.Match;
+import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-public class InverseMatchSwapMoveFilter implements SelectionFilter<SwapMove> {
+public class InverseMatchSwapMoveFilter implements SelectionFilter<TravelingTournament, SwapMove> {
 
-    public boolean accept(ScoreDirector scoreDirector, SwapMove move) {
+    public boolean accept(ScoreDirector<TravelingTournament> scoreDirector, SwapMove move) {
         Match leftMatch = (Match) move.getLeftEntity();
         Match rightMatch = (Match) move.getRightEntity();
         return leftMatch.getHomeTeam().equals(rightMatch.getAwayTeam())

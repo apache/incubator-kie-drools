@@ -19,10 +19,11 @@ package org.optaplanner.examples.tennis.domain.solver;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
+import org.optaplanner.examples.tennis.domain.TennisSolution;
 
-public class MovableTeamAssignmentSelectionFilter implements SelectionFilter<TeamAssignment> {
+public class MovableTeamAssignmentSelectionFilter implements SelectionFilter<TennisSolution, TeamAssignment> {
 
-    public boolean accept(ScoreDirector scoreDirector, TeamAssignment teamAssignment) {
+    public boolean accept(ScoreDirector<TennisSolution> scoreDirector, TeamAssignment teamAssignment) {
         return !teamAssignment.isLocked();
     }
 

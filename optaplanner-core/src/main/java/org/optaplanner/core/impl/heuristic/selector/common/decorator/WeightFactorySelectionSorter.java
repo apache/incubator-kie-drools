@@ -56,8 +56,8 @@ public class WeightFactorySelectionSorter<Solution_, T> implements SelectionSort
         }
     }
 
-    public void sort(ScoreDirector scoreDirector, List<T> selectionList) {
-        sort((Solution_) scoreDirector.getWorkingSolution(), selectionList);
+    public void sort(ScoreDirector<Solution_> scoreDirector, List<T> selectionList) {
+        sort(scoreDirector.getWorkingSolution(), selectionList);
     }
 
     /**

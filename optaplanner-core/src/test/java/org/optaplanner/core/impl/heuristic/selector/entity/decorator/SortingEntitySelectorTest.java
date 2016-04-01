@@ -63,15 +63,8 @@ public class SortingEntitySelectorTest {
                 new TestdataEntity("jan"), new TestdataEntity("feb"), new TestdataEntity("mar"),
                 new TestdataEntity("apr"), new TestdataEntity("may"), new TestdataEntity("jun"));
 
-        SelectionSorter<TestdataSolution, TestdataEntity> sorter = new SelectionSorter<TestdataSolution, TestdataEntity>() {
-            public void sort(ScoreDirector scoreDirector, List<TestdataEntity> selectionList) {
-                Collections.sort(selectionList, new Comparator<TestdataEntity>() {
-                    public int compare(TestdataEntity a, TestdataEntity b) {
-                        return a.getCode().compareTo(b.getCode());
-                    }
-                });
-            }
-        };
+        SelectionSorter<TestdataSolution, TestdataEntity> sorter = (scoreDirector, selectionList)
+                -> Collections.sort(selectionList, (a, b) -> a.getCode().compareTo(b.getCode()));
         EntitySelector entitySelector = new SortingEntitySelector(childEntitySelector, cacheType, sorter);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);

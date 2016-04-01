@@ -60,15 +60,8 @@ public class SortingValueSelectorTest {
                 new TestdataValue("apr"), new TestdataValue("may"), new TestdataValue("jun"));
 
 
-        SelectionSorter<TestdataSolution, TestdataValue> sorter = new SelectionSorter<TestdataSolution, TestdataValue>() {
-            public void sort(ScoreDirector scoreDirector, List<TestdataValue> selectionList) {
-                Collections.sort(selectionList, new Comparator<TestdataValue>() {
-                    public int compare(TestdataValue a, TestdataValue b) {
-                        return a.getCode().compareTo(b.getCode());
-                    }
-                });
-            }
-        };
+        SelectionSorter<TestdataSolution, TestdataValue> sorter = (scoreDirector, selectionList)
+                -> Collections.sort(selectionList, (a, b) -> a.getCode().compareTo(b.getCode()));
         EntityIndependentValueSelector valueSelector = new SortingValueSelector(childValueSelector, cacheType, sorter);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);

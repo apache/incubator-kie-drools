@@ -19,15 +19,15 @@ package org.optaplanner.examples.dinnerparty.solver.move;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 import org.optaplanner.examples.dinnerparty.domain.SeatDesignation;
 
-public class DifferentGenderSwapMoveFilter implements SelectionFilter<SwapMove> {
+public class DifferentGenderSwapMoveFilter implements SelectionFilter<DinnerParty, SwapMove> {
 
-    public boolean accept(ScoreDirector scoreDirector, SwapMove move) {
+    public boolean accept(ScoreDirector<DinnerParty> scoreDirector, SwapMove move) {
         SeatDesignation leftSeatDesignation = (SeatDesignation) move.getLeftEntity();
         SeatDesignation rightSeatDesignation = (SeatDesignation) move.getRightEntity();
-        return leftSeatDesignation.getGuest().getGender()
-                == rightSeatDesignation.getGuest().getGender();
+        return leftSeatDesignation.getGuest().getGender() == rightSeatDesignation.getGuest().getGender();
     }
 
 }

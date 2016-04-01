@@ -18,11 +18,12 @@ package org.optaplanner.examples.curriculumcourse.domain.solver;
 
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 
-public class MovableLectureSelectionFilter implements SelectionFilter<Lecture> {
+public class MovableLectureSelectionFilter implements SelectionFilter<CourseSchedule, Lecture> {
 
-    public boolean accept(ScoreDirector scoreDirector, Lecture lecture) {
+    public boolean accept(ScoreDirector<CourseSchedule> scoreDirector, Lecture lecture) {
         return !lecture.isLocked();
     }
 

@@ -28,6 +28,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
@@ -39,19 +40,19 @@ public class ProbabilityMoveSelectorTest {
         MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("e1"), new DummyMove("e2"), new DummyMove("e3"), new DummyMove("e4"));
 
-        SelectionProbabilityWeightFactory<DummyMove> probabilityWeightFactory = new SelectionProbabilityWeightFactory<DummyMove>() {
-            public double createProbabilityWeight(ScoreDirector scoreDirector, DummyMove move) {
-                if (move.getCode().equals("e1")) {
+        SelectionProbabilityWeightFactory<TestdataSolution, DummyMove> probabilityWeightFactory
+                = (scoreDirector, move) -> {
+            switch (move.getCode()) {
+                case "e1":
                     return 1000.0;
-                } else if (move.getCode().equals("e2")) {
+                case "e2":
                     return 200.0;
-                } else if (move.getCode().equals("e3")) {
+                case "e3":
                     return 30.0;
-                } else if (move.getCode().equals("e4")) {
+                case "e4":
                     return 4.0;
-                } else {
+                default:
                     throw new IllegalStateException("Unknown move (" + move + ").");
-                }
             }
         };
         MoveSelector moveSelector = new ProbabilityMoveSelector(childMoveSelector, SelectionCacheType.STEP,

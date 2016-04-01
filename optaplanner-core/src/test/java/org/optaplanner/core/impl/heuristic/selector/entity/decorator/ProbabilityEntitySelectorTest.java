@@ -26,6 +26,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import java.util.Iterator;
 import java.util.Random;
@@ -43,19 +44,19 @@ public class ProbabilityEntitySelectorTest {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
 
-        SelectionProbabilityWeightFactory<TestdataEntity> probabilityWeightFactory = new SelectionProbabilityWeightFactory<TestdataEntity>() {
-            public double createProbabilityWeight(ScoreDirector scoreDirector, TestdataEntity entity) {
-                if (entity.getCode().equals("e1")) {
+        SelectionProbabilityWeightFactory<TestdataSolution, TestdataEntity> probabilityWeightFactory
+                = (scoreDirector, entity) -> {
+            switch (entity.getCode()) {
+                case "e1":
                     return 1000.0;
-                } else if (entity.getCode().equals("e2")) {
+                case "e2":
                     return 200.0;
-                } else if (entity.getCode().equals("e3")) {
+                case "e3":
                     return 30.0;
-                } else if (entity.getCode().equals("e4")) {
+                case "e4":
                     return 4.0;
-                } else {
+                default:
                     throw new IllegalStateException("Unknown entity (" + entity + ").");
-                }
             }
         };
         EntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP,
@@ -118,19 +119,19 @@ public class ProbabilityEntitySelectorTest {
     public void getSize() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
-        SelectionProbabilityWeightFactory<TestdataEntity> probabilityWeightFactory = new SelectionProbabilityWeightFactory<TestdataEntity>() {
-            public double createProbabilityWeight(ScoreDirector scoreDirector, TestdataEntity entity) {
-                if (entity.getCode().equals("e1")) {
+        SelectionProbabilityWeightFactory<TestdataSolution, TestdataEntity> probabilityWeightFactory
+                = (scoreDirector, entity) -> {
+            switch (entity.getCode()) {
+                case "e1":
                     return 1000.0;
-                } else if (entity.getCode().equals("e2")) {
+                case "e2":
                     return 200.0;
-                } else if (entity.getCode().equals("e3")) {
+                case "e3":
                     return 30.0;
-                } else if (entity.getCode().equals("e4")) {
+                case "e4":
                     return 4.0;
-                } else {
+                default:
                     throw new IllegalStateException("Unknown entity (" + entity + ").");
-                }
             }
         };
         ProbabilityEntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP,

@@ -20,10 +20,11 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFi
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.JobType;
+import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
-public class NotSourceOrSinkAllocationFilter implements SelectionFilter<Allocation> {
+public class NotSourceOrSinkAllocationFilter implements SelectionFilter<Schedule, Allocation> {
 
-    public boolean accept(ScoreDirector scoreDirector, Allocation allocation) {
+    public boolean accept(ScoreDirector<Schedule> scoreDirector, Allocation allocation) {
         JobType jobType = allocation.getJob().getJobType();
         return jobType != JobType.SOURCE && jobType != JobType.SINK;
     }

@@ -29,6 +29,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
@@ -59,11 +60,7 @@ public class FilteringMoveSelectorTest {
         MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"), new DummyMove("a4"));
 
-        SelectionFilter<DummyMove> filter = new SelectionFilter<DummyMove>() {
-            public boolean accept(ScoreDirector scoreDirector, DummyMove move) {
-                return !move.getCode().equals("a3");
-            }
-        };
+        SelectionFilter<TestdataSolution, DummyMove> filter = (scoreDirector, move) -> !move.getCode().equals("a3");
         List<SelectionFilter> filterList = Arrays.<SelectionFilter>asList(filter);
         MoveSelector moveSelector = new FilteringMoveSelector(childMoveSelector, filterList);
         if (cacheType.isCached()) {

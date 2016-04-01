@@ -22,11 +22,10 @@ import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 
-public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<ShiftAssignment> {
+public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<NurseRoster, ShiftAssignment> {
 
-    public boolean accept(ScoreDirector scoreDirector, ShiftAssignment shiftAssignment) {
-        NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
-        return accept(nurseRoster, shiftAssignment);
+    public boolean accept(ScoreDirector<NurseRoster> scoreDirector, ShiftAssignment shiftAssignment) {
+        return accept(scoreDirector.getWorkingSolution(), shiftAssignment);
     }
 
     public boolean accept(NurseRoster nurseRoster, ShiftAssignment shiftAssignment) {

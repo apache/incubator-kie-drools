@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -26,8 +27,10 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * (which is a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}).
  * <p>
  * A filtered selection is considered as not selected, it does not count as an unaccepted selection.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ * @param <T> the selection type
  */
-public interface SelectionFilter<T> {
+public interface SelectionFilter<Solution_, T> {
 
     /**
      * @param scoreDirector never null, the {@link ScoreDirector}
@@ -35,6 +38,6 @@ public interface SelectionFilter<T> {
      * @param selection never null, a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}
      * @return true if the selection is accepted, false if the selection should be discarded
      */
-    boolean accept(ScoreDirector scoreDirector, T selection);
+    boolean accept(ScoreDirector<Solution_> scoreDirector, T selection);
 
 }

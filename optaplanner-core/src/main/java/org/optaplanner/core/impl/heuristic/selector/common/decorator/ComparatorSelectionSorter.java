@@ -33,6 +33,10 @@ public class ComparatorSelectionSorter<Solution_, T> implements SelectionSorter<
 
     private final Comparator<T> appliedComparator;
 
+    public ComparatorSelectionSorter(Comparator<T> comparator) {
+        this(comparator, SelectionSorterOrder.ASCENDING);
+    }
+
     public ComparatorSelectionSorter(Comparator<T> comparator, SelectionSorterOrder selectionSorterOrder) {
         switch (selectionSorterOrder) {
             case ASCENDING:
@@ -47,7 +51,7 @@ public class ComparatorSelectionSorter<Solution_, T> implements SelectionSorter<
         }
     }
 
-    public void sort(ScoreDirector scoreDirector, List<T> selectionList) {
+    public void sort(ScoreDirector<Solution_> scoreDirector, List<T> selectionList) {
         Collections.sort(selectionList, appliedComparator);
     }
 

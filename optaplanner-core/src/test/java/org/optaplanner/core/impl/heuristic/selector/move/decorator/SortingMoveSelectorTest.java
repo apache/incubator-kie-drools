@@ -62,15 +62,8 @@ public class SortingMoveSelectorTest {
                 new DummyMove("jan"), new DummyMove("feb"), new DummyMove("mar"),
                 new DummyMove("apr"), new DummyMove("may"), new DummyMove("jun"));
 
-        SelectionSorter<TestdataSolution, DummyMove> sorter = new SelectionSorter<TestdataSolution, DummyMove>() {
-            public void sort(ScoreDirector scoreDirector, List<DummyMove> selectionList) {
-                Collections.sort(selectionList, new Comparator<DummyMove>() {
-                    public int compare(DummyMove a, DummyMove b) {
-                        return a.getCode().compareTo(b.getCode());
-                    }
-                });
-            }
-        };
+        SelectionSorter<TestdataSolution, DummyMove> sorter = (scoreDirector, selectionList)
+                -> Collections.sort(selectionList, (a, b) -> a.getCode().compareTo(b.getCode()));
         MoveSelector moveSelector = new SortingMoveSelector(childMoveSelector, cacheType, sorter);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
