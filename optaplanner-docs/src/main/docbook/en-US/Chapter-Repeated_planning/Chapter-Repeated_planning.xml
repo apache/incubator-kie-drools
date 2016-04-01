@@ -92,25 +92,79 @@
   <section xml:id="continuousPlanning">
     <title>Continuous Planning (Windowed Planning)</title>
 
-    <para>Continuous planning is the technique of planning one or more upcoming planning windows at the same time and
-    repeating that process monthly, weekly, daily or hourly. Because time is infinite, there are infinite future
-    windows, so planning all future windows is impossible. Instead, plan only a fixed number of upcoming planning
-    windows.</para>
+    <para>Continuous planning is the technique of planning one or more upcoming planning periods at the same time and
+    repeating that process monthly, weekly, daily, hourly or even more frequently. Time is infinite, so planning all
+    future time periods is impossible. Instead, plan a planning window of a fixed number of upcoming planning time
+    periods, and consider anything beyond that out of scope.</para>
 
-    <para>Past planning windows are immutable. The first upcoming planning window is considered stable (unlikely to
-    change), while later upcoming planning windows are considered draft (likely to change during the next planning
-    effort). Distant future planning windows are not planned at all.</para>
+    <para>The planning window can be split up in several parts:</para>
 
-    <para>Past planning windows have only <emphasis>immovable</emphasis> planning entities: the planning entities can no
-    longer be changed (they are unable to move), but some of them are still needed in the score calculation, as they
-    might affect some of the score constraints that apply on the upcoming planning entities. For example: when an
-    employee should not work more than 5 days in a row, he shouldn't work today and tomorrow if he worked the past 4
-    days already.</para>
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">History</emphasis>: Past time periods that immutable. It contains only immovable
+        entities.</para>
 
-    <para>Sometimes some planning entities are semi-immovable: they can be changed, but occur a certain score penalty if
-    they differ from their original place. For example: avoid rescheduling hospital beds less than 2 days before the
-    patient arrives (unless it's really worth it), avoid changing the airplane gate during the 2 hours before boarding
-    (unless there is no alternative), ...</para>
+        <itemizedlist>
+          <listitem>
+            <para>Historic entities can affect score constraints that apply to movable entities too. For example in
+            nurse rostering, a nurse that has worked the last 5 historic days in a row, should not be assigned on the
+            first tentative day of the planning window because then she's work too many days in a row.</para>
+          </listitem>
+
+          <listitem>
+            <para>Do not load all historic entities in memory: even though immovable entities don't affect solving
+            performance, they can cause out of memory problems when the data grows to years. Only load those that might
+            still affect the current constraints with a good safety margin, for example load the past year.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Tentative</emphasis>: The first few time periods that are being planned freely for
+        the last time. After this planning, their planning entities become <link
+        linkend="immovablePlanningEntities">immovable</link> or <link
+        linkend="nonvolatileReplanning">semi-immovable</link>.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>The result of the tentative planning is usually shared with the business. For example in nurse
+            rostering, the nurses will use this schedule to plan their personal lives. Changing that schedule later
+            becomes disruptive (but if exceptions force us to do so, <link linkend="nonvolatileReplanning">we minimize
+            disruption</link>).</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Draft</emphasis>: The latter time periods that are being planned freely, but not for
+        the last time. They are likely to change again in the next planning effort.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>The draft part is needed to assure that the tentatively planned entities will allow room of a good,
+            feasible planning afterwards. It prevents you from painting yourself in a corner.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Future</emphasis> (out of scope): Planning entities that aren't in the current
+        planning window. </para>
+
+        <itemizedlist>
+          <listitem>
+            <para>If <link linkend="assigningTimeToPlanningEntities">time is a planning variable</link>, there is no
+            future part. Instead, if the planning window is too small to plan all entities, you're dealing with <link
+            linkend="overconstrainedPlanning">overconstrained planning</link>. </para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+    </itemizedlist>
+
+    <note>
+      <para>The start of the planning window (so the first tentative time period) does <emphasis>not</emphasis> need to
+      be now.</para>
+    </note>
 
     <mediaobject>
       <imageobject>
@@ -119,7 +173,8 @@
     </mediaobject>
 
     <para>Notice the difference between the original planning of November 1th and the new planning of November 5th: some
-    problem facts (F, H, I, J, K) changed, which results in unrelated planning entities (G) changing too.</para>
+    problem facts (F, H, I, J, K) changed meanwhile, which results in unrelated planning entities (G) changing
+    too.</para>
 
     <section xml:id="immovablePlanningEntities">
       <title>Immovable Planning Entities</title>
@@ -155,7 +210,8 @@ public class ShiftAssignment {
 
       <para>Replanning an existing plan can be very disruptive on the plan. If the plan affects humans (such as
       employees, drivers, ...), very disruptive changes are often undesirable. In such cases, nonvolatile replanning
-      helps: the gain of changing a plan must be higher than the disruption it causes.</para>
+      helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes.
+      This is usually implemented by taxing all planning entities that change.</para>
 
       <mediaobject>
         <imageobject>
@@ -351,8 +407,9 @@ end</programlisting>
 
           <itemizedlist>
             <listitem>
-              <para>Except for <literal>terminateEarly()</literal>, which does make it return from <literal>solve()</literal>, freeing up
-              system resources and allowing an application to shutdown gracefully.</para>
+              <para>Except for <literal>terminateEarly()</literal>, which does make it return from
+              <literal>solve()</literal>, freeing up system resources and allowing an application to shutdown
+              gracefully.</para>
             </listitem>
 
             <listitem>
