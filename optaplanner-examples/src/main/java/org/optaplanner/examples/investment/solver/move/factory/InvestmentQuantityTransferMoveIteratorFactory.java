@@ -32,24 +32,24 @@ import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 import org.optaplanner.examples.investment.solver.move.InvestmentQuantityTransferMove;
 
-public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIteratorFactory {
+public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIteratorFactory<InvestmentSolution> {
 
     @Override
-    public long getSize(ScoreDirector scoreDirector) {
-        InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
+    public long getSize(ScoreDirector<InvestmentSolution> scoreDirector) {
+        InvestmentSolution solution = scoreDirector.getWorkingSolution();
         int size = solution.getAssetClassAllocationList().size();
         // The MAXIMUM_QUANTITY_MILLIS accounts for all fromAllocations too
         return InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS * (size - 1);
     }
 
     @Override
-    public Iterator<Move> createOriginalMoveIterator(ScoreDirector scoreDirector) {
+    public Iterator<Move> createOriginalMoveIterator(ScoreDirector<InvestmentSolution> scoreDirector) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Iterator<Move> createRandomMoveIterator(ScoreDirector scoreDirector, Random workingRandom) {
-        InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
+    public Iterator<Move> createRandomMoveIterator(ScoreDirector<InvestmentSolution> scoreDirector, Random workingRandom) {
+        InvestmentSolution solution = scoreDirector.getWorkingSolution();
         List<AssetClassAllocation> allocationList = solution.getAssetClassAllocationList();
         NavigableMap<Long, AssetClassAllocation> quantityMillisIncrementToAllocationMap = new TreeMap<>();
         long quantityIncrementMillis = 0L;

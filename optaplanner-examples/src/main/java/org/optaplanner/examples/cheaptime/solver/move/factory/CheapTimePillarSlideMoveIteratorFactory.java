@@ -32,21 +32,21 @@ import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.solver.move.CheapTimePillarSlideMove;
 
-public class CheapTimePillarSlideMoveIteratorFactory implements MoveIteratorFactory {
+public class CheapTimePillarSlideMoveIteratorFactory implements MoveIteratorFactory<CheapTimeSolution> {
 
     @Override
-    public long getSize(ScoreDirector scoreDirector) {
+    public long getSize(ScoreDirector<CheapTimeSolution> scoreDirector) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Iterator<Move> createOriginalMoveIterator(ScoreDirector scoreDirector) {
+    public Iterator<Move> createOriginalMoveIterator(ScoreDirector<CheapTimeSolution> scoreDirector) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Iterator<Move> createRandomMoveIterator(ScoreDirector scoreDirector, Random workingRandom) {
-        CheapTimeSolution cheapTimeSolution = (CheapTimeSolution) scoreDirector.getWorkingSolution();
+    public Iterator<Move> createRandomMoveIterator(ScoreDirector<CheapTimeSolution> scoreDirector, Random workingRandom) {
+        CheapTimeSolution cheapTimeSolution = scoreDirector.getWorkingSolution();
         Map<Machine, List<TaskAssignment>> positivePillarMap = new LinkedHashMap<>(
                 cheapTimeSolution.getGlobalPeriodRangeTo());
         Map<Machine, List<TaskAssignment>> negativePillarMap = new LinkedHashMap<>(

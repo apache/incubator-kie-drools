@@ -31,11 +31,11 @@ import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 import org.optaplanner.examples.investment.solver.move.InvestmentQuantityTransferMove;
 
-public class InvestmentBiQuantityTransferMoveIteratorFactory implements MoveIteratorFactory {
+public class InvestmentBiQuantityTransferMoveIteratorFactory implements MoveIteratorFactory<InvestmentSolution> {
 
     @Override
-    public long getSize(ScoreDirector scoreDirector) {
-        InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
+    public long getSize(ScoreDirector<InvestmentSolution> scoreDirector) {
+        InvestmentSolution solution = scoreDirector.getWorkingSolution();
         int size = solution.getAssetClassAllocationList().size();
         // The MAXIMUM_QUANTITY_MILLIS accounts for all fromAllocations too
         return InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS
@@ -44,13 +44,13 @@ public class InvestmentBiQuantityTransferMoveIteratorFactory implements MoveIter
     }
 
     @Override
-    public Iterator<Move> createOriginalMoveIterator(ScoreDirector scoreDirector) {
+    public Iterator<Move> createOriginalMoveIterator(ScoreDirector<InvestmentSolution> scoreDirector) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Iterator<Move> createRandomMoveIterator(ScoreDirector scoreDirector, Random workingRandom) {
-        InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
+    public Iterator<Move> createRandomMoveIterator(ScoreDirector<InvestmentSolution> scoreDirector, Random workingRandom) {
+        InvestmentSolution solution = scoreDirector.getWorkingSolution();
         List<AssetClassAllocation> allocationList = solution.getAssetClassAllocationList();
         List<AssetClassAllocation> nonEmptyAllocationList = new ArrayList<>(allocationList);
         for (Iterator<AssetClassAllocation> it = nonEmptyAllocationList.iterator(); it.hasNext(); ) {
