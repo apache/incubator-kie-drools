@@ -89,8 +89,9 @@ public class Talk {...}</programlisting>
         <programlisting language="java">@PlanningSolution
 @Entity
 @TypeDef(defaultForType = HardSoftScore.class, typeClass = HardSoftScoreHibernateType.class)
-public class CloudBalance implements Solution&lt;HardSoftScore&gt; {
+public class CloudBalance {
 
+    @PlanningScore
     @Columns(columns = {@Column(name = "hardScore"), @Column(name = "softScore")})
     protected HardSoftScore score;
 
@@ -116,8 +117,9 @@ public class CloudBalance implements Solution&lt;HardSoftScore&gt; {
         <programlisting language="java">@PlanningSolution
 @Entity
 @TypeDef(defaultForType = HardSoftBigDecimalScore.class, typeClass = HardSoftBigDecimalScoreHibernateType.class)
-public class CloudBalance implements Solution&lt;HardSoftBigDecimalScore&gt; {
+public class CloudBalance{
 
+    @PlanningScore
     @Columns(columns = {
             @Column(name = "hardScore", precision = 10, scale = 5),
             @Column(name = "softScore", precision = 10, scale = 5)})
@@ -134,8 +136,9 @@ public class CloudBalance implements Solution&lt;HardSoftBigDecimalScore&gt; {
 @TypeDef(defaultForType = BendableScore.class, typeClass = BendableScoreHibernateType.class, parameters = {
         @Parameter(name = "hardLevelsSize", value = "3"),
         @Parameter(name = "softLevelsSize", value = "2")})
-public class Schedule implements Solution&lt;BendableScore&gt; {
+public class Schedule {
 
+    @PlanningScore
     @Columns(columns = {
             @Column(name = "hard0Score"),
             @Column(name = "hard1Score"),
@@ -202,7 +205,7 @@ public class Room {
 
         <programlisting language="java">@PlanningSolution
 @XStreamAlias("CloudBalance")
-public class CloudBalance implements Solution&lt;HardSoftScore&gt; {
+public class CloudBalance {
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
     private HardSoftScore score;
@@ -222,8 +225,9 @@ public class CloudBalance implements Solution&lt;HardSoftScore&gt; {
 
         <programlisting language="java">@PlanningSolution
 @XStreamAlias("Schedule")
-public class Schedule implements Solution&lt;BendableScore&gt; {
+public class Schedule {
 
+    @PlanningScore
     @XStreamConverter(value = XStreamScoreConverter.class, types = {BendableScoreDefinition.class}, ints = {2, 3})
     private BendableScore score;
 
@@ -234,7 +238,7 @@ public class Schedule implements Solution&lt;BendableScore&gt; {
 
         <programlisting language="xml">&lt;Schedule&gt;
    ...
-   &lt;score&gt;0/0/-100/-20/-3&lt;/score&gt;
+   &lt;score&gt;0/0hard/-100/-20/-3soft&lt;/score&gt;
 &lt;/Schedule&gt;</programlisting>
       </section>
     </section>

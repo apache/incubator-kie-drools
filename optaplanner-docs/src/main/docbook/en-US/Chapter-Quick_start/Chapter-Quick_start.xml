@@ -209,19 +209,19 @@
 
       <itemizedlist>
         <listitem>
-          <para>Planning entity: the class (or classes) that changes during planning. In this example, it is the class
+          <para>Planning entity: the class (or classes) that changes during solving. In this example, it is the class
           <literal>Process</literal>.</para>
         </listitem>
 
         <listitem>
-          <para>Planning variable: the property (or properties) of a planning entity class that changes during planning.
+          <para>Planning variable: the property (or properties) of a planning entity class that changes during solving.
           In this example, it is the property <literal>computer</literal> on the class
           <literal>Process</literal>.</para>
         </listitem>
 
         <listitem>
-          <para>Solution: the class that represents a data set and contains all planning entities. In this example that
-          is the class <literal>CloudBalance</literal>.</para>
+          <para>Planning solution: the class that represents a data set and contains all planning entities. In this
+          example that is the class <literal>CloudBalance</literal>.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -378,7 +378,7 @@
         <title>The <literal>Computer</literal> Class</title>
 
         <para>The <literal>Computer</literal> class is a POJO (Plain Old Java Object). Usually, you will have more of
-        this kind of classes.</para>
+        this kind of classes with input data.</para>
 
         <example>
           <title>CloudComputer.java</title>
@@ -398,9 +398,11 @@
       <section xml:id="cloudBalancingClassProcess">
         <title>The <literal>Process</literal> Class</title>
 
-        <para>The <literal>Process</literal> class is particularly important. We need to tell Planner that it can change
-        the field <literal>computer</literal>, so we annotate the class with <literal>@PlanningEntity</literal> and the
-        getter <literal>getComputer()</literal> with <literal>@PlanningVariable</literal>:</para>
+        <para>The <literal>Process</literal> class is particularly important. It is the class that is modified during
+        solving. We need to tell Planner that it can change the property <literal>computer</literal>, so we annotate the
+        class with <literal>@PlanningEntity</literal> and the getter <literal>getComputer()</literal> with
+        <literal>@PlanningVariable</literal>. Of course, the property <literal>computer</literal> needs a setter too, so
+        Planner can change it during solving.</para>
 
         <example>
           <title>CloudProcess.java</title>
@@ -434,10 +436,13 @@ public class CloudProcess ... {
 }</programlisting>
         </example>
 
-        <para>The values that Planner can choose from for the field <literal>computer</literal>, are retrieved from a
-        method on the <literal>Solution</literal> implementation: <literal>CloudBalance.getComputerList()</literal>,
-        which returns a list of all computers in the current data set. The <literal>valueRangeProviderRefs</literal>
-        property is used to pass this information to the Planner.</para>
+        <para>Planner needs to know which values it can choose from to assign to the property
+        <literal>computer</literal>. Those values are retrieved from the method
+        <literal>CloudBalance.getComputerList()</literal> on the planning solution, which returns a list of all
+        computers in the current data set. The <literal>@PlanningVariable</literal>'s
+        <literal>valueRangeProviderRefs</literal> parameter on <literal>CloudProcess.getComputer()</literal> needs to
+        match with the <literal>@ValueRangeProvider</literal>'s <literal>id</literal> on
+        CloudBalance.getComputerList().</para>
 
         <note>
           <para>Instead of getter annotations, it is also possible to use <link linkend="annotationAlternatives">field
@@ -448,19 +453,23 @@ public class CloudProcess ... {
       <section xml:id="cloudBalancingClassCloudBalance">
         <title>The <literal>CloudBalance</literal> Class</title>
 
-        <para>The <literal>CloudBalance</literal> class implements the <filename>Solution</filename> interface. It holds
-        a list of all computers and processes. We need to tell Planner how to retrieve the collection of processes that
-        it can change, therefore we must annotate the getter <literal>getProcessList</literal> with
-        <literal>@PlanningEntityCollectionProperty</literal>.</para>
+        <para>The <literal>CloudBalance</literal> class has a <filename>@PlanningSolution</filename> annotation. It
+        holds a list of all computers and processes. It represents both the planning problem and (if it's initialized)
+        the planning solution.</para>
 
-        <para>The <literal>CloudBalance</literal> class also has a property <literal>score</literal>, which is the
-        <literal>Score</literal> of that <literal>Solution</literal> instance in its current state:</para>
+        <para>Planner needs to retrieve the collection of processes that it can change, therefore we annotate the getter
+        <literal>getProcessList()</literal> with <literal>@PlanningEntityCollectionProperty</literal>. </para>
+
+        <para>The <literal>CloudBalance</literal> class also has a <literal>@PlanningScore</literal> annotated property
+        <literal>score</literal>, which is the <literal>Score</literal> of that solution in its current state. Planner
+        automatically updates it when it calculates a <literal>Score</literal> for a solution instance and therefore it
+        needs a setter.</para>
 
         <example>
           <title>CloudBalance.java</title>
 
           <programlisting language="java">@PlanningSolution
-public class CloudBalance ... implements Solution&lt;HardSoftScore&gt; {
+public class CloudBalance ... {
 
     private List&lt;CloudComputer&gt; computerList;
 
@@ -469,6 +478,7 @@ public class CloudBalance ... implements Solution&lt;HardSoftScore&gt; {
     private HardSoftScore score;
 
     @ValueRangeProvider(id = "computerRange")
+    @ProblemFactCollectionProperty
     public List&lt;CloudComputer&gt; getComputerList() {
         return computerList;
     }
@@ -478,8 +488,7 @@ public class CloudBalance ... implements Solution&lt;HardSoftScore&gt; {
         return processList;
     }
 
-    ...
-
+    @PlanningScore
     public HardSoftScore getScore() {
         return score;
     }
@@ -488,23 +497,12 @@ public class CloudBalance ... implements Solution&lt;HardSoftScore&gt; {
         this.score = score;
     }
 
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
-
-    public Collection&lt;? extends Object&gt; getProblemFacts() {
-        List&lt;Object&gt; facts = new ArrayList&lt;Object&gt;();
-        facts.addAll(computerList);
-        // Do not add the planning entity's (processList) because that will be done automatically
-        return facts;
-    }
-
     ...
 }</programlisting>
         </example>
 
-        <para>The <literal>getProblemFacts()</literal> method is only needed for score calculation with Drools. It is
-        not needed for the other score calculation types.</para>
+        <para>Especially for score calculation with Drools, the property <literal>computerList</literal> needs to be
+        annotated with a <literal>@ProblemFactCollectionProperty</literal> so the computers are known to it.</para>
       </section>
     </section>
 
@@ -610,8 +608,8 @@ public class CloudBalance ... implements Solution&lt;HardSoftScore&gt; {
 
         <para>Even if we optimize the code above to use <literal>Map</literal>s to iterate through the
         <literal>processList</literal> only once, <emphasis role="bold">it is still slow</emphasis> because it does not
-        do <link linkend="incrementalScoreCalculation">incremental score calculation</link>. To fix that, either use an
-        incremental Java score function or a Drools score function. Let's take a look at the latter.</para>
+        do <link linkend="incrementalScoreCalculation">incremental score calculation</link>. To fix that, either use
+        incremental Java score calculation or Drools score calculation. Let's take a look at the latter.</para>
       </section>
 
       <section xml:id="cloudBalancingDroolsScoreConfiguration">

@@ -149,13 +149,13 @@
 
       <listitem>
         <para><emphasis role="bold">Future</emphasis> (out of scope): Planning entities that aren't in the current
-        planning window. </para>
+        planning window.</para>
 
         <itemizedlist>
           <listitem>
             <para>If <link linkend="assigningTimeToPlanningEntities">time is a planning variable</link>, there is no
             future part. Instead, if the planning window is too small to plan all entities, you're dealing with <link
-            linkend="overconstrainedPlanning">overconstrained planning</link>. </para>
+            linkend="overconstrainedPlanning">overconstrained planning</link>.</para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -182,11 +182,11 @@
       <para>To make some planning entities immovable, simply add an entity <literal>SelectionFilter</literal> that
       returns <literal>true</literal> if an entity is movable and <literal>false</literal> if it is immovable.</para>
 
-      <programlisting language="java">public class MovableShiftAssignmentSelectionFilter implements SelectionFilter&lt;ShiftAssignment&gt; {
+      <programlisting language="java">public class MovableShiftAssignmentSelectionFilter implements SelectionFilter&lt;NurseRoster, ShiftAssignment&gt; {
 
-    public boolean accept(ScoreDirector scoreDirector, ShiftAssignment shiftAssignment) {
+    public boolean accept(ScoreDirector&lt;NurseRoster&gt; scoreDirector, ShiftAssignment shiftAssignment) {
+        NurseRoster nurseRoster = scoreDirector.getWorkingSolution();
         ShiftDate shiftDate = shiftAssignment.getShift().getShiftDate();
-        NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
         return nurseRoster.getNurseRosterInfo().isInPlanningWindow(shiftDate);
     }
 
@@ -285,11 +285,11 @@ end</programlisting>
       thread), as that will corrupt it. Instead, add a <literal>ProblemFactChange</literal> to the
       <literal>Solver</literal> which it will execute in the solver thread as soon as possible.</para>
 
-      <programlisting language="java">public interface Solver {
+      <programlisting language="java">public interface Solver&lt;Solution_&gt; {
 
     ...
 
-    boolean addProblemFactChange(ProblemFactChange problemFactChange);
+    boolean addProblemFactChange(ProblemFactChange&lt;Solution_&gt; problemFactChange);
 
     boolean isEveryProblemFactChangeProcessed();
 
@@ -297,38 +297,37 @@ end</programlisting>
 
 }</programlisting>
 
-      <programlisting language="java">public interface ProblemFactChange {
+      <programlisting language="java">public interface ProblemFactChange&lt;Solution_&gt; {
 
-    void doChange(ScoreDirector scoreDirector);
+    void doChange(ScoreDirector&lt;Solution_&gt; scoreDirector);
 
 }</programlisting>
 
       <para>Here's an example:</para>
 
       <programlisting language="java">    public void deleteComputer(final CloudComputer computer) {
-        solver.addProblemFactChange(new ProblemFactChange() {
-            public void doChange(ScoreDirector scoreDirector) {
-                CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
-                // First remove the problem fact from all planning entities that use it
-                for (CloudProcess process : cloudBalance.getProcessList()) {
-                    if (Objects.equals(process.getComputer(), computer)) {
-                        scoreDirector.beforeVariableChanged(process, "computer");
-                        process.setComputer(null);
-                        scoreDirector.afterVariableChanged(process, "computer");
-                    }
+        solver.addProblemFactChange(scoreDirector -&gt; {
+            CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
+            // First remove the problem fact from all planning entities that use it
+            for (CloudProcess process : cloudBalance.getProcessList()) {
+                if (Objects.equals(process.getComputer(), computer)) {
+                    scoreDirector.beforeVariableChanged(process, "computer");
+                    process.setComputer(null);
+                    scoreDirector.afterVariableChanged(process, "computer");
                 }
-                // A SolutionCloner does not clone problem fact lists (such as computerList)
-                // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
-                cloudBalance.setComputerList(new ArrayList&lt;CloudComputer&gt;(cloudBalance.getComputerList()));
-                // Next remove it the problem fact itself
-                for (Iterator&lt;CloudComputer&gt; it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
-                    CloudComputer workingComputer = it.next();
-                    if (Objects.equals(workingComputer, computer)) {
-                        scoreDirector.beforeProblemFactRemoved(workingComputer);
-                        it.remove(); // remove from list
-                        scoreDirector.afterProblemFactRemoved(workingComputer);
-                        break;
-                    }
+            }
+            scoreDirector.triggerVariableListeners();
+            // A SolutionCloner does not clone problem fact lists (such as computerList)
+            // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
+            cloudBalance.setComputerList(new ArrayList&lt;&gt;(cloudBalance.getComputerList()));
+            // Remove the problem fact itself
+            for (Iterator&lt;CloudComputer&gt; it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
+                CloudComputer workingComputer = it.next();
+                if (Objects.equals(workingComputer, computer)) {
+                    scoreDirector.beforeProblemFactRemoved(workingComputer);
+                    it.remove(); // remove from list
+                    scoreDirector.afterProblemFactRemoved(workingComputer);
+                    break;
                 }
             }
         });

@@ -1051,9 +1051,9 @@
         <para>If you need the entire <literal>Solution</literal> to sort a <literal>Selector</literal>, use a
         <literal>SelectionSorterWeightFactory</literal> instead:</para>
 
-        <programlisting language="java">public interface SelectionSorterWeightFactory&lt;Sol extends Solution, T&gt; {
+        <programlisting language="java">public interface SelectionSorterWeightFactory&lt;Solution_, T&gt; {
 
-    Comparable createSorterWeight(Sol solution, T selection);
+    Comparable createSorterWeight(Solution_ solution, T selection);
 
 }</programlisting>
 
@@ -1064,7 +1064,7 @@
         return new QueenDifficultyWeight(queen, distanceFromMiddle);
     }
 
-    // ...
+    ...
 
     public static class QueenDifficultyWeight implements Comparable&lt;QueenDifficultyWeight&gt; {
 
@@ -1105,9 +1105,9 @@
 
         <para>Alternatively, you can also use the interface <literal>SelectionSorter</literal> directly:</para>
 
-        <programlisting language="java">public interface SelectionSorter&lt;T&gt; {
+        <programlisting language="java">public interface SelectionSorter&lt;Solution_, T&gt; {
 
-    void sort(ScoreDirector scoreDirector, List&lt;T&gt; selectionList);
+    void sort(ScoreDirector&lt;Solution_&gt; scoreDirector, List&lt;T&gt; selectionList);
 
 }</programlisting>
 
@@ -1136,9 +1136,9 @@
       <para>Each selection has a <literal>probabilityWeight</literal>, which determines the chance that selection will
       be selected:</para>
 
-      <programlisting language="java">public interface SelectionProbabilityWeightFactory&lt;T&gt; {
+      <programlisting language="java">public interface SelectionProbabilityWeightFactory&lt;Solution_, T&gt; {
 
-    double createProbabilityWeight(ScoreDirector scoreDirector, T selection);
+    double createProbabilityWeight(ScoreDirector&lt;Solution_&gt; scoreDirector, T selection);
 
 }</programlisting>
 
@@ -1538,9 +1538,9 @@
       <para>The easiest way to generate custom moves is by implementing the interface
       <literal>MoveListFactory</literal>:</para>
 
-      <programlisting language="java">public interface MoveListFactory&lt;S extends Solution&gt; {
+      <programlisting language="java">public interface MoveListFactory&lt;Solution_&gt; {
 
-    List&lt;Move&gt; createMoveList(S solution);
+    List&lt;Move&gt; createMoveList(Solution_ solution);
 
 }</programlisting>
 
@@ -1586,13 +1586,13 @@
       <para>Use this advanced form to generate custom moves by implementing the <literal>MoveIteratorFactory</literal>
       interface:</para>
 
-      <programlisting language="java">public interface MoveIteratorFactory {
+      <programlisting language="java">public interface MoveIteratorFactory&lt;Solution_&gt; {
 
-    long getSize(ScoreDirector scoreDirector);
+    long getSize(ScoreDirector&lt;Solution_&gt; scoreDirector);
 
-    Iterator&lt;Move&gt; createOriginalMoveIterator(ScoreDirector scoreDirector);
+    Iterator&lt;Move&gt; createOriginalMoveIterator(ScoreDirector&lt;Solution_&gt; scoreDirector);
 
-    Iterator&lt;Move&gt; createRandomMoveIterator(ScoreDirector scoreDirector, Random workingRandom);
+    Iterator&lt;Move&gt; createRandomMoveIterator(ScoreDirector&lt;Solution_&gt; scoreDirector, Random workingRandom);
 
 }</programlisting>
 

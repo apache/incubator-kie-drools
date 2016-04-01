@@ -754,9 +754,8 @@ public class Queen {
     }</programlisting>
 
           <programlisting language="java">@PlanningSolution
-public class NQueens implements Solution&lt;SimpleScore&gt; {
-
-    // ...
+public class NQueens {
+    ...
 
     @ValueRangeProvider(id = "rowRange")
     public List&lt;Row&gt; getRowList() {
@@ -775,7 +774,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           too:</para>
 
           <programlisting language="java">@PlanningSolution
-public class NQueens implements Solution&lt;SimpleScore&gt; {
+public class NQueens {
     ...
 
     @ValueRangeProvider(id = "rowRange")
@@ -938,7 +937,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
         <programlisting language="java">    @PlanningVariable(..., strengthComparatorClass = CloudComputerStrengthComparator.class)
     public CloudComputer getComputer() {
-        // ...
+        return computer;
     }</programlisting>
 
         <programlisting language="java">public class CloudComputerStrengthComparator implements Comparator&lt;CloudComputer&gt; {
@@ -966,7 +965,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
         <programlisting language="java">    @PlanningVariable(..., strengthWeightFactoryClass = RowStrengthWeightFactory.class)
     public Row getRow() {
-        // ...
+        return row;
     }</programlisting>
 
         <para>See <link linkend="sortedSelection">sorted selection</link> for more information.</para>
@@ -1064,7 +1063,6 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
         <literal>Vehicle</literal>):</para>
 
         <programlisting language="java">public class Domicile ... implements Standstill {
-
     ...
 
     public City getCity() {...}
@@ -1085,7 +1083,6 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
         <programlisting language="java">@PlanningEntity
 public class Visit ... implements Standstill {
-
     ...
 
     public City getCity() {...}
@@ -1408,53 +1405,43 @@ public class Customer {
         <title>Planning Problem Instance</title>
 
         <para>A dataset for a planning problem needs to be wrapped in a class for the <literal>Solver</literal> to
-        solve. You must implement this class. For example in n queens, this in the <literal>NQueens</literal> class,
-        which contains a <literal>Column</literal> list, a <literal>Row</literal> list, and a <literal>Queen</literal>
-        list.</para>
+        solve. That solution class represents both the planning problem and (if solved) a solution. It is annotated with
+        a <literal>@PlanningSolution</literal> annotation. For example in n queens, the solution class is the
+        <literal>NQueens</literal> class, which contains a <literal>Column</literal> list, a <literal>Row</literal>
+        list, and a <literal>Queen</literal> list.</para>
 
-        <para>A planning problem is actually a unsolved planning solution or - stated differently - an uninitialized
-        <literal>Solution</literal>. Therefore, that wrapping class must implement the <literal>Solution</literal>
-        interface. For example in n queens, that <literal>NQueens</literal> class implements
-        <literal>Solution</literal>, yet every <literal>Queen</literal> in a fresh <literal>NQueens</literal> class is
-        not yet assigned to a <literal>Row</literal> (their <literal>row</literal> property is <literal>null</literal>).
-        This is not a feasible solution. It's not even a possible solution. It's an uninitialized solution.</para>
+        <para>A planning problem is actually an unsolved planning solution or - stated differently - an uninitialized
+        solution. For example in n queens, that <literal>NQueens</literal> class has the
+        <literal>@PlanningSolution</literal> annotation, yet every <literal>Queen</literal> in an unsolved
+        <literal>NQueens</literal> class is not yet assigned to a <literal>Row</literal> (their <literal>row</literal>
+        property is <literal>null</literal>). That's not a feasible solution. It's not even a possible solution. It's an
+        uninitialized solution.</para>
       </section>
 
-      <section xml:id="solutionInterface">
-        <title><literal>Solution</literal> Interface</title>
+      <section xml:id="solutionClass">
+        <title>Solution Class</title>
 
-        <para>You need to present the problem as a <literal>Solution</literal> instance to the
-        <literal>Solver</literal>. So your class needs to implement the <literal>Solution</literal> interface:</para>
-
-        <programlisting language="java">public interface Solution&lt;S extends Score&gt; {
-
-    S getScore();
-    void setScore(S score);
-
-    Collection&lt;? extends Object&gt; getProblemFacts();
-
-}</programlisting>
-
-        <para>For example, an <literal>NQueens</literal> instance holds a list of all columns, all rows and all
-        <literal>Queen</literal> instances:</para>
+        <para>A solution class holds all problem facts, planning entities and a score. It is annotated with a<literal>
+        @PlanningSolution</literal> annotation. For example, an <literal>NQueens</literal> instance holds a list of all
+        columns, all rows and all <literal>Queen</literal> instances:</para>
 
         <programlisting language="java">@PlanningSolution
-public class NQueens implements Solution&lt;SimpleScore&gt; {
-
-    private int n;
+public class NQueens {
 
     // Problem facts
+    private int n;
     private List&lt;Column&gt; columnList;
     private List&lt;Row&gt; rowList;
 
     // Planning entities
     private List&lt;Queen&gt; queenList;
 
-    // ...
+    private SimpleScore score;
+
+    ...
 }</programlisting>
 
-        <para>A planning solution class also needs to be annotated with the <literal>@PlanningSolution</literal>
-        annotation. Without <link linkend="automaticScanningForAnnotations">automated scanning</link>, the solver
+        <para>Without <link linkend="automaticScanningForAnnotations">automated scanning</link>, the solver
         configuration also needs to declare the planning solution class:</para>
 
         <programlisting language="java">&lt;solver&gt;
@@ -1464,15 +1451,15 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 &lt;/solver&gt;</programlisting>
       </section>
 
-      <section xml:id="extractTheEntitiesFromTheSolution">
-        <title>Extract the entities from the <literal>Solution</literal></title>
+      <section xml:id="planningEntitiesOfASolution">
+        <title>Planning Entities of a Solution (@PlanningEntityCollectionProperty)</title>
 
-        <para>Planner needs to extract the entity instances from the <literal>Solution</literal> instance. It gets those
-        collection(s) by calling every getter (or field) that is annotated with
+        <para>Planner needs to extract the entity instances from the solution instance. It gets those collection(s) by
+        calling every getter (or field) that is annotated with
         <literal>@PlanningEntityCollectionProperty</literal>:</para>
 
         <programlisting language="java">@PlanningSolution
-public class NQueens implements Solution&lt;SimpleScore&gt; {
+public class NQueens {
     ...
 
     private List&lt;Queen&gt; queenList;
@@ -1496,37 +1483,40 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
         its getter (or field) instead.</para>
       </section>
 
-      <section xml:id="getScoreAndSetScoreMethods">
-        <title>The <literal>getScore()</literal> and <literal>setScore()</literal> Methods</title>
+      <section xml:id="scoreOfASolution">
+        <title><literal>Score</literal> of a Solution (<literal>@PlanningScore</literal>)</title>
 
-        <para>A <literal>Solution</literal> requires a score property. The score property is <literal>null</literal> if
-        the <literal>Solution</literal> is uninitialized or if the score has not yet been (re)calculated. The
-        <literal>score</literal> property is usually typed to the specific <literal>Score</literal> implementation you
-        use. For example, <literal>NQueens</literal> uses a <literal>SimpleScore</literal>:</para>
+        <para>A <literal>Solution</literal> requires a score property, which is annotated with a
+        <literal>@PlanningScore</literal> annotation. The score property is <literal>null</literal> if the
+        <literal>Solution</literal> is uninitialized and the score hasn't been calculated yet. The
+        <literal>score</literal> property is typed to the specific <literal>Score</literal> implementation of your use
+        case. For example, <literal>NQueens</literal> uses a <link linkend="simpleScore">SimpleScore</link>:</para>
 
         <programlisting language="java">@PlanningSolution
-public class NQueens implements Solution&lt;SimpleScore&gt; {
+public class NQueens {
+    ...
 
     private SimpleScore score;
 
+    @PlanningScore
     public SimpleScore getScore() {
         return score;
     }
-
     public void setScore(SimpleScore score) {
         this.score = score;
     }
 
-    // ...
 }</programlisting>
 
-        <para>Most use cases use a <literal>HardSoftScore</literal> instead:</para>
+        <para>Most use cases use a <link linkend="hardSoftScore">HardSoftScore</link> instead:</para>
 
         <programlisting language="java">@PlanningSolution
-public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
+public class CourseSchedule {
+    ...
 
     private HardSoftScore score;
 
+    @PlanningScore
     public HardSoftScore getScore() {
         return score;
     }
@@ -1535,62 +1525,72 @@ public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
         this.score = score;
     }
 
-    // ...
 }</programlisting>
 
-        <para>See the Score calculation section for more information on the <literal>Score</literal>
-        implementations.</para>
+        <para>Some use cases use <link linkend="scoreDefinition">other <literal>Score</literal> types</link>.</para>
       </section>
 
       <section xml:id="getProblemFacts">
-        <title>The <literal>getProblemFacts()</literal> Method</title>
+        <title>Problem Facts of a Solution (<literal>@ProblemFactCollectionProperty</literal>)</title>
 
-        <para>The method is only used if Drools is used for score calculation. Other score directors do not use
-        it.</para>
+        <para>For <link linkend="droolsScoreCalculation">Drools score calculation</link>, Planner needs to extract the
+        problem fact instances from the solution instance. It gets those collection(s) by calling every method (or
+        field) that is annotated with <literal>@ProblemFactCollectionProperty</literal>. All objects returned by those
+        methods will be inserted into the Drools session, so the score rules can access them. For example in
+        <literal>NQueens</literal> all <literal>Column</literal> and <literal>Row</literal> instances are problem
+        facts.</para>
 
-        <para>All objects returned by the <literal>getProblemFacts()</literal> method will be asserted into the Drools
-        working memory, so the score rules can access them. For example, <literal>NQueens</literal> just returns all
-        <literal>Column</literal> and <literal>Row</literal> instances.</para>
+        <programlisting language="java">@PlanningSolution
+public class NQueens {
+    ...
 
-        <programlisting language="java">    public Collection&lt;? extends Object&gt; getProblemFacts() {
-        List&lt;Object&gt; facts = new ArrayList&lt;Object&gt;();
-        facts.addAll(columnList);
-        facts.addAll(rowList);
-        // Do not add the planning entity's (queenList) because that will be done automatically
-        return facts;
-    }</programlisting>
+    private List&lt;Column&gt; columnList;
+    private List&lt;Row&gt; rowList;
 
-        <para><emphasis>All planning entities are automatically inserted into the Drools working memory.</emphasis> Do
-        not add them in the method <literal>getProblemFacts()</literal>.</para>
+    @ProblemFactCollectionProperty
+    public List&lt;Column&gt; getColumnList() {
+        return columnList;
+    }
+
+    @ProblemFactCollectionProperty
+    public List&lt;Row&gt; getRowList() {
+        return rowList;
+    }
+
+}</programlisting>
+
+        <para>All planning entities are automatically inserted into the Drools working memory. Do note add an annotation
+        on their properties.</para>
 
         <note>
-          <para>A common mistake is to use <literal>facts.add(...)</literal> instead of
-          <literal>fact.addAll(...)</literal> for a <literal>Collection</literal>, which leads to score rules failing to
-          match because the elements of that <literal>Collection</literal> are not in the Drools working memory.</para>
+          <para>The problem facts methods are not called often: at most only once per solver phase per solver
+          thread.</para>
         </note>
 
-        <para>The <literal>getProblemFacts()</literal> method is not called often: at most only once per solver phase
-        per solver thread.</para>
+        <para>There can be multiple <literal>@ProblemFactCollectionProperty</literal> annotated members. Those can even
+        return a <literal>Collection</literal> with the same class type, but they shouldn't return the same instance
+        twice.</para>
+
+        <note>
+          <para>A @ProblemFactCollectionProperty annotation needs to be on a member in a class with a @PlanningSolution
+          annotation. It is ignored on parent classes or subclasses without that annotation.</para>
+        </note>
+
+        <para>In rare cases, a problem fact might be a singleton: use <literal>@ProblemFactProperty</literal> on its
+        method (or field) instead.</para>
 
         <section xml:id="cachedProblemFact">
           <title>Cached Problem Fact</title>
 
           <para>A cached problem fact is a problem fact that does not exist in the real domain model, but is calculated
-          before the <literal>Solver</literal> really starts solving. The <literal>getProblemFacts()</literal> method
-          has the chance to enrich the domain model with such cached problem facts, which can lead to simpler and faster
-          score constraints.</para>
+          before the <literal>Solver</literal> really starts solving. The problem facts methods have the opportunity to
+          enrich the domain model with such cached problem facts, which can lead to simpler and faster score
+          constraints.</para>
 
           <para>For example in examination, a cached problem fact <literal>TopicConflict</literal> is created for every
           two <literal>Topic</literal>s which share at least one <literal>Student</literal>.</para>
 
-          <programlisting language="java">    public Collection&lt;? extends Object&gt; getProblemFacts() {
-        List&lt;Object&gt; facts = new ArrayList&lt;Object&gt;();
-        // ...
-        facts.addAll(calculateTopicConflictList());
-        // ...
-        return facts;
-    }
-
+          <programlisting language="java">    @ProblemFactCollectionProperty
     private List&lt;TopicConflict&gt; calculateTopicConflictList() {
         List&lt;TopicConflict&gt; topicConflictList = new ArrayList&lt;TopicConflict&gt;();
         for (Topic leftTopic : topicList) {
@@ -1619,7 +1619,7 @@ public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
       </section>
 
       <section xml:id="cloningASolution">
-        <title>Cloning a <literal>Solution</literal></title>
+        <title>Cloning a Solution</title>
 
         <para>Most (if not all) optimization algorithms clone the solution each time they encounter a new best solution
         (so they can recall it later) or to work with multiple solutions in parallel.</para>
@@ -1629,7 +1629,7 @@ public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
           <emphasis>a planning clone</emphasis>.</para>
         </note>
 
-        <para>A planning clone of a <literal>Solution</literal> must fulfill these requirements:</para>
+        <para>A planning clone of a solution must fulfill these requirements:</para>
 
         <itemizedlist>
           <listitem>
@@ -1700,7 +1700,7 @@ public class SeatDesignationDependency {
           only deep clone all <literal>Queen</literal> instances. When the original solution is changed during planning,
           by changing a <literal>Queen</literal>, the clone stays the same.</para>
 
-          <programlisting language="java">public class NQueens implements Solution&lt;...&gt;, PlanningCloneable&lt;NQueens&gt; {
+          <programlisting language="java">public class NQueens PlanningCloneable&lt;NQueens&gt; {
     ...
 
     /**
@@ -1815,9 +1815,9 @@ public class SeatDesignationDependency {
 
       <para>A <literal>Solver</literal> implementation will solve your planning problem.</para>
 
-      <programlisting language="java">public interface Solver&lt;S extends Solution&gt; {
-    
-    S solve(S planningProblem);
+      <programlisting language="java">public interface Solver&lt;Solution_&gt; {
+
+    Solution_ solve(Solution_ planningProblem);
 
     ...
 }</programlisting>

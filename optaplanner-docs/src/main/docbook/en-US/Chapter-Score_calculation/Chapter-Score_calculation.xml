@@ -553,9 +553,9 @@
 
       <para>Just implement one method of the interface <literal>EasyScoreCalculator</literal>:</para>
 
-      <programlisting language="java">public interface EasyScoreCalculator&lt;Sol extends Solution&gt; {
+      <programlisting language="java">public interface EasyScoreCalculator&lt;Solution_&gt; {
 
-    Score calculateScore(Sol solution);
+    Score calculateScore(Solution_ solution);
    
 }</programlisting>
 
@@ -660,9 +660,9 @@
       <para>Implement all the methods of the interface <literal>IncrementalScoreCalculator</literal> and extend the
       class <literal>AbstractIncrementalScoreCalculator</literal>:</para>
 
-      <programlisting language="java">public interface IncrementalScoreCalculator&lt;Sol extends Solution&gt; {
+      <programlisting language="java">public interface IncrementalScoreCalculator&lt;Solution_&gt; {
 
-    void resetWorkingSolution(Sol workingSolution);
+    void resetWorkingSolution(Solution_ workingSolution);
 
     void beforeEntityAdded(Object entity);
 
@@ -789,9 +789,9 @@
       <literal>FAST_ASSERT</literal> or <literal>FULL_ASSERT environmentMode</literal>, implement also the
       <literal>ConstraintMatchAwareIncrementalScoreCalculator</literal> interface:</para>
 
-      <programlisting language="java">public interface ConstraintMatchAwareIncrementalScoreCalculator&lt;Sol extends Solution&gt; {
+      <programlisting language="java">public interface ConstraintMatchAwareIncrementalScoreCalculator&lt;Solution_&gt; {
 
-    void resetWorkingSolution(Sol workingSolution, boolean constraintMatchEnabled);
+    void resetWorkingSolution(Solution_ workingSolution, boolean constraintMatchEnabled);
 
     Collection&lt;ConstraintMatchTotal&gt; getConstraintMatchTotals();
     
@@ -1491,12 +1491,12 @@ end</programlisting>
     reusing the <literal>ScoreDirectorFactory</literal> of the <literal>Solver</literal> to build a separate
     <literal>ScoreDirector</literal> for that webUI:</para>
 
-    <programlisting language="java">ScoreDirectorFactory scoreDirectorFactory = solver.getScoreDirectorFactory();
-ScoreDirector guiScoreDirector = scoreDirectorFactory.buildScoreDirector();</programlisting>
+    <programlisting language="java">ScoreDirectorFactory&lt;CloudBalance&gt; scoreDirectorFactory = solver.getScoreDirectorFactory();
+ScoreDirector&lt;CloudBalance&gt; guiScoreDirector = scoreDirectorFactory.buildScoreDirector();</programlisting>
 
     <para>Then use it when you need to calculate the <literal>Score</literal> of a <literal>Solution</literal>:</para>
 
-    <programlisting language="java">guiScoreDirector.setWorkingSolution(solution);
+    <programlisting language="java">guiScoreDirector.setWorkingSolution(cloudBalance);
 Score score = guiScoreDirector.calculateScore();</programlisting>
 
     <para>To explain in the GUI what entities are causing which part of the <literal>Score</literal>, get the

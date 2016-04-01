@@ -953,9 +953,8 @@
       a server restart. This cannot be configured by a <literal>Termination</literal> as it's impossible to predict when
       and if it will occur. Therefore the <literal>Solver</literal> interface has these 2 thread-safe methods:</para>
 
-      <programlisting language="java">public interface Solver&lt;S extends Solution&gt; {
-
-    // ...
+      <programlisting language="java">public interface Solver&lt;Solution_&gt; {
+    ...
 
     boolean terminateEarly();
     boolean isTerminateEarly();
@@ -984,9 +983,8 @@
     <para>To listen to such events, add a <literal>SolverEventListener</literal> to the
     <literal>Solver</literal>:</para>
 
-    <programlisting language="java">public interface Solver&lt;S extends Solution&gt; {
-
-    // ...
+    <programlisting language="java">public interface Solver&lt;Solution_&gt; {
+    ...
 
     void addEventListener(SolverEventListener&lt;S&gt; eventListener);
     void removeEventListener(SolverEventListener&lt;S&gt; eventListener);
@@ -1029,21 +1027,20 @@
 
     <para>The <literal>CustomPhaseCommand</literal> interface looks like this:</para>
 
-    <programlisting language="java">public interface CustomPhaseCommand {
+    <programlisting language="java">public interface CustomPhaseCommand&lt;Solution_&gt; {
+    ...
 
-    void applyCustomProperties(Map&lt;String, String&gt; customPropertyMap);
-
-    void changeWorkingSolution(ScoreDirector scoreDirector);
+    void changeWorkingSolution(ScoreDirector&lt;Solution_&gt; scoreDirector);
 
 }</programlisting>
 
     <para>For example, extend <literal>AbstractCustomPhaseCommand</literal> and implement the
     <literal>changeWorkingSolution()</literal> method:</para>
 
-    <programlisting language="java">public class ToOriginalMachineSolutionInitializer extends AbstractCustomPhaseCommand {
+    <programlisting language="java">public class ToOriginalMachineSolutionInitializer extends AbstractCustomPhaseCommand&lt;MachineReassignment&gt; {
 
-    public void changeWorkingSolution(ScoreDirector scoreDirector) {
-        MachineReassignment machineReassignment = (MachineReassignment) scoreDirector.getWorkingSolution();
+    public void changeWorkingSolution(ScoreDirector&lt;MachineReassignment&gt; scoreDirector) {
+        MachineReassignment machineReassignment = scoreDirector.getWorkingSolution();
         for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
             scoreDirector.beforeVariableChanged(processAssignment, "machine");
             processAssignment.setMachine(processAssignment.getOriginalMachine());
@@ -1110,7 +1107,7 @@
     <para>Then override the <literal>applyCustomProperties()</literal> method to parse and apply them when a
     <literal>Solver</literal> is build.</para>
 
-    <programlisting language="java">public class MySolutionInitializer extends AbstractCustomPhaseCommand {
+    <programlisting language="java">public class MySolutionInitializer extends AbstractCustomPhaseCommand&lt;MySolution&gt; {
 
     private int mySelectionSize;
 

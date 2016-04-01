@@ -35,7 +35,7 @@ import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
 
 public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
 
-    private final ScoreDirectorFactory scoreDirectorFactory;
+    private final ScoreDirectorFactory<VehicleRoutingSolution> scoreDirectorFactory;
 
     public static void main(String[] args) {
         new VehicleRoutingDistanceTypeComparison().compare(
@@ -48,7 +48,7 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
 
     public VehicleRoutingDistanceTypeComparison() {
         vehicleRoutingDao = new VehicleRoutingDao();
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(VehicleRoutingApp.SOLVER_CONFIG);
+        SolverFactory<VehicleRoutingSolution> solverFactory = SolverFactory.createFromXmlResource(VehicleRoutingApp.SOLVER_CONFIG);
         scoreDirectorFactory = solverFactory.buildSolver().getScoreDirectorFactory();
     }
 
@@ -105,7 +105,7 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
             Customer varNext = varCustomer.getNextCustomer();
             inputCustomer.setNextCustomer(varNext == null ? null : inputCustomerMap.get(varNext.getId()));
         }
-        ScoreDirector scoreDirector = scoreDirectorFactory.buildScoreDirector();
+        ScoreDirector<VehicleRoutingSolution> scoreDirector = scoreDirectorFactory.buildScoreDirector();
         scoreDirector.setWorkingSolution(inputSolution);
         scoreDirector.calculateScore();
     }

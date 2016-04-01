@@ -149,15 +149,11 @@
         might need to write the best <literal>Solution</literal> of each benchmark to an output file. For that it uses a
         class that implements the <literal>SolutionFileIO</literal> interface:</para>
 
-        <programlisting language="java">public interface SolutionFileIO {
+        <programlisting language="java">public interface SolutionFileIO&lt;Solution_&gt; {
+    ...
 
-    String getInputFileExtension();
-
-    String getOutputFileExtension();
-
-    Solution read(File inputSolutionFile);
-
-    void write(Solution solution, File outputSolutionFile);
+    Solution_ read(File inputSolutionFile);
+    void write(Solution_ solution, File outputSolutionFile);
 
 }</programlisting>
 
@@ -222,7 +218,7 @@
         <itemizedlist>
           <listitem>
             <para>Extract the datasets from the database and serialize them to a local file (for example as XML with
-            <literal>XStreamSolutionFileIO</literal>). Then use those files an
+            <literal>XStreamSolutionFileIO</literal> if XML isn't too verbose). Then use those files an
             <literal>&lt;inputSolutionFile&gt;</literal> elements.</para>
           </listitem>
 
@@ -343,8 +339,7 @@
     <section xml:id="benchmarkLogging">
       <title>Benchmark Logging</title>
 
-      <para>Benchmark logging is configured like <link linkend="logging">the <literal>Solver</literal>
-      logging</link>.</para>
+      <para>Benchmark logging is configured like <link linkend="logging">solver logging</link>.</para>
 
       <para>To separate the log messages of each single benchmark run into a separate file, use the <link
       xlink:href="http://logback.qos.ch/manual/mdc.html">MDC</link> with key <literal>singleBenchmark.name</literal> in

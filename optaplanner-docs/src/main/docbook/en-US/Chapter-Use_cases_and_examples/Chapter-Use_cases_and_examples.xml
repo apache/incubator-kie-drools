@@ -983,7 +983,7 @@
         column and the row, the ascending diagonal line as well as the descending diagonal line can be calculated. The
         column and row indexes start from the upper left corner of the chessboard.</para>
 
-        <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
+        <programlisting language="java">public class NQueens {
     
     private int n;
     private List&lt;Column&gt; columnList;
