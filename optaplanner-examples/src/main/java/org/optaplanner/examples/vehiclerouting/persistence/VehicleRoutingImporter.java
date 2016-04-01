@@ -133,17 +133,20 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
         private void readVrpWebHeaders() throws IOException {
             skipOptionalConstantLines("COMMENT *:.*");
             String vrpType = readStringValue("TYPE *:");
-            if (vrpType.equals("CVRP")) {
-                timewindowed = false;
-            } else if (vrpType.equals("CVRPTW")) {
-                timewindowed = true;
-                Long solutionId = solution.getId();
-                String solutionName = solution.getName();
-                solution = new TimeWindowedVehicleRoutingSolution();
-                solution.setId(solutionId);
-                solution.setName(solutionName);
-            } else {
-                throw new IllegalArgumentException("The vrpType (" + vrpType + ") is not supported.");
+            switch (vrpType) {
+                case "CVRP":
+                    timewindowed = false;
+                    break;
+                case "CVRPTW":
+                    timewindowed = true;
+                    Long solutionId = solution.getId();
+                    String solutionName = solution.getName();
+                    solution = new TimeWindowedVehicleRoutingSolution();
+                    solution.setId(solutionId);
+                    solution.setName(solutionName);
+                    break;
+                default:
+                    throw new IllegalArgumentException("The vrpType (" + vrpType + ") is not supported.");
             }
             customerListSize = readIntegerValue("DIMENSION *:");
             String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE *:");

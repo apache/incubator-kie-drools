@@ -128,22 +128,25 @@ public class TspSolution extends AbstractPersistable {
         if (distanceUnitOfMeasurement == null) {
             return numberFormat.format(((double) distance) / 1000.0);
         }
-        if (distanceUnitOfMeasurement.equals("sec")) { // TODO why are the values 1000 larger?
-            long hours = distance / 3600000;
-            long minutes = distance % 3600000 / 60000;
-            long seconds = distance % 60000 / 1000;
-            long milliseconds = distance % 1000;
-            return hours + "h " + minutes + "m " + seconds + "s " + milliseconds + "ms";
-        } else if (distanceUnitOfMeasurement.equals("km")) { // TODO why are the values 1000 larger?
-            long km = distance / 1000;
-            long meter = distance % 1000;
-            return km + "km " + meter + "m";
-        } else if (distanceUnitOfMeasurement.equals("meter")) {
-            long km = distance / 1000;
-            long meter = distance % 1000;
-            return km + "km " + meter + "m";
-        } else {
-            return numberFormat.format(((double) distance) / 1000.0) + " " + distanceUnitOfMeasurement;
+        switch (distanceUnitOfMeasurement) {
+            case "sec":  // TODO why are the values 1000 larger?
+                long hours = distance / 3600000;
+                long minutes = distance % 3600000 / 60000;
+                long seconds = distance % 60000 / 1000;
+                long milliseconds = distance % 1000;
+                return hours + "h " + minutes + "m " + seconds + "s " + milliseconds + "ms";
+            case "km": { // TODO why are the values 1000 larger?
+                long km = distance / 1000;
+                long meter = distance % 1000;
+                return km + "km " + meter + "m";
+            }
+            case "meter": {
+                long km = distance / 1000;
+                long meter = distance % 1000;
+                return km + "km " + meter + "m";
+            }
+            default:
+                return numberFormat.format(((double) distance) / 1000.0) + " " + distanceUnitOfMeasurement;
         }
     }
 

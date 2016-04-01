@@ -137,22 +137,25 @@ public class VehicleRoutingSolution extends AbstractPersistable {
         if (distanceUnitOfMeasurement == null) {
             return numberFormat.format(((double) distance) / 1000.0);
         }
-        if (distanceUnitOfMeasurement.equals("sec")) { // TODO why are the values 1000 larger?
-            long hours = distance / 3600000L;
-            long minutes = distance % 3600000L / 60000L;
-            long seconds = distance % 60000L / 1000L;
-            long milliseconds = distance % 1000L;
-            return hours + "h " + minutes + "m " + seconds + "s " + milliseconds + "ms";
-        } else if (distanceUnitOfMeasurement.equals("km")) { // TODO why are the values 1000 larger?
-            long km = distance / 1000L;
-            long meter = distance % 1000L;
-            return km + "km " + meter + "m";
-        } else if (distanceUnitOfMeasurement.equals("meter")) {
-            long km = distance / 1000L;
-            long meter = distance % 1000L;
-            return km + "km " + meter + "m";
-        } else {
-            return numberFormat.format(((double) distance) / 1000.0) + " " + distanceUnitOfMeasurement;
+        switch (distanceUnitOfMeasurement) {
+            case "sec":  // TODO why are the values 1000 larger?
+                long hours = distance / 3600000L;
+                long minutes = distance % 3600000L / 60000L;
+                long seconds = distance % 60000L / 1000L;
+                long milliseconds = distance % 1000L;
+                return hours + "h " + minutes + "m " + seconds + "s " + milliseconds + "ms";
+            case "km": { // TODO why are the values 1000 larger?
+                long km = distance / 1000L;
+                long meter = distance % 1000L;
+                return km + "km " + meter + "m";
+            }
+            case "meter": {
+                long km = distance / 1000L;
+                long meter = distance % 1000L;
+                return km + "km " + meter + "m";
+            }
+            default:
+                return numberFormat.format(((double) distance) / 1000.0) + " " + distanceUnitOfMeasurement;
         }
     }
 
