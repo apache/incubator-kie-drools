@@ -237,54 +237,50 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
 
     public void addComputer(final CloudComputer computer) {
         logger.info("Scheduling addition of computer ({}).", computer);
-        doProblemFactChange(new ProblemFactChange() {
-            public void doChange(ScoreDirector scoreDirector) {
-                CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
-                // Set a unique id on the new computer
-                long nextComputerId = 0L;
-                for (CloudComputer otherComputer : cloudBalance.getComputerList()) {
-                    if (nextComputerId <= otherComputer.getId()) {
-                        nextComputerId = otherComputer.getId() + 1L;
-                    }
+        doProblemFactChange(scoreDirector -> {
+            CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
+            // Set a unique id on the new computer
+            long nextComputerId = 0L;
+            for (CloudComputer otherComputer : cloudBalance.getComputerList()) {
+                if (nextComputerId <= otherComputer.getId()) {
+                    nextComputerId = otherComputer.getId() + 1L;
                 }
-                computer.setId(nextComputerId);
-                // A SolutionCloner does not clone problem fact lists (such as computerList)
-                // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
-                cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
-                // Add the problem fact itself
-                scoreDirector.beforeProblemFactAdded(computer);
-                cloudBalance.getComputerList().add(computer);
-                scoreDirector.afterProblemFactAdded(computer);
             }
+            computer.setId(nextComputerId);
+            // A SolutionCloner does not clone problem fact lists (such as computerList)
+            // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
+            cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
+            // Add the problem fact itself
+            scoreDirector.beforeProblemFactAdded(computer);
+            cloudBalance.getComputerList().add(computer);
+            scoreDirector.afterProblemFactAdded(computer);
         });
     }
 
     public void deleteComputer(final CloudComputer computer) {
         logger.info("Scheduling delete of computer ({}).", computer);
-        doProblemFactChange(new ProblemFactChange() {
-            public void doChange(ScoreDirector scoreDirector) {
-                CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
-                // First remove the problem fact from all planning entities that use it
-                for (CloudProcess process : cloudBalance.getProcessList()) {
-                    if (Objects.equals(process.getComputer(), computer)) {
-                        scoreDirector.beforeVariableChanged(process, "computer");
-                        process.setComputer(null);
-                        scoreDirector.afterVariableChanged(process, "computer");
-                    }
+        doProblemFactChange(scoreDirector -> {
+            CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
+            // First remove the problem fact from all planning entities that use it
+            for (CloudProcess process : cloudBalance.getProcessList()) {
+                if (Objects.equals(process.getComputer(), computer)) {
+                    scoreDirector.beforeVariableChanged(process, "computer");
+                    process.setComputer(null);
+                    scoreDirector.afterVariableChanged(process, "computer");
                 }
-                scoreDirector.triggerVariableListeners();
-                // A SolutionCloner does not clone problem fact lists (such as computerList)
-                // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
-                cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
-                // Remove the problem fact itself
-                for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
-                    CloudComputer workingComputer = it.next();
-                    if (Objects.equals(workingComputer, computer)) {
-                        scoreDirector.beforeProblemFactRemoved(workingComputer);
-                        it.remove(); // remove from list
-                        scoreDirector.afterProblemFactRemoved(workingComputer);
-                        break;
-                    }
+            }
+            scoreDirector.triggerVariableListeners();
+            // A SolutionCloner does not clone problem fact lists (such as computerList)
+            // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
+            cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
+            // Remove the problem fact itself
+            for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
+                CloudComputer workingComputer = it.next();
+                if (Objects.equals(workingComputer, computer)) {
+                    scoreDirector.beforeProblemFactRemoved(workingComputer);
+                    it.remove(); // remove from list
+                    scoreDirector.afterProblemFactRemoved(workingComputer);
+                    break;
                 }
             }
         });
@@ -292,43 +288,39 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
 
     public void addProcess(final CloudProcess process) {
         logger.info("Scheduling addition of process ({}).", process);
-        doProblemFactChange(new ProblemFactChange() {
-            public void doChange(ScoreDirector scoreDirector) {
-                CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
-                // Set a unique id on the new process
-                long nextProcessId = 0L;
-                for (CloudProcess otherProcess : cloudBalance.getProcessList()) {
-                    if (nextProcessId <= otherProcess.getId()) {
-                        nextProcessId = otherProcess.getId() + 1L;
-                    }
+        doProblemFactChange(scoreDirector -> {
+            CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
+            // Set a unique id on the new process
+            long nextProcessId = 0L;
+            for (CloudProcess otherProcess : cloudBalance.getProcessList()) {
+                if (nextProcessId <= otherProcess.getId()) {
+                    nextProcessId = otherProcess.getId() + 1L;
                 }
-                process.setId(nextProcessId);
-                // Add the planning entity itself
-                scoreDirector.beforeEntityAdded(process);
-                cloudBalance.getProcessList().add(process);
-                scoreDirector.afterEntityAdded(process);
-                scoreDirector.triggerVariableListeners();
             }
+            process.setId(nextProcessId);
+            // Add the planning entity itself
+            scoreDirector.beforeEntityAdded(process);
+            cloudBalance.getProcessList().add(process);
+            scoreDirector.afterEntityAdded(process);
+            scoreDirector.triggerVariableListeners();
         });
     }
 
     public void deleteProcess(final CloudProcess process) {
         logger.info("Scheduling delete of process ({}).", process);
-        doProblemFactChange(new ProblemFactChange() {
-            public void doChange(ScoreDirector scoreDirector) {
-                CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
-                // Remove the planning entity itself
-                for (Iterator<CloudProcess> it = cloudBalance.getProcessList().iterator(); it.hasNext(); ) {
-                    CloudProcess workingProcess = it.next();
-                    if (Objects.equals(workingProcess, process)) {
-                        scoreDirector.beforeEntityRemoved(workingProcess);
-                        it.remove(); // remove from list
-                        scoreDirector.afterEntityRemoved(workingProcess);
-                        break;
-                    }
+        doProblemFactChange(scoreDirector -> {
+            CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
+            // Remove the planning entity itself
+            for (Iterator<CloudProcess> it = cloudBalance.getProcessList().iterator(); it.hasNext(); ) {
+                CloudProcess workingProcess = it.next();
+                if (Objects.equals(workingProcess, process)) {
+                    scoreDirector.beforeEntityRemoved(workingProcess);
+                    it.remove(); // remove from list
+                    scoreDirector.afterEntityRemoved(workingProcess);
+                    break;
                 }
-                scoreDirector.triggerVariableListeners();
             }
+            scoreDirector.triggerVariableListeners();
         });
     }
 

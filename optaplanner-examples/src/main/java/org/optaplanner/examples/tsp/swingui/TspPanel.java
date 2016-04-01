@@ -106,20 +106,18 @@ public class TspPanel extends SolutionPanel<TspSolution> {
         newLocation.setLongitude(longitude);
         newLocation.setLatitude(latitude);
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
-        doProblemFactChange(new ProblemFactChange() {
-            public void doChange(ScoreDirector scoreDirector) {
-                TspSolution tspSolution = (TspSolution) scoreDirector.getWorkingSolution();
-                scoreDirector.beforeProblemFactAdded(newLocation);
-                tspSolution.getLocationList().add(newLocation);
-                scoreDirector.afterProblemFactAdded(newLocation);
-                Visit newVisit = new Visit();
-                newVisit.setId(newLocation.getId());
-                newVisit.setLocation(newLocation);
-                scoreDirector.beforeEntityAdded(newVisit);
-                tspSolution.getVisitList().add(newVisit);
-                scoreDirector.afterEntityAdded(newVisit);
-                scoreDirector.triggerVariableListeners();
-            }
+        doProblemFactChange(scoreDirector -> {
+            TspSolution tspSolution = scoreDirector.getWorkingSolution();
+            scoreDirector.beforeProblemFactAdded(newLocation);
+            tspSolution.getLocationList().add(newLocation);
+            scoreDirector.afterProblemFactAdded(newLocation);
+            Visit newVisit = new Visit();
+            newVisit.setId(newLocation.getId());
+            newVisit.setLocation(newLocation);
+            scoreDirector.beforeEntityAdded(newVisit);
+            tspSolution.getVisitList().add(newVisit);
+            scoreDirector.afterEntityAdded(newVisit);
+            scoreDirector.triggerVariableListeners();
         });
     }
     public void connectStandstills(Standstill sourceStandstill, Standstill targetStandstill) {

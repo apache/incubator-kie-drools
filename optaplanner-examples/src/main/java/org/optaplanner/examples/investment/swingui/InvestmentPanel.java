@@ -299,44 +299,38 @@ public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
     }
 
     private void changeStandardDeviationMillisMaximum(final long standardDeviationMillisMaximum) {
-        doProblemFactChange(new ProblemFactChange() {
-            public void doChange(ScoreDirector scoreDirector) {
-                InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
-                InvestmentParametrization parametrization = solution.getParametrization();
-                scoreDirector.beforeProblemFactChanged(parametrization);
-                parametrization.setStandardDeviationMillisMaximum(standardDeviationMillisMaximum);
-                scoreDirector.afterProblemFactChanged(parametrization);
-            }
+        doProblemFactChange(scoreDirector -> {
+            InvestmentSolution solution = scoreDirector.getWorkingSolution();
+            InvestmentParametrization parametrization = solution.getParametrization();
+            scoreDirector.beforeProblemFactChanged(parametrization);
+            parametrization.setStandardDeviationMillisMaximum(standardDeviationMillisMaximum);
+            scoreDirector.afterProblemFactChanged(parametrization);
         }, true);
     }
 
     private void changeRegionQuantityMillisMaximum(final Region region, final long quantityMillisMaximum) {
-        doProblemFactChange(new ProblemFactChange() {
-            public void doChange(ScoreDirector scoreDirector) {
-                InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
-                for (Region workingRegion : solution.getRegionList()) {
-                    if (region.getId().equals(workingRegion.getId())) {
-                        scoreDirector.beforeProblemFactChanged(workingRegion);
-                        workingRegion.setQuantityMillisMaximum(quantityMillisMaximum);
-                        scoreDirector.afterProblemFactChanged(workingRegion);
-                        break;
-                    }
+        doProblemFactChange(scoreDirector -> {
+            InvestmentSolution solution = scoreDirector.getWorkingSolution();
+            for (Region workingRegion : solution.getRegionList()) {
+                if (region.getId().equals(workingRegion.getId())) {
+                    scoreDirector.beforeProblemFactChanged(workingRegion);
+                    workingRegion.setQuantityMillisMaximum(quantityMillisMaximum);
+                    scoreDirector.afterProblemFactChanged(workingRegion);
+                    break;
                 }
             }
         }, true);
     }
 
     private void changeSectorQuantityMillisMaximum(final Sector sector, final long quantityMillisMaximum) {
-        doProblemFactChange(new ProblemFactChange() {
-            public void doChange(ScoreDirector scoreDirector) {
-                InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
-                for (Sector workingSector : solution.getSectorList()) {
-                    if (sector.getId().equals(workingSector.getId())) {
-                        scoreDirector.beforeProblemFactChanged(workingSector);
-                        workingSector.setQuantityMillisMaximum(quantityMillisMaximum);
-                        scoreDirector.afterProblemFactChanged(workingSector);
-                        break;
-                    }
+        doProblemFactChange(scoreDirector -> {
+            InvestmentSolution solution = scoreDirector.getWorkingSolution();
+            for (Sector workingSector : solution.getSectorList()) {
+                if (sector.getId().equals(workingSector.getId())) {
+                    scoreDirector.beforeProblemFactChanged(workingSector);
+                    workingSector.setQuantityMillisMaximum(quantityMillisMaximum);
+                    scoreDirector.afterProblemFactChanged(workingSector);
+                    break;
                 }
             }
         }, true);

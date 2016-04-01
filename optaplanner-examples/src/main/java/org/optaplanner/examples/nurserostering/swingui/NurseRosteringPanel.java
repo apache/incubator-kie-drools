@@ -180,91 +180,87 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
                     "Unsupported in GUI", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
-        doProblemFactChange(new ProblemFactChange() {
-            public void doChange(ScoreDirector scoreDirector) {
-                NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
-                NurseRosterParametrization nurseRosterParametrization = nurseRoster.getNurseRosterParametrization();
-                List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
-                ShiftDate planningWindowStart = nurseRosterParametrization.getPlanningWindowStart();
-                int windowStartIndex = shiftDateList.indexOf(planningWindowStart);
-                if (windowStartIndex < 0) {
-                    throw new IllegalStateException("The planningWindowStart ("
-                            + planningWindowStart + ") must be in the shiftDateList ("
-                            + shiftDateList + ").");
-                }
-                ShiftDate oldLastShiftDate = shiftDateList.get(shiftDateList.size() - 1);
-                ShiftDate newShiftDate = new ShiftDate();
-                newShiftDate.setId(oldLastShiftDate.getId() + 1L);
-                newShiftDate.setDayIndex(oldLastShiftDate.getDayIndex() + 1);
-                newShiftDate.setDateString(oldLastShiftDate.determineNextDateString());
-                newShiftDate.setDayOfWeek(oldLastShiftDate.getDayOfWeek().determineNextDayOfWeek());
-                List<Shift> refShiftList = planningWindowStart.getShiftList();
-                List<Shift> newShiftList = new ArrayList<>(refShiftList.size());
-                newShiftDate.setShiftList(newShiftList);
-                nurseRoster.getShiftDateList().add(newShiftDate);
-                scoreDirector.afterProblemFactAdded(newShiftDate);
-                Shift oldLastShift = nurseRoster.getShiftList().get(nurseRoster.getShiftList().size() - 1);
-                long shiftId = oldLastShift.getId() + 1L;
-                int shiftIndex = oldLastShift.getIndex() + 1;
-                long shiftAssignmentId = nurseRoster.getShiftAssignmentList().get(
-                        nurseRoster.getShiftAssignmentList().size() - 1).getId() + 1L;
-                for (Shift refShift : refShiftList) {
-                    Shift newShift = new Shift();
-                    newShift.setId(shiftId);
-                    shiftId++;
-                    newShift.setShiftDate(newShiftDate);
-                    newShift.setShiftType(refShift.getShiftType());
-                    newShift.setIndex(shiftIndex);
-                    shiftIndex++;
-                    newShift.setRequiredEmployeeSize(refShift.getRequiredEmployeeSize());
-                    newShiftList.add(newShift);
-                    nurseRoster.getShiftList().add(newShift);
-                    scoreDirector.afterProblemFactAdded(newShift);
-                    for (int indexInShift = 0; indexInShift < newShift.getRequiredEmployeeSize(); indexInShift++) {
-                        ShiftAssignment newShiftAssignment = new ShiftAssignment();
-                        newShiftAssignment.setId(shiftAssignmentId);
-                        shiftAssignmentId++;
-                        newShiftAssignment.setShift(newShift);
-                        newShiftAssignment.setIndexInShift(indexInShift);
-                        nurseRoster.getShiftAssignmentList().add(newShiftAssignment);
-                        scoreDirector.afterEntityAdded(newShiftAssignment);
-                    }
-                }
-                windowStartIndex++;
-                ShiftDate newPlanningWindowStart = shiftDateList.get(windowStartIndex);
-                nurseRosterParametrization.setPlanningWindowStart(newPlanningWindowStart);
-                nurseRosterParametrization.setLastShiftDate(newShiftDate);
-                scoreDirector.afterProblemFactChanged(nurseRosterParametrization);
+        doProblemFactChange(scoreDirector -> {
+            NurseRoster nurseRoster = scoreDirector.getWorkingSolution();
+            NurseRosterParametrization nurseRosterParametrization = nurseRoster.getNurseRosterParametrization();
+            List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
+            ShiftDate planningWindowStart = nurseRosterParametrization.getPlanningWindowStart();
+            int windowStartIndex = shiftDateList.indexOf(planningWindowStart);
+            if (windowStartIndex < 0) {
+                throw new IllegalStateException("The planningWindowStart ("
+                        + planningWindowStart + ") must be in the shiftDateList ("
+                        + shiftDateList + ").");
             }
+            ShiftDate oldLastShiftDate = shiftDateList.get(shiftDateList.size() - 1);
+            ShiftDate newShiftDate = new ShiftDate();
+            newShiftDate.setId(oldLastShiftDate.getId() + 1L);
+            newShiftDate.setDayIndex(oldLastShiftDate.getDayIndex() + 1);
+            newShiftDate.setDateString(oldLastShiftDate.determineNextDateString());
+            newShiftDate.setDayOfWeek(oldLastShiftDate.getDayOfWeek().determineNextDayOfWeek());
+            List<Shift> refShiftList = planningWindowStart.getShiftList();
+            List<Shift> newShiftList = new ArrayList<>(refShiftList.size());
+            newShiftDate.setShiftList(newShiftList);
+            nurseRoster.getShiftDateList().add(newShiftDate);
+            scoreDirector.afterProblemFactAdded(newShiftDate);
+            Shift oldLastShift = nurseRoster.getShiftList().get(nurseRoster.getShiftList().size() - 1);
+            long shiftId = oldLastShift.getId() + 1L;
+            int shiftIndex = oldLastShift.getIndex() + 1;
+            long shiftAssignmentId = nurseRoster.getShiftAssignmentList().get(
+                    nurseRoster.getShiftAssignmentList().size() - 1).getId() + 1L;
+            for (Shift refShift : refShiftList) {
+                Shift newShift = new Shift();
+                newShift.setId(shiftId);
+                shiftId++;
+                newShift.setShiftDate(newShiftDate);
+                newShift.setShiftType(refShift.getShiftType());
+                newShift.setIndex(shiftIndex);
+                shiftIndex++;
+                newShift.setRequiredEmployeeSize(refShift.getRequiredEmployeeSize());
+                newShiftList.add(newShift);
+                nurseRoster.getShiftList().add(newShift);
+                scoreDirector.afterProblemFactAdded(newShift);
+                for (int indexInShift = 0; indexInShift < newShift.getRequiredEmployeeSize(); indexInShift++) {
+                    ShiftAssignment newShiftAssignment = new ShiftAssignment();
+                    newShiftAssignment.setId(shiftAssignmentId);
+                    shiftAssignmentId++;
+                    newShiftAssignment.setShift(newShift);
+                    newShiftAssignment.setIndexInShift(indexInShift);
+                    nurseRoster.getShiftAssignmentList().add(newShiftAssignment);
+                    scoreDirector.afterEntityAdded(newShiftAssignment);
+                }
+            }
+            windowStartIndex++;
+            ShiftDate newPlanningWindowStart = shiftDateList.get(windowStartIndex);
+            nurseRosterParametrization.setPlanningWindowStart(newPlanningWindowStart);
+            nurseRosterParametrization.setLastShiftDate(newShiftDate);
+            scoreDirector.afterProblemFactChanged(nurseRosterParametrization);
         }, true);
     }
 
     public void deleteEmployee(final Employee employee) {
         logger.info("Scheduling delete of employee ({}).", employee);
-        doProblemFactChange(new ProblemFactChange() {
-            public void doChange(ScoreDirector scoreDirector) {
-                NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
-                // First remove the problem fact from all planning entities that use it
-                for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
-                    if (Objects.equals(shiftAssignment.getEmployee(), employee)) {
-                        scoreDirector.beforeVariableChanged(shiftAssignment, "employee");
-                        shiftAssignment.setEmployee(null);
-                        scoreDirector.afterVariableChanged(shiftAssignment, "employee");
-                    }
+        doProblemFactChange(scoreDirector -> {
+            NurseRoster nurseRoster = scoreDirector.getWorkingSolution();
+            // First remove the problem fact from all planning entities that use it
+            for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
+                if (Objects.equals(shiftAssignment.getEmployee(), employee)) {
+                    scoreDirector.beforeVariableChanged(shiftAssignment, "employee");
+                    shiftAssignment.setEmployee(null);
+                    scoreDirector.afterVariableChanged(shiftAssignment, "employee");
                 }
-                scoreDirector.triggerVariableListeners();
-                // A SolutionCloner does not clone problem fact lists (such as employeeList)
-                // Shallow clone the employeeList so only workingSolution is affected, not bestSolution or guiSolution
-                nurseRoster.setEmployeeList(new ArrayList<>(nurseRoster.getEmployeeList()));
-                // Remove it the problem fact itself
-                for (Iterator<Employee> it = nurseRoster.getEmployeeList().iterator(); it.hasNext(); ) {
-                    Employee workingEmployee = it.next();
-                    if (Objects.equals(workingEmployee, employee)) {
-                        scoreDirector.beforeProblemFactRemoved(workingEmployee);
-                        it.remove(); // remove from list
-                        scoreDirector.afterProblemFactRemoved(employee);
-                        break;
-                    }
+            }
+            scoreDirector.triggerVariableListeners();
+            // A SolutionCloner does not clone problem fact lists (such as employeeList)
+            // Shallow clone the employeeList so only workingSolution is affected, not bestSolution or guiSolution
+            nurseRoster.setEmployeeList(new ArrayList<>(nurseRoster.getEmployeeList()));
+            // Remove it the problem fact itself
+            for (Iterator<Employee> it = nurseRoster.getEmployeeList().iterator(); it.hasNext(); ) {
+                Employee workingEmployee = it.next();
+                if (Objects.equals(workingEmployee, employee)) {
+                    scoreDirector.beforeProblemFactRemoved(workingEmployee);
+                    it.remove(); // remove from list
+                    scoreDirector.afterProblemFactRemoved(employee);
+                    break;
                 }
             }
         });

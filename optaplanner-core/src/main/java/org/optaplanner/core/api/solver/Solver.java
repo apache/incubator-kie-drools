@@ -134,7 +134,7 @@ public interface Solver<Solution_> {
      * @param problemFactChange never null
      * @return true (as specified by {@link Collection#add})
      */
-    boolean addProblemFactChange(ProblemFactChange problemFactChange);
+    boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
 
     /**
      * Checks if all scheduled {@link ProblemFactChange}s have been processed.

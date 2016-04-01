@@ -26,7 +26,7 @@ import org.optaplanner.examples.nqueens.domain.Queen;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NQueensStepTracker extends PhaseLifecycleListenerAdapter {
+public class NQueensStepTracker extends PhaseLifecycleListenerAdapter<NQueens> {
 
     private NQueens lastStepSolution = null;
     private List<NQueensStepTracking> trackingList = new ArrayList<>();

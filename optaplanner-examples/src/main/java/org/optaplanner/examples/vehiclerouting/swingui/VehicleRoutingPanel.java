@@ -107,18 +107,16 @@ public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
         newLocation.setLongitude(longitude);
         newLocation.setLatitude(latitude);
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
-        doProblemFactChange(new ProblemFactChange() {
-            public void doChange(ScoreDirector scoreDirector) {
-                VehicleRoutingSolution solution = (VehicleRoutingSolution) scoreDirector.getWorkingSolution();
-                scoreDirector.beforeProblemFactAdded(newLocation);
-                solution.getLocationList().add(newLocation);
-                scoreDirector.afterProblemFactAdded(newLocation);
-                Customer newCustomer = createCustomer(solution, newLocation);
-                scoreDirector.beforeEntityAdded(newCustomer);
-                solution.getCustomerList().add(newCustomer);
-                scoreDirector.afterEntityAdded(newCustomer);
-                scoreDirector.triggerVariableListeners();
-            }
+        doProblemFactChange(scoreDirector -> {
+            VehicleRoutingSolution solution = scoreDirector.getWorkingSolution();
+            scoreDirector.beforeProblemFactAdded(newLocation);
+            solution.getLocationList().add(newLocation);
+            scoreDirector.afterProblemFactAdded(newLocation);
+            Customer newCustomer = createCustomer(solution, newLocation);
+            scoreDirector.beforeEntityAdded(newCustomer);
+            solution.getCustomerList().add(newCustomer);
+            scoreDirector.afterEntityAdded(newCustomer);
+            scoreDirector.triggerVariableListeners();
         });
     }
 

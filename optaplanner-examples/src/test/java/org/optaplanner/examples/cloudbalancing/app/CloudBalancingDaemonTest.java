@@ -118,7 +118,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
 
     }
 
-    private static class AddProcessChange implements ProblemFactChange {
+    private static class AddProcessChange implements ProblemFactChange<CloudBalance> {
 
         private final CloudProcess process;
 
@@ -127,8 +127,8 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         }
 
         @Override
-        public void doChange(ScoreDirector scoreDirector) { // In solver thread
-            CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
+        public void doChange(ScoreDirector<CloudBalance> scoreDirector) { // In solver thread
+            CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
             // No need to clone the processList because planning cloning already does that
             scoreDirector.beforeEntityAdded(process);
             cloudBalance.getProcessList().add(process);

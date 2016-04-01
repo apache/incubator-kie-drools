@@ -131,21 +131,19 @@ public class InstitutionParametrizationDialog extends JDialog {
         final int frontLoadLastPeriodSize = (Integer) frontLoadLastPeriodSizeField.getValue();
         final int frontLoadPenalty = (Integer) frontLoadPenaltyField.getValue();
         setVisible(false);
-        examinationPanel.doProblemFactChange(new ProblemFactChange() {
-            public void doChange(ScoreDirector scoreDirector) {
-                Examination examination = (Examination) scoreDirector.getWorkingSolution();
-                InstitutionParametrization institutionParametrization = examination.getInstitutionParametrization();
-                scoreDirector.beforeProblemFactChanged(institutionParametrization);
-                institutionParametrization.setTwoInARowPenalty(twoInARowPenalty);
-                institutionParametrization.setTwoInADayPenalty(twoInADayPenalty);
-                institutionParametrization.setPeriodSpreadLength(periodSpreadLength);
-                institutionParametrization.setPeriodSpreadPenalty(periodSpreadPenalty);
-                institutionParametrization.setMixedDurationPenalty(mixedDurationPenalty);
-                institutionParametrization.setFrontLoadLargeTopicSize(frontLoadLargeTopicSize);
-                institutionParametrization.setFrontLoadLastPeriodSize(frontLoadLastPeriodSize);
-                institutionParametrization.setFrontLoadPenalty(frontLoadPenalty);
-                scoreDirector.afterProblemFactChanged(institutionParametrization);
-            }
+        examinationPanel.doProblemFactChange(scoreDirector -> {
+            Examination examination = scoreDirector.getWorkingSolution();
+            InstitutionParametrization institutionParametrization = examination.getInstitutionParametrization();
+            scoreDirector.beforeProblemFactChanged(institutionParametrization);
+            institutionParametrization.setTwoInARowPenalty(twoInARowPenalty);
+            institutionParametrization.setTwoInADayPenalty(twoInADayPenalty);
+            institutionParametrization.setPeriodSpreadLength(periodSpreadLength);
+            institutionParametrization.setPeriodSpreadPenalty(periodSpreadPenalty);
+            institutionParametrization.setMixedDurationPenalty(mixedDurationPenalty);
+            institutionParametrization.setFrontLoadLargeTopicSize(frontLoadLargeTopicSize);
+            institutionParametrization.setFrontLoadLastPeriodSize(frontLoadLastPeriodSize);
+            institutionParametrization.setFrontLoadPenalty(frontLoadPenalty);
+            scoreDirector.afterProblemFactChanged(institutionParametrization);
         }, true);
     }
 

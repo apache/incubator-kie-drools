@@ -294,7 +294,7 @@ public class SolutionBusiness<Solution_> {
         guiScoreDirector.calculateScore();
     }
 
-    public void doProblemFactChange(ProblemFactChange problemFactChange) {
+    public void doProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
         if (solver.isSolving()) {
             solver.addProblemFactChange(problemFactChange);
         } else {

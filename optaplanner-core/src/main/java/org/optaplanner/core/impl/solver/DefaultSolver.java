@@ -157,7 +157,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         return basicPlumbingTermination.isTerminateEarly();
     }
 
-    public boolean addProblemFactChange(ProblemFactChange problemFactChange) {
+    public boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
         return basicPlumbingTermination.addProblemFactChange(problemFactChange);
     }
 
@@ -269,7 +269,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
             solverScope.setWorkingSolutionFromBestSolution();
             Score score = null;
             int stepIndex = 0;
-            ProblemFactChange problemFactChange = problemFactChangeQueue.poll();
+            ProblemFactChange<Solution_> problemFactChange = problemFactChangeQueue.poll();
             while (problemFactChange != null) {
                 score = doProblemFactChange(problemFactChange, stepIndex);
                 stepIndex++;
@@ -288,7 +288,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         }
     }
 
-    private Score doProblemFactChange(ProblemFactChange problemFactChange, int stepIndex) {
+    private Score doProblemFactChange(ProblemFactChange<Solution_> problemFactChange, int stepIndex) {
         problemFactChange.doChange(solverScope.getScoreDirector());
         Score score = solverScope.calculateScore();
         logger.debug("    Step index ({}), new score ({}) for real-time problem fact change.", stepIndex, score);
@@ -303,13 +303,13 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         solverEventSupport.removeEventListener(eventListener);
     }
 
-    public void addPhaseLifecycleListener(PhaseLifecycleListener phaseLifecycleListener) {
+    public void addPhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener) {
         for (Phase phase : phaseList) {
             phase.addPhaseLifecycleListener(phaseLifecycleListener);
         }
     }
 
-    public void removePhaseLifecycleListener(PhaseLifecycleListener phaseLifecycleListener) {
+    public void removePhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener) {
         for (Phase phase : phaseList) {
             phase.addPhaseLifecycleListener(phaseLifecycleListener);
         }

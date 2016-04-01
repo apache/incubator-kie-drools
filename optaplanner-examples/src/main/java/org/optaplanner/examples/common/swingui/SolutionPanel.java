@@ -105,11 +105,11 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
         return false;
     }
 
-    public void doProblemFactChange(ProblemFactChange problemFactChange) {
+    public void doProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
         doProblemFactChange(problemFactChange, false);
     }
 
-    public void doProblemFactChange(ProblemFactChange problemFactChange, boolean reset) {
+    public void doProblemFactChange(ProblemFactChange<Solution_> problemFactChange, boolean reset) {
         solutionBusiness.doProblemFactChange(problemFactChange);
         Solution_ solution = getSolution();
         Score score = solutionBusiness.getScore();
