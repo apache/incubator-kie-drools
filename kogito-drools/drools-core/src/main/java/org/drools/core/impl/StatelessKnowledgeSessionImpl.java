@@ -40,7 +40,6 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.agent.KnowledgeAgent;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 
@@ -59,7 +58,6 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         StatelessKieSession {
 
     private InternalKnowledgeBase kBase;
-    private KnowledgeAgent   kagent;
     private MapGlobalResolver    sessionGlobals = new MapGlobalResolver();
     private Map<String, Channel> channels       = new HashMap<String, Channel>();
 
@@ -74,32 +72,19 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public StatelessKnowledgeSessionImpl(final InternalKnowledgeBase kBase,
-                                         final KnowledgeAgent kagent,
                                          final KieSessionConfiguration conf) {
         this.kBase = kBase;
-        this.kagent = kagent;
         this.conf = (conf != null) ? conf : SessionConfigurationImpl.getDefaultInstance();
         this.environment = EnvironmentFactory.newEnvironment();
         this.wmFactory = kBase.getConfiguration().getComponentFactory().getWorkingMemoryFactory();
     }
 
     public InternalKnowledgeBase getKnowledgeBase() {
-        if (this.kagent != null) {
-            // if we have an agent always get the rulebase from there
-            this.kBase = (InternalKnowledgeBase) this.kagent.getKnowledgeBase();
-        }
         return this.kBase;
     }
 
-    public KnowledgeAgent getKnowledgeAgent() {
-        return this.kagent;
-    }
 
     public StatefulKnowledgeSession newWorkingMemory() {
-        if (this.kagent != null) {
-            // if we have an agent always get the rulebase from there
-            this.kBase = (InternalKnowledgeBase) this.kagent.getKnowledgeBase();
-        }
         this.kBase.readLock();
         try {
             StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) wmFactory.createWorkingMemory(this.kBase.nextWorkingMemoryCounter(),
