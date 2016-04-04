@@ -13,16 +13,6 @@
 
   <name>jBPM :: Executor Service</name>
 
-  <properties>
-    <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
-    <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
-    <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
-    <maven.jdbc.db.name />
-    <maven.jdbc.db.port />
-    <maven.jdbc.db.server />
-    <maven.jdbc.url>jdbc:h2:mem:test;MVCC=true</maven.jdbc.url>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

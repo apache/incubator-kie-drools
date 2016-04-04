@@ -110,6 +110,9 @@
               <exclude>**/*JMS*Test.java</exclude>
             </excludes>
             <argLine>-Xmx1024m -XX:MaxPermSize=128m</argLine>
+            <additionalClasspathElements>
+              <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
+            </additionalClasspathElements>
           </configuration>
         </plugin> 
       </plugins>
@@ -130,28 +133,25 @@
     </profile>
 
     <profile>
-      <id>database</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <additionalClasspathElements>
-                <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
-              </additionalClasspathElements>
-              <useSystemClassLoader>true</useSystemClassLoader>
-              <includes>
-                <include>**/*Test.java</include>
-              </includes>
-              <excludes>
-                <exclude>**/*AbstractTest.java</exclude>
-                <exclude>**/*JMS*Test.java</exclude>
-              </excludes>
-              <argLine>-Xmx1024m -XX:MaxPermSize=128m</argLine>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
+      <id>mariadb</id>
+      <!-- Important: one still needs to specify the MariaDB JDBC driver jar!
+
+           Following are the default values for MariaDB started via Docker:
+           "docker run &#x002d;&#x002d;name mariadb-jbpm -e MYSQL_ROOT_PASSWORD="admin1234" -d -p 3306:3306 mariadb:latest"
+           (replace the "&#x002d;&#x002d;" with two "-"
+           More info at https://hub.docker.com/_/mariadb/-->
+      <properties>
+        <maven.hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</maven.hibernate.dialect>
+        <maven.datasource.classname>org.mariadb.jdbc.MySQLDataSource</maven.datasource.classname>
+        <maven.jdbc.driver.class>org.mariadb.jdbc.Driver</maven.jdbc.driver.class>
+        <maven.jdbc.db.name>mysql</maven.jdbc.db.name>
+        <maven.jdbc.db.port>3306</maven.jdbc.db.port>
+        <maven.jdbc.driver.jar/>
+        <maven.jdbc.username>root</maven.jdbc.username>
+        <maven.jdbc.password>admin1234</maven.jdbc.password>
+        <maven.jdbc.url>jdbc:mariadb://localhost:3306/mysql</maven.jdbc.url>
+        <maven.jdbc.schema>mysql</maven.jdbc.schema>
+      </properties>
     </profile>
 
   </profiles>

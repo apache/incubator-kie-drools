@@ -194,15 +194,22 @@ public class PersistenceUtil {
 
         String driverClass = dsProps.getProperty("driverClassName");
         if (driverClass.startsWith("org.h2") || driverClass.startsWith("org.hsqldb")) {
-            if( startServer ) { 
+            if (startServer) {
                 h2Server.start();
             }
+        }
+        setDatabaseSpecificDataSourceProperties(pds, dsProps);
+        return pds;
+    }
+
+    public static void setDatabaseSpecificDataSourceProperties(PoolingDataSource pds, Properties dsProps) {
+        String driverClass = dsProps.getProperty("driverClassName");
+        if (driverClass.startsWith("org.h2") || driverClass.startsWith("org.hsqldb")) {
             for (String propertyName : new String[] { "url", "driverClassName"}) {
                 pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
             }
         } else {
             pds.setClassName(dsProps.getProperty("className"));
-
             if (driverClass.startsWith("oracle")) {
                 pds.getDriverProperties().put("driverType", "thin");
                 pds.getDriverProperties().put("URL", dsProps.getProperty("url"));
@@ -234,7 +241,7 @@ public class PersistenceUtil {
                 }
                 pds.getDriverProperties().put("REQUEST_HA_SESSION", "false");
                 pds.getDriverProperties().put("networkProtocol", "Tds");
-            // com.edb is Postgres Plus.
+                // com.edb is Postgres Plus.
             } else if (driverClass.startsWith("org.postgresql") || driverClass.startsWith("com.edb")) {
                 for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
@@ -243,8 +250,6 @@ public class PersistenceUtil {
                 throw new RuntimeException("Unknown driver class: " + driverClass);
             }
         }
-
-        return pds;
     }
 
     /**
