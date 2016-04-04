@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.score.Score;
@@ -37,6 +38,7 @@ import org.optaplanner.core.impl.domain.common.ReflectionHelper;
  * We can never enforce it, as the user might want to use a different superclass.
  * @param <S> the {@link Score} type used by this use case
  */
+@PlanningSolution
 public abstract class AbstractSolution<S extends Score> implements Serializable {
 
     protected S score;
@@ -56,9 +58,9 @@ public abstract class AbstractSolution<S extends Score> implements Serializable 
      */
     @ProblemFactCollectionProperty
     protected List<Object> getProblemFactList() {
-        List<Object> factList = new ArrayList<>();
-        addProblemFactsFromClass(factList, getClass());
-        return factList;
+        List<Object> problemFactList = new ArrayList<>();
+        addProblemFactsFromClass(problemFactList, getClass());
+        return problemFactList;
     }
 
     /**

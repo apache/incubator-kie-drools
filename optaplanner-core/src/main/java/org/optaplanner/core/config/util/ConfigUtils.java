@@ -199,14 +199,29 @@ public class ConfigUtils {
     // Member and annotation methods
     // ************************************************************************
 
+    public static List<Class<?>> getAllAnnotatedLineageClasses(Class<?> bottomClass,
+            Class<? extends Annotation> annotation) {
+        if (!bottomClass.isAnnotationPresent(annotation)) {
+            return Collections.emptyList();
+        }
+        List<Class<?>> lineageClassList = new ArrayList<>();
+        lineageClassList.add(bottomClass);
+        Class<?> superclass = bottomClass.getSuperclass();
+        lineageClassList.addAll(getAllAnnotatedLineageClasses(superclass, annotation));
+        for (Class<?> superInterface : bottomClass.getInterfaces()) {
+            lineageClassList.addAll(getAllAnnotatedLineageClasses(superInterface, annotation));
+        }
+        return lineageClassList;
+    }
+
     /**
-     * @param clazz never null
+     * @param baseClass never null
      * @return never null, sorted by type (fields before methods), then by {@link AlphabeticMemberComparator}.
      */
-    public static List<Member> getDeclaredMembers(Class<?> clazz) {
-        Stream<Field> fieldStream = Stream.of(clazz.getDeclaredFields())
+    public static List<Member> getDeclaredMembers(Class<?> baseClass) {
+        Stream<Field> fieldStream = Stream.of(baseClass.getDeclaredFields())
                 .sorted(new AlphabeticMemberComparator());
-        Stream<Method> methodStream = Stream.of(clazz.getDeclaredMethods())
+        Stream<Method> methodStream = Stream.of(baseClass.getDeclaredMethods())
                 .sorted(new AlphabeticMemberComparator());
         return Stream.<Member>concat(fieldStream, methodStream)
             .collect(Collectors.toList());

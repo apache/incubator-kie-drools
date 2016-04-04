@@ -19,6 +19,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataReadMethodProblemFactCollectionPropertySolution;
@@ -92,18 +93,32 @@ public class SolutionDescriptorTest {
         solverFactory.buildSolver();
     }
 
+    @Test
+    public void extended() {
+        SolutionDescriptor<TestdataAnnotatedExtendedSolution> solutionDescriptor
+                = TestdataAnnotatedExtendedSolution.buildExtendedSolutionDescriptor();
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap());
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
+                "valueList", "subValueList");
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap());
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
+                "entityList", "subEntityList");
+    }
+
     // ************************************************************************
     // Others
     // ************************************************************************
 
     @Test
     public void extendedAbstractSolution() {
-        SolutionDescriptor<TestdataExtendedAbstractSolution> descriptor
+        SolutionDescriptor<TestdataExtendedAbstractSolution> solutionDescriptor
                 = TestdataExtendedAbstractSolution.buildSolutionDescriptor();
-        Assert.assertEquals("Fact collection inherited from abstract class is not registered.",
-                1, descriptor.getProblemFactCollectionMemberAccessorMap().size());
-        Assert.assertEquals("Private fact property from the solution class is not registered.",
-                1, descriptor.getProblemFactMemberAccessorMap().size());
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap());
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
+                "problemFactList");
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap());
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
+                "entityList");
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2015 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,29 @@
 
 package org.optaplanner.core.impl.testdata.domain.extended;
 
-import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
-import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class TestdataExtendedSolution extends TestdataSolution {
+public class TestdataUnannotatedExtendedEntity extends TestdataEntity {
 
     private Object extraObject;
 
-    public TestdataExtendedSolution() {
+    public TestdataUnannotatedExtendedEntity() {
     }
 
-    public TestdataExtendedSolution(String code) {
+    public TestdataUnannotatedExtendedEntity(String code) {
         super(code);
     }
 
-    public TestdataExtendedSolution(String code, Object extraObject) {
-        super(code);
+    public TestdataUnannotatedExtendedEntity(String code, TestdataValue value) {
+        super(code, value);
+    }
+
+    public TestdataUnannotatedExtendedEntity(String code, TestdataValue value, Object extraObject) {
+        super(code, value);
         this.extraObject = extraObject;
     }
 
-    @ProblemFactProperty
     public Object getExtraObject() {
         return extraObject;
     }

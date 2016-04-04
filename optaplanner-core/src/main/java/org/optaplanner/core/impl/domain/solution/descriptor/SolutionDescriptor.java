@@ -34,7 +34,6 @@ import java.util.Set;
 import com.google.common.collect.Iterators;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
@@ -151,12 +150,16 @@ public class SolutionDescriptor<Solution_> {
 
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
         processSolutionAnnotations(descriptorPolicy);
-        List<Member> memberList = ConfigUtils.getDeclaredMembers(solutionClass);
-        for (Member member : memberList) {
-            processValueRangeProviderAnnotation(descriptorPolicy, member);
-            processProblemFactPropertyAnnotation(descriptorPolicy, member);
-            processPlanningEntityPropertyAnnotation(descriptorPolicy, member);
-            processScoreAnnotation(descriptorPolicy, member);
+        // Iterate inherited members too (unlike for EntityDescriptor where each one is declared)
+        // to make sure each one is registered
+        for (Class<?> lineageClass : ConfigUtils.getAllAnnotatedLineageClasses(solutionClass, PlanningSolution.class)) {
+            List<Member> memberList = ConfigUtils.getDeclaredMembers(lineageClass);
+            for (Member member : memberList) {
+                processValueRangeProviderAnnotation(descriptorPolicy, member);
+                processProblemFactPropertyAnnotation(descriptorPolicy, member);
+                processPlanningEntityPropertyAnnotation(descriptorPolicy, member);
+                processScoreAnnotation(descriptorPolicy, member);
+            }
         }
         if (entityCollectionMemberAccessorMap.isEmpty() && entityMemberAccessorMap.isEmpty()) {
             throw new IllegalStateException("The solutionClass (" + solutionClass

@@ -141,7 +141,7 @@ public class EntityDescriptor<Solution_> {
     }
 
     private void processValueRangeProviderAnnotations(DescriptorPolicy descriptorPolicy) {
-        // Only iterate declared fields and methods, not inherited members, to avoid registering the same ValueRangeProvider twice
+        // Only iterate declared fields and methods, not inherited members, to avoid registering the same one twice
         List<Member> memberList = ConfigUtils.getDeclaredMembers(entityClass);
         for (Member member : memberList) {
             if (((AnnotatedElement) member).isAnnotationPresent(ValueRangeProvider.class)) {
@@ -157,6 +157,7 @@ public class EntityDescriptor<Solution_> {
         declaredGenuineVariableDescriptorMap = new LinkedHashMap<>();
         declaredShadowVariableDescriptorMap = new LinkedHashMap<>();
         boolean noVariableAnnotation = true;
+        // Only iterate declared fields and methods, not inherited members, to avoid registering the same one twice
         List<Member> memberList = ConfigUtils.getDeclaredMembers(entityClass);
         for (Member member : memberList) {
             Class<? extends Annotation> variableAnnotationClass = ConfigUtils.extractAnnotationClass(

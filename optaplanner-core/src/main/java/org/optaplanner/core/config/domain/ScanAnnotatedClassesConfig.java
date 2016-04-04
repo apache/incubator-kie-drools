@@ -24,6 +24,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
@@ -89,6 +90,12 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
     protected Class<?> loadSolutionClass(Reflections reflections) {
         Set<Class<?>> solutionClassSet = reflections.getTypesAnnotatedWith(PlanningSolution.class);
         retainOnlyClassesWithDeclaredAnnotation(solutionClassSet, PlanningSolution.class);
+        if (solutionClassSet.contains(AbstractSolution.class)) {
+            // Remove that core class to avoid a pointless fail-fast.
+            // (if users have a class like this, they need to use packageIncludeList)
+            solutionClassSet.remove(AbstractSolution.class);
+            // Note: Another abstract solution class might be fine, if extended by an unannotated solution class.
+        }
         if (ConfigUtils.isEmptyCollection(solutionClassSet)) {
             throw new IllegalStateException("The scanAnnotatedClasses (" + this
                     + ") did not find any classes with a " + PlanningSolution.class.getSimpleName()
@@ -120,6 +127,7 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
         return new ArrayList<>(entityClassSet);
     }
 
+    // TODO We need unit test for this: annotation scanning with TestdataUnannotatedExtendedEntity
     private void retainOnlyClassesWithDeclaredAnnotation(Set<Class<?>> classSet, Class<? extends Annotation> annotation) {
         for (Iterator<Class<?>> it = classSet.iterator(); it.hasNext(); ) {
             Class<?> clazz = it.next();

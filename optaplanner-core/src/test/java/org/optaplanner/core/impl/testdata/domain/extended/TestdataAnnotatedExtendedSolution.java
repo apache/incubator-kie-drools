@@ -14,60 +14,57 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.extended.abstractsolution;
+package org.optaplanner.core.impl.testdata.domain.extended;
 
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataExtendedAbstractSolution extends AbstractSolution {
+public class TestdataAnnotatedExtendedSolution extends TestdataSolution {
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedAbstractSolution.class, TestdataEntity.class);
+    public static SolutionDescriptor<TestdataAnnotatedExtendedSolution> buildExtendedSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataAnnotatedExtendedSolution.class,
+                TestdataEntity.class, TestdataAnnotatedExtendedEntity.class);
     }
 
-    private List<TestdataValue> valueList;
-    private Object extraObject;
+    private List<TestdataValue> subValueList;
 
-    private List<TestdataEntity> entityList;
+    private List<TestdataAnnotatedExtendedEntity> subEntityList;
 
-    public TestdataExtendedAbstractSolution(String code) {
-        super();
+    public TestdataAnnotatedExtendedSolution() {
     }
 
-    @ValueRangeProvider(id = "valueRange")
-    public List<TestdataValue> getValueList() {
-        return valueList;
+    public TestdataAnnotatedExtendedSolution(String code) {
+        super(code);
     }
 
-    public void setValueList(List<TestdataValue> valueList) {
-        this.valueList = valueList;
+
+    @ValueRangeProvider(id = "subValueRange")
+    @ProblemFactCollectionProperty
+    public List<TestdataValue> getSubValueList() {
+        return subValueList;
     }
 
-    public Object getExtraObject() {
-        return extraObject;
-    }
-
-    public void setExtraObject(Object extraObject) {
-        this.extraObject = extraObject;
+    public void setSubValueList(List<TestdataValue> subValueList) {
+        this.subValueList = subValueList;
     }
 
     @PlanningEntityCollectionProperty
-    public List<TestdataEntity> getEntityList() {
-        return entityList;
+    public List<TestdataAnnotatedExtendedEntity> getSubEntityList() {
+        return subEntityList;
     }
 
-    public void setEntityList(List<TestdataEntity> entityList) {
-        this.entityList = entityList;
+    public void setSubEntityList(List<TestdataAnnotatedExtendedEntity> subEntityList) {
+        this.subEntityList = subEntityList;
     }
 
     // ************************************************************************
