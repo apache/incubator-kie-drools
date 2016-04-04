@@ -187,13 +187,8 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         return solverScope.getBestSolution();
     }
 
-    public Solution_ solve(Solution planningProblem) {
-        if (planningProblem == null) {
-            throw new IllegalArgumentException("The planningProblem (" + planningProblem
-                    + ") must not be null.");
-        }
-        // we can do this, since this legacy Solution is in fact the same type as Solution_
-        return solve((Solution_)planningProblem);
+    public Solution solve(Solution planningProblem) {
+        return (Solution) solve((Solution_) planningProblem);
     }
 
     public void outerSolvingStarted(DefaultSolverScope<Solution_> solverScope) {
