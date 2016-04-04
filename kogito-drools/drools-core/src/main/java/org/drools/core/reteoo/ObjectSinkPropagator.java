@@ -16,42 +16,42 @@
 
 package org.drools.core.reteoo;
 
-import java.io.Externalizable;
-
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.spi.PropagationContext;
 
+import java.io.Externalizable;
+
 public interface ObjectSinkPropagator
     extends
     Externalizable {
 
-    public RuleBasePartitionId getPartitionId();
+    RuleBasePartitionId getPartitionId();
 
-    public void propagateAssertObject(InternalFactHandle factHandle,
-                                      PropagationContext context,
-                                      InternalWorkingMemory workingMemory);
+    void propagateAssertObject(InternalFactHandle factHandle,
+                               PropagationContext context,
+                               InternalWorkingMemory workingMemory);
 
-    public BaseNode getMatchingNode(BaseNode candidate);
+    BaseNode getMatchingNode(BaseNode candidate);
 
-    public ObjectSink[] getSinks();
+    ObjectSink[] getSinks();
 
-    public int size();
+    int size();
 
-    public void propagateModifyObject(InternalFactHandle factHandle,
-                                      ModifyPreviousTuples modifyPreviousTuples,
-                                      PropagationContext context,
-                                      InternalWorkingMemory workingMemory);
+    void propagateModifyObject(InternalFactHandle factHandle,
+                               ModifyPreviousTuples modifyPreviousTuples,
+                               PropagationContext context,
+                               InternalWorkingMemory workingMemory);
     
-    public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
-                                        final ModifyPreviousTuples modifyPreviousTuples,
-                                        final PropagationContext context,
-                                        final InternalWorkingMemory workingMemory);
+    void byPassModifyToBetaNode (final InternalFactHandle factHandle,
+                                 final ModifyPreviousTuples modifyPreviousTuples,
+                                 final PropagationContext context,
+                                 final InternalWorkingMemory workingMemory);
     
-    public void doLinkRiaNode(InternalWorkingMemory wm);
+    void doLinkRiaNode(InternalWorkingMemory wm);
 
-    public void doUnlinkRiaNode(InternalWorkingMemory wm);
+    void doUnlinkRiaNode(InternalWorkingMemory wm);
 
 }

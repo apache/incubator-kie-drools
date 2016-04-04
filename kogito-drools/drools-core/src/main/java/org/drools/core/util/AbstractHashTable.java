@@ -100,10 +100,7 @@ public abstract class AbstractHashTable
     }
 
     public Iterator newIterator() {
-        HashTableIterator iterator = new HashTableIterator( this );
-        iterator.reset();
-        return iterator;
-
+        return new HashTableIterator( this );
     }
 
     public void setComparator(final ObjectComparator comparator) {

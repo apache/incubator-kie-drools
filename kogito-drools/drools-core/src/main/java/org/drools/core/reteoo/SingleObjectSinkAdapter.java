@@ -31,7 +31,8 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
     private static final long serialVersionUID = 510l;
 
-    protected ObjectSink      sink;
+    private ObjectSink      sink;
+    private ObjectSink[]    sinks;
 
     public SingleObjectSinkAdapter() {
         super( null );
@@ -41,12 +42,14 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
                                    final ObjectSink sink) {
         super( partitionId );
         this.sink = sink;
+        this.sinks = new ObjectSink[]{this.sink};
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         super.readExternal( in );
-        sink = (ObjectSink) in.readObject();
+        this.sink = (ObjectSink) in.readObject();
+        this.sinks = new ObjectSink[]{this.sink};
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -137,7 +140,7 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     public ObjectSink[] getSinks() {
-        return new ObjectSink[]{this.sink};
+        return sinks;
     }
 
     public int size() {
