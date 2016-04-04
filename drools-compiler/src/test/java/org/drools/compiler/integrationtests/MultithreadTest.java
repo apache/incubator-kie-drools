@@ -22,6 +22,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
@@ -43,17 +44,22 @@ import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+
+import static org.hamcrest.core.IsEqual.equalTo;
 
 /**
  * This is a test case for multi-thred issues
@@ -683,6 +689,110 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
+    @Test
+    public void test() throws Exception {
+        String drl =
+                "package org.drools.test; \n" +
+                "global java.util.Map finalPrices;\n" +
+                "\n" +
+                "/*------------- declare type --------------------------*/\n" +
+                "declare Product\n" +
+                "    ref : String\n" +
+                "    price : Integer\n" +
+                "    quantity : Integer\n" +
+                "end\n" +
+                "\n" +
+                "declare DiscountConf\n" +
+                "    productRef : String\n" +
+                "    discount : Integer\n" +
+                "end\n" +
+                "\n" +
+                "/*------------- Initializing facts ----------------------*/ \n" +
+                "rule Init \n" +
+                "dialect \"mvel\"\n" +
+                "when \n" +
+                "then\n" +
+                "    /* insert product */\n" +
+                "    insert(new Product(\"Product-1\", 10, 3));\n" +
+                "    insert(new Product(\"Product-2\", 20, 4));\n" +
+                "    insert(new Product(\"Product-3\", 10, 5));\n" +
+                "    /* insert discount for each product */    \n" +
+                "    insert(new DiscountConf(\"Product-1\", 2)); //discount 2\u0080\n" +
+                "    insert(new DiscountConf(\"Product-2\", 3)); //discount 3\u0080\n" +
+                "    insert(new DiscountConf(\"Product-3\", 4)); //discount 4\u0080\n" +
+                "\n" +
+                "end \n" +
+                "\n" +
+                "query fetchDiscountConf1(Product $product, DiscountConf $discountConf)\n" +
+                "   $product := Product( ref == \"Product-1\" )\n" +
+                "   $discountConf := DiscountConf(productRef == $product.ref)\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "query fetchDiscountConf2(Product $product, DiscountConf $discountConf)\n" +
+                "   $product := Product( ref == \"Product-2\" )\n" +
+                "   $discountConf := DiscountConf(productRef == $product.ref)\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "query fetchDiscountConf3(Product $product, DiscountConf $discountConf)\n" +
+                "   $product := Product( ref == \"Product-3\" )\n" +
+                "   $discountConf := DiscountConf(productRef == $product.ref)\n" +
+                "end\n" +
+                "\n" +
+                "/*------------- Give discount ----------------------*/ \n" +
+                "rule Discount1\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "    Integer()\n" +
+                "    fetchDiscountConf1($product, $discountConf;)\n" +
+                "then\n" +
+                "    finalPrices[$product.ref] = $product.price * $product.quantity - $discountConf.discount * $product.quantity;\n" +
+                "end\n" +
+                "rule Discount2\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "    Integer()\n" +
+                "    fetchDiscountConf2($product, $discountConf;)\n" +
+                "then\n" +
+                "    finalPrices[$product.ref] = $product.price * $product.quantity - $discountConf.discount * $product.quantity;\n" +
+                "end\n" +
+                "rule Discount3\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "    Integer()\n" +
+                "    fetchDiscountConf3($product, $discountConf;)\n" +
+                "then\n" +
+                "    finalPrices[$product.ref] = $product.price * $product.quantity - $discountConf.discount * $product.quantity;\n" +
+                "end\n";
+
+        final KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
+
+        ExecutorService executor = Executors.newFixedThreadPool( 10 );
+
+        for (int i = 0; i < 10000; i++) {
+            executor.submit( new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println(" Run in thread  : "+ Thread.currentThread().getName());
+                    KieSession kieSession = kbase.newKieSession();
+
+                    Map<String, Integer> finalPrices = new HashMap<String, Integer>();
+                    kieSession.setGlobal( "finalPrices", finalPrices );
+
+                    kieSession.insert( 1 );
+                    kieSession.fireAllRules();
+
+                    assertThat(finalPrices.get("Product-1"), equalTo(24));
+                    assertThat(finalPrices.get("Product-2"), equalTo(68));
+                    assertThat(finalPrices.get("Product-3"), equalTo(30));
+                }
+            } );
+        }
+
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.MINUTES);
+    }
 
     // FIXME
 //
