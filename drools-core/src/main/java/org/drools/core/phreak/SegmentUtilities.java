@@ -24,7 +24,6 @@ import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.ConditionalBranchNode.ConditionalBranchMemory;
 import org.drools.core.reteoo.EntryPointNode;
@@ -53,8 +52,6 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.rule.constraint.QueryNameConstraint;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.kie.api.definition.rule.Rule;
 
 public class SegmentUtilities {
@@ -527,32 +524,12 @@ public class SegmentUtilities {
     }
 
     public static LeftInputAdapterNode getQueryLiaNode(String queryName, ObjectTypeNode queryOtn) {
-        if (queryOtn.getObjectSinkPropagator() instanceof CompositeObjectSinkAdapter) {
-            CompositeObjectSinkAdapter sink = (CompositeObjectSinkAdapter) queryOtn.getObjectSinkPropagator();
-            if (sink.getHashableSinks() != null) {
-                for (AlphaNode alphaNode = (AlphaNode) sink.getHashableSinks().getFirst(); alphaNode != null; alphaNode = (AlphaNode) alphaNode.getNextObjectSinkNode()) {
-                    QueryNameConstraint nameConstraint = (QueryNameConstraint) alphaNode.getConstraint();
-                    if (queryName.equals(nameConstraint.getQueryName())) {
-                        return (LeftInputAdapterNode) alphaNode.getObjectSinkPropagator().getSinks()[0];
-                    }
-                }
-            }
-
-            Iterator it = sink.getHashedSinkMap().iterator();
-            for (ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next()) {
-                AlphaNode alphaNode = (AlphaNode) entry.getValue();
-                QueryNameConstraint nameConstraint = (QueryNameConstraint) alphaNode.getConstraint();
-                if (queryName.equals(nameConstraint.getQueryName())) {
-                    return (LeftInputAdapterNode) alphaNode.getObjectSinkPropagator().getSinks()[0];
-                }
-            }
-        } else {
-            AlphaNode alphaNode = (AlphaNode) queryOtn.getObjectSinkPropagator().getSinks()[0];
+        for (ObjectSink sink : queryOtn.getObjectSinkPropagator().getSinks()) {
+            AlphaNode alphaNode = (AlphaNode) sink;
             QueryNameConstraint nameConstraint = (QueryNameConstraint) alphaNode.getConstraint();
             if (queryName.equals(nameConstraint.getQueryName())) {
                 return (LeftInputAdapterNode) alphaNode.getObjectSinkPropagator().getSinks()[0];
             }
-            return (LeftInputAdapterNode) queryOtn.getObjectSinkPropagator().getSinks()[0];
         }
 
         throw new RuntimeException("Unable to find query '" + queryName + "'");
