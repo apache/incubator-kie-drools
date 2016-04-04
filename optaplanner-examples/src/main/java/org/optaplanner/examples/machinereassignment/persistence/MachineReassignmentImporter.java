@@ -74,6 +74,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
         return MachineReassignmentFileIO.FILE_EXTENSION;
     }
 
+    @Override
     public TxtInputBuilder<MachineReassignment> createTxtInputBuilder() {
         return new MachineReassignmentInputBuilder();
     }
@@ -89,6 +90,7 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
         private int processListSize;
         private List<MrProcess> processList;
 
+        @Override
         public MachineReassignment readSolution() throws IOException {
             machineReassignment = new MachineReassignment();
             machineReassignment.setId(0L);

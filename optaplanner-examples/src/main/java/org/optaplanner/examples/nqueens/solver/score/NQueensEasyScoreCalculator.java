@@ -25,6 +25,7 @@ import org.optaplanner.examples.nqueens.domain.Queen;
 
 public class NQueensEasyScoreCalculator implements EasyScoreCalculator<NQueens> {
 
+    @Override
     public SimpleScore calculateScore(NQueens nQueens) {
         int n = nQueens.getN();
         List<Queen> queenList = nQueens.getQueenList();

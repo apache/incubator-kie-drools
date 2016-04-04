@@ -24,6 +24,7 @@ import java.util.Comparator;
  */
 public class AlphaNumericStringComparator implements Comparator<String>, Serializable {
 
+    @Override
     public int compare(String a, String b) {
         char[] aChars = a.toCharArray();
         char[] bChars = b.toCharArray();

@@ -58,6 +58,7 @@ public class LateSimulatedAnnealingAcceptor extends AbstractAcceptor {
         }
     }
 
+    @Override
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
         Score moveScore = moveScope.getScore();
         Score lastStepScore = moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore();

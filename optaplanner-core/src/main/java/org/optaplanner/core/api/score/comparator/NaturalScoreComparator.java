@@ -26,6 +26,7 @@ import org.optaplanner.core.api.score.Score;
  */
 public class NaturalScoreComparator implements Comparator<Score>, Serializable {
 
+    @Override
     public int compare(Score score1, Score score2) {
         return score1.compareTo(score2);
     }

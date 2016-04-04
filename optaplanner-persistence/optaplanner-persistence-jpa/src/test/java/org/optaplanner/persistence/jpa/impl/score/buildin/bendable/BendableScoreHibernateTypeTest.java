@@ -51,12 +51,14 @@ public class BendableScoreHibernateTypeTest extends AbstractScoreHibernateTypeTe
             this.score = score;
         }
 
+        @Override
         @Columns(columns = {@Column(name = "hard0Score"), @Column(name = "hard1Score"), @Column(name = "hard2Score"),
                 @Column(name = "soft0Score"), @Column(name = "soft1Score")})
         public BendableScore getScore() {
             return score;
         }
 
+        @Override
         public void setScore(BendableScore score) {
             this.score = score;
         }

@@ -42,18 +42,22 @@ public class DowncastingValueSelector extends AbstractValueSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public GenuineVariableDescriptor getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return childValueSelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return childValueSelector.isNeverEnding();
     }
 
+    @Override
     public long getSize(Object entity) {
         if (!downcastEntityClass.isInstance(entity)) {
             return 0L;
@@ -61,6 +65,7 @@ public class DowncastingValueSelector extends AbstractValueSelector {
         return childValueSelector.getSize(entity);
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         if (!downcastEntityClass.isInstance(entity)) {
             return Iterators.emptyIterator();
@@ -68,6 +73,7 @@ public class DowncastingValueSelector extends AbstractValueSelector {
         return childValueSelector.iterator(entity);
     }
 
+    @Override
     public Iterator<Object> endingIterator(Object entity) {
         if (!downcastEntityClass.isInstance(entity)) {
             return Iterators.emptyIterator();

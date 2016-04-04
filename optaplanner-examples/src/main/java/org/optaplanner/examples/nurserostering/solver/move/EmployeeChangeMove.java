@@ -38,10 +38,12 @@ public class EmployeeChangeMove extends AbstractMove {
         this.toEmployee = toEmployee;
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !Objects.equals(shiftAssignment.getEmployee(), toEmployee);
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new EmployeeChangeMove(shiftAssignment, shiftAssignment.getEmployee());
     }
@@ -51,10 +53,12 @@ public class EmployeeChangeMove extends AbstractMove {
         NurseRosteringMoveHelper.moveEmployee(scoreDirector, shiftAssignment, toEmployee);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(shiftAssignment);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Collections.singletonList(toEmployee);
     }

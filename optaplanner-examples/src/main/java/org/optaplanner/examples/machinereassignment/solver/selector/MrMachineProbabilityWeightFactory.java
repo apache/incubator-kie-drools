@@ -26,6 +26,7 @@ import org.optaplanner.examples.machinereassignment.domain.MrResource;
 
 public class MrMachineProbabilityWeightFactory implements SelectionProbabilityWeightFactory<MachineReassignment, MrProcessAssignment> {
 
+    @Override
     public double createProbabilityWeight(ScoreDirector<MachineReassignment> scoreDirector, MrProcessAssignment processAssignment) {
         MachineReassignment machineReassignment = scoreDirector.getWorkingSolution();
         MrMachine machine = processAssignment.getMachine();

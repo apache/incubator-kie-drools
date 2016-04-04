@@ -32,6 +32,7 @@ public class CustomPhaseScope<Solution_> extends AbstractPhaseScope<Solution_> {
         lastCompletedStepScope = new CustomStepScope<>(this, -1);
     }
 
+    @Override
     public CustomStepScope<Solution_> getLastCompletedStepScope() {
         return lastCompletedStepScope;
     }

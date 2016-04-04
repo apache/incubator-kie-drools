@@ -49,6 +49,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
         super(entityDescriptor, variableMemberAccessor);
     }
 
+    @Override
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
         processPropertyAnnotations(descriptorPolicy);
     }

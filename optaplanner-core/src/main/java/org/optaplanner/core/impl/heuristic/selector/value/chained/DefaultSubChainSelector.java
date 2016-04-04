@@ -91,6 +91,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         }
     }
 
+    @Override
     public GenuineVariableDescriptor getVariableDescriptor() {
         return valueSelector.getVariableDescriptor();
     }
@@ -118,6 +119,7 @@ public class DefaultSubChainSelector extends AbstractSelector
     // Cache lifecycle methods
     // ************************************************************************
 
+    @Override
     public void constructCache(DefaultSolverScope solverScope) {
         InnerScoreDirector scoreDirector = solverScope.getScoreDirector();
         GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
@@ -151,6 +153,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         }
     }
 
+    @Override
     public void disposeCache(DefaultSolverScope solverScope) {
         anchorTrailingChainList = null;
     }
@@ -159,14 +162,17 @@ public class DefaultSubChainSelector extends AbstractSelector
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         return randomSelection;
     }
 
+    @Override
     public long getSize() {
         long selectionSize = 0L;
         for (SubChain anchorTrailingChain : anchorTrailingChainList) {
@@ -183,6 +189,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         return (n * (n + 1L) / 2L) - (m * (m + 1L) / 2L);
     }
 
+    @Override
     public Iterator<SubChain> iterator() {
         if (!randomSelection) {
             return new OriginalSubChainIterator(anchorTrailingChainList.listIterator());
@@ -191,6 +198,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         }
     }
 
+    @Override
     public ListIterator<SubChain> listIterator() {
         if (!randomSelection) {
             return new OriginalSubChainIterator(anchorTrailingChainList.listIterator());
@@ -200,6 +208,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         }
     }
 
+    @Override
     public ListIterator<SubChain> listIterator(int index) {
         if (!randomSelection) {
             // TODO Implement more efficient ListIterator https://issues.jboss.org/browse/PLANNER-37
@@ -257,29 +266,35 @@ public class DefaultSubChainSelector extends AbstractSelector
             return super.next();
         }
 
+        @Override
         public int nextIndex() {
             return nextListIteratorIndex;
         }
 
+        @Override
         public boolean hasPrevious() {
             throw new UnsupportedOperationException("The operation hasPrevious() is not supported."
                     + " See https://issues.jboss.org/browse/PLANNER-37");
         }
 
+        @Override
         public SubChain previous() {
             throw new UnsupportedOperationException("The operation previous() is not supported."
                     + " See https://issues.jboss.org/browse/PLANNER-37");
         }
 
+        @Override
         public int previousIndex() {
             throw new UnsupportedOperationException("The operation previousIndex() is not supported."
                     + " See https://issues.jboss.org/browse/PLANNER-37");
         }
 
+        @Override
         public void set(SubChain subChain) {
             throw new UnsupportedOperationException("The optional operation set() is not supported.");
         }
 
+        @Override
         public void add(SubChain subChain) {
             throw new UnsupportedOperationException("The optional operation add() is not supported.");
         }

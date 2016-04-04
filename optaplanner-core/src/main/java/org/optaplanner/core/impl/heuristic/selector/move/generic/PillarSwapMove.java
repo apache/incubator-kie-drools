@@ -61,6 +61,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         boolean movable = false;
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptors) {
@@ -90,6 +91,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove {
         return movable;
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new PillarSwapMove<>(variableDescriptors, rightPillar, leftPillar);
     }
@@ -131,6 +133,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove {
         return moveTypeDescription.toString();
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         List<Object> entities = new ArrayList<>(
                 leftPillar.size() + rightPillar.size());
@@ -139,6 +142,7 @@ public class PillarSwapMove<Solution_> extends AbstractMove {
         return entities;
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         List<Object> values = new ArrayList<>(variableDescriptors.size() * 2);
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {

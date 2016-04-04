@@ -50,6 +50,7 @@ public class HardSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreHiber
             this.score = score;
         }
 
+        @Override
         @Columns(columns = {
                 @Column(name = "hardScore", precision = 10, scale = 5),
                 @Column(name = "softScore", precision = 10, scale = 5)})
@@ -57,6 +58,7 @@ public class HardSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreHiber
             return score;
         }
 
+        @Override
         public void setScore(HardSoftBigDecimalScore score) {
             this.score = score;
         }

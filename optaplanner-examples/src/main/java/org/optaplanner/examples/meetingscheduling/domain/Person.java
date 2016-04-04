@@ -33,6 +33,7 @@ public class Person extends AbstractPersistable implements Labeled {
         this.fullName = fullName;
     }
 
+    @Override
     public String getLabel() {
         return fullName;
     }

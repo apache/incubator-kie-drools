@@ -45,14 +45,17 @@ public class SortingValueSelector extends AbstractCachingValueSelector implement
                 cachedValueList.size(), this);
     }
 
+    @Override
     public boolean isNeverEnding() {
         return false;
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         return iterator();
     }
 
+    @Override
     public Iterator<Object> iterator() {
         return cachedValueList.iterator();
     }

@@ -55,14 +55,17 @@ public class MoveIteratorFactoryToMoveSelectorBridge extends AbstractMoveSelecto
         scoreDirector = null;
     }
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         return randomSelection;
     }
 
+    @Override
     public long getSize() {
         long size = moveIteratorFactory.getSize(scoreDirector);
         if (size < 0L) {
@@ -73,6 +76,7 @@ public class MoveIteratorFactoryToMoveSelectorBridge extends AbstractMoveSelecto
         return size;
     }
 
+    @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
             return moveIteratorFactory.createOriginalMoveIterator(scoreDirector);

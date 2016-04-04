@@ -69,6 +69,7 @@ public class BendableScoreHolder extends AbstractScoreHolder {
     public void addHardConstraintMatch(RuleContext kcontext, final int hardLevel, final int weight) {
         hardScores[hardLevel] += weight;
         registerIntConstraintMatch(kcontext, hardLevel, weight, new IntConstraintUndoListener() {
+            @Override
             public void undo() {
                 hardScores[hardLevel] -= weight;
             }
@@ -78,12 +79,14 @@ public class BendableScoreHolder extends AbstractScoreHolder {
     public void addSoftConstraintMatch(RuleContext kcontext, final int softLevel, final int weight) {
         softScores[softLevel] += weight;
         registerIntConstraintMatch(kcontext, getHardLevelsSize() + softLevel, weight, new IntConstraintUndoListener() {
+            @Override
             public void undo() {
                 softScores[softLevel] -= weight;
             }
         });
     }
 
+    @Override
     public Score extractScore() {
         return new BendableScore(Arrays.copyOf(hardScores, hardScores.length),
                 Arrays.copyOf(softScores, softScores.length));

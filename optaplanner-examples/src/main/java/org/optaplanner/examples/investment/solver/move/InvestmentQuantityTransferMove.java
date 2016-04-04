@@ -37,10 +37,12 @@ public class InvestmentQuantityTransferMove extends AbstractMove {
         this.transferMillis = transferMillis;
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true;
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new InvestmentQuantityTransferMove(toAssetClassAllocation, fromAssetClassAllocation, transferMillis);
     }
@@ -55,10 +57,12 @@ public class InvestmentQuantityTransferMove extends AbstractMove {
         scoreDirector.afterVariableChanged(toAssetClassAllocation, "quantityMillis");
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Arrays.asList(fromAssetClassAllocation, toAssetClassAllocation);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Collections.emptyList();
     }

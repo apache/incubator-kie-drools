@@ -249,6 +249,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
             this.parentFrame = parentFrame;
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             parentFrame.setEnabled(false);
             generateReport();

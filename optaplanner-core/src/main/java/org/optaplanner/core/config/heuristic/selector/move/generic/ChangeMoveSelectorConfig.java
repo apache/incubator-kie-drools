@@ -69,6 +69,7 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig<ChangeMoveSelec
     // Builder methods
     // ************************************************************************
 
+    @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         if (entitySelectorConfig == null) {
@@ -143,6 +144,7 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig<ChangeMoveSelec
         return unfoldedMoveSelectorConfig;
     }
 
+    @Override
     public void inherit(ChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());

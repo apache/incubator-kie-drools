@@ -64,6 +64,7 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter<InvestmentS
         private Map<String, Region> regionMap;
         private Map<String, Sector> sectorMap;
 
+        @Override
         public InvestmentSolution readSolution() throws IOException {
             solution = new InvestmentSolution();
             solution.setId(0L);

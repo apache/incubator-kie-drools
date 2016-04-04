@@ -36,10 +36,12 @@ public class CheapTimePillarSlideMove extends AbstractMove {
         this.startPeriodDiff = startPeriodDiff;
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true;
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new CheapTimePillarSlideMove(pillar, - startPeriodDiff);
     }
@@ -53,10 +55,12 @@ public class CheapTimePillarSlideMove extends AbstractMove {
         }
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(pillar);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         // Presumes this method is always called after the move is done.
         List<Integer> startPeriodList = new ArrayList<>(pillar.size());

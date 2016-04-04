@@ -66,6 +66,7 @@ public class CompositeValueRangeDescriptor<Solution_> extends AbstractValueRange
         return entityIndependent;
     }
 
+    @Override
     public ValueRange<?> extractValueRange(Solution_ solution, Object entity) {
         List<CountableValueRange<?>> childValueRangeList = new ArrayList<>(childValueRangeDescriptorList.size());
         for (ValueRangeDescriptor<Solution_> valueRangeDescriptor : childValueRangeDescriptorList) {

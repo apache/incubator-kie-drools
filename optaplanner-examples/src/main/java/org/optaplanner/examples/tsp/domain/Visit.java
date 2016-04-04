@@ -34,6 +34,7 @@ public class Visit extends AbstractPersistable implements Standstill {
     // Planning variables: changes during planning, between score calculations.
     private Standstill previousStandstill;
 
+    @Override
     public Location getLocation() {
         return location;
     }
@@ -79,6 +80,7 @@ public class Visit extends AbstractPersistable implements Standstill {
      * @param standstill never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
+    @Override
     public long getDistanceTo(Standstill standstill) {
         return location.getDistanceTo(standstill.getLocation());
     }

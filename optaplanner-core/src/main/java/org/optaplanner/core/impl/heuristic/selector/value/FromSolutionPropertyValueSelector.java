@@ -50,6 +50,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
         valueRangeMightContainEntity = valueRangeDescriptor.mightContainEntity();
     }
 
+    @Override
     public GenuineVariableDescriptor getVariableDescriptor() {
         return valueRangeDescriptor.getVariableDescriptor();
     }
@@ -109,26 +110,32 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         return valueRangeDescriptor.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return randomSelection || !isCountable();
     }
 
+    @Override
     public long getSize(Object entity) {
         return getSize();
     }
 
+    @Override
     public long getSize() {
         return ((CountableValueRange<?>) cachedValueRange).getSize();
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         return iterator();
     }
 
+    @Override
     public Iterator<Object> iterator() {
         checkCachedEntityListIsDirty();
         if (!randomSelection) {
@@ -138,6 +145,7 @@ public class FromSolutionPropertyValueSelector extends AbstractValueSelector
         }
     }
 
+    @Override
     public Iterator<Object> endingIterator(Object entity) {
        return endingIterator();
     }

@@ -99,6 +99,7 @@ public class Employee extends AbstractPersistable implements Labeled {
         this.shiftOnRequestMap = shiftOnRequestMap;
     }
 
+    @Override
     public String getLabel() {
         return "Employee " + name;
     }

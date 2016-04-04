@@ -256,6 +256,7 @@ public class TennisPanel extends SolutionPanel<TennisSolution> {
             this.teamAssignment = teamAssignment;
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 2));
             listFieldsPanel.add(new JLabel("Team:"));

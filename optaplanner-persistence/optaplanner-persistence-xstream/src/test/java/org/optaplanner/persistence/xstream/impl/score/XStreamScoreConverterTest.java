@@ -74,6 +74,7 @@ public class XStreamScoreConverterTest {
             this.score = score;
         }
 
+        @Override
         public SimpleScore getScore() {
             return score;
         }
@@ -96,6 +97,7 @@ public class XStreamScoreConverterTest {
             this.score = score;
         }
 
+        @Override
         public SimpleLongScore getScore() {
             return score;
         }
@@ -118,6 +120,7 @@ public class XStreamScoreConverterTest {
             this.score = score;
         }
 
+        @Override
         public SimpleDoubleScore getScore() {
             return score;
         }
@@ -140,6 +143,7 @@ public class XStreamScoreConverterTest {
             this.score = score;
         }
 
+        @Override
         public SimpleBigDecimalScore getScore() {
             return score;
         }
@@ -166,6 +170,7 @@ public class XStreamScoreConverterTest {
             this.score = score;
         }
 
+        @Override
         public HardSoftScore getScore() {
             return score;
         }
@@ -188,6 +193,7 @@ public class XStreamScoreConverterTest {
             this.score = score;
         }
 
+        @Override
         public HardSoftLongScore getScore() {
             return score;
         }
@@ -210,6 +216,7 @@ public class XStreamScoreConverterTest {
             this.score = score;
         }
 
+        @Override
         public HardSoftDoubleScore getScore() {
             return score;
         }
@@ -233,6 +240,7 @@ public class XStreamScoreConverterTest {
             this.score = score;
         }
 
+        @Override
         public HardSoftBigDecimalScore getScore() {
             return score;
         }
@@ -259,6 +267,7 @@ public class XStreamScoreConverterTest {
             this.score = score;
         }
 
+        @Override
         public HardMediumSoftScore getScore() {
             return score;
         }
@@ -281,6 +290,7 @@ public class XStreamScoreConverterTest {
             this.score = score;
         }
 
+        @Override
         public HardMediumSoftLongScore getScore() {
             return score;
         }
@@ -307,6 +317,7 @@ public class XStreamScoreConverterTest {
             this.score = score;
         }
 
+        @Override
         public BendableScore getScore() {
             return score;
         }
@@ -329,6 +340,7 @@ public class XStreamScoreConverterTest {
             this.score = score;
         }
 
+        @Override
         public BendableLongScore getScore() {
             return score;
         }
@@ -352,6 +364,7 @@ public class XStreamScoreConverterTest {
             this.score = score;
         }
 
+        @Override
         public BendableBigDecimalScore getScore() {
             return score;
         }

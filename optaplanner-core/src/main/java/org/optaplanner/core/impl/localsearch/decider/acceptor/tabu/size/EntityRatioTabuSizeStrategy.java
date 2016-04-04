@@ -30,6 +30,7 @@ public class EntityRatioTabuSizeStrategy extends AbstractTabuSizeStrategy {
         }
     }
 
+    @Override
     public int determineTabuSize(LocalSearchStepScope stepScope) {
         // TODO we might want to cache the entityCount if and only if moves don't add/remove entities
         int entityCount = stepScope.getPhaseScope().getWorkingEntityCount();

@@ -67,6 +67,7 @@ public class TestdataExtendedThirdPartyEntity extends TestdataThirdPartyEntityPo
     // Complex methods
     // ************************************************************************
 
+    @Override
     @PlanningVariable(valueRangeProviderRefs = "valueRange")
     public TestdataValue getValue() {
         return super.getValue();

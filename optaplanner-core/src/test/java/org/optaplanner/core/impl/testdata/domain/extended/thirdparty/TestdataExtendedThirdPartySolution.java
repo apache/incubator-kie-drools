@@ -69,12 +69,14 @@ public class TestdataExtendedThirdPartySolution extends TestdataThirdPartySoluti
     // Complex methods
     // ************************************************************************
 
+    @Override
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
     public List<TestdataValue> getValueList() {
         return super.getValueList();
     }
 
+    @Override
     @PlanningEntityCollectionProperty
     public List<TestdataThirdPartyEntityPojo> getEntityList() {
         return super.getEntityList();

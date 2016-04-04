@@ -44,12 +44,14 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
         super(withoutDao);
     }
 
+    @Override
     public String getInputFileSuffix() {
         return DEFAULT_INPUT_FILE_SUFFIX;
     }
 
     public abstract XslxInputBuilder<Solution_> createXslxInputBuilder();
 
+    @Override
     public Solution_ readSolution(File inputFile) {
         try (InputStream in = new BufferedInputStream(new FileInputStream(inputFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);

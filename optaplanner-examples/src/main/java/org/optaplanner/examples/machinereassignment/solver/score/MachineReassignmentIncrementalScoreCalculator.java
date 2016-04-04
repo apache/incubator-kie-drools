@@ -60,6 +60,7 @@ public class MachineReassignmentIncrementalScoreCalculator
     private long hardScore;
     private long softScore;
 
+    @Override
     public void resetWorkingSolution(MachineReassignment machineReassignment) {
         this.machineReassignment = machineReassignment;
         hardScore = 0L;
@@ -89,27 +90,33 @@ public class MachineReassignmentIncrementalScoreCalculator
         }
     }
 
+    @Override
     public void beforeEntityAdded(Object entity) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(Object entity) {
         // TODO the maps should probably be adjusted
         insert((MrProcessAssignment) entity);
     }
 
+    @Override
     public void beforeVariableChanged(Object entity, String variableName) {
         retract((MrProcessAssignment) entity);
     }
 
+    @Override
     public void afterVariableChanged(Object entity, String variableName) {
         insert((MrProcessAssignment) entity);
     }
 
+    @Override
     public void beforeEntityRemoved(Object entity) {
         retract((MrProcessAssignment) entity);
     }
 
+    @Override
     public void afterEntityRemoved(Object entity) {
         // Do nothing
         // TODO the maps should probably be adjusted
@@ -135,6 +142,7 @@ public class MachineReassignmentIncrementalScoreCalculator
         }
     }
 
+    @Override
     public HardSoftLongScore calculateScore() {
         return HardSoftLongScore.valueOf(hardScore, softScore);
     }

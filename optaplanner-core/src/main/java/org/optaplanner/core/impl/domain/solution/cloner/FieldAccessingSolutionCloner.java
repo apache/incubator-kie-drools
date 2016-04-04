@@ -70,6 +70,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
     // Worker methods
     // ************************************************************************
 
+    @Override
     public Solution_ cloneSolution(Solution_ originalSolution) {
         return new FieldAccessingSolutionClonerRun().cloneSolution(originalSolution);
     }

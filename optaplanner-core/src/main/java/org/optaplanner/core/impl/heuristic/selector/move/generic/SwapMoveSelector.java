@@ -112,18 +112,22 @@ public class SwapMoveSelector extends GenericMoveSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         return leftEntitySelector.isCountable() && rightEntitySelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return randomSelection || leftEntitySelector.isNeverEnding() || rightEntitySelector.isNeverEnding();
     }
 
+    @Override
     public long getSize() {
         return AbstractOriginalSwapIterator.getSize(leftEntitySelector, rightEntitySelector);
     }
 
+    @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
             return new AbstractOriginalSwapIterator<Move, Object>(leftEntitySelector, rightEntitySelector) {

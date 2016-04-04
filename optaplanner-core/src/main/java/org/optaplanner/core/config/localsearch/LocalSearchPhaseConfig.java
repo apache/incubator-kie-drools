@@ -99,6 +99,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
     // Builder methods
     // ************************************************************************
 
+    @Override
     public LocalSearchPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
@@ -232,6 +233,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
         return moveSelector;
     }
 
+    @Override
     public void inherit(LocalSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         localSearchType = ConfigUtils.inheritOverwritableProperty(localSearchType,

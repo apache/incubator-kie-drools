@@ -55,10 +55,12 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         constraintMatchTotalMap = constraintMatchEnabled ? new LinkedHashMap<>() : null;
     }
 
+    @Override
     public boolean isConstraintMatchEnabled() {
         return constraintMatchEnabled;
     }
 
+    @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
         return constraintMatchTotalMap.values();
     }

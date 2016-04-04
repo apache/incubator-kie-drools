@@ -47,11 +47,13 @@ public class HardMediumSoftLongScoreHibernateTypeTest extends AbstractScoreHiber
             this.score = score;
         }
 
+        @Override
         @Columns(columns = {@Column(name = "hardScore"), @Column(name = "mediumScore"), @Column(name = "softScore")})
         public HardMediumSoftLongScore getScore() {
             return score;
         }
 
+        @Override
         public void setScore(HardMediumSoftLongScore score) {
             this.score = score;
         }

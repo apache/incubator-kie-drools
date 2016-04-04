@@ -39,12 +39,14 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<Tra
         super(new TravelingTournamentDao());
     }
 
+    @Override
     public TxtInputBuilder<TravelingTournament> createTxtInputBuilder() {
         return new TravelingTournamentInputBuilder();
     }
 
     public static class TravelingTournamentInputBuilder extends TxtInputBuilder<TravelingTournament> {
 
+        @Override
         public TravelingTournament readSolution() throws IOException {
             TravelingTournament travelingTournament = new TravelingTournament();
             travelingTournament.setId(0L);

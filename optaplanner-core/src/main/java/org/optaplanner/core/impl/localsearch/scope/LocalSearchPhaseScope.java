@@ -33,6 +33,7 @@ public class LocalSearchPhaseScope<Solution_> extends AbstractPhaseScope<Solutio
         lastCompletedStepScope.setTimeGradient(0.0);
     }
 
+    @Override
     public LocalSearchStepScope<Solution_> getLastCompletedStepScope() {
         return lastCompletedStepScope;
     }

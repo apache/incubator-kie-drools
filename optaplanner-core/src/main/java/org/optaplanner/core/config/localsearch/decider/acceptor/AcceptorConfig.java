@@ -419,6 +419,7 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
         }
     }
 
+    @Override
     public void inherit(AcceptorConfig inheritedConfig) {
         acceptorClassList = ConfigUtils.inheritMergeableListProperty(acceptorClassList,
                 inheritedConfig.getAcceptorClassList());

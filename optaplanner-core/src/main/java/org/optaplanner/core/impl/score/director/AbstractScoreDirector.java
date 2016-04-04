@@ -74,22 +74,27 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         variableListenerSupport.linkVariableListeners();
     }
 
+    @Override
     public Factory_ getScoreDirectorFactory() {
         return scoreDirectorFactory;
     }
 
+    @Override
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return scoreDirectorFactory.getSolutionDescriptor();
     }
 
+    @Override
     public ScoreDefinition getScoreDefinition() {
         return scoreDirectorFactory.getScoreDefinition();
     }
 
+    @Override
     public Solution_ getWorkingSolution() {
         return workingSolution;
     }
 
+    @Override
     public long getWorkingEntityListRevision() {
         return workingEntityListRevision;
     }
@@ -98,18 +103,22 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         return allChangesWillBeUndoneBeforeStepEnds;
     }
 
+    @Override
     public void setAllChangesWillBeUndoneBeforeStepEnds(boolean allChangesWillBeUndoneBeforeStepEnds) {
         this.allChangesWillBeUndoneBeforeStepEnds = allChangesWillBeUndoneBeforeStepEnds;
     }
 
+    @Override
     public long getCalculateCount() {
         return calculateCount;
     }
 
+    @Override
     public void resetCalculateCount() {
         this.calculateCount = 0L;
     }
 
+    @Override
     public SupplyManager getSupplyManager() {
         return variableListenerSupport;
     }
@@ -118,12 +127,14 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     // Complex methods
     // ************************************************************************
 
+    @Override
     public void setWorkingSolution(Solution_ workingSolution) {
         this.workingSolution = workingSolution;
         variableListenerSupport.resetWorkingSolution();
         setWorkingEntityListDirty();
     }
 
+    @Override
     public boolean isWorkingEntityListDirty(long expectedWorkingEntityListRevision) {
         return workingEntityListRevision != expectedWorkingEntityListRevision;
     }
@@ -132,10 +143,12 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         workingEntityListRevision++;
     }
 
+    @Override
     public Solution_ cloneWorkingSolution() {
         return cloneSolution(workingSolution);
     }
 
+    @Override
     public Solution_ cloneSolution(Solution_ originalSolution) {
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         Score originalScore = solutionDescriptor.getScore(originalSolution);
@@ -167,18 +180,22 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         return cloneSolution;
     }
 
+    @Override
     public int getWorkingEntityCount() {
         return getSolutionDescriptor().getEntityCount(workingSolution);
     }
 
+    @Override
     public List<Object> getWorkingEntityList() {
         return getSolutionDescriptor().getEntityList(workingSolution);
     }
 
+    @Override
     public int getWorkingValueCount() {
         return getSolutionDescriptor().getValueCount(workingSolution);
     }
 
+    @Override
     public int countWorkingSolutionUninitializedVariables() {
         return getSolutionDescriptor().countUninitializedVariables(workingSolution);
     }
@@ -193,6 +210,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         calculateCount++;
     }
 
+    @Override
     public AbstractScoreDirector<Solution_, Factory_> clone() {
         // Breaks incremental score calculation.
         // Subclasses should overwrite this method to avoid breaking it if possible.
@@ -202,6 +220,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         return clone;
     }
 
+    @Override
     public void dispose() {
         variableListenerSupport.clearWorkingSolution();
     }
@@ -210,30 +229,36 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     // Entity/variable add/change/remove methods
     // ************************************************************************
 
+    @Override
     public final void beforeEntityAdded(Object entity) {
         beforeEntityAdded(getSolutionDescriptor().findEntityDescriptorOrFail(entity.getClass()), entity);
     }
 
+    @Override
     public final void afterEntityAdded(Object entity) {
         afterEntityAdded(getSolutionDescriptor().findEntityDescriptorOrFail(entity.getClass()), entity);
     }
 
+    @Override
     public final void beforeVariableChanged(Object entity, String variableName) {
         VariableDescriptor variableDescriptor = getSolutionDescriptor()
                 .findVariableDescriptorOrFail(entity, variableName);
         beforeVariableChanged(variableDescriptor, entity);
     }
 
+    @Override
     public final void afterVariableChanged(Object entity, String variableName) {
         VariableDescriptor variableDescriptor = getSolutionDescriptor()
                 .findVariableDescriptorOrFail(entity, variableName);
         afterVariableChanged(variableDescriptor, entity);
     }
 
+    @Override
     public final void beforeEntityRemoved(Object entity) {
         beforeEntityRemoved(getSolutionDescriptor().findEntityDescriptorOrFail(entity.getClass()), entity);
     }
 
+    @Override
     public final void afterEntityRemoved(Object entity) {
         afterEntityRemoved(getSolutionDescriptor().findEntityDescriptorOrFail(entity.getClass()), entity);
     }
@@ -249,14 +274,17 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         }
     }
 
+    @Override
     public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
         variableListenerSupport.beforeVariableChanged(variableDescriptor, entity);
     }
 
+    @Override
     public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
         variableListenerSupport.afterVariableChanged(variableDescriptor, entity);
     }
 
+    @Override
     public void changeVariableFacade(VariableDescriptor variableDescriptor, Object entity, Object newValue) {
         beforeVariableChanged(variableDescriptor, entity);
         variableDescriptor.setValue(entity, newValue);
@@ -278,26 +306,32 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     // Problem fact add/change/remove methods
     // ************************************************************************
 
+    @Override
     public void beforeProblemFactAdded(Object problemFact) {
         // Do nothing
     }
 
+    @Override
     public void afterProblemFactAdded(Object problemFact) {
         variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
     }
 
+    @Override
     public void beforeProblemFactChanged(Object problemFact) {
         // Do nothing
     }
 
+    @Override
     public void afterProblemFactChanged(Object problemFact) {
         variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
     }
 
+    @Override
     public void beforeProblemFactRemoved(Object problemFact) {
         // Do nothing
     }
 
+    @Override
     public void afterProblemFactRemoved(Object problemFact) {
         variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
     }
@@ -306,6 +340,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     // Assert methods
     // ************************************************************************
 
+    @Override
     public void assertExpectedWorkingScore(Score expectedWorkingScore, Object completedAction) {
         Score workingScore = calculateScore();
         if (!expectedWorkingScore.equals(workingScore)) {
@@ -316,6 +351,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         }
     }
 
+    @Override
     public void assertShadowVariablesAreNotStale(Score expectedWorkingScore, Object completedAction) {
         SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
         Map<Object, Map<ShadowVariableDescriptor, Object>> entityToShadowVariableValuesMap = new IdentityHashMap<>();
@@ -365,6 +401,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         }
     }
 
+    @Override
     public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
         InnerScoreDirectorFactory<Solution_> assertionScoreDirectorFactory
                 = scoreDirectorFactory.getAssertionScoreDirectorFactory();

@@ -61,29 +61,35 @@ public class MoveListFactoryToMoveSelectorBridge extends AbstractMoveSelector
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void constructCache(DefaultSolverScope solverScope) {
         cachedMoveList = moveListFactory.createMoveList(solverScope.getScoreDirector().getWorkingSolution());
         logger.trace("    Created cachedMoveList: size ({}), moveSelector ({}).",
                 cachedMoveList.size(), this);
     }
 
+    @Override
     public void disposeCache(DefaultSolverScope solverScope) {
         cachedMoveList = null;
     }
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         // CachedListRandomIterator is neverEnding
         return randomSelection;
     }
 
+    @Override
     public long getSize() {
         return (long) cachedMoveList.size();
     }
 
+    @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
             return cachedMoveList.iterator();

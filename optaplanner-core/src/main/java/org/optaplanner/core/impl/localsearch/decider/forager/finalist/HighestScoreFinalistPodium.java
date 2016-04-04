@@ -35,6 +35,7 @@ public class HighestScoreFinalistPodium extends AbstractFinalistPodium {
         finalistScore = null;
     }
 
+    @Override
     public void addMove(LocalSearchMoveScope moveScope) {
         boolean accepted = moveScope.getAccepted();
         if (finalistIsAccepted && !accepted) {

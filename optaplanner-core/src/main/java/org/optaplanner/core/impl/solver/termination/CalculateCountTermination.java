@@ -36,10 +36,12 @@ public class CalculateCountTermination extends AbstractTermination {
     // Terminated methods
     // ************************************************************************
 
+    @Override
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
         return isTerminated(solverScope.getScoreDirector());
     }
 
+    @Override
     public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         return isTerminated(phaseScope.getScoreDirector());
     }
@@ -53,10 +55,12 @@ public class CalculateCountTermination extends AbstractTermination {
     // Time gradient methods
     // ************************************************************************
 
+    @Override
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         return calculateTimeGradient(solverScope.getScoreDirector());
     }
 
+    @Override
     public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         return calculateTimeGradient(phaseScope.getScoreDirector());
     }

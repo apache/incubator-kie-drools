@@ -41,10 +41,12 @@ public class ExternalizedCollectionInverseVariableSupply implements StatefulVari
         this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
+    @Override
     public VariableDescriptor getSourceVariableDescriptor() {
         return sourceVariableDescriptor;
     }
 
+    @Override
     public void resetWorkingSolution(ScoreDirector scoreDirector) {
         EntityDescriptor entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
         List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
@@ -54,30 +56,37 @@ public class ExternalizedCollectionInverseVariableSupply implements StatefulVari
         }
     }
 
+    @Override
     public void clearWorkingSolution(ScoreDirector scoreDirector) {
         inverseEntitySetMap = null;
     }
 
+    @Override
     public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
+    @Override
     public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
         retract(scoreDirector, entity);
     }
 
+    @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
+    @Override
     public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
         retract(scoreDirector, entity);
     }
 
+    @Override
     public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
         // Do nothing
     }
@@ -119,6 +128,7 @@ public class ExternalizedCollectionInverseVariableSupply implements StatefulVari
         }
     }
 
+    @Override
     public Collection<?> getInverseCollection(Object value) {
         Set<Object> inverseEntitySet = inverseEntitySetMap.get(value);
         if (inverseEntitySet == null) {

@@ -138,6 +138,7 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public PlannerBenchmarkConfig getPlannerBenchmarkConfig() {
         if (plannerBenchmarkConfig == null) {
             throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") is null," +
@@ -146,6 +147,7 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
         return plannerBenchmarkConfig;
     }
 
+    @Override
     public PlannerBenchmark buildPlannerBenchmark() {
         if (plannerBenchmarkConfig == null) {
             throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") is null," +

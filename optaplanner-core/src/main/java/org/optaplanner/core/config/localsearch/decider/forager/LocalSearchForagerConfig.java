@@ -97,6 +97,7 @@ public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerC
         return new AcceptedForager(finalistPodiumType_.buildFinalistPodium(), pickEarlyType_, acceptedCountLimit_, breakTieRandomly_);
     }
 
+    @Override
     public void inherit(LocalSearchForagerConfig inheritedConfig) {
         foragerClass = ConfigUtils.inheritOverwritableProperty(foragerClass,
                 inheritedConfig.getForagerClass());

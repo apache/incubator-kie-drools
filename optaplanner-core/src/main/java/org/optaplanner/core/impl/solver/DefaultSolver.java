@@ -88,6 +88,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
     }
 
+    @Override
     public InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory() {
         return scoreDirectorFactory;
     }
@@ -129,14 +130,17 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
     // Complex getters
     // ************************************************************************
 
+    @Override
     public Solution_ getBestSolution() {
         return solverScope.getBestSolution();
     }
 
+    @Override
     public Score getBestScore() {
         return solverScope.getBestScore();
     }
 
+    @Override
     public long getTimeMillisSpent() {
         Long endingSystemTimeMillis = solverScope.getEndingSystemTimeMillis();
         if (endingSystemTimeMillis == null) {
@@ -145,22 +149,27 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         return endingSystemTimeMillis - solverScope.getStartingSystemTimeMillis();
     }
 
+    @Override
     public boolean isSolving() {
         return solving.get();
     }
 
+    @Override
     public boolean terminateEarly() {
         return basicPlumbingTermination.terminateEarly();
     }
 
+    @Override
     public boolean isTerminateEarly() {
         return basicPlumbingTermination.isTerminateEarly();
     }
 
+    @Override
     public boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange) {
         return basicPlumbingTermination.addProblemFactChange(problemFactChange);
     }
 
+    @Override
     public boolean isEveryProblemFactChangeProcessed() {
         return basicPlumbingTermination.isEveryProblemFactChangeProcessed();
     }
@@ -169,6 +178,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public final Solution_ solve(Solution_ planningProblem) {
         if (planningProblem == null) {
             throw new IllegalArgumentException("The planningProblem (" + planningProblem
@@ -187,6 +197,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         return solverScope.getBestSolution();
     }
 
+    @Override
     public Solution solve(Solution planningProblem) {
         return (Solution) solve((Solution_) planningProblem);
     }
@@ -290,10 +301,12 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         return score;
     }
 
+    @Override
     public void addEventListener(SolverEventListener<Solution_> eventListener) {
         solverEventSupport.addEventListener(eventListener);
     }
 
+    @Override
     public void removeEventListener(SolverEventListener<Solution_> eventListener) {
         solverEventSupport.removeEventListener(eventListener);
     }

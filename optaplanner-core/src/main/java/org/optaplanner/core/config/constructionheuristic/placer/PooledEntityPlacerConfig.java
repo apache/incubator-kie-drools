@@ -58,6 +58,7 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
     // Builder methods
     // ************************************************************************
 
+    @Override
     public PooledEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
         MoveSelectorConfig moveSelectorConfig;
         if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
@@ -137,6 +138,7 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
         return changeMoveSelectorConfig;
     }
 
+    @Override
     public void inherit(PooledEntityPlacerConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(

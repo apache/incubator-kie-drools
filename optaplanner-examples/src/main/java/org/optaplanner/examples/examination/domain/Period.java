@@ -78,6 +78,7 @@ public class Period extends AbstractPersistable implements Labeled {
         this.frontLoadLast = frontLoadLast;
     }
 
+    @Override
     public String getLabel() {
         return startDateTimeString;
     }

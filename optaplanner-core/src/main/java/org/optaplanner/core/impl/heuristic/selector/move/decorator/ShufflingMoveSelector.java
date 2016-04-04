@@ -33,10 +33,12 @@ public class ShufflingMoveSelector extends AbstractCachingMoveSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isNeverEnding() {
         return false;
     }
 
+    @Override
     public Iterator<Move> iterator() {
         Collections.shuffle(cachedMoveList, workingRandom);
         logger.trace("    Shuffled cachedMoveList with size ({}) in moveSelector({}).",

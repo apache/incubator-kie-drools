@@ -126,6 +126,7 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
         JButton addComputerButton = SwingUtils.makeSmallButton(new JButton(addCloudComputerIcon));
         addComputerButton.setToolTipText("Add computer");
         addComputerButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 CloudComputer computer = new CloudComputer();
                 computer.setCpuPower(12);
@@ -139,6 +140,7 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
         JButton addProcessButton = SwingUtils.makeSmallButton(new JButton(addCloudProcessIcon));
         addProcessButton.setToolTipText("Add process");
         addProcessButton.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 CloudProcess process = new CloudProcess();
                 process.setRequiredCpuPower(3);
@@ -335,6 +337,7 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
             this.process = process;
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(1, 2));
             listFieldsPanel.add(new JLabel("Computer:"));

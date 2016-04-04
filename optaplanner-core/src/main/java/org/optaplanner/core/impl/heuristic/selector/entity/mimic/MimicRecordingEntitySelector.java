@@ -48,22 +48,27 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
     // Worker methods
     // ************************************************************************
 
+    @Override
     public EntityDescriptor getEntityDescriptor() {
         return childEntitySelector.getEntityDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return childEntitySelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return childEntitySelector.isNeverEnding();
     }
 
+    @Override
     public long getSize() {
         return childEntitySelector.getSize();
     }
 
+    @Override
     public Iterator<Object> iterator() {
         return new RecordingEntityIterator(childEntitySelector.iterator());
     }
@@ -76,6 +81,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
             this.childEntityIterator = childEntityIterator;
         }
 
+        @Override
         public boolean hasNext() {
             boolean hasNext = childEntityIterator.hasNext();
             for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
@@ -84,6 +90,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
             return hasNext;
         }
 
+        @Override
         public Object next() {
             Object next = childEntityIterator.next();
             for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
@@ -94,15 +101,18 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
 
     }
 
+    @Override
     public Iterator<Object> endingIterator() {
         // No recording, because the endingIterator() is used for determining size
         return childEntitySelector.endingIterator();
     }
 
+    @Override
     public ListIterator<Object> listIterator() {
         return new RecordingEntityListIterator(childEntitySelector.listIterator());
     }
 
+    @Override
     public ListIterator<Object> listIterator(int index) {
         return new RecordingEntityListIterator(childEntitySelector.listIterator(index));
     }
@@ -115,6 +125,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
             this.childEntityIterator = childEntityIterator;
         }
 
+        @Override
         public boolean hasNext() {
             boolean hasNext = childEntityIterator.hasNext();
             for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
@@ -123,6 +134,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
             return hasNext;
         }
 
+        @Override
         public Object next() {
             Object next = childEntityIterator.next();
             for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
@@ -131,6 +143,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
             return next;
         }
 
+        @Override
         public boolean hasPrevious() {
             boolean hasPrevious = childEntityIterator.hasPrevious();
             for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
@@ -140,6 +153,7 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
             return hasPrevious;
         }
 
+        @Override
         public Object previous() {
             Object previous = childEntityIterator.previous();
             for (MimicReplayingEntitySelector replayingEntitySelector : replayingEntitySelectorList) {
@@ -149,10 +163,12 @@ public class MimicRecordingEntitySelector extends AbstractEntitySelector impleme
             return previous;
         }
 
+        @Override
         public int nextIndex() {
             return childEntityIterator.nextIndex();
         }
 
+        @Override
         public int previousIndex() {
             return childEntityIterator.previousIndex();
         }

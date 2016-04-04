@@ -31,6 +31,7 @@ import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 
 public class CoachShuttleGatheringEasyScoreCalculator implements EasyScoreCalculator<CoachShuttleGatheringSolution> {
 
+    @Override
     public HardSoftLongScore calculateScore(CoachShuttleGatheringSolution solution) {
         long hardScore = 0L;
         long softScore = 0L;

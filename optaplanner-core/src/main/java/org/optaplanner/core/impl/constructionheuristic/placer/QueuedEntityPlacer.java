@@ -39,6 +39,7 @@ public class QueuedEntityPlacer extends AbstractEntityPlacer implements EntityPl
         }
     }
 
+    @Override
     public Iterator<Placement> iterator() {
         return new QueuedEntityPlacingIterator(entitySelector.iterator());
     }
@@ -53,6 +54,7 @@ public class QueuedEntityPlacer extends AbstractEntityPlacer implements EntityPl
             moveSelectorIterator = Iterators.emptyIterator();
         }
 
+        @Override
         protected Placement createUpcomingSelection() {
             Iterator<Move> moveIterator = null;
             // Skip empty placements to avoid no-operation steps

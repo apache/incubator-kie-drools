@@ -39,10 +39,12 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
         return 1;
     }
 
+    @Override
     public Class<SimpleScore> getScoreClass() {
         return SimpleScore.class;
     }
 
+    @Override
     public SimpleScore parseScore(String scoreString) {
         return SimpleScore.parseScore(scoreString);
     }
@@ -56,16 +58,19 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
         return SimpleScore.valueOf((Integer) levelNumbers[0]);
     }
 
+    @Override
     public SimpleScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new SimpleScoreHolder(constraintMatchEnabled);
     }
 
+    @Override
     public SimpleScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return SimpleScore.valueOf(
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getScore() : Integer.MAX_VALUE);
     }
 
+    @Override
     public SimpleScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return SimpleScore.valueOf(

@@ -56,6 +56,7 @@ public class StepCountingHillClimbingAcceptor extends AbstractAcceptor {
         count = 0;
     }
 
+    @Override
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
         Score lastStepScore = moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore();
         Score moveScore = moveScope.getScore();

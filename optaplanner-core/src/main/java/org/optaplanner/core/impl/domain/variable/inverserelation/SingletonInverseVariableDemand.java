@@ -40,6 +40,7 @@ public class SingletonInverseVariableDemand implements Demand<SingletonInverseVa
     // Creation method
     // ************************************************************************
 
+    @Override
     public SingletonInverseVariableSupply createExternalizedSupply(InnerScoreDirector scoreDirector) {
         return new ExternalizedSingletonInverseVariableSupply(sourceVariableDescriptor);
     }

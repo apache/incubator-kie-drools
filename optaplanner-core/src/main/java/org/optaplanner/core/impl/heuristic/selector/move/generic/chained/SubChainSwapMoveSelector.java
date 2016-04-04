@@ -77,18 +77,22 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         return leftSubChainSelector.isCountable() && rightSubChainSelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return randomSelection || leftSubChainSelector.isNeverEnding() || rightSubChainSelector.isNeverEnding();
     }
 
+    @Override
     public long getSize() {
         return AbstractOriginalSwapIterator.getSize(leftSubChainSelector, rightSubChainSelector);
     }
 
+    @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
             return new AbstractOriginalSwapIterator<Move, SubChain>(leftSubChainSelector, rightSubChainSelector) {

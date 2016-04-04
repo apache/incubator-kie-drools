@@ -39,12 +39,14 @@ public abstract class AbstractTxtSolutionExporter<Solution_> extends AbstractSol
         super(withoutDao);
     }
 
+    @Override
     public String getOutputFileSuffix() {
         return DEFAULT_OUTPUT_FILE_SUFFIX;
     }
 
     public abstract TxtOutputBuilder<Solution_> createTxtOutputBuilder();
 
+    @Override
     public void writeSolution(Solution_ solution, File outputFile) {
         try (BufferedWriter writer =
                      new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"))) {

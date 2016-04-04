@@ -43,12 +43,14 @@ public class CoachShuttleGatheringExporter extends AbstractTxtSolutionExporter<C
         return OUTPUT_FILE_SUFFIX;
     }
 
+    @Override
     public TxtOutputBuilder<CoachShuttleGatheringSolution> createTxtOutputBuilder() {
         return new CoachShuttleGatheringOutputBuilder();
     }
 
     public static class CoachShuttleGatheringOutputBuilder extends TxtOutputBuilder<CoachShuttleGatheringSolution> {
 
+        @Override
         public void writeSolution() throws IOException {
             bufferedWriter.append("VEHICLE_ID;TOUR_POSITION;LOCATION_ID;LOCATION_TYPE\n");
             for (Bus bus : solution.getBusList()) {

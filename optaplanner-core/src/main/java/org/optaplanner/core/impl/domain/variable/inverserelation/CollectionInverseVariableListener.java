@@ -33,26 +33,32 @@ public class CollectionInverseVariableListener implements VariableListener<Objec
         this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
+    @Override
     public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
+    @Override
     public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
         retract(scoreDirector, entity);
     }
 
+    @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
+    @Override
     public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
         retract(scoreDirector, entity);
     }
 
+    @Override
     public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
         // Do nothing
     }
@@ -115,6 +121,7 @@ public class CollectionInverseVariableListener implements VariableListener<Objec
         }
     }
 
+    @Override
     public Collection<?> getInverseCollection(Object planningValue) {
         return (Collection<?>) shadowVariableDescriptor.getValue(planningValue);
     }

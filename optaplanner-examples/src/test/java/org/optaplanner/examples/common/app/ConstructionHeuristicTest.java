@@ -62,6 +62,7 @@ public abstract class ConstructionHeuristicTest<Solution_> extends PhaseTest<Sol
         this.constructionHeuristicType = constructionHeuristicType;
     }
 
+    @Override
     protected SolverFactory<Solution_> buildSolverFactory() {
         SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
         SolverConfig solverConfig = solverFactory.getSolverConfig();

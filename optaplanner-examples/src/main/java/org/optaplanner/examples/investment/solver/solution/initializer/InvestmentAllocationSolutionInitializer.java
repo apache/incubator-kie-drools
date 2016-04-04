@@ -28,6 +28,7 @@ public class InvestmentAllocationSolutionInitializer extends AbstractCustomPhase
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Override
     public void changeWorkingSolution(ScoreDirector<InvestmentSolution> scoreDirector) {
         InvestmentSolution solution = scoreDirector.getWorkingSolution();
         distributeQuantityEvenly(scoreDirector, solution);

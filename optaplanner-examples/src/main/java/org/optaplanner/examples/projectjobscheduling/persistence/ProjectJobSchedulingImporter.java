@@ -55,6 +55,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
         super(new ProjectJobSchedulingDao());
     }
 
+    @Override
     public TxtInputBuilder<Schedule> createTxtInputBuilder() {
         return new ProjectJobSchedulingInputBuilder();
     }
@@ -75,6 +76,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
 
         private Map<Project, File> projectFileMap;
 
+        @Override
         public Schedule readSolution() throws IOException {
             schedule = new Schedule();
             schedule.setId(0L);
@@ -173,6 +175,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
                 this.project = project;
             }
 
+            @Override
             public Schedule readSolution() throws IOException {
                 readHeader();
                 readResourceList();

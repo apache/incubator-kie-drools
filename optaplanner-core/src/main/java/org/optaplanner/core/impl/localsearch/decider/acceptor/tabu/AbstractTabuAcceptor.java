@@ -128,6 +128,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         }
     }
 
+    @Override
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
         int maximumTabuStepIndex = locateMaximumTabStepIndex(moveScope);
         if (maximumTabuStepIndex < 0) {

@@ -227,6 +227,7 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
                     + "</html>");
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 2));
             listFieldsPanel.add(new JLabel("Period:"));
@@ -269,14 +270,17 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
             this.period = period;
         }
 
+        @Override
         public int getIconWidth() {
             return DIAMETER;
         }
 
+        @Override
         public int getIconHeight() {
             return DIAMETER;
         }
 
+        @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
             g.setColor(TangoColorFactory.ALUMINIUM_6);
             g.fillOval(x, y, DIAMETER, DIAMETER);
@@ -299,14 +303,17 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
             this.room = room;
         }
 
+        @Override
         public int getIconWidth() {
             return ICON_WIDTH;
         }
 
+        @Override
         public int getIconHeight() {
             return ICON_HEIGHT;
         }
 
+        @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
             g.setColor(TangoColorFactory.ALUMINIUM_6);
             g.fillRect(x + 1, y, ICON_WIDTH - 2, ICON_HEIGHT);
@@ -331,14 +338,17 @@ public class ExaminationPanel extends SolutionPanel<Examination> {
             this.exam = exam;
         }
 
+        @Override
         public int getIconWidth() {
             return DIAMETER + ICON_WIDTH;
         }
 
+        @Override
         public int getIconHeight() {
             return DIAMETER;
         }
 
+        @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
             g.setColor(Color.WHITE);
             g.fillOval(x, y, DIAMETER, DIAMETER);

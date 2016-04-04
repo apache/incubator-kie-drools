@@ -107,22 +107,27 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
         nearbyDistanceMatrix = null;
     }
 
+    @Override
     public EntityDescriptor getEntityDescriptor() {
         return childEntitySelector.getEntityDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         return randomSelection;
     }
 
+    @Override
     public long getSize() {
         return childEntitySelector.getSize() - (discardNearbyIndexZero ? 1 : 0);
     }
 
+    @Override
     public Iterator<Object> iterator() {
         if (!randomSelection) {
             return new OriginalNearbyEntityIterator(originEntitySelector.iterator(), childEntitySelector.getSize());
@@ -131,16 +136,19 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
         }
     }
 
+    @Override
     public ListIterator<Object> listIterator() {
         // TODO Not yet implemented
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public ListIterator<Object> listIterator(int index) {
         // TODO Not yet implemented
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public Iterator<Object> endingIterator() {
         // TODO It should probably use nearby order
         // It must include the origin entity too

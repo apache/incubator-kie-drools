@@ -30,6 +30,7 @@ public class FixedSelectorProbabilityWeightFactory<Solution_, Selector_ extends 
         this.fixedProbabilityWeightMap = fixedProbabilityWeightMap;
     }
 
+    @Override
     public double createProbabilityWeight(ScoreDirector<Solution_> scoreDirector, Selector_ selector) {
         return fixedProbabilityWeightMap.get(selector);
     }

@@ -45,6 +45,7 @@ public class AnchorShadowVariableDescriptor<Solution_> extends ShadowVariableDes
         super(entityDescriptor, variableMemberAccessor);
     }
 
+    @Override
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
         processPropertyAnnotations(descriptorPolicy);
     }
@@ -53,6 +54,7 @@ public class AnchorShadowVariableDescriptor<Solution_> extends ShadowVariableDes
 
     }
 
+    @Override
     public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
         AnchorShadowVariable shadowVariableAnnotation = variableMemberAccessor.getAnnotation(AnchorShadowVariable.class);
         String sourceVariableName = shadowVariableAnnotation.sourceVariableName();

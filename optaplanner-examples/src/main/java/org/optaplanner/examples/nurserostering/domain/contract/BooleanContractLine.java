@@ -24,6 +24,7 @@ public class BooleanContractLine extends ContractLine {
     private boolean enabled;
     private int weight;
 
+    @Override
     public boolean isEnabled() {
         return enabled;
     }

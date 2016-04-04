@@ -51,12 +51,14 @@ public class CloudBalancingWebAction {
         final CloudBalance unsolvedSolution = (CloudBalance) session.getAttribute(CloudBalancingSessionAttributeName.SHOWN_SOLUTION);
 
         solver.addEventListener(new SolverEventListener<CloudBalance>() {
+            @Override
             public void bestSolutionChanged(BestSolutionChangedEvent<CloudBalance> event) {
                 CloudBalance bestSolution = event.getNewBestSolution();
                 session.setAttribute(CloudBalancingSessionAttributeName.SHOWN_SOLUTION, bestSolution);
             }
         });
         solvingExecutor.submit(new Runnable() {
+            @Override
             public void run() {
                 solver.solve(unsolvedSolution);
             }

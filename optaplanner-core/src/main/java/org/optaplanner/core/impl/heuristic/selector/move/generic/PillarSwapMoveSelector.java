@@ -74,18 +74,22 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         return leftPillarSelector.isCountable() && rightPillarSelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return randomSelection || leftPillarSelector.isNeverEnding() || rightPillarSelector.isNeverEnding();
     }
 
+    @Override
     public long getSize() {
         return AbstractOriginalSwapIterator.getSize(leftPillarSelector, rightPillarSelector);
     }
 
+    @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
             return new AbstractOriginalSwapIterator<Move, List<Object>>(leftPillarSelector, rightPillarSelector) {

@@ -222,6 +222,7 @@ public class DinnerPartyPanel extends SolutionPanel<DinnerParty> {
             }
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             List<SeatDesignation> seatDesignationList = getSolution().getSeatDesignationList();
             // Add 1 to array size to add null, which makes the entity unassigned

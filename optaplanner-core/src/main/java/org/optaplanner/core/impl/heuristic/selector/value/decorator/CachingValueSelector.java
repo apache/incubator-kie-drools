@@ -44,15 +44,18 @@ public class CachingValueSelector extends AbstractCachingValueSelector implement
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isNeverEnding() {
         // CachedListRandomIterator is neverEnding
         return randomSelection;
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         return iterator();
     }
 
+    @Override
     public Iterator<Object> iterator() {
         if (!randomSelection) {
             return cachedValueList.iterator();

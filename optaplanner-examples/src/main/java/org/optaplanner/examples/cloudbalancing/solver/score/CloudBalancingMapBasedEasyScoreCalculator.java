@@ -30,6 +30,7 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
 public class CloudBalancingMapBasedEasyScoreCalculator implements EasyScoreCalculator<CloudBalance> {
 
+    @Override
     public HardSoftScore calculateScore(CloudBalance cloudBalance) {
         int computerListSize = cloudBalance.getComputerList().size();
         Map<CloudComputer, Integer> cpuPowerUsageMap = new HashMap<>(computerListSize);

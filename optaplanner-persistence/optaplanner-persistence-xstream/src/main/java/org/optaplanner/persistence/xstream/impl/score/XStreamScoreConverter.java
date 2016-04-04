@@ -101,15 +101,18 @@ public class XStreamScoreConverter implements Converter {
         }
     }
 
+    @Override
     public boolean canConvert(Class type) {
         return scoreDefinition.getScoreClass().isAssignableFrom(type);
     }
 
+    @Override
     public void marshal(Object scoreObject, HierarchicalStreamWriter writer, MarshallingContext context) {
         String scoreString = scoreDefinition.formatScore((Score) scoreObject);
         writer.setValue(scoreString);
     }
 
+    @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
         String scoreString = reader.getValue();
         return scoreDefinition.parseScore(scoreString);

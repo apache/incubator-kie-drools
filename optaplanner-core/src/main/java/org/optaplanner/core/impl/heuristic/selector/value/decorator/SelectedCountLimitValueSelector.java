@@ -52,23 +52,28 @@ public class SelectedCountLimitValueSelector extends AbstractValueSelector imple
     // Worker methods
     // ************************************************************************
 
+    @Override
     public GenuineVariableDescriptor getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         return false;
     }
 
+    @Override
     public long getSize(Object entity) {
         long childSize = childValueSelector.getSize(entity);
         return Math.min(selectedCountLimit, childSize);
     }
 
+    @Override
     public long getSize() {
         if (!(childValueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("To use the method getSize(), the moveSelector (" + this
@@ -79,14 +84,17 @@ public class SelectedCountLimitValueSelector extends AbstractValueSelector imple
         return Math.min(selectedCountLimit, childSize);
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         return new SelectedCountLimitValueIterator(childValueSelector.iterator(entity));
     }
 
+    @Override
     public Iterator<Object> iterator() {
         return new SelectedCountLimitValueIterator(((EntityIndependentValueSelector) childValueSelector).iterator());
     }
 
+    @Override
     public Iterator<Object> endingIterator(Object entity) {
         return new SelectedCountLimitValueIterator(childValueSelector.endingIterator(entity));
     }

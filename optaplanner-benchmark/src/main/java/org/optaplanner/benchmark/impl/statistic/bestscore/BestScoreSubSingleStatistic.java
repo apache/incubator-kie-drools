@@ -40,16 +40,19 @@ public class BestScoreSubSingleStatistic<Solution_>
     // Lifecycle methods
     // ************************************************************************
 
+    @Override
     public void open(Solver<Solution_> solver) {
         solver.addEventListener(listener);
     }
 
+    @Override
     public void close(Solver<Solution_> solver) {
         solver.removeEventListener(listener);
     }
 
     private class BestScoreSubSingleStatisticListener implements SolverEventListener<Solution_> {
 
+        @Override
         public void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event) {
             pointList.add(new BestScoreStatisticPoint(event.getTimeMillisSpent(), event.getNewBestScore()));
         }

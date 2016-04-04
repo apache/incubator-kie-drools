@@ -42,6 +42,7 @@ public class CustomStepScope<Solution_> extends AbstractStepScope<Solution_> {
         return phaseScope;
     }
 
+    @Override
     public int getUninitializedVariableCount() {
         return uninitializedVariableCount;
     }

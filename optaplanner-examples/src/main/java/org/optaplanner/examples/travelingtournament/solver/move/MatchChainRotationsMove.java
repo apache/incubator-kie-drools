@@ -40,10 +40,12 @@ public class MatchChainRotationsMove extends AbstractMove {
         this.secondMatchList = secondMatchList;
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true;
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         List<Match> inverseFirstMatchList = new ArrayList<>(firstMatchList);
         Collections.reverse(inverseFirstMatchList);
@@ -73,6 +75,7 @@ public class MatchChainRotationsMove extends AbstractMove {
         TravelingTournamentMoveHelper.moveDay(scoreDirector, match, firstDay);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         List<Match> entities = new ArrayList<>(firstMatchList.size() + secondMatchList.size());
         entities.addAll(firstMatchList);
@@ -80,6 +83,7 @@ public class MatchChainRotationsMove extends AbstractMove {
         return entities;
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         List<Day> values = new ArrayList<>(firstMatchList.size() + secondMatchList.size());
         for (Match match : firstMatchList) {

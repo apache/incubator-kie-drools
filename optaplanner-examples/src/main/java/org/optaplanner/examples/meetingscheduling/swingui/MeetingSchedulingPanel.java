@@ -249,6 +249,7 @@ public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
             this.meetingAssignment = meetingAssignment;
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             // TODO Add support for moving meetings like in other examples
             JOptionPane.showMessageDialog(MeetingSchedulingPanel.this.getTopLevelAncestor(),

@@ -53,6 +53,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isNeverEnding() {
         if (randomSelection) {
             return true;
@@ -63,6 +64,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
         }
     }
 
+    @Override
     public long getSize() {
         long size = 0L;
         for (MoveSelector moveSelector : childMoveSelectorList) {
@@ -84,6 +86,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
         return size;
     }
 
+    @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
             return new OriginalCartesianProductMoveIterator();
@@ -181,6 +184,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
             }
         }
 
+        @Override
         public boolean hasNext() {
             if (empty == null) { // Only done in the first call
                 int emptyCount = 0;
@@ -197,6 +201,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
             return !empty;
         }
 
+        @Override
         public Move next() {
             List<Move> moveList = new ArrayList<>(moveIteratorList.size());
             for (int i = 0; i < moveIteratorList.size(); i++) {

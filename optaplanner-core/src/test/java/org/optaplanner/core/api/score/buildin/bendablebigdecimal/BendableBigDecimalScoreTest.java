@@ -247,6 +247,7 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
         BendableBigDecimalScore input = scoreDefinitionHSS.createScore(MINUS_FIVE, MINUS_300, MINUS_4000);
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
                 new PlannerTestUtils.OutputAsserter<BendableBigDecimalScore>() {
+                    @Override
                     public void assertOutput(BendableBigDecimalScore output) {
                         assertEquals(1, output.getHardLevelsSize());
                         assertEquals(MINUS_FIVE, output.getHardScore(0));

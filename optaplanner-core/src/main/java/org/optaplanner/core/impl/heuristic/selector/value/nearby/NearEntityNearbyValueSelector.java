@@ -116,18 +116,22 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         return childValueSelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return randomSelection || !isCountable();
     }
 
+    @Override
     public long getSize(Object entity) {
         return childValueSelector.getSize(entity) - (discardNearbyIndexZero ? 1 : 0);
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         if (!randomSelection) {
             return new OriginalEntityNearbyValueIterator(
@@ -138,6 +142,7 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
         }
     }
 
+    @Override
     public Iterator<Object> endingIterator(Object entity) {
         // TODO It should probably use nearby order
         // It must include the origin entity too

@@ -85,18 +85,22 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         return subChainSelector.isCountable() && valueSelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return randomSelection;
     }
 
+    @Override
     public long getSize() {
         return subChainSelector.getSize() * valueSelector.getSize();
     }
 
+    @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
             return new OriginalSubChainChangeMoveIterator();
@@ -120,6 +124,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             valueIterator = Iterators.emptyIterator();
         }
 
+        @Override
         protected Move createUpcomingSelection() {
             if (selectReversingMoveToo && nextReversingSelection != null) {
                 Move upcomingSelection = nextReversingSelection;
@@ -163,6 +168,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             valueIterator = Iterators.emptyIterator();
         }
 
+        @Override
         protected Move createUpcomingSelection() {
             // Ideally, this code should have read:
             //     SubChain subChain = subChainIterator.next();

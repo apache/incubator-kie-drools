@@ -59,6 +59,7 @@ public class IncrementalScoreDirectorTest {
         IncrementalScoreCalculator incrementalScoreCalculator = mock(IncrementalScoreCalculator.class);
         IncrementalScoreDirector scoreDirector = new IncrementalScoreDirector(
                 scoreDirectorFactory, false, incrementalScoreCalculator) {
+            @Override
             public Score calculateScore() {
                 return SimpleScore.valueOf(-100);
             }

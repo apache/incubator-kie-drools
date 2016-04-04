@@ -49,10 +49,12 @@ public class BusHub extends AbstractPersistable implements StopOrHub {
         this.location = location;
     }
 
+    @Override
     public List<Shuttle> getTransferShuttleList() {
         return transferShuttleList;
     }
 
+    @Override
     public void setTransferShuttleList(List<Shuttle> transferShuttleList) {
         this.transferShuttleList = transferShuttleList;
     }

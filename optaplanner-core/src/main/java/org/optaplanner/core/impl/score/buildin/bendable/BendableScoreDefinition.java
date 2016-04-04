@@ -34,10 +34,12 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
     // Worker methods
     // ************************************************************************
 
+    @Override
     public Class<BendableScore> getScoreClass() {
         return BendableScore.class;
     }
 
+    @Override
     public BendableScore parseScore(String scoreString) {
         return BendableScore.parseScore(hardLevelsSize, softLevelsSize, scoreString);
     }
@@ -70,10 +72,12 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
                 Arrays.copyOfRange(scores, hardLevelsSize, levelsSize));
     }
 
+    @Override
     public BendableScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new BendableScoreHolder(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
     }
 
+    @Override
     public BendableScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, BendableScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         int[] hardScores = new int[hardLevelsSize];
@@ -89,6 +93,7 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
         return BendableScore.valueOf(hardScores, softScores);
     }
 
+    @Override
     public BendableScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, BendableScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         int[] hardScores = new int[hardLevelsSize];

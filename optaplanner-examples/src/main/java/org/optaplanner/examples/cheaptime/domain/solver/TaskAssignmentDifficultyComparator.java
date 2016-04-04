@@ -25,6 +25,7 @@ import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 
 public class TaskAssignmentDifficultyComparator implements Comparator<TaskAssignment>, Serializable {
 
+    @Override
     public int compare(TaskAssignment a, TaskAssignment b) {
         Task aTask = a.getTask();
         Task bTask = b.getTask();

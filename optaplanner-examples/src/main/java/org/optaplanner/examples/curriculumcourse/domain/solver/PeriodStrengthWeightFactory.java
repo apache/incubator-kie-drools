@@ -24,6 +24,7 @@ import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty
 
 public class PeriodStrengthWeightFactory implements SelectionSorterWeightFactory<CourseSchedule, Period> {
 
+    @Override
     public Comparable createSorterWeight(CourseSchedule schedule, Period period) {
         int unavailablePeriodPenaltyCount = 0;
         for (UnavailablePeriodPenalty penalty : schedule.getUnavailablePeriodPenaltyList()) {
@@ -44,6 +45,7 @@ public class PeriodStrengthWeightFactory implements SelectionSorterWeightFactory
             this.unavailablePeriodPenaltyCount = unavailablePeriodPenaltyCount;
         }
 
+        @Override
         public int compareTo(PeriodStrengthWeight other) {
             return new CompareToBuilder()
                     // The higher unavailablePeriodPenaltyCount, the weaker

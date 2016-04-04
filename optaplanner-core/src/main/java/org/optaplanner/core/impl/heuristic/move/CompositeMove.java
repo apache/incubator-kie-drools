@@ -81,6 +81,7 @@ public class CompositeMove implements Move {
         return moves;
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         for (Move move : moves) {
             if (!move.isMoveDoable(scoreDirector)) {
@@ -90,6 +91,7 @@ public class CompositeMove implements Move {
         return true;
     }
 
+    @Override
     public CompositeMove createUndoMove(ScoreDirector scoreDirector) {
         Move[] undoMoves = new Move[moves.length];
         for (int i = 0; i < moves.length; i++) {
@@ -100,6 +102,7 @@ public class CompositeMove implements Move {
         return new CompositeMove(undoMoves);
     }
 
+    @Override
     public void doMove(ScoreDirector scoreDirector) {
         for (Move move : moves) {
             // Calls scoreDirector.triggerVariableListeners() between moves
@@ -113,6 +116,7 @@ public class CompositeMove implements Move {
     // Introspection methods
     // ************************************************************************
 
+    @Override
     public String getSimpleMoveTypeDescription() {
         Set<String> childMoveTypeDescriptionSet = new TreeSet<>();
         for (Move move : moves) {
@@ -129,6 +133,7 @@ public class CompositeMove implements Move {
         return moveTypeDescription.toString();
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         Set<Object> entities = new LinkedHashSet<>(moves.length * 2);
         for (Move move : moves) {
@@ -137,6 +142,7 @@ public class CompositeMove implements Move {
         return entities;
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         Set<Object> values = new LinkedHashSet<>(moves.length * 2);
         for (Move move : moves) {

@@ -79,6 +79,7 @@ public class Task extends TaskOrEmployee {
         this.previousTaskOrEmployee = previousTaskOrEmployee;
     }
 
+    @Override
     public Employee getEmployee() {
         return employee;
     }
@@ -117,6 +118,7 @@ public class Task extends TaskOrEmployee {
         return taskType.getBaseDuration() * affinity.getDurationMultiplier();
     }
 
+    @Override
     public Integer getEndTime() {
         if (startTime == null) {
             return null;

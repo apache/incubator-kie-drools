@@ -106,10 +106,12 @@ public class CheapTimePillarSlideMoveIteratorFactory implements MoveIteratorFact
             totalSize = positivePillarList.size() + negativePillarList.size();
         }
 
+        @Override
         public boolean hasNext() {
             return totalSize > 0;
         }
 
+        @Override
         public Move next() {
             int listIndex = workingRandom.nextInt(totalSize);
             boolean positive = listIndex < positivePillarList.size();
@@ -141,6 +143,7 @@ public class CheapTimePillarSlideMoveIteratorFactory implements MoveIteratorFact
             return new CheapTimePillarSlideMove(subPillar, startPeriodDiff);
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException("The optional operation remove() is not supported.");
         }

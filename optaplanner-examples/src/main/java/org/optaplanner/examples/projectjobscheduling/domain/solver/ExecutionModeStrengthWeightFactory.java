@@ -28,6 +28,7 @@ import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 
 public class ExecutionModeStrengthWeightFactory implements SelectionSorterWeightFactory<Schedule, ExecutionMode> {
 
+    @Override
     public Comparable createSorterWeight(Schedule schedule, ExecutionMode executionMode) {
         Map<Resource, Integer> requirementTotalMap = new HashMap<>(
                 executionMode.getResourceRequirementList().size());
@@ -65,6 +66,7 @@ public class ExecutionModeStrengthWeightFactory implements SelectionSorterWeight
             this.requirementDesirability = requirementDesirability;
         }
 
+        @Override
         public int compareTo(ExecutionModeStrengthWeight other) {
             return new CompareToBuilder()
                     // The less requirementsWeight, the less desirable resources are used

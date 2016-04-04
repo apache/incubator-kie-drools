@@ -67,6 +67,7 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void constructCache(DefaultSolverScope solverScope) {
         long childSize = childValueSelector.getSize();
         if (childSize > (long) Integer.MAX_VALUE) {
@@ -82,18 +83,22 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
                 cachedValueList.size(), this);
     }
 
+    @Override
     public void disposeCache(DefaultSolverScope solverScope) {
         cachedValueList = null;
     }
 
+    @Override
     public GenuineVariableDescriptor getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public long getSize(Object entity) {
         return getSize();
     }
@@ -102,6 +107,7 @@ public abstract class AbstractCachingValueSelector extends AbstractValueSelector
         return cachedValueList.size();
     }
 
+    @Override
     public Iterator<Object> endingIterator(Object entity) {
         return endingIterator();
     }

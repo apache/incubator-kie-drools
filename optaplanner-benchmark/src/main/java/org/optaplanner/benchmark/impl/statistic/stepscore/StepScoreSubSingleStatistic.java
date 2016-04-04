@@ -41,10 +41,12 @@ public class StepScoreSubSingleStatistic<Solution_>
     // Lifecycle methods
     // ************************************************************************
 
+    @Override
     public void open(Solver<Solution_> solver) {
         ((DefaultSolver<Solution_>) solver).addPhaseLifecycleListener(listener);
     }
 
+    @Override
     public void close(Solver<Solution_> solver) {
         ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }

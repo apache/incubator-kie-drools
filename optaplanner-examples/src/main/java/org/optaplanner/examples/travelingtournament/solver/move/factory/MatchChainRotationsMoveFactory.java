@@ -34,6 +34,7 @@ import org.optaplanner.examples.travelingtournament.solver.move.MatchChainRotati
 
 public class MatchChainRotationsMoveFactory implements MoveListFactory<TravelingTournament> {
 
+    @Override
     public List<Move> createMoveList(TravelingTournament travelingTournament) {
         List<Move> moveList = new ArrayList<>();
         RotationMovesFactory rotationMovesFactory = new RotationMovesFactory(travelingTournament);

@@ -38,10 +38,12 @@ public class BedChangeMove extends AbstractMove {
         this.toBed = toBed;
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !Objects.equals(bedDesignation.getBed(), toBed);
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new BedChangeMove(bedDesignation, bedDesignation.getBed());
     }
@@ -51,10 +53,12 @@ public class BedChangeMove extends AbstractMove {
         PatientAdmissionMoveHelper.moveBed(scoreDirector, bedDesignation, toBed);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(bedDesignation);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Collections.singletonList(toBed);
     }

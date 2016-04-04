@@ -41,12 +41,14 @@ public class TravelingTournamentExporter extends AbstractTxtSolutionExporter<Tra
         return OUTPUT_FILE_SUFFIX;
     }
 
+    @Override
     public TxtOutputBuilder<TravelingTournament> createTxtOutputBuilder() {
         return new TravelingTournamentOutputBuilder();
     }
 
     public static class TravelingTournamentOutputBuilder extends TxtOutputBuilder<TravelingTournament> {
 
+        @Override
         public void writeSolution() throws IOException {
             int maximumTeamNameLength = 0;
             for (Team team : solution.getTeamList()) {

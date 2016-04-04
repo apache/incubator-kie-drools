@@ -39,6 +39,7 @@ public class LeadingExam extends Exam {
         this.followingExamList = followingExamList;
     }
 
+    @Override
     @PlanningVariable(valueRangeProviderRefs = {"periodRange"})
     public Period getPeriod() {
         return period;

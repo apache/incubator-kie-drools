@@ -42,6 +42,7 @@ public class Room extends AbstractPersistable implements Labeled {
         this.capacity = capacity;
     }
 
+    @Override
     public String getLabel() {
         return name;
     }

@@ -50,11 +50,13 @@ public class SimpleBigDecimalScoreHibernateTypeTest extends AbstractScoreHiberna
             this.score = score;
         }
 
+        @Override
         @Columns(columns = {@Column(name = "score", precision = 10, scale = 5)})
         public SimpleBigDecimalScore getScore() {
             return score;
         }
 
+        @Override
         public void setScore(SimpleBigDecimalScore score) {
             this.score = score;
         }

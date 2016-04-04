@@ -26,10 +26,12 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public class NoChangeMove extends AbstractMove {
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true;
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new NoChangeMove();
     }
@@ -43,10 +45,12 @@ public class NoChangeMove extends AbstractMove {
     // Introspection methods
     // ************************************************************************
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.<Object>emptyList();
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Collections.<Object>emptyList();
     }

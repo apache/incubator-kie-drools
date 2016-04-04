@@ -47,6 +47,7 @@ public abstract class AbstractScoreDefinition<S extends Score> implements ScoreD
         return levelLabels;
     }
 
+    @Override
     public String formatScore(S score) {
         return score.toString();
     }

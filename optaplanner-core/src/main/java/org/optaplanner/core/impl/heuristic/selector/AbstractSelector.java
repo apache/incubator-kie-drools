@@ -38,32 +38,39 @@ public abstract class AbstractSelector implements Selector {
 
     protected Random workingRandom = null;
 
+    @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         workingRandom = solverScope.getWorkingRandom();
         phaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
+    @Override
     public void phaseStarted(AbstractPhaseScope phaseScope) {
         phaseLifecycleSupport.firePhaseStarted(phaseScope);
     }
 
+    @Override
     public void stepStarted(AbstractStepScope stepScope) {
         phaseLifecycleSupport.fireStepStarted(stepScope);
     }
 
+    @Override
     public void stepEnded(AbstractStepScope stepScope) {
         phaseLifecycleSupport.fireStepEnded(stepScope);
     }
 
+    @Override
     public void phaseEnded(AbstractPhaseScope phaseScope) {
         phaseLifecycleSupport.firePhaseEnded(phaseScope);
     }
 
+    @Override
     public void solvingEnded(DefaultSolverScope solverScope) {
         phaseLifecycleSupport.fireSolvingEnded(solverScope);
         workingRandom = null;
     }
 
+    @Override
     public SelectionCacheType getCacheType() {
         return SelectionCacheType.JUST_IN_TIME;
     }

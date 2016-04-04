@@ -66,6 +66,7 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     // Builder methods
     // ************************************************************************
 
+    @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         List<MoveSelector> moveSelectorList = new ArrayList<>(moveSelectorConfigList.size());
@@ -78,6 +79,7 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
         return new CartesianProductMoveSelector(moveSelectorList, ignoreEmptyChildIterators_, randomSelection);
     }
 
+    @Override
     public void inherit(CartesianProductMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(

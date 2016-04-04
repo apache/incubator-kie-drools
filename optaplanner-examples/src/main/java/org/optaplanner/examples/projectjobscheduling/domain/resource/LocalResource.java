@@ -33,6 +33,7 @@ public class LocalResource extends Resource {
         this.project = project;
     }
 
+    @Override
     public boolean isRenewable() {
         return renewable;
     }

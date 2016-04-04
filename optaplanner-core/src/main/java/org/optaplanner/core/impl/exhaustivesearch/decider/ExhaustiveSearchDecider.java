@@ -87,26 +87,32 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         moveSelector.solvingStarted(solverScope);
     }
 
+    @Override
     public void phaseStarted(ExhaustiveSearchPhaseScope<Solution_> phaseScope) {
         moveSelector.phaseStarted(phaseScope);
     }
 
+    @Override
     public void stepStarted(ExhaustiveSearchStepScope<Solution_> stepScope) {
         moveSelector.stepStarted(stepScope);
     }
 
+    @Override
     public void stepEnded(ExhaustiveSearchStepScope<Solution_> stepScope) {
         moveSelector.stepEnded(stepScope);
     }
 
+    @Override
     public void phaseEnded(ExhaustiveSearchPhaseScope<Solution_> phaseScope) {
         moveSelector.phaseEnded(phaseScope);
     }
 
+    @Override
     public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         moveSelector.solvingEnded(solverScope);
     }

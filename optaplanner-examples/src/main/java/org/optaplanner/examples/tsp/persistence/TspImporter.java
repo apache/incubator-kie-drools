@@ -59,6 +59,7 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
         return INPUT_FILE_SUFFIX;
     }
 
+    @Override
     public TxtInputBuilder<TspSolution> createTxtInputBuilder() {
         return new TspInputBuilder();
     }
@@ -69,6 +70,7 @@ public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
 
         private int locationListSize;
 
+        @Override
         public TspSolution readSolution() throws IOException {
             tspSolution = new TspSolution();
             tspSolution.setId(0L);

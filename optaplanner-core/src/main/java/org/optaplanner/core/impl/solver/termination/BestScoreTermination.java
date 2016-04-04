@@ -50,10 +50,12 @@ public class BestScoreTermination extends AbstractTermination {
     // Terminated methods
     // ************************************************************************
 
+    @Override
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
         return isTerminated(solverScope.isBestSolutionInitialized(), solverScope.getBestScore());
     }
 
+    @Override
     public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         return isTerminated(phaseScope.isBestSolutionInitialized(), phaseScope.getBestScore());
     }
@@ -66,12 +68,14 @@ public class BestScoreTermination extends AbstractTermination {
     // Time gradient methods
     // ************************************************************************
 
+    @Override
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         Score startingInitializedScore = solverScope.getStartingInitializedScore();
         Score bestScore = solverScope.getBestScore();
         return calculateTimeGradient(startingInitializedScore, bestScoreLimit, bestScore);
     }
 
+    @Override
     public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         Score startingInitializedScore = phaseScope.getStartingScore();
         Score bestScore = phaseScope.getBestScore();

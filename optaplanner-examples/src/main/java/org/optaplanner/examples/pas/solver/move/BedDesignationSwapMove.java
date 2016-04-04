@@ -38,10 +38,12 @@ public class BedDesignationSwapMove extends AbstractMove {
         this.rightBedDesignation = rightBedDesignation;
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !Objects.equals(leftBedDesignation.getBed(), rightBedDesignation.getBed());
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new BedDesignationSwapMove(rightBedDesignation, leftBedDesignation);
     }
@@ -54,10 +56,12 @@ public class BedDesignationSwapMove extends AbstractMove {
         PatientAdmissionMoveHelper.moveBed(scoreDirector, rightBedDesignation, oldLeftBed);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Arrays.<BedDesignation>asList(leftBedDesignation, rightBedDesignation);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Arrays.<Bed>asList(leftBedDesignation.getBed(), rightBedDesignation.getBed());
     }

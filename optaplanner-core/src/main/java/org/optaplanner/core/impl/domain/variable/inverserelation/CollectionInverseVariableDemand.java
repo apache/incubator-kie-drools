@@ -43,6 +43,7 @@ public class CollectionInverseVariableDemand implements Demand<CollectionInverse
     // Creation method
     // ************************************************************************
 
+    @Override
     public CollectionInverseVariableSupply createExternalizedSupply(InnerScoreDirector scoreDirector) {
         return new ExternalizedCollectionInverseVariableSupply(sourceVariableDescriptor);
     }

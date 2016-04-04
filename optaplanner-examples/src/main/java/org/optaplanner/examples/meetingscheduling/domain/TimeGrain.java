@@ -68,6 +68,7 @@ public class TimeGrain extends AbstractPersistable implements Labeled {
         return day.getDateString() + " " + getTimeString();
     }
 
+    @Override
     public String getLabel() {
         return getTimeString();
     }

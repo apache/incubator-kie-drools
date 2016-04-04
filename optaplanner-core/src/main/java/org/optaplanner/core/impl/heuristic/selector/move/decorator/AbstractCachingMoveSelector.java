@@ -64,6 +64,7 @@ public abstract class AbstractCachingMoveSelector extends AbstractMoveSelector i
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void constructCache(DefaultSolverScope solverScope) {
         long childSize = childMoveSelector.getSize();
         if (childSize > (long) Integer.MAX_VALUE) {
@@ -78,14 +79,17 @@ public abstract class AbstractCachingMoveSelector extends AbstractMoveSelector i
                 cachedMoveList.size(), this);
     }
 
+    @Override
     public void disposeCache(DefaultSolverScope solverScope) {
         cachedMoveList = null;
     }
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public long getSize() {
         return cachedMoveList.size();
     }

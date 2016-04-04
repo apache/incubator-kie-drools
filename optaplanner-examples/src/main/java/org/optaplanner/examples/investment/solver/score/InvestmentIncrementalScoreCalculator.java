@@ -49,6 +49,7 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
     // Lifecycle methods
     // ************************************************************************
 
+    @Override
     public void resetWorkingSolution(InvestmentSolution solution) {
         this.solution = solution;
         squaredStandardDeviationFemtosMaximum = solution.getParametrization()
@@ -71,26 +72,32 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
         }
     }
 
+    @Override
     public void beforeEntityAdded(Object entity) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(Object entity) {
         insertQuantityMillis((AssetClassAllocation) entity, false);
     }
 
+    @Override
     public void beforeVariableChanged(Object entity, String variableName) {
         retractQuantityMillis((AssetClassAllocation) entity);
     }
 
+    @Override
     public void afterVariableChanged(Object entity, String variableName) {
         insertQuantityMillis((AssetClassAllocation) entity, false);
     }
 
+    @Override
     public void beforeEntityRemoved(Object entity) {
         retractQuantityMillis((AssetClassAllocation) entity);
     }
 
+    @Override
     public void afterEntityRemoved(Object entity) {
         // Do nothing
     }

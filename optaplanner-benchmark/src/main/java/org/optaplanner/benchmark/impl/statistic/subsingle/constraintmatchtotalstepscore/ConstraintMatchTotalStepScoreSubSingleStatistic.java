@@ -76,12 +76,14 @@ public class ConstraintMatchTotalStepScoreSubSingleStatistic<Solution_>
     // Lifecycle methods
     // ************************************************************************
 
+    @Override
     public void open(Solver<Solution_> solver) {
         DefaultSolver<Solution_> defaultSolver = (DefaultSolver<Solution_>) solver;
         defaultSolver.setConstraintMatchEnabledPreference(true);
         defaultSolver.addPhaseLifecycleListener(listener);
     }
 
+    @Override
     public void close(Solver<Solution_> solver) {
         ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }

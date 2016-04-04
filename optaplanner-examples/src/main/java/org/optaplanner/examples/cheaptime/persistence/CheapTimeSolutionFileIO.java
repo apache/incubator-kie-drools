@@ -28,18 +28,22 @@ public class CheapTimeSolutionFileIO implements SolutionFileIO<CheapTimeSolution
     private CheapTimeImporter importer = new CheapTimeImporter();
     private CheapTimeExporter exporter = new CheapTimeExporter();
 
+    @Override
     public String getInputFileExtension() {
         return null;
     }
 
+    @Override
     public String getOutputFileExtension() {
         return OUTPUT_FILE_EXTENSION;
     }
 
+    @Override
     public CheapTimeSolution read(File inputSolutionFile) {
         return importer.readSolution(inputSolutionFile);
     }
 
+    @Override
     public void write(CheapTimeSolution solution, File outputSolutionFile) {
         exporter.writeSolution(solution, outputSolutionFile);
     }

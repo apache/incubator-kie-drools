@@ -27,10 +27,12 @@ public class EntityIndependentInitializedValueSelector extends InitializedValueS
         super(childValueSelector);
     }
 
+    @Override
     public long getSize() {
         return ((EntityIndependentValueSelector) childValueSelector).getSize();
     }
 
+    @Override
     public Iterator<Object> iterator() {
         return new JustInTimeInitializedValueIterator(null,
                 ((EntityIndependentValueSelector) childValueSelector).iterator(), determineBailOutSize());

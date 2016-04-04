@@ -33,6 +33,7 @@ public class DinnerPartySolutionInitializer extends AbstractCustomPhaseCommand<D
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Override
     public void changeWorkingSolution(ScoreDirector<DinnerParty> scoreDirector) {
         DinnerParty dinnerParty = scoreDirector.getWorkingSolution();
         initializeSeatDesignationList(scoreDirector, dinnerParty);

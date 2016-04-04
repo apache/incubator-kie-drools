@@ -35,6 +35,7 @@ public class NearbyDistanceMatrixTest {
         List<Object> entityList = Arrays.<Object>asList(a, b, c, d);
         NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter
                 = new NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject>() {
+            @Override
             public double getNearbyDistance(MatrixTestdataObject origin, MatrixTestdataObject destination) {
                 return origin.distances[destination.index];
             }
@@ -73,6 +74,7 @@ public class NearbyDistanceMatrixTest {
         List<Object> entityList = Arrays.<Object>asList(a, b, c, d);
         NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject> meter
                 = new NearbyDistanceMeter<MatrixTestdataObject, MatrixTestdataObject>() {
+            @Override
             public double getNearbyDistance(MatrixTestdataObject origin, MatrixTestdataObject destination) {
                 return origin.distances[destination.index];
             }

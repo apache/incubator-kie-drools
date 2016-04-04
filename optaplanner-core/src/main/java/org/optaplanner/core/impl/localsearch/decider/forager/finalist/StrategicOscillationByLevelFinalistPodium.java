@@ -48,6 +48,7 @@ public class StrategicOscillationByLevelFinalistPodium extends AbstractFinalistP
         finalistLevelNumbers = null;
     }
 
+    @Override
     public void addMove(LocalSearchMoveScope moveScope) {
         boolean accepted = moveScope.getAccepted();
         if (finalistIsAccepted && !accepted) {

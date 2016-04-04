@@ -48,6 +48,7 @@ public final class BeanPropertyMemberAccessor implements MemberAccessor {
         }
     }
 
+    @Override
     public String getName() {
         return propertyName;
     }
@@ -62,6 +63,7 @@ public final class BeanPropertyMemberAccessor implements MemberAccessor {
         return getterMethod.getGenericReturnType();
     }
 
+    @Override
     public Object executeGetter(Object bean) {
         try {
             return getterMethod.invoke(bean);
@@ -81,6 +83,7 @@ public final class BeanPropertyMemberAccessor implements MemberAccessor {
         return setterMethod != null;
     }
 
+    @Override
     public void executeSetter(Object bean, Object value) {
         try {
             setterMethod.invoke(bean, value);

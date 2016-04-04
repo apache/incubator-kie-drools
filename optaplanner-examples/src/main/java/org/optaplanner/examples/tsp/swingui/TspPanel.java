@@ -60,6 +60,7 @@ public class TspPanel extends SolutionPanel<TspSolution> {
         return true;
     }
 
+    @Override
     public void resetPanel(TspSolution tspSolution) {
         tspWorldPanel.resetPanel(tspSolution);
         tspListPanel.resetPanel(tspSolution);

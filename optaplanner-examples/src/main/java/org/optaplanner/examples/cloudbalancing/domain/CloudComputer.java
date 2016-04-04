@@ -68,6 +68,7 @@ public class CloudComputer extends AbstractPersistable implements Labeled {
         return cpuPower * memory * networkBandwidth;
     }
 
+    @Override
     public String getLabel() {
         return "Computer " + id;
     }

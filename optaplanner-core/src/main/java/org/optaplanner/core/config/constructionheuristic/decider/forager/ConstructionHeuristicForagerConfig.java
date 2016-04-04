@@ -59,6 +59,7 @@ public class ConstructionHeuristicForagerConfig extends AbstractConfig<Construct
         return new DefaultConstructionHeuristicForager(pickEarlyType_);
     }
 
+    @Override
     public void inherit(ConstructionHeuristicForagerConfig inheritedConfig) {
         pickEarlyType = ConfigUtils.inheritOverwritableProperty(pickEarlyType, inheritedConfig.getPickEarlyType());
     }

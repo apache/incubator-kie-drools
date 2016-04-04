@@ -532,6 +532,7 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
         return entitySelector;
     }
 
+    @Override
     public void inherit(EntitySelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         id = ConfigUtils.inheritOverwritableProperty(id, inheritedConfig.getId());

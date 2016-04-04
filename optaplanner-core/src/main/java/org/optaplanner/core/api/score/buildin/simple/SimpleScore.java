@@ -69,30 +69,37 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public SimpleScore add(SimpleScore augment) {
         return new SimpleScore(score + augment.getScore());
     }
 
+    @Override
     public SimpleScore subtract(SimpleScore subtrahend) {
         return new SimpleScore(score - subtrahend.getScore());
     }
 
+    @Override
     public SimpleScore multiply(double multiplicand) {
         return new SimpleScore((int) Math.floor(score * multiplicand));
     }
 
+    @Override
     public SimpleScore divide(double divisor) {
         return new SimpleScore((int) Math.floor(score / divisor));
     }
 
+    @Override
     public SimpleScore power(double exponent) {
         return new SimpleScore((int) Math.floor(Math.pow(score, exponent)));
     }
 
+    @Override
     public SimpleScore negate() {
         return new SimpleScore(-score);
     }
 
+    @Override
     public Number[] toLevelNumbers() {
         return new Number[]{score};
     }
@@ -114,6 +121,7 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
         return (17 * 37) + score;
     }
 
+    @Override
     public int compareTo(SimpleScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (score < other.getScore()) {

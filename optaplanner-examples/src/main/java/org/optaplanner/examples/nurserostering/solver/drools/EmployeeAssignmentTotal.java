@@ -71,6 +71,7 @@ public class EmployeeAssignmentTotal implements Comparable<EmployeeAssignmentTot
                 .toHashCode();
     }
 
+    @Override
     public int compareTo(EmployeeAssignmentTotal other) {
         return new CompareToBuilder()
                 .append(employee, other.employee)

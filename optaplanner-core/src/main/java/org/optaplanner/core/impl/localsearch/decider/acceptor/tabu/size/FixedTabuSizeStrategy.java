@@ -30,6 +30,7 @@ public class FixedTabuSizeStrategy extends AbstractTabuSizeStrategy {
         }
     }
 
+    @Override
     public int determineTabuSize(LocalSearchStepScope stepScope) {
         return tabuSize;
     }

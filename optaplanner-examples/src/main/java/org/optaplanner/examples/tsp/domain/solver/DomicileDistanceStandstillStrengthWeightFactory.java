@@ -24,6 +24,7 @@ import org.optaplanner.examples.tsp.domain.TspSolution;
 
 public class DomicileDistanceStandstillStrengthWeightFactory implements SelectionSorterWeightFactory<TspSolution, Standstill> {
 
+    @Override
     public Comparable createSorterWeight(TspSolution tspSolution, Standstill standstill) {
         Domicile domicile = tspSolution.getDomicile();
         long domicileRoundTripDistance = domicile.getDistanceTo(standstill) + standstill.getDistanceTo(domicile);
@@ -40,6 +41,7 @@ public class DomicileDistanceStandstillStrengthWeightFactory implements Selectio
             this.domicileRoundTripDistance = domicileRoundTripDistance;
         }
 
+        @Override
         public int compareTo(DomicileDistanceVisitDifficultyWeight other) {
             return new CompareToBuilder()
                     .append(other.domicileRoundTripDistance, domicileRoundTripDistance) // Decreasing: closer to depot is stronger

@@ -110,6 +110,7 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
         SimpleLongScore input = SimpleLongScore.valueOf(123L);
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
                 new PlannerTestUtils.OutputAsserter<SimpleLongScore>() {
+                    @Override
                     public void assertOutput(SimpleLongScore output) {
                         assertEquals(123L, output.getScore());
                     }

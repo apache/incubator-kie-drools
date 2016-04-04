@@ -47,6 +47,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
         super(entityDescriptor, variableMemberAccessor);
     }
 
+    @Override
     public void processAnnotations(DescriptorPolicy descriptorPolicy) {
         processPropertyAnnotations(descriptorPolicy);
     }
@@ -55,6 +56,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
 
     }
 
+    @Override
     public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
         InverseRelationShadowVariable shadowVariableAnnotation = variableMemberAccessor
                 .getAnnotation(InverseRelationShadowVariable.class);

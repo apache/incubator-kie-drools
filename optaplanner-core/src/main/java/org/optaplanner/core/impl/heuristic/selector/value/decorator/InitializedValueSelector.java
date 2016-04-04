@@ -49,27 +49,33 @@ public class InitializedValueSelector extends AbstractValueSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public GenuineVariableDescriptor getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return childValueSelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return childValueSelector.isNeverEnding();
     }
 
+    @Override
     public long getSize(Object entity) {
         // TODO use cached results
         return childValueSelector.getSize(entity);
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         return new JustInTimeInitializedValueIterator(entity, childValueSelector.iterator(entity));
     }
 
+    @Override
     public Iterator<Object> endingIterator(Object entity) {
         return new JustInTimeInitializedValueIterator(entity, childValueSelector.endingIterator(entity));
     }

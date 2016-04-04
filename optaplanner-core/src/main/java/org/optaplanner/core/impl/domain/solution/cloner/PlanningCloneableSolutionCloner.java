@@ -25,6 +25,7 @@ import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
  */
 public class PlanningCloneableSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
 
+    @Override
     public Solution_ cloneSolution(Solution_ original) {
         return (Solution_) ((PlanningCloneable) original).planningClone();
     }

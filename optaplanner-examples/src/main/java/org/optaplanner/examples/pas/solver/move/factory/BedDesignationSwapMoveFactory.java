@@ -28,6 +28,7 @@ import org.optaplanner.examples.pas.solver.move.BedDesignationSwapMove;
 
 public class BedDesignationSwapMoveFactory implements MoveListFactory<PatientAdmissionSchedule> {
 
+    @Override
     public List<Move> createMoveList(PatientAdmissionSchedule patientAdmissionSchedule) {
         List<BedDesignation> bedDesignationList = patientAdmissionSchedule.getBedDesignationList();
         List<Move> moveList = new ArrayList<>();

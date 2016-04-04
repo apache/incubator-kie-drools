@@ -98,39 +98,47 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isFeasible() {
         return getHardScore() >= 0.0;
     }
 
+    @Override
     public HardSoftDoubleScore add(HardSoftDoubleScore augment) {
         return new HardSoftDoubleScore(hardScore + augment.getHardScore(),
                 softScore + augment.getSoftScore());
     }
 
+    @Override
     public HardSoftDoubleScore subtract(HardSoftDoubleScore subtrahend) {
         return new HardSoftDoubleScore(hardScore - subtrahend.getHardScore(),
                 softScore - subtrahend.getSoftScore());
     }
 
+    @Override
     public HardSoftDoubleScore multiply(double multiplicand) {
         return new HardSoftDoubleScore(hardScore * multiplicand,
                 softScore * multiplicand);
     }
 
+    @Override
     public HardSoftDoubleScore divide(double divisor) {
         return new HardSoftDoubleScore(hardScore / divisor,
                 softScore / divisor);
     }
 
+    @Override
     public HardSoftDoubleScore power(double exponent) {
         return new HardSoftDoubleScore(Math.pow(hardScore, exponent),
                 Math.pow(softScore, exponent));
     }
 
+    @Override
     public HardSoftDoubleScore negate() {
         return new HardSoftDoubleScore(-hardScore, -softScore);
     }
 
+    @Override
     public Number[] toLevelNumbers() {
         return new Number[]{hardScore, softScore};
     }
@@ -153,6 +161,7 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
         return (((17 * 37) + Double.valueOf(hardScore).hashCode())) * 37 + Double.valueOf(softScore).hashCode();
     }
 
+    @Override
     public int compareTo(HardSoftDoubleScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (hardScore != other.getHardScore()) {

@@ -67,6 +67,7 @@ public class TaskType extends AbstractPersistable implements Labeled {
     // Complex methods
     // ************************************************************************
 
+    @Override
     public String getLabel() {
         return title;
     }

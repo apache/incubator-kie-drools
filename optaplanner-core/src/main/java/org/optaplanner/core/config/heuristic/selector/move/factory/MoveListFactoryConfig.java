@@ -47,6 +47,7 @@ public class MoveListFactoryConfig extends MoveSelectorConfig<MoveListFactoryCon
         return true;
     }
 
+    @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         if (moveListFactoryClass == null) {
@@ -63,6 +64,7 @@ public class MoveListFactoryConfig extends MoveSelectorConfig<MoveListFactoryCon
         return new MoveListFactoryToMoveSelectorBridge(moveListFactory, minimumCacheType, randomSelection);
     }
 
+    @Override
     public void inherit(MoveListFactoryConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         moveListFactoryClass = ConfigUtils.inheritOverwritableProperty(

@@ -101,6 +101,7 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         return index;
     }
 
+    @Override
     public void addLayoutComponent(Component component, Object o) {
         TimeTableLayoutConstraints c = (TimeTableLayoutConstraints) o;
         if (c.getXEnd() > columns.size()) {
@@ -146,10 +147,12 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         }
     }
 
+    @Override
     public void addLayoutComponent(String name, Component component) {
         // No effect
     }
 
+    @Override
     public void removeLayoutComponent(Component component) {
         stale = true;
         ComponentSpan span = spanMap.remove(component);
@@ -161,34 +164,41 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         }
     }
 
+    @Override
     public Dimension minimumLayoutSize(Container parent) {
         update();
         return new Dimension(totalColumnWidth, totalRowHeight);
     }
 
+    @Override
     public Dimension preferredLayoutSize(Container parent) {
         update();
         return new Dimension(totalColumnWidth, totalRowHeight);
     }
 
+    @Override
     public Dimension maximumLayoutSize(Container target) {
         update();
         return new Dimension(totalColumnWidth, totalRowHeight);
     }
 
+    @Override
     public float getLayoutAlignmentX(Container target) {
         return 0.5f;
     }
 
+    @Override
     public float getLayoutAlignmentY(Container target) {
         return 0.5f;
     }
 
 
+    @Override
     public void invalidateLayout(Container target) {
         // No effect
     }
 
+    @Override
     public void layoutContainer(Container parent) {
         update();
         synchronized (parent.getTreeLock()) {

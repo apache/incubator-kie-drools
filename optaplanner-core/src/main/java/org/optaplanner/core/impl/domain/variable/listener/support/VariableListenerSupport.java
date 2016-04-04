@@ -90,6 +90,7 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
         Collections.sort(notifiableList);
     }
 
+    @Override
     public <S extends Supply> S demand(Demand<S> demand) {
         S supply = (S) supplyMap.get(demand);
         if (supply == null) {

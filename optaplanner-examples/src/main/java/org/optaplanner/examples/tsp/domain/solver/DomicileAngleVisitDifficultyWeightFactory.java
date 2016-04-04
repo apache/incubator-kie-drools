@@ -28,6 +28,7 @@ import org.optaplanner.examples.tsp.domain.Visit;
 public class DomicileAngleVisitDifficultyWeightFactory
         implements SelectionSorterWeightFactory<TspSolution, Visit> {
 
+    @Override
     public Comparable createSorterWeight(TspSolution vehicleRoutingSolution, Visit visit) {
         Domicile domicile = vehicleRoutingSolution.getDomicile();
         return new DomicileAngleVisitDifficultyWeight(visit,
@@ -50,6 +51,7 @@ public class DomicileAngleVisitDifficultyWeightFactory
             this.domicileRoundTripDistance = domicileRoundTripDistance;
         }
 
+        @Override
         public int compareTo(DomicileAngleVisitDifficultyWeight other) {
             return new CompareToBuilder()
                     .append(domicileAngle, other.domicileAngle)

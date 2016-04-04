@@ -33,6 +33,7 @@ public final class FieldMemberAccessor implements MemberAccessor {
         field.setAccessible(true);
     }
 
+    @Override
     public String getName() {
         return field.getName();
     }
@@ -47,6 +48,7 @@ public final class FieldMemberAccessor implements MemberAccessor {
         return field.getGenericType();
     }
 
+    @Override
     public Object executeGetter(Object bean) {
         try {
             return field.get(bean);
@@ -61,6 +63,7 @@ public final class FieldMemberAccessor implements MemberAccessor {
         return true;
     }
 
+    @Override
     public void executeSetter(Object bean, Object value) {
         try {
             field.set(bean, value);

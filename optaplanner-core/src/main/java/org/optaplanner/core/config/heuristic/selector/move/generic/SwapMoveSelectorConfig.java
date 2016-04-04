@@ -77,6 +77,7 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorC
     // Builder methods
     // ************************************************************************
 
+    @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
@@ -148,6 +149,7 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorC
         return unfoldedMoveSelectorConfig;
     }
 
+    @Override
     public void inherit(SwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());

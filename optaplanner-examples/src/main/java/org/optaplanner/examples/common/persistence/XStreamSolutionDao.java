@@ -33,16 +33,19 @@ public abstract class XStreamSolutionDao<Solution_> extends AbstractSolutionDao<
         xStreamSolutionFileIO = new XStreamSolutionFileIO<>(xStreamAnnotations);
     }
 
+    @Override
     public String getFileExtension() {
         return xStreamSolutionFileIO.getOutputFileExtension();
     }
 
+    @Override
     public Solution_ readSolution(File inputSolutionFile) {
         Solution_ solution = xStreamSolutionFileIO.read(inputSolutionFile);
         logger.info("Opened: {}", inputSolutionFile);
         return solution;
     }
 
+    @Override
     public void writeSolution(Solution_ solution, File outputSolutionFile) {
         xStreamSolutionFileIO.write(solution, outputSolutionFile);
         logger.info("Saved: {}", outputSolutionFile);

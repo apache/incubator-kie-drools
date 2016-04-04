@@ -69,6 +69,7 @@ public class MrServiceMovedProcessesCount implements Serializable, Comparable<Mr
      * @param other never null
      * @return comparison
      */
+    @Override
     public int compareTo(MrServiceMovedProcessesCount other) {
         return new CompareToBuilder()
                 .append(service, other.service)

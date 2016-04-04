@@ -106,6 +106,7 @@ public class EmployeePanel extends JPanel {
             deleteButton = SwingUtils.makeSmallButton(new JButton(nurseRosteringPanel.getDeleteEmployeeIcon()));
             deleteButton.setToolTipText("Delete");
             deleteButton.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     nurseRosteringPanel.deleteEmployee(employee);
                 }
@@ -233,6 +234,7 @@ public class EmployeePanel extends JPanel {
                     + "</html>");
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             List<Employee> employeeList = nurseRosteringPanel.getSolution().getEmployeeList();
             // Add 1 to array size to add null, which makes the entity unassigned

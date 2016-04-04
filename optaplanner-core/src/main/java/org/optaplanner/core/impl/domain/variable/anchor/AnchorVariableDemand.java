@@ -42,6 +42,7 @@ public class AnchorVariableDemand implements Demand<AnchorVariableSupply>, Seria
     // Creation method
     // ************************************************************************
 
+    @Override
     public AnchorVariableSupply createExternalizedSupply(InnerScoreDirector scoreDirector) {
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
                 .demand(new SingletonInverseVariableDemand(sourceVariableDescriptor));

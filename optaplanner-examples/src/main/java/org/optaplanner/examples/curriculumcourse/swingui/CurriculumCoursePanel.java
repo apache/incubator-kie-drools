@@ -233,6 +233,7 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
             this.lecture = lecture;
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(3, 2));
             listFieldsPanel.add(new JLabel("Period:"));

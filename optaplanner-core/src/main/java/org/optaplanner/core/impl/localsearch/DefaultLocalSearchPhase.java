@@ -62,6 +62,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void solve(DefaultSolverScope<Solution_> solverScope) {
         LocalSearchPhaseScope<Solution_> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         phaseStarted(phaseScope);
@@ -118,6 +119,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
         decider.solvingStarted(solverScope);
     }
 
+    @Override
     public void phaseStarted(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         decider.phaseStarted(phaseScope);
@@ -125,11 +127,13 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
         assertWorkingSolutionInitialized(phaseScope);
     }
 
+    @Override
     public void stepStarted(LocalSearchStepScope<Solution_> stepScope) {
         super.stepStarted(stepScope);
         decider.stepStarted(stepScope);
     }
 
+    @Override
     public void stepEnded(LocalSearchStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
         decider.stepEnded(stepScope);
@@ -147,6 +151,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
         }
     }
 
+    @Override
     public void phaseEnded(LocalSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);

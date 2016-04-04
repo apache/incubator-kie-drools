@@ -23,6 +23,7 @@ import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 
 public class MovableLectureSelectionFilter implements SelectionFilter<CourseSchedule, Lecture> {
 
+    @Override
     public boolean accept(ScoreDirector<CourseSchedule> scoreDirector, Lecture lecture) {
         return !lecture.isLocked();
     }

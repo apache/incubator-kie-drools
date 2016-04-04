@@ -42,6 +42,7 @@ public class MoveIteratorFactoryConfig extends MoveSelectorConfig<MoveIteratorFa
     // Builder methods
     // ************************************************************************
 
+    @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         if (moveIteratorFactoryClass == null) {
@@ -53,6 +54,7 @@ public class MoveIteratorFactoryConfig extends MoveSelectorConfig<MoveIteratorFa
         return new MoveIteratorFactoryToMoveSelectorBridge(moveIteratorFactory, randomSelection);
     }
 
+    @Override
     public void inherit(MoveIteratorFactoryConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         moveIteratorFactoryClass = ConfigUtils.inheritOverwritableProperty(

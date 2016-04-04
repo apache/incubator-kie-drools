@@ -117,6 +117,7 @@ public class HardSoftLongScoreTest extends AbstractScoreTest {
         HardSoftLongScore input = HardSoftLongScore.valueOf(-12L, 3400L);
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
                 new PlannerTestUtils.OutputAsserter<HardSoftLongScore>() {
+                    @Override
                     public void assertOutput(HardSoftLongScore output) {
                         assertEquals(-12L, output.getHardScore());
                         assertEquals(3400L, output.getSoftScore());

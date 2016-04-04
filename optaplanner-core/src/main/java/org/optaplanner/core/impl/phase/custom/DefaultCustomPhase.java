@@ -58,6 +58,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void solve(DefaultSolverScope<Solution_> solverScope) {
         CustomPhaseScope<Solution_> phaseScope = new CustomPhaseScope<>(solverScope);
         phaseStarted(phaseScope);

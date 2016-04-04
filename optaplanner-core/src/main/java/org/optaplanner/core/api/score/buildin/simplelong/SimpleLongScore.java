@@ -69,30 +69,37 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public SimpleLongScore add(SimpleLongScore augment) {
         return new SimpleLongScore(score + augment.getScore());
     }
 
+    @Override
     public SimpleLongScore subtract(SimpleLongScore subtrahend) {
         return new SimpleLongScore(score - subtrahend.getScore());
     }
 
+    @Override
     public SimpleLongScore multiply(double multiplicand) {
         return new SimpleLongScore((long) Math.floor(score * multiplicand));
     }
 
+    @Override
     public SimpleLongScore divide(double divisor) {
         return new SimpleLongScore((long) Math.floor(score / divisor));
     }
 
+    @Override
     public SimpleLongScore power(double exponent) {
         return new SimpleLongScore((long) Math.floor(Math.pow(score, exponent)));
     }
 
+    @Override
     public SimpleLongScore negate() {
         return new SimpleLongScore(-score);
     }
 
+    @Override
     public Number[] toLevelNumbers() {
         return new Number[]{score};
     }
@@ -114,6 +121,7 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
         return (17 * 37) + Long.valueOf(score).hashCode();
     }
 
+    @Override
     public int compareTo(SimpleLongScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (score < other.getScore()) {

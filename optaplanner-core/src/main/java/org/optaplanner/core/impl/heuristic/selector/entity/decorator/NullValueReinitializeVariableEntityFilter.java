@@ -35,6 +35,7 @@ public class NullValueReinitializeVariableEntityFilter<Solution_> implements Sel
         this.variableDescriptor = variableDescriptor;
     }
 
+    @Override
     public boolean accept(ScoreDirector<Solution_> scoreDirector, Object selection) {
         // Do not use variableDescriptor.isInitialized() because if nullable it must also accept it
         Object value = variableDescriptor.getValue(selection);

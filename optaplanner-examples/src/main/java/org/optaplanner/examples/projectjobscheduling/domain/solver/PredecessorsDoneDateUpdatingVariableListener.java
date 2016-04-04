@@ -26,26 +26,32 @@ import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 
 public class PredecessorsDoneDateUpdatingVariableListener implements VariableListener<Allocation> {
 
+    @Override
     public void beforeEntityAdded(ScoreDirector scoreDirector, Allocation allocation) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, Allocation allocation) {
         updateAllocation(scoreDirector, allocation);
     }
 
+    @Override
     public void beforeVariableChanged(ScoreDirector scoreDirector, Allocation allocation) {
         // Do nothing
     }
 
+    @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, Allocation allocation) {
         updateAllocation(scoreDirector, allocation);
     }
 
+    @Override
     public void beforeEntityRemoved(ScoreDirector scoreDirector, Allocation allocation) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityRemoved(ScoreDirector scoreDirector, Allocation allocation) {
         // Do nothing
     }

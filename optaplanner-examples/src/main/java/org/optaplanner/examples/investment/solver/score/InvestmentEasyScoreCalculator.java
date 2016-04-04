@@ -26,6 +26,7 @@ import org.optaplanner.examples.investment.domain.Sector;
 
 public class InvestmentEasyScoreCalculator implements EasyScoreCalculator<InvestmentSolution> {
 
+    @Override
     public HardSoftLongScore calculateScore(InvestmentSolution solution) {
         long hardScore = 0L;
         long softScore = 0L;

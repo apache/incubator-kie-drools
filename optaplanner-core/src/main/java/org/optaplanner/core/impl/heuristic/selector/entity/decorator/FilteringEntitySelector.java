@@ -59,22 +59,27 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
         scoreDirector = null;
     }
 
+    @Override
     public EntityDescriptor getEntityDescriptor() {
         return childEntitySelector.getEntityDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return childEntitySelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return childEntitySelector.isNeverEnding();
     }
 
+    @Override
     public long getSize() {
         return childEntitySelector.getSize();
     }
 
+    @Override
     public Iterator<Object> iterator() {
         return new JustInTimeFilteringEntityIterator(childEntitySelector.iterator());
     }
@@ -120,16 +125,19 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
         return childEntitySelector.getSize() * 10L;
     }
 
+    @Override
     public ListIterator<Object> listIterator() {
         // TODO Not yet implemented
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public ListIterator<Object> listIterator(int index) {
         // TODO Not yet implemented
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public Iterator<Object> endingIterator() {
         return new JustInTimeFilteringEntityIterator(childEntitySelector.endingIterator());
     }

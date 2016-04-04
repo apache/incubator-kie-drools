@@ -69,6 +69,7 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void constructCache(DefaultSolverScope solverScope) {
         cachedEntityMap = new TreeMap<>();
         ScoreDirector scoreDirector = solverScope.getScoreDirector();
@@ -82,32 +83,40 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
         probabilityWeightTotal = probabilityWeightOffset;
     }
 
+    @Override
     public void disposeCache(DefaultSolverScope solverScope) {
         probabilityWeightTotal = -1.0;
     }
 
+    @Override
     public EntityDescriptor getEntityDescriptor() {
         return childEntitySelector.getEntityDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         return true;
     }
 
+    @Override
     public long getSize() {
         return cachedEntityMap.size();
     }
 
+    @Override
     public Iterator<Object> iterator() {
         return new Iterator<Object>() {
+            @Override
             public boolean hasNext() {
                 return true;
             }
 
+            @Override
             public Object next() {
                 double randomOffset = RandomUtils.nextDouble(workingRandom, probabilityWeightTotal);
                 Map.Entry<Double, Object> entry = cachedEntityMap.floorEntry(randomOffset);
@@ -115,22 +124,26 @@ public class ProbabilityEntitySelector extends AbstractEntitySelector implements
                 return entry.getValue();
             }
 
+            @Override
             public void remove() {
                 throw new UnsupportedOperationException("The optional operation remove() is not supported.");
             }
         };
     }
 
+    @Override
     public ListIterator<Object> listIterator() {
         throw new IllegalStateException("The selector (" + this
                 + ") does not support a ListIterator with randomSelection (true).");
     }
 
+    @Override
     public ListIterator<Object> listIterator(int index) {
         throw new IllegalStateException("The selector (" + this
                 + ") does not support a ListIterator with randomSelection (true).");
     }
 
+    @Override
     public Iterator<Object> endingIterator() {
         return childEntitySelector.endingIterator();
     }

@@ -45,10 +45,12 @@ public class Vehicle extends AbstractPersistable implements Standstill {
         this.depot = depot;
     }
 
+    @Override
     public Customer getNextCustomer() {
         return nextCustomer;
     }
 
+    @Override
     public void setNextCustomer(Customer nextCustomer) {
         this.nextCustomer = nextCustomer;
     }
@@ -57,10 +59,12 @@ public class Vehicle extends AbstractPersistable implements Standstill {
     // Complex methods
     // ************************************************************************
 
+    @Override
     public Vehicle getVehicle() {
         return this;
     }
 
+    @Override
     public Location getLocation() {
         return depot.getLocation();
     }

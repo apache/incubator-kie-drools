@@ -47,6 +47,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
         this.randomSelection = randomSelection;
     }
 
+    @Override
     public EntityDescriptor getEntityDescriptor() {
         return entityDescriptor;
     }
@@ -100,19 +101,23 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         // CachedListRandomIterator is neverEnding
         return randomSelection;
     }
 
+    @Override
     public long getSize() {
         return (long) cachedEntityList.size();
     }
 
+    @Override
     public Iterator<Object> iterator() {
         checkCachedEntityListIsDirty();
         if (!randomSelection) {
@@ -122,6 +127,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
         }
     }
 
+    @Override
     public ListIterator<Object> listIterator() {
         checkCachedEntityListIsDirty();
         if (!randomSelection) {
@@ -132,6 +138,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
         }
     }
 
+    @Override
     public ListIterator<Object> listIterator(int index) {
         checkCachedEntityListIsDirty();
         if (!randomSelection) {
@@ -142,6 +149,7 @@ public class FromSolutionEntitySelector extends AbstractEntitySelector {
         }
     }
 
+    @Override
     public Iterator<Object> endingIterator() {
         checkCachedEntityListIsDirty();
         return cachedEntityList.iterator();

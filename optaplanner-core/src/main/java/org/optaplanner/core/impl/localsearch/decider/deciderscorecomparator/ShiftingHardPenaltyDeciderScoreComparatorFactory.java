@@ -117,6 +117,7 @@ public class ShiftingHardPenaltyDeciderScoreComparatorFactory extends AbstractDe
         }
     }
 
+    @Override
     public Comparator<Score> createDeciderScoreComparator() {
         // TODO BROKEN because createDeciderScoreComparator() is only called once per phase...
         if (shiftingPenaltyActive) {

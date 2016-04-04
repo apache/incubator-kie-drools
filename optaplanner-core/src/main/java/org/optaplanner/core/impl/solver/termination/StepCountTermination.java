@@ -35,11 +35,13 @@ public class StepCountTermination extends AbstractTermination {
     // Terminated methods
     // ************************************************************************
 
+    @Override
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
         throw new UnsupportedOperationException(
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
+    @Override
     public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         int nextStepIndex = phaseScope.getNextStepIndex();
         return nextStepIndex >= stepCountLimit;
@@ -49,11 +51,13 @@ public class StepCountTermination extends AbstractTermination {
     // Time gradient methods
     // ************************************************************************
 
+    @Override
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         throw new UnsupportedOperationException(
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
+    @Override
     public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         int nextStepIndex = phaseScope.getNextStepIndex();
         double timeGradient = ((double) nextStepIndex) / ((double) stepCountLimit);

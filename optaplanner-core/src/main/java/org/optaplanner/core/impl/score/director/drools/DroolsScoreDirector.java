@@ -80,6 +80,7 @@ public class DroolsScoreDirector<Solution_>
         return getSolutionDescriptor().getAllFacts(workingSolution);
     }
 
+    @Override
     public Score calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
         kieSession.fireAllRules();
@@ -88,10 +89,12 @@ public class DroolsScoreDirector<Solution_>
         return score;
     }
 
+    @Override
     public boolean isConstraintMatchEnabled() {
         return workingScoreHolder.isConstraintMatchEnabled();
     }
 
+    @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
         if (workingSolution == null) {
             throw new IllegalStateException(

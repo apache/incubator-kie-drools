@@ -46,10 +46,12 @@ public class SortingMoveSelector extends AbstractCachingMoveSelector {
                 cachedMoveList.size(), this);
     }
 
+    @Override
     public boolean isNeverEnding() {
         return false;
     }
 
+    @Override
     public Iterator<Move> iterator() {
         return cachedMoveList.iterator();
     }

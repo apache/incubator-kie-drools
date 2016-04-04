@@ -44,10 +44,12 @@ public class HardMediumSoftLongScoreDefinition extends AbstractFeasibilityScoreD
         return 1;
     }
 
+    @Override
     public Class<HardMediumSoftLongScore> getScoreClass() {
         return HardMediumSoftLongScore.class;
     }
 
+    @Override
     public HardMediumSoftLongScore parseScore(String scoreString) {
         return HardMediumSoftLongScore.parseScore(scoreString);
     }
@@ -61,10 +63,12 @@ public class HardMediumSoftLongScoreDefinition extends AbstractFeasibilityScoreD
         return HardMediumSoftLongScore.valueOf((Long) levelNumbers[0], (Long) levelNumbers[1], (Long) levelNumbers[2]);
     }
 
+    @Override
     public HardMediumSoftLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new HardMediumSoftLongScoreHolder(constraintMatchEnabled);
     }
 
+    @Override
     public HardMediumSoftLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardMediumSoftLongScore.valueOf(
@@ -73,6 +77,7 @@ public class HardMediumSoftLongScoreDefinition extends AbstractFeasibilityScoreD
                 trendLevels[2] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getSoftScore() : Long.MAX_VALUE);
     }
 
+    @Override
     public HardMediumSoftLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardMediumSoftLongScore.valueOf(

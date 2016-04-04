@@ -28,6 +28,7 @@ import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 public class DepotDistanceCustomerDifficultyWeightFactory
         implements SelectionSorterWeightFactory<VehicleRoutingSolution, Customer> {
 
+    @Override
     public Comparable createSorterWeight(VehicleRoutingSolution vehicleRoutingSolution, Customer customer) {
         Depot depot = vehicleRoutingSolution.getDepotList().get(0);
         return new DepotDistanceCustomerDifficultyWeight(customer,
@@ -47,6 +48,7 @@ public class DepotDistanceCustomerDifficultyWeightFactory
             this.depotRoundTripDistance = depotRoundTripDistance;
         }
 
+        @Override
         public int compareTo(DepotDistanceCustomerDifficultyWeight other) {
             return new CompareToBuilder()
                     .append(depotRoundTripDistance, other.depotRoundTripDistance) // Ascending (further from the depot are more difficult)

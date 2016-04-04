@@ -23,6 +23,7 @@ import org.optaplanner.examples.curriculumcourse.domain.Room;
 
 public class RoomStrengthWeightFactory implements SelectionSorterWeightFactory<CourseSchedule, Room> {
 
+    @Override
     public Comparable createSorterWeight(CourseSchedule schedule, Room room) {
         return new RoomStrengthWeight(room);
     }
@@ -35,6 +36,7 @@ public class RoomStrengthWeightFactory implements SelectionSorterWeightFactory<C
             this.room = room;
         }
 
+        @Override
         public int compareTo(RoomStrengthWeight other) {
             return new CompareToBuilder()
                     .append(room.getCapacity(), other.room.getCapacity())

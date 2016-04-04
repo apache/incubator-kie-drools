@@ -133,6 +133,7 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
         }
     }
 
+    @Override
     public boolean isFeasible() {
         for (BigDecimal hardScore : hardScores) {
             int comparison = hardScore.compareTo(BigDecimal.ZERO);
@@ -145,6 +146,7 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
         return true;
     }
 
+    @Override
     public BendableBigDecimalScore add(BendableBigDecimalScore augment) {
         validateCompatible(augment);
         BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
@@ -158,6 +160,7 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
         return new BendableBigDecimalScore(newHardScores, newSoftScores);
     }
 
+    @Override
     public BendableBigDecimalScore subtract(BendableBigDecimalScore subtrahend) {
         validateCompatible(subtrahend);
         BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
@@ -171,6 +174,7 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
         return new BendableBigDecimalScore(newHardScores, newSoftScores);
     }
 
+    @Override
     public BendableBigDecimalScore multiply(double multiplicand) {
         BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
         BigDecimal[] newSoftScores = new BigDecimal[softScores.length];
@@ -184,6 +188,7 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
         return new BendableBigDecimalScore(newHardScores, newSoftScores);
     }
 
+    @Override
     public BendableBigDecimalScore divide(double divisor) {
         BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
         BigDecimal[] newSoftScores = new BigDecimal[softScores.length];
@@ -199,6 +204,7 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
         return new BendableBigDecimalScore(newHardScores, newSoftScores);
     }
 
+    @Override
     public BendableBigDecimalScore power(double exponent) {
         BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
         BigDecimal[] newSoftScores = new BigDecimal[softScores.length];
@@ -217,6 +223,7 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
         return new BendableBigDecimalScore(newHardScores, newSoftScores);
     }
 
+    @Override
     public BendableBigDecimalScore negate() {
         BigDecimal[] newHardScores = new BigDecimal[hardScores.length];
         BigDecimal[] newSoftScores = new BigDecimal[softScores.length];
@@ -229,6 +236,7 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
         return new BendableBigDecimalScore(newHardScores, newSoftScores);
     }
 
+    @Override
     public Number[] toLevelNumbers() {
         Number[] levelNumbers = new Number[hardScores.length + softScores.length];
         for (int i = 0; i < hardScores.length; i++) {
@@ -278,6 +286,7 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
         return hashCode;
     }
 
+    @Override
     public int compareTo(BendableBigDecimalScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         validateCompatible(other);

@@ -38,36 +38,42 @@ public class SelectionCacheLifecycleBridge implements PhaseLifecycleListener {
         }
     }
 
+    @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         if (cacheType == SelectionCacheType.SOLVER) {
             selectionCacheLifecycleListener.constructCache(solverScope);
         }
     }
 
+    @Override
     public void phaseStarted(AbstractPhaseScope phaseScope) {
         if (cacheType == SelectionCacheType.PHASE) {
             selectionCacheLifecycleListener.constructCache(phaseScope.getSolverScope());
         }
     }
 
+    @Override
     public void stepStarted(AbstractStepScope stepScope) {
         if (cacheType == SelectionCacheType.STEP) {
             selectionCacheLifecycleListener.constructCache(stepScope.getPhaseScope().getSolverScope());
         }
     }
 
+    @Override
     public void stepEnded(AbstractStepScope stepScope) {
         if (cacheType == SelectionCacheType.STEP) {
             selectionCacheLifecycleListener.disposeCache(stepScope.getPhaseScope().getSolverScope());
         }
     }
 
+    @Override
     public void phaseEnded(AbstractPhaseScope phaseScope) {
         if (cacheType == SelectionCacheType.PHASE) {
             selectionCacheLifecycleListener.disposeCache(phaseScope.getSolverScope());
         }
     }
 
+    @Override
     public void solvingEnded(DefaultSolverScope solverScope) {
         if (cacheType == SelectionCacheType.SOLVER) {
             selectionCacheLifecycleListener.disposeCache(solverScope);

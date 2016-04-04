@@ -117,10 +117,12 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints.
      * @return true if the {@link #getHardScore()} is 0 or higher
      */
+    @Override
     public boolean isFeasible() {
         return getHardScore() >= 0;
     }
 
+    @Override
     public HardMediumSoftScore add(HardMediumSoftScore augment) {
         return new HardMediumSoftScore(
                 hardScore + augment.getHardScore(),
@@ -128,6 +130,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
                 softScore + augment.getSoftScore());
     }
 
+    @Override
     public HardMediumSoftScore subtract(HardMediumSoftScore subtrahend) {
         return new HardMediumSoftScore(
                 hardScore - subtrahend.getHardScore(),
@@ -135,6 +138,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
                 softScore - subtrahend.getSoftScore());
     }
 
+    @Override
     public HardMediumSoftScore multiply(double multiplicand) {
         return new HardMediumSoftScore(
                 (int) Math.floor(hardScore * multiplicand),
@@ -142,6 +146,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
                 (int) Math.floor(softScore * multiplicand));
     }
 
+    @Override
     public HardMediumSoftScore divide(double divisor) {
         return new HardMediumSoftScore(
                 (int) Math.floor(hardScore / divisor),
@@ -149,6 +154,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
                 (int) Math.floor(softScore / divisor));
     }
 
+    @Override
     public HardMediumSoftScore power(double exponent) {
         return new HardMediumSoftScore(
                 (int) Math.floor(Math.pow(hardScore, exponent)),
@@ -156,10 +162,12 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
                 (int) Math.floor(Math.pow(softScore, exponent)));
     }
 
+    @Override
     public HardMediumSoftScore negate() {
         return new HardMediumSoftScore(-hardScore, -mediumScore, -softScore);
     }
 
+    @Override
     public Number[] toLevelNumbers() {
         return new Number[]{hardScore, mediumScore, softScore};
     }
@@ -186,6 +194,7 @@ public final class HardMediumSoftScore extends AbstractScore<HardMediumSoftScore
                 + softScore;
     }
 
+    @Override
     public int compareTo(HardMediumSoftScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (hardScore != other.getHardScore()) {

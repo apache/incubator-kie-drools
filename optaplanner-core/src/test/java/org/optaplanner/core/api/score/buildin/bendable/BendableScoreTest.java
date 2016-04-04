@@ -227,6 +227,7 @@ public class BendableScoreTest extends AbstractScoreTest {
         BendableScore input = scoreDefinitionHSS.createScore(-5, -300, -4000);
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
                 new PlannerTestUtils.OutputAsserter<BendableScore>() {
+                    @Override
                     public void assertOutput(BendableScore output) {
                         assertEquals(1, output.getHardLevelsSize());
                         assertEquals(-5, output.getHardScore(0));

@@ -25,6 +25,7 @@ public class GlobalResource extends Resource {
     // Complex methods
     // ************************************************************************
 
+    @Override
     public boolean isRenewable() {
         return true;
     }

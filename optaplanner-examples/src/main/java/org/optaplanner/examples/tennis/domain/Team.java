@@ -41,6 +41,7 @@ public class Team extends AbstractPersistable implements Labeled {
         this.name = name;
     }
 
+    @Override
     public String getLabel() {
         return name;
     }

@@ -37,6 +37,7 @@ public class Customer extends AbstractPersistable implements Labeled {
     // Complex methods
     // ************************************************************************
 
+    @Override
     public String getLabel() {
         return name;
     }

@@ -71,6 +71,7 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         for (MoveSelector moveSelector : childMoveSelectorList) {
             if (!moveSelector.isCountable()) {

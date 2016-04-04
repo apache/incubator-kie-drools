@@ -37,6 +37,7 @@ public class CheatingNQueensPhaseCommand extends AbstractCustomPhaseCommand<NQue
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Override
     public void changeWorkingSolution(ScoreDirector<NQueens> scoreDirector) {
         NQueens nQueens = scoreDirector.getWorkingSolution();
         int n = nQueens.getN();

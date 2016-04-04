@@ -38,10 +38,12 @@ public class RowChangeMove extends AbstractMove {
         this.toRow = toRow;
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !Objects.equals(queen.getRow(), toRow);
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new RowChangeMove(queen, queen.getRow());
     }
@@ -53,10 +55,12 @@ public class RowChangeMove extends AbstractMove {
         scoreDirector.afterVariableChanged(queen, "row"); // after changes are made
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(queen);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Collections.singletonList(toRow);
     }

@@ -168,6 +168,7 @@ public class PlannerAssert extends Assert {
             final String code = convertToCodeAssertable(changeMove.getEntity()).getCode()
                     + "->" + convertToCodeAssertable(changeMove.getToPlanningValue()).getCode();
             return new CodeAssertable() {
+                @Override
                 public String getCode() {
                     return code;
                 }
@@ -177,6 +178,7 @@ public class PlannerAssert extends Assert {
             final String code = convertToCodeAssertable(swapMove.getLeftEntity()).getCode()
                     + "<->" + convertToCodeAssertable(swapMove.getRightEntity()).getCode();
             return new CodeAssertable() {
+                @Override
                 public String getCode() {
                     return code;
                 }
@@ -189,6 +191,7 @@ public class PlannerAssert extends Assert {
             }
             final String code = codeBuilder.substring(1);
             return new CodeAssertable() {
+                @Override
                 public String getCode() {
                     return code;
                 }
@@ -208,6 +211,7 @@ public class PlannerAssert extends Assert {
             codeBuilder.append("]");
             final String code = codeBuilder.toString();
             return new CodeAssertable() {
+                @Override
                 public String getCode() {
                     return code;
                 }
@@ -216,6 +220,7 @@ public class PlannerAssert extends Assert {
             SubChain subChain = (SubChain) o;
             final String code = convertToCodeAssertable(subChain.getEntityList()).getCode();
             return new CodeAssertable() {
+                @Override
                 public String getCode() {
                     return code;
                 }

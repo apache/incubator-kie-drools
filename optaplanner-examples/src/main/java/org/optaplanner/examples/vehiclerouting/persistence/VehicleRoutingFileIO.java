@@ -27,18 +27,22 @@ public class VehicleRoutingFileIO implements SolutionFileIO<VehicleRoutingSoluti
 
     private VehicleRoutingImporter importer = new VehicleRoutingImporter();
 
+    @Override
     public String getInputFileExtension() {
         return FILE_EXTENSION;
     }
 
+    @Override
     public String getOutputFileExtension() {
         return FILE_EXTENSION;
     }
 
+    @Override
     public VehicleRoutingSolution read(File inputSolutionFile) {
         return importer.readSolution(inputSolutionFile);
     }
 
+    @Override
     public void write(VehicleRoutingSolution solution, File outputSolutionFile) {
         throw new UnsupportedOperationException();
     }

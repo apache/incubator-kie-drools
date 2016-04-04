@@ -43,11 +43,13 @@ public class CachingMoveSelector extends AbstractCachingMoveSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isNeverEnding() {
         // CachedListRandomIterator is neverEnding
         return randomSelection;
     }
 
+    @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
             return cachedMoveList.iterator();

@@ -25,6 +25,7 @@ import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 
 public class ShiftAssignmentDifficultyComparator implements Comparator<ShiftAssignment>, Serializable {
 
+    @Override
     public int compare(ShiftAssignment a, ShiftAssignment b) {
         Shift aShift = a.getShift();
         Shift bShift = b.getShift();

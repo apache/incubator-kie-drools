@@ -44,37 +44,45 @@ public class SelectedCountLimitEntitySelector extends AbstractEntitySelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public EntityDescriptor getEntityDescriptor() {
         return childEntitySelector.getEntityDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         return false;
     }
 
+    @Override
     public long getSize() {
         long childSize = childEntitySelector.getSize();
         return Math.min(selectedCountLimit, childSize);
     }
 
+    @Override
     public Iterator<Object> iterator() {
         return new SelectedCountLimitEntityIterator(childEntitySelector.iterator());
     }
 
+    @Override
     public ListIterator<Object> listIterator() {
         // TODO Not yet implemented
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public ListIterator<Object> listIterator(int index) {
         // TODO Not yet implemented
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public Iterator<Object> endingIterator() {
         return new SelectedCountLimitEntityIterator(childEntitySelector.endingIterator());
     }

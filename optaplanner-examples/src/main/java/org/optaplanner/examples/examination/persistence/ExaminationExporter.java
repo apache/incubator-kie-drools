@@ -41,12 +41,14 @@ public class ExaminationExporter extends AbstractTxtSolutionExporter<Examination
         return OUTPUT_FILE_SUFFIX;
     }
 
+    @Override
     public TxtOutputBuilder<Examination> createTxtOutputBuilder() {
         return new ExaminationOutputBuilder();
     }
 
     public static class ExaminationOutputBuilder extends TxtOutputBuilder<Examination> {
 
+        @Override
         public void writeSolution() throws IOException {
             Collections.sort(solution.getExamList(), new PersistableIdComparator()); // TODO remove me when obsolete
             for (Exam exam : solution.getExamList()) {

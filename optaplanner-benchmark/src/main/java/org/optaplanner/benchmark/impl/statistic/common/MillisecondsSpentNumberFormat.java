@@ -34,10 +34,12 @@ public class MillisecondsSpentNumberFormat extends NumberFormat {
         this.locale = locale;
     }
 
+    @Override
     public StringBuffer format(double number, StringBuffer toAppendTo, FieldPosition pos) {
         return format((long) number, toAppendTo, pos);
     }
 
+    @Override
     public StringBuffer format(long number, StringBuffer toAppendTo, FieldPosition pos) {
         if (number == 0L) {
             toAppendTo.append("0");
@@ -69,6 +71,7 @@ public class MillisecondsSpentNumberFormat extends NumberFormat {
         return toAppendTo;
     }
 
+    @Override
     public Number parse(String source, ParsePosition parsePosition) {
         throw new UnsupportedOperationException();
     }

@@ -34,10 +34,12 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
     // Worker methods
     // ************************************************************************
 
+    @Override
     public Class<BendableLongScore> getScoreClass() {
         return BendableLongScore.class;
     }
 
+    @Override
     public BendableLongScore parseScore(String scoreString) {
         return BendableLongScore.parseScore(hardLevelsSize, softLevelsSize, scoreString);
     }
@@ -70,10 +72,12 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
                 Arrays.copyOfRange(scores, hardLevelsSize, levelsSize));
     }
 
+    @Override
     public BendableLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new BendableLongScoreHolder(constraintMatchEnabled, hardLevelsSize, softLevelsSize);
     }
 
+    @Override
     public BendableLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, BendableLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         long[] hardScores = new long[hardLevelsSize];
@@ -89,6 +93,7 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
         return BendableLongScore.valueOf(hardScores, softScores);
     }
 
+    @Override
     public BendableLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, BendableLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         long[] hardScores = new long[hardLevelsSize];

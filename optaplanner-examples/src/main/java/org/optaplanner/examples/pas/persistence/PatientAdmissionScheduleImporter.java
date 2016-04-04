@@ -56,6 +56,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
         super(new PatientAdmissionScheduleDao());
     }
 
+    @Override
     public TxtInputBuilder<PatientAdmissionSchedule> createTxtInputBuilder() {
         return new PatientAdmissionScheduleInputBuilder();
     }
@@ -78,6 +79,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
         private Map<Long, Room> idToRoomMap = null;
         private Map<Integer, Night> indexToNightMap = null;
 
+        @Override
         public PatientAdmissionSchedule readSolution() throws IOException {
             patientAdmissionSchedule = new PatientAdmissionSchedule();
             patientAdmissionSchedule.setId(0L);
@@ -295,6 +297,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 room.setRoomEquipmentList(roomEquipmentListOfRoom);
             }
             Collections.sort(roomList, new Comparator<Room>() {
+                @Override
                 public int compare(Room a, Room b) {
                     return new CompareToBuilder()
                             .append(a.getDepartment().getId(), b.getDepartment().getId())
@@ -330,6 +333,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                 room.getBedList().add(bed);
             }
             Collections.sort(bedList, new Comparator<Bed>() {
+                @Override
                 public int compare(Bed a, Bed b) {
                     return new CompareToBuilder()
                             .append(a.getRoom().getDepartment().getId(), b.getRoom().getDepartment().getId())

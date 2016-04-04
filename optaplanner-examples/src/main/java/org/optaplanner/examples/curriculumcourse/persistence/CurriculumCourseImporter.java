@@ -54,12 +54,14 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter<Course
         return INPUT_FILE_SUFFIX;
     }
 
+    @Override
     public TxtInputBuilder<CourseSchedule> createTxtInputBuilder() {
         return new CurriculumCourseInputBuilder();
     }
 
     public static class CurriculumCourseInputBuilder extends TxtInputBuilder<CourseSchedule> {
 
+        @Override
         public CourseSchedule readSolution() throws IOException {
             CourseSchedule schedule = new CourseSchedule();
             schedule.setId(0L);

@@ -24,6 +24,7 @@ import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
 public class InverseMatchSwapMoveFilter implements SelectionFilter<TravelingTournament, SwapMove> {
 
+    @Override
     public boolean accept(ScoreDirector<TravelingTournament> scoreDirector, SwapMove move) {
         Match leftMatch = (Match) move.getLeftEntity();
         Match rightMatch = (Match) move.getRightEntity();

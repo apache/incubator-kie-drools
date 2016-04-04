@@ -45,12 +45,14 @@ public class DinnerPartyImporter extends AbstractTxtSolutionImporter<DinnerParty
         super(new DinnerPartyDao());
     }
 
+    @Override
     public TxtInputBuilder<DinnerParty> createTxtInputBuilder() {
         return new DinnerPartyInputBuilder();
     }
 
     public static class DinnerPartyInputBuilder extends TxtInputBuilder<DinnerParty> {
 
+        @Override
         public DinnerParty readSolution() throws IOException {
             DinnerParty dinnerParty = new DinnerParty();
             dinnerParty.setId(0L);

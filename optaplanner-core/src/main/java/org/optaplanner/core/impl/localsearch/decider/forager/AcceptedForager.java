@@ -81,11 +81,13 @@ public class AcceptedForager extends AbstractForager {
         earlyPickedMoveScope = null;
     }
 
+    @Override
     public boolean supportsNeverEndingMoveSelector() {
         // TODO FIXME magical value Integer.MAX_VALUE coming from ForagerConfig
         return acceptedCountLimit < Integer.MAX_VALUE;
     }
 
+    @Override
     public void addMove(LocalSearchMoveScope moveScope) {
         selectedMoveCount++;
         if (moveScope.getAccepted()) {
@@ -117,10 +119,12 @@ public class AcceptedForager extends AbstractForager {
         }
     }
 
+    @Override
     public boolean isQuitEarly() {
         return earlyPickedMoveScope != null || acceptedMoveCount >= acceptedCountLimit;
     }
 
+    @Override
     public LocalSearchMoveScope pickMove(LocalSearchStepScope stepScope) {
         stepScope.setSelectedMoveCount(selectedMoveCount);
         stepScope.setAcceptedMoveCount(acceptedMoveCount);

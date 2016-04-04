@@ -24,6 +24,7 @@ import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 
 public class DifferentCourseSwapMoveFilter implements SelectionFilter<CourseSchedule, SwapMove> {
 
+    @Override
     public boolean accept(ScoreDirector<CourseSchedule> scoreDirector, SwapMove move) {
         Lecture leftLecture = (Lecture) move.getLeftEntity();
         Lecture rightLecture = (Lecture) move.getRightEntity();

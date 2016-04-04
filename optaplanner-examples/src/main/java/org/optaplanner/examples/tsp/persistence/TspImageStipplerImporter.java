@@ -46,6 +46,7 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSol
         super(withoutDao);
     }
 
+    @Override
     public PngInputBuilder<TspSolution> createPngInputBuilder() {
         return new TspImageStipplerInputBuilder();
     }
@@ -56,6 +57,7 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSol
 
         private int locationListSize;
 
+        @Override
         public TspSolution readSolution() throws IOException {
             tspSolution = new TspSolution();
             tspSolution.setId(0L);

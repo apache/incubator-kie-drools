@@ -40,6 +40,7 @@ public class Shuttle extends Bus {
         this.setupCost = setupCost;
     }
 
+    @Override
     @PlanningVariable(valueRangeProviderRefs = {"stopRange", "hubRange"})
     public StopOrHub getDestination() {
         return destination;

@@ -33,6 +33,7 @@ public class DummyMove extends AbstractMove implements CodeAssertable {
         this.code = code;
     }
 
+    @Override
     public String getCode() {
         return code;
     }
@@ -41,10 +42,12 @@ public class DummyMove extends AbstractMove implements CodeAssertable {
     // Complex methods
     // ************************************************************************
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return true;
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new DummyMove("undo " + code);
     }
@@ -54,10 +57,12 @@ public class DummyMove extends AbstractMove implements CodeAssertable {
         // do nothing
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.<Object>emptyList();
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Collections.<Object>emptyList();
     }

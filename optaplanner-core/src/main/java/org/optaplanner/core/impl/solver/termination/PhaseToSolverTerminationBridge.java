@@ -66,11 +66,13 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
     // Terminated methods
     // ************************************************************************
 
+    @Override
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
         throw new UnsupportedOperationException(
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
+    @Override
     public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         return solverTermination.isSolverTerminated(phaseScope.getSolverScope());
     }
@@ -79,11 +81,13 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
     // Time gradient methods
     // ************************************************************************
 
+    @Override
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         throw new UnsupportedOperationException(
                 getClass().getSimpleName() + " can only be used for phase termination.");
     }
 
+    @Override
     public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         return solverTermination.calculateSolverTimeGradient(phaseScope.getSolverScope());
     }

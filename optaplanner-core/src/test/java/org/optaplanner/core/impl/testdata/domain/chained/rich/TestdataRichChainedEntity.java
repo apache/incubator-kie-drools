@@ -60,10 +60,12 @@ public class TestdataRichChainedEntity extends TestdataObject implements Testdat
         this.chainedObject = chainedObject;
     }
 
+    @Override
     public TestdataRichChainedEntity getNextEntity() {
         return nextEntity;
     }
 
+    @Override
     public void setNextEntity(TestdataRichChainedEntity nextEntity) {
         this.nextEntity = nextEntity;
     }

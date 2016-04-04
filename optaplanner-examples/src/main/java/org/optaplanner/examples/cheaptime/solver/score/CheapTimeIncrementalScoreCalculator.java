@@ -63,6 +63,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
     // Lifecycle methods
     // ************************************************************************
 
+    @Override
     public void resetWorkingSolution(CheapTimeSolution solution) {
         this.cheapTimeSolution = solution;
         hardScore = 0L;
@@ -95,10 +96,12 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         }
     }
 
+    @Override
     public void beforeEntityAdded(Object entity) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(Object entity) {
         TaskAssignment taskAssignment = (TaskAssignment) entity;
         // Do not do modifyMachine(taskAssignment, null, taskAssignment.getMachine());
@@ -106,6 +109,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         modifyStartPeriod(taskAssignment, null, taskAssignment.getStartPeriod());
     }
 
+    @Override
     public void beforeVariableChanged(Object entity, String variableName) {
         TaskAssignment taskAssignment = (TaskAssignment) entity;
         if (variableName.equals("machine")) {
@@ -117,6 +121,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         }
     }
 
+    @Override
     public void afterVariableChanged(Object entity, String variableName) {
         TaskAssignment taskAssignment = (TaskAssignment) entity;
         if (variableName.equals("machine")) {
@@ -128,12 +133,14 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         }
     }
 
+    @Override
     public void beforeEntityRemoved(Object entity) {
         TaskAssignment taskAssignment = (TaskAssignment) entity;
         oldMachine = taskAssignment.getMachine();
         oldStartPeriod = taskAssignment.getStartPeriod();
     }
 
+    @Override
     public void afterEntityRemoved(Object entity) {
         TaskAssignment taskAssignment = (TaskAssignment) entity;
         // Do not do modifyMachine(taskAssignment, oldMachine, null);
@@ -391,6 +398,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
         }
     }
 
+    @Override
     public HardMediumSoftLongScore calculateScore() {
         return HardMediumSoftLongScore.valueOf(hardScore, mediumScore, softScore);
     }

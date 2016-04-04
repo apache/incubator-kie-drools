@@ -64,6 +64,7 @@ public class IncrementalScoreDirector<Solution_>
         }
     }
 
+    @Override
     public Score calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
         Score score = incrementalScoreCalculator.calculateScore();
@@ -71,11 +72,13 @@ public class IncrementalScoreDirector<Solution_>
         return score;
     }
 
+    @Override
     public boolean isConstraintMatchEnabled() {
         return constraintMatchEnabledPreference
                 && incrementalScoreCalculator instanceof ConstraintMatchAwareIncrementalScoreCalculator;
     }
 
+    @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
         if (!isConstraintMatchEnabled()) {
             throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()

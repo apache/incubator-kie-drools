@@ -28,18 +28,22 @@ import org.optaplanner.core.impl.solver.event.SolverLifecycleListenerAdapter;
 public abstract class PhaseLifecycleListenerAdapter<Solution_> extends SolverLifecycleListenerAdapter<Solution_>
         implements PhaseLifecycleListener<Solution_> {
 
+    @Override
     public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
         // Hook method
     }
 
+    @Override
     public void stepStarted(AbstractStepScope<Solution_> stepScope) {
         // Hook method
     }
 
+    @Override
     public void stepEnded(AbstractStepScope<Solution_> stepScope) {
         // Hook method
     }
 
+    @Override
     public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
         // Hook method
     }

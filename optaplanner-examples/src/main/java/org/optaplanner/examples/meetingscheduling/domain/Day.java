@@ -37,6 +37,7 @@ public class Day extends AbstractPersistable implements Labeled {
         return dayOfYear + "-JAN";
     }
 
+    @Override
     public String getLabel() {
         return getDateString();
     }

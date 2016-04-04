@@ -26,6 +26,7 @@ public class HillClimbingAcceptor extends AbstractAcceptor {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
         Score moveScore = moveScope.getScore();
         Score lastStepScore = moveScope.getStepScope().getPhaseScope().getLastCompletedStepScope().getScore();

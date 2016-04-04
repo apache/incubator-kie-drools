@@ -67,6 +67,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
     // Builder methods
     // ************************************************************************
 
+    @Override
     public QueuedEntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
         EntitySelectorConfig entitySelectorConfig_ = buildEntitySelectorConfig(configPolicy);
         EntitySelector entitySelector = entitySelectorConfig_.buildEntitySelector(configPolicy,
@@ -151,6 +152,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
         return changeMoveSelectorConfig;
     }
 
+    @Override
     public void inherit(QueuedEntityPlacerConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());

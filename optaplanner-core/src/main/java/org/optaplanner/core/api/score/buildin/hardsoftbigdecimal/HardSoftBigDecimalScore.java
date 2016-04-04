@@ -96,20 +96,24 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isFeasible() {
         return getHardScore().compareTo(BigDecimal.ZERO) >= 0;
     }
 
+    @Override
     public HardSoftBigDecimalScore add(HardSoftBigDecimalScore augment) {
         return new HardSoftBigDecimalScore(hardScore.add(augment.getHardScore()),
                 softScore.add(augment.getSoftScore()));
     }
 
+    @Override
     public HardSoftBigDecimalScore subtract(HardSoftBigDecimalScore subtrahend) {
         return new HardSoftBigDecimalScore(hardScore.subtract(subtrahend.getHardScore()),
                 softScore.subtract(subtrahend.getSoftScore()));
     }
 
+    @Override
     public HardSoftBigDecimalScore multiply(double multiplicand) {
         // Intentionally not taken "new BigDecimal(multiplicand, MathContext.UNLIMITED)"
         // because together with the floor rounding it gives unwanted behaviour
@@ -120,6 +124,7 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
                 softScore.multiply(multiplicandBigDecimal).setScale(softScore.scale(), RoundingMode.FLOOR));
     }
 
+    @Override
     public HardSoftBigDecimalScore divide(double divisor) {
         // Intentionally not taken "new BigDecimal(multiplicand, MathContext.UNLIMITED)"
         // because together with the floor rounding it gives unwanted behaviour
@@ -130,6 +135,7 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
                 softScore.divide(divisorBigDecimal, softScore.scale(), RoundingMode.FLOOR));
     }
 
+    @Override
     public HardSoftBigDecimalScore power(double exponent) {
         // Intentionally not taken "new BigDecimal(multiplicand, MathContext.UNLIMITED)"
         // because together with the floor rounding it gives unwanted behaviour
@@ -142,10 +148,12 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
                 softScore.pow(exponentBigDecimal.intValue()).setScale(softScore.scale()));
     }
 
+    @Override
     public HardSoftBigDecimalScore negate() {
         return new HardSoftBigDecimalScore(hardScore.negate(), softScore.negate());
     }
 
+    @Override
     public Number[] toLevelNumbers() {
         return new Number[]{hardScore, softScore};
     }
@@ -168,6 +176,7 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
         return (((17 * 37) + hardScore.hashCode())) * 37 + softScore.hashCode();
     }
 
+    @Override
     public int compareTo(HardSoftBigDecimalScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (hardScore.compareTo(other.getHardScore()) != 0) {

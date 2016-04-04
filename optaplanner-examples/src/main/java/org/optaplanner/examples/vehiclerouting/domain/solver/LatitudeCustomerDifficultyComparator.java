@@ -28,6 +28,7 @@ import org.optaplanner.examples.vehiclerouting.domain.Customer;
  */
 public class LatitudeCustomerDifficultyComparator implements Comparator<Customer>, Serializable {
 
+    @Override
     public int compare(Customer a, Customer b) {
         return new CompareToBuilder()
                 .append(a.getLocation().getLatitude(), b.getLocation().getLatitude())

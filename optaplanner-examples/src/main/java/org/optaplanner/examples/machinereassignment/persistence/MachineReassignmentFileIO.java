@@ -28,18 +28,22 @@ public class MachineReassignmentFileIO implements SolutionFileIO<MachineReassign
     private MachineReassignmentImporter importer = new MachineReassignmentImporter();
     private MachineReassignmentExporter exporter = new MachineReassignmentExporter();
 
+    @Override
     public String getInputFileExtension() {
         return FILE_EXTENSION;
     }
 
+    @Override
     public String getOutputFileExtension() {
         return FILE_EXTENSION;
     }
 
+    @Override
     public MachineReassignment read(File inputSolutionFile) {
         return importer.readSolution(inputSolutionFile);
     }
 
+    @Override
     public void write(MachineReassignment solution, File outputSolutionFile) {
         exporter.writeSolution(solution, outputSolutionFile);
     }

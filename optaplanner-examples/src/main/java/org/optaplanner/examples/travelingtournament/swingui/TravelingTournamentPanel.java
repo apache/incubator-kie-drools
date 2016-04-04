@@ -158,6 +158,7 @@ public class TravelingTournamentPanel extends SolutionPanel<TravelingTournament>
             this.match = match;
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             // TODO this allows the user to put the TTP in an inconsistent state, from which the solver cannot start
             List<Day> dayList = getSolution().getDayList();

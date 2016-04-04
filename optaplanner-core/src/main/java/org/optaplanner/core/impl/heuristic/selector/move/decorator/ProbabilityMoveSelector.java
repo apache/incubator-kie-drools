@@ -68,6 +68,7 @@ public class ProbabilityMoveSelector extends AbstractMoveSelector implements Sel
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void constructCache(DefaultSolverScope solverScope) {
         cachedMoveMap = new TreeMap<>();
         ScoreDirector scoreDirector = solverScope.getScoreDirector();
@@ -81,28 +82,35 @@ public class ProbabilityMoveSelector extends AbstractMoveSelector implements Sel
         probabilityWeightTotal = probabilityWeightOffset;
     }
 
+    @Override
     public void disposeCache(DefaultSolverScope solverScope) {
         probabilityWeightTotal = -1.0;
     }
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         return true;
     }
 
+    @Override
     public long getSize() {
         return cachedMoveMap.size();
     }
 
+    @Override
     public Iterator<Move> iterator() {
         return new Iterator<Move>() {
+            @Override
             public boolean hasNext() {
                 return true;
             }
 
+            @Override
             public Move next() {
                 double randomOffset = RandomUtils.nextDouble(workingRandom, probabilityWeightTotal);
                 Map.Entry<Double, Move> entry = cachedMoveMap.floorEntry(randomOffset);
@@ -110,6 +118,7 @@ public class ProbabilityMoveSelector extends AbstractMoveSelector implements Sel
                 return entry.getValue();
             }
 
+            @Override
             public void remove() {
                 throw new UnsupportedOperationException("The optional operation remove() is not supported.");
             }

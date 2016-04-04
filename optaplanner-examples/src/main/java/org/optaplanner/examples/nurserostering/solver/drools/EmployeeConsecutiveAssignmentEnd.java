@@ -74,6 +74,7 @@ public class EmployeeConsecutiveAssignmentEnd implements Comparable<EmployeeCons
                 .toHashCode();
     }
 
+    @Override
     public int compareTo(EmployeeConsecutiveAssignmentEnd other) {
         return new CompareToBuilder()
                 .append(employee, other.employee)

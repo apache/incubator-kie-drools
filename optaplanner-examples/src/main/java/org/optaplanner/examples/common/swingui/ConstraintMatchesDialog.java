@@ -94,6 +94,7 @@ public class ConstraintMatchesDialog extends JDialog {
             bottomPanel.add(detailScrollPane, BorderLayout.CENTER);
             table.getSelectionModel().addListSelectionListener(
                     new ListSelectionListener() {
+                        @Override
                         public void valueChanged(ListSelectionEvent event) {
                             int selectedRow = table.getSelectedRow();
                             if (selectedRow < 0) {
@@ -133,14 +134,17 @@ public class ConstraintMatchesDialog extends JDialog {
             this.constraintMatchTotalList = constraintMatchTotalList;
         }
 
+        @Override
         public int getRowCount() {
             return constraintMatchTotalList.size();
         }
 
+        @Override
         public int getColumnCount() {
             return 5;
         }
 
+        @Override
         public String getColumnName(int columnIndex) {
             switch (columnIndex) {
                 case 0:
@@ -158,6 +162,7 @@ public class ConstraintMatchesDialog extends JDialog {
             }
         }
 
+        @Override
         public Class<?> getColumnClass(int columnIndex) {
             switch (columnIndex) {
                 case 0:
@@ -175,6 +180,7 @@ public class ConstraintMatchesDialog extends JDialog {
             }
         }
 
+        @Override
         public Object getValueAt(int rowIndex, int columnIndex) {
             ConstraintMatchTotal constraintMatchTotal = constraintMatchTotalList.get(rowIndex);
             switch (columnIndex) {

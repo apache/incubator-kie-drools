@@ -37,6 +37,7 @@ import org.optaplanner.examples.pas.solver.move.BedChangeMove;
 
 public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<PatientAdmissionSchedule> {
 
+    @Override
     public List<Move> createMoveList(PatientAdmissionSchedule patientAdmissionSchedule) {
         Map<Bed, List<BedDesignation>> bedToBedDesignationList = new HashMap<>(
                 patientAdmissionSchedule.getBedList().size());
@@ -53,6 +54,7 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
         }
         for (List<BedDesignation> bedDesignationListPerBed : bedToBedDesignationList.values()) {
             Collections.sort(bedDesignationListPerBed, new Comparator<BedDesignation>() {
+                @Override
                 public int compare(BedDesignation a, BedDesignation b) {
                     // This comparison is sameBedInSameNight safe.
                     return new CompareToBuilder()
@@ -155,6 +157,7 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
             }
         }
 
+        @Override
         public boolean hasNext() {
             return leftHasNext || rightHasNext;
         }
@@ -176,6 +179,7 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
             }
         }
 
+        @Override
         public BedDesignation next() {
             lastNextWasLeft = nextIsLeft();
             // Buffer the nextLeft or nextRight
@@ -220,6 +224,7 @@ public class BedDesignationPillarPartSwapMoveFactory implements MoveListFactory<
             return returnLeft;
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException("The optional operation remove() is not supported.");
         }

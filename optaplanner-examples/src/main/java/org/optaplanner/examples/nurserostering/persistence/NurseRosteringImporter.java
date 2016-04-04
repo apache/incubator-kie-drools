@@ -73,6 +73,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         super(new NurseRosteringDao());
     }
 
+    @Override
     public XmlInputBuilder<NurseRoster> createXmlInputBuilder() {
         return new NurseRosteringInputBuilder();
     }
@@ -88,6 +89,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         protected Map<String, Contract> contractMap;
         protected Map<String, Employee> employeeMap;
 
+        @Override
         public NurseRoster readSolution() throws IOException, JDOMException {
             // Note: javax.xml is terrible. JDom is much much easier.
 

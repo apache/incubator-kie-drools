@@ -34,10 +34,12 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
     // Worker methods
     // ************************************************************************
 
+    @Override
     public Class<SimpleLongScore> getScoreClass() {
         return SimpleLongScore.class;
     }
 
+    @Override
     public SimpleLongScore parseScore(String scoreString) {
         return SimpleLongScore.parseScore(scoreString);
     }
@@ -51,16 +53,19 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
         return SimpleLongScore.valueOf((Long) levelNumbers[0]);
     }
 
+    @Override
     public SimpleLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new SimpleLongScoreHolder(constraintMatchEnabled);
     }
 
+    @Override
     public SimpleLongScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return SimpleLongScore.valueOf(
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getScore() : Long.MAX_VALUE);
     }
 
+    @Override
     public SimpleLongScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleLongScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return SimpleLongScore.valueOf(

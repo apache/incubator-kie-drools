@@ -36,6 +36,7 @@ public class QueuedValuePlacer extends AbstractEntityPlacer implements EntityPla
         phaseLifecycleSupport.addEventListener(moveSelector);
     }
 
+    @Override
     public Iterator<Placement> iterator() {
         return new QueuedValuePlacingIterator();
     }
@@ -48,6 +49,7 @@ public class QueuedValuePlacer extends AbstractEntityPlacer implements EntityPla
             valueIterator = Iterators.emptyIterator();
         }
 
+        @Override
         protected Placement createUpcomingSelection() {
             // If all values are used, there can still be entities uninitialized
             if (!valueIterator.hasNext()) {

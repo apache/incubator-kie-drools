@@ -79,22 +79,27 @@ public class EntityDependentSortingValueSelector extends AbstractValueSelector {
         scoreDirector = null;
     }
 
+    @Override
     public GenuineVariableDescriptor getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 
+    @Override
     public long getSize(Object entity) {
         return childValueSelector.getSize(entity);
     }
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         return false;
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         long childSize = childValueSelector.getSize(entity);
         if (childSize > (long) Integer.MAX_VALUE) {
@@ -113,6 +118,7 @@ public class EntityDependentSortingValueSelector extends AbstractValueSelector {
         return cachedValueList.iterator();
     }
 
+    @Override
     public Iterator<Object> endingIterator(Object entity) {
         return iterator(entity);
     }

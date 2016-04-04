@@ -30,10 +30,12 @@ public class TestdataRichChainedAnchor extends TestdataObject implements Testdat
         super(code);
     }
 
+    @Override
     public TestdataRichChainedEntity getNextEntity() {
         return nextEntity;
     }
 
+    @Override
     public void setNextEntity(TestdataRichChainedEntity nextEntity) {
         this.nextEntity = nextEntity;
     }

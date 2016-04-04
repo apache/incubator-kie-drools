@@ -23,6 +23,7 @@ import org.optaplanner.examples.nqueens.domain.Queen;
 
 public class QueenDifficultyWeightFactory implements SelectionSorterWeightFactory<NQueens, Queen> {
 
+    @Override
     public Comparable createSorterWeight(NQueens nQueens, Queen queen) {
         int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), queen.getColumnIndex());
         return new QueenDifficultyWeight(queen, distanceFromMiddle);
@@ -47,6 +48,7 @@ public class QueenDifficultyWeightFactory implements SelectionSorterWeightFactor
             this.distanceFromMiddle = distanceFromMiddle;
         }
 
+        @Override
         public int compareTo(QueenDifficultyWeight other) {
             return new CompareToBuilder()
                     // The more difficult queens have a lower distance to the middle

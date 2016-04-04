@@ -81,6 +81,7 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig<SubChai
     // Builder methods
     // ************************************************************************
 
+    @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntityDescriptor entityDescriptor = deduceEntityDescriptor(
@@ -104,6 +105,7 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig<SubChai
                 randomSelection, defaultIfNull(selectReversingMoveToo, true));
     }
 
+    @Override
     public void inherit(SubChainChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass, inheritedConfig.getEntityClass());

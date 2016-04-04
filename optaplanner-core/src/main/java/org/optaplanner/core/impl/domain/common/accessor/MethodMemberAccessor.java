@@ -47,6 +47,7 @@ public final class MethodMemberAccessor implements MemberAccessor {
         }
     }
 
+    @Override
     public String getName() {
         return methodName;
     }
@@ -61,6 +62,7 @@ public final class MethodMemberAccessor implements MemberAccessor {
         return readMethod.getGenericReturnType();
     }
 
+    @Override
     public Object executeGetter(Object bean) {
         try {
             return readMethod.invoke(bean);
@@ -80,6 +82,7 @@ public final class MethodMemberAccessor implements MemberAccessor {
         return  false;
     }
 
+    @Override
     public void executeSetter(Object bean, Object value) {
         throw new UnsupportedOperationException();
     }

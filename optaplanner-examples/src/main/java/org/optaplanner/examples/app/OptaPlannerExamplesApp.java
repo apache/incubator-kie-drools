@@ -180,6 +180,7 @@ public class OptaPlannerExamplesApp extends JFrame {
         String iconResource = commonApp.getIconResource();
         Icon icon = iconResource == null ? new EmptyIcon() : new ImageIcon(getClass().getResource(iconResource));
         JButton button = new JButton(new AbstractAction(commonApp.getName(), icon) {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 commonApp.init(OptaPlannerExamplesApp.this, false);
             }
@@ -189,10 +190,12 @@ public class OptaPlannerExamplesApp extends JFrame {
         button.setVerticalTextPosition(JButton.CENTER);
         button.addMouseListener(new MouseAdapter() {
 
+            @Override
             public void mouseEntered(MouseEvent e) {
                 descriptionTextArea.setText(commonApp.getDescription());
             }
 
+            @Override
             public void mouseExited(MouseEvent e) {
                 descriptionTextArea.setText("");
             }

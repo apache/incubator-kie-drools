@@ -39,10 +39,12 @@ public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<
         return 1;
     }
 
+    @Override
     public Class<HardSoftScore> getScoreClass() {
         return HardSoftScore.class;
     }
 
+    @Override
     public HardSoftScore parseScore(String scoreString) {
         return HardSoftScore.parseScore(scoreString);
     }
@@ -56,10 +58,12 @@ public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<
         return HardSoftScore.valueOf((Integer) levelNumbers[0], (Integer) levelNumbers[1]);
     }
 
+    @Override
     public HardSoftScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new HardSoftScoreHolder(constraintMatchEnabled);
     }
 
+    @Override
     public HardSoftScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardSoftScore.valueOf(
@@ -67,6 +71,7 @@ public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getSoftScore() : Integer.MAX_VALUE);
     }
 
+    @Override
     public HardSoftScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
         return HardSoftScore.valueOf(

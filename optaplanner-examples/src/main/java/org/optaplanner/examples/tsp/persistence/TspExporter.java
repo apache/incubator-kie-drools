@@ -40,12 +40,14 @@ public class TspExporter extends AbstractTxtSolutionExporter<TspSolution> {
         return OUTPUT_FILE_SUFFIX;
     }
 
+    @Override
     public TxtOutputBuilder<TspSolution> createTxtOutputBuilder() {
         return new TspOutputBuilder();
     }
 
     public static class TspOutputBuilder extends TxtOutputBuilder<TspSolution> {
 
+        @Override
         public void writeSolution() throws IOException {
             bufferedWriter.write("NAME : " + solution.getName() + "\n");
             bufferedWriter.write("TYPE : TOUR\n");

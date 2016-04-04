@@ -43,19 +43,23 @@ public class SelectedCountLimitMoveSelector extends AbstractMoveSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         return false;
     }
 
+    @Override
     public long getSize() {
         long childSize = childMoveSelector.getSize();
         return Math.min(selectedCountLimit, childSize);
     }
 
+    @Override
     public Iterator<Move> iterator() {
         return new SelectedCountLimitMoveIterator(childMoveSelector.iterator());
     }

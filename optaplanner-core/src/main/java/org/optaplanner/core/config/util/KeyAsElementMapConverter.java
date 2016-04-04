@@ -28,10 +28,12 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class KeyAsElementMapConverter implements Converter {
 
+    @Override
     public boolean canConvert(Class type) {
         return AbstractMap.class.isAssignableFrom(type);
     }
 
+    @Override
     public void marshal(Object mapObject, HierarchicalStreamWriter writer, MarshallingContext context) {
        Map<String, String> map = (Map<String, String>) mapObject;
         for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -41,6 +43,7 @@ public class KeyAsElementMapConverter implements Converter {
         }
     }
 
+    @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
         Map<String, String> map = new LinkedHashMap<>();
         while (reader.hasMoreChildren()) {

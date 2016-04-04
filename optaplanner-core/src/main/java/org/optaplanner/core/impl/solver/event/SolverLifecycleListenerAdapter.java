@@ -25,10 +25,12 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
  */
 public abstract class SolverLifecycleListenerAdapter<Solution_> implements SolverLifecycleListener<Solution_> {
 
+    @Override
     public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         // Hook method
     }
 
+    @Override
     public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         // Hook method
     }

@@ -29,6 +29,7 @@ public class TestdataObject implements CodeAssertable {
         this.code = code;
     }
 
+    @Override
     public String getCode() {
         return code;
     }

@@ -71,6 +71,7 @@ public class MrMachineTransientUsage implements Serializable, Comparable<MrMachi
      * @param other never null
      * @return comparison
      */
+    @Override
     public int compareTo(MrMachineTransientUsage other) {
         return new CompareToBuilder()
                 .append(machineCapacity, other.machineCapacity)

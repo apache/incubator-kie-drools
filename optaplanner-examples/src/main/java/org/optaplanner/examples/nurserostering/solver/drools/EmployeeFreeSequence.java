@@ -82,6 +82,7 @@ public class EmployeeFreeSequence implements Comparable<EmployeeFreeSequence>, S
                 .toHashCode();
     }
 
+    @Override
     public int compareTo(EmployeeFreeSequence other) {
         return new CompareToBuilder()
                 .append(employee, other.employee)

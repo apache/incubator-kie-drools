@@ -33,6 +33,7 @@ import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 
 public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTimeSolution> {
 
+    @Override
     public HardMediumSoftLongScore calculateScore(CheapTimeSolution solution) {
         if (solution.getGlobalPeriodRangeFrom() != 0) {
             throw new IllegalStateException("The globalPeriodRangeFrom (" + solution.getGlobalPeriodRangeFrom()

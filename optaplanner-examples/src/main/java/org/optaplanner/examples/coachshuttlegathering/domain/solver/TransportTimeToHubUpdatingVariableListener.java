@@ -29,10 +29,12 @@ import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 
 public class TransportTimeToHubUpdatingVariableListener implements VariableListener<BusOrStop> {
 
+    @Override
     public void beforeEntityAdded(ScoreDirector scoreDirector, BusOrStop busOrStop) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, BusOrStop busOrStop) {
         if (busOrStop instanceof BusStop) {
             updateTransportTimeToHub(scoreDirector, (BusStop) busOrStop);
@@ -41,10 +43,12 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
         }
     }
 
+    @Override
     public void beforeVariableChanged(ScoreDirector scoreDirector, BusOrStop busOrStop) {
         // Do nothing
     }
 
+    @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, BusOrStop busOrStop) {
         if (busOrStop instanceof BusStop) {
             updateTransportTimeToHub(scoreDirector, (BusStop) busOrStop);
@@ -53,10 +57,12 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
         }
     }
 
+    @Override
     public void beforeEntityRemoved(ScoreDirector scoreDirector, BusOrStop busOrStop) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityRemoved(ScoreDirector scoreDirector, BusOrStop busOrStop) {
         // Do nothing
     }

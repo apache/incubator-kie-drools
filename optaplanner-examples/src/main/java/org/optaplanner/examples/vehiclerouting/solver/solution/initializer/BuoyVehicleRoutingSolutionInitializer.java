@@ -38,6 +38,7 @@ public class BuoyVehicleRoutingSolutionInitializer extends AbstractCustomPhaseCo
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Override
     public void changeWorkingSolution(ScoreDirector<VehicleRoutingSolution> scoreDirector) {
         VehicleRoutingSolution solution = scoreDirector.getWorkingSolution();
         List<Vehicle> vehicleList = solution.getVehicleList();

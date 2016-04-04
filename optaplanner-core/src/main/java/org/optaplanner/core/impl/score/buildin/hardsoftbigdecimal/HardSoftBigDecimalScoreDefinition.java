@@ -44,10 +44,12 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreD
         return 1;
     }
 
+    @Override
     public Class<HardSoftBigDecimalScore> getScoreClass() {
         return HardSoftBigDecimalScore.class;
     }
 
+    @Override
     public HardSoftBigDecimalScore parseScore(String scoreString) {
         return HardSoftBigDecimalScore.parseScore(scoreString);
     }
@@ -61,16 +63,19 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreD
         return HardSoftBigDecimalScore.valueOf((BigDecimal) levelNumbers[0], (BigDecimal) levelNumbers[1]);
     }
 
+    @Override
     public HardSoftBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new HardSoftBigDecimalScoreHolder(constraintMatchEnabled);
     }
 
+    @Override
     public HardSoftBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftBigDecimalScore score) {
         // TODO https://issues.jboss.org/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }
 
+    @Override
     public HardSoftBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardSoftBigDecimalScore score) {
         // TODO https://issues.jboss.org/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +

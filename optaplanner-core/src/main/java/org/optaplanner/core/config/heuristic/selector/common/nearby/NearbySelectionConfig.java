@@ -274,6 +274,7 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
         }
     }
 
+    @Override
     public void inherit(NearbySelectionConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         originEntitySelectorConfig = ConfigUtils.inheritConfig(originEntitySelectorConfig, inheritedConfig.getOriginEntitySelectorConfig());

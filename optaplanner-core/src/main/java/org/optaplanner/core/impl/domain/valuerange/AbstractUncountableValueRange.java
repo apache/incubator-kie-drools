@@ -33,6 +33,7 @@ public abstract class AbstractUncountableValueRange<T> implements ValueRange<T>,
     /**
      * If you extend this class, then just must override this method!
      */
+    @Override
     public boolean isEmpty() {
         return false;
     }

@@ -38,10 +38,12 @@ public class ExternalizedSingletonInverseVariableSupply implements StatefulVaria
         this.sourceVariableDescriptor = sourceVariableDescriptor;
     }
 
+    @Override
     public VariableDescriptor getSourceVariableDescriptor() {
         return sourceVariableDescriptor;
     }
 
+    @Override
     public void resetWorkingSolution(ScoreDirector scoreDirector) {
         EntityDescriptor entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
         List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
@@ -51,30 +53,37 @@ public class ExternalizedSingletonInverseVariableSupply implements StatefulVaria
         }
     }
 
+    @Override
     public void clearWorkingSolution(ScoreDirector scoreDirector) {
         inverseEntityMap = null;
     }
 
+    @Override
     public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
+    @Override
     public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
         retract(scoreDirector, entity);
     }
 
+    @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
+    @Override
     public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
         retract(scoreDirector, entity);
     }
 
+    @Override
     public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
         // Do nothing
     }
@@ -108,6 +117,7 @@ public class ExternalizedSingletonInverseVariableSupply implements StatefulVaria
         }
     }
 
+    @Override
     public Object getInverseSingleton(Object value) {
         return inverseEntityMap.get(value);
     }

@@ -39,6 +39,7 @@ public class AbstractSolverFactory<Solution_> extends SolverFactory<Solution_> {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public SolverConfig getSolverConfig() {
         if (solverConfig == null) {
             throw new IllegalStateException("The solverConfig (" + solverConfig + ") is null," +
@@ -47,6 +48,7 @@ public class AbstractSolverFactory<Solution_> extends SolverFactory<Solution_> {
         return solverConfig;
     }
 
+    @Override
     public Solver<Solution_> buildSolver() {
         if (solverConfig == null) {
             throw new IllegalStateException("The solverConfig (" + solverConfig + ") is null," +

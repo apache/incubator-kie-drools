@@ -27,6 +27,7 @@ import org.optaplanner.core.api.score.comparator.NaturalScoreComparator;
  */
 public class ResilientScoreComparator implements Comparator<Score>, Serializable {
 
+    @Override
     public int compare(Score a, Score b) {
         if (a == null) {
             return b == null ? 0 : -1;

@@ -28,6 +28,7 @@ public class ToOriginalMachineSolutionInitializer extends AbstractCustomPhaseCom
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Override
     public void changeWorkingSolution(ScoreDirector<MachineReassignment> scoreDirector) {
         MachineReassignment machineReassignment = scoreDirector.getWorkingSolution();
         initializeProcessAssignmentList(scoreDirector, machineReassignment);

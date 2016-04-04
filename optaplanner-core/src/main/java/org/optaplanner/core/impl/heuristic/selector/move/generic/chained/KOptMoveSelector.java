@@ -100,6 +100,7 @@ public class KOptMoveSelector extends GenericMoveSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         if (!entitySelector.isCountable()) {
             return false;
@@ -112,6 +113,7 @@ public class KOptMoveSelector extends GenericMoveSelector {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         if (randomSelection || entitySelector.isNeverEnding()) {
             return true;
@@ -124,6 +126,7 @@ public class KOptMoveSelector extends GenericMoveSelector {
         return false;
     }
 
+    @Override
     public long getSize() {
         throw new UnsupportedOperationException("Not yet supported."); // TODO
 //        if (valueSelector instanceof IterableSelector) {
@@ -132,6 +135,7 @@ public class KOptMoveSelector extends GenericMoveSelector {
 //        }
     }
 
+    @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
             throw new UnsupportedOperationException(

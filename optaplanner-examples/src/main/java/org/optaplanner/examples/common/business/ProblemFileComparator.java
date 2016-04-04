@@ -27,6 +27,7 @@ public class ProblemFileComparator implements Comparator<File>, Serializable {
 
     private static final AlphaNumericStringComparator ALPHA_NUMERIC_STRING_COMPARATOR = new AlphaNumericStringComparator();
 
+    @Override
     public int compare(File a, File b) {
         String aLowerCaseName = a.getName().toLowerCase(Locale.US);
         String bLowerCaseName = b.getName().toLowerCase(Locale.US);

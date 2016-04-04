@@ -37,6 +37,7 @@ public class ShiftAssignmentSequenceSwitchLength2MoveFactory implements MoveList
 
     private MovableShiftAssignmentSelectionFilter filter = new MovableShiftAssignmentSelectionFilter();
 
+    @Override
     public List<Move> createMoveList(NurseRoster nurseRoster) {
         List<Employee> employeeList = nurseRoster.getEmployeeList();
         // This code assumes the shiftAssignmentList is sorted

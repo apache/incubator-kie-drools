@@ -122,6 +122,7 @@ public class TspListPanel extends JPanel implements Scrollable {
             this.visit = visit;
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             TspSolution tspSolution = tspPanel.getSolution();
             JComboBox previousStandstillListField = new JComboBox();
@@ -141,18 +142,22 @@ public class TspListPanel extends JPanel implements Scrollable {
 
     }
 
+    @Override
     public Dimension getPreferredScrollableViewportSize() {
         return PREFERRED_SCROLLABLE_VIEWPORT_SIZE;
     }
 
+    @Override
     public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
         return 20;
     }
 
+    @Override
     public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
         return 20;
     }
 
+    @Override
     public boolean getScrollableTracksViewportWidth() {
         if (getParent() instanceof JViewport) {
             return (((JViewport) getParent()).getWidth() > getPreferredSize().width);
@@ -160,6 +165,7 @@ public class TspListPanel extends JPanel implements Scrollable {
         return false;
     }
 
+    @Override
     public boolean getScrollableTracksViewportHeight() {
         if (getParent() instanceof JViewport) {
             return (((JViewport) getParent()).getHeight() > getPreferredSize().height);

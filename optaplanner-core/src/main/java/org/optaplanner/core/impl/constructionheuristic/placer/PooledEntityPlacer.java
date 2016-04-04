@@ -31,6 +31,7 @@ public class PooledEntityPlacer extends AbstractEntityPlacer implements EntityPl
         phaseLifecycleSupport.addEventListener(moveSelector);
     }
 
+    @Override
     public Iterator<Placement> iterator() {
         return new PooledEntityPlacingIterator();
     }
@@ -41,6 +42,7 @@ public class PooledEntityPlacer extends AbstractEntityPlacer implements EntityPl
         private PooledEntityPlacingIterator() {
         }
 
+        @Override
         protected Placement createUpcomingSelection() {
             Iterator<Move> moveIterator = moveSelector.iterator();
             if (!moveIterator.hasNext()) {

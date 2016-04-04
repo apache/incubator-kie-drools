@@ -24,26 +24,32 @@ import org.optaplanner.examples.examination.domain.Period;
 
 public class PeriodUpdatingVariableListener implements VariableListener<LeadingExam> {
 
+    @Override
     public void beforeEntityAdded(ScoreDirector scoreDirector, LeadingExam leadingExam) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, LeadingExam leadingExam) {
         updatePeriod(scoreDirector, leadingExam);
     }
 
+    @Override
     public void beforeVariableChanged(ScoreDirector scoreDirector, LeadingExam leadingExam) {
         // Do nothing
     }
 
+    @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, LeadingExam leadingExam) {
         updatePeriod(scoreDirector, leadingExam);
     }
 
+    @Override
     public void beforeEntityRemoved(ScoreDirector scoreDirector, LeadingExam leadingExam) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityRemoved(ScoreDirector scoreDirector, LeadingExam leadingExam) {
         // Do nothing
     }

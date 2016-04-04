@@ -199,6 +199,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     /**
      * @return never null, filename safe
      */
+    @Override
     public String getName() {
         return singleBenchmarkResult.getName() + "_" + subSingleBenchmarkIndex;
     }
@@ -260,10 +261,12 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     // Accumulate methods
     // ************************************************************************
 
+    @Override
     public String getResultDirectoryName() {
         return "sub" + subSingleBenchmarkIndex;
     }
 
+    @Override
     public File getResultDirectory() {
         return new File(singleBenchmarkResult.getResultDirectory(), getResultDirectoryName());
     }

@@ -72,14 +72,17 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     // Worker methods
     // ************************************************************************
 
+    @Override
     public SimpleBigDecimalScore add(SimpleBigDecimalScore augment) {
         return new SimpleBigDecimalScore(score.add(augment.getScore()));
     }
 
+    @Override
     public SimpleBigDecimalScore subtract(SimpleBigDecimalScore subtrahend) {
         return new SimpleBigDecimalScore(score.subtract(subtrahend.getScore()));
     }
 
+    @Override
     public SimpleBigDecimalScore multiply(double multiplicand) {
         // Intentionally not taken "new BigDecimal(multiplicand, MathContext.UNLIMITED)"
         // because together with the floor rounding it gives unwanted behaviour
@@ -89,6 +92,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
                 score.multiply(multiplicandBigDecimal).setScale(score.scale(), RoundingMode.FLOOR));
     }
 
+    @Override
     public SimpleBigDecimalScore divide(double divisor) {
         // Intentionally not taken "new BigDecimal(multiplicand, MathContext.UNLIMITED)"
         // because together with the floor rounding it gives unwanted behaviour
@@ -98,6 +102,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
                 score.divide(divisorBigDecimal, score.scale(), RoundingMode.FLOOR));
     }
 
+    @Override
     public SimpleBigDecimalScore power(double exponent) {
         // Intentionally not taken "new BigDecimal(multiplicand, MathContext.UNLIMITED)"
         // because together with the floor rounding it gives unwanted behaviour
@@ -109,10 +114,12 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
                 score.pow(exponentBigDecimal.intValue()).setScale(score.scale()));
     }
 
+    @Override
     public SimpleBigDecimalScore negate() {
         return new SimpleBigDecimalScore(score.negate());
     }
 
+    @Override
     public Number[] toLevelNumbers() {
         return new Number[]{score};
     }
@@ -134,6 +141,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         return (17 * 37) + score.hashCode();
     }
 
+    @Override
     public int compareTo(SimpleBigDecimalScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (score.compareTo(other.getScore()) < 0) {

@@ -23,6 +23,7 @@ import org.optaplanner.examples.tennis.domain.TennisSolution;
 
 public class MovableTeamAssignmentSelectionFilter implements SelectionFilter<TennisSolution, TeamAssignment> {
 
+    @Override
     public boolean accept(ScoreDirector<TennisSolution> scoreDirector, TeamAssignment teamAssignment) {
         return !teamAssignment.isLocked();
     }

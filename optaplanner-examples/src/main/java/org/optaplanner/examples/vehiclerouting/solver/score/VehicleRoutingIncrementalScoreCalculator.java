@@ -37,6 +37,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
     private long hardScore;
     private long softScore;
 
+    @Override
     public void resetWorkingSolution(VehicleRoutingSolution solution) {
         timeWindowed = solution instanceof TimeWindowedVehicleRoutingSolution;
         List<Vehicle> vehicleList = solution.getVehicleList();
@@ -56,10 +57,12 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
+    @Override
     public void beforeEntityAdded(Object entity) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(Object entity) {
         if (entity instanceof Vehicle) {
             return;
@@ -72,6 +75,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
+    @Override
     public void beforeVariableChanged(Object entity, String variableName) {
         if (entity instanceof Vehicle) {
             return;
@@ -89,6 +93,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
+    @Override
     public void afterVariableChanged(Object entity, String variableName) {
         if (entity instanceof Vehicle) {
             return;
@@ -106,6 +111,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
+    @Override
     public void beforeEntityRemoved(Object entity) {
         if (entity instanceof Vehicle) {
             return;
@@ -118,6 +124,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
+    @Override
     public void afterEntityRemoved(Object entity) {
         // Do nothing
     }
@@ -213,6 +220,7 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
+    @Override
     public HardSoftLongScore calculateScore() {
         return HardSoftLongScore.valueOf(hardScore, softScore);
     }

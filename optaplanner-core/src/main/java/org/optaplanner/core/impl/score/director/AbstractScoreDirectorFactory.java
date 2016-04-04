@@ -42,6 +42,7 @@ public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerSc
 
     protected boolean assertClonedSolution = false;
 
+    @Override
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
     }
@@ -50,6 +51,7 @@ public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerSc
         this.solutionDescriptor = solutionDescriptor;
     }
 
+    @Override
     public ScoreDefinition getScoreDefinition() {
         return scoreDefinition;
     }
@@ -58,6 +60,7 @@ public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerSc
         this.scoreDefinition = scoreDefinition;
     }
 
+    @Override
     public InitializingScoreTrend getInitializingScoreTrend() {
         return initializingScoreTrend;
     }
@@ -86,10 +89,12 @@ public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerSc
     // Complex methods
     // ************************************************************************
 
+    @Override
     public InnerScoreDirector<Solution_> buildScoreDirector() {
         return buildScoreDirector(true);
     }
 
+    @Override
     public void assertScoreFromScratch(Solution_ solution) {
         // Get the score before uncorruptedScoreDirector.calculateScore() modifies it
         Score score = getSolutionDescriptor().getScore(solution);

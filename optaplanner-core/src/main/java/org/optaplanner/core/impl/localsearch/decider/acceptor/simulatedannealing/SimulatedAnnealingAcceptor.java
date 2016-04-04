@@ -67,6 +67,7 @@ public class SimulatedAnnealingAcceptor extends AbstractAcceptor {
         levelsLength = -1;
     }
 
+    @Override
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
         LocalSearchPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
         Score lastStepScore = phaseScope.getLastCompletedStepScope().getScore();

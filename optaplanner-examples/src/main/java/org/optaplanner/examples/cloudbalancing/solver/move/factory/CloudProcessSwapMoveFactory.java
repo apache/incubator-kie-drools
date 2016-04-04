@@ -28,6 +28,7 @@ import org.optaplanner.examples.cloudbalancing.solver.move.CloudProcessSwapMove;
 
 public class CloudProcessSwapMoveFactory implements MoveListFactory<CloudBalance> {
 
+    @Override
     public List<Move> createMoveList(CloudBalance cloudBalance) {
         List<CloudProcess> cloudProcessList = cloudBalance.getProcessList();
         List<Move> moveList = new ArrayList<>();

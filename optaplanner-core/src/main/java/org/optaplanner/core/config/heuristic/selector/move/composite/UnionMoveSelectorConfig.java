@@ -69,6 +69,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
     // Builder methods
     // ************************************************************************
 
+    @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         List<MoveSelector> moveSelectorList = new ArrayList<>(moveSelectorConfigList.size());
@@ -108,6 +109,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
                 selectorProbabilityWeightFactory);
     }
 
+    @Override
     public void inherit(UnionMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(

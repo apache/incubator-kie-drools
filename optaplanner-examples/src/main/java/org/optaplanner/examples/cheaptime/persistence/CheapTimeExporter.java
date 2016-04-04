@@ -48,12 +48,14 @@ public class CheapTimeExporter extends AbstractTxtSolutionExporter<CheapTimeSolu
         return CheapTimeSolutionFileIO.OUTPUT_FILE_EXTENSION;
     }
 
+    @Override
     public TxtOutputBuilder<CheapTimeSolution> createTxtOutputBuilder() {
         return new CheapTimeOutputBuilder();
     }
 
     public static class CheapTimeOutputBuilder extends TxtOutputBuilder<CheapTimeSolution> {
 
+        @Override
         public void writeSolution() throws IOException {
             int globalPeriodRangeTo = solution.getGlobalPeriodRangeTo();
             List<Machine> machineList = solution.getMachineList();

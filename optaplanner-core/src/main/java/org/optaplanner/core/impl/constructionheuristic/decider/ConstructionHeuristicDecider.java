@@ -57,6 +57,7 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         forager.solvingStarted(solverScope);
     }
@@ -77,6 +78,7 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
         forager.phaseEnded(phaseScope);
     }
 
+    @Override
     public void solvingEnded(DefaultSolverScope solverScope) {
         forager.solvingEnded(solverScope);
     }

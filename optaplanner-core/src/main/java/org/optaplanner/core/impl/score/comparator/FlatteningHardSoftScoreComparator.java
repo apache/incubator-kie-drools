@@ -37,6 +37,7 @@ public class FlatteningHardSoftScoreComparator implements Comparator<Score>, Ser
         return hardWeight;
     }
 
+    @Override
     public int compare(Score s1, Score s2) {
         HardSoftScore score1 = (HardSoftScore) s1;
         HardSoftScore score2 = (HardSoftScore) s2;

@@ -44,6 +44,7 @@ public abstract class AbstractFinalistPodium extends LocalSearchPhaseLifecycleLi
         finalistList = new ArrayList<>(1024);
     }
 
+    @Override
     public List<LocalSearchMoveScope> getFinalistList() {
         return finalistList;
     }

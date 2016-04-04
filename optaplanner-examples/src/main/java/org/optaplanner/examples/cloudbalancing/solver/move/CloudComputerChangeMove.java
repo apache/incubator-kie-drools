@@ -38,10 +38,12 @@ public class CloudComputerChangeMove extends AbstractMove {
         this.toCloudComputer = toCloudComputer;
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !Objects.equals(cloudProcess.getComputer(), toCloudComputer);
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new CloudComputerChangeMove(cloudProcess, cloudProcess.getComputer());
     }
@@ -51,10 +53,12 @@ public class CloudComputerChangeMove extends AbstractMove {
         CloudBalancingMoveHelper.moveCloudComputer(scoreDirector, cloudProcess, toCloudComputer);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(cloudProcess);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Collections.singletonList(toCloudComputer);
     }

@@ -61,6 +61,7 @@ public abstract class SelectorConfig<C extends SelectorConfig> extends AbstractC
     // Builder methods
     // ************************************************************************
 
+    @Override
     public void inherit(C inheritedConfig) {
     }
 

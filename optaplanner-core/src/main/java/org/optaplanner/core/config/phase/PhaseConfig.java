@@ -71,6 +71,7 @@ public abstract class PhaseConfig<C extends PhaseConfig> extends AbstractConfig<
                 new PhaseToSolverTerminationBridge(solverTermination)));
     }
 
+    @Override
     public void inherit(C inheritedConfig) {
         terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());
     }

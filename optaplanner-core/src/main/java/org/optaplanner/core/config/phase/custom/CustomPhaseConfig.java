@@ -76,6 +76,7 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
     // Builder methods
     // ************************************************************************
 
+    @Override
     public CustomPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
@@ -103,6 +104,7 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
         return customPhase;
     }
 
+    @Override
     public void inherit(CustomPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         customPhaseCommandClassList = ConfigUtils.inheritMergeableListProperty(

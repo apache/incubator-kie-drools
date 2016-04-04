@@ -390,6 +390,7 @@ public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends S
         return moveSelector;
     }
 
+    @Override
     public void inherit(C inheritedConfig) {
         super.inherit(inheritedConfig);
         inheritCommon(inheritedConfig);

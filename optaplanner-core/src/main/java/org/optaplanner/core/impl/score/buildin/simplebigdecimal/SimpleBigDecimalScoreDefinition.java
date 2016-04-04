@@ -39,10 +39,12 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
         return 1;
     }
 
+    @Override
     public Class<SimpleBigDecimalScore> getScoreClass() {
         return SimpleBigDecimalScore.class;
     }
 
+    @Override
     public SimpleBigDecimalScore parseScore(String scoreString) {
         return SimpleBigDecimalScore.parseScore(scoreString);
     }
@@ -56,16 +58,19 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
         return SimpleBigDecimalScore.valueOf((BigDecimal) levelNumbers[0]);
     }
 
+    @Override
     public SimpleBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {
         return new SimpleBigDecimalScoreHolder(constraintMatchEnabled);
     }
 
+    @Override
     public SimpleBigDecimalScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleBigDecimalScore score) {
         // TODO https://issues.jboss.org/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +
                 " because a BigDecimal cannot represent infinity.");
     }
 
+    @Override
     public SimpleBigDecimalScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleBigDecimalScore score) {
         // TODO https://issues.jboss.org/browse/PLANNER-232
         throw new UnsupportedOperationException("PLANNER-232: BigDecimalScore does not support bounds" +

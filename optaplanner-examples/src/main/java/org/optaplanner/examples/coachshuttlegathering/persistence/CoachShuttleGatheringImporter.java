@@ -66,6 +66,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
         throw new IllegalStateException("The inputFile is a directory, so there is no suffix.");
     }
 
+    @Override
     public TxtInputBuilder<CoachShuttleGatheringSolution> createTxtInputBuilder() {
         return new CoachShuttleGatheringInputBuilder();
     }
@@ -84,6 +85,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<C
         private Map<List<Double>, RoadLocation> latLongToLocationMap;
         private long busOrStopOrHubId;
 
+        @Override
         public CoachShuttleGatheringSolution readSolution() throws IOException {
             solution = new CoachShuttleGatheringSolution();
             solution.setId(0L);

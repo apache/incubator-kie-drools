@@ -24,26 +24,32 @@ import org.optaplanner.examples.taskassigning.domain.Task;
 
 public class StartTimeUpdatingVariableListener implements VariableListener<Task> {
 
+    @Override
     public void beforeEntityAdded(ScoreDirector scoreDirector, Task task) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, Task task) {
         updateStartTime(scoreDirector, task);
     }
 
+    @Override
     public void beforeVariableChanged(ScoreDirector scoreDirector, Task task) {
         // Do nothing
     }
 
+    @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, Task task) {
         updateStartTime(scoreDirector,task);
     }
 
+    @Override
     public void beforeEntityRemoved(ScoreDirector scoreDirector, Task task) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityRemoved(ScoreDirector scoreDirector, Task task) {
         // Do nothing
     }

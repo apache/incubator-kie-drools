@@ -78,6 +78,7 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
     // Builder methods
     // ************************************************************************
 
+    @Override
     public QueuedValuePlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination) {
         EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), entityClass);
         boolean reinitializeVariableFilterEnabled = configPolicy.isReinitializeVariableFilterEnabled();
@@ -156,6 +157,7 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
         return changeMoveSelectorConfig;
     }
 
+    @Override
     public void inherit(QueuedValuePlacerConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass, inheritedConfig.getEntityClass());

@@ -122,6 +122,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
         throw new IllegalStateException("The inputFile is a directory, so there is no suffix.");
     }
 
+    @Override
     public TxtInputBuilder<CheapTimeSolution> createTxtInputBuilder() {
         return new CheapTimeInputBuilder();
     }
@@ -139,6 +140,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
 
         private int resourceListSize;
 
+        @Override
         public CheapTimeSolution readSolution() throws IOException {
             solution = new CheapTimeSolution();
             solution.setId(0L);

@@ -39,6 +39,7 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
      * @param solverScope never null
      * @return true if all the Terminations are terminated.
      */
+    @Override
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
         for (Termination termination : terminationList) {
             if (!termination.isSolverTerminated(solverScope)) {
@@ -52,6 +53,7 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
      * @param phaseScope never null
      * @return true if all the Terminations are terminated.
      */
+    @Override
     public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         for (Termination termination : terminationList) {
             if (!termination.isPhaseTerminated(phaseScope)) {
@@ -71,6 +73,7 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
      * @param solverScope never null
      * @return the minimum timeGradient of the Terminations.
      */
+    @Override
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         double timeGradient = 1.0;
         for (Termination termination : terminationList) {
@@ -88,6 +91,7 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
      * @param phaseScope never null
      * @return the minimum timeGradient of the Terminations.
      */
+    @Override
     public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         double timeGradient = 1.0;
         for (Termination termination : terminationList) {

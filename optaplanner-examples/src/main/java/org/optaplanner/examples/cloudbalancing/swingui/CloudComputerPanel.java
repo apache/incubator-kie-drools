@@ -109,6 +109,7 @@ public class CloudComputerPanel extends JPanel {
             JButton deleteButton = SwingUtils.makeSmallButton(new JButton(cloudBalancingPanel.getDeleteCloudComputerIcon()));
             deleteButton.setToolTipText("Delete");
             deleteButton.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     cloudBalancingPanel.deleteComputer(computer);
                 }
@@ -150,6 +151,7 @@ public class CloudComputerPanel extends JPanel {
         networkBandwidthBar.setEnabled(false);
         add(networkBandwidthBar);
         detailsButton = new JButton(new AbstractAction("Details") {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 CloudProcessListDialog processListDialog = new CloudProcessListDialog();
                 processListDialog.setLocationRelativeTo(getRootPane());
@@ -329,6 +331,7 @@ public class CloudComputerPanel extends JPanel {
                 JButton deleteButton = SwingUtils.makeSmallButton(new JButton(cloudBalancingPanel.getDeleteCloudProcessIcon()));
                 deleteButton.setToolTipText("Delete");
                 deleteButton.addActionListener(new ActionListener() {
+                    @Override
                     public void actionPerformed(ActionEvent e) {
                         cloudBalancingPanel.deleteProcess(process);
                         CloudProcessListDialog.this.dispose();

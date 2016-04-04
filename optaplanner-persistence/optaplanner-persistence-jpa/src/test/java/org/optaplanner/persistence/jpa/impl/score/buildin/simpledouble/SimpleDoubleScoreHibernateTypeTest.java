@@ -47,11 +47,13 @@ public class SimpleDoubleScoreHibernateTypeTest extends AbstractScoreHibernateTy
             this.score = score;
         }
 
+        @Override
         @Columns(columns = {@Column(name = "score")})
         public SimpleDoubleScore getScore() {
             return score;
         }
 
+        @Override
         public void setScore(SimpleDoubleScore score) {
             this.score = score;
         }

@@ -71,6 +71,7 @@ public class CourseConflict implements Serializable, Comparable<CourseConflict> 
                 .toHashCode();
     }
 
+    @Override
     public int compareTo(CourseConflict other) {
         return new CompareToBuilder()
                 .append(leftCourse, other.leftCourse)

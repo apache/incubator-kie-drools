@@ -43,6 +43,7 @@ public class Day extends AbstractPersistable implements Labeled {
         this.nextDay = nextDay;
     }
 
+    @Override
     public String getLabel() {
         return Integer.toString(index);
     }

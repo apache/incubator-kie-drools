@@ -118,6 +118,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
     // Builder methods
     // ************************************************************************
 
+    @Override
     public ExhaustiveSearchPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
@@ -262,6 +263,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
         return moveSelectorConfig_;
     }
 
+    @Override
     public void inherit(ExhaustiveSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         exhaustiveSearchType = ConfigUtils.inheritOverwritableProperty(exhaustiveSearchType,

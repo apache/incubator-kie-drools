@@ -47,12 +47,14 @@ public class SimpleScoreHolder extends AbstractScoreHolder {
     public void addConstraintMatch(RuleContext kcontext, final int weight) {
         score += weight;
         registerIntConstraintMatch(kcontext, 0, weight, new IntConstraintUndoListener() {
+            @Override
             public void undo() {
                 score -= weight;
             }
         });
     }
 
+    @Override
     public Score extractScore() {
         return SimpleScore.valueOf(score);
     }

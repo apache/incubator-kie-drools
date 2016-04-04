@@ -28,18 +28,22 @@ import org.optaplanner.core.impl.solver.event.SolverLifecycleListenerAdapter;
 public class ConstructionHeuristicPhaseLifecycleListenerAdapter<Solution_> extends SolverLifecycleListenerAdapter<Solution_>
         implements ConstructionHeuristicPhaseLifecycleListener<Solution_> {
 
+    @Override
     public void phaseStarted(ConstructionHeuristicPhaseScope<Solution_> phaseScope) {
         // Hook method
     }
 
+    @Override
     public void stepStarted(ConstructionHeuristicStepScope<Solution_> stepScope) {
         // Hook method
     }
 
+    @Override
     public void stepEnded(ConstructionHeuristicStepScope<Solution_> stepScope) {
         // Hook method
     }
 
+    @Override
     public void phaseEnded(ConstructionHeuristicPhaseScope<Solution_> phaseScope) {
         // Hook method
     }

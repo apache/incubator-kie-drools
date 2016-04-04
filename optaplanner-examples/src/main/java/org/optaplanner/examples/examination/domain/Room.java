@@ -42,6 +42,7 @@ public class Room extends AbstractPersistable implements Labeled {
         this.penalty = penalty;
     }
 
+    @Override
     public String getLabel() {
         return Long.toString(id);
     }

@@ -72,6 +72,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove {
                 : anchorVariableSupply.getAnchor(rightValue);
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         Object leftValue = variableDescriptor.getValue(leftEntity);
         Object rightEntity = inverseVariableSupply.getInverseSingleton(rightValue);
@@ -105,6 +106,7 @@ public class TailChainSwapMove<Solution_> extends AbstractMove {
         return true;
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         Object leftAnchor = anchorVariableSupply.getAnchor(leftEntity);
         Object rightAnchor = determineRightAnchor();
@@ -195,11 +197,13 @@ public class TailChainSwapMove<Solution_> extends AbstractMove {
         return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         Object rightEntity = inverseVariableSupply.getInverseSingleton(rightValue);
         return Arrays.asList(leftEntity, rightEntity);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         Object leftValue = variableDescriptor.getValue(leftEntity);
         return Arrays.asList(leftValue, rightValue);

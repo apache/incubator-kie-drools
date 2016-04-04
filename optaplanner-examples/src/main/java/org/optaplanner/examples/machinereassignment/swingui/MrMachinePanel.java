@@ -94,6 +94,7 @@ public class MrMachinePanel extends JPanel {
             JButton deleteButton = SwingUtils.makeSmallButton(new JButton("X"));
             deleteButton.setToolTipText("Delete");
             deleteButton.addActionListener(new ActionListener() {
+                @Override
                 public void actionPerformed(ActionEvent e) {
                     machineReassignmentPanel.deleteMachine(machine);
                 }
@@ -109,6 +110,7 @@ public class MrMachinePanel extends JPanel {
         numberOfProcessesLabel.setEnabled(false);
         numberAndDetailsPanel.add(numberOfProcessesLabel, BorderLayout.WEST);
         detailsButton = new JButton(new AbstractAction("Details") {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 MrProcessAssignmentListDialog processAssignmentListDialog = new MrProcessAssignmentListDialog();
                 processAssignmentListDialog.setLocationRelativeTo(getRootPane());

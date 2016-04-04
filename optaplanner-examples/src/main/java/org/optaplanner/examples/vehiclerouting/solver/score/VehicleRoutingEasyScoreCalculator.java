@@ -31,6 +31,7 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedV
 
 public class VehicleRoutingEasyScoreCalculator implements EasyScoreCalculator<VehicleRoutingSolution> {
 
+    @Override
     public HardSoftLongScore calculateScore(VehicleRoutingSolution solution) {
         boolean timeWindowed = solution instanceof TimeWindowedVehicleRoutingSolution;
         List<Customer> customerList = solution.getCustomerList();

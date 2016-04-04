@@ -117,6 +117,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
     // Termination worker methods
     // ************************************************************************
 
+    @Override
     public synchronized boolean isSolverTerminated(DefaultSolverScope solverScope) {
         // Destroying a thread pool with solver threads will only cause it to interrupt those solver threads
         if (Thread.currentThread().isInterrupted()) { // Does not clear the interrupted flag
@@ -126,16 +127,19 @@ public class BasicPlumbingTermination extends AbstractTermination {
         return terminatedEarly || !problemFactChangeQueue.isEmpty();
     }
 
+    @Override
     public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         throw new IllegalStateException(
                 "BasicPlumbingTermination configured only as solver termination."
                 + " It is always bridged to phase termination.");
     }
 
+    @Override
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         return -1.0; // Not supported
     }
 
+    @Override
     public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         throw new IllegalStateException(
                 "BasicPlumbingTermination configured only as solver termination."

@@ -50,14 +50,17 @@ public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution
         xStream.processAnnotations(xStreamAnnotatedClasses);
     }
 
+    @Override
     public String getInputFileExtension() {
         return FILE_EXTENSION;
     }
 
+    @Override
     public String getOutputFileExtension() {
         return FILE_EXTENSION;
     }
 
+    @Override
     public Solution_ read(File inputSolutionFile) {
         Solution_ unsolvedSolution;
         Reader reader = null;
@@ -75,6 +78,7 @@ public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution
         return unsolvedSolution;
     }
 
+    @Override
     public void write(Solution_ solution, File outputSolutionFile) {
         Writer writer = null;
         try {

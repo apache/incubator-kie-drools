@@ -29,6 +29,7 @@ public class Placement implements Iterable<Move>, Serializable {
         this.moveIterator = moveIterator;
     }
 
+    @Override
     public Iterator<Move> iterator() {
         return moveIterator;
     }

@@ -69,6 +69,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
         return INPUT_FILE_SUFFIX;
     }
 
+    @Override
     public TxtInputBuilder<Examination> createTxtInputBuilder() {
         return new ExaminationInputBuilder();
     }
@@ -81,6 +82,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
         private Map<Topic, Set<Topic>> exclusionMap;
         private Map<Topic, Set<Topic>> afterMap;
 
+        @Override
         public Examination readSolution() throws IOException {
             examination = new Examination();
             examination.setId(0L);
@@ -434,6 +436,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
         private void tagFrontLoadLargeTopics() {
             List<Topic> sortedTopicList = new ArrayList<>(examination.getTopicList());
             Collections.sort(sortedTopicList, new Comparator<Topic>() {
+                @Override
                 public int compare(Topic a, Topic b) {
                     return new CompareToBuilder()
                             .append(a.getStudentSize(), b.getStudentSize()) // Ascending

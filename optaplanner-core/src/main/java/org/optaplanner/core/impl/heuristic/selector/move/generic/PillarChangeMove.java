@@ -61,6 +61,7 @@ public class PillarChangeMove<Solution_> extends AbstractMove {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         Object oldValue = variableDescriptor.getValue(pillar.get(0));
         if (Objects.equals(oldValue, toPlanningValue)) {
@@ -80,6 +81,7 @@ public class PillarChangeMove<Solution_> extends AbstractMove {
         return true;
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldValue = variableDescriptor.getValue(pillar.get(0));
         return new PillarChangeMove<>(pillar, variableDescriptor, oldValue);
@@ -103,10 +105,12 @@ public class PillarChangeMove<Solution_> extends AbstractMove {
         return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return pillar;
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Collections.singletonList(toPlanningValue);
     }

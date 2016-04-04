@@ -24,6 +24,7 @@ import org.optaplanner.examples.nurserostering.domain.Employee;
 
 public class EmployeeStrengthComparator implements Comparator<Employee>, Serializable {
 
+    @Override
     public int compare(Employee a, Employee b) {
         // TODO refactor to DifficultyWeightFactory and use getContract().getContractLineList()
         // to sum maximumValue and minimumValue etc

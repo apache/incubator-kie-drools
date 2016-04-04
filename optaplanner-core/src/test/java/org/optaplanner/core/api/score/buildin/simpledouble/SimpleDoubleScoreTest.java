@@ -111,6 +111,7 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
         SimpleDoubleScore input = SimpleDoubleScore.valueOf(123.4);
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
                 new PlannerTestUtils.OutputAsserter<SimpleDoubleScore>() {
+                    @Override
                     public void assertOutput(SimpleDoubleScore output) {
                         assertEquals(123.4, output.getScore(), 0.0);
                     }

@@ -66,6 +66,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
         return VehicleRoutingFileIO.FILE_EXTENSION;
     }
 
+    @Override
     public TxtInputBuilder<VehicleRoutingSolution> createTxtInputBuilder() {
         return new VehicleRoutingInputBuilder();
     }
@@ -81,6 +82,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleR
         private Map<Long, Location> locationMap;
         private List<Depot> depotList;
 
+        @Override
         public VehicleRoutingSolution readSolution() throws IOException {
             String firstLine = readStringValue();
             if (firstLine.matches("\\s*NAME\\s*:.*")) {

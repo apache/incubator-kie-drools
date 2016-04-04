@@ -24,6 +24,7 @@ import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 
 public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<NurseRoster, ShiftAssignment> {
 
+    @Override
     public boolean accept(ScoreDirector<NurseRoster> scoreDirector, ShiftAssignment shiftAssignment) {
         return accept(scoreDirector.getWorkingSolution(), shiftAssignment);
     }

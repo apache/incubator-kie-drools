@@ -66,6 +66,7 @@ public class CompositeAcceptor extends AbstractAcceptor {
         }
     }
 
+    @Override
     public boolean isAccepted(LocalSearchMoveScope moveScope) {
         for (Acceptor acceptor : acceptorList) {
             boolean accepted = acceptor.isAccepted(moveScope);

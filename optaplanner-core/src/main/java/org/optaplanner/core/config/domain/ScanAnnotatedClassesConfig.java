@@ -137,6 +137,7 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
         }
     }
 
+    @Override
     public void inherit(ScanAnnotatedClassesConfig inheritedConfig) {
         packageIncludeList = ConfigUtils.inheritMergeableListProperty(
                 packageIncludeList, inheritedConfig.getPackageIncludeList());

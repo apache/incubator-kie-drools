@@ -58,18 +58,22 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
         scoreDirector = null;
     }
 
+    @Override
     public boolean isCountable() {
         return childMoveSelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return childMoveSelector.isNeverEnding();
     }
 
+    @Override
     public long getSize() {
         return childMoveSelector.getSize();
     }
 
+    @Override
     public Iterator<Move> iterator() {
         return new JustInTimeFilteringMoveIterator(childMoveSelector.iterator());
     }

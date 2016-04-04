@@ -33,10 +33,12 @@ public class ShufflingEntitySelector extends AbstractCachingEntitySelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isNeverEnding() {
         return false;
     }
 
+    @Override
     public Iterator<Object> iterator() {
         Collections.shuffle(cachedEntityList, workingRandom);
         logger.trace("    Shuffled cachedEntityList with size ({}) in entitySelector({}).",
@@ -44,6 +46,7 @@ public class ShufflingEntitySelector extends AbstractCachingEntitySelector {
         return cachedEntityList.iterator();
     }
 
+    @Override
     public ListIterator<Object> listIterator() {
         Collections.shuffle(cachedEntityList, workingRandom);
         logger.trace("    Shuffled cachedEntityList with size ({}) in entitySelector({}).",
@@ -51,6 +54,7 @@ public class ShufflingEntitySelector extends AbstractCachingEntitySelector {
         return cachedEntityList.listIterator();
     }
 
+    @Override
     public ListIterator<Object> listIterator(int index) {
         // Presumes that listIterator() has already been called and shuffling would be bad
         return cachedEntityList.listIterator(index);

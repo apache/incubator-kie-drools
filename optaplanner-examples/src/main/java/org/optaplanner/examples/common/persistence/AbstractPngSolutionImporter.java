@@ -39,12 +39,14 @@ public abstract class AbstractPngSolutionImporter<Solution_> extends AbstractSol
         super(withoutDao);
     }
 
+    @Override
     public String getInputFileSuffix() {
         return DEFAULT_INPUT_FILE_SUFFIX;
     }
 
     public abstract PngInputBuilder<Solution_> createPngInputBuilder();
 
+    @Override
     public Solution_ readSolution(File inputFile) {
         try {
             BufferedImage image = ImageIO.read(inputFile);

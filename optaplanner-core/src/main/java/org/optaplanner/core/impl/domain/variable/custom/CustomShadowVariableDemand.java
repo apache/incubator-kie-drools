@@ -40,6 +40,7 @@ public class CustomShadowVariableDemand implements Demand<SingletonInverseVariab
     // Creation method
     // ************************************************************************
 
+    @Override
     public SingletonInverseVariableSupply createExternalizedSupply(InnerScoreDirector scoreDirector) {
         throw new IllegalArgumentException("A custom shadow variable cannot be externalized.");
     }

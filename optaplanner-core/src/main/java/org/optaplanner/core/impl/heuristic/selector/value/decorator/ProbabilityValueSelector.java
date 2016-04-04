@@ -69,6 +69,7 @@ public class ProbabilityValueSelector extends AbstractValueSelector
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void constructCache(DefaultSolverScope solverScope) {
         cachedEntityMap = new TreeMap<>();
         ScoreDirector scoreDirector = solverScope.getScoreDirector();
@@ -83,40 +84,50 @@ public class ProbabilityValueSelector extends AbstractValueSelector
         probabilityWeightTotal = probabilityWeightOffset;
     }
 
+    @Override
     public void disposeCache(DefaultSolverScope solverScope) {
         probabilityWeightTotal = -1.0;
     }
 
+    @Override
     public GenuineVariableDescriptor getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         return false;
     }
 
+    @Override
     public long getSize(Object entity) {
         return getSize();
     }
 
+    @Override
     public long getSize() {
         return cachedEntityMap.size();
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         return iterator();
     }
 
+    @Override
     public Iterator<Object> iterator() {
         return new Iterator<Object>() {
+            @Override
             public boolean hasNext() {
                 return true;
             }
 
+            @Override
             public Object next() {
                 double randomOffset = RandomUtils.nextDouble(workingRandom, probabilityWeightTotal);
                 Map.Entry<Double, Object> entry = cachedEntityMap.floorEntry(randomOffset);
@@ -124,12 +135,14 @@ public class ProbabilityValueSelector extends AbstractValueSelector
                 return entry.getValue();
             }
 
+            @Override
             public void remove() {
                 throw new UnsupportedOperationException("The optional operation remove() is not supported.");
             }
         };
     }
 
+    @Override
     public Iterator<Object> endingIterator(Object entity) {
         return childValueSelector.endingIterator(entity);
     }

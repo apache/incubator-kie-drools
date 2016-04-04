@@ -29,6 +29,7 @@ import org.optaplanner.examples.tsp.domain.Visit;
 
 public class TspEasyScoreCalculator implements EasyScoreCalculator<TspSolution> {
 
+    @Override
     public SimpleLongScore calculateScore(TspSolution tspSolution) {
         List<Visit> visitList = tspSolution.getVisitList();
         Set<Visit> tailVisitSet = new HashSet<>(visitList);

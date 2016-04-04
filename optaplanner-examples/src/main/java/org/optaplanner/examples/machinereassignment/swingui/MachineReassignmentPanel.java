@@ -172,6 +172,7 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
             this.processAssignment = processAssignment;
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             List<MrMachine> machineList = getSolution().getMachineList();
             // Add 1 to array size to add null, which makes the entity unassigned

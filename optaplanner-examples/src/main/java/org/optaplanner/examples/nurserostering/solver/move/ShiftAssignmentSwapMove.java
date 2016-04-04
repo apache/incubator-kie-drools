@@ -38,10 +38,12 @@ public class ShiftAssignmentSwapMove extends AbstractMove {
         this.rightShiftAssignment = rightShiftAssignment;
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !Objects.equals(leftShiftAssignment.getEmployee(), rightShiftAssignment.getEmployee());
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new ShiftAssignmentSwapMove(rightShiftAssignment, leftShiftAssignment);
     }
@@ -54,10 +56,12 @@ public class ShiftAssignmentSwapMove extends AbstractMove {
         NurseRosteringMoveHelper.moveEmployee(scoreDirector, rightShiftAssignment, oldLeftEmployee);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Arrays.asList(leftShiftAssignment, rightShiftAssignment);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Arrays.asList(leftShiftAssignment.getEmployee(), rightShiftAssignment.getEmployee());
     }

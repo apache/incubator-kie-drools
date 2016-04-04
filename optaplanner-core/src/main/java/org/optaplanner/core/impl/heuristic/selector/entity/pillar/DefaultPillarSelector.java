@@ -114,6 +114,7 @@ public class DefaultPillarSelector extends AbstractSelector
         }
     }
 
+    @Override
     public EntityDescriptor getEntityDescriptor() {
         return entitySelector.getEntityDescriptor();
     }
@@ -127,6 +128,7 @@ public class DefaultPillarSelector extends AbstractSelector
     // Cache lifecycle methods
     // ************************************************************************
 
+    @Override
     public void constructCache(DefaultSolverScope solverScope) {
         long entitySize = entitySelector.getSize();
         if (entitySize > (long) Integer.MAX_VALUE) {
@@ -151,6 +153,7 @@ public class DefaultPillarSelector extends AbstractSelector
         cachedBasePillarList = new ArrayList<>(valueStateToPillarMap.values());
     }
 
+    @Override
     public void disposeCache(DefaultSolverScope solverScope) {
         cachedBasePillarList = null;
     }
@@ -159,15 +162,18 @@ public class DefaultPillarSelector extends AbstractSelector
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public boolean isNeverEnding() {
         // CachedListRandomIterator is neverEnding
         return randomSelection;
     }
 
+    @Override
     public long getSize() {
         if (!subPillarEnabled) {
             return (long) cachedBasePillarList.size();
@@ -182,6 +188,7 @@ public class DefaultPillarSelector extends AbstractSelector
         }
     }
 
+    @Override
     public Iterator<List<Object>> iterator() {
         if (!randomSelection) {
             if (!subPillarEnabled) {
@@ -200,6 +207,7 @@ public class DefaultPillarSelector extends AbstractSelector
         }
     }
 
+    @Override
     public ListIterator<List<Object>> listIterator() {
         if (!randomSelection) {
             if (!subPillarEnabled) {
@@ -215,6 +223,7 @@ public class DefaultPillarSelector extends AbstractSelector
         }
     }
 
+    @Override
     public ListIterator<List<Object>> listIterator(int index) {
         if (!randomSelection) {
             if (!subPillarEnabled) {

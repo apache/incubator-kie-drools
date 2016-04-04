@@ -24,6 +24,7 @@ import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 
 public class MrProcessAssignmentDifficultyComparator implements Comparator<MrProcessAssignment>, Serializable {
 
+    @Override
     public int compare(MrProcessAssignment a, MrProcessAssignment b) {
         return new CompareToBuilder()
                 .append(a.getProcess().getUsageMultiplicand(), b.getProcess().getUsageMultiplicand())

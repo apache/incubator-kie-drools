@@ -82,11 +82,13 @@ public class SelectorTestUtils {
         when(entitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
         final List<Object> entityList = Arrays.<Object>asList(entities);
         when(entitySelector.iterator()).thenAnswer(new Answer<Iterator<Object>>() {
+            @Override
             public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
                 return entityList.iterator();
             }
         });
         when(entitySelector.listIterator()).thenAnswer(new Answer<ListIterator<Object>>() {
+            @Override
             public ListIterator<Object> answer(InvocationOnMock invocation) throws Throwable {
                 return entityList.listIterator();
             }
@@ -94,12 +96,14 @@ public class SelectorTestUtils {
         for (int i = 0; i < entityList.size(); i++) {
             final int index = i;
             when(entitySelector.listIterator(index)).thenAnswer(new Answer<ListIterator<Object>>() {
+                @Override
                 public ListIterator<Object> answer(InvocationOnMock invocation) throws Throwable {
                     return entityList.listIterator(index);
                 }
             });
         }
         when(entitySelector.endingIterator()).thenAnswer(new Answer<Iterator<Object>>() {
+            @Override
             public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
                 return entityList.iterator();
             }
@@ -126,6 +130,7 @@ public class SelectorTestUtils {
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         final List<Object> valueList = Arrays.<Object>asList(values);
         when(valueSelector.iterator(any())).thenAnswer(new Answer<Iterator<Object>>() {
+            @Override
             public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
                 return valueList.iterator();
             }
@@ -156,11 +161,13 @@ public class SelectorTestUtils {
             Object entity = entry.getKey();
             final List<Object> valueList = (List<Object>) entry.getValue();
             when(valueSelector.getSize(entity)).thenAnswer(new Answer<Long>() {
+                @Override
                 public Long answer(InvocationOnMock invocation) {
                     return (long) valueList.size();
                 }
             });
             when(valueSelector.iterator(entity)).thenAnswer(new Answer<Iterator<Object>>() {
+                @Override
                 public Iterator<Object> answer(InvocationOnMock invocation) {
                     return valueList.iterator();
                 }
@@ -185,16 +192,19 @@ public class SelectorTestUtils {
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         final List<Object> valueList = Arrays.<Object>asList(values);
         when(valueSelector.iterator(any())).thenAnswer(new Answer<Iterator<Object>>() {
+            @Override
             public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
                 return valueList.iterator();
             }
         });
         when(valueSelector.endingIterator(any())).thenAnswer(new Answer<Iterator<Object>>() {
+            @Override
             public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
                 return valueList.iterator();
             }
         });
         when(valueSelector.iterator()).thenAnswer(new Answer<Iterator<Object>>() {
+            @Override
             public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
                 return valueList.iterator();
             }
@@ -211,6 +221,7 @@ public class SelectorTestUtils {
         MoveSelector moveSelector = mock(MoveSelector.class);
         final List<Move> moveList = Arrays.<Move>asList(moves);
         when(moveSelector.iterator()).thenAnswer(new Answer<Iterator<Move>>() {
+            @Override
             public Iterator<Move> answer(InvocationOnMock invocation) throws Throwable {
                 return moveList.iterator();
             }

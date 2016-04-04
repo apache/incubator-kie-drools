@@ -32,6 +32,7 @@ public class ShiftAssignmentSwapMoveFactory implements MoveListFactory<NurseRost
 
     private MovableShiftAssignmentSelectionFilter filter = new MovableShiftAssignmentSelectionFilter();
 
+    @Override
     public List<Move> createMoveList(NurseRoster nurseRoster) {
         // Filter out every immovable ShiftAssignment
         List<ShiftAssignment> shiftAssignmentList = new ArrayList<>(

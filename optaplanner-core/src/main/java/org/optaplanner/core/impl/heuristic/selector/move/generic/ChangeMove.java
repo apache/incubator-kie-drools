@@ -52,11 +52,13 @@ public class ChangeMove extends AbstractMove {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         Object oldValue = variableDescriptor.getValue(entity);
         return !Objects.equals(oldValue, toPlanningValue);
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldValue = variableDescriptor.getValue(entity);
         return new ChangeMove(entity, variableDescriptor, oldValue);
@@ -78,10 +80,12 @@ public class ChangeMove extends AbstractMove {
         return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(entity);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Collections.singletonList(toPlanningValue);
     }

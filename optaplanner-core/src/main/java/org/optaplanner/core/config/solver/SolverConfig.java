@@ -297,6 +297,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return phaseList;
     }
 
+    @Override
     public void inherit(SolverConfig inheritedConfig) {
         environmentMode = ConfigUtils.inheritOverwritableProperty(environmentMode, inheritedConfig.getEnvironmentMode());
         daemon = ConfigUtils.inheritOverwritableProperty(daemon, inheritedConfig.getDaemon());

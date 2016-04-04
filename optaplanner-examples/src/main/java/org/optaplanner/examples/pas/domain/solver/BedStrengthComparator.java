@@ -26,6 +26,7 @@ import org.optaplanner.examples.pas.domain.Room;
 
 public class BedStrengthComparator implements Comparator<Bed>, Serializable {
 
+    @Override
     public int compare(Bed a, Bed b) {
         if (a == null) {
             if (b == null) {

@@ -83,6 +83,7 @@ public class TopicConflict implements Serializable, Comparable<TopicConflict> {
                 .toHashCode();
     }
 
+    @Override
     public int compareTo(TopicConflict other) {
         return new CompareToBuilder()
                 .append(leftTopic, other.leftTopic)

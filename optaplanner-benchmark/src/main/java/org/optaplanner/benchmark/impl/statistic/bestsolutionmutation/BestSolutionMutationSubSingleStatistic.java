@@ -43,6 +43,7 @@ public class BestSolutionMutationSubSingleStatistic<Solution_>
     // Lifecycle methods
     // ************************************************************************
 
+    @Override
     public void open(Solver<Solution_> solver) {
         InnerScoreDirectorFactory<Solution_> scoreDirectorFactory
                 = (InnerScoreDirectorFactory<Solution_>) solver.getScoreDirectorFactory();
@@ -51,6 +52,7 @@ public class BestSolutionMutationSubSingleStatistic<Solution_>
         solver.addEventListener(listener);
     }
 
+    @Override
     public void close(Solver<Solution_> solver) {
         solver.removeEventListener(listener);
     }
@@ -69,6 +71,7 @@ public class BestSolutionMutationSubSingleStatistic<Solution_>
             this.mutationCounter = mutationCounter;
         }
 
+        @Override
         public void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event) {
             int mutationCount;
             Solution_ newBestSolution = event.getNewBestSolution();

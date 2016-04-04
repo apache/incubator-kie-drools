@@ -65,6 +65,7 @@ public class KOptMove extends AbstractMove {
         return 1 + values.length;
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         Object firstAnchor = anchorVariableSupply.getAnchor(entity);
         Object firstValue = variableDescriptor.getValue(entity);
@@ -99,6 +100,7 @@ public class KOptMove extends AbstractMove {
         return -1;
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         Object[] undoValues = new Object[values.length];
         undoValues[0] = variableDescriptor.getValue(entity);
@@ -134,6 +136,7 @@ public class KOptMove extends AbstractMove {
         return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         List<Object> allEntityList = new ArrayList<>(values.length + 1);
         allEntityList.add(entity);
@@ -144,6 +147,7 @@ public class KOptMove extends AbstractMove {
         return allEntityList;
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         List<Object> allValueList = new ArrayList<>(values.length + 1);
         allValueList.add(variableDescriptor.getValue(entity));

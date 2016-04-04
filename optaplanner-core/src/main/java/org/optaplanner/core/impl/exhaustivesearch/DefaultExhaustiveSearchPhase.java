@@ -93,6 +93,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void solve(DefaultSolverScope<Solution_> solverScope) {
         SortedSet<ExhaustiveSearchNode> expandableNodeQueue = new TreeSet<>(nodeComparator);
         ExhaustiveSearchPhaseScope<Solution_> phaseScope = new ExhaustiveSearchPhaseScope<>(solverScope);

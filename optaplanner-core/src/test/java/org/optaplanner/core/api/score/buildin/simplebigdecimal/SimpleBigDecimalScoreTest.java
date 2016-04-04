@@ -112,6 +112,7 @@ public class SimpleBigDecimalScoreTest extends AbstractScoreTest {
         SimpleBigDecimalScore input = SimpleBigDecimalScore.valueOf(new BigDecimal("123.4"));
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
                 new PlannerTestUtils.OutputAsserter<SimpleBigDecimalScore>() {
+                    @Override
                     public void assertOutput(SimpleBigDecimalScore output) {
                         assertEquals(new BigDecimal("123.4"), output.getScore());
                     }

@@ -44,11 +44,13 @@ public class CachingEntitySelector extends AbstractCachingEntitySelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isNeverEnding() {
         // CachedListRandomIterator is neverEnding
         return randomSelection;
     }
 
+    @Override
     public Iterator<Object> iterator() {
         if (!randomSelection) {
             return cachedEntityList.iterator();
@@ -57,6 +59,7 @@ public class CachingEntitySelector extends AbstractCachingEntitySelector {
         }
     }
 
+    @Override
     public ListIterator<Object> listIterator() {
         if (!randomSelection) {
             return cachedEntityList.listIterator();
@@ -66,6 +69,7 @@ public class CachingEntitySelector extends AbstractCachingEntitySelector {
         }
     }
 
+    @Override
     public ListIterator<Object> listIterator(int index) {
         if (!randomSelection) {
             return cachedEntityList.listIterator(index);

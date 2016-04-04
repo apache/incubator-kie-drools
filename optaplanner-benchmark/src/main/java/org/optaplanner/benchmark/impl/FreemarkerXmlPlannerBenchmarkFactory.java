@@ -172,10 +172,12 @@ public class FreemarkerXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactor
     // Worker methods
     // ************************************************************************
 
+    @Override
     public PlannerBenchmarkConfig getPlannerBenchmarkConfig() {
         return xmlPlannerBenchmarkFactory.getPlannerBenchmarkConfig();
     }
 
+    @Override
     public PlannerBenchmark buildPlannerBenchmark() {
         return xmlPlannerBenchmarkFactory.buildPlannerBenchmark();
     }

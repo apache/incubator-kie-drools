@@ -51,12 +51,14 @@ public class BendableLongScoreHibernateTypeTest extends AbstractScoreHibernateTy
             this.score = score;
         }
 
+        @Override
         @Columns(columns = {@Column(name = "hard0Score"), @Column(name = "hard1Score"), @Column(name = "hard2Score"),
                 @Column(name = "soft0Score"), @Column(name = "soft1Score")})
         public BendableLongScore getScore() {
             return score;
         }
 
+        @Override
         public void setScore(BendableLongScore score) {
             this.score = score;
         }

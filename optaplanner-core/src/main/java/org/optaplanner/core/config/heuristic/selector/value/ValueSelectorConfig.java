@@ -627,6 +627,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         return valueSelector;
     }
 
+    @Override
     public void inherit(ValueSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         id = ConfigUtils.inheritOverwritableProperty(id, inheritedConfig.getId());

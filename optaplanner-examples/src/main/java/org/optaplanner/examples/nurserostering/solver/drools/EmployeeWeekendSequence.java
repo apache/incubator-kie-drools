@@ -82,6 +82,7 @@ public class EmployeeWeekendSequence implements Comparable<EmployeeWeekendSequen
                 .toHashCode();
     }
 
+    @Override
     public int compareTo(EmployeeWeekendSequence other) {
         return new CompareToBuilder()
                 .append(employee, other.employee)

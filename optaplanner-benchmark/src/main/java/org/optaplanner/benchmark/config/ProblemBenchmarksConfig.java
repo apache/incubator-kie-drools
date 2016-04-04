@@ -208,6 +208,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         parent.setSubSingleBenchmarkResultList(subSingleBenchmarkResultList);
     }
 
+    @Override
     public void inherit(ProblemBenchmarksConfig inheritedConfig) {
         solutionFileIOClass = ConfigUtils.inheritOverwritableProperty(solutionFileIOClass,
                 inheritedConfig.getSolutionFileIOClass());

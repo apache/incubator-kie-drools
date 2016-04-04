@@ -35,6 +35,7 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
     private int hardScore;
     private int softScore;
 
+    @Override
     public void resetWorkingSolution(CloudBalance cloudBalance) {
         int computerListSize = cloudBalance.getComputerList().size();
         cpuPowerUsageMap = new HashMap<>(computerListSize);
@@ -54,27 +55,33 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
+    @Override
     public void beforeEntityAdded(Object entity) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(Object entity) {
         // TODO the maps should probably be adjusted
         insert((CloudProcess) entity);
     }
 
+    @Override
     public void beforeVariableChanged(Object entity, String variableName) {
         retract((CloudProcess) entity);
     }
 
+    @Override
     public void afterVariableChanged(Object entity, String variableName) {
         insert((CloudProcess) entity);
     }
 
+    @Override
     public void beforeEntityRemoved(Object entity) {
         retract((CloudProcess) entity);
     }
 
+    @Override
     public void afterEntityRemoved(Object entity) {
         // Do nothing
         // TODO the maps should probably be adjusted
@@ -152,6 +159,7 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
+    @Override
     public HardSoftScore calculateScore() {
         return HardSoftScore.valueOf(hardScore, softScore);
     }

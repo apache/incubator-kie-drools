@@ -65,18 +65,22 @@ public class ReinitializeVariableValueSelector extends AbstractValueSelector {
         scoreDirector = null;
     }
 
+    @Override
     public GenuineVariableDescriptor getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return childValueSelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return childValueSelector.isNeverEnding();
     }
 
+    @Override
     public long getSize(Object entity) {
         if (!reinitializeVariableEntityFilter.accept(scoreDirector, entity)) {
             return 0L;
@@ -84,6 +88,7 @@ public class ReinitializeVariableValueSelector extends AbstractValueSelector {
         return childValueSelector.getSize(entity);
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         if (!reinitializeVariableEntityFilter.accept(scoreDirector, entity)) {
             return Iterators.emptyIterator();
@@ -91,6 +96,7 @@ public class ReinitializeVariableValueSelector extends AbstractValueSelector {
         return childValueSelector.iterator(entity);
     }
 
+    @Override
     public Iterator<Object> endingIterator(Object entity) {
         if (!reinitializeVariableEntityFilter.accept(scoreDirector, entity)) {
             return Iterators.emptyIterator();

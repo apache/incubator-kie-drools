@@ -69,6 +69,7 @@ public class MrMachine extends AbstractPersistable implements Labeled {
         this.machineMoveCostMap = machineMoveCostMap;
     }
 
+    @Override
     public String getLabel() {
         return "Machine " + getId();
     }

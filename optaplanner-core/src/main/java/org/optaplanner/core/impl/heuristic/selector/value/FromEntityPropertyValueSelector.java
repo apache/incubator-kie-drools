@@ -41,6 +41,7 @@ public class FromEntityPropertyValueSelector<Solution_> extends AbstractValueSel
         this.randomSelection = randomSelection;
     }
 
+    @Override
     public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
         return valueRangeDescriptor.getVariableDescriptor();
     }
@@ -62,19 +63,23 @@ public class FromEntityPropertyValueSelector<Solution_> extends AbstractValueSel
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         return valueRangeDescriptor.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return randomSelection || !isCountable();
     }
 
+    @Override
     public long getSize(Object entity) {
         ValueRange<?> valueRange = valueRangeDescriptor.extractValueRange(workingSolution, entity);
         return ((CountableValueRange<?>) valueRange).getSize();
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         ValueRange<Object> valueRange = (ValueRange<Object>)
                 valueRangeDescriptor.extractValueRange(workingSolution, entity);
@@ -85,6 +90,7 @@ public class FromEntityPropertyValueSelector<Solution_> extends AbstractValueSel
         }
     }
 
+    @Override
     public Iterator<Object> endingIterator(Object entity) {
         ValueRange<Object> valueRange = (ValueRange<Object>)
                 valueRangeDescriptor.extractValueRange(workingSolution, entity);

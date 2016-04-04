@@ -24,6 +24,7 @@ import org.optaplanner.examples.dinnerparty.domain.SeatDesignation;
 
 public class DifferentGenderSwapMoveFilter implements SelectionFilter<DinnerParty, SwapMove> {
 
+    @Override
     public boolean accept(ScoreDirector<DinnerParty> scoreDirector, SwapMove move) {
         SeatDesignation leftSeatDesignation = (SeatDesignation) move.getLeftEntity();
         SeatDesignation rightSeatDesignation = (SeatDesignation) move.getRightEntity();

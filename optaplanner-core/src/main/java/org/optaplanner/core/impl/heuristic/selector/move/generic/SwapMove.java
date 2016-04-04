@@ -56,6 +56,7 @@ public class SwapMove<Solution_> extends AbstractMove {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         boolean movable = false;
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
@@ -81,6 +82,7 @@ public class SwapMove<Solution_> extends AbstractMove {
         return movable;
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new SwapMove<>(variableDescriptorList, rightEntity, leftEntity);
     }
@@ -118,10 +120,12 @@ public class SwapMove<Solution_> extends AbstractMove {
         return moveTypeDescription.toString();
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Arrays.asList(leftEntity, rightEntity);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         List<Object> values = new ArrayList<>(variableDescriptorList.size() * 2);
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {

@@ -59,6 +59,7 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
     public void addHardConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         hardScore = (hardScore == null) ? weight : hardScore.add(weight);
         registerBigDecimalConstraintMatch(kcontext, 0, weight, new BigDecimalConstraintUndoListener() {
+            @Override
             public void undo() {
                 hardScore = hardScore.subtract(weight);
             }
@@ -68,12 +69,14 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
     public void addSoftConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         softScore = (softScore == null) ? weight : softScore.add(weight);
         registerBigDecimalConstraintMatch(kcontext, 1, weight, new BigDecimalConstraintUndoListener() {
+            @Override
             public void undo() {
                 softScore = softScore.subtract(weight);
             }
         });
     }
 
+    @Override
     public Score extractScore() {
         return HardSoftBigDecimalScore.valueOf(hardScore == null ? BigDecimal.ZERO : hardScore,
                 softScore == null ? BigDecimal.ZERO : softScore);

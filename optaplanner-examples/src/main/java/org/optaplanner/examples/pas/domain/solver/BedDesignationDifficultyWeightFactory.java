@@ -25,6 +25,7 @@ import org.optaplanner.examples.pas.domain.Room;
 public class BedDesignationDifficultyWeightFactory
         implements SelectionSorterWeightFactory<PatientAdmissionSchedule, BedDesignation> {
 
+    @Override
     public Comparable createSorterWeight(PatientAdmissionSchedule schedule, BedDesignation bedDesignation) {
         int hardDisallowedCount = 0;
         int softDisallowedCount = 0;
@@ -54,6 +55,7 @@ public class BedDesignationDifficultyWeightFactory
             this.softDisallowedCount = softDisallowedCount;
         }
 
+        @Override
         public int compareTo(BedDesignationDifficultyWeight other) {
             return new CompareToBuilder()
                     .append(requiredEquipmentCount * nightCount,

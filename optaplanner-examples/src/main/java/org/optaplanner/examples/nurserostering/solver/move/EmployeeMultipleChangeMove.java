@@ -42,10 +42,12 @@ public class EmployeeMultipleChangeMove extends AbstractMove {
         this.toEmployee = toEmployee;
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !Objects.equals(fromEmployee, toEmployee);
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new EmployeeMultipleChangeMove(toEmployee, shiftAssignmentList, fromEmployee);
     }
@@ -61,10 +63,12 @@ public class EmployeeMultipleChangeMove extends AbstractMove {
         }
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Collections.singletonList(shiftAssignmentList);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Arrays.asList(fromEmployee, toEmployee);
     }

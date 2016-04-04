@@ -93,39 +93,47 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isFeasible() {
         return getHardScore() >= 0L;
     }
 
+    @Override
     public HardSoftLongScore add(HardSoftLongScore augment) {
         return new HardSoftLongScore(hardScore + augment.getHardScore(),
                 softScore + augment.getSoftScore());
     }
 
+    @Override
     public HardSoftLongScore subtract(HardSoftLongScore subtrahend) {
         return new HardSoftLongScore(hardScore - subtrahend.getHardScore(),
                 softScore - subtrahend.getSoftScore());
     }
 
+    @Override
     public HardSoftLongScore multiply(double multiplicand) {
         return new HardSoftLongScore((long) Math.floor(hardScore * multiplicand),
                 (long) Math.floor(softScore * multiplicand));
     }
 
+    @Override
     public HardSoftLongScore divide(double divisor) {
         return new HardSoftLongScore((long) Math.floor(hardScore / divisor),
                 (long) Math.floor(softScore / divisor));
     }
 
+    @Override
     public HardSoftLongScore power(double exponent) {
         return new HardSoftLongScore((long) Math.floor(Math.pow(hardScore, exponent)),
                 (long) Math.floor(Math.pow(softScore, exponent)));
     }
 
+    @Override
     public HardSoftLongScore negate() {
         return new HardSoftLongScore(-hardScore, -softScore);
     }
 
+    @Override
     public Number[] toLevelNumbers() {
         return new Number[]{hardScore, softScore};
     }
@@ -148,6 +156,7 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
         return (((17 * 37) + Long.valueOf(hardScore).hashCode())) * 37 + Long.valueOf(softScore).hashCode();
     }
 
+    @Override
     public int compareTo(HardSoftLongScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (hardScore != other.getHardScore()) {

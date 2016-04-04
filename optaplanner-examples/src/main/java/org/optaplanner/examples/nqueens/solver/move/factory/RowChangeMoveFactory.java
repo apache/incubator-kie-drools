@@ -28,6 +28,7 @@ import org.optaplanner.examples.nqueens.solver.move.RowChangeMove;
 
 public class RowChangeMoveFactory implements MoveListFactory<NQueens> {
 
+    @Override
     public List<Move> createMoveList(NQueens nQueens) {
         List<Move> moveList = new ArrayList<>();
         for (Queen queen : nQueens.getQueenList()) {

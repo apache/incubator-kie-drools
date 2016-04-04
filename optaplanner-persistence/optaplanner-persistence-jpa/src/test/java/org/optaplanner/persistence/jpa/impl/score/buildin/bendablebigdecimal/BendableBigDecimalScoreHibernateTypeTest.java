@@ -56,6 +56,7 @@ public class BendableBigDecimalScoreHibernateTypeTest extends AbstractScoreHiber
             this.score = score;
         }
 
+        @Override
         @Columns(columns = {
                 @Column(name = "hard0Score", precision = 10, scale = 5),
                 @Column(name = "hard1Score", precision = 10, scale = 5),
@@ -66,6 +67,7 @@ public class BendableBigDecimalScoreHibernateTypeTest extends AbstractScoreHiber
             return score;
         }
 
+        @Override
         public void setScore(BendableBigDecimalScore score) {
             this.score = score;
         }

@@ -38,6 +38,7 @@ public abstract class EntityPlacerConfig<C extends EntityPlacerConfig> extends A
 
     public abstract EntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination);
 
+    @Override
     public void inherit(C inheritedConfig) {
     }
 

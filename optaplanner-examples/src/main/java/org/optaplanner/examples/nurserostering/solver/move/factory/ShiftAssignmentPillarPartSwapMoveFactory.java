@@ -38,6 +38,7 @@ public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory
 
     private MovableShiftAssignmentSelectionFilter filter = new MovableShiftAssignmentSelectionFilter();
 
+    @Override
     public List<Move> createMoveList(NurseRoster nurseRoster) {
         List<Employee> employeeList = nurseRoster.getEmployeeList();
         // This code assumes the shiftAssignmentList is sorted
@@ -219,6 +220,7 @@ public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory
             }
         }
 
+        @Override
         public boolean hasNext() {
             return leftHasNext || rightHasNext;
         }
@@ -240,6 +242,7 @@ public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory
             }
         }
 
+        @Override
         public AssignmentSequence next() {
             lastNextWasLeft = nextIsLeft();
             // Buffer the nextLeft or nextRight
@@ -284,6 +287,7 @@ public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory
             return returnLeft;
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException("The optional operation remove() is not supported.");
         }

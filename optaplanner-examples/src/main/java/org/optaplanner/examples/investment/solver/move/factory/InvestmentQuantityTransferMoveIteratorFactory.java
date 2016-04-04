@@ -82,10 +82,12 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
             this.workingRandom = workingRandom;
         }
 
+        @Override
         public boolean hasNext() {
             return allocationList.size() >= 2;
         }
 
+        @Override
         public Move next() {
             long transferMillis
                     = RandomUtils.nextLong(workingRandom, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS) + 1L;
@@ -103,6 +105,7 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
             return new InvestmentQuantityTransferMove(fromAllocation, toAllocation, transferMillis);
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException("The optional operation remove() is not supported.");
         }

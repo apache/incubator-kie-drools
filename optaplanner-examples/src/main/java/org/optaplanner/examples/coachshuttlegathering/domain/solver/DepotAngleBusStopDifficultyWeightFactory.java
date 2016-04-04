@@ -28,6 +28,7 @@ import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheri
 public class DepotAngleBusStopDifficultyWeightFactory
         implements SelectionSorterWeightFactory<CoachShuttleGatheringSolution, BusOrStop> {
 
+    @Override
     public Comparable createSorterWeight(CoachShuttleGatheringSolution solution, BusOrStop busOrStop) {
         BusHub hub = solution.getHub();
         return new DepotAngleCustomerDifficultyWeight(busOrStop,
@@ -49,6 +50,7 @@ public class DepotAngleBusStopDifficultyWeightFactory
             this.hubRoundTripDistance = hubRoundTripDistance;
         }
 
+        @Override
         public int compareTo(DepotAngleCustomerDifficultyWeight other) {
             return new CompareToBuilder()
                     .append(hubAngle, other.hubAngle)

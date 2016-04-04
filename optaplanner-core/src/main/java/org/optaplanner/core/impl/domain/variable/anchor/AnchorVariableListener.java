@@ -39,26 +39,32 @@ public class AnchorVariableListener<Solution_> implements VariableListener<Objec
         this.nextVariableSupply = nextVariableSupply;
     }
 
+    @Override
     public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
+    @Override
     public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
         // No need to retract() because the insert (which is guaranteed to be called later) affects the same trailing entities.
     }
 
+    @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
+    @Override
     public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
         // No need to retract() because the trailing entities will be removed too or change their previousVariable
     }
 
+    @Override
     public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
         // Do nothing
     }
@@ -82,6 +88,7 @@ public class AnchorVariableListener<Solution_> implements VariableListener<Objec
         }
     }
 
+    @Override
     public Object getAnchor(Object entity) {
         return anchorShadowVariableDescriptor.getValue(entity);
     }

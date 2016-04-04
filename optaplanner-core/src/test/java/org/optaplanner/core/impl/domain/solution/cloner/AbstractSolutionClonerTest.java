@@ -393,6 +393,7 @@ public abstract class AbstractSolutionClonerTest {
 
         TestdataSetBasedSolution original = new TestdataSetBasedSolution("solution");
         Comparator<TestdataValue> valueComparator = new Comparator<TestdataValue>() {
+            @Override
             public int compare(TestdataValue a, TestdataValue b) {
                 return b.getCode().compareTo(a.getCode()); // Reverse alphabetic
             }
@@ -401,6 +402,7 @@ public abstract class AbstractSolutionClonerTest {
         valueSet.addAll(Arrays.asList(val1, val2, val3));
         original.setValueSet(valueSet);
         Comparator<TestdataSetBasedEntity> entityComparator = new Comparator<TestdataSetBasedEntity>() {
+            @Override
             public int compare(TestdataSetBasedEntity a, TestdataSetBasedEntity b) {
                 return b.getCode().compareTo(a.getCode()); // Reverse alphabetic
             }

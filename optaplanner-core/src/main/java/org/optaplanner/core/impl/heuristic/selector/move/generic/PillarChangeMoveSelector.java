@@ -53,14 +53,17 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         return pillarSelector.isCountable() && valueSelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return randomSelection || pillarSelector.isNeverEnding() || valueSelector.isNeverEnding();
     }
 
+    @Override
     public long getSize() {
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("To use the method getSize(), the moveSelector (" + this
@@ -70,6 +73,7 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
         return pillarSelector.getSize() * ((EntityIndependentValueSelector) valueSelector).getSize();
     }
 
+    @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
             return new OriginalPillarChangeMoveIterator();

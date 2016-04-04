@@ -46,18 +46,22 @@ public class SortingEntitySelector extends AbstractCachingEntitySelector {
                 cachedEntityList.size(), this);
     }
 
+    @Override
     public boolean isNeverEnding() {
         return false;
     }
 
+    @Override
     public Iterator<Object> iterator() {
         return cachedEntityList.iterator();
     }
 
+    @Override
     public ListIterator<Object> listIterator() {
         return cachedEntityList.listIterator();
     }
 
+    @Override
     public ListIterator<Object> listIterator(int index) {
         return cachedEntityList.listIterator(index);
     }

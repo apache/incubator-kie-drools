@@ -44,12 +44,14 @@ public abstract class AbstractTxtSolutionImporter<Solution_> extends AbstractSol
         super(withoutDao);
     }
 
+    @Override
     public String getInputFileSuffix() {
         return DEFAULT_INPUT_FILE_SUFFIX;
     }
 
     public abstract TxtInputBuilder<Solution_> createTxtInputBuilder();
 
+    @Override
     public Solution_ readSolution(File inputFile) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), "UTF-8"))) {
             TxtInputBuilder<Solution_> txtInputBuilder = createTxtInputBuilder();

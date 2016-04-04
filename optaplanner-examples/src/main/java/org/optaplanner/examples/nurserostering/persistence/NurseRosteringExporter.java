@@ -34,6 +34,7 @@ public class NurseRosteringExporter extends AbstractXmlSolutionExporter<NurseRos
         super(new NurseRosteringDao());
     }
 
+    @Override
     public XmlOutputBuilder<NurseRoster> createXmlOutputBuilder() {
         return new NurseRosteringOutputBuilder();
     }
@@ -42,10 +43,12 @@ public class NurseRosteringExporter extends AbstractXmlSolutionExporter<NurseRos
 
         private NurseRoster nurseRoster;
 
+        @Override
         public void setSolution(NurseRoster solution) {
             nurseRoster = solution;
         }
 
+        @Override
         public void writeSolution() throws IOException {
             Element solutionElement = new Element("Solution");
             document.setRootElement(solutionElement);

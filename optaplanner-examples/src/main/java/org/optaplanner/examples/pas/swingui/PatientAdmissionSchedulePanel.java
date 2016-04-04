@@ -185,6 +185,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel<PatientAdmissio
                     + "</html>");
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
             List<Bed> bedList = getSolution().getBedList();
@@ -231,14 +232,17 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel<PatientAdmissio
             }
         }
 
+        @Override
         public int getIconWidth() {
             return genderIcon.getIconWidth() + equipmentColorList.size() * EQUIPMENT_ICON_WIDTH;
         }
 
+        @Override
         public int getIconHeight() {
             return genderIcon.getIconHeight();
         }
 
+        @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
             genderIcon.paintIcon(c, g, x, y);
             int innerX = x + genderIcon.getIconWidth();

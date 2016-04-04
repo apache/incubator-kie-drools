@@ -57,6 +57,7 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
         maxScoreMoveScope = null;
     }
 
+    @Override
     public void addMove(ConstructionHeuristicMoveScope moveScope) {
         checkPickEarly(moveScope);
         if (maxScoreMoveScope == null
@@ -93,10 +94,12 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
         }
     }
 
+    @Override
     public boolean isQuitEarly() {
         return earlyPickedMoveScope != null;
     }
 
+    @Override
     public ConstructionHeuristicMoveScope pickMove(ConstructionHeuristicStepScope stepScope) {
         if (earlyPickedMoveScope != null) {
             return earlyPickedMoveScope;

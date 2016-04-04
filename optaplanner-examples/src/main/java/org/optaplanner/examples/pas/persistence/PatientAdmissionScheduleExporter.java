@@ -35,12 +35,14 @@ public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporte
         super(new PatientAdmissionScheduleDao());
     }
 
+    @Override
     public TxtOutputBuilder<PatientAdmissionSchedule> createTxtOutputBuilder() {
         return new PatientAdmissionScheduleOutputBuilder();
     }
 
     public static class PatientAdmissionScheduleOutputBuilder extends TxtOutputBuilder<PatientAdmissionSchedule> {
 
+        @Override
         public void writeSolution() throws IOException {
             Collections.sort(solution.getBedDesignationList(), (a, b) -> new CompareToBuilder()
                     .append(a.getAdmissionPart(), b.getAdmissionPart())

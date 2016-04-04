@@ -30,6 +30,7 @@ public class NaturalDeciderScoreComparatorFactory extends AbstractDeciderScoreCo
 
     private final Comparator<Score> naturalDeciderScoreComparator = new NaturalScoreComparator();
 
+    @Override
     public Comparator<Score> createDeciderScoreComparator() {
         return naturalDeciderScoreComparator;
     }

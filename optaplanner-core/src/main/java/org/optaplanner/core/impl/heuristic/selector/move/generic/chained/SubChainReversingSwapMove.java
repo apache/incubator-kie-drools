@@ -60,6 +60,7 @@ public class SubChainReversingSwapMove extends AbstractMove {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         for (Object leftEntity : leftSubChain.getEntityList()) {
             if (rightSubChain.getEntityList().contains(leftEntity)) {
@@ -70,6 +71,7 @@ public class SubChainReversingSwapMove extends AbstractMove {
         return true;
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
                 rightSubChain.reverse(), leftSubChain.reverse());
@@ -132,6 +134,7 @@ public class SubChainReversingSwapMove extends AbstractMove {
         return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         List<Object> entities = new ArrayList<>(
                 leftSubChain.getSize() + rightSubChain.getSize());
@@ -140,6 +143,7 @@ public class SubChainReversingSwapMove extends AbstractMove {
         return entities;
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         List<Object> values = new ArrayList<>(2);
         values.add(variableDescriptor.getValue(leftSubChain.getFirstEntity()));

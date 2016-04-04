@@ -65,6 +65,7 @@ public class TailChainSwapMoveSelectorConfig extends MoveSelectorConfig<TailChai
     // Builder methods
     // ************************************************************************
 
+    @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
@@ -79,6 +80,7 @@ public class TailChainSwapMoveSelectorConfig extends MoveSelectorConfig<TailChai
         return new TailChainSwapMoveSelector(entitySelector, valueSelector, randomSelection);
     }
 
+    @Override
     public void inherit(TailChainSwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());

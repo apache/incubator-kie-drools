@@ -32,14 +32,17 @@ public class ShufflingValueSelector extends AbstractCachingValueSelector impleme
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isNeverEnding() {
         return false;
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         return iterator();
     }
 
+    @Override
     public Iterator<Object> iterator() {
         Collections.shuffle(cachedValueList, workingRandom);
         logger.trace("    Shuffled cachedValueList with size ({}) in valueSelector({}).",

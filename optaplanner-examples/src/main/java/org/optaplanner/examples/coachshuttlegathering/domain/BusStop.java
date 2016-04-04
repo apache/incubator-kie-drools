@@ -111,10 +111,12 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
         this.bus = bus;
     }
 
+    @Override
     public List<Shuttle> getTransferShuttleList() {
         return transferShuttleList;
     }
 
+    @Override
     public void setTransferShuttleList(List<Shuttle> transferShuttleList) {
         this.transferShuttleList = transferShuttleList;
     }

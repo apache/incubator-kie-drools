@@ -23,6 +23,7 @@ import org.optaplanner.examples.nqueens.domain.Row;
 
 public class RowStrengthWeightFactory implements SelectionSorterWeightFactory<NQueens, Row> {
 
+    @Override
     public Comparable createSorterWeight(NQueens nQueens, Row row) {
         int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), row.getIndex());
         return new RowStrengthWeight(row, distanceFromMiddle);
@@ -47,6 +48,7 @@ public class RowStrengthWeightFactory implements SelectionSorterWeightFactory<NQ
             this.distanceFromMiddle = distanceFromMiddle;
         }
 
+        @Override
         public int compareTo(RowStrengthWeight other) {
             return new CompareToBuilder()
                     // The stronger rows are on the side, so they have a higher distance to the middle

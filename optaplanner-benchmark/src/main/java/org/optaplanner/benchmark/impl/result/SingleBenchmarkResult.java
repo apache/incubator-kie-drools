@@ -238,6 +238,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     /**
      * @return never null, filename safe
      */
+    @Override
     public String getName() {
         return problemBenchmarkResult.getName() + "_" + solverBenchmarkResult.getName();
     }
@@ -303,10 +304,12 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     // Accumulate methods
     // ************************************************************************
 
+    @Override
     public String getResultDirectoryName() {
         return solverBenchmarkResult.getName();
     }
 
+    @Override
     public File getResultDirectory() {
         return new File(problemBenchmarkResult.getProblemReportDirectory(), getResultDirectoryName());
     }

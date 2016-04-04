@@ -38,10 +38,12 @@ public class CachedListRandomIterator<S> extends SelectionIterator<S>  {
         notEmpty = !cachedList.isEmpty();
     }
 
+    @Override
     public boolean hasNext() {
         return notEmpty;
     }
 
+    @Override
     public S next() {
         int index = workingRandom.nextInt(cachedList.size());
         return cachedList.get(index);

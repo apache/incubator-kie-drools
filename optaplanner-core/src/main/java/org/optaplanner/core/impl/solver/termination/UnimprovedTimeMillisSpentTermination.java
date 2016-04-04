@@ -39,11 +39,13 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
     // Terminated methods
     // ************************************************************************
 
+    @Override
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
         long bestSolutionTimeMillis = solverScope.getBestSolutionTimeMillis();
         return isTerminated(bestSolutionTimeMillis);
     }
 
+    @Override
     public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         long bestSolutionTimeMillis = phaseScope.getPhaseBestSolutionTimeMillis();
         return isTerminated(bestSolutionTimeMillis);
@@ -59,11 +61,13 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
     // Time gradient methods
     // ************************************************************************
 
+    @Override
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         long bestSolutionTimeMillis = solverScope.getBestSolutionTimeMillis();
         return calculateTimeGradient(bestSolutionTimeMillis);
     }
 
+    @Override
     public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         long bestSolutionTimeMillis = phaseScope.getPhaseBestSolutionTimeMillis();
         return calculateTimeGradient(bestSolutionTimeMillis);

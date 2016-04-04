@@ -80,6 +80,7 @@ public class Employee extends TaskOrEmployee implements Labeled {
         return affinity;
     }
 
+    @Override
     public String getLabel() {
         return fullName;
     }

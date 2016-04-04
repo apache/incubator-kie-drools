@@ -45,6 +45,7 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
     private int soft1Score;
 
 
+    @Override
     public void resetWorkingSolution(Schedule schedule) {
         List<Resource> resourceList = schedule.getResourceList();
         resourceCapacityTrackerMap = new HashMap<>(resourceList.size());
@@ -69,26 +70,32 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
         }
     }
 
+    @Override
     public void beforeEntityAdded(Object entity) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(Object entity) {
         insert((Allocation) entity);
     }
 
+    @Override
     public void beforeVariableChanged(Object entity, String variableName) {
         retract((Allocation) entity);
     }
 
+    @Override
     public void afterVariableChanged(Object entity, String variableName) {
         insert((Allocation) entity);
     }
 
+    @Override
     public void beforeEntityRemoved(Object entity) {
         retract((Allocation) entity);
     }
 
+    @Override
     public void afterEntityRemoved(Object entity) {
         // Do nothing
     }
@@ -163,6 +170,7 @@ public class ProjectJobSchedulingIncrementalScoreCalculator extends AbstractIncr
         maximumProjectEndDate = maximum;
     }
 
+    @Override
     public Score calculateScore() {
         return BendableScore.valueOf(new int[] {hardScore}, new int[] {soft0Score, soft1Score});
     }

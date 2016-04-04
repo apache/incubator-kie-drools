@@ -39,12 +39,14 @@ public class MachineReassignmentExporter extends AbstractTxtSolutionExporter<Mac
         return MachineReassignmentFileIO.FILE_EXTENSION;
     }
 
+    @Override
     public TxtOutputBuilder<MachineReassignment> createTxtOutputBuilder() {
         return new MachineReassignmentOutputBuilder();
     }
 
     public static class MachineReassignmentOutputBuilder extends TxtOutputBuilder<MachineReassignment> {
 
+        @Override
         public void writeSolution() throws IOException {
             boolean first = true;
             List<MrMachine> machineList = solution.getMachineList();

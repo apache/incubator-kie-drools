@@ -87,6 +87,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isNeverEnding() {
         if (randomSelection) {
             for (MoveSelector moveSelector : childMoveSelectorList) {
@@ -106,6 +107,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
         }
     }
 
+    @Override
     public long getSize() {
         long size = 0L;
         for (MoveSelector moveSelector : childMoveSelectorList) {
@@ -114,6 +116,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
         return size;
     }
 
+    @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
             Iterator<Move> iterator = Iterators.emptyIterator();
@@ -154,6 +157,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
             stale = true;
         }
 
+        @Override
         public boolean hasNext() {
             if (stale) {
                 refreshMoveIteratorMap();
@@ -161,6 +165,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
             return !moveIteratorMap.isEmpty();
         }
 
+        @Override
         public Move next() {
             if (stale) {
                 refreshMoveIteratorMap();

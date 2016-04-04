@@ -38,12 +38,14 @@ public class CurriculumCourseExporter extends AbstractTxtSolutionExporter<Course
         return OUTPUT_FILE_SUFFIX;
     }
 
+    @Override
     public TxtOutputBuilder<CourseSchedule> createTxtOutputBuilder() {
         return new CurriculumCourseOutputBuilder();
     }
 
     public static class CurriculumCourseOutputBuilder extends TxtOutputBuilder<CourseSchedule> {
 
+        @Override
         public void writeSolution() throws IOException {
             for (Lecture lecture : solution.getLectureList()) {
                 bufferedWriter.write(lecture.getCourse().getCode()

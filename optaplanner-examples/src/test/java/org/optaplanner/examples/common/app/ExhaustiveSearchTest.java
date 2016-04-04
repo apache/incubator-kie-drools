@@ -50,6 +50,7 @@ public abstract class ExhaustiveSearchTest<Solution_> extends PhaseTest<Solution
         this.exhaustiveSearchType = exhaustiveSearchType;
     }
 
+    @Override
     protected SolverFactory<Solution_> buildSolverFactory() {
         SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
         SolverConfig solverConfig = solverFactory.getSolverConfig();

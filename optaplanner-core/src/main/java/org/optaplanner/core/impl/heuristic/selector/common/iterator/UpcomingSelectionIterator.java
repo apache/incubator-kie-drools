@@ -36,6 +36,7 @@ public abstract class UpcomingSelectionIterator<S> extends SelectionIterator<S> 
     protected boolean hasUpcomingSelection = true;
     protected S upcomingSelection;
 
+    @Override
     public boolean hasNext() {
         if (!upcomingCreated) {
             upcomingSelection = createUpcomingSelection();
@@ -44,6 +45,7 @@ public abstract class UpcomingSelectionIterator<S> extends SelectionIterator<S> 
         return hasUpcomingSelection;
     }
 
+    @Override
     public S next() {
         if (!hasUpcomingSelection) {
             throw new NoSuchElementException();

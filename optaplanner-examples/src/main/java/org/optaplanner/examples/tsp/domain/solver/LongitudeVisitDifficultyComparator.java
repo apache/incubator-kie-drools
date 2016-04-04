@@ -24,6 +24,7 @@ import org.optaplanner.examples.tsp.domain.Visit;
 
 public class LongitudeVisitDifficultyComparator implements Comparator<Visit>, Serializable {
 
+    @Override
     public int compare(Visit a, Visit b) {
         return new CompareToBuilder()
                 // TODO experiment with (aLongitude - bLongitude) % 10

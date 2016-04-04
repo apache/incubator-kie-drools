@@ -67,6 +67,7 @@ public class ExhaustiveSearchPhaseScope<Solution_> extends AbstractPhaseScope<So
         this.bestPessimisticBound = bestPessimisticBound;
     }
 
+    @Override
     public ExhaustiveSearchStepScope<Solution_> getLastCompletedStepScope() {
         return lastCompletedStepScope;
     }

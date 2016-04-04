@@ -65,6 +65,7 @@ public abstract class AbstractCachingEntitySelector extends AbstractEntitySelect
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void constructCache(DefaultSolverScope solverScope) {
         long childSize = childEntitySelector.getSize();
         if (childSize > (long) Integer.MAX_VALUE) {
@@ -79,22 +80,27 @@ public abstract class AbstractCachingEntitySelector extends AbstractEntitySelect
                 cachedEntityList.size(), this);
     }
 
+    @Override
     public void disposeCache(DefaultSolverScope solverScope) {
         cachedEntityList = null;
     }
 
+    @Override
     public EntityDescriptor getEntityDescriptor() {
         return childEntitySelector.getEntityDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return true;
     }
 
+    @Override
     public long getSize() {
         return cachedEntityList.size();
     }
 
+    @Override
     public Iterator<Object> endingIterator() {
         return cachedEntityList.iterator();
     }

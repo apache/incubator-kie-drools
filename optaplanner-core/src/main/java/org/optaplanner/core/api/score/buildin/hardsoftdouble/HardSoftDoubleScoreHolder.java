@@ -60,6 +60,7 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder {
     public void addHardConstraintMatch(RuleContext kcontext, final double weight) {
         hardScore += weight;
         registerDoubleConstraintMatch(kcontext, 0, weight, new DoubleConstraintUndoListener() {
+            @Override
             public void undo() {
                 hardScore -= weight;
             }
@@ -69,12 +70,14 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder {
     public void addSoftConstraintMatch(RuleContext kcontext, final double weight) {
         softScore += weight;
         registerDoubleConstraintMatch(kcontext, 1, weight, new DoubleConstraintUndoListener() {
+            @Override
             public void undo() {
                 softScore -= weight;
             }
         });
     }
 
+    @Override
     public Score extractScore() {
         return HardSoftDoubleScore.valueOf(hardScore, softScore);
     }

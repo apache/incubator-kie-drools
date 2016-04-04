@@ -44,6 +44,7 @@ public class Customer extends AbstractPersistable implements Standstill {
     protected Customer nextCustomer;
     protected Vehicle vehicle;
 
+    @Override
     public Location getLocation() {
         return location;
     }
@@ -70,14 +71,17 @@ public class Customer extends AbstractPersistable implements Standstill {
         this.previousStandstill = previousStandstill;
     }
 
+    @Override
     public Customer getNextCustomer() {
         return nextCustomer;
     }
 
+    @Override
     public void setNextCustomer(Customer nextCustomer) {
         this.nextCustomer = nextCustomer;
     }
 
+    @Override
     @AnchorShadowVariable(sourceVariableName = "previousStandstill")
     public Vehicle getVehicle() {
         return vehicle;

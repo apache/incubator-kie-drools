@@ -101,6 +101,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     // Benchmark methods
     // ************************************************************************
 
+    @Override
     public void benchmark() {
         benchmarkingStarted();
         warmUp();

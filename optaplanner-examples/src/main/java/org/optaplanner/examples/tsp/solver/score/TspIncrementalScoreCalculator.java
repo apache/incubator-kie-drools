@@ -29,6 +29,7 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
 
     private long score;
 
+    @Override
     public void resetWorkingSolution(TspSolution tspSolution) {
         domicile = tspSolution.getDomicile();
         score = 0L;
@@ -37,26 +38,32 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
         }
     }
 
+    @Override
     public void beforeEntityAdded(Object entity) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(Object entity) {
         insert((Visit) entity);
     }
 
+    @Override
     public void beforeVariableChanged(Object entity, String variableName) {
         retract((Visit) entity);
     }
 
+    @Override
     public void afterVariableChanged(Object entity, String variableName) {
         insert((Visit) entity);
     }
 
+    @Override
     public void beforeEntityRemoved(Object entity) {
         retract((Visit) entity);
     }
 
+    @Override
     public void afterEntityRemoved(Object entity) {
         // Do nothing
     }
@@ -81,6 +88,7 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
         }
     }
 
+    @Override
     public SimpleLongScore calculateScore() {
         return SimpleLongScore.valueOf(score);
     }

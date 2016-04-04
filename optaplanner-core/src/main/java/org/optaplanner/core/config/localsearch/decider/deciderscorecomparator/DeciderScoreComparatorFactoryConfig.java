@@ -145,6 +145,7 @@ public class DeciderScoreComparatorFactoryConfig extends AbstractConfig<DeciderS
         }
     }
 
+    @Override
     public void inherit(DeciderScoreComparatorFactoryConfig inheritedConfig) {
         if (deciderScoreComparatorClass == null && deciderScoreComparatorFactoryType == null) {
             deciderScoreComparatorClass = inheritedConfig.getDeciderScoreComparatorClass();

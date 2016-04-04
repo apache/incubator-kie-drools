@@ -48,6 +48,7 @@ public class SubChainChangeMove extends AbstractMove {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         if (subChain.getEntityList().contains(toPlanningValue)) {
             return false;
@@ -56,6 +57,7 @@ public class SubChainChangeMove extends AbstractMove {
         return !Objects.equals(oldFirstValue, toPlanningValue);
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
         return new SubChainChangeMove(subChain, variableDescriptor, inverseVariableSupply, oldFirstValue);
@@ -90,10 +92,12 @@ public class SubChainChangeMove extends AbstractMove {
         return getClass().getSimpleName() + "(" + variableDescriptor.getSimpleEntityAndVariableName() + ")";
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return subChain.getEntityList();
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Collections.singletonList(toPlanningValue);
     }

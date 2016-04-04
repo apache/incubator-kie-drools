@@ -101,6 +101,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     // ************************************************************************
 
 
+    @Override
     public ConstructionHeuristicPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
@@ -159,6 +160,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         return decider;
     }
 
+    @Override
     public void inherit(ConstructionHeuristicPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         constructionHeuristicType = ConfigUtils.inheritOverwritableProperty(constructionHeuristicType,

@@ -406,6 +406,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         return unimprovedTimeMillisSpentLimit;
     }
 
+    @Override
     public void inherit(TerminationConfig inheritedConfig) {
         terminationClass = ConfigUtils.inheritOverwritableProperty(terminationClass,
                 inheritedConfig.getTerminationClass());

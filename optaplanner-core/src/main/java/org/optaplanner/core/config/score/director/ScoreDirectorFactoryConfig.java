@@ -477,6 +477,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         }
     }
 
+    @Override
     public void inherit(ScoreDirectorFactoryConfig inheritedConfig) {
         if (scoreDefinitionClass == null && scoreDefinitionType == null
                 && bendableHardLevelsSize == null && bendableSoftLevelsSize == null) {

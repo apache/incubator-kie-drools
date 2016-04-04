@@ -46,6 +46,7 @@ public class EasyScoreDirector<Solution_>
     // Complex methods
     // ************************************************************************
 
+    @Override
     public Score calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
         Score score = easyScoreCalculator.calculateScore(workingSolution);
@@ -53,10 +54,12 @@ public class EasyScoreDirector<Solution_>
         return score;
     }
 
+    @Override
     public boolean isConstraintMatchEnabled() {
         return false;
     }
 
+    @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
         throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
                 + ") is disabled, this method should not be called.");

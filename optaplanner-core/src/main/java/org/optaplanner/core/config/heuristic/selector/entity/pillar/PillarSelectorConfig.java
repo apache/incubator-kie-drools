@@ -119,6 +119,7 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
                 defaultIfNull(maximumSubPillarSize, Integer.MAX_VALUE));
     }
 
+    @Override
     public void inherit(PillarSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());

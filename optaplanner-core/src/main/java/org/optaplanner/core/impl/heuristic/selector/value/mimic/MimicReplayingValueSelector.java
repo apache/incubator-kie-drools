@@ -72,31 +72,38 @@ public class MimicReplayingValueSelector extends AbstractValueSelector
         recording = null;
     }
 
+    @Override
     public GenuineVariableDescriptor getVariableDescriptor() {
         return valueMimicRecorder.getVariableDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return valueMimicRecorder.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return valueMimicRecorder.isNeverEnding();
     }
 
+    @Override
     public long getSize(Object entity) {
         return valueMimicRecorder.getSize(entity);
     }
 
+    @Override
     public long getSize() {
         return valueMimicRecorder.getSize();
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         // Ignores the entity, but the constructor of this class guarantees that the valueRange is entity independent
         return new ReplayingValueIterator();
     }
 
+    @Override
     public Iterator<Object> iterator() {
         return new ReplayingValueIterator();
     }
@@ -124,6 +131,7 @@ public class MimicReplayingValueSelector extends AbstractValueSelector
             recordingAlreadyReturned = false;
         }
 
+        @Override
         public boolean hasNext() {
             if (!hasRecordingCreated) {
                 throw new IllegalStateException("Replay must occur after record."
@@ -133,6 +141,7 @@ public class MimicReplayingValueSelector extends AbstractValueSelector
             return hasRecording && !recordingAlreadyReturned;
         }
 
+        @Override
         public Object next() {
             if (!recordingCreated) {
                 throw new IllegalStateException("Replay must occur after record."
@@ -158,6 +167,7 @@ public class MimicReplayingValueSelector extends AbstractValueSelector
 
     }
 
+    @Override
     public Iterator<Object> endingIterator(Object entity) {
         // No replaying, because the endingIterator() is used for determining size
         return valueMimicRecorder.endingIterator(entity);

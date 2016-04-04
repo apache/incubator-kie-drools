@@ -60,6 +60,7 @@ public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig<PillarCha
     // Builder methods
     // ************************************************************************
 
+    @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         PillarSelectorConfig pillarSelectorConfig_ = pillarSelectorConfig == null ? new PillarSelectorConfig()
@@ -77,6 +78,7 @@ public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig<PillarCha
         return new PillarChangeMoveSelector(pillarSelector, valueSelector, randomSelection);
     }
 
+    @Override
     public void inherit(PillarChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         pillarSelectorConfig = ConfigUtils.inheritConfig(pillarSelectorConfig, inheritedConfig.getPillarSelectorConfig());

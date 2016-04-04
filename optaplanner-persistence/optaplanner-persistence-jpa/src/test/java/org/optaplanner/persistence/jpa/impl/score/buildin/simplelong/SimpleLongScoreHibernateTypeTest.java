@@ -47,11 +47,13 @@ public class SimpleLongScoreHibernateTypeTest extends AbstractScoreHibernateType
             this.score = score;
         }
 
+        @Override
         @Columns(columns = {@Column(name = "score")})
         public SimpleLongScore getScore() {
             return score;
         }
 
+        @Override
         public void setScore(SimpleLongScore score) {
             this.score = score;
         }

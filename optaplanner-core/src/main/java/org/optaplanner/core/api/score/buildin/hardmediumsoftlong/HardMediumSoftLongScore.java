@@ -117,10 +117,12 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
      * A {@link PlanningSolution} is feasible if it has no broken hard constraints.
      * @return true if the {@link #getHardScore()} is 0 or higher
      */
+    @Override
     public boolean isFeasible() {
         return getHardScore() >= 0L;
     }
 
+    @Override
     public HardMediumSoftLongScore add(HardMediumSoftLongScore augment) {
         return new HardMediumSoftLongScore(
                 hardScore + augment.getHardScore(),
@@ -128,6 +130,7 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
                 softScore + augment.getSoftScore());
     }
 
+    @Override
     public HardMediumSoftLongScore subtract(HardMediumSoftLongScore subtrahend) {
         return new HardMediumSoftLongScore(
                 hardScore - subtrahend.getHardScore(),
@@ -135,6 +138,7 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
                 softScore - subtrahend.getSoftScore());
     }
 
+    @Override
     public HardMediumSoftLongScore multiply(double multiplicand) {
         return new HardMediumSoftLongScore(
                 (long) Math.floor(hardScore * multiplicand),
@@ -142,6 +146,7 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
                 (long) Math.floor(softScore * multiplicand));
     }
 
+    @Override
     public HardMediumSoftLongScore divide(double divisor) {
         return new HardMediumSoftLongScore(
                 (long) Math.floor(hardScore / divisor),
@@ -149,6 +154,7 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
                 (long) Math.floor(softScore / divisor));
     }
 
+    @Override
     public HardMediumSoftLongScore power(double exponent) {
         return new HardMediumSoftLongScore(
                 (long) Math.floor(Math.pow(hardScore, exponent)),
@@ -156,10 +162,12 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
                 (long) Math.floor(Math.pow(softScore, exponent)));
     }
 
+    @Override
     public HardMediumSoftLongScore negate() {
         return new HardMediumSoftLongScore(-hardScore, -mediumScore, -softScore);
     }
 
+    @Override
     public Number[] toLevelNumbers() {
         return new Number[]{hardScore, mediumScore, softScore};
     }
@@ -186,6 +194,7 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
                 + Long.valueOf(softScore).hashCode();
     }
 
+    @Override
     public int compareTo(HardMediumSoftLongScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         if (hardScore != other.getHardScore()) {

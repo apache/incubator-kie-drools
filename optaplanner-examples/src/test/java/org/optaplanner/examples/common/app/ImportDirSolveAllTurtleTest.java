@@ -64,6 +64,7 @@ public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTur
 
     protected abstract AbstractSolutionImporter<Solution_> createSolutionImporter();
 
+    @Override
     protected Solution_ readPlanningProblem() {
         return solutionImporter.readSolution(dataFile);
     }

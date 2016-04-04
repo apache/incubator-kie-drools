@@ -69,6 +69,7 @@ public class KOptMoveSelectorConfig extends MoveSelectorConfig<KOptMoveSelectorC
     // Builder methods
     // ************************************************************************
 
+    @Override
     public MoveSelector buildBaseMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, boolean randomSelection) {
         EntitySelectorConfig entitySelectorConfig_ = entitySelectorConfig == null ? new EntitySelectorConfig()
@@ -87,6 +88,7 @@ public class KOptMoveSelectorConfig extends MoveSelectorConfig<KOptMoveSelectorC
         return new KOptMoveSelector(entitySelector, valueSelectors, randomSelection);
     }
 
+    @Override
     public void inherit(KOptMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());

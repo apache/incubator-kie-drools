@@ -38,10 +38,12 @@ public class CloudProcessSwapMove extends AbstractMove {
         this.rightCloudProcess = rightCloudProcess;
     }
 
+    @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return !Objects.equals(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
     }
 
+    @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         return new CloudProcessSwapMove(rightCloudProcess, leftCloudProcess);
     }
@@ -54,10 +56,12 @@ public class CloudProcessSwapMove extends AbstractMove {
         CloudBalancingMoveHelper.moveCloudComputer(scoreDirector, rightCloudProcess, oldLeftCloudComputer);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningEntities() {
         return Arrays.asList(leftCloudProcess, rightCloudProcess);
     }
 
+    @Override
     public Collection<? extends Object> getPlanningValues() {
         return Arrays.asList(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
     }

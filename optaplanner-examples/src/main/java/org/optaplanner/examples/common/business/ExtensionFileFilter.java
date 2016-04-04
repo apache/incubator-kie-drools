@@ -27,6 +27,7 @@ public class ExtensionFileFilter implements FileFilter {
         extensionWithDot = "." + extension;
     }
 
+    @Override
     public boolean accept(File file) {
         if (file.isDirectory() || file.isHidden()) {
             return false;

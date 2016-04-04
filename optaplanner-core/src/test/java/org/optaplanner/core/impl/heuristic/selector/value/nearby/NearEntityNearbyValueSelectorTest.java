@@ -63,6 +63,7 @@ public class NearEntityNearbyValueSelectorTest {
                 variableDescriptor,
                 morocco, spain, australia, brazil);
         NearbyDistanceMeter meter = new NearbyDistanceMeter<TestdataEntity, TestdataValue>() {
+            @Override
             public double getNearbyDistance(TestdataEntity origin, TestdataValue destination) {
                 if (origin == africa) {
                     if (destination == morocco) {
@@ -182,6 +183,7 @@ public class NearEntityNearbyValueSelectorTest {
                 variableDescriptor,
                 morocco, spain, australia, brazil);
         NearbyDistanceMeter meter = new NearbyDistanceMeter<TestdataChainedEntity, TestdataChainedObject>() {
+            @Override
             public double getNearbyDistance(TestdataChainedEntity origin, TestdataChainedObject destination) {
                 if (origin == morocco) {
                     if (destination == morocco) {

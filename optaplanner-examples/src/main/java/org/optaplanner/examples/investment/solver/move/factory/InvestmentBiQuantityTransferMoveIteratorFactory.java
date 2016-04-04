@@ -76,10 +76,12 @@ public class InvestmentBiQuantityTransferMoveIteratorFactory implements MoveIter
             this.workingRandom = workingRandom;
         }
 
+        @Override
         public boolean hasNext() {
             return allocationList.size() >= 3 && nonEmptyAllocationList.size() >= 1;
         }
 
+        @Override
         public Move next() {
             AssetClassAllocation firstFrom;
             AssetClassAllocation secondFrom;
@@ -118,6 +120,7 @@ public class InvestmentBiQuantityTransferMoveIteratorFactory implements MoveIter
                     new InvestmentQuantityTransferMove(secondFrom, secondTo, secondTransferMillis));
         }
 
+        @Override
         public void remove() {
             throw new UnsupportedOperationException("The optional operation remove() is not supported.");
         }

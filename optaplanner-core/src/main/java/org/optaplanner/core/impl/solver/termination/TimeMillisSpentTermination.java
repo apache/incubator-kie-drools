@@ -39,11 +39,13 @@ public class TimeMillisSpentTermination extends AbstractTermination {
     // Terminated methods
     // ************************************************************************
 
+    @Override
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
         long solverTimeMillisSpent = solverScope.calculateTimeMillisSpent();
         return isTerminated(solverTimeMillisSpent);
     }
 
+    @Override
     public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
         long phaseTimeMillisSpent = phaseScope.calculatePhaseTimeMillisSpent();
         return isTerminated(phaseTimeMillisSpent);
@@ -57,11 +59,13 @@ public class TimeMillisSpentTermination extends AbstractTermination {
     // Time gradient methods
     // ************************************************************************
 
+    @Override
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
         long solverTimeMillisSpent = solverScope.calculateTimeMillisSpent();
         return calculateTimeGradient(solverTimeMillisSpent);
     }
 
+    @Override
     public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         long phaseTimeMillisSpent = phaseScope.calculatePhaseTimeMillisSpent();
         return calculateTimeGradient(phaseTimeMillisSpent);

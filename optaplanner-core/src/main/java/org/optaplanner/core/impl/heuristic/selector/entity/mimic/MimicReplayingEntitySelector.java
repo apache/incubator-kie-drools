@@ -63,22 +63,27 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
         recording = null;
     }
 
+    @Override
     public EntityDescriptor getEntityDescriptor() {
         return entityMimicRecorder.getEntityDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return entityMimicRecorder.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return entityMimicRecorder.isNeverEnding();
     }
 
+    @Override
     public long getSize() {
         return entityMimicRecorder.getSize();
     }
 
+    @Override
     public Iterator<Object> iterator() {
         return new ReplayingEntityIterator();
     }
@@ -106,6 +111,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
             recordingAlreadyReturned = false;
         }
 
+        @Override
         public boolean hasNext() {
             if (!hasRecordingCreated) {
                 throw new IllegalStateException("Replay must occur after record."
@@ -115,6 +121,7 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
             return hasRecording && !recordingAlreadyReturned;
         }
 
+        @Override
         public Object next() {
             if (!recordingCreated) {
                 throw new IllegalStateException("Replay must occur after record."
@@ -140,16 +147,19 @@ public class MimicReplayingEntitySelector extends AbstractEntitySelector {
 
     }
 
+    @Override
     public Iterator<Object> endingIterator() {
         // No replaying, because the endingIterator() is used for determining size
         return entityMimicRecorder.endingIterator();
     }
 
+    @Override
     public ListIterator<Object> listIterator() {
         // TODO Not yet implemented
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public ListIterator<Object> listIterator(int index) {
         // TODO Not yet implemented
         throw new UnsupportedOperationException();

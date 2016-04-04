@@ -91,14 +91,17 @@ public class TailChainSwapMoveSelector extends GenericMoveSelector {
     // Worker methods
     // ************************************************************************
 
+    @Override
     public boolean isCountable() {
         return entitySelector.isCountable() && valueSelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return randomSelection || entitySelector.isNeverEnding() || valueSelector.isNeverEnding();
     }
 
+    @Override
     public long getSize() {
         if (valueSelector instanceof IterableSelector) {
             return entitySelector.getSize() * ((IterableSelector) valueSelector).getSize();
@@ -112,6 +115,7 @@ public class TailChainSwapMoveSelector extends GenericMoveSelector {
         }
     }
 
+    @Override
     public Iterator<Move> iterator() {
         final GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
         if (!randomSelection) {

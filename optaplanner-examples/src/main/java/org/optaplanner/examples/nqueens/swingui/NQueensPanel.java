@@ -101,6 +101,7 @@ public class NQueensPanel extends SolutionPanel<NQueens> {
             this.queen = queen;
         }
 
+        @Override
         public void actionPerformed(ActionEvent e) {
             JPanel messagePanel = new JPanel(new BorderLayout());
             messagePanel.add(new JLabel("Move to row: "), BorderLayout.WEST);

@@ -146,6 +146,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
         }
     }
 
+    @Override
     public boolean isFeasible() {
         for (int hardScore : hardScores) {
             if (hardScore > 0) {
@@ -157,6 +158,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
         return true;
     }
 
+    @Override
     public BendableScore add(BendableScore augment) {
         validateCompatible(augment);
         int[] newHardScores = new int[hardScores.length];
@@ -170,6 +172,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
         return new BendableScore(newHardScores, newSoftScores);
     }
 
+    @Override
     public BendableScore subtract(BendableScore subtrahend) {
         validateCompatible(subtrahend);
         int[] newHardScores = new int[hardScores.length];
@@ -183,6 +186,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
         return new BendableScore(newHardScores, newSoftScores);
     }
 
+    @Override
     public BendableScore multiply(double multiplicand) {
         int[] newHardScores = new int[hardScores.length];
         int[] newSoftScores = new int[softScores.length];
@@ -195,6 +199,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
         return new BendableScore(newHardScores, newSoftScores);
     }
 
+    @Override
     public BendableScore divide(double divisor) {
         int[] newHardScores = new int[hardScores.length];
         int[] newSoftScores = new int[softScores.length];
@@ -207,6 +212,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
         return new BendableScore(newHardScores, newSoftScores);
     }
 
+    @Override
     public BendableScore power(double exponent) {
         int[] newHardScores = new int[hardScores.length];
         int[] newSoftScores = new int[softScores.length];
@@ -219,6 +225,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
         return new BendableScore(newHardScores, newSoftScores);
     }
 
+    @Override
     public BendableScore negate() {
         int[] newHardScores = new int[hardScores.length];
         int[] newSoftScores = new int[softScores.length];
@@ -231,6 +238,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
         return new BendableScore(newHardScores, newSoftScores);
     }
 
+    @Override
     public Number[] toLevelNumbers() {
         Number[] levelNumbers = new Number[hardScores.length + softScores.length];
         for (int i = 0; i < hardScores.length; i++) {
@@ -280,6 +288,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
         return hashCode;
     }
 
+    @Override
     public int compareTo(BendableScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
         validateCompatible(other);

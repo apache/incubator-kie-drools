@@ -120,6 +120,7 @@ public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirector
     // Complex methods
     // ************************************************************************
 
+    @Override
     public DroolsScoreDirector<Solution_> buildScoreDirector(boolean constraintMatchEnabledPreference) {
         return new DroolsScoreDirector<>(this, constraintMatchEnabledPreference);
     }

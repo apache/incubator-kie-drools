@@ -92,6 +92,7 @@ public class SeatDesignation extends AbstractPersistable implements Labeled {
         return seat.getLeftSeat() == otherSeatDesignation.seat || seat.getRightSeat() == otherSeatDesignation.seat;
     }
 
+    @Override
     public String getLabel() {
         return guest.getLabel();
     }

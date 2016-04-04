@@ -24,6 +24,7 @@ import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
 public class NotSourceOrSinkAllocationFilter implements SelectionFilter<Schedule, Allocation> {
 
+    @Override
     public boolean accept(ScoreDirector<Schedule> scoreDirector, Allocation allocation) {
         JobType jobType = allocation.getJob().getJobType();
         return jobType != JobType.SOURCE && jobType != JobType.SINK;

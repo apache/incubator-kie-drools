@@ -50,30 +50,37 @@ public class MimicRecordingValueSelector extends AbstractValueSelector
     // Worker methods
     // ************************************************************************
 
+    @Override
     public GenuineVariableDescriptor getVariableDescriptor() {
         return childValueSelector.getVariableDescriptor();
     }
 
+    @Override
     public boolean isCountable() {
         return childValueSelector.isCountable();
     }
 
+    @Override
     public boolean isNeverEnding() {
         return childValueSelector.isNeverEnding();
     }
 
+    @Override
     public long getSize(Object entity) {
         return childValueSelector.getSize(entity);
     }
 
+    @Override
     public long getSize() {
         return childValueSelector.getSize();
     }
 
+    @Override
     public Iterator<Object> iterator(Object entity) {
         return new RecordingValueIterator(childValueSelector.iterator(entity));
     }
 
+    @Override
     public Iterator<Object> iterator() {
         return new RecordingValueIterator(childValueSelector.iterator());
     }
@@ -86,6 +93,7 @@ public class MimicRecordingValueSelector extends AbstractValueSelector
             this.childValueIterator = childValueIterator;
         }
 
+        @Override
         public boolean hasNext() {
             boolean hasNext = childValueIterator.hasNext();
             for (MimicReplayingValueSelector replayingValueSelector : replayingValueSelectorList) {
@@ -94,6 +102,7 @@ public class MimicRecordingValueSelector extends AbstractValueSelector
             return hasNext;
         }
 
+        @Override
         public Object next() {
             Object next = childValueIterator.next();
             for (MimicReplayingValueSelector replayingValueSelector : replayingValueSelectorList) {
@@ -104,6 +113,7 @@ public class MimicRecordingValueSelector extends AbstractValueSelector
 
     }
 
+    @Override
     public Iterator<Object> endingIterator(Object entity) {
         // No recording, because the endingIterator() is used for determining size
         return childValueSelector.endingIterator(entity);

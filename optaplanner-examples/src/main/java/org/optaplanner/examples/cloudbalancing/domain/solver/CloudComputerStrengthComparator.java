@@ -24,6 +24,7 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 
 public class CloudComputerStrengthComparator implements Comparator<CloudComputer>, Serializable {
 
+    @Override
     public int compare(CloudComputer a, CloudComputer b) {
         return new CompareToBuilder()
                 .append(a.getMultiplicand(), b.getMultiplicand())

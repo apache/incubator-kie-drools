@@ -120,6 +120,7 @@ public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfi
                         defaultIfNull(maximumSubChainSize, DEFAULT_MAXIMUM_SUB_CHAIN_SIZE));
     }
 
+    @Override
     public void inherit(SubChainSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
         valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());

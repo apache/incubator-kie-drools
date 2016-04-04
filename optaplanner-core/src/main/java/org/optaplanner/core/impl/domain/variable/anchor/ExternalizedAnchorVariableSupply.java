@@ -42,10 +42,12 @@ public class ExternalizedAnchorVariableSupply implements StatefulVariableListene
         this.nextVariableSupply = nextVariableSupply;
     }
 
+    @Override
     public VariableDescriptor getSourceVariableDescriptor() {
         return previousVariableDescriptor;
     }
 
+    @Override
     public void resetWorkingSolution(ScoreDirector scoreDirector) {
         EntityDescriptor entityDescriptor = previousVariableDescriptor.getEntityDescriptor();
         List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
@@ -55,26 +57,32 @@ public class ExternalizedAnchorVariableSupply implements StatefulVariableListene
         }
     }
 
+    @Override
     public void clearWorkingSolution(ScoreDirector scoreDirector) {
         anchorMap = null;
     }
 
+    @Override
     public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
         // Do nothing
     }
 
+    @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
+    @Override
     public void beforeVariableChanged(ScoreDirector scoreDirector, Object entity) {
         // No need to retract() because the insert (which is guaranteed to be called later) affects the same trailing entities.
     }
 
+    @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, Object entity) {
         insert(scoreDirector, entity);
     }
 
+    @Override
     public void beforeEntityRemoved(ScoreDirector scoreDirector, Object entity) {
         boolean removeSucceeded = anchorMap.remove(entity) != null;
         if (!removeSucceeded) {
@@ -86,6 +94,7 @@ public class ExternalizedAnchorVariableSupply implements StatefulVariableListene
         // No need to retract the trailing entities because they will be removed too or change their previousVariable
     }
 
+    @Override
     public void afterEntityRemoved(ScoreDirector scoreDirector, Object entity) {
         // Do nothing
     }
@@ -107,6 +116,7 @@ public class ExternalizedAnchorVariableSupply implements StatefulVariableListene
         }
     }
 
+    @Override
     public Object getAnchor(Object entity) {
         return anchorMap.get(entity);
     }
