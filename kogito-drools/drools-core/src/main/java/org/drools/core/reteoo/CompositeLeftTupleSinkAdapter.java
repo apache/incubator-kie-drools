@@ -67,16 +67,6 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
         }
     }
     
-    public void modifyChildLeftTuplesforQuery(final RightTuple rightTuple,
-                                              final PropagationContext context,
-                                              final InternalWorkingMemory workingMemory) {
-        LeftTuple childLeftTuple = rightTuple.getFirstChild();
-        while ( childLeftTuple != null ) {
-            childLeftTuple.modifyTuple( context, workingMemory );
-            childLeftTuple = childLeftTuple.getRightParentNext();
-        }
-    }
-
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,
                                          final RightTuple rightTuple,
                                          final LeftTuple currentLeftChild,

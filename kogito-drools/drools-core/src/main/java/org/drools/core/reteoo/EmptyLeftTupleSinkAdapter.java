@@ -164,11 +164,6 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                               boolean linkRightTuple) {
     }
 
-    public void modifyChildLeftTuplesforQuery(RightTuple rightTuple,
-                                              PropagationContext context,
-                                              InternalWorkingMemory workingMemory) {
-    }
-
     public void byPassModifyToLeftTupleSink(ModifyPreviousTuples modifyPreviousTuples) {
     }
 

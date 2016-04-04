@@ -51,13 +51,6 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                    this.sink );
     }  
     
-    public void modifyChildLeftTuplesforQuery(final RightTuple rightTuple,
-                                              final PropagationContext context,
-                                              final InternalWorkingMemory workingMemory) {
-        LeftTuple childLeftTuple = rightTuple.getFirstChild();
-        childLeftTuple.modifyTuple( context, workingMemory );
-    }
-
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,
                                          final RightTuple rightTuple,
                                          final LeftTuple currentLeftChild,

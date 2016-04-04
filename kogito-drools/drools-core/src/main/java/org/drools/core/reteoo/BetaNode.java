@@ -558,8 +558,7 @@ public abstract class BetaNode extends LeftTupleSource
     public boolean equals(Object object) {
         return this == object ||
                ( internalEquals(object) &&
-               this.leftInput.thisNodeEquals( ((BetaNode) object).leftInput ) &&
-               this.rightInput.thisNodeEquals( ((BetaNode) object).rightInput ) );
+               this.leftInput.thisNodeEquals( ((BetaNode) object).leftInput ) );
     }
 
     @Override
@@ -573,7 +572,8 @@ public abstract class BetaNode extends LeftTupleSource
                this.constraints.equals( other.constraints ) &&
                this.rightInputIsPassive == other.rightInputIsPassive &&
                areNullSafeEquals(this.leftListenedProperties, other.leftListenedProperties) &&
-               areNullSafeEquals(this.rightListenedProperties, other.rightListenedProperties);
+               areNullSafeEquals(this.rightListenedProperties, other.rightListenedProperties) &&
+               this.rightInput.getId() == other.rightInput.getId();
     }
 
     /**
