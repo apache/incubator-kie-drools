@@ -16,6 +16,7 @@
   <modules>
     <module>cdi-example</module>
     <module>cdi-example-with-inclusion</module>
+    <module>cdi-example-scopes</module>
   </modules>
 
 
