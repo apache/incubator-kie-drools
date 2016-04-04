@@ -16,6 +16,13 @@
 
 package org.optaplanner.benchmark.impl.statistic.calculatecount;
 
+import java.awt.BasicStroke;
+import java.io.File;
+import java.text.NumberFormat;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -33,13 +40,6 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
-
-import java.awt.*;
-import java.io.File;
-import java.text.NumberFormat;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 @XStreamAlias("calculateCountProblemStatistic")
 public class CalculateCountProblemStatistic extends ProblemStatistic {

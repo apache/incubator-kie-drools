@@ -16,6 +16,13 @@
 
 package org.optaplanner.core.impl.exhaustivesearch;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
@@ -30,8 +37,6 @@ import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-
-import java.util.*;
 
 /**
  * Default implementation of {@link ExhaustiveSearchPhase}.

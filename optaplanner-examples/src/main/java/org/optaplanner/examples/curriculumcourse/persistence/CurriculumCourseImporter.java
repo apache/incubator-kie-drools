@@ -16,12 +16,25 @@
 
 package org.optaplanner.examples.curriculumcourse.persistence;
 
-import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.curriculumcourse.domain.*;
-
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.curriculumcourse.domain.Course;
+import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
+import org.optaplanner.examples.curriculumcourse.domain.Curriculum;
+import org.optaplanner.examples.curriculumcourse.domain.Day;
+import org.optaplanner.examples.curriculumcourse.domain.Lecture;
+import org.optaplanner.examples.curriculumcourse.domain.Period;
+import org.optaplanner.examples.curriculumcourse.domain.Room;
+import org.optaplanner.examples.curriculumcourse.domain.Teacher;
+import org.optaplanner.examples.curriculumcourse.domain.Timeslot;
+import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
 
 public class CurriculumCourseImporter extends AbstractTxtSolutionImporter<CourseSchedule> {
 

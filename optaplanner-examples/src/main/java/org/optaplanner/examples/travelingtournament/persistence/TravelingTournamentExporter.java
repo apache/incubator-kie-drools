@@ -16,13 +16,13 @@
 
 package org.optaplanner.examples.travelingtournament.persistence;
 
+import java.io.IOException;
+
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
 import org.optaplanner.examples.travelingtournament.domain.Team;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
-
-import java.io.IOException;
 
 public class TravelingTournamentExporter extends AbstractTxtSolutionExporter<TravelingTournament> {
 

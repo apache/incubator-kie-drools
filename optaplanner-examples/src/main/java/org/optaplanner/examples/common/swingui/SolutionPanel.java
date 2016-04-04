@@ -16,15 +16,18 @@
 
 package org.optaplanner.examples.common.swingui;
 
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import javax.swing.JPanel;
+import javax.swing.JViewport;
+import javax.swing.Scrollable;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
-import java.awt.*;
 
 
 /**

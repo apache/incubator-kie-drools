@@ -20,9 +20,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 @XStreamAlias("TaEmployee")

@@ -33,8 +33,8 @@ import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
-import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class CoachShuttleGatheringWorldPanel extends JPanel {
 

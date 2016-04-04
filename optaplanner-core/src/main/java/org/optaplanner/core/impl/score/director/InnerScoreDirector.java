@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import java.util.List;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-
-import java.util.List;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

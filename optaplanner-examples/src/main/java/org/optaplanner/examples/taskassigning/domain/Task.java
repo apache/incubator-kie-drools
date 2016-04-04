@@ -22,7 +22,6 @@ import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
 
 @PlanningEntity()

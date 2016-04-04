@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.solver.scope;
 
+import java.util.List;
+import java.util.Random;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -24,9 +27,6 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Random;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

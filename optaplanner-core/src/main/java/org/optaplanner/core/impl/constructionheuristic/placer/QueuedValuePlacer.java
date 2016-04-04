@@ -17,14 +17,12 @@
 package org.optaplanner.core.impl.constructionheuristic.placer;
 
 import java.util.Iterator;
-import java.util.List;
 
 import com.google.common.collect.Iterators;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 public class QueuedValuePlacer extends AbstractEntityPlacer implements EntityPlacer {
 

@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.score.director.easy;
 
+import java.util.Collection;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-
-import java.util.Collection;
 
 /**
  * Easy java implementation of {@link ScoreDirector}, which recalculates the {@link Score}

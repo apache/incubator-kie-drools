@@ -16,6 +16,12 @@
 
 package org.optaplanner.examples.common.app;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
@@ -24,12 +30,6 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

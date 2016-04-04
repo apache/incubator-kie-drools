@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.impl.statistic.memoryuse;
 
+import java.util.List;
+
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
@@ -24,8 +26,6 @@ import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
-
-import java.util.List;
 
 public class MemoryUseSubSingleStatistic<Solution_>
         extends ProblemBasedSubSingleStatistic<Solution_, MemoryUseStatisticPoint> {

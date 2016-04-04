@@ -23,7 +23,6 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Combines several acceptors into one.

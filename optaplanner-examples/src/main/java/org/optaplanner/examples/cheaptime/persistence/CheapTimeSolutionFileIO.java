@@ -16,10 +16,10 @@
 
 package org.optaplanner.examples.cheaptime.persistence;
 
+import java.io.File;
+
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-
-import java.io.File;
 
 public class CheapTimeSolutionFileIO implements SolutionFileIO<CheapTimeSolution> {
 

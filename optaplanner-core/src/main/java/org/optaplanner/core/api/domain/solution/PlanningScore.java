@@ -22,9 +22,8 @@ import java.lang.annotation.Target;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Specifies that a property (or a field) on a {@link PlanningSolution} class holds the {@link Score} of that solution.

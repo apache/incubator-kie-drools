@@ -17,7 +17,6 @@
 package org.optaplanner.persistence.jpa.impl.score.buildin.simpledouble;
 
 import org.hibernate.type.StandardBasicTypes;
-import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.simpledouble.SimpleDoubleScoreDefinition;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 

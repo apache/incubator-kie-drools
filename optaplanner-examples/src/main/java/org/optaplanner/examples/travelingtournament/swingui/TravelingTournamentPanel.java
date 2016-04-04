@@ -31,15 +31,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
-import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
 import org.optaplanner.examples.travelingtournament.domain.Team;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
+import org.optaplanner.swing.impl.SwingUtils;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;

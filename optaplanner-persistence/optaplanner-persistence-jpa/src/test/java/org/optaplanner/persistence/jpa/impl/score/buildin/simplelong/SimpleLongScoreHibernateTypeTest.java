@@ -25,8 +25,6 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest;
 
-import static org.junit.Assert.*;
-
 public class SimpleLongScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
 
     @Test

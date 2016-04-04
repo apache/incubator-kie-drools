@@ -16,6 +16,21 @@
 
 package org.optaplanner.core.config.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -23,15 +38,6 @@ import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccess
 import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MethodMemberAccessor;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ConfigUtils {
 

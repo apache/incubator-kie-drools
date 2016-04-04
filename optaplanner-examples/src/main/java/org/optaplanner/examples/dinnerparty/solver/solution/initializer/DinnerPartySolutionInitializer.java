@@ -22,7 +22,6 @@ import java.util.List;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.phase.custom.AbstractCustomPhaseCommand;
-import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 import org.optaplanner.examples.dinnerparty.domain.Seat;

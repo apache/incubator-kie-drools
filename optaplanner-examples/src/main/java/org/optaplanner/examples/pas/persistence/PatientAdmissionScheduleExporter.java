@@ -16,14 +16,14 @@
 
 package org.optaplanner.examples.pas.persistence;
 
+import java.io.IOException;
+import java.util.Collections;
+
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.Patient;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
-
-import java.io.IOException;
-import java.util.Collections;
 
 public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporter<PatientAdmissionSchedule> {
 

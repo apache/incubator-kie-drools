@@ -25,13 +25,9 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.TestdataInverseRelationEntity;
-import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.TestdataInverseRelationSolution;
-import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.TestdataInverseRelationValue;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCollectionContainsExactly;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class ExternalizedCollectionInverseVariableSupplyTest {
 

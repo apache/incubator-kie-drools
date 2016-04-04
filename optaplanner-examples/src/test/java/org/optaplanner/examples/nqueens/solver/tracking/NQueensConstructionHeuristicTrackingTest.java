@@ -16,6 +16,12 @@
 
 package org.optaplanner.examples.nqueens.solver.tracking;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -31,9 +37,7 @@ import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
 
-import java.util.*;
-
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTrackingTest {

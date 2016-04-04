@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.domain.solution.mutation;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

@@ -16,6 +16,13 @@
 
 package org.optaplanner.examples.vehiclerouting.persistence;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
@@ -31,13 +38,6 @@ import org.optaplanner.examples.vehiclerouting.domain.location.segmented.RoadSeg
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
-
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleRoutingSolution> {
 

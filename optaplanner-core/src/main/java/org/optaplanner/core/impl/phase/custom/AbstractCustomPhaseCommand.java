@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.phase.custom;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Abstract superclass for {@link CustomPhaseCommand}.

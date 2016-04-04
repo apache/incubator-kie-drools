@@ -16,20 +16,11 @@
 
 package org.optaplanner.persistence.jpa.impl.score.buildin.bendable;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Properties;
 
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.type.IntegerType;
 import org.hibernate.type.StandardBasicTypes;
-import org.hibernate.type.Type;
 import org.hibernate.usertype.ParameterizedType;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 
 /**

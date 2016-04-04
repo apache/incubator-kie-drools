@@ -35,9 +35,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 import org.optaplanner.examples.dinnerparty.domain.Gender;
@@ -47,6 +45,8 @@ import org.optaplanner.examples.dinnerparty.domain.HobbyPractician;
 import org.optaplanner.examples.dinnerparty.domain.Seat;
 import org.optaplanner.examples.dinnerparty.domain.SeatDesignation;
 import org.optaplanner.examples.dinnerparty.domain.Table;
+import org.optaplanner.swing.impl.SwingUtils;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class DinnerPartyPanel extends SolutionPanel<DinnerParty> {
 

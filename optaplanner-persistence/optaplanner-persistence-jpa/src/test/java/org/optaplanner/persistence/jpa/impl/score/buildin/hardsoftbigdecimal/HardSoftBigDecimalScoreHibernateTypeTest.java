@@ -26,8 +26,6 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest;
 
-import static org.junit.Assert.*;
-
 public class HardSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
 
     @Test

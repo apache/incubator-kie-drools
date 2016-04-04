@@ -16,13 +16,13 @@
 
 package org.optaplanner.examples.examination.persistence;
 
+import java.io.IOException;
+import java.util.Collections;
+
 import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
-
-import java.io.IOException;
-import java.util.Collections;
 
 public class ExaminationExporter extends AbstractTxtSolutionExporter<Examination> {
 

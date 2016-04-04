@@ -30,13 +30,9 @@ import org.hibernate.type.BigDecimalType;
 import org.hibernate.type.DoubleType;
 import org.hibernate.type.IntegerType;
 import org.hibernate.type.LongType;
-import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.CompositeUserType;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 /**

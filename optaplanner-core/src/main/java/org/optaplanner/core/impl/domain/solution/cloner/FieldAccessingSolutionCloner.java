@@ -16,6 +16,32 @@
 
 package org.optaplanner.core.impl.domain.solution.cloner;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
@@ -23,9 +49,6 @@ import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-
-import java.lang.reflect.*;
-import java.util.*;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

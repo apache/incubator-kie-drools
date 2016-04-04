@@ -32,19 +32,17 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.optaplanner.swing.impl.SwingUtils;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.investment.domain.AssetClass;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
-import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.InvestmentParametrization;
+import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.Region;
 import org.optaplanner.examples.investment.domain.Sector;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
+import org.optaplanner.swing.impl.SwingUtils;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;

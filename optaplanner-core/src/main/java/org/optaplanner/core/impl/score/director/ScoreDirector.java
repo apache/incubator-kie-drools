@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import java.util.Collection;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-
-import java.util.Collection;
 
 /**
  * The ScoreDirector holds the {@link PlanningSolution working solution}

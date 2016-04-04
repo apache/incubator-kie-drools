@@ -36,12 +36,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import org.optaplanner.swing.impl.SwingUtils;
-import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
+import org.optaplanner.swing.impl.SwingUtils;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class MrMachinePanel extends JPanel {
 

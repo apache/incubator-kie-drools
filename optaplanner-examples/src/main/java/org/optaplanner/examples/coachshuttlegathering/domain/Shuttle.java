@@ -21,7 +21,6 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.coachshuttlegathering.domain.solver.DepotAngleBusStopDifficultyWeightFactory;
-import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity(difficultyWeightFactoryClass = DepotAngleBusStopDifficultyWeightFactory.class)
 @XStreamAlias("CsgShuttle")

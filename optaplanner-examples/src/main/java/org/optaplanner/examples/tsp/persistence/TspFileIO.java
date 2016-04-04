@@ -16,10 +16,10 @@
 
 package org.optaplanner.examples.tsp.persistence;
 
+import java.io.File;
+
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-
-import java.io.File;
 
 public class TspFileIO implements SolutionFileIO<TspSolution> {
 

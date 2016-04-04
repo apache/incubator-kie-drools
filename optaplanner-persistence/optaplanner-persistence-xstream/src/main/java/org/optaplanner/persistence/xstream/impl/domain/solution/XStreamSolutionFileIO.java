@@ -16,13 +16,20 @@
 
 package org.optaplanner.persistence.xstream.impl.domain.solution;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
-
-import java.io.*;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

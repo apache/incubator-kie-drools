@@ -16,6 +16,14 @@
 
 package org.optaplanner.examples.tsp.persistence;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.tsp.domain.Domicile;
@@ -26,10 +34,6 @@ import org.optaplanner.examples.tsp.domain.location.AirLocation;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.domain.location.RoadLocation;
-
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.*;
 
 public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
 

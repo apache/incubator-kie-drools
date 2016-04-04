@@ -48,7 +48,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.*;
 
 @XStreamAlias("exhaustiveSearch")
 public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPhaseConfig> {

@@ -20,7 +20,6 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.buildin.AbstractScoreDefinitionTest;
-import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 import static org.junit.Assert.*;

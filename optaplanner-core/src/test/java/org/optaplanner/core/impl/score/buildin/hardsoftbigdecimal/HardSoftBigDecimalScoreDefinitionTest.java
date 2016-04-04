@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
 import org.junit.Test;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 
 import static org.junit.Assert.*;
 

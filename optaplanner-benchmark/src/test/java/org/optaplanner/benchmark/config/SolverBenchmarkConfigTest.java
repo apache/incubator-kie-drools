@@ -19,8 +19,6 @@ package org.optaplanner.benchmark.config;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class SolverBenchmarkConfigTest {
 
     @Test

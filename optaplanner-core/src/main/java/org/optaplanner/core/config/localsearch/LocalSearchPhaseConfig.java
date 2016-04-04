@@ -22,7 +22,6 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -34,15 +33,9 @@ import org.optaplanner.core.config.heuristic.selector.move.generic.SwapMoveSelec
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
-import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchPickEarlyType;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.exhaustivesearch.node.comparator.BreadthFirstNodeComparator;
-import org.optaplanner.core.impl.exhaustivesearch.node.comparator.DepthFirstNodeComparator;
-import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OptimisticBoundFirstNodeComparator;
-import org.optaplanner.core.impl.exhaustivesearch.node.comparator.OriginalOrderNodeComparator;
-import org.optaplanner.core.impl.exhaustivesearch.node.comparator.ScoreFirstNodeComparator;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.localsearch.DefaultLocalSearchPhase;
 import org.optaplanner.core.impl.localsearch.LocalSearchPhase;
@@ -52,7 +45,7 @@ import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.*;
 
 @XStreamAlias("localSearch")
 public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> {

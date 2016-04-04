@@ -17,7 +17,6 @@
 package org.optaplanner.examples.investment.solver.solution.initializer;
 
 import org.optaplanner.core.impl.phase.custom.AbstractCustomPhaseCommand;
-import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;

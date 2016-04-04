@@ -37,10 +37,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
-import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.examples.common.swingui.CommonIcons;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.tennis.domain.Day;
@@ -48,6 +46,8 @@ import org.optaplanner.examples.tennis.domain.Team;
 import org.optaplanner.examples.tennis.domain.TeamAssignment;
 import org.optaplanner.examples.tennis.domain.TennisSolution;
 import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
+import org.optaplanner.swing.impl.SwingUtils;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;

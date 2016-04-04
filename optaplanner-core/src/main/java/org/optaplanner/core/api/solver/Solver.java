@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.api.solver;
 
+import java.util.Collection;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Future;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
@@ -24,10 +28,6 @@ import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.termination.Termination;
-
-import java.util.Collection;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Future;
 
 /**
  * A Solver solves a planning problem.

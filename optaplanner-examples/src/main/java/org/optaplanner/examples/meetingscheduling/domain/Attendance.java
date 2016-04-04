@@ -19,9 +19,6 @@ package org.optaplanner.examples.meetingscheduling.domain;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.common.swingui.components.Labeled;
-import org.optaplanner.examples.nurserostering.domain.contract.BooleanContractLine;
-import org.optaplanner.examples.nurserostering.domain.contract.MinMaxContractLine;
 
 @XStreamAlias("MsAttendance")
 @XStreamInclude({

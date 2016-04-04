@@ -16,14 +16,18 @@
 
 package org.optaplanner.examples.common.persistence;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.commons.io.FilenameUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-
-import java.io.*;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

@@ -16,10 +16,10 @@
 
 package org.optaplanner.examples.common.persistence;
 
+import java.io.File;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
-
-import java.io.File;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

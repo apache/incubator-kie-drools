@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.testdata.util;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.lang3.SerializationUtils;
 import org.mockito.AdditionalAnswers;
@@ -33,11 +37,7 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collections;
-
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class PlannerTestUtils {
 

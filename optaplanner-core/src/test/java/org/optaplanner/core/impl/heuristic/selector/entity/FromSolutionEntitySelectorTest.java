@@ -31,7 +31,6 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.mockito.Mockito.*;
-import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class FromSolutionEntitySelectorTest {

@@ -16,18 +16,13 @@
 
 package org.optaplanner.core.impl.solver;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
 

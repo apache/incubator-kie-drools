@@ -16,10 +16,15 @@
 
 package org.optaplanner.core.impl.heuristic.selector;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Objects;
 
 import com.google.common.collect.ImmutableListMultimap;
-import com.google.common.collect.Iterators;
 import com.google.common.collect.ListMultimap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.mockito.invocation.InvocationOnMock;
@@ -34,10 +39,8 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
-import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

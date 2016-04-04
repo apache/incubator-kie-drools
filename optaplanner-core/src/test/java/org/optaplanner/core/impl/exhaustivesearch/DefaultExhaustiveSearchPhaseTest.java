@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.exhaustivesearch;
 import org.junit.Test;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;

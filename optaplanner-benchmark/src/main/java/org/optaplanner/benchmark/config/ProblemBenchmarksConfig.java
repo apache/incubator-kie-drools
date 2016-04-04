@@ -31,7 +31,6 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;

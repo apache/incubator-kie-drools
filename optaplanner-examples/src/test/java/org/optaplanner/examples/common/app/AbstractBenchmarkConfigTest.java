@@ -31,8 +31,6 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 
-import static org.junit.Assert.*;
-
 @RunWith(Parameterized.class)
 public abstract class AbstractBenchmarkConfigTest {
 

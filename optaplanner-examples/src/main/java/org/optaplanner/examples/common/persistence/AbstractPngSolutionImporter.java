@@ -16,13 +16,13 @@
 
 package org.optaplanner.examples.common.persistence;
 
-import org.apache.commons.io.FilenameUtils;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import javax.imageio.ImageIO;
+
+import org.apache.commons.io.FilenameUtils;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

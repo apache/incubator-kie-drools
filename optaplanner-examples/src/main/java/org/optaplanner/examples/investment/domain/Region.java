@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.investment.domain;
 
-import java.util.Map;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;

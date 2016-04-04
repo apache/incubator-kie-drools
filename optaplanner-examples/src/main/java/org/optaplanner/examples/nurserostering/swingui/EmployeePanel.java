@@ -35,8 +35,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.optaplanner.swing.impl.SwingUtils;
-import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.Shift;
@@ -44,6 +42,8 @@ import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 import org.optaplanner.examples.nurserostering.domain.ShiftType;
 import org.optaplanner.examples.nurserostering.domain.WeekendDefinition;
+import org.optaplanner.swing.impl.SwingUtils;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class EmployeePanel extends JPanel {
 

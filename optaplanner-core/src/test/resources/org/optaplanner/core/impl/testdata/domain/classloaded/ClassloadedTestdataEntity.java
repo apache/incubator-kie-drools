@@ -22,8 +22,6 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import testdata.kjar.ClassloadedTestdataSolution;
-import testdata.kjar.ClassloadedTestdataValue;
 
 @PlanningEntity
 public class ClassloadedTestdataEntity {

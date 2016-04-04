@@ -20,8 +20,6 @@ import java.awt.BorderLayout;
 import java.util.Random;
 import javax.swing.JTabbedPane;
 
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;

@@ -16,6 +16,14 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
@@ -24,8 +32,6 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
-
-import java.io.*;
 
 /**
  * XML based configuration that builds a {@link Solver} with {@link XStream}.

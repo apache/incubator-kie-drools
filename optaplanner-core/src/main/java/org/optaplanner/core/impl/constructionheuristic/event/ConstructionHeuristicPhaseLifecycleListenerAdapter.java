@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.constructionheuristic.event;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
-import org.optaplanner.core.impl.solver.event.SolverLifecycleListener;
 import org.optaplanner.core.impl.solver.event.SolverLifecycleListenerAdapter;
 
 /**

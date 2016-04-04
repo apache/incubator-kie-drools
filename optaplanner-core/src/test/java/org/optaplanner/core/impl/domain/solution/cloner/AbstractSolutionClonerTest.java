@@ -34,9 +34,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-import org.optaplanner.core.impl.testdata.domain.deepcloning.field.TestdataFieldAnnotatedDeepCloningEntity;
-import org.optaplanner.core.impl.testdata.domain.deepcloning.field.TestdataFieldAnnotatedDeepCloningSolution;
-import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.TestdataAccessModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedObject;
@@ -47,11 +44,14 @@ import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedEnti
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.deepcloning.TestdataDeepCloningEntity;
 import org.optaplanner.core.impl.testdata.domain.deepcloning.TestdataDeepCloningSolution;
+import org.optaplanner.core.impl.testdata.domain.deepcloning.field.TestdataFieldAnnotatedDeepCloningEntity;
+import org.optaplanner.core.impl.testdata.domain.deepcloning.field.TestdataFieldAnnotatedDeepCloningSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedEntity;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataUnannotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.thirdparty.TestdataExtendedThirdPartyEntity;
 import org.optaplanner.core.impl.testdata.domain.extended.thirdparty.TestdataExtendedThirdPartySolution;
 import org.optaplanner.core.impl.testdata.domain.extended.thirdparty.TestdataThirdPartyEntityPojo;
+import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.TestdataAccessModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedEntity;
 import org.optaplanner.core.impl.testdata.domain.reflect.field.TestdataFieldAnnotatedSolution;
 

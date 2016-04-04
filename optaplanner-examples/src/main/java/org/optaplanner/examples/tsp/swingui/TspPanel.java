@@ -20,16 +20,14 @@ import java.awt.BorderLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
-import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.domain.location.AirLocation;
+import org.optaplanner.examples.tsp.domain.location.Location;
 
 public class TspPanel extends SolutionPanel<TspSolution> {
 

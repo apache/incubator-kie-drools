@@ -23,7 +23,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedForager;
 import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.*;
 
 @XStreamAlias("localSearchForagerConfig")
 public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerConfig> {

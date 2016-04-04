@@ -16,15 +16,15 @@
 
 package org.optaplanner.examples.common.persistence;
 
-import com.google.common.math.BigIntegerMath;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.examples.common.app.LoggingMain;
-import org.optaplanner.examples.common.business.ProblemFileComparator;
-
 import java.io.File;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
+
+import com.google.common.math.BigIntegerMath;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.examples.common.app.LoggingMain;
+import org.optaplanner.examples.common.business.ProblemFileComparator;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

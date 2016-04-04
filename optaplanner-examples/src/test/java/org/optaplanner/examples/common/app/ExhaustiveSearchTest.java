@@ -16,6 +16,10 @@
 
 package org.optaplanner.examples.common.app;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -25,10 +29,6 @@ import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

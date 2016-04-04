@@ -18,7 +18,6 @@ package org.optaplanner.core.api.domain.variable;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.util.Comparator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;

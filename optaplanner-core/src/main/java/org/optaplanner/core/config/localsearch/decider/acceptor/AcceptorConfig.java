@@ -41,7 +41,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.EntityRa
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.FixedTabuSizeStrategy;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.ValueRatioTabuSizeStrategy;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.*;
 
 @XStreamAlias("acceptor")
 public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {

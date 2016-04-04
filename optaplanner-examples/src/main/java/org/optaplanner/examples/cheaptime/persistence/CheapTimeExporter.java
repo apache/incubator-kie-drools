@@ -16,18 +16,18 @@
 
 package org.optaplanner.examples.cheaptime.persistence;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public class CheapTimeExporter extends AbstractTxtSolutionExporter<CheapTimeSolution> {
 

@@ -16,6 +16,14 @@
 
 package org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalstepscore;
 
+import java.io.File;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.jfree.chart.JFreeChart;
@@ -40,10 +48,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolver;
-
-import java.io.File;
-import java.text.NumberFormat;
-import java.util.*;
 
 @XStreamAlias("constraintMatchTotalStepScoreSubSingleStatistic")
 public class ConstraintMatchTotalStepScoreSubSingleStatistic<Solution_>

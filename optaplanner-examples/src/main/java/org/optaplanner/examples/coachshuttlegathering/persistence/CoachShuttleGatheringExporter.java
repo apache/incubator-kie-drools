@@ -16,10 +16,15 @@
 
 package org.optaplanner.examples.coachshuttlegathering.persistence;
 
-import org.optaplanner.examples.coachshuttlegathering.domain.*;
-import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
-
 import java.io.IOException;
+
+import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
+import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
+import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
+import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
+import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
+import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
+import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 
 public class CoachShuttleGatheringExporter extends AbstractTxtSolutionExporter<CoachShuttleGatheringSolution> {
 

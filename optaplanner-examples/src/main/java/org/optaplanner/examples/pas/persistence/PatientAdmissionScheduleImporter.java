@@ -16,14 +16,35 @@
 
 package org.optaplanner.examples.pas.persistence;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.pas.domain.*;
-
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.*;
+import org.optaplanner.examples.pas.domain.AdmissionPart;
+import org.optaplanner.examples.pas.domain.Bed;
+import org.optaplanner.examples.pas.domain.BedDesignation;
+import org.optaplanner.examples.pas.domain.Department;
+import org.optaplanner.examples.pas.domain.DepartmentSpecialism;
+import org.optaplanner.examples.pas.domain.Equipment;
+import org.optaplanner.examples.pas.domain.Gender;
+import org.optaplanner.examples.pas.domain.GenderLimitation;
+import org.optaplanner.examples.pas.domain.Night;
+import org.optaplanner.examples.pas.domain.Patient;
+import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
+import org.optaplanner.examples.pas.domain.PreferredPatientEquipment;
+import org.optaplanner.examples.pas.domain.RequiredPatientEquipment;
+import org.optaplanner.examples.pas.domain.Room;
+import org.optaplanner.examples.pas.domain.RoomEquipment;
+import org.optaplanner.examples.pas.domain.RoomSpecialism;
+import org.optaplanner.examples.pas.domain.Specialism;
 
 public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporter<PatientAdmissionSchedule> {
 

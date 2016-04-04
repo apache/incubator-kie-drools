@@ -19,7 +19,6 @@ package org.optaplanner.benchmark.api;
 import java.io.File;
 import java.io.IOException;
 
-import com.google.common.io.Files;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.optaplanner.core.api.solver.DivertingClassLoader;

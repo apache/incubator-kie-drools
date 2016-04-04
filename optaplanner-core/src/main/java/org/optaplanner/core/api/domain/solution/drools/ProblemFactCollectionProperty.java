@@ -26,9 +26,8 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Specifies that a property (or a field) on a {@link PlanningSolution} class is a {@link Collection} of problem facts.

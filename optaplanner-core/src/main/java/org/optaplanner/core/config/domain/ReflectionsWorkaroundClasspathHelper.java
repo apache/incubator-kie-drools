@@ -16,15 +16,10 @@
 
 package org.optaplanner.core.config.domain;
 
-import com.google.common.collect.Sets;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
@@ -34,9 +29,10 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
+
+import com.google.common.collect.Sets;
+import org.reflections.Reflections;
+import org.reflections.util.ClasspathHelper;
 
 /**
  * Workaround for bug in {@link ClasspathHelper}.

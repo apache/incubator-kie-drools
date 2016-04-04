@@ -16,6 +16,12 @@
 
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
@@ -31,11 +37,13 @@ import org.optaplanner.core.impl.domain.valuerange.descriptor.CompositeValueRang
 import org.optaplanner.core.impl.domain.valuerange.descriptor.FromEntityPropertyValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.FromSolutionPropertyValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.*;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-
-import java.util.*;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.kie.api.runtime.rule.RuleContext;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
 

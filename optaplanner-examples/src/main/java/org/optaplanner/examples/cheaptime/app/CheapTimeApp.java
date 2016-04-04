@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.cheaptime.app;
 
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.persistence.CheapTimeDao;
 import org.optaplanner.examples.cheaptime.persistence.CheapTimeExporter;

@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.impl;
 
+import java.util.concurrent.Callable;
+
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
@@ -28,8 +30,6 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-
-import java.util.concurrent.Callable;
 
 public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBenchmarkRunner<Solution_>> {
 

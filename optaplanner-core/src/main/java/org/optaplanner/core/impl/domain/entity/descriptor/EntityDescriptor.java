@@ -16,6 +16,16 @@
 
 package org.optaplanner.core.impl.domain.entity.descriptor;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Member;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -25,10 +35,7 @@ import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
-import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -38,15 +45,12 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.InverseRelationShadowVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.*;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.util.*;
 
 import static org.optaplanner.core.config.util.ConfigUtils.MemberAccessorType.*;
 

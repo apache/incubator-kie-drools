@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.common.app;
 
+import java.io.File;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -27,10 +29,7 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
-import java.io.File;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Runs an example {@link Solver}.

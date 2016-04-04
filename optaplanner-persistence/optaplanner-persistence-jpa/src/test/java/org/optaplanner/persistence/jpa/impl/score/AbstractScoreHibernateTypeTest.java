@@ -16,11 +16,7 @@
 
 package org.optaplanner.persistence.jpa.impl.score;
 
-import org.junit.After;
-import org.junit.Before;
-import org.kie.test.util.db.PersistenceUtil;
-import org.optaplanner.core.api.score.Score;
-
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.GeneratedValue;
@@ -34,7 +30,11 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.TransactionManager;
-import java.util.Map;
+
+import org.junit.After;
+import org.junit.Before;
+import org.kie.test.util.db.PersistenceUtil;
+import org.optaplanner.core.api.score.Score;
 
 import static org.junit.Assert.*;
 

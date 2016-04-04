@@ -27,7 +27,6 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
-import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -40,9 +39,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicRecorder;
-import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromEntityPropertyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;

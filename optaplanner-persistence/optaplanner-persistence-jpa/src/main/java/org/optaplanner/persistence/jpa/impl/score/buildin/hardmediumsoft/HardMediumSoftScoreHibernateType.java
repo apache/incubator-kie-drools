@@ -18,7 +18,6 @@ package org.optaplanner.persistence.jpa.impl.score.buildin.hardmediumsoft;
 
 import org.hibernate.type.StandardBasicTypes;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 
 /**

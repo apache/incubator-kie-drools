@@ -16,16 +16,40 @@
 
 package org.optaplanner.examples.examination.persistence;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.examination.domain.*;
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.examination.domain.Exam;
+import org.optaplanner.examples.examination.domain.Examination;
+import org.optaplanner.examples.examination.domain.FollowingExam;
+import org.optaplanner.examples.examination.domain.InstitutionParametrization;
+import org.optaplanner.examples.examination.domain.LeadingExam;
+import org.optaplanner.examples.examination.domain.Period;
+import org.optaplanner.examples.examination.domain.PeriodPenalty;
+import org.optaplanner.examples.examination.domain.PeriodPenaltyType;
+import org.optaplanner.examples.examination.domain.Room;
+import org.optaplanner.examples.examination.domain.RoomPenalty;
+import org.optaplanner.examples.examination.domain.RoomPenaltyType;
+import org.optaplanner.examples.examination.domain.Student;
+import org.optaplanner.examples.examination.domain.Topic;
 
 public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination> {
 

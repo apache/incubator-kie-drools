@@ -17,7 +17,6 @@
 package org.optaplanner.examples.common.persistence;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class StringDataGenerator {

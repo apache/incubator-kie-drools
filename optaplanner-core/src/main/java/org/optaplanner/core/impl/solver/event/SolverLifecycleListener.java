@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.impl.solver.event;
 
+import java.util.EventListener;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-
-import java.util.EventListener;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

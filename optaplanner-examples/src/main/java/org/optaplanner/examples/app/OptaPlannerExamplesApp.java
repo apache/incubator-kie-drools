@@ -47,13 +47,12 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionDao;
 import org.optaplanner.examples.common.swingui.OpenBrowserAction;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
-import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
-import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.dinnerparty.app.DinnerPartyApp;
 import org.optaplanner.examples.examination.app.ExaminationApp;
 import org.optaplanner.examples.investment.app.InvestmentApp;
 import org.optaplanner.examples.machinereassignment.app.MachineReassignmentApp;
+import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
 import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
 import org.optaplanner.examples.pas.app.PatientAdmissionScheduleApp;
@@ -62,6 +61,7 @@ import org.optaplanner.examples.tennis.app.TennisApp;
 import org.optaplanner.examples.travelingtournament.app.TravelingTournamentApp;
 import org.optaplanner.examples.tsp.app.TspApp;
 import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class OptaPlannerExamplesApp extends JFrame {
 

@@ -35,9 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.pas.domain.AdmissionPart;
@@ -52,6 +50,8 @@ import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.domain.RequiredPatientEquipment;
 import org.optaplanner.examples.pas.domain.Room;
 import org.optaplanner.examples.pas.domain.RoomEquipment;
+import org.optaplanner.swing.impl.SwingUtils;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;

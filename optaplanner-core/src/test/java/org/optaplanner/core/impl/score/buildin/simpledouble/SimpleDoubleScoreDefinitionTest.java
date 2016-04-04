@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.score.buildin.simpledouble;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
-import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 import static org.junit.Assert.*;

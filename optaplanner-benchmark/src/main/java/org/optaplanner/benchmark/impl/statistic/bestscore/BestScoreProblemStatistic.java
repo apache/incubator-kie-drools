@@ -16,6 +16,13 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestscore;
 
+import java.awt.BasicStroke;
+import java.io.File;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -35,13 +42,6 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.impl.score.ScoreUtils;
-
-import java.awt.*;
-import java.io.File;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 @XStreamAlias("bestScoreProblemStatistic")
 public class BestScoreProblemStatistic extends ProblemStatistic {

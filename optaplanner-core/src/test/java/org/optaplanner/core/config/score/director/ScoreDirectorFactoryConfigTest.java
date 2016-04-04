@@ -22,7 +22,7 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class ScoreDirectorFactoryConfigTest {

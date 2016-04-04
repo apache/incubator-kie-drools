@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
 import org.junit.Test;
-import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 
 import static org.junit.Assert.*;
 

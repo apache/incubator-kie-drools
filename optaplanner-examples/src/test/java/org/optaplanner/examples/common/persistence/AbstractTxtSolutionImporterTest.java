@@ -16,12 +16,12 @@
 
 package org.optaplanner.examples.common.persistence;
 
+import java.io.IOException;
+
 import org.junit.Test;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
-import java.io.IOException;
-
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.*;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

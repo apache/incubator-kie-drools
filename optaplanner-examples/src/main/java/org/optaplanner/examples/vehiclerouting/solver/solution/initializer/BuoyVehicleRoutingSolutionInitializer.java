@@ -25,7 +25,6 @@ import java.util.Map;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.custom.AbstractCustomPhaseCommand;
-import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;

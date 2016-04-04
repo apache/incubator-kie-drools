@@ -16,15 +16,14 @@
 
 package org.optaplanner.benchmark.config;
 
+import java.util.ArrayList;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-
-import java.util.ArrayList;
 
 @XStreamAlias("solverBenchmark")
 public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBenchmarkConfig> {

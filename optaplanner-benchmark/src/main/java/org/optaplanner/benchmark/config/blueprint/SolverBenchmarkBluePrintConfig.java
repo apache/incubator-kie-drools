@@ -16,19 +16,10 @@
 
 package org.optaplanner.benchmark.config.blueprint;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
-import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
-import org.optaplanner.core.config.localsearch.LocalSearchType;
-import org.optaplanner.core.config.phase.PhaseConfig;
-import org.optaplanner.core.config.solver.SolverConfig;
 
 @XStreamAlias("solverBenchmarkBluePrint")
 public class SolverBenchmarkBluePrintConfig {

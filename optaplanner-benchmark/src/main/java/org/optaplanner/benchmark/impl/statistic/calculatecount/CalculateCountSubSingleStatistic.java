@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.impl.statistic.calculatecount;
 
+import java.util.List;
+
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
@@ -25,8 +27,6 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
-
-import java.util.List;
 
 public class CalculateCountSubSingleStatistic<Solution_>
         extends ProblemBasedSubSingleStatistic<Solution_, CalculateCountStatisticPoint> {

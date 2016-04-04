@@ -16,6 +16,12 @@
 
 package org.optaplanner.core.config.domain;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.lang3.StringUtils;
@@ -29,12 +35,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
-
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 @XStreamAlias("scanAnnotatedClasses")
 public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClassesConfig> {

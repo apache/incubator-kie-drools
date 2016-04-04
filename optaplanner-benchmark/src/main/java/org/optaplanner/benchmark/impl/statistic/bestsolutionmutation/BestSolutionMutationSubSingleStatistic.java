@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
 
+import java.util.List;
+
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
@@ -26,8 +28,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.solution.mutation.MutationCounter;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-
-import java.util.List;
 
 public class BestSolutionMutationSubSingleStatistic<Solution_>
         extends ProblemBasedSubSingleStatistic<Solution_, BestSolutionMutationStatisticPoint> {

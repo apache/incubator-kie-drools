@@ -28,8 +28,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-
 /**
  * Avoids the usage of Introspector to work on Android too.
  */

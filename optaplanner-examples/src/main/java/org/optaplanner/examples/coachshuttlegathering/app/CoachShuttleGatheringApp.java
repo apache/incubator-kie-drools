@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.coachshuttlegathering.app;
 
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringDao;
 import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringExporter;

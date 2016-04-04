@@ -16,13 +16,32 @@
 
 package org.optaplanner.examples.machinereassignment.persistence;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.machinereassignment.domain.*;
-
-import java.io.*;
-import java.math.BigInteger;
-import java.util.*;
+import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
+import org.optaplanner.examples.machinereassignment.domain.MrBalancePenalty;
+import org.optaplanner.examples.machinereassignment.domain.MrGlobalPenaltyInfo;
+import org.optaplanner.examples.machinereassignment.domain.MrLocation;
+import org.optaplanner.examples.machinereassignment.domain.MrMachine;
+import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
+import org.optaplanner.examples.machinereassignment.domain.MrNeighborhood;
+import org.optaplanner.examples.machinereassignment.domain.MrProcess;
+import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
+import org.optaplanner.examples.machinereassignment.domain.MrProcessRequirement;
+import org.optaplanner.examples.machinereassignment.domain.MrResource;
+import org.optaplanner.examples.machinereassignment.domain.MrService;
 
 public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<MachineReassignment> {
 

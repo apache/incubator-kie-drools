@@ -16,16 +16,27 @@
 
 package org.optaplanner.examples.cheaptime.persistence;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.optaplanner.examples.cheaptime.domain.*;
-import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
-import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
+import org.optaplanner.examples.cheaptime.domain.Machine;
+import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
+import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
+import org.optaplanner.examples.cheaptime.domain.Resource;
+import org.optaplanner.examples.cheaptime.domain.Task;
+import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
+import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
+import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
+import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 
 public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolution> {
 

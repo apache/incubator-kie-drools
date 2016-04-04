@@ -16,40 +16,8 @@
 
 package org.optaplanner.examples.taskassigning.swingui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.swing.AbstractAction;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
-
-import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
-import org.optaplanner.examples.meetingscheduling.domain.Day;
-import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
-import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
-import org.optaplanner.examples.meetingscheduling.domain.Person;
-import org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance;
-import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
-import org.optaplanner.examples.meetingscheduling.domain.Room;
-import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
-import org.optaplanner.swing.impl.SwingUtils;
-import org.optaplanner.swing.impl.TangoColorFactory;
-
-import static org.apache.commons.lang3.ObjectUtils.*;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
-import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
 public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
 

@@ -16,18 +16,18 @@
 
 package org.optaplanner.examples.travelingtournament.persistence;
 
-import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.travelingtournament.domain.Day;
-import org.optaplanner.examples.travelingtournament.domain.Match;
-import org.optaplanner.examples.travelingtournament.domain.Team;
-import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.travelingtournament.domain.Day;
+import org.optaplanner.examples.travelingtournament.domain.Match;
+import org.optaplanner.examples.travelingtournament.domain.Team;
+import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
 public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<TravelingTournament> {
 

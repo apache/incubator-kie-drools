@@ -16,13 +16,13 @@
 
 package org.optaplanner.examples.machinereassignment.persistence;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
-
-import java.io.IOException;
-import java.util.List;
 
 public class MachineReassignmentExporter extends AbstractTxtSolutionExporter<MachineReassignment> {
 

@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.config.solver;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.solver.Solver;
@@ -40,10 +43,7 @@ import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.*;
 
 @XStreamAlias("solver")
 public class SolverConfig extends AbstractConfig<SolverConfig> {

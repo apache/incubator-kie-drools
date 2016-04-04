@@ -24,8 +24,8 @@ import java.util.Random;
 
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.examples.common.persistence.StringDataGenerator;
 import org.optaplanner.examples.common.persistence.SolutionDao;
+import org.optaplanner.examples.common.persistence.StringDataGenerator;
 import org.optaplanner.examples.meetingscheduling.domain.Attendance;
 import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;

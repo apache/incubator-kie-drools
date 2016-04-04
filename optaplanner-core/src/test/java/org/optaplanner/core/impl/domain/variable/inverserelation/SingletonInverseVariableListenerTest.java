@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -27,7 +26,6 @@ import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescri
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedEntity;
-import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedObject;
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedSolution;
 
 import static org.junit.Assert.*;

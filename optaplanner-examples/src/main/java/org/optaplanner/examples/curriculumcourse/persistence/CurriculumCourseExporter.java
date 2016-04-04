@@ -16,11 +16,11 @@
 
 package org.optaplanner.examples.curriculumcourse.persistence;
 
+import java.io.IOException;
+
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
-
-import java.io.IOException;
 
 public class CurriculumCourseExporter extends AbstractTxtSolutionExporter<CourseSchedule> {
     private static final String OUTPUT_FILE_SUFFIX = "sol";

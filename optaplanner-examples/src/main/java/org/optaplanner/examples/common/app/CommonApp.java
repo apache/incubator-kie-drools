@@ -20,16 +20,16 @@ import java.awt.Component;
 import javax.swing.WindowConstants;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.swing.impl.SwingUncaughtExceptionHandler;
-import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
+import org.optaplanner.swing.impl.SwingUncaughtExceptionHandler;
+import org.optaplanner.swing.impl.SwingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -27,8 +27,6 @@ import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest;
 
-import static org.junit.Assert.*;
-
 public class BendableBigDecimalScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
 
     @Test

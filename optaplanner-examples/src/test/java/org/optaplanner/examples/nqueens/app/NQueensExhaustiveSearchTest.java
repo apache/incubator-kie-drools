@@ -16,6 +16,9 @@
 
 package org.optaplanner.examples.nqueens.app;
 
+import java.io.File;
+import java.util.Collection;
+
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
 import org.optaplanner.examples.common.app.ExhaustiveSearchTest;
@@ -23,10 +26,7 @@ import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.persistence.NQueensDao;
 
-import java.io.File;
-import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class NQueensExhaustiveSearchTest extends ExhaustiveSearchTest<NQueens> {
 

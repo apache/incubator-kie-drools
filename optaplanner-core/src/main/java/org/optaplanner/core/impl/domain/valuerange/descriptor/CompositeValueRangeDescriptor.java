@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.composite.CompositeCountableValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

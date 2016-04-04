@@ -16,15 +16,24 @@
 
 package org.optaplanner.examples.dinnerparty.persistence;
 
-import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.dinnerparty.domain.*;
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
+import org.optaplanner.examples.dinnerparty.domain.Gender;
+import org.optaplanner.examples.dinnerparty.domain.Guest;
+import org.optaplanner.examples.dinnerparty.domain.Hobby;
+import org.optaplanner.examples.dinnerparty.domain.HobbyPractician;
+import org.optaplanner.examples.dinnerparty.domain.Job;
+import org.optaplanner.examples.dinnerparty.domain.JobType;
+import org.optaplanner.examples.dinnerparty.domain.Seat;
+import org.optaplanner.examples.dinnerparty.domain.SeatDesignation;
+import org.optaplanner.examples.dinnerparty.domain.Table;
 
 public class DinnerPartyImporter extends AbstractTxtSolutionImporter<DinnerParty> {
 

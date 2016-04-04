@@ -20,8 +20,6 @@ import java.io.File;
 
 import org.junit.Test;
 import org.optaplanner.core.config.solver.EnvironmentMode;
-import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
-import org.optaplanner.examples.cheaptime.persistence.CheapTimeDao;
 import org.optaplanner.examples.common.app.SolverPerformanceTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.investment.persistence.InvestmentDao;

@@ -17,7 +17,6 @@
 package org.optaplanner.examples.machinereassignment.solver.solution.initializer;
 
 import org.optaplanner.core.impl.phase.custom.AbstractCustomPhaseCommand;
-import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;

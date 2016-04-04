@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.phase.event;
 
-import java.util.Iterator;
-
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.event.AbstractEventSupport;

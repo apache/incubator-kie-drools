@@ -16,14 +16,14 @@
 
 package org.optaplanner.examples.curriculumcourse.app;
 
+import java.io.File;
+import java.util.Collection;
+
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
 import org.optaplanner.examples.common.app.ConstructionHeuristicTest;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
-
-import java.io.File;
-import java.util.Collection;
 
 public class CurriculumCourseConstructionHeuristicTest extends ConstructionHeuristicTest<CourseSchedule> {
 

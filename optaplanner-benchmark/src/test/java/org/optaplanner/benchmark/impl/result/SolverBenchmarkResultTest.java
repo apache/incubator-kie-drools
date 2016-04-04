@@ -16,10 +16,7 @@
 
 package org.optaplanner.benchmark.impl.result;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;

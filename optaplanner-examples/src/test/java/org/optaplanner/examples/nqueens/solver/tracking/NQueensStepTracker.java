@@ -16,15 +16,14 @@
 
 package org.optaplanner.examples.nqueens.solver.tracking;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class NQueensStepTracker extends PhaseLifecycleListenerAdapter<NQueens> {
 

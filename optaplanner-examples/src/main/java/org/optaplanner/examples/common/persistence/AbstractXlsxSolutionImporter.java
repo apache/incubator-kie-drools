@@ -16,14 +16,18 @@
 
 package org.optaplanner.examples.common.persistence;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-
-import java.io.*;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

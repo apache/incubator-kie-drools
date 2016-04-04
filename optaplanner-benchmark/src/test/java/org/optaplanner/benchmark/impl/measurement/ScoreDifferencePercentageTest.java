@@ -21,7 +21,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class ScoreDifferencePercentageTest {
 

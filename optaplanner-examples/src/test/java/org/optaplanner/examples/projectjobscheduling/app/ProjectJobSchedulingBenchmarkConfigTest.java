@@ -19,8 +19,8 @@ package org.optaplanner.examples.projectjobscheduling.app;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
-import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
+import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 
 public class ProjectJobSchedulingBenchmarkConfigTest extends AbstractBenchmarkConfigTest {
 

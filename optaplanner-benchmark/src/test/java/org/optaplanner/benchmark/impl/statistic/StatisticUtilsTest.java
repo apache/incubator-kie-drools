@@ -18,21 +18,15 @@ package org.optaplanner.benchmark.impl.statistic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
-import org.optaplanner.benchmark.impl.result.BenchmarkResult;
-import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 
 import static org.junit.Assert.*;
-
 import static org.mockito.Mockito.*;
 
 public class StatisticUtilsTest {

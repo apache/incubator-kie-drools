@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.solver.event;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**

@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.solver.kie;
 
-import java.util.Map;
-
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;

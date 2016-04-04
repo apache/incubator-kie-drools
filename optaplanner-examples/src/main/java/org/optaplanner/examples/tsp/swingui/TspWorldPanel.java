@@ -36,15 +36,15 @@ import javax.swing.JPanel;
 
 import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.examples.tsp.domain.TspSolution;
-import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
-import org.optaplanner.examples.tsp.domain.location.Location;
-import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.examples.tsp.domain.location.AirLocation;
+import org.optaplanner.examples.tsp.domain.location.DistanceType;
+import org.optaplanner.examples.tsp.domain.location.Location;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class TspWorldPanel extends JPanel {
 

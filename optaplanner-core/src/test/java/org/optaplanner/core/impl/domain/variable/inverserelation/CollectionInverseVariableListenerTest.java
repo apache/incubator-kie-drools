@@ -17,22 +17,18 @@
 package org.optaplanner.core.impl.domain.variable.inverserelation;
 
 import java.util.Arrays;
-import java.util.Collection;
 
 import org.junit.Test;
-import org.mockito.InOrder;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.TestdataInverseRelationEntity;
 import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.TestdataInverseRelationSolution;
 import org.optaplanner.core.impl.testdata.domain.shadow.inverserelation.TestdataInverseRelationValue;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCollectionContainsExactly;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class CollectionInverseVariableListenerTest {
 

@@ -30,12 +30,8 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.domain.InstitutionParametrization;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class InstitutionParametrizationDialog extends JDialog {
 

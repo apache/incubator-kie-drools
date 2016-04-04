@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.api.domain.solution;
 
+import java.util.Collection;
+
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
@@ -23,8 +25,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
-
-import java.util.Collection;
 
 /**
  * Retained for backwards compatibility with 6.x. This interface will be removed in 8.0.

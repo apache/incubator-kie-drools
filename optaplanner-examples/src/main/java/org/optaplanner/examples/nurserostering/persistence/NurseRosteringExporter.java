@@ -16,13 +16,13 @@
 
 package org.optaplanner.examples.nurserostering.persistence;
 
+import java.io.IOException;
+
 import org.jdom.Element;
 import org.optaplanner.examples.common.persistence.AbstractXmlSolutionExporter;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.Shift;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
-
-import java.io.IOException;
 
 public class NurseRosteringExporter extends AbstractXmlSolutionExporter<NurseRoster> {
 

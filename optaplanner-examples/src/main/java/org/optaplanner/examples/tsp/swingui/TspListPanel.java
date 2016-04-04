@@ -35,11 +35,11 @@ import javax.swing.JViewport;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 
-import org.optaplanner.examples.tsp.domain.TspSolution;
-import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class TspListPanel extends JPanel implements Scrollable {
 

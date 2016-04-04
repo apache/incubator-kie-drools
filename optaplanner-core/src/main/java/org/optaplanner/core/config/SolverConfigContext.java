@@ -17,7 +17,6 @@
 package org.optaplanner.core.config;
 
 import org.kie.api.runtime.KieContainer;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.solver.SolverConfig;
 
 /**

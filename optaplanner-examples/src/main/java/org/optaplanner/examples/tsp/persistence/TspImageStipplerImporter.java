@@ -16,6 +16,11 @@
 
 package org.optaplanner.examples.tsp.persistence;
 
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.examples.common.persistence.AbstractPngSolutionImporter;
 import org.optaplanner.examples.tsp.domain.Domicile;
@@ -24,11 +29,6 @@ import org.optaplanner.examples.tsp.domain.Visit;
 import org.optaplanner.examples.tsp.domain.location.AirLocation;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.examples.tsp.domain.location.Location;
-
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSolution> {
 

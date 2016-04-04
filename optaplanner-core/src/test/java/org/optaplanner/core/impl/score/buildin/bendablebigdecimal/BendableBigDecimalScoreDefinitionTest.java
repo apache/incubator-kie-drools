@@ -16,10 +16,10 @@
 
 package org.optaplanner.core.impl.score.buildin.bendablebigdecimal;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
-
-import java.math.BigDecimal;
 
 import static org.junit.Assert.*;
 

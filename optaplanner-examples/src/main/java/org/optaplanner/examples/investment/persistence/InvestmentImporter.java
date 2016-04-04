@@ -16,16 +16,25 @@
 
 package org.optaplanner.examples.investment.persistence;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionImporter;
-import org.optaplanner.examples.investment.domain.*;
-import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionImporter;
+import org.optaplanner.examples.investment.domain.AssetClass;
+import org.optaplanner.examples.investment.domain.AssetClassAllocation;
+import org.optaplanner.examples.investment.domain.InvestmentParametrization;
+import org.optaplanner.examples.investment.domain.InvestmentSolution;
+import org.optaplanner.examples.investment.domain.Region;
+import org.optaplanner.examples.investment.domain.Sector;
+import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 
 public class InvestmentImporter extends AbstractXlsxSolutionImporter<InvestmentSolution> {
 

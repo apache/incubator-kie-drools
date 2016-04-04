@@ -20,8 +20,6 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 
 public class AlphabeticMemberComparator implements Comparator<Member>, Serializable {

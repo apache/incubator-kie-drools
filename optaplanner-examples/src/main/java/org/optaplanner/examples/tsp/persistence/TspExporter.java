@@ -16,12 +16,12 @@
 
 package org.optaplanner.examples.tsp.persistence;
 
+import java.io.IOException;
+
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
-
-import java.io.IOException;
 
 public class TspExporter extends AbstractTxtSolutionExporter<TspSolution> {
 
