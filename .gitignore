@@ -17,3 +17,5 @@ dependency-reduced-pom.xml
 
 # these modules don't exist anymore on master
 /drools-clips/
+/drools-examples-cdi/drools-example-cdi-scopes/target/
+/drools-examples-cdi/cdi-example-scopes/target/

@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>cdi-example-with-inclusion</artifactId>
-  <name>Drools CDI Example WIth Inclusion</name>
+  <name>Drools CDI Example With Inclusion</name>
 
   <dependencies>
     <dependency>
