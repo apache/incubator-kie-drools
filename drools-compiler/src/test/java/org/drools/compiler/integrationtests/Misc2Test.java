@@ -8366,4 +8366,34 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 1, fired2 );
         ksession2.dispose();
     }
+
+    @Test
+    public void testWrongNodeSharingWithSameHashCode() throws IllegalAccessException, InstantiationException {
+
+        String drl =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R1 when\n" +
+                 "    String()\n" +
+                 "    $p: Person( name == \"ATL\", name != null)\n" +
+                 "then \n" +
+                 "    $p.setHappy(true);\n" +
+                 "end\n" +
+                "rule R2 when\n" +
+                 "    String()\n" +
+                 "    $p: Person( name == \"B5L\", name != null)\n" +
+                 "then \n" +
+                 "    $p.setHappy(true);\n" +
+                 "end\n";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        kieSession.insert("test");
+        Person b5L = new Person("B5L");
+        kieSession.insert(b5L);
+
+        assertFalse(b5L.isHappy());
+        kieSession.fireAllRules();
+        assertTrue(b5L.isHappy());
+    }
 }
