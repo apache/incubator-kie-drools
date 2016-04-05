@@ -31,8 +31,8 @@ public class MutationCounterTest {
 
     @Test
     public void countMutationsNone() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        MutationCounter mutationCounter = new MutationCounter(solutionDescriptor);
+        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+        MutationCounter<TestdataSolution> mutationCounter = new MutationCounter<>(solutionDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");
@@ -64,8 +64,8 @@ public class MutationCounterTest {
 
     @Test
     public void countMutationsSome() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        MutationCounter mutationCounter = new MutationCounter(solutionDescriptor);
+        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+        MutationCounter<TestdataSolution> mutationCounter = new MutationCounter<>(solutionDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");
@@ -97,8 +97,8 @@ public class MutationCounterTest {
 
     @Test
     public void countMutationsAll() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        MutationCounter mutationCounter = new MutationCounter(solutionDescriptor);
+        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+        MutationCounter<TestdataSolution> mutationCounter = new MutationCounter<>(solutionDescriptor);
 
         TestdataValue val1 = new TestdataValue("1");
         TestdataValue val2 = new TestdataValue("2");

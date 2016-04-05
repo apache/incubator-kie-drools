@@ -84,15 +84,6 @@ public interface Solver<Solution_> {
     Solution_ solve(Solution_ planningProblem);
 
     /**
-     * Retained for backwards compatibility with 6.x. This method will be removed in 8.0.
-     * @param planningProblem never null
-     * @return never null
-     * @deprecated In favor of {@link #solve(Object)}
-     */
-    @Deprecated
-    Solution solve(Solution planningProblem);
-
-    /**
      * This method is thread-safe.
      * @return true if the {@link #solve(Solution_)} method is still running.
      */

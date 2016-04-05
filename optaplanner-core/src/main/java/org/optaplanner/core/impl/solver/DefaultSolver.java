@@ -197,11 +197,6 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         return solverScope.getBestSolution();
     }
 
-    @Override
-    public Solution solve(Solution planningProblem) {
-        return (Solution) solve((Solution_) planningProblem);
-    }
-
     public void outerSolvingStarted(DefaultSolverScope<Solution_> solverScope) {
         solving.set(true);
         basicPlumbingTermination.resetTerminateEarly();
