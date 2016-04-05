@@ -1,14 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="java.util.Map" %>
-<%@ page import="java.util.HashMap" %>
-<%@ page import="org.optaplanner.examples.cloudbalancing.domain.CloudComputer" %>
-<%@ page import="java.util.List" %>
-<%@ page import="org.optaplanner.examples.cloudbalancing.domain.CloudProcess" %>
-<%@ page import="org.optaplanner.examples.cloudbalancing.domain.CloudBalance" %>
-<%@ page import="org.optaplanner.webexamples.cloudbalancing.CloudBalancingSessionAttributeName" %>
 <%@ page import="java.util.ArrayList" %>
 <%@ page import="java.util.LinkedHashMap" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 <%@ page import="org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore" %>
+<%@ page import="org.optaplanner.examples.cloudbalancing.domain.CloudBalance" %>
+<%@ page import="org.optaplanner.examples.cloudbalancing.domain.CloudComputer" %>
+<%@ page import="org.optaplanner.examples.cloudbalancing.domain.CloudProcess" %>
+<%@ page import="org.optaplanner.webexamples.cloudbalancing.CloudBalancingSessionAttributeName" %>
 
 <%
   CloudBalance solution = (CloudBalance) session.getAttribute(CloudBalancingSessionAttributeName.SHOWN_SOLUTION);

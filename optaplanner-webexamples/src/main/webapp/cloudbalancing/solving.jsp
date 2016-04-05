@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="org.optaplanner.webexamples.cloudbalancing.CloudBalancingWebAction" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>

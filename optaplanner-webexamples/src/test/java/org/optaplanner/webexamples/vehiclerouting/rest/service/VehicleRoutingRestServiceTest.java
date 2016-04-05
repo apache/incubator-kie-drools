@@ -16,15 +16,12 @@
 
 package org.optaplanner.webexamples.vehiclerouting.rest.service;
 
-import java.io.IOException;
 import java.net.URL;
 
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.jboss.resteasy.client.ProxyFactory;
 import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.optaplanner.webexamples.common.rest.service.AbstractClientArquillianTest;
 import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonVehicleRoutingSolution;
