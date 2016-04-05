@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.NormalScope;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
@@ -52,6 +53,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Named;
+import javax.inject.Scope;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -91,7 +93,7 @@ public class KieCDIExtension
         named = new HashMap<String, KieCDIExtension.KieCDIEntry>();
     }
 
-    public <Object> void processInjectionTarget(@Observes ProcessInjectionTarget<Object> pit,
+    public <Object> void processInjectionTarget(@Observes ProcessInjectionTarget<java.lang.Object> pit,
                                                 BeanManager beanManager) {
         if ( classpathKContainer == null ) {
             init();
@@ -136,10 +138,10 @@ public class KieCDIExtension
                                   null );
                     }
 
-                    Class< ? extends Annotation> scope = ApplicationScoped.class;
+                    Class<? extends Annotation> scope = getScope(pit);
 
                     if ( kBaseExists ) {
-                        addKBaseInjectionPoint(ip, kBase,scope, releaseId, kReleaseId);
+                        addKBaseInjectionPoint(ip, kBase, scope, releaseId, kReleaseId);
                     } else if ( kSessionExists ) {
                         addKSessionInjectionPoint(ip, kSession, scope, releaseId, kReleaseId);
                     } else if ( kContainerExists ) {
@@ -149,7 +151,18 @@ public class KieCDIExtension
             }
         }
     }
-    
+
+    private Class<? extends Annotation> getScope(ProcessInjectionTarget<Object> pit) {
+        Set<Annotation> annotations = pit.getAnnotatedType().getAnnotations();
+        for (Annotation annotation : pit.getAnnotatedType().getAnnotations()) {
+            Class<? extends Annotation> scope = annotation.annotationType();
+            if (scope.getAnnotation( NormalScope.class ) != null || scope.getAnnotation( Scope.class ) != null) {
+                return scope;
+            }
+        }
+        return ApplicationScoped.class;
+    }
+
     public void addKBaseInjectionPoint(InjectionPoint ip, KBase kBase, Class< ? extends Annotation> scope, ReleaseId releaseId, KReleaseId kReleaseId) {
         if ( kBaseNames == null ) {
             kBaseNames = new HashMap<KieCDIEntry, KieCDIEntry>();
@@ -432,7 +445,7 @@ public class KieCDIExtension
             return;
         }
 
-        if ( !kSessionModel.getScope().trim().equals( entry.getScope().getClass().getName() ) ) {
+        if ( kSessionModel.getScope() != null && !kSessionModel.getScope().trim().equals( entry.getScope().getClass().getName() ) ) {
             try {
                 if ( kSessionModel.getScope().indexOf( '.' ) >= 0 ) {
                     entry.setScope( (Class< ? extends Annotation>) Class.forName( kSessionModel.getScope() ) );

@@ -3,24 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.drools.workshop;
+package org.drools.example.cdi.scopes;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
-
-import javax.inject.Inject;
 import org.apache.deltaspike.cdise.api.ContextControl;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 
 /**
  *
@@ -48,7 +46,6 @@ public class SessionScopedRulesJUnitTest {
     private MySessionScopedBean mySessionBean;
 
     @Test
-    @Ignore
     public void helloSessionScoped() {
         Assert.assertNotNull(mySessionBean);
         ContextControl ctxCtrl = BeanProvider.getContextualReference(ContextControl.class);
@@ -57,8 +54,8 @@ public class SessionScopedRulesJUnitTest {
         ctxCtrl.startContext(RequestScoped.class);
 
 
-        int myBeanHashcode = mySessionBean.getMyBean().hashCode();
-        int myKieSessionHashcode = mySessionBean.getkSession().hashCode();
+        String myBeanId = mySessionBean.getMyBean().getId();
+        long myKieSessionId = mySessionBean.getkSession().getIdentifier();
 
         int result = mySessionBean.doSomething("hello 0");
         Assert.assertEquals(1, result);
@@ -67,12 +64,12 @@ public class SessionScopedRulesJUnitTest {
         ctxCtrl.startContext(RequestScoped.class);
         
 
-        Assert.assertEquals(myBeanHashcode, mySessionBean.getMyBean().hashCode());
-        Assert.assertEquals(myKieSessionHashcode, mySessionBean.getkSession().hashCode());
+        Assert.assertEquals(myBeanId, mySessionBean.getMyBean().getId());
+        Assert.assertEquals(myKieSessionId, mySessionBean.getkSession().getIdentifier());
 
 
-        myBeanHashcode = mySessionBean.getMyBean().hashCode();
-        myKieSessionHashcode = mySessionBean.getkSession().hashCode();
+        myBeanId = mySessionBean.getMyBean().getId();
+        myKieSessionId = mySessionBean.getkSession().getIdentifier();
 
         result = mySessionBean.doSomething("hello 1");
         Assert.assertEquals(1, result);
@@ -80,14 +77,14 @@ public class SessionScopedRulesJUnitTest {
         ctxCtrl.startContext(RequestScoped.class);
 
         
-        Assert.assertEquals(myBeanHashcode, mySessionBean.getMyBean().hashCode());
-        Assert.assertEquals(myKieSessionHashcode, mySessionBean.getkSession().hashCode());
+        Assert.assertEquals(myBeanId, mySessionBean.getMyBean().getId());
+        Assert.assertEquals(myKieSessionId, mySessionBean.getkSession().getIdentifier());
 
         result = mySessionBean.doSomething("hello 2");
         Assert.assertEquals(1, result);
        
-        myBeanHashcode = mySessionBean.getMyBean().hashCode();
-        myKieSessionHashcode = mySessionBean.getkSession().hashCode();
+        myBeanId = mySessionBean.getMyBean().getId();
+        myKieSessionId = mySessionBean.getkSession().getIdentifier();
         
         ctxCtrl.stopContext(RequestScoped.class);
         ctxCtrl.stopContext(SessionScoped.class);
@@ -96,11 +93,10 @@ public class SessionScopedRulesJUnitTest {
         ctxCtrl.startContext(SessionScoped.class);
         ctxCtrl.startContext(RequestScoped.class);
         
-        Assert.assertNotEquals(myBeanHashcode, mySessionBean.getMyBean().hashCode());
-        Assert.assertNotEquals(myKieSessionHashcode, mySessionBean.getkSession().hashCode());
+        Assert.assertNotEquals(myBeanId, mySessionBean.getMyBean().getId());
+        Assert.assertNotEquals(myKieSessionId, mySessionBean.getkSession().getIdentifier());
 
+        ctxCtrl.stopContext(SessionScoped.class);
+        ctxCtrl.stopContext(RequestScoped.class );
     }
-
-  
-    
 }
