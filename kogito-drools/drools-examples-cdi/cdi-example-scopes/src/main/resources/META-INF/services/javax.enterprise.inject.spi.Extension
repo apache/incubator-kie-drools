@@ -1,1 +1,1 @@
-org.drools.workshop.KieBusinessScopeExtension
+org.drools.example.cdi.scopes.KieBusinessScopeExtension

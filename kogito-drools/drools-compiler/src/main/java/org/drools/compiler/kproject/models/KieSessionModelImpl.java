@@ -43,7 +43,7 @@ public class KieSessionModelImpl
 
     private BeliefSystemTypeOption           beliefSystem = BeliefSystemTypeOption.get(BeliefSystemType.SIMPLE.toString());
 
-    private String                           scope = "javax.enterprise.context.ApplicationScoped";
+    private String                           scope;
 
     private KieBaseModelImpl                 kBase;
 

@@ -3,23 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.drools.workshop;
+package org.drools.example.cdi.scopes;
 
-import javax.enterprise.context.RequestScoped;
-
-import javax.inject.Inject;
 import org.apache.deltaspike.cdise.api.ContextControl;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import static org.junit.Assert.assertNotEquals;
 
 /**
  *
@@ -46,7 +46,6 @@ public class RequestScopedRulesJUnitTest {
     private MyRequestScopedBean myRequestBean;
 
     @Test
-    @Ignore
     public void helloRequestScoped() {
         Assert.assertNotNull(myRequestBean);
         ContextControl ctxCtrl = BeanProvider.getContextualReference(ContextControl.class);
@@ -54,8 +53,8 @@ public class RequestScopedRulesJUnitTest {
         ctxCtrl.startContext(RequestScoped.class);
 
 
-        int myBeanHashcode = myRequestBean.getMyBean().hashCode();
-        int myKieSessionHashcode = myRequestBean.getkSession().hashCode();
+        String myBeanId = myRequestBean.getMyBean().getId();
+        long myKieSessionId = myRequestBean.getkSession().getIdentifier();
 
         int result = myRequestBean.doSomething("hello 0");
         Assert.assertEquals(1, result);
@@ -64,36 +63,34 @@ public class RequestScopedRulesJUnitTest {
         ctxCtrl.startContext(RequestScoped.class);
         
 
-        Assert.assertNotEquals(myBeanHashcode, myRequestBean.getMyBean().hashCode());
-        Assert.assertNotEquals(myKieSessionHashcode, myRequestBean.getkSession().hashCode());
+        assertNotEquals(myBeanId, myRequestBean.getMyBean().getId());
+        assertNotEquals(myKieSessionId, myRequestBean.getkSession().getIdentifier());
 
 
-        myBeanHashcode = myRequestBean.getMyBean().hashCode();
-        myKieSessionHashcode = myRequestBean.getkSession().hashCode();
+        myBeanId = myRequestBean.getMyBean().getId();
+        myKieSessionId = myRequestBean.getkSession().getIdentifier();
 
         result = myRequestBean.doSomething("hello 1");
         Assert.assertEquals(1, result);
         ctxCtrl.stopContext(RequestScoped.class);
         ctxCtrl.startContext(RequestScoped.class);
 
-        
-        Assert.assertNotEquals(myBeanHashcode, myRequestBean.getMyBean().hashCode());
-        Assert.assertNotEquals(myKieSessionHashcode, myRequestBean.getkSession().hashCode());
+
+        assertNotEquals(myBeanId, myRequestBean.getMyBean().getId());
+        assertNotEquals(myKieSessionId, myRequestBean.getkSession().getIdentifier());
 
         result = myRequestBean.doSomething("hello 2");
         Assert.assertEquals(1, result);
-       
-        myBeanHashcode = myRequestBean.getMyBean().hashCode();
-        myKieSessionHashcode = myRequestBean.getkSession().hashCode();
+
+        myBeanId = myRequestBean.getMyBean().getId();
+        myKieSessionId = myRequestBean.getkSession().getIdentifier();
         
         ctxCtrl.stopContext(RequestScoped.class);
         ctxCtrl.startContext(RequestScoped.class);
 
-        Assert.assertNotEquals(myBeanHashcode, myRequestBean.getMyBean().hashCode());
-        Assert.assertNotEquals(myKieSessionHashcode, myRequestBean.getkSession().hashCode());
+        assertNotEquals(myBeanId, myRequestBean.getMyBean().getId());
+        assertNotEquals(myKieSessionId, myRequestBean.getkSession().getIdentifier());
 
+        ctxCtrl.stopContext(RequestScoped.class );
     }
-
-  
-    
 }
