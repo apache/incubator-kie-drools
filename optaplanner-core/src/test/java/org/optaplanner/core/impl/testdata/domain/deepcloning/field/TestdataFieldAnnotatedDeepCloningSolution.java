@@ -16,7 +16,11 @@
 
 package org.optaplanner.core.impl.testdata.domain.deepcloning.field;
 
-import org.optaplanner.core.api.domain.solution.*;
+import java.util.List;
+
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -24,8 +28,6 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
-
-import java.util.List;
 
 @PlanningSolution
 public class TestdataFieldAnnotatedDeepCloningSolution extends TestdataObject {

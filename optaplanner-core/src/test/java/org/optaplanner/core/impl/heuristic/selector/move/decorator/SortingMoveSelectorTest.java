@@ -17,8 +17,6 @@
 package org.optaplanner.core.impl.heuristic.selector.move.decorator;
 
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import org.junit.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -28,7 +26,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 

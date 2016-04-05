@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -26,11 +28,8 @@ import org.optaplanner.core.impl.testdata.domain.entityproviding.TestdataEntityP
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataOtherValue;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ChangeMoveTest {
 

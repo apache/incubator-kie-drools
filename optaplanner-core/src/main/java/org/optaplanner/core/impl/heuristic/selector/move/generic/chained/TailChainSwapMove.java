@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Objects;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -27,10 +31,6 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
 
 /**
  * Also known as a 2-opt move.

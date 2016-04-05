@@ -16,6 +16,12 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -25,8 +31,6 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-
-import java.util.*;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

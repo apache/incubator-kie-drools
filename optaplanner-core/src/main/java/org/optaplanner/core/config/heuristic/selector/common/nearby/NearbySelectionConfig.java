@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.nearby.NearEntityNear
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.nearby.NearEntityNearbyValueSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.*;
 
 @XStreamAlias("nearbySelection")
 public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig> {

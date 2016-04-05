@@ -16,15 +16,15 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
+import java.util.List;
+import java.util.Objects;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation

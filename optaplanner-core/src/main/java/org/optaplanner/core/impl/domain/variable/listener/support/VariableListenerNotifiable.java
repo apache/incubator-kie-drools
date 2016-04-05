@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;

@@ -16,22 +16,18 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.composite;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.CompositeAcceptor;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchMoveScope;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class CompositeAcceptorTest {
     @Test

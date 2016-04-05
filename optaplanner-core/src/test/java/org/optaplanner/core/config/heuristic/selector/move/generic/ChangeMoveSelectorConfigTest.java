@@ -17,7 +17,6 @@
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
 import org.junit.Test;
-import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.AbstractSelectorConfigTest;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -25,7 +24,6 @@ import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfi
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.composite.CartesianProductMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.UnionMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -33,8 +31,8 @@ import org.optaplanner.core.impl.testdata.domain.multientity.TestdataHerdEntity;
 import org.optaplanner.core.impl.testdata.domain.multientity.TestdataMultiEntitySolution;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarSolution;
 
-import static org.junit.Assert.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
+import static org.junit.Assert.assertEquals;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class ChangeMoveSelectorConfigTest extends AbstractSelectorConfigTest {
 

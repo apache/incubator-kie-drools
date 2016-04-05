@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
+import java.util.Collections;
+
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -32,12 +34,9 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedSolution;
 
-import java.util.Collections;
-
 import static org.junit.Assert.assertSame;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
+import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class VariableListenerSupportTest {
 

@@ -16,12 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.nearby;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.ListIterator;
-import java.util.Map;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;

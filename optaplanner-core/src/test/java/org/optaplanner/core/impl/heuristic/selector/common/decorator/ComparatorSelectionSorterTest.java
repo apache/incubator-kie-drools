@@ -16,16 +16,16 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
-import org.junit.Test;
-import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
-import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
+import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+
+import static org.junit.Assert.*;
 
 public class ComparatorSelectionSorterTest {
 

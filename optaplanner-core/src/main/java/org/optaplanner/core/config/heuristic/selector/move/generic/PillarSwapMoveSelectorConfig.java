@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarSwapMoveSelector;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
+import static org.apache.commons.lang3.ObjectUtils.*;
 
 @XStreamAlias("pillarSwapMoveSelector")
 public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig<PillarSwapMoveSelectorConfig> {

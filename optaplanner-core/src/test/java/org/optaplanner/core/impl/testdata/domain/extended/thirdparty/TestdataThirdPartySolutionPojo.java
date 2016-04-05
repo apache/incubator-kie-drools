@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.testdata.domain.extended.thirdparty;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;

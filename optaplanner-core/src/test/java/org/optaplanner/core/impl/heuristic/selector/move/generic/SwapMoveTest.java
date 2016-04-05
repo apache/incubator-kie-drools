@@ -17,10 +17,8 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;

@@ -16,15 +16,15 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.DefaultSubChainSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 
 public class SubChainChangeMoveSelectorTest {

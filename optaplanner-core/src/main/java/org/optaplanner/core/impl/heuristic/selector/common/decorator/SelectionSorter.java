@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
+import java.util.List;
+
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-
-import java.util.List;
 
 /**
  * Decides the order of a {@link List} of selection

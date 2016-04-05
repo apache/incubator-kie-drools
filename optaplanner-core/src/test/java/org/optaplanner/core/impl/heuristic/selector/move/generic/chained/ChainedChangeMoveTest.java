@@ -16,10 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
-import java.util.Collections;
-
 import org.junit.Test;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;

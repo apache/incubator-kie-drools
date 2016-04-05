@@ -27,7 +27,6 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.KOptMoveSelector;
-import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.TailChainSwapMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 /**

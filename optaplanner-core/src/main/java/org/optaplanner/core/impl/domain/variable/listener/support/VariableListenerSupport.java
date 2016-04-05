@@ -16,6 +16,13 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -29,8 +36,6 @@ import org.optaplanner.core.impl.domain.variable.supply.Supply;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-
-import java.util.*;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
