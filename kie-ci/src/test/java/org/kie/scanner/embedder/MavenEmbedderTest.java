@@ -89,7 +89,7 @@ public class MavenEmbedderTest {
     private static MavenRequest createMavenRequest() {
         MavenRequest mavenRequest = new MavenRequest();
         mavenRequest.setLocalRepositoryPath( MavenSettings.getSettings().getLocalRepository() );
-        mavenRequest.setUserSettingsFile( MavenSettings.getUserSettingsFile().getAbsolutePath() );
+        mavenRequest.setUserSettingsSource(MavenSettings.getUserSettingsSource());
         mavenRequest.setResolveDependencies( true );
         mavenRequest.setOffline( true );
         return mavenRequest;
