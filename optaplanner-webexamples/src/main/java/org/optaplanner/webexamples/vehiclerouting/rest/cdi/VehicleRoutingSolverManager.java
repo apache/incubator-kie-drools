@@ -83,13 +83,10 @@ public class VehicleRoutingSolverManager implements Serializable {
 
     public synchronized boolean solve(final String sessionId) {
         final Solver<VehicleRoutingSolution> solver = solverFactory.buildSolver();
-        solver.addEventListener(new SolverEventListener<VehicleRoutingSolution>() {
-            @Override
-            public void bestSolutionChanged(BestSolutionChangedEvent<VehicleRoutingSolution> event) {
-                VehicleRoutingSolution bestSolution = event.getNewBestSolution();
-                synchronized (VehicleRoutingSolverManager.this) {
-                    sessionSolutionMap.put(sessionId, bestSolution);
-                }
+        solver.addEventListener(event -> {
+            VehicleRoutingSolution bestSolution = event.getNewBestSolution();
+            synchronized (VehicleRoutingSolverManager.this) {
+                sessionSolutionMap.put(sessionId, bestSolution);
             }
         });
         if (sessionSolverMap.containsKey(sessionId)) {
@@ -97,14 +94,11 @@ public class VehicleRoutingSolverManager implements Serializable {
         }
         sessionSolverMap.put(sessionId, solver);
         final VehicleRoutingSolution solution = retrieveOrCreateSolution(sessionId);
-        executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                VehicleRoutingSolution bestSolution = solver.solve(solution);
-                synchronized (VehicleRoutingSolverManager.this) {
-                    sessionSolutionMap.put(sessionId, bestSolution);
-                    sessionSolverMap.remove(sessionId);
-                }
+        executor.submit((Runnable) () -> {
+            VehicleRoutingSolution bestSolution = solver.solve(solution);
+            synchronized (VehicleRoutingSolverManager.this) {
+                sessionSolutionMap.put(sessionId, bestSolution);
+                sessionSolverMap.remove(sessionId);
             }
         });
         return true;
