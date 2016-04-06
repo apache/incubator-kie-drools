@@ -36,9 +36,11 @@ import org.apache.maven.project.ProjectBuildingResult;
 import org.apache.maven.repository.RepositorySystem;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
+import org.apache.maven.settings.building.FileSettingsSource;
 import org.apache.maven.settings.building.SettingsBuilder;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
+import org.apache.maven.settings.building.SettingsSource;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.Os;
@@ -111,8 +113,8 @@ public class MavenEmbedder {
             mavenExecutionRequest.setGlobalSettingsFile( new File( mavenRequest.getGlobalSettingsFile() ) );
         }
 
-        if ( mavenRequest.getUserSettingsFile() != null ) {
-            mavenExecutionRequest.setUserSettingsFile( new File( mavenRequest.getUserSettingsFile() ) );
+        if ( mavenRequest.getUserSettingsSource() instanceof FileSettingsSource ) {
+            mavenExecutionRequest.setUserSettingsFile( ( (FileSettingsSource) mavenRequest.getUserSettingsSource() ).getSettingsFile() );
         }
 
         try {
@@ -198,12 +200,12 @@ public class MavenEmbedder {
         } else {
             settingsBuildingRequest.setGlobalSettingsFile( DEFAULT_GLOBAL_SETTINGS_FILE );
         }
-        if ( this.mavenRequest.getUserSettingsFile() != null ) {
-            settingsBuildingRequest.setUserSettingsFile( new File( this.mavenRequest.getUserSettingsFile() ) );
+        if ( this.mavenRequest.getUserSettingsSource() != null ) {
+            settingsBuildingRequest.setUserSettingsSource( this.mavenRequest.getUserSettingsSource() );
         } else {
-            File userSettingsFile = MavenSettings.getUserSettingsFile();
-            if ( userSettingsFile != null ) {
-                settingsBuildingRequest.setUserSettingsFile( userSettingsFile );
+            SettingsSource userSettingsSource = MavenSettings.getUserSettingsSource();
+            if ( userSettingsSource != null ) {
+                settingsBuildingRequest.setUserSettingsSource( userSettingsSource );
             }
         }
 

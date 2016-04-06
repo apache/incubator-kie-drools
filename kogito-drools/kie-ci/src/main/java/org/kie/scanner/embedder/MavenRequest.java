@@ -15,23 +15,24 @@
 
 package org.kie.scanner.embedder;
 
-import java.net.URL;
-import java.util.List;
-import java.util.Properties;
-
 import org.apache.maven.execution.ExecutionListener;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.model.building.ModelBuildingRequest;
+import org.apache.maven.settings.building.SettingsSource;
 import org.codehaus.plexus.PlexusConstants;
 import org.codehaus.plexus.logging.LoggerManager;
 import org.eclipse.aether.repository.WorkspaceReader;
 import org.eclipse.aether.transfer.TransferListener;
 
+import java.net.URL;
+import java.util.List;
+import java.util.Properties;
+
 public class MavenRequest {
 
     private String globalSettingsFile;
 
-    private String userSettingsFile;
+    private SettingsSource userSettingsSource;
 
     private String localRepositoryPath;
 
@@ -140,12 +141,12 @@ public class MavenRequest {
         return this;
     }
 
-    public String getUserSettingsFile() {
-        return userSettingsFile;
+    public SettingsSource getUserSettingsSource() {
+        return userSettingsSource;
     }
 
-    public MavenRequest setUserSettingsFile( String userSettingsFile ) {
-        this.userSettingsFile = userSettingsFile;
+    public MavenRequest setUserSettingsSource( SettingsSource userSettingsFile ) {
+        this.userSettingsSource = userSettingsSource;
         return this;
     }
 
