@@ -74,9 +74,8 @@ public class MavenProjectLoader {
     private static MavenRequest createMavenRequest(boolean offline) {
         MavenRequest mavenRequest = new MavenRequest();
         mavenRequest.setLocalRepositoryPath( MavenSettings.getSettings().getLocalRepository() );
-        if ( MavenSettings.getUserSettingsFile() != null) {
-            mavenRequest.setUserSettingsFile(MavenSettings.getUserSettingsFile().getAbsolutePath());
-        }
+        mavenRequest.setUserSettingsSource(MavenSettings.getUserSettingsSource());
+
         // BZ-1007894: If dependency is not resolvable and maven project builder does not complain about it,
         // then a <code>java.lang.NullPointerException</code> is thrown to the client.
         // So, the user will se an exception message "null", not descriptive about the real error.

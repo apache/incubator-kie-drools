@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.nio.channels.FileChannel;
@@ -35,6 +36,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -83,7 +85,7 @@ public class IoUtils {
         StringBuffer sb = new StringBuffer();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), IoUtils.UTF8_CHARSET));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), UTF8_CHARSET));
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 sb.append(line).append("\n");
             }
@@ -131,7 +133,25 @@ public class IoUtils {
             }
         }
     }
-    
+
+    public static long copy( InputStream input, OutputStream output ) throws IOException {
+        byte[] buffer = createBytesBuffer( input );
+        long count = 0;
+        int n = 0;
+        while ((n = input.read(buffer)) != -1) {
+            output.write(buffer, 0, n);
+            count += n;
+        }
+        return count;
+    }
+
+    public static File copyInTempFile( InputStream input, String fileExtension ) throws IOException {
+        File tempFile = File.createTempFile( UUID.randomUUID().toString(), "." + fileExtension );
+        tempFile.deleteOnExit();
+        copy(input, new FileOutputStream(tempFile));
+        return tempFile;
+    }
+
     public static Map<String, byte[]> indexZipFile(java.io.File jarFile) {
         Map<String, byte[]> files = new HashMap<String, byte[]>();
         ZipFile zipFile = null;
@@ -204,14 +224,8 @@ public class IoUtils {
     }
 
     public static byte[] readBytesFromInputStream(InputStream input) throws IOException {
-        int length = input.available();
-        byte[] buffer = new byte[Math.max(length, 8192)];
+        byte[] buffer = createBytesBuffer( input );
         ByteArrayOutputStream output = new ByteArrayOutputStream(buffer.length);
-
-        if (length > 0) {
-            int n = input.read(buffer);
-            output.write(buffer, 0, n);
-        }
 
         int n = 0;
         while (-1 != (n = input.read(buffer))) {
@@ -219,7 +233,11 @@ public class IoUtils {
         }
         return output.toByteArray();
     }
-    
+
+    private static byte[] createBytesBuffer( InputStream input ) throws IOException {
+        return new byte[Math.max(input.available(), 8192)];
+    }
+
     public static byte[] readBytesFromZipEntry(File file, ZipEntry entry) throws IOException {
         if ( entry == null ) {
             return null;
