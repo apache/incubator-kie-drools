@@ -45,7 +45,7 @@ public class DefaultSolverScope<Solution_> {
     protected Score startingInitializedScore; // TODO after initialization => ambiguous with solve()'s planningProblem
 
     protected volatile Solution_ bestSolution;
-    protected volatile int bestUninitializedVariableCount; // TODO remove me by folding me into bestSolution.getScore(): https://issues.jboss.org/browse/PLANNER-405
+    protected volatile int bestUninitializedVariableCount = Integer.MAX_VALUE; // TODO remove me by folding me into bestSolution.getScore(): https://issues.jboss.org/browse/PLANNER-405
     protected volatile Score bestScore; // TODO remove me by folding me into bestSolution.getScore(): https://issues.jboss.org/browse/PLANNER-405
     protected Long bestSolutionTimeMillis;
 
