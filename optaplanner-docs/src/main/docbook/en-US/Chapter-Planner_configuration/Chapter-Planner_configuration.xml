@@ -30,7 +30,7 @@
 
       <listitem>
         <para><emphasis role="bold">Solve it</emphasis> with <literal>Solver.solve(planningProblem)</literal> which
-        retuns the best solution found.</para>
+        returns the best solution found.</para>
       </listitem>
     </orderedlist>
 
@@ -1488,7 +1488,7 @@ public class NQueens {
 
         <para>A <literal>Solution</literal> requires a score property, which is annotated with a
         <literal>@PlanningScore</literal> annotation. The score property is <literal>null</literal> if the
-        <literal>Solution</literal> is uninitialized and the score hasn't been calculated yet. The
+        the score hasn't been calculated yet. The
         <literal>score</literal> property is typed to the specific <literal>Score</literal> implementation of your use
         case. For example, <literal>NQueens</literal> uses a <link linkend="simpleScore">SimpleScore</link>:</para>
 
@@ -1511,7 +1511,7 @@ public class NQueens {
         <para>Most use cases use a <link linkend="hardSoftScore">HardSoftScore</link> instead:</para>
 
         <programlisting language="java">@PlanningSolution
-public class CourseSchedule {
+public class CloudBalance {
     ...
 
     private HardSoftScore score;
@@ -2112,7 +2112,7 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
         xlink:href="http://logback.qos.ch/manual/mdc.html">MDC</link>:</para>
 
         <programlisting language="java">        MDC.put("tenant.name",tenantName);
-        Solution bestSolution = solver.solve(planningProblem);
+        MySolution bestSolution = solver.solve(planningProblem);
         MDC.remove("tenant.name");</programlisting>
 
         <para>Then configure your logger to use different files for each <literal>${tenant.name}</literal>. For example
