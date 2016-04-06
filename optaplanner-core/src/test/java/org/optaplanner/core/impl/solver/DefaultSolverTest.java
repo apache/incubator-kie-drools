@@ -17,10 +17,15 @@
 package org.optaplanner.core.impl.solver;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.Test;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
+import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.phase.custom.DummyCustomPhaseCommand;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -59,6 +64,48 @@ public class DefaultSolverTest {
 
         solution = solver.solve(solution);
         assertNotNull(solution);
+    }
+
+    @Test
+    public void solveStopsWhenUninitialized() {
+        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+                TestdataSolution.class, TestdataEntity.class);
+        CustomPhaseConfig phaseConfig = new CustomPhaseConfig();
+        phaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(DummyCustomPhaseCommand.class));
+        solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(phaseConfig));
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"),
+                new TestdataEntity("e3"), new TestdataEntity("e4"), new TestdataEntity("e5")));
+
+        solution = solver.solve(solution);
+        assertNotNull(solution);
+        // TODO Improve me when PLANNER-405 is fixed
+        assertEquals(false, ((DefaultSolver) solver).getSolverScope().isBestSolutionInitialized());
+    }
+
+    @Test
+    public void solveStopsWhenPartiallyInitialized() {
+        SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
+                TestdataSolution.class, TestdataEntity.class);
+        ConstructionHeuristicPhaseConfig phaseConfig = new ConstructionHeuristicPhaseConfig();
+        TerminationConfig terminationConfig = new TerminationConfig();
+        terminationConfig.setStepCountLimit(2); // Run only 2 steps, although 5 are needed to initialize all entities
+        phaseConfig.setTerminationConfig(terminationConfig);
+        solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(phaseConfig));
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2"),
+                new TestdataEntity("e3"), new TestdataEntity("e4"), new TestdataEntity("e5")));
+
+        solution = solver.solve(solution);
+        assertNotNull(solution);
+        // TODO Improve me when PLANNER-405 is fixed
+        assertEquals(false, ((DefaultSolver) solver).getSolverScope().isBestSolutionInitialized());
     }
 
 }
