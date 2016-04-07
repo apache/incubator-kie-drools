@@ -108,7 +108,7 @@ public class ProcessInstanceWithCustomVarsQueryMapper extends AbstractQueryMappe
 
     @Override
     public QueryResultMapper<List<ProcessInstanceWithVarsDesc>> forColumnMapping(Map<String, String> columnMapping) {
-        return new ProcessInstanceWithCustomVarsQueryMapper();
+        return new ProcessInstanceWithCustomVarsQueryMapper(columnMapping);
     }
 
 }
