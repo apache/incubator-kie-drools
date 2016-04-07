@@ -61,20 +61,32 @@ public class KieRepositoryImpl
     private static final String DEFAULT_ARTIFACT = "artifact";
     private static final String DEFAULT_GROUP = "org.default";
 
+    private final AtomicReference<ReleaseId> defaultGAV = new AtomicReference(new ReleaseIdImpl(DEFAULT_GROUP,
+                                                                                                DEFAULT_ARTIFACT,
+                                                                                                DEFAULT_VERSION));
+
     public static final KieRepository INSTANCE = new KieRepositoryImpl();
 
     private final KieModuleRepo kieModuleRepo;
 
-    private InternalKieScanner internalKieScanner;
+    private static class KieScannerHolder {
+        // Use holder class idiom to lazily initialize the kieScanner
+        private static final InternalKieScanner KIE_SCANNER = getInternalKieScanner();
 
-    public KieRepositoryImpl() {
-        internalKieScanner = getInternalKieScanner();
-        kieModuleRepo = new KieModuleRepo(internalKieScanner);
+        private static InternalKieScanner getInternalKieScanner() {
+            try {
+                KieScannerFactoryService scannerFactoryService = ServiceRegistryImpl.getInstance().get( KieScannerFactoryService.class );
+                return (InternalKieScanner)scannerFactoryService.newKieScanner();
+            } catch (Exception e) {
+                // kie-ci is not on the classpath
+                return new DummyKieScanner();
+            }
+        }
     }
 
-    private final AtomicReference<ReleaseId> defaultGAV = new AtomicReference(new ReleaseIdImpl(DEFAULT_GROUP,
-                                                                                                DEFAULT_ARTIFACT,
-                                                                                                DEFAULT_VERSION));
+    public KieRepositoryImpl() {
+        kieModuleRepo = new KieModuleRepo();
+    }
 
     public void setDefaultGAV(ReleaseId releaseId) {
         this.defaultGAV.set(releaseId);
@@ -103,7 +115,7 @@ public class KieRepositoryImpl
     }
 
     public KieModule getKieModule(ReleaseId releaseId, PomModel pomModel) {
-        KieModule kieModule = kieModuleRepo.load(releaseId);
+        KieModule kieModule = kieModuleRepo.load( KieScannerHolder.KIE_SCANNER, releaseId );
         if (kieModule == null) {
             log.debug("KieModule Lookup. ReleaseId {} was not in cache, checking classpath",
                       releaseId.toExternalForm());
@@ -127,20 +139,7 @@ public class KieRepositoryImpl
     }
 
     private KieModule loadKieModuleFromMavenRepo(ReleaseId releaseId, PomModel pomModel) {
-        return getInternalKieScanner().loadArtifact(releaseId, pomModel);
-    }
-
-    private InternalKieScanner getInternalKieScanner() {
-        if (internalKieScanner == null) {
-            try {
-                KieScannerFactoryService scannerFactoryService = ServiceRegistryImpl.getInstance().get( KieScannerFactoryService.class );
-                internalKieScanner = (InternalKieScanner)scannerFactoryService.newKieScanner();
-            } catch (Exception e) {
-                // kie-ci is not on the classpath
-                internalKieScanner = new DummyKieScanner();
-            }
-        }
-        return internalKieScanner;
+        return KieScannerHolder.KIE_SCANNER.loadArtifact( releaseId, pomModel );
     }
 
     private static class DummyKieScanner
@@ -262,8 +261,6 @@ public class KieRepositoryImpl
 
         // FIELDS -----------------------------------------------------------------------------------------------------------------
 
-        private final InternalKieScanner kieScanner;
-
         // kieModules evicts based on access-time, not on insertion-time
         final Map<String, NavigableMap<ComparableVersion, KieModule>> kieModules
             = new LinkedHashMap<String, NavigableMap<ComparableVersion, KieModule>>(16, 0.75f, true) {
@@ -282,10 +279,6 @@ public class KieRepositoryImpl
         };
 
         // METHODS ----------------------------------------------------------------------------------------------------------------
-
-        KieModuleRepo(InternalKieScanner kieScanner) {
-            this.kieScanner = kieScanner;
-        }
 
         synchronized KieModule remove(ReleaseId releaseId) {
             KieModule removedKieModule = null;
@@ -328,7 +321,7 @@ public class KieRepositoryImpl
 
         /**
          * Returns a map that fulfills 2 purposes: <ol>
-         * <li>It is a {@link NavigableMap} and thus can be used in the {@link KieModuleRepo#load(ReleaseId, VersionRange)} method</li>
+         * <li>It is a {@link NavigableMap} and thus can be used in the {@link KieModuleRepo#load(InternalKieScanner, ReleaseId, VersionRange)} method</li>
          * <li>It is a LRU cache, and thus will not grow without limit.
          * </ol>
          * @return a {@link NavigableMap} that is "backed" by a {@link LinkedHashMap} to enforce a LRU cache
@@ -363,11 +356,11 @@ public class KieRepositoryImpl
             return oldKieModules.remove(releaseId);
         }
 
-        synchronized KieModule load(ReleaseId releaseId) {
-            return load(releaseId, new VersionRange(releaseId.getVersion()));
+        synchronized KieModule load(InternalKieScanner kieScanner, ReleaseId releaseId) {
+            return load(kieScanner, releaseId, new VersionRange(releaseId.getVersion()));
         }
 
-        synchronized KieModule load(ReleaseId releaseId, VersionRange versionRange) {
+        synchronized KieModule load(InternalKieScanner kieScanner, ReleaseId releaseId, VersionRange versionRange) {
             String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
 
             NavigableMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
