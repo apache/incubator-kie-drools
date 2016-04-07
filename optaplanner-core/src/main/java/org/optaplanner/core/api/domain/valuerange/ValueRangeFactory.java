@@ -21,6 +21,7 @@ import java.math.BigInteger;
 
 import org.optaplanner.core.impl.domain.valuerange.buildin.bigdecimal.BigDecimalValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.biginteger.BigIntegerValueRange;
+import org.optaplanner.core.impl.domain.valuerange.buildin.primboolean.BooleanValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.primdouble.DoubleValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.primint.IntValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.primlong.LongValueRange;
@@ -29,6 +30,14 @@ import org.optaplanner.core.impl.domain.valuerange.buildin.primlong.LongValueRan
  * Factory for {@link ValueRange}.
  */
 public class ValueRangeFactory {
+
+    /**
+     * Build a {@link CountableValueRange} of both {@code boolean} values.
+     * @return never null
+     */
+    public static CountableValueRange<Boolean> createBooleanValueRange() {
+        return new BooleanValueRange();
+    }
 
     /**
      * Build a {@link CountableValueRange} of all {@code int} values between 2 bounds.

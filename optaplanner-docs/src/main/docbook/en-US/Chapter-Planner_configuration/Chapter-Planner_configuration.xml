@@ -868,6 +868,10 @@ public class NQueens {
 
           <itemizedlist>
             <listitem>
+              <para><literal>boolean</literal>: A boolean range.</para>
+            </listitem>
+
+            <listitem>
               <para><literal>int</literal>: A 32bit integer range.</para>
             </listitem>
 
@@ -1487,10 +1491,10 @@ public class NQueens {
         <title><literal>Score</literal> of a Solution (<literal>@PlanningScore</literal>)</title>
 
         <para>A <literal>Solution</literal> requires a score property, which is annotated with a
-        <literal>@PlanningScore</literal> annotation. The score property is <literal>null</literal> if the
-        the score hasn't been calculated yet. The
-        <literal>score</literal> property is typed to the specific <literal>Score</literal> implementation of your use
-        case. For example, <literal>NQueens</literal> uses a <link linkend="simpleScore">SimpleScore</link>:</para>
+        <literal>@PlanningScore</literal> annotation. The score property is <literal>null</literal> if the the score
+        hasn't been calculated yet. The <literal>score</literal> property is typed to the specific
+        <literal>Score</literal> implementation of your use case. For example, <literal>NQueens</literal> uses a <link
+        linkend="simpleScore">SimpleScore</link>:</para>
 
         <programlisting language="java">@PlanningSolution
 public class NQueens {
