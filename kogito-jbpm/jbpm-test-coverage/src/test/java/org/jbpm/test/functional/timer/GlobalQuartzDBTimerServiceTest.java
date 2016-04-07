@@ -29,10 +29,8 @@ import java.util.Properties;
 import javax.naming.InitialContext;
 import javax.persistence.Persistence;
 import javax.sql.DataSource;
-import javax.transaction.UserTransaction;
 
 import org.drools.core.time.TimerService;
-import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
@@ -60,12 +58,11 @@ import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 @RunWith(Parameterized.class)
 public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
-    
+
     private int managerType;
     
     @Parameters
@@ -332,24 +329,27 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("test", "john");
         ProcessInstance processInstance = ksession.startProcess("PROCESS_1", params);
-       
+
+        Connection connection = null;
+        Statement stmt = null;
         try {
-            Connection connection = ((DataSource)InitialContext.doLookup("jdbc/jbpm-ds")).getConnection();
-            Statement stmt = connection.createStatement();
+            connection = ((DataSource)InitialContext.doLookup("jdbc/jbpm-ds")).getConnection();
+            stmt = connection.createStatement();
 
             ResultSet resultSet = stmt.executeQuery("select REQUESTS_RECOVERY from QRTZ_JOB_DETAILS");
             while(resultSet.next()) {
                 boolean requestsRecovery = resultSet.getBoolean(1);
                 assertEquals("Requests recovery must be set to true", true, requestsRecovery);
             }
-            
-            stmt.close();
-            connection.close();
-        } catch (Exception e) {
-            
+        } finally {
+            if(stmt != null) {
+                stmt.close();
+            }
+            if(connection != null) {
+                connection.close();
+            }
         }
         ksession.abortProcessInstance(processInstance.getId());
         manager.disposeRuntimeEngine(runtime);
-        
     }
 }

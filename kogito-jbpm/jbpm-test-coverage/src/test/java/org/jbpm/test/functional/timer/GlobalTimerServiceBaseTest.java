@@ -76,7 +76,7 @@ import org.slf4j.LoggerFactory;
 
 public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     
-    private static final Logger logger = LoggerFactory.getLogger(GlobalTimerServiceBaseTest.class);
+    protected static final Logger logger = LoggerFactory.getLogger(GlobalTimerServiceBaseTest.class);
     
     protected GlobalSchedulerService globalScheduler;
     protected RuntimeManager manager;
