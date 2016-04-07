@@ -27,7 +27,7 @@
   </parent>
 
   <artifactId>drools-workbench-models-datamodel-api</artifactId>
-  <packaging>jar</packaging>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>Drools Workbench - Data Model API</name>
   <description>Drools Workbench - Data Model API</description>
@@ -43,6 +43,25 @@
         <directory>src/main/resources</directory>
       </resource>
     </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.drools.workbench.models.datamodel</Bundle-SymbolicName>
+            <Export-Package>
+              org.drools.workbench.models.datamodel*
+            </Export-Package>
+            <Import-Package>
+              *
+            </Import-Package>
+            <_removeheaders>Private-Package</_removeheaders>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
   <dependencies>
