@@ -1,24 +1,5 @@
 package org.drools.compiler.kie.builder.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.CyclicBarrier;
-
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.ComparableVersion;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.KieModuleRepo;
 import org.drools.compiler.kproject.ReleaseIdImpl;
@@ -34,6 +15,18 @@ import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 /**
  * This test contains
@@ -57,8 +50,7 @@ public class KieModuleRepoTest {
 
     @Before
     public void before() throws Exception {
-        InternalKieScanner mockKieScanner = mock(InternalKieScanner.class);
-        kieModuleRepo = new KieModuleRepo(mockKieScanner);
+        kieModuleRepo = new KieModuleRepo();
 
         // store the original values as we need to restore them after the test
         maxSizeGaCacheOrig = KieModuleRepo.MAX_SIZE_GA_CACHE;
