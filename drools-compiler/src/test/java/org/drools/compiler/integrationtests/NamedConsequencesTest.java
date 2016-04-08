@@ -908,4 +908,52 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
         assertEquals( "branch", list.get( 0 ) );
     }
+
+    @Test
+    public void testQueryWithBreakingBranch() throws Exception {
+        // DROOLS-1115
+        String drl =
+                "import " + ListHolder.class.getCanonicalName() + ";\n" +
+                "query q(ListHolder $listHolder)\n" +
+                "    $listHolder := ListHolder()\n" +
+                "    $i : Integer()\n" +
+                "end\n" +
+                "\n" +
+                "rule R when\n" +
+                "    q($listHolder;)\n" +
+                "    $s : String() from $listHolder.list\n" +
+                "    if (1==2) break[branch]\n" +
+                "then\n" +
+                "    $listHolder.getList().add(\"ok\");\n" +
+                "then[branch]\n" +
+                "    $listHolder.getList().add(\"ko\");\n" +
+                "end\n" +
+                "\n" +
+                "rule Init when then insert(1); end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        list.add("test");
+
+        ksession.insert( new ListHolder(list) );
+
+        ksession.fireAllRules();
+
+        assertEquals( "ok", list.get(1) );
+    }
+
+    public static class ListHolder {
+        private final List<String> list;
+
+        public ListHolder( List<String> list ) {
+            this.list = list;
+        }
+
+        public List<String> getList() {
+            return list;
+        }
+    }
 }
