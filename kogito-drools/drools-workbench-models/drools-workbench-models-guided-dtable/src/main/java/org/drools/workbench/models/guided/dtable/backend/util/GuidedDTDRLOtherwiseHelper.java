@@ -15,14 +15,14 @@
  */
 package org.drools.workbench.models.guided.dtable.backend.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Utility class to build Field Constraints for cells with "Otherwise" values
@@ -52,6 +52,11 @@ public class GuidedDTDRLOtherwiseHelper {
             StringBuilder value = new StringBuilder();
             value.append( "( " );
             for ( DTCellValue52 cv : columnData ) {
+
+                //Skip the "otherwise" cell itself
+                if ( cv.isOtherwise() ) {
+                    continue;
+                }
 
                 //Ensure cell values start and end with quotes
                 String scv = GuidedDTDRLUtilities.convertDTCellValueToString( cv );
@@ -94,6 +99,11 @@ public class GuidedDTDRLOtherwiseHelper {
             StringBuilder value = new StringBuilder();
             value.append( "( " );
             for ( DTCellValue52 cv : columnData ) {
+
+                //Skip the "otherwise" cell itself
+                if ( cv.isOtherwise() ) {
+                    continue;
+                }
 
                 //Ensure cell values start and end with quotes
                 String scv = GuidedDTDRLUtilities.convertDTCellValueToString( cv );

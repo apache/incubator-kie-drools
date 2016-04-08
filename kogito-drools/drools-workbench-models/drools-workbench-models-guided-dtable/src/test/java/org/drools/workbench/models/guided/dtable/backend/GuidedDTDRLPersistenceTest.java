@@ -875,6 +875,11 @@ public class GuidedDTDRLPersistenceTest {
         rowDTModel1.get( 3 ).setOtherwise( true );
         data[ 1 ] = row[ 1 ];
 
+        final List<List<DTCellValue52>> allDTData = new ArrayList<List<DTCellValue52>>() {{
+            add( rowDTModel0 );
+            add( rowDTModel1 );
+        }};
+
         List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
         List<CompositeColumn<? extends BaseColumn>> allPatterns = new ArrayList<CompositeColumn<? extends BaseColumn>>();
         allColumns.add( new RowNumberCol52() );
@@ -915,7 +920,7 @@ public class GuidedDTDRLPersistenceTest {
                         allPatterns,
                         rowDataProvider0,
                         rowDTModel0,
-                        DataUtilities.makeDataLists( data ),
+                        allDTData,
                         rm );
         String drl0 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
@@ -940,7 +945,7 @@ public class GuidedDTDRLPersistenceTest {
                         allPatterns,
                         rowDataProvider1,
                         rowDTModel1,
-                        DataUtilities.makeDataLists( data ),
+                        allDTData,
                         rm );
         String drl1 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
@@ -978,6 +983,12 @@ public class GuidedDTDRLPersistenceTest {
         rowDTModel2.get( 2 ).setOtherwise( true );
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[ 2 ] = row[ 2 ];
+
+        final List<List<DTCellValue52>> allDTData = new ArrayList<List<DTCellValue52>>() {{
+            add( rowDTModel0 );
+            add( rowDTModel1 );
+            add( rowDTModel2 );
+        }};
 
         List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
         List<CompositeColumn<? extends BaseColumn>> allPatterns = new ArrayList<CompositeColumn<? extends BaseColumn>>();
@@ -1019,7 +1030,7 @@ public class GuidedDTDRLPersistenceTest {
                         allPatterns,
                         rowDataProvider0,
                         rowDTModel0,
-                        DataUtilities.makeDataLists( data ),
+                        allDTData,
                         rm );
         String drl0 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
@@ -1044,7 +1055,7 @@ public class GuidedDTDRLPersistenceTest {
                         allPatterns,
                         rowDataProvider1,
                         rowDTModel1,
-                        DataUtilities.makeDataLists( data ),
+                        allDTData,
                         rm );
         String drl1 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
@@ -1069,7 +1080,7 @@ public class GuidedDTDRLPersistenceTest {
                         allPatterns,
                         rowDataProvider2,
                         rowDTModel2,
-                        DataUtilities.makeDataLists( data ),
+                        allDTData,
                         rm );
         String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
@@ -1107,6 +1118,12 @@ public class GuidedDTDRLPersistenceTest {
         rowDTModel2.get( 2 ).setOtherwise( true );
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[ 2 ] = row[ 2 ];
+
+        final List<List<DTCellValue52>> allDTData = new ArrayList<List<DTCellValue52>>() {{
+            add( rowDTModel0 );
+            add( rowDTModel1 );
+            add( rowDTModel2 );
+        }};
 
         List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
         List<CompositeColumn<? extends BaseColumn>> allPatterns = new ArrayList<CompositeColumn<? extends BaseColumn>>();
@@ -1148,7 +1165,7 @@ public class GuidedDTDRLPersistenceTest {
                         allPatterns,
                         rowDataProvider0,
                         rowDTModel0,
-                        DataUtilities.makeDataLists( data ),
+                        allDTData,
                         rm );
         String drl0 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
@@ -1173,7 +1190,7 @@ public class GuidedDTDRLPersistenceTest {
                         allPatterns,
                         rowDataProvider1,
                         rowDTModel1,
-                        DataUtilities.makeDataLists( data ),
+                        allDTData,
                         rm );
         String drl1 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
@@ -1198,7 +1215,7 @@ public class GuidedDTDRLPersistenceTest {
                         allPatterns,
                         rowDataProvider2,
                         rowDTModel2,
-                        DataUtilities.makeDataLists( data ),
+                        allDTData,
                         rm );
         String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
@@ -1231,11 +1248,17 @@ public class GuidedDTDRLPersistenceTest {
         List<DTCellValue52> rowDTModel1 = DataUtilities.makeDataRowList( row[ 1 ] );
         data[ 1 ] = row[ 1 ];
 
-        row[ 2 ] = new String[]{ "3", "desc3", null, null };
+        row[ 2 ] = new String[]{ "3", "desc3", "", "" };
         List<DTCellValue52> rowDTModel2 = DataUtilities.makeDataRowList( row[ 2 ] );
         rowDTModel2.get( 2 ).setOtherwise( true );
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[ 2 ] = row[ 2 ];
+
+        final List<List<DTCellValue52>> allDTData = new ArrayList<List<DTCellValue52>>() {{
+            add( rowDTModel0 );
+            add( rowDTModel1 );
+            add( rowDTModel2 );
+        }};
 
         List<BaseColumn> allColumns = new ArrayList<BaseColumn>();
         List<CompositeColumn<? extends BaseColumn>> allPatterns = new ArrayList<CompositeColumn<? extends BaseColumn>>();
@@ -1277,7 +1300,7 @@ public class GuidedDTDRLPersistenceTest {
                         allPatterns,
                         rowDataProvider0,
                         rowDTModel0,
-                        DataUtilities.makeDataLists( data ),
+                        allDTData,
                         rm );
         String drl0 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
@@ -1302,7 +1325,7 @@ public class GuidedDTDRLPersistenceTest {
                         allPatterns,
                         rowDataProvider1,
                         rowDTModel1,
-                        DataUtilities.makeDataLists( data ),
+                        allDTData,
                         rm );
         String drl1 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
@@ -1327,7 +1350,7 @@ public class GuidedDTDRLPersistenceTest {
                         allPatterns,
                         rowDataProvider2,
                         rowDTModel2,
-                        DataUtilities.makeDataLists( data ),
+                        allDTData,
                         rm );
         String drl2 = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
 
