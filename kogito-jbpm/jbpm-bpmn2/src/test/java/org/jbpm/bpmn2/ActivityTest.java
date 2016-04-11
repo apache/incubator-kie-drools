@@ -1799,4 +1799,40 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals(1, listAddress.size());
         assertProcessInstanceFinished(processInstance, ksession);
     }
+    
+    @Test
+    public void testAdHocSubProcessWithTerminateEndEvent() throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
+                "BPMN2-AdHocTerminateEndEvent.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("complete", false);
+        
+        ProcessInstance processInstance = ksession.startProcess("AdHocWithTerminateEnd", parameters);
+        assertProcessInstanceActive(processInstance);
+        
+        WorkItem workItem = workItemHandler.getWorkItem();
+        assertNull(workItem);
+        ksession = restoreSession(ksession, true);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", workItemHandler);
+        
+        // signal human task with none end event
+        ksession.signalEvent("First task", null, processInstance.getId());
+        
+        workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);       
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        assertProcessInstanceActive(processInstance);
+        
+        // signal human task that leads to terminate end event that should complete ad hoc task
+        ksession.signalEvent("Terminate", null, processInstance.getId());
+        workItem = workItemHandler.getWorkItem();
+        assertNotNull(workItem);       
+        ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
+        
+        assertProcessInstanceFinished(processInstance, ksession);
+    }
 }

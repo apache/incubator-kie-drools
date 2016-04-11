@@ -22,7 +22,6 @@ import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
-import org.jbpm.workflow.instance.impl.WorkItemResolverFactory;
 import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.process.NodeInstance;
 
@@ -65,7 +64,9 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
 	    String completionCondition = getDynamicNode().getCompletionExpression();
 		// TODO what if we reach the end of one branch but others might still need to be created ?
 		// TODO are we sure there will always be node instances left if we are not done yet?
-		if (getDynamicNode().isAutoComplete() && getNodeInstances(false).isEmpty()) {
+		if (isTerminated(nodeInstance)) {
+		    triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
+		} else if (getDynamicNode().isAutoComplete() && getNodeInstances(false).isEmpty()) {
     		triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
     	} else if (completionCondition != null) {
     		Object value = MVELSafeHelper.getEvaluator().eval(completionCondition, new NodeInstanceResolverFactory(this));
@@ -97,4 +98,12 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
 		}
 	}
 
+    protected boolean isTerminated(NodeInstance from) {
+        if (from instanceof EndNodeInstance) {
+            
+            return ((EndNodeInstance) from).getEndNode().isTerminate();
+        }
+        
+        return false;
+    }
 }
