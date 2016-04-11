@@ -104,4 +104,9 @@ public class BooleanValueRange extends AbstractCountableValueRange<Boolean> {
 
     }
 
+    @Override
+    public String toString() {
+        return "[false, true]"; // Formatting: interval (mathematics) ISO 31-11
+    }
+
 }

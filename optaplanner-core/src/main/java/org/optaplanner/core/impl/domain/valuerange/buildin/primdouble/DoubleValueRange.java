@@ -91,4 +91,9 @@ public class DoubleValueRange extends AbstractUncountableValueRange<Double> {
 
     }
 
+    @Override
+    public String toString() {
+        return "[" + from + "-" + to + ")"; // Formatting: interval (mathematics) ISO 31-11
+    }
+
 }

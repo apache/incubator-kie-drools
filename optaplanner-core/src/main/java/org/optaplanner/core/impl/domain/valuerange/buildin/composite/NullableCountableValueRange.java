@@ -114,4 +114,9 @@ public class NullableCountableValueRange<T> extends AbstractCountableValueRange<
 
     }
 
+    @Override
+    public String toString() {
+        return "[null]∪" + childValueRange; // Formatting: interval (mathematics) ISO 31-11
+    }
+
 }

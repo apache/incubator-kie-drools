@@ -45,6 +45,9 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * @see PlannerAssert
+ */
 public class PlannerTestUtils {
 
     // ************************************************************************

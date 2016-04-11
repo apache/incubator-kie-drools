@@ -157,4 +157,9 @@ public class BigDecimalValueRange extends AbstractCountableValueRange<BigDecimal
 
     }
 
+    @Override
+    public String toString() {
+        return "[" + from + "-" + to + ")"; // Formatting: interval (mathematics) ISO 31-11
+    }
+
 }

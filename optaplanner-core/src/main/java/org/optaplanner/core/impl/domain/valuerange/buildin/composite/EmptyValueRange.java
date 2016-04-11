@@ -68,4 +68,9 @@ public class EmptyValueRange<T> extends AbstractCountableValueRange<T> {
 
     }
 
+    @Override
+    public String toString() {
+        return "[]"; // Formatting: interval (mathematics) ISO 31-11
+    }
+
 }

@@ -148,4 +148,9 @@ public class LongValueRange extends AbstractCountableValueRange<Long> {
 
     }
 
+    @Override
+    public String toString() {
+        return "[" + from + "-" + to + ")"; // Formatting: interval (mathematics) ISO 31-11
+    }
+
 }

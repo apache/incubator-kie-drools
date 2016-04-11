@@ -50,6 +50,9 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * @see PlannerTestUtils
+ */
 public class PlannerAssert extends Assert {
 
     public static final long DO_NOT_ASSERT_SIZE = Long.MIN_VALUE;

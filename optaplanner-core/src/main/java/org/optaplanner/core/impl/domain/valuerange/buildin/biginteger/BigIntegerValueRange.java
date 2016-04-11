@@ -142,4 +142,9 @@ public class BigIntegerValueRange extends AbstractCountableValueRange<BigInteger
 
     }
 
+    @Override
+    public String toString() {
+        return "[" + from + "-" + to + ")"; // Formatting: interval (mathematics) ISO 31-11
+    }
+
 }

@@ -143,4 +143,9 @@ public class IntValueRange extends AbstractCountableValueRange<Integer> {
 
     }
 
+    @Override
+    public String toString() {
+        return "[" + from + "-" + to + ")"; // Formatting: interval (mathematics) ISO 31-11
+    }
+
 }
