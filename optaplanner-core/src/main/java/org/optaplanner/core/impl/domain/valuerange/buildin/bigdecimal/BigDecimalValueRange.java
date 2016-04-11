@@ -31,12 +31,11 @@ public class BigDecimalValueRange extends AbstractCountableValueRange<BigDecimal
     private final BigDecimal from;
     private final BigDecimal to;
     private final BigDecimal incrementUnit;
-    private final int scale;
 
     /**
      * All parameters must have the same {@link BigDecimal#scale()}.
-     * @param from inclusive minimum
-     * @param to exclusive maximum, {@code >= from}
+     * @param from never null, inclusive minimum
+     * @param to never null, exclusive maximum, {@code >= from}
      */
     public BigDecimalValueRange(BigDecimal from, BigDecimal to) {
         this(from, to, BigDecimal.valueOf(1L, from.scale()));
@@ -44,15 +43,15 @@ public class BigDecimalValueRange extends AbstractCountableValueRange<BigDecimal
 
     /**
      * All parameters must have the same {@link BigDecimal#scale()}.
-     * @param from inclusive minimum
-     * @param to exclusive maximum, {@code >= from}
-     * @param incrementUnit {@code > 0}
+     * @param from never null, inclusive minimum
+     * @param to never null, exclusive maximum, {@code >= from}
+     * @param incrementUnit never null, {@code > 0}
      */
     public BigDecimalValueRange(BigDecimal from, BigDecimal to, BigDecimal incrementUnit) {
         this.from = from;
         this.to = to;
         this.incrementUnit = incrementUnit;
-        scale = from.scale();
+        int scale = from.scale();
         if (scale != to.scale()) {
             throw new IllegalArgumentException("The " + getClass().getSimpleName()
                     + " cannot have a to (" + to + ") scale (" + to.scale()

@@ -32,17 +32,17 @@ public class BigIntegerValueRange extends AbstractCountableValueRange<BigInteger
     private final BigInteger incrementUnit;
 
     /**
-     * @param from inclusive minimum
-     * @param to exclusive maximum, {@code >= from}
+     * @param from never null, inclusive minimum
+     * @param to never null, exclusive maximum, {@code >= from}
      */
     public BigIntegerValueRange(BigInteger from, BigInteger to) {
         this(from, to, BigInteger.valueOf(1L));
     }
 
     /**
-     * @param from inclusive minimum
-     * @param to exclusive maximum, {@code >= from}
-     * @param incrementUnit {@code > 0}
+     * @param from never null, inclusive minimum
+     * @param to never null, exclusive maximum, {@code >= from}
+     * @param incrementUnit never null, {@code > 0}
      */
     public BigIntegerValueRange(BigInteger from, BigInteger to, BigInteger incrementUnit) {
         this.from = from;
