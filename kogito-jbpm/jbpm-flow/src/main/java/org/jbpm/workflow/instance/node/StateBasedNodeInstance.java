@@ -180,8 +180,9 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
                     timerInstance.setPeriod(resolveValue(timer.getPeriod()));
                 }
             } else {
-            	if (CronExpression.isValidExpression(timer.getDelay())) {
-            		timerInstance.setCronExpression(timer.getDelay());
+                String resolvedDelay = resolveVariable(timer.getDelay());
+            	if (CronExpression.isValidExpression(resolvedDelay)) {
+            		timerInstance.setCronExpression(resolvedDelay);
             	} else {
 
 	                // when using ISO date/time period is not set
@@ -189,9 +190,8 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
 	                try {
 	                    repeatValues = DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
 	                } catch (RuntimeException e) {
-	                    // cannot parse delay, trying to interpret it
-	                    s = resolveVariable(timer.getDelay());
-	                    repeatValues = DateTimeUtils.parseRepeatableDateTime(s);
+	                    // cannot parse delay, trying to interpret it	                   
+	                    repeatValues = DateTimeUtils.parseRepeatableDateTime(resolvedDelay);
 	                }
 	                if (repeatValues.length == 3) {
 	                    int parsedReapedCount = (int)repeatValues[0];

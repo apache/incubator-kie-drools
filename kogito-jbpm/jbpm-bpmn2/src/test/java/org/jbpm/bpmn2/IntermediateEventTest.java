@@ -18,7 +18,6 @@ package org.jbpm.bpmn2;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -2538,5 +2537,68 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 
         assertProcessInstanceFinished(processInstance, ksession);
 
+    }
+    
+    @Test(timeout=10000)
+    public void testTimerBoundaryEventCronCycleVariable() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Send Update Timer", 3);
+        KieBase kbase = createKnowledgeBase("BPMN2-BoundaryTimerCycleCronVariable.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(countDownListener);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("cronStr", "0/1 * * * * ?");
+        
+        ProcessInstance processInstance = ksession.startProcess("boundaryTimerCycleCron", parameters);
+        assertProcessInstanceActive(processInstance);
+
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertNotNull(workItems);
+        assertEquals(1, workItems.size());
+
+        countDownListener.waitTillCompleted();
+        assertProcessInstanceActive(processInstance);
+        workItems = handler.getWorkItems();
+        assertNotNull(workItems);
+        assertEquals(3, workItems.size());
+
+        ksession.abortProcessInstance(processInstance.getId());
+
+        assertProcessInstanceFinished(processInstance, ksession);
+    }
+    
+    @Test(timeout=10000)
+    public void testMultipleTimerBoundaryEventCronCycleVariable() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Send Update Timer", 2);
+        KieBase kbase = createKnowledgeBase("BPMN2-MultipleBoundaryTimerCycleCronVariable.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(countDownListener);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("cronStr", "0/1 * * * * ?");
+        
+        ProcessInstance processInstance = ksession.startProcess("boundaryTimerCycleCron", parameters);
+        assertProcessInstanceActive(processInstance);
+
+        List<WorkItem> workItems = handler.getWorkItems();
+        assertNotNull(workItems);
+        assertEquals(1, workItems.size());
+
+        countDownListener.waitTillCompleted();
+        assertProcessInstanceActive(processInstance);
+        
+        workItems = handler.getWorkItems();
+        assertNotNull(workItems);
+        assertEquals(2, workItems.size());
+
+        ksession.abortProcessInstance(processInstance.getId());
+
+        assertProcessInstanceFinished(processInstance, ksession);
     }
 }

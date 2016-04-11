@@ -257,14 +257,14 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 if (timeDuration != null && timeDuration.trim().length() > 0) {
                     List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
-                    eventFilter.setType("Timer-" + attachedTo + "-" + timeDuration);
+                    eventFilter.setType("Timer-" + attachedTo + "-" + timeDuration + "-" + eventNode.getId());
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("TimeDuration", timeDuration);                    
                 } else if (timeCycle != null && timeCycle.trim().length() > 0) {
                     List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
-                    eventFilter.setType("Timer-" + attachedTo + "-" + timeCycle);
+                    eventFilter.setType("Timer-" + attachedTo + "-" + timeCycle + "-" + eventNode.getId());
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("TimeCycle", timeCycle);
@@ -272,7 +272,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 } else if (timeDate != null && timeDate.trim().length() > 0) {
                     List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
-                    eventFilter.setType("Timer-" + attachedTo + "-" + timeDate);
+                    eventFilter.setType("Timer-" + attachedTo + "-" + timeDate + "-" + eventNode.getId());
                     eventFilters.add(eventFilter);
                     eventNode.setEventFilters(eventFilters);
                     eventNode.setMetaData("TimeDate", timeDate);

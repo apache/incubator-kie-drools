@@ -462,7 +462,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             timer.setDelay(timeDuration);
             timer.setTimeType(Timer.TIME_DURATION);
             compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
-                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeDuration + "\", kcontext.getNodeInstance().getId());"));
+                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeDuration + "-" + node.getId() +"\", kcontext.getNodeInstance().getId());"));
         } else if (timeCycle != null) {
             int index = timeCycle.indexOf("###");
             if (index != -1) {
@@ -473,12 +473,12 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             timer.setDelay(timeCycle);
             timer.setTimeType(Timer.TIME_CYCLE);
             compositeNode.addTimer(timer, new DroolsConsequenceAction("java",
-                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "\", kcontext.getNodeInstance().getId());"));
+                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "-" + node.getId() + "\", kcontext.getNodeInstance().getId());"));
         } else if (timeDate != null) {
             timer.setDate(timeDate);
             timer.setTimeType(Timer.TIME_DATE);
             compositeNode.addTimer(timer, new DroolsConsequenceAction("java", 
-                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeDate + "\", kcontext.getNodeInstance().getId());"));
+                PROCESS_INSTANCE_SIGNAL_EVENT + "Timer-" + attachedTo + "-" + timeDate + "-" + node.getId() + "\", kcontext.getNodeInstance().getId());"));
         }
         
         if (cancelActivity) {
