@@ -10,6 +10,7 @@
   </parent>
 
   <artifactId>drools-workbench-models-commons</artifactId>
+  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>Drools Workbench - Common Model</name>
   <description>Drools Workbench - Common Model</description>
@@ -62,5 +63,24 @@
         <directory>src/main/resources</directory>
       </resource>
     </resources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.drools.workbench.models.commons</Bundle-SymbolicName>
+            <Export-Package>
+              org.drools.workbench.models.commons.*
+            </Export-Package>
+            <Import-Package>
+              *
+            </Import-Package>
+            <_removeheaders>Private-Package</_removeheaders>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>
