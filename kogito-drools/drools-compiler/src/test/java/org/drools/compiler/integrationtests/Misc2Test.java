@@ -8396,4 +8396,17 @@ public class Misc2Test extends CommonTestMethodBase {
         kieSession.fireAllRules();
         assertTrue(b5L.isHappy());
     }
+
+    @Test
+    public void testWrongVariableNameWithSameDeclarationName() {
+        // DROOLS-1064
+        String str =
+                "declare Parameter end\n" +
+                "rule R when\n" +
+                "    Parameter($b : $b == 0 )\n" +
+                "then\n" +
+                "end\n";
+
+        assertDrlHasCompilationError( str, -1 );
+    }
 }
