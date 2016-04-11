@@ -134,6 +134,9 @@ public class IntValueRange extends AbstractCountableValueRange<Integer> {
 
         @Override
         public Integer next() {
+            if (size <= 0L) {
+                throw new NoSuchElementException();
+            }
             long index = RandomUtils.nextLong(workingRandom, size);
             return (int) (index * incrementUnit + from);
         }

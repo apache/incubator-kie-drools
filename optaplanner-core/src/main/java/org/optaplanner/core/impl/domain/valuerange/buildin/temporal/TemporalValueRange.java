@@ -109,7 +109,7 @@ public class TemporalValueRange extends AbstractCountableValueRange<Temporal> {
 
         @Override
         public Temporal next() {
-            if (upcoming.until(to, incrementUnitType) < 0) {
+            if (upcoming.until(to, incrementUnitType) <= 0) {
                 throw new NoSuchElementException();
             }
 

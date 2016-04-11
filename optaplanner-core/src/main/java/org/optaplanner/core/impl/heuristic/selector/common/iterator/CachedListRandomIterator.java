@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.common.iterator;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -30,21 +31,24 @@ public class CachedListRandomIterator<S> extends SelectionIterator<S>  {
 
     protected final List<S> cachedList;
     protected final Random workingRandom;
-    protected final boolean notEmpty;
+    protected final boolean empty;
 
     public CachedListRandomIterator(List<S> cachedList, Random workingRandom) {
         this.cachedList = cachedList;
         this.workingRandom = workingRandom;
-        notEmpty = !cachedList.isEmpty();
+        empty = cachedList.isEmpty();
     }
 
     @Override
     public boolean hasNext() {
-        return notEmpty;
+        return !empty;
     }
 
     @Override
     public S next() {
+        if (empty) {
+            throw new NoSuchElementException();
+        }
         int index = workingRandom.nextInt(cachedList.size());
         return cachedList.get(index);
     }

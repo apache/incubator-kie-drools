@@ -139,6 +139,9 @@ public class LongValueRange extends AbstractCountableValueRange<Long> {
 
         @Override
         public Long next() {
+            if (size <= 0L) {
+                throw new NoSuchElementException();
+            }
             long index = RandomUtils.nextLong(workingRandom, size);
             return index * incrementUnit + from;
         }

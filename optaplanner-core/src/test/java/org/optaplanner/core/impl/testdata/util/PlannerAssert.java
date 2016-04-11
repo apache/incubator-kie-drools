@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 import org.junit.Assert;
 import org.junit.ComparisonFailure;
@@ -153,6 +155,13 @@ public class PlannerAssert extends Assert {
     public static <O> void assertAllElementsOfIterator(Iterator<O> iterator, O... elements) {
         assertElementsOfIterator(iterator, elements);
         assertFalse(iterator.hasNext());
+        try {
+            iterator.next();
+            fail("The iterator with hasNext() (" + false + ") is expected to throw a "
+                    + NoSuchElementException.class.getSimpleName() + " when calling next().");
+        } catch (NoSuchElementException e) {
+            // Do nothing
+        }
     }
 
     // ************************************************************************

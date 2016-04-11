@@ -133,6 +133,9 @@ public class BigIntegerValueRange extends AbstractCountableValueRange<BigInteger
 
         @Override
         public BigInteger next() {
+            if (size <= 0L) {
+                throw new NoSuchElementException();
+            }
             long index = RandomUtils.nextLong(workingRandom, size);
             return incrementUnit.multiply(BigInteger.valueOf(index)).add(from);
         }

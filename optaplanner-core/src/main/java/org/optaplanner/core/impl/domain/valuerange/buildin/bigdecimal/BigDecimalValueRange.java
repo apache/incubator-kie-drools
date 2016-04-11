@@ -148,6 +148,9 @@ public class BigDecimalValueRange extends AbstractCountableValueRange<BigDecimal
 
         @Override
         public BigDecimal next() {
+            if (size <= 0L) {
+                throw new NoSuchElementException();
+            }
             long index = RandomUtils.nextLong(workingRandom, size);
             return incrementUnit.multiply(BigDecimal.valueOf(index)).add(from);
         }

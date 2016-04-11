@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.domain.valuerange.buildin.primdouble;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import org.optaplanner.core.impl.domain.valuerange.AbstractUncountableValueRange;
@@ -76,6 +77,9 @@ public class DoubleValueRange extends AbstractUncountableValueRange<Double> {
 
         @Override
         public Double next() {
+            if (to == from) {
+                throw new NoSuchElementException();
+            }
             double diff = to - from;
             double next = from + diff * workingRandom.nextDouble();
             if (next >= to) {
