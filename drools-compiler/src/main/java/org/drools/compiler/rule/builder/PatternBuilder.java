@@ -979,7 +979,7 @@ public class PatternBuilder
 
     private boolean isDateType( RuleBuildContext context, Pattern pattern, String leftValue ) {
         Declaration declaration = pattern.getDeclarations().get( leftValue );
-        if (declaration != null) {
+        if (declaration != null && declaration.getExtractor() != null) {
             return declaration.getValueType() == ValueType.DATE_TYPE;
         }
 
