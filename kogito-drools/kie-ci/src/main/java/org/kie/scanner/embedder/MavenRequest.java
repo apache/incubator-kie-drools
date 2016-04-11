@@ -145,7 +145,7 @@ public class MavenRequest {
         return userSettingsSource;
     }
 
-    public MavenRequest setUserSettingsSource( SettingsSource userSettingsFile ) {
+    public MavenRequest setUserSettingsSource( SettingsSource userSettingsSource ) {
         this.userSettingsSource = userSettingsSource;
         return this;
     }

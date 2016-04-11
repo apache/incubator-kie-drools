@@ -22,13 +22,18 @@ import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuilder;
 import org.apache.maven.settings.building.SettingsBuildingException;
+import org.apache.maven.settings.building.SettingsSource;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.junit.Test;
 import org.kie.scanner.MavenRepositoryConfiguration;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
+import static org.drools.core.util.IoUtils.readFileAsString;
 import static org.junit.Assert.*;
 
 public class MavenEmbedderTest {
@@ -36,7 +41,7 @@ public class MavenEmbedderTest {
     @Test
     public void testExternalRepositories() {
         try {
-            final MavenRequest mavenRequest = createMavenRequest();
+            final MavenRequest mavenRequest = createMavenRequest(null);
             final MavenEmbedder embedder = new MavenEmbedderMock( mavenRequest );
             final MavenExecutionRequest request = embedder.buildMavenExecutionRequest( mavenRequest );
 
@@ -49,6 +54,25 @@ public class MavenEmbedderTest {
                 assertTrue( remoteRepository.getId().equals( "central" )
                                     || remoteRepository.getId().equals( "kie-wb-m2-repo" ) );
             }
+
+        } catch ( MavenEmbedderException mee ) {
+            fail( mee.getMessage() );
+
+        } catch ( ComponentLookupException cle ) {
+            fail( cle.getMessage() );
+        }
+    }
+
+    @Test
+    public void testCustomSettingSource() {
+        try {
+            final MavenRequest mavenRequest = createMavenRequest(new SettingsSourceMock( "<settings/>" ) );
+            final MavenEmbedder embedder = new MavenEmbedderMock( mavenRequest );
+            final MavenExecutionRequest request = embedder.buildMavenExecutionRequest( mavenRequest );
+
+            assertNotNull( request );
+
+            assertEquals( "<settings/>", readFileAsString( request.getUserSettingsFile() ).trim() );
 
         } catch ( MavenEmbedderException mee ) {
             fail( mee.getMessage() );
@@ -86,13 +110,31 @@ public class MavenEmbedderTest {
         }
     }
 
-    private static MavenRequest createMavenRequest() {
+    private static MavenRequest createMavenRequest(SettingsSource settingsSource) {
         MavenRequest mavenRequest = new MavenRequest();
         mavenRequest.setLocalRepositoryPath( MavenSettings.getSettings().getLocalRepository() );
-        mavenRequest.setUserSettingsSource(MavenSettings.getUserSettingsSource());
+        mavenRequest.setUserSettingsSource(settingsSource != null ? settingsSource : MavenSettings.getUserSettingsSource());
         mavenRequest.setResolveDependencies( true );
         mavenRequest.setOffline( true );
         return mavenRequest;
     }
 
+    public static class SettingsSourceMock implements SettingsSource {
+
+        private final String settings;
+
+        public SettingsSourceMock( String settings ) {
+            this.settings = settings;
+        }
+
+        @Override
+        public InputStream getInputStream() throws IOException {
+            return new ByteArrayInputStream( settings.getBytes( "UTF-8" ) );
+        }
+
+        @Override
+        public String getLocation() {
+            return "test";
+        }
+    }
 }

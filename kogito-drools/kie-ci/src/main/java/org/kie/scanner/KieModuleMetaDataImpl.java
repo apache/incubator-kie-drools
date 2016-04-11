@@ -42,6 +42,7 @@ import java.util.zip.ZipFile;
 
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
+import static org.drools.core.util.IoUtils.UTF8_CHARSET;
 import static org.kie.scanner.ArtifactResolver.getResolverFor;
 
 public class KieModuleMetaDataImpl implements KieModuleMetaData {
@@ -186,7 +187,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
                 ZipEntry entry = entries.nextElement();
                 String pathName = entry.getName();
                 if(pathName.endsWith("bpmn2")){
-                  processes.put(pathName, new String(readBytesFromZipEntry(jarFile, entry), IoUtils.UTF8_CHARSET));
+                  processes.put(pathName, new String(readBytesFromZipEntry(jarFile, entry), UTF8_CHARSET));
                 }
                 if (!indexClass(pathName)) {
                     if (pathName.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH)) {
@@ -226,7 +227,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     }
 
     private void indexMetaInfo(byte[] bytes) {
-        KieModuleMetaInfo info = KieModuleMetaInfo.unmarshallMetaInfos(new String(bytes, IoUtils.UTF8_CHARSET));
+        KieModuleMetaInfo info = KieModuleMetaInfo.unmarshallMetaInfos(new String(bytes, UTF8_CHARSET));
         typeMetaInfos.putAll(info.getTypeMetaInfos());
         rulesByPackage.putAll(info.getRulesByPackage());
     }
