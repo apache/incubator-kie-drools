@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Year;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.List;
@@ -99,21 +100,27 @@ public class TestdataValueRangeSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "localDateValueRange")
-    public CountableValueRange<Temporal> createLocalDateValueRange() { // TODO FIXME return value
-        return ValueRangeFactory.createTemporalValueRange(
+    public CountableValueRange<LocalDate> createLocalDateValueRange() {
+        return ValueRangeFactory.createLocalDateValueRange(
                 LocalDate.of(2000, 1, 1), LocalDate.of(2000, 1, 4), 1, ChronoUnit.DAYS);
     }
 
     @ValueRangeProvider(id = "localTimeValueRange")
-    public CountableValueRange<Temporal> createLocaleTimeValueRange() {
-        return ValueRangeFactory.createTemporalValueRange(
+    public CountableValueRange<LocalTime> createLocaleTimeValueRange() {
+        return ValueRangeFactory.createLocalTimeValueRange(
                 LocalTime.of(10, 0), LocalTime.of(10, 3), 1, ChronoUnit.MINUTES);
     }
 
     @ValueRangeProvider(id = "localDateTimeValueRange")
-    public CountableValueRange<Temporal> createLocaleDateTimeValueRange() {
-        return ValueRangeFactory.createTemporalValueRange(
+    public CountableValueRange<LocalDateTime> createLocaleDateTimeValueRange() {
+        return ValueRangeFactory.createLocalDateTimeValueRange(
                 LocalDateTime.of(2000, 1, 1, 10, 0), LocalDateTime.of(2000, 1, 1, 10, 3), 1, ChronoUnit.MINUTES);
+    }
+
+    @ValueRangeProvider(id = "yearValueRange")
+    public CountableValueRange<Year> createYearValueRange() {
+        return ValueRangeFactory.createTemporalValueRange(
+                Year.of(2000), Year.of(2003), 1, ChronoUnit.YEARS);
     }
 
 }

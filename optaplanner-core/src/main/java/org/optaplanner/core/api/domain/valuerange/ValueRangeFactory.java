@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
 
@@ -141,6 +142,48 @@ public class ValueRangeFactory {
     }
 
     /**
+     * Build a {@link CountableValueRange} of a subset of {@link LocalDate} values between 2 bounds.
+     * <p>
+     * Facade for {@link #createTemporalValueRange(Temporal, Temporal, long, TemporalUnit)}.
+     * @param from never null, inclusive minimum
+     * @param to never null, exclusive maximum, {@code >= from}
+     * @param incrementUnitAmount {@code > 0}
+     * @param incrementUnitType never null, must be {@link LocalDate#isSupported(TemporalUnit) supported}
+     */
+    public static CountableValueRange<LocalDate> createLocalDateValueRange(
+            LocalDate from, LocalDate to, long incrementUnitAmount, TemporalUnit incrementUnitType) {
+        return createTemporalValueRange(from, to, incrementUnitAmount, incrementUnitType);
+    }
+
+    /**
+     * Build a {@link CountableValueRange} of a subset of {@link LocalTime} values between 2 bounds.
+     * <p>
+     * Facade for {@link #createTemporalValueRange(Temporal, Temporal, long, TemporalUnit)}.
+     * @param from never null, inclusive minimum
+     * @param to never null, exclusive maximum, {@code >= from}
+     * @param incrementUnitAmount {@code > 0}
+     * @param incrementUnitType never null, must be {@link LocalTime#isSupported(TemporalUnit) supported}
+     */
+    public static CountableValueRange<LocalTime> createLocalTimeValueRange(
+            LocalTime from, LocalTime to, long incrementUnitAmount, TemporalUnit incrementUnitType) {
+        return createTemporalValueRange(from, to, incrementUnitAmount, incrementUnitType);
+    }
+
+    /**
+     * Build a {@link CountableValueRange} of a subset of {@link LocalDateTime} values between 2 bounds.
+     * <p>
+     * Facade for {@link #createTemporalValueRange(Temporal, Temporal, long, TemporalUnit)}.
+     * @param from never null, inclusive minimum
+     * @param to never null, exclusive maximum, {@code >= from}
+     * @param incrementUnitAmount {@code > 0}
+     * @param incrementUnitType never null, must be {@link LocalDateTime#isSupported(TemporalUnit) supported}
+     */
+    public static CountableValueRange<LocalDateTime> createLocalDateTimeValueRange(
+            LocalDateTime from, LocalDateTime to, long incrementUnitAmount, TemporalUnit incrementUnitType) {
+        return createTemporalValueRange(from, to, incrementUnitAmount, incrementUnitType);
+    }
+
+    /**
      * Build a {@link CountableValueRange} of a subset of {@link Temporal} values (such as {@link LocalDate} or {@link LocalDateTime}) between 2 bounds.
      * All parameters must have the same {@link TemporalUnit}.
      * @param from never null, inclusive minimum
@@ -148,8 +191,9 @@ public class ValueRangeFactory {
      * @param incrementUnitAmount {@code > 0}
      * @param incrementUnitType never null, must be {@link Temporal#isSupported(TemporalUnit) supported} by {@code from} and {@code to}
      */
-    public static CountableValueRange<Temporal> createTemporalValueRange(Temporal from, Temporal to, long incrementUnitAmount, TemporalUnit incrementUnitType) {
-        return new TemporalValueRange(from, to, incrementUnitAmount, incrementUnitType);
+    public static <Temporal_ extends Temporal> CountableValueRange<Temporal_> createTemporalValueRange(
+            Temporal_ from, Temporal_ to, long incrementUnitAmount, TemporalUnit incrementUnitType) {
+        return new TemporalValueRange<>(from, to, incrementUnitAmount, incrementUnitType);
     }
 
 }

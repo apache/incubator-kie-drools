@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Year;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -51,6 +52,7 @@ public class TestdataValueRangeEntity extends TestdataObject {
     private LocalDate localDateValue;
     private LocalTime localTimeValue;
     private LocalDateTime localDateTimeValue;
+    private Year yearValue;
 
     public TestdataValueRangeEntity() {
     }
@@ -120,6 +122,15 @@ public class TestdataValueRangeEntity extends TestdataObject {
 
     public void setLocalDateTimeValue(LocalDateTime localDateTimeValue) {
         this.localDateTimeValue = localDateTimeValue;
+    }
+
+    @PlanningVariable(valueRangeProviderRefs = "yearValueRange")
+    public Year getYearValue() {
+        return yearValue;
+    }
+
+    public void setYearValue(Year yearValue) {
+        this.yearValue = yearValue;
     }
 
     // ************************************************************************

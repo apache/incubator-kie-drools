@@ -12,10 +12,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-public class TemporalValueRange extends AbstractCountableValueRange<Temporal> {
+public class TemporalValueRange<Temporal_ extends Temporal> extends AbstractCountableValueRange<Temporal_> {
 
-    private final Temporal from;
-    private final Temporal to;
+    private final Temporal_ from;
+    private final Temporal_ to;
     /** We could not use a {@link TemporalAmount} as {@code incrementUnit} due to lack of calculus functions. */
     private final long incrementUnitAmount;
     private final TemporalUnit incrementUnitType;
@@ -26,7 +26,7 @@ public class TemporalValueRange extends AbstractCountableValueRange<Temporal> {
      * @param incrementUnitAmount {@code > 0}
      * @param incrementUnitType never null, must be {@link Temporal#isSupported(TemporalUnit) supported} by {@code from} and {@code to}
      */
-    public TemporalValueRange(Temporal from, Temporal to, long incrementUnitAmount, TemporalUnit incrementUnitType) {
+    public TemporalValueRange(Temporal_ from, Temporal_ to, long incrementUnitAmount, TemporalUnit incrementUnitType) {
         this.from = from;
         this.to = to;
         this.incrementUnitAmount = incrementUnitAmount;
@@ -68,15 +68,15 @@ public class TemporalValueRange extends AbstractCountableValueRange<Temporal> {
     }
 
     @Override
-    public Temporal get(long index) {
+    public Temporal_ get(long index) {
         if (index >= getSize() || index < 0) {
             throw new IndexOutOfBoundsException();
         }
-        return from.plus(index * incrementUnitAmount, incrementUnitType);
+        return (Temporal_) from.plus(index * incrementUnitAmount, incrementUnitType);
     }
 
     @Override
-    public boolean contains(Temporal value) {
+    public boolean contains(Temporal_ value) {
         if (value == null || !value.isSupported(incrementUnitType)) {
             return false;
         }
@@ -85,7 +85,7 @@ public class TemporalValueRange extends AbstractCountableValueRange<Temporal> {
         // return from.until(value, incrementUnit) >= 0 && to.until(value, incrementUnit) < 0 && delta == 0;
 
         for (long i = 0; i < getSize(); i++) {
-            Temporal temporal = get(i);
+            Temporal_ temporal = get(i);
             if (value.equals(temporal)) {
                 return true;
             }
@@ -94,13 +94,13 @@ public class TemporalValueRange extends AbstractCountableValueRange<Temporal> {
     }
 
     @Override
-    public Iterator<Temporal> createOriginalIterator() {
+    public Iterator<Temporal_> createOriginalIterator() {
         return new OriginalTemporalValueRangeIterator();
     }
 
-    private class OriginalTemporalValueRangeIterator extends ValueRangeIterator<Temporal> {
+    private class OriginalTemporalValueRangeIterator extends ValueRangeIterator<Temporal_> {
 
-        private Temporal upcoming = from;
+        private Temporal_ upcoming = from;
 
         @Override
         public boolean hasNext() {
@@ -108,24 +108,24 @@ public class TemporalValueRange extends AbstractCountableValueRange<Temporal> {
         }
 
         @Override
-        public Temporal next() {
+        public Temporal_ next() {
             if (upcoming.until(to, incrementUnitType) <= 0) {
                 throw new NoSuchElementException();
             }
 
-            Temporal next = upcoming;
-            upcoming = upcoming.plus(incrementUnitAmount, incrementUnitType);
+            Temporal_ next = upcoming;
+            upcoming = (Temporal_) upcoming.plus(incrementUnitAmount, incrementUnitType);
             return next;
         }
 
     }
 
     @Override
-    public Iterator<Temporal> createRandomIterator(Random workingRandom) {
+    public Iterator<Temporal_> createRandomIterator(Random workingRandom) {
         return new RandomTemporalValueRangeIterator(workingRandom);
     }
 
-    private class RandomTemporalValueRangeIterator extends ValueRangeIterator<Temporal> {
+    private class RandomTemporalValueRangeIterator extends ValueRangeIterator<Temporal_> {
 
         private final Random workingRandom;
         private final long size = getSize();
@@ -140,7 +140,7 @@ public class TemporalValueRange extends AbstractCountableValueRange<Temporal> {
         }
 
         @Override
-        public Temporal next() {
+        public Temporal_ next() {
             long index = RandomUtils.nextLong(workingRandom, size);
             return get(index);
         }
