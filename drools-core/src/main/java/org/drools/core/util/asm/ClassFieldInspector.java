@@ -321,8 +321,8 @@ public class ClassFieldInspector {
         return fields;
     }
 
-    private void storeGetterSetter( final Method method,
-                                    final String fieldName ) {
+    private void storeGetterSetter( Method method,
+                                    String fieldName ) {
         Field f =  getAllFields( classUnderInspection ).get( fieldName );
         if ( method.getName().startsWith( "set" ) && method.getParameterTypes().length == 1 ) {
             this.setterMethods.put( fieldName,
@@ -338,9 +338,14 @@ public class ClassFieldInspector {
         } else if( ! void.class.isAssignableFrom( method.getReturnType() ) ) {
             Method existingMethod = getterMethods.get( fieldName );
             if ( existingMethod != null && !isOverride( existingMethod, method ) ) {
-                addResult( fieldName, new GetterOverloadWarning( classUnderInspection,
-                                                                 this.getterMethods.get( fieldName ).getName(), this.fieldTypes.get( fieldName ),
-                                                                 method.getName(), method.getReturnType() ) );
+                if (method.getReturnType() != existingMethod.getReturnType() && method.getReturnType().isAssignableFrom(existingMethod.getReturnType())) {
+                    // a more specialized getter (covariant overload) has been already indexed, so skip this one
+                    return;
+                } else {
+                    addResult( fieldName, new GetterOverloadWarning( classUnderInspection,
+                                                                     this.getterMethods.get( fieldName ).getName(), this.fieldTypes.get( fieldName ),
+                                                                     method.getName(), method.getReturnType() ) );
+                }
             }
             this.getterMethods.put( fieldName,
                                     method );
