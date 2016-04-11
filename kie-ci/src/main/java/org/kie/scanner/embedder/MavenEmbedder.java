@@ -58,6 +58,8 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import static org.drools.core.util.IoUtils.copyInTempFile;
+
 
 public class MavenEmbedder {
 
@@ -113,8 +115,17 @@ public class MavenEmbedder {
             mavenExecutionRequest.setGlobalSettingsFile( new File( mavenRequest.getGlobalSettingsFile() ) );
         }
 
-        if ( mavenRequest.getUserSettingsSource() instanceof FileSettingsSource ) {
-            mavenExecutionRequest.setUserSettingsFile( ( (FileSettingsSource) mavenRequest.getUserSettingsSource() ).getSettingsFile() );
+        SettingsSource userSettings = mavenRequest.getUserSettingsSource();
+        if ( userSettings != null ) {
+            if ( userSettings instanceof FileSettingsSource ) {
+                mavenExecutionRequest.setUserSettingsFile( ( (FileSettingsSource) userSettings ).getSettingsFile() );
+            } else {
+                try {
+                    mavenExecutionRequest.setUserSettingsFile( copyInTempFile( userSettings.getInputStream(), "xml" ) );
+                } catch (IOException ioe) {
+                    log.warn( "Unable to use maven settings defined in " + userSettings, ioe );
+                }
+            }
         }
 
         try {
