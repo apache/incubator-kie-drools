@@ -76,6 +76,24 @@ public class TemporalValueRange extends AbstractCountableValueRange<Temporal> {
     }
 
     @Override
+    public boolean contains(Temporal value) {
+        if (value == null || !value.isSupported(incrementUnitType)) {
+            return false;
+        }
+
+        // long delta = ...
+        // return from.until(value, incrementUnit) >= 0 && to.until(value, incrementUnit) < 0 && delta == 0;
+
+        for (long i = 0; i < getSize(); i++) {
+            Temporal temporal = get(i);
+            if (value.equals(temporal)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public Iterator<Temporal> createOriginalIterator() {
         return new OriginalTemporalValueRangeIterator();
     }
@@ -100,22 +118,6 @@ public class TemporalValueRange extends AbstractCountableValueRange<Temporal> {
             return next;
         }
 
-    }
-
-    @Override
-    public boolean contains(Temporal value) {
-        if (value == null || !value.isSupported(incrementUnitType)) {return false;}
-
-        // long delta = ...
-        // return from.until(value, incrementUnit) >= 0 && to.until(value, incrementUnit) < 0 && delta == 0;
-
-        for (long i = 0; i < getSize(); i++) {
-            Temporal temporal = get(i);
-            if (value.equals(temporal)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override
