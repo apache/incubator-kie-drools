@@ -18,6 +18,10 @@ package org.optaplanner.core.api.domain.valuerange;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalUnit;
 
 import org.optaplanner.core.impl.domain.valuerange.buildin.bigdecimal.BigDecimalValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.biginteger.BigIntegerValueRange;
@@ -25,6 +29,7 @@ import org.optaplanner.core.impl.domain.valuerange.buildin.primboolean.BooleanVa
 import org.optaplanner.core.impl.domain.valuerange.buildin.primdouble.DoubleValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.primint.IntValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.primlong.LongValueRange;
+import org.optaplanner.core.impl.domain.valuerange.buildin.temporal.TemporalValueRange;
 
 /**
  * Factory for {@link ValueRange}.
@@ -133,6 +138,18 @@ public class ValueRangeFactory {
      */
     public static CountableValueRange<BigDecimal> createBigDecimalValueRange(BigDecimal from, BigDecimal to, BigDecimal incrementUnit) {
         return new BigDecimalValueRange(from, to, incrementUnit);
+    }
+
+    /**
+     * Build a {@link CountableValueRange} of a subset of {@link Temporal} values (such as {@link LocalDate} or {@link LocalDateTime}) between 2 bounds.
+     * All parameters must have the same {@link TemporalUnit}.
+     * @param from never null, inclusive minimum
+     * @param to never null, exclusive maximum, {@code >= from}
+     * @param incrementUnitAmount {@code > 0}
+     * @param incrementUnitType never null, must be {@link Temporal#isSupported(TemporalUnit) supported} by {@code from} and {@code to}
+     */
+    public static CountableValueRange<Temporal> createTemporalRange(Temporal from, Temporal to, long incrementUnitAmount, TemporalUnit incrementUnitType) {
+        return new TemporalValueRange(from, to, incrementUnitAmount, incrementUnitType);
     }
 
 }

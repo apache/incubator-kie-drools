@@ -892,6 +892,11 @@ public class NQueens {
               <para><literal>BigDecimal</literal>: A decimal point range. By default, the increment unit is the lowest
               non-zero value in the scale of the bounds.</para>
             </listitem>
+
+            <listitem>
+              <para><literal>Temporal</literal> (such as <literal>LocalDate</literal>, <literal>LocalDateTime</literal>,
+              ...): A time range.</para>
+            </listitem>
           </itemizedlist>
         </section>
 
