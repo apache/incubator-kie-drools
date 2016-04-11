@@ -18,19 +18,20 @@ package org.optaplanner.examples.examination.persistence;
 
 import java.io.IOException;
 import java.math.BigInteger;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -157,11 +158,8 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
         private void readPeriodList() throws IOException {
             int periodSize = readHeaderWithNumber("Periods");
             List<Period> periodList = new ArrayList<>(periodSize);
-            // Everything is in the default timezone and the default locale.
-            Calendar calendar = Calendar.getInstance();
-            final DateFormat DATE_FORMAT = new SimpleDateFormat("dd:MM:yyyy HH:mm:ss");
-            int referenceDayOfYear = -1;
-            int referenceYear = -1;
+            DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd:MM:yyyy HH:mm:ss", Locale.UK);
+            LocalDateTime referenceDateTime = null;
             for (int i = 0; i < periodSize; i++) {
                 Period period = new Period();
                 period.setId((long) i);
@@ -173,25 +171,16 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination
                 String startDateTimeString = lineTokens[0] + " " + lineTokens[1];
                 period.setStartDateTimeString(startDateTimeString);
                 period.setPeriodIndex(i);
-                int dayOfYear;
-                int year;
+                LocalDateTime dateTime;
                 try {
-                    calendar.setTime(DATE_FORMAT.parse(startDateTimeString));
-                    calendar.get(Calendar.DAY_OF_YEAR);
-                    dayOfYear = calendar.get(Calendar.DAY_OF_YEAR);
-                    year = calendar.get(Calendar.YEAR);
-                } catch (ParseException e) {
+                    dateTime = LocalDateTime.parse(startDateTimeString, DATE_FORMAT);
+                } catch (DateTimeParseException e) {
                     throw new IllegalArgumentException("Illegal startDateTimeString (" + startDateTimeString + ").", e);
                 }
-                if (referenceDayOfYear < 0) {
-                    referenceDayOfYear = dayOfYear;
-                    referenceYear = year;
+                if (referenceDateTime == null) {
+                    referenceDateTime = dateTime;
                 }
-                if (year != referenceYear) {
-                    // Because the Calendar API in JSE <= 7 sucks...
-                    throw new IllegalStateException("Not yet implemented to handle periods spread over different years...");
-                }
-                int dayIndex = dayOfYear - referenceDayOfYear;
+                int dayIndex = (int) ChronoUnit.DAYS.between(referenceDateTime, dateTime);
                 if (dayIndex < 0) {
                     throw new IllegalStateException("The periods should be in ascending order.");
                 }
