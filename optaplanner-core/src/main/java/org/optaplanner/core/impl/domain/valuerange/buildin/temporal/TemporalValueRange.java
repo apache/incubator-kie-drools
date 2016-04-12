@@ -80,10 +80,12 @@ public class TemporalValueRange<Temporal_ extends Temporal> extends AbstractCoun
         if (value == null || !value.isSupported(incrementUnitType)) {
             return false;
         }
-
-        // long delta = ...
-        // return from.until(value, incrementUnit) >= 0 && to.until(value, incrementUnit) < 0 && delta == 0;
-
+        long fromSpace = from.until(value, incrementUnitType);
+        if (fromSpace < 0 || value.until(to, incrementUnitType) <= 0) {
+            return false;
+        }
+        // Just checking the modulus doesn't work because 1-MAR + 1 month doesn't include 7-MAR but the modulus is 0 anyway
+        // return fromSpace % incrementUnitAmount == 0;
         for (long i = 0; i < getSize(); i++) {
             Temporal_ temporal = get(i);
             if (value.equals(temporal)) {
