@@ -57,7 +57,6 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -242,8 +241,8 @@ public class KieContainerImpl
             rebuildAll(newReleaseId, results, newKM, modifiedClasses, kieBaseModel, pkgbuilder, ckbuilder);
         }
 
-        for (StatefulKnowledgeSession session : kBase.getStatefulKnowledgeSessions()) {
-            ( (InternalWorkingMemory) session ).notifyWaitOnRest();
+        for ( InternalWorkingMemory wm : kBase.getWorkingMemories() ) {
+            wm.notifyWaitOnRest();
         }
     }
 

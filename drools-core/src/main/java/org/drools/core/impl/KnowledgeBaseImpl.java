@@ -749,12 +749,12 @@ public class KnowledgeBaseImpl
     }
 
     private boolean tryDeactivateAllSessions() {
-        if (statefulSessions.isEmpty()) {
+        InternalWorkingMemory[] wms = getWorkingMemories();
+        if (wms.length == 0) {
             return true;
         }
         List<InternalWorkingMemory> deactivatedWMs = new ArrayList<InternalWorkingMemory>();
-        for ( StatefulKnowledgeSession session : statefulSessions ) {
-            InternalWorkingMemory wm = (InternalWorkingMemory)session;
+        for ( InternalWorkingMemory wm : wms ) {
             if (wm.tryDeactivate()) {
                 deactivatedWMs.add(wm);
             } else {
@@ -788,23 +788,23 @@ public class KnowledgeBaseImpl
 
     private void deactivateAllSessions() {
         if ( sessionDeactivationsCounter.incrementAndGet() < 2 ) {
-            for ( StatefulKnowledgeSession session : statefulSessions ) {
-                ( (InternalWorkingMemory) session ).deactivate();
+            for ( InternalWorkingMemory wm : getWorkingMemories() ) {
+                wm.deactivate();
             }
         }
     }
 
     private void activateAllSessions() {
         if ( sessionDeactivationsCounter.decrementAndGet() == 0 ) {
-            for ( StatefulKnowledgeSession session : statefulSessions ) {
-                ( (InternalWorkingMemory) session ).activate();
+            for ( InternalWorkingMemory wm : getWorkingMemories() ) {
+                wm.activate();
             }
         }
     }
 
     private void internalAddPackages(List<InternalKnowledgePackage> clonedPkgs) {
-        for ( StatefulKnowledgeSession session : statefulSessions ) {
-            ((InternalWorkingMemory)session).flushPropagations();
+        for ( InternalWorkingMemory wm : getWorkingMemories() ) {
+            wm.flushPropagations();
         }
 
         // we need to merge all byte[] first, so that the root classloader can resolve classes
@@ -1229,8 +1229,8 @@ public class KnowledgeBaseImpl
 
     public void removeGlobal(String identifier) {
         this.globals.remove( identifier );
-        for ( StatefulKnowledgeSession session : statefulSessions ) {
-            ((InternalWorkingMemory)session).removeGlobal(identifier);
+        for ( InternalWorkingMemory wm : getWorkingMemories() ) {
+            wm.removeGlobal(identifier);
         }
     }
 
@@ -1747,15 +1747,13 @@ public class KnowledgeBaseImpl
         return this.pkgs.get( name );
     }
 
-    public StatefulKnowledgeSessionImpl[] getStatefulSessions() {
-        synchronized (statefulSessions) {
-            return statefulSessions.toArray( new StatefulKnowledgeSessionImpl[statefulSessions.size()] );
-        }
-    }
+    private static final InternalWorkingMemory[] EMPTY_WMS = new InternalWorkingMemory[0];
 
     public InternalWorkingMemory[] getWorkingMemories() {
         synchronized (statefulSessions) {
-            return statefulSessions.toArray( new InternalWorkingMemory[statefulSessions.size()] );
+            return statefulSessions.isEmpty() ?
+                   EMPTY_WMS :
+                   statefulSessions.toArray( new InternalWorkingMemory[statefulSessions.size()] );
         }
     }
 
