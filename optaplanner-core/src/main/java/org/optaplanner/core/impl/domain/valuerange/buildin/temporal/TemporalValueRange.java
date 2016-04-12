@@ -84,15 +84,9 @@ public class TemporalValueRange<Temporal_ extends Temporal> extends AbstractCoun
         if (fromSpace < 0 || value.until(to, incrementUnitType) <= 0) {
             return false;
         }
-        // Just checking the modulus doesn't work because 1-MAR + 1 month doesn't include 7-MAR but the modulus is 0 anyway
-        // return fromSpace % incrementUnitAmount == 0;
-        for (long i = 0; i < getSize(); i++) {
-            Temporal_ temporal = get(i);
-            if (value.equals(temporal)) {
-                return true;
-            }
-        }
-        return false;
+        // Only checking the modulus is not enough: 1-MAR + 1 month doesn't include 7-MAR but the modulus is 0 anyway
+        return fromSpace % incrementUnitAmount == 0
+                && value.equals(from.plus(fromSpace, incrementUnitType));
     }
 
     @Override
