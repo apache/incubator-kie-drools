@@ -64,7 +64,7 @@ public class TemporalValueRange<Temporal_ extends Temporal> extends AbstractCoun
 
     @Override
     public long getSize() {
-        return (from.until(to, incrementUnitType) / incrementUnitAmount);
+        return from.until(to, incrementUnitType) / incrementUnitAmount;
     }
 
     @Override
@@ -96,21 +96,23 @@ public class TemporalValueRange<Temporal_ extends Temporal> extends AbstractCoun
 
     private class OriginalTemporalValueRangeIterator extends ValueRangeIterator<Temporal_> {
 
-        private Temporal_ upcoming = from;
+        private long size = getSize();
+        private long index = 0L;
 
         @Override
         public boolean hasNext() {
-            return upcoming.until(to, incrementUnitType) >= incrementUnitAmount;
+            return index < size;
         }
 
         @Override
         public Temporal_ next() {
-            if (upcoming.until(to, incrementUnitType) <= 0) {
+            if (index >= size) {
                 throw new NoSuchElementException();
             }
 
-            Temporal_ next = upcoming;
-            upcoming = (Temporal_) upcoming.plus(incrementUnitAmount, incrementUnitType);
+            // Do not use upcoming += incrementUnitAmount because 31-JAN + 1 month + 1 month returns 28-MAR
+            Temporal_ next = get(index);
+            index++;
             return next;
         }
 
