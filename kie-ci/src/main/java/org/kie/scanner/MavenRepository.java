@@ -60,7 +60,7 @@ public class MavenRepository {
 
     private static final Logger log = LoggerFactory.getLogger( MavenRepository.class );
 
-    private static MavenRepository defaultMavenRepository;
+    public static MavenRepository defaultMavenRepository;
 
     private final Aether aether;
     private final Collection<RemoteRepository> remoteRepositoriesForRequest;

@@ -24,6 +24,7 @@ import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsSource;
 import org.apache.maven.settings.building.UrlSettingsSource;
 import org.kie.scanner.Aether;
+import org.kie.scanner.MavenRepository;
 import org.kie.scanner.MavenRepositoryConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,7 @@ public class MavenSettings {
             mavenConf = new MavenRepositoryConfiguration(settings);
             Aether.instance = null;
             MavenProjectLoader.mavenProject = null;
+            MavenRepository.defaultMavenRepository = null;
         }
     }
 
