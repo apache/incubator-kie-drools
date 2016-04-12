@@ -28,10 +28,6 @@ import org.kie.api.runtime.KieSession;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-/**
- *
- * @author salaboy
- */
 @KieBusinessScoped
 @Named("rules")
 public class KieBusinessScopedRules {
@@ -48,6 +44,5 @@ public class KieBusinessScopedRules {
     public void setkSession(KieSession kSession) {
         this.kSession = kSession;
     }
-    
-    
+
 }

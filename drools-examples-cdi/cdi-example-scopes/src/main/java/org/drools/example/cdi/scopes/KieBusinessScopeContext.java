@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.drools.example.cdi.scopes;
 
 import javax.enterprise.context.spi.Context;
@@ -30,11 +25,6 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
-
-/**
- *
- * @author salaboy
- */
 public class KieBusinessScopeContext implements Context, Serializable {
 
     private Map<String, Object> somewhere = new HashMap<String, Object>();
@@ -43,8 +33,8 @@ public class KieBusinessScopeContext implements Context, Serializable {
         System.out.println(">>> Creating a new context instance");
     }
 
-    
-  // Get the scope type of the context object.
+
+    // Get the scope type of the context object.
     @Override
     public Class<? extends Annotation> getScope() {
         return KieBusinessScoped.class;
@@ -52,7 +42,7 @@ public class KieBusinessScopeContext implements Context, Serializable {
 
     // Return an existing instance of certain contextual type or create a new instance by calling
     // javax.enterprise.context.spi.Contextual.create(CreationalContext) and return the new instance.
-    
+
     @Override
     @SuppressWarnings("unchecked")
     public <T> T get(Contextual<T> contextual, CreationalContext<T> creationalContext) {
@@ -80,12 +70,10 @@ public class KieBusinessScopeContext implements Context, Serializable {
         }
     }
 
-  // Determines if the context object is active.
+    // Determines if the context object is active.
     @Override
     public boolean isActive() {
         return true;
     }
-
-   
 
 }

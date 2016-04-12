@@ -1,8 +1,18 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
 package org.drools.example.cdi.scopes;
 
 import org.apache.deltaspike.cdise.api.ContextControl;
@@ -12,6 +22,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,15 +32,8 @@ import javax.inject.Inject;
 
 import static org.junit.Assert.assertNotEquals;
 
-/**
- *
- * @author salaboy
- */
 @RunWith(Arquillian.class)
 public class RequestScopedRulesJUnitTest {
-
-    public RequestScopedRulesJUnitTest() {
-    }
 
     @Deployment
     public static JavaArchive createDeployment() {
@@ -38,17 +42,22 @@ public class RequestScopedRulesJUnitTest {
                 .addClasses(MyBean.class, MyRequestScopedBean.class)
                 .addPackages(true, "org.apache.deltaspike")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-//        System.out.println(war.toString(true));
         return jar;
     }
-    
+
     @Inject
     private MyRequestScopedBean myRequestBean;
+
+    private ContextControl ctxCtrl = BeanProvider.getContextualReference(ContextControl.class);
+
+    @After
+    public void stopContexts() {
+        ctxCtrl.stopContexts();
+    }
 
     @Test
     public void helloRequestScoped() {
         Assert.assertNotNull(myRequestBean);
-        ContextControl ctxCtrl = BeanProvider.getContextualReference(ContextControl.class);
 
         ctxCtrl.startContext(RequestScoped.class);
 

@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.drools.example.cdi.scopes;
 
 import javax.enterprise.event.Observes;
@@ -27,10 +22,6 @@ import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.Extension;
 import java.io.Serializable;
 
-/**
- *
- * @author salaboy
- */
 public class KieBusinessScopeExtension implements Extension, Serializable {
 
     public void addACustomScope(@Observes final BeforeBeanDiscovery event) {
