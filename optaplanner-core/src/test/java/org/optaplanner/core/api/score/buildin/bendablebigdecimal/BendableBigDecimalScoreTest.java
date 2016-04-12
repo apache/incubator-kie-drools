@@ -65,8 +65,16 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(scoreDefinitionHSS.createScore(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258),
-                BigDecimal.valueOf(-369)), scoreDefinitionHSS.parseScore("-147/-258/-369"));
+        BendableBigDecimalScore score = scoreDefinitionHSS.createScore(
+                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369));
+        assertEquals(score, scoreDefinitionHSS.parseScore("[-147]hard/[-258/-369]soft"));
+    }
+
+    @Test
+    public void testToString() {
+        BendableBigDecimalScore score = scoreDefinitionHSS.createScore(
+                BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369));
+        assertEquals("[-147]hard/[-258/-369]soft", score.toString());
     }
 
     @Test(expected = IllegalArgumentException.class)

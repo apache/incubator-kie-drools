@@ -26,11 +26,24 @@ import static org.junit.Assert.*;
 public class BendableScoreTest extends AbstractScoreTest {
 
     private BendableScoreDefinition scoreDefinitionHSS = new BendableScoreDefinition(1, 2);
+    private BendableScoreDefinition scoreDefinitionHHH = new BendableScoreDefinition(3, 0);
+    private BendableScoreDefinition scoreDefinitionSSS = new BendableScoreDefinition(0, 3);
 
     @Test
     public void parseScore() {
         assertEquals(scoreDefinitionHSS.createScore(-147, -258, -369),
-                scoreDefinitionHSS.parseScore("-147/-258/-369"));
+                scoreDefinitionHSS.parseScore("[-147]hard/[-258/-369]soft"));
+        assertEquals(scoreDefinitionHHH.createScore(-147, -258, -369),
+                scoreDefinitionHHH.parseScore("[-147/-258/-369]hard/[]soft"));
+        assertEquals(scoreDefinitionSSS.createScore(-147, -258, -369),
+                scoreDefinitionSSS.parseScore("[]hard/[-147/-258/-369]soft"));
+    }
+
+    @Test
+    public void testToString() {
+        assertEquals("[-147]hard/[-258/-369]soft", scoreDefinitionHSS.createScore(-147, -258, -369).toString());
+        assertEquals("[-147/-258/-369]hard/[]soft", scoreDefinitionHHH.createScore(-147, -258, -369).toString());
+        assertEquals("[]hard/[-147/-258/-369]soft", scoreDefinitionSSS.createScore(-147, -258, -369).toString());
     }
 
     @Test(expected = IllegalArgumentException.class)

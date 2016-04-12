@@ -423,7 +423,7 @@
 
       <para>A <literal>BendableScore</literal> has a configurable number of score levels. It has an array of hard
       <literal>int</literal> values and an array of soft <literal>int</literal> value, for example with 2 hard levels
-      and 3 soft levels, the score can be <literal>-123/-456/-789/-012/-345</literal>.</para>
+      and 3 soft levels, the score can be <literal>[-123/-456]hard/[-789/-012/-345]soft</literal>.</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;BENDABLE&lt;/scoreDefinitionType&gt;
@@ -432,14 +432,14 @@
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
-      <para>The number of hard and soft score levels needs to be set at configuration time. It is not flexible to change
+      <para>The number of hard and soft score levels need to be set at configuration time. It is not flexible to change
       during solving.</para>
 
       <para>Variants of this <literal>scoreDefinitionType</literal>:</para>
 
       <itemizedlist>
         <listitem>
-          <para><literal>BENDABLE_Long</literal>: Uses <literal>BendableLongScore</literal> which has
+          <para><literal>BENDABLE_LONG</literal>: Uses <literal>BendableLongScore</literal> which has
           <literal>long</literal> values instead of <literal>int</literal> values.</para>
         </listitem>
 
@@ -455,12 +455,10 @@
 
       <para>The <literal>ScoreDefinition</literal> interface defines the score representation.</para>
 
-      <para>To implement a custom <literal>Score</literal>, you will also need to implement a custom
+      <para>To implement a custom <literal>Score</literal>, you also need to implement such a custom
       <literal>ScoreDefinition</literal>. Extend <literal>AbstractScoreDefinition</literal> (preferably by copy pasting
-      <literal>HardSoftScoreDefinition</literal>) and start from there.</para>
-
-      <para>Then hook your custom <literal>ScoreDefinition</literal> in your
-      <filename>SolverConfig.xml</filename>:</para>
+      <literal>HardSoftScoreDefinition</literal>) and start from there. Then hook your custom
+      <literal>ScoreDefinition</literal> in your <filename>SolverConfig.xml</filename>:</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionClass&gt;...MyScoreDefinition&lt;/scoreDefinitionClass&gt;

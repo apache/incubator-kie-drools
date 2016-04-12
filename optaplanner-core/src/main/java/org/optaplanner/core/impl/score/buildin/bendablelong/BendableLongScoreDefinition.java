@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.buildin.bendablelong;
 
 import java.util.Arrays;
 
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
@@ -41,7 +42,22 @@ public class BendableLongScoreDefinition extends AbstractBendableScoreDefinition
 
     @Override
     public BendableLongScore parseScore(String scoreString) {
-        return BendableLongScore.parseScore(hardLevelsSize, softLevelsSize, scoreString);
+        BendableLongScore score = BendableLongScore.parseScore(scoreString);
+        if (score.getHardLevelsSize() != hardLevelsSize) {
+            throw new IllegalArgumentException("The scoreString (" + scoreString
+                    + ") for the scoreClass (" + BendableLongScore.class.getSimpleName()
+                    + ") doesn't follow the correct pattern:"
+                    + " the hardLevelsSize (" + score.getHardLevelsSize()
+                    + ") doesn't match the scoreDefinition's hardLevelsSize (" + hardLevelsSize + ").");
+        }
+        if (score.getSoftLevelsSize() != softLevelsSize) {
+            throw new IllegalArgumentException("The scoreString (" + scoreString
+                    + ") for the scoreClass (" + BendableLongScore.class.getSimpleName()
+                    + ") doesn't follow the correct pattern:"
+                    + " the softLevelsSize (" + score.getSoftLevelsSize()
+                    + ") doesn't match the scoreDefinition's softLevelsSize (" + softLevelsSize + ").");
+        }
+        return score;
     }
 
     @Override

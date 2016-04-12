@@ -43,13 +43,13 @@ public class ProjectJobSchedulingPerformanceTest extends SolverPerformanceTest {
     @Test(timeout = 600000)
     public void solveModel_A_4() {
         File unsolvedDataFile = new File("data/projectjobscheduling/unsolved/A-4.xml");
-        runSpeedTest(unsolvedDataFile, "0/-152/-69");
+        runSpeedTest(unsolvedDataFile, "[0]hard/[-152/-69]soft");
     }
 
     @Test(timeout = 600000)
     public void solveModel_A_4FastAssert() {
         File unsolvedDataFile = new File("data/projectjobscheduling/unsolved/A-4.xml");
-        runSpeedTest(unsolvedDataFile, "0/-193/-92", EnvironmentMode.FAST_ASSERT);
+        runSpeedTest(unsolvedDataFile, "[0]hard/[-193/-92]soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }

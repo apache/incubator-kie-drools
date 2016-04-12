@@ -30,7 +30,13 @@ public class BendableLongScoreTest extends AbstractScoreTest {
     @Test
     public void parseScore() {
         assertEquals(scoreDefinitionHSS.createScore(-5432109876L, -9876543210L, -3456789012L),
-                scoreDefinitionHSS.parseScore("-5432109876/-9876543210/-3456789012"));
+                scoreDefinitionHSS.parseScore("[-5432109876]hard/[-9876543210/-3456789012]soft"));
+    }
+
+    @Test
+    public void testToString() {
+        assertEquals("[-5432109876]hard/[-9876543210/-3456789012]soft",
+                scoreDefinitionHSS.createScore(-5432109876L, -9876543210L, -3456789012L).toString());
     }
 
     @Test(expected = IllegalArgumentException.class)

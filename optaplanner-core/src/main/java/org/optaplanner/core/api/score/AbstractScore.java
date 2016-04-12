@@ -30,18 +30,8 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
  */
 public abstract class AbstractScore<S extends Score> implements Score<S>, Serializable {
 
-    protected static String[] parseLevelStrings(Class<? extends Score> scoreClass,
-            String scoreString, int levelsSize) {
-        String[] scoreTokens = scoreString.split("/");
-        if (scoreTokens.length != levelsSize) {
-            throw new IllegalArgumentException("The scoreString (" + scoreString
-                    + ") for the scoreClass (" + scoreClass.getSimpleName()
-                    + ") doesn't follow the correct pattern (" + buildScorePattern(levelsSize) + "):"
-                    + " the scoreTokens length (" + scoreTokens.length
-                    + ") differs from the levelsSize (" + levelsSize + "). Check the <scoreDefinitionType> too.");
-        }
-        return scoreTokens;
-    }
+    protected static final String HARD_LABEL = "hard";
+    protected static final String SOFT_LABEL = "soft";
 
     protected static String[] parseLevelStrings(Class<? extends Score> scoreClass,
             String scoreString, String... levelSuffixes) {
@@ -49,7 +39,7 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
         if (scoreTokens.length != levelSuffixes.length) {
             throw new IllegalArgumentException("The scoreString (" + scoreString
                     + ") for the scoreClass (" + scoreClass.getSimpleName()
-                    + ") doesn't follow the correct pattern (" + buildScorePattern(levelSuffixes) + "):"
+                    + ") doesn't follow the correct pattern (" + buildScorePattern(false, levelSuffixes) + "):"
                     + " the scoreTokens length (" + scoreTokens.length
                     + ") differs from the levelSuffixes length (" + levelSuffixes.length + ").");
         }
@@ -58,11 +48,44 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
             if (!scoreTokens[i].endsWith(levelSuffixes[i])) {
                 throw new IllegalArgumentException("The scoreString (" + scoreString
                         + ") for the scoreClass (" + scoreClass.getSimpleName()
-                        + ") doesn't follow the correct pattern (" + buildScorePattern(levelSuffixes) + "):"
+                        + ") doesn't follow the correct pattern (" + buildScorePattern(false, levelSuffixes) + "):"
                         + " the scoreToken (" + scoreTokens[i]
                         + ") does not end with levelSuffix (" + levelSuffixes[i] + ").");
             }
             levelStrings[i] = scoreTokens[i].substring(0, scoreTokens[i].length() - levelSuffixes[i].length());
+        }
+        return levelStrings;
+    }
+
+    protected static String[][] parseBendableLevelStrings(Class<? extends Score> scoreClass,
+            String scoreString, String... levelSuffixes) {
+        String[][] levelStrings = new String[levelSuffixes.length][];
+        int startIndex = 0;
+        for (int i = 0; i < levelSuffixes.length; i++) {
+            String levelSuffix = levelSuffixes[i];
+            int endIndex = scoreString.indexOf(levelSuffix, startIndex);
+            if (endIndex < 0) {
+                throw new IllegalArgumentException("The scoreString (" + scoreString
+                        + ") for the scoreClass (" + scoreClass.getSimpleName()
+                        + ") doesn't follow the correct pattern (" + buildScorePattern(true, levelSuffixes) + "):"
+                        + " the levelSuffix (" + levelSuffix
+                        + ") isn't in the scoreSubstring (" + scoreString.substring(startIndex) + ").");
+            }
+            String scoreSubString = scoreString.substring(startIndex, endIndex);
+            if (!scoreSubString.startsWith("[") || !scoreSubString.endsWith("]")) {
+                throw new IllegalArgumentException("The scoreString (" + scoreString
+                        + ") for the scoreClass (" + scoreClass.getSimpleName()
+                        + ") doesn't follow the correct pattern (" + buildScorePattern(true, levelSuffixes) + "):"
+                        + " the scoreSubString (" + scoreSubString
+                        + ") does not start and end with \"[\" and \"]\".");
+            }
+            if (scoreSubString.equals("[]")) {
+                levelStrings[i] = new String[0];
+            } else {
+                String[] scoreTokens = scoreSubString.substring(1, scoreSubString.length() - 1).split("/");
+                levelStrings[i] = scoreTokens;
+            }
+            startIndex = endIndex + levelSuffix.length() + "/".length();
         }
         return levelStrings;
     }
@@ -111,21 +134,7 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
         }
     }
 
-    protected static String buildScorePattern(int levelsSize) {
-        StringBuilder scorePattern = new StringBuilder(levelsSize * 4);
-        boolean first = true;
-        for (int i = 0; i < levelsSize; i++) {
-            if (first) {
-                first = false;
-            } else {
-                scorePattern.append("/");
-            }
-            scorePattern.append("999");
-        }
-        return scorePattern.toString();
-    }
-
-    protected static String buildScorePattern(String... levelSuffixes) {
+    protected static String buildScorePattern(boolean bendable, String... levelSuffixes) {
         StringBuilder scorePattern = new StringBuilder(levelSuffixes.length * 10);
         boolean first = true;
         for (String levelSuffix : levelSuffixes) {
@@ -134,7 +143,11 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
             } else {
                 scorePattern.append("/");
             }
-            scorePattern.append("999");
+            if (bendable) {
+                scorePattern.append("[999/.../999]");
+            } else {
+                scorePattern.append("999");
+            }
             scorePattern.append(levelSuffix);
         }
         return scorePattern.toString();

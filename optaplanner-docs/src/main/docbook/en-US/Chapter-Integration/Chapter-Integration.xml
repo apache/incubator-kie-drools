@@ -238,7 +238,7 @@ public class Schedule {
 
         <programlisting language="xml">&lt;Schedule&gt;
    ...
-   &lt;score&gt;0/0hard/-100/-20/-3soft&lt;/score&gt;
+   &lt;score&gt;[0/0]hard/[-100/-20/-3]soft&lt;/score&gt;
 &lt;/Schedule&gt;</programlisting>
       </section>
     </section>

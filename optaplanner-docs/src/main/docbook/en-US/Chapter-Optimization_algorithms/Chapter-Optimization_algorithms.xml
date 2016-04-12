@@ -850,7 +850,7 @@
       soft level, it could look like this:</para>
 
       <programlisting language="xml">  &lt;termination&gt;
-    &lt;bestScoreLimit&gt;0/0/0/-5000&lt;/bestScoreLimit&gt;
+    &lt;bestScoreLimit&gt;[0/0/0]hard/[-5000]soft&lt;/bestScoreLimit&gt;
   &lt;/termination&gt;</programlisting>
 
       <para>To terminate once a feasible solution has been reached, this <literal>Termination</literal> isn't practical

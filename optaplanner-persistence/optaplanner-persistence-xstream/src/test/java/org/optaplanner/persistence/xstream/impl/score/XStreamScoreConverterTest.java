@@ -379,7 +379,9 @@ public class XStreamScoreConverterTest {
         W output = serializeAndDeserializeWithXStream(input);
         assertEquals(expectedScore, output.getScore());
         if (expectedScore != null) {
-            assertXStreamXml("<([\\w\\-\\.]+)>\\s*<score>" + expectedScore.toString() + "</score>\\s*</\\1>", input);
+            assertXStreamXml("<([\\w\\-\\.]+)>\\s*<score>"
+                    + expectedScore.toString().replaceAll("\\[", "\\\\[").replaceAll("\\]", "\\\\]")
+                    + "</score>\\s*</\\1>", input);
         } else {
             assertXStreamXml("<([\\w\\-\\.]+)/>", input);
         }
@@ -406,6 +408,7 @@ public class XStreamScoreConverterTest {
     public static abstract class TestScoreWrapper<S extends Score> implements Serializable {
 
         public abstract S getScore();
+
     }
 
 }

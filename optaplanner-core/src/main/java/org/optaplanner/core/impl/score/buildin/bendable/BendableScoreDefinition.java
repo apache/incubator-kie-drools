@@ -41,7 +41,22 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
 
     @Override
     public BendableScore parseScore(String scoreString) {
-        return BendableScore.parseScore(hardLevelsSize, softLevelsSize, scoreString);
+        BendableScore score = BendableScore.parseScore(scoreString);
+        if (score.getHardLevelsSize() != hardLevelsSize) {
+            throw new IllegalArgumentException("The scoreString (" + scoreString
+                    + ") for the scoreClass (" + BendableScore.class.getSimpleName()
+                    + ") doesn't follow the correct pattern:"
+                    + " the hardLevelsSize (" + score.getHardLevelsSize()
+                    + ") doesn't match the scoreDefinition's hardLevelsSize (" + hardLevelsSize + ").");
+        }
+        if (score.getSoftLevelsSize() != softLevelsSize) {
+            throw new IllegalArgumentException("The scoreString (" + scoreString
+                    + ") for the scoreClass (" + BendableScore.class.getSimpleName()
+                    + ") doesn't follow the correct pattern:"
+                    + " the softLevelsSize (" + score.getSoftLevelsSize()
+                    + ") doesn't match the scoreDefinition's softLevelsSize (" + softLevelsSize + ").");
+        }
+        return score;
     }
 
     @Override

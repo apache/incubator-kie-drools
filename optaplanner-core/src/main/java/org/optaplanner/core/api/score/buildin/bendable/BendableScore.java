@@ -35,21 +35,18 @@ public final class BendableScore extends AbstractScore<BendableScore>
         implements FeasibilityScore<BendableScore> {
 
     /**
-     * @param hardLevelsSize {@code >= 0}
-     * @param softLevelsSize {@code >= 0}
      * @param scoreString never null
      * @return never null
      */
-    public static BendableScore parseScore(int hardLevelsSize, int softLevelsSize, String scoreString) {
-        int levelsSize = hardLevelsSize + softLevelsSize;
-        String[] levelStrings = parseLevelStrings(BendableScore.class, scoreString, levelsSize);
-        int[] hardScores = new int[hardLevelsSize];
-        int[] softScores = new int[softLevelsSize];
+    public static BendableScore parseScore(String scoreString) {
+        String[][] levelStrings = parseBendableLevelStrings(BendableScore.class, scoreString, HARD_LABEL, SOFT_LABEL);
+        int[] hardScores = new int[levelStrings[0].length];
         for (int i = 0; i < hardScores.length; i++) {
-            hardScores[i] = parseLevelAsInt(BendableScore.class, scoreString, levelStrings[i]);
+            hardScores[i] = parseLevelAsInt(BendableScore.class, scoreString, levelStrings[0][i]);
         }
+        int[] softScores = new int[levelStrings[1].length];
         for (int i = 0; i < softScores.length; i++) {
-            softScores[i] = parseLevelAsInt(BendableScore.class, scoreString, levelStrings[hardScores.length + i]);
+            softScores[i] = parseLevelAsInt(BendableScore.class, scoreString, levelStrings[1][i]);
         }
         return valueOf(hardScores, softScores);
     }
@@ -314,7 +311,8 @@ public final class BendableScore extends AbstractScore<BendableScore>
     }
 
     public String toString() {
-        StringBuilder s = new StringBuilder(((hardScores.length + softScores.length) * 4) + 1);
+        StringBuilder s = new StringBuilder(((hardScores.length + softScores.length) * 4) + 13);
+        s.append("[");
         boolean first = true;
         for (int hardScore : hardScores) {
             if (first) {
@@ -324,6 +322,8 @@ public final class BendableScore extends AbstractScore<BendableScore>
             }
             s.append(hardScore);
         }
+        s.append("]hard/[");
+        first = true;
         for (int softScore : softScores) {
             if (first) {
                 first = false;
@@ -332,6 +332,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
             }
             s.append(softScore);
         }
+        s.append("]soft");
         return s.toString();
     }
 
