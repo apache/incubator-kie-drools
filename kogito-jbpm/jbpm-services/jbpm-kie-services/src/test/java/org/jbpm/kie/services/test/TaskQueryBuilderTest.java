@@ -105,7 +105,7 @@ public class TaskQueryBuilderTest extends AbstractKieServicesBaseTest {
         File kjarJPA = new File("src/test/resources/kjar-jpa/persistence-test.jar");
         File pomJPA = new File("src/test/resources/kjar-jpa/pom.xml");
 
-        repository.deployArtifact(releaseIdJPA, kjarJPA, pomJPA);
+        repository.installArtifact(releaseIdJPA, kjarJPA, pomJPA);
 
         deploymentUnitJPA = new KModuleDeploymentUnit("org.jbpm.test", "persistence-test", "1.0.0");
     }

@@ -156,13 +156,13 @@ public class TaskVariablesQueryServiceTest extends AbstractKieServicesBaseTest {
         File kjar = new File("src/test/resources/kjar-task-vars/task-vars-1.0.jar");
         File pom = new File("src/test/resources/kjar-task-vars/pom.xml");
         MavenRepository repository = getMavenRepository();
-        repository.deployArtifact(releaseId, kjar, pom);
+        repository.installArtifact(releaseId, kjar, pom);
         
         ReleaseId releaseIdSales = ks.newReleaseId("org.jbpm.test", "product-sale", "1.0");
         File kjarSales = new File("src/test/resources/kjar-sales/product-sale-1.0.jar");
         File pomSales = new File("src/test/resources/kjar-sales/pom.xml");
         
-        repository.deployArtifact(releaseIdSales, kjarSales, pomSales);
+        repository.installArtifact(releaseIdSales, kjarSales, pomSales);
         
         
         assertNotNull(deploymentService);

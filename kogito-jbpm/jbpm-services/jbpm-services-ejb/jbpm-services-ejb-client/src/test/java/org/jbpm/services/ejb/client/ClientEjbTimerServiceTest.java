@@ -68,7 +68,7 @@ public class ClientEjbTimerServiceTest extends AbstractKieServicesBaseTest {
         File kjar = new File("src/test/resources/kjar/custom-data-project-1.0.jar");
         File pom = new File("src/test/resources/kjar/pom.xml");
         MavenRepository repository = getMavenRepository();
-        repository.deployArtifact(releaseId, kjar, pom);
+        repository.installArtifact(releaseId, kjar, pom);
        
     }
     
