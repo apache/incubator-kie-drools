@@ -18,6 +18,7 @@ package org.kie.scanner;
 import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.settings.Server;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -31,7 +32,9 @@ import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.DependencyVisitor;
 import org.eclipse.aether.installation.InstallRequest;
 import org.eclipse.aether.installation.InstallationException;
+import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
@@ -41,6 +44,8 @@ import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.version.Version;
 import org.kie.api.builder.ReleaseId;
+import org.kie.scanner.embedder.MavenEmbedder;
+import org.kie.scanner.embedder.MavenProjectLoader;
 import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,7 +198,8 @@ public class MavenRepository {
                                 File pomfile ) {
         RemoteRepository repository = getRemoteRepositoryFromDistributionManagement( pomfile );
         if (repository == null) {
-            throw new RuntimeException( "No Distribution Managament configured: unknown repository" );
+            log.warn( "No Distribution Managament configured: unknown repository" );
+            return;
         }
         deployArtifact( repository, releaseId, kieModule, pomfile );
     }
@@ -204,13 +210,31 @@ public class MavenRepository {
         if (distMan == null) {
             return null;
         }
-        DeploymentRepository deployRepo = mavenProject.getVersion().endsWith( "SNAPSHOT" ) ?
+        DeploymentRepository deployRepo = distMan.getSnapshotRepository() != null && mavenProject.getVersion().endsWith( "SNAPSHOT" ) ?
                                           distMan.getSnapshotRepository() :
                                           distMan.getRepository();
         if (deployRepo == null) {
             return null;
         }
-        return new RemoteRepository.Builder( deployRepo.getId(), "default", deployRepo.getUrl() ).build();
+
+        RemoteRepository.Builder remoteRepoBuilder = new RemoteRepository.Builder( deployRepo.getId(), deployRepo.getLayout(), deployRepo.getUrl() )
+                .setSnapshotPolicy( new RepositoryPolicy( true,
+                                                          RepositoryPolicy.UPDATE_POLICY_DAILY,
+                                                          RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
+                .setReleasePolicy( new RepositoryPolicy( true,
+                                                         RepositoryPolicy.UPDATE_POLICY_ALWAYS,
+                                                         RepositoryPolicy.CHECKSUM_POLICY_WARN ) );
+
+        Server server = MavenSettings.getSettings().getServer( deployRepo.getId() );
+        if ( server != null ) {
+            MavenEmbedder embedder = MavenProjectLoader.newMavenEmbedder( false );
+            Authentication authentication = embedder.getMavenSession().getRepositorySession()
+                                                    .getAuthenticationSelector()
+                                                    .getAuthentication( remoteRepoBuilder.build() );
+            remoteRepoBuilder.setAuthentication( authentication );
+        }
+
+        return remoteRepoBuilder.build();
     }
 
     public void deployArtifact( RemoteRepository repository,
