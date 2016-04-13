@@ -186,7 +186,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
             while ( entries.hasMoreElements() ) {
                 ZipEntry entry = entries.nextElement();
                 String pathName = entry.getName();
-                if(pathName.endsWith("bpmn2")){
+                if(pathName.endsWith("bpmn") || pathName.endsWith("bpmn2")){
                   processes.put(pathName, new String(readBytesFromZipEntry(jarFile, entry), UTF8_CHARSET));
                 }
                 if (!indexClass(pathName)) {
