@@ -1202,7 +1202,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this.id;
     }
 
-    public void setId(Long id) {
+    public void setIdentifier(long id) {
         checkAlive();
         this.id = id;
     }

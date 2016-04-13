@@ -211,7 +211,7 @@ public class ProtobufOutputMarshaller {
                 _session.setProcessData( _pdata.build() );
             }
 
-            Timers _timers = writeTimers( context.wm.getTimerService().getTimerJobInstances( context.wm.getId() ),
+            Timers _timers = writeTimers( context.wm.getTimerService().getTimerJobInstances( context.wm.getIdentifier() ),
                                           context );
             if ( _timers != null ) {
                 _session.setTimers( _timers );
