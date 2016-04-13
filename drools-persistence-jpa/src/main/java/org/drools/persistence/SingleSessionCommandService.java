@@ -120,7 +120,7 @@ public class SingleSessionCommandService
         }
 
         // update the session id to be the same as the session info id
-        ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId());
+        ((InternalKnowledgeRuntime) ksession).setIdentifier( this.sessionInfo.getId());
     }
 
     protected void initNewKnowledgeSession(KieBase kbase, KieSessionConfiguration conf) { 
@@ -243,7 +243,7 @@ public class SingleSessionCommandService
 
         // update the session id to be the same as the session info id
         InternalKnowledgeRuntime kruntime = ((InternalKnowledgeRuntime) ksession);
-        kruntime.setId( this.sessionInfo.getId() );
+        kruntime.setIdentifier( this.sessionInfo.getId() );
         kruntime.setEndOperationListener( new EndOperationListenerImpl( this.txm, this.sessionInfo ) );
 
         if ( this.kContext == null ) {
