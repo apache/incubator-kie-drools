@@ -55,7 +55,7 @@ public class MavenSettings {
     }
 
     // USE ONLY FOR TESTING PURPOSES
-    public static void reinitSettings() {
+    static void reinitSettings() {
         SettingsHolder.reinitSettings();
     }
 
