@@ -201,15 +201,19 @@ public class StatefulProcessSession extends AbstractRuntime implements StatefulK
 			timerService.shutdown();
 		}
 	}
-	
-	public void setId(Long id) {
+
+	public void setIdentifier(long id) {
 		this.id = id;
 	}
 
+	public long getIdentifier() {
+		return id;
+	}
+	
 	public int getId() {
 		return id.intValue();
 	}
-	
+
 	public void setEndOperationListener(EndOperationListener listener) {
 		
 	}
@@ -401,11 +405,4 @@ public class StatefulProcessSession extends AbstractRuntime implements StatefulK
     public void destroy() {
         dispose();
     }
-
-	@Override
-	public long getIdentifier() {
-		return id;
-	}
-
-
 }
