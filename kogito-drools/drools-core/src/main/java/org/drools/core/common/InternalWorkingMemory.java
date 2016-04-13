@@ -45,8 +45,8 @@ public interface InternalWorkingMemory
 
     InternalAgenda getAgenda();
 
-    int getId();
-    void setId(Long id);
+    long getIdentifier();
+    void setIdentifier(long id);
 
     void setRuleRuntimeEventSupport(RuleRuntimeEventSupport workingMemoryEventSupport);
 

@@ -31,6 +31,7 @@ import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.management.KieSessionMonitoringMBean;
+import org.kie.api.runtime.KieSession;
 
 import javax.management.ObjectName;
 import java.util.Date;
@@ -58,7 +59,7 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
     public KieSessionMonitoringImpl(InternalWorkingMemory ksession) {
         this.ksession = ksession;
         this.kbase = ksession.getKnowledgeBase();
-        this.name = DroolsManagementAgent.createObjectName(KSESSION_PREFIX + ":type="+kbase.getId()+",group=Sessions,sessionId=Session-"+ksession.getId());
+        this.name = DroolsManagementAgent.createObjectName(KSESSION_PREFIX + ":type="+kbase.getId()+",group=Sessions,sessionId=Session-"+ksession.getIdentifier());
         this.agendaStats = new AgendaStats();
         this.processStats = new ProcessStats();
         this.ksession.addEventListener( agendaStats );
@@ -108,7 +109,7 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
      * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getKnowledgeSessionId()
      */
     public int getKieSessionId() {
-        return ksession.getId();
+        return ((KieSession)ksession).getId();
     }
 
     /* (non-Javadoc)
