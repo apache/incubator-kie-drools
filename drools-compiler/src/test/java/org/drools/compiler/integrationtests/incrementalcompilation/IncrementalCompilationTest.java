@@ -2698,4 +2698,87 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
 
     }
+
+    @Test
+    public void testIncrementalCompilationRemovingParentRule() throws Exception {
+        // DROOLS-1031
+        String drl1 = "package org.drools.compiler\n" +
+                      "rule R1 when\n" +
+                      "   $s : String()\n" +
+                      "then\n" +
+                      "end\n";
+
+        String drl2 = "package org.drools.compiler\n" +
+                      "rule R2 extends R1 when\n" +
+                      "   $i : Integer()\n" +
+                      "then\n" +
+                      "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                              .write( "src/main/resources/r1.drl", drl1 )
+                              .write( "src/main/resources/r2.drl", drl2 );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        KieContainer kieContainer = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() );
+
+        KieSession ksession = kieContainer.newKieSession();
+        ksession.insert( "test" );
+        ksession.insert( 1 );
+        assertEquals( 2, ksession.fireAllRules() );
+
+        kfs.delete( "src/main/resources/r1.drl" );
+        IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).createFileSet( "src/main/resources/r1.drl", "src/main/resources/r2.drl" ).build();
+
+        assertEquals( 1, results.getAddedMessages().size() );
+        assertEquals( 0, results.getRemovedMessages().size() );
+
+        kieContainer.updateToVersion( ks.getRepository().getDefaultReleaseId() );
+        ksession = kieContainer.newKieSession();
+        ksession.insert( "test" );
+        ksession.insert( 1 );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testIncrementalCompilationChangeingParentRule() throws Exception {
+        // DROOLS-1031
+        String drl1_1 =
+                      "rule R1 when\n" +
+                      "   $s : String( this == \"s1\" )\n" +
+                      "then\n" +
+                      "end\n";
+
+        String drl1_2 =
+                      "rule R1 when\n" +
+                      "   $s : String( this == \"s2\" )\n" +
+                      "then\n" +
+                      "end\n";
+
+        String drl2 =
+                      "rule R2 extends R1 when\n" +
+                      "   $i : Integer()\n" +
+                      "then\n" +
+                      "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-extends", "1.1.1" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1_1 + drl2 );
+
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        ksession.insert( 1 );
+        ksession.insert( "s2" );
+        assertEquals( 0, ksession.fireAllRules() );
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-extends", "1.1.2");
+        km = createAndDeployJar( ks, releaseId2, drl1_2 + drl2 );
+
+        kc.updateToVersion( releaseId2 );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
 }

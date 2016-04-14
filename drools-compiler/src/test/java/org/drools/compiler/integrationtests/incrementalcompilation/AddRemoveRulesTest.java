@@ -19,7 +19,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SubnetworkTuple;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.definition.rule.Rule;
@@ -554,7 +553,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
         session.fireAllRules();
     }
 
-    @Test @Ignore("DROOLS-1031")
+    @Test
     public void testAddRemoveWithExtends() {
         final String packageName = "test_same_condition_pk" ;
         final String rule1 = "package " + packageName + ";" +
@@ -574,6 +573,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "then \n" +
                 "System.out.println('Child rule!'); \n"+
                 "end";
+
         final StatefulKnowledgeSession session = buildSessionInSteps( rule1, rule2);
         session.fireAllRules();
         final Map<String, Object> fact = new HashMap<String, Object>();
@@ -581,52 +581,12 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
         fact.put("test", 1);
         session.insert(fact);
 
-        session.getKieBase().removeRule(packageName, "parentRule");
-        assertTrue(session.fireAllRules() == 0);
-    }
-
-    @Test @Ignore("DROOLS-1031")
-    public void testRuleWithExtendsModifyParent() {
-        final String packageName = "test_same_condition_pk" ;
-        final String rule1 = "package " + packageName + ";" +
-                "import java.util.Map; \n" +
-                "rule \"parentRule\" \n" +
-                "when \n" +
-                " Map(this['name'] == 'Michael') \n" +
-                "then \n" +
-                "System.out.println('Parent rule!'); \n"+
-                "end";
-
-        final String rule1modified = "package " + packageName + ";" +
-                "import java.util.Map; \n" +
-                "rule \"parentRule\" \n" +
-                "when \n" +
-                " Map(this['name'] == 'Jerry') \n" +
-                "then \n" +
-                "System.out.println('Parent rule modified!'); \n"+
-                "end";
-
-        final String rule2 = "package " + packageName + ";" +
-                "import java.util.Map; \n" +
-                "rule \"childRule\" \n" +
-                "     extends \"parentRule\"\n" +
-                "when \n" +
-                " Map(this['test'] == '1') \n" +
-                "then \n" +
-                "System.out.println('Child rule!'); \n"+
-                "end";
-        final StatefulKnowledgeSession session = buildSessionInSteps( rule1, rule2);
-        session.fireAllRules();
-
-        final KnowledgeBuilder kbuilder2 = createKnowledgeBuilder(session.getKieBase(), rule1modified);
-        session.getKieBase().addKnowledgePackages(kbuilder2.getKnowledgePackages());
-
-        final Map<String, Object> fact2 = new HashMap<String, Object>();
-        fact2.put("name", "Michael");
-        fact2.put("test", 1);
-        session.insert(fact2);
-
-        assertTrue(session.fireAllRules() == 0);
+        try {
+            session.getKieBase().removeRule(packageName, "parentRule");
+            fail("A parent rule cannot be removed if one of its children is still there");
+        } catch (Exception e) {
+            // OK
+        }
     }
 
     @Test

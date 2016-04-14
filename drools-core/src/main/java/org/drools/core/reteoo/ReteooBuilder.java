@@ -154,19 +154,29 @@ public class ReteooBuilder
         return this.rules;
     }
 
-    public synchronized void removeRule(final RuleImpl rule) {
+    public synchronized void removeRules(List<RuleImpl> rulesToBeRemoved) {
         // reset working memories for potential propagation
         InternalWorkingMemory[] workingMemories = this.kBase.getWorkingMemories();
 
-        final RuleRemovalContext context = new RuleRemovalContext( rule );
-        context.setKnowledgeBase(kBase);
+        for (RuleImpl rule : rulesToBeRemoved) {
+            if (rule.hasChildren() && !rulesToBeRemoved.containsAll( rule.getChildren() )) {
+                throw new RuntimeException("Cannot remove parent rule " + rule + " without having removed all its chikdren");
+            }
 
-        for (BaseNode node : rules.remove( rule.getFullyQualifiedName() )) {
-            removeTerminalNode(context, (TerminalNode) node, workingMemories);
-        }
+            final RuleRemovalContext context = new RuleRemovalContext( rule );
+            context.setKnowledgeBase( kBase );
 
-        if (rule.isQuery()) {
-            this.queries.remove( rule.getName() );
+            for ( BaseNode node : rules.remove( rule.getFullyQualifiedName() ) ) {
+                removeTerminalNode( context, (TerminalNode) node, workingMemories );
+            }
+
+            if ( rule.isQuery() ) {
+                this.queries.remove( rule.getName() );
+            }
+
+            if (rule.getParent() != null && !rulesToBeRemoved.contains( rule.getParent() )) {
+                rule.getParent().removeChild( rule );
+            }
         }
     }
 

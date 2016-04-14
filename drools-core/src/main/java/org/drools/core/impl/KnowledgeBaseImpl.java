@@ -1200,12 +1200,19 @@ public class KnowledgeBaseImpl
 
         //Merge rules into the RuleBase package
         //as this is needed for individual rule removal later on
+        List<RuleImpl> rulesToBeRemoved = new ArrayList<RuleImpl>();
         for (Rule newRule : newPkg.getRules()) {
             // remove the rule if it already exists
-            if (pkg.getRule(newRule.getName()) != null) {
-                removeRule( pkg, pkg.getRule(newRule.getName()) );
+            RuleImpl oldRule = pkg.getRule(newRule.getName());
+            if (oldRule != null) {
+                rulesToBeRemoved.add(oldRule);
             }
+        }
+        if (!rulesToBeRemoved.isEmpty()) {
+            removeRules( pkg, rulesToBeRemoved );
+        }
 
+        for (Rule newRule : newPkg.getRules()) {
             pkg.addRule((RuleImpl)newRule);
         }
 
@@ -1627,7 +1634,6 @@ public class KnowledgeBaseImpl
     /**
      * Notify listeners and sub-classes about imminent removal of a rule from a package.
      */
-    // FIXME: removeTerminalNode(String, String) and removeTerminalNode(Package, Rule) do totally different things!
     public void removeRule( final InternalKnowledgePackage pkg,
                             final RuleImpl rule ) {
         enqueueModification(new Runnable() {
@@ -1638,9 +1644,29 @@ public class KnowledgeBaseImpl
         });
     }
 
+    public void removeRules( final InternalKnowledgePackage pkg,
+                             final List<RuleImpl> rules ) {
+        enqueueModification(new Runnable() {
+            @Override
+            public void run() {
+                internalRemoveRules(pkg, rules);
+            }
+        });
+    }
+
+    private void internalRemoveRules(InternalKnowledgePackage pkg, List<RuleImpl> rules) {
+        for (RuleImpl rule : rules) {
+            this.eventSupport.fireBeforeRuleRemoved( pkg, rule );
+        }
+        this.reteooBuilder.removeRules(rules);
+        for (RuleImpl rule : rules) {
+            this.eventSupport.fireAfterRuleRemoved( pkg, rule );
+        }
+    }
+
     private void internalRemoveRule(InternalKnowledgePackage pkg, RuleImpl rule) {
         this.eventSupport.fireBeforeRuleRemoved(pkg, rule);
-        this.reteooBuilder.removeRule(rule);
+        this.reteooBuilder.removeRules(Collections.singletonList(rule));
         this.eventSupport.fireAfterRuleRemoved(pkg, rule);
     }
 
@@ -1855,17 +1881,20 @@ public class KnowledgeBaseImpl
         boolean modified = false;
         for (InternalKnowledgePackage pkg : pkgs.values()) {
             List<RuleImpl> rulesToBeRemoved = pkg.removeRulesGeneratedFromResource(resource);
-            for (RuleImpl rule : rulesToBeRemoved) {
-                this.reteooBuilder.removeRule(rule);
+            if (!rulesToBeRemoved.isEmpty()) {
+                this.reteooBuilder.removeRules( rulesToBeRemoved );
             }
+
             List<Function> functionsToBeRemoved = pkg.removeFunctionsGeneratedFromResource(resource);
             for (Function function : functionsToBeRemoved) {
                 removeFunction(function.getName());
             }
+
             List<Process> processesToBeRemoved = pkg.removeProcessesGeneratedFromResource(resource);
             for (Process process : processesToBeRemoved) {
                 processes.remove(process.getId());
             }
+
             List<TypeDeclaration> removedTypes = pkg.removeTypesGeneratedFromResource(resource);
             modified |= !rulesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty() || !processesToBeRemoved.isEmpty() || !removedTypes.isEmpty();
         }
