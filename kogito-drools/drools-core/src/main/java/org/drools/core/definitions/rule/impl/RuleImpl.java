@@ -16,23 +16,6 @@
 
 package org.drools.core.definitions.rule.impl;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.EnabledBoolean;
 import org.drools.core.base.SalienceInteger;
@@ -63,6 +46,23 @@ import org.kie.api.io.Resource;
 import org.kie.internal.definition.rule.InternalRule;
 import org.kie.internal.security.KiePolicyHelper;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 public class RuleImpl implements Externalizable,
                                  Wireable,
                                  Dialectable,
@@ -88,6 +88,8 @@ public class RuleImpl implements Externalizable,
 
     /** Parent Rule Name, optional */
     private RuleImpl                 parent;
+
+    private List<RuleImpl>           children;
 
     /** Salience value. */
     private Salience salience;
@@ -870,13 +872,33 @@ public class RuleImpl implements Externalizable,
 
     public void setParent(RuleImpl parent) {
         this.parent = parent;
+        parent.addChild( this );
     }
 
     public RuleImpl getParent() {
         return parent;
     }
 
-    public static java.util.List getMethodBytecode(Class cls, String ruleClassName, String packageName, String methodName, String resource) {
+    public void addChild(RuleImpl child) {
+        if (children == null) {
+            children = new ArrayList<RuleImpl>();
+        }
+        children.add(child);
+    }
+
+    public void removeChild(RuleImpl child) {
+        children.remove( child );
+    }
+
+    public List<RuleImpl> getChildren() {
+        return children;
+    }
+
+    public boolean hasChildren() {
+        return children != null && !children.isEmpty();
+    }
+
+    public static java.util.List getMethodBytecode( Class cls, String ruleClassName, String packageName, String methodName, String resource ) {
         org.drools.core.util.asm.MethodComparator.Tracer visit = new org.drools.core.util.asm.MethodComparator.Tracer(methodName);
 
         java.io.InputStream is = cls.getClassLoader().getResourceAsStream( resource );

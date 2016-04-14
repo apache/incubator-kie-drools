@@ -37,6 +37,7 @@ import org.kie.internal.KnowledgeBase;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -119,6 +120,7 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
 
     void addRule( InternalKnowledgePackage pkg, RuleImpl rule ) throws InvalidPatternException;
     void removeRule( InternalKnowledgePackage pkg, RuleImpl rule ) throws InvalidPatternException;
+    void removeRules( InternalKnowledgePackage pkg, List<RuleImpl> rules ) throws InvalidPatternException;
 
     void addProcess( Process process );
     void removeProcess( final String id );

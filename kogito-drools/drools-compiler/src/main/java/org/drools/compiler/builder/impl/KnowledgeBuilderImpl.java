@@ -1156,13 +1156,18 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                             pkg.removeRule(((RuleImpl)rule));
                         }
                     }
+
+                    List<RuleImpl> rulesToBeRemoved = new ArrayList<RuleImpl>();
                     for (RuleDescr ruleDescr : packageDescr.getRules()) {
                         if (filterAccepts(ResourceChange.Type.RULE, ruleDescr.getNamespace(), ruleDescr.getName()) ) {
-                            if (pkg.getRule(ruleDescr.getName()) != null) {
-                                // XXX: this one notifies listeners
-                                this.kBase.removeRule(pkg, pkg.getRule(ruleDescr.getName()));
+                            RuleImpl rule = (RuleImpl)pkg.getRule(ruleDescr.getName());
+                            if (rule != null) {
+                                rulesToBeRemoved.add(rule);
                             }
                         }
+                    }
+                    if (!rulesToBeRemoved.isEmpty()) {
+                        kBase.removeRules( pkg, rulesToBeRemoved );
                     }
                 } finally {
                     this.kBase.unlock();
