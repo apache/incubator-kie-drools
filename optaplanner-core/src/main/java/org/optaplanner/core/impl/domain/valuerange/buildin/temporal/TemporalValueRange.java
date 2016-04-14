@@ -20,6 +20,8 @@ public class TemporalValueRange<Temporal_ extends Temporal> extends AbstractCoun
     private final long incrementUnitAmount;
     private final TemporalUnit incrementUnitType;
 
+    private final long size;
+
     /**
      * @param from never null, inclusive minimum
      * @param to never null, exclusive maximum, {@code >= from}
@@ -46,30 +48,44 @@ public class TemporalValueRange<Temporal_ extends Temporal> extends AbstractCoun
                     + " must have a incrementUnitType (" + incrementUnitType
                     + ") that is supported by its from (" + from + ") and to (" + to + ").");
         }
-        long space = from.until(to, incrementUnitType);
-        if (space < 0) {
+        Comparable<Temporal_> comparableFrom = (Comparable<Temporal_>) from;
+        // We cannot use Temporal.until() to check bounds due to rounding errors
+        if (comparableFrom.compareTo(to) > 0) {
             throw new IllegalArgumentException("The " + getClass().getSimpleName()
                     + " cannot have a from (" + from + ") which is strictly higher than its to (" + to + ").");
         }
+        long space = from.until(to, incrementUnitType);
+        if (to.equals(from.plus(space + 1, incrementUnitType))) {
+            // Temporal.until() rounds down, but it needs to round up, to be consistent with Temporal.plus()
+            space++;
+        }
 
         // Fail fast if there's a remainder on amount (to be consistent with other value ranges)
-        // Do not fail fast if there's a remainder on type: what is the remainder in months between 31-JAN and 1-MAR?
         if (space % incrementUnitAmount > 0) {
             throw new IllegalArgumentException("The " + getClass().getSimpleName()
                     + " 's incrementUnitAmount (" + incrementUnitAmount
                     + ") must fit an integer number of times in the space (" + space
                     + ") between from (" + from + ") and to (" + to + ").");
         }
+        // Fail fast if there's a remainder on type (to be consistent with other value ranges)
+        if (!to.equals(from.plus(space, incrementUnitType))) {
+            throw new IllegalArgumentException("The " + getClass().getSimpleName()
+                    + " 's incrementUnitType (" + incrementUnitType
+                    + ") must fit an integer number of times in the space (" + space
+                    + ") between from (" + from + ") and to (" + to + ").\n"
+                    + "The to (" + to + ") is not the expected to (" + from.plus(space, incrementUnitType) + ").");
+        }
+        size =  space / incrementUnitAmount;
     }
 
     @Override
     public long getSize() {
-        return from.until(to, incrementUnitType) / incrementUnitAmount;
+        return size;
     }
 
     @Override
     public Temporal_ get(long index) {
-        if (index >= getSize() || index < 0) {
+        if (index >= size || index < 0) {
             throw new IndexOutOfBoundsException();
         }
         return (Temporal_) from.plus(index * incrementUnitAmount, incrementUnitType);
@@ -80,10 +96,18 @@ public class TemporalValueRange<Temporal_ extends Temporal> extends AbstractCoun
         if (value == null || !value.isSupported(incrementUnitType)) {
             return false;
         }
-        long fromSpace = from.until(value, incrementUnitType);
-        if (fromSpace < 0 || value.until(to, incrementUnitType) <= 0) {
+        Comparable<Temporal_> comparableValue = (Comparable<Temporal_>) value;
+        // We cannot use Temporal.until() to check bounds due to rounding errors
+        if (comparableValue.compareTo(from) < 0 || comparableValue.compareTo(to) >= 0) {
             return false;
         }
+        long fromSpace = from.until(value, incrementUnitType);
+        if (value.equals(from.plus(fromSpace + 1, incrementUnitType))) {
+            // Temporal.until() rounds down, but it needs to round up, to be consistent with Temporal.plus()
+            fromSpace++;
+        }
+
+
         // Only checking the modulus is not enough: 1-MAR + 1 month doesn't include 7-MAR but the modulus is 0 anyway
         return fromSpace % incrementUnitAmount == 0
                 && value.equals(from.plus(fromSpace, incrementUnitType));
@@ -96,7 +120,6 @@ public class TemporalValueRange<Temporal_ extends Temporal> extends AbstractCoun
 
     private class OriginalTemporalValueRangeIterator extends ValueRangeIterator<Temporal_> {
 
-        private long size = getSize();
         private long index = 0L;
 
         @Override
@@ -126,7 +149,6 @@ public class TemporalValueRange<Temporal_ extends Temporal> extends AbstractCoun
     private class RandomTemporalValueRangeIterator extends ValueRangeIterator<Temporal_> {
 
         private final Random workingRandom;
-        private final long size = getSize();
 
         public RandomTemporalValueRangeIterator(Random workingRandom) {
             this.workingRandom = workingRandom;
