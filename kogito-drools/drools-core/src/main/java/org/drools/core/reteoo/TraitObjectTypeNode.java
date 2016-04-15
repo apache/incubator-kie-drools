@@ -40,6 +40,8 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
 
     private BitSet typeMask;
 
+    public TraitObjectTypeNode() { }
+
     public TraitObjectTypeNode( int id, EntryPointNode source, ObjectType objectType, BuildContext context ) {
         super( id, source, objectType, context );
 
