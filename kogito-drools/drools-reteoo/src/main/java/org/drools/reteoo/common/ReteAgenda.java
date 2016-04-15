@@ -1480,11 +1480,6 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     }
 
     @Override
-    public <T> T executeCallable( Callable<T> callable ) {
-        throw new UnsupportedOperationException( "Cannot invoke executeCallable on ReteAgenda" );
-    }
-
-    @Override
     public void activate( ) {
         throw new UnsupportedOperationException( "Cannot invoke activate on ReteAgenda" );
     }

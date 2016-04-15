@@ -36,7 +36,6 @@ import org.kie.api.runtime.rule.AgendaFilter;
 
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 public interface InternalAgenda
     extends
@@ -282,7 +281,6 @@ public interface InternalAgenda
 
     boolean isFiring();
     void executeTask( ExecutableEntry executable );
-    <T> T executeCallable( Callable<T> callable );
 
     void activate();
     void deactivate();

@@ -40,7 +40,11 @@ public class SynchronizedPropagationList implements PropagationList {
             workingMemory.getAgenda().executeTask( new ExecutableEntry() {
                 @Override
                 public void execute() {
-                    ( (PhreakTimerNode.TimerAction) entry ).execute( workingMemory, true );
+                    if (entry instanceof PhreakTimerNode.TimerAction) {
+                        ( (PhreakTimerNode.TimerAction) entry ).execute( workingMemory, true );
+                    } else {
+                        entry.execute( workingMemory );
+                    }
                 }
 
                 @Override

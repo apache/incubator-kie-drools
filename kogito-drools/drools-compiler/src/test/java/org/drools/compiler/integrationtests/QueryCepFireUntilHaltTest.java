@@ -50,7 +50,7 @@ public class QueryCepFireUntilHaltTest {
     @Before
     public void prepare() {
         String drl = "package org.drools.compiler.integrationtests\n" + 
-                "import org.drools.compiler.integrationtests.QueryCepTest.TestEvent\n" + 
+                "import " + TestEvent.class.getCanonicalName() + "\n" +
                 "declare TestEvent\n" + 
                 "    @role( event )\n" + 
                 "end\n" + 

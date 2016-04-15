@@ -155,7 +155,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
@@ -871,36 +870,53 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     protected BaseNode[] evalQuery(final String queryName, final DroolsQuery queryObject, final InternalFactHandle handle, final PropagationContext pCtx) {
-        return agenda.executeCallable( new Callable<BaseNode[]>() {
-            @Override
-            public BaseNode[] call() throws Exception {
-                BaseNode[] tnodes = kBase.getReteooBuilder().getTerminalNodesForQuery( queryName );
-                if ( tnodes == null ) {
-                    throw new RuntimeException( "Query '" + queryName + "' does not exist" );
-                }
+        ExecuteQuery executeQuery = new ExecuteQuery( queryName, queryObject, handle, pCtx );
+        addPropagation( executeQuery );
+        return executeQuery.getResult();
+    }
 
-                QueryTerminalNode tnode = (QueryTerminalNode) tnodes[0];
-                LeftTupleSource lts = tnode.getLeftTupleSource();
-                while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
-                    lts = lts.getLeftTupleSource();
-                }
-                LeftInputAdapterNode lian = (LeftInputAdapterNode) lts;
-                LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory( lian );
-                if ( lmem.getSegmentMemory() == null ) {
-                    SegmentUtilities.createSegmentMemory( lts, StatefulKnowledgeSessionImpl.this );
-                }
+    private class ExecuteQuery extends PropagationEntry.PropagationEntryWithResult<BaseNode[]> {
 
-                LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, StatefulKnowledgeSessionImpl.this, lmem, false, queryObject.isOpen() );
+        private final String queryName;
+        private final DroolsQuery queryObject;
+        private final InternalFactHandle handle;
+        private final PropagationContext pCtx;
 
-                for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
-                    RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getPathEndNode() );
-                    evaluator.getRuleExecutor().setDirty( true );
-                    evaluator.getRuleExecutor().evaluateNetworkAndFire( StatefulKnowledgeSessionImpl.this, null, 0, -1 );
-                }
+        private ExecuteQuery( String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx ) {
+            this.queryName = queryName;
+            this.queryObject = queryObject;
+            this.handle = handle;
+            this.pCtx = pCtx;
+        }
 
-                return tnodes;
+        @Override
+        public void execute( InternalWorkingMemory wm ) {
+            BaseNode[] tnodes = kBase.getReteooBuilder().getTerminalNodesForQuery( queryName );
+            if ( tnodes == null ) {
+                throw new RuntimeException( "Query '" + queryName + "' does not exist" );
             }
-        } );
+
+            QueryTerminalNode tnode = (QueryTerminalNode) tnodes[0];
+            LeftTupleSource lts = tnode.getLeftTupleSource();
+            while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
+                lts = lts.getLeftTupleSource();
+            }
+            LeftInputAdapterNode lian = (LeftInputAdapterNode) lts;
+            LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory( lian );
+            if ( lmem.getSegmentMemory() == null ) {
+                SegmentUtilities.createSegmentMemory( lts, StatefulKnowledgeSessionImpl.this );
+            }
+
+            LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, StatefulKnowledgeSessionImpl.this, lmem, false, queryObject.isOpen() );
+
+            for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
+                RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getPathEndNode() );
+                evaluator.getRuleExecutor().setDirty( true );
+                evaluator.getRuleExecutor().evaluateNetworkAndFire( StatefulKnowledgeSessionImpl.this, null, 0, -1 );
+            }
+
+            done(tnodes);
+        }
     }
 
     public void closeLiveQuery(final InternalFactHandle factHandle) {
@@ -908,29 +924,40 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         try {
             startOperation();
             this.lock.lock();
-            agenda.executeCallable( new Callable<Void>() {
-                @Override
-                public Void call() throws Exception {
-                    LeftInputAdapterNode lian = factHandle.getFirstLeftTuple().getTupleSource();
-                    LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory(lian);
-                    SegmentMemory lsmem = lmem.getSegmentMemory();
-
-                    LeftTuple childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
-                    LeftInputAdapterNode.doDeleteObject( childLeftTuple, childLeftTuple.getPropagationContext(),  lsmem, StatefulKnowledgeSessionImpl.this, lian, false, lmem );
-
-                    for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
-                        RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getPathEndNode() );
-                        evaluator.getRuleExecutor().setDirty( true );
-                        evaluator.getRuleExecutor().evaluateNetworkAndFire( StatefulKnowledgeSessionImpl.this, null, 0, -1 );
-                    }
-
-                    getFactHandleFactory().destroyFactHandle( factHandle );
-                    return null;
-                }
-            } );
+            ExecuteCloseLiveQuery query = new ExecuteCloseLiveQuery( factHandle );
+            addPropagation( query );
+            query.getResult();
         } finally {
             this.lock.unlock();
             endOperation();
+        }
+    }
+
+    private class ExecuteCloseLiveQuery extends PropagationEntry.PropagationEntryWithResult<Void> {
+
+        private final InternalFactHandle factHandle;
+
+        private ExecuteCloseLiveQuery( InternalFactHandle factHandle ) {
+            this.factHandle = factHandle;
+        }
+
+        @Override
+        public void execute( InternalWorkingMemory wm ) {
+            LeftInputAdapterNode lian = factHandle.getFirstLeftTuple().getTupleSource();
+            LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory(lian);
+            SegmentMemory lsmem = lmem.getSegmentMemory();
+
+            LeftTuple childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
+            LeftInputAdapterNode.doDeleteObject( childLeftTuple, childLeftTuple.getPropagationContext(),  lsmem, StatefulKnowledgeSessionImpl.this, lian, false, lmem );
+
+            for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
+                RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getPathEndNode() );
+                evaluator.getRuleExecutor().setDirty( true );
+                evaluator.getRuleExecutor().evaluateNetworkAndFire( StatefulKnowledgeSessionImpl.this, null, 0, -1 );
+            }
+
+            getFactHandleFactory().destroyFactHandle( factHandle );
+            done(null);
         }
     }
 
