@@ -18,6 +18,7 @@ package org.drools.compiler.factmodel.traits;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.ObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
@@ -39,6 +40,7 @@ import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.factmodel.traits.TripleBasedBean;
 import org.drools.core.factmodel.traits.TripleBasedStruct;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
@@ -5941,4 +5943,44 @@ public class TraitTest extends CommonTestMethodBase {
 
         return otns;
     }
+
+    @Test(timeout=10000)
+    public void testSerializeKieBaseWithTraits() {
+        // DRL-1123
+        String drl = "package org.drools.test; " +
+                     "import " + StudentImpl.class.getName() + "; " +
+                     "import " + IStudent.class.getName() + "; " +
+                     "global java.util.List list; " +
+
+                     "rule Test1 " +
+                     "when " +
+                     "  StudentImpl( this isA IStudent.class ) " +
+                     "then list.add( 1 ); end " +
+
+                     "rule Test2 " +
+                     "when " +
+                     "  IStudent( this isA StudentImpl.class ) " +
+                     "then list.add( 2 ); end " +
+
+                     "";
+
+        KnowledgeBase kbase = getKieBaseFromString( drl );
+
+        try {
+            kbase = SerializationHelper.serializeObject( kbase, ((InternalKnowledgeBase) kbase).getRootClassLoader() );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        List list = new ArrayList(  );
+        TraitFactory.setMode( mode, kbase );
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+        knowledgeSession.insert( new StudentImpl(  ) );
+
+        assertEquals( 2, knowledgeSession.fireAllRules() );
+        assertEquals( Arrays.asList( 1, 2 ), list );
+    }
+
 }
