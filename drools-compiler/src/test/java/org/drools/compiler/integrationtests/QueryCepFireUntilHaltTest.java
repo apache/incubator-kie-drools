@@ -30,24 +30,28 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.internal.io.ResourceFactory;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class QueryCepTest {
-    
+public class QueryCepFireUntilHaltTest {
+
     private KieSession ksession;
     
     private SessionPseudoClock clock;
     
     private EntryPoint firstEntryPoint, secondEntryPoint;
 
+    private ExecutorService executorService;
+
     @Before
     public void prepare() {
-        String drl = "package org.drools.compiler.integrationtests\n" +
+        String drl = "package org.drools.compiler.integrationtests\n" + 
                 "import " + TestEvent.class.getCanonicalName() + "\n" +
-                "declare TestEvent\n" +
+                "declare TestEvent\n" + 
                 "    @role( event )\n" + 
                 "end\n" + 
                 "query EventsFromStream\n" + 
@@ -79,6 +83,25 @@ public class QueryCepTest {
         firstEntryPoint = ksession.getEntryPoint("FirstStream");
         secondEntryPoint = ksession.getEntryPoint("SecondStream"); 
         clock = ksession.getSessionClock();
+
+        this.startEngine();
+    }
+
+    private void startEngine() {
+        // start execution
+        executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(new Runnable() {
+
+            @Override
+            public void run() {
+                ksession.fireUntilHalt();
+            }
+        });
+    }
+
+    private void stopEngine() {
+        ksession.halt();
+        executorService.shutdown();
     }
 
     @Test
@@ -126,7 +149,8 @@ public class QueryCepTest {
     
     @After
     public void cleanup() {
-        
+        this.stopEngine();
+
         if (ksession != null) {
             ksession.dispose();
         }

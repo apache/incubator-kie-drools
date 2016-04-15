@@ -30,6 +30,8 @@ import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
 
+import java.util.concurrent.CountDownLatch;
+
 public interface PropagationEntry {
 
     void execute(InternalWorkingMemory wm);
@@ -66,6 +68,31 @@ public interface PropagationEntry {
         @Override
         public void execute(InternalKnowledgeRuntime kruntime) {
             execute( ((InternalWorkingMemoryEntryPoint) kruntime).getInternalWorkingMemory() );
+        }
+    }
+
+    abstract class PropagationEntryWithResult<T> extends PropagationEntry.AbstractPropagationEntry {
+        private final CountDownLatch done = new CountDownLatch( 1 );
+
+        private T result;
+
+        public final T getResult() {
+            try {
+                done.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException( e );
+            }
+            return result;
+        }
+
+        protected void done(T result) {
+            this.result = result;
+            done.countDown();
+        }
+
+        @Override
+        public boolean requiresImmediateFlushing() {
+            return true;
         }
     }
 
