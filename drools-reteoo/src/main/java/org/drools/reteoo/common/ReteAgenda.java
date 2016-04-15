@@ -1499,6 +1499,16 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         throw new UnsupportedOperationException( "Cannot invoke tryDeactivate on ReteAgenda" );
     }
 
+    @Override
+    public void waitOnFireUntilHalt() {
+        throw new UnsupportedOperationException( "Cannot invoke waitOnFireUntilHalt on ReteAgenda" );
+    }
+
+    @Override
+    public void notifyForFireUntilHalt() {
+        throw new UnsupportedOperationException( "Cannot invoke notifyForFireUntilHalt on ReteAgenda" );
+    }
+
     public void halt() {
         this.halt.set( true );
         workingMemory.notifyWaitOnRest();

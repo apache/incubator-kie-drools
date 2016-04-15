@@ -127,27 +127,36 @@ public class DefaultAgenda
 
     private volatile ExecutionState                              currentState = ExecutionState.INACTIVE;
 
-    public enum ExecutionState {     // fireAllRule | fireUntilHalt | executeTask <-- required action
-        INACTIVE( false ),           // fire        | fire          | exec
-        FIRING_ALL_RULES( true ),    // do nothing  | wait + fire   | enqueue
-        FIRING_UNTIL_HALT( true ),   // do nothing  | do nothing    | enqueue
-        HALTING( false ),            // wait + fire | wait + fire   | enqueue
-        EXECUTING_TASK( false ),     // wait + fire | wait + fire   | wait + exec
-        EXECUTING_CALLABLE( false ), // wait + fire | wait + fire   | wait + exec
-        DEACTIVATED( false );        // wait + fire | wait + fire   | wait + exec
+    public enum ExecutionState {                      // fireAllRule | fireUntilHalt | executeTask <-- required action
+        INACTIVE( false, true ),                      // fire        | fire          | exec
+        INACTIVE_ON_FIRE_UNTIL_HALT( true, true ),    // fire        | fire          | exec
+        FIRING_ALL_RULES( true, false ),              // do nothing  | wait + fire   | enqueue
+        FIRING_UNTIL_HALT( true, false ),             // do nothing  | do nothing    | enqueue
+        HALTING( false, false ),                      // wait + fire | wait + fire   | enqueue
+        EXECUTING_TASK( false, false ),               // wait + fire | wait + fire   | wait + exec
+        EXECUTING_CALLABLE( false, false ),           // wait + fire | wait + fire   | wait + exec
+        DEACTIVATED( false, false );                  // wait + fire | wait + fire   | wait + exec
 
         private final boolean firing;
+        private final boolean inactive;
 
-        ExecutionState( boolean firing ) {
+        ExecutionState( boolean firing, boolean inactive ) {
             this.firing = firing;
+            this.inactive = inactive;
         }
 
         public boolean isFiring() {
             return firing;
         }
+
+        public boolean isInactive() {
+            return inactive;
+        }
     }
 
     private final Object stateMachineLock = new Object();
+
+    private volatile boolean wasFiringUntilHalt = false;
 
     // ------------------------------------------------------------
     // Constructors
@@ -1403,7 +1412,7 @@ public class DefaultAgenda
     }
 
     private void waitAndEnterExecutionState( ExecutionState newState ) {
-        while (currentState != ExecutionState.INACTIVE) {
+        while (!currentState.isInactive()) {
             try {
                 stateMachineLock.wait();
             } catch (InterruptedException e) {
@@ -1453,10 +1462,12 @@ public class DefaultAgenda
         }
     }
 
+    @Override
     public void activate() {
         immediateHalt();
     }
 
+    @Override
     public void deactivate() {
         synchronized (stateMachineLock) {
             if ( currentState != ExecutionState.DEACTIVATED ) {
@@ -1465,9 +1476,10 @@ public class DefaultAgenda
         }
     }
 
+    @Override
     public boolean tryDeactivate() {
         synchronized (stateMachineLock) {
-            if ( currentState == ExecutionState.INACTIVE ) {
+            if ( currentState.isInactive() ) {
                 setCurrentState( ExecutionState.DEACTIVATED );
                 return true;
             }
@@ -1475,31 +1487,59 @@ public class DefaultAgenda
         return false;
     }
 
+    @Override
     public void halt() {
         synchronized (stateMachineLock) {
             if (currentState.isFiring()) {
                 setCurrentState( ExecutionState.HALTING );
+            }
+            wasFiringUntilHalt = false;
+        }
+    }
+
+    @Override
+    public void waitOnFireUntilHalt() {
+        synchronized (stateMachineLock) {
+            if (currentState == ExecutionState.FIRING_UNTIL_HALT) {
+                stateMachineLock.notify();
+                setCurrentState( ExecutionState.INACTIVE_ON_FIRE_UNTIL_HALT );
+            }
+        }
+    }
+
+    @Override
+    public void notifyForFireUntilHalt() {
+        if (currentState == ExecutionState.INACTIVE_ON_FIRE_UNTIL_HALT || wasFiringUntilHalt ) {
+            synchronized (stateMachineLock) {
+                if ( currentState == ExecutionState.INACTIVE_ON_FIRE_UNTIL_HALT ) {
+                    setCurrentState( ExecutionState.FIRING_UNTIL_HALT );
+                } else if ( wasFiringUntilHalt ) {
+                    waitAndEnterExecutionState( ExecutionState.FIRING_UNTIL_HALT );
+                }
+                wasFiringUntilHalt = false;
             }
         }
     }
 
     private void immediateHalt() {
         synchronized (stateMachineLock) {
-            if (currentState != ExecutionState.INACTIVE) {
-                setCurrentState( ExecutionState.INACTIVE );
+            if (!currentState.isInactive()) {
+                setCurrentState( wasFiringUntilHalt ? ExecutionState.INACTIVE_ON_FIRE_UNTIL_HALT : ExecutionState.INACTIVE );
                 stateMachineLock.notify();
                 workingMemory.notifyEngineInactive();
             }
         }
     }
 
-    public void setCurrentState(ExecutionState state) {
+    private void setCurrentState(ExecutionState state) {
         if ( log.isDebugEnabled() ) {
             log.debug("State was {} is nw {}", currentState, state);
         }
+        if (currentState == ExecutionState.INACTIVE_ON_FIRE_UNTIL_HALT && !state.isInactive()) {
+            wasFiringUntilHalt = true;
+        }
         currentState = state;
     }
-
 
     public ConsequenceExceptionHandler getConsequenceExceptionHandler() {
         return this.legacyConsequenceExceptionHandler;

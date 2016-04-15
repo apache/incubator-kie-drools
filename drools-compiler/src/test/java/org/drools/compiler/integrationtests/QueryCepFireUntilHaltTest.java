@@ -50,7 +50,7 @@ public class QueryCepFireUntilHaltTest {
     @Before
     public void prepare() {
         String drl = "package org.drools.compiler.integrationtests\n" + 
-                "import org.drools.compiler.integrationtests.QueryCepTest.TestEvent\n" + 
+                "import " + TestEvent.class.getCanonicalName() +"\n" +
                 "declare TestEvent\n" + 
                 "    @role( event )\n" + 
                 "end\n" + 
@@ -59,7 +59,7 @@ public class QueryCepFireUntilHaltTest {
                 "end\n" + 
                 "query ZeroToNineteenSeconds\n" + 
                 "    $event : TestEvent() from entry-point FirstStream\n" + 
-                "    $result : TestEvent ( this after [0s, 19s] $event) from entry-point SecondStream\n" + 
+                "    $result : TestEvent ( this after [0s, 19s] $event) from entry-point SecondStream\n" +
                 "end\n";
         
         final KieServices ks = KieServices.Factory.get();
