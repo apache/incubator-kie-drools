@@ -62,7 +62,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
 /**
  * Rule-firing Agenda.
@@ -133,7 +132,6 @@ public class DefaultAgenda
         FIRING_UNTIL_HALT( true ),   // do nothing  | do nothing    | enqueue
         HALTING( false ),            // wait + fire | wait + fire   | enqueue
         EXECUTING_TASK( false ),     // wait + fire | wait + fire   | wait + exec
-        EXECUTING_CALLABLE( false ), // wait + fire | wait + fire   | wait + exec
         DEACTIVATED( false );        // wait + fire | wait + fire   | wait + exec
 
         private final boolean firing;
@@ -1434,22 +1432,6 @@ public class DefaultAgenda
             executable.execute();
         } finally {
             immediateHalt();
-        }
-    }
-
-    @Override
-    public <T> T executeCallable( Callable<T> callable ) {
-        synchronized (stateMachineLock) {
-            if (currentState != ExecutionState.EXECUTING_CALLABLE) {
-                waitAndEnterExecutionState( ExecutionState.EXECUTING_CALLABLE );
-            }
-            try {
-                return callable.call();
-            } catch (Exception e) {
-                throw new RuntimeException( e );
-            } finally {
-                immediateHalt();
-            }
         }
     }
 
