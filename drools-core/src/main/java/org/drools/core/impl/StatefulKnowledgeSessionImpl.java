@@ -2031,6 +2031,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             // if halt() has called, the thread should not be put into a wait state
             // instead this is just a safe way to make sure the queue is flushed before exiting the loop
             if (head == null && currentState == DefaultAgenda.ExecutionState.FIRING_UNTIL_HALT) {
+                agenda.waitOnFireUntilHalt();
                 propagationList.waitOnRest();
                 head = takeAllPropagations();
             }

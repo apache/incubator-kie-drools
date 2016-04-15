@@ -288,6 +288,9 @@ public interface InternalAgenda
     void deactivate();
     boolean tryDeactivate();
 
+    void waitOnFireUntilHalt();
+    void notifyForFireUntilHalt();
+
     void insertAndStageActivation(AgendaItem activation);
 
     void addAgendaItemToGroup(AgendaItem item);

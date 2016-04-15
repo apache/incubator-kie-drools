@@ -68,8 +68,8 @@ public class SynchronizedPropagationList implements PropagationList {
         flush( workingMemory, takeAll() );
     }
 
-    @Override public void flush(PropagationEntry currentHead)
-    {
+    @Override
+    public void flush(PropagationEntry currentHead) {
         flush( workingMemory, currentHead );
     }
 
@@ -118,7 +118,7 @@ public class SynchronizedPropagationList implements PropagationList {
         return head == null;
     }
 
-    public synchronized void waitOnRest() {
+    public void waitOnRest() {
         try {
             log.debug("Engine wait");
             wait();
@@ -128,10 +128,12 @@ public class SynchronizedPropagationList implements PropagationList {
         log.debug("Engine resumed");
     }
 
-
     @Override
-    public synchronized void notifyWaitOnRest() {
-        notifyAll();
+    public void notifyWaitOnRest() {
+        workingMemory.getAgenda().notifyForFireUntilHalt();
+        synchronized (this) {
+            notifyAll();
+        }
     }
 
     @Override
