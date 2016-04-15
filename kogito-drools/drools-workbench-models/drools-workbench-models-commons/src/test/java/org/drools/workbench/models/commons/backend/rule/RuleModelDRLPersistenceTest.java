@@ -16,6 +16,12 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -67,11 +73,12 @@ import org.drools.workbench.models.datamodel.workitems.PortableStringParameterDe
 import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RuleModelDRLPersistenceTest {
+
+    private static final Logger logger = LoggerFactory.getLogger( RuleModelDRLPersistenceTest.class );
 
     private RuleModelPersistence ruleModelPersistence;
 
@@ -774,7 +781,7 @@ public class RuleModelDRLPersistenceTest {
         // to satisfy JBRULES-850
         RuleModel m = getModelWithNoConstraints();
         String s = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        // System.out.println(s);
+        logger.debug(s);
         assertTrue( s.contains( "Person( f1 : age)" ) );
 
         checkMarshalling( s,
@@ -899,7 +906,7 @@ public class RuleModelDRLPersistenceTest {
         m.addLhsItem( cp );
 
         String result = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        System.out.println( result );
+        logger.debug( result );
 
         assertTrue( result.indexOf( "exists (Person( age == 42 )) " ) > 0 );
         checkMarshalling( result,

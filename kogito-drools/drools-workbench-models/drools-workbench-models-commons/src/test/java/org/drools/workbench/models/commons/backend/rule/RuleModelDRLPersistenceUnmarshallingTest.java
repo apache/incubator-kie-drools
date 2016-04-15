@@ -74,13 +74,20 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.kie.test.util.logging.LoggingPrintStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class RuleModelDRLPersistenceUnmarshallingTest {
+
+    private static final Logger logger = LoggerFactory.getLogger( RuleModelDRLPersistenceUnmarshallingTest.class );
 
     private PackageDataModelOracle dmo;
     private Map<String, ModelField[]> packageModelFields = new HashMap<String, ModelField[]>();
@@ -2231,7 +2238,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "a", f2.getValue() );
 
         String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        System.out.println( marshalled );
+        logger.debug( marshalled );
 
         assertEqualsIgnoreWhitespace( drl,
                                       marshalled );
@@ -2286,7 +2293,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( FieldNatureType.TYPE_VARIABLE, f2.getNature() );
 
         String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        System.out.println( marshalled );
+        logger.debug( marshalled );
 
         assertEqualsIgnoreWhitespace( drl,
                                       marshalled );
@@ -2335,7 +2342,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( FieldNatureType.TYPE_FORMULA, f1.getNature() );
 
         String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        System.out.println( marshalled );
+        logger.debug( marshalled );
 
         assertEqualsIgnoreWhitespace( drl,
                                       marshalled );
@@ -2385,7 +2392,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( FieldNatureType.TYPE_VARIABLE, f1.getNature() );
 
         String marshalled = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
-        System.out.println( marshalled );
+        logger.debug( marshalled );
         assertEqualsIgnoreWhitespace( drl,
                                       marshalled );
     }

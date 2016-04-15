@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -33,12 +33,16 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class RuleModelTest {
+
+    private static final Logger logger = LoggerFactory.getLogger( RuleModelTest.class );
 
     @Test
     public void testAddItemLhs() {
@@ -224,7 +228,7 @@ public class RuleModelTest {
 
         final String brl = xt.toXML( model );
 
-        System.out.println( brl );
+        logger.debug( brl );
     }
 
     @Test
