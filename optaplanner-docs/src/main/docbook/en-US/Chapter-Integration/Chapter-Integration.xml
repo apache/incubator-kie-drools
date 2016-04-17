@@ -445,5 +445,17 @@ public class Schedule {
     </itemizedlist>
 
     <para>Therefore, it's often a good idea to involve the human planner in your project.</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Integration/parameterizeTheScoreWeights.png"/>
+      </imageobject>
+    </mediaobject>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Integration/keepTheUserInControl.png"/>
+      </imageobject>
+    </mediaobject>
   </section>
 </chapter>
