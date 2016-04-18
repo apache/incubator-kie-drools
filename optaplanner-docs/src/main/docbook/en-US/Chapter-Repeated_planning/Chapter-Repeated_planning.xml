@@ -112,7 +112,7 @@
     <section xml:id="overconstrainedPlanningWithVirutalValues">
       <title>Overconstrained Planning with Virtual Values</title>
 
-      <para>In overconstrained planning it's often usefull to know which resources are lacking. In overconstrained
+      <para>In overconstrained planning it's often useful to know which resources are lacking. In overconstrained
       planning with virtual values, the solution indicates which resources to buy.</para>
 
       <para>To implement this:</para>
