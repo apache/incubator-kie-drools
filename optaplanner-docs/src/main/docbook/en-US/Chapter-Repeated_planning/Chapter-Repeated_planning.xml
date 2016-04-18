@@ -64,29 +64,90 @@
     <para>When there is no feasible solution to assign all planning entities, it's often desired to assign as many
     entities as possible without breaking hard constraints. This is called overconstrained planning.</para>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata fileref="images/Chapter-Repeated_planning/overconstrainedPlanning.png"/>
-      </imageobject>
-    </mediaobject>
+    <para>By default, Planner will assign all planning entities, overload the planning values and therefore break hard
+    constraints. There are 2 ways to avoid that:</para>
 
-    <para>To implement this:</para>
-
-    <orderedlist>
+    <itemizedlist>
       <listitem>
-        <para>Add a additional score level (usually a medium level between the hard and soft level) by switching <link
-        linkend="scoreDefinition">ScoreDefinition</link>.</para>
+        <para>Use <link linkend="nullablePlanningVariable">nullable</link> planning variables, so some entities are
+        unassigned.</para>
       </listitem>
 
       <listitem>
-        <para>Make the planning variable <link linkend="nullablePlanningVariable">nullable</link>.</para>
+        <para>Add virtual values to catch the unassigned entities.</para>
       </listitem>
+    </itemizedlist>
 
-      <listitem>
-        <para>Add a score constraint on the new level (so usually a medium constraint) to penalize the number of
-        unassigned entities (or a weighted sum of them).</para>
-      </listitem>
-    </orderedlist>
+    <section xml:id="overconstrainedPlanningWithNullableVariables">
+      <title>Overconstrained Planning with Nullable Variables</title>
+
+      <para>If we handle overconstrained planning with nullable variables, the overload entities will be left
+      unassigned:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Repeated_planning/overconstrainedPlanning.png"/>
+        </imageobject>
+      </mediaobject>
+
+      <para>To implement this:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Add a additional score level (usually a medium level between the hard and soft level) by switching <link
+          linkend="scoreDefinition">ScoreDefinition</link>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Make the planning variable <link linkend="nullablePlanningVariable">nullable</link>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Add a score constraint on the new level (so usually a medium constraint) to penalize the number of
+          unassigned entities (or a weighted sum of them).</para>
+        </listitem>
+      </orderedlist>
+    </section>
+
+    <section xml:id="overconstrainedPlanningWithVirutalValues">
+      <title>Overconstrained Planning with Virtual Values</title>
+
+      <para>In overconstrained planning it's often usefull to know which resources are lacking. In overconstrained
+      planning with virtual values, the solution indicates which resources to buy.</para>
+
+      <para>To implement this:</para>
+
+      <orderedlist>
+        <listitem>
+          <para>Add a additional score level (usually a medium level between the hard and soft level) by switching <link
+          linkend="scoreDefinition">ScoreDefinition</link>.</para>
+        </listitem>
+
+        <listitem>
+          <para>Add a number of virtual values. It can be difficult to determine a good formula to calculate that
+          number:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Don't add too many, as that will decrease solver efficiency.</para>
+            </listitem>
+
+            <listitem>
+              <para>Definitely don't add too few as that will lead to an infeasible solution.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Add a score constraint on the new level (so usually a medium constraint) to penalize the number of
+          virtual assigned entities (or a weighted sum of them).</para>
+        </listitem>
+
+        <listitem>
+          <para>Optionally change all soft constraints to ignore virtual assigned entities.</para>
+        </listitem>
+      </orderedlist>
+    </section>
   </section>
 
   <section xml:id="continuousPlanning">
