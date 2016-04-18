@@ -54,7 +54,7 @@ public class ServiceDiscoveryImpl implements ServiceDiscovery {
                 log.info( "Discovered kie.conf url={} ", url );
                 processKieConf( is, serviceRegistry );
             } catch ( Exception exc ) {
-                log.error( "Unable to build kie service url={} reason={}\n", url.toExternalForm(), exc.getMessage() );
+                throw new RuntimeException( "Unable to build kie service url = " + url.toExternalForm(), exc );
             } finally {
                 try {
                     if ( is != null ) {
