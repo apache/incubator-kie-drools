@@ -66,6 +66,7 @@ public class RequestInfo implements org.kie.internal.executor.api.RequestInfo, S
     private String deploymentId;
     // owning component of this request, meaning when set only same component can execute it 
     private String owner;
+    private int priority = 0;
     
     @Lob
     @Column(length=2147483647)
@@ -183,9 +184,16 @@ public class RequestInfo implements org.kie.internal.executor.api.RequestInfo, S
 	public void setOwner(String owner) {
 		this.owner = owner;
 	}
+	
+    public int getPriority() {
+        return priority;
+    }
+    
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
 
-
-	@Override
+    @Override
     public String toString() {
         return "RequestInfo{" + "id=" + id + ", time=" + time 
         		+ ", status=" + status + ", commandName=" + commandName + ", message=" + message + ", owner=" + owner

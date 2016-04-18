@@ -38,10 +38,11 @@ import org.slf4j.LoggerFactory;
  * it expects following parameters to be present on work item for proper execution:
  * <ul>
  *  <li>CommandClass - FQCN of the command to be executed - mandatory unless this handler is configured with default command class</li>
- *  <li>Retries - number of retires for the command execution - optional</li>
+ *  <li>Retries - number of retries for the command execution - optional</li>
  *  <li>RetryDelay - Comma separated list of time expressions (5s, 2m, 4h) to be used in case of errors and retry needed.</li>
  *  <li>Delay - optionally delay which job should be executed after given as time expression (5s, 2m, 4h) that will be calculated starting from current time</li>
  *  <li>AutoComplete - allows to use "fire and forget" style so it will not wait for job completion and allow to move on (default false)</li>
+ *  <li>Priority - priority for the job execution - from 0 (the lowest) to 9 (the highest)</li>
  * </ul>
  * During execution it will set contextual data that will be available inside the command:
  * <ul>
@@ -110,6 +111,11 @@ public class AsyncWorkItemHandler implements WorkItemHandler {
         if (workItem.getParameter("RetryDelay") != null) {
      
             ctxCMD.setData("retryDelay", workItem.getParameter("RetryDelay"));
+        }
+        
+        if (workItem.getParameter("Priority") != null) {
+            
+            ctxCMD.setData("priority", Integer.parseInt(workItem.getParameter("Priority").toString()));
         }
         
         Date scheduleDate = new Date();

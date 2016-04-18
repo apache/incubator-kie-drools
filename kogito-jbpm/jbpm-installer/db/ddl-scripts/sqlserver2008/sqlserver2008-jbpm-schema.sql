@@ -280,6 +280,7 @@
         businessKey varchar(255),
         message varchar(255),
         owner varchar(255),
+        priority int not null,
         requestData varbinary(MAX),
         responseData varbinary(MAX),
         retries int not null,

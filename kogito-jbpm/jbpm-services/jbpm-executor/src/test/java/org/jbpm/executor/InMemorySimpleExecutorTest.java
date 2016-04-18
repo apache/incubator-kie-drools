@@ -72,5 +72,17 @@ public class InMemorySimpleExecutorTest extends BasicExecutorBaseTest{
     public void testCustomIncrementingRequestRetrySpecialValues() throws InterruptedException {        
         super.testCustomIncrementingRequestRetrySpecialValues();
     }
+
+    @Test
+    @Ignore("It's only for JPA based as it in memory does not care about priorities")
+    public void testPrioritizedJobsExecution() throws InterruptedException {
+        super.testPrioritizedJobsExecution();
+    }
+
+    @Test
+    @Ignore("It's only for JPA based as it in memory does not care about priorities")
+    public void testPrioritizedJobsExecutionInvalidProrities() throws InterruptedException {
+        super.testPrioritizedJobsExecutionInvalidProrities();
+    }
     
 }

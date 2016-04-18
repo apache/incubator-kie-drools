@@ -85,7 +85,7 @@
     <named-query name="PendingRequestsForProcessing"> 
         <query>
             Select r from RequestInfo as r where (r.status ='QUEUED' or r.status = 'RETRYING') 
-            and r.time &lt; :now and (r.owner = :owner or r.owner is null)
+            and r.time &lt; :now and (r.owner = :owner or r.owner is null) order by r.priority desc
         </query>
     </named-query>
     

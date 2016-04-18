@@ -320,6 +320,20 @@ public class ExecutorImpl implements Executor {
         } else {
             requestInfo.setRetries(retries);
         }
+        int priority = 5;
+        if (ctx.getData("priority") != null) {
+            priority = (Integer) ctx.getData("priority");
+            if (priority < 0) {
+                logger.warn("Priority {} is not valid (cannot be less than 0) setting it to 0", priority);
+                priority = 0;
+                
+            } else if (priority > 9) {
+                logger.warn("Priority {} is not valid (cannot be more than 9) setting it to 9", priority);
+                priority = 9;
+            }
+            
+        }
+        requestInfo.setPriority(priority);
         
         if (ctx.getData("retryDelay") != null) {
             List<Long> retryDelay = new ArrayList<Long>();
@@ -353,7 +367,7 @@ public class ExecutorImpl implements Executor {
                 if (currentTimestamp >= date.getTime()) {
                     logger.debug("Sending JMS message to trigger job execution for job {}", requestInfo.getId());
                     // send JMS message to trigger processing
-                    sendMessage(String.valueOf(requestInfo.getId()));
+                    sendMessage(String.valueOf(requestInfo.getId()), priority);
                 } else {
                     logger.debug("JMS message not sent for job {} as the job should not be executed immediately but at {}", requestInfo.getId(), date);
                 }
@@ -385,7 +399,7 @@ public class ExecutorImpl implements Executor {
     }
 
     
-    protected void sendMessage(String messageBody) {
+    protected void sendMessage(String messageBody, int priority) {
         if (connectionFactory == null && queue == null) {
             throw new IllegalStateException("ConnectionFactory and Queue cannot be null");
         }
@@ -397,7 +411,8 @@ public class ExecutorImpl implements Executor {
             queueSession = queueConnection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
                       
             TextMessage message = queueSession.createTextMessage(messageBody);
-            producer = queueSession.createProducer(queue);   
+            producer = queueSession.createProducer(queue);  
+            producer.setPriority(priority);
             
             queueConnection.start();
             

@@ -30,6 +30,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.jbpm.executor.ExecutorServiceFactory;
+import org.jbpm.executor.impl.ExecutorServiceImpl;
+import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractExecutorBaseTest;
@@ -391,6 +393,72 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         assertEquals(1, jobRequest.size());
         assertEquals(businessKey, jobRequest.get(0).getKey());
         assertEquals(STATUS.CANCELLED, jobRequest.get(0).getStatus());
+    }
+    
+    @Test(timeout=10000)
+    public void testRunProcessWithAsyncHandlerProritizedJobs() throws Exception {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) executorService).addAsyncJobListener(countDownListener);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-PrioritizedAsyncTasks.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("async", new AsyncWorkItemHandler(executorService, "org.jbpm.executor.commands.PrintOutCommand"));
+                        return handlers;
+                    }
+
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        ProcessInstance processInstance = ksession.startProcess("async-examples.priority-jobs");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        List<RequestInfo> delayedPrintOuts = executorService.getRequestsByCommand("org.jbpm.executor.test.CustomCommand", new QueryContext());
+        List<RequestInfo> printOuts = executorService.getRequestsByCommand("org.jbpm.executor.commands.PrintOutCommand", new QueryContext());
+        
+        assertEquals(1, delayedPrintOuts.size());
+        assertEquals(1, printOuts.size());
+        
+        assertEquals(STATUS.QUEUED, delayedPrintOuts.get(0).getStatus());
+        assertEquals(STATUS.QUEUED, printOuts.get(0).getStatus());
+        
+        countDownListener.waitTillCompleted();
+        
+        delayedPrintOuts = executorService.getRequestsByCommand("org.jbpm.executor.test.CustomCommand", new QueryContext());
+        printOuts = executorService.getRequestsByCommand("org.jbpm.executor.commands.PrintOutCommand", new QueryContext());
+        
+        assertEquals(1, delayedPrintOuts.size());
+        assertEquals(1, printOuts.size());
+        
+        assertEquals(STATUS.DONE, delayedPrintOuts.get(0).getStatus());
+        assertEquals(STATUS.QUEUED, printOuts.get(0).getStatus());
+        
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
+        
+        delayedPrintOuts = executorService.getRequestsByCommand("org.jbpm.executor.test.CustomCommand", new QueryContext());
+        printOuts = executorService.getRequestsByCommand("org.jbpm.executor.commands.PrintOutCommand", new QueryContext());
+        
+        assertEquals(1, delayedPrintOuts.size());
+        assertEquals(1, printOuts.size());
+        
+        assertEquals(STATUS.DONE, delayedPrintOuts.get(0).getStatus());
+        assertEquals(STATUS.DONE, printOuts.get(0).getStatus());
+        
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNull(processInstance);
     }
     
     private ExecutorService buildExecutorService() {        

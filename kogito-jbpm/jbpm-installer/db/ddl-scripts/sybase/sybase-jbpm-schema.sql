@@ -311,6 +311,7 @@
         businessKey varchar(255) null,
         message varchar(255) null,
         owner varchar(255) null,
+        priority int not null,
         requestData image null,
         responseData image null,
         retries int not null,
