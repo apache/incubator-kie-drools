@@ -218,13 +218,14 @@ public class ServiceRegistryImpl
     }
 
     private void initServiceDiscovery() {
+        Enumeration<URL> confResources = null;
         try {
-            Enumeration<URL> confResources = getClassLoader().getResources( path );
-            if (confResources.hasMoreElements()) {
-                get( ServiceDiscovery.class ).discoverFactories( confResources, this );
-            }
+            confResources = getClassLoader().getResources( path );
         } catch ( Exception e ) {
             // no conf file or no ServiceDiscovery - ignore
+        }
+        if (confResources != null && confResources.hasMoreElements()) {
+            get( ServiceDiscovery.class ).discoverFactories( confResources, this );
         }
     }
 
