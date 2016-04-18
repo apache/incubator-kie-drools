@@ -15,6 +15,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.NavigableMap;
+import java.util.Properties;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
@@ -26,7 +27,9 @@ import org.drools.core.common.ResourceProvider;
 import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.jboss.byteman.contrib.bmunit.BMUnitConfig;
 import org.junit.After;
+import org.junit.Assume;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.builder.KieModule;
@@ -54,6 +57,11 @@ public class KieModuleRepoTest {
     private int maxSizeGaVersionsCacheOrig;
     private Field maxSizeGaCacheField;
     private Field maxSizeGaVersionsCacheField;
+
+    @BeforeClass
+    public static void checkJDKForBytemanCompatibility() {
+        Assume.assumeTrue(System.getProperties().get("java.vm.vendor").equals("Oracle Corporation"));
+    }
 
     @Before
     public void before() throws Exception {
