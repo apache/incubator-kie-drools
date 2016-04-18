@@ -128,7 +128,7 @@ public class WorkCaseService {
         Random rand = new Random();
         int n = 0;
         if (users.length > 1) {
-            n = rand.nextInt(users.length - 1);
+            n = rand.nextInt(users.length);
         }
         return users[n];
     }
