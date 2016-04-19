@@ -88,14 +88,13 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.drools.core</Bundle-SymbolicName>
+            <Bundle-SymbolicName>org.drools.reteoo</Bundle-SymbolicName>
             <Export-Package>
               org.drools.reteoo.*
             </Export-Package>
             <Import-Package>
               *
             </Import-Package>
-            <Bundle-Activator>org.drools.core.osgi.Activator</Bundle-Activator>
             <_removeheaders>Private-Package</_removeheaders>
           </instructions>
         </configuration>
