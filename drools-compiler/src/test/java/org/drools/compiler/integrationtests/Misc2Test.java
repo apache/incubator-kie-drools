@@ -120,6 +120,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Timestamp;
@@ -8408,63 +8409,5 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end\n";
 
         assertDrlHasCompilationError( str, -1 );
-    }
-
-    @Test
-    public void testNodeHashTypeMismatch() throws Exception {
-        // BZ-1328380
-
-        // 2 rules -- Mvel coercion
-        String drl1 = "import org.drools.compiler.Person;\n" +
-                     "rule \"rule1\"\n" +
-                     "when\n" +
-                     "    Person( status == 1 )\n" +
-                     "then\n" +
-                     "end\n" +
-                     "rule \"rule2\"\n" +
-                     "when\n" +
-                     "    Person( status == 2 )\n" +
-                     "then\n" +
-                     "end\n";
-
-        KieSession ksession1 = new KieHelper().addContent( drl1, ResourceType.DRL )
-                .build()
-                .newKieSession();
-
-        Person p1 = new Person();
-        p1.setStatus( "1" );
-        ksession1.insert( p1 );
-
-        assertEquals( 1, ksession1.fireAllRules() );
-        ksession1.dispose();
-
-        // 3 rules -- Node Hashing
-        String drl2 = "import org.drools.compiler.Person;\n" +
-                     "rule \"rule1\"\n" +
-                     "when\n" +
-                     "    Person( status == 1 )\n" +
-                     "then\n" +
-                     "end\n" +
-                     "rule \"rule2\"\n" +
-                     "when\n" +
-                     "    Person( status == 2 )\n" +
-                     "then\n" +
-                     "end\n" +
-                     "rule \"rule3\"\n" +
-                     "when\n" +
-                     "    Person( status == 3 )\n" +
-                     "then\n" +
-                     "end\n";
-
-        KieSession ksession2 = new KieHelper().addContent( drl2, ResourceType.DRL )
-                .build()
-                .newKieSession();
-
-        Person p2 = new Person();
-        p2.setStatus( "1" );
-        ksession2.insert( p2 );
-
-        assertEquals( 1, ksession2.fireAllRules() );
-        ksession2.dispose();
     }
 }
