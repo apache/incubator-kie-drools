@@ -41,7 +41,7 @@ import java.util.Set;
 
 import static org.kie.scanner.embedder.MavenProjectLoader.parseMavenPom;
 
-class ArtifactResolver {
+public class ArtifactResolver {
 
     private static final Logger log = LoggerFactory.getLogger(KieScanner.class);
 
@@ -49,7 +49,7 @@ class ArtifactResolver {
 
     private final MavenRepository mavenRepository;
 
-    ArtifactResolver() {
+    public ArtifactResolver() {
         mavenRepository = MavenRepository.getMavenRepository();
         pomParser = new EmbeddedPomParser();
     }
@@ -64,23 +64,23 @@ class ArtifactResolver {
         this.pomParser = pomParser;
     }
 
-    Artifact resolveArtifact(ReleaseId releaseId) {
+    public Artifact resolveArtifact(ReleaseId releaseId) {
         return mavenRepository.resolveArtifact(releaseId);
     }
 
-    List<DependencyDescriptor> getArtifactDependecies(String artifactName) {
+    public List<DependencyDescriptor> getArtifactDependecies(String artifactName) {
         return mavenRepository.getArtifactDependecies(artifactName);
     }
 
-    List<DependencyDescriptor> getPomDirectDependencies(DependencyFilter filter) {
+    public List<DependencyDescriptor> getPomDirectDependencies(DependencyFilter filter) {
         return pomParser.getPomDirectDependencies(filter);
     }
 
-    Collection<DependencyDescriptor> getAllDependecies() {
+    public Collection<DependencyDescriptor> getAllDependecies() {
         return getAllDependecies( DependencyFilter.TAKE_ALL_FILTER );
     }
 
-    Collection<DependencyDescriptor> getAllDependecies( DependencyFilter dependencyFilter ) {
+    public Collection<DependencyDescriptor> getAllDependecies( DependencyFilter dependencyFilter ) {
         Set<DependencyDescriptor> dependencies = new HashSet<DependencyDescriptor>();
         for (DependencyDescriptor dep : getPomDirectDependencies(dependencyFilter)) {
             dependencies.add( dep );
