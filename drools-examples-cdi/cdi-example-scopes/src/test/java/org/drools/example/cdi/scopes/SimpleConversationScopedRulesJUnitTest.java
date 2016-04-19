@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.drools.example.cdi.scopes;
 
 import org.apache.deltaspike.cdise.api.ContextControl;
@@ -28,6 +23,7 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,10 +33,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
-/**
- *
- * @author salaboy
- */
 @RunWith(Arquillian.class)
 public class SimpleConversationScopedRulesJUnitTest {
 
@@ -54,17 +46,22 @@ public class SimpleConversationScopedRulesJUnitTest {
                 .addClasses(MyBean.class, MySimpleConversationScopedBean.class)
                 .addPackages(true, "org.apache.deltaspike")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-//        System.out.println(war.toString(true));
         return jar;
     }
 
     @Inject
     private MySimpleConversationScopedBean mySimpleConversationBean;
 
+    private ContextControl ctxCtrl = BeanProvider.getContextualReference(ContextControl.class);
+
+    @After
+    public void stopContexts() {
+        ctxCtrl.stopContexts();
+    }
+
     @Test
     public void helloSimpleConversationScoped() {
         Assert.assertNotNull(mySimpleConversationBean);
-        ContextControl ctxCtrl = BeanProvider.getContextualReference(ContextControl.class);
 
         ctxCtrl.startContext(SessionScoped.class);
         ctxCtrl.startContext(ConversationScoped.class);
@@ -148,12 +145,6 @@ public class SimpleConversationScopedRulesJUnitTest {
         Assert.assertNotEquals(myBeanHashcode, mySimpleConversationBean.getMyBean().hashCode());
         
         mySimpleConversationBean.end();
-        
-        
-        ctxCtrl.stopContext(RequestScoped.class);
-        ctxCtrl.stopContext(ConversationScoped.class);
-        ctxCtrl.stopContext(SessionScoped.class);
-
     }
 
 }
