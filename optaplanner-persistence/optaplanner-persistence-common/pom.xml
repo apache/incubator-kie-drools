@@ -67,9 +67,9 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.optaplanner.persistence.xstream</Bundle-SymbolicName>
+            <Bundle-SymbolicName>org.optaplanner.persistence.common</Bundle-SymbolicName>
             <Export-Package>
-              org.optaplanner.persistence.xstream.*
+              org.optaplanner.persistence.common.*
             </Export-Package>
           </instructions>
         </configuration>
