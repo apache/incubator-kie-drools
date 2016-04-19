@@ -54,7 +54,7 @@ public class JPAWorkItemManager implements WorkItemManager {
         Environment env = this.kruntime.getEnvironment();
         WorkItemInfo workItemInfo = new WorkItemInfo(workItem, env);
         
-        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+        PersistenceContext context = getPersistenceContext();
         workItemInfo = context.persist( workItemInfo );
         
         ((WorkItemImpl) workItem).setId(workItemInfo.getId());
@@ -81,21 +81,34 @@ public class JPAWorkItemManager implements WorkItemManager {
     	return this.workItemHandlers.get(name);
     }
     
-    public void retryWorkItem(long workItemId) {
-    	WorkItem workItem = getWorkItem(workItemId);
+    public void retryWorkItemWithParams(long workItemId, Map<String,Object> map) {
+        Environment env = this.kruntime.getEnvironment();
+        WorkItem workItem = getWorkItem(workItemId);
+        
     	if (workItem != null) {
+    	    workItem.setParameters( map );
+            WorkItemInfo workItemInfo = new WorkItemInfo(workItem, env);
+            PersistenceContext context = getPersistenceContext();
+            context.merge( workItemInfo );
+            
+            retryWorkItem(workItemInfo.getId());
+    	}
+    }
+    
+    public void retryWorkItem(long workItemId) {
+        WorkItem workItem = getWorkItem(workItemId);
+        if (workItem != null) {
             WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
                 handler.executeWorkItem(workItem, this);
             } else {
                 throwWorkItemNotFoundException( workItem );
             }
-    	}
+        }
     }
 
     public void internalAbortWorkItem(long id) {
-        Environment env = this.kruntime.getEnvironment();
-        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+        PersistenceContext context = getPersistenceContext();
         
         WorkItemInfo workItemInfo = context.findWorkItemInfo( id );
         // work item may have been aborted
@@ -117,12 +130,17 @@ public class JPAWorkItemManager implements WorkItemManager {
         }
     }
 
+    private PersistenceContext getPersistenceContext() {
+        Environment env = this.kruntime.getEnvironment();
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+        return context;
+    }
+
     public void internalAddWorkItem(WorkItem workItem) {
     }
 
     public void completeWorkItem(long id, Map<String, Object> results) {
-        Environment env = this.kruntime.getEnvironment();
-        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+        PersistenceContext context = getPersistenceContext();
         
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
@@ -154,8 +172,7 @@ public class JPAWorkItemManager implements WorkItemManager {
     }
 
     public void abortWorkItem(long id) {
-        Environment env = this.kruntime.getEnvironment();
-        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+        PersistenceContext context = getPersistenceContext();
 
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
@@ -186,8 +203,7 @@ public class JPAWorkItemManager implements WorkItemManager {
     }
 
     public WorkItem getWorkItem(long id) {
-        Environment env = this.kruntime.getEnvironment();
-        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+        PersistenceContext context = getPersistenceContext();
         
         WorkItemInfo workItemInfo = null;
         if (this.workItems != null) {
