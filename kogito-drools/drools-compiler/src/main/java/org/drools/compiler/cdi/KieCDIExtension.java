@@ -47,9 +47,9 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.inject.spi.ProcessInjectionTarget;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Named;
@@ -63,6 +63,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 public class KieCDIExtension
     implements
@@ -89,12 +90,11 @@ public class KieCDIExtension
     public void init() {
         final KieServices ks = KieServices.Factory.get();
         gavs = new HashMap<ReleaseId, KieContainer>();
-        classpathKContainer = (KieContainerImpl) ks.newKieClasspathContainer(); //new KieContainerImpl( kProject, null );
+        classpathKContainer = (KieContainerImpl) ks.newKieClasspathContainer();
         named = new HashMap<String, KieCDIExtension.KieCDIEntry>();
     }
 
-    public <Object> void processInjectionTarget(@Observes ProcessInjectionTarget<java.lang.Object> pit,
-                                                BeanManager beanManager) {
+    public <T> void processInjectionTarget(@Observes ProcessInjectionTarget<T> pit) {
         if ( classpathKContainer == null ) {
             init();
         }
@@ -152,9 +152,9 @@ public class KieCDIExtension
         }
     }
 
-    private Class<? extends Annotation> getScope(ProcessInjectionTarget<Object> pit) {
+    private <T> Class<? extends Annotation> getScope(ProcessInjectionTarget<T> pit) {
         Set<Annotation> annotations = pit.getAnnotatedType().getAnnotations();
-        for (Annotation annotation : pit.getAnnotatedType().getAnnotations()) {
+        for (Annotation annotation : annotations) {
             Class<? extends Annotation> scope = annotation.annotationType();
             if (scope.getAnnotation( NormalScope.class ) != null || scope.getAnnotation( Scope.class ) != null) {
                 return scope;
@@ -165,7 +165,7 @@ public class KieCDIExtension
 
     public void addKBaseInjectionPoint(InjectionPoint ip, KBase kBase, Class< ? extends Annotation> scope, ReleaseId releaseId, KReleaseId kReleaseId) {
         if ( kBaseNames == null ) {
-            kBaseNames = new HashMap<KieCDIEntry, KieCDIEntry>();
+            kBaseNames = new HashMap<>();
         }
         
         String namedStr = ( kBase == null ) ? null : kBase.name();
@@ -288,8 +288,7 @@ public class KieCDIExtension
     }    
         
     
-    public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd,
-                                   BeanManager bm) {
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery abd) {
         if ( classpathKContainer != null ) {
             // if classpathKContainer null, processInjectionTarget was not called, so beans to create
             KieServices ks = KieServices.Factory.get();
@@ -339,7 +338,7 @@ public class KieCDIExtension
                                   KieCDIEntry entry) {        
         ReleaseId releaseId = entry.getReleaseId();
         KieContainerImpl kieContainer = classpathKContainer; // default to classpath, but allow it to be overriden
-        if ( releaseId != null ) { //&& !StringUtils.isEmpty( releaseId.getGroupId() ) && !StringUtils.isEmpty( releaseId.getArtifactId() ) && !StringUtils.isEmpty( releaseId.getArtifactId())) {
+        if ( releaseId != null ) {
             kieContainer = (KieContainerImpl) gavs.get(releaseId);
             if ( kieContainer == null ) {
                 log.error( "Could not retrieve KieContainer for ReleaseId {}",
@@ -365,7 +364,7 @@ public class KieCDIExtension
     public void addKBaseBean(AfterBeanDiscovery abd,
                              KieCDIEntry entry) {
         ReleaseId releaseId = entry.getReleaseId();
-        KieContainerImpl kieContainer = classpathKContainer; // default to classpath, but allow it to be overriden
+        KieContainerImpl kieContainer = classpathKContainer; // default to classpath, but allow it to be overridden
         if ( releaseId != null ) {
             kieContainer = (KieContainerImpl) gavs.get(releaseId);
             if ( kieContainer == null ) {
@@ -486,9 +485,7 @@ public class KieCDIExtension
         }
     }
     
-    public static class KContainerBean
-        implements
-        Bean<KieContainer> {
+    public static class KContainerBean implements Bean<KieContainer>, PassivationCapable {
         static final Set<Type>                     types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( KieContainer.class,
                                                                                                                           Object.class ) ) );
 
@@ -500,28 +497,30 @@ public class KieCDIExtension
 
         private final Set<InjectionPoint>          injectionPoints;
 
-        public KContainerBean(KieContainer kContainer,
-                              KReleaseId kReleaseId,
+        private final String id = "KContainerBean-" + UUID.randomUUID().toString();
+
+        public KContainerBean(final KieContainer kContainer,
+                              final KReleaseId kReleaseId,
                               final String named,
-                              Set<InjectionPoint> injectionPoints) {
+                              final Set<InjectionPoint> injectionPoints) {
             this.kContainer = kContainer;
             this.named = named;
             this.injectionPoints = injectionPoints;
 
-            Set<Annotation> set = new HashSet<Annotation>();
+            Set<Annotation> annotations = new HashSet<Annotation>();
             if ( kReleaseId == null ) {
-                set.add( defaultAnnLit );
+                annotations.add( defaultAnnLit );
             }
-            set.add( anyAnnLit );
+            annotations.add( anyAnnLit );
 
             if ( named != null ) {
-                set.add( new Named() {
+                annotations.add( new Named() {
                     public Class< ? extends Annotation> annotationType() {
                         return Named.class;
                     }
 
                     public String value() {
-                        return named;
+                        return named == null ? "" : named;
                     }
 
                     public String toString() {
@@ -531,10 +530,10 @@ public class KieCDIExtension
             }
             
             if ( kReleaseId != null ) {
-                set.add( kReleaseId );
+                annotations.add( kReleaseId );
             } 
 
-            this.qualifiers = Collections.unmodifiableSet( set );
+            this.qualifiers = Collections.unmodifiableSet( annotations );
         }
         
         public KieContainer create(CreationalContext ctx) {
@@ -587,12 +586,14 @@ public class KieCDIExtension
         public String toString() {
             return "KieContainer [qualifiers=" + qualifiers + "]";
         }
-        
+
+        @Override
+        public String getId() {
+            return id;
+        }
     }
 
-    public static class KBaseBean
-        implements
-        Bean<KieBase> {
+    public static class KBaseBean implements Bean<KieBase>, PassivationCapable {
         static final Set<Type>               types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( KieBase.class,
                                                                                                                     Object.class ) ) );
 
@@ -608,43 +609,45 @@ public class KieCDIExtension
         
         private final Set<InjectionPoint>          injectionPoints;
 
+        private String id = "KieBase-" + UUID.randomUUID().toString();
+
         public KBaseBean(final String kBaseQName,
                          final KieBaseModel kBaseModel,
-                         KieContainer kContainer,
-                         KReleaseId kReleaseId, 
-                         Class< ? extends Annotation> scope,
+                         final KieContainer kContainer,
+                         final KReleaseId kReleaseId,
+                         final Class< ? extends Annotation> scope,
                          final String named,
-                         Set<InjectionPoint> injectionPoints) {
+                         final Set<InjectionPoint> injectionPoints) {
             this.kBaseModel = kBaseModel;
             this.kContainer = kContainer;
             this.scope = scope;
             this.named = StringUtils.isEmpty( named ) ? null : named;
             this.injectionPoints = injectionPoints;
 
-            Set<Annotation> set = new HashSet<Annotation>();
+            Set<Annotation> annotations = new HashSet<>();
             if ( kBaseModel.isDefault() && kReleaseId == null ) {
-                set.add( defaultAnnLit );
+                annotations.add( defaultAnnLit );
             }
-            set.add( anyAnnLit );
-            set.add( new KBase() {
+            annotations.add( anyAnnLit );
+            annotations.add( new KBase() {
                 public Class< ? extends Annotation> annotationType() {
                     return KBase.class;
                 }
 
                 public String value() {
-                    return kBaseQName;
+                    return kBaseQName == null ? "" : kBaseQName;
                 }
                 
                 public String name() {
-                    return named;
+                    return named == null ? "" : named;
                 }
             } );
 
             if ( kReleaseId != null ) {
-                set.add( kReleaseId );
+                annotations.add( kReleaseId );
             }
 
-            this.qualifiers = Collections.unmodifiableSet( set );
+            this.qualifiers = Collections.unmodifiableSet( annotations );
         }
 
         public KieBase create(CreationalContext ctx) {
@@ -694,15 +697,18 @@ public class KieCDIExtension
         }
 
         @Override
-        public String toString() {
+          public String toString() {
             return "KBaseBean [kBase=" + kBaseModel.getName() + ", qualifiers=" + qualifiers + "]";
+        }
+
+        @Override
+        public String getId() {
+            return id;
         }
 
     }
 
-    public static class StatelessKSessionBean
-        implements
-        Bean<StatelessKieSession> {
+    public static class StatelessKSessionBean implements Bean<StatelessKieSession>, PassivationCapable {
         static final Set<Type>               types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( StatelessKieSession.class,
                                                                                                                     Object.class ) ) );
 
@@ -718,6 +724,8 @@ public class KieCDIExtension
         
         private final Set<InjectionPoint>          injectionPoints;
 
+        private final String id = "StatelessKSessionBean-" + UUID.randomUUID().toString();
+
         public StatelessKSessionBean(final KieSessionModel kieSessionModelModel,
                                      KieContainer kContainer,
                                      KReleaseId kReleaseId, 
@@ -730,12 +738,12 @@ public class KieCDIExtension
             this.named = StringUtils.isEmpty( named ) ? null : named;
             this.injectionPoints = injectionPoints;
 
-            Set<Annotation> set = new HashSet<Annotation>();
+            Set<Annotation> annotations = new HashSet<Annotation>();
             if ( kieSessionModelModel.isDefault() && kReleaseId == null ) {
-                set.add( defaultAnnLit );
+                annotations.add( defaultAnnLit );
             }
-            set.add( anyAnnLit );
-            set.add( new KSession() {
+            annotations.add( anyAnnLit );
+            annotations.add( new KSession() {
                 public Class< ? extends Annotation> annotationType() {
                     return KSession.class;
                 }
@@ -745,13 +753,13 @@ public class KieCDIExtension
                 }
                 
                 public String name() {
-                    return named;
+                    return named == null ? "" : named;
                 }                
             } );
             if ( kReleaseId != null ) {
-                set.add( kReleaseId );
+                annotations.add( kReleaseId );
             }
-            this.qualifiers = Collections.unmodifiableSet( set );
+            this.qualifiers = Collections.unmodifiableSet( annotations );
         }
 
         public StatelessKieSession create(CreationalContext ctx) {
@@ -798,11 +806,14 @@ public class KieCDIExtension
         public boolean isNullable() {
             return false;
         }
+
+        @Override
+        public String getId() {
+            return id;
+        }
     }
 
-    public static class StatefulKSessionBean
-        implements
-        Bean<KieSession> {
+    public static class StatefulKSessionBean implements Bean<KieSession>, PassivationCapable {
         static final Set<Type>               types = Collections.unmodifiableSet( new HashSet<Type>( Arrays.asList( KieSession.class,
                                                                                                                     Object.class ) ) );
 
@@ -818,43 +829,45 @@ public class KieCDIExtension
         
         private final Set<InjectionPoint>          injectionPoints;
 
+        private final String id = "StatefulKSessionBean-" + UUID.randomUUID().toString();
+
         public StatefulKSessionBean(final String kSessionName,
-                                    final KieSessionModel kieSessionModelModel,
-                                    KieContainer kContainer,
-                                    KReleaseId kReleaseId, 
-                                    Class< ? extends Annotation> scope,
+                                    final KieSessionModel kieSessionModel,
+                                    final KieContainer kContainer,
+                                    final KReleaseId kReleaseId,
+                                    final Class< ? extends Annotation> scope,
                                     final String named,
-                                    Set<InjectionPoint> injectionPoints) {
-            this.kSessionModel = kieSessionModelModel;
+                                    final Set<InjectionPoint> injectionPoints) {
+            this.kSessionModel = kieSessionModel;
             this.kContainer = kContainer;
             this.scope = scope;
             this.named = StringUtils.isEmpty( named ) ? null : named;
             this.injectionPoints = injectionPoints;
 
-            Set<Annotation> set = new HashSet<Annotation>();
-            if ( kieSessionModelModel.isDefault() && kReleaseId == null ) {
-                set.add( defaultAnnLit );
+            Set<Annotation> annotations = new HashSet<>();
+            if ( kieSessionModel.isDefault() && kReleaseId == null ) {
+                annotations.add( defaultAnnLit );
             }
-            set.add( anyAnnLit );
-            set.add( new KSession() {
+            annotations.add( anyAnnLit );
+            annotations.add( new KSession() {
                 public Class< ? extends Annotation> annotationType() {
                     return KSession.class;
                 }
 
                 public String value() {
-                    return kSessionName;
+                    return kSessionName == null ? "" : kSessionName;
                 }
                 
                 public String name() {
-                    return named;
+                    return named == null ? "" : named;
                 }                
             } );
 
             if ( kReleaseId != null ) {
-                set.add( kReleaseId );
+                annotations.add( kReleaseId );
             }
 
-            this.qualifiers = Collections.unmodifiableSet( set );
+            this.qualifiers = Collections.unmodifiableSet( annotations );
         }
 
         public KieSession create(CreationalContext ctx) {
@@ -900,6 +913,11 @@ public class KieCDIExtension
 
         public boolean isNullable() {
             return false;
+        }
+
+        @Override
+        public String getId() {
+            return id;
         }
     }
 
