@@ -20,6 +20,7 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.facttemplates.FactTemplate;
+import org.drools.core.util.MathUtils;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -29,7 +30,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 
-public class ValueType
+public class ValueType<T>
     implements
     Externalizable {
 
@@ -94,12 +95,9 @@ public class ValueType
                                                                         Number.class,
                                                                         SimpleValueType.DATE );
    
-    public static final ValueType  BIG_DECIMAL_TYPE  = new ValueType( "BigDecimal",
-                                                                      BigDecimal.class,
-                                                                      SimpleValueType.NUMBER );
-    public static final ValueType  BIG_INTEGER_TYPE  = new ValueType( "BigInteger",
-                                                                      BigInteger.class,
-                                                                      SimpleValueType.NUMBER );
+    public static final ValueType  BIG_DECIMAL_TYPE  = new BigDecimalValueType();
+
+    public static final ValueType  BIG_INTEGER_TYPE  = new BigIntegerValueType();
     
     
     // other types    
@@ -109,9 +107,9 @@ public class ValueType
     public static final ValueType  ARRAY_TYPE        = new ValueType( "Array",
                                                                       Object[].class,
                                                                       SimpleValueType.LIST );
-    public static final ValueType  STRING_TYPE       = new ValueType( "String",
-                                                                      String.class,
-                                                                      SimpleValueType.STRING );
+
+    public static final ValueType  STRING_TYPE       = new StringValueType();
+
     public static final ValueType  OBJECT_TYPE       = new ValueType( "Object",
                                                                       Object.class,
                                                                       SimpleValueType.OBJECT );
@@ -134,7 +132,7 @@ public class ValueType
                                                                       SimpleValueType.OBJECT );
 
     private String           name;
-    private Class<?>         classType;
+    private Class<T>         classType;
     private int              simpleType;
 
     public ValueType() {
@@ -142,7 +140,7 @@ public class ValueType
     }
 
     private ValueType(final String name,
-                      final Class<?> classType,
+                      final Class<T> classType,
                       final int simpleType) {
         this.name = name;
         this.classType = classType;
@@ -151,7 +149,7 @@ public class ValueType
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         name        = (String)in.readObject();
-        classType   = (Class<?>)in.readObject();
+        classType   = (Class<T>)in.readObject();
         simpleType  = in.readInt();
     }
 
@@ -175,7 +173,7 @@ public class ValueType
     /* (non-Javadoc)
      * @see org.kie.base.ValueTypeInterface#getClassType()
      */
-    public Class<?> getClassType() {
+    public Class<T> getClassType() {
         return this.classType;
     }
 
@@ -332,4 +330,49 @@ public class ValueType
         return this.classType == EventFactHandle.class;
     }
 
+    public T coerce(Object value) {
+        return (T)value;
+    }
+
+    public static class StringValueType extends ValueType<String> {
+        public StringValueType() {
+            super("String", String.class, SimpleValueType.STRING);
+        }
+
+        @Override
+        public String coerce( Object value ) {
+            if (value == null) {
+                return null;
+            }
+            return value instanceof String ? (String)value : value.toString();
+        }
+    }
+
+    public static class BigIntegerValueType extends ValueType<BigInteger> {
+        public BigIntegerValueType() {
+            super("BigInteger", BigInteger.class, SimpleValueType.NUMBER);
+        }
+
+        @Override
+        public BigInteger coerce( Object value ) {
+            if (value == null) {
+                return null;
+            }
+            return MathUtils.getBigInteger( value );
+        }
+    }
+
+    public static class BigDecimalValueType extends ValueType<BigDecimal> {
+        public BigDecimalValueType() {
+            super("BigDecimal", BigDecimal.class, SimpleValueType.NUMBER);
+        }
+
+        @Override
+        public BigDecimal coerce( Object value ) {
+            if (value == null) {
+                return null;
+            }
+            return MathUtils.getBigDecimal( value );
+        }
+    }
 }

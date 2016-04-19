@@ -751,7 +751,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             } else {
                 this.type = OBJECT;
                 if ( !isNull ) {
-                    this.ovalue = value.getValue();
+                    this.ovalue = vtype.coerce( value.getValue() );
                     this.setHashCode( this.ovalue != null ? this.ovalue.hashCode() : 0 );
                 } else {
                     this.setHashCode( 0 );
@@ -860,19 +860,20 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 return (other.isNull);
             }
 
+            if (this.index != other.index) {
+                return false;
+            }
+
             switch ( this.type ) {
                 case BOOL :
-                    return (this.index == other.index) && (this.bvalue == other.getBooleanValue());
+                    return this.bvalue == other.getBooleanValue();
                 case LONG :
-                    return (this.index == other.index) && (this.lvalue == other.getLongValue());
+                    return this.lvalue == other.getLongValue();
                 case DOUBLE :
-                    return (this.index == other.index) && (this.dvalue == other.getDoubleValue());
+                    return this.dvalue == other.getDoubleValue();
                 case OBJECT :
                     final Object otherValue = other.getObjectValue();
-                    if ( (this.ovalue != null) && (this.ovalue instanceof Number) && (otherValue instanceof Number) ) {
-                        return (this.index == other.index) && (((Number) this.ovalue).doubleValue() == ((Number) otherValue).doubleValue());
-                    }
-                    return (this.index == other.index) && (this.ovalue == null ? otherValue == null : this.ovalue.equals( otherValue ));
+                    return this.ovalue == null ? otherValue == null : this.ovalue.equals( otherValue );
             }
             return false;
         }

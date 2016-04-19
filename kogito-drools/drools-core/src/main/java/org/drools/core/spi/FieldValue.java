@@ -24,44 +24,43 @@ public interface FieldValue
     extends
     Serializable {
 
-    public Object getValue();
+    Object getValue();
 
-    public char getCharValue();
+    char getCharValue();
 
-    public BigDecimal getBigDecimalValue();
+    BigDecimal getBigDecimalValue();
 
-    public BigInteger getBigIntegerValue();
+    BigInteger getBigIntegerValue();
 
-    public int getIntValue();
+    int getIntValue();
 
-    public byte getByteValue();
+    byte getByteValue();
 
-    public short getShortValue();
+    short getShortValue();
 
-    public long getLongValue();
+    long getLongValue();
 
-    public float getFloatValue();
+    float getFloatValue();
 
-    public double getDoubleValue();
+    double getDoubleValue();
 
-    public boolean getBooleanValue();
+    boolean getBooleanValue();
 
-    public boolean isNull();
+    boolean isNull();
 
-    public boolean isBooleanField();
+    boolean isBooleanField();
 
-    public boolean isIntegerNumberField();
+    boolean isIntegerNumberField();
 
-    public boolean isFloatNumberField();
+    boolean isFloatNumberField();
 
-    public boolean isObjectField();
+    boolean isObjectField();
 
     /**
      * Returns true if the given field value implements the Collection interface
      * @return
      */
-    public boolean isCollectionField();
+    boolean isCollectionField();
 
-    public boolean isStringField();
-
+    boolean isStringField();
 }
