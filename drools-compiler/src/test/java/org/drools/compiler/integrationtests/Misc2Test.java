@@ -120,6 +120,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Timestamp;
