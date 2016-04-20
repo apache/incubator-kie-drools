@@ -60,4 +60,7 @@ public class MathUtils {
         return ret;
     }
 
+    public static int compare(Number n1, Number n2) {
+        return getBigDecimal( n1 ).compareTo( getBigDecimal( n2 ) );
+    }
 }
