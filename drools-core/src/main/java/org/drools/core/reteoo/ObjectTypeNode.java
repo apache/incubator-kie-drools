@@ -102,7 +102,7 @@ public class ObjectTypeNode extends ObjectSource
     protected CompiledNetwork compiledNetwork;
 
     /* always dirty after serialisation */
-    protected transient boolean dirty;
+    private transient volatile boolean dirty;
 
     /* reset counter when dirty */
     protected transient IdGenerator idGenerator;
@@ -268,11 +268,15 @@ public class ObjectTypeNode extends ObjectSource
         propagateAssert(factHandle, context, workingMemory);
     }
 
-    private void checkDirty() {
+    protected void checkDirty() {
         if (dirty) {
-            resetIdGenerator();
-            updateTupleSinkId(this, this);
-            dirty = false;
+            synchronized (this) {
+                if (dirty) {
+                    resetIdGenerator();
+                    updateTupleSinkId( this, this );
+                    dirty = false;
+                }
+            }
         }
     }
 

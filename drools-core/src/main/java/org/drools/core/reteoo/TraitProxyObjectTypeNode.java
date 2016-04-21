@@ -34,11 +34,7 @@ public class TraitProxyObjectTypeNode extends ObjectTypeNode {
                               ModifyPreviousTuples modifyPreviousTuples,
                               PropagationContext context,
                               InternalWorkingMemory workingMemory ) {
-        if ( dirty ) {
-            resetIdGenerator();
-            updateTupleSinkId( this, this );
-            dirty = false;
-        }
+        checkDirty();
         // node can't have sinks. Avoid mask recalculations and other operations on updates
     }
 
