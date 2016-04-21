@@ -342,7 +342,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             }
             scoreDirectorFactory.setAssertionScoreDirectorFactory(
                     assertionScoreDirectorFactory.buildScoreDirectorFactory(configContext,
-                            EnvironmentMode.PRODUCTION, solutionDescriptor, scoreDefinition));
+                            EnvironmentMode.NON_REPRODUCIBLE, solutionDescriptor, scoreDefinition));
         }
         scoreDirectorFactory.setInitializingScoreTrend(InitializingScoreTrend.parseTrend(
                 initializingScoreTrend == null ? InitializingScoreTrendLevel.ANY.name() : initializingScoreTrend,

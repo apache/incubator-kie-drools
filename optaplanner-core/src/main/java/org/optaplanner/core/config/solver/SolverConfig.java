@@ -79,6 +79,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     public SolverConfig(SolverConfig inheritedConfig) {
         inherit(inheritedConfig);
+        if (environmentMode == EnvironmentMode.PRODUCTION) {
+            environmentMode = EnvironmentMode.NON_REPRODUCIBLE;
+        }
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -174,6 +177,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     // ************************************************************************
 
     public EnvironmentMode determineEnvironmentMode() {
+        if (environmentMode == EnvironmentMode.PRODUCTION) {
+            environmentMode = EnvironmentMode.NON_REPRODUCIBLE;
+        }
         return defaultIfNull(environmentMode, EnvironmentMode.REPRODUCIBLE);
     }
 
@@ -236,7 +242,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         } else {
             RandomType randomType_ = defaultIfNull(randomType, RandomType.JDK);
             Long randomSeed_ = randomSeed;
-            if (randomSeed == null && environmentMode_ != EnvironmentMode.PRODUCTION) {
+            if (randomSeed == null && environmentMode_ != EnvironmentMode.NON_REPRODUCIBLE) {
                 randomSeed_ = DEFAULT_RANDOM_SEED;
             }
             randomFactory = new DefaultRandomFactory(randomType_, randomSeed_);

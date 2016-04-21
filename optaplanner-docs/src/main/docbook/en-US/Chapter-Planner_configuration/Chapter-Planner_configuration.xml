@@ -1909,7 +1909,7 @@ public class SeatDesignationDependency {
 &lt;/solver&gt;</programlisting>
 
       <para>A solver has a single <literal>Random</literal> instance. Some solver configurations use the
-      <literal>Random</literal> instance a lot more than others. For example Simulated Annealing depends highly on
+      <literal>Random</literal> instance a lot more than others. For example, Simulated Annealing depends highly on
       random numbers, while Tabu Search only depends on it to deal with score ties. The environment mode influences the
       seed of that <literal>Random</literal> instance.</para>
 
@@ -1986,18 +1986,19 @@ public class SeatDesignationDependency {
           </itemizedlist>
         </note>
 
-        <para>The reproducible mode is slightly slower than the production mode. If your production environment requires
-        reproducibility, use this mode in production too.</para>
+        <para>The reproducible mode can be slightly slower than the non-reproducible mode. If your production
+        environment can benefit from reproducibility, use this mode in production.</para>
 
         <para>In practice, this mode uses the default, fixed <link linkend="randomNumberGenerator">random seed</link> if
         no seed is specified, and it also disables certain concurrency optimizations (such as work stealing).</para>
       </section>
 
       <section xml:id="environmentModeProduction">
-        <title>PRODUCTION</title>
+        <title>NON_REPRODUCIBLE</title>
 
-        <para>The production mode is the fastest, but it is not reproducible. It is recommended for a production
-        environment, unless reproducibility is required.</para>
+        <para>The non-reproducible mode can be slightly faster than the reproducible mode. Avoid using it during
+        development as it makes debugging and bug fixing painful. If your production environment doesn't care about
+        reproducibility, use this mode in production.</para>
 
         <para>In practice, this mode uses no fixed <link linkend="randomNumberGenerator">random seed</link> if no seed
         is specified.</para>

@@ -79,23 +79,29 @@ public enum EnvironmentMode {
      * <p>
      * Warning: some code can disrupt reproducibility regardless of this mode. See the reference manual for more info.
      * <p>
-     * The reproducible mode is slightly slower than the production mode.
-     * <p>
      * In practice, this mode uses the default random seed,
      * and it also disables certain concurrency optimizations (such as work stealing).
      * TODO: PLANNER-76 Multi-threaded support which implement those concurrency optimizations
      */
     REPRODUCIBLE,
     /**
-     * The production mode is the fastest, but not reproducible.
-     * It is recommended for a production environment, unless reproducibility is required.
+     * This mode has been renamed to {@link #NON_REPRODUCIBLE}
+     * because most users prefer to use {@link #REPRODUCIBLE} in production.
+     * @deprecated in favor of {@link #NON_REPRODUCIBLE}
+     */
+    @Deprecated
+    PRODUCTION,
+    /**
+     * The non reproducible mode is equally fast or slightly faster than {@link #REPRODUCIBLE}.
      * <p>
      * The random seed is different on every run, which makes it more robust against an unlucky random seed.
      * An unlucky random seed gives a bad result on a certain data set with a certain solver configuration.
      * Note that in most use cases the impact of the random seed is relatively low on the result.
      * An occasional bad result is far more likely to be caused by another issue (such as a score trap).
+     * <p>
+     * In multi-threaded scenario's, this mode allows the use of work stealing and other non deterministic speed tricks.
      */
-    PRODUCTION;
+    NON_REPRODUCIBLE;
 
     public boolean isAsserted() {
         switch (this) {
@@ -104,7 +110,7 @@ public enum EnvironmentMode {
             case FAST_ASSERT:
                 return true;
             case REPRODUCIBLE:
-            case PRODUCTION:
+            case NON_REPRODUCIBLE:
                 return false;
             default:
                 throw new IllegalStateException("The environmentMode (" + this + ") is not implemented.");
@@ -118,7 +124,7 @@ public enum EnvironmentMode {
                 return true;
             case FAST_ASSERT:
             case REPRODUCIBLE:
-            case PRODUCTION:
+            case NON_REPRODUCIBLE:
                 return false;
             default:
                 throw new IllegalStateException("The environmentMode (" + this + ") is not implemented.");
@@ -132,7 +138,7 @@ public enum EnvironmentMode {
                 return true;
             case NON_INTRUSIVE_FULL_ASSERT:
             case REPRODUCIBLE:
-            case PRODUCTION:
+            case NON_REPRODUCIBLE:
                 return false;
             default:
                 throw new IllegalStateException("The environmentMode (" + this + ") is not implemented.");
@@ -146,7 +152,7 @@ public enum EnvironmentMode {
             case FAST_ASSERT:
             case REPRODUCIBLE:
                 return true;
-            case PRODUCTION:
+            case NON_REPRODUCIBLE:
                 return false;
             default:
                 throw new IllegalStateException("The environmentMode (" + this + ") is not implemented.");
