@@ -29,7 +29,7 @@ import java.io.ObjectOutput;
 public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     protected LeftTupleSink sink;
     
-    private LeftTupleSink[] array;
+    private LeftTupleSink[] sinkArray;
 
     public SingleLeftTupleSinkAdapter() {
         this( RuleBasePartitionId.MAIN_PARTITION,
@@ -40,6 +40,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                       final LeftTupleSink sink) {
         super( partitionId );
         this.sink = sink;
+        this.sinkArray = new LeftTupleSink[]{this.sink};
     }
     
     public void createChildLeftTuplesforQuery(final LeftTuple leftTuple,
@@ -142,10 +143,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     }
 
     public LeftTupleSink[] getSinks() {
-    	if ( array == null ) {
-    		array = new LeftTupleSink[]{this.sink};
-    	}
-        return array;
+        return sinkArray;
     }
     
     public LeftTupleSinkNode getFirstLeftTupleSink() {
@@ -164,6 +162,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                             ClassNotFoundException {
         super.readExternal( in );
         this.sink = (LeftTupleSink) in.readObject();
+        this.sinkArray = new LeftTupleSink[]{this.sink};
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
