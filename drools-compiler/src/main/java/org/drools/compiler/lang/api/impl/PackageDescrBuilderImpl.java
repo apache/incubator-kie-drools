@@ -154,4 +154,8 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
     public PackageDescrBuilder end() {
         return this;
     }
+
+    public Resource getResource() {
+        return this.resource;
+    }
 }

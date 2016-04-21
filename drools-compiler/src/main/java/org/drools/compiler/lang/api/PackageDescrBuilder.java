@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -16,6 +16,7 @@
 package org.drools.compiler.lang.api;
 
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.kie.api.io.Resource;
 
 public interface PackageDescrBuilder
     extends
@@ -23,7 +24,7 @@ public interface PackageDescrBuilder
     DescrBuilder<PackageDescrBuilder, PackageDescr> {
 
     /**
-     * Sets the name of the package 
+     * Sets the name of the package
      * @param name
      * @return itself, in order to be used as a fluent API
      */
@@ -40,7 +41,7 @@ public interface PackageDescrBuilder
      * @return the ImporDescrBuilder to set the function import
      */
     public ImportDescrBuilder newFunctionImport();
-    
+
     /**
      * Adds an accumulate import statement to the package
      * @return
@@ -48,13 +49,13 @@ public interface PackageDescrBuilder
     public AccumulateImportDescrBuilder newAccumulateImport();
 
     /**
-     * Adds a global statement to the package 
+     * Adds a global statement to the package
      * @return the GlobalDescrBuilder to set the global
      */
     public GlobalDescrBuilder newGlobal();
 
     /**
-     * Adds a new Declare statement to the package 
+     * Adds a new Declare statement to the package
      * @return the DeclareDescrBuilder to build the declare statement
      */
     public DeclareDescrBuilder newDeclare();
@@ -76,13 +77,19 @@ public interface PackageDescrBuilder
      * @return the QueryDescrBuilder to build the query
      */
     public QueryDescrBuilder newQuery();
-    
+
     /**
-     * Returns itself, as there is no container for a package 
+     * Returns itself, as there is no container for a package
      * descr builder.
-     * 
+     *
      * {@inheritDoc}
      */
     public PackageDescrBuilder end();
+
+    /**
+     * Returns the resource from which this package is being built
+     * @return {@link Resource}
+     */
+    public Resource getResource();
 
 }

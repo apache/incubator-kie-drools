@@ -33,8 +33,8 @@ public class RuleDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBuild
     RuleDescrBuilder {
 
     protected RuleDescrBuilderImpl(PackageDescrBuilder parent) {
-        super( parent,
-               new RuleDescr() );
+        super( parent, new RuleDescr() );
+        descr.setResource(parent.getResource());
     }
 
     public AnnotationDescrBuilder<RuleDescrBuilder> newAnnotation( String name ) {
