@@ -13,7 +13,11 @@
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>Drools :: Decision Tables</name>
-  
+
+  <properties>
+    <osgi.Bundle-SymbolicName>org.drools.decisiontables;singleton:=true</osgi.Bundle-SymbolicName>
+  </properties>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -80,7 +84,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.drools.decisiontables;singleton:=true</Bundle-SymbolicName>
             <Export-Package>
               org.drools.decisiontable.*
             </Export-Package>

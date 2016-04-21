@@ -15,6 +15,7 @@
   <name>Drools :: Compiler</name>
 
   <properties>
+    <osgi.Bundle-SymbolicName>org.drools.compiler</osgi.Bundle-SymbolicName>
     <surefire.forkCount>2</surefire.forkCount>
   </properties>
 
@@ -193,7 +194,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.drools.compiler</Bundle-SymbolicName>
             <Import-Package>
               com.sun.tools.xjc.*;resolution:=optional,
               com.sun.codemodel;resolution:=optional,
