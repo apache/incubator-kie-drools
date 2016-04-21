@@ -61,8 +61,8 @@ public class StartTimeUpdatingVariableListener implements VariableListener<Task>
             scoreDirector.beforeVariableChanged(shadowTask, "startTime");
             shadowTask.setStartTime(startTime);
             scoreDirector.afterVariableChanged(shadowTask, "startTime");
-            shadowTask = shadowTask.getNextTask();
             startTime = shadowTask.getEndTime();
+            shadowTask = shadowTask.getNextTask();
         }
     }
 
