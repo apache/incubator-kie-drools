@@ -69,12 +69,55 @@ public class StringDataGenerator {
                         "Snos");
     }
 
+    public static StringDataGenerator build1kCompanyNames() {
+        return new StringDataGenerator()
+                .addPart(
+                        "Steel",
+                        "Paper",
+                        "Stone",
+                        "Wood",
+                        "Water",
+                        "Food",
+                        "Oil",
+                        "Car",
+                        "Power",
+                        "Computer")
+                .addPart(
+                        "Inc",
+                        "Corp",
+                        "Limited",
+                        "Express",
+                        "Telco",
+                        "Mobile",
+                        "Soft",
+                        "Mart",
+                        "Bank",
+                        "Labs")
+                .addPart(
+                        "US",
+                        "UK",
+                        "JP",
+                        "DE",
+                        "FR",
+                        "BE",
+                        "NL",
+                        "BR",
+                        "IN",
+                        "ES");
+    }
+
+    private final String delimiter;
     private List<String[]> partValuesList = new ArrayList<>();
     private int partValuesLength;
     private int index = 0;
     private int indexLimit;
 
     public StringDataGenerator() {
+        this(" ");
+    }
+
+    public StringDataGenerator(String delimiter) {
+        this.delimiter = delimiter;
     }
 
     public StringDataGenerator addPart(String... partValues) {
@@ -120,7 +163,7 @@ public class StringDataGenerator {
         }
         for (int i = 0; i < listSize; i++) {
             if (i > 0) {
-                result.append(" ");
+                result.append(delimiter);
             }
             String[] partValues = partValuesList.get(i);
             result.append(partValues[chosens[i]]);

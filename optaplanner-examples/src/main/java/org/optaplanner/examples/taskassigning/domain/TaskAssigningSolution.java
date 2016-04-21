@@ -36,13 +36,13 @@ public class TaskAssigningSolution extends AbstractPersistable {
 
     @ProblemFactCollectionProperty
     private List<Skill> skillList;
-    @ValueRangeProvider(id = "employeeRange")
-    @ProblemFactCollectionProperty
-    private List<Employee> employeeList;
     @ProblemFactCollectionProperty
     private List<TaskType> taskTypeList;
     @ProblemFactCollectionProperty
     private List<Customer> customerList;
+    @ValueRangeProvider(id = "employeeRange")
+    @ProblemFactCollectionProperty
+    private List<Employee> employeeList;
 
     @PlanningEntityCollectionProperty
     @ValueRangeProvider(id = "taskRange")
@@ -59,14 +59,6 @@ public class TaskAssigningSolution extends AbstractPersistable {
         this.skillList = skillList;
     }
 
-    public List<Employee> getEmployeeList() {
-        return employeeList;
-    }
-
-    public void setEmployeeList(List<Employee> employeeList) {
-        this.employeeList = employeeList;
-    }
-
     public List<TaskType> getTaskTypeList() {
         return taskTypeList;
     }
@@ -81,6 +73,14 @@ public class TaskAssigningSolution extends AbstractPersistable {
 
     public void setCustomerList(List<Customer> customerList) {
         this.customerList = customerList;
+    }
+
+    public List<Employee> getEmployeeList() {
+        return employeeList;
+    }
+
+    public void setEmployeeList(List<Employee> employeeList) {
+        this.employeeList = employeeList;
     }
 
     public List<Task> getTaskList() {
