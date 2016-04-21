@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -14,6 +14,19 @@
 */
 
 package org.drools.compiler.rule.builder.dialect.java;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.errors.ErrorHandler;
@@ -30,6 +43,7 @@ import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
+import org.drools.compiler.compiler.PackageCompilationResult;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.AbstractKieModule.CompilationCacheEntry;
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -74,6 +88,7 @@ import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.compiler.rule.builder.WindowReferenceBuilder;
+import org.drools.compiler.rule.builder.dialect.AbstractDialect;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.compiler.rule.builder.dialect.asm.ASMConsequenceStubBuilder;
 import org.drools.compiler.rule.builder.dialect.asm.ASMEvalStubBuilder;
@@ -93,20 +108,14 @@ import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JavaDialect
-    implements
-    Dialect {
+    extends AbstractDialect
+    implements Dialect {
+
+    private static final Logger log = LoggerFactory.getLogger(KnowledgeBuilderConfigurationImpl.class);
 
     public static final String                         ID                            = "java";
 
@@ -138,6 +147,7 @@ public class JavaDialect
     // a map of registered builders
     private static Map<Class<?>, EngineElementBuilder> builders;
 
+
     static {
         initBuilder();
     }
@@ -157,7 +167,8 @@ public class JavaDialect
     private final Map<String, ErrorHandler>          errorHandlers;
     private final List<KnowledgeBuilderResult>       results;
 
-    private final PackageRegistry packageRegistry;
+    private Map<String, BaseDescr> classFileNameResourceMap;
+
 
     public JavaDialect(ClassLoader rootClassLoader,
                        KnowledgeBuilderConfigurationImpl pkgConf,
@@ -176,6 +187,7 @@ public class JavaDialect
         this.src = new MemoryResourceReader();
 
         this.generatedClassList = new ArrayList<String>();
+        this.classFileNameResourceMap = new HashMap<String, BaseDescr>(8);
 
         JavaDialectRuntimeData data = (JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData( ID );
 
@@ -304,6 +316,7 @@ public class JavaDialect
         try {
             result = analyzer.analyzeExpression((String) content,
                     availableIdentifiers);
+            addAnalysisResultReferences(context.getPkg().getName(), descr, result);
         } catch ( final Exception e ) {
             context.addError(new DescrBuildError(context.getParentDescr(),
                     descr,
@@ -321,6 +334,7 @@ public class JavaDialect
         try {
             result = analyzer.analyzeBlock( text,
                                             availableIdentifiers );
+            addAnalysisResultReferences(context.getPkg().getName(), descr, result);
         } catch ( final Exception e ) {
             context.addError( new DescrBuildError( context.getParentDescr(),
                                                           descr,
@@ -328,15 +342,6 @@ public class JavaDialect
                                                           "Unable to determine the used declarations.\n" + e ) );
         }
         return result;
-    }
-
-    /**
-     * Returns the current type resolver instance
-     *
-     * @return
-     */
-    public TypeResolver getTypeResolver() {
-        return this.packageRegistry.getTypeResolver();
     }
 
     public RuleConditionBuilder getBuilder(final Class clazz) {
@@ -400,11 +405,14 @@ public class JavaDialect
      * Errors are mapped back to the element that originally generated the semantic
      * code.
      */
-    public void compileAll() {
+    public PackageCompilationResult compileAll() {
+
+        PackageCompilationResult dialectResult = new PackageCompilationResult(this.pkg.getName());
         if ( this.generatedClassList.isEmpty() ) {
             this.errorHandlers.clear();
-            return;
+            return dialectResult;
         }
+
         final String[] classes = new String[this.generatedClassList.size()];
         this.generatedClassList.toArray( classes );
 
@@ -439,6 +447,26 @@ public class JavaDialect
         // We've compiled everthing, so clear it for the next set of additions
         this.generatedClassList.clear();
         this.errorHandlers.clear();
+
+        String [] typeReferences = result.getTypeReferences();
+        if( typeReferences == null || typeReferences.length == 0 ) {
+            return dialectResult;
+        }
+
+        for( String className : classes ) {
+           BaseDescr descr = classFileNameResourceMap.get(className);
+           Resource resource = descr.getResource();
+           assert resource != null : descr.getClass().getSimpleName() + " instance has a null .resource field!";
+           if( resource != null ) {
+               List<String> typeRefList = Arrays.asList(typeReferences);
+               int lastSlashIndex = className.lastIndexOf('/');
+               String pkgPath = className.substring(0, lastSlashIndex);
+               dialectResult.addResourceTypeReferenceMapping(pkgPath, resource, typeRefList);
+           } else {
+               log.error("Null resource for when collecting type references from " + className );
+           }
+        }
+        return dialectResult;
     }
 
     /**
@@ -625,13 +653,15 @@ public class JavaDialect
         this.errorHandlers.put( fileName,
                                 handler );
 
+        this.classFileNameResourceMap.put(fileName, descr);
+
         addClassName( fileName );
     }
 
     public void addClassName(final String className) {
         boolean found = false;
         if( pkgConf.isPreCompiled() ) {
-            // recover bytecode from cache 
+            // recover bytecode from cache
             Map<String, List<CompilationCacheEntry>> cache = pkgConf.getCompilationCache().getCacheForDialect( ID );
             if( cache != null ) {
                 String resourceName = className.replace( ".java", ".class" );
@@ -653,7 +683,7 @@ public class JavaDialect
     }
 
     private void loadCompiler() {
-        this.compiler = JavaCompilerFactory.getInstance().loadCompiler( this.configuration );
+        this.compiler = new JavaCompilerFactory().loadCompiler( this.configuration );
     }
 
     public void addImport(ImportDescr importDescr) {
@@ -675,10 +705,6 @@ public class JavaDialect
 
     public String getId() {
         return ID;
-    }
-
-    public PackageRegistry getPackageRegistry() {
-        return this.packageRegistry;
     }
 
 }
