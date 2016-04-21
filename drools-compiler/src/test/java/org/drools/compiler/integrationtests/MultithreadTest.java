@@ -63,39 +63,64 @@ public class MultithreadTest extends CommonTestMethodBase {
 
     @Test(timeout = 10000)
     public void testConcurrentInsertionsFewObjectsManyThreads() {
-        testConcurrentInsertions(1, 1000, false);
+        final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
+                "\n" +
+                "rule \"R\"\n" +
+                "when\n" +
+                "    $a : Bean( seed != 1 )\n" +
+                "then\n" +
+                "end";
+        testConcurrentInsertions(drl, 1, 1000, false);
     }
 
     @Test(timeout = 10000)
     public void testConcurrentInsertionsManyObjectsFewThreads() {
-        testConcurrentInsertions(1000, 4, false);
+        final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
+                "\n" +
+                "rule \"R\"\n" +
+                "when\n" +
+                "    $a : Bean( seed != 1 )\n" +
+                "then\n" +
+                "end";
+        testConcurrentInsertions(drl, 1000, 4, false);
     }
 
     @Test(timeout = 10000)
-    public void testConcurrentInsertionsFewObjectsManyThreadsNewSessionEachThread() {
-        testConcurrentInsertions(1, 1000, true);
+    public void testConcurrentInsertionsNewSessionEachThread() {
+        final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
+                " query existsBeanSeed5More() \n" +
+                "     Bean( seed > 5 ) \n" +
+                " end \n" +
+                "\n" +
+                "rule \"R\"\n" +
+                "when\n" +
+                "    $a: Bean( seed != 1 )\n" +
+                "    $b: Bean( seed != 2 )\n" +
+                "    existsBeanSeed5More() \n" +
+                "then\n" +
+                "end \n" +
+                "rule \"R2\"\n" +
+                "when\n" +
+                "    $a: Bean( seed != 1 )\n" +
+                "    $b: Bean( seed != 2 )\n" +
+                "then\n" +
+                "end\n" +
+                "rule \"R3\"\n" +
+                "when\n" +
+                "    $a: Bean( seed != 3 )\n" +
+                "    $b: Bean( seed != 4 )\n" +
+                "    $c: Bean( seed != 5 )\n" +
+                "    $d: Bean( seed != 6 )\n" +
+                "    $e: Bean( seed != 7 )\n" +
+                "then\n" +
+                "end";
+        testConcurrentInsertions(drl, 10, 1000, true);
     }
 
-    @Test(timeout = 10000)
-    public void testConcurrentInsertionsManyObjectsFewThreadsNewSessionEachThread() {
-        testConcurrentInsertions(100, 1000, true);
-    }
-
-    private void testConcurrentInsertions(final int objectCount, final int threadCount,
+    private void testConcurrentInsertions(final String drl, final int objectCount, final int threadCount,
             final boolean newSessionForEachThread) {
-        String str = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
-                     " query existsBeanSeed5More() \n" +
-                     "     Bean( seed > 5 ) \n" +
-                     " end \n" +
-                     "\n" +
-                     "rule \"R\"\n" +
-                     "when\n" +
-                     "    $a : Bean( seed != 1 )\n" +
-                     "    existsBeanSeed5More() \n" +
-                     "then\n" +
-                     "end";
 
-        final KieBase kieBase = new KieHelper().addContent(str, ResourceType.DRL).build();
+        final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
 
         Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
             public Thread newThread(Runnable r) {
@@ -152,10 +177,6 @@ public class MultithreadTest extends CommonTestMethodBase {
                         FactHandle[] facts = new FactHandle[objectCount];
                         for (int i = 0; i < objectCount; i++) {
                             facts[i] = ksession.insert(new Bean(i));
-                        }
-                        ksession.fireAllRules();
-                        for (int i = 0; i < objectCount; i++) {
-                            ksession.update(facts[i], new Bean(-i));
                         }
                         for (FactHandle fact : facts) {
                             ksession.delete(fact);
