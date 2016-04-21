@@ -22,6 +22,7 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.StockTick;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
@@ -62,24 +63,85 @@ public class MultithreadTest extends CommonTestMethodBase {
 
     @Test(timeout = 10000)
     public void testConcurrentInsertionsFewObjectsManyThreads() {
-        testConcurrentInsertions(1, 1000);
+        final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
+                "\n" +
+                "rule \"R\"\n" +
+                "when\n" +
+                "    $a : Bean( seed != 1 )\n" +
+                "then\n" +
+                "end";
+        testConcurrentInsertions(drl, 1, 1000, false, false);
     }
 
     @Test(timeout = 10000)
     public void testConcurrentInsertionsManyObjectsFewThreads() {
-        testConcurrentInsertions(1000, 4);
+        final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
+                "\n" +
+                "rule \"R\"\n" +
+                "when\n" +
+                "    $a : Bean( seed != 1 )\n" +
+                "then\n" +
+                "end";
+        testConcurrentInsertions(drl, 1000, 4, false, false);
     }
 
-    private void testConcurrentInsertions(final int objectCount, final int threadCount) {
-        String str = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
-                     "\n" +
-                     "rule \"R\"\n" +
-                     "when\n" +
-                     "    $a : Bean( seed != 1 )\n" +
-                     "then\n" +
-                     "end";
+    @Test(timeout = 10000)
+    public void testConcurrentInsertionsNewSessionEachThreadObjectTypeNode() {
+        final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
+                " query existsBeanSeed5More() \n" +
+                "     Bean( seed > 5 ) \n" +
+                " end \n" +
+                "\n" +
+                "rule \"R\"\n" +
+                "when\n" +
+                "    $a: Bean( seed != 1 )\n" +
+                "    existsBeanSeed5More() \n" +
+                "then\n" +
+                "end \n" +
+                "rule \"R2\"\n" +
+                "when\n" +
+                "    $a: Bean( seed != 1 )\n" +
+                "then\n" +
+                "end\n";
+        testConcurrentInsertions(drl, 10, 1000, true, true);
+    }
 
-        final KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
+    @Test(timeout = 10000)
+    public void testConcurrentInsertionsNewSessionEachThread() {
+        final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
+                " query existsBeanSeed5More() \n" +
+                "     Bean( seed > 5 ) \n" +
+                " end \n" +
+                "\n" +
+                "rule \"R\"\n" +
+                "when\n" +
+                "    $a: Bean( seed != 1 )\n" +
+                "    $b: Bean( seed != 2 )\n" +
+                "    existsBeanSeed5More() \n" +
+                "then\n" +
+                "end \n" +
+                "rule \"R2\"\n" +
+                "when\n" +
+                "    $a: Bean( seed != 1 )\n" +
+                "    $b: Bean( seed != 2 )\n" +
+                "then\n" +
+                "end\n" +
+                "rule \"R3\"\n" +
+                "when\n" +
+                "    $a: Bean( seed != 3 )\n" +
+                "    $b: Bean( seed != 4 )\n" +
+                "    $c: Bean( seed != 5 )\n" +
+                "    $d: Bean( seed != 6 )\n" +
+                "    $e: Bean( seed != 7 )\n" +
+                "then\n" +
+                "end";
+        testConcurrentInsertions(drl, 10, 1000, true, false);
+    }
+
+    private void testConcurrentInsertions(final String drl, final int objectCount, final int threadCount,
+            final boolean newSessionForEachThread, final boolean updateFacts) {
+
+        final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
 
         Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
             public Thread newThread(Runnable r) {
@@ -89,9 +151,17 @@ public class MultithreadTest extends CommonTestMethodBase {
             }
         });
 
+        KieSession ksession = null;
         Callable<Boolean>[] tasks = new Callable[threadCount];
-        for (int i = 0; i < threadCount; i++) {
-            tasks[i] = getTask( objectCount, ksession );
+        if (newSessionForEachThread) {
+            for (int i = 0; i < threadCount; i++) {
+                tasks[i] = getTask( objectCount, kieBase, updateFacts );
+            }
+        } else {
+            ksession = kieBase.newKieSession();
+            for (int i = 0; i < threadCount; i++) {
+                tasks[i] = getTask( objectCount, ksession, false , updateFacts );
+            }
         }
 
         CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
@@ -111,26 +181,46 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
 
         assertEquals(threadCount, successCounter);
-        ksession.dispose();
+        if (ksession != null) {
+            ksession.dispose();
+        }
     }
 
-    private Callable<Boolean> getTask( final int objectCount, final KieSession ksession ) {
+    private Callable<Boolean> getTask( final int objectCount, final KieBase kieBase, final boolean updateFacts) {
+        return getTask(objectCount, kieBase.newKieSession(), true, updateFacts);
+    }
+
+    private Callable<Boolean> getTask(
+            final int objectCount,
+            final KieSession ksession,
+            final boolean disposeSession,
+            final boolean updateFacts) {
         return new Callable<Boolean>() {
             public Boolean call() throws Exception {
                 try {
-                    FactHandle[] facts = new FactHandle[objectCount];
-                    for (int i = 0; i < objectCount; i++) {
-                        facts[i] = ksession.insert(new Bean(i));
+                    for (int j = 0; j < 10; j++) {
+                        FactHandle[] facts = new FactHandle[objectCount];
+                        for (int i = 0; i < objectCount; i++) {
+                            facts[i] = ksession.insert(new Bean(i));
+                        }
+                        if (updateFacts) {
+                            for (int i = 0; i < objectCount; i++) {
+                                ksession.update(facts[i], new Bean(-i));
+                            }
+                        }
+                        for (FactHandle fact : facts) {
+                            ksession.delete(fact);
+                        }
+                        ksession.fireAllRules();
                     }
-                    ksession.fireAllRules();
-                    for (FactHandle fact : facts) {
-                        ksession.delete(fact);
-                    }
-                    ksession.fireAllRules();
                     return true;
                 } catch (Exception e) {
                     e.printStackTrace();
                     return false;
+                } finally {
+                    if (disposeSession) {
+                        ksession.dispose();
+                    }
                 }
             }
         };
