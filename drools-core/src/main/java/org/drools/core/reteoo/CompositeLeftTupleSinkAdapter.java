@@ -29,7 +29,7 @@ import java.io.ObjectOutput;
 public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     private LeftTupleSinkNodeList sinks;
 
-    private LeftTupleSink[] sinkArray;
+    private volatile LeftTupleSink[] sinkArray;
 
     public CompositeLeftTupleSinkAdapter() {
         super( RuleBasePartitionId.MAIN_PARTITION );
