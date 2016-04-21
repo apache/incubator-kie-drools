@@ -70,7 +70,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                 "    $a : Bean( seed != 1 )\n" +
                 "then\n" +
                 "end";
-        testConcurrentInsertions(drl, 1, 1000, false);
+        testConcurrentInsertions(drl, 1, 1000, false, false);
     }
 
     @Test(timeout = 10000)
@@ -82,7 +82,28 @@ public class MultithreadTest extends CommonTestMethodBase {
                 "    $a : Bean( seed != 1 )\n" +
                 "then\n" +
                 "end";
-        testConcurrentInsertions(drl, 1000, 4, false);
+        testConcurrentInsertions(drl, 1000, 4, false, false);
+    }
+
+    @Test(timeout = 10000)
+    public void testConcurrentInsertionsNewSessionEachThreadObjectTypeNode() {
+        final String drl = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
+                " query existsBeanSeed5More() \n" +
+                "     Bean( seed > 5 ) \n" +
+                " end \n" +
+                "\n" +
+                "rule \"R\"\n" +
+                "when\n" +
+                "    $a: Bean( seed != 1 )\n" +
+                "    existsBeanSeed5More() \n" +
+                "then\n" +
+                "end \n" +
+                "rule \"R2\"\n" +
+                "when\n" +
+                "    $a: Bean( seed != 1 )\n" +
+                "then\n" +
+                "end\n";
+        testConcurrentInsertions(drl, 10, 1000, true, true);
     }
 
     @Test(timeout = 10000)
@@ -114,11 +135,11 @@ public class MultithreadTest extends CommonTestMethodBase {
                 "    $e: Bean( seed != 7 )\n" +
                 "then\n" +
                 "end";
-        testConcurrentInsertions(drl, 10, 1000, true);
+        testConcurrentInsertions(drl, 10, 1000, true, false);
     }
 
     private void testConcurrentInsertions(final String drl, final int objectCount, final int threadCount,
-            final boolean newSessionForEachThread) {
+            final boolean newSessionForEachThread, final boolean updateFacts) {
 
         final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
 
@@ -134,12 +155,12 @@ public class MultithreadTest extends CommonTestMethodBase {
         Callable<Boolean>[] tasks = new Callable[threadCount];
         if (newSessionForEachThread) {
             for (int i = 0; i < threadCount; i++) {
-                tasks[i] = getTask( objectCount, kieBase );
+                tasks[i] = getTask( objectCount, kieBase, updateFacts );
             }
         } else {
             ksession = kieBase.newKieSession();
             for (int i = 0; i < threadCount; i++) {
-                tasks[i] = getTask( objectCount, ksession, false );
+                tasks[i] = getTask( objectCount, ksession, false , updateFacts );
             }
         }
 
@@ -165,18 +186,27 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    private Callable<Boolean> getTask( final int objectCount, final KieBase kieBase ) {
-        return getTask(objectCount, kieBase.newKieSession(), true);
+    private Callable<Boolean> getTask( final int objectCount, final KieBase kieBase, final boolean updateFacts) {
+        return getTask(objectCount, kieBase.newKieSession(), true, updateFacts);
     }
 
-    private Callable<Boolean> getTask( final int objectCount, final KieSession ksession, final boolean disposeSession ) {
+    private Callable<Boolean> getTask(
+            final int objectCount,
+            final KieSession ksession,
+            final boolean disposeSession,
+            final boolean updateFacts) {
         return new Callable<Boolean>() {
             public Boolean call() throws Exception {
                 try {
-                    for (int j = 0; j < 100; j++) {
+                    for (int j = 0; j < 10; j++) {
                         FactHandle[] facts = new FactHandle[objectCount];
                         for (int i = 0; i < objectCount; i++) {
                             facts[i] = ksession.insert(new Bean(i));
+                        }
+                        if (updateFacts) {
+                            for (int i = 0; i < objectCount; i++) {
+                                ksession.update(facts[i], new Bean(-i));
+                            }
                         }
                         for (FactHandle fact : facts) {
                             ksession.delete(fact);
