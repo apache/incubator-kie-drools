@@ -19,6 +19,7 @@ package org.optaplanner.examples.taskassigning.persistence;
 import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -228,6 +229,7 @@ public class TaskAssigningGenerator extends LoggingMain {
     }
 
     private void createTaskTypeList(TaskAssigningSolution solution, int taskTypeListSize) {
+        List<Employee> employeeList = solution.getEmployeeList();
         List<TaskType> taskTypeList = new ArrayList<>(taskTypeListSize);
         Set<String> codeSet = new HashSet<>(taskTypeListSize);
         for (int i = 0; i < taskTypeListSize; i++) {
@@ -242,6 +244,11 @@ public class TaskAssigningGenerator extends LoggingMain {
             }
             taskType.setBaseDuration(
                     BASE_DURATION_MINIMUM + random.nextInt(BASE_DURATION_MAXIMUM - BASE_DURATION_MINIMUM));
+            Employee randomEmployee = employeeList.get(random.nextInt(employeeList.size()));
+            ArrayList<Skill> randomSkillList = new ArrayList<>(randomEmployee.getSkillSet());
+            Collections.shuffle(randomSkillList);
+            int requiredSkillListSize = 1 + random.nextInt(randomSkillList.size() - 1);
+            taskType.setRequiredSkillList(new ArrayList<>(randomSkillList.subList(0, requiredSkillListSize)));
             logger.trace("Created taskType with title ({}).", title);
             taskTypeList.add(taskType);
         }

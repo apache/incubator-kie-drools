@@ -21,6 +21,7 @@ import java.util.Objects;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.taskassigning.domain.Task;
+import org.optaplanner.examples.taskassigning.domain.TaskOrEmployee;
 
 public class StartTimeUpdatingVariableListener implements VariableListener<Task> {
 
@@ -55,7 +56,8 @@ public class StartTimeUpdatingVariableListener implements VariableListener<Task>
     }
 
     protected void updateStartTime(ScoreDirector scoreDirector, Task sourceTask) {
-        Integer startTime = sourceTask.getPreviousTaskOrEmployee().getEndTime();
+        TaskOrEmployee previous = sourceTask.getPreviousTaskOrEmployee();
+        Integer startTime = previous == null ? null : previous.getEndTime();
         Task shadowTask = sourceTask;
         while (shadowTask != null && !Objects.equals(shadowTask.getStartTime(), startTime)) {
             scoreDirector.beforeVariableChanged(shadowTask, "startTime");
