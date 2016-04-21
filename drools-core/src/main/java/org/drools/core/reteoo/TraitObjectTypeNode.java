@@ -134,11 +134,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
             return;
         }
 
-        if ( dirty ) {
-            resetIdGenerator();
-            updateTupleSinkId( this, this );
-            dirty = false;
-        }
+        checkDirty();
 
         context.setObjectType( objectType );
         if ( compiledNetwork != null ) {

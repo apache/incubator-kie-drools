@@ -566,7 +566,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 sinks[at++] = sink;
             }
         }
-        
+
         if ( this.otherSinks != null ) {
             for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 sinks[at++] = sink;

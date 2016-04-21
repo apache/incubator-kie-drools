@@ -29,7 +29,7 @@ import java.io.ObjectOutput;
 public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     private LeftTupleSinkNodeList sinks;
 
-    private LeftTupleSink[] sinkArray;
+    private volatile LeftTupleSink[] sinkArray;
 
     public CompositeLeftTupleSinkAdapter() {
         super( RuleBasePartitionId.MAIN_PARTITION );
@@ -172,15 +172,19 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
     }
     
     public LeftTupleSink[] getSinks() {
-        if (sinkArray == null) {
-            sinkArray = new LeftTupleSink[this.sinks.size()];
-
-            int i = 0;
-            for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-                sinkArray[i++] = sink;
-            }
+        if ( sinkArray != null ) {
+            return sinkArray;
         }
-        return sinkArray;
+
+        LeftTupleSink[] sinks = new LeftTupleSink[this.sinks.size()];
+
+        int i = 0;
+        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
+            sinks[i++] = sink;
+        }
+
+        this.sinkArray = sinks;
+        return sinks;
     }
     
     public LeftTupleSinkNode getFirstLeftTupleSink() {
