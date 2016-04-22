@@ -126,7 +126,7 @@ public class EvalConditionNode extends LeftTupleSource
      * @return The debug string.
      */
     public String toString() {
-        return "[EvalConditionNode: cond=" + this.condition + "]";
+        return "[EvalConditionNode(" + this.id + ")]: cond=" + this.condition + "]";
     }
 
     private int calculateHashCode() {

@@ -283,7 +283,15 @@ public class ClassGenerator {
         return arrayPrefix + typeDescriptor;
     }
 
-    private String[] toInteralNames(Class<?>[] classes) {
+    public String getClassName() {
+        return className;
+    }
+
+    public String getInternalClassName() {
+        return toInteralName(className);
+    }
+
+    private String[] toInteralNames( Class<?>[] classes ) {
         if (classes == null) return null;
         String[] internals = new String[classes.length];
         for (int i = 0; i < classes.length; i++) internals[i] = toInteralName(classes[i]);

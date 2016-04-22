@@ -111,10 +111,10 @@ public class LogicTransformer {
                 if (child instanceof NamedConsequence) {
                     GroupElement clonedAnd = GroupElementFactory.newAndInstance();
                     for (int j = 0; j < i; j++) {
-                        clonedAnd.getChildren().add(children.get(j).clone());
+                        clonedAnd.addChild(children.get(j).clone());
                     }
                     ((NamedConsequence) child).setTerminal(true);
-                    clonedAnd.getChildren().add(child);
+                    clonedAnd.addChild(child);
                     children.remove(i--);
                     result.add(clonedAnd);
                 }
@@ -467,8 +467,7 @@ public class LogicTransformer {
                 for ( int j = orsList.size() - 1; j >= 0; j-- ) {
                     GroupElement or = orsList.get(j);
                     // we must insert at the beginning to keep the order
-                    and.getChildren().add(0,
-                                          or.getChildren().get(indexes[j]).clone());
+                    and.addChild( 0, or.getChildren().get(indexes[j]).clone() );
                     if ( (i % mod) == 0 ) {
                         indexes[j] = (indexes[j] + 1) % or.getChildren().size();
                     }
@@ -482,7 +481,7 @@ public class LogicTransformer {
                         // always add clone of them to avoid offset conflicts in declarations
 
                         // HERE IS THE MESSY PROBLEM: need to change further references to the appropriate cloned ref
-                        and.getChildren().add( j, others[j].clone() );
+                        and.addChild( j, others[j].clone() );
                     }
                 }
                 parent.addChild( and );

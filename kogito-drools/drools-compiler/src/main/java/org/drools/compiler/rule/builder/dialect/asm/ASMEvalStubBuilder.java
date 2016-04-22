@@ -52,8 +52,10 @@ public class ASMEvalStubBuilder extends AbstractASMEvalBuilder {
             }
         }).addMethod(ACC_PUBLIC, "clone", generator.methodDescr(EvalExpression.class), new ClassGenerator.MethodBody() {
             public void body(MethodVisitor mv) {
-                mv.visitVarInsn(ALOAD, 0);
-                mv.visitInsn(ARETURN);
+                mv.visitTypeInsn( NEW, generator.getInternalClassName() );
+                mv.visitInsn( DUP );
+                mv.visitMethodInsn( INVOKESPECIAL, generator.getInternalClassName(), "<init>", "()V", false );
+                mv.visitInsn( ARETURN );
             }
         }).addMethod(ACC_PUBLIC, "replaceDeclaration", generator.methodDescr(null, Declaration.class, Declaration.class)
         ).addMethod(ACC_PUBLIC, "evaluate", generator.methodDescr(Boolean.TYPE, Tuple.class, Declaration[].class, WorkingMemory.class, Object.class), new String[]{"java/lang/Exception"}, new ClassGenerator.MethodBody() {

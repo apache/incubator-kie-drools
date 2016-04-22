@@ -212,8 +212,7 @@ public class GroupElement extends ConditionalElement
                 // for each child, pack it and add it to parent
                 for ( RuleConditionElement child : children ) {
                     // we must keep the order, so add in the same place were parent was before
-                    parent.getChildren().add( index++,
-                                              child );
+                    parent.addChild( index++, child );
                     if ( child instanceof GroupElement ) {
                         final int previousSize = parent.getChildren().size();
                         ((GroupElement) child).pack( parent );
@@ -230,8 +229,7 @@ public class GroupElement extends ConditionalElement
                 parent.getChildren().remove( this );
 
                 final RuleConditionElement child = this.children.get( 0 );
-                parent.getChildren().add( index,
-                                          child );
+                parent.addChild( index, child );
 
                 if ( child instanceof GroupElement ) {
                     ((GroupElement) child).pack( parent );
@@ -302,7 +300,7 @@ public class GroupElement extends ConditionalElement
         GroupElement cloned = new GroupElement();
         cloned.setType( this.getType() );
         for ( RuleConditionElement re : children ) {
-            cloned.addChild( deepClone && ( re instanceof GroupElement || re instanceof Pattern ) ? re.clone() : re );
+            cloned.addChild( deepClone ? re.clone() : re );
         }
         return cloned;
     }
