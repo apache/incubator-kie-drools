@@ -1477,7 +1477,7 @@ public class DefaultAgenda
 
     public void setCurrentState(ExecutionState state) {
         if ( log.isDebugEnabled() ) {
-            log.debug("State was {} is nw {}", currentState, state);
+            log.debug("State was {} is now {}", currentState, state);
         }
         currentState = state;
     }
