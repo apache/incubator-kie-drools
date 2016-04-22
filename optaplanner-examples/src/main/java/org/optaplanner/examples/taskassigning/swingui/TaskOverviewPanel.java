@@ -17,14 +17,20 @@
 package org.optaplanner.examples.taskassigning.swingui;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JViewport;
+import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 
+import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.nqueens.domain.Row;
 import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
@@ -32,14 +38,14 @@ import org.optaplanner.swing.impl.TangoColorFactory;
 
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
-public class TaskOverviewPanel extends JPanel {
+public class TaskOverviewPanel extends JPanel implements Scrollable {
 
     public static final int HEADER_COLUMN_WIDTH = 150;
     public static final int ROW_HEIGHT = 40;
 
     public TaskOverviewPanel() {
         setLayout(null);
-        setBackground(Color.WHITE);
+        setMinimumSize(new Dimension(HEADER_COLUMN_WIDTH * 2, ROW_HEIGHT * 8));
     }
 
     public void resetPanel(TaskAssigningSolution taskAssigningSolution) {
@@ -59,6 +65,7 @@ public class TaskOverviewPanel extends JPanel {
             employeeIndexMap.put(employee, employeeIndex);
             employeeIndex++;
         }
+        int panelWidth = HEADER_COLUMN_WIDTH;
         int unassignedIndex = employeeList.size();
         for (Task task : taskAssigningSolution.getTaskList()) {
             TaskPanel taskPanel = new TaskPanel(task);
@@ -74,9 +81,15 @@ public class TaskOverviewPanel extends JPanel {
                 y = unassignedIndex * ROW_HEIGHT;
                 unassignedIndex++;
             }
+            if (x + taskPanel.getWidth() > panelWidth) {
+                panelWidth = x + taskPanel.getWidth();
+            }
             taskPanel.setLocation(x, y);
             add(taskPanel);
         }
+        Dimension size = new Dimension(panelWidth, unassignedIndex * ROW_HEIGHT);
+        setSize(size);
+        setPreferredSize(size);
         repaint();
     }
 
@@ -98,6 +111,37 @@ public class TaskOverviewPanel extends JPanel {
             add(titleLabel);
         }
 
+    }
+
+    @Override
+    public Dimension getPreferredScrollableViewportSize() {
+        return SolutionPanel.PREFERRED_SCROLLABLE_VIEWPORT_SIZE;
+    }
+
+    @Override
+    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return 20;
+    }
+
+    @Override
+    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return 20;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportWidth() {
+        if (getParent() instanceof JViewport) {
+            return (((JViewport) getParent()).getWidth() > getPreferredSize().width);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportHeight() {
+        if (getParent() instanceof JViewport) {
+            return (((JViewport) getParent()).getHeight() > getPreferredSize().height);
+        }
+        return false;
     }
 
 }

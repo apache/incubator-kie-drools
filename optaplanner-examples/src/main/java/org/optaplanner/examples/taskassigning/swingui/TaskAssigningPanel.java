@@ -19,6 +19,7 @@ package org.optaplanner.examples.taskassigning.swingui;
 import java.awt.BorderLayout;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.taskassigning.domain.Task;
@@ -36,7 +37,12 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
     public TaskAssigningPanel() {
         setLayout(new BorderLayout());
         taskOverviewPanel = new TaskOverviewPanel();
-        add(taskOverviewPanel, BorderLayout.CENTER);
+        add(new JScrollPane(taskOverviewPanel), BorderLayout.CENTER);
+    }
+
+    @Override
+    public boolean isWrapInScrollPane() {
+        return false;
     }
 
     @Override
