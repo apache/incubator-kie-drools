@@ -2,6 +2,7 @@
 <solver>
   <!--<environmentMode>FAST_ASSERT</environmentMode>-->
   <solutionClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</solutionClass>
+  <entityClass>org.optaplanner.examples.taskassigning.domain.TaskOrEmployee</entityClass>
   <entityClass>org.optaplanner.examples.taskassigning.domain.Task</entityClass>
 
   <scoreDirectorFactory>
