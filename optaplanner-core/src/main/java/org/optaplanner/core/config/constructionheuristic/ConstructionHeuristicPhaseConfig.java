@@ -141,6 +141,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         }
         if (environmentMode.isIntrusiveFastAsserted()) {
             phase.setAssertExpectedStepScore(true);
+            phase.setAssertShadowVariablesAreNotStaleAfterStep(true);
         }
         return phase;
     }

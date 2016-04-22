@@ -134,6 +134,10 @@ public abstract class AbstractPhaseScope<Solution_> {
         solverScope.assertWorkingScoreFromScratch(workingScore, completedAction);
     }
 
+    public void assertShadowVariablesAreNotStale(Score workingScore, Object completedAction) {
+        solverScope.assertShadowVariablesAreNotStale(workingScore, completedAction);
+    }
+
     public void assertExpectedUndoMoveScore(Move move, Move undoMove, Score beforeMoveScore) {
         Score undoScore = calculateScore();
         if (!undoScore.equals(beforeMoveScore)) {

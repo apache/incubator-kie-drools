@@ -34,23 +34,12 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
 
     protected LocalSearchDecider<Solution_> decider;
 
-    protected boolean assertStepScoreFromScratch = false;
-    protected boolean assertExpectedStepScore = false;
-
     public LocalSearchDecider<Solution_> getDecider() {
         return decider;
     }
 
     public void setDecider(LocalSearchDecider<Solution_> decider) {
         this.decider = decider;
-    }
-
-    public void setAssertStepScoreFromScratch(boolean assertStepScoreFromScratch) {
-        this.assertStepScoreFromScratch = assertStepScoreFromScratch;
-    }
-
-    public void setAssertExpectedStepScore(boolean assertExpectedStepScore) {
-        this.assertExpectedStepScore = assertExpectedStepScore;
     }
 
     @Override
@@ -102,14 +91,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
         LocalSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         Move nextStep = stepScope.getStep();
         nextStep.doMove(stepScope.getScoreDirector());
-        // There is no need to recalculate the score, but we still need to set it
-        phaseScope.getSolutionDescriptor().setScore(phaseScope.getWorkingSolution(), stepScope.getScore());
-        if (assertStepScoreFromScratch) {
-            phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), nextStep);
-        }
-        if (assertExpectedStepScore) {
-            phaseScope.assertExpectedWorkingScore(stepScope.getScore(), nextStep);
-        }
+        predictWorkingStepScore(stepScope, nextStep);
         bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
     }
 

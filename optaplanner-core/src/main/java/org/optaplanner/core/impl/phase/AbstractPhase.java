@@ -47,6 +47,10 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     protected Termination termination;
     protected BestSolutionRecaller<Solution_> bestSolutionRecaller;
 
+    protected boolean assertStepScoreFromScratch = false;
+    protected boolean assertExpectedStepScore = false;
+    protected boolean assertShadowVariablesAreNotStaleAfterStep = false;
+
     protected PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
 
     public Termination getTermination() {
@@ -67,6 +71,30 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     public void setBestSolutionRecaller(BestSolutionRecaller<Solution_> bestSolutionRecaller) {
         this.bestSolutionRecaller = bestSolutionRecaller;
+    }
+
+    public boolean isAssertStepScoreFromScratch() {
+        return assertStepScoreFromScratch;
+    }
+
+    public void setAssertStepScoreFromScratch(boolean assertStepScoreFromScratch) {
+        this.assertStepScoreFromScratch = assertStepScoreFromScratch;
+    }
+
+    public boolean isAssertExpectedStepScore() {
+        return assertExpectedStepScore;
+    }
+
+    public void setAssertExpectedStepScore(boolean assertExpectedStepScore) {
+        this.assertExpectedStepScore = assertExpectedStepScore;
+    }
+
+    public boolean isAssertShadowVariablesAreNotStaleAfterStep() {
+        return assertShadowVariablesAreNotStaleAfterStep;
+    }
+
+    public void setAssertShadowVariablesAreNotStaleAfterStep(boolean assertShadowVariablesAreNotStaleAfterStep) {
+        this.assertShadowVariablesAreNotStaleAfterStep = assertShadowVariablesAreNotStaleAfterStep;
     }
 
     public abstract String getPhaseTypeString();
@@ -102,6 +130,21 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
         bestSolutionRecaller.stepStarted(stepScope);
         termination.stepStarted(stepScope);
         phaseLifecycleSupport.fireStepStarted(stepScope);
+    }
+
+    protected void predictWorkingStepScore(AbstractStepScope<Solution_> stepScope, Object completedAction) {
+        AbstractPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
+        // There is no need to recalculate the score, but we still need to set it
+        phaseScope.getSolutionDescriptor().setScore(phaseScope.getWorkingSolution(), stepScope.getScore());
+        if (assertStepScoreFromScratch) {
+            phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), completedAction);
+        }
+        if (assertExpectedStepScore) {
+            phaseScope.assertExpectedWorkingScore(stepScope.getScore(), completedAction);
+        }
+        if (assertShadowVariablesAreNotStaleAfterStep) {
+            phaseScope.assertShadowVariablesAreNotStale(stepScope.getScore(), completedAction);
+        }
     }
 
     @Override

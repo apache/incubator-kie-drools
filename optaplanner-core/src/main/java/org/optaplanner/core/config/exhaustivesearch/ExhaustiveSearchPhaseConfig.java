@@ -155,9 +155,12 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             phase.setAssertWorkingSolutionScoreFromScratch(true);
+            phase.setAssertStepScoreFromScratch(true); // Does nothing because ES doesn't use predictStepScore()
         }
         if (environmentMode.isIntrusiveFastAsserted()) {
             phase.setAssertExpectedWorkingSolutionScore(true);
+            phase.setAssertExpectedStepScore(true); // Does nothing because ES doesn't use predictStepScore()
+            phase.setAssertShadowVariablesAreNotStaleAfterStep(true); // Does nothing because ES doesn't use predictStepScore()
         }
         return phase;
     }

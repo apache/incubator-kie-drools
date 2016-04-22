@@ -130,6 +130,10 @@ public class DefaultSolverScope<Solution_> {
         scoreDirector.getScoreDirectorFactory().assertScoreFromScratch(solution);
     }
 
+    public void assertShadowVariablesAreNotStale(Score workingScore, Object completedAction) {
+        scoreDirector.assertShadowVariablesAreNotStale(workingScore, completedAction);
+    }
+
     public Score getStartingInitializedScore() {
         return startingInitializedScore;
     }
