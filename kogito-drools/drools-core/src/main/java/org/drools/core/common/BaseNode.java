@@ -110,7 +110,7 @@ public abstract class BaseNode
 
     /**
      * A method that is called for all nodes whose network below them
-     * changed, after the change is complete, providing them with an oportunity
+     * changed, after the change is complete, providing them with an opportunity
      * for state update
      */
     public abstract void networkUpdated(UpdateContext updateContext);
@@ -126,7 +126,7 @@ public abstract class BaseNode
     }
 
     /**
-     * Removes the node from teh network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
+     * Removes the node from the network. Usually from the parent <code>ObjectSource</code> or <code>TupleSource</code>
      */
     protected abstract boolean doRemove(RuleRemovalContext context,
                                         ReteooBuilder builder,
