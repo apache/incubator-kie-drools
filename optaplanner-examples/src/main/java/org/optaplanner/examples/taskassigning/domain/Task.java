@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.taskassigning.domain;
 
+import javax.swing.Icon;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
@@ -127,9 +129,19 @@ public class Task extends TaskOrEmployee {
     }
 
     public String getLabel() {
-        return "<html><center>" + taskType + "-" + indexInTaskType + "<br/>"
-                + taskType.getTitle() + "<br/>"
-                + customer.getName() + "</center></html>";
+        return taskType.getCode() + "-" + indexInTaskType + ": " + taskType.getTitle();
+    }
+
+    public String getToolText() {
+        StringBuilder toolText = new StringBuilder();
+        toolText.append("<html><center><b>").append(getLabel()).append("</b><br/>");
+        toolText.append("Customer: ").append(customer.getName()).append("<br/>");
+        toolText.append("Required skills:<br/>");
+        for (Skill skill : taskType.getRequiredSkillList()) {
+            toolText.append(skill.getLabel()).append("<br/>");
+        }
+        toolText.append("</center></html>");
+        return toolText.toString();
     }
 
     @Override

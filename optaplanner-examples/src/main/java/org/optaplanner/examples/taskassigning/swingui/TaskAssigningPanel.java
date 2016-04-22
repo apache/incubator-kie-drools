@@ -16,18 +16,37 @@
 
 package org.optaplanner.examples.taskassigning.swingui;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JPanel;
+
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
+import org.optaplanner.swing.impl.TangoColorFactory;
+
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/taskassigning/swingui/taskAssigningLogo.png";
 
+    private TaskOverviewPanel taskOverviewPanel;
+
     public TaskAssigningPanel() {
+        setLayout(new BorderLayout());
+        taskOverviewPanel = new TaskOverviewPanel();
+        add(taskOverviewPanel, BorderLayout.CENTER);
+    }
+
+    @Override
+    public boolean isRefreshScreenDuringSolving() {
+        return true;
     }
 
     @Override
     public void resetPanel(TaskAssigningSolution taskAssigningSolution) {
+        taskOverviewPanel.resetPanel(taskAssigningSolution);
     }
 
 }

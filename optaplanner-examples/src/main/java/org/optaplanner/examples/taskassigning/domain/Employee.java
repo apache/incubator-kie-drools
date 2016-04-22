@@ -85,6 +85,17 @@ public class Employee extends TaskOrEmployee implements Labeled {
         return fullName;
     }
 
+    public String getToolText() {
+        StringBuilder toolText = new StringBuilder();
+        toolText.append("<html><center><b>").append(fullName).append("</b><br/>");
+        toolText.append("Skills:<br/>");
+        for (Skill skill : skillSet) {
+            toolText.append(skill.getLabel()).append("<br/>");
+        }
+        toolText.append("</center></html>");
+        return toolText.toString();
+    }
+
     @Override
     public String toString() {
         return fullName;

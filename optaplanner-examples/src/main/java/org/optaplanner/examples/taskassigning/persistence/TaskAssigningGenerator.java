@@ -175,9 +175,9 @@ public class TaskAssigningGenerator extends LoggingMain {
         for (int i = 0; i < skillListSize; i++) {
             Skill skill = new Skill();
             skill.setId((long) i);
-            String customerName = customerNameGenerator.generateNextValue();
-            skill.setName(customerName);
-            logger.trace("Created skill with customerName ({}).",customerName);
+            String skillName = skillNameGenerator.generateNextValue();
+            skill.setName(skillName);
+            logger.trace("Created skill with skillName ({}).",skillName);
             skillList.add(skill);
         }
         solution.setSkillList(skillList);
@@ -188,9 +188,9 @@ public class TaskAssigningGenerator extends LoggingMain {
         for (int i = 0; i < customerListSize; i++) {
             Customer customer = new Customer();
             customer.setId((long) i);
-            String skillName = skillNameGenerator.generateNextValue();
-            customer.setName(skillName);
-            logger.trace("Created skill with skillName ({}).",skillName);
+            String customerName = customerNameGenerator.generateNextValue();
+            customer.setName(customerName);
+            logger.trace("Created skill with customerName ({}).",customerName);
             customerList.add(customer);
         }
         solution.setCustomerList(customerList);
