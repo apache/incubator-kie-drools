@@ -128,8 +128,16 @@ public class Task extends TaskOrEmployee {
         return startTime + getDuration();
     }
 
+    public String getCode() {
+        return taskType + "-" + indexInTaskType;
+    }
+
+    public String getTitle() {
+        return taskType.getTitle();
+    }
+
     public String getLabel() {
-        return taskType.getCode() + "-" + indexInTaskType + ": " + taskType.getTitle();
+        return getCode() + ": " + taskType.getTitle();
     }
 
     public String getToolText() {
@@ -146,7 +154,7 @@ public class Task extends TaskOrEmployee {
 
     @Override
     public String toString() {
-        return taskType + "-" + indexInTaskType;
+        return getCode();
     }
 
 }

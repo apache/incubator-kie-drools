@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -34,7 +35,7 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 public class TaskOverviewPanel extends JPanel {
 
     public static final int HEADER_COLUMN_WIDTH = 150;
-    public static final int ROW_HEIGHT = 20;
+    public static final int ROW_HEIGHT = 40;
 
     public TaskOverviewPanel() {
         setLayout(null);
@@ -53,16 +54,16 @@ public class TaskOverviewPanel extends JPanel {
             employeeLabel.setToolTipText(employee.getToolText());
             employeeLabel.setLocation(0, employeeIndex * ROW_HEIGHT);
             employeeLabel.setSize(HEADER_COLUMN_WIDTH, ROW_HEIGHT);
+            employeeLabel.setBorder(BorderFactory.createLineBorder(Color.black, 1));
             add(employeeLabel);
             employeeIndexMap.put(employee, employeeIndex);
             employeeIndex++;
         }
         int unassignedIndex = employeeList.size();
         for (Task task : taskAssigningSolution.getTaskList()) {
-            JLabel taskLabel = new JLabel(task.getLabel(), SwingConstants.CENTER);
-            taskLabel.setOpaque(true);
-            taskLabel.setToolTipText(task.getToolText());
-            taskLabel.setBackground(tangoColorFactory.pickColor(task));
+            TaskPanel taskPanel = new TaskPanel(task);
+            taskPanel.setToolTipText(task.getToolText());
+            taskPanel.setBackground(tangoColorFactory.pickColor(task.getTaskType()));
             int x;
             int y;
             if (task.getEmployee() != null) {
@@ -73,11 +74,30 @@ public class TaskOverviewPanel extends JPanel {
                 y = unassignedIndex * ROW_HEIGHT;
                 unassignedIndex++;
             }
-            taskLabel.setLocation(x, y);
-            taskLabel.setSize(task.getDuration(), ROW_HEIGHT);
-            add(taskLabel);
+            taskPanel.setLocation(x, y);
+            add(taskPanel);
         }
         repaint();
+    }
+
+    private class TaskPanel extends JPanel {
+
+        private final Task task;
+
+        public TaskPanel(Task task) {
+            this.task = task;
+            setLayout(null);
+            setSize(task.getDuration(), ROW_HEIGHT);
+            JLabel codeLabel = new JLabel(task.getCode(), SwingConstants.CENTER);
+            codeLabel.setLocation(0, 0);
+            codeLabel.setSize(task.getDuration(), ROW_HEIGHT / 2);
+            add(codeLabel);
+            JLabel titleLabel = new JLabel(task.getTitle(), SwingConstants.CENTER);
+            titleLabel.setLocation(0, ROW_HEIGHT / 2);
+            titleLabel.setSize(task.getDuration(), ROW_HEIGHT / 2);
+            add(titleLabel);
+        }
+
     }
 
 }

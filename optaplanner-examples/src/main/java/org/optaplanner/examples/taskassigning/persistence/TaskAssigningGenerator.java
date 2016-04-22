@@ -102,8 +102,8 @@ public class TaskAssigningGenerator extends LoggingMain {
                     "Research");
     private static final StringDataGenerator customerNameGenerator = StringDataGenerator.build1kCompanyNames();
     private static final StringDataGenerator employeeNameGenerator = StringDataGenerator.build10kFullNames();
-    private static final int BASE_DURATION_MINIMUM = 10;
-    private static final int BASE_DURATION_MAXIMUM = 60;
+    private static final int BASE_DURATION_MINIMUM = 20;
+    private static final int BASE_DURATION_MAXIMUM = 120;
     private static final int SKILL_SET_SIZE_MINIMUM = 2;
     private static final int SKILL_SET_SIZE_MAXIMUM = 7;
 
@@ -123,6 +123,8 @@ public class TaskAssigningGenerator extends LoggingMain {
     public void generate() {
         writeTaskAssigningSolution(50, 5);
         writeTaskAssigningSolution(100, 5);
+        writeTaskAssigningSolution(500, 20);
+        writeTaskAssigningSolution(1000, 20);
     }
 
     private void writeTaskAssigningSolution(int taskListSize, int employeeListSize) {
