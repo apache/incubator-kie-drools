@@ -76,7 +76,7 @@ public class ConcurrentNodeMemories implements NodeMemories {
 
     /**
      * The implementation tries to delay locking as much as possible, by running
-     * some potentialy unsafe opperations out of the critical session. In case it
+     * some potentially unsafe operations out of the critical session. In case it
      * fails the checks, it will move into the critical sessions and re-check everything
      * before effectively doing any change on data structures. 
      */

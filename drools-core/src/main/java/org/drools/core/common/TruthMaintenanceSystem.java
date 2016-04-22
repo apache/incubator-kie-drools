@@ -36,9 +36,9 @@ import static org.drools.core.common.ClassAwareObjectStore.getActualClass;
 /**
  * The Truth Maintenance System is responsible for tracking two things. Firstly
  * It maintains a Map to track the classes with the same Equality, using the
- * EqualityKey. The EqualityKey has an internal datastructure which references
+ * EqualityKey. The EqualityKey has an internal data structure which references
  * all the handles which are equal. Secondly It maintains another map tracking
- * the  justificiations for logically asserted facts.
+ * the justifications for logically asserted facts.
  */
 public class TruthMaintenanceSystem {
 
