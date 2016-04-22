@@ -30,18 +30,17 @@ import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.nqueens.domain.Row;
 import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
-import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
-
 public class TaskOverviewPanel extends JPanel implements Scrollable {
 
+    public static final int HEADER_ROW_HEIGHT = 40;
     public static final int HEADER_COLUMN_WIDTH = 150;
     public static final int ROW_HEIGHT = 40;
+    public static final int TIME_COLUMN_WIDTH = 60;
 
     public TaskOverviewPanel() {
         setLayout(null);
@@ -58,9 +57,9 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             JLabel employeeLabel = new JLabel(employee.getLabel(), SwingConstants.LEFT);
             employeeLabel.setOpaque(true);
             employeeLabel.setToolTipText(employee.getToolText());
-            employeeLabel.setLocation(0, employeeIndex * ROW_HEIGHT);
+            employeeLabel.setLocation(0, HEADER_ROW_HEIGHT + employeeIndex * ROW_HEIGHT);
             employeeLabel.setSize(HEADER_COLUMN_WIDTH, ROW_HEIGHT);
-            employeeLabel.setBorder(BorderFactory.createLineBorder(Color.black, 1));
+            employeeLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
             add(employeeLabel);
             employeeIndexMap.put(employee, employeeIndex);
             employeeIndex++;
@@ -75,7 +74,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             int y;
             if (task.getEmployee() != null) {
                 x = HEADER_COLUMN_WIDTH + task.getStartTime();
-                y = employeeIndexMap.get(task.getEmployee()) * ROW_HEIGHT;
+                y = HEADER_ROW_HEIGHT + employeeIndexMap.get(task.getEmployee()) * ROW_HEIGHT;
             } else {
                 x = HEADER_COLUMN_WIDTH;
                 y = unassignedIndex * ROW_HEIGHT;
@@ -87,7 +86,22 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             taskPanel.setLocation(x, y);
             add(taskPanel);
         }
-        Dimension size = new Dimension(panelWidth, unassignedIndex * ROW_HEIGHT);
+        for (int x = HEADER_COLUMN_WIDTH; x < panelWidth; x += TIME_COLUMN_WIDTH) {
+            // Start at 8:00
+            int minutes = (8 * 60 + (x - HEADER_COLUMN_WIDTH)) % (24 * 60);
+            int hours = minutes / 60;
+            minutes %= 60;
+            JLabel timeLabel = new JLabel((hours < 10 ? "0" : "") + hours + ":" + (minutes < 10 ? "0" : "") + minutes);
+            timeLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+            timeLabel.setLocation(x, 0);
+            timeLabel.setSize(TIME_COLUMN_WIDTH, ROW_HEIGHT);
+            add(timeLabel);
+        }
+        if ((panelWidth - HEADER_COLUMN_WIDTH) % TIME_COLUMN_WIDTH != 0) {
+            panelWidth = panelWidth - ((panelWidth - HEADER_COLUMN_WIDTH) % TIME_COLUMN_WIDTH) + TIME_COLUMN_WIDTH;
+        }
+
+        Dimension size = new Dimension(panelWidth, HEADER_ROW_HEIGHT + unassignedIndex * ROW_HEIGHT);
         setSize(size);
         setPreferredSize(size);
         repaint();
