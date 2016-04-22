@@ -56,6 +56,8 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
         this.globalShadowOrder = globalShadowOrder;
     }
 
+    public abstract Class<? extends VariableListener> getVariableListenerClass();
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

@@ -53,7 +53,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     }
 
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
-
+        // Do nothing
     }
 
     @Override
@@ -143,6 +143,15 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
     @Override
     public List<VariableDescriptor<Solution_>> getSourceVariableDescriptorList() {
         return Collections.singletonList(sourceVariableDescriptor);
+    }
+
+    @Override
+    public Class<? extends VariableListener> getVariableListenerClass() {
+        if (singleton) {
+            return SingletonInverseVariableListener.class;
+        } else {
+            return CollectionInverseVariableListener.class;
+        }
     }
 
     // ************************************************************************

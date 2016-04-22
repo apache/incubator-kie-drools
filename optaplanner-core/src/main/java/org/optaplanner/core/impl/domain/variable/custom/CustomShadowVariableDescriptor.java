@@ -191,6 +191,11 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
         return sourceVariableDescriptorList;
     }
 
+    @Override
+    public Class<? extends VariableListener> getVariableListenerClass() {
+        return variableListenerClass;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -206,7 +211,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     }
 
     @Override
-    public VariableListener buildVariableListener(InnerScoreDirector scoreDirector) {
+    public VariableListener<Solution_> buildVariableListener(InnerScoreDirector<Solution_> scoreDirector) {
         if (refVariableDescriptor != null) {
             throw new IllegalStateException("The shadowVariableDescriptor (" + this
                     + ") references another shadowVariableDescriptor (" + refVariableDescriptor

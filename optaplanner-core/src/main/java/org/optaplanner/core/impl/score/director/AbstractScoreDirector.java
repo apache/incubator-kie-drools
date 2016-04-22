@@ -384,8 +384,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                             + ")'s shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
                             + ")'s corrupted value (" + originalValue + ") changed to uncorrupted value (" + newValue
                             + ") after all " + VariableListener.class.getSimpleName() + "s were triggered without changes to the genuine variables.\n"
-                            + "Probably the " + VariableListener.class.getSimpleName()
-                            + " class for that shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
+                            + "Probably the " + VariableListener.class.getSimpleName() + " class ("
+                            + shadowVariableDescriptor.getVariableListenerClass().getSimpleName()
+                            + ") for that shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
                             + ") forgot to update it when one of its sources changed"
                             + " after completedAction (" + completedAction + ").");
                 }

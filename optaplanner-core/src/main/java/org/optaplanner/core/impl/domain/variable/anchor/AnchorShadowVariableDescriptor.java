@@ -51,7 +51,7 @@ public class AnchorShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     }
 
     private void processPropertyAnnotations(DescriptorPolicy descriptorPolicy) {
-
+        // Do nothing
     }
 
     @Override
@@ -82,6 +82,11 @@ public class AnchorShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     @Override
     public List<VariableDescriptor<Solution_>> getSourceVariableDescriptorList() {
         return Collections.singletonList(sourceVariableDescriptor);
+    }
+
+    @Override
+    public Class<? extends VariableListener> getVariableListenerClass() {
+        return AnchorVariableListener.class;
     }
 
     // ************************************************************************
