@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- origin at X=0.0 Y=0.0 -->
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn20="http://www.omg.org/bpmn20" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xmlns:java="http://www.java.com/javaTypes" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="_QCDN4dS8EeWwAKzhGMOFRg" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.2.1.201509111741" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="_parentProcessInstanceIdItem" isCollection="false" structureRef="java.lang.Long"/>
+  <bpmn2:signal id="Signal_1" name="EVENT"/>
+  <bpmn2:process id="com.redhat.mprs.child-process-01" drools:packageName="com.redhat.mprs" drools:version="1.0" name="child-process-01" isExecutable="true">
+    <bpmn2:property id="parentProcessInstanceId" itemSubjectRef="_parentProcessInstanceIdItem" name="parentProcessInstanceId"/>
+    <bpmn2:startEvent id="processStartEvent" drools:bgcolor="#9acd32" drools:selectable="true" name="">
+      <bpmn2:outgoing>_5B2A48ED-05DD-4692-A8C5-8546CF45E8EA</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="_4D93B662-179E-4505-8252-62F1F11667DA" drools:selectable="true" name="Script Task 01" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_5B2A48ED-05DD-4692-A8C5-8546CF45E8EA</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Executing 'child-process-01'!&quot;);
+
+// Sets the processInstanceId
+org.kie.api.runtime.process.WorkflowProcessInstance processInstance =   (org.kie.api.runtime.process.WorkflowProcessInstance) kcontext.getKnowledgeRuntime().getProcessInstance(parentProcessInstanceId);
+processInstance.setVariable(&quot;childProcessInstanceId&quot;, kcontext.getProcessInstance().getId());</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_5B2A48ED-05DD-4692-A8C5-8546CF45E8EA" drools:bgcolor="#000000" drools:selectable="true" sourceRef="processStartEvent" targetRef="_4D93B662-179E-4505-8252-62F1F11667DA"/>
+    <bpmn2:intermediateCatchEvent id="IntermediateCatchEvent_1" name="Some Event">
+      <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_3</bpmn2:outgoing>
+      <bpmn2:signalEventDefinition id="SignalEventDefinition_1" signalRef="Signal_1"/>
+    </bpmn2:intermediateCatchEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_1" drools:priority="1" sourceRef="_4D93B662-179E-4505-8252-62F1F11667DA" targetRef="IntermediateCatchEvent_1"/>
+    <bpmn2:scriptTask id="ScriptTask_1" name="Script Task 02" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;EVENT received&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="SequenceFlow_3" drools:priority="1" sourceRef="IntermediateCatchEvent_1" targetRef="ScriptTask_1"/>
+    <bpmn2:endEvent id="EndEvent_1">
+      <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_4" drools:priority="1" sourceRef="ScriptTask_1" targetRef="EndEvent_1"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_QCEcANS8EeWwAKzhGMOFRg">
+    <bpmndi:BPMNPlane id="_QCEcAdS8EeWwAKzhGMOFRg" bpmnElement="com.redhat.mprs.child-process-01">
+      <bpmndi:BPMNShape id="_QCEcAtS8EeWwAKzhGMOFRg" bpmnElement="processStartEvent">
+        <dc:Bounds height="30.0" width="30.0" x="120.0" y="165.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_1"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_QCEcA9S8EeWwAKzhGMOFRg" bpmnElement="_4D93B662-179E-4505-8252-62F1F11667DA">
+        <dc:Bounds height="80.0" width="100.0" x="290.0" y="130.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_2">
+          <dc:Bounds height="14.0" width="77.0" x="301.0" y="163.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_IntermediateCatchEvent_1" bpmnElement="IntermediateCatchEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="540.0" y="137.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_4">
+          <dc:Bounds height="14.0" width="66.0" x="525.0" y="173.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ScriptTask_1" bpmnElement="ScriptTask_1">
+        <dc:Bounds height="50.0" width="110.0" x="680.0" y="137.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="14.0" width="77.0" x="696.0" y="155.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1" bpmnElement="EndEvent_1">
+        <dc:Bounds height="36.0" width="36.0" x="970.0" y="137.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_QCFDENS8EeWwAKzhGMOFRg" bpmnElement="_5B2A48ED-05DD-4692-A8C5-8546CF45E8EA" sourceElement="_QCEcAtS8EeWwAKzhGMOFRg" targetElement="_QCEcA9S8EeWwAKzhGMOFRg">
+        <di:waypoint xsi:type="dc:Point" x="150.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="220.0" y="180.0"/>
+        <di:waypoint xsi:type="dc:Point" x="220.0" y="170.0"/>
+        <di:waypoint xsi:type="dc:Point" x="290.0" y="170.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_4"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="_QCEcA9S8EeWwAKzhGMOFRg" targetElement="BPMNShape_IntermediateCatchEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="390.0" y="170.0"/>
+        <di:waypoint xsi:type="dc:Point" x="456.0" y="170.0"/>
+        <di:waypoint xsi:type="dc:Point" x="456.0" y="155.0"/>
+        <di:waypoint xsi:type="dc:Point" x="540.0" y="155.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_3" sourceElement="BPMNShape_IntermediateCatchEvent_1" targetElement="BPMNShape_ScriptTask_1">
+        <di:waypoint xsi:type="dc:Point" x="576.0" y="155.0"/>
+        <di:waypoint xsi:type="dc:Point" x="603.0" y="155.0"/>
+        <di:waypoint xsi:type="dc:Point" x="603.0" y="162.0"/>
+        <di:waypoint xsi:type="dc:Point" x="680.0" y="162.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="BPMNShape_ScriptTask_1" targetElement="BPMNShape_EndEvent_1">
+        <di:waypoint xsi:type="dc:Point" x="790.0" y="162.0"/>
+        <di:waypoint xsi:type="dc:Point" x="855.0" y="162.0"/>
+        <di:waypoint xsi:type="dc:Point" x="855.0" y="155.0"/>
+        <di:waypoint xsi:type="dc:Point" x="970.0" y="155.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

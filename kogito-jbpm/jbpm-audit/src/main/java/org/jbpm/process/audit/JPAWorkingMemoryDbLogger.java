@@ -32,6 +32,7 @@ import javax.transaction.UserTransaction;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.runtime.process.InternalProcessRuntime;
+import org.drools.persistence.TransactionManager;
 import org.jbpm.process.audit.variable.ProcessIndexerManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
@@ -207,8 +208,9 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
      * This method creates a entity manager. 
      */
     private EntityManager getEntityManager(KieRuntimeEvent event) {
+        
         Environment env = event.getKieRuntime().getEnvironment();
-    
+        
         /**
          * It's important to set the sharedEM flag with _every_ operation
          * otherwise, there are situations where:
@@ -221,17 +223,37 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
         if( emf != null ) { 
            return emf.createEntityManager();
         } else if (env != null) {
-            EntityManager em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+            EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+            
+            // first check active transaction if it contains entity manager
+            EntityManager em = getEntityManagerFromTransaction(env);
+
+            if (em != null && em.isOpen() && em.getEntityManagerFactory().equals(emf)) {
+                sharedEM = true;
+                return em;
+            }
+            // next check the environment itself
+            em = (EntityManager) env.get(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
         	if (em != null) {
         		sharedEM = true;
         		return em;
         	}
-            EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+            // lastly use entity manager factory
             if (emf != null) {
                 return emf.createEntityManager();
             }
         } 
         throw new RuntimeException("Could not find or create a new EntityManager!");
+    }
+
+    protected EntityManager getEntityManagerFromTransaction(Environment env) {
+        if (env.get(EnvironmentName.TRANSACTION_MANAGER) instanceof TransactionManager) {
+            TransactionManager txm = (TransactionManager) env.get(EnvironmentName.TRANSACTION_MANAGER);
+            EntityManager em = (EntityManager) txm.getResource(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+            return em;
+        }
+        
+        return null;
     }
 
     /**
