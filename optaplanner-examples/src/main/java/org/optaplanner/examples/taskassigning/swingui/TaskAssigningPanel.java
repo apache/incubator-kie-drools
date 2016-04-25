@@ -125,6 +125,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
      * @param consumedDuration in minutes, just like {@link Task#getStartTime()}
      */
     public void consumeUpTo(final int consumedDuration) {
+        taskOverviewPanel.setConsumedDuration(consumedDuration);
         if (consumedDuration <= previousConsumedDuration) {
             // Occurs due to rounding down of consumedDurationInSeconds
             return;
@@ -213,6 +214,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         previousProducedDuration = 0;
         producingRandom = new Random(0); // Random is thread safe
         taskOverviewPanel.resetPanel(taskAssigningSolution);
+        taskOverviewPanel.setConsumedDuration(consumedDurationInSeconds / 60);
     }
 
     @Override

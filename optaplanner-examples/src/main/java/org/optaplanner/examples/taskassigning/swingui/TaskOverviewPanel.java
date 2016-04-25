@@ -18,6 +18,7 @@ package org.optaplanner.examples.taskassigning.swingui;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +42,8 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
     public static final int HEADER_COLUMN_WIDTH = 150;
     public static final int ROW_HEIGHT = 40;
     public static final int TIME_COLUMN_WIDTH = 60;
+
+    private int consumedDuration = 0;
 
     public TaskOverviewPanel() {
         setLayout(null);
@@ -105,6 +108,21 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         setSize(size);
         setPreferredSize(size);
         repaint();
+    }
+
+    public void setConsumedDuration(int consumedDuration) {
+        this.consumedDuration = consumedDuration;
+        repaint();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.setColor(TangoColorFactory.ALUMINIUM_4);
+        int lineX = HEADER_COLUMN_WIDTH + consumedDuration;
+        g.fillRect(HEADER_COLUMN_WIDTH, 0, lineX, getHeight());
+        g.setColor(Color.WHITE);
+        g.fillRect(lineX, 0, getWidth(), getHeight());
     }
 
     private class TaskPanel extends JPanel {
