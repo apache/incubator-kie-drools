@@ -77,7 +77,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
                 y = HEADER_ROW_HEIGHT + employeeIndexMap.get(task.getEmployee()) * ROW_HEIGHT;
             } else {
                 x = HEADER_COLUMN_WIDTH;
-                y = unassignedIndex * ROW_HEIGHT;
+                y = HEADER_ROW_HEIGHT + unassignedIndex * ROW_HEIGHT;
                 unassignedIndex++;
             }
             if (x + taskPanel.getWidth() > panelWidth) {
@@ -123,6 +123,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             titleLabel.setLocation(0, ROW_HEIGHT / 2);
             titleLabel.setSize(task.getDuration(), ROW_HEIGHT / 2);
             add(titleLabel);
+            setBorder(BorderFactory.createLineBorder(task.isLocked() ? TangoColorFactory.ALUMINIUM_4 : Color.BLACK));
         }
 
     }

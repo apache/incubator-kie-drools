@@ -20,6 +20,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
+import java.util.List;
+import java.util.Random;
 
 import javax.swing.AbstractAction;
 import javax.swing.JLabel;
@@ -30,8 +32,16 @@ import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.Timer;
 
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.taskassigning.domain.Affinity;
+import org.optaplanner.examples.taskassigning.domain.Customer;
+import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
+import org.optaplanner.examples.taskassigning.domain.TaskType;
+import org.optaplanner.examples.taskassigning.persistence.TaskAssigningGenerator;
+
+import static org.optaplanner.examples.taskassigning.persistence.TaskAssigningGenerator.*;
 
 public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
 
@@ -47,7 +57,10 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
     private Timer produceTimer;
 
     private int consumedDurationInSeconds = 0;
+    private int previousConsumedDuration = 0; // In minutes
     private int producedDurationInSeconds = 0;
+    private int previousProducedDuration = 0; // In minutes
+    private volatile Random producingRandom;
 
     public TaskAssigningPanel() {
         setLayout(new BorderLayout());
@@ -61,12 +74,12 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         JPanel headerPanel = new JPanel(new GridLayout(1, 0));
         JPanel consumePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         consumePanel.add(new JLabel("Consume rate:"));
-        consumeRateField = new JSpinner(new SpinnerNumberModel(60, 10, 3600, 10));
+        consumeRateField = new JSpinner(new SpinnerNumberModel(300, 10, 3600, 10));
         consumePanel.add(consumeRateField);
         consumeTimer = new Timer(1000, e -> {
             consumedDurationInSeconds += (Integer) consumeRateField.getValue();
+            consumeUpTo(consumedDurationInSeconds / 60);
             repaint();
-System.out.println("c " + consumedDurationInSeconds);
         });
         consumeAction = new AbstractAction("Consume") {
             @Override
@@ -84,12 +97,12 @@ System.out.println("c " + consumedDurationInSeconds);
         headerPanel.add(consumePanel);
         JPanel producePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         producePanel.add(new JLabel("Produce rate:"));
-        produceRateField = new JSpinner(new SpinnerNumberModel(60, 10, 3600, 10));
+        produceRateField = new JSpinner(new SpinnerNumberModel(300, 10, 3600, 10));
         producePanel.add(produceRateField);
         produceTimer = new Timer(1000, e -> {
             producedDurationInSeconds += (Integer) produceRateField.getValue();
+            produceUpTo(producedDurationInSeconds / 60);
             repaint();
-System.out.println("p " + producedDurationInSeconds);
         });
         produceAction = new AbstractAction("Produce") {
             @Override
@@ -108,6 +121,80 @@ System.out.println("p " + producedDurationInSeconds);
         return headerPanel;
     }
 
+    /**
+     * @param consumedDuration in minutes, just like {@link Task#getStartTime()}
+     */
+    public void consumeUpTo(final int consumedDuration) {
+        if (consumedDuration <= previousConsumedDuration) {
+            // Occurs due to rounding down of consumedDurationInSeconds
+            return;
+        }
+        logger.debug("Scheduling consumption of all tasks up to {} minutes.", consumedDuration);
+        previousConsumedDuration = consumedDuration;
+        doProblemFactChange(scoreDirector -> {
+            TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
+            for (Task task : solution.getTaskList()) {
+                if (!task.isLocked() && task.getStartTime() != null && task.getStartTime() < consumedDuration) {
+                    scoreDirector.beforeProblemFactChanged(task);
+                    task.setLocked(true);
+                    scoreDirector.afterProblemFactChanged(task);
+                    logger.trace("Consumed task ({}).", task);
+                }
+            }
+            scoreDirector.triggerVariableListeners();
+        });
+    }
+
+    /**
+     * @param producedDuration in minutes, just like {@link Task#getStartTime()}
+     */
+    public void produceUpTo(final int producedDuration) {
+        if (producedDuration <= previousProducedDuration) {
+            // Occurs due to rounding down of producedDurationInSeconds
+            return;
+        }
+        final int baseDurationBudgetPerEmployee = (producedDuration - previousProducedDuration)
+                / Affinity.MEDIUM.getDurationMultiplier();
+        if (baseDurationBudgetPerEmployee < BASE_DURATION_AVERAGE) {
+            return;
+        }
+        final int newTaskCount = Math.max(1,
+                getSolution().getEmployeeList().size() * baseDurationBudgetPerEmployee / BASE_DURATION_AVERAGE);
+        logger.debug("Scheduling production of {} new tasks.", newTaskCount);
+        previousProducedDuration = producedDuration;
+        doProblemFactChange(scoreDirector -> {
+            TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
+            List<TaskType> taskTypeList = solution.getTaskTypeList();
+            List<Customer> customerList = solution.getCustomerList();
+            List<Task> taskList = solution.getTaskList();
+            for (int i = 0; i < newTaskCount; i++) {
+                Task task = new Task();
+                TaskType taskType = taskTypeList.get(producingRandom.nextInt(taskTypeList.size()));
+                long nextTaskId = 0L;
+                int nextIndexInTaskType = 0;
+                for (Task other : taskList) {
+                    if (nextTaskId <= other.getId()) {
+                        nextTaskId = other.getId() + 1L;
+                    }
+                    if (taskType == other.getTaskType()) {
+                        if (nextIndexInTaskType <= other.getIndexInTaskType()) {
+                            nextIndexInTaskType = other.getIndexInTaskType() + 1;
+                        }
+                    }
+                }
+                task.setId(nextTaskId);
+                task.setTaskType(taskType);
+                task.setIndexInTaskType(nextIndexInTaskType);
+                task.setCustomer(customerList.get(producingRandom.nextInt(customerList.size())));
+
+                scoreDirector.beforeEntityAdded(task);
+                taskList.add(task);
+                scoreDirector.afterEntityAdded(task);
+            }
+            scoreDirector.triggerVariableListeners();
+        });
+    }
+
     @Override
     public boolean isWrapInScrollPane() {
         return false;
@@ -120,6 +207,16 @@ System.out.println("p " + producedDurationInSeconds);
 
     @Override
     public void resetPanel(TaskAssigningSolution taskAssigningSolution) {
+        consumedDurationInSeconds = 0;
+        previousConsumedDuration = 0;
+        producedDurationInSeconds = 0;
+        previousProducedDuration = 0;
+        producingRandom = new Random(0); // Random is thread safe
+        taskOverviewPanel.resetPanel(taskAssigningSolution);
+    }
+
+    @Override
+    public void updatePanel(TaskAssigningSolution taskAssigningSolution) {
         taskOverviewPanel.resetPanel(taskAssigningSolution);
     }
 

@@ -24,15 +24,17 @@ import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
+import org.optaplanner.examples.taskassigning.domain.solver.MovableTaskSelectionFilter;
 import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
 
-@PlanningEntity()
+@PlanningEntity(movableEntitySelectionFilter = MovableTaskSelectionFilter.class)
 @XStreamAlias("MsTask")
 public class Task extends TaskOrEmployee {
 
     private TaskType taskType;
     private int indexInTaskType;
     private Customer customer;
+    private boolean locked;
 
     // Planning variables: changes during planning, between score calculations.
     @PlanningVariable(valueRangeProviderRefs = {"employeeRange", "taskRange"},
@@ -47,7 +49,7 @@ public class Task extends TaskOrEmployee {
             // Arguable, to adhere to API specs (although this works), nextTask and employee should also be a source,
             // because this shadow must be triggered after nextTask and employee (but there is no need to be triggered by those)
             sources = {@CustomShadowVariable.Source(variableName = "previousTaskOrEmployee")})
-    private Integer startTime;
+    private Integer startTime; // In minutes
 
     public TaskType getTaskType() {
         return taskType;
@@ -71,6 +73,14 @@ public class Task extends TaskOrEmployee {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
 
     public TaskOrEmployee getPreviousTaskOrEmployee() {
