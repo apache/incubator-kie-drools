@@ -8428,4 +8428,28 @@ public class Misc2Test extends CommonTestMethodBase {
         kieSession.insert( "test" );
         assertEquals(1, kieSession.fireAllRules());
     }
+
+    @Test
+    public void testComplexEvals2() {
+        // DROOLS-1139
+        String drl =
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "    Boolean()\n" +
+                "    $i : Integer()" +
+                "    and (eval($s.length() > 2)\n" +
+                "        or (eval(true) and eval(true)))\n" +
+                "    and (eval(true)\n" +
+                "         or ( eval($i > 2) and (eval(true))))\n\n" +
+                "then \n" +
+                "end\n";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        kieSession.insert( 42 );
+        kieSession.insert( "test" );
+        kieSession.insert( true );
+        assertEquals(4, kieSession.fireAllRules());
+    }
 }

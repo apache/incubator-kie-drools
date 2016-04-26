@@ -34,7 +34,7 @@ public interface RuleConditionElement
      * 
      * @return
      */
-    public Map<String,Declaration> getInnerDeclarations();
+    Map<String,Declaration> getInnerDeclarations();
 
     /**
      * Returns a Map of declarations that are visible
@@ -42,7 +42,7 @@ public interface RuleConditionElement
      * 
      * @return
      */
-    public Map<String,Declaration> getOuterDeclarations();
+    Map<String,Declaration> getOuterDeclarations();
 
     /**
      * Resolves the given identifier in the current scope and
@@ -52,20 +52,20 @@ public interface RuleConditionElement
      * @param identifier
      * @return
      */
-    public Declaration resolveDeclaration(String identifier);
+    Declaration resolveDeclaration(String identifier);
 
     /**
      * Returns a clone from itself
      * @return
      */
-    public RuleConditionElement clone();
+    RuleConditionElement clone();
     
     /**
      * Returs a list of RuleConditionElement's that are nested
      * inside the current element
      * @return
      */
-    public List<? extends RuleConditionElement> getNestedElements();
+    List<? extends RuleConditionElement> getNestedElements();
     
     /**
      * Returns true in case this RuleConditionElement delimits
@@ -75,6 +75,6 @@ public interface RuleConditionElement
      * NOT CE is a scope delimiter
      * @return
      */
-    public boolean isPatternScopeDelimiter();
+    boolean isPatternScopeDelimiter();
 
 }
