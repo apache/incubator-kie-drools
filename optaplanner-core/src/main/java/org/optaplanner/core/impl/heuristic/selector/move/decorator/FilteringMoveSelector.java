@@ -75,7 +75,7 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
 
     @Override
     public Iterator<Move> iterator() {
-        return new JustInTimeFilteringMoveIterator(childMoveSelector.iterator());
+        return new JustInTimeFilteringMoveIterator(childMoveSelector.iterator(), determineBailOutSize());
     }
 
     private class JustInTimeFilteringMoveIterator extends UpcomingSelectionIterator<Move> {
@@ -83,9 +83,9 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
         private final Iterator<Move> childMoveIterator;
         private final long bailOutSize;
 
-        public JustInTimeFilteringMoveIterator(Iterator<Move> childMoveIterator) {
+        public JustInTimeFilteringMoveIterator(Iterator<Move> childMoveIterator, long bailOutSize) {
             this.childMoveIterator = childMoveIterator;
-            this.bailOutSize = determineBailOutSize();
+            this.bailOutSize = bailOutSize;
         }
 
         @Override
@@ -119,7 +119,7 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
         return childMoveSelector.getSize() * 10L;
     }
 
-    private boolean accept(ScoreDirector scoreDirector, Move move) {
+    protected boolean accept(ScoreDirector scoreDirector, Move move) {
         for (SelectionFilter filter : filterList) {
             if (!filter.accept(scoreDirector, move)) {
                 return false;

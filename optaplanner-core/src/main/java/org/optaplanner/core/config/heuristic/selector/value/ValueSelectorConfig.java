@@ -16,10 +16,13 @@
 
 package org.optaplanner.core.config.heuristic.selector.value;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
@@ -33,12 +36,15 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.decorator.FilteringEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromEntityPropertyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;
@@ -47,6 +53,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValue
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.DowncastingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.EntityDependentSortingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.EntityIndependentInitializedValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.FilteringValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.InitializedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ReinitializeVariableValueSelector;
@@ -74,7 +81,8 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
     @XStreamAlias("nearbySelection")
     protected NearbySelectionConfig nearbySelectionConfig = null;
 
-    // TODO filterClass
+    @XStreamImplicit(itemFieldName = "filterClass")
+    protected List<Class<? extends SelectionFilter>> filterClassList = null;
 
     protected ValueSorterManner sorterManner = null;
     protected Class<? extends Comparator> sorterComparatorClass = null;
@@ -153,6 +161,14 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
 
     public void setNearbySelectionConfig(NearbySelectionConfig nearbySelectionConfig) {
         this.nearbySelectionConfig = nearbySelectionConfig;
+    }
+
+    public List<Class<? extends SelectionFilter>> getFilterClassList() {
+        return filterClassList;
+    }
+
+    public void setFilterClassList(List<Class<? extends SelectionFilter>> filterClassList) {
+        this.filterClassList = filterClassList;
     }
 
     public ValueSorterManner getSorterManner() {
@@ -274,11 +290,11 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                 determineBaseRandomSelection(variableDescriptor, resolvedCacheType, resolvedSelectionOrder));
 
         if (nearbySelectionConfig != null) {
-            // TODO Static filtering should affect nearbySelection too
+            // TODO Static filtering (such as movableEntitySelectionFilter) should affect nearbySelection too
             valueSelector = nearbySelectionConfig.applyNearbyValueSelector(configPolicy,
                     minimumCacheType, resolvedCacheType, resolvedSelectionOrder, valueSelector);
         }
-//        valueSelector = applyFiltering(variableDescriptor, resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applyFiltering(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyInitializedChainedValueFilter(configPolicy, variableDescriptor,
                 resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applySorting(resolvedCacheType, resolvedSelectionOrder, valueSelector);
@@ -298,6 +314,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                 || cacheType != null
                 || selectionOrder != null
                 || nearbySelectionConfig != null
+                || filterClassList != null
                 || sorterManner != null
                 || sorterComparatorClass != null
                 || sorterWeightFactoryClass != null
@@ -352,7 +369,8 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                 return false;
             case RANDOM:
                 // Predict if caching will occur
-                return resolvedCacheType.isNotCached() || (isBaseInherentlyCached(variableDescriptor) && !hasFiltering());
+                return resolvedCacheType.isNotCached()
+                        || (isBaseInherentlyCached(variableDescriptor) && !hasFiltering(variableDescriptor));
             default:
                 throw new IllegalStateException("The selectionOrder (" + resolvedSelectionOrder
                         + ") is not implemented.");
@@ -384,8 +402,30 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         }
     }
 
-    private boolean hasFiltering() {
-        return false; // NOT yet implemented
+    private boolean hasFiltering(GenuineVariableDescriptor variableDescriptor) {
+        // TODO in some chained cases add || entityDescriptor.hasMovableEntitySelectionFilter()
+        return !ConfigUtils.isEmptyCollection(filterClassList);
+    }
+
+    private ValueSelector applyFiltering(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
+            ValueSelector valueSelector) {
+        GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
+        if (hasFiltering(variableDescriptor)) {
+            List<SelectionFilter> filterList = new ArrayList<>(
+                    filterClassList == null ? 1 : filterClassList.size() + 1);
+            if (filterClassList != null) {
+                for (Class<? extends SelectionFilter> filterClass : filterClassList) {
+                    filterList.add(ConfigUtils.newInstance(this, "filterClass", filterClass));
+                }
+            }
+            // TODO
+//            // Filter out immovable entities
+//            if (variableDescriptor.hasMovableEntitySelectionFilter()) {
+//                filterList.add(variableDescriptor.getMovableEntitySelectionFilter());
+//            }
+            valueSelector = FilteringValueSelector.create(valueSelector, filterList);
+        }
+        return valueSelector;
     }
 
     protected ValueSelector applyInitializedChainedValueFilter(HeuristicConfigPolicy configPolicy,
@@ -394,11 +434,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
             ValueSelector valueSelector) {
         if (configPolicy.isInitializedChainedValueFilterEnabled()
                     && variableDescriptor.isChained()) {
-            if (valueSelector instanceof EntityIndependentValueSelector) {
-                valueSelector = new EntityIndependentInitializedValueSelector((EntityIndependentValueSelector) valueSelector);
-            } else {
-                valueSelector = new InitializedValueSelector(valueSelector);
-            }
+            valueSelector = InitializedValueSelector.create(valueSelector);
         }
         return valueSelector;
     }

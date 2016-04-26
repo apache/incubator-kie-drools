@@ -313,7 +313,8 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
                 return false;
             case RANDOM:
                 // Predict if caching will occur
-                return resolvedCacheType.isNotCached() || (isBaseInherentlyCached() && !hasFiltering(entityDescriptor));
+                return resolvedCacheType.isNotCached()
+                        || (isBaseInherentlyCached() && !hasFiltering(entityDescriptor));
             default:
                 throw new IllegalStateException("The selectionOrder (" + resolvedSelectionOrder
                         + ") is not implemented.");

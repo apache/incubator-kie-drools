@@ -81,7 +81,7 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
 
     @Override
     public Iterator<Object> iterator() {
-        return new JustInTimeFilteringEntityIterator(childEntitySelector.iterator());
+        return new JustInTimeFilteringEntityIterator(childEntitySelector.iterator(), determineBailOutSize());
     }
 
     protected class JustInTimeFilteringEntityIterator extends UpcomingSelectionIterator<Object> {
@@ -89,9 +89,9 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
         private final Iterator<Object> childEntityIterator;
         private final long bailOutSize;
 
-        public JustInTimeFilteringEntityIterator(Iterator<Object> childEntityIterator) {
+        public JustInTimeFilteringEntityIterator(Iterator<Object> childEntityIterator, long bailOutSize) {
             this.childEntityIterator = childEntityIterator;
-            this.bailOutSize = determineBailOutSize();
+            this.bailOutSize = bailOutSize;
         }
 
         @Override
@@ -118,13 +118,6 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
 
     }
 
-    protected long determineBailOutSize() {
-        if (!bailOutEnabled) {
-            return -1L;
-        }
-        return childEntitySelector.getSize() * 10L;
-    }
-
     @Override
     public ListIterator<Object> listIterator() {
         // TODO Not yet implemented
@@ -139,10 +132,17 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
 
     @Override
     public Iterator<Object> endingIterator() {
-        return new JustInTimeFilteringEntityIterator(childEntitySelector.endingIterator());
+        return new JustInTimeFilteringEntityIterator(childEntitySelector.endingIterator(), determineBailOutSize());
     }
 
-    private boolean accept(ScoreDirector scoreDirector, Object entity) {
+    protected long determineBailOutSize() {
+        if (!bailOutEnabled) {
+            return -1L;
+        }
+        return childEntitySelector.getSize() * 10L;
+    }
+
+    protected boolean accept(ScoreDirector scoreDirector, Object entity) {
         for (SelectionFilter filter : filterList) {
             if (!filter.accept(scoreDirector, entity)) {
                 return false;

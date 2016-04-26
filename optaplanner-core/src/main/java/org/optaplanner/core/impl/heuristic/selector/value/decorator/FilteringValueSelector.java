@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,39 +17,38 @@
 package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-/**
- * Prevents creating chains without an anchor.
- * <p>
- * Filters out every value that is a planning entity for which the {@link PlanningVariable}
- * (on which this {@link ValueSelector} applies to) is uninitialized.
- * <p>
- * Mainly used for chained planning variables, but supports other planning variables too.
- */
-public class InitializedValueSelector extends AbstractValueSelector {
+public class FilteringValueSelector extends AbstractValueSelector {
 
-    public static ValueSelector create(ValueSelector valueSelector) {
+    public static ValueSelector create(ValueSelector valueSelector, List<SelectionFilter> filterList) {
         if (valueSelector instanceof EntityIndependentValueSelector) {
-            return new EntityIndependentInitializedValueSelector((EntityIndependentValueSelector) valueSelector);
+            return new EntityIndependentFilteringValueSelector((EntityIndependentValueSelector) valueSelector,
+                    filterList);
         } else {
-            return new InitializedValueSelector(valueSelector);
+            return new FilteringValueSelector(valueSelector, filterList);
         }
     }
 
-    protected final GenuineVariableDescriptor variableDescriptor;
     protected final ValueSelector childValueSelector;
+    protected final List<SelectionFilter> filterList;
     protected final boolean bailOutEnabled;
 
-    protected InitializedValueSelector(ValueSelector childValueSelector) {
-        this.variableDescriptor = childValueSelector.getVariableDescriptor();
+    protected ScoreDirector scoreDirector = null;
+
+    protected FilteringValueSelector(ValueSelector childValueSelector, List<SelectionFilter> filterList) {
         this.childValueSelector = childValueSelector;
+        this.filterList = filterList;
         bailOutEnabled = childValueSelector.isNeverEnding();
         phaseLifecycleSupport.addEventListener(childValueSelector);
     }
@@ -57,6 +56,18 @@ public class InitializedValueSelector extends AbstractValueSelector {
     // ************************************************************************
     // Worker methods
     // ************************************************************************
+
+    @Override
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
+        super.phaseStarted(phaseScope);
+        scoreDirector = phaseScope.getScoreDirector();
+    }
+
+    @Override
+    public void phaseEnded(AbstractPhaseScope phaseScope) {
+        super.phaseEnded(phaseScope);
+        scoreDirector = null;
+    }
 
     @Override
     public GenuineVariableDescriptor getVariableDescriptor() {
@@ -75,32 +86,21 @@ public class InitializedValueSelector extends AbstractValueSelector {
 
     @Override
     public long getSize(Object entity) {
-        // TODO use cached results
         return childValueSelector.getSize(entity);
     }
 
     @Override
     public Iterator<Object> iterator(Object entity) {
-        return new JustInTimeInitializedValueIterator(entity, childValueSelector.iterator(entity));
+        return new JustInTimeFilteringValueIterator(childValueSelector.iterator(entity),
+                determineBailOutSize(entity));
     }
 
-    @Override
-    public Iterator<Object> endingIterator(Object entity) {
-        return new JustInTimeInitializedValueIterator(entity, childValueSelector.endingIterator(entity));
-    }
+    protected class JustInTimeFilteringValueIterator extends UpcomingSelectionIterator<Object> {
 
-    protected class JustInTimeInitializedValueIterator extends UpcomingSelectionIterator<Object> {
-
-        private final Object entity;
         private final Iterator<Object> childValueIterator;
         private final long bailOutSize;
 
-        public JustInTimeInitializedValueIterator(Object entity, Iterator<Object> childValueIterator) {
-            this(entity, childValueIterator, determineBailOutSize(entity));
-        }
-
-        public JustInTimeInitializedValueIterator(Object entity, Iterator<Object> childValueIterator, long bailOutSize) {
-            this.entity = entity;
+        public JustInTimeFilteringValueIterator(Iterator<Object> childValueIterator, long bailOutSize) {
             this.childValueIterator = childValueIterator;
             this.bailOutSize = bailOutSize;
         }
@@ -117,16 +117,22 @@ public class InitializedValueSelector extends AbstractValueSelector {
                     // if childValueIterator is neverEnding and nothing is accepted, bail out of the infinite loop
                     if (attemptsBeforeBailOut <= 0L) {
                         logger.warn("Bailing out of neverEnding selector ({}) to avoid infinite loop.",
-                                InitializedValueSelector.this);
+                                FilteringValueSelector.this);
                         return noUpcomingSelection();
                     }
                     attemptsBeforeBailOut--;
                 }
                 next = childValueIterator.next();
-            } while (!accept(next));
+            } while (!accept(scoreDirector, next));
             return next;
         }
 
+    }
+
+    @Override
+    public Iterator<Object> endingIterator(Object entity) {
+        return new JustInTimeFilteringValueIterator(childValueSelector.endingIterator(entity),
+                determineBailOutSize(entity));
     }
 
     protected long determineBailOutSize(Object entity) {
@@ -136,15 +142,18 @@ public class InitializedValueSelector extends AbstractValueSelector {
         return childValueSelector.getSize(entity) * 10L;
     }
 
-    protected boolean accept(Object value) {
-        return value == null
-                || !variableDescriptor.getEntityDescriptor().getEntityClass().isAssignableFrom(value.getClass())
-                || variableDescriptor.isInitialized(value);
+    protected boolean accept(ScoreDirector scoreDirector, Object entity) {
+        for (SelectionFilter filter : filterList) {
+            if (!filter.accept(scoreDirector, entity)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
     public String toString() {
-        return "Initialized(" + childValueSelector + ")";
+        return "Filtering(" + childValueSelector + ")";
     }
 
 }

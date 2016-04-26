@@ -36,26 +36,26 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 public class FilteringMoveSelectorTest {
 
     @Test
-    public void cacheTypeSolver() {
-        runCacheType(SelectionCacheType.SOLVER, 1);
+    public void filterCacheTypeSolver() {
+        filter(SelectionCacheType.SOLVER, 1);
     }
 
     @Test
-    public void cacheTypePhase() {
-        runCacheType(SelectionCacheType.PHASE, 2);
+    public void filterCacheTypePhase() {
+        filter(SelectionCacheType.PHASE, 2);
     }
 
     @Test
-    public void cacheTypeStep() {
-        runCacheType(SelectionCacheType.STEP, 5);
+    public void filterCacheTypeStep() {
+        filter(SelectionCacheType.STEP, 5);
     }
 
     @Test
-    public void cacheTypeJustInTime() {
-        runCacheType(SelectionCacheType.JUST_IN_TIME, 5);
+    public void filterCacheTypeJustInTime() {
+        filter(SelectionCacheType.JUST_IN_TIME, 5);
     }
 
-    public void runCacheType(SelectionCacheType cacheType, int timesCalled) {
+    public void filter(SelectionCacheType cacheType, int timesCalled) {
         MoveSelector childMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
                 new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"), new DummyMove("a4"));
 
