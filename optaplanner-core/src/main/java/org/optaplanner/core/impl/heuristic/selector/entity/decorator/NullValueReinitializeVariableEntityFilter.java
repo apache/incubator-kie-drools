@@ -36,9 +36,9 @@ public class NullValueReinitializeVariableEntityFilter<Solution_> implements Sel
     }
 
     @Override
-    public boolean accept(ScoreDirector<Solution_> scoreDirector, Object selection) {
+    public boolean accept(ScoreDirector<Solution_> scoreDirector, Object entity) {
         // Do not use variableDescriptor.isInitialized() because if nullable it must also accept it
-        Object value = variableDescriptor.getValue(selection);
+        Object value = variableDescriptor.getValue(entity);
         return value == null;
     }
 
