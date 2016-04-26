@@ -1,14 +1,14 @@
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import java.util.Collection;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.Collection;
-
 @RunWith(Parameterized.class)
-public class AddRemoveGenerated2RulesEvalTest extends AbstractAddRemoveGenerated2RulesTest {
+public class AddRemoveGenerated2RulesEval2Test extends AbstractAddRemoveGenerated2RulesTest {
 
-    public AddRemoveGenerated2RulesEvalTest(final ConstraintsPair constraintsPair) {
+    public AddRemoveGenerated2RulesEval2Test(final ConstraintsPair constraintsPair) {
         super(constraintsPair);
     }
 
@@ -21,6 +21,6 @@ public class AddRemoveGenerated2RulesEvalTest extends AbstractAddRemoveGenerated
         return generateRulesConstraintsCombinations(
                 " Integer() \n",
                 " ${variableNamePlaceholder}: Integer() eval(${variableNamePlaceholder} == 1) \n",
-                " exists(Integer() and exists(Integer() and Integer())) \n");
+                " ${variableNamePlaceholder}: Integer() and (eval(true) or eval(${variableNamePlaceholder} == 1) )\n");
     }
 }
