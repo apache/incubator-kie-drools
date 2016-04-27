@@ -215,7 +215,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel<PatientAdmissio
         private final List<Color> equipmentColorList;
 
         private PatientOrRoomIcon(Patient patient) {
-            this.genderIcon = determinePatientGenderIcon(patient.getGender());
+            genderIcon = determinePatientGenderIcon(patient.getGender());
             List<RequiredPatientEquipment> equipmentList = patient.getRequiredPatientEquipmentList();
             equipmentColorList = new ArrayList<>(equipmentList.size());
             for (RequiredPatientEquipment equipment : equipmentList) {
@@ -224,7 +224,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel<PatientAdmissio
         }
 
         private PatientOrRoomIcon(Room room) {
-            this.genderIcon = determineRoomGenderIcon(room.getGenderLimitation());
+            genderIcon = determineRoomGenderIcon(room.getGenderLimitation());
             List<RoomEquipment> equipmentList = room.getRoomEquipmentList();
             equipmentColorList = new ArrayList<>(equipmentList.size());
             for (RoomEquipment equipment : equipmentList) {

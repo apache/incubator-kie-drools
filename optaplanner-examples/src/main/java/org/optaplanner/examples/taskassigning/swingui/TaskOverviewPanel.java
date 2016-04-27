@@ -17,13 +17,18 @@
 package org.optaplanner.examples.taskassigning.swingui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
@@ -31,7 +36,10 @@ import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.pas.domain.RequiredPatientEquipment;
+import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.taskassigning.domain.Employee;
+import org.optaplanner.examples.taskassigning.domain.Skill;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 import org.optaplanner.swing.impl.TangoColorFactory;
@@ -43,6 +51,9 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
     public static final int ROW_HEIGHT = 40;
     public static final int TIME_COLUMN_WIDTH = 60;
 
+    private TangoColorFactory customerColorFactory;
+    private TangoColorFactory skillColorFactory;
+
     private int consumedDuration = 0;
 
     public TaskOverviewPanel() {
@@ -52,12 +63,13 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
 
     public void resetPanel(TaskAssigningSolution taskAssigningSolution) {
         removeAll();
-        TangoColorFactory tangoColorFactory = new TangoColorFactory();
+        customerColorFactory = new TangoColorFactory();
+        skillColorFactory = new TangoColorFactory();
         List<Employee> employeeList = taskAssigningSolution.getEmployeeList();
         Map<Employee, Integer> employeeIndexMap = new HashMap<>(employeeList.size());
         int employeeIndex = 0;
         for (Employee employee : employeeList) {
-            JLabel employeeLabel = new JLabel(employee.getLabel(), SwingConstants.LEFT);
+            JLabel employeeLabel = new JLabel(employee.getLabel(), new TaskOrEmployeeIcon(employee), SwingConstants.LEFT);
             employeeLabel.setOpaque(true);
             employeeLabel.setToolTipText(employee.getToolText());
             employeeLabel.setLocation(0, HEADER_ROW_HEIGHT + employeeIndex * ROW_HEIGHT);
@@ -72,7 +84,6 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         for (Task task : taskAssigningSolution.getTaskList()) {
             TaskPanel taskPanel = new TaskPanel(task);
             taskPanel.setToolTipText(task.getToolText());
-            taskPanel.setBackground(tangoColorFactory.pickColor(task.getTaskType()));
             int x;
             int y;
             if (task.getEmployee() != null) {
@@ -118,7 +129,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(TangoColorFactory.ALUMINIUM_4);
+        g.setColor(TangoColorFactory.ALUMINIUM_3);
         int lineX = HEADER_COLUMN_WIDTH + consumedDuration;
         g.fillRect(HEADER_COLUMN_WIDTH, 0, lineX, getHeight());
         g.setColor(Color.WHITE);
@@ -132,8 +143,9 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         public TaskPanel(Task task) {
             this.task = task;
             setLayout(null);
+            setBackground(task.isLocked() ? TangoColorFactory.ALUMINIUM_3 : TangoColorFactory.ALUMINIUM_1);
             setSize(task.getDuration(), ROW_HEIGHT);
-            JLabel codeLabel = new JLabel(task.getCode(), SwingConstants.CENTER);
+            JLabel codeLabel = new JLabel(task.getCode(), new TaskOrEmployeeIcon(task), SwingConstants.CENTER);
             codeLabel.setLocation(0, 0);
             codeLabel.setSize(task.getDuration(), ROW_HEIGHT / 2);
             add(codeLabel);
@@ -141,7 +153,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             titleLabel.setLocation(0, ROW_HEIGHT / 2);
             titleLabel.setSize(task.getDuration(), ROW_HEIGHT / 2);
             add(titleLabel);
-            setBorder(BorderFactory.createLineBorder(task.isLocked() ? TangoColorFactory.ALUMINIUM_4 : Color.BLACK));
+            setBorder(BorderFactory.createLineBorder(Color.BLACK));
         }
 
     }
@@ -175,6 +187,67 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             return (((JViewport) getParent()).getHeight() > getPreferredSize().height);
         }
         return false;
+    }
+
+    private class TaskOrEmployeeIcon implements Icon {
+
+        private static final int SKILL_ICON_WIDTH = 8;
+        private static final int SKILL_ICON_HEIGHT = 16;
+        private static final int CUSTOMER_SKILL_GAP = 4;
+        private static final int CUSTOMER_ICON_WIDTH = 8;
+        private static final int CUSTOMER_ICON_HEIGHT = 16;
+
+        private final Color customerColor;
+        private final List<Color> skillColorList;
+
+        private TaskOrEmployeeIcon(Task task) {
+            customerColor = customerColorFactory.pickColor(task.getCustomer());
+            List<Skill> skillList = task.getTaskType().getRequiredSkillList();
+            skillColorList = new ArrayList<>(skillList.size());
+            for (Skill skill : skillList) {
+                skillColorList.add(skillColorFactory.pickColor(skill));
+            }
+        }
+
+        private TaskOrEmployeeIcon(Employee employee) {
+            customerColor = null;
+            Set<Skill> skillSet = employee.getSkillSet();
+            skillColorList = new ArrayList<>(skillSet.size());
+            for (Skill skill : skillSet) {
+                skillColorList.add(skillColorFactory.pickColor(skill));
+            }
+        }
+
+        @Override
+        public int getIconWidth() {
+            return skillColorList.size() * SKILL_ICON_WIDTH + (customerColor == null ? 0 : CUSTOMER_ICON_WIDTH + CUSTOMER_SKILL_GAP);
+        }
+
+        @Override
+        public int getIconHeight() {
+            return Math.max(SKILL_ICON_HEIGHT, CUSTOMER_ICON_HEIGHT);
+        }
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            int innerX = x;
+            for (Color skillColor : skillColorList) {
+                g.setColor(skillColor);
+                g.fillRect(innerX + 1, y + 1, SKILL_ICON_WIDTH - 2, SKILL_ICON_HEIGHT - 2);
+                g.setColor(TangoColorFactory.ALUMINIUM_5);
+                g.drawRect(innerX + 1, y + 1, SKILL_ICON_WIDTH - 2, SKILL_ICON_HEIGHT - 2);
+                innerX += SKILL_ICON_WIDTH;
+            }
+            innerX += CUSTOMER_SKILL_GAP;
+            if (customerColor != null) {
+                g.setColor(customerColor);
+                g.fillOval(innerX + 1, y + 4, CUSTOMER_ICON_WIDTH - 2, CUSTOMER_ICON_HEIGHT - 8);
+                g.setColor(TangoColorFactory.ALUMINIUM_5);
+                g.drawOval(innerX + 1, y + 4, CUSTOMER_ICON_WIDTH - 2, CUSTOMER_ICON_HEIGHT - 8);
+                innerX += CUSTOMER_ICON_WIDTH;
+            }
+        }
+
     }
 
 }

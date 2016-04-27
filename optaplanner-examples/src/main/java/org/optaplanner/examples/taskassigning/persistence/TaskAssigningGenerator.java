@@ -122,6 +122,7 @@ public class TaskAssigningGenerator extends LoggingMain {
     }
 
     public void generate() {
+        writeTaskAssigningSolution(20, 10);
         writeTaskAssigningSolution(50, 5);
         writeTaskAssigningSolution(100, 5);
         writeTaskAssigningSolution(500, 20);
