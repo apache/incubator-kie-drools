@@ -21,6 +21,10 @@
     This module contains the benchmarker toolkit.
   </description>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.optaplanner.benchmark</osgi.Bundle-SymbolicName>
+  </properties>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -103,7 +107,6 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.optaplanner.benchmark</Bundle-SymbolicName>
             <Export-Package>
               org.optaplanner.benchmark.*
             </Export-Package>

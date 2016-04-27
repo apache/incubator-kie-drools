@@ -21,6 +21,10 @@
     This module contains the planning engine itself.
   </description>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.optaplanner.core</osgi.Bundle-SymbolicName>
+  </properties>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -92,7 +96,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.optaplanner.core</Bundle-SymbolicName>
             <Export-Package>
               org.optaplanner.core.*
             </Export-Package>

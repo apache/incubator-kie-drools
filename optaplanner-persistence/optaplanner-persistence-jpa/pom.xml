@@ -96,6 +96,8 @@
   </dependencies>
 
   <properties>
+    <osgi.Bundle-SymbolicName>org.optaplanner.persistence.jpa</osgi.Bundle-SymbolicName>
+
     <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
     <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
     <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
@@ -128,7 +130,6 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.optaplanner.persistence.jpa</Bundle-SymbolicName>
             <Export-Package>
               org.optaplanner.persistence.jpa.*
             </Export-Package>

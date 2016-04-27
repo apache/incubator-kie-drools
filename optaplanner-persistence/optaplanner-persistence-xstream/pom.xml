@@ -21,6 +21,10 @@
     This module contains the XStream integration.
   </description>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.optaplanner.persistence.xstream</osgi.Bundle-SymbolicName>
+  </properties>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -76,7 +80,6 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.optaplanner.persistence.xstream</Bundle-SymbolicName>
             <Export-Package>
               org.optaplanner.persistence.xstream.*
             </Export-Package>

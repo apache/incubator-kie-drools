@@ -21,6 +21,10 @@
     This module contains the common persistence integration.
   </description>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.optaplanner.persistence.common</osgi.Bundle-SymbolicName>
+  </properties>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -67,7 +71,6 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.optaplanner.persistence.common</Bundle-SymbolicName>
             <Export-Package>
               org.optaplanner.persistence.common.*
             </Export-Package>
