@@ -825,8 +825,14 @@ public class RuleNetworkEvaluator {
         // this is to avoid split bucket when an updated rightTuple hasn't been moved yet
         // and so it is the first entry in the wrong bucket
 
-        for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
-            RightTuple next = rightTuple.getStagedNext();
+        for (RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
+            if (rightTuple.getMemory() != null) {
+                // it may have been staged and never actually added
+                rtm.remove(rightTuple);
+            }
+        }
+
+        for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
             if (rightTuple.getMemory() != null) {
                 rightTuple.setTempRightTupleMemory(rightTuple.getMemory());
 
@@ -856,11 +862,9 @@ public class RuleNetworkEvaluator {
                 rightTuple.setBlocked(null);
                 rtm.remove(rightTuple);
             }
-            rightTuple = next;
         }
 
-        for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
-            RightTuple next = rightTuple.getStagedNext();
+        for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
             if ( rightTuple.getTempRightTupleMemory() != null ) {
 
                 rtm.add( rightTuple );
@@ -879,7 +883,6 @@ public class RuleNetworkEvaluator {
                     childLeftTuple = childNext;
                 }
             }
-            rightTuple = next;
         }
     }
 
