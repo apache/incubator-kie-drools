@@ -379,7 +379,11 @@ public class KnowledgeBaseImpl
     }
 
     public Collection<? extends KieSession> getKieSessions() {
-        return getStatefulKnowledgeSessions();
+        Collection<KieSession> result = new ArrayList<KieSession>();
+        synchronized (statefulSessions) {
+            result.addAll( statefulSessions );
+        }
+        return result;
     }
 
     public StatelessKieSession newStatelessKieSession(KieSessionConfiguration conf) {
