@@ -15,6 +15,10 @@
   <name>KIE :: Internal</name>
   <description>The Drools and jBPM internal API which is NOT backwards compatible between releases.</description>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.kie.internal.api</osgi.Bundle-SymbolicName>
+  </properties>
+
   <build>
     <resources>
       <resource>
@@ -32,7 +36,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.kie.internalapi</Bundle-SymbolicName>
             <Import-Package>
               com.sun.tools.xjc;resolution:=optional,
               com.thoughtworks.xstream;resolution:=optional,

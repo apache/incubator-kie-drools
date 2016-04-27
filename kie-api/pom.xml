@@ -15,6 +15,10 @@
   <name>KIE :: Public API</name>
   <description>The Drools and jBPM public API which is backwards compatible between releases.</description>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.kie.api</osgi.Bundle-SymbolicName>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -22,7 +26,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.kie.api</Bundle-SymbolicName>
             <Import-Package>
               *;resolution:=optional,
               org.jbpm.runtime.manager.impl;resolution:=optional,
