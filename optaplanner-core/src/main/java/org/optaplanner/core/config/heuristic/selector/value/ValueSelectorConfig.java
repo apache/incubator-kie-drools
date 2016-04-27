@@ -36,7 +36,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.EntityIndependentValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
@@ -44,7 +43,6 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
-import org.optaplanner.core.impl.heuristic.selector.entity.decorator.FilteringEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromEntityPropertyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;
@@ -52,7 +50,6 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.DowncastingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.EntityDependentSortingValueSelector;
-import org.optaplanner.core.impl.heuristic.selector.value.decorator.EntityIndependentInitializedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.FilteringValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.InitializedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
@@ -403,8 +400,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
     }
 
     private boolean hasFiltering(GenuineVariableDescriptor variableDescriptor) {
-        // TODO in some chained cases add || entityDescriptor.hasMovableEntitySelectionFilter()
-        return !ConfigUtils.isEmptyCollection(filterClassList);
+        return !ConfigUtils.isEmptyCollection(filterClassList) || variableDescriptor.hasMovableChainedTrailingValueFilter();
     }
 
     private ValueSelector applyFiltering(SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
@@ -418,11 +414,10 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                     filterList.add(ConfigUtils.newInstance(this, "filterClass", filterClass));
                 }
             }
-            // TODO
-//            // Filter out immovable entities
-//            if (variableDescriptor.hasMovableEntitySelectionFilter()) {
-//                filterList.add(variableDescriptor.getMovableEntitySelectionFilter());
-//            }
+            // Filter out immovable entities
+            if (variableDescriptor.hasMovableChainedTrailingValueFilter()) {
+                filterList.add(variableDescriptor.getMovableChainedTrailingValueFilter());
+            }
             valueSelector = FilteringValueSelector.create(valueSelector, filterList);
         }
         return valueSelector;
