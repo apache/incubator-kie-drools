@@ -106,7 +106,7 @@ public class TaskAssigningGenerator extends LoggingMain {
     public static final int BASE_DURATION_MAXIMUM = 120;
     public static final int BASE_DURATION_AVERAGE = BASE_DURATION_MINIMUM + BASE_DURATION_MAXIMUM / 2;
     private static final int SKILL_SET_SIZE_MINIMUM = 2;
-    private static final int SKILL_SET_SIZE_MAXIMUM = 7;
+    private static final int SKILL_SET_SIZE_MAXIMUM = 4;
 
     public static void main(String[] args) {
         new TaskAssigningGenerator().generate();
@@ -122,7 +122,7 @@ public class TaskAssigningGenerator extends LoggingMain {
     }
 
     public void generate() {
-        writeTaskAssigningSolution(20, 10);
+        writeTaskAssigningSolution(30, 10);
         writeTaskAssigningSolution(50, 5);
         writeTaskAssigningSolution(100, 5);
         writeTaskAssigningSolution(500, 20);

@@ -87,7 +87,7 @@ public class Employee extends TaskOrEmployee implements Labeled {
 
     public String getToolText() {
         StringBuilder toolText = new StringBuilder();
-        toolText.append("<html><center><b>").append(fullName).append("</b><br/>");
+        toolText.append("<html><center><b>").append(fullName).append("</b><br/><br/>");
         toolText.append("Skills:<br/>");
         for (Skill skill : skillSet) {
             toolText.append(skill.getLabel()).append("<br/>");

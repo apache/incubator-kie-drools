@@ -152,8 +152,8 @@ public class Task extends TaskOrEmployee {
 
     public String getToolText() {
         StringBuilder toolText = new StringBuilder();
-        toolText.append("<html><center><b>").append(getLabel()).append("</b><br/>");
-        toolText.append("Customer: ").append(customer.getName()).append("<br/>");
+        toolText.append("<html><center><b>").append(getLabel()).append("</b><br/><br/>");
+        toolText.append("Customer:<br/>").append(customer.getName()).append("<br/><br/>");
         toolText.append("Required skills:<br/>");
         for (Skill skill : taskType.getRequiredSkillList()) {
             toolText.append(skill.getLabel()).append("<br/>");
