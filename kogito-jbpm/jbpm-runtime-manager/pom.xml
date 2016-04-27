@@ -13,6 +13,8 @@
   <description>jBPM RuntimeManager</description>
   
   <properties>
+    <osgi.Bundle-SymbolicName>org.jbpm.runtime.manager</osgi.Bundle-SymbolicName>
+
     <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
     <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
     <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
@@ -195,7 +197,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.runtime.manager</Bundle-SymbolicName>
             <Import-Package>
               !org.jbpm.runtime.manager*,
               javassist.util.proxy;resolution:=optional,

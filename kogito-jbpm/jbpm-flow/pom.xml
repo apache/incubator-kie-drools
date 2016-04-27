@@ -16,6 +16,10 @@
   <name>jBPM :: Flow</name>
   <description>jBPM Flow</description>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.jbpm.flow.core</osgi.Bundle-SymbolicName>
+  </properties>
+
   <profiles>
     <profile>
       <id>protobufProfile</id>
@@ -59,7 +63,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.flow.core</Bundle-SymbolicName>
             <Import-Package>
                 javax.swing.*;resolution:=optional,
                 org.jbpm.persistence.timer;resolution:=optional,

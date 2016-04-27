@@ -17,7 +17,8 @@
   <name>jBPM :: BPMN2</name>
   <description>jBPM BPMN2</description>
   
-  <properties>    
+  <properties>
+    <osgi.Bundle-SymbolicName>org.jbpm.bpmn2</osgi.Bundle-SymbolicName>
     <maven.jdbc.url>jdbc:h2:tcp://localhost/target/jbpm-bpmn-db;MVCC=TRUE</maven.jdbc.url>
   </properties>
 
@@ -168,7 +169,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.bpmn2</Bundle-SymbolicName>
             <Bundle-Activator>org.jbpm.osgi.bpmn2.Activator</Bundle-Activator>
             <Import-Package>
               !org.jbpm.compiler

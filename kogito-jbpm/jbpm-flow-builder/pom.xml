@@ -16,6 +16,10 @@
   <name>jBPM :: Flow Builder</name>
   <description>jBPM Flow Builder</description>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.jbpm.flow.builder</osgi.Bundle-SymbolicName>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -23,7 +27,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.flow.builder</Bundle-SymbolicName>
             <Bundle-Activator>org.jbpm.osgi.flow.compiler.Activator</Bundle-Activator>
           </instructions>
         </configuration>

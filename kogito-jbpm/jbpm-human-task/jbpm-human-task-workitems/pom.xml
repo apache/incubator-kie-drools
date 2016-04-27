@@ -14,6 +14,10 @@
 
   <name>jBPM :: Human Task WorkItems</name>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.jbpm.services.task.wih</osgi.Bundle-SymbolicName>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -127,7 +131,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.services.task.wih</Bundle-SymbolicName>
             <Import-Package>
               !org.jbpm.services.task.wih,
               *

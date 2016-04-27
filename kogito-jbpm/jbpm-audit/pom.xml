@@ -15,6 +15,12 @@
 
   <name>jBPM :: Audit</name>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.jbpm.process.audit</osgi.Bundle-SymbolicName>
+
+    <maven.jdbc.url>jdbc:h2:mem:bamTest;MVCC=TRUE</maven.jdbc.url>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -189,7 +195,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.process.audit</Bundle-SymbolicName>
             <Import-Package>
               !org.jbpm.process.audit,
               javassist.util.proxy;resolution:=optional,
@@ -233,11 +238,5 @@
       </plugin>
     </plugins>
   </build>
-
-  
-
-  <properties>
-    <maven.jdbc.url>jdbc:h2:mem:bamTest;MVCC=TRUE</maven.jdbc.url>
-  </properties>
 
 </project>

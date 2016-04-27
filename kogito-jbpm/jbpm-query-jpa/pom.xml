@@ -16,6 +16,10 @@
   <name>jBPM :: JPA Query</name>
   <description>jBPM JPA Query</description>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.jbpm.query.jpa</osgi.Bundle-SymbolicName>
+  </properties>
+
   <build>
     <testResources>
         <testResource>
@@ -51,7 +55,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.query.jpa</Bundle-SymbolicName>
             <Import-Package>
               *
             </Import-Package>

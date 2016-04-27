@@ -11,6 +11,10 @@
   <name>jBPM :: JPA Human Task Persistence</name>
   <description>jBPM JPA Human Task Persistence</description>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.jbpm.services.task.jpa</osgi.Bundle-SymbolicName>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>
@@ -115,7 +119,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.services.task.jpa</Bundle-SymbolicName>
             <Import-Package>
               javassist.util.proxy;resolution:=optional,
               javax.transaction.*;resolution:=optional,

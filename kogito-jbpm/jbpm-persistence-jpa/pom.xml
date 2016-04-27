@@ -16,6 +16,10 @@
   <name>jBPM :: JPA Persistence</name>
   <description>jBPM JPA Persistence</description>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.jbpm.persistence.jpa</osgi.Bundle-SymbolicName>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>
@@ -171,7 +175,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.persistence.jpa</Bundle-SymbolicName>
             <Import-Package>
               javassist.util.proxy;resolution:=optional,
               javax.persistence,

@@ -13,6 +13,8 @@
   <name>jBPM :: Human Task Core</name>
 
   <properties>
+    <osgi.Bundle-SymbolicName>org.jbpm.services.task</osgi.Bundle-SymbolicName>
+
     <!--  Oracle test properties
     <maven.datasource.classname>oracle.jdbc.xa.client.OracleXADataSource</maven.datasource.classname>
     <maven.hibernate.dialect>org.hibernate.dialect.Oracle10gDialect</maven.hibernate.dialect>
@@ -216,7 +218,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.services.task</Bundle-SymbolicName>
             <Import-Package>
               !org.jbpm.services.task.admin,
               !org.jbpm.services.task.commands,

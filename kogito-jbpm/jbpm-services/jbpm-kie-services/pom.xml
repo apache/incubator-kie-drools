@@ -11,6 +11,10 @@
   <packaging>bundle</packaging>
   <name>jBPM :: KIE Services</name>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.jbpm.kie.services.api;singleton:=true</osgi.Bundle-SymbolicName>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -265,15 +269,13 @@
               ${project.build.testOutputDirectory}/jbpm-kie-services-tests-custom-settings.xml
             </kie.maven.settings.custom>
           </systemProperties>
-        </configuration>        
+        </configuration>
       </plugin>
-      
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.jbpm.kie.services.api.jpa;singleton:=true</Bundle-SymbolicName>
             <Import-Package>
               javax.transaction.*;resolution:=optional,
               *
@@ -285,7 +287,6 @@
           </instructions>
         </configuration>
       </plugin>
-      
     </plugins>
   </build>
 </project>
