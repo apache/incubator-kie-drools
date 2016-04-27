@@ -15,6 +15,10 @@
   <name>Drools Workbench - Guided Decision Table Model</name>
   <description>Drools Workbench - Guided Decision Table Model</description>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.drools.workbench.models.guided.dtable</osgi.Bundle-SymbolicName>
+  </properties>
+
   <dependencies>
 
     <!-- Internal dependencies -->
@@ -73,7 +77,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.drools.workbench.models.guided.dtable</Bundle-SymbolicName>
             <Export-Package>
               org.drools.workbench.models.guided.dtable.*
             </Export-Package>

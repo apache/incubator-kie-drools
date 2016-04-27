@@ -14,6 +14,10 @@
 
   <name>Drools :: Beliefs</name>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.drools.beliefs</osgi.Bundle-SymbolicName>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.osgi</groupId>
@@ -83,7 +87,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.drools.beliefs</Bundle-SymbolicName>
             <Export-Package>
                 org.drools.beliefs.*
             </Export-Package>

@@ -15,6 +15,7 @@
   <name>Drools :: Core</name>
 
   <properties>
+    <osgi.Bundle-SymbolicName>org.drools.core</osgi.Bundle-SymbolicName>
     <surefire.forkCount>2</surefire.forkCount>
   </properties>
 
@@ -237,7 +238,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.drools.core</Bundle-SymbolicName>
             <Export-Package>
               org.drools.core.*
             </Export-Package>

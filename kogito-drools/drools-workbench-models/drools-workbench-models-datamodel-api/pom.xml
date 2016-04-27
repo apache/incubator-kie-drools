@@ -32,6 +32,10 @@
   <name>Drools Workbench - Data Model API</name>
   <description>Drools Workbench - Data Model API</description>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.drools.workbench.models.datamodel</osgi.Bundle-SymbolicName>
+  </properties>
+
   <build>
     <resources>
       <!-- Include src/main/java in order not to break the Eclipse GWT plug-in -->
@@ -50,7 +54,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.drools.workbench.models.datamodel</Bundle-SymbolicName>
             <Export-Package>
               org.drools.workbench.models.datamodel*
             </Export-Package>

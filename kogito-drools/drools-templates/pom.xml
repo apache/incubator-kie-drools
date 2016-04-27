@@ -15,6 +15,10 @@
 
   <name>Drools :: Templates</name>
 
+  <properties>
+    <osgi.Bundle-SymbolicName>org.drools.templates</osgi.Bundle-SymbolicName>
+  </properties>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -50,7 +54,6 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.drools.templates</Bundle-SymbolicName>
             <Export-Package>
               org.drools.template.*
             </Export-Package>
