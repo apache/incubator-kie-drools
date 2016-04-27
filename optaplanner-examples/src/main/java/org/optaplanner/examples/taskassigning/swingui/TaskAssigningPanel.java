@@ -74,7 +74,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         JPanel headerPanel = new JPanel(new GridLayout(1, 0));
         JPanel consumePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         consumePanel.add(new JLabel("Consume rate:"));
-        consumeRateField = new JSpinner(new SpinnerNumberModel(300, 10, 3600, 10));
+        consumeRateField = new JSpinner(new SpinnerNumberModel(1000, 10, 3600, 10));
         consumePanel.add(consumeRateField);
         consumeTimer = new Timer(1000, e -> {
             consumedDurationInSeconds += (Integer) consumeRateField.getValue();
@@ -97,7 +97,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         headerPanel.add(consumePanel);
         JPanel producePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         producePanel.add(new JLabel("Produce rate:"));
-        produceRateField = new JSpinner(new SpinnerNumberModel(300, 10, 3600, 10));
+        produceRateField = new JSpinner(new SpinnerNumberModel(1000, 10, 3600, 10));
         producePanel.add(produceRateField);
         produceTimer = new Timer(1000, e -> {
             producedDurationInSeconds += (Integer) produceRateField.getValue();
@@ -154,8 +154,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
             // Occurs due to rounding down of producedDurationInSeconds
             return;
         }
-        final int baseDurationBudgetPerEmployee = (producedDuration - previousProducedDuration)
-                / Affinity.MEDIUM.getDurationMultiplier();
+        final int baseDurationBudgetPerEmployee = (producedDuration - previousProducedDuration);
         if (baseDurationBudgetPerEmployee < BASE_DURATION_AVERAGE) {
             return;
         }
