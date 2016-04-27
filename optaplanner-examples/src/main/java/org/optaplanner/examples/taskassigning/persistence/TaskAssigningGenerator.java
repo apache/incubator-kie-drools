@@ -278,6 +278,7 @@ public class TaskAssigningGenerator extends LoggingMain {
             task.setIndexInTaskType(indexInTaskType);
             maxIndexInTaskTypeMap.put(taskType, indexInTaskType);
             task.setCustomer(customerList.get(random.nextInt(customerList.size())));
+            task.setReadyTime(0);
             taskList.add(task);
         }
         solution.setTaskList(taskList);

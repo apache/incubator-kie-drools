@@ -90,7 +90,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
                 x = HEADER_COLUMN_WIDTH + task.getStartTime();
                 y = HEADER_ROW_HEIGHT + employeeIndexMap.get(task.getEmployee()) * ROW_HEIGHT;
             } else {
-                x = HEADER_COLUMN_WIDTH;
+                x = HEADER_COLUMN_WIDTH + task.getReadyTime();
                 y = HEADER_ROW_HEIGHT + unassignedIndex * ROW_HEIGHT;
                 unassignedIndex++;
             }

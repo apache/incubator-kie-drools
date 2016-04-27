@@ -34,6 +34,7 @@ public class Task extends TaskOrEmployee {
     private TaskType taskType;
     private int indexInTaskType;
     private Customer customer;
+    private int readyTime;
     private boolean locked;
 
     // Planning variables: changes during planning, between score calculations.
@@ -73,6 +74,14 @@ public class Task extends TaskOrEmployee {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public int getReadyTime() {
+        return readyTime;
+    }
+
+    public void setReadyTime(int readyTime) {
+        this.readyTime = readyTime;
     }
 
     public boolean isLocked() {

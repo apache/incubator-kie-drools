@@ -162,6 +162,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
                 getSolution().getEmployeeList().size() * baseDurationBudgetPerEmployee / BASE_DURATION_AVERAGE);
         logger.debug("Scheduling production of {} new tasks.", newTaskCount);
         previousProducedDuration = producedDuration;
+        final int readyTime = previousConsumedDuration;
         doProblemFactChange(scoreDirector -> {
             TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
             List<TaskType> taskTypeList = solution.getTaskTypeList();
@@ -186,6 +187,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
                 task.setTaskType(taskType);
                 task.setIndexInTaskType(nextIndexInTaskType);
                 task.setCustomer(customerList.get(producingRandom.nextInt(customerList.size())));
+                task.setReadyTime(readyTime);
 
                 scoreDirector.beforeEntityAdded(task);
                 taskList.add(task);

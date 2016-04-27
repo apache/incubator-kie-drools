@@ -57,15 +57,24 @@ public class StartTimeUpdatingVariableListener implements VariableListener<Task>
 
     protected void updateStartTime(ScoreDirector scoreDirector, Task sourceTask) {
         TaskOrEmployee previous = sourceTask.getPreviousTaskOrEmployee();
-        Integer startTime = previous == null ? null : previous.getEndTime();
         Task shadowTask = sourceTask;
+        Integer previousEndTime = (previous == null ? null : previous.getEndTime());
+        Integer startTime = calculateStartTime(shadowTask, previousEndTime);
         while (shadowTask != null && !Objects.equals(shadowTask.getStartTime(), startTime)) {
             scoreDirector.beforeVariableChanged(shadowTask, "startTime");
             shadowTask.setStartTime(startTime);
             scoreDirector.afterVariableChanged(shadowTask, "startTime");
-            startTime = shadowTask.getEndTime();
+            previousEndTime = shadowTask.getEndTime();
             shadowTask = shadowTask.getNextTask();
+            startTime = calculateStartTime(shadowTask, previousEndTime);
         }
+    }
+
+    private Integer calculateStartTime(Task task, Integer previousEndTime) {
+        if (task == null || previousEndTime == null) {
+            return null;
+        }
+        return Math.max(task.getReadyTime(), previousEndTime);
     }
 
 }
