@@ -36,36 +36,34 @@
       <id>1</id>
       <code>ETD</code>
       <title>Expand Tax Development</title>
-      <baseDuration>70</baseDuration>
+      <baseDuration>56</baseDuration>
       <requiredSkillList id="12">
-        <TaSkill reference="7"/>
-        <TaSkill reference="6"/>
+        <TaSkill reference="3"/>
       </requiredSkillList>
     </TaTaskType>
     <TaTaskType id="13">
       <id>2</id>
       <code>SVA</code>
       <title>Shrink VAT Accounting</title>
-      <baseDuration>87</baseDuration>
+      <baseDuration>46</baseDuration>
       <requiredSkillList id="14">
-        <TaSkill reference="7"/>
-        <TaSkill reference="6"/>
+        <TaSkill reference="4"/>
       </requiredSkillList>
     </TaTaskType>
     <TaTaskType id="15">
       <id>3</id>
       <code>ALM</code>
       <title>Approve Legal Management</title>
-      <baseDuration>87</baseDuration>
+      <baseDuration>53</baseDuration>
       <requiredSkillList id="16">
-        <TaSkill reference="4"/>
+        <TaSkill reference="5"/>
       </requiredSkillList>
     </TaTaskType>
     <TaTaskType id="17">
       <id>4</id>
       <code>LCF</code>
       <title>Localize Cloud Facilities</title>
-      <baseDuration>53</baseDuration>
+      <baseDuration>47</baseDuration>
       <requiredSkillList id="18">
         <TaSkill reference="4"/>
       </requiredSkillList>
@@ -74,7 +72,7 @@
       <id>5</id>
       <code>RMW</code>
       <title>Review Marketing Writing</title>
-      <baseDuration>66</baseDuration>
+      <baseDuration>48</baseDuration>
       <requiredSkillList id="20">
         <TaSkill reference="5"/>
       </requiredSkillList>
@@ -83,7 +81,7 @@
       <id>6</id>
       <code>CIP</code>
       <title>Clean IT Productization</title>
-      <baseDuration>32</baseDuration>
+      <baseDuration>79</baseDuration>
       <requiredSkillList id="22">
         <TaSkill reference="5"/>
       </requiredSkillList>
@@ -92,27 +90,28 @@
       <id>7</id>
       <code>MCL</code>
       <title>Merge Contract Lobbying</title>
-      <baseDuration>62</baseDuration>
+      <baseDuration>33</baseDuration>
       <requiredSkillList id="24">
-        <TaSkill reference="7"/>
+        <TaSkill reference="5"/>
+        <TaSkill reference="4"/>
       </requiredSkillList>
     </TaTaskType>
     <TaTaskType id="25">
       <id>8</id>
       <code>DFE</code>
       <title>Double Financial Engineering</title>
-      <baseDuration>79</baseDuration>
+      <baseDuration>71</baseDuration>
       <requiredSkillList id="26">
-        <TaSkill reference="5"/>
+        <TaSkill reference="4"/>
       </requiredSkillList>
     </TaTaskType>
     <TaTaskType id="27">
       <id>9</id>
       <code>OAR</code>
       <title>Optimize Advertisement Research</title>
-      <baseDuration>60</baseDuration>
+      <baseDuration>67</baseDuration>
       <requiredSkillList id="28">
-        <TaSkill reference="7"/>
+        <TaSkill reference="4"/>
       </requiredSkillList>
     </TaTaskType>
   </taskTypeList>
@@ -415,42 +414,6 @@
   <taskList id="56">
     <MsTask id="57">
       <id>0</id>
-      <taskType reference="17"/>
-      <indexInTaskType>1</indexInTaskType>
-      <customer reference="39"/>
-      <readyTime>0</readyTime>
-      <priority>MAJOR</priority>
-      <locked>false</locked>
-    </MsTask>
-    <MsTask id="58">
-      <id>1</id>
-      <taskType reference="11"/>
-      <indexInTaskType>1</indexInTaskType>
-      <customer reference="30"/>
-      <readyTime>0</readyTime>
-      <priority>MINOR</priority>
-      <locked>false</locked>
-    </MsTask>
-    <MsTask id="59">
-      <id>2</id>
-      <taskType reference="27"/>
-      <indexInTaskType>1</indexInTaskType>
-      <customer reference="36"/>
-      <readyTime>0</readyTime>
-      <priority>MAJOR</priority>
-      <locked>false</locked>
-    </MsTask>
-    <MsTask id="60">
-      <id>3</id>
-      <taskType reference="13"/>
-      <indexInTaskType>1</indexInTaskType>
-      <customer reference="31"/>
-      <readyTime>0</readyTime>
-      <priority>MINOR</priority>
-      <locked>false</locked>
-    </MsTask>
-    <MsTask id="61">
-      <id>4</id>
       <taskType reference="23"/>
       <indexInTaskType>1</indexInTaskType>
       <customer reference="36"/>
@@ -458,8 +421,8 @@
       <priority>MAJOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="62">
-      <id>5</id>
+    <MsTask id="58">
+      <id>1</id>
       <taskType reference="15"/>
       <indexInTaskType>1</indexInTaskType>
       <customer reference="31"/>
@@ -467,8 +430,8 @@
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="63">
-      <id>6</id>
+    <MsTask id="59">
+      <id>2</id>
       <taskType reference="23"/>
       <indexInTaskType>2</indexInTaskType>
       <customer reference="38"/>
@@ -476,17 +439,17 @@
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="64">
-      <id>7</id>
+    <MsTask id="60">
+      <id>3</id>
       <taskType reference="27"/>
-      <indexInTaskType>2</indexInTaskType>
+      <indexInTaskType>1</indexInTaskType>
       <customer reference="30"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="65">
-      <id>8</id>
+    <MsTask id="61">
+      <id>4</id>
       <taskType reference="25"/>
       <indexInTaskType>1</indexInTaskType>
       <customer reference="39"/>
@@ -494,8 +457,8 @@
       <priority>MAJOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="66">
-      <id>9</id>
+    <MsTask id="62">
+      <id>5</id>
       <taskType reference="21"/>
       <indexInTaskType>1</indexInTaskType>
       <customer reference="39"/>
@@ -503,17 +466,17 @@
       <priority>MAJOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="67">
-      <id>10</id>
+    <MsTask id="63">
+      <id>6</id>
       <taskType reference="11"/>
-      <indexInTaskType>2</indexInTaskType>
+      <indexInTaskType>1</indexInTaskType>
       <customer reference="35"/>
       <readyTime>0</readyTime>
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="68">
-      <id>11</id>
+    <MsTask id="64">
+      <id>7</id>
       <taskType reference="21"/>
       <indexInTaskType>2</indexInTaskType>
       <customer reference="31"/>
@@ -521,26 +484,26 @@
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="69">
-      <id>12</id>
+    <MsTask id="65">
+      <id>8</id>
       <taskType reference="27"/>
-      <indexInTaskType>3</indexInTaskType>
+      <indexInTaskType>2</indexInTaskType>
       <customer reference="31"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="70">
-      <id>13</id>
+    <MsTask id="66">
+      <id>9</id>
       <taskType reference="11"/>
-      <indexInTaskType>3</indexInTaskType>
+      <indexInTaskType>2</indexInTaskType>
       <customer reference="38"/>
       <readyTime>0</readyTime>
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="71">
-      <id>14</id>
+    <MsTask id="67">
+      <id>10</id>
       <taskType reference="21"/>
       <indexInTaskType>3</indexInTaskType>
       <customer reference="30"/>
@@ -548,26 +511,26 @@
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="72">
-      <id>15</id>
+    <MsTask id="68">
+      <id>11</id>
       <taskType reference="13"/>
-      <indexInTaskType>2</indexInTaskType>
+      <indexInTaskType>1</indexInTaskType>
       <customer reference="35"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="73">
-      <id>16</id>
+    <MsTask id="69">
+      <id>12</id>
       <taskType reference="13"/>
-      <indexInTaskType>3</indexInTaskType>
+      <indexInTaskType>2</indexInTaskType>
       <customer reference="39"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="74">
-      <id>17</id>
+    <MsTask id="70">
+      <id>13</id>
       <taskType reference="25"/>
       <indexInTaskType>2</indexInTaskType>
       <customer reference="34"/>
@@ -575,8 +538,8 @@
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="75">
-      <id>18</id>
+    <MsTask id="71">
+      <id>14</id>
       <taskType reference="21"/>
       <indexInTaskType>4</indexInTaskType>
       <customer reference="33"/>
@@ -584,8 +547,8 @@
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="76">
-      <id>19</id>
+    <MsTask id="72">
+      <id>15</id>
       <taskType reference="25"/>
       <indexInTaskType>3</indexInTaskType>
       <customer reference="36"/>
@@ -593,8 +556,8 @@
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="77">
-      <id>20</id>
+    <MsTask id="73">
+      <id>16</id>
       <taskType reference="25"/>
       <indexInTaskType>4</indexInTaskType>
       <customer reference="33"/>
@@ -602,17 +565,17 @@
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="78">
-      <id>21</id>
+    <MsTask id="74">
+      <id>17</id>
       <taskType reference="11"/>
-      <indexInTaskType>4</indexInTaskType>
+      <indexInTaskType>3</indexInTaskType>
       <customer reference="37"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="79">
-      <id>22</id>
+    <MsTask id="75">
+      <id>18</id>
       <taskType reference="21"/>
       <indexInTaskType>5</indexInTaskType>
       <customer reference="33"/>
@@ -620,8 +583,8 @@
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="80">
-      <id>23</id>
+    <MsTask id="76">
+      <id>19</id>
       <taskType reference="23"/>
       <indexInTaskType>3</indexInTaskType>
       <customer reference="34"/>
@@ -629,8 +592,8 @@
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="81">
-      <id>24</id>
+    <MsTask id="77">
+      <id>20</id>
       <taskType reference="23"/>
       <indexInTaskType>4</indexInTaskType>
       <customer reference="34"/>
@@ -638,17 +601,17 @@
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="82">
-      <id>25</id>
+    <MsTask id="78">
+      <id>21</id>
       <taskType reference="13"/>
-      <indexInTaskType>4</indexInTaskType>
+      <indexInTaskType>3</indexInTaskType>
       <customer reference="35"/>
       <readyTime>0</readyTime>
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="83">
-      <id>26</id>
+    <MsTask id="79">
+      <id>22</id>
       <taskType reference="9"/>
       <indexInTaskType>1</indexInTaskType>
       <customer reference="37"/>
@@ -656,8 +619,8 @@
       <priority>MAJOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="84">
-      <id>27</id>
+    <MsTask id="80">
+      <id>23</id>
       <taskType reference="9"/>
       <indexInTaskType>2</indexInTaskType>
       <customer reference="33"/>
@@ -665,35 +628,35 @@
       <priority>MAJOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="85">
-      <id>28</id>
+    <MsTask id="81">
+      <id>24</id>
       <taskType reference="13"/>
-      <indexInTaskType>5</indexInTaskType>
+      <indexInTaskType>4</indexInTaskType>
       <customer reference="33"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="86">
-      <id>29</id>
+    <MsTask id="82">
+      <id>25</id>
       <taskType reference="27"/>
-      <indexInTaskType>4</indexInTaskType>
+      <indexInTaskType>3</indexInTaskType>
       <customer reference="34"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="87">
-      <id>30</id>
+    <MsTask id="83">
+      <id>26</id>
       <taskType reference="13"/>
-      <indexInTaskType>6</indexInTaskType>
+      <indexInTaskType>5</indexInTaskType>
       <customer reference="31"/>
       <readyTime>0</readyTime>
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="88">
-      <id>31</id>
+    <MsTask id="84">
+      <id>27</id>
       <taskType reference="19"/>
       <indexInTaskType>1</indexInTaskType>
       <customer reference="35"/>
@@ -701,8 +664,8 @@
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="89">
-      <id>32</id>
+    <MsTask id="85">
+      <id>28</id>
       <taskType reference="9"/>
       <indexInTaskType>3</indexInTaskType>
       <customer reference="34"/>
@@ -710,8 +673,8 @@
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="90">
-      <id>33</id>
+    <MsTask id="86">
+      <id>29</id>
       <taskType reference="9"/>
       <indexInTaskType>4</indexInTaskType>
       <customer reference="31"/>
@@ -719,8 +682,8 @@
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="91">
-      <id>34</id>
+    <MsTask id="87">
+      <id>30</id>
       <taskType reference="9"/>
       <indexInTaskType>5</indexInTaskType>
       <customer reference="30"/>
@@ -728,17 +691,17 @@
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="92">
-      <id>35</id>
+    <MsTask id="88">
+      <id>31</id>
       <taskType reference="27"/>
-      <indexInTaskType>5</indexInTaskType>
+      <indexInTaskType>4</indexInTaskType>
       <customer reference="38"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="93">
-      <id>36</id>
+    <MsTask id="89">
+      <id>32</id>
       <taskType reference="23"/>
       <indexInTaskType>5</indexInTaskType>
       <customer reference="31"/>
@@ -746,8 +709,8 @@
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="94">
-      <id>37</id>
+    <MsTask id="90">
+      <id>33</id>
       <taskType reference="25"/>
       <indexInTaskType>5</indexInTaskType>
       <customer reference="32"/>
@@ -755,8 +718,8 @@
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="95">
-      <id>38</id>
+    <MsTask id="91">
+      <id>34</id>
       <taskType reference="21"/>
       <indexInTaskType>6</indexInTaskType>
       <customer reference="37"/>
@@ -764,8 +727,8 @@
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="96">
-      <id>39</id>
+    <MsTask id="92">
+      <id>35</id>
       <taskType reference="21"/>
       <indexInTaskType>7</indexInTaskType>
       <customer reference="39"/>
@@ -773,8 +736,8 @@
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="97">
-      <id>40</id>
+    <MsTask id="93">
+      <id>36</id>
       <taskType reference="9"/>
       <indexInTaskType>6</indexInTaskType>
       <customer reference="39"/>
@@ -782,8 +745,8 @@
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="98">
-      <id>41</id>
+    <MsTask id="94">
+      <id>37</id>
       <taskType reference="23"/>
       <indexInTaskType>6</indexInTaskType>
       <customer reference="38"/>
@@ -791,8 +754,8 @@
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="99">
-      <id>42</id>
+    <MsTask id="95">
+      <id>38</id>
       <taskType reference="21"/>
       <indexInTaskType>8</indexInTaskType>
       <customer reference="34"/>
@@ -800,8 +763,8 @@
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="100">
-      <id>43</id>
+    <MsTask id="96">
+      <id>39</id>
       <taskType reference="19"/>
       <indexInTaskType>2</indexInTaskType>
       <customer reference="38"/>
@@ -809,17 +772,17 @@
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="101">
-      <id>44</id>
+    <MsTask id="97">
+      <id>40</id>
       <taskType reference="11"/>
-      <indexInTaskType>5</indexInTaskType>
+      <indexInTaskType>4</indexInTaskType>
       <customer reference="34"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="102">
-      <id>45</id>
+    <MsTask id="98">
+      <id>41</id>
       <taskType reference="19"/>
       <indexInTaskType>3</indexInTaskType>
       <customer reference="31"/>
@@ -827,17 +790,17 @@
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="103">
-      <id>46</id>
+    <MsTask id="99">
+      <id>42</id>
       <taskType reference="11"/>
-      <indexInTaskType>6</indexInTaskType>
+      <indexInTaskType>5</indexInTaskType>
       <customer reference="32"/>
       <readyTime>0</readyTime>
       <priority>MAJOR</priority>
       <locked>false</locked>
     </MsTask>
-    <MsTask id="104">
-      <id>47</id>
+    <MsTask id="100">
+      <id>43</id>
       <taskType reference="21"/>
       <indexInTaskType>9</indexInTaskType>
       <customer reference="30"/>
@@ -845,20 +808,56 @@
       <priority>CRITICAL</priority>
       <locked>false</locked>
     </MsTask>
+    <MsTask id="101">
+      <id>44</id>
+      <taskType reference="11"/>
+      <indexInTaskType>6</indexInTaskType>
+      <customer reference="30"/>
+      <readyTime>0</readyTime>
+      <priority>MINOR</priority>
+      <locked>false</locked>
+    </MsTask>
+    <MsTask id="102">
+      <id>45</id>
+      <taskType reference="9"/>
+      <indexInTaskType>7</indexInTaskType>
+      <customer reference="32"/>
+      <readyTime>0</readyTime>
+      <priority>MINOR</priority>
+      <locked>false</locked>
+    </MsTask>
+    <MsTask id="103">
+      <id>46</id>
+      <taskType reference="15"/>
+      <indexInTaskType>2</indexInTaskType>
+      <customer reference="31"/>
+      <readyTime>0</readyTime>
+      <priority>CRITICAL</priority>
+      <locked>false</locked>
+    </MsTask>
+    <MsTask id="104">
+      <id>47</id>
+      <taskType reference="21"/>
+      <indexInTaskType>10</indexInTaskType>
+      <customer reference="34"/>
+      <readyTime>0</readyTime>
+      <priority>MAJOR</priority>
+      <locked>false</locked>
+    </MsTask>
     <MsTask id="105">
       <id>48</id>
-      <taskType reference="11"/>
-      <indexInTaskType>7</indexInTaskType>
-      <customer reference="30"/>
+      <taskType reference="27"/>
+      <indexInTaskType>5</indexInTaskType>
+      <customer reference="38"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
       <locked>false</locked>
     </MsTask>
     <MsTask id="106">
       <id>49</id>
-      <taskType reference="9"/>
+      <taskType reference="11"/>
       <indexInTaskType>7</indexInTaskType>
-      <customer reference="32"/>
+      <customer reference="38"/>
       <readyTime>0</readyTime>
       <priority>MINOR</priority>
       <locked>false</locked>

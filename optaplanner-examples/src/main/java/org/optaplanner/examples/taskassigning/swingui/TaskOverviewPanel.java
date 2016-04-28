@@ -126,9 +126,10 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             add(taskButton);
         }
         for (int x = HEADER_COLUMN_WIDTH; x < panelWidth; x += TIME_COLUMN_WIDTH) {
+            // Use 10 hours per day
+            int minutes = (x - HEADER_COLUMN_WIDTH) % (10 * 60);
             // Start at 8:00
-            int minutes = (8 * 60 + (x - HEADER_COLUMN_WIDTH)) % (24 * 60);
-            int hours = minutes / 60;
+            int hours = 8 + (minutes / 60);
             minutes %= 60;
             JLabel timeLabel = new JLabel((hours < 10 ? "0" : "") + hours + ":" + (minutes < 10 ? "0" : "") + minutes);
             timeLabel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));

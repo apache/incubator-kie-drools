@@ -123,7 +123,7 @@ public class TaskAssigningGenerator extends LoggingMain {
     }
 
     public void generate() {
-        writeTaskAssigningSolution(30, 10);
+        writeTaskAssigningSolution(24, 8);
         writeTaskAssigningSolution(50, 5);
         writeTaskAssigningSolution(100, 5);
         writeTaskAssigningSolution(500, 20);
@@ -236,7 +236,7 @@ public class TaskAssigningGenerator extends LoggingMain {
     private void createTaskTypeList(TaskAssigningSolution solution, int taskTypeListSize) {
         List<Employee> employeeList = solution.getEmployeeList();
         List<TaskType> taskTypeList = new ArrayList<>(taskTypeListSize);
-        Set<String> codeSet = new HashSet<>(taskTypeListSize);
+        Set<String> codeSet = new LinkedHashSet<>(taskTypeListSize);
         for (int i = 0; i < taskTypeListSize; i++) {
             TaskType taskType = new TaskType();
             taskType.setId((long) i);
@@ -251,7 +251,7 @@ public class TaskAssigningGenerator extends LoggingMain {
                     BASE_DURATION_MINIMUM + random.nextInt(BASE_DURATION_MAXIMUM - BASE_DURATION_MINIMUM));
             Employee randomEmployee = employeeList.get(random.nextInt(employeeList.size()));
             ArrayList<Skill> randomSkillList = new ArrayList<>(randomEmployee.getSkillSet());
-            Collections.shuffle(randomSkillList);
+            Collections.shuffle(randomSkillList, random);
             int requiredSkillListSize = 1 + random.nextInt(randomSkillList.size() - 1);
             taskType.setRequiredSkillList(new ArrayList<>(randomSkillList.subList(0, requiredSkillListSize)));
             logger.trace("Created taskType with title ({}).", title);
@@ -265,7 +265,7 @@ public class TaskAssigningGenerator extends LoggingMain {
         List<Customer> customerList = solution.getCustomerList();
         Priority[] priorities = Priority.values();
         List<Task> taskList = new ArrayList<>(taskListSize);
-        Map<TaskType, Integer> maxIndexInTaskTypeMap = new HashMap<>(taskTypeList.size());
+        Map<TaskType, Integer> maxIndexInTaskTypeMap = new LinkedHashMap<>(taskTypeList.size());
         for (int i = 0; i < taskListSize; i++) {
             Task task = new Task();
             task.setId((long) i);
