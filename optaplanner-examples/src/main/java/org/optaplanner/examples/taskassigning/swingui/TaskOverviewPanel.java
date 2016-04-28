@@ -20,35 +20,48 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JViewport;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
+import org.optaplanner.examples.pas.domain.Bed;
+import org.optaplanner.examples.pas.domain.BedDesignation;
+import org.optaplanner.examples.pas.domain.Patient;
 import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Skill;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
+import org.optaplanner.examples.taskassigning.domain.TaskOrEmployee;
+import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class TaskOverviewPanel extends JPanel implements Scrollable {
 
-    public static final int HEADER_ROW_HEIGHT = 40;
+    public static final int HEADER_ROW_HEIGHT = 50;
     public static final int HEADER_COLUMN_WIDTH = 150;
-    public static final int ROW_HEIGHT = 40;
+    public static final int ROW_HEIGHT = 50;
     public static final int TIME_COLUMN_WIDTH = 60;
 
+    private final TaskAssigningPanel taskAssigningPanel;
     private final ImageIcon[] affinityIcons;
     private final ImageIcon[] priorityIcons;
 
@@ -57,7 +70,8 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
 
     private int consumedDuration = 0;
 
-    public TaskOverviewPanel() {
+    public TaskOverviewPanel(TaskAssigningPanel taskAssigningPanel) {
+        this.taskAssigningPanel = taskAssigningPanel;
         affinityIcons = new ImageIcon[] {
                 new ImageIcon(getClass().getResource("affinityNone.png")),
                 new ImageIcon(getClass().getResource("affinityLow.png")),
@@ -94,8 +108,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         int panelWidth = HEADER_COLUMN_WIDTH;
         int unassignedIndex = employeeList.size();
         for (Task task : taskAssigningSolution.getTaskList()) {
-            TaskPanel taskPanel = new TaskPanel(task);
-            taskPanel.setToolTipText(task.getToolText());
+            JButton taskButton = createTaskButton(task);
             int x;
             int y;
             if (task.getEmployee() != null) {
@@ -106,11 +119,11 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
                 y = HEADER_ROW_HEIGHT + unassignedIndex * ROW_HEIGHT;
                 unassignedIndex++;
             }
-            if (x + taskPanel.getWidth() > panelWidth) {
-                panelWidth = x + taskPanel.getWidth();
+            if (x + taskButton.getWidth() > panelWidth) {
+                panelWidth = x + taskButton.getWidth();
             }
-            taskPanel.setLocation(x, y);
-            add(taskPanel);
+            taskButton.setLocation(x, y);
+            add(taskButton);
         }
         for (int x = HEADER_COLUMN_WIDTH; x < panelWidth; x += TIME_COLUMN_WIDTH) {
             // Start at 8:00
@@ -148,24 +161,46 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         g.fillRect(lineX, 0, getWidth(), getHeight());
     }
 
-    private class TaskPanel extends JPanel {
+    private JButton createTaskButton(Task task) {
+        JButton taskButton =  SwingUtils.makeSmallButton(new JButton(new TaskAction(task)));
+        taskButton.setBackground(task.isLocked() ? TangoColorFactory.ALUMINIUM_3 : TangoColorFactory.ALUMINIUM_1);
+        taskButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        taskButton.setVerticalTextPosition(SwingConstants.TOP);
+        taskButton.setSize(task.getDuration(), ROW_HEIGHT);
+        return taskButton;
+    }
+
+    private class TaskAction extends AbstractAction {
 
         private final Task task;
 
-        public TaskPanel(Task task) {
+        public TaskAction(Task task) {
+            super(task.getCode(), new TaskOrEmployeeIcon(task));
             this.task = task;
-            setLayout(null);
-            setBackground(task.isLocked() ? TangoColorFactory.ALUMINIUM_3 : TangoColorFactory.ALUMINIUM_1);
-            setSize(task.getDuration(), ROW_HEIGHT);
-            JLabel codeLabel = new JLabel(task.getCode(), SwingConstants.CENTER);
-            codeLabel.setLocation(0, 0);
-            codeLabel.setSize(task.getDuration(), ROW_HEIGHT / 2);
-            add(codeLabel);
-            JLabel iconLabel = new JLabel(new TaskOrEmployeeIcon(task), SwingConstants.CENTER);
-            iconLabel.setLocation(0, ROW_HEIGHT / 2);
-            iconLabel.setSize(task.getDuration(), ROW_HEIGHT / 2);
-            add(iconLabel);
-            setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            // Tooltip
+            putValue(SHORT_DESCRIPTION, task.getToolText());
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
+            List<TaskOrEmployee> taskOrEmployeeList = new ArrayList<>();
+            taskOrEmployeeList.addAll(taskAssigningPanel.getSolution().getEmployeeList());
+            taskOrEmployeeList.addAll(taskAssigningPanel.getSolution().getTaskList());
+            // Add 1 to array size to add null, which makes the entity unassigned
+            JComboBox TaskOrEmployeeListField = new JComboBox(
+                    taskOrEmployeeList.toArray(new Object[taskOrEmployeeList.size() + 1]));
+            LabeledComboBoxRenderer.applyToComboBox(TaskOrEmployeeListField);
+            TaskOrEmployeeListField.setSelectedItem(task.getPreviousTaskOrEmployee());
+            listFieldsPanel.add(TaskOrEmployeeListField);
+            int result = JOptionPane.showConfirmDialog(TaskOverviewPanel.this.getRootPane(),
+                    listFieldsPanel, "Select previous task or employee for " + task.getLabel(),
+                    JOptionPane.OK_CANCEL_OPTION);
+            if (result == JOptionPane.OK_OPTION) {
+                TaskOrEmployee toTaskOrEmployee = (TaskOrEmployee) TaskOrEmployeeListField.getSelectedItem();
+                taskAssigningPanel.getSolutionBusiness().doChangeMove(task, "previousTaskOrEmployee", toTaskOrEmployee);
+                taskAssigningPanel.getSolverAndPersistenceFrame().resetScreen();
+            }
         }
 
     }

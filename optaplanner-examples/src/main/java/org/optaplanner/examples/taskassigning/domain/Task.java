@@ -24,12 +24,13 @@ import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
+import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.taskassigning.domain.solver.MovableTaskSelectionFilter;
 import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
 
 @PlanningEntity(movableEntitySelectionFilter = MovableTaskSelectionFilter.class)
 @XStreamAlias("MsTask")
-public class Task extends TaskOrEmployee {
+public class Task extends TaskOrEmployee implements Labeled {
 
     private TaskType taskType;
     private int indexInTaskType;

@@ -68,7 +68,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         setLayout(new BorderLayout());
         JPanel headerPanel = createHeaderPanel();
         add(headerPanel, BorderLayout.NORTH);
-        taskOverviewPanel = new TaskOverviewPanel();
+        taskOverviewPanel = new TaskOverviewPanel(this);
         add(new JScrollPane(taskOverviewPanel), BorderLayout.CENTER);
     }
 

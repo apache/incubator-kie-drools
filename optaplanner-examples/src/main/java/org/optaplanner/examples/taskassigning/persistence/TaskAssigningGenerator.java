@@ -103,8 +103,8 @@ public class TaskAssigningGenerator extends LoggingMain {
                     "Research");
     private static final StringDataGenerator customerNameGenerator = StringDataGenerator.build1kCompanyNames();
     private static final StringDataGenerator employeeNameGenerator = StringDataGenerator.build10kFullNames();
-    public static final int BASE_DURATION_MINIMUM = 20;
-    public static final int BASE_DURATION_MAXIMUM = 120;
+    public static final int BASE_DURATION_MINIMUM = 30;
+    public static final int BASE_DURATION_MAXIMUM = 90;
     public static final int BASE_DURATION_AVERAGE = BASE_DURATION_MINIMUM + BASE_DURATION_MAXIMUM / 2;
     private static final int SKILL_SET_SIZE_MINIMUM = 2;
     private static final int SKILL_SET_SIZE_MAXIMUM = 4;
@@ -127,7 +127,7 @@ public class TaskAssigningGenerator extends LoggingMain {
         writeTaskAssigningSolution(50, 5);
         writeTaskAssigningSolution(100, 5);
         writeTaskAssigningSolution(500, 20);
-        writeTaskAssigningSolution(1000, 20);
+        // For more tasks, switch to BendableLongScore to avoid overflow in the score.
     }
 
     private void writeTaskAssigningSolution(int taskListSize, int employeeListSize) {
