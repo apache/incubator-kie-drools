@@ -36,6 +36,7 @@ import org.optaplanner.examples.common.persistence.StringDataGenerator;
 import org.optaplanner.examples.taskassigning.domain.Affinity;
 import org.optaplanner.examples.taskassigning.domain.Customer;
 import org.optaplanner.examples.taskassigning.domain.Employee;
+import org.optaplanner.examples.taskassigning.domain.Priority;
 import org.optaplanner.examples.taskassigning.domain.Skill;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
@@ -260,9 +261,10 @@ public class TaskAssigningGenerator extends LoggingMain {
     }
 
     private void createTaskList(TaskAssigningSolution solution, int taskListSize) {
-        List<Task> taskList = new ArrayList<>(taskListSize);
         List<TaskType> taskTypeList = solution.getTaskTypeList();
         List<Customer> customerList = solution.getCustomerList();
+        Priority[] priorities = Priority.values();
+        List<Task> taskList = new ArrayList<>(taskListSize);
         Map<TaskType, Integer> maxIndexInTaskTypeMap = new HashMap<>(taskTypeList.size());
         for (int i = 0; i < taskListSize; i++) {
             Task task = new Task();
@@ -279,6 +281,7 @@ public class TaskAssigningGenerator extends LoggingMain {
             maxIndexInTaskTypeMap.put(taskType, indexInTaskType);
             task.setCustomer(customerList.get(random.nextInt(customerList.size())));
             task.setReadyTime(0);
+            task.setPriority(priorities[random.nextInt(priorities.length)]);
             taskList.add(task);
         }
         solution.setTaskList(taskList);

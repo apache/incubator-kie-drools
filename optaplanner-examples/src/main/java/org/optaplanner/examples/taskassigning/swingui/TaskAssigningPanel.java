@@ -36,6 +36,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.taskassigning.domain.Affinity;
 import org.optaplanner.examples.taskassigning.domain.Customer;
+import org.optaplanner.examples.taskassigning.domain.Priority;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 import org.optaplanner.examples.taskassigning.domain.TaskType;
@@ -167,6 +168,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
             TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
             List<TaskType> taskTypeList = solution.getTaskTypeList();
             List<Customer> customerList = solution.getCustomerList();
+            Priority[] priorities = Priority.values();
             List<Task> taskList = solution.getTaskList();
             for (int i = 0; i < newTaskCount; i++) {
                 Task task = new Task();
@@ -188,6 +190,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
                 task.setIndexInTaskType(nextIndexInTaskType);
                 task.setCustomer(customerList.get(producingRandom.nextInt(customerList.size())));
                 task.setReadyTime(readyTime);
+                task.setPriority(priorities[producingRandom.nextInt(priorities.length)]);
 
                 scoreDirector.beforeEntityAdded(task);
                 taskList.add(task);

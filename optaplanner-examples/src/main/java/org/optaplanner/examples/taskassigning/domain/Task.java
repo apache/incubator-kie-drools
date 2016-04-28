@@ -35,6 +35,7 @@ public class Task extends TaskOrEmployee {
     private int indexInTaskType;
     private Customer customer;
     private int readyTime;
+    private Priority priority;
     private boolean locked;
 
     // Planning variables: changes during planning, between score calculations.
@@ -82,6 +83,14 @@ public class Task extends TaskOrEmployee {
 
     public void setReadyTime(int readyTime) {
         this.readyTime = readyTime;
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 
     public boolean isLocked() {
@@ -135,8 +144,12 @@ public class Task extends TaskOrEmployee {
     }
 
     public int getDuration() {
-        Affinity affinity = (employee == null) ? Affinity.NONE : employee.getAffinity(customer);
+        Affinity affinity = getAffinity();
         return taskType.getBaseDuration() * affinity.getDurationMultiplier();
+    }
+
+    public Affinity getAffinity() {
+        return (employee == null) ? Affinity.NONE : employee.getAffinity(customer);
     }
 
     @Override
@@ -161,12 +174,14 @@ public class Task extends TaskOrEmployee {
 
     public String getToolText() {
         StringBuilder toolText = new StringBuilder();
-        toolText.append("<html><center><b>").append(getLabel()).append("</b><br/><br/>");
-        toolText.append("Customer:<br/>").append(customer.getName()).append("<br/><br/>");
+        toolText.append("<html><center><b>").append(getLabel()).append("</b><br/>")
+                .append(priority.getLabel()).append("<br/><br/>");
         toolText.append("Required skills:<br/>");
         for (Skill skill : taskType.getRequiredSkillList()) {
             toolText.append(skill.getLabel()).append("<br/>");
         }
+        toolText.append("<br/>Customer:<br/>").append(customer.getName()).append("<br/>(")
+                .append(getAffinity().getLabel()).append(")<br/>");
         toolText.append("</center></html>");
         return toolText.toString();
     }
