@@ -1419,10 +1419,17 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         // Create a session and fire rules
         final KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        final KieSession kieSession = kc.newKieSession();
 
         new Thread(new Runnable() {
             public void run() {
-                kc.newKieSession().fireUntilHalt();
+                kieSession.fireUntilHalt();
+                try {
+                    Thread.sleep( 20000 );
+                } catch (InterruptedException e) {
+                    throw new RuntimeException( e );
+                }
+                kieSession.halt();
             }
         }).start();
 

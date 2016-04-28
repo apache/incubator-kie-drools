@@ -124,6 +124,8 @@ public class DefaultAgenda
 
     private ActivationsFilter                                    activationsFilter;
 
+    private volatile boolean                                     wasFiringUntilHalt = false;
+
     private volatile ExecutionState                              currentState = ExecutionState.INACTIVE;
 
     public enum ExecutionState {     // fireAllRule | fireUntilHalt | executeTask <-- required action
@@ -1401,14 +1403,18 @@ public class DefaultAgenda
     }
 
     private void waitAndEnterExecutionState( ExecutionState newState ) {
-        while (currentState != ExecutionState.INACTIVE) {
+        waitInactive();
+        setCurrentState( newState );
+    }
+
+    private void waitInactive() {
+        while ( currentState != ExecutionState.INACTIVE) {
             try {
                 stateMachineLock.wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException( e );
             }
         }
-        setCurrentState( newState );
     }
 
     @Override
@@ -1437,10 +1443,15 @@ public class DefaultAgenda
 
     public void activate() {
         immediateHalt();
+        if (wasFiringUntilHalt) {
+            wasFiringUntilHalt = false;
+            fireUntilHalt();
+        }
     }
 
     public void deactivate() {
         synchronized (stateMachineLock) {
+            pauseFiringUntilHalt();
             if ( currentState != ExecutionState.DEACTIVATED ) {
                 waitAndEnterExecutionState( ExecutionState.DEACTIVATED );
             }
@@ -1449,12 +1460,21 @@ public class DefaultAgenda
 
     public boolean tryDeactivate() {
         synchronized (stateMachineLock) {
+            pauseFiringUntilHalt();
             if ( currentState == ExecutionState.INACTIVE ) {
                 setCurrentState( ExecutionState.DEACTIVATED );
                 return true;
             }
         }
         return false;
+    }
+
+    private void pauseFiringUntilHalt() {
+        if ( currentState == ExecutionState.FIRING_UNTIL_HALT) {
+            wasFiringUntilHalt = true;
+            setCurrentState( ExecutionState.HALTING );
+            waitInactive();
+        }
     }
 
     public void halt() {
