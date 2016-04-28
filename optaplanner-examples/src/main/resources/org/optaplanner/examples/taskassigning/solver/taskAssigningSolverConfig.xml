@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
-  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <!--<environmentMode>FULL_ASSERT</environmentMode>-->
   <solutionClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</solutionClass>
   <entityClass>org.optaplanner.examples.taskassigning.domain.TaskOrEmployee</entityClass>
   <entityClass>org.optaplanner.examples.taskassigning.domain.Task</entityClass>
 
   <scoreDirectorFactory>
-    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <scoreDefinitionType>BENDABLE</scoreDefinitionType>
+    <bendableHardLevelsSize>1</bendableHardLevelsSize>
+    <bendableSoftLevelsSize>4</bendableSoftLevelsSize>
     <scoreDrl>org/optaplanner/examples/taskassigning/solver/taskAssigningScoreRules.drl</scoreDrl>
   </scoreDirectorFactory>
 
-  <termination>
-    <minutesSpentLimit>5</minutesSpentLimit>
-  </termination>
+  <!--<termination>-->
+    <!--<minutesSpentLimit>5</minutesSpentLimit>-->
+  <!--</termination>-->
 </solver>

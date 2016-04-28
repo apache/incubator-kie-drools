@@ -17,7 +17,7 @@
 package org.optaplanner.examples.meetingscheduling.solver;
     dialect "java"
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
 
 import org.optaplanner.examples.taskassigning.domain.Affinity;
 import org.optaplanner.examples.taskassigning.domain.Customer;
@@ -25,9 +25,10 @@ import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Skill;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
-import org.optaplanner.examples.taskassigning.domain.TaskType;
+import org.optaplanner.examples.taskassigning.domain.TaskType
+import org.optaplanner.examples.taskassigning.domain.Priority;
 
-global HardSoftScoreHolder scoreHolder;
+global BendableScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -37,17 +38,38 @@ rule "Skill requirements"
     when
         Task(employee != null, missingSkillCount > 0, $missingSkillCount : missingSkillCount)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, - $missingSkillCount);
+        scoreHolder.addHardConstraintMatch(kcontext, 0, - $missingSkillCount);
 end
 
 // ############################################################################
 // Soft constraints
 // ############################################################################
 
+rule "Critical priority"
+    when
+        Task(employee != null, priority == Priority.CRITICAL, $endTime : endTime)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, 0, - $endTime);
+end
+
 rule "Minimze makespan (starting with the latest ending employee first)"
     when
         Task(employee != null, nextTask == null, $endTime : endTime)
     then
         // Fairness and load balancing trick (see docs): squared to assure correctness in corner cases
-        scoreHolder.addSoftConstraintMatch(kcontext, - ($endTime * $endTime));
+        scoreHolder.addSoftConstraintMatch(kcontext, 1, - ($endTime * $endTime));
+end
+
+rule "Major priority"
+    when
+        Task(employee != null, priority == Priority.MAJOR, $endTime : endTime)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, 2, - $endTime);
+end
+
+rule "Minor priority"
+    when
+        Task(employee != null, priority == Priority.MINOR, $endTime : endTime)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, 3, - $endTime);
 end

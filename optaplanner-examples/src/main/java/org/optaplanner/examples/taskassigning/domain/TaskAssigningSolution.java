@@ -25,7 +25,9 @@ import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
@@ -48,8 +50,8 @@ public class TaskAssigningSolution extends AbstractPersistable {
     @ValueRangeProvider(id = "taskRange")
     private List<Task> taskList;
 
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
-    private HardSoftScore score;
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {BendableScoreDefinition.class}, ints = {1, 4})
+    private BendableScore score;
 
     public List<Skill> getSkillList() {
         return skillList;
@@ -92,11 +94,11 @@ public class TaskAssigningSolution extends AbstractPersistable {
     }
 
     @PlanningScore
-    public HardSoftScore getScore() {
+    public BendableScore getScore() {
         return score;
     }
 
-    public void setScore(HardSoftScore score) {
+    public void setScore(BendableScore score) {
         this.score = score;
     }
 

@@ -141,7 +141,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(TangoColorFactory.ALUMINIUM_3);
+        g.setColor(TangoColorFactory.ALUMINIUM_2);
         int lineX = HEADER_COLUMN_WIDTH + consumedDuration;
         g.fillRect(HEADER_COLUMN_WIDTH, 0, lineX, getHeight());
         g.setColor(Color.WHITE);
