@@ -137,11 +137,18 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
         doProblemFactChange(scoreDirector -> {
             TaskAssigningSolution solution = scoreDirector.getWorkingSolution();
             for (Task task : solution.getTaskList()) {
-                if (!task.isLocked() && task.getStartTime() != null && task.getStartTime() < consumedDuration) {
-                    scoreDirector.beforeProblemFactChanged(task);
-                    task.setLocked(true);
-                    scoreDirector.afterProblemFactChanged(task);
-                    logger.trace("Consumed task ({}).", task);
+                if (!task.isLocked()) {
+                    if (task.getStartTime() != null && task.getStartTime() < consumedDuration) {
+                        scoreDirector.beforeProblemFactChanged(task);
+                        task.setLocked(true);
+                        scoreDirector.afterProblemFactChanged(task);
+                        logger.trace("Consumed task ({}).", task);
+                    } else if (task.getReadyTime() < consumedDuration) {
+                        // Prevent a non-locked task from being assigned retroactively
+                        scoreDirector.beforeProblemFactChanged(task);
+                        task.setReadyTime(consumedDuration);
+                        scoreDirector.afterProblemFactChanged(task);
+                    }
                 }
             }
             scoreDirector.triggerVariableListeners();
@@ -190,6 +197,7 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
                 task.setTaskType(taskType);
                 task.setIndexInTaskType(nextIndexInTaskType);
                 task.setCustomer(customerList.get(producingRandom.nextInt(customerList.size())));
+                // Prevent the new task from being assigned retroactively
                 task.setReadyTime(readyTime);
                 task.setPriority(priorities[producingRandom.nextInt(priorities.length)]);
 
