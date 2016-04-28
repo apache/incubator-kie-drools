@@ -49,6 +49,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
     public static final int ROW_HEIGHT = 40;
     public static final int TIME_COLUMN_WIDTH = 60;
 
+    private final ImageIcon[] affinityIcons;
     private final ImageIcon[] priorityIcons;
 
     private TangoColorFactory customerColorFactory;
@@ -57,6 +58,12 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
     private int consumedDuration = 0;
 
     public TaskOverviewPanel() {
+        affinityIcons = new ImageIcon[] {
+                new ImageIcon(getClass().getResource("affinityNone.png")),
+                new ImageIcon(getClass().getResource("affinityLow.png")),
+                new ImageIcon(getClass().getResource("affinityMedium.png")),
+                new ImageIcon(getClass().getResource("affinityHigh.png"))
+        };
         priorityIcons = new ImageIcon[] {
                 new ImageIcon(getClass().getResource("priorityMinor.png")),
                 new ImageIcon(getClass().getResource("priorityMajor.png")),
@@ -150,14 +157,14 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             setLayout(null);
             setBackground(task.isLocked() ? TangoColorFactory.ALUMINIUM_3 : TangoColorFactory.ALUMINIUM_1);
             setSize(task.getDuration(), ROW_HEIGHT);
-            JLabel codeLabel = new JLabel(task.getCode(), new TaskOrEmployeeIcon(task), SwingConstants.CENTER);
+            JLabel codeLabel = new JLabel(task.getCode(), SwingConstants.CENTER);
             codeLabel.setLocation(0, 0);
             codeLabel.setSize(task.getDuration(), ROW_HEIGHT / 2);
             add(codeLabel);
-            JLabel titleLabel = new JLabel(task.getTitle(), SwingConstants.CENTER);
-            titleLabel.setLocation(0, ROW_HEIGHT / 2);
-            titleLabel.setSize(task.getDuration(), ROW_HEIGHT / 2);
-            add(titleLabel);
+            JLabel iconLabel = new JLabel(new TaskOrEmployeeIcon(task), SwingConstants.CENTER);
+            iconLabel.setLocation(0, ROW_HEIGHT / 2);
+            iconLabel.setSize(task.getDuration(), ROW_HEIGHT / 2);
+            add(iconLabel);
             setBorder(BorderFactory.createLineBorder(Color.BLACK));
         }
 
@@ -198,42 +205,40 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
 
         private static final int SKILL_ICON_WIDTH = 8;
         private static final int SKILL_ICON_HEIGHT = 16;
-        private static final int CUSTOMER_ICON_WIDTH = 8;
-        private static final int CUSTOMER_ICON_HEIGHT = 16;
-        private static final int GAP = 4;
 
-        private final Color customerColor;
-        private final List<Color> skillColorList;
         private final ImageIcon priorityIcon;
+        private final List<Color> skillColorList;
+        private final ImageIcon affinityIcon;
 
         private TaskOrEmployeeIcon(Task task) {
-            customerColor = customerColorFactory.pickColor(task.getCustomer());
+            priorityIcon = priorityIcons[task.getPriority().ordinal()];
             List<Skill> skillList = task.getTaskType().getRequiredSkillList();
             skillColorList = new ArrayList<>(skillList.size());
             for (Skill skill : skillList) {
                 skillColorList.add(skillColorFactory.pickColor(skill));
             }
-            priorityIcon = priorityIcons[task.getPriority().ordinal()];
+            affinityIcon = affinityIcons[task.getAffinity().ordinal()];
         }
 
         private TaskOrEmployeeIcon(Employee employee) {
-            customerColor = null;
+            priorityIcon = null;
             Set<Skill> skillSet = employee.getSkillSet();
             skillColorList = new ArrayList<>(skillSet.size());
             for (Skill skill : skillSet) {
                 skillColorList.add(skillColorFactory.pickColor(skill));
             }
-            priorityIcon = null;
+            affinityIcon = null;
         }
 
         @Override
         public int getIconWidth() {
-            int width = skillColorList.size() * SKILL_ICON_WIDTH;
-            if (customerColor != null) {
-                width += GAP + CUSTOMER_ICON_WIDTH;
-            }
+            int width = 0;
             if (priorityIcon != null) {
-                width += GAP + priorityIcon.getIconWidth();
+                width += priorityIcon.getIconWidth();
+            }
+            width += skillColorList.size() * SKILL_ICON_WIDTH;
+            if (affinityIcon != null) {
+                width += affinityIcon.getIconWidth();
             }
             return width;
         }
@@ -241,11 +246,11 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         @Override
         public int getIconHeight() {
             int height = SKILL_ICON_HEIGHT;
-            if (CUSTOMER_ICON_HEIGHT > height) {
-                height = CUSTOMER_ICON_HEIGHT;
-            }
             if (priorityIcon != null && priorityIcon.getIconHeight() > height) {
                 height = priorityIcon.getIconHeight();
+            }
+            if (affinityIcon != null && affinityIcon.getIconHeight() > height) {
+                height = affinityIcon.getIconHeight();
             }
             return height;
         }
@@ -253,6 +258,10 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
         @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
             int innerX = x;
+            if (priorityIcon != null) {
+                priorityIcon.paintIcon(c, g, innerX, y);
+                innerX += priorityIcon.getIconWidth();
+            }
             for (Color skillColor : skillColorList) {
                 g.setColor(skillColor);
                 g.fillRect(innerX + 1, y + 1, SKILL_ICON_WIDTH - 2, SKILL_ICON_HEIGHT - 2);
@@ -260,18 +269,9 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
                 g.drawRect(innerX + 1, y + 1, SKILL_ICON_WIDTH - 2, SKILL_ICON_HEIGHT - 2);
                 innerX += SKILL_ICON_WIDTH;
             }
-            if (customerColor != null) {
-                innerX += GAP;
-                g.setColor(customerColor);
-                g.fillOval(innerX + 1, y + 4, CUSTOMER_ICON_WIDTH - 2, CUSTOMER_ICON_HEIGHT - 8);
-                g.setColor(TangoColorFactory.ALUMINIUM_5);
-                g.drawOval(innerX + 1, y + 4, CUSTOMER_ICON_WIDTH - 2, CUSTOMER_ICON_HEIGHT - 8);
-                innerX += CUSTOMER_ICON_WIDTH;
-            }
-            if (priorityIcon != null) {
-                innerX += GAP;
-                priorityIcon.paintIcon(c, g, innerX, y);
-                innerX += priorityIcon.getIconWidth();
+            if (affinityIcon != null) {
+                affinityIcon.paintIcon(c, g, innerX, y);
+                innerX += affinityIcon.getIconWidth();
             }
         }
 
