@@ -36,8 +36,6 @@ import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
 
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.pas.domain.RequiredPatientEquipment;
-import org.optaplanner.examples.pas.domain.RoomEquipment;
 import org.optaplanner.examples.taskassigning.domain.Employee;
 import org.optaplanner.examples.taskassigning.domain.Skill;
 import org.optaplanner.examples.taskassigning.domain.Task;
@@ -51,12 +49,19 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
     public static final int ROW_HEIGHT = 40;
     public static final int TIME_COLUMN_WIDTH = 60;
 
+    private final ImageIcon[] priorityIcons;
+
     private TangoColorFactory customerColorFactory;
     private TangoColorFactory skillColorFactory;
 
     private int consumedDuration = 0;
 
     public TaskOverviewPanel() {
+        priorityIcons = new ImageIcon[] {
+                new ImageIcon(getClass().getResource("priorityMinor.png")),
+                new ImageIcon(getClass().getResource("priorityMajor.png")),
+                new ImageIcon(getClass().getResource("priorityCritical.png"))
+        };
         setLayout(null);
         setMinimumSize(new Dimension(HEADER_COLUMN_WIDTH * 2, ROW_HEIGHT * 8));
     }
@@ -193,12 +198,13 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
 
         private static final int SKILL_ICON_WIDTH = 8;
         private static final int SKILL_ICON_HEIGHT = 16;
-        private static final int CUSTOMER_SKILL_GAP = 4;
         private static final int CUSTOMER_ICON_WIDTH = 8;
         private static final int CUSTOMER_ICON_HEIGHT = 16;
+        private static final int GAP = 4;
 
         private final Color customerColor;
         private final List<Color> skillColorList;
+        private final ImageIcon priorityIcon;
 
         private TaskOrEmployeeIcon(Task task) {
             customerColor = customerColorFactory.pickColor(task.getCustomer());
@@ -207,6 +213,7 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             for (Skill skill : skillList) {
                 skillColorList.add(skillColorFactory.pickColor(skill));
             }
+            priorityIcon = priorityIcons[task.getPriority().ordinal()];
         }
 
         private TaskOrEmployeeIcon(Employee employee) {
@@ -216,16 +223,31 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
             for (Skill skill : skillSet) {
                 skillColorList.add(skillColorFactory.pickColor(skill));
             }
+            priorityIcon = null;
         }
 
         @Override
         public int getIconWidth() {
-            return skillColorList.size() * SKILL_ICON_WIDTH + (customerColor == null ? 0 : CUSTOMER_ICON_WIDTH + CUSTOMER_SKILL_GAP);
+            int width = skillColorList.size() * SKILL_ICON_WIDTH;
+            if (customerColor != null) {
+                width += GAP + CUSTOMER_ICON_WIDTH;
+            }
+            if (priorityIcon != null) {
+                width += GAP + priorityIcon.getIconWidth();
+            }
+            return width;
         }
 
         @Override
         public int getIconHeight() {
-            return Math.max(SKILL_ICON_HEIGHT, CUSTOMER_ICON_HEIGHT);
+            int height = SKILL_ICON_HEIGHT;
+            if (CUSTOMER_ICON_HEIGHT > height) {
+                height = CUSTOMER_ICON_HEIGHT;
+            }
+            if (priorityIcon != null && priorityIcon.getIconHeight() > height) {
+                height = priorityIcon.getIconHeight();
+            }
+            return height;
         }
 
         @Override
@@ -238,13 +260,18 @@ public class TaskOverviewPanel extends JPanel implements Scrollable {
                 g.drawRect(innerX + 1, y + 1, SKILL_ICON_WIDTH - 2, SKILL_ICON_HEIGHT - 2);
                 innerX += SKILL_ICON_WIDTH;
             }
-            innerX += CUSTOMER_SKILL_GAP;
             if (customerColor != null) {
+                innerX += GAP;
                 g.setColor(customerColor);
                 g.fillOval(innerX + 1, y + 4, CUSTOMER_ICON_WIDTH - 2, CUSTOMER_ICON_HEIGHT - 8);
                 g.setColor(TangoColorFactory.ALUMINIUM_5);
                 g.drawOval(innerX + 1, y + 4, CUSTOMER_ICON_WIDTH - 2, CUSTOMER_ICON_HEIGHT - 8);
                 innerX += CUSTOMER_ICON_WIDTH;
+            }
+            if (priorityIcon != null) {
+                innerX += GAP;
+                priorityIcon.paintIcon(c, g, innerX, y);
+                innerX += priorityIcon.getIconWidth();
             }
         }
 
