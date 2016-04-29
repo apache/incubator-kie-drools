@@ -825,6 +825,10 @@ public class RuleNetworkEvaluator {
         // this is to avoid split bucket when an updated rightTuple hasn't been moved yet
         // and so it is the first entry in the wrong bucket
 
+        for (RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
+            rtm.remove(rightTuple);
+        }
+
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
             if (rightTuple.getMemory() != null) {
