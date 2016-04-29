@@ -19,7 +19,7 @@ package org.optaplanner.core.api.score.buildin.bendablebigdecimal;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import org.optaplanner.core.api.score.AbstractScore;
+import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
  * {@link BendableScoreDefinition} used.
  * @see Score
  */
-public final class BendableBigDecimalScore extends AbstractScore<BendableBigDecimalScore>
+public final class BendableBigDecimalScore extends AbstractBendableScore<BendableBigDecimalScore>
         implements FeasibilityScore<BendableBigDecimalScore> {
 
     /**
@@ -82,6 +82,10 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
         softScores = null;
     }
 
+    /**
+     * @param hardScores never null
+     * @param softScores never null
+     */
     protected BendableBigDecimalScore(BigDecimal[] hardScores, BigDecimal[] softScores) {
         this.hardScores = hardScores;
         this.softScores = softScores;
@@ -89,6 +93,10 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
 
     // Intentionally no getters for the hardScores or softScores int arrays to guarantee that this class is immutable
 
+    /**
+     * @return {@code >= 0}
+     */
+    @Override
     public int getHardLevelsSize() {
         return hardScores.length;
     }
@@ -101,6 +109,10 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
         return hardScores[index];
     }
 
+    /**
+     * @return {@code >= 0}
+     */
+    @Override
     public int getSoftLevelsSize() {
         return softScores.length;
     }
@@ -117,9 +129,7 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
     // Worker methods
     // ************************************************************************
 
-    /**
-     * @return {@link #getHardLevelsSize()} + {@link #getSoftLevelsSize()}
-     */
+    @Override
     public int getLevelsSize() {
         return hardScores.length + softScores.length;
     }

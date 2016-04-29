@@ -16,7 +16,7 @@
 
 package org.optaplanner.core.api.score.buildin.bendable;
 
-import org.optaplanner.core.api.score.AbstractScore;
+import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
@@ -31,7 +31,7 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
  * {@link BendableScoreDefinition} used.
  * @see Score
  */
-public final class BendableScore extends AbstractScore<BendableScore>
+public final class BendableScore extends AbstractBendableScore<BendableScore>
         implements FeasibilityScore<BendableScore> {
 
     /**
@@ -93,6 +93,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
     /**
      * @return {@code >= 0}
      */
+    @Override
     public int getHardLevelsSize() {
         return hardScores.length;
     }
@@ -108,6 +109,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
     /**
      * @return {@code >= 0}
      */
+    @Override
     public int getSoftLevelsSize() {
         return softScores.length;
     }
@@ -124,9 +126,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
     // Worker methods
     // ************************************************************************
 
-    /**
-     * @return {@link #getHardLevelsSize()} + {@link #getSoftLevelsSize()}
-     */
+    @Override
     public int getLevelsSize() {
         return hardScores.length + softScores.length;
     }
