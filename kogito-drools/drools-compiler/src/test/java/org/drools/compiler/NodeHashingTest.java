@@ -447,4 +447,37 @@ public class NodeHashingTest {
         assertEquals( 1, ksession2.fireAllRules() );
         ksession2.dispose();
     }
+
+    @Test
+    public void testHashingOnClassConstraint() {
+        String drl =
+                "import " + A.class.getCanonicalName() + "\n" +
+                "rule R1 when\n" +
+                "    A( configClass == String.class );\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    A( configClass == String.class );\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R3 when\n" +
+                "    A( configClass == String.class );\n" +
+                "then\n" +
+                "end\n\n";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        kieSession.insert( new A( ) );
+
+        assertEquals( 3, kieSession.fireAllRules() );
+    }
+
+    public static class A {
+        public Class<?> getConfigClass() {
+            return String.class;
+        }
+    }
 }

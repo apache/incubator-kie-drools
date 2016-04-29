@@ -70,6 +70,16 @@ public class ClassFieldImpl implements FieldValue, Externalizable {
         return type;
     }
 
+    @Override
+    public int hashCode() {
+        return className.hashCode();
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+        return obj instanceof ClassFieldImpl && className.equals( ( (ClassFieldImpl) obj ).className );
+    }
+
     public char getCharValue() {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
