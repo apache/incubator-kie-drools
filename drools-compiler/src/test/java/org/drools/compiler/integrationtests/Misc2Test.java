@@ -8452,4 +8452,47 @@ public class Misc2Test extends CommonTestMethodBase {
         kieSession.insert( true );
         assertEquals(4, kieSession.fireAllRules());
     }
+
+    @Test
+    public void testDeletedRightTupleInChangedBucket() {
+        // PLANNER-488
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    Person( $name: name, $age: age )\n" +
+                "    not Person( happy, name == $name, age == $age-1 )\n" +
+                "then\n" +
+                "end";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        Person p1 = new Person( "C", 1, true );
+        Person p2 = new Person( "B", 1, true );
+        Person p3 = new Person( "B", 2, true );
+        Person p4 = new Person( "A", 2 );
+
+        FactHandle fh1 = kieSession.insert( p1 );
+        FactHandle fh2 = kieSession.insert( p2 );
+        FactHandle fh3 = kieSession.insert( p3 );
+        FactHandle fh4 = kieSession.insert( p4 );
+
+        kieSession.fireAllRules();
+
+        p4.setName( "B" );
+        p4.setHappy( true );
+        kieSession.update( fh4, p4 );
+
+        kieSession.fireAllRules();
+
+        p3.setName( "A" );
+        p3.setHappy( false );
+        kieSession.update( fh3, p3 );
+        p1.setName( "B" );
+        kieSession.update( fh1, p1 );
+        p2.setName( "C" );
+        kieSession.update( fh2, p2 );
+
+        kieSession.fireAllRules();
+    }
 }
