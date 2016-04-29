@@ -207,7 +207,7 @@ public class MavenRepository {
                                 File pomfile ) {
         RemoteRepository repository = getRemoteRepositoryFromDistributionManagement( pomfile );
         if (repository == null) {
-            log.warn( "No Distribution Managament configured: unknown repository" );
+            log.warn( "No Distribution Management configured: unknown repository" );
             return;
         }
         deployArtifact( repository, releaseId, kieModule, pomfile );
