@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
 
     protected final MemberAccessor memberAccessor;
     protected boolean collectionWrapping;
+    protected boolean arrayWrapping;
     protected boolean countable;
 
     public AbstractFromPropertyValueRangeDescriptor(GenuineVariableDescriptor<Solution_> variableDescriptor,
@@ -65,14 +67,15 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
         EntityDescriptor<Solution_> entityDescriptor = variableDescriptor.getEntityDescriptor();
         Class<?> type = memberAccessor.getType();
         collectionWrapping = Collection.class.isAssignableFrom(type);
-        if (!collectionWrapping && !ValueRange.class.isAssignableFrom(type)) {
+        arrayWrapping = type.isArray();
+        if (!collectionWrapping && !arrayWrapping && !ValueRange.class.isAssignableFrom(type)) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + PlanningVariable.class.getSimpleName()
                     + " annotated property (" + variableDescriptor.getVariableName()
                     + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
                     + " annotated member (" + memberAccessor
                     + ") that does not return a " + Collection.class.getSimpleName()
-                    + " or a " + ValueRange.class.getSimpleName() + ".");
+                    + ", an array or a " + ValueRange.class.getSimpleName() + ".");
         }
         if (collectionWrapping) {
             Type genericType = memberAccessor.getGenericType();
@@ -122,8 +125,21 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
                             + "'s type (" + variablePropertyType + ").");
                 }
             }
+        } else if (arrayWrapping) {
+            Class<?> arrayElementClass = type.getComponentType();
+            Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
+            if (!variablePropertyType.isAssignableFrom(arrayElementClass)) {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a " + PlanningVariable.class.getSimpleName()
+                        + " annotated property (" + variableDescriptor.getVariableName()
+                        + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                        + " annotated member (" + memberAccessor
+                        + ") that returns a array with elements of type (" + arrayElementClass
+                        + ") which cannot be assigned to the " + PlanningVariable.class.getSimpleName()
+                        + "'s type (" + variablePropertyType + ").");
+            }
         }
-        countable = collectionWrapping || CountableValueRange.class.isAssignableFrom(type);
+        countable = collectionWrapping || arrayWrapping || CountableValueRange.class.isAssignableFrom(type);
     }
 
     // ************************************************************************
@@ -145,7 +161,10 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
         }
         ValueRange<Object> valueRange;
         if (collectionWrapping) {
-            List<Object> list = transformToList((Collection<Object>) valueRangeObject);
+            List<Object> list = transformCollectionToList((Collection<Object>) valueRangeObject);
+            valueRange = new ListValueRange<>(list);
+        } else if (arrayWrapping) {
+            List<Object> list = transformArrayToList(valueRangeObject);
             valueRange = new ListValueRange<>(list);
         } else {
             valueRange = (ValueRange<Object>) valueRangeObject;
@@ -161,12 +180,21 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
         return valueRange;
     }
 
-    private <T> List<T> transformToList(Collection<T> collection) {
+    private <T> List<T> transformCollectionToList(Collection<T> collection) {
         // TODO The user might not be aware of these performance pitfalls with Set and LinkedList:
         // - If only ValueRange.createOriginalIterator() is used, cloning a Set to a List is a waste of time.
         // - If the List is a LinkedList, ValueRange.createRandomIterator(Random)
         //   and ValueRange.get(int) are not efficient.
         return (collection instanceof List ? (List<T>) collection : new ArrayList<>(collection));
+    }
+
+    private List<Object> transformArrayToList(Object valueRangeObject) {
+        int arrayLength = Array.getLength(valueRangeObject);
+        List<Object> list = new ArrayList<>(arrayLength);
+        for (int i = 0; i < arrayLength; i++) {
+            list.add(Array.get(arrayLength, i));
+        }
+        return list;
     }
 
 }

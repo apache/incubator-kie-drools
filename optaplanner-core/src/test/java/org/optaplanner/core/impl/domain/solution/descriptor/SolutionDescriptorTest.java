@@ -15,9 +15,12 @@
  */
 package org.optaplanner.core.impl.domain.solution.descriptor;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.collection.TestdataArrayBasedSolution;
+import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.legacysolution.TestdataLegacySolution;
@@ -103,6 +106,30 @@ public class SolutionDescriptorTest {
         assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap());
         assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
                 "entityList", "subEntityList");
+    }
+
+    @Test
+    public void setProperties() {
+        SolutionDescriptor<TestdataSetBasedSolution> solutionDescriptor
+                = TestdataSetBasedSolution.buildSolutionDescriptor();
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap());
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
+                "valueSet");
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap());
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
+                "entitySet");
+    }
+
+    @Test @Ignore("Resolve PLANNER-573 to fix this")
+    public void arrayProperties() {
+        SolutionDescriptor<TestdataArrayBasedSolution> solutionDescriptor
+                = TestdataArrayBasedSolution.buildSolutionDescriptor();
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap());
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
+                "values");
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap());
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
+                "entities");
     }
 
     // ************************************************************************
