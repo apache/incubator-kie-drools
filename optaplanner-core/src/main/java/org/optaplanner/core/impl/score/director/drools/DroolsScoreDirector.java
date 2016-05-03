@@ -161,8 +161,10 @@ public class DroolsScoreDirector<Solution_>
         FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {
             throw new IllegalArgumentException("The entity (" + entity
-                    + ") was never added to this ScoreDirector."
-                    + " Usually the cause is that that specific instance was not in your Solution's entities.");
+                    + ") was never added to this ScoreDirector.\n"
+                    + "Maybe that specific instance is not in the return values of the "
+                    + PlanningSolution.class.getSimpleName() + "'s entity members ("
+                    + getSolutionDescriptor().getEntityMemberAndEntityCollectionMemberNames() + ").");
         }
         kieSession.update(factHandle, entity);
     }
@@ -174,8 +176,10 @@ public class DroolsScoreDirector<Solution_>
         FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {
             throw new IllegalArgumentException("The entity (" + entity
-                    + ") was never added to this ScoreDirector."
-                    + " Usually the cause is that that specific instance was not in your Solution's entities.");
+                    + ") was never added to this ScoreDirector.\n"
+                    + "Maybe that specific instance is not in the return values of the "
+                    + PlanningSolution.class.getSimpleName() + "'s entity members ("
+                    + getSolutionDescriptor().getEntityMemberAndEntityCollectionMemberNames() + ").");
         }
         kieSession.delete(factHandle);
         super.afterEntityRemoved(entityDescriptor, entity);
@@ -192,9 +196,11 @@ public class DroolsScoreDirector<Solution_>
     public void afterProblemFactAdded(Object problemFact) {
         if (kieSession.getFactHandle(problemFact) != null) {
             throw new IllegalArgumentException("The problemFact (" + problemFact
-                    + ") was already added to this ScoreDirector."
-                    + " Usually the cause is that that specific instance was already in your Solution's getProblemFacts()"
-                    + " and you probably want to use before/afterProblemFactChanged() instead.");
+                    + ") was already added to this ScoreDirector.\n"
+                    + "Maybe that specific instance is already in the "
+                    + PlanningSolution.class.getSimpleName() + "'s problem fact members ("
+                    + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").\n"
+                    + "Maybe use before/afterProblemFactChanged() instead of before/afterProblemFactAdded().");
         }
         kieSession.insert(problemFact);
         super.afterProblemFactAdded(problemFact);
@@ -207,8 +213,10 @@ public class DroolsScoreDirector<Solution_>
         FactHandle factHandle = kieSession.getFactHandle(problemFact);
         if (factHandle == null) {
             throw new IllegalArgumentException("The problemFact (" + problemFact
-                    + ") was never added to this ScoreDirector."
-                    + " Usually the cause is that that specific instance was not in your Solution's getProblemFacts().");
+                    + ") was never added to this ScoreDirector.\n"
+                    + "Maybe that specific instance is not in the "
+                    + PlanningSolution.class.getSimpleName() + "'s problem fact members ("
+                    + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").");
         }
         kieSession.update(factHandle, problemFact);
         super.afterProblemFactChanged(problemFact);
@@ -221,8 +229,10 @@ public class DroolsScoreDirector<Solution_>
         FactHandle factHandle = kieSession.getFactHandle(problemFact);
         if (factHandle == null) {
             throw new IllegalArgumentException("The problemFact (" + problemFact
-                    + ") was never added to this ScoreDirector."
-                    + " Usually the cause is that that specific instance was not in your Solution's getProblemFacts().");
+                    + ") was never added to this ScoreDirector.\n"
+                    + "Maybe that specific instance is not in the "
+                    + PlanningSolution.class.getSimpleName() + "'s problem fact members ("
+                    + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").");
         }
         kieSession.delete(factHandle);
         super.afterProblemFactRemoved(problemFact);

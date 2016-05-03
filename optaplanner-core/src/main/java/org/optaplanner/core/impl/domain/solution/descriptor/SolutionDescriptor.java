@@ -451,12 +451,28 @@ public class SolutionDescriptor<Solution_> {
         return problemFactCollectionMemberAccessorMap;
     }
 
+    public List<String> getProblemFactMemberAndProblemFactCollectionMemberNames() {
+        List<String> memberNames = new ArrayList<>(problemFactMemberAccessorMap.size()
+                + problemFactCollectionMemberAccessorMap.size());
+        memberNames.addAll(problemFactMemberAccessorMap.keySet());
+        memberNames.addAll(problemFactCollectionMemberAccessorMap.keySet());
+        return memberNames;
+    }
+
     public Map<String, MemberAccessor> getEntityMemberAccessorMap() {
         return entityMemberAccessorMap;
     }
 
     public Map<String, MemberAccessor> getEntityCollectionMemberAccessorMap() {
         return entityCollectionMemberAccessorMap;
+    }
+
+    public List<String> getEntityMemberAndEntityCollectionMemberNames() {
+        List<String> memberNames = new ArrayList<>(entityMemberAccessorMap.size()
+                + entityCollectionMemberAccessorMap.size());
+        memberNames.addAll(entityMemberAccessorMap.keySet());
+        memberNames.addAll(entityCollectionMemberAccessorMap.keySet());
+        return memberNames;
     }
 
     // ************************************************************************
