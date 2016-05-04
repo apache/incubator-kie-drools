@@ -3,34 +3,19 @@
 
   <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <!-- %l lowers performance -->
-      <!--<pattern>%d [%t] %-5p %l%n  %m%n</pattern>-->
-      <pattern>%d [%t] |%c| %-5p %m%n</pattern>
+      <pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %class{36}.%method:%line - %msg%n</pattern>
     </encoder>
   </appender>
 
   <logger name="org.kie" level="info"/>
+  <logger name="org.drools" level="info"/>
 
   <!-- bitronix -->
   <logger name="bitronix.tm.twopc.Preparer" level="error"/>
-  <logger name="bitronix.tm.recovery.Recoverer" level="warn" />
-  <logger name="bitronix.tm.BitronixTransactionManager" level="warn" />
   <logger name="bitronix.tm.Configuration" level="error" />
-  
 
-  <!--  hibernate  -->
-  <logger name="java.sql.DatabaseMetaData" level="warn" />
-  
-  <logger name="org.hibernate" level="warn"/>
-  <logger name="org.hibernate.cfg.search" level="warn"/>
-  <logger name="org.hibernate.cfg.annotations" level="warn"/>
-  <logger name="org.hibernate.cfg.AnnotationBinder" level="warn"/>
-  <logger name="org.hibernate.cfg.SettingsFactory" level="warn"/>
-  <logger name="org.hibernate.tool.hbm2ddl" level="warn"/>
-
-  <root level="info"><!-- TODO We probably want to set default level to warn instead -->
+  <root level="warn">
     <appender-ref ref="consoleAppender" />
   </root>
 
 </configuration>
-
