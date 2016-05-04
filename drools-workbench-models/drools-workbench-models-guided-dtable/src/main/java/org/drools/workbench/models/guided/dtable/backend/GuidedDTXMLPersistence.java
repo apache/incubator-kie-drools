@@ -105,6 +105,10 @@ public class GuidedDTXMLPersistence {
         xt.alias( "valueNumeric",
                   Number.class,
                   BigDecimal.class );
+
+        // this is needed for OSGi as XStream needs to be able to load classes from the guided-dtable module
+        // and the default classloader for XStream bundle in OSGi does not have access to those classes
+        xt.setClassLoader( getClass().getClassLoader() );
     }
 
     public static GuidedDTXMLPersistence getInstance() {
