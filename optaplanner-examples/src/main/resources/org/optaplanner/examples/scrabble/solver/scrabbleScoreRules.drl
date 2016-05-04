@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 import org.optaplanner.examples.scrabble.domain.ScrabbleWordDirection;
 import org.optaplanner.examples.scrabble.domain.ScrabbleCell;
 import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
-import org.optaplanner.examples.scrabble.domain.ScrabbleWord;
+import org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment;
 
 global HardSoftScoreHolder scoreHolder;
 

@@ -21,13 +21,8 @@ import java.util.Set;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
-import org.optaplanner.examples.cloudbalancing.domain.solver.CloudComputerStrengthComparator;
-import org.optaplanner.examples.cloudbalancing.domain.solver.CloudProcessDifficultyComparator;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.scrabble.domain.solver.CellUpdatingVariableListener;
-import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
 
 @PlanningEntity()
 @XStreamAlias("ScrabbleCell")
@@ -37,9 +32,9 @@ public class ScrabbleCell extends AbstractPersistable {
     private int y;
 
     @CustomShadowVariable(variableListenerClass = CellUpdatingVariableListener.class,
-            sources = {@CustomShadowVariable.Source(entityClass = ScrabbleWord.class, variableName = "startCell"),
-                    @CustomShadowVariable.Source(entityClass = ScrabbleWord.class, variableName = "direction"),})
-    private Set<ScrabbleWord> wordSet;
+            sources = {@CustomShadowVariable.Source(entityClass = ScrabbleWordAssignment.class, variableName = "startCell"),
+                    @CustomShadowVariable.Source(entityClass = ScrabbleWordAssignment.class, variableName = "direction"),})
+    private Set<ScrabbleWordAssignment> wordSet;
 
     public int getX() {
         return x;
@@ -57,11 +52,11 @@ public class ScrabbleCell extends AbstractPersistable {
         this.y = y;
     }
 
-    public Set<ScrabbleWord> getWordSet() {
+    public Set<ScrabbleWordAssignment> getWordSet() {
         return wordSet;
     }
 
-    public void setWordSet(Set<ScrabbleWord> wordSet) {
+    public void setWordSet(Set<ScrabbleWordAssignment> wordSet) {
         this.wordSet = wordSet;
     }
 
@@ -70,6 +65,27 @@ public class ScrabbleCell extends AbstractPersistable {
     // ************************************************************************
 
     public String getLabel() {
+        return "(" + x + "," + y + ")";
+    }
+
+    public void insertWordAssignment(ScrabbleWordAssignment wordAssignment, char c) {
+        boolean added = wordSet.add(wordAssignment);
+        if (!added) {
+            throw new IllegalStateException("The wordAssignment (" + wordAssignment
+                    + ") is already in the cell (" + this + ").");
+        }
+    }
+
+    public void retractWordAssignment(ScrabbleWordAssignment wordAssignment, char c) {
+        boolean removed = wordSet.remove(wordAssignment);
+        if (!removed) {
+            throw new IllegalStateException("The wordAssignment (" + wordAssignment
+                    + ") is not in the cell (" + this + ").");
+        }
+    }
+
+    @Override
+    public String toString() {
         return "(" + x + "," + y + ")";
     }
 

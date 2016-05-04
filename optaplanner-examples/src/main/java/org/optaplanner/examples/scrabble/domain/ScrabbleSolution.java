@@ -42,7 +42,7 @@ public class ScrabbleSolution extends AbstractPersistable {
     private List<ScrabbleCell> cellList;
 
     @PlanningEntityCollectionProperty
-    private List<ScrabbleWord> wordList;
+    private List<ScrabbleWordAssignment> wordList;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
     private HardSoftScore score;
@@ -71,11 +71,11 @@ public class ScrabbleSolution extends AbstractPersistable {
         this.cellList = cellList;
     }
 
-    public List<ScrabbleWord> getWordList() {
+    public List<ScrabbleWordAssignment> getWordList() {
         return wordList;
     }
 
-    public void setWordList(List<ScrabbleWord> wordList) {
+    public void setWordList(List<ScrabbleWordAssignment> wordList) {
         this.wordList = wordList;
     }
 

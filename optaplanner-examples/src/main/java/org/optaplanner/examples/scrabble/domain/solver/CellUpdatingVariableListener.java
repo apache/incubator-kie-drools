@@ -16,53 +16,97 @@
 
 package org.optaplanner.examples.scrabble.domain.solver;
 
-import java.util.Objects;
-
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.examples.scrabble.domain.ScrabbleCell;
 import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
-import org.optaplanner.examples.scrabble.domain.ScrabbleWord;
-import org.optaplanner.examples.vehiclerouting.domain.Customer;
-import org.optaplanner.examples.vehiclerouting.domain.Standstill;
-import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
+import org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment;
+import org.optaplanner.examples.scrabble.domain.ScrabbleWordDirection;
 
-public class CellUpdatingVariableListener implements VariableListener<ScrabbleWord> {
+public class CellUpdatingVariableListener implements VariableListener<ScrabbleWordAssignment> {
 
     @Override
-    public void beforeEntityAdded(ScoreDirector scoreDirector, ScrabbleWord word) {
+    public void beforeEntityAdded(ScoreDirector scoreDirector, ScrabbleWordAssignment wordAssignment) {
         // Do nothing
     }
 
     @Override
-    public void afterEntityAdded(ScoreDirector scoreDirector, ScrabbleWord word) {
-        insertWord((ScrabbleSolution) scoreDirector.getWorkingSolution(), word);
+    public void afterEntityAdded(ScoreDirector scoreDirector, ScrabbleWordAssignment wordAssignment) {
+        insertWord((ScrabbleSolution) scoreDirector.getWorkingSolution(), wordAssignment);
     }
 
     @Override
-    public void beforeVariableChanged(ScoreDirector scoreDirector, ScrabbleWord word) {
-        retractWord((ScrabbleSolution) scoreDirector.getWorkingSolution(), word);
+    public void beforeVariableChanged(ScoreDirector scoreDirector, ScrabbleWordAssignment wordAssignment) {
+        retractWord((ScrabbleSolution) scoreDirector.getWorkingSolution(), wordAssignment);
     }
 
     @Override
-    public void afterVariableChanged(ScoreDirector scoreDirector, ScrabbleWord word) {
-        insertWord((ScrabbleSolution) scoreDirector.getWorkingSolution(), word);
+    public void afterVariableChanged(ScoreDirector scoreDirector, ScrabbleWordAssignment wordAssignment) {
+        insertWord((ScrabbleSolution) scoreDirector.getWorkingSolution(), wordAssignment);
     }
 
     @Override
-    public void beforeEntityRemoved(ScoreDirector scoreDirector, ScrabbleWord word) {
-        retractWord((ScrabbleSolution) scoreDirector.getWorkingSolution(), word);
+    public void beforeEntityRemoved(ScoreDirector scoreDirector, ScrabbleWordAssignment wordAssignment) {
+        retractWord((ScrabbleSolution) scoreDirector.getWorkingSolution(), wordAssignment);
     }
 
     @Override
-    public void afterEntityRemoved(ScoreDirector scoreDirector, ScrabbleWord word) {
+    public void afterEntityRemoved(ScoreDirector scoreDirector, ScrabbleWordAssignment wordAssignment) {
         // Do nothing
     }
 
-    private void insertWord(ScrabbleSolution solution, ScrabbleWord word) {
+    private void insertWord(ScrabbleSolution solution, ScrabbleWordAssignment wordAssignment) {
+        ScrabbleCell startCell = wordAssignment.getStartCell();
+        ScrabbleWordDirection direction = wordAssignment.getDirection();
+        if (startCell != null && direction != null) {
+            int x = startCell.getX();
+            int y = startCell.getY();
+            String word = wordAssignment.getWord();
+            for (int i = 0; i < word.length(); i++) {
+                solution.getCell(x, y).insertWordAssignment(wordAssignment, word.charAt(i));
+                switch (direction) {
+                    case HORIZONTAL:
+                        x++;
+                        break;
+                    case VERTICAL:
+                        y++;
+                        break;
+                    default:
+                        throw new IllegalStateException("The direction (" + direction + ") is not implemented.");
 
+                }
+                if (x >= solution.getGridWidth() || y >= solution.getGridHeight()) {
+                    break;
+                }
+            }
+        }
     }
 
-    private void retractWord(ScrabbleSolution solution, ScrabbleWord word) {
+    private void retractWord(ScrabbleSolution solution, ScrabbleWordAssignment wordAssignment) {
+        ScrabbleCell startCell = wordAssignment.getStartCell();
+        ScrabbleWordDirection direction = wordAssignment.getDirection();
+        if (startCell != null && direction != null) {
+            int x = startCell.getX();
+            int y = startCell.getY();
+            String word = wordAssignment.getWord();
+            for (int i = 0; i < word.length(); i++) {
+                solution.getCell(x, y).retractWordAssignment(wordAssignment, word.charAt(i));
+                switch (direction) {
+                    case HORIZONTAL:
+                        x++;
+                        break;
+                    case VERTICAL:
+                        y++;
+                        break;
+                    default:
+                        throw new IllegalStateException("The direction (" + direction + ") is not implemented.");
+
+                }
+                if (x >= solution.getGridWidth() || y >= solution.getGridHeight()) {
+                    break;
+                }
+            }
+        }
 
     }
 

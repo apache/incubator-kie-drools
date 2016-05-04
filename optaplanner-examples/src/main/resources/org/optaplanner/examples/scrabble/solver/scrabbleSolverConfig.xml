@@ -2,7 +2,7 @@
 <solver>
   <!--<environmentMode>FAST_ASSERT</environmentMode>-->
   <solutionClass>org.optaplanner.examples.scrabble.domain.ScrabbleSolution</solutionClass>
-  <entityClass>org.optaplanner.examples.scrabble.domain.ScrabbleWord</entityClass>
+  <entityClass>org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment</entityClass>
   <entityClass>org.optaplanner.examples.scrabble.domain.ScrabbleCell</entityClass>
 
   <!-- Score configuration -->

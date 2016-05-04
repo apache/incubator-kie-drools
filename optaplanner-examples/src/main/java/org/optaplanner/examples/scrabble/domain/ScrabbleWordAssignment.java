@@ -25,7 +25,7 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity()
 @XStreamAlias("ScrabbleWord")
-public class ScrabbleWord extends AbstractPersistable {
+public class ScrabbleWordAssignment extends AbstractPersistable {
 
     private String word;
 
