@@ -192,7 +192,7 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
         int arrayLength = Array.getLength(valueRangeObject);
         List<Object> list = new ArrayList<>(arrayLength);
         for (int i = 0; i < arrayLength; i++) {
-            list.add(Array.get(arrayLength, i));
+            list.add(Array.get(valueRangeObject, i));
         }
         return list;
     }
