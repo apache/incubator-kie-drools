@@ -3,18 +3,15 @@
 
   <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <!-- %l lowers performance -->
-      <!--<pattern>%d [%t] %-5p %l%n  %m%n</pattern>-->
-      <pattern>%d [%t] %-5p %m%n</pattern>
+      <pattern>%date{HH:mm:ss.SSS} [%thread] %-5level %class{36}.%method:%line - %msg%n</pattern>
     </encoder>
   </appender>
 
-  <!-- change to debug to see test output -->
-  <logger name="org.kie.api.builder" level="info"/>
+  <logger name="org.kie" level="info"/>
+  <logger name="org.drools" level="info"/>
 
-  <root level="info">
+  <root level="warn">
     <appender-ref ref="consoleAppender" />
   </root>
 
 </configuration>
-
