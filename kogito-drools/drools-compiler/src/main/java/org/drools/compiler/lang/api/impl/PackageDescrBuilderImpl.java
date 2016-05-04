@@ -131,7 +131,7 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
     private <T extends BaseDescr> T initDescr(DescrBuilder<PackageDescrBuilder, T> builder) {
         // resource for new descr already set in builder
         T descr = builder.getDescr();
-        descr.setNamespace(descr.getNamespace());
+        descr.setNamespace(this.descr.getNamespace());
         return descr;
     }
 
