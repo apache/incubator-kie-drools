@@ -1168,7 +1168,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         ksession.setGlobal("partiallyCovered", partiallyCovered);
         ksession.setGlobal("notCovered", notCovered);
 
-        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "test");
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "target/test");
 
         // Using 4 IntervalRequirement objects that never change during the execution of the test
         // Staffing required at interval 100

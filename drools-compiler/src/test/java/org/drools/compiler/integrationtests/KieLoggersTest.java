@@ -168,8 +168,8 @@ public class KieLoggersTest {
         // create the builder
         KieSession ksession = getKieSession(dt);
 
-        String fileName = "testKieFileLogger";
-        File file = new File(fileName+".log");
+        String fileName = "target/testKieFileLogger";
+        File file = new File(fileName + ".log");
         if( file.exists() ) {
             file.delete();
         }
@@ -182,7 +182,7 @@ public class KieLoggersTest {
 
         logger.close();
 
-        file = new File( fileName+".log" );
+        file = new File( fileName + ".log" );
         assertTrue( file.exists() );
         assertTrue( file.length() > 0 );
         file.delete();
@@ -204,8 +204,8 @@ public class KieLoggersTest {
         // create the builder
         KieSession ksession = getKieSession(dt);
 
-        String fileName = "testKieFileLogger";
-        File file = new File(fileName+".log");
+        String fileName = "target/testKieFileLogger";
+        File file = new File(fileName + ".log");
         if( file.exists() ) {
             file.delete();
         }
@@ -218,7 +218,7 @@ public class KieLoggersTest {
         assertEquals( 1, fired );
 
         // check that the file has been populated before closing it
-        file = new File( fileName+".log" );
+        file = new File( fileName + ".log" );
         assertTrue( file.exists() );
         assertTrue( file.length() > 0 );
 
@@ -236,8 +236,8 @@ public class KieLoggersTest {
                 "    then\n" + 
                 "end";
 
-        String fileName = "testKieFileLogger";
-        File file = new File(fileName+".log");
+        String fileName = "target/testKieFileLogger";
+        File file = new File(fileName + ".log");
         if( file.exists() ) {
             file.delete();
         }
