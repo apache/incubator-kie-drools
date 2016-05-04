@@ -16,11 +16,13 @@
 
 package org.optaplanner.examples.scrabble.domain;
 
+import java.util.Map;
 import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.scrabble.domain.solver.CellUpdatingVariableListener;
 
@@ -35,6 +37,9 @@ public class ScrabbleCell extends AbstractPersistable {
             sources = {@CustomShadowVariable.Source(entityClass = ScrabbleWordAssignment.class, variableName = "startCell"),
                     @CustomShadowVariable.Source(entityClass = ScrabbleWordAssignment.class, variableName = "direction"),})
     private Set<ScrabbleWordAssignment> wordSet;
+
+    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "wordSet"))
+    private Map<Character, Integer> characterCountMap;
 
     public int getX() {
         return x;
@@ -60,6 +65,14 @@ public class ScrabbleCell extends AbstractPersistable {
         this.wordSet = wordSet;
     }
 
+    public Map<Character, Integer> getCharacterCountMap() {
+        return characterCountMap;
+    }
+
+    public void setCharacterCountMap(Map<Character, Integer> characterCountMap) {
+        this.characterCountMap = characterCountMap;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
@@ -74,6 +87,12 @@ public class ScrabbleCell extends AbstractPersistable {
             throw new IllegalStateException("The wordAssignment (" + wordAssignment
                     + ") is already in the cell (" + this + ").");
         }
+        Integer characterCount = characterCountMap.get(c);
+        if (characterCount == null) {
+            characterCount = 0;
+        }
+        characterCount++;
+        characterCountMap.put(c, characterCount);
     }
 
     public void retractWordAssignment(ScrabbleWordAssignment wordAssignment, char c) {
@@ -82,6 +101,17 @@ public class ScrabbleCell extends AbstractPersistable {
             throw new IllegalStateException("The wordAssignment (" + wordAssignment
                     + ") is not in the cell (" + this + ").");
         }
+        Integer characterCount = characterCountMap.get(c);
+        characterCount--;
+        if (characterCount == 0) {
+            characterCountMap.remove(c);
+        } else {
+            characterCountMap.put(c, characterCount);
+        }
+    }
+
+    public Set<Character> getCharacterSet() {
+        return characterCountMap.keySet();
     }
 
     @Override

@@ -19,6 +19,7 @@ package org.optaplanner.examples.scrabble.persistence;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -83,8 +84,8 @@ public class ScrabbleImporter extends AbstractTxtSolutionImporter<ScrabbleSoluti
                     cell.setX(x);
                     cell.setY(y);
                     cell.setWordSet(new LinkedHashSet<>());
+                    cell.setCharacterCountMap(new LinkedHashMap<>());
                     cellList.add(cell);
-
                 }
             }
             solution.setCellList(cellList);

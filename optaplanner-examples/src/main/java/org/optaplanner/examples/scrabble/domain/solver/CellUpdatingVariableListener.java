@@ -32,22 +32,22 @@ public class CellUpdatingVariableListener implements VariableListener<ScrabbleWo
 
     @Override
     public void afterEntityAdded(ScoreDirector scoreDirector, ScrabbleWordAssignment wordAssignment) {
-        insertWord((ScrabbleSolution) scoreDirector.getWorkingSolution(), wordAssignment);
+        insertWord(scoreDirector, wordAssignment);
     }
 
     @Override
     public void beforeVariableChanged(ScoreDirector scoreDirector, ScrabbleWordAssignment wordAssignment) {
-        retractWord((ScrabbleSolution) scoreDirector.getWorkingSolution(), wordAssignment);
+        retractWord(scoreDirector, wordAssignment);
     }
 
     @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, ScrabbleWordAssignment wordAssignment) {
-        insertWord((ScrabbleSolution) scoreDirector.getWorkingSolution(), wordAssignment);
+        insertWord(scoreDirector, wordAssignment);
     }
 
     @Override
     public void beforeEntityRemoved(ScoreDirector scoreDirector, ScrabbleWordAssignment wordAssignment) {
-        retractWord((ScrabbleSolution) scoreDirector.getWorkingSolution(), wordAssignment);
+        retractWord(scoreDirector, wordAssignment);
     }
 
     @Override
@@ -55,7 +55,8 @@ public class CellUpdatingVariableListener implements VariableListener<ScrabbleWo
         // Do nothing
     }
 
-    private void insertWord(ScrabbleSolution solution, ScrabbleWordAssignment wordAssignment) {
+    private void insertWord(ScoreDirector scoreDirector, ScrabbleWordAssignment wordAssignment) {
+        ScrabbleSolution solution = (ScrabbleSolution) scoreDirector.getWorkingSolution();
         ScrabbleCell startCell = wordAssignment.getStartCell();
         ScrabbleWordDirection direction = wordAssignment.getDirection();
         if (startCell != null && direction != null) {
@@ -63,7 +64,12 @@ public class CellUpdatingVariableListener implements VariableListener<ScrabbleWo
             int y = startCell.getY();
             String word = wordAssignment.getWord();
             for (int i = 0; i < word.length(); i++) {
+                ScrabbleCell cell = solution.getCell(x, y);
+                scoreDirector.beforeVariableChanged(cell, "wordSet");
+                scoreDirector.beforeVariableChanged(cell, "characterCountMap");
                 solution.getCell(x, y).insertWordAssignment(wordAssignment, word.charAt(i));
+                scoreDirector.afterVariableChanged(cell, "wordSet");
+                scoreDirector.afterVariableChanged(cell, "characterCountMap");
                 switch (direction) {
                     case HORIZONTAL:
                         x++;
@@ -82,7 +88,8 @@ public class CellUpdatingVariableListener implements VariableListener<ScrabbleWo
         }
     }
 
-    private void retractWord(ScrabbleSolution solution, ScrabbleWordAssignment wordAssignment) {
+    private void retractWord(ScoreDirector scoreDirector, ScrabbleWordAssignment wordAssignment) {
+        ScrabbleSolution solution = (ScrabbleSolution) scoreDirector.getWorkingSolution();
         ScrabbleCell startCell = wordAssignment.getStartCell();
         ScrabbleWordDirection direction = wordAssignment.getDirection();
         if (startCell != null && direction != null) {
@@ -90,7 +97,12 @@ public class CellUpdatingVariableListener implements VariableListener<ScrabbleWo
             int y = startCell.getY();
             String word = wordAssignment.getWord();
             for (int i = 0; i < word.length(); i++) {
-                solution.getCell(x, y).retractWordAssignment(wordAssignment, word.charAt(i));
+                ScrabbleCell cell = solution.getCell(x, y);
+                scoreDirector.beforeVariableChanged(cell, "wordSet");
+                scoreDirector.beforeVariableChanged(cell, "characterCountMap");
+                cell.retractWordAssignment(wordAssignment, word.charAt(i));
+                scoreDirector.afterVariableChanged(cell, "wordSet");
+                scoreDirector.afterVariableChanged(cell, "characterCountMap");
                 switch (direction) {
                     case HORIZONTAL:
                         x++;
@@ -109,21 +121,5 @@ public class CellUpdatingVariableListener implements VariableListener<ScrabbleWo
         }
 
     }
-
-//    protected void updateArrivalTime(ScoreDirector scoreDirector, TimeWindowedCustomer sourceCustomer) {
-//        Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
-//        Long departureTime = (previousStandstill instanceof TimeWindowedCustomer)
-//                ? ((TimeWindowedCustomer) previousStandstill).getDepartureTime() : null;
-//        TimeWindowedCustomer shadowCustomer = sourceCustomer;
-//        Long arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
-//        while (shadowCustomer != null && !Objects.equals(shadowCustomer.getArrivalTime(), arrivalTime)) {
-//            scoreDirector.beforeVariableChanged(shadowCustomer, "arrivalTime");
-//            shadowCustomer.setArrivalTime(arrivalTime);
-//            scoreDirector.afterVariableChanged(shadowCustomer, "arrivalTime");
-//            departureTime = shadowCustomer.getDepartureTime();
-//            shadowCustomer = shadowCustomer.getNextCustomer();
-//            arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
-//        }
-//    }
 
 }

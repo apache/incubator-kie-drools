@@ -30,6 +30,15 @@ global HardSoftScoreHolder scoreHolder;
 // Hard constraints
 // ############################################################################
 
+rule "Character confict"
+    when
+        ScrabbleCell(characterSet.size() >= 2, $size : characterSet.size())
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, 1 - $size);
+end
+
 // ############################################################################
 // Soft constraints
 // ############################################################################
+
+

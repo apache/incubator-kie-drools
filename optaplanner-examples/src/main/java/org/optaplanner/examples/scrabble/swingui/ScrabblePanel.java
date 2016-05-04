@@ -122,7 +122,9 @@ public class ScrabblePanel extends SolutionPanel<ScrabbleSolution> {
 
     private void fillTeamAssignmentCells(ScrabbleSolution solution) {
         for (ScrabbleCell cell : solution.getCellList()) {
-            gridPanel.addCell(cell.getX(), cell.getY(), new JLabel(cell.getWordSet().toString(), SwingConstants.CENTER));
+            for (Character c : cell.getCharacterSet()) {
+                gridPanel.addCell(cell.getX(), cell.getY(), new JLabel(c.toString(), SwingConstants.CENTER));
+            }
         }
     }
     private JPanel createTableHeader(JLabel label) {
