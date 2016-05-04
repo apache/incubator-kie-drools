@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.meetingscheduling.solver;
+package org.optaplanner.examples.taskassigning.solver;
     dialect "java"
 
 import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;

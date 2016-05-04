@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <solutionClass>org.optaplanner.examples.scrabble.domain.ScrabbleSolution</solutionClass>
+  <entityClass>org.optaplanner.examples.scrabble.domain.ScrabbleWord</entityClass>
+  <entityClass>org.optaplanner.examples.scrabble.domain.ScrabbleCell</entityClass>
+
+  <!-- Score configuration -->
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <scoreDrl>org/optaplanner/examples/scrabble/solver/scrabbleScoreRules.drl</scoreDrl>
+    <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
+  </scoreDirectorFactory>
+</solver>
