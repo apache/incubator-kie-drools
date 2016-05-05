@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -22,6 +22,7 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.ImportError;
+import org.drools.compiler.compiler.PackageCompilationResult;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.AccumulateDescr;
 import org.drools.compiler.lang.descr.AndDescr;
@@ -64,6 +65,7 @@ import org.drools.compiler.rule.builder.RuleClassBuilder;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
 import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.compiler.rule.builder.WindowReferenceBuilder;
+import org.drools.compiler.rule.builder.dialect.AbstractDialect;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
 import org.drools.compiler.rule.builder.dialect.java.JavaFunctionBuilder;
 import org.drools.core.base.EvaluatorWrapper;
@@ -77,6 +79,7 @@ import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.util.StringUtils;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.CompilationResult;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.mvel2.MVEL;
 import org.mvel2.optimizers.OptimizerFactory;
@@ -96,9 +99,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class MVELDialect
-        implements
-        Dialect,
-        Externalizable {
+    extends AbstractDialect
+    implements Dialect, Externalizable {
 
     private String                                       id                         = "mvel";
 
@@ -144,8 +146,6 @@ public class MVELDialect
     protected InternalKnowledgePackage     pkg;
     private MVELDialectConfiguration       configuration;
 
-    private PackageRegistry                packageRegistry;
-
     private boolean                        strictMode;
     private int                            languageLevel;
 
@@ -189,7 +189,7 @@ public class MVELDialect
 
         // this.data = new MVELDialectRuntimeData(
         // this.pkg.getDialectRuntimeRegistry() );
-        //        
+        //
         // this.pkg.getDialectRuntimeRegistry().setDialectData( ID,
         // this.data );
 
@@ -367,13 +367,13 @@ public class MVELDialect
         //                                   null,
         //                                   null,
         //                                   null );
-        //        
+        //
         //        final ParserContext parserContext = getParserContext( analysis,
         //                                                              outerDeclarations,
         //                                                              otherInputVariables,
         //                                                              context );
         //        return MVELCompilationUnit.compile( text, pkgBuilder.getRootClassLoader(), parserContext, languageLevel );
-        //        
+        //
 
         //        Map<String, org.mvel2.ast.Function> map = org.mvel2.util.CompilerTools.extractAllDeclaredFunctions( (org.mvel2.compiler.CompiledExpression) s1 );
         //        MVELDialectRuntimeData data = (MVELDialectRuntimeData) this.packageRegistry.getDialectRuntimeRegistry().getDialectData( getId() );
@@ -484,7 +484,8 @@ public class MVELDialect
         this.strictMode = strictMode;
     }
 
-    public void compileAll() {
+    public PackageCompilationResult compileAll() {
+       return null;
     }
 
     public AnalysisResult analyzeExpression(final PackageBuildContext context,
@@ -515,6 +516,7 @@ public class MVELDialect
                                                  localTypes,
                                                  "drools",
                                                  KnowledgeHelper.class );
+            addAnalysisResultReferences(context.getPkg().getName(), descr, result);
         } catch ( final Exception e ) {
             DialectUtil.copyErrorLocation( e, descr );
             context.addError( new DescrBuildError( context.getParentDescr(),
@@ -544,15 +546,17 @@ public class MVELDialect
                                        final String text,
                                        final BoundIdentifiers availableIdentifiers,
                                        final Map<String, Class< ? >> localTypes,
-                                       String contextIndeifier,
+                                       String contextIndentifier,
                                        Class kcontextClass) {
 
-        return analyzer.analyzeExpression( context,
+        AnalysisResult result = analyzer.analyzeExpression( context,
                                            text,
                                            availableIdentifiers,
                                            localTypes,
-                                           contextIndeifier,
+                                           contextIndentifier,
                                            kcontextClass );
+
+        return result;
     }
 
     public MVELCompilationUnit getMVELCompilationUnit(final String expression,
@@ -627,7 +631,7 @@ public class MVELDialect
         }
 
         // "not bound" identifiers could be drools, kcontext and rule
-        // but in the case of accumulate it could be vars from the "init" section.        
+        // but in the case of accumulate it could be vars from the "init" section.
         //String[] otherIdentifiers = otherInputVariables == null ? new String[]{} : new String[otherInputVariables.size()];
         strList = new ArrayList<String>();
         if ( otherInputVariables != null ) {
@@ -741,10 +745,6 @@ public class MVELDialect
         throw new UnsupportedOperationException( "MVELDialect.getRuleClassBuilder is not supported" );
     }
 
-    public TypeResolver getTypeResolver() {
-        return this.packageRegistry.getTypeResolver();
-    }
-
     public Map getInterceptors() {
         return this.interceptors;
     }
@@ -753,7 +753,4 @@ public class MVELDialect
         return this.id;
     }
 
-    public PackageRegistry getPackageRegistry() {
-        return this.packageRegistry;
-    }
 }

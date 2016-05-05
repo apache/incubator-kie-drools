@@ -70,6 +70,7 @@ public class RuleDescr extends AnnotatedBaseDescr
         this.attributes = new LinkedHashMap<String, AttributeDescr>();
         this.namedConsequence = new HashMap<String, Object>();
         this.lhs = new AndDescr();
+        this.lhs.setResource(this.getResource());
         this.consequence = "";
     }
 
@@ -143,6 +144,7 @@ public class RuleDescr extends AnnotatedBaseDescr
 
     public void addAttribute(final AttributeDescr attribute) {
         if ( attribute != null ) {
+            attribute.setResource(getResource());
             if (attributes.containsKey(attribute.getName())) {
                 addError("Duplicate attribute definition: " + attribute.getName());
             } else {

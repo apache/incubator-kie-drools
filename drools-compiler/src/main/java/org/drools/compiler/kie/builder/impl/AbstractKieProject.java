@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -17,6 +17,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
+import org.kie.api.builder.KieModule;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -27,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
@@ -61,7 +63,7 @@ public abstract class AbstractKieProject implements KieProject {
 
     public void verify(ResultsImpl messages) {
         for ( KieBaseModel model : kBaseModels.values() ) {
-            buildKnowledgePackages((KieBaseModelImpl) model, this, messages);
+           buildKnowledgePackages((KieBaseModelImpl) model, this, messages);
         }
     }
 
@@ -138,7 +140,7 @@ public abstract class AbstractKieProject implements KieProject {
             }
         }
     }
-    
+
     protected void cleanIndex() {
         kBaseModels.clear();
         kSessionModels.clear();
@@ -176,4 +178,18 @@ public abstract class AbstractKieProject implements KieProject {
             }
         }
     }
+
+    @Override
+    public Map<String, Set<String>> getTypeReferences() {
+        Map<String, Set<String>> typeReferences = new HashMap<>();
+        for( String kBaseName : this.kBaseModels.keySet() ) {
+           KieModule kModule = getKieModuleForKBase(kBaseName);
+           Map<String, Set<String>> kModuleTypeReferences = ((AbstractKieModule) kModule).getTypeReferences();
+           if( kModuleTypeReferences != null ) {
+               typeReferences.putAll(kModuleTypeReferences);
+           }
+        }
+        return typeReferences;
+    }
+
 }

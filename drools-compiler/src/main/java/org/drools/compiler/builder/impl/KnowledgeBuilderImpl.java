@@ -41,6 +41,7 @@ import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLCompilerFactory;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageBuilderResults;
+import org.drools.compiler.compiler.PackageCompilationResult;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ParserError;
 import org.drools.compiler.compiler.ProcessBuilder;
@@ -982,13 +983,14 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         compileAllRules(packageDescr, pkgRegistry);
     }
 
-    void compileAllRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+    PackageCompilationResult compileAllRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         pkgRegistry.setDialect( getPackageDialect( packageDescr ) );
 
         validateUniqueRuleNames( packageDescr );
-        compileRules(packageDescr, pkgRegistry);
 
-        compileAll();
+        PackageCompilationResult compilationResult = compileRules(packageDescr, pkgRegistry);
+        compilationResult = compileAll(compilationResult);
+
         try {
             reloadAll();
         } catch (Exception e) {
@@ -1005,6 +1007,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 }
             }
         }
+
+        return compilationResult;
     }
 
     void addBuilderResult(KnowledgeBuilderResult result) {
@@ -1047,8 +1051,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return pkgRegistry;
     }
 
-    private void compileRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
+    private PackageCompilationResult compileRules(PackageDescr packageDescr, PackageRegistry pkgRegistry) {
         List<FunctionDescr> functions = packageDescr.getFunctions();
+        PackageCompilationResult compilationResult = null;
         if (!functions.isEmpty()) {
 
             for (FunctionDescr functionDescr : functions) {
@@ -1073,7 +1078,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
             // We need to compile all the functions now, so scripting
             // languages like mvel can find them
-            compileAll();
+            compilationResult = compileAll();
 
             for (FunctionDescr functionDescr : functions) {
                 if (filterAccepts(ResourceChange.Type.FUNCTION, functionDescr.getNamespace(), functionDescr.getName()) ) {
@@ -1111,6 +1116,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 addRule(ruleCxts.get(ruleDescr.getName()));
             }
         }
+
+        return compilationResult;
     }
 
     boolean filterAccepts( ResourceChange.Type type, String namespace, String name ) {
@@ -1352,10 +1359,20 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         this.results = getResults(results);
     }
 
-    public void compileAll() {
+    public PackageCompilationResult compileAll() {
+       return compileAll(null);
+    }
+
+    PackageCompilationResult compileAll(PackageCompilationResult result) {
         for (PackageRegistry pkgRegistry : this.pkgRegistryMap.values()) {
-            pkgRegistry.compileAll();
+            PackageCompilationResult pkgResult = pkgRegistry.compileAll();
+            if( result == null ) {
+                result = pkgResult;
+            } else {
+                result.addTypeReferences(pkgResult);
+            }
         }
+        return result;
     }
 
     public void reloadAll() {

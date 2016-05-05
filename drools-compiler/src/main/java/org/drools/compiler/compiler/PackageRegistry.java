@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -16,20 +16,21 @@
 package org.drools.compiler.compiler;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.core.base.ClassTypeResolver;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.util.ClassUtils;
 import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.ImportDeclaration;
 import org.drools.core.spi.Consequence;
+import org.drools.core.util.ClassUtils;
 import org.kie.api.io.Resource;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class PackageRegistry {
 
@@ -50,6 +51,8 @@ public class PackageRegistry {
 
     private final TypeResolver               typeResolver;
 
+    private final PackageCompilationResult analysisCompilationResult;
+
     public PackageRegistry(ClassLoader rootClassLoader, KnowledgeBuilderConfigurationImpl pkgConf, InternalKnowledgePackage pkg) {
         this.pkg = pkg;
         this.dialectCompiletimeRegistry = pkgConf.buildDialectRegistry(rootClassLoader, pkgConf, this, pkg);
@@ -58,6 +61,7 @@ public class PackageRegistry {
         this.typeResolver = new ClassTypeResolver( new HashSet<String>( this.pkg.getImports().keySet() ),
                                                    rootClassLoader,
                                                    this.pkg.getName() );
+        this.analysisCompilationResult = new PackageCompilationResult(this.pkg.getName());
 
         this.typeResolver.addImport( pkg.getName() + ".*" );
         for (String implicitImport : implicitImports) {
@@ -72,6 +76,7 @@ public class PackageRegistry {
         this.dialectRuntimeRegistry = runtimeRegistry;
         this.dialectCompiletimeRegistry = compiletimeRegistry;
         this.typeResolver = typeResolver;
+        this.analysisCompilationResult = new PackageCompilationResult(this.pkg.getName());
     }
 
     PackageRegistry clonePackage(ClassLoader classLoader) {
@@ -134,8 +139,10 @@ public class PackageRegistry {
         return this.typeResolver;
     }
 
-    public void compileAll() {
-        this.dialectCompiletimeRegistry.compileAll();
+    public PackageCompilationResult compileAll() {
+        PackageCompilationResult result = this.dialectCompiletimeRegistry.compileAll();
+        result.addTypeReferences(this.analysisCompilationResult);
+        return result;
     }
 
     public boolean removeObjectsGeneratedFromResource(Resource resource) {
@@ -144,5 +151,9 @@ public class PackageRegistry {
 
     public TraitRegistry getTraitRegistry() {
         return pkg.getTraitRegistry();
+    }
+
+    public void addTypeReferences(String pkgName, Resource resource, Set<String> referencedTypes) {
+       this.analysisCompilationResult.addResourceTypeReferenceMapping(pkgName, resource, referencedTypes);
     }
 }

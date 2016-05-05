@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -45,7 +45,7 @@ public class MVELEnabledBuilder
         context.getDeclarationResolver().pushOnBuildStack( context.getRule().getLhs() );
 
         try {
-            // This builder is re-usable in other dialects, so specify by name            
+            // This builder is re-usable in other dialects, so specify by name
             MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
 
             Map<String, Class< ? >> otherVars = new HashMap<String, Class< ? >>();
@@ -68,7 +68,7 @@ public class MVELEnabledBuilder
             for ( String id :  usedIdentifiers.getDeclrClasses().keySet() ) {
                 previousDeclarations[i++] = declrs.get( id );
             }
-            Arrays.sort( previousDeclarations, SortDeclarations.instance  );            
+            Arrays.sort( previousDeclarations, SortDeclarations.instance  );
 
             String exprStr = context.getRuleDescr().getEnabled();
             exprStr = exprStr.substring( 1,
@@ -93,6 +93,7 @@ public class MVELEnabledBuilder
                                  expr );
 
             expr.compile( data, context.getRule() );
+            // TODO: extract type references here (from analysis?) because we only have references to actual rule here?
         } catch ( final Exception e ) {
             DialectUtil.copyErrorLocation(e, context.getRuleDescr());
             context.addError( new DescrBuildError( context.getParentDescr(),

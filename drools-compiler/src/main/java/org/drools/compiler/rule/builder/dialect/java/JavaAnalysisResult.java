@@ -80,4 +80,12 @@ public class JavaAnalysisResult implements AnalysisResult {
     public void setBlockDescrs(JavaContainerBlockDescr blocks) {
         this.blocks = blocks;
     }
+
+    @Override
+    public String toString() {
+        return "JavaAnalysisResult [boundIdentifiers=" + boundIdentifiers +
+               ",\n identifiers=" + identifiers +
+               ",\n localVariables=" + localVariables +
+               ",\n notBoundedIdentifiers=" + notBoundedIdentifiers + "]";
+    }
 }
