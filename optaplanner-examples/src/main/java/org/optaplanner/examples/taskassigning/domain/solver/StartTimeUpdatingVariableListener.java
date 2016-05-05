@@ -42,7 +42,7 @@ public class StartTimeUpdatingVariableListener implements VariableListener<Task>
 
     @Override
     public void afterVariableChanged(ScoreDirector scoreDirector, Task task) {
-        updateStartTime(scoreDirector,task);
+        updateStartTime(scoreDirector, task);
     }
 
     @Override
