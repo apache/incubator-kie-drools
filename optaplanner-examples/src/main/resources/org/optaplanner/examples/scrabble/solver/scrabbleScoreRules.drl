@@ -37,8 +37,32 @@ rule "Character confict"
         scoreHolder.addHardConstraintMatch(kcontext, 1 - $size);
 end
 
+rule "No parallel horizontal neighbours"
+    when
+        // TODO check overlap
+        ScrabbleWordAssignment(direction == ScrabbleWordDirection.HORIZONTAL, $leftY : startCell.y)
+        ScrabbleWordAssignment(direction == ScrabbleWordDirection.HORIZONTAL, startCell.y + 1 == $leftY)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -1); // TODO score trap
+end
+rule "No parallel vertical neighbours"
+    when
+        // TODO check overlap
+        ScrabbleWordAssignment(direction == ScrabbleWordDirection.VERTICAL, $leftX : startCell.x)
+        ScrabbleWordAssignment(direction == ScrabbleWordDirection.VERTICAL, startCell.x + 1 == $leftX)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, -1); // TODO score trap
+end
+
 // ############################################################################
 // Soft constraints
 // ############################################################################
+
+rule "Maximize overlaps"
+    when
+        ScrabbleCell(wordSet.size() >= 2, $size : wordSet.size())
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, $size + 1);
+end
 
 

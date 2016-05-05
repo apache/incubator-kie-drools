@@ -97,12 +97,13 @@ public class ScrabbleImporter extends AbstractTxtSolutionImporter<ScrabbleSoluti
             String line = bufferedReader.readLine();
             long wordId = 0L;
             while (line != null) {
-                String word = readStringValue();
+                String word = line.trim();
                 if (!word.isEmpty()) {
                     ScrabbleWordAssignment wordAssignment = new ScrabbleWordAssignment();
                     wordAssignment.setId(wordId);
                     wordId++;
-                    wordAssignment.setWord(word.toUpperCase(locale));
+                    // Add spaces to enforce an empty cell before and after each word
+                    wordAssignment.setWord(" " + word.toUpperCase(locale) + " ");
                     wordList.add(wordAssignment);
                 }
                 line = bufferedReader.readLine();

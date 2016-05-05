@@ -39,7 +39,6 @@ JSFUnit
 Keycloak
 LiveOak
 Microcontainer
-mod_cluster
 ModeShape
 Narayana
 Netty
