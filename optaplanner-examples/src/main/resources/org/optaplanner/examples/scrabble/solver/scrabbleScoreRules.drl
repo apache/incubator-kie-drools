@@ -58,11 +58,11 @@ end
 // Soft constraints
 // ############################################################################
 
-rule "Maximize overlaps"
+rule "Maximize merges"
     when
-        ScrabbleCell(wordSet.size() >= 2, $size : wordSet.size())
+        ScrabbleCell(hasMerge() == true)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, $size + 1);
+        scoreHolder.addSoftConstraintMatch(kcontext, 1);
 end
 
 

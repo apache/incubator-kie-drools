@@ -21,6 +21,7 @@ import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -36,9 +37,11 @@ public class ScrabbleCell extends AbstractPersistable {
     @CustomShadowVariable(variableListenerClass = CellUpdatingVariableListener.class,
             sources = {@CustomShadowVariable.Source(entityClass = ScrabbleWordAssignment.class, variableName = "startCell"),
                     @CustomShadowVariable.Source(entityClass = ScrabbleWordAssignment.class, variableName = "direction"),})
+    @DeepPlanningClone // TODO Why is this needed? This is already a shadow var
     private Set<ScrabbleWordAssignment> wordSet;
 
     @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "wordSet"))
+    @DeepPlanningClone // TODO Why is this needed? This is already a shadow var
     private Map<Character, Integer> characterCountMap;
 
     public int getX() {
@@ -112,6 +115,13 @@ public class ScrabbleCell extends AbstractPersistable {
 
     public Set<Character> getCharacterSet() {
         return characterCountMap.keySet();
+    }
+
+    public boolean hasMerge() {
+        if (characterCountMap.containsKey(' ')) {
+            return false;
+        }
+        return wordSet.size() > 1;
     }
 
     @Override
