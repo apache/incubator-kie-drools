@@ -7,7 +7,7 @@
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
-    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <scoreDefinitionType>HARD_MEDIUM_SOFT</scoreDefinitionType>
     <scoreDrl>org/optaplanner/examples/scrabble/solver/scrabbleScoreRules.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>

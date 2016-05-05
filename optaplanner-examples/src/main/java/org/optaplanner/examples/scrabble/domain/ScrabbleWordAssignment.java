@@ -86,8 +86,33 @@ public class ScrabbleWordAssignment extends AbstractPersistable {
                 return startCell.getY() + word.length() > solution.getGridHeight();
             default:
                 throw new IllegalStateException("The direction (" + direction + ") is not implemented.");
-
         }
+    }
+
+    /**
+     * @return manhattan distance
+     */
+    public int getDistanceToCenter() {
+        if (direction == null || startCell == null) {
+            return 0;
+        }
+        int centerX = solution.getGridWidth() / 2;
+        int centerY = solution.getGridHeight() / 2;
+        int x;
+        int y;
+        switch (direction) {
+            case HORIZONTAL:
+                x = startCell.getX() + word.length() / 2;
+                y = startCell.getY();
+                break;
+            case VERTICAL:
+                x = startCell.getX();
+                y = startCell.getY() + word.length() / 2;
+                break;
+            default:
+                throw new IllegalStateException("The direction (" + direction + ") is not implemented.");
+        }
+        return Math.abs(centerX - x) + Math.abs(centerY - y);
     }
 
 }

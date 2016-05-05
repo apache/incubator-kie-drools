@@ -17,14 +17,14 @@
 package org.optaplanner.examples.scrabble.solver;
     dialect "java"
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder;
 
 import org.optaplanner.examples.scrabble.domain.ScrabbleWordDirection;
 import org.optaplanner.examples.scrabble.domain.ScrabbleCell;
 import org.optaplanner.examples.scrabble.domain.ScrabbleSolution;
 import org.optaplanner.examples.scrabble.domain.ScrabbleWordAssignment;
 
-global HardSoftScoreHolder scoreHolder;
+global HardMediumSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -63,14 +63,25 @@ rule "Out of grid"
 end
 
 // ############################################################################
-// Soft constraints
+// Medium constraints
 // ############################################################################
 
 rule "Maximize merges"
     when
         ScrabbleCell(hasMerge() == true)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, 1);
+        scoreHolder.addMediumConstraintMatch(kcontext, 1);
+end
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+rule "Pull to the center"
+    when
+        ScrabbleWordAssignment($d : distanceToCenter)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $d);
 end
 
 
