@@ -27,12 +27,21 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 @XStreamAlias("ScrabbleWord")
 public class ScrabbleWordAssignment extends AbstractPersistable {
 
+    private ScrabbleSolution solution;
     private String word;
 
     @PlanningVariable(valueRangeProviderRefs = {"startCellRange"})
     private ScrabbleCell startCell;
     @PlanningVariable(valueRangeProviderRefs = {"directionRange"})
     private ScrabbleWordDirection direction;
+
+    public ScrabbleSolution getSolution() {
+        return solution;
+    }
+
+    public void setSolution(ScrabbleSolution solution) {
+        this.solution = solution;
+    }
 
     public String getWord() {
         return word;
@@ -64,6 +73,21 @@ public class ScrabbleWordAssignment extends AbstractPersistable {
 
     public String getLabel() {
         return word;
+    }
+
+    public boolean isOutOfGrid() {
+        if (direction == null || startCell == null) {
+            return false;
+        }
+        switch (direction) {
+            case HORIZONTAL:
+                return startCell.getX() + word.length() > solution.getGridWidth();
+            case VERTICAL:
+                return startCell.getY() + word.length() > solution.getGridHeight();
+            default:
+                throw new IllegalStateException("The direction (" + direction + ") is not implemented.");
+
+        }
     }
 
 }

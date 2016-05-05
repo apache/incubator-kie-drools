@@ -45,6 +45,7 @@ rule "No parallel horizontal neighbours"
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1); // TODO score trap
 end
+
 rule "No parallel vertical neighbours"
     when
         // TODO check overlap
@@ -52,6 +53,13 @@ rule "No parallel vertical neighbours"
         ScrabbleWordAssignment(direction == ScrabbleWordDirection.VERTICAL, startCell.x + 1 == $leftX)
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1); // TODO score trap
+end
+
+rule "Out of grid"
+    when
+        ScrabbleWordAssignment(isOutOfGrid() == true, $wordLength : word.length())
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, - $wordLength);
 end
 
 // ############################################################################

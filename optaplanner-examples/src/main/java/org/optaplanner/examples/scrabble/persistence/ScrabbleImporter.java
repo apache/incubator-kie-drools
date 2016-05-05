@@ -102,6 +102,7 @@ public class ScrabbleImporter extends AbstractTxtSolutionImporter<ScrabbleSoluti
                     ScrabbleWordAssignment wordAssignment = new ScrabbleWordAssignment();
                     wordAssignment.setId(wordId);
                     wordId++;
+                    wordAssignment.setSolution(solution);
                     // Add spaces to enforce an empty cell before and after each word
                     wordAssignment.setWord(" " + word.toUpperCase(locale) + " ");
                     wordList.add(wordAssignment);

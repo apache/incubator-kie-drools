@@ -1,6 +1,6 @@
 locale: en_US
-gridWidth: 30
-gridHeight: 30
+gridWidth: 40
+gridHeight: 40
 # Words
 AeroGear
 ActiveMQ
