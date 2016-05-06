@@ -66,11 +66,22 @@ end
 // Medium constraints
 // ############################################################################
 
-rule "Maximize merges"
+//rule "Maximize merges"
+//    when
+//        ScrabbleCell(hasMerge() == true)
+//    then
+//        scoreHolder.addMediumConstraintMatch(kcontext, 1);
+//end
+
+rule "Maximize merges per word"
     when
-        ScrabbleCell(hasMerge() == true)
+        $w : ScrabbleWordAssignment()
+        $total : Number() from accumulate(
+            $c : ScrabbleCell(wordSet.contains($w), hasMerge() == true),
+            count($c)
+        )
     then
-        scoreHolder.addMediumConstraintMatch(kcontext, 1);
+        scoreHolder.addMediumConstraintMatch(kcontext, $total.intValue() * $total.intValue());
 end
 
 // ############################################################################
