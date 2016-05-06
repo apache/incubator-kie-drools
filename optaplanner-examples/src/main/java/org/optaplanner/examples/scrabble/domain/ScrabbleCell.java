@@ -124,6 +124,15 @@ public class ScrabbleCell extends AbstractPersistable {
         return wordSet.size() > 1;
     }
 
+    public boolean hasWordSet(ScrabbleWordDirection direction) {
+        for (ScrabbleWordAssignment wordAssignment : wordSet) {
+            if (wordAssignment.getDirection() == direction) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "(" + x + "," + y + ")";

@@ -39,21 +39,37 @@ end
 
 rule "No parallel horizontal neighbours"
     when
-        // TODO check overlap
-        ScrabbleWordAssignment(direction == ScrabbleWordDirection.HORIZONTAL, $leftY : startCell.y)
-        ScrabbleWordAssignment(direction == ScrabbleWordDirection.HORIZONTAL, startCell.y + 1 == $leftY)
+        ScrabbleCell(hasWordSet(ScrabbleWordDirection.HORIZONTAL), $x : x, $y : y)
+        ScrabbleCell(x == $x, y == $y + 1, hasWordSet(ScrabbleWordDirection.HORIZONTAL))
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1); // TODO score trap
 end
 
 rule "No parallel vertical neighbours"
     when
-        // TODO check overlap
-        ScrabbleWordAssignment(direction == ScrabbleWordDirection.VERTICAL, $leftX : startCell.x)
-        ScrabbleWordAssignment(direction == ScrabbleWordDirection.VERTICAL, startCell.x + 1 == $leftX)
+        ScrabbleCell(hasWordSet(ScrabbleWordDirection.VERTICAL), $x : x, $y : y)
+        ScrabbleCell(x == $x + 1, y == $y, hasWordSet(ScrabbleWordDirection.VERTICAL))
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1); // TODO score trap
 end
+
+//rule "No parallel horizontal neighbours"
+//    when
+//        // TODO check overlap
+//        ScrabbleWordAssignment(direction == ScrabbleWordDirection.HORIZONTAL, $leftY : startCell.y)
+//        ScrabbleWordAssignment(direction == ScrabbleWordDirection.HORIZONTAL, startCell.y + 1 == $leftY)
+//    then
+//        scoreHolder.addHardConstraintMatch(kcontext, -1); // TODO score trap
+//end
+//
+//rule "No parallel vertical neighbours"
+//    when
+//        // TODO check overlap
+//        ScrabbleWordAssignment(direction == ScrabbleWordDirection.VERTICAL, $leftX : startCell.x)
+//        ScrabbleWordAssignment(direction == ScrabbleWordDirection.VERTICAL, startCell.x + 1 == $leftX)
+//    then
+//        scoreHolder.addHardConstraintMatch(kcontext, -1); // TODO score trap
+//end
 
 rule "Out of grid"
     when
