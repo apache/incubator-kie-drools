@@ -154,7 +154,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
 
-import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.core.impl.KnowledgeBaseImpl.registerFunctionClassAndInnerClasses;
 import static org.drools.core.util.StringUtils.isEmpty;
 import static org.drools.core.util.StringUtils.ucFirst;
 
@@ -1788,9 +1788,11 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         if (rootClassLoader instanceof ProjectClassLoader) {
             String functionClassName = functionDescr.getClassName();
             JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData( "java" ));
-            byte [] def = runtime.getStore().get(convertClassToResourcePath(functionClassName));
-            if (def != null) {
-                ((ProjectClassLoader)rootClassLoader).storeClass(functionClassName, def);
+            try {
+                registerFunctionClassAndInnerClasses( functionClassName, runtime,
+                                                      (name, bytes) ->  ((ProjectClassLoader)rootClassLoader).storeClass( name, bytes ));
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException( e );
             }
         }
     }
