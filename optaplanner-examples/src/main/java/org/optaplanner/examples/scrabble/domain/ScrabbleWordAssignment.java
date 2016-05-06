@@ -22,8 +22,9 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.solver.CloudComputerStrengthComparator;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.scrabble.domain.solver.ScrabbleWordAssignmentDifficultyComparator;
 
-@PlanningEntity()
+@PlanningEntity(difficultyComparatorClass = ScrabbleWordAssignmentDifficultyComparator.class)
 @XStreamAlias("ScrabbleWord")
 public class ScrabbleWordAssignment extends AbstractPersistable {
 
@@ -113,6 +114,11 @@ public class ScrabbleWordAssignment extends AbstractPersistable {
                 throw new IllegalStateException("The direction (" + direction + ") is not implemented.");
         }
         return Math.abs(centerX - x) + Math.abs(centerY - y);
+    }
+
+    @Override
+    public String toString() {
+        return word;
     }
 
 }

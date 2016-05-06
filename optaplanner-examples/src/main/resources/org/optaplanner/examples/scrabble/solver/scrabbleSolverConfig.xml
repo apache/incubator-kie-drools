@@ -11,4 +11,11 @@
     <scoreDrl>org/optaplanner/examples/scrabble/solver/scrabbleScoreRules.drl</scoreDrl>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
+
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+  </constructionHeuristic>
+  <localSearch>
+    <localSearchType>LATE_ACCEPTANCE</localSearchType>
+  </localSearch>
 </solver>
