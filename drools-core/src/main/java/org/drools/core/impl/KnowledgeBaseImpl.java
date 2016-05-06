@@ -875,8 +875,7 @@ public class KnowledgeBaseImpl
 
                 for ( Function function : newPkg.getFunctions().values() ) {
                     String functionClassName = function.getClassName();
-                    byte [] def = runtime.getStore().get(convertClassToResourcePath(functionClassName));
-                    registerAndLoadTypeDefinition( functionClassName, def );
+                    registerFunctionClassAndInnerClasses( functionClassName, runtime, this::registerAndLoadTypeDefinition );
                 }
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException( "unable to resolve Type Declaration class '" + lastType + "'", e );
@@ -943,6 +942,23 @@ public class KnowledgeBaseImpl
             }
 
             this.eventSupport.fireAfterPackageAdded( newPkg );
+        }
+    }
+
+    public interface ClassRegister {
+        void register(String name, byte[] bytes) throws ClassNotFoundException;
+    }
+
+    public static void registerFunctionClassAndInnerClasses( String functionClassName, JavaDialectRuntimeData runtime, ClassRegister consumer ) throws ClassNotFoundException {
+        String className = convertClassToResourcePath(functionClassName);
+        String innerClassName = className.substring( 0, className.length() - ".class".length() ) + "$";
+        for (Map.Entry<String, byte[]> entry : runtime.getStore().entrySet()) {
+            if (entry.getKey().equals( className )) {
+                consumer.register( functionClassName, entry.getValue() );
+            } else if (entry.getKey().startsWith( innerClassName )) {
+                String innerName = functionClassName + entry.getKey().substring( functionClassName.length(), entry.getKey().length() - ".class".length() );
+                consumer.register( innerName, entry.getValue() );
+            }
         }
     }
 
