@@ -8495,4 +8495,29 @@ public class Misc2Test extends CommonTestMethodBase {
 
         kieSession.fireAllRules();
     }
+
+    @Test
+    public void testJittingFunctionReturningAnInnerClass() {
+        // DROOLS-1166
+        String drl =
+                "import " + java.util.function.Function.class.getCanonicalName() + "\n" +
+                "function Function<String, Integer> f() {\n" +
+                "    return new Function<String, Integer>() {\n" +
+                "        public Integer apply(String s) {\n" +
+                "            return s.length();\n" +
+                "        }\n" +
+                "    };\n" +
+                "}\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $s : String( f().apply(this) > 3 )\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        kieSession.insert( "test" );
+        assertEquals( 1, kieSession.fireAllRules() );
+    }
 }
