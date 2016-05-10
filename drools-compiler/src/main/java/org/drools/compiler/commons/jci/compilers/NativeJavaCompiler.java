@@ -43,6 +43,7 @@ import java.io.Writer;
 import java.net.JarURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -355,7 +356,12 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
                 jarUri = jarUri.substring(0, separator);
             }
 
-            JarURLConnection jarConn = (JarURLConnection) packageFolderURL.openConnection();
+            URLConnection urlConnection = packageFolderURL.openConnection();
+            if (!(urlConnection instanceof JarURLConnection)) {
+                return null;
+            }
+
+            JarURLConnection jarConn = (JarURLConnection) urlConnection;
             String rootEntryName = jarConn.getEntryName();
             int rootEnd = rootEntryName.length()+1;
 
