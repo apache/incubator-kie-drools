@@ -598,6 +598,78 @@
           </row>
 
           <row>
+            <entry><link linkend="taskAssigning">Task assigning</link></entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para>1 entity class</para>
+                </listitem>
+
+                <listitem>
+                  <para>1 chained variable</para>
+                </listitem>
+
+                <listitem>
+                  <para>1 shadow entity class</para>
+                </listitem>
+
+                <listitem>
+                  <para>1 automatic shadow variable</para>
+                </listitem>
+
+                <listitem>
+                  <para>1 shadow variable</para>
+                </listitem>
+              </itemizedlist></entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>500</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para>Value &lt;= 520</para>
+                </listitem>
+
+                <listitem>
+                  <para>Search space &lt;= <literal>10^1384</literal></para>
+                </listitem>
+              </itemizedlist></entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para>No</para>
+                </listitem>
+
+                <listitem>
+                  <para>Defined by us</para>
+                </listitem>
+              </itemizedlist></entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="bendableScore">Bendable score</link></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="chainedThroughTimePattern">Chained through time pattern</link></para>
+                </listitem>
+
+                <listitem>
+                  <para>Custom <link linkend="customVariableListener">VariableListener</link></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="continuousPlanning">Continuous planning</link></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="realTimePlanning">Real-time planning</link></para>
+                </listitem>
+              </itemizedlist></entry>
+          </row>
+
+          <row>
             <entry><link linkend="examination">Exam timetabling</link></entry>
 
             <entry><itemizedlist>
@@ -1885,6 +1957,83 @@ testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 
         <mediaobject>
           <imageobject>
             <imagedata fileref="images/Chapter-Use_cases_and_examples/hospitalBedAllocationClassDiagram.png"/>
+          </imageobject>
+        </mediaobject>
+      </section>
+    </section>
+
+    <section xml:id="taskAssigning">
+      <title>Task assigning</title>
+
+      <section xml:id="taskAssigningProblemDescription">
+        <title>Problem Description</title>
+
+        <para>Assign each task to a spot in an employee's queue. Each task has a duration which is affected by the
+        employee's affinity level with the task's customer.</para>
+
+        <para>Hard constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Skill: Each task requires one or more skills. The employee must posses all these skills.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Soft level 0 constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Critical tasks: Complete critical tasks first, sooner than major and minor tasks.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Soft level 1 constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Minimize makespan: Reduce the time to complete all tasks.</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Start with the longest working employee first, then the second longest working employee and so
+                forth, to creates <link linkend="fairnessScoreConstraints">fairness and load balancing</link>.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+
+        <para>Soft level 2 constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Major tasks: Complete major tasks as soon as possible, sooner than minor tasks.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Soft level 3 constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Minor tasks: Complete minor tasks as soon as possible.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section xml:id="taskAssigningProblemSize">
+        <title>Problem Size</title>
+
+        <programlisting>24tasks-8employees   has  24 tasks, 6 skills,  8 employees,   4 task types and  4 customers with a search space of   10^40.
+50tasks-5employees   has  50 tasks, 5 skills,  5 employees,  10 task types and 10 customers with a search space of   10^91.
+100tasks-5employees  has 100 tasks, 5 skills,  5 employees,  20 task types and 15 customers with a search space of  10^207.
+500tasks-20employees has 500 tasks, 6 skills, 20 employees, 100 task types and 60 customers with a search space of 10^1384.</programlisting>
+      </section>
+
+      <section xml:id="taskAssigningDomainModel">
+        <title>Domain Model</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/taskAssigningClassDiagram.png"/>
           </imageobject>
         </mediaobject>
       </section>

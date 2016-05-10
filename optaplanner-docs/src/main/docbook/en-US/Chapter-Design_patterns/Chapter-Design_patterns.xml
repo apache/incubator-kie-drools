@@ -16,8 +16,8 @@
   <section xml:id="assigningTimeToPlanningEntities">
     <title>Assigning Time to Planning Entities</title>
 
-    <para>Dealing with time and dates in planning problems may be problematic because it is dependent on the needs of your use
-    case.</para>
+    <para>Dealing with time and dates in planning problems may be problematic because it is dependent on the needs of
+    your use case.</para>
 
     <para>There are several representations of timestamps, dates, durations and periods in Java. Choose the right
     representation type for your use case:</para>
@@ -67,8 +67,8 @@
           </listitem>
 
           <listitem>
-            <para>It often represents an extra field in a class, alongside the <literal>LocalDateTime</literal> field from which it was
-            calculated. The <literal>LocalDateTime</literal> is used for user visualization, but the
+            <para>It often represents an extra field in a class, alongside the <literal>LocalDateTime</literal> field
+            from which it was calculated. The <literal>LocalDateTime</literal> is used for user visualization, but the
             <literal>int</literal> is used in the score constraints.</para>
           </listitem>
 
@@ -96,8 +96,8 @@
           </listitem>
 
           <listitem>
-            <para>This is common in <link linkend="multiStagePlanning">multi stage planning</link>, when the starting time has been decided already in an earlier
-            planning stage.</para>
+            <para>This is common in <link linkend="multiStagePlanning">multi stage planning</link>, when the starting
+            time has been decided already in an earlier planning stage.</para>
           </listitem>
         </itemizedlist>
       </listitem>
@@ -112,14 +112,15 @@
 
             <itemizedlist>
               <listitem>
-                <para>For example in course scheduling, all lectures take 1 hour. Therefore, each timeslot is 1 hour.</para>
+                <para>For example in course scheduling, all lectures take 1 hour. Therefore, each timeslot is 1
+                hour.</para>
               </listitem>
             </itemizedlist>
           </listitem>
 
           <listitem>
-            <para>If the duration differs and time is rounded to a specifc time granularity (for example 5 minutes) use the
-            <link linkend="timeGrainPattern">TimeGrain pattern</link>.</para>
+            <para>If the duration differs and time is rounded to a specifc time granularity (for example 5 minutes) use
+            the <link linkend="timeGrainPattern">TimeGrain pattern</link>.</para>
 
             <itemizedlist>
               <listitem>
@@ -131,7 +132,8 @@
 
           <listitem>
             <para>If the duration differs and one task starts immediately after the previous task (assigned to the same
-            executor) finishes, use the <link linkend="???">Chained Through Time pattern</link>.</para>
+            executor) finishes, use the <link linkend="chainedThroughTimePattern">Chained Through Time
+            pattern</link>.</para>
 
             <itemizedlist>
               <listitem>
@@ -156,32 +158,33 @@
       <title>Timeslot Pattern: Assign to a Fixed-Length Timeslot</title>
 
       <para>If all planning entities have <emphasis role="bold">the same duration</emphasis> (or can be inflated to the
-      same duration), the Timeslot pattern is useful. The planning entities are assigned to a timeslot rather than
-      time. For example in <link linkend="curriculumCourse">course timetabling</link>, all lectures take 1
-      hour.</para>
+      same duration), the Timeslot pattern is useful. The planning entities are assigned to a timeslot rather than time.
+      For example in <link linkend="curriculumCourse">course timetabling</link>, all lectures take 1 hour.</para>
 
-      <para>The timeslots can start at any time. For example, the timeslots start at 8:00, 9:00, 10:15 (after a 15-minute break), 11:15, ... They can even overlap, but that is unusual.</para>
+      <para>The timeslots can start at any time. For example, the timeslots start at 8:00, 9:00, 10:15 (after a
+      15-minute break), 11:15, ... They can even overlap, but that is unusual.</para>
 
       <para>It is also usable if all planning entities can be inflated to the same duration. For example in <link
       linkend="examination">exam timetabling</link>, some exams take 90 minutes and others 120 minutes, but all
       timeslots are 120 minutes. When an exam of 90 minutes is assigned to a timeslot, for the remaining 30 minutes, its
       seats are occupied too and cannot be used by another exam.</para>
 
-      <para>Usually there is a second planning variable, for example the room. In course timetabling, two lectures are in
-      conflict if they share the same room at the same timeslot. However, in exam timetabling, that is allowed, if there is
-      enough seating capacity in the room (although mixed exam durations in the same room do inflict a soft score
-      penalty).</para>
+      <para>Usually there is a second planning variable, for example the room. In course timetabling, two lectures are
+      in conflict if they share the same room at the same timeslot. However, in exam timetabling, that is allowed, if
+      there is enough seating capacity in the room (although mixed exam durations in the same room do inflict a soft
+      score penalty).</para>
     </section>
 
     <section xml:id="timeGrainPattern">
       <title>TimeGrain Pattern: Assign to a Starting TimeGrain</title>
 
-      <para>Assigning humans to start a meeting at 4 seconds after 9 o'clock is pointless because most human activities have a time granularity of 5 minutes or 15 minutes. Therefore
-      it is not necessary to allow a planning entity to be assigned subsecond, second or even 1 minute accuracy. The 5
-      minute or 15 minutes accuracy suffices. The TimeGrain pattern models such <emphasis role="bold">time
-      accuracy</emphasis> by partitioning time as time grains. For example in <link linkend="meetingScheduling">meeting
-      scheduling</link>, all meetings start/end in hour, half hour, or 15-minute intervals before or after each hour, therefore the optimal settings for time
-      grains is 15 minutes.</para>
+      <para>Assigning humans to start a meeting at 4 seconds after 9 o'clock is pointless because most human activities
+      have a time granularity of 5 minutes or 15 minutes. Therefore it is not necessary to allow a planning entity to be
+      assigned subsecond, second or even 1 minute accuracy. The 5 minute or 15 minutes accuracy suffices. The TimeGrain
+      pattern models such <emphasis role="bold">time accuracy</emphasis> by partitioning time as time grains. For
+      example in <link linkend="meetingScheduling">meeting scheduling</link>, all meetings start/end in hour, half hour,
+      or 15-minute intervals before or after each hour, therefore the optimal settings for time grains is 15
+      minutes.</para>
 
       <para>Each planning entity is assigned to a start time grain. The end time grain is calculated by adding the
       duration in grains to the starting time grain. Overlap of two entities is determined by comparing their start and
@@ -189,28 +192,29 @@
 
       <para>This pattern also works well with a coarser time granularity (such as days, half days, hours, ...). With a
       finer time granularity (such as seconds, milliseconds, ...) and a long time window, the value range (and therefore
-      <link linkend="searchSpaceSize">the search space</link>) can become too high, which reduces efficiency and scalability.
-      However, such solution is not impossible, as shown in <link linkend="cheapTimeScheduling">cheap time scheduling</link>.</para>
+      <link linkend="searchSpaceSize">the search space</link>) can become too high, which reduces efficiency and
+      scalability. However, such solution is not impossible, as shown in <link linkend="cheapTimeScheduling">cheap time
+      scheduling</link>.</para>
     </section>
 
-    <section xml:id="chainedThroughTime">
+    <section xml:id="chainedThroughTimePattern">
       <title>Chained Through Time Pattern: Assign in a Chain that Determines Starting Time</title>
 
-      <para>If a person or a machine continuously works on <emphasis role="bold">1 task at a time in sequence</emphasis>,
-      which means starting a task when the previous is finished (or with a deterministic delay), the Chained Through Time pattern
-      is useful. For example, in the vehicle routing with time windows example, a vehicle drives from customer to
-      customer (thus it handles one customer at a time).</para>
+      <para>If a person or a machine continuously works on <emphasis role="bold">1 task at a time in
+      sequence</emphasis>, which means starting a task when the previous is finished (or with a deterministic delay),
+      the Chained Through Time pattern is useful. For example, in the vehicle routing with time windows example, a
+      vehicle drives from customer to customer (thus it handles one customer at a time).</para>
 
       <para>In this pattern, the planning entities are <link linkend="chainedPlanningVariable">chained</link>. The
       anchor determines the starting time of its first planning entity. The second entity's starting time is calculated
       based on the starting time and duration of the first entity. For example, in task assignment, Beth (the anchor)
-      starts working at 8:00, thus her first task starts at 8:00. It lasts 52 mins, therefore her second task starts at 8:52. The
-      starting time of an entity is usually <link linkend="shadowVariable">a shadow variable</link>.</para>
+      starts working at 8:00, thus her first task starts at 8:00. It lasts 52 mins, therefore her second task starts at
+      8:52. The starting time of an entity is usually <link linkend="shadowVariable">a shadow variable</link>.</para>
 
       <para>An anchor has only one chain. Although it is possible to split up the anchor into two separate anchors, for
       example split up Beth into Beth's left hand and Beth's right hand (because she can do two tasks at the same time),
-      this model makes pooling resources difficult. Consequently, using this model in the exam scheduling example
-      to allow two or more exams to use the same room at the same time is problematic.</para>
+      this model makes pooling resources difficult. Consequently, using this model in the exam scheduling example to
+      allow two or more exams to use the same room at the same time is problematic.</para>
 
       <para>Between planning entities, there are three ways to create gaps:</para>
 
@@ -222,13 +226,13 @@
 
         <listitem>
           <para>Only deterministic gaps: This is common for humans. For example, any task that crosses the 10:00 barrier
-          gets an extra 15 minutes duration so the human can take a break. </para>
+          gets an extra 15 minutes duration so the human can take a break.</para>
 
           <itemizedlist>
             <listitem>
               <para>A deterministic gap can be subjected to complex business logic. For example in vehicle routing, a
-              cross-continent truck driver needs to rest 15 minutes after 2 hours of driving (which may also occur during
-              loading or unloading time at a customer location) and also needs to rest 10 hours after 14 hours of
+              cross-continent truck driver needs to rest 15 minutes after 2 hours of driving (which may also occur
+              during loading or unloading time at a customer location) and also needs to rest 10 hours after 14 hours of
               work.</para>
             </listitem>
           </itemizedlist>
@@ -253,6 +257,7 @@
     confuse it with <link linkend="solverPhase">multi-phase solving</link> which uses a one-solver configuration.</para>
 
     <para>Similarly to <link linkend="partitionedSearch">Partitioned Search</link>, multi-stage planning leads to
-    suboptimal results. Nevertheless, it may be beneficial in order to simplify the maintenance, ownership, and help to start a project.</para>
+    suboptimal results. Nevertheless, it may be beneficial in order to simplify the maintenance, ownership, and help to
+    start a project.</para>
   </section>
 </chapter>
