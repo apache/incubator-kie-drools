@@ -65,6 +65,7 @@ import org.jbpm.services.api.query.model.QueryDefinition;
 import org.jbpm.services.api.query.model.QueryDefinition.Target;
 import org.jbpm.services.api.query.model.QueryParam;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -717,6 +718,63 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         
         assertEquals(15, firstRow.size());
         
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;        
+    }
+    
+    @Test
+    public void testGetProcessInstancesWithRawMapperMultipleRows() {
+        
+        query = new SqlQueryDefinition("getAllProcessInstances", dataSourceJNDIname);
+        query.setExpression("select * from processinstancelog");
+        
+        queryService.registerQuery(query);
+        
+        List<QueryDefinition> queries = queryService.getQueries(new QueryContext());
+        assertNotNull(queries);
+        assertEquals(1, queries.size());
+        
+        QueryDefinition registeredQuery = queries.get(0);
+        assertNotNull(registeredQuery);
+        assertEquals(query.getName(), registeredQuery.getName());
+        assertEquals(query.getSource(), registeredQuery.getSource());
+        assertEquals(query.getExpression(), registeredQuery.getExpression());
+        assertEquals(query.getTarget(), registeredQuery.getTarget());
+        
+        registeredQuery = queryService.getQuery(query.getName());
+        
+        assertNotNull(registeredQuery);
+        assertEquals(query.getName(), registeredQuery.getName());
+        assertEquals(query.getSource(), registeredQuery.getSource());
+        assertEquals(query.getExpression(), registeredQuery.getExpression());
+        assertEquals(query.getTarget(), registeredQuery.getTarget());
+        
+        List<List<Object>> instances = queryService.query(query.getName(), RawListQueryMapper.get(), new QueryContext());
+        assertNotNull(instances);
+        assertEquals(0, instances.size());
+
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+        Long processInstanceId2 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId2);
+
+        instances = queryService.query(query.getName(), RawListQueryMapper.get(), new QueryContext());
+        assertNotNull(instances);
+        assertEquals(2, instances.size());
+        
+        List<Object> firstRow = instances.get(0);
+        assertNotNull(firstRow);
+        
+        assertEquals(15, firstRow.size());
+        
+        List<Object> secondRow = instances.get(1);
+        assertNotNull(secondRow);
+        
+        assertEquals(15, secondRow.size());
+        
+        Assert.assertNotEquals(firstRow, secondRow);
+        
+        processService.abortProcessInstance(processInstanceId2);
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;        
     }

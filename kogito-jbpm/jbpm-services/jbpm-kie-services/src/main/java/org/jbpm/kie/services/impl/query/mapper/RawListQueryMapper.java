@@ -72,7 +72,7 @@ public class RawListQueryMapper extends AbstractQueryMapper<List<Object>> implem
         List<Object> row = new ArrayList<Object>();
         
         for (DataColumn column : dataSetResult.getColumns()) {
-            row.add(dataSetResult.getColumnById(column.getId()).getValues().get(0));
+            row.add(dataSetResult.getColumnById(column.getId()).getValues().get(index));
         }
         
         return row;
