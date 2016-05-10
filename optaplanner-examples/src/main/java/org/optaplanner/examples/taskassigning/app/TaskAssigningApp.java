@@ -35,7 +35,10 @@ public class TaskAssigningApp extends CommonApp<TaskAssigningSolution> {
 
     public TaskAssigningApp() {
         super("Task assigning",
-                "Assign tasks to employees in a sequence.",
+                "Assign tasks to employees in a sequence.\n\n"
+                + "Match skills and affinity.\n"
+                + "Prioritize critical tasks.\n"
+                + "Minimize the makespan.",
                 SOLVER_CONFIG,
                 TaskAssigningPanel.LOGO_PATH);
     }
