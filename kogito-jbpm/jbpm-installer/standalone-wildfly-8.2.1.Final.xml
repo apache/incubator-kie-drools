@@ -40,10 +40,10 @@
             <security-realm name="ApplicationRealm">
                 <authentication>
                     <local default-user="$local" allowed-users="*" skip-group-loading="true"/>
-                    <properties path="application-users.properties" relative-to="jboss.server.config.dir"/>
+                    <properties path="users.properties" relative-to="jboss.server.config.dir"/>
                 </authentication>
                 <authorization>
-                    <properties path="application-roles.properties" relative-to="jboss.server.config.dir"/>
+                    <properties path="roles.properties" relative-to="jboss.server.config.dir"/>
                 </authorization>
             </security-realm>
         </security-realms>
