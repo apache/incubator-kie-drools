@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-public class TemporalValueRange<Temporal_ extends Temporal> extends AbstractCountableValueRange<Temporal_> {
+public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super Temporal_>> extends AbstractCountableValueRange<Temporal_> {
 
     private final Temporal_ from;
     private final Temporal_ to;
@@ -96,9 +96,8 @@ public class TemporalValueRange<Temporal_ extends Temporal> extends AbstractCoun
         if (value == null || !value.isSupported(incrementUnitType)) {
             return false;
         }
-        Comparable<Temporal_> comparableValue = (Comparable<Temporal_>) value;
         // We cannot use Temporal.until() to check bounds due to rounding errors
-        if (comparableValue.compareTo(from) < 0 || comparableValue.compareTo(to) >= 0) {
+        if (value.compareTo(from) < 0 || value.compareTo(to) >= 0) {
             return false;
         }
         long fromSpace = from.until(value, incrementUnitType);
