@@ -84,7 +84,7 @@
        SolverFactory&lt;NQueens&gt; solverFactory = SolverFactory.createFromKieContainerXmlResource(
                kieContainer, ".../nqueensSolverConfig.xml");</programlisting>
 
-        <para>And use <link linkend="droolsScoreCalculationKsessionName">a ksessionName in the solver
+        <para>Also use <link linkend="droolsScoreCalculationKsessionName">a ksessionName in the solver
         configuration</link>.</para>
       </note>
 

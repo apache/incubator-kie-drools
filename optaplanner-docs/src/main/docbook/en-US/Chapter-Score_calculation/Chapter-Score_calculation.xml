@@ -964,8 +964,8 @@
           obtain that kjar either from the local classpath, from a local Maven repository or even from a remote Maven
           repository.</para>
 
-          <para>The score rules still live in a DRL file, but the <literal>KieContainer</literal> finds it through the
-          <literal>META-INF/kmodule.xml</literal> file:</para>
+          <para>The score rules still live in a DRL file, but the <literal>KieContainer</literal> finds that DRL file
+          through the <literal>META-INF/kmodule.xml</literal> file:</para>
 
           <programlisting language="xml">&lt;kmodule xmlns="http://www.drools.org/xsd/kmodule"&gt;
   &lt;kbase name="nQueensKbase" packages="org.optaplanner.examples.nqueens.solver"&gt;
@@ -984,9 +984,9 @@
     &lt;ksessionName&gt;nQueensKsession&lt;/ksessionName&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
-          <para>When using this approach, it's required to use a
-          <literal>SolverFactory.createFromKieContainerXmlResource(...)</literal> method to build the
-          <literal>SolverFactory</literal>.</para>
+          <para>In this approach, it's required to use a
+          <literal>SolverFactory.createFromKieContainerXmlResource(...)</literal> method to <link
+          linkend="solverConfigurationByXML">build the <literal>SolverFactory</literal></link>.</para>
         </section>
       </section>
 
