@@ -112,6 +112,16 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
     	}
     }
 
+    public void retryWorkItemWithParams(long workItemId,Map<String,Object> map) {
+        WorkItem workItem = workItems.get(workItemId);
+        
+        if (workItem != null) {
+            workItem.setParameters( map );
+            
+            retryWorkItem(workItem.getId());
+        }
+    }
+    
     public Set<WorkItem> getWorkItems() {
         return new HashSet<WorkItem>(workItems.values());
     }
