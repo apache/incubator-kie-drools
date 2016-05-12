@@ -29,8 +29,7 @@ public class NullValueReinitializeVariableEntityFilterTest {
 
     @Test
     public void accept() {
-        EntityDescriptor entityDescriptor = TestdataEntity.buildEntityDescriptor();
-        GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor("value");
+        GenuineVariableDescriptor variableDescriptor = TestdataEntity.buildVariableDescriptorForValue();
         NullValueReinitializeVariableEntityFilter filter = new NullValueReinitializeVariableEntityFilter(variableDescriptor);
         assertEquals(false, filter.accept(null, new TestdataEntity("a", new TestdataValue())));
         assertEquals(true, filter.accept(null, new TestdataEntity("b", null)));
