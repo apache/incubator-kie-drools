@@ -19,6 +19,7 @@
 
   <modules>
     <module>standalone</module>
+    <module>test-suite</module>
   </modules>
 
 </project>
