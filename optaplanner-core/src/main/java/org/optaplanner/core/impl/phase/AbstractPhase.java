@@ -119,6 +119,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     @Override
     public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
+        phaseScope.startingNow();
         phaseScope.reset();
         bestSolutionRecaller.phaseStarted(phaseScope);
         termination.phaseStarted(phaseScope);

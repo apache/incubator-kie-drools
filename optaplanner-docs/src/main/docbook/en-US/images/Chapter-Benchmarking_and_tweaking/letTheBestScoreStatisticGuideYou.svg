@@ -7319,10 +7319,10 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.3066667"
-     inkscape:cx="400"
+     inkscape:cx="401.53061"
      inkscape:cy="300"
      inkscape:document-units="px"
-     inkscape:current-layer="layer3"
+     inkscape:current-layer="layer2"
      showgrid="true"
      width="800px"
      borderlayer="true"
@@ -7711,7 +7711,7 @@
          style="font-weight:normal;font-size:15px;fill:#000000"
          id="flowPara6110">Recommendations:</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
-         id="flowPara6116">- Improve score calculation speed: check average calculation count per second</flowPara><flowPara
+         id="flowPara6116">- Improve the score calculation speed: check info log</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
          id="flowPara6118">- Use better hardware</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"

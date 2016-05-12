@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.calculatecount;
+package org.optaplanner.benchmark.impl.statistic.scorecalculationspeed;
 
 import java.awt.BasicStroke;
 import java.io.File;
@@ -41,18 +41,18 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 
-@XStreamAlias("calculateCountProblemStatistic")
-public class CalculateCountProblemStatistic extends ProblemStatistic {
+@XStreamAlias("scoreCalculationSpeedProblemStatistic")
+public class ScoreCalculationSpeedProblemStatistic extends ProblemStatistic {
 
     protected File graphFile = null;
 
-    public CalculateCountProblemStatistic(ProblemBenchmarkResult problemBenchmarkResult) {
-        super(problemBenchmarkResult, ProblemStatisticType.CALCULATE_COUNT_PER_SECOND);
+    public ScoreCalculationSpeedProblemStatistic(ProblemBenchmarkResult problemBenchmarkResult) {
+        super(problemBenchmarkResult, ProblemStatisticType.SCORE_CALCULATION_SPEED);
     }
 
     @Override
     public SubSingleStatistic createSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
-        return new CalculateCountSubSingleStatistic(subSingleBenchmarkResult);
+        return new ScoreCalculationSpeedSubSingleStatistic(subSingleBenchmarkResult);
     }
 
     /**
@@ -72,7 +72,7 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
         Locale locale = benchmarkReport.getLocale();
         NumberAxis xAxis = new NumberAxis("Time spent");
         xAxis.setNumberFormatOverride(new MillisecondsSpentNumberFormat(locale));
-        NumberAxis yAxis = new NumberAxis("Calculate count per second");
+        NumberAxis yAxis = new NumberAxis("Score calculation speed per second");
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         yAxis.setAutoRangeIncludesZero(false);
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
@@ -82,13 +82,13 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
             XYSeries series = new XYSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmarkResult.hasAllSuccess()) {
-                CalculateCountSubSingleStatistic subSingleStatistic = (CalculateCountSubSingleStatistic)
+                ScoreCalculationSpeedSubSingleStatistic subSingleStatistic = (ScoreCalculationSpeedSubSingleStatistic)
                         singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
-                List<CalculateCountStatisticPoint> points = subSingleStatistic.getPointList();
-                for (CalculateCountStatisticPoint point : points) {
+                List<ScoreCalculationSpeedStatisticPoint> points = subSingleStatistic.getPointList();
+                for (ScoreCalculationSpeedStatisticPoint point : points) {
                     long timeMillisSpent = point.getTimeMillisSpent();
-                    long calculateCountPerSecond = point.getCalculateCountPerSecond();
-                    series.add(timeMillisSpent, calculateCountPerSecond);
+                    long scoreCalculationSpeed = point.getScoreCalculationSpeed();
+                    series.add(timeMillisSpent, scoreCalculationSpeed);
                 }
             }
             plot.setDataset(seriesIndex, new XYSeriesCollection(series));
@@ -100,9 +100,9 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
             plot.setRenderer(seriesIndex, renderer);
             seriesIndex++;
         }
-        JFreeChart chart = new JFreeChart(problemBenchmarkResult.getName() + " calculate count statistic",
+        JFreeChart chart = new JFreeChart(problemBenchmarkResult.getName() + " score calculation speed statistic",
                 JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-        graphFile = writeChartToImageFile(chart, problemBenchmarkResult.getName() + "CalculateCountStatistic");
+        graphFile = writeChartToImageFile(chart, problemBenchmarkResult.getName() + "ScoreCalculationSpeedStatistic");
     }
 
 }

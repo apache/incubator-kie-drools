@@ -20,14 +20,14 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class CalculateCountTermination extends AbstractTermination {
+public class ScoreCalculationCountTermination extends AbstractTermination {
 
-    private final long calculateCountLimit;
+    private final long scoreCalculationCountLimit;
 
-    public CalculateCountTermination(long calculateCountLimit) {
-        this.calculateCountLimit = calculateCountLimit;
-        if (calculateCountLimit < 0L) {
-            throw new IllegalArgumentException("The calculateCountLimit (" + calculateCountLimit
+    public ScoreCalculationCountTermination(long scoreCalculationCountLimit) {
+        this.scoreCalculationCountLimit = scoreCalculationCountLimit;
+        if (scoreCalculationCountLimit < 0L) {
+            throw new IllegalArgumentException("The scoreCalculationCountLimit (" + scoreCalculationCountLimit
                     + ") cannot be negative.");
         }
     }
@@ -47,8 +47,8 @@ public class CalculateCountTermination extends AbstractTermination {
     }
 
     protected boolean isTerminated(InnerScoreDirector scoreDirector) {
-        long calculateCount = scoreDirector.getCalculateCount();
-        return calculateCount >= calculateCountLimit;
+        long scoreCalculationCount = scoreDirector.getCalculationCount();
+        return scoreCalculationCount >= scoreCalculationCountLimit;
     }
 
     // ************************************************************************
@@ -66,8 +66,8 @@ public class CalculateCountTermination extends AbstractTermination {
     }
 
     protected double calculateTimeGradient(InnerScoreDirector scoreDirector) {
-        long calculateCount = scoreDirector.getCalculateCount();
-        double timeGradient = ((double) calculateCount) / ((double) calculateCountLimit);
+        long scoreCalculationCount = scoreDirector.getCalculationCount();
+        double timeGradient = ((double) scoreCalculationCount) / ((double) scoreCalculationCountLimit);
         return Math.min(timeGradient, 1.0);
     }
 

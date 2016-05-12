@@ -68,7 +68,7 @@ public class MemoryUseSubSingleStatistic<Solution_>
 
         @Override
         public void stepEnded(AbstractStepScope<Solution_> stepScope) {
-            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
+            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
             if (timeMillisSpent >= nextTimeMillisThreshold) {
                 pointList.add(new MemoryUseStatisticPoint(timeMillisSpent, MemoryUseMeasurement.create()));
 

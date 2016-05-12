@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.calculatecount;
+package org.optaplanner.benchmark.impl.statistic.scorecalculationspeed;
 
 import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
 
-public class CalculateCountStatisticPoint extends StatisticPoint {
+public class ScoreCalculationSpeedStatisticPoint extends StatisticPoint {
 
     private final long timeMillisSpent;
-    private final long calculateCountPerSecond;
+    private final long scoreCalculationSpeed;
 
-    public CalculateCountStatisticPoint(long timeMillisSpent, long calculateCountPerSecond) {
+    public ScoreCalculationSpeedStatisticPoint(long timeMillisSpent, long scoreCalculationSpeed) {
         this.timeMillisSpent = timeMillisSpent;
-        this.calculateCountPerSecond = calculateCountPerSecond;
+        this.scoreCalculationSpeed = scoreCalculationSpeed;
     }
 
     public long getTimeMillisSpent() {
         return timeMillisSpent;
     }
 
-    public long getCalculateCountPerSecond() {
-        return calculateCountPerSecond;
+    public long getScoreCalculationSpeed() {
+        return scoreCalculationSpeed;
     }
 
     @Override
     public String toCsvLine() {
-        return buildCsvLineWithLongs(timeMillisSpent, calculateCountPerSecond);
+        return buildCsvLineWithLongs(timeMillisSpent, scoreCalculationSpeed);
     }
 
 }

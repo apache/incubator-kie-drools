@@ -65,7 +65,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     protected boolean allChangesWillBeUndoneBeforeStepEnds = false;
 
-    protected long calculateCount = 0L;
+    protected long calculationCount = 0L;
 
     protected AbstractScoreDirector(Factory_ scoreDirectorFactory, boolean constraintMatchEnabledPreference) {
         this.scoreDirectorFactory = scoreDirectorFactory;
@@ -109,13 +109,13 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     @Override
-    public long getCalculateCount() {
-        return calculateCount;
+    public long getCalculationCount() {
+        return calculationCount;
     }
 
     @Override
-    public void resetCalculateCount() {
-        this.calculateCount = 0L;
+    public void resetCalculationCount() {
+        this.calculationCount = 0L;
     }
 
     @Override
@@ -207,7 +207,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     protected void setCalculatedScore(Score score) {
         getSolutionDescriptor().setScore(workingSolution, score);
-        calculateCount++;
+        calculationCount++;
     }
 
     @Override
@@ -513,7 +513,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + calculateCount + ")";
+        return getClass().getSimpleName() + "(" + calculationCount + ")";
     }
 
 }

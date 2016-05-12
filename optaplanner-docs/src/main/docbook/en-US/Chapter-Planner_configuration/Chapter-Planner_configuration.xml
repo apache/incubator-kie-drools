@@ -2062,11 +2062,11 @@ DEBUG     CH step (0), time spent (5), score (0), selected move count (1), picke
 DEBUG     CH step (1), time spent (7), score (0), selected move count (3), picked move (Queen-1 {null -&gt; Row-2}).
 DEBUG     CH step (2), time spent (10), score (0), selected move count (4), picked move (Queen-3 {null -&gt; Row-3}).
 DEBUG     CH step (3), time spent (12), score (-1), selected move count (4), picked move (Queen-0 {null -&gt; Row-1}).
-INFO  Construction Heuristic phase (0) ended: step total (4), time spent (12), best score (-1).
+INFO  Construction Heuristic phase (0) ended: time spent (12), best score (-1), score calculation speed (9000/sec), step total (4).
 DEBUG     LS step (0), time spent (19), score (-1),     best score (-1), accepted/selected move count (12/12), picked move (Queen-1 {Row-2 -&gt; Row-3}).
 DEBUG     LS step (1), time spent (24), score (0), new best score (0), accepted/selected move count (9/12), picked move (Queen-3 {Row-3 -&gt; Row-2}).
-INFO  Local Search phase (1) ended: step total (2), time spent (24), best score (0).
-INFO  Solving ended: time spent (24), best score (0), average calculate count per second (1625).</programlisting>
+INFO  Local Search phase (1) ended: time spent (24), best score (0), score calculation speed (4000/sec), step total (2).
+INFO  Solving ended: time spent (24), best score (0), score calculation speed (7000/sec), environment mode (REPRODUCIBLE).</programlisting>
 
       <para>All time spent values are in milliseconds.</para>
 

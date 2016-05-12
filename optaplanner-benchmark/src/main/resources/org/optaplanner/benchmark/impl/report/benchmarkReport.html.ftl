@@ -344,7 +344,7 @@
                     <div class="tabbable">
                         <ul class="nav nav-pills">
                             <li class="active">
-                                <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
+                                <a href="#summary_scoreCalculationSpeed" data-toggle="tab">Score calculation speed</a>
                             </li>
                             <li>
                                 <a href="#summary_timeSpent" data-toggle="tab">Time spent</a>
@@ -357,15 +357,15 @@
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane active" id="summary_averageCalculateCount">
-                                <h3>Average calculate count summary</h3>
+                            <div class="tab-pane active" id="summary_scoreCalculationSpeed">
+                                <h3>Score calculation speed summary</h3>
                                 <p>
                                     Useful for comparing different score calculators and/or score rule implementations
                                     (presuming that the solver configurations do not differ otherwise).
                                     Also useful to measure the scalability cost of an extra constraint.
                                 </p>
                                 <div class="benchmark-chart">
-                                    <img src="summary/${benchmarkReport.averageCalculateCountSummaryChartFile.name}"/>
+                                    <img src="summary/${benchmarkReport.scoreCalculationSpeedSummaryChartFile.name}"/>
                                 </div>
                                 <table class="benchmark-table table table-striped table-bordered">
                                     <tr>
@@ -388,7 +388,7 @@
                                 <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkResultList as solverBenchmarkResult>
                                     <tr<#if solverBenchmarkResult.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmarkResult.name}&nbsp;<@addSolverBenchmarkBadges solverBenchmarkResult=solverBenchmarkResult/></th>
-                                        <td>${solverBenchmarkResult.averageAverageCalculateCountPerSecond!""}/s</td>
+                                        <td>${solverBenchmarkResult.averageScoreCalculationSpeed!""}/s</td>
                                         <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                             <#if !solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)??>
                                                 <td></td>
@@ -398,11 +398,11 @@
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <#if solverBenchmarkResult.subSingleCount lte 1>
-                                                        <td>${singleBenchmarkResult.averageCalculateCountPerSecond}/s</td>
+                                                        <td>${singleBenchmarkResult.scoreCalculationSpeed}/s</td>
                                                     <#else>
                                                         <td><div class="dropdown">
                                                             <span class="nav nav-pills dropdown-toggle" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                ${singleBenchmarkResult.averageCalculateCountPerSecond!""}/s
+                                                                ${singleBenchmarkResult.scoreCalculationSpeed!""}/s
                                                                 <span class="caret"></span>
                                                             </span>
                                                         <ul class="dropdown-menu" aria-labelledby="dLabel">
@@ -410,7 +410,7 @@
                                                             <li role="separator" class="divider"></li>
                                                             <#list singleBenchmarkResult.subSingleBenchmarkResultList as subSingleBenchmarkResult>
                                                                 <li class="dropdown-header"><strong>Run #${subSingleBenchmarkResult.getSubSingleBenchmarkIndex()}</strong></li>
-                                                                <li>${subSingleBenchmarkResult.averageCalculateCountPerSecond!""}/s</li>
+                                                                <li>${subSingleBenchmarkResult.scoreCalculationSpeed!""}/s</li>
                                                             </#list>
                                                         </ul>
                                                       </div></td>
@@ -499,7 +499,7 @@
                         <!-- HACK Duplication to show the navigation tabs in the same viewport as the tables -->
                         <ul class="nav nav-pills">
                             <li class="active">
-                                <a href="#summary_averageCalculateCount" data-toggle="tab">Average calculation count</a>
+                                <a href="#summary_scoreCalculationSpeed" data-toggle="tab">Score calculation speed</a>
                             </li>
                             <li>
                                 <a href="#summary_timeSpent" data-toggle="tab">Time spent</a>

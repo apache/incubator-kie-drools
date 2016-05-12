@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.calculatecount;
+package org.optaplanner.benchmark.impl.statistic.scorecalculationspeed;
 
 import java.util.List;
 
@@ -28,25 +28,25 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class CalculateCountSubSingleStatistic<Solution_>
-        extends ProblemBasedSubSingleStatistic<Solution_, CalculateCountStatisticPoint> {
+public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
+        extends ProblemBasedSubSingleStatistic<Solution_, ScoreCalculationSpeedStatisticPoint> {
 
     private final long timeMillisThresholdInterval;
 
-    private final CalculateCountSubSingleStatisticListener listener;
+    private final ScoreCalculationSpeedSubSingleStatisticListener listener;
 
-    public CalculateCountSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+    public ScoreCalculationSpeedSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         this(subSingleBenchmarkResult, 1000L);
     }
 
-    public CalculateCountSubSingleStatistic(SubSingleBenchmarkResult benchmarkResult, long timeMillisThresholdInterval) {
-        super(benchmarkResult, ProblemStatisticType.CALCULATE_COUNT_PER_SECOND);
+    public ScoreCalculationSpeedSubSingleStatistic(SubSingleBenchmarkResult benchmarkResult, long timeMillisThresholdInterval) {
+        super(benchmarkResult, ProblemStatisticType.SCORE_CALCULATION_SPEED);
         if (timeMillisThresholdInterval <= 0L) {
             throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
                     + ") must be bigger than 0.");
         }
         this.timeMillisThresholdInterval = timeMillisThresholdInterval;
-        listener = new CalculateCountSubSingleStatisticListener();
+        listener = new ScoreCalculationSpeedSubSingleStatisticListener();
     }
 
     // ************************************************************************
@@ -63,27 +63,27 @@ public class CalculateCountSubSingleStatistic<Solution_>
         ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class CalculateCountSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
+    private class ScoreCalculationSpeedSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
 
         private long nextTimeMillisThreshold = timeMillisThresholdInterval;
         private long lastTimeMillisSpent = 0L;
-        private long lastCalculateCount = 0L;
+        private long lastCalculationCount = 0L;
 
         @Override
         public void stepEnded(AbstractStepScope<Solution_> stepScope) {
-            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
+            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
             if (timeMillisSpent >= nextTimeMillisThreshold) {
                 DefaultSolverScope<Solution_> solverScope = stepScope.getPhaseScope().getSolverScope();
-                long calculateCount = solverScope.getCalculateCount();
-                long calculateCountInterval = calculateCount - lastCalculateCount;
+                long calculationCount = solverScope.getScoreCalculationCount();
+                long calculationCountInterval = calculationCount - lastCalculationCount;
                 long timeMillisSpentInterval = timeMillisSpent - lastTimeMillisSpent;
                 if (timeMillisSpentInterval == 0L) {
                     // Avoid divide by zero exception on a fast CPU
                     timeMillisSpentInterval = 1L;
                 }
-                long averageCalculateCountPerSecond = calculateCountInterval * 1000L / timeMillisSpentInterval;
-                pointList.add(new CalculateCountStatisticPoint(timeMillisSpent, averageCalculateCountPerSecond));
-                lastCalculateCount = calculateCount;
+                long scoreCalculationSpeed = calculationCountInterval * 1000L / timeMillisSpentInterval;
+                pointList.add(new ScoreCalculationSpeedStatisticPoint(timeMillisSpent, scoreCalculationSpeed));
+                lastCalculationCount = calculationCount;
 
                 lastTimeMillisSpent = timeMillisSpent;
                 nextTimeMillisThreshold += timeMillisThresholdInterval;
@@ -101,13 +101,13 @@ public class CalculateCountSubSingleStatistic<Solution_>
 
     @Override
     protected String getCsvHeader() {
-        return CalculateCountStatisticPoint.buildCsvLine("timeMillisSpent", "calculateCountPerSecond");
+        return ScoreCalculationSpeedStatisticPoint.buildCsvLine("timeMillisSpent", "scoreCalculationSpeed");
     }
 
     @Override
-    protected CalculateCountStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected ScoreCalculationSpeedStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new CalculateCountStatisticPoint(Long.parseLong(csvLine.get(0)),
+        return new ScoreCalculationSpeedStatisticPoint(Long.parseLong(csvLine.get(0)),
                 Long.parseLong(csvLine.get(1)));
     }
 

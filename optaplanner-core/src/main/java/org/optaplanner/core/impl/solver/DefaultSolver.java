@@ -205,9 +205,8 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
     }
 
     public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
-        solverScope.setStartingSystemTimeMillis(System.currentTimeMillis());
-        solverScope.setEndingSystemTimeMillis(null);
-        solverScope.getScoreDirector().resetCalculateCount();
+        solverScope.startingNow();
+        solverScope.getScoreDirector().resetCalculationCount();
         solverScope.setWorkingSolutionFromBestSolution();
         bestSolutionRecaller.solvingStarted(solverScope);
         for (Phase phase : phaseList) {
@@ -217,7 +216,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         solverScope.setStartingSolverCount(startingSolverCount);
         logger.info("Solving {}: time spent ({}), best score ({}), environment mode ({}), random ({}).",
                 (startingSolverCount == 1 ? "started" : "restarted"),
-                solverScope.calculateTimeMillisSpent(),
+                solverScope.calculateTimeMillisSpentUpToNow(),
                 solverScope.getBestScoreWithUninitializedPrefix(),
                 environmentMode.name(),
                 (randomFactory != null ? randomFactory : "not fixed"));
@@ -240,21 +239,17 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
             phase.solvingEnded(solverScope);
         }
         bestSolutionRecaller.solvingEnded(solverScope);
-        solverScope.setEndingSystemTimeMillis(System.currentTimeMillis());
+        solverScope.endingNow();
     }
 
     public void outerSolvingEnded(DefaultSolverScope<Solution_> solverScope) {
         // Must be kept open for doProblemFactChange
         solverScope.getScoreDirector().dispose();
-        long timeMillisSpent = getTimeMillisSpent();
-        // Avoid divide by zero exception on a fast CPU
-        long averageCalculateCountPerSecond = solverScope.getCalculateCount() * 1000L
-                / (timeMillisSpent == 0L ? 1L : timeMillisSpent);
-        logger.info("Solving ended: time spent ({}), best score ({}), average calculate count per second ({}),"
+        logger.info("Solving ended: time spent ({}), best score ({}), score calculation speed ({}/sec),"
                         + " environment mode ({}).",
-                timeMillisSpent,
+                solverScope.getTimeMillisSpent(),
                 solverScope.getBestScoreWithUninitializedPrefix(),
-                averageCalculateCountPerSecond,
+                solverScope.getScoreCalculationSpeed(),
                 environmentMode.name());
         solving.set(false);
     }

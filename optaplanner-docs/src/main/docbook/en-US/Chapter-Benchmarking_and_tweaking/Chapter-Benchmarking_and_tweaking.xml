@@ -534,11 +534,10 @@
       <para>Useful for visualizing the return on investment (ROI) to decision makers.</para>
     </section>
 
-    <section xml:id="benchmarkReportAverageCalculationCountSummary">
-      <title>Average Calculation Count Summary (Graph and Table)</title>
+    <section xml:id="benchmarkReportScoreCalculationSpeedSummary">
+      <title>Score Calculation Speed Summary (Graph and Table)</title>
 
-      <para>Shows the score calculation speed: the average calculation count per second per problem scale for each
-      solver configuration.</para>
+      <para>Shows the score calculation speed: a count per second per problem scale for each solver configuration.</para>
 
       <para>Useful for comparing different score calculators and/or score rule implementations (presuming that the
       solver configurations do not differ otherwise). Also useful to measure the scalability cost of an extra
@@ -592,7 +591,7 @@
     &lt;problemBenchmarks&gt;
       ...
       &lt;problemStatisticType&gt;BEST_SCORE&lt;/problemStatisticType&gt;
-      &lt;problemStatisticType&gt;CALCULATE_COUNT_PER_SECOND&lt;/problemStatisticType&gt;
+      &lt;problemStatisticType&gt;SCORE_CALCULATION_SPEED&lt;/problemStatisticType&gt;
     &lt;/problemBenchmarks&gt;
     ...
   &lt;/inheritedSolverBenchmark&gt;
@@ -679,32 +678,32 @@
       </warning>
     </section>
 
-    <section xml:id="benchmarkReportCalculateCountPerSecondStatistic">
-      <title>Calculate Count Per Second Statistic (Graph And CSV)</title>
+    <section xml:id="benchmarkReportScoreCalculationSpeedtatistic">
+      <title>Score Calculation Speed Statistic (Graph And CSV)</title>
 
       <para>To see how fast the scores are calculated, add:</para>
 
       <programlisting language="xml">    &lt;problemBenchmarks&gt;
       ...
-      &lt;problemStatisticType&gt;CALCULATE_COUNT_PER_SECOND&lt;/problemStatisticType&gt;
+      &lt;problemStatisticType&gt;SCORE_CALCULATION_SPEED&lt;/problemStatisticType&gt;
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
-        <title>Calculate Count Per Second Statistic</title>
+        <title>Score Calculation Speed Statistic</title>
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/calculateCountPerSecondStatistic.png"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/scoreCalculationSpeedStatistic.png"/>
           </imageobject>
         </mediaobject>
       </figure>
 
       <note>
-        <para>The initial high calculate count is typical during solution initialization: it's far easier to calculate
+        <para>The initial high calculation speed is typical during solution initialization: it's far easier to calculate
         the score of a solution if only a handful planning entities have been initialized, than when all the planning
         entities are initialized.</para>
 
-        <para>After those few seconds of initialization, the calculate count is relatively stable, apart from an
+        <para>After those few seconds of initialization, the calculation speed is relatively stable, apart from an
         occasional stop-the-world garbage collector disruption.</para>
       </note>
     </section>

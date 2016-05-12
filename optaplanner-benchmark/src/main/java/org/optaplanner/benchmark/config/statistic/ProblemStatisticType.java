@@ -22,7 +22,7 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.scorecalculationspeed.ScoreCalculationSpeedProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatistic;
@@ -30,7 +30,12 @@ import org.optaplanner.benchmark.impl.statistic.stepscore.StepScoreProblemStatis
 public enum ProblemStatisticType implements StatisticType {
     BEST_SCORE,
     STEP_SCORE,
+    /**
+     * @deprecated use {@link #SCORE_CALCULATION_SPEED} instead
+     */
+    @Deprecated
     CALCULATE_COUNT_PER_SECOND,
+    SCORE_CALCULATION_SPEED,
     BEST_SOLUTION_MUTATION,
     MOVE_COUNT_PER_STEP,
     MEMORY_USE;
@@ -48,7 +53,8 @@ public enum ProblemStatisticType implements StatisticType {
             case STEP_SCORE:
                 return new StepScoreProblemStatistic(problemBenchmarkResult);
             case CALCULATE_COUNT_PER_SECOND:
-                return new CalculateCountProblemStatistic(problemBenchmarkResult);
+            case SCORE_CALCULATION_SPEED:
+                return new ScoreCalculationSpeedProblemStatistic(problemBenchmarkResult);
             case BEST_SOLUTION_MUTATION:
                 return new BestSolutionMutationProblemStatistic(problemBenchmarkResult);
             case MOVE_COUNT_PER_STEP:

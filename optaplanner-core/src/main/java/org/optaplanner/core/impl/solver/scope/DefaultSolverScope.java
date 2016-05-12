@@ -78,16 +78,8 @@ public class DefaultSolverScope<Solution_> {
         return startingSystemTimeMillis;
     }
 
-    public void setStartingSystemTimeMillis(Long startingSystemTimeMillis) {
-        this.startingSystemTimeMillis = startingSystemTimeMillis;
-    }
-
     public Long getEndingSystemTimeMillis() {
         return endingSystemTimeMillis;
-    }
-
-    public void setEndingSystemTimeMillis(Long endingSystemTimeMillis) {
-        this.endingSystemTimeMillis = endingSystemTimeMillis;
     }
 
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
@@ -142,8 +134,8 @@ public class DefaultSolverScope<Solution_> {
         this.startingInitializedScore = startingInitializedScore;
     }
 
-    public long getCalculateCount() {
-        return scoreDirector.getCalculateCount();
+    public long getScoreCalculationCount() {
+        return scoreDirector.getCalculationCount();
     }
 
     public Solution_ getBestSolution() {
@@ -191,13 +183,35 @@ public class DefaultSolverScope<Solution_> {
     // Calculated methods
     // ************************************************************************
 
+    public void startingNow() {
+        startingSystemTimeMillis = System.currentTimeMillis();
+        endingSystemTimeMillis = null;
+    }
+
+    public void endingNow() {
+        endingSystemTimeMillis = System.currentTimeMillis();
+    }
+
     public boolean isBestSolutionInitialized() {
         return bestUninitializedVariableCount == 0;
     }
 
-    public long calculateTimeMillisSpent() {
+    public long calculateTimeMillisSpentUpToNow() {
         long now = System.currentTimeMillis();
         return now - startingSystemTimeMillis;
+    }
+
+    public long getTimeMillisSpent() {
+        return endingSystemTimeMillis - startingSystemTimeMillis;
+    }
+
+    /**
+     * @return at least 0, per second
+     */
+    public long getScoreCalculationSpeed() {
+        long timeMillisSpent = getTimeMillisSpent();
+        // Avoid divide by zero exception on a fast CPU
+        return getScoreCalculationCount() * 1000L / (timeMillisSpent == 0L ? 1L : timeMillisSpent);
     }
 
     public void setWorkingSolutionFromBestSolution() {

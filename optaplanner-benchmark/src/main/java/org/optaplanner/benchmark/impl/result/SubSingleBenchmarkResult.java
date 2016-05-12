@@ -63,7 +63,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     private Integer uninitializedVariableCount = null;
     private Score score = null;
     private long timeMillisSpent = -1L;
-    private long calculateCount = -1L;
+    private long scoreCalculationCount = -1L;
 
     // ************************************************************************
     // Report accumulates
@@ -160,12 +160,12 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
         this.timeMillisSpent = timeMillisSpent;
     }
 
-    public long getCalculateCount() {
-        return calculateCount;
+    public long getScoreCalculationCount() {
+        return scoreCalculationCount;
     }
 
-    public void setCalculateCount(long calculateCount) {
-        this.calculateCount = calculateCount;
+    public void setScoreCalculationCount(long scoreCalculationCount) {
+        this.scoreCalculationCount = scoreCalculationCount;
     }
 
     public Score getWinningScoreDifference() {
@@ -226,13 +226,13 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
         }
     }
 
-    public Long getAverageCalculateCountPerSecond() {
+    public Long getScoreCalculationSpeed() {
         long timeMillisSpent = this.timeMillisSpent;
         if (timeMillisSpent == 0L) {
             // Avoid divide by zero exception on a fast CPU
             timeMillisSpent = 1L;
         }
-        return calculateCount * 1000L / timeMillisSpent;
+        return scoreCalculationCount * 1000L / timeMillisSpent;
     }
 
     public boolean isWinner() {
@@ -316,7 +316,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
         newResult.score = oldResult.score;
         newResult.uninitializedVariableCount = oldResult.uninitializedVariableCount;
         newResult.timeMillisSpent = oldResult.timeMillisSpent;
-        newResult.calculateCount = oldResult.calculateCount;
+        newResult.scoreCalculationCount = oldResult.scoreCalculationCount;
 
         singleBenchmarkResult.getSubSingleBenchmarkResultList().add(newResult);
         return newResult;

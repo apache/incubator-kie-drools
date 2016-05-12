@@ -40,8 +40,11 @@ public abstract class AbstractPhaseScope<Solution_> {
 
     protected final DefaultSolverScope<Solution_> solverScope;
 
-    protected long startingSystemTimeMillis;
+    protected Long startingSystemTimeMillis;
+    protected Long startingScoreCalculationCount;
     protected Score startingScore;
+    protected Long endingSystemTimeMillis;
+    protected Long endingScoreCalculationCount;
 
     protected int bestSolutionStepIndex;
 
@@ -53,12 +56,16 @@ public abstract class AbstractPhaseScope<Solution_> {
         return solverScope;
     }
 
-    public long getStartingSystemTimeMillis() {
+    public Long getStartingSystemTimeMillis() {
         return startingSystemTimeMillis;
     }
 
     public Score getStartingScore() {
         return startingScore;
+    }
+
+    public Long getEndingSystemTimeMillis() {
+        return endingSystemTimeMillis;
     }
 
     public int getBestSolutionStepIndex() {
@@ -76,13 +83,22 @@ public abstract class AbstractPhaseScope<Solution_> {
     // ************************************************************************
 
     public void reset() {
-        startingSystemTimeMillis = System.currentTimeMillis();
         bestSolutionStepIndex = -1;
         // TODO Usage of solverScope.getBestScore() would be better performance wise but is null with a uninitialized score
         startingScore = solverScope.calculateScore();
         if (getLastCompletedStepScope().getStepIndex() < 0) {
             getLastCompletedStepScope().setScore(startingScore);
         }
+    }
+
+    public void startingNow() {
+        startingSystemTimeMillis = System.currentTimeMillis();
+        startingScoreCalculationCount = getScoreDirector().getCalculationCount();
+    }
+
+    public void endingNow() {
+        endingSystemTimeMillis = System.currentTimeMillis();
+        endingScoreCalculationCount = getScoreDirector().getCalculationCount();
     }
 
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
@@ -93,13 +109,30 @@ public abstract class AbstractPhaseScope<Solution_> {
         return solverScope.getScoreDefinition();
     }
 
-    public long calculateSolverTimeMillisSpent() {
-        return solverScope.calculateTimeMillisSpent();
+    public long calculateSolverTimeMillisSpentUpToNow() {
+        return solverScope.calculateTimeMillisSpentUpToNow();
     }
 
-    public long calculatePhaseTimeMillisSpent() {
+    public long calculatePhaseTimeMillisSpentUpToNow() {
         long now = System.currentTimeMillis();
         return now - startingSystemTimeMillis;
+    }
+
+    public long getPhaseTimeMillisSpent() {
+        return endingSystemTimeMillis - startingSystemTimeMillis;
+    }
+
+    public long getPhaseScoreCalculationCount() {
+        return endingScoreCalculationCount - startingScoreCalculationCount;
+    }
+
+    /**
+     * @return at least 0, per second
+     */
+    public long getPhaseScoreCalculationSpeed() {
+        long timeMillisSpent = getPhaseTimeMillisSpent();
+        // Avoid divide by zero exception on a fast CPU
+        return getPhaseScoreCalculationCount() * 1000L / (timeMillisSpent == 0L ? 1L : timeMillisSpent);
     }
 
     public InnerScoreDirector<Solution_> getScoreDirector() {

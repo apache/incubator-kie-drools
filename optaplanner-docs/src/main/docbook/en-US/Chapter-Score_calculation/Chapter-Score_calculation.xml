@@ -311,7 +311,7 @@
 
       <note>
         <para>BigDecimal arithmetic is considerably slower than <literal>int</literal>, <literal>long</literal> or
-        <literal>double</literal> arithmetic. In experiments we have seen the average calculation count get divided by
+        <literal>double</literal> arithmetic. In experiments we have seen the score calculation speed get divided by
         5.</para>
 
         <para>Therefore, in some cases, it can be worthwhile to multiply <emphasis>all</emphasis> numbers for a single
@@ -1213,23 +1213,23 @@ end</programlisting>
       the same algorithm, which normally means a better solution in equal time.</para>
     </section>
 
-    <section xml:id="averageCalculationCountPerSecond">
-      <title>Average Calculation Count Per Second</title>
+    <section xml:id="scoreCalculationSpeed">
+      <title>Score Calculation Speed</title>
 
-      <para>After solving a problem, the <literal>Solver</literal> will log the <emphasis>average calculation count per
+      <para>After solving a problem, the <literal>Solver</literal> will log the <emphasis>score calculation speed per
       second</emphasis>. This is a good measurement of Score calculation performance, despite that it is affected by non
       score calculation execution time. It depends on the problem scale of the problem dataset. Normally, even for high
-      scale problems, it is higher than <literal>1000</literal>, except when you are using
+      scale problems, it is higher than <literal>1000</literal>, except when you are using an
       <literal>EasyScoreCalculator</literal>.</para>
 
       <important>
-        <para>When improving your score calculation, focus on maximizing the average calculation count per second,
+        <para>When improving your score calculation, focus on maximizing the score calculation speed,
         instead of maximizing the best score. A big improvement in score calculation can sometimes yield little or no
         best score improvement, for example when the algorithm is stuck in a local or global optima. If you are watching
-        the calculation count instead, score calculation improvements are far more visible.</para>
+        the calculation speed instead, score calculation improvements are far more visible.</para>
 
-        <para>Furthermore, watching the calculation count, allows you to remove or add score constraints, and still
-        compare it with the original calculation count. Comparing the best score with the original would be wrong,
+        <para>Furthermore, watching the calculation speed, allows you to remove or add score constraints, and still
+        compare it with the original calculation speed. Comparing the best score with the original would be wrong,
         because it is comparing apples and oranges.</para>
       </important>
     </section>
@@ -1425,7 +1425,7 @@ end</programlisting>
 
       <para>Not all score constraints have the same performance cost. Sometimes one score constraint can kill the score
       calculation performance outright. Use the <link linkend="benchmarker">Benchmarker</link> to do a one minute run
-      and check what happens to the average calculation count per second if you comment out all but one of the score
+      and check what happens to the score calculation speed if you comment out all but one of the score
       constraints.</para>
     </section>
 

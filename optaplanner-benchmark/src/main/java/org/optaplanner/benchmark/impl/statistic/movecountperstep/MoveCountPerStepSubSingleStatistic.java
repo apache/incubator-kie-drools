@@ -62,7 +62,7 @@ public class MoveCountPerStepSubSingleStatistic<Solution_>
         }
 
         private void localSearchStepEnded(LocalSearchStepScope<Solution_> stepScope) {
-            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
+            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
             pointList.add(new MoveCountPerStepStatisticPoint(timeMillisSpent,
                     new MoveCountPerStepMeasurement(stepScope.getAcceptedMoveCount(), stepScope.getSelectedMoveCount())
             ));

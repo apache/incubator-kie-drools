@@ -31,7 +31,7 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.scorecalculationspeed.ScoreCalculationSpeedProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.GraphSupport;
 import org.optaplanner.benchmark.impl.statistic.memoryuse.MemoryUseProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.movecountperstep.MoveCountPerStepProblemStatistic;
@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 @XStreamInclude({
         BestScoreProblemStatistic.class,
         StepScoreProblemStatistic.class,
-        CalculateCountProblemStatistic.class,
+        ScoreCalculationSpeedProblemStatistic.class,
         BestSolutionMutationProblemStatistic.class,
         MoveCountPerStepProblemStatistic.class,
         MemoryUseProblemStatistic.class

@@ -113,7 +113,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
         }
 
         private void localSearchStepEnded(LocalSearchStepScope<Solution_> stepScope) {
-            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
+            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
             String moveType = stepScope.getStep().getSimpleMoveTypeDescription();
             Score newStepScore = stepScope.getScore();
             Score stepScoreDiff = newStepScore.subtract(oldStepScore);

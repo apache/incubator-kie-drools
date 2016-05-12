@@ -236,9 +236,9 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         decider.stepEnded(stepScope);
         if (logger.isDebugEnabled()) {
             ExhaustiveSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
-            long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpent();
             logger.debug("    ES step ({}), time spent ({}), treeId ({}), {} best score ({}), selected move count ({}).",
-                    stepScope.getStepIndex(), timeMillisSpent,
+                    stepScope.getStepIndex(),
+                    phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                     stepScope.getTreeId(),
                     (stepScope.getBestScoreImproved() ? "new" : "   "),
                     phaseScope.getBestScoreWithUninitializedPrefix(),
@@ -250,11 +250,14 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         super.phaseEnded(phaseScope);
         entitySelector.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
-        logger.info("Exhaustive Search phase ({}) ended: step total ({}), time spent ({}), best score ({}).",
+        phaseScope.endingNow();
+        logger.info("Exhaustive Search phase ({}) ended: time spent ({}), best score ({}),"
+                        + " score calculation speed ({}/sec), step total ({}).",
                 phaseIndex,
-                phaseScope.getNextStepIndex(),
-                phaseScope.calculateSolverTimeMillisSpent(),
-                phaseScope.getBestScore());
+                phaseScope.calculateSolverTimeMillisSpentUpToNow(),
+                phaseScope.getBestScore(),
+                phaseScope.getPhaseScoreCalculationSpeed(),
+                phaseScope.getNextStepIndex());
     }
 
     @Override

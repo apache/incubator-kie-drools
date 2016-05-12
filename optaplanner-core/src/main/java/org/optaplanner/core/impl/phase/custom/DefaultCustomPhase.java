@@ -110,9 +110,9 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
         }
         CustomPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
-            long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpent();
             logger.debug("    Custom step ({}), time spent ({}), score ({}), {} best score ({}).",
-                    stepScope.getStepIndex(), timeMillisSpent,
+                    stepScope.getStepIndex(),
+                    phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                     stepScope.getScore(),
                     bestScoreImproved ? "new" : (forceUpdateBestSolution ? "forced" : "   "),
                     phaseScope.getBestScoreWithUninitializedPrefix());
@@ -121,11 +121,14 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
 
     public void phaseEnded(CustomPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
-        logger.info("Custom phase ({}) ended: step total ({}), time spent ({}), best score ({}).",
+        phaseScope.endingNow();
+        logger.info("Custom phase ({}) ended: time spent ({}), best score ({}),"
+                        + " score calculation speed ({}/sec), step total ({}).",
                 phaseIndex,
-                phaseScope.getNextStepIndex(),
-                phaseScope.calculateSolverTimeMillisSpent(),
-                phaseScope.getBestScore());
+                phaseScope.calculateSolverTimeMillisSpentUpToNow(),
+                phaseScope.getBestScore(),
+                phaseScope.getPhaseScoreCalculationSpeed(),
+                phaseScope.getNextStepIndex());
     }
 
 }

@@ -907,14 +907,14 @@
       <literal>&lt;localSearch&gt;</literal>), not for the <literal>Solver</literal> itself.</para>
     </section>
 
-    <section xml:id="calculateCountTermination">
-      <title>CalculateCountTermination</title>
+    <section xml:id="scoreCalculationCountTermination">
+      <title>ScoreCalculationCountTermination</title>
 
-      <para>Terminates when a number of score calculations (which is usually the sum of the number of moves and the
-      number of steps) have been reached. This is useful for benchmarking.</para>
+      <para>Terminates when a number of score calculations have been reached. That's usually the sum of the number of
+      moves and the number of steps. This is useful for benchmarking.</para>
 
       <programlisting language="xml">  &lt;termination&gt;
-    &lt;calculateCountLimit&gt;100000&lt;/calculateCountLimit&gt;
+    &lt;scoreCalculationCountLimit&gt;100000&lt;/scoreCalculationCountLimit&gt;
   &lt;/termination&gt;</programlisting>
 
       <para>Switching <link linkend="environmentMode">EnvironmentMode</link> can heavily impact when this termination

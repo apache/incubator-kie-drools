@@ -87,9 +87,9 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
     /**
      * @return at least 0L
      */
-    long getCalculateCount();
+    long getCalculationCount();
 
-    void resetCalculateCount();
+    void resetCalculationCount();
 
     /**
      * @return never null

@@ -112,7 +112,7 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
 
         private void localSearchStepEnded(LocalSearchStepScope<Solution_> stepScope) {
             if (constraintMatchEnabled && stepScope.getBestScoreImproved()) {
-                long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
+                long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
                 for (ConstraintMatchTotal constraintMatchTotal : stepScope.getScoreDirector().getConstraintMatchTotals()) {
                     pointList.add(new ConstraintMatchTotalBestScoreStatisticPoint(
                             timeMillisSpent,
@@ -131,7 +131,7 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
                 if (constraintMatchEnabled && !pointList.isEmpty()) {
                     // Draw horizontal lines from the last new best step to how long the solver actually ran
                     // HACK because this also adds a entry in the CSV (and it should not do that)
-                    long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpent();
+                    long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpentUpToNow();
                     ConstraintMatchTotalBestScoreStatisticPoint previousPoint = pointList.get(pointList.size() - 1);
                     pointList.add(new ConstraintMatchTotalBestScoreStatisticPoint(
                             timeMillisSpent,

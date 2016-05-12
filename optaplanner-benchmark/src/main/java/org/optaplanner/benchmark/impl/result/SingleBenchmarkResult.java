@@ -74,7 +74,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     // - standard deviation should not be rounded to integer numbers
     private double[] standardDeviationDoubles = null;
     private long timeMillisSpent = -1L;
-    private long calculateCount = -1L;
+    private long scoreCalculationCount = -1L;
 
     // ************************************************************************
     // Report accumulates
@@ -149,12 +149,12 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         this.timeMillisSpent = timeMillisSpent;
     }
 
-    public long getCalculateCount() {
-        return calculateCount;
+    public long getScoreCalculationCount() {
+        return scoreCalculationCount;
     }
 
-    public void setCalculateCount(long calculateCount) {
-        this.calculateCount = calculateCount;
+    public void setScoreCalculationCount(long scoreCalculationCount) {
+        this.scoreCalculationCount = scoreCalculationCount;
     }
 
     public Score getWinningScoreDifference() {
@@ -269,13 +269,13 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         }
     }
 
-    public Long getAverageCalculateCountPerSecond() {
+    public Long getScoreCalculationSpeed() {
         long timeMillisSpent = this.timeMillisSpent;
         if (timeMillisSpent == 0L) {
             // Avoid divide by zero exception on a fast CPU
             timeMillisSpent = 1L;
         }
-        return calculateCount * 1000L / timeMillisSpent;
+        return scoreCalculationCount * 1000L / timeMillisSpent;
     }
 
     public boolean isWinner() {
@@ -355,7 +355,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         median = subSingleBenchmarkResultListCopy.get(ConfigUtils.ceilDivide(subSingleBenchmarkResultListCopy.size() - 1, 2));
         usedMemoryAfterInputSolution = median.getUsedMemoryAfterInputSolution();
         timeMillisSpent = median.getTimeMillisSpent();
-        calculateCount = median.getCalculateCount();
+        scoreCalculationCount = median.getScoreCalculationCount();
         winningScoreDifference = median.getWinningScoreDifference();
         worstScoreDifferencePercentage = median.getWorstScoreDifferencePercentage();
     }
