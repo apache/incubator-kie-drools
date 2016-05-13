@@ -33,7 +33,7 @@ import java.util.Set;
  */
 public final class SmallScalingOrderedSet<E> implements Set<E> {
 
-    protected static final int LIST_SIZE_THRESHOLD = 128;
+    protected static final int LIST_SIZE_THRESHOLD = 16;
 
     private boolean belowThreshold;
     private List<E> list;
