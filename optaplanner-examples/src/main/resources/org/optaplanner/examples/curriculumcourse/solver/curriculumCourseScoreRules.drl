@@ -100,7 +100,7 @@ end
 rule "minimumWorkingDays"
     when
         $course : Course($minWorkingDaySize : minWorkingDaySize)
-        $dayCount : Number(intValue < $minWorkingDaySize) from accumulate(
+        $dayCount : Long(this < $minWorkingDaySize) from accumulate(
             $day : Day()
             and exists Lecture(course == $course, day == $day),
             count($day)
@@ -138,7 +138,7 @@ end
 rule "roomStability"
     when
         $course : Course()
-        $roomCount : Number(intValue > 1) from accumulate(
+        $roomCount : Long(this > 1) from accumulate(
             $room : Room()
             and exists Lecture(course == $course, room == $room),
             count($room)

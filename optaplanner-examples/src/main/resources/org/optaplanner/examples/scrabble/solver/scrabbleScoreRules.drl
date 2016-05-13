@@ -92,7 +92,7 @@ end
 rule "Maximize merges per word"
     when
         $w : ScrabbleWordAssignment()
-        $total : Number() from accumulate(
+        $total : Long() from accumulate(
             $c : ScrabbleCell(wordSet.contains($w), hasMerge() == true),
             count($c)
         )

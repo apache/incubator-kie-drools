@@ -53,7 +53,7 @@ end
 rule "fairAssignmentCountPerTeam"
     when
         $t : Team()
-        $total : Number() from accumulate(
+        $total : Long() from accumulate(
             $a : TeamAssignment(team == $t),
             count($a)
         )
@@ -70,7 +70,7 @@ rule "evenlyConfrontationCount"
     when
         $t1 : Team()
         $t2 : Team()
-        $total : Number() from accumulate(
+        $total : Long() from accumulate(
             $a : TeamAssignment(team == $t1, $d : day, $leftId : id)
             and TeamAssignment(team == $t2, day == $d, id > $leftId),
             count($a)

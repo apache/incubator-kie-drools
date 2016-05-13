@@ -95,13 +95,13 @@ end
 rule "serviceLocationSpread"
     when
         $service : MrService($locationSpread : locationSpread)
-        $spreadCount : Number(intValue < $locationSpread) from accumulate(
+        $spreadCount : Long(this < $locationSpread) from accumulate(
                 $location : MrLocation()
                 and exists MrProcessAssignment(service == $service, location == $location),
             count($location)
         )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, $spreadCount.intValue() - $locationSpread);
+        scoreHolder.addHardConstraintMatch(kcontext, $spreadCount - $locationSpread);
 end
 
 // Dependency constraints

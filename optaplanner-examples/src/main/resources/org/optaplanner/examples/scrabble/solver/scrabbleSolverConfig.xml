@@ -12,10 +12,15 @@
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 
-  <constructionHeuristic>
-    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-  </constructionHeuristic>
-  <localSearch>
-    <localSearchType>LATE_ACCEPTANCE</localSearchType>
-  </localSearch>
+  <!--<constructionHeuristic>-->
+    <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+  <!--</constructionHeuristic>-->
+  <!--<localSearch>-->
+    <!--<acceptor>-->
+      <!--<lateAcceptanceSize>1000</lateAcceptanceSize>-->
+    <!--</acceptor>-->
+    <!--<forager>-->
+      <!--<acceptedCountLimit>1</acceptedCountLimit>-->
+    <!--</forager>-->
+  <!--</localSearch>-->
 </solver>

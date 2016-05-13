@@ -61,22 +61,7 @@ global HardSoftScoreHolder scoreHolder;
 // Hard constraints
 // ############################################################################
 
-// This rule is build in
-// All demanded shifts must be assigned to a nurse
-//rule "requiredEmployeeSizePerShift"
-//    when
-//        $shift : Shift(requiredEmployeeSize > 0, $requiredEmployeeSize : requiredEmployeeSize)
-//
-//        $totalEmployeeSize : Number(intValue != $requiredEmployeeSize) from accumulate(
-//            $assignment : ShiftAssignment(shift == $shift),
-//            count($assignment)
-//        )
-//    then
-//        scoreHolder.addHardConstraintMatch(kcontext,
-//                - Math.abs($requiredEmployeeSize - $totalEmployeeSize.intValue());
-//end
-
-// a nurse can only work one shift per day, i.e. no two shift can be assigned to the same nurse on a day.
+// A nurse can only work one shift per day, i.e. no two shift can be assigned to the same nurse on a day.
 rule "oneShiftPerDay"
     when
         ShiftAssignment($leftId : id, $employee : employee, $shiftDate : shiftDate, employee != null)
@@ -95,7 +80,7 @@ rule "insertEmployeeAssignmentTotal"
         MinMaxContractLine(contractLineType == ContractLineType.TOTAL_ASSIGNMENTS, enabled == true,
             $contract : contract)
         $employee : Employee(contract == $contract)
-        $assignmentTotal : Number() from accumulate(
+        $assignmentTotal : Long() from accumulate(
             $assignment : ShiftAssignment(employee == $employee),
             count($assignment)
         )
@@ -457,7 +442,7 @@ rule "identicalShiftTypesDuringWeekend"
         $employee : Employee(contract == $contract, $weekendLength : weekendLength)
         ShiftDate(dayOfWeek == DayOfWeek.SUNDAY, $sundayIndex : dayIndex)
         $shiftType : ShiftType()
-        $weekendAssignmentTotal : Number(intValue > 0 && < $weekendLength) from accumulate(
+        $weekendAssignmentTotal : Long(this > 0 && < $weekendLength) from accumulate(
             $assignment : ShiftAssignment(
                 weekend == true,
                 weekendSundayIndex == $sundayIndex,
