@@ -19,9 +19,9 @@ public class MvelLinkageErrorTest {
 
     private static final String TEST_FACT = "test";
 
-    private static final String DRL = "package org.drools.testcoverage.regression.mvel \n"
+    private static final String DRL = "package " + MvelLinkageErrorTest.class.getPackage().getName() + " \n"
             + "dialect \"mvel\"\n"
-            + "import org.drools.testcoverage.regression.mvel.* \n"
+            + "import " + MvelLinkageErrorTest.class.getPackage().getName() + ".* \n"
             + "global java.util.List output \n"
             + "rule rule1 \n"
             + "  when \n"
