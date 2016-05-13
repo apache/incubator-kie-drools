@@ -24,6 +24,7 @@ import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolu
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.legacysolution.TestdataLegacySolution;
+import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataNoProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataReadMethodProblemFactCollectionPropertySolution;
@@ -130,6 +131,12 @@ public class SolutionDescriptorTest {
         assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap());
         assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
                 "entities");
+    }
+
+    @Test
+    public void generic() {
+        SolutionDescriptor<TestdataGenericSolution> solutionDescriptor
+                = TestdataGenericSolution.buildSolutionDescriptor();
     }
 
     // ************************************************************************

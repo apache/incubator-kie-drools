@@ -102,7 +102,15 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
                             + ") with an unsupported number of generic parameters (" + typeArguments.length + ").");
                 }
                 Type typeArgument = typeArguments[0];
-                if (!(typeArgument instanceof Class)) {
+                if (typeArgument instanceof ParameterizedType) {
+                    // TODO fail fast if the type arguments don't match
+                    // with the variableDescriptor's generic type's type arguments
+                    typeArgument = ((ParameterizedType) typeArgument).getRawType();
+                }
+                Class collectionElementClass;
+                if (typeArgument instanceof Class) {
+                    collectionElementClass = ((Class) typeArgument);
+                } else {
                     throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                             + ") has a " + PlanningVariable.class.getSimpleName()
                             + " annotated property (" + variableDescriptor.getVariableName()
@@ -111,7 +119,6 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
                             + ") that returns a parameterized " + Collection.class.getSimpleName()
                             + " with an unsupported type arguments (" + typeArgument + ").");
                 }
-                Class collectionElementClass = ((Class) typeArgument);
                 Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
                 if (!variablePropertyType.isAssignableFrom(collectionElementClass)) {
                     throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
