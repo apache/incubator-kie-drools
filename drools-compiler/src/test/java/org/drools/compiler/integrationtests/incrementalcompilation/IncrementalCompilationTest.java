@@ -2781,4 +2781,54 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertEquals( 2, ksession.fireAllRules() );
     }
 
+    @Test
+    public void testRemoveRuleWithNonInitializedPath() {
+        // DROOLS-1177
+        String drl1 =
+                "import " + MyEvent.class.getCanonicalName() + "\n" +
+                "declare MyEvent @role( event ) end\n" +
+                "rule \"RG_TEST_1\"\n" +
+                "    when\n" +
+                "       $dummy: MyEvent (id == 1)\n" +
+                "		$other: MyEvent (this != $dummy)\n" +
+                "    then\n" +
+                "        retract($other);\n" +
+                "end\n" +
+                "rule \"RG_TEST_2\"\n" +
+                "    when\n" +
+                "       $dummy: MyEvent (id == 1)\n" +
+                "    then\n" +
+                "        retract($dummy);\n" +
+                "end\n";
+
+        String drl2 =
+                "import " + MyEvent.class.getCanonicalName() + "\n" +
+                "declare IMyEvent @role( event ) end\n" +
+                "rule \"RG_TEST_2\"\n" +
+                "    when\n" +
+                "       $dummy: MyEvent (id == 1)\n" +
+                "    then\n" +
+                "        retract($dummy);\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "KBase1" ).setDefault( true )
+                                          .setEventProcessingMode(EventProcessingOption.STREAM);
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1").setDefault(true)
+                                                 .setType(KieSessionModel.KieSessionType.STATEFUL);
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId1, null, drl1 ) );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+
+        ksession.insert( new MyEvent( 0 ) );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId2, null, drl2 ) );
+        kc.updateToVersion( releaseId2 );
+    }
 }
