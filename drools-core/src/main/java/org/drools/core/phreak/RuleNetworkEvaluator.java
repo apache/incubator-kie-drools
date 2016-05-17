@@ -814,7 +814,7 @@ public class RuleNetworkEvaluator {
         // and so it is the first entry in the wrong bucket
 
         for (RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
-            rtm.remove(rightTuple);
+            rtm.removeAdd(rightTuple);
         }
 
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
