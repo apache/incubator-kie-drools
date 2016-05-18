@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.testcoverage.common;
+package org.drools.testcoverage.common.util;
 
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 
 /**
- * Util class that provides KieBase from various sources.
+ * Util class that provides various methods related to KieBase.
  */
 public final class KieBaseUtil {
 
@@ -51,6 +54,15 @@ public final class KieBaseUtil {
         } else {
             return container.getKieBase(name);
         }
+    }
+
+    public static final KieFileSystem writeKieModuleWithResourceToFileSystem(final KieModuleModel kieModuleModel,
+            final ReleaseId releaseId, final Resource resource) {
+        final KieFileSystem fileSystem = getKieServices().newKieFileSystem();
+        fileSystem.generateAndWritePomXML(releaseId);
+        fileSystem.write(resource);
+        fileSystem.writeKModuleXML(kieModuleModel.toXML());
+        return fileSystem;
     }
 
     public static final KieServices getKieServices() {
