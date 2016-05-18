@@ -46,6 +46,8 @@ import org.mvel2.ParserContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.drools.core.util.StringUtils.isDereferencingIdentifier;
+
 public class QueryElementBuilder
     implements
     RuleConditionBuilder {
@@ -359,37 +361,36 @@ public class QueryElementBuilder
         int position = ((ExprConstraintDescr) base).getPosition();
         if ( position >= arguments.size() ) {
             context.addError( new DescrBuildError( context.getParentDescr(),
-                                                          base,
-                                                          null,
-                                                          "Unable to parse query '" + query.getName() + "', as postion " + position + " for expression '" + expression + "' does not exist on query size " + arguments.size()) );
-            return;            
+                                                   base,
+                                                   null,
+                                                   "Unable to parse query '" + query.getName() + "', as postion " + position + " for expression '" + expression + "' does not exist on query size " + arguments.size()) );
+            return;
         }
-        if ( isVariable( expression ) ) {
-            // is this already bound?
-            Declaration declr = context.getDeclarationResolver().getDeclaration( query,
-                                                                                 expression );
-            if ( declr != null ) {
-                // it exists, so it's an input
-                arguments.set( position,
-                               declr );
-                declrIndexes.add( position );
-                requiredDeclarations.add( declr );
-            } else {
-                // it doesn't exist, so it's an output
-                arguments.set( position,
-                               Variable.v );
-                
-                varIndexes.add( position );
-                               
-                declr = pattern.addDeclaration( expression );
 
-                // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
-                ArrayElementReader reader = new ArrayElementReader( arrayReader,
-                                                                    position,
-                                                                    params[position].getDeclarationClass() );
+        boolean isVariable = isVariable( expression );
+        Declaration declr = isVariable ?
+                            context.getDeclarationResolver().getDeclaration( query, expression ) :
+                            null;
 
-                declr.setReadAccessor( reader );
-            }
+        if ( declr != null ) {
+            // it exists, so it's an input
+            arguments.set( position, declr );
+            declrIndexes.add( position );
+            requiredDeclarations.add( declr );
+        } else if( isVariable && expression.indexOf( '.' ) < 0 ) {
+            // it's a variable that doesn't exist and doesn't contain a dot, so it's an output
+            arguments.set( position, Variable.v );
+
+            varIndexes.add( position );
+
+            declr = pattern.addDeclaration( expression );
+
+            // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
+            ArrayElementReader reader = new ArrayElementReader( arrayReader,
+                                                                position,
+                                                                params[position].getDeclarationClass() );
+
+            declr.setReadAccessor( reader );
         } else {
             // it's an expression and thus an input
             MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
@@ -437,65 +438,9 @@ public class QueryElementBuilder
 
     public static boolean isVariable( String str ) {
         str = str.trim();
-        
-        // check for invalid variable name start char
-        switch ( str.charAt( 0 ) ) {
-            case '\'' :
-            case '"' :
-            case '-' :
-            case '+' :
-            case '!' :
-            case '>' :
-            case '<' :
-            case '&' :
-            case '|' :
-            case '?' :
-            case '^' :
-            case '%' :
-            case '=' :
-            case '.' :
-            case '(' :
-            case ')' :
-            case '[' :
-            case ']' :
-            case '{' :
-            case '}' :
-            case '0' :
-            case '1' :
-            case '2' :
-            case '3' :
-            case '4' :
-            case '5' :
-            case '6' :
-            case '7' :
-            case '8' :
-            case '9' :
-                return false;
+        if (!isDereferencingIdentifier(str)) {
+            return false;
         }
-
-        // Check for operators
-        for ( int i = 1; i < str.length(); i++ ) {
-            switch ( str.charAt( i ) ) {
-                //case '"' :
-                case '\'' :
-                case '"' :                
-                case '-' :
-                case '+' :
-                case '!' :
-                case '>' :
-                case '<' :
-                case '&' :
-                case '|' :
-                case '?' :
-                case '^' :
-                case '%' :
-                case '=' :
-                case '{' :
-                case '}' :
-                    return false;
-            }
-        }
-
         return !str.endsWith( ".class" );
     }
 
