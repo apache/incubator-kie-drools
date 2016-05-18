@@ -190,7 +190,7 @@ public class AddRemoveRule {
                 }
             }
 
-            if (tnms.subjectPmem != null && tnms.subjectPmem.getRuleAgendaItem() != null && tnms.subjectPmem.getRuleAgendaItem().isQueued()) {
+            if (tnms.subjectPmem != null && tnms.subjectPmem.isInitialized() && tnms.subjectPmem.getRuleAgendaItem().isQueued()) {
                 // SubjectPmem can be null, if it was never initialized
                 tnms.subjectPmem.getRuleAgendaItem().dequeue();
             }
@@ -543,7 +543,7 @@ public class AddRemoveRule {
 
     private static void flushStagedTuples(PathMemory pmem, PathEndNodes pathEndNodes, InternalWorkingMemory wm) {
         // first flush the subject rule, then flush any staging lists that are part of a merge
-        if ( pmem.getRuleAgendaItem() != null ) {
+        if ( pmem.isInitialized() ) {
             new RuleNetworkEvaluator().evaluateNetwork(pmem, pmem.getRuleAgendaItem().getRuleExecutor(), wm);
         }
 
@@ -584,7 +584,7 @@ public class AddRemoveRule {
     }
 
     private static void flushStagedTuples(LeftTupleNode splitStartNode, PathMemory pmem, InternalWorkingMemory wm) {
-        if (pmem.getRuleAgendaItem() == null ) {
+        if ( !pmem.isInitialized() ) {
             // The rule has never been linked in and evaluated, so there will be nothing to flush.
             return;
         }
@@ -618,15 +618,19 @@ public class AddRemoveRule {
                           sm.getPathMemories().get(0) :
                           sm.getFirstDataDrivenPathMemory();
 
+        if (pmem == null) {
+            return false;
+        }
+
         TupleSets<LeftTuple> leftTupleSets = new TupleSetsImpl<LeftTuple>();
         if (leftTuple != null) {
             leftTupleSets.addInsert(leftTuple);
         }
-
-        return pmem != null && forceFlushLeftTuple(pmem, sm, wm, leftTupleSets);
+        forceFlushLeftTuple(pmem, sm, wm, leftTupleSets);
+        return true;
     }
 
-    private static boolean forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, TupleSets<LeftTuple> leftTupleSets) {
+    private static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, TupleSets<LeftTuple> leftTupleSets) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
 
         LeftTupleNode node;
@@ -652,7 +656,6 @@ public class AddRemoveRule {
         new RuleNetworkEvaluator().outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, wm,
                                              new LinkedList<StackEntry>(),
                                              true, rtnPmem.getOrCreateRuleAgendaItem(wm).getRuleExecutor());
-        return true;
     }
 
 
