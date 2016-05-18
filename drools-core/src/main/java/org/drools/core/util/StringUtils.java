@@ -1082,6 +1082,11 @@ public class StringUtils {
                !expr.equals("null") && expr.matches("[a-zA-Z_\\$][a-zA-Z_\\$0-9]*");
     }
 
+    public static boolean isDereferencingIdentifier(String expr) {
+        return !expr.equals("true") && !expr.equals("false") &&
+               !expr.equals("null") && expr.matches("[a-zA-Z_\\$][a-zA-Z_\\$0-9\\.]*");
+    }
+
     // To be extended in the future with more comparison strategies
     public enum SIMILARITY_STRATS { DICE }
 

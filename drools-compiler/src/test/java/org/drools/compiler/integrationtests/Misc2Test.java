@@ -8688,4 +8688,61 @@ public class Misc2Test extends CommonTestMethodBase {
             return "Shift " + employee + " from " + start + " to " + end;
         }
     }
+
+    @Test
+    public void testQueryWithEnum() {
+        // DROOLS-1181
+        String drl =
+                "import " + AnswerGiver.class.getCanonicalName() + "\n" +
+                "import " + Answer.class.getCanonicalName() + "\n" +
+                "\n" +
+                "declare TestThing end\n" +
+                "\n" +
+                "query TestQuery(Answer enumVal)\n" +
+                "  AnswerGiver( answer == enumVal )\n" +
+                "end\n" +
+                "\n" +
+                "query MyQuery()\n" +
+                "  TestQuery(Answer.NO;)\n" +
+                "end\n" +
+                "\n" +
+                "rule R when MyQuery() then end\n";
+
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        kieSession.insert( new AnswerGiver() );
+        assertEquals( 0, kieSession.fireAllRules() );
+    }
+
+    @Test
+    public void testOrQueryWithEnum() {
+        // DROOLS-1181
+        String drl =
+                "import " + AnswerGiver.class.getCanonicalName() + "\n" +
+                "import " + Answer.class.getCanonicalName() + "\n" +
+                "\n" +
+                "declare TestThing end\n" +
+                "\n" +
+                "query TestQuery(Answer enumVal)\n" +
+                "  AnswerGiver( answer == enumVal )\n" +
+                "end\n" +
+                "\n" +
+                "query ORQuery()\n" +
+                "  (\n" +
+                "    TestQuery(Answer.YES;)\n" +
+                "  ) or (\n" +
+                "    TestQuery(Answer.YES;)\n" +
+                "  )\n" +
+                "end\n" +
+                "\n" +
+                "rule R when ORQuery() then end\n";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        kieSession.insert( new AnswerGiver() );
+        assertEquals( 2, kieSession.fireAllRules() );
+    }
 }
