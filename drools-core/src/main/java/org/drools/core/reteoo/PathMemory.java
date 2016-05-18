@@ -179,6 +179,10 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         return NodeTypeEnums.RuleTerminalNode;
     }
 
+    public boolean isInitialized() {
+        return agendaItem != null && segmentMemories[0] != null;
+    }
+
     public SegmentMemory[] getSegmentMemories() {
         return segmentMemories;
     }
