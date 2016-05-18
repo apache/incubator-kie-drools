@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -208,10 +209,10 @@ public class IoUtils {
     }
 
     public static List<String> recursiveListFile(File folder) {
-        return recursiveListFile(folder, "", Predicate.PassAll.INSTANCE);
+        return recursiveListFile( folder, "", f -> true );
     }
 
-    public static List<String> recursiveListFile(File folder, String prefix, Predicate<? super File> filter) {
+    public static List<String> recursiveListFile(File folder, String prefix, Predicate<File> filter) {
         List<String> files = new ArrayList<String>();
         for (File child : safeListFiles(folder)) {
             filesInFolder(files, child, prefix, filter);
@@ -219,14 +220,14 @@ public class IoUtils {
         return files;
     }
 
-    private static void filesInFolder(List<String> files, File file, String relativePath, Predicate<? super File> filter) {
+    private static void filesInFolder(List<String> files, File file, String relativePath, Predicate<File> filter) {
         if (file.isDirectory()) {
             relativePath += file.getName() + "/";
             for (File child : safeListFiles(file)) {
                 filesInFolder(files, child, relativePath, filter);
             }
         } else {
-            if (filter.apply(file)) {
+            if (filter.test(file)) {
                 files.add(relativePath + file.getName());
             }
         }
