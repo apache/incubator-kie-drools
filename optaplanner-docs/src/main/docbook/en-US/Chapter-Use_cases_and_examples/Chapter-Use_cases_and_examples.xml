@@ -534,7 +534,7 @@
                 </listitem>
 
                 <listitem>
-                  <para><link xlink:href="http://allserv.kahosl.be/mista2013challenge/">MISTA 2013</link></para>
+                  <para><link xlink:href="http://gent.cs.kuleuven.be/mista2013challenge/">MISTA 2013</link></para>
                 </listitem>
               </itemizedlist></entry>
 
@@ -586,7 +586,7 @@
                 </listitem>
 
                 <listitem>
-                  <para><link xlink:href="http://allserv.kahosl.be/~peter/pas/">Kaho PAS</link></para>
+                  <para><link xlink:href="https://people.cs.kuleuven.be/~wim.vancroonenburg/pas/">Kaho PAS</link></para>
                 </listitem>
               </itemizedlist></entry>
 
@@ -1817,7 +1817,7 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
           </listitem>
         </itemizedlist>
 
-        <para>The problem is defined by <link xlink:href="http://allserv.kahosl.be/mista2013challenge/">the MISTA 2013
+        <para>The problem is defined by <link xlink:href="http://gent.cs.kuleuven.be/mista2013challenge/">the MISTA 2013
         challenge</link>.</para>
       </section>
 
@@ -1929,7 +1929,7 @@ Schedule B-10 has 20 projects, 460 jobs, 1300 execution modes, 42 resources and 
           </listitem>
         </itemizedlist>
 
-        <para>The problem is a variant on <link xlink:href="http://allserv.kahosl.be/~peter/pas/">Kaho's Patient
+        <para>The problem is a variant on <link xlink:href="https://people.cs.kuleuven.be/~wim.vancroonenburg/pas/">Kaho's Patient
         Scheduling</link> and the datasets come from real world hospitals.</para>
       </section>
 
