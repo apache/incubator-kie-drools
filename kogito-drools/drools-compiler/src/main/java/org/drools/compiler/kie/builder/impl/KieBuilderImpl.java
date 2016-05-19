@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -14,6 +14,17 @@
 */
 
 package org.drools.compiler.kie.builder.impl;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
@@ -49,19 +60,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
-import org.kie.internal.io.ResourceTypeImpl;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class KieBuilderImpl
         implements
@@ -108,11 +106,13 @@ public class KieBuilderImpl
         srcMfs = ( (KieFileSystemImpl) kieFileSystem ).asMemoryFileSystem();
     }
 
+    @Override
     public KieBuilder setDependencies( KieModule... dependencies ) {
         this.kieDependencies = Arrays.asList( dependencies );
         return this;
     }
 
+    @Override
     public KieBuilder setDependencies( Resource... resources ) {
         KieRepositoryImpl kr = (KieRepositoryImpl) KieServices.Factory.get().getRepository();
         List<KieModule> list = new ArrayList<KieModule>();
@@ -165,7 +165,13 @@ public class KieBuilderImpl
         kieDependencies.add( depModule );
     }
 
+    @Override
     public KieBuilder buildAll() {
+        return buildAll( o -> true );
+    }
+
+    @Override
+    public KieBuilder buildAll( Predicate<String> classFilter ) {
         PomModel pomModel = init();
 
         // kModuleModel will be null if a provided pom.xml or kmodule.xml is invalid
@@ -193,7 +199,7 @@ public class KieBuilderImpl
                 results.addMessage( Level.ERROR, "pom.xml", "Unresolved dependency " + unresolvedDep );
             }
 
-            compileJavaClasses( kProject.getClassLoader() );
+            compileJavaClasses( kProject.getClassLoader(), classFilter );
 
             buildKieProject( kModule, results, kProject, trgMfs );
         }
@@ -270,19 +276,6 @@ public class KieBuilderImpl
         return trgFileName;
     }
 
-    private ResourceType getResourceType( String fileName ) {
-        if ( srcMfs.isAvailable( fileName + ".properties" ) ) {
-            // configuration file available
-            Properties prop = new Properties();
-            try {
-                prop.load( new ByteArrayInputStream( srcMfs.getBytes( fileName + ".properties" ) ) );
-                return getResourceType( ResourceTypeImpl.fromProperties( prop ) );
-            } catch ( IOException e ) {
-            }
-        }
-        return null;
-    }
-
     void cloneKieModuleForIncrementalCompilation() {
         if ( !Arrays.equals( pomXml, getOrGeneratePomXml( srcMfs ) ) ) {
             pomModel = null;
@@ -320,7 +313,7 @@ public class KieBuilderImpl
     }
 
     private static boolean isKieExtension(String fileName) {
-        return !fileName.endsWith(".java") && ResourceType.determineResourceType(fileName) != null;
+        return !isJavaSourceFile( fileName ) && ResourceType.determineResourceType(fileName) != null;
     }
 
     private static boolean isFileInKieBase( KieBaseModel kieBase,
@@ -366,6 +359,7 @@ public class KieBuilderImpl
         }
     }
 
+    @Override
     public Results getResults() {
         if ( !isBuilt() ) {
             buildAll();
@@ -373,10 +367,12 @@ public class KieBuilderImpl
         return results;
     }
 
+    @Override
     public KieModule getKieModule() {
         return getKieModule( false );
     }
 
+    @Override
     public KieModule getKieModuleIgnoringErrors() {
         return getKieModule( true );
     }
@@ -544,7 +540,7 @@ public class KieBuilderImpl
         return sBuilder.toString();
     }
 
-    private void compileJavaClasses( ClassLoader classLoader ) {
+    private void compileJavaClasses( ClassLoader classLoader, Predicate<String> classFilter ) {
         List<String> classFiles = new ArrayList<String>();
         for ( String fileName : srcMfs.getFileNames() ) {
             if ( fileName.endsWith( ".class" ) ) {
@@ -559,8 +555,9 @@ public class KieBuilderImpl
         List<String> javaFiles = new ArrayList<String>();
         List<String> javaTestFiles = new ArrayList<String>();
         for ( String fileName : srcMfs.getFileNames() ) {
-            if ( fileName.endsWith( ".java" ) && !classFiles.contains( fileName.substring( 0,
-                                                                                           fileName.length() - ".java".length() ) ) ) {
+            if ( isJavaSourceFile( fileName )
+                    && noClassFileForGivenSourceFile( classFiles, fileName )
+                    && notVetoedByFilter( classFilter, fileName ) ) {
                 fileName = fileName.replace( File.separatorChar, '/' );
 
                 if ( !fileName.startsWith( JAVA_ROOT ) && !fileName.startsWith( JAVA_TEST_ROOT ) ) {
@@ -583,6 +580,19 @@ public class KieBuilderImpl
             compileJavaClasses( javaConf, classLoader, javaFiles, JAVA_ROOT );
             compileJavaClasses( javaConf, classLoader, javaTestFiles, JAVA_TEST_ROOT );
         }
+    }
+
+    private static boolean notVetoedByFilter( final Predicate<String> classFilter,
+                                               final String sourceFileName ) {
+        return classFilter.test( sourceFileName );
+    }
+
+    private static boolean noClassFileForGivenSourceFile( List<String> classFiles, String sourceFileName ) {
+        return !classFiles.contains( sourceFileName.substring( 0, sourceFileName.length() - ".java".length() ) );
+    }
+
+    private static boolean isJavaSourceFile( String fileName ) {
+        return fileName.endsWith( ".java" );
     }
 
     private void compileJavaClasses( JavaDialectConfiguration javaConf,
@@ -658,6 +668,7 @@ public class KieBuilderImpl
         return kieBuilderSet.setFiles( files );
     }
 
+    @Override
     public IncrementalResults incrementalBuild() {
         return new KieBuilderSetImpl( this ).build();
     }
