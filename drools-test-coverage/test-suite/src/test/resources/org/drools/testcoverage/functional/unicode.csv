@@ -1,0 +1,10 @@
+"RuleSet","org.drools.testcoverage.functional",
+"import","org.drools.testcoverage.functional.UnicodeTest.Člověk",
+"Variables","java.util.List dospělí",
+,,
+"RuleTable Test použití češtiny",,
+"NAME","CONDITION","ACTION"
+,"$člověk : Člověk",
+,"$param > 18","dospělí.add($člověk);"
+"jméno","starší než 18","přidat do seznamu dospělích"
+"pokusné pravidlo rozhodovací tabulky","věk","X"

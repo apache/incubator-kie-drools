@@ -1,0 +1,15 @@
+package org.drools.testcoverage.functional
+
+import java.util.List
+import org.drools.testcoverage.functional.UnicodeTest.Člověk
+
+expander unicode.dslr
+
+global List dospělí
+
+rule "pokusné doménově specifické pravidlo"
+    when
+        Je tu Člověk, který má věk větší než 18
+    then
+        Přidat do　seznamu dospělých
+end
