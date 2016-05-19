@@ -39,7 +39,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class NearEntityNearbyValueSelectorTest {
 
-    @Test @Ignore("Limitation in NearEntityNearbyValueSelector")
+    @Test
     public void originalSelection() {
         final TestdataEntity africa = new TestdataEntity("Africa");
         final TestdataEntity europe = new TestdataEntity("Europe");

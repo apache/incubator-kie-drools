@@ -35,7 +35,7 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
     protected final NearbyDistanceMeter nearbyDistanceMeter;
     protected final NearbyRandom nearbyRandom;
     protected final boolean randomSelection;
-    protected final boolean discardNearbyIndexZero = true; // TODO deactivate me when appropriate
+    protected final boolean discardNearbyIndexZero;
 
     protected NearbyDistanceMatrix nearbyDistanceMatrix = null;
 
@@ -50,15 +50,8 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
             throw new IllegalArgumentException("The valueSelector (" + this
                     + ") with randomSelection (" + randomSelection + ") has no nearbyRandom (" + nearbyRandom + ").");
         }
-        // TODO Remove this limitation and unignore test NearEntityNearbyValueSelectorTest.originalSelection()
-        if (!childValueSelector.getVariableDescriptor().getVariablePropertyType().isAssignableFrom(
-                originEntitySelector.getEntityDescriptor().getEntityClass())) {
-            throw new IllegalArgumentException("The valueSelector (" + this
-                    + ") has a variable property type ("
-                    +  childValueSelector.getVariableDescriptor().getVariablePropertyType()
-                    + ") which is not a superclass of the originEntitySelector's entityClass ("
-                    + originEntitySelector.getEntityDescriptor().getEntityClass() + ").");
-        }
+        discardNearbyIndexZero = childValueSelector.getVariableDescriptor().getVariablePropertyType().isAssignableFrom(
+                originEntitySelector.getEntityDescriptor().getEntityClass());
         phaseLifecycleSupport.addEventListener(childValueSelector);
         phaseLifecycleSupport.addEventListener(originEntitySelector);
     }
