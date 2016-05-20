@@ -16,6 +16,8 @@
 
 package org.drools.testcoverage.common.util;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -49,6 +51,17 @@ public final class KieBaseUtil {
 
     public static KieBase getDefaultKieBaseFromReleaseId(final ReleaseId id) {
         return getKieBaseFromReleaseIdByName(id, null);
+    }
+
+    public static KieBase getKieBaseFromClasspathResources(final Class classLoaderFromClass,
+                                                           final boolean failIfBuildError, final String... resources) {
+        final List<Resource> result = new ArrayList<>();
+
+        for (String resource : resources) {
+            result.add(KieServices.Factory.get().getResources().newClassPathResource(resource, classLoaderFromClass));
+        }
+
+        return getKieBaseFromResources(true, result.toArray(new Resource[result.size()]));
     }
 
     public static KieBase getKieBaseFromResources(final boolean failIfBuildError, final Resource... resources) {

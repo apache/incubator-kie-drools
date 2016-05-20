@@ -19,7 +19,8 @@ package org.drools.testcoverage.common.model;
 import java.io.Serializable;
 
 public class Address implements Serializable {
-    private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = -4500788294548913289L;
 
     private String street;
     private int number;

@@ -14,18 +14,36 @@
  * limitations under the License.
  */
 
-package org.drools.testcoverage.functional
+package org.drools.testcoverage.common.model;
 
-import java.util.List
-import org.drools.testcoverage.functional.UnicodeTest.Člověk
+import java.io.Serializable;
 
-expander unicode.dslr
+public class Cheese implements Serializable {
 
-global List dospělí
+    private static final long serialVersionUID = -6959012349000689087L;
 
-rule "pokusné doménově specifické pravidlo"
-    when
-        Je tu Člověk, který má věk větší než 18
-    then
-        Přidat do　seznamu dospělých
-end
+    private String type;
+    private int price;
+
+    public Cheese() {
+    }
+
+    public Cheese(final String type, final int price) {
+        super();
+        this.type = type;
+        this.price = price;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setPrice(final int price) {
+        this.price = price;
+    }
+
+}

@@ -14,18 +14,32 @@
  * limitations under the License.
  */
 
-package org.drools.testcoverage.functional
+package org.drools.testcoverage.common.model;
 
-import java.util.List
-import org.drools.testcoverage.functional.UnicodeTest.Člověk
+import java.io.Serializable;
 
-expander unicode.dslr
+/**
+ * Simple fact class used in aggregation test. Holds one value that can be
+ * aggregated.
+ */
+public class AggregableFact implements Serializable {
 
-global List dospělí
+    private static final long serialVersionUID = 3491698741720234098L;
+    private double value;
 
-rule "pokusné doménově specifické pravidlo"
-    when
-        Je tu Člověk, který má věk větší než 18
-    then
-        Přidat do　seznamu dospělých
-end
+    public AggregableFact() {
+        value = 0.0;
+    }
+
+    public AggregableFact(final double value) {
+        this.value = value;
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(final double value) {
+        this.value = value;
+    }
+}
