@@ -17,7 +17,6 @@
 package org.drools.testcoverage.functional;
 
 import org.assertj.core.api.Assertions;
-import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
@@ -27,7 +26,6 @@ import org.kie.api.KieServices;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 
 import java.io.StringReader;
@@ -69,12 +67,9 @@ public class ResourcesTest {
 
     @Test
     public void testCSV() {
-        final Resource res = KieServices.Factory.get().getResources().newClassPathResource("sample.csv", getClass());
-        final DecisionTableConfiguration resourceConfig = new DecisionTableConfigurationImpl();
-        resourceConfig.setInputType(DecisionTableInputType.CSV);
-        res.setConfiguration(resourceConfig);
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, res);
+        final Resource decisionTable =
+                KieBaseUtil.getDecisionTableResourceFromClasspath("sample.csv", getClass(), DecisionTableInputType.CSV);
+        final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
 
         Assertions.assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of packages in kbase").isEqualTo((long) 2);
 

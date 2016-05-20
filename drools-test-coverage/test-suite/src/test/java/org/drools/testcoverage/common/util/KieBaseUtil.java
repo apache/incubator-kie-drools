@@ -16,23 +16,22 @@
 
 package org.drools.testcoverage.common.util;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.assertj.core.api.Assertions;
+import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.Message;
-import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.*;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
+import org.kie.internal.builder.DecisionTableConfiguration;
+import org.kie.internal.builder.DecisionTableInputType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Util class that provides various methods related to KieBase.
@@ -41,7 +40,18 @@ public final class KieBaseUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KieBaseUtil.class);
 
-    public static final KieBase getDefaultKieBaseFromKieBuilder(final KieBuilder kbuilder) {
+    public static Resource getDecisionTableResourceFromClasspath(final String resourceName,
+                                                                 final Class classLoaderFromClass,
+                                                                 final DecisionTableInputType type) {
+        final Resource dtable =
+                KieServices.Factory.get().getResources().newClassPathResource(resourceName, classLoaderFromClass);
+        final DecisionTableConfiguration resourceConfig = new DecisionTableConfigurationImpl();
+        resourceConfig.setInputType(type);
+        dtable.setConfiguration(resourceConfig);
+        return dtable;
+    }
+
+    public static KieBase getDefaultKieBaseFromKieBuilder(final KieBuilder kbuilder) {
         return getDefaultKieBaseFromKieModule(kbuilder.getKieModule());
     }
 
@@ -55,13 +65,8 @@ public final class KieBaseUtil {
 
     public static KieBase getKieBaseFromClasspathResources(final Class classLoaderFromClass,
                                                            final boolean failIfBuildError, final String... resources) {
-        final List<Resource> result = new ArrayList<>();
-
-        for (String resource : resources) {
-            result.add(KieServices.Factory.get().getResources().newClassPathResource(resource, classLoaderFromClass));
-        }
-
-        return getKieBaseFromResources(true, result.toArray(new Resource[result.size()]));
+        final KieBuilder kieBuilder = getKieBuilderFromClasspathResources(classLoaderFromClass, failIfBuildError, resources);
+        return getDefaultKieBaseFromKieBuilder(kieBuilder);
     }
 
     public static KieBase getKieBaseFromResources(final boolean failIfBuildError, final Resource... resources) {
@@ -95,8 +100,30 @@ public final class KieBaseUtil {
         return fileSystem;
     }
 
+    public static void addKieModuleWithResourceToRepository(final ReleaseId releaseId, final Resource resource) {
+        final KieServices kieServices = KieServices.Factory.get();
+
+        final KieModuleModel module = kieServices.newKieModuleModel();
+        final KieBaseModel base = module.newKieBaseModel();
+        base.setDefault(true);
+        final KieFileSystem fileSystem = writeKieModuleWithResourceToFileSystem(module, releaseId, resource);
+        final KieBuilder builder = getKieBuilderFromKieFileSystem(fileSystem, true);
+        kieServices.getRepository().addKieModule(builder.getKieModule());
+    }
+
     public static KieBuilder getKieBuilderFromKieFileSystem(final KieFileSystem fileSystem, final boolean failIfBuildError) {
         return getKieBuilderFromFileSystemWithResources(fileSystem, failIfBuildError);
+    }
+
+    public static KieBuilder getKieBuilderFromClasspathResources(final Class classLoaderFromClass,
+                                                                 final boolean failIfBuildError,
+                                                                 final String... resources) {
+        final List<Resource> result = new ArrayList<>();
+        for (String resource : resources) {
+            result.add(KieServices.Factory.get().getResources().newClassPathResource(resource, classLoaderFromClass));
+        }
+
+        return getKieBuilderFromResources(failIfBuildError, result.toArray(new Resource[]{}));
     }
 
     public static KieBuilder getKieBuilderFromResources(final boolean failIfBuildError, final Resource... resources) {

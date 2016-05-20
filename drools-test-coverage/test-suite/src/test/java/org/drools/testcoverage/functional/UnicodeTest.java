@@ -17,7 +17,6 @@
 package org.drools.testcoverage.functional;
 
 import org.assertj.core.api.Assertions;
-import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Test;
@@ -31,7 +30,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
-import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 
 import java.io.FileNotFoundException;
@@ -151,12 +149,10 @@ public class UnicodeTest {
     public void testCzechCSVDecisionTable() throws FileNotFoundException {
         final KieServices kieServices = KieServices.Factory.get();
 
-        final DecisionTableConfiguration resourceConfig = new DecisionTableConfigurationImpl();
-        resourceConfig.setInputType(DecisionTableInputType.CSV);
-        final Resource resource = kieServices.getResources().newClassPathResource("unicode.csv", getClass());
-        resource.setConfiguration(resourceConfig);
+        final Resource decisionTable =
+                KieBaseUtil.getDecisionTableResourceFromClasspath("unicode.csv", getClass(), DecisionTableInputType.CSV);
 
-        KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, resource);
+        KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
         KieSession ksession = kbase.newKieSession();
 
         List<Command<?>> commands = new ArrayList<Command<?>>();
