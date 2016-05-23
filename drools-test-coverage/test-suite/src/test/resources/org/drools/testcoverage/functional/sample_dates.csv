@@ -1,0 +1,13 @@
+,
+"RuleSet","org.drools.testcoverage.functional"
+"Import","org.drools.testcoverage.common.model.Person"
+"Notes",
+,
+"RuleTable ID change",
+"CONDITION","ACTION","DATE-EFFECTIVE","DATE-EXPIRES"
+"person:Person","person"
+"id == $param","setId($param)"
+"ID","new ID","effective date","expires date"
+0,1,01-Jan-2012,31-Dec-2012
+1,2,01-Jan-2013,31-Dec-2013
+2,3

@@ -1,0 +1,167 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.testcoverage.functional
+
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.model.Pet;
+import java.util.ArrayList;
+import java.util.List;
+
+// query with empty name
+query ""
+    person : Person()
+end
+
+// simple query, just returns all persons
+query "simple query with no parameters"
+    person : Person()
+end
+
+// simple query, returns persons with names and ages as in specific parameters
+query queryWithParams(String name1, int age1, String name2, int age2)
+    person : Person((name == name1 || name == name2) && (age == age1 || age == age2))
+end
+
+// simple query with few return values
+query "query with return values" (int top, int bottom)
+    person : Person(age > bottom, age < top, ageR : age, likesR : likes)
+end
+
+// simple query which returns nothing
+query nothing
+    person : Person( name == null )
+end
+
+// simple query, return person with specific name or with name Petr
+query personWithName(String pname)
+    person : Person(name == pname || name == "Petr")
+end
+
+// query with parameters without type
+query queryWithParamWithoutType( tname , tage)
+    person : Person(name == tname, age < (Integer)tage )
+end
+
+declare Location
+    thing : String 
+    location : String 
+end
+
+query isContainedIn( String x, String y ) 
+    Location(x, y;)
+    or 
+    ( Location(z, y;) and isContainedIn(x, z;) )
+end
+
+declare Location2
+    thing : String @position(1)
+    location : String @position(0)
+end
+
+query isContainedIn2( String x, String y ) 
+    Location2(y, x;)
+    or 
+    ( Location2(y, z;) and isContainedIn2(x, z;) )
+end
+
+query isPersonOlderThan(Person p, int ageFrom)
+    Person(this == p, age > ageFrom)
+end
+
+query isPersonYoungerThan(Person p, int ageTo)
+    Person(this == p, age < ageTo)
+end
+
+query getPersonsBetween(int ageFrom, int ageTo) 
+    p : Person()
+    isPersonOlderThan(p, ageFrom;) and isPersonYoungerThan(p, ageTo;)
+end
+
+query personsAgesAndLikes(int ages, String plikes)
+    Person(ages := age, plikes := likes)
+end
+
+query personsNamesAndLikesWithAgeAbove(String names, String plikes, int pAge)
+    Person(pAge < age, names := name, plikes := likes)
+end
+
+query isPersonWithSameAgeAs(Person p)
+    $per : Person( age == p.getAge() )
+    eval($per != p)
+end
+
+// push query
+rule "tell me if there is person with same age as Petr"
+    when
+        $p : Person( name == "Petr" ) // check if there is Petr
+        isPersonWithSameAgeAs($p;)               
+    then
+end
+
+// pull query
+rule "tell me if there is person with same age as Pavel"
+    when
+        $p : Person( name == "Pavel" ) // check if there is Pavel
+        ?isPersonWithSameAgeAs($p;)               
+    then
+end
+
+// query that use  forall
+query ifAllPersonsAreOlderReturnThem (int pAge)
+    forall ( Person(age > pAge) )
+    $person : Person()
+end
+
+// query that use  from
+query getPersonWithPetAndLikes(String pLikes)
+    $pet : Pet()
+    $person : Person(likes == pLikes) from $pet.owner   
+end
+
+// query that use collect
+query getListOfPersonOlderThan(int pAge)
+    $persons : ArrayList() from collect ( Person(age > pAge) )
+end
+
+// queries that use accumulate
+query calculateSumOfAgesOfPersonsOlderThan(int pAge)
+    $sum : Integer() from accumulate (
+        Person( age > pAge, $age : age ), init( int sum = 0; ), action( sum += $age; ), reverse( sum -= $age; ), result( sum )
+    )
+end
+
+query namesOfTeenagers
+    $names : List() from accumulate (
+        Person( age >= 13, age <= 19, $name : name ), collectList( $name )
+    )
+end
+
+query informationsAboutPersons
+    accumulate (
+        Person( $age : age, $name : name );
+        $minimalAge : min( $age ),
+        $maximalAge : max( $age ),
+        $averageAge : average( $age ), 
+        $countOfPerson : count( $age ),
+        $sumOfAges : sum ( $age ),
+        $setOfNames : collectSet ( $name ),
+        $listOfNames : collectList( $name ),
+        $expr : average( $age * 1000 );
+        $minimalAge > 0, $maximalAge < 150
+    )
+end
+    
