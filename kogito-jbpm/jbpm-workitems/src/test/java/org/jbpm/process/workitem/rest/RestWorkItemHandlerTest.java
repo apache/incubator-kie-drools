@@ -78,8 +78,10 @@ public class RestWorkItemHandlerTest {
 
     @AfterClass
     public static void destroy() throws Exception {
-        server.stop();
-        server.destroy();
+        if (server != null) {
+            server.stop();
+            server.destroy();
+        }
     }
     
     @Before

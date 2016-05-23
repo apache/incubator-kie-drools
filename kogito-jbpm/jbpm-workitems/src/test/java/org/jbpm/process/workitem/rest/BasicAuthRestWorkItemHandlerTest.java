@@ -15,24 +15,9 @@
 
 package org.jbpm.process.workitem.rest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.RuntimeDelegate;
-
-import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
-import org.apache.cxf.jaxrs.ext.RequestHandler;
-import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.jaxrs.provider.JAXBElementProvider;
-import org.apache.cxf.message.Message;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.bpmn2.handler.WorkItemHandlerRuntimeException;
 import org.junit.AfterClass;
@@ -46,6 +31,21 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
 
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.RuntimeDelegate;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collection;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 @RunWith(Parameterized.class)
 public class BasicAuthRestWorkItemHandlerTest {
 
@@ -58,19 +58,19 @@ public class BasicAuthRestWorkItemHandlerTest {
         return Arrays.asList(locking);
     };
   
-    private final boolean httpClient43;
-	
-    private final static String serverURL = "http://localhost:9998/test";
+    private static final String SERVER_URL = "http://localhost:9998/test";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+
     private static Server server;
-    
-    private String username = "username";
-    private String password = "password";
-    
+
+    private final boolean httpClient43;
+
     public BasicAuthRestWorkItemHandlerTest(boolean httpClient43) {
     	this.httpClient43 = httpClient43;
     }
 
-    @SuppressWarnings({ "rawtypes"})
+    @SuppressWarnings({"rawtypes"})
     @BeforeClass
     public static void initialize() throws Exception {
 
@@ -82,15 +82,17 @@ public class BasicAuthRestWorkItemHandlerTest {
         bean.setAddress("http://localhost:9998" + bean.getAddress());
         // disabled logging interceptor by default but proves to be useful
         // bean.getInInterceptors().add(new LoggingInInterceptor(new PrintWriter(System.out, true)));
-        bean.setProvider(new AuthenticationHandler());
+        bean.setProvider(new AuthenticationFilter());
         server = bean.create();
         server.start();
     }
 
     @AfterClass
     public static void destroy() throws Exception {
-        server.stop();
-        server.destroy();
+        if (server != null) {
+            server.stop();
+            server.destroy();
+        }
     }
     
     @Before
@@ -100,10 +102,10 @@ public class BasicAuthRestWorkItemHandlerTest {
     
     @Test
     public void testGETOperation() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(USERNAME, PASSWORD);
         
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setParameter( "Url", serverURL);
+        workItem.setParameter( "Url", SERVER_URL);
         workItem.setParameter( "Method", "GET" );
         
         
@@ -123,10 +125,10 @@ public class BasicAuthRestWorkItemHandlerTest {
     
     @Test
     public void testGETOperationWithCustomTimeout() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(USERNAME, PASSWORD);
         
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setParameter( "Url", serverURL);
+        workItem.setParameter( "Url", SERVER_URL);
         workItem.setParameter( "Method", "GET" );
         workItem.setParameter( "ConnectTimeout", "30000" );
         workItem.setParameter( "ReadTimeout", "25000" );
@@ -148,10 +150,10 @@ public class BasicAuthRestWorkItemHandlerTest {
     
     @Test
     public void testGETOperationWithInvalidTimeout() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(USERNAME, PASSWORD);
         
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setParameter( "Url", serverURL);
+        workItem.setParameter( "Url", SERVER_URL);
         workItem.setParameter( "Method", "GET" );
         workItem.setParameter( "ConnectTimeout", "" );
         workItem.setParameter( "ReadTimeout", "" );
@@ -173,10 +175,10 @@ public class BasicAuthRestWorkItemHandlerTest {
     
     @Test
     public void testGETOperationWithQueryParam() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(USERNAME, PASSWORD);
         
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setParameter( "Url", serverURL+"?param=test");
+        workItem.setParameter( "Url", SERVER_URL +"?param=test");
         workItem.setParameter( "Method", "GET" );
         
         
@@ -196,12 +198,12 @@ public class BasicAuthRestWorkItemHandlerTest {
     
     @Test
     public void testPOSTOperation() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(USERNAME, PASSWORD);
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
         		"<person><age>25</age><name>Post john</name></person>";
         
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setParameter( "Url", serverURL+"/xml");
+        workItem.setParameter( "Url", SERVER_URL +"/xml");
         workItem.setParameter( "Method", "POST" );
         workItem.setParameter( "ContentType", "application/xml" );
         workItem.setParameter( "Content", "<person><name>john</name><age>25</age></person>" );
@@ -223,10 +225,10 @@ public class BasicAuthRestWorkItemHandlerTest {
     
     @Test
     public void testPOSTOperationWithPathParamAndNoContent() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(USERNAME, PASSWORD);
         
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setParameter( "Url", serverURL+"/john");
+        workItem.setParameter( "Url", SERVER_URL +"/john");
         workItem.setParameter( "Method", "POST" );
         
         
@@ -246,12 +248,12 @@ public class BasicAuthRestWorkItemHandlerTest {
     
     @Test
     public void testPUTOperation() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(USERNAME, PASSWORD);
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
                 "<person><age>25</age><name>Put john</name></person>";
         
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setParameter( "Url", serverURL+"/xml");
+        workItem.setParameter( "Url", SERVER_URL +"/xml");
         workItem.setParameter( "Method", "PUT" );
         workItem.setParameter( "ContentType", "application/xml" );
         workItem.setParameter( "Content", "<person><name>john</name><age>25</age></person>" );
@@ -273,12 +275,12 @@ public class BasicAuthRestWorkItemHandlerTest {
     
     @Test
     public void testDELETEOperation() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(USERNAME, PASSWORD);
         String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
                 "<person><age>-1</age><name>deleted john</name></person>";
         
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setParameter( "Url", serverURL+"/xml/john");
+        workItem.setParameter( "Url", SERVER_URL +"/xml/john");
         workItem.setParameter( "Method", "DELETE" );
         
         
@@ -298,10 +300,10 @@ public class BasicAuthRestWorkItemHandlerTest {
     
     @Test(expected=IllegalArgumentException.class)
     public void testUnsupportedOperation() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(USERNAME, PASSWORD);
         
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setParameter( "Url", serverURL+"/xml/john");
+        workItem.setParameter( "Url", SERVER_URL +"/xml/john");
         workItem.setParameter( "Method", "HEAD" );
         
         
@@ -311,10 +313,10 @@ public class BasicAuthRestWorkItemHandlerTest {
     
     @Test
     public void testHandleErrorOnNotSuccessfulResponse() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, password);
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(USERNAME, PASSWORD);
         
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setParameter( "Url", serverURL+"/notexisting");
+        workItem.setParameter( "Url", SERVER_URL +"/notexisting");
         workItem.setParameter( "Method", "GET" );
         workItem.setParameter("HandleResponseErrors", "true");
         
@@ -327,17 +329,17 @@ public class BasicAuthRestWorkItemHandlerTest {
         	
         	RESTServiceException e = (RESTServiceException) ex.getCause().getCause();
         	assertEquals(405, e.getStatus());
-        	assertEquals(serverURL+"/notexisting", e.getEndoint());
+        	assertEquals(SERVER_URL +"/notexisting", e.getEndoint());
         	assertEquals("", e.getResponse());
         }
     }
     
     @Test
     public void testHandleErrorOnNotSuccessfulResponseWrongCredentials() {
-        RESTWorkItemHandler handler = new RESTWorkItemHandler(username, "wrongpassword");
+        RESTWorkItemHandler handler = new RESTWorkItemHandler(USERNAME, "wrongpassword");
         
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setParameter( "Url", serverURL);
+        workItem.setParameter( "Url", SERVER_URL);
         workItem.setParameter( "Method", "GET" );
         workItem.setParameter("HandleResponseErrors", "true");
         
@@ -350,7 +352,7 @@ public class BasicAuthRestWorkItemHandlerTest {
         	
         	RESTServiceException e = (RESTServiceException) ex.getCause().getCause();
         	assertEquals(401, e.getStatus());
-        	assertEquals(serverURL, e.getEndoint());
+        	assertEquals(SERVER_URL, e.getEndoint());
         	assertEquals("", e.getResponse());
         }
     }
@@ -360,11 +362,11 @@ public class BasicAuthRestWorkItemHandlerTest {
         RESTWorkItemHandler handler = new RESTWorkItemHandler();
         
         WorkItemImpl workItem = new WorkItemImpl();
-        workItem.setParameter( "Url", serverURL);
+        workItem.setParameter( "Url", SERVER_URL);
         workItem.setParameter( "Method", "GET" );
         workItem.setParameter( "AuthType", "BASIC" );
-        workItem.setParameter( "Username", username );
-        workItem.setParameter( "Password", password );
+        workItem.setParameter( "Username", USERNAME);
+        workItem.setParameter( "Password", PASSWORD);
         
         
         WorkItemManager manager = new TestWorkItemManager(workItem);
@@ -406,28 +408,34 @@ public class BasicAuthRestWorkItemHandlerTest {
         }
         
     }
-    
-    private static class AuthenticationHandler implements RequestHandler {
-    	 
-        public Response handleRequest(Message m, ClassResourceInfo resourceClass) {
-            AuthorizationPolicy policy = (AuthorizationPolicy)m.get(AuthorizationPolicy.class);
-            String username = policy.getUserName();
-            String password = policy.getPassword(); 
-            if (isAuthenticated(username, password)) {
-                // let request to continue
-                return null;
-            } else {
-                // authentication failed, request the authetication, add the realm name if needed to the value of WWW-Authenticate 
-                return Response.status(401).header("WWW-Authenticate", "Basic").build();
+
+    /**
+     * Intercepts the request and checks whether the HTTP Basic authentication header was correctly set (e.g. has
+     * correct username+password).
+     *
+     * For test purposes only.
+     */
+    private static class AuthenticationFilter implements ContainerRequestFilter {
+
+        @Override
+        public void filter(ContainerRequestContext containerRequestContext) throws IOException {
+            String[] usernamePassword = decodeBase64UsernameAndPassword(containerRequestContext.getHeaderString("Authorization"));
+            String username = usernamePassword[0];
+            String password = usernamePassword[1];
+            if (!isAuthenticated(username, password)) {
+                containerRequestContext.abortWith(Response.status(401).header("WWW-Authenticate", "Basic").build());
             }
         }
 
-		private boolean isAuthenticated(String username, String password) {
-			if ("username".equals(username) && "password".equals(password)) {
-				return true;
-			}
-			return false;
-		}
-     
+        private String[] decodeBase64UsernameAndPassword(String base64authzHeader) {
+            // extract just the username:password part (removing the "Basic " prefix)
+            String usernamePasswordBase64 = base64authzHeader.substring("Basic ".length());
+            String usernamePassword = new String(Base64.getDecoder().decode(usernamePasswordBase64), StandardCharsets.UTF_8);
+            return usernamePassword.split(":");
+        }
+
+        private boolean isAuthenticated(String username, String password) {
+            return USERNAME.equals(username) && PASSWORD.equals(password);
+        }
     }
 }
