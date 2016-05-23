@@ -1,0 +1,13 @@
+,
+"RuleSet","org.drools.testcoverage.functional"
+"Import","org.drools.testcoverage.common.model.Person"
+"Notes",
+,
+"RuleTable ID change",
+"CONDITION","ACTION"
+"person:Person","person"
+"id == $param","setId($param)"
+"ID","new ID"
+0,1
+1,2
+2,3

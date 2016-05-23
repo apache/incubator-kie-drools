@@ -1,0 +1,79 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.testcoverage.functional
+
+import java.util.List
+import org.drools.testcoverage.functional.UnicodeTest.人
+import org.drools.testcoverage.functional.UnicodeTest.Člověk
+
+global List 一覧
+global List lidé
+
+declare Umístění
+    @author(Jiří)
+    věc : String
+    místo : String
+end
+
+declare Město extends Umístění
+
+end
+
+query jeObsažen (String x, String y)
+    Umístění (x,y;)
+    or
+    (Umístění(z,y;) and jeObsažen(x,z;))
+end
+
+rule "サンプルのルール"
+	when
+		$person : 人(歳 > 18)
+	then
+        //System.out.println("adult Japanese!");	   
+        一覧.add($person);
+end
+
+rule "サンプルのルール2"
+    when
+        $person : 人( 既婚 )
+    then
+        //System.out.println("married Japanese!");
+end
+
+rule "příliš žluťoučký kůň úpěl ďábelské ódy"
+@PrávníPožadavek("Osoba starší osmnácti let")
+    activation-group "Aktivační skupina"
+    agenda-group "Třeba nějaká agenda"
+    auto-focus true
+    when
+        človíček : Člověk(věk > 18)
+    then
+        //System.out.println("adult Czech!");       
+        lidé.add(človíček);
+        drools.getKieRuntime().getAgenda().getAgendaGroup("nějaká agendová skupina").setFocus();
+end
+
+rule "pomocné pravidlo s novou agendovou skupinou, třistatčicettři stříbrných křepelek přelětlo třisttřicettři červených třešní"
+    agenda-group "nějaká agendová skupina"
+    when
+        Člověk(věk > 18);
+    then
+        Člověk člověk = new Člověk();
+        člověk.setJméno("Oldřiška");
+        člověk.setVěk(10);
+        lidé.add(člověk);
+end

@@ -16,13 +16,13 @@
 
 package org.drools.testcoverage.regression;
 
-import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
 import org.drools.core.time.SessionPseudoClock;
+import org.drools.testcoverage.common.util.TestConstants;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionUtil;
 import org.junit.Before;
@@ -31,7 +31,6 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
@@ -58,7 +57,7 @@ public class DroolsGcCausesNPETest {
     private static final KieServices services = KieServices.Factory.get();
 
     private static final ReleaseId RELEASE_ID = services.newReleaseId(
-            "org.drools.testcoverage", "drools-gc-causes-npe-example", "1.0");
+            TestConstants.PACKAGE_TESTCOVERAGE, "drools-gc-causes-npe-example", "1.0");
 
     private KieSession session;
     private SessionPseudoClock clock;
@@ -76,12 +75,7 @@ public class DroolsGcCausesNPETest {
         final KieFileSystem fileSystem = KieBaseUtil.writeKieModuleWithResourceToFileSystem(module, RELEASE_ID,
                 fileSystemResource);
 
-        final KieBuilder builder = services.newKieBuilder(fileSystem);
-        final List<Message> errors = builder.buildAll().getResults()
-                .getMessages(Message.Level.ERROR);
-        if (errors.size() > 0) {
-            Assertions.fail("unexpected errors building drl: " + errors);
-        }
+        final KieBuilder builder = KieBaseUtil.getKieBuilderFromKieFileSystem(fileSystem, true);
 
         services.getRepository().addKieModule(builder.getKieModule());
     }
@@ -92,7 +86,7 @@ public class DroolsGcCausesNPETest {
                 KieSessionUtil.getKieSessionConfigurationWithClock(ClockTypeOption.get("pseudo"), getSessionProperties());
 
         session = KieBaseUtil.getKieBaseFromReleaseIdByName(RELEASE_ID, KIE_BASE_NAME).newKieSession(conf,
-                KieBaseUtil.getKieServices().newEnvironment());
+                KieServices.Factory.get().newEnvironment());
         clock = session.getSessionClock();
         eventFactType = session.getKieBase().getFactType(this.getClass().getPackage().getName(), "Event");
     }

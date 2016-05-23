@@ -1,0 +1,59 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.testcoverage.regression
+
+import org.drools.testcoverage.common.model.Person
+import org.drools.testcoverage.common.model.Message
+
+rule "Name"
+    when
+        $p : Person ( name == "" || == null )
+    then
+    	modify ($p) {
+    		setName("Aquaman");
+    	}
+end
+
+rule "Message"
+	no-loop
+	when
+		$m : Message ( message == "" || == null )
+	then
+		modify ($m) {
+			setMessage("Hello world");
+		}
+end
+
+rule "Id"
+    when
+        $p : Person ( id == 0 )
+    then
+    	modify ($p) {
+    		setId(5);
+    	}
+end
+
+rule "Message from"
+	salience -10
+	when
+		$p : Person ( name != "" && != null && id != 0)
+		$m : Message ( message == "Hello world" )
+	then
+		modify ($m) {
+			setMessage($m.getMessage() + " from " + $p.getName() + "[id=" + $p.getId() + "]");
+		}
+end

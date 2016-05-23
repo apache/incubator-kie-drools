@@ -1,0 +1,23 @@
+template header
+age
+type
+log
+
+package org.drools.testcoverage.functional;
+
+import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.model.Cheese;
+
+global java.util.List list;
+
+template "cheesefans"
+
+rule "Cheese fans_@{row.rowNumber}"
+when
+    Person(age == @{age})
+    Cheese(type == "@{type}")
+then
+    list.add("@{log}");
+end
+
+end template

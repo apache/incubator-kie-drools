@@ -16,25 +16,19 @@
 
 package org.drools.testcoverage.common.util;
 
-import java.util.Properties;
-
-import org.kie.api.KieServices;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
-
 /**
- * Util class that provides various methods related to KieSession.
+ * Various constants used in tests.
  */
-public final class KieSessionUtil {
+public final class TestConstants {
 
-    public static KieSessionConfiguration getKieSessionConfigurationWithClock(final ClockTypeOption clockType,
-            final Properties sessionProperties) {
-        final KieSessionConfiguration conf = KieServices.Factory.get().newKieSessionConfiguration(sessionProperties);
-        conf.setOption(clockType);
-        return conf;
-    }
+    public static final String PACKAGE_TESTCOVERAGE = "org.drools.testcoverage";
+    public static final String PACKAGE_TESTCOVERAGE_MODEL = "org.drools.testcoverage.common.model";
+    public static final String PACKAGE_REGRESSION = PACKAGE_TESTCOVERAGE + ".regression";
+    public static final String PACKAGE_FUNCTIONAL = PACKAGE_TESTCOVERAGE + ".functional";
 
-    private KieSessionUtil() {
+    public static final String DRL_TEST_TARGET_PATH = "src/main/resources/rule.drl";
+
+    private TestConstants() {
         // Creating instances of util classes should not be possible.
     }
 }
