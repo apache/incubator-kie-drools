@@ -338,7 +338,7 @@ public class PersistenceUtil {
 
         // Postgresql has a "Large Object" api which REQUIRES the use of transactions
         //  since @Lob/byte array is actually stored in multiple tables.
-        if (databaseDriverClassName.startsWith("org.postgresql")) {
+        if (databaseDriverClassName.startsWith("org.postgresql") || databaseDriverClassName.startsWith("com.edb")) {
             useTransactions = true;
         }
         return useTransactions;
