@@ -138,6 +138,7 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8439,5 +8440,30 @@ public class Misc2Test extends CommonTestMethodBase {
         kieSession.update( fh2, p2 );
 
         kieSession.fireAllRules();
+    }
+
+    @Test
+    public void testModifyWithOr() {
+        // DROOLS-1185
+        String drl =
+                "import " + List.class.getCanonicalName() + "\n" +
+                "import " + AtomicBoolean.class.getCanonicalName() + "\n" +
+                "\n" +
+                "rule R when\n" +
+                "  $l : List()\n" +
+                "  ( String() from $l\n" +
+                "  or\n" +
+                "  String() from $l )\n" +
+                "  $b : AtomicBoolean( get() )\n" +
+                "then" +
+                "  modify($b) { set(false) }\n" +
+                "end\n";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        kieSession.insert( asList("test") );
+        kieSession.insert( new AtomicBoolean( true ) );
+        assertEquals( 1, kieSession.fireAllRules() );
     }
 }
