@@ -36,7 +36,7 @@
   </repositories>
 
   <scm>
-    <connection>scm:git:git@github.com:droolsjbpm/droolsjbpm-knowledge.git</connection>
+    <connection>scm:git:https://github.com/droolsjbpm/droolsjbpm-knowledge.git</connection>
     <developerConnection>scm:git:git@github.com:droolsjbpm/droolsjbpm-knowledge.git</developerConnection>
     <url>https://github.com/droolsjbpm/droolsjbpm-knowledge</url>
   </scm>
@@ -52,13 +52,6 @@
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-third-party-bom</artifactId>
         <version>${version.org.kie}</version>
         <type>pom</type>
         <scope>import</scope>
