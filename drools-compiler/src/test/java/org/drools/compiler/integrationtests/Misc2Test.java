@@ -8577,4 +8577,45 @@ public class Misc2Test extends CommonTestMethodBase {
         kieSession.insert( new AnswerGiver() );
         assertEquals( 2, kieSession.fireAllRules() );
     }
+
+    @Test
+    public void testExtraDoubleQuote() {
+        // DROOLS-1189
+        String drl =
+                "global java.util.List list;\n" +
+                "rule rule1\n" +
+                "when\n" +
+                "then\n" +
+                "    list.add(\"1\"\");\n" +
+                "end\n" +
+                "\n" +
+                "rule rule2\n" +
+                "when\n" +
+                "then\n" +
+                "    list.add(\"2\");\n" +
+                "end\n" +
+                "\n" +
+                "rule rule3\n" +
+                "when\n" +
+                "then\n" +
+                "    list.add(\"3\");\n" +
+                "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write( ResourceFactory.newByteArrayResource( drl.getBytes() )
+                .setTargetPath( "org/drools/compiler/rules.drl" ) );
+        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder( kfs );
+        kbuilder.buildAll();
+
+        boolean pointed = false;
+        List<org.kie.api.builder.Message> messages = kbuilder.getResults().getMessages();
+        for ( org.kie.api.builder.Message message : messages ) {
+            if ( message.toString().contains( "Line 5:" ) ) {
+                pointed = true;
+            }
+        }
+
+        assertTrue( "The error messages don't point at the problematic line", pointed );
+    }
 }
