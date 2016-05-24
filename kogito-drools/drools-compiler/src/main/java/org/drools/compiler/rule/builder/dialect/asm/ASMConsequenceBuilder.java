@@ -84,8 +84,8 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     mv.visitVarInsn(ALOAD, 4); // org.kie.rule.Declaration[]
                     push(i); // i
                     mv.visitInsn(AALOAD); // declarations[i]
-                    invokeInterface(Tuple.class, "getObject", Object.class, Declaration.class);
-                    mv.visitVarInsn(ASTORE, factPos); // obj[i]
+                    invokeInterface(Tuple.class, "get", InternalFactHandle.class, Declaration.class);
+                    mv.visitVarInsn(ASTORE, factPos); // fact[i]
 
                     // declarations[i].getValue((org.kie.common.InternalWorkingMemory)workingMemory, obj[i] );
                     mv.visitVarInsn(ALOAD, 4); // org.kie.rule.Declaration[]
@@ -93,7 +93,8 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                     mv.visitInsn(AALOAD); // declarations[i]
                     mv.visitVarInsn(ALOAD, 2); // WorkingMemory
                     cast(InternalWorkingMemory.class);
-                    mv.visitVarInsn(ALOAD, factPos); // obj[i]
+                    mv.visitVarInsn(ALOAD, factPos); // fact[i]
+                    invokeInterface(InternalFactHandle.class, "getObject", Object.class);
                     String readMethod = declarations[i].getNativeReadMethodName();
                     boolean isObject = readMethod.equals("getValue");
                     String returnedType = isObject ? "Ljava/lang/Object;" : typeDescr(declarations[i].getTypeName());
