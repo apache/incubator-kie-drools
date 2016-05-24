@@ -30,7 +30,7 @@ import org.kie.api.runtime.process.WorkItemManager;
  *  - "To" (String): sends the email to the given email address(es),
  *                   multiple addresses must be separated using a semi-colon (';') 
  *  - "Subject" (String): the subject of the email
- *  - "Text" (String): the body of the email (using HTML)
+ *  - "Body" (String): the body of the email (using HTML)
  * Is completed immediately and does not return any result parameters.  
  * 
  * Sending an email cannot be aborted.
