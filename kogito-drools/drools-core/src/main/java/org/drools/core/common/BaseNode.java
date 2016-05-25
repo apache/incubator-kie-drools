@@ -171,7 +171,7 @@ public abstract class BaseNode
      * associations map.
      */
     public boolean removeAssociation( Rule rule ) {
-        return this.associations.removeKey(rule);
+        return this.associations.remove(rule);
     }
 
     public int getAssociationsSize() {

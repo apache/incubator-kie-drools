@@ -34,7 +34,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
-import org.kie.api.definition.rule.Rule;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -160,12 +159,12 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     /**
      * Creates and return the node memory
      */
-    public static void initPathMemory(PathMemory pmem, LeftTupleSource startTupleSource, InternalWorkingMemory wm, Rule removingRule) {
+    public static void initPathMemory(PathMemory pmem, LeftTupleSource startTupleSource, InternalWorkingMemory wm, TerminalNode removingTN) {
         int counter = 1;
         long allLinkedTestMask = 0;
 
         LeftTupleSource tupleSource = pmem.getPathEndNode().getLeftTupleSource();
-        if ( SegmentUtilities.isRootNode(pmem.getPathEndNode(), removingRule)) {
+        if ( SegmentUtilities.isRootNode(pmem.getPathEndNode(), removingTN)) {
             counter++;
         }
 
@@ -201,7 +200,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
                 }
             }
 
-            if ( SegmentUtilities.isRootNode( tupleSource, removingRule ) ) {
+            if ( SegmentUtilities.isRootNode( tupleSource, removingTN ) ) {
                 updateBitInNewSegment = true; // allow bit to be set for segment
                 allLinkedTestMask = allLinkedTestMask << 1;
                 counter++;
@@ -311,6 +310,24 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
             pathNodes = getPathNodes( this );
         }
         return pathNodes;
+    }
+
+    public final boolean hasPathNode(LeftTupleNode node) {
+        for (LeftTupleNode pathNode : getPathNodes()) {
+            if (node.getId() == pathNode.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public final boolean isTerminalNodeOf(LeftTupleNode node) {
+        for (PathEndNode pathEndNode : getPathEndNodes()) {
+            if (pathEndNode.hasPathNode( node )) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public LeftTupleSinkPropagator getSinkPropagator() {
