@@ -8508,4 +8508,20 @@ public class Misc2Test extends CommonTestMethodBase {
         kieSession.insert( true );
         assertEquals(4, kieSession.fireAllRules());
     }
+
+    @Test
+    public void testNormalizeRuleName() {
+        // DROOLS-1192
+        String drl =
+                "rule \"rule（hello）\" when\n" +
+                "  Integer()\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        kieSession.insert( 1 );
+        assertEquals( 1, kieSession.fireAllRules() );
+    }
 }
