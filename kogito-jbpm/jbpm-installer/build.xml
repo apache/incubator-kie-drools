@@ -126,7 +126,7 @@
       </or>
     </and>
   </condition>	
-  <condition property="download.type" value="macosx-cocoa">
+  <condition property="download.type" value="macosx-cocoa-x86_64">
     <and>
       <os family="mac" />
       <os family="unix" />
@@ -424,7 +424,7 @@
     <gunzip src="${install.home}/lib/eclipse-java-mars-2-${download.type}.tar.gz"/>
     <untar dest="${install.home}" src="${install.home}/lib/eclipse-java-mars-2-${download.type}.tar" />
     <chmod perm="a+x" file="${install.home}/eclipse/eclipse" os="Linux"/>
-    <chmod perm="a+x" file="${install.home}/eclipse/Eclipse.app/Contents/MacOS/eclipse" os="Mac OS X"/>
+    <chmod perm="a+x" file="${install.home}/Eclipse.app/Contents/MacOS/eclipse" os="Mac OS X"/>
   </target>
 
   <!-- Install Eclipse plugins -->
@@ -476,7 +476,7 @@
       <arg value="-installIU" />
       <arg value="org.eclipse.bpmn2.modeler.runtime.jboss.feature.group" />
     </exec>
-    <exec executable="${eclipse.home}/Eclipse.app/Contents/MacOS/eclipse" osfamily="mac">
+    <exec executable="./Eclipse.app/Contents/MacOS/eclipse" osfamily="mac">
       <arg value="-nosplash" />
       <arg value="-application" />
       <arg value="org.eclipse.equinox.p2.director" />
@@ -597,7 +597,7 @@
     </exec>
   	<chmod perm="a+x" file="./generate.mac.eclipse.preferences.sh" />
     <exec executable="./generate.mac.eclipse.preferences.sh" osfamily="mac"/>
-    <exec executable="${eclipse.home}/Eclipse.app/Contents/MacOS/eclipse" spawn="yes" osfamily="mac">
+    <exec executable="./Eclipse.app/Contents/MacOS/eclipse" spawn="yes" osfamily="mac">
       <arg value="-data" />
       <arg value="../../../../${eclipse.workspace.dir}" />
       <arg value="-plugincustomization" />
