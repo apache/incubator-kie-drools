@@ -47,7 +47,6 @@ import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.Variable;
 
 import java.io.IOException;
@@ -688,16 +687,16 @@ public class QueryElementNode extends LeftTupleSource
             return resultLeftTuples;
         }
 
-        public void correctMemoryOnSinksChanged(Rule removingRule) {
+        public void correctMemoryOnSinksChanged(TerminalNode removingTN) {
             if (resultLeftTuples instanceof QueryTupleSets ) {
-                if (!SegmentUtilities.isTipNode( node, removingRule )) {
+                if (!SegmentUtilities.isTipNode( node, removingTN )) {
                     // a sink has been removed and now there is no longer a split
                     TupleSetsImpl<LeftTuple> newTupleSets = new TupleSetsImpl<LeftTuple>();
                     this.resultLeftTuples.addTo( newTupleSets );
                     this.resultLeftTuples = newTupleSets;
                 }
             } else {
-                if (SegmentUtilities.isTipNode( node, removingRule )) {
+                if (SegmentUtilities.isTipNode( node, removingTN )) {
                     // a sink has been added and now there is a split
                     TupleSetsImpl<LeftTuple> newTupleSets = new QueryTupleSets();
                     this.resultLeftTuples.addTo( newTupleSets );

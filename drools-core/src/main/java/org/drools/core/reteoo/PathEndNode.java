@@ -18,6 +18,7 @@ package org.drools.core.reteoo;
 
 public interface PathEndNode extends LeftTupleNode {
     LeftTupleNode[] getPathNodes();
+    boolean hasPathNode(LeftTupleNode node);
 
     void setPathEndNodes(PathEndNode[] pathEndNodes);
     PathEndNode[] getPathEndNodes();

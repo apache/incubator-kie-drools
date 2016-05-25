@@ -49,10 +49,10 @@ import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.rule.constraint.QueryNameConstraint;
-import org.kie.api.definition.rule.Rule;
 
 public class SegmentUtilities {
 
@@ -453,17 +453,14 @@ public class SegmentUtilities {
      *
      * The result should discount any removingRule. That means it gives you the result as
      * if the rule had already been removed from the network.
-     * @param node
-     * @param removingRule
-     * @return
      */
-    public static boolean isRootNode(LeftTupleNode node, Rule removingRule) {
+    public static boolean isRootNode(LeftTupleNode node, TerminalNode removingTN) {
         if (node.getType() == NodeTypeEnums.LeftInputAdapterNode) {
             return true;
         }
 
         LeftTupleNode parent = node.getLeftTupleSource();
-        return isTipNode( parent, removingRule );
+        return isTipNode( parent, removingTN );
     }
 
     /**
@@ -474,18 +471,15 @@ public class SegmentUtilities {
      *
      * The result should discount any removingRule. That means it gives you the result as
      * if the rule had already been removed from the network.
-     * @param node
-     * @param removingRule
-     * @return
      */
-    public static boolean isTipNode(LeftTupleNode node, Rule removingRule) {
+    public static boolean isTipNode( LeftTupleNode node, TerminalNode removingTN ) {
         if (NodeTypeEnums.isEndNode(node)) {
             return true;
         }
         LeftTupleSinkPropagator sinkPropagator = node.getSinkPropagator();
 
 
-        if (removingRule == null) {
+        if (removingTN == null) {
             return sinkPropagator.size() > 1;
         }
 
@@ -495,9 +489,8 @@ public class SegmentUtilities {
 
         // we know the sink size is creater than 1 and that there is a removingRule that needs to be ignored.
         int count = 0;
-        for ( LeftTupleSinkNode sink = sinkPropagator.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode() )  {
-            int associatedRuleSize = sink.getAssociatedRuleSize();
-            if ( !(associatedRuleSize == 1 && sink.isAssociatedWith( removingRule )) ) {
+        for ( LeftTupleSinkNode sink = sinkPropagator.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
+            if ( sinkNotExclusivelyAssociatedWithTerminal( removingTN, sink ) ) {
                 count++;
                 if ( count > 1 ) {
                     // There is more than one sink that is not for the removing rule
@@ -506,6 +499,25 @@ public class SegmentUtilities {
             }
         }
 
+        return false;
+    }
+
+    private static boolean sinkNotExclusivelyAssociatedWithTerminal( TerminalNode removingTN, LeftTupleSinkNode sink ) {
+        return sink.getAssociatedRuleSize() > 1 || !sink.isAssociatedWith( removingTN.getRule() ) ||
+               !removingTN.isTerminalNodeOf( sink ) || hasTerminalNodesDifferentThan( sink, removingTN );
+    }
+
+    private static boolean hasTerminalNodesDifferentThan(LeftTupleSinkNode node, TerminalNode tn) {
+        LeftTupleSinkPropagator sinkPropagator = node.getSinkPropagator();
+        for ( LeftTupleSinkNode sink = sinkPropagator.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode() )  {
+            if (sink instanceof TerminalNode) {
+                if (tn.getId() != sink.getId()) {
+                    return true;
+                }
+            } else if (hasTerminalNodesDifferentThan(sink, tn)) {
+                return true;
+            }
+        }
         return false;
     }
 
