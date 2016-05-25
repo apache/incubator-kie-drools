@@ -75,7 +75,7 @@ import static org.drools.core.util.StringUtils.*;
 
 public final class DialectUtil {
 
-    private static final Pattern NON_ALPHA_REGEX = Pattern.compile("[ -/:-@\\[-`\\{-\\xff]");
+    private static final Pattern NON_ALPHA_REGEX = Pattern.compile("[\\W]");
     private static final Pattern LINE_BREAK_FINDER = Pattern.compile( "\\r\\n|\\r|\\n" );
 
     /**
