@@ -31,8 +31,10 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
+import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
@@ -247,5 +249,45 @@ public class I18nTest extends CommonTestMethodBase {
         assertTrue(list.contains("名称は山田花子です"));
 
         ksession.dispose();
+    }
+
+    @Test
+    public void testMultibyteRuleName() {
+        // DROOLS-1192
+        String str = "package org.drools.compiler.i18ntest;\n" +
+                "\n" +
+                "rule \"rule（hello）\"\n" +
+                "    when\n" +
+                "    then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        KieBuilder kbuilder = ks.newKieBuilder( kfs );
+        kbuilder.buildAll();
+
+        if ( !kbuilder.getResults().getMessages( Level.ERROR ).isEmpty() ) {
+            fail( kbuilder.getResults().getMessages( Level.ERROR ).toString() );
+        }
+    }
+
+    @Test
+    public void testMultibyteRuleNameWithWhitespace() {
+        // DROOLS-1192
+        String str = "package org.drools.compiler.i18ntest;\n" +
+                "\n" +
+                "rule \"rule （hello）\"\n" +
+                "    when\n" +
+                "    then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        KieBuilder kbuilder = ks.newKieBuilder( kfs );
+        kbuilder.buildAll();
+
+        if ( !kbuilder.getResults().getMessages( Level.ERROR ).isEmpty() ) {
+            fail( kbuilder.getResults().getMessages( Level.ERROR ).toString() );
+        }
     }
 }
