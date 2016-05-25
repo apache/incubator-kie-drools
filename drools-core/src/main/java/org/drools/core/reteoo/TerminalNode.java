@@ -57,4 +57,6 @@ public interface TerminalNode
     Declaration[] getSalienceDeclarations();
 
     Declaration[][] getTimerDeclarations();
+
+    boolean isTerminalNodeOf(LeftTupleNode node);
 }
