@@ -146,8 +146,8 @@
         <title><literal>SolutionFileIO</literal> Interface</title>
 
         <para>The benchmarker needs to be able to read the input files to load a <literal>Solution</literal>. Also, it
-        might need to write the best <literal>Solution</literal> of each benchmark to an output file. For that it uses a
-        class that implements the <literal>SolutionFileIO</literal> interface:</para>
+        optionally writes the best <literal>Solution</literal> of each benchmark to an output file. It does that through
+        the <literal>SolutionFileIO</literal> interface which has a read and write method:</para>
 
         <programlisting language="java">public interface SolutionFileIO&lt;Solution_&gt; {
     ...
@@ -159,17 +159,14 @@
 
         <para>The <literal>SolutionFileIO</literal> interface is in the
         <literal>optaplanner-persistence-common</literal> jar (which is a dependency of the
-        <literal>optaplanner-benchmark</literal> jar).</para>
+        <literal>optaplanner-benchmark</literal> jar). There are several ways to serialize a solution:</para>
       </section>
 
       <section xml:id="xStreamSolutionFileIO">
-        <title><literal>XStreamSolutionFileIO</literal>: The Default <literal>SolutionFileIO</literal></title>
+        <title><literal>XStreamSolutionFileIO</literal>: Serialize To And From An XML Format</title>
 
-        <para>By default, a benchmarker uses a <literal>XStreamSolutionFileIO</literal> instance to read and write
-        solutions.</para>
-
-        <para>It's required to tell the benchmarker about your <literal>Solution</literal> class which is annotated with
-        XStream annotations:</para>
+        <para>To use the <literal>XStreamSolutionFileIO</literal> instance to read and write solutions, just configure
+        your <literal>Solution</literal> class as an <literal>xStreamAnnotatedClass</literal>:</para>
 
         <programlisting language="xml">    &lt;problemBenchmarks&gt;
       &lt;xStreamAnnotatedClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/xStreamAnnotatedClass&gt;
@@ -179,19 +176,22 @@
 
         <para>Those input files need to have been written with a <literal>XStreamSolutionFileIO</literal> instance, not
         just any <literal>XStream</literal> instance, because the <literal>XStreamSolutionFileIO</literal> uses a
-        customized <literal>XStream</literal> instance.</para>
+        customized <literal>XStream</literal> instance. Add XStream annotations (such as
+        <literal>@XStreamAlias</literal>) on your domain classes to use a less verbose XML format.</para>
 
         <warning>
-          <para>XStream (and XML in general) is a very verbose format. Reading or writing very large datasets in this
-          format can cause an <literal>OutOfMemoryError</literal> and performance degradation.</para>
+          <para>XML is a very verbose format. Reading or writing large datasets in this format can cause an
+          <literal>OutOfMemoryError</literal> , <literal>StackOverflowError</literal> or large performance
+          degradation.</para>
         </warning>
       </section>
 
       <section xml:id="customSolutionFileIO">
-        <title>Custom <literal>SolutionFileIO</literal></title>
+        <title>Custom <literal>SolutionFileIO</literal>: Serialize To And From A Custom Format</title>
 
-        <para>Alternatively, implement your own <literal>SolutionFileIO</literal> implementation and configure it with
-        the <literal>solutionFileIOClass</literal> element:</para>
+        <para>Implement your own <literal>SolutionFileIO</literal> implementation and configure it with the
+        <literal>solutionFileIOClass</literal> element to write to a custom format (such as a txt or a binary
+        format):</para>
 
         <programlisting language="xml">    &lt;problemBenchmarks&gt;
       &lt;solutionFileIOClass&gt;org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO&lt;/solutionFileIOClass&gt;
@@ -199,7 +199,7 @@
       ...
     &lt;/problemBenchmarks&gt;</programlisting>
 
-        <para>It's recommended that output files can be read as input files, which also implies that
+        <para>It's recommended that output files can be read as input files, which implies that
         <literal>getInputFileExtension()</literal> and <literal>getOutputFileExtension()</literal> return the same
         value.</para>
 
@@ -211,9 +211,9 @@
       <section xml:id="readingAnInputSolutionFromADatabase">
         <title>Reading An Input Solution From A Database (Or Other Repository)</title>
 
-        <para>The benchmark configuration currently expects an <literal>&lt;inputSolutionFile&gt;</literal> element for
-        each dataset. There are 2 ways to deal with this if your dataset is in a database or another type of
-        repository:</para>
+        <para>The benchmark configuration currently expects an <literal>&lt;inputSolutionFile&gt;</literal> element, so
+        a separate file, for each dataset. There are 2 ways to deal with this if your dataset is in a relational
+        database or another type of repository:</para>
 
         <itemizedlist>
           <listitem>
@@ -231,7 +231,8 @@
         </itemizedlist>
 
         <note>
-          <para>Local files are always faster and don't require a network connection.</para>
+          <para>Local files are always better: they allow for faster, more reliable, offline benchmarking. Otherwise, an
+          unstable network connection can ruin a long running benchmark.</para>
         </note>
       </section>
     </section>
@@ -537,7 +538,8 @@
     <section xml:id="benchmarkReportScoreCalculationSpeedSummary">
       <title>Score Calculation Speed Summary (Graph and Table)</title>
 
-      <para>Shows the score calculation speed: a count per second per problem scale for each solver configuration.</para>
+      <para>Shows the score calculation speed: a count per second per problem scale for each solver
+      configuration.</para>
 
       <para>Useful for comparing different score calculators and/or score rule implementations (presuming that the
       solver configurations do not differ otherwise). Also useful to measure the scalability cost of an extra
