@@ -16,6 +16,10 @@
 
 package org.drools.core.command.impl;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+
 import org.drools.core.command.CommandService;
 import org.drools.core.command.GetSessionClockCommand;
 import org.drools.core.command.Interceptor;
@@ -44,6 +48,7 @@ import org.drools.core.command.runtime.process.GetProcessInstanceByCorrelationKe
 import org.drools.core.command.runtime.process.GetProcessInstanceCommand;
 import org.drools.core.command.runtime.process.GetProcessInstancesCommand;
 import org.drools.core.command.runtime.process.GetWorkItemCommand;
+import org.drools.core.command.runtime.process.ReTryWorkItemCommand;
 import org.drools.core.command.runtime.process.RegisterWorkItemHandlerCommand;
 import org.drools.core.command.runtime.process.SignalEventCommand;
 import org.drools.core.command.runtime.process.StartCorrelatedProcessCommand;
@@ -100,10 +105,6 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
 
 public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     implements
@@ -221,6 +222,12 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                 @Override
                 public void dispose() {
                     // no-op
+                }
+
+                @Override
+                public void retryWorkItem( Long workItemID, Map<String, Object> params ) {
+                   ReTryWorkItemCommand command = new ReTryWorkItemCommand(workItemID,params);
+                   commandService.execute( command );
                 }
             };
         }

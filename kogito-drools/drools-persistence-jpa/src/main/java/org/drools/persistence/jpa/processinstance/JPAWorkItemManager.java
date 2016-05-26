@@ -41,189 +41,207 @@ public class JPAWorkItemManager implements WorkItemManager {
     private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
     private transient Map<Long, WorkItemInfo> workItems;
     private transient volatile boolean pessimisticLocking;
-    
+
     public JPAWorkItemManager(InternalKnowledgeRuntime kruntime) {
         this.kruntime = kruntime;
-        Boolean locking = (Boolean) this.kruntime.getEnvironment().get(EnvironmentName.USE_PESSIMISTIC_LOCKING);
-        if( locking != null && locking ) {
+        Boolean locking = (Boolean) this.kruntime.getEnvironment().get( EnvironmentName.USE_PESSIMISTIC_LOCKING );
+        if ( locking != null && locking ) {
             this.pessimisticLocking = locking;
         }
     }
-    
-    public void internalExecuteWorkItem(WorkItem workItem) {
+
+    public void internalExecuteWorkItem( WorkItem workItem ) {
         Environment env = this.kruntime.getEnvironment();
-        WorkItemInfo workItemInfo = new WorkItemInfo(workItem, env);
-        
-        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+        WorkItemInfo workItemInfo = new WorkItemInfo( workItem, env );
+
+        PersistenceContext context = getPersistenceContext();
         workItemInfo = context.persist( workItemInfo );
-        
-        ((WorkItemImpl) workItem).setId(workItemInfo.getId());
-        
-        if (this.workItems == null) {
+
+        ((WorkItemImpl) workItem).setId( workItemInfo.getId() );
+
+        if ( this.workItems == null ) {
             this.workItems = new HashMap<Long, WorkItemInfo>();
         }
-        workItems.put(workItem.getId(), workItemInfo);
-        
-        WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
-        if (handler != null) {
-            handler.executeWorkItem(workItem, this);
+        workItems.put( workItem.getId(), workItemInfo );
+
+        WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get( workItem.getName() );
+        if ( handler != null ) {
+            handler.executeWorkItem( workItem, this );
         } else {
             throwWorkItemNotFoundException( workItem );
         }
     }
 
-    private void throwWorkItemNotFoundException(WorkItem workItem) {
+    private void throwWorkItemNotFoundException( WorkItem workItem ) {
         throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                    workItem.getName() );
+                workItem.getName() );
     }
-    
-    public WorkItemHandler getWorkItemHandler(String name) {
-    	return this.workItemHandlers.get(name);
+
+    public WorkItemHandler getWorkItemHandler( String name ) {
+        return this.workItemHandlers.get( name );
     }
-    
-    public void retryWorkItem(long workItemId) {
-    	WorkItem workItem = getWorkItem(workItemId);
-    	if (workItem != null) {
-            WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
-            if (handler != null) {
-                handler.executeWorkItem(workItem, this);
+
+    public void retryWorkItemWithParams( long workItemId, Map<String, Object> map ) {
+        Environment env = this.kruntime.getEnvironment();
+        WorkItem workItem = getWorkItem( workItemId );
+        if ( workItem != null ) {
+            workItem.setParameters( map );
+            WorkItemInfo workItemInfo = new WorkItemInfo( workItem, env );
+            PersistenceContext context = getPersistenceContext();
+            context.merge( workItemInfo );
+            retryWorkItem( workItem );
+        }
+    }
+
+    public void retryWorkItem( long workItemId ) {
+        WorkItem workItem = getWorkItem( workItemId );
+        retryWorkItem( workItem );
+    }
+
+    private void retryWorkItem( WorkItem workItem ) {
+        if ( workItem != null ) {
+            WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get( workItem.getName() );
+            if ( handler != null ) {
+                handler.executeWorkItem( workItem, this );
             } else {
                 throwWorkItemNotFoundException( workItem );
             }
-    	}
+        }
     }
 
-    public void internalAbortWorkItem(long id) {
-        Environment env = this.kruntime.getEnvironment();
-        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
-        
+    public void internalAbortWorkItem( long id ) {
+        PersistenceContext context = getPersistenceContext();
+
         WorkItemInfo workItemInfo = context.findWorkItemInfo( id );
         // work item may have been aborted
-        if (workItemInfo != null) {
-            WorkItemImpl workItem = (WorkItemImpl) internalGetWorkItem(workItemInfo);
-            WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get(workItem.getName());
-            if (handler != null) {
-                handler.abortWorkItem(workItem, this);
+        if ( workItemInfo != null ) {
+            WorkItemImpl workItem = (WorkItemImpl) internalGetWorkItem( workItemInfo );
+            WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get( workItem.getName() );
+            if ( handler != null ) {
+                handler.abortWorkItem( workItem, this );
             } else {
                 if ( workItems != null ) {
                     workItems.remove( id );
                     throwWorkItemNotFoundException( workItem );
                 }
             }
-            if (workItems != null) {
-                workItems.remove(id);
+            if ( workItems != null ) {
+                workItems.remove( id );
             }
-            context.remove(workItemInfo);
+            context.remove( workItemInfo );
         }
     }
 
-    public void internalAddWorkItem(WorkItem workItem) {
-    }
-
-    public void completeWorkItem(long id, Map<String, Object> results) {
+    private PersistenceContext getPersistenceContext() {
         Environment env = this.kruntime.getEnvironment();
         PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
-        
+        return context;
+    }
+
+    public void internalAddWorkItem( WorkItem workItem ) {
+    }
+
+    public void completeWorkItem( long id, Map<String, Object> results ) {
+        PersistenceContext context = getPersistenceContext();
+
         WorkItemInfo workItemInfo = null;
-        if (this.workItems != null) {
-            workItemInfo = this.workItems.get(id);
-            if (workItemInfo != null) {
-                workItemInfo = context.merge(workItemInfo);
+        if ( this.workItems != null ) {
+            workItemInfo = this.workItems.get( id );
+            if ( workItemInfo != null ) {
+                workItemInfo = context.merge( workItemInfo );
             }
         }
-        
-        if (workItemInfo == null) {
+
+        if ( workItemInfo == null ) {
             workItemInfo = context.findWorkItemInfo( id );
         }
-        
+
         // work item may have been aborted
-        if (workItemInfo != null) {
-            WorkItem workItem = internalGetWorkItem(workItemInfo);
-            workItem.setResults(results);
-            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
-            workItem.setState(WorkItem.COMPLETED);
+        if ( workItemInfo != null ) {
+            WorkItem workItem = internalGetWorkItem( workItemInfo );
+            workItem.setResults( results );
+            ProcessInstance processInstance = kruntime.getProcessInstance( workItem.getProcessInstanceId() );
+            workItem.setState( WorkItem.COMPLETED );
             // process instance may have finished already
-            if (processInstance != null) {
-                processInstance.signalEvent("workItemCompleted", workItem);
+            if ( processInstance != null ) {
+                processInstance.signalEvent( "workItemCompleted", workItem );
             }
-            context.remove(workItemInfo);
-            if (workItems != null) {
-                this.workItems.remove(workItem.getId());
+            context.remove( workItemInfo );
+            if ( workItems != null ) {
+                this.workItems.remove( workItem.getId() );
             }
         }
     }
 
-    public void abortWorkItem(long id) {
-        Environment env = this.kruntime.getEnvironment();
-        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+    public void abortWorkItem( long id ) {
+        PersistenceContext context = getPersistenceContext();
 
         WorkItemInfo workItemInfo = null;
-        if (this.workItems != null) {
-            workItemInfo = this.workItems.get(id);
-            if (workItemInfo != null) {
-                workItemInfo = context.merge(workItemInfo);
+        if ( this.workItems != null ) {
+            workItemInfo = this.workItems.get( id );
+            if ( workItemInfo != null ) {
+                workItemInfo = context.merge( workItemInfo );
             }
         }
-        
-        if (workItemInfo == null) {
+
+        if ( workItemInfo == null ) {
             workItemInfo = context.findWorkItemInfo( id );
         }
-        
+
         // work item may have been aborted
-        if (workItemInfo != null) {
-            WorkItem workItem = (WorkItemImpl) internalGetWorkItem(workItemInfo);
-            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
-            workItem.setState(WorkItem.ABORTED);
+        if ( workItemInfo != null ) {
+            WorkItem workItem = (WorkItemImpl) internalGetWorkItem( workItemInfo );
+            ProcessInstance processInstance = kruntime.getProcessInstance( workItem.getProcessInstanceId() );
+            workItem.setState( WorkItem.ABORTED );
             // process instance may have finished already
-            if (processInstance != null) {
-                processInstance.signalEvent("workItemAborted", workItem);
+            if ( processInstance != null ) {
+                processInstance.signalEvent( "workItemAborted", workItem );
             }
-            context.remove(workItemInfo);
-            if (workItems != null) {
-                workItems.remove(workItem.getId());
+            context.remove( workItemInfo );
+            if ( workItems != null ) {
+                workItems.remove( workItem.getId() );
             }
         }
     }
 
-    public WorkItem getWorkItem(long id) {
-        Environment env = this.kruntime.getEnvironment();
-        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
-        
+    public WorkItem getWorkItem( long id ) {
+        PersistenceContext context = getPersistenceContext();
+
         WorkItemInfo workItemInfo = null;
-        if (this.workItems != null) {
-            workItemInfo = this.workItems.get(id);
+        if ( this.workItems != null ) {
+            workItemInfo = this.workItems.get( id );
         }
-        
-        if( this.pessimisticLocking && workItemInfo != null ) { 
-           context.lock(workItemInfo);
+
+        if ( this.pessimisticLocking && workItemInfo != null ) {
+            context.lock( workItemInfo );
         }
-        
-        if (workItemInfo == null && context != null) {
+
+        if ( workItemInfo == null && context != null ) {
             workItemInfo = context.findWorkItemInfo( id );
         }
 
-        if (workItemInfo == null) {
+        if ( workItemInfo == null ) {
             return null;
         }
-        return internalGetWorkItem(workItemInfo);
+        return internalGetWorkItem( workItemInfo );
     }
 
-    private WorkItem internalGetWorkItem(WorkItemInfo workItemInfo) { 
+    private WorkItem internalGetWorkItem( WorkItemInfo workItemInfo ) {
         Environment env = kruntime.getEnvironment();
-        WorkItem workItem = workItemInfo.getWorkItem(env, (InternalKnowledgeBase) kruntime.getKieBase());
+        WorkItem workItem = workItemInfo.getWorkItem( env, (InternalKnowledgeBase) kruntime.getKieBase() );
         return workItem;
     }
-    
+
     public Set<WorkItem> getWorkItems() {
         return new HashSet<WorkItem>();
     }
 
-    public void registerWorkItemHandler(String workItemName, WorkItemHandler handler) {
-        this.workItemHandlers.put(workItemName, handler);
+    public void registerWorkItemHandler( String workItemName, WorkItemHandler handler ) {
+        this.workItemHandlers.put( workItemName, handler );
     }
 
     public void clearWorkItems() {
-        if (workItems != null) {
+        if ( workItems != null ) {
             workItems.clear();
         }
     }
@@ -231,23 +249,33 @@ public class JPAWorkItemManager implements WorkItemManager {
     public void clear() {
         clearWorkItems();
     }
-    
-    public void signalEvent(String type, Object event) { 
-        this.kruntime.signalEvent(type, event);
-    } 
-    
-    public void signalEvent(String type, Object event, long processInstanceId) { 
-        this.kruntime.signalEvent(type, event, processInstanceId);
+
+    public void signalEvent( String type, Object event ) {
+        this.kruntime.signalEvent( type, event );
+    }
+
+    public void signalEvent( String type, Object event, long processInstanceId ) {
+        this.kruntime.signalEvent( type, event, processInstanceId );
     }
 
     @Override
     public void dispose() {
-        if (workItemHandlers != null) {
-            for (Map.Entry<String, WorkItemHandler> handlerEntry : workItemHandlers.entrySet()) {
-                if (handlerEntry.getValue() instanceof Closeable) {
+        if ( workItemHandlers != null ) {
+            for ( Map.Entry<String, WorkItemHandler> handlerEntry : workItemHandlers.entrySet() ) {
+                if ( handlerEntry.getValue() instanceof Closeable ) {
                     ((Closeable) handlerEntry.getValue()).close();
                 }
             }
         }
+    }
+
+    @Override
+    public void retryWorkItem( Long workItemID, Map<String, Object> params ) {
+        if ( params == null || params.isEmpty() ) {
+            retryWorkItem( workItemID );
+        } else {
+            this.retryWorkItemWithParams( workItemID, params );
+        }
+
     }
 }

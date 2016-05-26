@@ -16,6 +16,7 @@
 
 package org.drools.core.process.instance;
 
+import java.util.Map;
 import java.util.Set;
 
 public interface WorkItemManager extends org.kie.api.runtime.process.WorkItemManager {
@@ -37,5 +38,7 @@ public interface WorkItemManager extends org.kie.api.runtime.process.WorkItemMan
     public void signalEvent(String type, Object event, long processInstanceId);
 
     void dispose();
+    
+    void retryWorkItem( Long workItemID, Map<String, Object> params ) ;
 
 }
