@@ -116,13 +116,13 @@ public final class JBPMMessages {
     com.google.protobuf.ByteString
         getDescriptionBytes();
 
-    // optional bool signal_completion = 16;
+    // optional bool signal_completion = 16 [default = true];
     /**
-     * <code>optional bool signal_completion = 16;</code>
+     * <code>optional bool signal_completion = 16 [default = true];</code>
      */
     boolean hasSignalCompletion();
     /**
-     * <code>optional bool signal_completion = 16;</code>
+     * <code>optional bool signal_completion = 16 [default = true];</code>
      */
     boolean getSignalCompletion();
 
@@ -15310,17 +15310,17 @@ public final class JBPMMessages {
       }
     }
 
-    // optional bool signal_completion = 16;
+    // optional bool signal_completion = 16 [default = true];
     public static final int SIGNAL_COMPLETION_FIELD_NUMBER = 16;
     private boolean signalCompletion_;
     /**
-     * <code>optional bool signal_completion = 16;</code>
+     * <code>optional bool signal_completion = 16 [default = true];</code>
      */
     public boolean hasSignalCompletion() {
       return ((bitField0_ & 0x00000100) == 0x00000100);
     }
     /**
-     * <code>optional bool signal_completion = 16;</code>
+     * <code>optional bool signal_completion = 16 [default = true];</code>
      */
     public boolean getSignalCompletion() {
       return signalCompletion_;
@@ -15545,7 +15545,7 @@ public final class JBPMMessages {
       processXml_ = "";
       parentProcessInstanceId_ = 0L;
       description_ = "";
-      signalCompletion_ = false;
+      signalCompletion_ = true;
       swimlaneContext_ = java.util.Collections.emptyList();
       nodeInstance_ = java.util.Collections.emptyList();
       variable_ = java.util.Collections.emptyList();
@@ -15821,7 +15821,7 @@ public final class JBPMMessages {
         bitField0_ = (bitField0_ & ~0x00000040);
         description_ = "";
         bitField0_ = (bitField0_ & ~0x00000080);
-        signalCompletion_ = false;
+        signalCompletion_ = true;
         bitField0_ = (bitField0_ & ~0x00000100);
         if (swimlaneContextBuilder_ == null) {
           swimlaneContext_ = java.util.Collections.emptyList();
@@ -16616,22 +16616,22 @@ public final class JBPMMessages {
         return this;
       }
 
-      // optional bool signal_completion = 16;
-      private boolean signalCompletion_ ;
+      // optional bool signal_completion = 16 [default = true];
+      private boolean signalCompletion_ = true;
       /**
-       * <code>optional bool signal_completion = 16;</code>
+       * <code>optional bool signal_completion = 16 [default = true];</code>
        */
       public boolean hasSignalCompletion() {
         return ((bitField0_ & 0x00000100) == 0x00000100);
       }
       /**
-       * <code>optional bool signal_completion = 16;</code>
+       * <code>optional bool signal_completion = 16 [default = true];</code>
        */
       public boolean getSignalCompletion() {
         return signalCompletion_;
       }
       /**
-       * <code>optional bool signal_completion = 16;</code>
+       * <code>optional bool signal_completion = 16 [default = true];</code>
        */
       public Builder setSignalCompletion(boolean value) {
         bitField0_ |= 0x00000100;
@@ -16640,11 +16640,11 @@ public final class JBPMMessages {
         return this;
       }
       /**
-       * <code>optional bool signal_completion = 16;</code>
+       * <code>optional bool signal_completion = 16 [default = true];</code>
        */
       public Builder clearSignalCompletion() {
         bitField0_ = (bitField0_ & ~0x00000100);
-        signalCompletion_ = false;
+        signalCompletion_ = true;
         onChanged();
         return this;
       }
@@ -23175,128 +23175,129 @@ public final class JBPMMessages {
     java.lang.String[] descriptorData = {
       "\n\'org/jbpm/marshalling/jbpmmessages.prot" +
       "o\022\024org.jbpm.marshalling\0320org/drools/core" +
-      "/marshalling/droolsmessages.proto\"\240\034\n\017Pr" +
+      "/marshalling/droolsmessages.proto\"\246\034\n\017Pr" +
       "ocessInstance\022\024\n\014process_type\030\001 \001(\t\022\n\n\002i" +
       "d\030\002 \001(\003\022\022\n\nprocess_id\030\003 \001(\t\022\r\n\005state\030\004 \001" +
       "(\005\022\035\n\025node_instance_counter\030\005 \001(\003\022\023\n\013pro" +
       "cess_xml\030\013 \001(\t\022\"\n\032parent_process_instanc" +
-      "e_id\030\014 \001(\003\022\023\n\013description\030\017 \001(\t\022\031\n\021signa" +
-      "l_completion\030\020 \001(\010\022W\n\020swimlane_context\030\006" +
-      " \003(\0132=.org.jbpm.marshalling.ProcessInsta",
-      "nce.SwimlaneContextInstance\022I\n\rnode_inst" +
-      "ance\030\007 \003(\01322.org.jbpm.marshalling.Proces" +
-      "sInstance.NodeInstance\0220\n\010variable\030\010 \003(\013" +
-      "2\036.org.jbpm.marshalling.Variable\022U\n\017excl" +
-      "usive_group\030\n \003(\0132<.org.jbpm.marshalling" +
-      ".ProcessInstance.ExclusiveGroupInstance\022" +
-      "\030\n\020completedNodeIds\030\r \003(\t\022=\n\017iterationLe" +
-      "vels\030\016 \003(\0132$.org.jbpm.marshalling.Iterat" +
-      "ionLevel\032=\n\027SwimlaneContextInstance\022\020\n\010s" +
-      "wimlane\030\001 \001(\t\022\020\n\010actor_id\030\002 \001(\t\032\206\001\n\014Node",
-      "Instance\022\n\n\002id\030\001 \001(\003\022\017\n\007node_id\030\002 \001(\003\022J\n" +
-      "\007content\030\004 \001(\01329.org.jbpm.marshalling.Pr" +
-      "ocessInstance.NodeInstanceContent\022\r\n\005lev" +
-      "el\030\005 \001(\005\0328\n\026ExclusiveGroupInstance\022\036\n\026gr" +
-      "oup_node_instance_id\030\001 \003(\003\032\214\023\n\023NodeInsta" +
-      "nceContent\022D\n\004type\030\001 \001(\01626.org.jbpm.mars" +
-      "halling.ProcessInstance.NodeInstanceType" +
-      "\022W\n\010rule_set\030\002 \001(\0132E.org.jbpm.marshallin" +
-      "g.ProcessInstance.NodeInstanceContent.Ru" +
-      "leSetNode\022[\n\nhuman_task\030\003 \001(\0132G.org.jbpm",
-      ".marshalling.ProcessInstance.NodeInstanc" +
-      "eContent.HumanTaskNode\022Y\n\twork_item\030\004 \001(" +
-      "\0132F.org.jbpm.marshalling.ProcessInstance" +
-      ".NodeInstanceContent.WorkItemNode\022]\n\013sub" +
-      "_process\030\005 \001(\0132H.org.jbpm.marshalling.Pr" +
-      "ocessInstance.NodeInstanceContent.SubPro" +
-      "cessNode\022Z\n\tmilestone\030\006 \001(\0132G.org.jbpm.m" +
-      "arshalling.ProcessInstance.NodeInstanceC" +
-      "ontent.MilestoneNode\022R\n\005event\030\007 \001(\0132C.or" +
-      "g.jbpm.marshalling.ProcessInstance.NodeI",
-      "nstanceContent.EventNode\022R\n\005timer\030\010 \001(\0132" +
-      "C.org.jbpm.marshalling.ProcessInstance.N" +
-      "odeInstanceContent.TimerNode\022P\n\004join\030\t \001" +
-      "(\0132B.org.jbpm.marshalling.ProcessInstanc" +
-      "e.NodeInstanceContent.JoinNode\022R\n\005state\030" +
-      "\n \001(\0132C.org.jbpm.marshalling.ProcessInst" +
-      "ance.NodeInstanceContent.StateNode\022a\n\tco" +
-      "mposite\030\013 \001(\0132N.org.jbpm.marshalling.Pro" +
-      "cessInstance.NodeInstanceContent.Composi" +
-      "teContextNode\022W\n\010for_each\030\014 \001(\0132E.org.jb",
-      "pm.marshalling.ProcessInstance.NodeInsta" +
-      "nceContent.ForEachNode\022]\n\013async_event\030\r " +
-      "\001(\0132H.org.jbpm.marshalling.ProcessInstan" +
-      "ce.NodeInstanceContent.AsyncEventNode\032\324\001" +
-      "\n\013RuleSetNode\022\031\n\021timer_instance_id\030\001 \003(\003" +
-      "\022d\n\010mapEntry\030\002 \003(\0132R.org.jbpm.marshallin" +
-      "g.ProcessInstance.NodeInstanceContent.Ru" +
-      "leSetNode.TextMapEntry\022\027\n\017rule_flow_grou" +
-      "p\030\003 \001(\t\032+\n\014TextMapEntry\022\014\n\004name\030\001 \001(\t\022\r\n" +
-      "\005value\030\002 \001(\t\032@\n\rHumanTaskNode\022\024\n\014work_it",
-      "em_id\030\001 \001(\003\022\031\n\021timer_instance_id\030\002 \003(\003\032?" +
-      "\n\014WorkItemNode\022\024\n\014work_item_id\030\001 \001(\003\022\031\n\021" +
-      "timer_instance_id\030\002 \003(\003\032H\n\016SubProcessNod" +
-      "e\022\033\n\023process_instance_id\030\001 \001(\003\022\031\n\021timer_" +
-      "instance_id\030\002 \003(\003\032*\n\rMilestoneNode\022\031\n\021ti" +
-      "mer_instance_id\030\001 \003(\003\032\013\n\tEventNode\032\035\n\tTi" +
-      "merNode\022\020\n\010timer_id\030\001 \001(\003\032\234\001\n\010JoinNode\022_" +
-      "\n\007trigger\030\001 \003(\0132N.org.jbpm.marshalling.P" +
-      "rocessInstance.NodeInstanceContent.JoinN" +
-      "ode.JoinTrigger\032/\n\013JoinTrigger\022\017\n\007node_i",
-      "d\030\001 \001(\003\022\017\n\007counter\030\002 \001(\005\032&\n\tStateNode\022\031\n" +
-      "\021timer_instance_id\030\001 \003(\003\032\304\002\n\024CompositeCo" +
-      "ntextNode\022\031\n\021timer_instance_id\030\002 \003(\003\0220\n\010" +
-      "variable\030\003 \003(\0132\036.org.jbpm.marshalling.Va" +
-      "riable\022I\n\rnode_instance\030\004 \003(\01322.org.jbpm" +
-      ".marshalling.ProcessInstance.NodeInstanc" +
-      "e\022U\n\017exclusive_group\030\005 \003(\0132<.org.jbpm.ma" +
-      "rshalling.ProcessInstance.ExclusiveGroup" +
-      "Instance\022=\n\017iterationLevels\030\006 \003(\0132$.org." +
-      "jbpm.marshalling.IterationLevel\032\311\001\n\013ForE",
-      "achNode\022I\n\rnode_instance\030\001 \003(\01322.org.jbp" +
+      "e_id\030\014 \001(\003\022\023\n\013description\030\017 \001(\t\022\037\n\021signa" +
+      "l_completion\030\020 \001(\010:\004true\022W\n\020swimlane_con" +
+      "text\030\006 \003(\0132=.org.jbpm.marshalling.Proces",
+      "sInstance.SwimlaneContextInstance\022I\n\rnod" +
+      "e_instance\030\007 \003(\01322.org.jbpm.marshalling." +
+      "ProcessInstance.NodeInstance\0220\n\010variable" +
+      "\030\010 \003(\0132\036.org.jbpm.marshalling.Variable\022U" +
+      "\n\017exclusive_group\030\n \003(\0132<.org.jbpm.marsh" +
+      "alling.ProcessInstance.ExclusiveGroupIns" +
+      "tance\022\030\n\020completedNodeIds\030\r \003(\t\022=\n\017itera" +
+      "tionLevels\030\016 \003(\0132$.org.jbpm.marshalling." +
+      "IterationLevel\032=\n\027SwimlaneContextInstanc" +
+      "e\022\020\n\010swimlane\030\001 \001(\t\022\020\n\010actor_id\030\002 \001(\t\032\206\001",
+      "\n\014NodeInstance\022\n\n\002id\030\001 \001(\003\022\017\n\007node_id\030\002 " +
+      "\001(\003\022J\n\007content\030\004 \001(\01329.org.jbpm.marshall" +
+      "ing.ProcessInstance.NodeInstanceContent\022" +
+      "\r\n\005level\030\005 \001(\005\0328\n\026ExclusiveGroupInstance" +
+      "\022\036\n\026group_node_instance_id\030\001 \003(\003\032\214\023\n\023Nod" +
+      "eInstanceContent\022D\n\004type\030\001 \001(\01626.org.jbp" +
       "m.marshalling.ProcessInstance.NodeInstan" +
-      "ce\0220\n\010variable\030\002 \003(\0132\036.org.jbpm.marshall" +
-      "ing.Variable\022=\n\017iterationLevels\030\003 \003(\0132$." +
-      "org.jbpm.marshalling.IterationLevel\032$\n\016A" +
-      "syncEventNode\022\022\n\nevent_type\030\001 \001(\t\"\250\002\n\020No" +
-      "deInstanceType\022\021\n\rRULE_SET_NODE\020\000\022\023\n\017HUM" +
-      "AN_TASK_NODE\020\001\022\022\n\016WORK_ITEM_NODE\020\002\022\023\n\017SU" +
-      "BPROCESS_NODE\020\003\022\022\n\016MILESTONE_NODE\020\004\022\016\n\nE" +
-      "VENT_NODE\020\005\022\016\n\nTIMER_NODE\020\006\022\r\n\tJOIN_NODE",
-      "\020\007\022\016\n\nSTATE_NODE\020\010\022\032\n\026COMPOSITE_CONTEXT_" +
-      "NODE\020\t\022\021\n\rFOR_EACH_NODE\020\n\022\020\n\014DYNAMIC_NOD" +
-      "E\020\013\022\031\n\025EVENT_SUBPROCESS_NODE\020\014\022\024\n\020ASYNC_" +
-      "EVENT_NODE\020\r\"?\n\010Variable\022\014\n\004name\030\001 \001(\t\022\026" +
-      "\n\016strategy_index\030\002 \001(\005\022\r\n\005value\030\003 \001(\014\"\305\001" +
-      "\n\010WorkItem\022\n\n\002id\030\001 \001(\003\022\034\n\024process_instan" +
-      "ces_id\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\r\n\005state\030\004 \001(" +
-      "\005\0220\n\010variable\030\005 \003(\0132\036.org.jbpm.marshalli" +
-      "ng.Variable\022\025\n\rdeployment_id\030\006 \001(\t\022\030\n\020no" +
-      "de_instance_id\030\007 \001(\003\022\017\n\007node_id\030\010 \001(\003\"\323\002",
-      "\n\014ProcessTimer\022?\n\005timer\030\001 \001(\01320.org.jbpm" +
-      ".marshalling.ProcessTimer.TimerInstance\022" +
-      "5\n\007trigger\030\002 \001(\0132$.org.drools.core.marsh" +
-      "alling.Trigger\032\312\001\n\rTimerInstance\022\n\n\002id\030\001" +
-      " \001(\003\022\020\n\010timer_id\030\002 \001(\003\022\r\n\005delay\030\003 \001(\003\022\016\n" +
-      "\006period\030\004 \001(\003\022\033\n\023process_instance_id\030\005 \001" +
-      "(\003\022\026\n\016activated_time\030\006 \001(\003\022\026\n\016last_trigg" +
-      "ered\030\007 \001(\003\022\034\n\024DEPRECATED_sessionId\030\010 \001(\005" +
-      "\022\021\n\tsessionId\030\t \001(\003\"+\n\016IterationLevel\022\n\n" +
-      "\002id\030\001 \001(\t\022\r\n\005level\030\002 \001(\005\"E\n\021VariableCont",
-      "ainer\0220\n\010variable\030\001 \003(\0132\036.org.jbpm.marsh" +
-      "alling.Variable:i\n\020process_instance\022(.or" +
-      "g.drools.core.marshalling.ProcessData\030\n " +
-      "\003(\0132%.org.jbpm.marshalling.ProcessInstan" +
-      "ce:[\n\twork_item\022(.org.drools.core.marsha" +
-      "lling.ProcessData\030\013 \003(\0132\036.org.jbpm.marsh" +
-      "alling.WorkItem::\n\010timer_id\022(.org.drools" +
-      ".core.marshalling.ProcessData\030\r \001(\003:c\n\rp" +
-      "rocess_timer\022(.org.drools.core.marshalli" +
-      "ng.ProcessData\030\014 \003(\0132\".org.jbpm.marshall",
-      "ing.ProcessTimer:a\n\nproc_timer\022).org.dro" +
-      "ols.core.marshalling.Timers.Timer\030d \001(\0132" +
-      "\".org.jbpm.marshalling.ProcessTimerB)\n\031o" +
-      "rg.jbpm.marshalling.implB\014JBPMMessages"
+      "ceType\022W\n\010rule_set\030\002 \001(\0132E.org.jbpm.mars" +
+      "halling.ProcessInstance.NodeInstanceCont" +
+      "ent.RuleSetNode\022[\n\nhuman_task\030\003 \001(\0132G.or",
+      "g.jbpm.marshalling.ProcessInstance.NodeI" +
+      "nstanceContent.HumanTaskNode\022Y\n\twork_ite" +
+      "m\030\004 \001(\0132F.org.jbpm.marshalling.ProcessIn" +
+      "stance.NodeInstanceContent.WorkItemNode\022" +
+      "]\n\013sub_process\030\005 \001(\0132H.org.jbpm.marshall" +
+      "ing.ProcessInstance.NodeInstanceContent." +
+      "SubProcessNode\022Z\n\tmilestone\030\006 \001(\0132G.org." +
+      "jbpm.marshalling.ProcessInstance.NodeIns" +
+      "tanceContent.MilestoneNode\022R\n\005event\030\007 \001(" +
+      "\0132C.org.jbpm.marshalling.ProcessInstance",
+      ".NodeInstanceContent.EventNode\022R\n\005timer\030" +
+      "\010 \001(\0132C.org.jbpm.marshalling.ProcessInst" +
+      "ance.NodeInstanceContent.TimerNode\022P\n\004jo" +
+      "in\030\t \001(\0132B.org.jbpm.marshalling.ProcessI" +
+      "nstance.NodeInstanceContent.JoinNode\022R\n\005" +
+      "state\030\n \001(\0132C.org.jbpm.marshalling.Proce" +
+      "ssInstance.NodeInstanceContent.StateNode" +
+      "\022a\n\tcomposite\030\013 \001(\0132N.org.jbpm.marshalli" +
+      "ng.ProcessInstance.NodeInstanceContent.C" +
+      "ompositeContextNode\022W\n\010for_each\030\014 \001(\0132E.",
+      "org.jbpm.marshalling.ProcessInstance.Nod" +
+      "eInstanceContent.ForEachNode\022]\n\013async_ev" +
+      "ent\030\r \001(\0132H.org.jbpm.marshalling.Process" +
+      "Instance.NodeInstanceContent.AsyncEventN" +
+      "ode\032\324\001\n\013RuleSetNode\022\031\n\021timer_instance_id" +
+      "\030\001 \003(\003\022d\n\010mapEntry\030\002 \003(\0132R.org.jbpm.mars" +
+      "halling.ProcessInstance.NodeInstanceCont" +
+      "ent.RuleSetNode.TextMapEntry\022\027\n\017rule_flo" +
+      "w_group\030\003 \001(\t\032+\n\014TextMapEntry\022\014\n\004name\030\001 " +
+      "\001(\t\022\r\n\005value\030\002 \001(\t\032@\n\rHumanTaskNode\022\024\n\014w",
+      "ork_item_id\030\001 \001(\003\022\031\n\021timer_instance_id\030\002" +
+      " \003(\003\032?\n\014WorkItemNode\022\024\n\014work_item_id\030\001 \001" +
+      "(\003\022\031\n\021timer_instance_id\030\002 \003(\003\032H\n\016SubProc" +
+      "essNode\022\033\n\023process_instance_id\030\001 \001(\003\022\031\n\021" +
+      "timer_instance_id\030\002 \003(\003\032*\n\rMilestoneNode" +
+      "\022\031\n\021timer_instance_id\030\001 \003(\003\032\013\n\tEventNode" +
+      "\032\035\n\tTimerNode\022\020\n\010timer_id\030\001 \001(\003\032\234\001\n\010Join" +
+      "Node\022_\n\007trigger\030\001 \003(\0132N.org.jbpm.marshal" +
+      "ling.ProcessInstance.NodeInstanceContent" +
+      ".JoinNode.JoinTrigger\032/\n\013JoinTrigger\022\017\n\007",
+      "node_id\030\001 \001(\003\022\017\n\007counter\030\002 \001(\005\032&\n\tStateN" +
+      "ode\022\031\n\021timer_instance_id\030\001 \003(\003\032\304\002\n\024Compo" +
+      "siteContextNode\022\031\n\021timer_instance_id\030\002 \003" +
+      "(\003\0220\n\010variable\030\003 \003(\0132\036.org.jbpm.marshall" +
+      "ing.Variable\022I\n\rnode_instance\030\004 \003(\01322.or" +
+      "g.jbpm.marshalling.ProcessInstance.NodeI" +
+      "nstance\022U\n\017exclusive_group\030\005 \003(\0132<.org.j" +
+      "bpm.marshalling.ProcessInstance.Exclusiv" +
+      "eGroupInstance\022=\n\017iterationLevels\030\006 \003(\0132" +
+      "$.org.jbpm.marshalling.IterationLevel\032\311\001",
+      "\n\013ForEachNode\022I\n\rnode_instance\030\001 \003(\01322.o" +
+      "rg.jbpm.marshalling.ProcessInstance.Node" +
+      "Instance\0220\n\010variable\030\002 \003(\0132\036.org.jbpm.ma" +
+      "rshalling.Variable\022=\n\017iterationLevels\030\003 " +
+      "\003(\0132$.org.jbpm.marshalling.IterationLeve" +
+      "l\032$\n\016AsyncEventNode\022\022\n\nevent_type\030\001 \001(\t\"" +
+      "\250\002\n\020NodeInstanceType\022\021\n\rRULE_SET_NODE\020\000\022" +
+      "\023\n\017HUMAN_TASK_NODE\020\001\022\022\n\016WORK_ITEM_NODE\020\002" +
+      "\022\023\n\017SUBPROCESS_NODE\020\003\022\022\n\016MILESTONE_NODE\020" +
+      "\004\022\016\n\nEVENT_NODE\020\005\022\016\n\nTIMER_NODE\020\006\022\r\n\tJOI",
+      "N_NODE\020\007\022\016\n\nSTATE_NODE\020\010\022\032\n\026COMPOSITE_CO" +
+      "NTEXT_NODE\020\t\022\021\n\rFOR_EACH_NODE\020\n\022\020\n\014DYNAM" +
+      "IC_NODE\020\013\022\031\n\025EVENT_SUBPROCESS_NODE\020\014\022\024\n\020" +
+      "ASYNC_EVENT_NODE\020\r\"?\n\010Variable\022\014\n\004name\030\001" +
+      " \001(\t\022\026\n\016strategy_index\030\002 \001(\005\022\r\n\005value\030\003 " +
+      "\001(\014\"\305\001\n\010WorkItem\022\n\n\002id\030\001 \001(\003\022\034\n\024process_" +
+      "instances_id\030\002 \001(\003\022\014\n\004name\030\003 \001(\t\022\r\n\005stat" +
+      "e\030\004 \001(\005\0220\n\010variable\030\005 \003(\0132\036.org.jbpm.mar" +
+      "shalling.Variable\022\025\n\rdeployment_id\030\006 \001(\t" +
+      "\022\030\n\020node_instance_id\030\007 \001(\003\022\017\n\007node_id\030\010 ",
+      "\001(\003\"\323\002\n\014ProcessTimer\022?\n\005timer\030\001 \001(\01320.or" +
+      "g.jbpm.marshalling.ProcessTimer.TimerIns" +
+      "tance\0225\n\007trigger\030\002 \001(\0132$.org.drools.core" +
+      ".marshalling.Trigger\032\312\001\n\rTimerInstance\022\n" +
+      "\n\002id\030\001 \001(\003\022\020\n\010timer_id\030\002 \001(\003\022\r\n\005delay\030\003 " +
+      "\001(\003\022\016\n\006period\030\004 \001(\003\022\033\n\023process_instance_" +
+      "id\030\005 \001(\003\022\026\n\016activated_time\030\006 \001(\003\022\026\n\016last" +
+      "_triggered\030\007 \001(\003\022\034\n\024DEPRECATED_sessionId" +
+      "\030\010 \001(\005\022\021\n\tsessionId\030\t \001(\003\"+\n\016IterationLe" +
+      "vel\022\n\n\002id\030\001 \001(\t\022\r\n\005level\030\002 \001(\005\"E\n\021Variab",
+      "leContainer\0220\n\010variable\030\001 \003(\0132\036.org.jbpm" +
+      ".marshalling.Variable:i\n\020process_instanc" +
+      "e\022(.org.drools.core.marshalling.ProcessD" +
+      "ata\030\n \003(\0132%.org.jbpm.marshalling.Process" +
+      "Instance:[\n\twork_item\022(.org.drools.core." +
+      "marshalling.ProcessData\030\013 \003(\0132\036.org.jbpm" +
+      ".marshalling.WorkItem::\n\010timer_id\022(.org." +
+      "drools.core.marshalling.ProcessData\030\r \001(" +
+      "\003:c\n\rprocess_timer\022(.org.drools.core.mar" +
+      "shalling.ProcessData\030\014 \003(\0132\".org.jbpm.ma",
+      "rshalling.ProcessTimer:a\n\nproc_timer\022).o" +
+      "rg.drools.core.marshalling.Timers.Timer\030" +
+      "d \001(\0132\".org.jbpm.marshalling.ProcessTime" +
+      "rB)\n\031org.jbpm.marshalling.implB\014JBPMMess" +
+      "ages"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
