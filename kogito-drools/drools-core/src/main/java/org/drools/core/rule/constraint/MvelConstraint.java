@@ -74,6 +74,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 import static org.drools.core.util.ClassUtils.getter2property;
+import static org.drools.core.util.Drools.isJmxAvailable;
 import static org.drools.core.util.StringUtils.*;
 
 public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint, AcceptsReadAccessor {
@@ -319,7 +320,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     private void executeJitting(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple) {
         InternalKnowledgeBase kBase = workingMemory.getKnowledgeBase();
-        if ( MemoryUtil.permGenStats.isUsageThresholdExceeded(kBase.getConfiguration().getPermGenThreshold()) ) {
+        if ( !isJmxAvailable() && MemoryUtil.permGenStats.isUsageThresholdExceeded(kBase.getConfiguration().getPermGenThreshold()) ) {
             return;
         }
 

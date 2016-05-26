@@ -31,6 +31,9 @@ public class Drools {
     private static int droolsRevisionVersion;
     private static String droolsRevisionClassifier;
 
+    private static boolean jmxAvailable;
+    private static boolean jndiAvailable;
+
     static {
         droolsFullVersion = Drools.class.getPackage().getImplementationVersion();
         if (droolsFullVersion == null || droolsFullVersion.equals("0.0")) {
@@ -61,6 +64,20 @@ public class Drools {
             droolsRevisionVersion = Integer.parseInt(m.group(3));
             droolsRevisionClassifier = m.group(5);
         }
+
+        try {
+            Class.forName( "java.lang.management.ManagementFactory" );
+            jmxAvailable = true;
+        } catch (Throwable t) {
+            jmxAvailable = false;
+        }
+
+        try {
+            Class.forName( "javax.naming.InitialContext" );
+            jndiAvailable = true;
+        } catch (Throwable t) {
+            jndiAvailable = false;
+        }
     }
 
     public static String getFullVersion() {
@@ -89,5 +106,13 @@ public class Drools {
         }
         // 6.0.x and 6.1+.x aren't compatible
         return minor == 0 ? droolsMinorVersion == 0 : droolsMinorVersion > 0;
+    }
+
+    public static boolean isJmxAvailable() {
+        return jmxAvailable;
+    }
+
+    public static boolean isJndiAvailable() {
+        return jndiAvailable;
     }
 }

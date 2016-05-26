@@ -76,6 +76,7 @@ import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowle
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 import static org.drools.compiler.kie.util.CDIHelper.wireListnersAndWIHs;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
+import static org.drools.core.util.Drools.isJndiAvailable;
 
 public class KieContainerImpl
     implements
@@ -608,7 +609,9 @@ public class KieContainerImpl
         }
 
         KieSession kSession = kBase.newKieSession( conf != null ? conf : getKieSessionConfiguration( kSessionModel ), environment );
-        wireListnersAndWIHs(kSessionModel, kSession);
+        if (isJndiAvailable()) {
+            wireListnersAndWIHs( kSessionModel, kSession );
+        }
         registerLoggers(kSessionModel, kSession);
         kSessions.put(kSessionName, kSession);
         return kSession;
@@ -649,7 +652,9 @@ public class KieContainerImpl
         }
 
         StatelessKieSession statelessKieSession = kBase.newStatelessKieSession( conf != null ? conf : getKieSessionConfiguration( kSessionModel ) );
-        wireListnersAndWIHs(kSessionModel, statelessKieSession);
+        if (isJndiAvailable()) {
+            wireListnersAndWIHs( kSessionModel, statelessKieSession );
+        }
         registerLoggers(kSessionModel, statelessKieSession);
         statelessKSessions.put(kSessionName, statelessKieSession);
         return statelessKieSession;
