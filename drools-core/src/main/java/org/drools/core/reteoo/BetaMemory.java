@@ -25,7 +25,7 @@ import org.drools.core.util.AbstractBaseLinkedListNode;
 
 public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         implements
-        Memory {
+        SegmentNodeMemory {
 
     private static final long serialVersionUID = 510l;
     private TupleMemory                leftTupleMemory;

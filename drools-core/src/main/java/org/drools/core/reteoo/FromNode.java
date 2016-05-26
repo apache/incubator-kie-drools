@@ -300,7 +300,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     public static class FromMemory extends AbstractBaseLinkedListNode<Memory>
         implements
         Serializable,
-        Memory {
+        SegmentNodeMemory {
         private static final long serialVersionUID = 510l;
 
         private DataProvider      dataProvider;
@@ -334,6 +334,26 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         public void reset() {
             this.betaMemory.reset();
             this.providerContext = dataProvider.createContext();
+        }
+
+        @Override
+        public long getNodePosMaskBit() {
+            return betaMemory.getNodePosMaskBit();
+        }
+
+        @Override
+        public void setNodePosMaskBit( long segmentPos ) {
+            betaMemory.setNodePosMaskBit( segmentPos );
+        }
+
+        @Override
+        public void setNodeDirtyWithoutNotify() {
+            betaMemory.setNodeDirtyWithoutNotify();
+        }
+
+        @Override
+        public void setNodeCleanWithoutNotify() {
+            betaMemory.setNodeCleanWithoutNotify();
         }
     }
     

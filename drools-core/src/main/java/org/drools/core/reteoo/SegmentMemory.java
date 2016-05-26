@@ -476,7 +476,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
         @Override
         public void populateMemory(InternalWorkingMemory wm, Memory liaMemory) {
-            ((LeftInputAdapterNode.LiaNodeMemory)liaMemory).setNodePosMaskBit( nodePosMaskBit );
+            ((SegmentNodeMemory)liaMemory).setNodePosMaskBit( nodePosMaskBit );
         }
     }
 
@@ -490,7 +490,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
         @Override
         public void populateMemory(InternalWorkingMemory wm, Memory memory) {
-            ((ReactiveFromNode.ReactiveFromMemory)memory).getBetaMemory().setNodePosMaskBit( nodePosMaskBit );
+            ((ReactiveFromNode.ReactiveFromMemory)memory).setNodePosMaskBit( nodePosMaskBit );
         }
     }
 

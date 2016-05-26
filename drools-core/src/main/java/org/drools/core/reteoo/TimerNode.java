@@ -274,7 +274,7 @@ public class TimerNode extends LeftTupleSource
 
     public static class TimerNodeMemory extends AbstractBaseLinkedListNode<Memory>
             implements
-            Memory {
+            SegmentNodeMemory {
 
         private static final long serialVersionUID = 510l;
         private TupleList insertOrUpdateLeftTuples;
