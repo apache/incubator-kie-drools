@@ -505,7 +505,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return new LiaNodeMemory();
     }
 
-    public static class LiaNodeMemory extends AbstractBaseLinkedListNode<Memory> implements Memory {
+    public static class LiaNodeMemory extends AbstractBaseLinkedListNode<Memory> implements SegmentNodeMemory {
         private int               counter;
 
         private SegmentMemory     segmentMemory;
@@ -547,6 +547,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
         public void setNodePosMaskBit(long nodePosMask) {
             nodePosMaskBit = nodePosMask;
         }
+
+        public void setNodeDirtyWithoutNotify() { }
+
+        public void setNodeCleanWithoutNotify() { }
 
         public void linkNodeWithoutRuleNotify() {
             segmentMemory.linkNodeWithoutRuleNotify(nodePosMaskBit);

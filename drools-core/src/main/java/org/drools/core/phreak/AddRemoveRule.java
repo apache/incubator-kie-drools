@@ -27,7 +27,6 @@ import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AbstractTerminalNode;
-import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
@@ -52,6 +51,7 @@ import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.SegmentNodeMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.WindowNode;
@@ -1251,14 +1251,8 @@ public class AddRemoveRule {
                 mem.setSegmentMemory(sm2);
 
                 // correct the NodePosMaskBit
-                BetaMemory bm = null;
-                if (mem instanceof AccumulateNode.AccumulateMemory) {
-                    bm = ((AccumulateNode.AccumulateMemory) mem).getBetaMemory();
-                } else if (mem instanceof BetaMemory) {
-                    bm = (BetaMemory) mem;
-                }
-                if (bm != null) {  // node may not be a beta
-                    bm.setNodePosMaskBit(nodePosMask);
+                if (mem instanceof SegmentNodeMemory) {
+                    ( (SegmentNodeMemory) mem ).setNodePosMaskBit( nodePosMask );
                 }
                 nodePosMask = nodePosMask << 1;
             }
@@ -1283,14 +1277,8 @@ public class AddRemoveRule {
             mem.setSegmentMemory(sm1);
 
             // correct the NodePosMaskBit
-            BetaMemory bm = null;
-            if (mem instanceof AccumulateNode.AccumulateMemory) {
-                bm = ((AccumulateNode.AccumulateMemory) mem).getBetaMemory();
-            } else if (mem instanceof BetaMemory) {
-                bm = (BetaMemory) mem;
-            }
-            if (bm != null) {  // node may not be a beta
-                bm.setNodePosMaskBit(nodePosMask);
+            if (mem instanceof SegmentNodeMemory) {
+                ( (SegmentNodeMemory) mem ).setNodePosMaskBit( nodePosMask );
             }
             nodePosMask = nodePosMask >> 1;
             mem = next;
