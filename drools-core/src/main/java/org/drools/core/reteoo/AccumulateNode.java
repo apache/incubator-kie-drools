@@ -206,7 +206,7 @@ public class AccumulateNode extends BetaNode {
 
     public static abstract class AccumulateMemory extends AbstractBaseLinkedListNode<Memory>
         implements
-        Memory {
+        SegmentNodeMemory {
 
         public Object             workingMemoryContext;
         private final BetaMemory  betaMemory;
@@ -233,6 +233,26 @@ public class AccumulateNode extends BetaNode {
         }
 
         public abstract void reset();
+
+        @Override
+        public long getNodePosMaskBit() {
+            return betaMemory.getNodePosMaskBit();
+        }
+
+        @Override
+        public void setNodePosMaskBit( long segmentPos ) {
+            betaMemory.setNodePosMaskBit( segmentPos );
+        }
+
+        @Override
+        public void setNodeDirtyWithoutNotify() {
+            betaMemory.setNodeDirtyWithoutNotify();
+        }
+
+        @Override
+        public void setNodeCleanWithoutNotify() {
+            betaMemory.setNodeCleanWithoutNotify();
+        }
     }
 
     public static class SingleAccumulateMemory extends AccumulateMemory {
