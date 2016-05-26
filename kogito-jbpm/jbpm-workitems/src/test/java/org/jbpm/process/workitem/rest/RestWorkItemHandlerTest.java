@@ -478,6 +478,5 @@ public class RestWorkItemHandlerTest {
         public void registerWorkItemHandler(String workItemName, WorkItemHandler handler) {
             
         }
-        
     }
 }

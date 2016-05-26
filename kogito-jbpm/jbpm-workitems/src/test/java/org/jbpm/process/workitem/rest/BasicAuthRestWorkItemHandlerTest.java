@@ -406,7 +406,6 @@ public class BasicAuthRestWorkItemHandlerTest {
         public void registerWorkItemHandler(String workItemName, WorkItemHandler handler) {
             
         }
-        
     }
 
     /**

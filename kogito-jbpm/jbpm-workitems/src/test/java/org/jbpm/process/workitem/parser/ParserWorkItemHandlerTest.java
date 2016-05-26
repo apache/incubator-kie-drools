@@ -112,7 +112,6 @@ public class ParserWorkItemHandlerTest {
 				WorkItemHandler handler) {
 
 		}
-
 	}
 
 }
