@@ -2831,4 +2831,112 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         deployJar( ks, createKJar( ks, kproj, releaseId2, null, drl2 ) );
         kc.updateToVersion( releaseId2 );
     }
+
+    @Test
+    public void testIncrementalCompilationWithTimerNode() throws Exception {
+        // DROOLS-1195
+        String drl1 =  "package fr.edf.distribution.brms.common.test\n" +
+                       "import " + DummyEvent.class.getCanonicalName() + "\n" +
+                       "declare DummyEvent\n" +
+                       "    @role( event )\n" +
+                       "    @timestamp( eventTimestamp )\n" +
+                       "end\n" +
+                       "rule \"RG_TEST_TIMER\"\n" +
+                       "timer (int: 0 1; start=$expirationTimestamp , repeat-limit=0 )\n" +
+                       "    when\n" +
+                       "       $dummy: DummyEvent (id == 'timer', $expirationTimestamp : systemTimestamp )\n" +
+                       "    then\n " +
+                       "System.out.println(\"1\");\n" +
+                       "end\n";
+
+        String drl2 =  "package fr.edf.distribution.brms.common.test\n" +
+                       "import " + DummyEvent.class.getCanonicalName() + "\n" +
+                       "declare DummyEvent\n" +
+                       "    @role( event )\n" +
+                       "    @timestamp( eventTimestamp )\n" +
+                       "end\n" +
+                       "rule \"RG_TEST_TIMER_NEW\"\n" +
+                       "timer (int: 0 1; start=$expirationTimestamp , repeat-limit=0 )\n" +
+                       "    when\n" +
+                       "       $dummy: DummyEvent (id == 'timer', $expirationTimestamp : systemTimestamp )\n" +
+                       "		DummyEvent (id == 'timer_match')\n" +
+                       "    then\n " +
+                       "System.out.println(\"1\");\n" +
+                       "end\n" +
+                       "rule \"RG_OTHER_RULE\"\n" +
+                       "    when\n" +
+                       "       $dummy: DummyEvent ( id == 'timer' )\n" +
+                       "    then\n " +
+                       "System.out.println(\"2\");\n" +
+                       "end\n";
+
+        long now = System.currentTimeMillis();
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "KBase1" ).setDefault( true )
+                                          .setEventProcessingMode(EventProcessingOption.STREAM);
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1").setDefault(true)
+                                                 .setType(KieSessionModel.KieSessionType.STATEFUL)
+                                                 .setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId1, null, drl1 ) );
+
+        KieContainer kc = ks.newKieContainer(releaseId1);
+        KieSession kieSession = kc.newKieSession();
+
+        DummyEvent dummyEvent = new DummyEvent();
+        dummyEvent.setId("timer");
+        dummyEvent.setEventTimestamp(now);
+        dummyEvent.setSystemTimestamp(now + TimeUnit.HOURS.toMillis(1));
+
+        DummyEvent other = new DummyEvent();
+        other.setId("timer_match");
+        other.setEventTimestamp(now);
+
+        kieSession.insert(dummyEvent);
+        kieSession.insert(other);
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "2.0.0");
+        deployJar( ks, createKJar( ks, kproj, releaseId2, null, drl2 ) );
+
+        kc.updateToVersion(releaseId2);
+
+        PseudoClockScheduler scheduler = kieSession.getSessionClock();
+        scheduler.setStartupTime(now);
+        scheduler.advanceTime(1, TimeUnit.DAYS);
+        assertEquals( 2, kieSession.fireAllRules() );
+    }
+
+    public static class DummyEvent {
+
+        private String id;
+        private long eventTimestamp;
+        private long systemTimestamp;
+
+        public long getEventTimestamp() {
+            return eventTimestamp;
+        }
+
+        public void setEventTimestamp(long eventTimestamp) {
+            this.eventTimestamp = eventTimestamp;
+        }
+
+        public long getSystemTimestamp() {
+            return systemTimestamp;
+        }
+
+        public void setSystemTimestamp(long systemTimestamp) {
+            this.systemTimestamp = systemTimestamp;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+    }
 }

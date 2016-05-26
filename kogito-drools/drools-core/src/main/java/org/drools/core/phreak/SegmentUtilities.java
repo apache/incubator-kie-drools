@@ -208,13 +208,13 @@ public class SegmentUtilities {
     }
 
     private static void processFromNode(MemoryFactory tupleSource, InternalWorkingMemory wm, SegmentMemory smem) {
-        ((FromNode.FromMemory) smem.createNodeMemory(tupleSource, wm)).getBetaMemory().setSegmentMemory(smem);
+        ((FromNode.FromMemory) smem.createNodeMemory(tupleSource, wm)).setSegmentMemory(smem);
     }
 
     private static void processReactiveFromNode(MemoryFactory tupleSource, InternalWorkingMemory wm, SegmentMemory smem, long nodePosMask) {
-        BetaMemory bm = ((FromNode.FromMemory) smem.createNodeMemory(tupleSource, wm)).getBetaMemory();
-        bm.setSegmentMemory(smem);
-        bm.setNodePosMaskBit(nodePosMask);
+        FromNode.FromMemory mem = ((FromNode.FromMemory) smem.createNodeMemory(tupleSource, wm));
+        mem.setSegmentMemory(smem);
+        mem.setNodePosMaskBit(nodePosMask);
     }
 
     private static boolean processBranchNode(ConditionalBranchNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem) {

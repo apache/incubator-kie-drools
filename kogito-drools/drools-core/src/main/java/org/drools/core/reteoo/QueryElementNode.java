@@ -638,7 +638,7 @@ public class QueryElementNode extends LeftTupleSource
         return new QueryElementNodeMemory(this);
     }
     
-    public static class QueryElementNodeMemory extends AbstractBaseLinkedListNode<Memory> implements Memory {
+    public static class QueryElementNodeMemory extends AbstractBaseLinkedListNode<Memory> implements SegmentNodeMemory {
         private QueryElementNode node;
 
         private SegmentMemory smem;
