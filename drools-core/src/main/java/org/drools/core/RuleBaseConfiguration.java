@@ -70,6 +70,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.drools.core.util.Drools.isJmxAvailable;
 import static org.drools.core.util.MemoryUtil.hasPermGen;
 
 /**
@@ -580,7 +581,7 @@ public class RuleBaseConfiguration
         if (permGenThreshold < 0 || permGenThreshold > 100) {
             throw new UnsupportedOperationException( "The PermGen threshold should be a number between 0 and 100" );
         }
-        if (!hasPermGen()) {
+        if (isJmxAvailable() && !hasPermGen()) {
             if (permGenThreshold != PermGenThresholdOption.DEFAULT_VALUE) {
                 logger.warn( "JVM version " + System.getProperty("java.version") + " has no PermGen space. " +
                              "Attempt to set the permgenThreshold to " + permGenThreshold + " will be ignored");
