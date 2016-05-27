@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2012 Red Hat, Inc. and/or its affiliates
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jbpm.document.service;
 
-import org.jbpm.document.Document;
-
-import java.io.File;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+
+import org.jbpm.document.Document;
 
 /**
  * Simple storage service definition
@@ -64,4 +65,12 @@ public interface DocumentStorageService {
      * @return              true if it was possible to remove, false if not
      */
     boolean deleteDocument(Document document);
+    
+    /**
+     * Lists available document with paging support.
+     * @param page page to be displayed
+     * @param pageSize number of elements to return
+     * @return
+     */
+    List<Document> listDocuments(Integer page, Integer pageSize);
 }

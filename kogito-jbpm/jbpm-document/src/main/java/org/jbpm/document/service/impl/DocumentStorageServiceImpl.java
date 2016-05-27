@@ -15,6 +15,16 @@
  */
 package org.jbpm.document.service.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,12 +32,6 @@ import org.jbpm.document.Document;
 import org.jbpm.document.service.DocumentStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * This a Sample Implementation of the DocumentStorageService saves the uploaded files on the File System on a folder (by default /docs)
@@ -42,14 +46,16 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
     /**
      * This is the root folder where the files are going to be stored, please check that the user that is running the app has permissions to read/write inside
      */
-    private String storagePath = ".docs";
+    private String storagePath = System.getProperty("org.jbpm.document.storage", ".docs");
+    private File storageFile;
 
     public DocumentStorageServiceImpl( String storagePath ) {
         this.storagePath = storagePath;
+        this.storageFile = new File(storagePath);
     }
 
     public DocumentStorageServiceImpl() {
-
+        this.storageFile = new File(this.storagePath);
     }
 
     @Override
@@ -72,10 +78,12 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
     public Document saveDocument(Document document, byte[] content) {
         if (document == null || StringUtils.isEmpty(document.getIdentifier())) return null;
 
-        File destination = getFileByPath( document.getIdentifier() + "/" + document.getName() );
+        File destination = getFileByPath( document.getIdentifier() + File.separator + document.getName() );
 
         try {
             FileUtils.writeByteArrayToFile(destination, content);
+            destination.getParentFile().setLastModified(document.getLastModified().getTime());
+            destination.setLastModified(document.getLastModified().getTime());
         } catch (IOException e) {
             log.error("Error writing file {}: {}", document.getName(), e);
         }
@@ -165,6 +173,26 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
     }
 
     protected File getFileByPath( String path ) {
-        return new File( storagePath + "/" + path );
+        return new File( storagePath + File.separator + path );
+    }
+
+    @Override
+    public List<Document> listDocuments(Integer page, Integer pageSize) {
+        List<Document> listOfDocs = new ArrayList<Document>();
+        
+        int startIndex = page * pageSize;
+        int endIndex = startIndex + pageSize;
+        
+        File[] documents = storageFile.listFiles();
+        Arrays.sort(documents, new Comparator<File>() {
+            public int compare(File f1, File f2) {
+                return Long.compare(f1.lastModified(), f2.lastModified());
+            }
+        });
+        for (int i = startIndex; i < endIndex; i++) {
+            Document doc = getDocument(documents[i].getName());
+            listOfDocs.add(doc);
+        }
+        return listOfDocs;
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2012 Red Hat, Inc. and/or its affiliates
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,29 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.jbpm.document.marshalling;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Date;
+import java.util.Map;
 
 import org.drools.core.common.DroolsObjectInputStream;
 import org.jbpm.document.Document;
 import org.jbpm.document.service.DocumentStorageService;
-import org.jbpm.document.service.impl.DocumentImpl;
-import org.jbpm.document.service.impl.DocumentStorageServiceImpl;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
-
-import java.io.*;
-import java.util.Date;
-import java.util.Map;
+import org.jbpm.document.service.DocumentStorageServiceProvider;
 
 public class DocumentMarshallingStrategy extends AbstractDocumentMarshallingStrategy {
 
     private DocumentStorageService documentStorageService;
 
     public DocumentMarshallingStrategy() {
-        documentStorageService = new DocumentStorageServiceImpl();
+        documentStorageService = DocumentStorageServiceProvider.get().getStorageService();
     }
 
     public DocumentMarshallingStrategy(String path) {
-        documentStorageService = new DocumentStorageServiceImpl(path);
+        documentStorageService = DocumentStorageServiceProvider.get().getStorageService();
     }
 
     @Override
