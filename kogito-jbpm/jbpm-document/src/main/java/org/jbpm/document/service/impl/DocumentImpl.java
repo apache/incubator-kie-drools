@@ -15,14 +15,22 @@
 
 package org.jbpm.document.service.impl;
 
-import org.jbpm.document.Document;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
+import org.jbpm.document.Document;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlRootElement(name="document-object")
 public class DocumentImpl implements Document {
+
+    private static final long serialVersionUID = -7422666286189013484L;
 
     private String identifier = "";
     private String name;

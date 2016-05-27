@@ -76,7 +76,10 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
 
     @Override
     public Document saveDocument(Document document, byte[] content) {
-        if (document == null || StringUtils.isEmpty(document.getIdentifier())) return null;
+        
+        if (StringUtils.isEmpty(document.getIdentifier())) {
+            document.setIdentifier(generateUniquePath());
+        }
 
         File destination = getFileByPath( document.getIdentifier() + File.separator + document.getName() );
 
@@ -184,6 +187,11 @@ public class DocumentStorageServiceImpl implements DocumentStorageService {
         int endIndex = startIndex + pageSize;
         
         File[] documents = storageFile.listFiles();
+        
+        // make sure the endIndex is not bigger then amount of files
+        if (documents.length < endIndex) {
+            endIndex = documents.length;
+        }
         Arrays.sort(documents, new Comparator<File>() {
             public int compare(File f1, File f2) {
                 return Long.compare(f1.lastModified(), f2.lastModified());

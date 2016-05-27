@@ -176,4 +176,19 @@ public class DocumentStorageServiceImplTest {
         assertEquals("mydoc" + 2, docs.get(0).getName());
         assertEquals("mydoc" + 3, docs.get(1).getName());
     }
+    
+    @Test
+    public void testListDocumentsLessThanPageSize() {
+        byte[] content = "yet another document content".getBytes();
+        Document document = documentStorageService.buildDocument("mydoc", content.length, new Date(), new HashMap<String, String>());
+        assertNotNull(document.getIdentifier());
+        
+        documentStorageService.saveDocument(document, content);
+        
+        List<Document> docs = documentStorageService.listDocuments(0, 5);
+        assertNotNull(docs);
+        assertEquals(1, docs.size());
+        
+        assertEquals("mydoc", docs.get(0).getName());
+    }
 }
