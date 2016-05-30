@@ -62,15 +62,7 @@ public abstract class AbstractScoreHibernateTypeTest {
             EntityManager em = entityManagerFactory.createEntityManager();
             em.persist(jpaEntity);
             transactionManager.commit();
-        } catch (NotSupportedException e) {
-            throw new RuntimeException("Transaction failed.", e);
-        } catch (SystemException e) {
-            throw new RuntimeException("Transaction failed.", e);
-        } catch (RollbackException e) {
-            throw new RuntimeException("Transaction failed.", e);
-        } catch (HeuristicMixedException e) {
-            throw new RuntimeException("Transaction failed.", e);
-        } catch (HeuristicRollbackException e) {
+        } catch (NotSupportedException | SystemException | RollbackException | HeuristicRollbackException | HeuristicMixedException e) {
             throw new RuntimeException("Transaction failed.", e);
         }
         Long id = jpaEntity.getId();
@@ -90,15 +82,7 @@ public abstract class AbstractScoreHibernateTypeTest {
             jpaEntity.setScore(newScore);
             jpaEntity = em.merge(jpaEntity);
             transactionManager.commit();
-        } catch (NotSupportedException e) {
-            throw new RuntimeException("Transaction failed.", e);
-        } catch (SystemException e) {
-            throw new RuntimeException("Transaction failed.", e);
-        } catch (RollbackException e) {
-            throw new RuntimeException("Transaction failed.", e);
-        } catch (HeuristicMixedException e) {
-            throw new RuntimeException("Transaction failed.", e);
-        } catch (HeuristicRollbackException e) {
+        } catch (NotSupportedException | SystemException | RollbackException | HeuristicRollbackException | HeuristicMixedException e) {
             throw new RuntimeException("Transaction failed.", e);
         }
     }
@@ -111,15 +95,7 @@ public abstract class AbstractScoreHibernateTypeTest {
             E jpaEntity = em.find(jpaEntityClass, id);
             assertEquals(score, jpaEntity.getScore());
             transactionManager.commit();
-        } catch (NotSupportedException e) {
-            throw new RuntimeException("Transaction failed.", e);
-        } catch (SystemException e) {
-            throw new RuntimeException("Transaction failed.", e);
-        } catch (RollbackException e) {
-            throw new RuntimeException("Transaction failed.", e);
-        } catch (HeuristicMixedException e) {
-            throw new RuntimeException("Transaction failed.", e);
-        } catch (HeuristicRollbackException e) {
+        } catch (NotSupportedException | SystemException | RollbackException | HeuristicMixedException | HeuristicRollbackException e) {
             throw new RuntimeException("Transaction failed.", e);
         }
     }
