@@ -88,5 +88,22 @@ public class TestRESTResource {
 
         return "{\"name\":\"Person Json\"}";
     }
+    
+    @GET
+    @Path("/xml-charset")
+    @Produces("application/xml; charset=utf-8")
+    public Person getXmlWithCharset() {
+        Person person = new Person();
+        person.setName("Person Xml");
+        return person;
+    }
+    
+    @GET
+    @Path("/json-charset")
+    @Produces("application/json; charset=utf-8")
+    public String getJsonWithCharset() {
+
+        return "{\"name\":\"Person Json\"}";
+    }
 
 }

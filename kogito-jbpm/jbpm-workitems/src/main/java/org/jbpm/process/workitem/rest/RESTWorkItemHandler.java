@@ -357,11 +357,11 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
     
     protected Object transformResult(Class<?> clazz, String contentType, String content) throws Exception {
         
-        if (contentType.equals("application/json")) {
+        if (contentType.toLowerCase().contains("application/json")) {
             ObjectMapper mapper = new ObjectMapper();
             
             return mapper.readValue(content, clazz);
-        } else if (contentType.equals("application/xml")) {
+        } else if (contentType.toLowerCase().contains("application/xml")) {
             StringReader result = new StringReader(content);
             JAXBContext jaxbContext = JAXBContext.newInstance(new Class[]{clazz});
             

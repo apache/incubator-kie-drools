@@ -455,6 +455,54 @@ public class RestWorkItemHandlerTest {
         assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
     }
     
+    @Test
+    public void testGETOperationWithXmlCharsetTrasformation() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "Url", serverURL + "/xml-charset");
+        workItem.setParameter( "Method", "GET" );
+        workItem.setParameter( "ResultClass", Person.class.getName() );
+        
+        
+        WorkItemManager manager = new TestWorkItemManager(workItem);
+        handler.executeWorkItem(workItem, manager);
+        
+        Person result = (Person) workItem.getResult("Result");
+        assertNotNull("result cannot be null", result);
+        assertEquals("Person Xml", result.getName());
+        int responseCode = (Integer) workItem.getResult("Status");
+        assertNotNull(responseCode);
+        assertEquals(200, responseCode);
+        String responseMsg = (String) workItem.getResult("StatusMsg");
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
+    }
+    
+    @Test
+    public void testGETOperationWithJsonCharsetTrasformation() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "Url", serverURL + "/json-charset");
+        workItem.setParameter( "Method", "GET" );
+        workItem.setParameter( "ResultClass", Person.class.getName() );
+        
+        
+        WorkItemManager manager = new TestWorkItemManager(workItem);
+        handler.executeWorkItem(workItem, manager);
+        
+        Person result = (Person) workItem.getResult("Result");
+        assertNotNull("result cannot be null", result);
+        assertEquals("Person Json", result.getName());
+        int responseCode = (Integer) workItem.getResult("Status");
+        assertNotNull(responseCode);
+        assertEquals(200, responseCode);
+        String responseMsg = (String) workItem.getResult("StatusMsg");
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
+    }
+    
     private class TestWorkItemManager implements WorkItemManager {
         
         private WorkItem workItem;
