@@ -248,4 +248,9 @@ public class QueryElementFactHandle
         throw new UnsupportedOperationException( "QueryElementFactHandle does not yet support this method" );
     }
 
+    @Override
+    public boolean isExpired() {
+        return false;
+    }
+
 }
