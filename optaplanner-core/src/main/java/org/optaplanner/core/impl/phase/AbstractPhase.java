@@ -177,25 +177,27 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     // ************************************************************************
 
     protected void assertWorkingSolutionInitialized(AbstractPhaseScope<Solution_> phaseScope) {
-        InnerScoreDirector<Solution_> scoreDirector = phaseScope.getScoreDirector();
-        SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
-        Solution_ workingSolution = scoreDirector.getWorkingSolution();
-        for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
-            Object entity = it.next();
-            if (!solutionDescriptor.isEntityInitializedOrImmovable(scoreDirector, entity)) {
-                EntityDescriptor<Solution_> entityDescriptor
-                        = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
-                String variableRef = null;
-                for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
-                    if (!variableDescriptor.isInitialized(entity)) {
-                        variableRef = variableDescriptor.getSimpleEntityAndVariableName();
-                        break;
+        if (!phaseScope.getStartingScore().isSolutionInitialized()) {
+            InnerScoreDirector<Solution_> scoreDirector = phaseScope.getScoreDirector();
+            SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
+            Solution_ workingSolution = scoreDirector.getWorkingSolution();
+            for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
+                Object entity = it.next();
+                if (!solutionDescriptor.isEntityInitializedOrImmovable(scoreDirector, entity)) {
+                    EntityDescriptor<Solution_> entityDescriptor
+                            = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
+                    String variableRef = null;
+                    for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
+                        if (!variableDescriptor.isInitialized(entity)) {
+                            variableRef = variableDescriptor.getSimpleEntityAndVariableName();
+                            break;
+                        }
                     }
+                    throw new IllegalStateException(getPhaseTypeString() + " phase (" + phaseIndex
+                            + ") needs to start from an initialized solution, but the planning variable (" + variableRef
+                            + ") is uninitialized for the entity (" +  entity + ").\n"
+                            + "  Initialize the solution by configuring a Construction Heuristic phase before this phase.");
                 }
-                throw new IllegalStateException(getPhaseTypeString() + " phase (" + phaseIndex
-                        + ") needs to start from an initialized solution, but the planning variable (" + variableRef
-                        + ") is uninitialized for the entity (" +  entity + ").\n"
-                        + "  Initialize the solution by configuring a Construction Heuristic phase before this phase.");
             }
         }
     }

@@ -50,12 +50,12 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
     }
 
     @Override
-    public SimpleDoubleScore fromLevelNumbers(Number[] levelNumbers) {
+    public SimpleDoubleScore fromLevelNumbers(int initScore, Number[] levelNumbers) {
         if (levelNumbers.length != getLevelsSize()) {
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
-        return SimpleDoubleScore.valueOf((Double) levelNumbers[0]);
+        return SimpleDoubleScore.valueOf(initScore, (Double) levelNumbers[0]);
     }
 
     @Override
@@ -66,14 +66,14 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
     @Override
     public SimpleDoubleScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleDoubleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return SimpleDoubleScore.valueOf(
+        return SimpleDoubleScore.valueOf(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getScore() : Double.POSITIVE_INFINITY);
     }
 
     @Override
     public SimpleDoubleScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, SimpleDoubleScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return SimpleDoubleScore.valueOf(
+        return SimpleDoubleScore.valueOf(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getScore() : Double.NEGATIVE_INFINITY);
     }
 

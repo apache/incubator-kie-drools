@@ -18,6 +18,8 @@ package org.optaplanner.core.api.score.buildin.simpledouble;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
@@ -26,7 +28,16 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void parseScore() {
-        assertEquals(SimpleDoubleScore.valueOf(-147.2), SimpleDoubleScore.parseScore("-147.2"));
+        assertEquals(SimpleDoubleScore.valueOfInitialized(-147.2),
+                SimpleDoubleScore.parseScore("-147.2"));
+        assertEquals(SimpleDoubleScore.valueOf(-7, -147.2),
+                SimpleDoubleScore.parseScore("-7init/-147.2"));
+    }
+
+    @Test
+    public void testToString() {
+        assertEquals("-147.2", SimpleDoubleScore.valueOfInitialized(-147.2).toString());
+        assertEquals("-7init/-147.2", SimpleDoubleScore.valueOf(-7, -147.2).toString());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -35,86 +46,126 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void toInitializedScore() {
+        assertEquals(SimpleDoubleScore.valueOfInitialized(-147.2),
+                SimpleDoubleScore.valueOfInitialized(-147.2).toInitializedScore());
+        assertEquals(SimpleDoubleScore.valueOfInitialized(-147.2),
+                SimpleDoubleScore.valueOf(-7, -147.2).toInitializedScore());
+    }
+
+    @Test
     public void add() {
-        assertEquals(SimpleDoubleScore.valueOf(19.0),
-                SimpleDoubleScore.valueOf(20.0).add(
-                        SimpleDoubleScore.valueOf(-1.0)));
+        assertEquals(SimpleDoubleScore.valueOfInitialized(19.0),
+                SimpleDoubleScore.valueOfInitialized(20.0).add(
+                        SimpleDoubleScore.valueOfInitialized(-1.0)));
+        assertEquals(SimpleDoubleScore.valueOf(-77, 19.0),
+                SimpleDoubleScore.valueOf(-70, 20.0).add(
+                        SimpleDoubleScore.valueOf(-7, -1.0)));
     }
 
     @Test
     public void subtract() {
-        assertEquals(SimpleDoubleScore.valueOf(21.0),
-                SimpleDoubleScore.valueOf(20.0).subtract(
-                        SimpleDoubleScore.valueOf(-1.0)));
+        assertEquals(SimpleDoubleScore.valueOfInitialized(21.0),
+                SimpleDoubleScore.valueOfInitialized(20.0).subtract(
+                        SimpleDoubleScore.valueOfInitialized(-1.0)));
+        assertEquals(SimpleDoubleScore.valueOf(-63, 21.0),
+                SimpleDoubleScore.valueOf(-70, 20.0).subtract(
+                        SimpleDoubleScore.valueOf(-7, -1.0)));
     }
 
     @Test
     public void multiply() {
-        assertEquals(SimpleDoubleScore.valueOf(6.0),
-                SimpleDoubleScore.valueOf(5.0).multiply(1.2));
-        assertEquals(SimpleDoubleScore.valueOf(1.2),
-                SimpleDoubleScore.valueOf(1.0).multiply(1.2));
-        assertEquals(SimpleDoubleScore.valueOf(4.8),
-                SimpleDoubleScore.valueOf(4.0).multiply(1.2));
+        assertEquals(SimpleDoubleScore.valueOfInitialized(6.0),
+                SimpleDoubleScore.valueOfInitialized(5.0).multiply(1.2));
+        assertEquals(SimpleDoubleScore.valueOfInitialized(1.2),
+                SimpleDoubleScore.valueOfInitialized(1.0).multiply(1.2));
+        assertEquals(SimpleDoubleScore.valueOfInitialized(4.8),
+                SimpleDoubleScore.valueOfInitialized(4.0).multiply(1.2));
+        assertEquals(SimpleDoubleScore.valueOf(-14, 8.6),
+                SimpleDoubleScore.valueOf(-7, 4.3).multiply(2.0));
     }
 
     @Test
     public void divide() {
-        assertEquals(SimpleDoubleScore.valueOf(5.0),
-                SimpleDoubleScore.valueOf(25.0).divide(5.0));
-        assertEquals(SimpleDoubleScore.valueOf(4.2),
-                SimpleDoubleScore.valueOf(21.0).divide(5.0));
-        assertEquals(SimpleDoubleScore.valueOf(4.8),
-                SimpleDoubleScore.valueOf(24.0).divide(5.0));
+        assertEquals(SimpleDoubleScore.valueOfInitialized(5.0),
+                SimpleDoubleScore.valueOfInitialized(25.0).divide(5.0));
+        assertEquals(SimpleDoubleScore.valueOfInitialized(4.2),
+                SimpleDoubleScore.valueOfInitialized(21.0).divide(5.0));
+        assertEquals(SimpleDoubleScore.valueOfInitialized(4.8),
+                SimpleDoubleScore.valueOfInitialized(24.0).divide(5.0));
+        assertEquals(SimpleDoubleScore.valueOf(-7, 4.3),
+                SimpleDoubleScore.valueOf(-14, 8.6).divide(2.0));
     }
 
     @Test
     public void power() {
-        assertEquals(SimpleDoubleScore.valueOf(2.25),
-                SimpleDoubleScore.valueOf(1.5).power(2.0));
-        assertEquals(SimpleDoubleScore.valueOf(1.5),
-                SimpleDoubleScore.valueOf(2.25).power(0.5));
+        assertEquals(SimpleDoubleScore.valueOfInitialized(2.25),
+                SimpleDoubleScore.valueOfInitialized(1.5).power(2.0));
+        assertEquals(SimpleDoubleScore.valueOfInitialized(1.5),
+                SimpleDoubleScore.valueOfInitialized(2.25).power(0.5));
+        assertEquals(SimpleDoubleScore.valueOf(-343, 125.0),
+                SimpleDoubleScore.valueOf(-7, 5.0).power(3.0));
     }
 
     @Test
     public void negate() {
-        assertEquals(SimpleDoubleScore.valueOf(-1.5),
-                SimpleDoubleScore.valueOf(1.5).negate());
-        assertEquals(SimpleDoubleScore.valueOf(1.5),
-                SimpleDoubleScore.valueOf(-1.5).negate());
+        assertEquals(SimpleDoubleScore.valueOfInitialized(-1.5),
+                SimpleDoubleScore.valueOfInitialized(1.5).negate());
+        assertEquals(SimpleDoubleScore.valueOfInitialized(1.5),
+                SimpleDoubleScore.valueOfInitialized(-1.5).negate());
     }
 
     @Test
     public void equalsAndHashCode() {
         assertScoresEqualsAndHashCode(
-                SimpleDoubleScore.valueOf(-10.0),
-                SimpleDoubleScore.valueOf(-10.0)
+                SimpleDoubleScore.valueOfInitialized(-10.0),
+                SimpleDoubleScore.valueOfInitialized(-10.0),
+                SimpleDoubleScore.valueOf(0, -10.0)
+        );
+        assertScoresEqualsAndHashCode(
+                SimpleDoubleScore.valueOf(-7, -10.0),
+                SimpleDoubleScore.valueOf(-7, -10.0)
+        );
+        assertScoresNotEquals(
+                SimpleDoubleScore.valueOfInitialized(-10.0),
+                SimpleDoubleScore.valueOfInitialized(-30.0),
+                SimpleDoubleScore.valueOf(-7, -10.0)
         );
     }
 
     @Test
     public void compareTo() {
         assertScoreCompareToOrder(
-                SimpleDoubleScore.valueOf(-300.5),
-                SimpleDoubleScore.valueOf(-300.0),
-                SimpleDoubleScore.valueOf(-20.06),
-                SimpleDoubleScore.valueOf(-20.007),
-                SimpleDoubleScore.valueOf(-20.0),
-                SimpleDoubleScore.valueOf(-1.0),
-                SimpleDoubleScore.valueOf(0.0),
-                SimpleDoubleScore.valueOf(1.0)
+                SimpleDoubleScore.valueOf(-8, -0.0),
+                SimpleDoubleScore.valueOf(-7, -20.0),
+                SimpleDoubleScore.valueOf(-7, -1.0),
+                SimpleDoubleScore.valueOf(-7, 0.0),
+                SimpleDoubleScore.valueOf(-7, 1.0),
+                SimpleDoubleScore.valueOfInitialized(-300.5),
+                SimpleDoubleScore.valueOfInitialized(-300.0),
+                SimpleDoubleScore.valueOfInitialized(-20.06),
+                SimpleDoubleScore.valueOfInitialized(-20.007),
+                SimpleDoubleScore.valueOfInitialized(-20.0),
+                SimpleDoubleScore.valueOfInitialized(-1.0),
+                SimpleDoubleScore.valueOfInitialized(0.0),
+                SimpleDoubleScore.valueOfInitialized(1.0)
         );
     }
 
     @Test
     public void serializeAndDeserialize() {
-        SimpleDoubleScore input = SimpleDoubleScore.valueOf(123.4);
-        PlannerTestUtils.serializeAndDeserializeWithAll(input,
-                new PlannerTestUtils.OutputAsserter<SimpleDoubleScore>() {
-                    @Override
-                    public void assertOutput(SimpleDoubleScore output) {
-                        assertEquals(123.4, output.getScore(), 0.0);
-                    }
+        PlannerTestUtils.serializeAndDeserializeWithAll(
+                SimpleDoubleScore.valueOfInitialized(123.4),
+                output -> {
+                    assertEquals(0, output.getInitScore());
+                    assertEquals(123.4, output.getScore(), 0.0);
+                }
+        );
+        PlannerTestUtils.serializeAndDeserializeWithAll(
+                SimpleDoubleScore.valueOf(-7, 123.4),
+                output -> {
+                    assertEquals(-7, output.getInitScore());
+                    assertEquals(123.4, output.getScore(), 0.0);
                 }
         );
     }

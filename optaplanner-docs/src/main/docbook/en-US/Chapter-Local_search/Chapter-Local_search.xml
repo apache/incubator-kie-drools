@@ -18,8 +18,8 @@
     <para>Local Search acts a lot like a human planner: it uses a single search path and moves facts around to find a
     good feasible solution. Therefore it's pretty natural to implement.</para>
 
-    <para><emphasis role="bold">Local Search usually needs to start from an initialized solution</emphasis>, therefore
-    it's usually required to configure a construction heuristic solver phase before it.</para>
+    <para><emphasis role="bold">Local Search needs to start from an initialized solution</emphasis>, therefore
+    it's usually required to configure a Construction Heuristic phase before it.</para>
   </section>
 
   <section xml:id="localSearchConcepts">

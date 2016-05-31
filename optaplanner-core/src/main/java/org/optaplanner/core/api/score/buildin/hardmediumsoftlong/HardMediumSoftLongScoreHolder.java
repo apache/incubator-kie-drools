@@ -38,27 +38,12 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder {
         return hardScore;
     }
 
-    @Deprecated
-    public void setHardScore(long hardScore) {
-        this.hardScore = hardScore;
-    }
-
     public long getMediumScore() {
         return mediumScore;
     }
 
-    @Deprecated
-    public void setMediumScore(long mediumScore) {
-        this.mediumScore = mediumScore;
-    }
-
     public long getSoftScore() {
         return softScore;
-    }
-
-    @Deprecated
-    public void setSoftScore(long softScore) {
-        this.softScore = softScore;
     }
 
     // ************************************************************************
@@ -96,8 +81,8 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore() {
-        return HardMediumSoftLongScore.valueOf(hardScore, mediumScore, softScore);
+    public Score extractScore(int initScore) {
+        return HardMediumSoftLongScore.valueOf(initScore, hardScore, mediumScore, softScore);
     }
 
 }

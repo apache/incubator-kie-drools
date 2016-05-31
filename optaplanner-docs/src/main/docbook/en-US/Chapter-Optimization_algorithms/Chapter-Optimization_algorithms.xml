@@ -992,17 +992,20 @@
 }</programlisting>
 
     <para>The <literal>BestSolutionChangedEvent</literal>'s <literal>newBestSolution</literal> might not be initialized
-    or feasible. Use the methods on <literal>BestSolutionChangedEvent</literal> to detect such cases:</para>
+    or feasible. Use the <literal>isFeasible()</literal> method on <literal>BestSolutionChangedEvent</literal>'s new
+    best <literal>Score</literal> to detect such cases:</para>
 
     <programlisting language="java">    solver.addEventListener(new SolverEventListener&lt;CloudBalance&gt;() {
         public void bestSolutionChanged(BestSolutionChangedEvent&lt;CloudBalance&gt; event) {
-            // Ignore invalid solutions
-            if (event.isNewBestSolutionInitialized()
-                    &amp;&amp; event.getNewBestSolution().getScore().isFeasible()) {
+            // Ignore infeasible (including uninitialized) solutions
+            if (event.getNewBestSolution().getScore().isFeasible()) {
                 ...
             }
         }
     });</programlisting>
+
+    <para>Use <literal>Score.isSolutionInitialized()</literal> instead of <literal>Score.isFeasible()</literal> to only
+    ignore uninitialized solutions, but do accept infeasible solutions too.</para>
 
     <warning>
       <para>The <literal>bestSolutionChanged()</literal> method is called in the solver's thread, as part of

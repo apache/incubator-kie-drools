@@ -504,13 +504,15 @@ end</programlisting>
       this:</para>
 
       <programlisting language="java">    public void bestSolutionChanged(BestSolutionChangedEvent&lt;CloudBalance&gt; event) {
-        // Ignore invalid solutions
         if (event.isEveryProblemFactChangeProcessed()
-                &amp;&amp; event.isNewBestSolutionInitialized()
+                // Ignore infeasible (including uninitialized) solutions
                 &amp;&amp; event.getNewBestSolution().getScore().isFeasible()) {
             ...
         }
     }</programlisting>
+
+      <para>Use <literal>Score.isSolutionInitialized()</literal> instead of <literal>Score.isFeasible()</literal> to
+      only ignore uninitialized solutions, but do accept infeasible solutions too.</para>
     </section>
   </section>
 </chapter>

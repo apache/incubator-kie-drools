@@ -44,12 +44,6 @@ public abstract class AbstractStepScope<Solution_> {
         return stepIndex;
     }
 
-    public abstract int getUninitializedVariableCount();
-
-    public boolean hasNoUninitializedVariables() {
-        return getUninitializedVariableCount() == 0;
-    }
-
     public Score getScore() {
         return score;
     }

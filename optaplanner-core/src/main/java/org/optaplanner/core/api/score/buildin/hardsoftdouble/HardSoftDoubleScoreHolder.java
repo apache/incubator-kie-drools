@@ -39,18 +39,8 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder {
         return hardScore;
     }
 
-    @Deprecated
-    public void setHardScore(double hardScore) {
-        this.hardScore = hardScore;
-    }
-
     public double getSoftScore() {
         return softScore;
-    }
-
-    @Deprecated
-    public void setSoftScore(double softScore) {
-        this.softScore = softScore;
     }
 
     // ************************************************************************
@@ -78,8 +68,8 @@ public class HardSoftDoubleScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore() {
-        return HardSoftDoubleScore.valueOf(hardScore, softScore);
+    public Score extractScore(int initScore) {
+        return HardSoftDoubleScore.valueOf(initScore, hardScore, softScore);
     }
 
 }

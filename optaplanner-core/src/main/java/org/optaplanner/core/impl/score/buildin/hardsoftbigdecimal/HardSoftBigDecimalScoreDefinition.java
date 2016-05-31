@@ -55,12 +55,12 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreD
     }
 
     @Override
-    public HardSoftBigDecimalScore fromLevelNumbers(Number[] levelNumbers) {
+    public HardSoftBigDecimalScore fromLevelNumbers(int initScore, Number[] levelNumbers) {
         if (levelNumbers.length != getLevelsSize()) {
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
-        return HardSoftBigDecimalScore.valueOf((BigDecimal) levelNumbers[0], (BigDecimal) levelNumbers[1]);
+        return HardSoftBigDecimalScore.valueOf(initScore, (BigDecimal) levelNumbers[0], (BigDecimal) levelNumbers[1]);
     }
 
     @Override

@@ -58,179 +58,110 @@ public class BestSolutionRecallerTest {
 
     @Test
     public void unimprovedUninitializedProcessWorkingSolutionDuringStep() {
-        DefaultSolverScope<AbstractSolution> solverScope = new DefaultSolverScope<>();
-        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
-
-        AbstractSolution solution = mock(AbstractSolution.class);
-        Score score = SimpleScore.parseScore("0");
-        when(solution.getScore()).thenReturn(score);
-        when(stepScope.createOrGetClonedSolution()).thenReturn(solution);
-
-        when(stepScope.getUninitializedVariableCount()).thenReturn(2);
-        solverScope.setBestUninitializedVariableCount(1);
-
-        BestSolutionRecaller recaller = createBestSolutionRecaller();
-        recaller.processWorkingSolutionDuringStep(stepScope);
-        assertEquals(null, solverScope.getBestSolution());
-        assertEquals(null, solverScope.getBestScore());
-        assertEquals(1, solverScope.getBestUninitializedVariableCount());
+        SimpleScore originalBestScore = SimpleScore.valueOf(-1, -300);
+        SimpleScore stepScore = SimpleScore.valueOf(-2, 0);
+        doProcessWorkingSolutionDuringStep(originalBestScore, stepScore, false);
     }
 
     @Test
     public void unimprovedInitializedProcessWorkingSolutionDuringStep() {
-        DefaultSolverScope<AbstractSolution> solverScope = new DefaultSolverScope<>();
-        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
-
-        AbstractSolution solution = mock(AbstractSolution.class);
-        Score score = SimpleScore.parseScore("0");
-        when(solution.getScore()).thenReturn(score);
-        solverScope.setBestSolution(solution);
-        solverScope.setBestScore(score);
-
-        AbstractSolution solution2 = mock(AbstractSolution.class);
-        Score score2 = SimpleScore.parseScore("-1");
-        when(solution2.getScore()).thenReturn(score2);
-        when(stepScope.createOrGetClonedSolution()).thenReturn(solution2);
-        when(stepScope.getScore()).thenReturn(score2);
-
-        when(stepScope.getUninitializedVariableCount()).thenReturn(0);
-        solverScope.setBestUninitializedVariableCount(0);
-
-        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
-        recaller.processWorkingSolutionDuringStep(stepScope);
-        assertEquals(solution, solverScope.getBestSolution());
-        assertEquals(score, solverScope.getBestScore());
-        assertEquals(0, solverScope.getBestUninitializedVariableCount());
+        Score originalBestScore = SimpleScore.valueOfInitialized(0);
+        Score stepScore = SimpleScore.valueOfInitialized(-1);
+        doProcessWorkingSolutionDuringStep(originalBestScore, stepScore, false);
     }
 
     @Test
     public void improvedUninitializedProcessWorkingSolutionDuringStep() {
-        DefaultSolverScope<AbstractSolution> solverScope = createSolverScope();
-        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
-
-        AbstractSolution solution = mock(AbstractSolution.class);
-        Score score = SimpleScore.parseScore("0");
-        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(solution)).thenReturn(score);
-        when(stepScope.createOrGetClonedSolution()).thenReturn(solution);
-
-        when(stepScope.getUninitializedVariableCount()).thenReturn(1);
-        solverScope.setBestUninitializedVariableCount(2);
-
-        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
-        recaller.processWorkingSolutionDuringStep(stepScope);
-        assertEquals(solution, solverScope.getBestSolution());
-        assertEquals(score, solverScope.getBestScore());
-        assertEquals(1, solverScope.getBestUninitializedVariableCount());
+        Score originalBestScore = SimpleScore.valueOf(-2, 0);
+        Score stepScore = SimpleScore.valueOf(-1, 0);
+        doProcessWorkingSolutionDuringStep(originalBestScore, stepScore, true);
     }
 
     @Test
     public void improvedInitializedProcessWorkingSolutionDuringStep() {
+        Score originalBestScore = SimpleScore.valueOfInitialized(-1);
+        Score stepScore = SimpleScore.valueOfInitialized(0);
+        doProcessWorkingSolutionDuringStep(originalBestScore, stepScore, true);
+    }
+
+    protected void doProcessWorkingSolutionDuringStep(Score originalBestScore, Score stepScore,
+            boolean stepImprovesBestSolution) {
         DefaultSolverScope<AbstractSolution> solverScope = createSolverScope();
+        AbstractSolution originalBestSolution = mock(AbstractSolution.class);
+        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(originalBestSolution)).thenReturn(originalBestScore);
+        solverScope.setBestSolution(originalBestSolution);
+        solverScope.setBestScore(originalBestScore);
+
         ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
-
-        AbstractSolution solution = mock(AbstractSolution.class);
-        Score score = SimpleScore.parseScore("-1");
-        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(solution)).thenReturn(score);
-        solverScope.setBestSolution(solution);
-        solverScope.setBestScore(score);
-
-        AbstractSolution solution2 = mock(AbstractSolution.class);
-        Score score2 = SimpleScore.parseScore("0");
-        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(solution2)).thenReturn(score2);
-        when(stepScope.getScore()).thenReturn(score2);
-        when(stepScope.createOrGetClonedSolution()).thenReturn(solution2);
-
-        when(stepScope.getUninitializedVariableCount()).thenReturn(0);
-        solverScope.setBestUninitializedVariableCount(0);
+        AbstractSolution stepSolution = mock(AbstractSolution.class);
+        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(stepSolution)).thenReturn(stepScore);
+        when(stepScope.getScore()).thenReturn(stepScore);
+        when(stepScope.createOrGetClonedSolution()).thenReturn(stepSolution);
 
         BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
         recaller.processWorkingSolutionDuringStep(stepScope);
-        assertEquals(solution2, solverScope.getBestSolution());
-        assertEquals(score2, solverScope.getBestScore());
-        assertEquals(0, solverScope.getBestUninitializedVariableCount());
+        if (stepImprovesBestSolution) {
+            assertEquals(stepSolution, solverScope.getBestSolution());
+            assertEquals(stepScore, solverScope.getBestScore());
+        } else {
+            assertEquals(originalBestSolution, solverScope.getBestSolution());
+            assertEquals(originalBestScore, solverScope.getBestScore());
+        }
     }
 
     @Test
     public void unimprovedUninitializedProcessWorkingSolutionDuringMove() {
-        DefaultSolverScope<AbstractSolution> solverScope = new DefaultSolverScope<>();
-        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
-
-        Score score = SimpleScore.parseScore("-1");
-        solverScope.setBestUninitializedVariableCount(0);
-
-        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
-        recaller.processWorkingSolutionDuringMove(1, score, stepScope);
-        assertEquals(null, solverScope.getBestSolution());
-        assertEquals(null, solverScope.getBestScore());
-        assertEquals(0, solverScope.getBestUninitializedVariableCount());
+        Score bestScore = SimpleScore.valueOfInitialized(-10);
+        Score moveScore = SimpleScore.valueOf(-1, -1);
+        doProcessWorkingSolutionDuringMove(bestScore, moveScore, false);
     }
 
 
     @Test
     public void unimprovedInitializedProcessWorkingSolutionDuringMove() {
-        DefaultSolverScope<AbstractSolution> solverScope = new DefaultSolverScope<>();
-        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
-
-        AbstractSolution solution = mock(AbstractSolution.class);
-        Score score2 = SimpleScore.parseScore("0");
-        when(solution.getScore()).thenReturn(score2);
-        solverScope.setBestScore(score2);
-        solverScope.setBestSolution(solution);
-
-        Score score = SimpleScore.parseScore("-1");
-        solverScope.setBestUninitializedVariableCount(0);
-
-        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
-        recaller.processWorkingSolutionDuringMove(0, score, stepScope);
-        assertEquals(solution, solverScope.getBestSolution());
-        assertEquals(0, ((SimpleScore) solverScope.getBestScore()).getScore());
-        assertEquals(0, solverScope.getBestUninitializedVariableCount());
+        Score bestScore = SimpleScore.valueOfInitialized(0);
+        Score moveScore = SimpleScore.valueOfInitialized(-1);
+        doProcessWorkingSolutionDuringMove(bestScore, moveScore, false);
     }
 
     @Test
     public void improvedUninitializedProcessWorkingSolutionDuringMove() {
-        DefaultSolverScope<AbstractSolution> solverScope = createSolverScope();
-        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
-
-        AbstractSolution helpSolution = mock(AbstractSolution.class);
-        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(helpSolution))
-                .thenReturn(SimpleScore.parseScore("-2"));
-        when(solverScope.getScoreDirector().cloneWorkingSolution()).thenReturn(helpSolution);
-
-        solverScope.setBestUninitializedVariableCount(1);
-        Score score = SimpleScore.parseScore("-1");
-
-        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
-        recaller.processWorkingSolutionDuringMove(0, score, stepScope);
-        assertEquals(helpSolution, solverScope.getBestSolution());
-        assertEquals(-2, ((SimpleScore) solverScope.getBestScore()).getScore());
-        assertEquals(0, solverScope.getBestUninitializedVariableCount());
+        Score bestScore = SimpleScore.valueOf(-1, 0);
+        SimpleScore moveScore = SimpleScore.valueOfInitialized(-2);
+        doProcessWorkingSolutionDuringMove(bestScore, moveScore, true);
     }
 
     @Test
     public void improvedInitializedProcessWorkingSolutionDuringMove() {
+        Score bestScore = SimpleScore.valueOfInitialized(-2);
+        Score moveScore = SimpleScore.valueOfInitialized(-1);
+        doProcessWorkingSolutionDuringMove(bestScore, moveScore, true);
+    }
+
+    protected void doProcessWorkingSolutionDuringMove(Score originalBestScore, Score moveScore,
+            boolean moveImprovesBestSolution) {
         DefaultSolverScope<AbstractSolution> solverScope = createSolverScope();
+        AbstractSolution originalBestSolution = mock(AbstractSolution.class);
+        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(originalBestSolution)).thenReturn(originalBestScore);
+        solverScope.setBestSolution(originalBestSolution);
+        solverScope.setBestScore(originalBestScore);
+
         ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
 
-        AbstractSolution solution = mock(AbstractSolution.class);
-        Score score = SimpleScore.parseScore("-2");
-        when(solution.getScore()).thenReturn(score);
-        solverScope.setBestScore(score);
-        solverScope.setBestSolution(solution);
-
-        AbstractSolution helpSolution = mock(AbstractSolution.class);
-        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(helpSolution))
-                .thenReturn(SimpleScore.parseScore("0"));
-        when(solverScope.getScoreDirector().cloneWorkingSolution()).thenReturn(helpSolution);
-
-        Score score2 = SimpleScore.parseScore("-1");
-        solverScope.setBestUninitializedVariableCount(0);
+        AbstractSolution moveSolution = mock(AbstractSolution.class);
+        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(moveSolution))
+                .thenReturn(moveScore);
+        when(solverScope.getScoreDirector().cloneWorkingSolution()).thenReturn(moveSolution);
 
         BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
-        recaller.processWorkingSolutionDuringMove(0, score2, stepScope);
-        assertEquals(helpSolution, solverScope.getBestSolution());
-        assertEquals(0, ((SimpleScore) solverScope.getBestScore()).getScore());
-        assertEquals(0, solverScope.getBestUninitializedVariableCount());
+        recaller.processWorkingSolutionDuringMove(moveScore, stepScope);
+        if (moveImprovesBestSolution) {
+            assertEquals(moveSolution, solverScope.getBestSolution());
+            assertEquals(moveScore, solverScope.getBestScore());
+        } else {
+            assertEquals(originalBestSolution, solverScope.getBestSolution());
+            assertEquals(originalBestScore, solverScope.getBestScore());
+        }
     }
 
 }

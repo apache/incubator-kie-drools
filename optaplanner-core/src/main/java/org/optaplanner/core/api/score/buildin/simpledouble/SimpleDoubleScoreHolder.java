@@ -37,11 +37,6 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder {
         return score;
     }
 
-    @Deprecated
-    public void setScore(double score) {
-        this.score = score;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -57,8 +52,8 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore() {
-        return SimpleDoubleScore.valueOf(score);
+    public Score extractScore(int initScore) {
+        return SimpleDoubleScore.valueOf(initScore, score);
     }
 
 }

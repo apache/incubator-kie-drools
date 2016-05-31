@@ -45,7 +45,8 @@ public class HardSoftLongScoreDefinitionTest {
         HardSoftLongScoreDefinition scoreDefinition = new HardSoftLongScoreDefinition();
         HardSoftLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
-                HardSoftLongScore.valueOf(-1L, -2L));
+                HardSoftLongScore.valueOfInitialized(-1L, -2L));
+        assertEquals(0, optimisticBound.getInitScore());
         assertEquals(Long.MAX_VALUE, optimisticBound.getHardScore());
         assertEquals(Long.MAX_VALUE, optimisticBound.getSoftScore());
     }
@@ -55,7 +56,8 @@ public class HardSoftLongScoreDefinitionTest {
         HardSoftLongScoreDefinition scoreDefinition = new HardSoftLongScoreDefinition();
         HardSoftLongScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
-                HardSoftLongScore.valueOf(-1L, -2L));
+                HardSoftLongScore.valueOfInitialized(-1L, -2L));
+        assertEquals(0, optimisticBound.getInitScore());
         assertEquals(-1L, optimisticBound.getHardScore());
         assertEquals(-2L, optimisticBound.getSoftScore());
     }
@@ -65,7 +67,8 @@ public class HardSoftLongScoreDefinitionTest {
         HardSoftLongScoreDefinition scoreDefinition = new HardSoftLongScoreDefinition();
         HardSoftLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
-                HardSoftLongScore.valueOf(-1L, -2L));
+                HardSoftLongScore.valueOfInitialized(-1L, -2L));
+        assertEquals(0, pessimisticBound.getInitScore());
         assertEquals(-1L, pessimisticBound.getHardScore());
         assertEquals(-2L, pessimisticBound.getSoftScore());
     }
@@ -75,7 +78,8 @@ public class HardSoftLongScoreDefinitionTest {
         HardSoftLongScoreDefinition scoreDefinition = new HardSoftLongScoreDefinition();
         HardSoftLongScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
-                HardSoftLongScore.valueOf(-1L, -2L));
+                HardSoftLongScore.valueOfInitialized(-1L, -2L));
+        assertEquals(0, pessimisticBound.getInitScore());
         assertEquals(Long.MIN_VALUE, pessimisticBound.getHardScore());
         assertEquals(Long.MIN_VALUE, pessimisticBound.getSoftScore());
     }

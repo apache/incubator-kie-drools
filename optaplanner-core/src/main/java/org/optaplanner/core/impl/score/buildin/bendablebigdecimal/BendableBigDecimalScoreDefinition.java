@@ -61,7 +61,7 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
     }
 
     @Override
-    public BendableBigDecimalScore fromLevelNumbers(Number[] levelNumbers) {
+    public BendableBigDecimalScore fromLevelNumbers(int initScore, Number[] levelNumbers) {
         if (levelNumbers.length != getLevelsSize()) {
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
@@ -74,17 +74,22 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
         for (int i = 0; i < softLevelsSize; i++) {
             softScores[i] = (BigDecimal) levelNumbers[hardLevelsSize + i];
         }
-        return BendableBigDecimalScore.valueOf(hardScores, softScores);
+        return BendableBigDecimalScore.valueOf(initScore, hardScores, softScores);
     }
 
-    public BendableBigDecimalScore createScore(BigDecimal... scores) {
+    public BendableBigDecimalScore createScoreInitialized(BigDecimal... scores) {
+        return createScore(0, scores);
+    }
+
+    public BendableBigDecimalScore createScore(int initScore, BigDecimal... scores) {
         int levelsSize = hardLevelsSize + softLevelsSize;
         if (scores.length != levelsSize) {
             throw new IllegalArgumentException("The scores (" + Arrays.toString(scores)
                     + ")'s length (" + scores.length
                     + ") is not levelsSize (" + levelsSize + ").");
         }
-        return BendableBigDecimalScore.valueOf(Arrays.copyOfRange(scores, 0, hardLevelsSize),
+        return BendableBigDecimalScore.valueOf(initScore,
+                Arrays.copyOfRange(scores, 0, hardLevelsSize),
                 Arrays.copyOfRange(scores, hardLevelsSize, levelsSize));
     }
 

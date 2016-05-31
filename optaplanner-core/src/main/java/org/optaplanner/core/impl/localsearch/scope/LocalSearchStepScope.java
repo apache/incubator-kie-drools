@@ -48,11 +48,6 @@ public class LocalSearchStepScope<Solution_> extends AbstractStepScope<Solution_
         return phaseScope;
     }
 
-    @Override
-    public int getUninitializedVariableCount() {
-        return 0;
-    }
-
     public double getTimeGradient() {
         return timeGradient;
     }

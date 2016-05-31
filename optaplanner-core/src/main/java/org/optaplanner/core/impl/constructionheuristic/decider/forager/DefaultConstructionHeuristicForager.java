@@ -73,18 +73,20 @@ public class DefaultConstructionHeuristicForager extends AbstractConstructionHeu
             case FIRST_NON_DETERIORATING_SCORE:
                 Score lastStepScore = moveScope.getStepScope().getPhaseScope()
                         .getLastCompletedStepScope().getScore();
-                if (moveScope.getScore().compareTo(lastStepScore) >= 0) {
+                if (moveScope.getScore().toInitializedScore().compareTo(lastStepScore.toInitializedScore()) >= 0) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
             case FIRST_FEASIBLE_SCORE:
-                if (((FeasibilityScore) moveScope.getScore()).isFeasible()) {
+                if (((FeasibilityScore) moveScope.getScore().toInitializedScore()).isFeasible()) {
                     earlyPickedMoveScope = moveScope;
                 }
                 break;
             case FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD:
-                Score lastStepScoreDifference = moveScope.getScore().subtract(moveScope.getStepScope().getPhaseScope()
-                        .getLastCompletedStepScope().getScore());
+                Score lastStepScore2 = moveScope.getStepScope().getPhaseScope()
+                        .getLastCompletedStepScope().getScore();
+                Score lastStepScoreDifference = moveScope.getScore().toInitializedScore()
+                        .subtract(lastStepScore2.toInitializedScore());
                 if (((FeasibilityScore) lastStepScoreDifference).isFeasible()) {
                     earlyPickedMoveScope = moveScope;
                 }

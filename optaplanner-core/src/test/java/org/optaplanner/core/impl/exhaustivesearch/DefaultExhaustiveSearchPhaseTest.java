@@ -47,11 +47,11 @@ public class DefaultExhaustiveSearchPhaseTest {
         SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         when(phaseScope.getSolutionDescriptor()).thenReturn(solutionDescriptor);
 
-        ExhaustiveSearchLayer layer0 = new ExhaustiveSearchLayer(0, mock(Object.class), 100);
-        ExhaustiveSearchLayer layer1 = new ExhaustiveSearchLayer(1, mock(Object.class), 99);
-        ExhaustiveSearchLayer layer2 = new ExhaustiveSearchLayer(2, mock(Object.class), 98);
-        ExhaustiveSearchLayer layer3 = new ExhaustiveSearchLayer(3, mock(Object.class), 97);
-        ExhaustiveSearchLayer layer4 = new ExhaustiveSearchLayer(4, mock(Object.class), 96);
+        ExhaustiveSearchLayer layer0 = new ExhaustiveSearchLayer(0, mock(Object.class));
+        ExhaustiveSearchLayer layer1 = new ExhaustiveSearchLayer(1, mock(Object.class));
+        ExhaustiveSearchLayer layer2 = new ExhaustiveSearchLayer(2, mock(Object.class));
+        ExhaustiveSearchLayer layer3 = new ExhaustiveSearchLayer(3, mock(Object.class));
+        ExhaustiveSearchLayer layer4 = new ExhaustiveSearchLayer(4, mock(Object.class));
         ExhaustiveSearchNode node0 = new ExhaustiveSearchNode(layer0, null);
         node0.setMove(mock(Move.class));
         node0.setUndoMove(mock(Move.class));
@@ -73,8 +73,7 @@ public class DefaultExhaustiveSearchPhaseTest {
         ExhaustiveSearchNode node4B = new ExhaustiveSearchNode(layer4, node3B); // newNode
         node4B.setMove(mock(Move.class));
         node4B.setUndoMove(mock(Move.class));
-        Score newScore = SimpleScore.valueOf(7);
-        node4B.setScore(newScore);
+        node4B.setScore(SimpleScore.valueOf(-96, 7));
         when(lastCompletedStepScope.getExpandingNode()).thenReturn(node3A);
         when(stepScope.getExpandingNode()).thenReturn(node4B);
 

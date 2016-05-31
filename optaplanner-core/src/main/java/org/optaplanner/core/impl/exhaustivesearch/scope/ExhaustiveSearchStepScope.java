@@ -80,9 +80,4 @@ public class ExhaustiveSearchStepScope<Solution_> extends AbstractStepScope<Solu
         return expandingNode.getTreeId();
     }
 
-    @Override
-    public int getUninitializedVariableCount() {
-        return expandingNode.getUninitializedVariableCount();
-    }
-
 }

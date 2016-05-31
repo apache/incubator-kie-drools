@@ -35,11 +35,6 @@ public class SimpleScoreHolder extends AbstractScoreHolder {
         return score;
     }
 
-    @Deprecated
-    public void setScore(int score) {
-        this.score = score;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -55,8 +50,8 @@ public class SimpleScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore() {
-        return SimpleScore.valueOf(score);
+    public Score extractScore(int initScore) {
+        return SimpleScore.valueOf(initScore, score);
     }
 
 }

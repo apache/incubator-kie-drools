@@ -55,12 +55,12 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
     }
 
     @Override
-    public HardMediumSoftScore fromLevelNumbers(Number[] levelNumbers) {
+    public HardMediumSoftScore fromLevelNumbers(int initScore, Number[] levelNumbers) {
         if (levelNumbers.length != getLevelsSize()) {
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
         }
-        return HardMediumSoftScore.valueOf((Integer) levelNumbers[0], (Integer) levelNumbers[1], (Integer) levelNumbers[2]);
+        return HardMediumSoftScore.valueOf(initScore, (Integer) levelNumbers[0], (Integer) levelNumbers[1], (Integer) levelNumbers[2]);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
     @Override
     public HardMediumSoftScore buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return HardMediumSoftScore.valueOf(
+        return HardMediumSoftScore.valueOf(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getHardScore() : Integer.MAX_VALUE,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getMediumScore() : Integer.MAX_VALUE,
                 trendLevels[2] == InitializingScoreTrendLevel.ONLY_DOWN ? score.getSoftScore() : Integer.MAX_VALUE);
@@ -80,7 +80,7 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
     @Override
     public HardMediumSoftScore buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, HardMediumSoftScore score) {
         InitializingScoreTrendLevel[] trendLevels = initializingScoreTrend.getTrendLevels();
-        return HardMediumSoftScore.valueOf(
+        return HardMediumSoftScore.valueOf(0,
                 trendLevels[0] == InitializingScoreTrendLevel.ONLY_UP ? score.getHardScore() : Integer.MIN_VALUE,
                 trendLevels[1] == InitializingScoreTrendLevel.ONLY_UP ? score.getMediumScore() : Integer.MIN_VALUE,
                 trendLevels[2] == InitializingScoreTrendLevel.ONLY_UP ? score.getSoftScore() : Integer.MIN_VALUE);

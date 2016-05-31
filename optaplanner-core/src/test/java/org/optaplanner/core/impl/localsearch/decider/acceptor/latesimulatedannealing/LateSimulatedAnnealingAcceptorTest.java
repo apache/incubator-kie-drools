@@ -37,13 +37,13 @@ public class LateSimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         acceptor.setLateSimulatedAnnealingSize(2);
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(SimpleScore.valueOf(-1000));
+        solverScope.setBestScore(SimpleScore.valueOfInitialized(-1000));
         Random workingRandom = mock(Random.class);
         when(workingRandom.nextDouble()).thenReturn(0.3);
         solverScope.setWorkingRandom(workingRandom);
         LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
         LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
-        lastCompletedStepScope.setScore(SimpleScore.valueOf(Integer.MIN_VALUE));
+        lastCompletedStepScope.setScore(SimpleScore.valueOfInitialized(Integer.MIN_VALUE));
         phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
         acceptor.phaseStarted(phaseScope);
 

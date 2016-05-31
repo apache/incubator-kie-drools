@@ -36,7 +36,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(false);
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(HardSoftScore.valueOf(-200, -5000));
+        solverScope.setBestScore(HardSoftScore.valueOfInitialized(-200, -5000));
         LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
         LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
         lastCompletedStepScope.setScore(solverScope.getBestScore());
@@ -89,7 +89,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(true);
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(HardSoftScore.valueOf(-200, -5000));
+        solverScope.setBestScore(HardSoftScore.valueOfInitialized(-200, -5000));
         LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
         LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
         lastCompletedStepScope.setScore(solverScope.getBestScore());
@@ -145,7 +145,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         Move move = mock(Move.class);
         moveScope.setAccepted(true);
         moveScope.setMove(move);
-        moveScope.setScore(HardSoftScore.valueOf(hardScore, softScore));
+        moveScope.setScore(HardSoftScore.valueOfInitialized(hardScore, softScore));
         return moveScope;
     }
 
@@ -154,7 +154,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         StrategicOscillationByLevelFinalistPodium finalistPodium = new StrategicOscillationByLevelFinalistPodium(false);
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(HardMediumSoftScore.valueOf(-200, -5000, -10));
+        solverScope.setBestScore(HardMediumSoftScore.valueOfInitialized(-200, -5000, -10));
         LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
         LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
         lastCompletedStepScope.setScore(solverScope.getBestScore());
@@ -208,7 +208,7 @@ public class StrategicOscillationByLevelFinalistPodiumTest {
         Move move = mock(Move.class);
         moveScope.setAccepted(true);
         moveScope.setMove(move);
-        moveScope.setScore(HardMediumSoftScore.valueOf(hardScore, mediumScore, softScore));
+        moveScope.setScore(HardMediumSoftScore.valueOfInitialized(hardScore, mediumScore, softScore));
         return moveScope;
     }
 

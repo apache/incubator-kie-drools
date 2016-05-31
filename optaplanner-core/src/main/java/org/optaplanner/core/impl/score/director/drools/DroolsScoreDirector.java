@@ -84,7 +84,7 @@ public class DroolsScoreDirector<Solution_>
     public Score calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
         kieSession.fireAllRules();
-        Score score = workingScoreHolder.extractScore();
+        Score score = workingScoreHolder.extractScore(workingInitScore);
         setCalculatedScore(score);
         return score;
     }

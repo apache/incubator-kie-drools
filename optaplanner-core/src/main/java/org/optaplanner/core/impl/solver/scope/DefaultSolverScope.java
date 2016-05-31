@@ -45,8 +45,7 @@ public class DefaultSolverScope<Solution_> {
     protected Score startingInitializedScore; // TODO after initialization => ambiguous with solve()'s planningProblem
 
     protected volatile Solution_ bestSolution;
-    protected volatile int bestUninitializedVariableCount = Integer.MAX_VALUE; // TODO remove me by folding me into bestSolution.getScore(): https://issues.jboss.org/browse/PLANNER-405
-    protected volatile Score bestScore; // TODO remove me by folding me into bestSolution.getScore(): https://issues.jboss.org/browse/PLANNER-405
+    protected volatile Score bestScore; // TODO remove me by folding me into bestSolution.getScore()?
     protected Long bestSolutionTimeMillis;
 
 
@@ -151,18 +150,6 @@ public class DefaultSolverScope<Solution_> {
         this.bestSolution = bestSolution;
     }
 
-    public int getBestUninitializedVariableCount() {
-        return bestUninitializedVariableCount;
-    }
-
-    public void setBestUninitializedVariableCount(int bestUninitializedVariableCount) {
-        if (bestUninitializedVariableCount < 0) {
-            throw new IllegalArgumentException("The bestUninitializedVariableCount ("
-                    + bestUninitializedVariableCount + ") cannot be negative.");
-        }
-        this.bestUninitializedVariableCount = bestUninitializedVariableCount;
-    }
-
     public Score getBestScore() {
         return bestScore;
     }
@@ -193,7 +180,7 @@ public class DefaultSolverScope<Solution_> {
     }
 
     public boolean isBestSolutionInitialized() {
-        return bestUninitializedVariableCount == 0;
+        return bestScore.isSolutionInitialized();
     }
 
     public long calculateTimeMillisSpentUpToNow() {
@@ -217,10 +204,6 @@ public class DefaultSolverScope<Solution_> {
     public void setWorkingSolutionFromBestSolution() {
         // The workingSolution must never be the same instance as the bestSolution.
         scoreDirector.setWorkingSolution(scoreDirector.cloneSolution(bestSolution));
-    }
-
-    public String getBestScoreWithUninitializedPrefix() {
-        return ScoreUtils.getScoreWithUninitializedPrefix(bestUninitializedVariableCount, bestScore);
     }
 
 }

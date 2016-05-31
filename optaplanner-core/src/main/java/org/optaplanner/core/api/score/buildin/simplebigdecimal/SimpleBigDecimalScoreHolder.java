@@ -37,11 +37,6 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
         return score;
     }
 
-    @Deprecated
-    public void setScore(BigDecimal score) {
-        this.score = score;
-    }
-
     // ************************************************************************
     // Worker methods
     // ************************************************************************
@@ -57,8 +52,8 @@ public class SimpleBigDecimalScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore() {
-        return SimpleBigDecimalScore.valueOf(score == null ? BigDecimal.ZERO : score);
+    public Score extractScore(int initScore) {
+        return SimpleBigDecimalScore.valueOf(initScore, score == null ? BigDecimal.ZERO : score);
     }
 
 }

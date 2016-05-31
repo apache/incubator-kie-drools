@@ -44,22 +44,12 @@ public class BendableScoreHolder extends AbstractScoreHolder {
         return hardScores[hardLevel];
     }
 
-    @Deprecated
-    public void setHardScore(int hardLevel, int hardScore) {
-        hardScores[hardLevel] = hardScore;
-    }
-
     public int getSoftLevelsSize() {
         return softScores.length;
     }
 
     public int getSoftScore(int softLevel) {
         return softScores[softLevel];
-    }
-
-    @Deprecated
-    public void setSoftScore(int softLevel, int softScore) {
-        softScores[softLevel] = softScore;
     }
 
     // ************************************************************************
@@ -87,8 +77,9 @@ public class BendableScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore() {
-        return new BendableScore(Arrays.copyOf(hardScores, hardScores.length),
+    public Score extractScore(int initScore) {
+        return new BendableScore(initScore,
+                Arrays.copyOf(hardScores, hardScores.length),
                 Arrays.copyOf(softScores, softScores.length));
     }
 

@@ -44,16 +44,16 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
 
     @Override
     public boolean isSolverTerminated(DefaultSolverScope solverScope) {
-        return isTerminated(solverScope.isBestSolutionInitialized(), solverScope.getBestScore());
+        return isTerminated(solverScope.getBestScore());
     }
 
     @Override
     public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
-        return isTerminated(phaseScope.isBestSolutionInitialized(), phaseScope.getBestScore());
+        return isTerminated(phaseScope.getBestScore());
     }
 
-    protected boolean isTerminated(boolean bestSolutionInitialized, Score bestScore) {
-        return bestSolutionInitialized && ((FeasibilityScore) bestScore).isFeasible();
+    protected boolean isTerminated(Score bestScore) {
+        return ((FeasibilityScore) bestScore).isFeasible();
     }
 
     @Override
@@ -69,6 +69,9 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
     }
 
     protected double calculateFeasibilityTimeGradient(FeasibilityScore startScore, FeasibilityScore score) {
+        if (startScore == null || !startScore.isSolutionInitialized()) {
+            return 0.0;
+        }
         Score totalDiff = startScore.negate();
         Number[] totalDiffNumbers = totalDiff.toLevelNumbers();
         Score scoreDiff = score.subtract(startScore);

@@ -36,22 +36,19 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
     private final long timeMillisSpent;
     private final Solution_ newBestSolution;
     private final Score newBestScore;
-    private final int newUninitializedVariableCount; // TODO will be removed very soon
 
     /**
      * @param solver never null
      * @param timeMillisSpent {@code >= 0L}
      * @param newBestSolution never null
-     * @param newUninitializedVariableCount {@code >= 0}
      */
     public BestSolutionChangedEvent(DefaultSolver<Solution_> solver, long timeMillisSpent,
-            Solution_ newBestSolution, Score newBestScore, int newUninitializedVariableCount) {
+            Solution_ newBestSolution, Score newBestScore) {
         super(solver);
         this.solver = solver;
         this.timeMillisSpent = timeMillisSpent;
         this.newBestSolution = newBestSolution;
         this.newBestScore = newBestScore;
-        this.newUninitializedVariableCount = newUninitializedVariableCount;
     }
 
     /**
@@ -67,7 +64,7 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
      * <ul>
      *     <li>In real-time planning, not all {@link ProblemFactChange}s might be processed:
      *     check {@link #isEveryProblemFactChangeProcessed()}.</li>
-     *     <li>this {@link PlanningSolution} might be uninitialized: check {@link #isNewBestSolutionInitialized()}.</li>
+     *     <li>this {@link PlanningSolution} might be uninitialized: check {@link Score#isSolutionInitialized()}.</li>
      *     <li>this {@link PlanningSolution} might be infeasible: check {@link FeasibilityScore#isFeasible()}.</li>
      * </ul>
      * @return never null
@@ -97,9 +94,11 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
 
     /**
      * @return true if all the planning entities have planning variables that are initialized.
+     * @deprecated Use {@link #getNewBestScore()}'s {@link Score#isSolutionInitialized()} instead.
      */
+    @Deprecated
     public boolean isNewBestSolutionInitialized() {
-        return newUninitializedVariableCount == 0;
+        return newBestScore.isSolutionInitialized();
     }
 
 }

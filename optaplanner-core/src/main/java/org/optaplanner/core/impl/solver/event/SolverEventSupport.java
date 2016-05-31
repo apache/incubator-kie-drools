@@ -36,13 +36,13 @@ public class SolverEventSupport<Solution_> extends AbstractEventSupport<SolverEv
         this.solver = solver;
     }
 
-    public void fireBestSolutionChanged(Solution_ newBestSolution, int newUninitializedVariableCount) {
+    public void fireBestSolutionChanged(Solution_ newBestSolution) {
         final Iterator<SolverEventListener<Solution_>> it = eventListenerSet.iterator();
         long timeMillisSpent = solver.getSolverScope().calculateTimeMillisSpentUpToNow();
         Score newBestScore = solver.getSolverScope().getSolutionDescriptor().getScore(newBestSolution);
         if (it.hasNext()) {
             final BestSolutionChangedEvent<Solution_> event = new BestSolutionChangedEvent<>(solver,
-                    timeMillisSpent, newBestSolution, newBestScore, newUninitializedVariableCount);
+                    timeMillisSpent, newBestSolution, newBestScore);
             do {
                 it.next().bestSolutionChanged(event);
             } while (it.hasNext());

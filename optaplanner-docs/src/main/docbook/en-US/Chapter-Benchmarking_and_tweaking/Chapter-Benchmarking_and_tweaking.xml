@@ -445,7 +445,7 @@
       <para><literal>Solver</literal>s with at least one failed single benchmark do not get a ranking.
       <literal>Solver</literal>s with not fully initialized solutions are ranked worse.</para>
 
-      <para>You can also use a custom ranking, by implementing a <literal>Comparator</literal>:</para>
+      <para>To use a custom ranking, implement a <literal>Comparator</literal>:</para>
 
       <programlisting language="xml">  &lt;benchmarkReport&gt;
     &lt;solverRankingComparatorClass&gt;...TotalScoreSolverRankingComparator&lt;/solverRankingComparatorClass&gt;

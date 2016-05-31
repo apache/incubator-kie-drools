@@ -55,7 +55,7 @@ public class BendableBigDecimalScoreDefinitionTest {
     @Test(expected = IllegalArgumentException.class)
     public void createScoreWithIllegalArgument() {
         BendableBigDecimalScoreDefinition bendableScoreDefinition = new BendableBigDecimalScoreDefinition(2, 3);
-        bendableScoreDefinition.createScore(new BigDecimal(1), new BigDecimal(2), new BigDecimal(3));
+        bendableScoreDefinition.createScoreInitialized(new BigDecimal(1), new BigDecimal(2), new BigDecimal(3));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class BendableBigDecimalScoreDefinitionTest {
                     scores[i] = new BigDecimal(i);
                 }
                 BendableBigDecimalScoreDefinition bendableScoreDefinition = new BendableBigDecimalScoreDefinition(hardLevelSize, softLevelSize);
-                BendableBigDecimalScore bendableScore = bendableScoreDefinition.createScore(scores);
+                BendableBigDecimalScore bendableScore = bendableScoreDefinition.createScoreInitialized(scores);
                 assertEquals(hardLevelSize, bendableScore.getHardLevelsSize());
                 assertEquals(softLevelSize, bendableScore.getSoftLevelsSize());
                 for (int i = 0; i < levelSize; i++) {

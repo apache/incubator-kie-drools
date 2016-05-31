@@ -32,6 +32,7 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
@@ -62,6 +63,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     protected Solution_ workingSolution;
     protected long workingEntityListRevision = 0L;
+    protected Integer workingInitScore = null;
 
     protected boolean allChangesWillBeUndoneBeforeStepEnds = false;
 
@@ -130,6 +132,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     @Override
     public void setWorkingSolution(Solution_ workingSolution) {
         this.workingSolution = workingSolution;
+        workingInitScore = - getSolutionDescriptor().countUninitializedVariables(workingSolution);
         variableListenerSupport.resetWorkingSolution();
         setWorkingEntityListDirty();
     }
@@ -196,11 +199,6 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     @Override
-    public int countWorkingSolutionUninitializedVariables() {
-        return getSolutionDescriptor().countUninitializedVariables(workingSolution);
-    }
-
-    @Override
     public void triggerVariableListeners() {
         variableListenerSupport.triggerVariableListenersInNotificationQueues();
     }
@@ -222,6 +220,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public void dispose() {
+        workingSolution = null;
+        workingInitScore = null;
         variableListenerSupport.clearWorkingSolution();
     }
 
@@ -268,6 +268,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     public void afterEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
+        workingInitScore -= entityDescriptor.countUninitializedVariables(entity);
         variableListenerSupport.afterEntityAdded(entityDescriptor, entity);
         if (!allChangesWillBeUndoneBeforeStepEnds) {
             setWorkingEntityListDirty();
@@ -276,11 +277,19 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
+        if (variableDescriptor instanceof GenuineVariableDescriptor
+                && !((GenuineVariableDescriptor) variableDescriptor).isInitialized(entity)) {
+            workingInitScore++;
+        }
         variableListenerSupport.beforeVariableChanged(variableDescriptor, entity);
     }
 
     @Override
     public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
+        if (variableDescriptor instanceof GenuineVariableDescriptor
+                && !((GenuineVariableDescriptor) variableDescriptor).isInitialized(entity)) {
+            workingInitScore--;
+        }
         variableListenerSupport.afterVariableChanged(variableDescriptor, entity);
     }
 
@@ -292,6 +301,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
+        workingInitScore += entityDescriptor.countUninitializedVariables(entity);
         variableListenerSupport.beforeEntityRemoved(entityDescriptor, entity);
     }
 

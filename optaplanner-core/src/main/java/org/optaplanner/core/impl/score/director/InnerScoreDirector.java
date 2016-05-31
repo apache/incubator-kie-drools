@@ -82,8 +82,6 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      */
     int getWorkingValueCount();
 
-    int countWorkingSolutionUninitializedVariables();
-
     /**
      * @return at least 0L
      */

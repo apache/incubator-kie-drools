@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.simpledouble;
 
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 
 /**
@@ -33,11 +34,18 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
 
     public static SimpleDoubleScore parseScore(String scoreString) {
-        return valueOf(parseLevelAsDouble(SimpleDoubleScore.class, scoreString, scoreString));
+        String[] scoreTokens = parseScoreTokens(SimpleDoubleScore.class, scoreString, "");
+        int initScore = parseInitScore(SimpleDoubleScore.class, scoreString, scoreTokens[0]);
+        double score = parseLevelAsDouble(SimpleDoubleScore.class, scoreString, scoreTokens[1]);
+        return valueOf(initScore, score);
     }
 
-    public static SimpleDoubleScore valueOf(double score) {
-        return new SimpleDoubleScore(score);
+    public static SimpleDoubleScore valueOf(int initScore, double score) {
+        return new SimpleDoubleScore(initScore, score);
+    }
+
+    public static SimpleDoubleScore valueOfInitialized(double score) {
+        return new SimpleDoubleScore(0, score);
     }
 
     // ************************************************************************
@@ -53,15 +61,17 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
      */
     @SuppressWarnings("unused")
     private SimpleDoubleScore() {
+        super(Integer.MIN_VALUE);
         score = Double.NaN;
     }
 
-    private SimpleDoubleScore(double score) {
+    private SimpleDoubleScore(int initScore, double score) {
+        super(initScore);
         this.score = score;
     }
 
     /**
-     * The total of the broken negative constraints and fulfilled positive hard constraints.
+     * The total of the broken negative constraints and fulfilled positive constraints.
      * Their weight is included in the total.
      * The score is usually a negative number because most use cases only have negative constraints.
      * @return higher is better, usually negative, 0 if no constraints are broken/fulfilled
@@ -75,33 +85,48 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
     // ************************************************************************
 
     @Override
+    public SimpleDoubleScore toInitializedScore() {
+        return initScore == 0 ? this : new SimpleDoubleScore(0, score);
+    }
+
+    @Override
     public SimpleDoubleScore add(SimpleDoubleScore augment) {
-        return new SimpleDoubleScore(score + augment.getScore());
+        return new SimpleDoubleScore(
+                initScore + augment.getInitScore(),
+                score + augment.getScore());
     }
 
     @Override
     public SimpleDoubleScore subtract(SimpleDoubleScore subtrahend) {
-        return new SimpleDoubleScore(score - subtrahend.getScore());
+        return new SimpleDoubleScore(
+                initScore - subtrahend.getInitScore(),
+                score - subtrahend.getScore());
     }
 
     @Override
     public SimpleDoubleScore multiply(double multiplicand) {
-        return new SimpleDoubleScore(score * multiplicand);
+        return new SimpleDoubleScore(
+                (int) Math.floor(initScore * multiplicand),
+                score * multiplicand);
     }
 
     @Override
     public SimpleDoubleScore divide(double divisor) {
-        return new SimpleDoubleScore(score / divisor);
+        return new SimpleDoubleScore(
+                (int) Math.floor(initScore / divisor),
+                score / divisor);
     }
 
     @Override
     public SimpleDoubleScore power(double exponent) {
-        return new SimpleDoubleScore(Math.pow(score, exponent));
+        return new SimpleDoubleScore(
+                (int) Math.floor(Math.pow(initScore, exponent)),
+                Math.pow(score, exponent));
     }
 
     @Override
     public SimpleDoubleScore negate() {
-        return new SimpleDoubleScore(-score);
+        return new SimpleDoubleScore(-initScore, -score);
     }
 
     @Override
@@ -115,7 +140,8 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
             return true;
         } else if (o instanceof SimpleDoubleScore) {
             SimpleDoubleScore other = (SimpleDoubleScore) o;
-            return score == other.getScore();
+            return initScore == other.getInitScore()
+                    && score == other.getScore();
         } else {
             return false;
         }
@@ -123,23 +149,23 @@ public final class SimpleDoubleScore extends AbstractScore<SimpleDoubleScore> {
 
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (17 * 37) + Double.valueOf(score).hashCode();
+        return (((17 * 37)
+                + initScore)) * 37
+                + Double.valueOf(score).hashCode();
     }
 
     @Override
     public int compareTo(SimpleDoubleScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
-        if (score < other.getScore()) {
-            return -1;
-        } else if (score > other.getScore()) {
-            return 1;
+        if (initScore != other.getInitScore()) {
+            return initScore < other.getInitScore() ? -1 : 1;
         } else {
-            return 0;
+            return Double.compare(score, other.getScore());
         }
     }
-
+    @Override
     public String toString() {
-        return Double.toString(score);
+        return getInitPrefix() + score;
     }
 
 }

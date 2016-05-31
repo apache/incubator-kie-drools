@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.score;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
@@ -32,6 +33,29 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
  * @see HardSoftScore
  */
 public interface Score<S extends Score> extends Comparable<S> {
+
+    /**
+     * The init score is the negative of the number of uninitialized genuine planning variables.
+     * If it's 0 (which is usually is), the {@link PlanningSolution} is fully initialized
+     * and the score's {@link #toString()} does not mention it.
+     * <p>
+     * During {@link #compareTo(Object)}, it's even more important than the hard score:
+     * if you don't want this behaviour, read about overconstrained planning in the reference manual.
+     * @return higher is better, always negative, 0 if all planning variables are initialized
+     */
+    int getInitScore();
+
+    /**
+     * Checks if the {@link PlanningSolution} of this score was fully initialized when it was calculated.
+     * @return true if {@link #getInitScore()} is 0
+     */
+    boolean isSolutionInitialized();
+
+    /**
+     * For example {@code -7init/0hard/-8soft} returns {@code 0hard/-8soft}.
+     * @return equal score except that {@link #getInitScore()} is {@code 0}.
+     */
+    S toInitializedScore();
 
     /**
      * Returns a Score whose value is (this + augment).
@@ -83,7 +107,10 @@ public interface Score<S extends Score> extends Comparable<S> {
     /**
      * Returns a Score whose value is (- this).
      * @return - this
+     * @deprecated Avoid usage, because it fails on a score with a non zero {@link #getInitScore()}
+     * https://issues.jboss.org/browse/PLANNER-584
      */
+    @Deprecated
     S negate();
 
     /**
@@ -94,8 +121,11 @@ public interface Score<S extends Score> extends Comparable<S> {
      * The length of the returned array must be stable for a specific {@link Score} implementation.
      * <p>
      * For example: {@code -0hard/-7soft} returns {@code new int{-0, -7}}
+     * <p>
+     * The level numbers do not contain the {@link #getInitScore()}.
+     * For example: {@code -3init/-0hard/-7soft} also returns {@code new int{-0, -7}}
      * @return never null
-     * @see ScoreDefinition#fromLevelNumbers(Number[])
+     * @see ScoreDefinition#fromLevelNumbers(int, Number[])
      */
     Number[] toLevelNumbers();
 

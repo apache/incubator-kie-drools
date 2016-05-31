@@ -88,9 +88,6 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
     private void doStep(CustomStepScope<Solution_> stepScope, CustomPhaseCommand<Solution_> customPhaseCommand) {
         InnerScoreDirector<Solution_> scoreDirector = stepScope.getScoreDirector();
         customPhaseCommand.changeWorkingSolution(scoreDirector);
-        int uninitializedVariableCount = scoreDirector.getSolutionDescriptor()
-                .countUninitializedVariables(stepScope.getWorkingSolution());
-        stepScope.setUninitializedVariableCount(uninitializedVariableCount);
         Score score = scoreDirector.calculateScore();
         stepScope.setScore(score);
         if (assertStepScoreFromScratch) {
@@ -105,8 +102,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
         if (forceUpdateBestSolution && !bestScoreImproved) {
             DefaultSolverScope<Solution_> solverScope = stepScope.getPhaseScope().getSolverScope();
             Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
-            bestSolutionRecaller.updateBestSolution(solverScope,
-                    newBestSolution, stepScope.getUninitializedVariableCount());
+            bestSolutionRecaller.updateBestSolution(solverScope, newBestSolution);
         }
         CustomPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
@@ -115,7 +111,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
                     phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                     stepScope.getScore(),
                     bestScoreImproved ? "new" : (forceUpdateBestSolution ? "forced" : "   "),
-                    phaseScope.getBestScoreWithUninitializedPrefix());
+                    phaseScope.getBestScore());
         }
     }
 

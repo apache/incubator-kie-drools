@@ -23,8 +23,8 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 public class DummySimpleScoreEasyScoreCalculator<Solution_> implements EasyScoreCalculator<Solution_> {
 
     @Override
-    public Score calculateScore(Solution_ solution_) {
-        return SimpleScore.valueOf(0);
+    public Score calculateScore(Solution_ solution_, int initScore) {
+        return SimpleScore.valueOf(initScore, 0);
     }
 
 }

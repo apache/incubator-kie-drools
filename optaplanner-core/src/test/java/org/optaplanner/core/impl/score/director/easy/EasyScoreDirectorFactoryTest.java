@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.director.easy;
 
+import java.util.Collections;
+
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -37,13 +39,17 @@ public class EasyScoreDirectorFactoryTest {
     public void buildScoreDirector() {
         SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
         EasyScoreCalculator scoreCalculator = mock(EasyScoreCalculator.class);
-        when(scoreCalculator.calculateScore(any(TestdataSolution.class))).thenReturn(SimpleScore.valueOf(-10));
+        when(scoreCalculator.calculateScore(any(TestdataSolution.class), anyInt()))
+                .thenAnswer(invocation -> SimpleScore.valueOf(invocation.getArgumentAt(1, Integer.class), -10));
         EasyScoreDirectorFactory directorFactory = new EasyScoreDirectorFactory(scoreCalculator);
         directorFactory.setSolutionDescriptor(solutionDescriptor);
 
         EasyScoreDirector director = directorFactory.buildScoreDirector(false);
-        director.setWorkingSolution(new TestdataSolution());
-        assertEquals(SimpleScore.valueOf(-10), director.calculateScore());
+        TestdataSolution solution = new TestdataSolution();
+        solution.setValueList(Collections.emptyList());
+        solution.setEntityList(Collections.emptyList());
+        director.setWorkingSolution(solution);
+        assertEquals(SimpleScore.valueOf(0, -10), director.calculateScore());
     }
 
 }

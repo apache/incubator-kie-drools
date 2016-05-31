@@ -20,14 +20,12 @@ public class ExhaustiveSearchLayer {
 
     private final int depth;
     private final Object entity;
-    private final int uninitializedVariableCount;
 
     private long nextBreadth;
 
-    public ExhaustiveSearchLayer(int depth, Object entity, int uninitializedVariableCount) {
+    public ExhaustiveSearchLayer(int depth, Object entity) {
         this.depth = depth;
         this.entity = entity;
-        this.uninitializedVariableCount = uninitializedVariableCount;
         nextBreadth = 0L;
     }
 
@@ -37,10 +35,6 @@ public class ExhaustiveSearchLayer {
 
     public Object getEntity() {
         return entity;
-    }
-
-    public int getUninitializedVariableCount() {
-        return uninitializedVariableCount;
     }
 
     // ************************************************************************

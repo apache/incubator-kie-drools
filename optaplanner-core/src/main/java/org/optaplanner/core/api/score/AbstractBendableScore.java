@@ -26,6 +26,55 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
  */
 public abstract class AbstractBendableScore<S extends FeasibilityScore<S>> extends AbstractScore<S> {
 
+    protected static final String HARD_LABEL = "hard";
+    protected static final String SOFT_LABEL = "soft";
+    protected static final String[] LEVEL_SUFFIXES = new String[]{HARD_LABEL, SOFT_LABEL};
+
+    protected static String[][] parseBendableScoreTokens(Class<? extends Score> scoreClass, String scoreString) {
+        String[][] scoreTokens = new String[3][];
+        scoreTokens[0] = new String[1];
+        int startIndex = 0;
+        int initEndIndex = scoreString.indexOf(INIT_LABEL, startIndex);
+        if (initEndIndex >= 0) {
+            scoreTokens[0][0] = scoreString.substring(startIndex, initEndIndex);
+            startIndex = initEndIndex + INIT_LABEL.length() + "/".length();
+        } else {
+            scoreTokens[0][0] = "0";
+        }
+        for (int i = 0; i < LEVEL_SUFFIXES.length; i++) {
+            String levelSuffix = LEVEL_SUFFIXES[i];
+            int endIndex = scoreString.indexOf(levelSuffix, startIndex);
+            if (endIndex < 0) {
+                throw new IllegalArgumentException("The scoreString (" + scoreString
+                        + ") for the scoreClass (" + scoreClass.getSimpleName()
+                        + ") doesn't follow the correct pattern (" + buildScorePattern(true, LEVEL_SUFFIXES) + "):"
+                        + " the levelSuffix (" + levelSuffix
+                        + ") isn't in the scoreSubstring (" + scoreString.substring(startIndex) + ").");
+            }
+            String scoreSubString = scoreString.substring(startIndex, endIndex);
+            if (!scoreSubString.startsWith("[") || !scoreSubString.endsWith("]")) {
+                throw new IllegalArgumentException("The scoreString (" + scoreString
+                        + ") for the scoreClass (" + scoreClass.getSimpleName()
+                        + ") doesn't follow the correct pattern (" + buildScorePattern(true, LEVEL_SUFFIXES) + "):"
+                        + " the scoreSubString (" + scoreSubString
+                        + ") does not start and end with \"[\" and \"]\".");
+            }
+            if (scoreSubString.equals("[]")) {
+                scoreTokens[1 + i] = new String[0];
+            } else {
+                scoreTokens[1 + i] = scoreSubString.substring(1, scoreSubString.length() - 1).split("/");
+            }
+            startIndex = endIndex + levelSuffix.length() + "/".length();
+        }
+        if (startIndex != scoreString.length() + "/".length()) {
+            throw new IllegalArgumentException("The scoreString (" + scoreString
+                    + ") for the scoreClass (" + scoreClass.getSimpleName()
+                    + ") doesn't follow the correct pattern (" + buildScorePattern(true, LEVEL_SUFFIXES) + "):"
+                    + " the suffix (" + scoreString.substring(startIndex) + ") is unsupported.");
+        }
+        return scoreTokens;
+    }
+
     public abstract int getHardLevelsSize();
 
     public abstract int getSoftLevelsSize();
@@ -34,5 +83,9 @@ public abstract class AbstractBendableScore<S extends FeasibilityScore<S>> exten
      * @return {@link #getHardLevelsSize()} + {@link #getSoftLevelsSize()}
      */
     public abstract int getLevelsSize();
+
+    protected AbstractBendableScore(int initScore) {
+        super(initScore);
+    }
 
 }

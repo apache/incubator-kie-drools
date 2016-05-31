@@ -206,10 +206,6 @@ public abstract class AbstractPhaseScope<Solution_> {
         return solverScope.getBestScore();
     }
 
-    public String getBestScoreWithUninitializedPrefix() {
-        return solverScope.getBestScoreWithUninitializedPrefix();
-    }
-
     public long getPhaseBestSolutionTimeMillis() {
         long bestSolutionTimeMillis = solverScope.getBestSolutionTimeMillis();
         // If the termination is explicitly phase configured, previous phases must not affect it

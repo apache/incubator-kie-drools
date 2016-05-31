@@ -79,14 +79,6 @@ public class ScoreUtils {
         return timeGradient;
     }
 
-    // TODO remove me (and all occurences) once https://issues.jboss.org/browse/PLANNER-405 is fixed
-    public static String getScoreWithUninitializedPrefix(int uninitializedVariableCount, Score score) {
-        if (score == null) {
-            return null;
-        }
-        return uninitializedVariableCount == 0 ? score.toString() : uninitializedVariableCount + "uninitialized/" + score.toString();
-    }
-
     private ScoreUtils() {
     }
 

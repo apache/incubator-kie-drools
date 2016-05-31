@@ -217,7 +217,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         logger.info("Solving {}: time spent ({}), best score ({}), environment mode ({}), random ({}).",
                 (startingSolverCount == 1 ? "started" : "restarted"),
                 solverScope.calculateTimeMillisSpentUpToNow(),
-                solverScope.getBestScoreWithUninitializedPrefix(),
+                solverScope.getBestScore(),
                 environmentMode.name(),
                 (randomFactory != null ? randomFactory : "not fixed"));
     }
@@ -248,7 +248,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         logger.info("Solving ended: time spent ({}), best score ({}), score calculation speed ({}/sec),"
                         + " environment mode ({}).",
                 solverScope.getTimeMillisSpent(),
-                solverScope.getBestScoreWithUninitializedPrefix(),
+                solverScope.getBestScore(),
                 solverScope.getScoreCalculationSpeed(),
                 environmentMode.name());
         solving.set(false);
@@ -272,13 +272,9 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
             }
             basicPlumbingTermination.endProblemFactChangesProcessing();
             Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
-            // TODO BestSolutionRecaller.solverStarted() already calls countUninitializedVariables()
-            int newBestUninitializedVariableCount = solverScope.getSolutionDescriptor()
-                    .countUninitializedVariables(newBestSolution);
-            bestSolutionRecaller.updateBestSolution(solverScope,
-                    newBestSolution, newBestUninitializedVariableCount);
-            logger.info("Real-time problem fact changes done: step total ({}), new {} best score ({}).",
-                    stepIndex, (newBestUninitializedVariableCount <= 0 ? "initialized" : "uninitialized"), score);
+            bestSolutionRecaller.updateBestSolution(solverScope, newBestSolution);
+            logger.info("Real-time problem fact changes done: step total ({}), new best score ({}).",
+                    stepIndex, score);
             return true;
         }
     }

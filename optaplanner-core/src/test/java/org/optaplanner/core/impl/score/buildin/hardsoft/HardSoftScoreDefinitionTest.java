@@ -46,7 +46,8 @@ public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
         HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
         HardSoftScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
-                HardSoftScore.valueOf(-1, -2));
+                HardSoftScore.valueOfInitialized(-1, -2));
+        assertEquals(0, optimisticBound.getInitScore());
         assertEquals(Integer.MAX_VALUE, optimisticBound.getHardScore());
         assertEquals(Integer.MAX_VALUE, optimisticBound.getSoftScore());
     }
@@ -56,7 +57,8 @@ public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
         HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
         HardSoftScore optimisticBound = scoreDefinition.buildOptimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
-                HardSoftScore.valueOf(-1, -2));
+                HardSoftScore.valueOfInitialized(-1, -2));
+        assertEquals(0, optimisticBound.getInitScore());
         assertEquals(-1, optimisticBound.getHardScore());
         assertEquals(-2, optimisticBound.getSoftScore());
     }
@@ -66,7 +68,8 @@ public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
         HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
         HardSoftScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_UP, 2),
-                HardSoftScore.valueOf(-1, -2));
+                HardSoftScore.valueOfInitialized(-1, -2));
+        assertEquals(0, pessimisticBound.getInitScore());
         assertEquals(-1, pessimisticBound.getHardScore());
         assertEquals(-2, pessimisticBound.getSoftScore());
     }
@@ -76,7 +79,8 @@ public class HardSoftScoreDefinitionTest extends AbstractScoreDefinitionTest {
         HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
         HardSoftScore pessimisticBound = scoreDefinition.buildPessimisticBound(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 2),
-                HardSoftScore.valueOf(-1, -2));
+                HardSoftScore.valueOfInitialized(-1, -2));
+        assertEquals(0, pessimisticBound.getInitScore());
         assertEquals(Integer.MIN_VALUE, pessimisticBound.getHardScore());
         assertEquals(Integer.MIN_VALUE, pessimisticBound.getSoftScore());
     }

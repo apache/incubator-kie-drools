@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.buildin.hardsoftdouble;
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 
 /**
@@ -39,14 +40,19 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
     private static final String SOFT_LABEL = "soft";
 
     public static HardSoftDoubleScore parseScore(String scoreString) {
-        String[] levelStrings = parseLevelStrings(HardSoftDoubleScore.class, scoreString, HARD_LABEL, SOFT_LABEL);
-        double hardScore = parseLevelAsDouble(HardSoftDoubleScore.class, scoreString, levelStrings[0]);
-        double softScore = parseLevelAsDouble(HardSoftDoubleScore.class, scoreString, levelStrings[1]);
-        return valueOf(hardScore, softScore);
+        String[] scoreTokens = parseScoreTokens(HardSoftDoubleScore.class, scoreString, HARD_LABEL, SOFT_LABEL);
+        int initScore = parseInitScore(HardSoftDoubleScore.class, scoreString, scoreTokens[0]);
+        double hardScore = parseLevelAsDouble(HardSoftDoubleScore.class, scoreString, scoreTokens[1]);
+        double softScore = parseLevelAsDouble(HardSoftDoubleScore.class, scoreString, scoreTokens[2]);
+        return valueOf(initScore, hardScore, softScore);
     }
 
-    public static HardSoftDoubleScore valueOf(double hardScore, double softScore) {
-        return new HardSoftDoubleScore(hardScore, softScore);
+    public static HardSoftDoubleScore valueOf(int initScore, double hardScore, double softScore) {
+        return new HardSoftDoubleScore(initScore, hardScore, softScore);
+    }
+
+    public static HardSoftDoubleScore valueOfInitialized(double hardScore, double softScore) {
+        return new HardSoftDoubleScore(0, hardScore, softScore);
     }
 
     // ************************************************************************
@@ -63,11 +69,13 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
      */
     @SuppressWarnings("unused")
     private HardSoftDoubleScore() {
+        super(Integer.MIN_VALUE);
         hardScore = Double.NaN;
         softScore = Double.NaN;
     }
 
-    private HardSoftDoubleScore(double hardScore, double softScore) {
+    private HardSoftDoubleScore(int initScore, double hardScore, double softScore) {
+        super(initScore);
         this.hardScore = hardScore;
         this.softScore = softScore;
     }
@@ -99,43 +107,58 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
     // ************************************************************************
 
     @Override
+    public HardSoftDoubleScore toInitializedScore() {
+        return initScore == 0 ? this : new HardSoftDoubleScore(0, hardScore, softScore);
+    }
+
+    @Override
     public boolean isFeasible() {
-        return getHardScore() >= 0.0;
+        return initScore >= 0 && hardScore >= 0.0;
     }
 
     @Override
     public HardSoftDoubleScore add(HardSoftDoubleScore augment) {
-        return new HardSoftDoubleScore(hardScore + augment.getHardScore(),
+        return new HardSoftDoubleScore(
+                initScore + augment.getInitScore(),
+                hardScore + augment.getHardScore(),
                 softScore + augment.getSoftScore());
     }
 
     @Override
     public HardSoftDoubleScore subtract(HardSoftDoubleScore subtrahend) {
-        return new HardSoftDoubleScore(hardScore - subtrahend.getHardScore(),
+        return new HardSoftDoubleScore(
+                initScore - subtrahend.getInitScore(),
+                hardScore - subtrahend.getHardScore(),
                 softScore - subtrahend.getSoftScore());
     }
 
     @Override
     public HardSoftDoubleScore multiply(double multiplicand) {
-        return new HardSoftDoubleScore(hardScore * multiplicand,
+        return new HardSoftDoubleScore(
+                (int) Math.floor(initScore * multiplicand),
+                hardScore * multiplicand,
                 softScore * multiplicand);
     }
 
     @Override
     public HardSoftDoubleScore divide(double divisor) {
-        return new HardSoftDoubleScore(hardScore / divisor,
+        return new HardSoftDoubleScore(
+                (int) Math.floor(initScore / divisor),
+                hardScore / divisor,
                 softScore / divisor);
     }
 
     @Override
     public HardSoftDoubleScore power(double exponent) {
-        return new HardSoftDoubleScore(Math.pow(hardScore, exponent),
+        return new HardSoftDoubleScore(
+                (int) Math.floor(Math.pow(initScore, exponent)),
+                Math.pow(hardScore, exponent),
                 Math.pow(softScore, exponent));
     }
 
     @Override
     public HardSoftDoubleScore negate() {
-        return new HardSoftDoubleScore(-hardScore, -softScore);
+        return new HardSoftDoubleScore(-initScore, -hardScore, -softScore);
     }
 
     @Override
@@ -149,7 +172,8 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
             return true;
         } else if (o instanceof HardSoftDoubleScore) {
             HardSoftDoubleScore other = (HardSoftDoubleScore) o;
-            return hardScore == other.getHardScore()
+            return initScore == other.getInitScore()
+                    && hardScore == other.getHardScore()
                     && softScore == other.getSoftScore();
         } else {
             return false;
@@ -158,31 +182,27 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
 
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (((17 * 37) + Double.valueOf(hardScore).hashCode())) * 37 + Double.valueOf(softScore).hashCode();
+        return ((((17 * 37)
+                + initScore)) * 37
+                + Double.valueOf(hardScore).hashCode()) * 37
+                + Double.valueOf(softScore).hashCode();
     }
 
     @Override
     public int compareTo(HardSoftDoubleScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
-        if (hardScore != other.getHardScore()) {
-            if (hardScore < other.getHardScore()) {
-                return -1;
-            } else {
-                return 1;
-            }
+        if (initScore != other.getInitScore()) {
+            return initScore < other.getInitScore() ? -1 : 1;
+        } else if (hardScore != other.getHardScore()) {
+            return hardScore < other.getHardScore() ? -1 : 1;
         } else {
-            if (softScore < other.getSoftScore()) {
-                return -1;
-            } else if (softScore > other.getSoftScore()) {
-                return 1;
-            } else {
-                return 0;
-            }
+            return Double.compare(softScore, other.getSoftScore());
         }
     }
 
+    @Override
     public String toString() {
-        return hardScore + HARD_LABEL + "/" + softScore + SOFT_LABEL;
+        return getInitPrefix() + hardScore + HARD_LABEL + "/" + softScore + SOFT_LABEL;
     }
 
 }

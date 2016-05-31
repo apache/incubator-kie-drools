@@ -35,15 +35,15 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
     @Test
     public void lateAcceptanceSize() {
         SimulatedAnnealingAcceptor acceptor = new SimulatedAnnealingAcceptor();
-        acceptor.setStartingTemperature(SimpleScore.valueOf(200));
+        acceptor.setStartingTemperature(SimpleScore.valueOfInitialized(200));
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(SimpleScore.valueOf(-1000));
+        solverScope.setBestScore(SimpleScore.valueOfInitialized(-1000));
         Random workingRandom = mock(Random.class);
         solverScope.setWorkingRandom(workingRandom);
         LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
         LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
-        lastCompletedStepScope.setScore(SimpleScore.valueOf(-1000));
+        lastCompletedStepScope.setScore(SimpleScore.valueOfInitialized(-1000));
         phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
         acceptor.phaseStarted(phaseScope);
 

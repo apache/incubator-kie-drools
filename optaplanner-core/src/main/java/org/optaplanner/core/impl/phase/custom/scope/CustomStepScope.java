@@ -26,8 +26,6 @@ public class CustomStepScope<Solution_> extends AbstractStepScope<Solution_> {
 
     private final CustomPhaseScope<Solution_> phaseScope;
 
-    private int uninitializedVariableCount = -1;
-
     public CustomStepScope(CustomPhaseScope<Solution_> phaseScope) {
         this(phaseScope, phaseScope.getNextStepIndex());
     }
@@ -40,15 +38,6 @@ public class CustomStepScope<Solution_> extends AbstractStepScope<Solution_> {
     @Override
     public CustomPhaseScope<Solution_> getPhaseScope() {
         return phaseScope;
-    }
-
-    @Override
-    public int getUninitializedVariableCount() {
-        return uninitializedVariableCount;
-    }
-
-    public void setUninitializedVariableCount(int uninitializedVariableCount) {
-        this.uninitializedVariableCount = uninitializedVariableCount;
     }
 
     // ************************************************************************

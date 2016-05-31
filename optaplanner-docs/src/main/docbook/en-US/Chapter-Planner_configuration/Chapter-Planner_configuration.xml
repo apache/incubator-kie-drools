@@ -2057,10 +2057,10 @@ public class SeatDesignationDependency {
       <para>For example, set it to <literal>debug</literal> logging, to see when the phases end and how fast steps are
       taken:</para>
 
-      <programlisting>INFO  Solving started: time spent (3), best score (uninitialized/0), random (JDK with seed 0).
-DEBUG     CH step (0), time spent (5), score (0), selected move count (1), picked move (Queen-2 {null -&gt; Row-0}).
-DEBUG     CH step (1), time spent (7), score (0), selected move count (3), picked move (Queen-1 {null -&gt; Row-2}).
-DEBUG     CH step (2), time spent (10), score (0), selected move count (4), picked move (Queen-3 {null -&gt; Row-3}).
+      <programlisting>INFO  Solving started: time spent (3), best score (-4init/0), random (JDK with seed 0).
+DEBUG     CH step (0), time spent (5), score (-3init/0), selected move count (1), picked move (Queen-2 {null -&gt; Row-0}).
+DEBUG     CH step (1), time spent (7), score (-2init/0), selected move count (3), picked move (Queen-1 {null -&gt; Row-2}).
+DEBUG     CH step (2), time spent (10), score (-1init/0), selected move count (4), picked move (Queen-3 {null -&gt; Row-3}).
 DEBUG     CH step (3), time spent (12), score (-1), selected move count (4), picked move (Queen-0 {null -&gt; Row-1}).
 INFO  Construction Heuristic phase (0) ended: time spent (12), best score (-1), score calculation speed (9000/sec), step total (4).
 DEBUG     LS step (0), time spent (19), score (-1),     best score (-1), accepted/selected move count (12/12), picked move (Queen-1 {Row-2 -&gt; Row-3}).

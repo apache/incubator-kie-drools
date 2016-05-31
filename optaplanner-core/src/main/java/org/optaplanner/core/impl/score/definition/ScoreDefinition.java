@@ -69,10 +69,12 @@ public interface ScoreDefinition<S extends Score> {
 
     /**
      * The opposite of {@link Score#toLevelNumbers()}.
+     * @param initScore <= 0, managed by OptaPlanner, needed as a parameter in the {@link Score}'s creation method,
+     * see {@link Score#getInitScore()}
      * @param levelNumbers never null
      * @return never null
      */
-    S fromLevelNumbers(Number[] levelNumbers);
+    S fromLevelNumbers(int initScore, Number[] levelNumbers);
 
     /**
      * Used by {@link DroolsScoreDirector}.
@@ -86,7 +88,7 @@ public interface ScoreDefinition<S extends Score> {
      * (while the already variables don't change).
      * @param initializingScoreTrend never null, with {@link InitializingScoreTrend#getLevelsSize()}
      * equal to {@link #getLevelsSize()}.
-     * @param score never null
+     * @param score never null, with {@link Score#getInitScore()} {@code 0}.
      * @return never null
      */
     S buildOptimisticBound(InitializingScoreTrend initializingScoreTrend, S score);
@@ -96,7 +98,7 @@ public interface ScoreDefinition<S extends Score> {
      * (while the already variables don't change).
      * @param initializingScoreTrend never null, with {@link InitializingScoreTrend#getLevelsSize()}
      * equal to {@link #getLevelsSize()}.
-     * @param score never null
+     * @param score never null, with {@link Score#getInitScore()} {@code 0}
      * @return never null
      */
     S buildPessimisticBound(InitializingScoreTrend initializingScoreTrend, S score);

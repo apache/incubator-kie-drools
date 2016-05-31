@@ -94,15 +94,4 @@ public class ConstructionHeuristicStepScope<Solution_> extends AbstractStepScope
     // Calculated methods
     // ************************************************************************
 
-    @Override
-    public int getUninitializedVariableCount() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean hasNoUninitializedVariables() {
-        // TODO might be true in the last step of a construction heuristic
-        return false;
-    }
-
 }

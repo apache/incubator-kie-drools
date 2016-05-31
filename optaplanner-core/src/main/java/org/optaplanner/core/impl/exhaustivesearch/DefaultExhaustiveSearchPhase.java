@@ -141,10 +141,8 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         List<ExhaustiveSearchLayer> layerList = new ArrayList<>((int) entitySize);
         int depth = 0;
         InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
-        int uninitializedVariableCount = phaseScope.getSolutionDescriptor()
-                .countReinitializableVariables(scoreDirector, phaseScope.getWorkingSolution());
         for (Object entity : entitySelector) {
-            ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, entity, uninitializedVariableCount);
+            ExhaustiveSearchLayer layer = new ExhaustiveSearchLayer(depth, entity);
             // Keep in sync with ExhaustiveSearchPhaseConfig.buildMoveSelectorConfig()
             // which includes all genuineVariableDescriptors
             int reinitializeVariableCount = entitySelector.getEntityDescriptor()
@@ -154,10 +152,9 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
                 continue;
             }
             depth++;
-            uninitializedVariableCount -= reinitializeVariableCount;
             layerList.add(layer);
         }
-        ExhaustiveSearchLayer lastLayer = new ExhaustiveSearchLayer(depth, null, uninitializedVariableCount);
+        ExhaustiveSearchLayer lastLayer = new ExhaustiveSearchLayer(depth, null);
         layerList.add(lastLayer);
         entitySelector.stepEnded(stepScope);
         phaseScope.setLayerList(layerList);
@@ -241,7 +238,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
                     phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                     stepScope.getTreeId(),
                     (stepScope.getBestScoreImproved() ? "new" : "   "),
-                    phaseScope.getBestScoreWithUninitializedPrefix(),
+                    phaseScope.getBestScore(),
                     stepScope.getSelectedMoveCount());
         }
     }

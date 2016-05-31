@@ -33,10 +33,10 @@ public class HillClimbingAcceptorTest extends AbstractAcceptorTest {
         HillClimbingAcceptor acceptor = new HillClimbingAcceptor();
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(SimpleScore.valueOf(-1000));
+        solverScope.setBestScore(SimpleScore.valueOfInitialized(-1000));
         LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
         LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
-        lastCompletedStepScope.setScore(SimpleScore.valueOf(-1000));
+        lastCompletedStepScope.setScore(SimpleScore.valueOfInitialized(-1000));
         phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
         acceptor.phaseStarted(phaseScope);
 

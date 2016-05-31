@@ -31,11 +31,18 @@ import org.optaplanner.core.api.score.Score;
 public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalScore> {
 
     public static SimpleBigDecimalScore parseScore(String scoreString) {
-        return valueOf(parseLevelAsBigDecimal(SimpleBigDecimalScore.class, scoreString, scoreString));
+        String[] scoreTokens = parseScoreTokens(SimpleBigDecimalScore.class, scoreString, "");
+        int initScore = parseInitScore(SimpleBigDecimalScore.class, scoreString, scoreTokens[0]);
+        BigDecimal score = parseLevelAsBigDecimal(SimpleBigDecimalScore.class, scoreString, scoreTokens[1]);
+        return valueOf(initScore, score);
     }
 
-    public static SimpleBigDecimalScore valueOf(BigDecimal score) {
-        return new SimpleBigDecimalScore(score);
+    public static SimpleBigDecimalScore valueOf(int initScore, BigDecimal score) {
+        return new SimpleBigDecimalScore(initScore, score);
+    }
+
+    public static SimpleBigDecimalScore valueOfInitialized(BigDecimal score) {
+        return new SimpleBigDecimalScore(0, score);
     }
 
     // ************************************************************************
@@ -51,15 +58,17 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
      */
     @SuppressWarnings("unused")
     private SimpleBigDecimalScore() {
+        super(Integer.MIN_VALUE);
         score = null;
     }
 
-    private SimpleBigDecimalScore(BigDecimal score) {
+    private SimpleBigDecimalScore(int initScore, BigDecimal score) {
+        super(initScore);
         this.score = score;
     }
 
     /**
-     * The total of the broken negative constraints and fulfilled positive hard constraints.
+     * The total of the broken negative constraints and fulfilled positive constraints.
      * Their weight is included in the total.
      * The score is usually a negative number because most use cases only have negative constraints.
      * @return higher is better, usually negative, 0 if no constraints are broken/fulfilled
@@ -73,13 +82,22 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     // ************************************************************************
 
     @Override
+    public SimpleBigDecimalScore toInitializedScore() {
+        return initScore == 0 ? this : new SimpleBigDecimalScore(0, score);
+    }
+
+    @Override
     public SimpleBigDecimalScore add(SimpleBigDecimalScore augment) {
-        return new SimpleBigDecimalScore(score.add(augment.getScore()));
+        return new SimpleBigDecimalScore(
+                initScore + augment.getInitScore(),
+                score.add(augment.getScore()));
     }
 
     @Override
     public SimpleBigDecimalScore subtract(SimpleBigDecimalScore subtrahend) {
-        return new SimpleBigDecimalScore(score.subtract(subtrahend.getScore()));
+        return new SimpleBigDecimalScore(
+                initScore - subtrahend.getInitScore(),
+                score.subtract(subtrahend.getScore()));
     }
 
     @Override
@@ -89,6 +107,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         BigDecimal multiplicandBigDecimal = BigDecimal.valueOf(multiplicand);
         // The (unspecified) scale/precision of the multiplicand should have no impact on the returned scale/precision
         return new SimpleBigDecimalScore(
+                (int) Math.floor(initScore * multiplicand),
                 score.multiply(multiplicandBigDecimal).setScale(score.scale(), RoundingMode.FLOOR));
     }
 
@@ -99,6 +118,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         BigDecimal divisorBigDecimal = BigDecimal.valueOf(divisor);
         // The (unspecified) scale/precision of the divisor should have no impact on the returned scale/precision
         return new SimpleBigDecimalScore(
+                (int) Math.floor(initScore / divisor),
                 score.divide(divisorBigDecimal, score.scale(), RoundingMode.FLOOR));
     }
 
@@ -111,12 +131,13 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         // TODO FIXME remove .intValue() so non-integer exponents produce correct results
         // None of the normal Java libraries support BigDecimal.pow(BigDecimal)
         return new SimpleBigDecimalScore(
+                (int) Math.floor(Math.pow(initScore, exponent)),
                 score.pow(exponentBigDecimal.intValue()).setScale(score.scale()));
     }
 
     @Override
     public SimpleBigDecimalScore negate() {
-        return new SimpleBigDecimalScore(score.negate());
+        return new SimpleBigDecimalScore(-initScore, score.negate());
     }
 
     @Override
@@ -130,7 +151,8 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
             return true;
         } else if (o instanceof SimpleBigDecimalScore) {
             SimpleBigDecimalScore other = (SimpleBigDecimalScore) o;
-            return score.equals(other.getScore());
+            return initScore == other.getInitScore()
+                    && score.equals(other.getScore());
         } else {
             return false;
         }
@@ -138,23 +160,24 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
 
     public int hashCode() {
         // A direct implementation (instead of HashCodeBuilder) to avoid dependencies
-        return (17 * 37) + score.hashCode();
+        return (((17 * 37)
+                + initScore)) * 37
+                + score.hashCode();
     }
 
     @Override
     public int compareTo(SimpleBigDecimalScore other) {
         // A direct implementation (instead of CompareToBuilder) to avoid dependencies
-        if (score.compareTo(other.getScore()) < 0) {
-            return -1;
-        } else if (score.compareTo(other.getScore()) > 0) {
-            return 1;
+        if (initScore != other.getInitScore()) {
+            return initScore < other.getInitScore() ? -1 : 1;
         } else {
-            return 0;
+            return score.compareTo(other.getScore());
         }
     }
 
+    @Override
     public String toString() {
-        return score.toString();
+        return getInitPrefix() + score;
     }
 
 }

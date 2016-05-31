@@ -26,22 +26,22 @@ import static org.mockito.Mockito.*;
 
 public abstract class AbstractNodeComparatorTest {
 
-    protected ExhaustiveSearchNode buildNode(int depth, int scoreString, long parentBreadth, long breadth) {
+    protected ExhaustiveSearchNode buildNode(int depth, int score, long parentBreadth, long breadth) {
         ExhaustiveSearchNode node = mock(ExhaustiveSearchNode.class);
         when(node.getDepth()).thenReturn(depth);
-        when(node.getScore()).thenReturn(SimpleScore.valueOf(scoreString));
-        when(node.getOptimisticBound()).thenReturn(SimpleScore.valueOf(scoreString));
+        when(node.getScore()).thenReturn(SimpleScore.valueOfInitialized(score));
+        when(node.getOptimisticBound()).thenReturn(SimpleScore.valueOfInitialized(score));
         when(node.getParentBreadth()).thenReturn(parentBreadth);
         when(node.getBreadth()).thenReturn(breadth);
         return node;
     }
 
-    protected ExhaustiveSearchNode buildNode(int depth, int scoreString, int optimisticBoundString,
+    protected ExhaustiveSearchNode buildNode(int depth, int score, int optimisticBound,
             long parentBreadth, long breadth) {
         ExhaustiveSearchNode node = mock(ExhaustiveSearchNode.class);
         when(node.getDepth()).thenReturn(depth);
-        when(node.getScore()).thenReturn(SimpleScore.valueOf(scoreString));
-        when(node.getOptimisticBound()).thenReturn(SimpleScore.valueOf(optimisticBoundString));
+        when(node.getScore()).thenReturn(SimpleScore.valueOfInitialized(score));
+        when(node.getOptimisticBound()).thenReturn(SimpleScore.valueOfInitialized(optimisticBound));
         when(node.getParentBreadth()).thenReturn(parentBreadth);
         when(node.getBreadth()).thenReturn(breadth);
         return node;

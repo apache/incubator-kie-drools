@@ -38,18 +38,8 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
         return hardScore;
     }
 
-    @Deprecated
-    public void setHardScore(BigDecimal hardScore) {
-        this.hardScore = hardScore;
-    }
-
     public BigDecimal getSoftScore() {
         return softScore;
-    }
-
-    @Deprecated
-    public void setSoftScore(BigDecimal softScore) {
-        this.softScore = softScore;
     }
 
     // ************************************************************************
@@ -77,8 +67,8 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
     }
 
     @Override
-    public Score extractScore() {
-        return HardSoftBigDecimalScore.valueOf(hardScore == null ? BigDecimal.ZERO : hardScore,
+    public Score extractScore(int initScore) {
+        return HardSoftBigDecimalScore.valueOf(initScore, hardScore == null ? BigDecimal.ZERO : hardScore,
                 softScore == null ? BigDecimal.ZERO : softScore);
     }
 

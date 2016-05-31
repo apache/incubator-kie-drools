@@ -159,7 +159,6 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
 
     private void processMove(ExhaustiveSearchStepScope<Solution_> stepScope, ExhaustiveSearchNode moveNode) {
         ExhaustiveSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
-        int uninitializedVariableCount = moveNode.getUninitializedVariableCount();
         boolean lastLayer = moveNode.isLastLayer();
         if (!scoreBounderEnabled) {
             if (lastLayer) {
@@ -168,7 +167,7 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
                 if (assertMoveScoreFromScratch) {
                     phaseScope.assertWorkingScoreFromScratch(score, moveNode.getMove());
                 }
-                bestSolutionRecaller.processWorkingSolutionDuringMove(uninitializedVariableCount, score, stepScope);
+                bestSolutionRecaller.processWorkingSolutionDuringMove(score, stepScope);
             } else {
                 phaseScope.addExpandableNode(moveNode);
             }
@@ -181,7 +180,7 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
             if (lastLayer) {
                 // There is no point in bounding a fully initialized score
                 phaseScope.registerPessimisticBound(score);
-                bestSolutionRecaller.processWorkingSolutionDuringMove(uninitializedVariableCount, score, stepScope);
+                bestSolutionRecaller.processWorkingSolutionDuringMove(score, stepScope);
             } else {
                 InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
                 Score optimisticBound = scoreBounder.calculateOptimisticBound(scoreDirector, score);

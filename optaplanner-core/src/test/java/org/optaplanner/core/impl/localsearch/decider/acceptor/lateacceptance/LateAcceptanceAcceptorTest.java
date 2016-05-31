@@ -35,10 +35,10 @@ public class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
         acceptor.setHillClimbingEnabled(false);
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(SimpleScore.valueOf(-1000));
+        solverScope.setBestScore(SimpleScore.valueOfInitialized(-1000));
         LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
         LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
-        lastCompletedStepScope.setScore(SimpleScore.valueOf(Integer.MIN_VALUE));
+        lastCompletedStepScope.setScore(SimpleScore.valueOfInitialized(Integer.MIN_VALUE));
         phaseScope.setLastCompletedStepScope(lastCompletedStepScope);
         acceptor.phaseStarted(phaseScope);
 
@@ -142,7 +142,7 @@ public class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
         acceptor.setHillClimbingEnabled(true);
 
         DefaultSolverScope solverScope = new DefaultSolverScope();
-        solverScope.setBestScore(SimpleScore.valueOf(-1000));
+        solverScope.setBestScore(SimpleScore.valueOfInitialized(-1000));
         LocalSearchPhaseScope phaseScope = new LocalSearchPhaseScope(solverScope);
         LocalSearchStepScope lastCompletedStepScope = new LocalSearchStepScope(phaseScope, -1);
         lastCompletedStepScope.setScore(solverScope.getBestScore());

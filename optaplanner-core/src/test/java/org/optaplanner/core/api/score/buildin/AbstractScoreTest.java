@@ -51,15 +51,24 @@ public abstract class AbstractScoreTest {
         }
     }
 
+    public static void assertScoresNotEquals(Score... scores) {
+        for (int i = 0; i < scores.length; i++) {
+            for (int j = i + 1; j < scores.length; j++) {
+                assertNotEquals(scores[i], scores[j]);
+                assertNotEquals(0, scores[i].compareTo(scores[j]));
+            }
+        }
+    }
+
     public static void assertScoreNotFeasible(FeasibilityScore... scores) {
         for (FeasibilityScore score : scores) {
-            assertEquals(false, score.isFeasible());
+            assertEquals(score + " should not be feasible.", false, score.isFeasible());
         }
     }
 
     public static void assertScoreFeasible(FeasibilityScore ... scores) {
         for (FeasibilityScore score : scores) {
-            assertEquals(true, score.isFeasible());
+            assertEquals(score + " should be feasible.", true, score.isFeasible());
         }
     }
 
