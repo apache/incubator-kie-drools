@@ -84,6 +84,7 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
@@ -160,6 +161,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class StatefulKnowledgeSessionImpl extends AbstractRuntime
@@ -1549,6 +1551,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return this.defaultEntryPoint.getEntryPointNode();
     }
 
+    @Override
+    public void removeFromObjectStore( InternalFactHandle handle ) {
+        throw new UnsupportedOperationException( );
+
+    }
+
     public void update(final FactHandle handle,
                        final Object object) {
         update(handle,
@@ -1738,13 +1746,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         public WorkingMemoryReteExpireAction(final EventFactHandle factHandle) {
             this.factHandle = factHandle;
-            factHandle.increaseOtnCount();
         }
 
         public WorkingMemoryReteExpireAction(final EventFactHandle factHandle,
                                              final ObjectTypeNode node) {
             this(factHandle);
             this.node = node;
+            factHandle.increaseOtnCount();
         }
 
         public EventFactHandle getFactHandle() {
@@ -1788,35 +1796,45 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         public void execute(InternalWorkingMemory workingMemory) {
-            if (this.factHandle.isValid()) {
-                PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-
-                // if the fact is still in the working memory (since it may have been previously retracted already
-                final PropagationContext context = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.EXPIRATION,
-                                                                                        null, null, this.factHandle);
-                if ( factHandle.getEqualityKey() == null || factHandle.getEqualityKey().getLogicalFactHandle() != factHandle ) {
-                    if (this.node != null) {
-                        this.node.retractObject(factHandle, context, workingMemory);
-                    } else {
-                        workingMemory.getEntryPoint(factHandle.getEntryPoint().getEntryPointId()).delete(factHandle);
-                    }
-                    factHandle.decreaseOtnCount();
-
-                    context.evaluateActionQueue(workingMemory);
-                    // if no activations for this expired event
-                    if (factHandle.getOtnCount() == 0) {
-                        // remove it from the object store and clean up resources
-                        factHandle.setExpired(true);
-                        if (factHandle.getActivationsCount() == 0) {
-                            factHandle.getEntryPoint().delete( factHandle );
-                        }
-                    }
-                } else {
-                    ((NamedEntryPoint) factHandle.getEntryPoint()).getTruthMaintenanceSystem().delete( factHandle );
-                }
-
-                context.evaluateActionQueue(workingMemory);
+            if (!factHandle.isValid()) {
+                return;
             }
+            retractRightTuples( workingMemory );
+            expireLeftTuples();
+            factHandle.decreaseOtnCount();
+            if (factHandle.getOtnCount() == 0) {
+                factHandle.setExpired( true );
+                if (factHandle.getActivationsCount() == 0) {
+                    String epId = factHandle.getEntryPoint().getEntryPointId();
+                    ( (InternalWorkingMemoryEntryPoint) workingMemory.getEntryPoint( epId ) ).removeFromObjectStore( factHandle );
+                }
+            }
+        }
+
+        private void expireLeftTuples() {
+            for ( LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext()) {
+                expireLeftTuple(leftTuple);
+            }
+        }
+
+        private void expireLeftTuple(LeftTuple leftTuple) {
+            leftTuple.setExpired( true );
+            for ( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
+                expireLeftTuple(child);
+            }
+            for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
+                expireLeftTuple(peer);
+            }
+        }
+
+        private void retractRightTuples( InternalWorkingMemory workingMemory ) {
+            final PropagationContext context = createPropagationContextForFact( workingMemory, factHandle, PropagationContext.EXPIRATION );
+            for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; ) {
+                RightTuple nextRightTuple = rightTuple.getHandleNext();
+                rightTuple.retractTuple( context, workingMemory);
+                rightTuple = nextRightTuple;
+            }
+            factHandle.clearRightTuples();
         }
 
         @Override

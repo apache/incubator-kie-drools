@@ -82,4 +82,12 @@ public class PhreakPropagationContextFactory implements PropagationContextFactor
                                                        final InternalFactHandle factHandle) {
         return new PhreakPropagationContext(number, type, rule, leftTuple, factHandle);
     }
+
+    public static PropagationContext createPropagationContextForFact( InternalWorkingMemory workingMemory, InternalFactHandle factHandle, int propagationType ) {
+        PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
+
+        // if the fact is still in the working memory (since it may have been previously retracted already
+        return pctxFactory.createPropagationContext( workingMemory.getNextPropagationIdCounter(), propagationType,
+                                                     null, null, factHandle );
+    }
 }

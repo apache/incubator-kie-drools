@@ -164,6 +164,11 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
+    @Override
+    public boolean isExpired() {
+        return false;
+    }
+
     public int getId() {
         return this.id;
     }

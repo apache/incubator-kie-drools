@@ -25,6 +25,7 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
+import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
@@ -119,9 +120,7 @@ public class PhreakExistsNode {
 
             if (leftTuple.getBlocker() != null) {
                 // tuple is not blocked to propagate
-                trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
-                                                             sink,
-                                                             leftTuple.getBlocker().getPropagationContext(), useLeftMemory));
+                insertChildLeftTuple( sink, trgLeftTuples, leftTuple, leftTuple.getBlocker().getPropagationContext(),useLeftMemory );
             } else if (useLeftMemory) {
                 // LeftTuple is not blocked, so add to memory so other RightTuples can match
                 ltm.add(leftTuple);
@@ -172,9 +171,7 @@ public class PhreakExistsNode {
 
                         ltm.remove( leftTuple );
 
-                        trgLeftTuples.addInsert( sink.createLeftTuple( leftTuple,
-                                                                       sink,
-                                                                       rightTuple.getPropagationContext(), true ) );
+                        insertChildLeftTuple( sink, trgLeftTuples, leftTuple, rightTuple.getPropagationContext(), true );
                     }
 
                     leftTuple = temp;
@@ -265,10 +262,7 @@ public class PhreakExistsNode {
                 // with no previous children. do nothing.
             } else if (leftTuple.getFirstChild() == null) {
                 // blocked, with no previous children, insert
-                trgLeftTuples.addInsert(sink.createLeftTuple(leftTuple,
-                                                             sink,
-                                                             leftTuple.getBlocker().getPropagationContext(),
-                                                             true));
+                insertChildLeftTuple( sink, trgLeftTuples, leftTuple, leftTuple.getBlocker().getPropagationContext(), true );
             } else {
                 // blocked, with previous children, modify
                 LeftTuple childLeftTuple = leftTuple.getFirstChild();
@@ -336,9 +330,7 @@ public class PhreakExistsNode {
                         ltm.remove( leftTuple );
 
                         // subclasses like ForallNotNode might override this propagation
-                        trgLeftTuples.addInsert( sink.createLeftTuple( leftTuple,
-                                                                       sink,
-                                                                       rightTuple.getPropagationContext(), true ) );
+                        insertChildLeftTuple( sink, trgLeftTuples, leftTuple, rightTuple.getPropagationContext(), true );
                     }
 
                     leftTuple = temp;
@@ -513,6 +505,12 @@ public class PhreakExistsNode {
             rightTuple.setBlocked(null);
             rightTuple.clearStaged();
             rightTuple = next;
+        }
+    }
+
+    private static void insertChildLeftTuple( LeftTupleSink sink, TupleSets<LeftTuple> trgLeftTuples, LeftTuple leftTuple, PropagationContext pctx, boolean useLeftMemory ) {
+        if (!leftTuple.isExpired()) {
+            trgLeftTuples.addInsert( sink.createLeftTuple( leftTuple, sink, pctx, useLeftMemory ) );
         }
     }
 }

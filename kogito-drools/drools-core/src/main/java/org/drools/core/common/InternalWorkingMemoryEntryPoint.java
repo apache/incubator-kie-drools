@@ -60,4 +60,6 @@ public interface InternalWorkingMemoryEntryPoint extends EntryPoint {
     FactHandleFactory getHandleFactory();
     
     EntryPointNode getEntryPointNode();
+
+    void removeFromObjectStore(InternalFactHandle handle);
 }

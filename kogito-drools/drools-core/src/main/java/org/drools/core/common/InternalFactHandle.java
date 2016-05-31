@@ -111,4 +111,6 @@ public interface InternalFactHandle
     void setNegated(boolean negated);
 
     <K> K as( Class<K> klass ) throws ClassCastException;
+
+    boolean isExpired();
 }

@@ -63,6 +63,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
+import static org.drools.core.reteoo.ObjectTypeNode.doRetractObject;
+
 /**
  * Rule-firing Agenda.
  * 
@@ -445,17 +448,14 @@ public class DefaultAgenda
         }
 
         if ( activation.isQueued() ) {
-            // on fact expiration, we don't remove the activation, but let it fire
-            if ( context.getType() != PropagationContext.EXPIRATION || context.getFactHandle() == null ) {
-                if ( activation.getActivationGroupNode() != null ) {
-                    activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
-                }
-                leftTuple.decreaseActivationCountForEvents();
-
-                ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                                                workingMemory,
-                                                                                                MatchCancelledCause.WME_MODIFY );
+            if ( activation.getActivationGroupNode() != null ) {
+                activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
             }
+            leftTuple.decreaseActivationCountForEvents();
+
+            ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
+                                                                                            workingMemory,
+                                                                                            MatchCancelledCause.WME_MODIFY );
         }
 
         fireConsequenceEvent( item, ON_DELETE_MATCH_CONSEQUENCE_NAME );
@@ -1121,6 +1121,7 @@ public class DefaultAgenda
                         if ( handle.isExpired() ) {
                             if ( handle.getActivationsCount() <= 0 ) {
                                 // and if no more activations, retract the handle
+                                doRetractObject( handle, createPropagationContextForFact( workingMemory, handle, PropagationContext.EXPIRATION ), workingMemory );
                                 handle.getEntryPoint().delete( handle );
                             }
                         }

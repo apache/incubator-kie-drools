@@ -248,7 +248,7 @@ public class PhreakRuleTerminalNode {
                                          activation,
                                          rtnLt.getTerminalNode() );
 
-        if ( leftTuple.getMemory() != null && (pctx.getType() != PropagationContext.EXPIRATION  ) ) {
+        if ( leftTuple.getMemory() != null ) {
             // Expiration propagations should not be removed from the list, as they still need to fire
             executor.removeLeftTuple(leftTuple);
         }

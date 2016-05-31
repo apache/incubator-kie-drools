@@ -674,4 +674,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return traitType;
     }
 
+    public boolean isExpired() {
+        return false;
+    }
 }

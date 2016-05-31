@@ -242,6 +242,8 @@ message FactHandle {
     optional string entry_point = 10;
     
     optional bool is_justified = 11;
+
+    optional int32 otn_count = 12;
 }
 
 message Activation {
