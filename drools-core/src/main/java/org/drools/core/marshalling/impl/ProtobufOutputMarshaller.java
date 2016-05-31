@@ -728,6 +728,7 @@ public class ProtobufOutputMarshaller {
             _handle.setDuration( efh.getDuration() );
             _handle.setIsExpired( efh.isExpired() );
             _handle.setActivationsCount( efh.getActivationsCount() );
+            _handle.setOtnCount( efh.getOtnCount() );
         }
 
         if ( handle.getEqualityKey() != null &&

@@ -563,6 +563,7 @@ public class ProtobufInputMarshaller {
                                               (InternalWorkingMemoryEntryPoint) entryPoint,
                                               typeConf != null && typeConf.isTrait() );
                 ((EventFactHandle) handle).setExpired( _handle.getIsExpired() );
+                ((EventFactHandle) handle).setOtnCount( _handle.getOtnCount() );
                 // the event is re-propagated through the network, so the activations counter will be recalculated
                 //((EventFactHandle) handle).setActivationsCount( _handle.getActivationsCount() );
                 break;

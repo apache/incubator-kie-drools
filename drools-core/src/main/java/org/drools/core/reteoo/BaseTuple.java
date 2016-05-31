@@ -180,4 +180,9 @@ public abstract class BaseTuple implements Tuple {
     public void setHandleNext(Tuple handleNext) {
         this.handleNext = handleNext;
     }
+
+    @Override
+    public boolean isExpired() {
+        return handle != null && handle.isExpired();
+    }
 }
