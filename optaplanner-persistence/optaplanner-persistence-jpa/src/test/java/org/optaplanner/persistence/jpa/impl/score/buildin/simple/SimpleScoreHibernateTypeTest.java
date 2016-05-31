@@ -29,9 +29,9 @@ public class SimpleScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest
 
     @Test
     public void persistAndMerge() {
-        Long id = persistAndAssert(new TestJpaEntity(null));
-        findAssertAndChangeScore(TestJpaEntity.class, id, null, SimpleScore.valueOf(-10));
-        findAndAssert(TestJpaEntity.class, id, SimpleScore.valueOf(-10));
+        persistAndMerge(new TestJpaEntity(null),
+                SimpleScore.valueOfInitialized(-10),
+                SimpleScore.valueOf(-7, -10));
     }
 
     @Entity
@@ -48,7 +48,7 @@ public class SimpleScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest
         }
 
         @Override
-        @Columns(columns = {@Column(name = "score")})
+        @Columns(columns = {@Column(name = "initScore"), @Column(name = "score")})
         public SimpleScore getScore() {
             return score;
         }

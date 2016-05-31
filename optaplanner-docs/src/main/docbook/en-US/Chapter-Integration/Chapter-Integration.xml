@@ -77,13 +77,13 @@ public class Talk {...}</programlisting>
           </listitem>
 
           <listitem>
-            <para>The score cannot be used in a SQL or JPA-QL query to filter the results: for example to query all
-            infeasible schedules.</para>
+            <para>The score cannot be used in a SQL or JPA-QL query to efficiently filter the results: for example to
+            query all infeasible schedules.</para>
           </listitem>
         </itemizedlist>
 
-        <para>To avoid these issues, configure it to use 2 <literal>INTEGER</literal> columns instead by using the
-        appropriate <literal>*ScoreHibernateType</literal> for your <literal>Score</literal> type, for example for a
+        <para>To avoid these issues, configure it to instead use INTEGER (or other) columns, by using the appropriate
+        <literal>*ScoreHibernateType</literal> for your <literal>Score</literal> type, for example for a
         <literal>HardSoftScore</literal>:</para>
 
         <programlisting language="java">@PlanningSolution
@@ -92,7 +92,7 @@ public class Talk {...}</programlisting>
 public class CloudBalance {
 
     @PlanningScore
-    @Columns(columns = {@Column(name = "hardScore"), @Column(name = "softScore")})
+    @Columns(columns = {@Column(name = "initScore"), @Column(name = "hardScore"), @Column(name = "softScore")})
     protected HardSoftScore score;
 
     ...
@@ -100,13 +100,15 @@ public class CloudBalance {
 
         <note>
           <para>Configure the same number of <literal>@Column</literal> annotations as the number of score levels in the
-          score, otherwise Hibernate will fail fast because a property mapping has the wrong number of columns.</para>
+          score plus one (for the <literal>initScore</literal>), otherwise Hibernate will fail fast because a property
+          mapping has the wrong number of columns.</para>
         </note>
 
         <para>In this case, the DDL will look like this:</para>
 
         <programlisting language="sql">CREATE TABLE CloudBalance(
     ...
+    initScore INTEGER,
     hardScore INTEGER,
     softScore INTEGER
 );</programlisting>
@@ -121,12 +123,22 @@ public class CloudBalance{
 
     @PlanningScore
     @Columns(columns = {
+            @Column(name = "initScore")
             @Column(name = "hardScore", precision = 10, scale = 5),
             @Column(name = "softScore", precision = 10, scale = 5)})
     protected HardSoftBigDecimalScore score;
 
     ...
 }</programlisting>
+
+        <para>In this case, the DDL will look like this:</para>
+
+        <programlisting language="sql">CREATE TABLE CloudBalance(
+    ...
+    initScore INTEGER,
+    hardScore DECIMAL(10, 5),
+    softScore DECIMAL(10, 5)
+);</programlisting>
 
         <para>When using any type of bendable <literal>Score</literal>, specify the hard and soft level sizes as
         parameters:</para>
@@ -140,6 +152,7 @@ public class Schedule {
 
     @PlanningScore
     @Columns(columns = {
+            @Column(name = "initScore")
             @Column(name = "hard0Score"),
             @Column(name = "hard1Score"),
             @Column(name = "hard2Score"),

@@ -68,7 +68,18 @@ public abstract class AbstractScoreHibernateTypeTest {
         Long id = jpaEntity.getId();
         assertNotNull(id);
         return id;
+    }
 
+    protected <S extends Score, E extends AbstractTestJpaEntity<S>> void persistAndMerge(
+            E jpaEntity, S... newScores) {
+        Long id = persistAndAssert(jpaEntity);
+        Class<? extends AbstractTestJpaEntity> jpaEntityClass = jpaEntity.getClass();
+        S oldScore = jpaEntity.getScore();
+        for (S newScore : newScores) {
+            findAssertAndChangeScore(jpaEntityClass, id, oldScore, newScore);
+            findAndAssert(jpaEntityClass, id, newScore);
+            oldScore = newScore;
+        }
     }
 
     protected <S extends Score, E extends AbstractTestJpaEntity<S>> void findAssertAndChangeScore(

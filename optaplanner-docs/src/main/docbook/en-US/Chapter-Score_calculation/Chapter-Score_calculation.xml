@@ -274,6 +274,12 @@
         </imageobject>
       </mediaobject>
 
+      <para>All Score implementations also have an <literal>initScore</literal> (which is an <literal>int</literal>). It
+      is mostly intended for internal use in Planner: it is the negative number of uninitialized planning variables.
+      From a user's perspective this is <literal>0</literal>, unless a Construction Heuristic is terminated before it
+      could initialize all planning variables (in which case <literal>Score.isSolutionInitialized()</literal> returns
+      <literal>false</literal>).</para>
+
       <para>The <literal>Score</literal> implementation (for example <literal>HardSoftScore</literal>) must be the same
       throughout a <literal>Solver</literal> runtime. The <literal>Score</literal> implementation is configured in the
       solver configuration as a ScoreDefinition:</para>
@@ -315,8 +321,10 @@
         5.</para>
 
         <para>Therefore, in some cases, it can be worthwhile to multiply <emphasis>all</emphasis> numbers for a single
-        score weight by a plural of ten (for example <literal>1000</literal>), so the score weight fits in an
-        <literal>int</literal> or <literal>long</literal>.</para>
+        score weight by a plural of ten, so the score weight fits in an <literal>int</literal> or
+        <literal>long</literal>. For example, if we multiple all weights by <literal>1000</literal>, a fuelCost of
+        <literal>0.07</literal> becomes a fuelCostMillis of <literal>70</literal> and no longer uses a decimal score
+        weight.</para>
       </note>
     </section>
   </section>
@@ -1223,10 +1231,10 @@ end</programlisting>
       <literal>EasyScoreCalculator</literal>.</para>
 
       <important>
-        <para>When improving your score calculation, focus on maximizing the score calculation speed,
-        instead of maximizing the best score. A big improvement in score calculation can sometimes yield little or no
-        best score improvement, for example when the algorithm is stuck in a local or global optima. If you are watching
-        the calculation speed instead, score calculation improvements are far more visible.</para>
+        <para>When improving your score calculation, focus on maximizing the score calculation speed, instead of
+        maximizing the best score. A big improvement in score calculation can sometimes yield little or no best score
+        improvement, for example when the algorithm is stuck in a local or global optima. If you are watching the
+        calculation speed instead, score calculation improvements are far more visible.</para>
 
         <para>Furthermore, watching the calculation speed, allows you to remove or add score constraints, and still
         compare it with the original calculation speed. Comparing the best score with the original would be wrong,

@@ -31,6 +31,13 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 public interface ScoreDefinition<S extends Score> {
 
     /**
+     * Returns the label for {@link Score#getInitScore()}.
+     * @return never null
+     * @see #getLevelLabels()
+     */
+    String getInitLabel();
+
+    /**
      * Returns the length of {@link Score#toLevelNumbers()} for every {@link Score} of this definition.
      * For example: returns 2 on {@link HardSoftScoreDefinition}.
      * @return at least 1
@@ -40,6 +47,8 @@ public interface ScoreDefinition<S extends Score> {
     /**
      * Returns a label for each score level. Each label includes the suffix "score" and must start in lower case.
      * For example: returns {@code {"hard score", "soft score "}} on {@link HardSoftScoreDefinition}.
+     * <p>
+     * It does not include the {@link #getInitLabel()}.
      * @return never null, array with length of {@link #getLevelsSize()}, each element is never null
      */
     String[] getLevelLabels();

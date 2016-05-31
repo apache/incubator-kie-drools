@@ -61,7 +61,9 @@ public class XStreamScoreConverterTest {
     @Test
     public void simpleScore() {
         testXStreaming(null, new TestSimpleScoreWrapper(null));
-        SimpleScore score = SimpleScore.valueOf(1234);
+        SimpleScore score = SimpleScore.valueOfInitialized(1234);
+        testXStreaming(score, new TestSimpleScoreWrapper(score));
+        score = SimpleScore.valueOf(-7, 1234);
         testXStreaming(score, new TestSimpleScoreWrapper(score));
     }
 
@@ -84,7 +86,9 @@ public class XStreamScoreConverterTest {
     @Test
     public void simpleLongScore() {
         testXStreaming(null, new TestSimpleLongScoreWrapper(null));
-        SimpleLongScore score = SimpleLongScore.valueOf(1234L);
+        SimpleLongScore score = SimpleLongScore.valueOfInitialized(1234L);
+        testXStreaming(score, new TestSimpleLongScoreWrapper(score));
+        score = SimpleLongScore.valueOf(-7, 1234L);
         testXStreaming(score, new TestSimpleLongScoreWrapper(score));
     }
 
@@ -107,7 +111,9 @@ public class XStreamScoreConverterTest {
     @Test
     public void simpleDoubleScore() {
         testXStreaming(null, new TestSimpleDoubleScoreWrapper(null));
-        SimpleDoubleScore score = SimpleDoubleScore.valueOf(1234.4321);
+        SimpleDoubleScore score = SimpleDoubleScore.valueOfInitialized(1234.4321);
+        testXStreaming(score, new TestSimpleDoubleScoreWrapper(score));
+        score = SimpleDoubleScore.valueOf(-7, 1234.4321);
         testXStreaming(score, new TestSimpleDoubleScoreWrapper(score));
     }
 
@@ -130,7 +136,9 @@ public class XStreamScoreConverterTest {
     @Test
     public void simpleBigDecimalScore() {
         testXStreaming(null, new TestSimpleBigDecimalScoreWrapper(null));
-        SimpleBigDecimalScore score = SimpleBigDecimalScore.valueOf(new BigDecimal("1234.4321"));
+        SimpleBigDecimalScore score = SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("1234.4321"));
+        testXStreaming(score, new TestSimpleBigDecimalScoreWrapper(score));
+        score = SimpleBigDecimalScore.valueOf(-7, new BigDecimal("1234.4321"));
         testXStreaming(score, new TestSimpleBigDecimalScoreWrapper(score));
     }
 
@@ -157,7 +165,9 @@ public class XStreamScoreConverterTest {
     @Test
     public void hardSoftScore() {
         testXStreaming(null, new TestHardSoftScoreWrapper(null));
-        HardSoftScore score = HardSoftScore.valueOf(1200, 34);
+        HardSoftScore score = HardSoftScore.valueOfInitialized(1200, 34);
+        testXStreaming(score, new TestHardSoftScoreWrapper(score));
+        score = HardSoftScore.valueOf(-7, 1200, 34);
         testXStreaming(score, new TestHardSoftScoreWrapper(score));
     }
 
@@ -180,7 +190,9 @@ public class XStreamScoreConverterTest {
     @Test
     public void hardSoftLongScore() {
         testXStreaming(null, new TestHardSoftLongScoreWrapper(null));
-        HardSoftLongScore score = HardSoftLongScore.valueOf(1200L, 34L);
+        HardSoftLongScore score = HardSoftLongScore.valueOfInitialized(1200L, 34L);
+        testXStreaming(score, new TestHardSoftLongScoreWrapper(score));
+        score = HardSoftLongScore.valueOf(-7, 1200L, 34L);
         testXStreaming(score, new TestHardSoftLongScoreWrapper(score));
     }
 
@@ -203,7 +215,9 @@ public class XStreamScoreConverterTest {
     @Test
     public void hardSoftDoubleScore() {
         testXStreaming(null, new TestHardSoftDoubleScoreWrapper(null));
-        HardSoftDoubleScore score = HardSoftDoubleScore.valueOf(1200.0021, 34.4300);
+        HardSoftDoubleScore score = HardSoftDoubleScore.valueOfInitialized(1200.0021, 34.4300);
+        testXStreaming(score, new TestHardSoftDoubleScoreWrapper(score));
+        score = HardSoftDoubleScore.valueOf(-7, 1200.0021, 34.4300);
         testXStreaming(score, new TestHardSoftDoubleScoreWrapper(score));
     }
 
@@ -227,7 +241,9 @@ public class XStreamScoreConverterTest {
     @Test
     public void hardSoftBigDecimalScore() {
         testXStreaming(null, new TestHardSoftBigDecimalScoreWrapper(null));
-        HardSoftBigDecimalScore score = HardSoftBigDecimalScore.valueOf(new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
+        HardSoftBigDecimalScore score = HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
+        testXStreaming(score, new TestHardSoftBigDecimalScoreWrapper(score));
+        score = HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("1200.0021"), new BigDecimal("34.4300"));
         testXStreaming(score, new TestHardSoftBigDecimalScoreWrapper(score));
     }
 
@@ -254,7 +270,9 @@ public class XStreamScoreConverterTest {
     @Test
     public void hardMediumSoftScore() {
         testXStreaming(null, new TestHardMediumSoftScoreWrapper(null));
-        HardMediumSoftScore score = HardMediumSoftScore.valueOf(1200, 30, 4);
+        HardMediumSoftScore score = HardMediumSoftScore.valueOfInitialized(1200, 30, 4);
+        testXStreaming(score, new TestHardMediumSoftScoreWrapper(score));
+        score = HardMediumSoftScore.valueOf(-7, 1200, 30, 4);
         testXStreaming(score, new TestHardMediumSoftScoreWrapper(score));
     }
 
@@ -277,7 +295,9 @@ public class XStreamScoreConverterTest {
     @Test
     public void hardMediumSoftLongScore() {
         testXStreaming(null, new TestHardMediumSoftLongScoreWrapper(null));
-        HardMediumSoftLongScore score = HardMediumSoftLongScore.valueOf(1200L, 30L, 4L);
+        HardMediumSoftLongScore score = HardMediumSoftLongScore.valueOfInitialized(1200L, 30L, 4L);
+        testXStreaming(score, new TestHardMediumSoftLongScoreWrapper(score));
+        score = HardMediumSoftLongScore.valueOf(-7, 1200L, 30L, 4L);
         testXStreaming(score, new TestHardMediumSoftLongScoreWrapper(score));
     }
 
@@ -304,7 +324,9 @@ public class XStreamScoreConverterTest {
     @Test
     public void bendableScore() {
         testXStreaming(null, new TestBendableScoreWrapper(null));
-        BendableScore score = BendableScore.valueOf(new int[]{1000, 200}, new int[]{34});
+        BendableScore score = BendableScore.valueOfInitialized(new int[]{1000, 200}, new int[]{34});
+        testXStreaming(score, new TestBendableScoreWrapper(score));
+        score = BendableScore.valueOf(-7, new int[]{1000, 200}, new int[]{34});
         testXStreaming(score, new TestBendableScoreWrapper(score));
     }
 
@@ -327,7 +349,9 @@ public class XStreamScoreConverterTest {
     @Test
     public void bendableLongScore() {
         testXStreaming(null, new TestBendableLongScoreWrapper(null));
-        BendableLongScore score = BendableLongScore.valueOf(new long[]{1000L, 200L}, new long[]{34L});
+        BendableLongScore score = BendableLongScore.valueOfInitialized(new long[]{1000L, 200L}, new long[]{34L});
+        testXStreaming(score, new TestBendableLongScoreWrapper(score));
+        score = BendableLongScore.valueOf(-7, new long[]{1000L, 200L}, new long[]{34L});
         testXStreaming(score, new TestBendableLongScoreWrapper(score));
     }
 
@@ -350,7 +374,10 @@ public class XStreamScoreConverterTest {
     @Test
     public void bendableBigDecimalScore() {
         testXStreaming(null, new TestBendableBigDecimalScoreWrapper(null));
-        BendableBigDecimalScore score = BendableBigDecimalScore.valueOf(
+        BendableBigDecimalScore score = BendableBigDecimalScore.valueOfInitialized(
+                new BigDecimal[]{new BigDecimal("1000.0001"), new BigDecimal("200.0020")}, new BigDecimal[]{new BigDecimal("34.4300")});
+        testXStreaming(score, new TestBendableBigDecimalScoreWrapper(score));
+        score = BendableBigDecimalScore.valueOf(-7,
                 new BigDecimal[]{new BigDecimal("1000.0001"), new BigDecimal("200.0020")}, new BigDecimal[]{new BigDecimal("34.4300")});
         testXStreaming(score, new TestBendableBigDecimalScoreWrapper(score));
     }

@@ -30,11 +30,9 @@ public class HardSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreHiber
 
     @Test
     public void persistAndMerge() {
-        Long id = persistAndAssert(new TestJpaEntity(null));
-        findAssertAndChangeScore(TestJpaEntity.class, id, null,
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("-10.01000"), new BigDecimal("-2.20000")));
-        findAndAssert(TestJpaEntity.class, id,
-                HardSoftBigDecimalScore.valueOf(new BigDecimal("-10.01000"), new BigDecimal("-2.20000")));
+        persistAndMerge(new TestJpaEntity(null),
+                HardSoftBigDecimalScore.valueOfInitialized(new BigDecimal("-10.01000"), new BigDecimal("-2.20000")),
+                HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-10.01000"), new BigDecimal("-2.20000")));
     }
 
     @Entity
@@ -52,6 +50,7 @@ public class HardSoftBigDecimalScoreHibernateTypeTest extends AbstractScoreHiber
 
         @Override
         @Columns(columns = {
+                @Column(name = "initScore"),
                 @Column(name = "hardScore", precision = 10, scale = 5),
                 @Column(name = "softScore", precision = 10, scale = 5)})
         public HardSoftBigDecimalScore getScore() {

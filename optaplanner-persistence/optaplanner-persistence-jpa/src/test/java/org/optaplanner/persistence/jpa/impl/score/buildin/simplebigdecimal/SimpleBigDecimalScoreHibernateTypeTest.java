@@ -30,11 +30,9 @@ public class SimpleBigDecimalScoreHibernateTypeTest extends AbstractScoreHiberna
 
     @Test
     public void persistAndMerge() {
-        Long id = persistAndAssert(new TestJpaEntity(null));
-        findAssertAndChangeScore(TestJpaEntity.class, id, null,
-                SimpleBigDecimalScore.valueOf(new BigDecimal("-10.01000")));
-        findAndAssert(TestJpaEntity.class, id,
-                SimpleBigDecimalScore.valueOf(new BigDecimal("-10.01000")));
+        persistAndMerge(new TestJpaEntity(null),
+                SimpleBigDecimalScore.valueOfInitialized(new BigDecimal("-10.01000")),
+                SimpleBigDecimalScore.valueOf(-7, new BigDecimal("-10.01000")));
     }
 
     @Entity
@@ -51,7 +49,7 @@ public class SimpleBigDecimalScoreHibernateTypeTest extends AbstractScoreHiberna
         }
 
         @Override
-        @Columns(columns = {@Column(name = "score", precision = 10, scale = 5)})
+        @Columns(columns = {@Column(name = "initScore"), @Column(name = "score", precision = 10, scale = 5)})
         public SimpleBigDecimalScore getScore() {
             return score;
         }

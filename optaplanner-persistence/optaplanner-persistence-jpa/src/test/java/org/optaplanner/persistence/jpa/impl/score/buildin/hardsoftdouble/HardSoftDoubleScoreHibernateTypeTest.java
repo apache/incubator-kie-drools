@@ -29,9 +29,9 @@ public class HardSoftDoubleScoreHibernateTypeTest extends AbstractScoreHibernate
 
     @Test
     public void persistAndMerge() {
-        Long id = persistAndAssert(new TestJpaEntity(null));
-        findAssertAndChangeScore(TestJpaEntity.class, id, null, HardSoftDoubleScore.valueOf(-10.01, -2.20));
-        findAndAssert(TestJpaEntity.class, id, HardSoftDoubleScore.valueOf(-10.01, -2.20));
+        persistAndMerge(new TestJpaEntity(null),
+                HardSoftDoubleScore.valueOfInitialized(-10.01, -2.20),
+                HardSoftDoubleScore.valueOf(-7, -10.01, -2.20));
     }
 
     @Entity
@@ -48,7 +48,7 @@ public class HardSoftDoubleScoreHibernateTypeTest extends AbstractScoreHibernate
         }
 
         @Override
-        @Columns(columns = {@Column(name = "hardScore"), @Column(name = "softScore")})
+        @Columns(columns = {@Column(name = "initScore"), @Column(name = "hardScore"), @Column(name = "softScore")})
         public HardSoftDoubleScore getScore() {
             return score;
         }

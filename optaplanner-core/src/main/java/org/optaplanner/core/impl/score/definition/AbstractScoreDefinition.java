@@ -38,6 +38,11 @@ public abstract class AbstractScoreDefinition<S extends Score> implements ScoreD
     }
 
     @Override
+    public String getInitLabel() {
+        return "init score";
+    }
+
+    @Override
     public int getLevelsSize() {
         return levelLabels.length;
     }

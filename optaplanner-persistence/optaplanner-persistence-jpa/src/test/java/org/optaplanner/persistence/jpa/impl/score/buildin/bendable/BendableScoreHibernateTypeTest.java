@@ -30,11 +30,9 @@ public class BendableScoreHibernateTypeTest extends AbstractScoreHibernateTypeTe
 
     @Test
     public void persistAndMerge() {
-        Long id = persistAndAssert(new TestJpaEntity(null));
-        findAssertAndChangeScore(TestJpaEntity.class, id, null,
-                BendableScore.valueOf(new int[]{10000, 2000, 300}, new int[]{40, 5}));
-        findAndAssert(TestJpaEntity.class, id,
-                BendableScore.valueOf(new int[]{10000, 2000, 300}, new int[]{40, 5}));
+        persistAndMerge(new TestJpaEntity(null),
+                BendableScore.valueOfInitialized(new int[]{10000, 2000, 300}, new int[]{40, 5}),
+                BendableScore.valueOf(-7, new int[]{10000, 2000, 300}, new int[]{40, 5}));
     }
 
     @Entity
@@ -52,7 +50,8 @@ public class BendableScoreHibernateTypeTest extends AbstractScoreHibernateTypeTe
         }
 
         @Override
-        @Columns(columns = {@Column(name = "hard0Score"), @Column(name = "hard1Score"), @Column(name = "hard2Score"),
+        @Columns(columns = {@Column(name = "initScore"),
+                @Column(name = "hard0Score"), @Column(name = "hard1Score"), @Column(name = "hard2Score"),
                 @Column(name = "soft0Score"), @Column(name = "soft1Score")})
         public BendableScore getScore() {
             return score;

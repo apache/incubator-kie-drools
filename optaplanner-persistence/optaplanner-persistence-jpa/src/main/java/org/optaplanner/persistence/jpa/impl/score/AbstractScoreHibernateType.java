@@ -30,6 +30,7 @@ import org.hibernate.type.BigDecimalType;
 import org.hibernate.type.DoubleType;
 import org.hibernate.type.IntegerType;
 import org.hibernate.type.LongType;
+import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.type.Type;
 import org.hibernate.usertype.CompositeUserType;
 import org.optaplanner.core.api.score.Score;
@@ -60,20 +61,21 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
 
     @Override
     public Class returnedClass() {
-        return scoreDefinition.getClass();
+        return scoreDefinition.getScoreClass();
     }
 
     @Override
     public String[] getPropertyNames() {
         int levelsSize = scoreDefinition.getLevelsSize();
+        String[] propertyNames = new String[levelsSize + 1];
+        propertyNames[0] = scoreDefinition.getInitLabel();
         String[] levelLabels = scoreDefinition.getLevelLabels();
-        String[] propertyNames = new String[levelsSize];
         for (int i = 0; i < levelsSize; i++) {
             String propertyName = levelLabels[i].replaceAll("\\s+s", "S").replaceAll("\\s+(\\d)", "$1");
             if (!propertyName.matches("[\\w\\d]+")) {
                 throw new IllegalStateException("The levelLabel (" + levelLabels[i] + ") is not yet supported.");
             }
-            propertyNames[i] = propertyName;
+            propertyNames[i + 1] = propertyName;
         }
         return propertyNames;
     }
@@ -81,9 +83,10 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
     @Override
     public Type[] getPropertyTypes() {
         int levelsSize = scoreDefinition.getLevelsSize();
-        Type[] propertyTypes = new Type[levelsSize];
+        Type[] propertyTypes = new Type[levelsSize + 1];
+        propertyTypes[0] = StandardBasicTypes.INTEGER;
         for (int i = 0; i < levelsSize; i++) {
-            propertyTypes[i] = type;
+            propertyTypes[i + 1] = type;
         }
         return propertyTypes;
     }
@@ -94,11 +97,14 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
             return null;
         }
         Score score = (Score) o;
-        Number[] levelNumbers = score.toLevelNumbers();
-        if (propertyIndex >= scoreDefinition.getLevelsSize()) {
+        if (propertyIndex == 0) {
+            return score.getInitScore();
+        }
+        if (propertyIndex >= scoreDefinition.getLevelsSize() + 1) {
             throw new IllegalArgumentException("The propertyIndex (" + propertyIndex
                     + ") must be lower than the levelsSize for score (" + score + ").");
         }
+        Number[] levelNumbers = score.toLevelNumbers();
         return levelNumbers[propertyIndex];
     }
 
@@ -108,24 +114,28 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
         if (resultSet == null) {
             return null;
         }
+        int nullCount = 0;
+        Integer initScore = (Integer) StandardBasicTypes.INTEGER.nullSafeGet(resultSet, names[0], session, owner);
+        if (initScore == null) {
+            nullCount++;
+        }
         int levelsSize = scoreDefinition.getLevelsSize();
         Number[] levelNumbers = new Number[levelsSize];
-        int nullCount = 0;
         for (int i = 0; i < levelsSize; i++) {
-            Number levelNumber = (Number) type.nullSafeGet(resultSet, names[i], session, owner);
+            Number levelNumber = (Number) type.nullSafeGet(resultSet, names[i + 1], session, owner);
             if (levelNumber == null) {
                 nullCount++;
             } else {
                 levelNumbers[i] = levelNumber;
             }
         }
-        if (nullCount == levelsSize) {
+        if (nullCount == levelsSize + 1) {
             return null;
         } else if (nullCount != 0) {
             throw new IllegalStateException("The nullCount (" + nullCount
                     + ") must be 0 or levelsSize (" + levelsSize + ") for " + getClass().getSimpleName() + ".");
         }
-        Score score = scoreDefinition.fromLevelNumbers(levelNumbers);
+        Score score = scoreDefinition.fromLevelNumbers(initScore, levelNumbers);
         if (score == null) {
             throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
                     + ") must not build a score (" + null + ") that is null.");
@@ -138,12 +148,14 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
             throws SQLException {
         int levelsSize = scoreDefinition.getLevelsSize();
         if (value == null) {
+            statement.setNull(parameterIndex, StandardBasicTypes.INTEGER.sqlType()); // initScore
             for (int i = 0; i < levelsSize; i++) {
-                statement.setNull(parameterIndex + i, type.sqlType());
+                statement.setNull(parameterIndex + i + 1, type.sqlType());
             }
             return;
         }
         Score score = (Score) value;
+        statement.setInt(parameterIndex, score.getInitScore());
         Number[] levelNumbers = score.toLevelNumbers();
         if (levelNumbers.length != levelsSize) {
             throw new IllegalStateException("The levelNumbers length (" + levelNumbers.length + ") for score (" + score
@@ -151,13 +163,13 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
         }
         for (int i = 0; i < levelsSize; i++) {
             if (type == IntegerType.INSTANCE) {
-                statement.setInt(parameterIndex + i, (Integer) levelNumbers[i]);
+                statement.setInt(parameterIndex + i + 1, (Integer) levelNumbers[i]);
             } else if (type == LongType.INSTANCE) {
-                statement.setLong(parameterIndex + i, (Long) levelNumbers[i]);
+                statement.setLong(parameterIndex + i + 1, (Long) levelNumbers[i]);
             } else if (type == DoubleType.INSTANCE) {
-                statement.setDouble(parameterIndex + i, (Double) levelNumbers[i]);
+                statement.setDouble(parameterIndex + i + 1, (Double) levelNumbers[i]);
             } else if (type == BigDecimalType.INSTANCE) {
-                statement.setBigDecimal(parameterIndex + i, (BigDecimal) levelNumbers[i]);
+                statement.setBigDecimal(parameterIndex + i + 1, (BigDecimal) levelNumbers[i]);
             } else {
                 throw new IllegalStateException("The type (" + type + ") is not yet supported.");
             }
