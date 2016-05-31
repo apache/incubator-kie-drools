@@ -18,7 +18,6 @@ package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.IndexableConstraint;
@@ -193,6 +192,9 @@ public class DefaultBetaConstraints
      */
     public boolean isAllowedCachedRight(final ContextEntry[] context,
                                         final Tuple tuple) {
+        if (tuple.isExpired()) {
+            return false;
+        }
         for (int i = indexed; i < constraints.length; i++) {
             if ( !constraints[i].isAllowedCachedRight(tuple, context[i]) ) {
                 return false;

@@ -153,4 +153,9 @@ public class DisconnectedWorkingMemoryEntryPoint implements InternalWorkingMemor
     public EntryPointNode getEntryPointNode() {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
+
+    @Override
+    public void removeFromObjectStore( InternalFactHandle handle ) {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
 }

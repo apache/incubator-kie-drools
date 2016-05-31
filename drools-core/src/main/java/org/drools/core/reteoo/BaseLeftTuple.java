@@ -53,6 +53,8 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     private short              stagedTypeForQueries;
 
+    private boolean            expired;
+
     public BaseLeftTuple() {
         // constructor needed for serialisation
     }

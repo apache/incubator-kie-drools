@@ -17,7 +17,6 @@
 package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.MutableTypeConstraint;
@@ -117,7 +116,8 @@ public class DoubleBetaConstraints extends MultipleBetaConstraint {
      */
     public boolean isAllowedCachedRight(final ContextEntry[] context,
                                         final Tuple tuple) {
-        return constraints[0].isAllowedCachedRight( tuple, context[0] ) &&
+        return !tuple.isExpired() &&
+               constraints[0].isAllowedCachedRight( tuple, context[0] ) &&
                constraints[1].isAllowedCachedRight( tuple, context[1] );
     }
 
