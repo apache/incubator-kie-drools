@@ -31,6 +31,7 @@ import org.kie.api.runtime.KieContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -72,6 +73,20 @@ public final class KieBaseUtil {
         } else {
             return container.getKieBase(name);
         }
+    }
+
+    public static KieBase getKieBaseAndBuildInstallModuleFromDrl(final String moduleGroupId,
+            final KieBaseTestConfiguration kieBaseTestConfiguration, final String drl) {
+        final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
+        drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
+        return getKieBaseAndBuildInstallModule(moduleGroupId, kieBaseTestConfiguration, drlResource);
+    }
+
+    public static KieBase getKieBaseAndBuildInstallModule(final String moduleGroupId,
+            final KieBaseTestConfiguration kieBaseTestConfiguration, final Resource... resources) {
+        final KieModule kieModule = KieBaseUtil.buildAndInstallKieModuleIntoRepo(
+                moduleGroupId, kieBaseTestConfiguration, resources);
+        return KieBaseUtil.getDefaultKieBaseFromReleaseId(kieModule.getReleaseId());
     }
 
     public static KieFileSystem getKieFileSystemWithKieModule(final KieModuleModel kieModuleModel,

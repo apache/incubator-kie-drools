@@ -33,6 +33,13 @@ public final class TestParametersUtil {
         return parameters;
     }
 
+    public static Collection<Object[]> getKieBaseStreamConfigurations() {
+        final Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_IDENTITY});
+        parameters.add(new Object[]{KieBaseTestConfiguration.STREAM_EQUALITY});
+        return parameters;
+    }
+
     private TestParametersUtil() {
         // Creating instances of util classes should not be possible.
     }

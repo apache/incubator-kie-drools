@@ -16,7 +16,6 @@
 
 package org.drools.testcoverage.regression;
 
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,9 +33,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieModule;
-import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
 
 @RunWith(Parameterized.class)
@@ -69,12 +65,8 @@ public class FromGenericCollectionTest {
                 + "        insert(new Boolean(true));\n"
                 + " end\n";
 
-        final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
-        drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-        final KieModule kieModule = KieBaseUtil.buildAndInstallKieModuleIntoRepo(
-                TestConstants.PACKAGE_REGRESSION, kieBaseTestConfiguration, drlResource);
-        final KieBase kieBase = KieBaseUtil.getDefaultKieBaseFromReleaseId(kieModule.getReleaseId());
-
+        final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(TestConstants.PACKAGE_REGRESSION,
+                kieBaseTestConfiguration, drl);
         final KieSession ksession = kieBase.newKieSession();
         try {
             final Map<String, List<String>> crazyMap = new HashMap<String, List<String>>();

@@ -1,0 +1,22 @@
+package org.drools.testcoverage.regression
+ 
+import org.drools.testcoverage.regression.UnwantedStringConversionTest.Message;
+ 
+rule "R1"
+dialect "java" 
+salience 2
+    when
+        Message($message: message in ("1.500") )
+    then
+        System.out.println("Result for R1 " + $message );
+end
+
+
+rule "R2"
+dialect "java"
+salience 1 
+    when
+      m:  Message( someEntity.someString in ("1.500") )
+    then
+        System.out.println("Result for R2 " + m.getSomeEntity().getSomeString() );
+end

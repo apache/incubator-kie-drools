@@ -17,9 +17,9 @@
 package org.drools.testcoverage.regression;
 
 import java.util.Collection;
-import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
@@ -29,25 +29,17 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.api.runtime.KieSession;
 
 /**
- * Test to verify BRMS-312 (Allow escaping characters in metadata value) is
- * fixed
+ * Tests problems with large numbers to String conversion. See DROOLS-167.
  */
 @RunWith(Parameterized.class)
-public class EscapesInMetadataTest {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(EscapesInMetadataTest.class);
-
-    private static final String RULE_NAME = "hello world";
-    private static final String RULE_KEY = "output";
-    private static final String RULE_VALUE = "Hello world!";
+public class InaccurateComparisonTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public EscapesInMetadataTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public InaccurateComparisonTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
@@ -57,22 +49,20 @@ public class EscapesInMetadataTest {
     }
 
     @Test
-    public void testMetadataEscapes() {
-        final String rule = "package " + TestConstants.PACKAGE_REGRESSION + "\n"
-                + " rule \"" + RULE_NAME + "\"\n"
-                + " @" + RULE_KEY + "(\"\\\""+ RULE_VALUE + "\\\"\")\n"
-                + " when\n"
-                + " then\n"
-                + "     System.out.println(\"Hello world!\");\n"
-                + " end";
+    public void testStringCoercionComparison() {
+        final String rule = "package " + TestConstants.PACKAGE_REGRESSION + "\n" +
+                " import " + TestConstants.PACKAGE_TESTCOVERAGE_MODEL + ".Message;\n" +
+                " rule \"string coercion\" \n" +
+                " when\n" +
+                "     m : Message( message < \"90201304122000000000000017\" )\n" +
+                " then \n" +
+                " end";
 
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModuleFromDrl(TestConstants.PACKAGE_REGRESSION,
                 kieBaseTestConfiguration, rule);
-        final Map<String, Object> metadata = kieBase.getRule(TestConstants.PACKAGE_REGRESSION, RULE_NAME).getMetaData();
-        LOGGER.debug(rule);
+        KieSession ksession = kieBase.newKieSession();
 
-        Assertions.assertThat(metadata.containsKey(RULE_KEY)).isTrue();
-        Assertions.assertThat(metadata.get(RULE_KEY)).isEqualTo("\"" + RULE_VALUE + "\"");
+        ksession.insert(new Message("90201304122000000000000015"));
+        Assertions.assertThat(1).isEqualTo(ksession.fireAllRules());
     }
-
 }
