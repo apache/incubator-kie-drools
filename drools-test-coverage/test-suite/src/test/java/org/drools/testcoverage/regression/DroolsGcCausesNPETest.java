@@ -72,7 +72,7 @@ public class DroolsGcCausesNPETest {
 
         final Resource fileSystemResource =
                 services.getResources().newClassPathResource(DRL_FILE_NAME, DroolsGcCausesNPETest.class);
-        final KieFileSystem fileSystem = KieBaseUtil.writeKieModuleWithResourceToFileSystem(module, RELEASE_ID,
+        final KieFileSystem fileSystem = KieBaseUtil.getKieFileSystemWithKieModule(module, RELEASE_ID,
                 fileSystemResource);
 
         final KieBuilder builder = KieBaseUtil.getKieBuilderFromKieFileSystem(fileSystem, true);

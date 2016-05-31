@@ -18,12 +18,14 @@ package org.drools.testcoverage.functional;
 
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.listener.OrderListener;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.DeclarativeAgendaOption;
 import org.kie.api.io.Resource;
@@ -266,17 +268,14 @@ public class DeclarativeAgendaTest {
 
     private KieBase buildKieBase(final String drlFile) {
         final KieServices kieServices = KieServices.Factory.get();
-        final ReleaseId releaseId = kieServices.newReleaseId(
-                TestConstants.PACKAGE_FUNCTIONAL,
-                UUID.randomUUID().toString(),
-                "1.0.0-SNAPSHOT");
         final Resource resource = kieServices.getResources().newClassPathResource(drlFile, getClass());
 
-        KieBaseUtil.addKieModuleWithResourceToRepository(releaseId, resource);
+        final KieModule kieModule = KieBaseUtil.buildAndInstallKieModuleIntoRepo(TestConstants.PACKAGE_FUNCTIONAL,
+                KieBaseTestConfiguration.CLOUD_IDENTITY, resource);
 
-        KieBaseConfiguration kbconf = kieServices.newKieBaseConfiguration();
+        final KieBaseConfiguration kbconf = kieServices.newKieBaseConfiguration();
         kbconf.setOption(DeclarativeAgendaOption.ENABLED);
 
-        return kieServices.newKieContainer(releaseId).newKieBase(kbconf);
+        return kieServices.newKieContainer(kieModule.getReleaseId()).newKieBase(kbconf);
     }
 }
