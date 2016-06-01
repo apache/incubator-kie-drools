@@ -14,26 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.testcoverage.regression
+package org.drools.testcoverage.functional.parser
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
-import org.drools.testcoverage.regression.PropertyListenerTest.Person;
-
-rule "Insert All Person Objects"
+rule "str with or"
     when
-        $people : ArrayList()
-    then 
-        for (Object person : $people) {
-            insert(person, true);
-        }
-        retract($people);
-end
-
-rule "Print Person Name"
-    when
-        $person : Person($name:name)
-    then 
-        System.out.println("Print name of person: " + $name);
+        Class(name str[startsWith] "org.jboss.qa" || name str[endsWith] "Test")
+    then
+        // consequences
 end
