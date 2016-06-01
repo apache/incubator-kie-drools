@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package org.drools.testcoverage.regression
+package org.drools.testcoverage.functional.parser
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
-import org.drools.testcoverage.regression.PropertyListenerTest.Person;
+import org.drools.testcoverage.common.model.*
 
-rule "Insert All Person Objects"
+expander basic.dsl
+
+/*
+    Some comment about the rule basic
+*/
+rule basic
     when
-        $people : ArrayList()
-    then 
-        for (Object person : $people) {
-            insert(person, true);
-        }
-        retract($people);
-end
-
-rule "Print Person Name"
-    when
-        $person : Person($name:name)
-    then 
-        System.out.println("Print name of person: " + $name);
+        There is a person
+            - named tomason
+            - age is equal to 22
+    then
+        Consequences
+        Print hello
 end

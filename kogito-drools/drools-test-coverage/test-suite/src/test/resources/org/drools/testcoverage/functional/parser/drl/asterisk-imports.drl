@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package org.drools.testcoverage.regression
+package org.drools.testcoverage.functional.parser
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
-import org.drools.testcoverage.regression.PropertyListenerTest.Person;
+import org.drools.testcoverage.common.model.*
+import java.util.*
 
-rule "Insert All Person Objects"
-    when
-        $people : ArrayList()
-    then 
-        for (Object person : $people) {
-            insert(person, true);
-        }
-        retract($people);
+declare ListWrapper
+    original : List
 end
 
-rule "Print Person Name"
+declare org.drools.testcoverage.common.model.Person
+    @role(event)
+end
+
+rule "rule 1"
     when
-        $person : Person($name:name)
-    then 
-        System.out.println("Print name of person: " + $name);
+        //conditions
+    then
+        Person p = new Person();
+        p.setName("Lord Tyranus");
 end

@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-package org.drools.testcoverage.regression
+package org.drools.testcoverage.functional.parser
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
-import org.drools.testcoverage.regression.PropertyListenerTest.Person;
+definuj Člověk
+    jméno : řetězec
+    věk : číslo
+konec
 
-rule "Insert All Person Objects"
-    when
-        $people : ArrayList()
-    then 
-        for (Object person : $people) {
-            insert(person, true);
-        }
-        retract($people);
-end
+expander miscelaneous.dsl
 
-rule "Print Person Name"
-    when
-        $person : Person($name:name)
-    then 
-        System.out.println("Print name of person: " + $name);
-end
+pravidlo "jedna"
+    @anotace("Příliš žluťoučký kůň úpěl ďábelské ódy")
+    kdykoli
+        Poznač člověka $p
+    potom
+        Pozdrav od $p
+konec
+
+pravidlo "dva"
+    necyklit
+    priorita 5
+    kdykoli
+        Je nějaký člověk
+    potom
+        Pozdrav
+konec

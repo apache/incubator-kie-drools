@@ -1,0 +1,189 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.testcoverage.functional.parser
+
+import java.util.Collection
+
+declare CollectionTestFact
+    id : int @key
+    strings : Collection
+end
+
+rule "TestMatches"
+    when
+        String( this matches "\\w" )
+    then
+        //consequences
+end
+
+rule "TestNotMatches"
+    when
+        String( this matches "\\d" )
+    then
+        //consequences
+end
+
+rule "TestContains"
+    when
+        CollectionTestFact( strings contains "teststring" )
+    then
+        //consequences
+end
+
+rule "TestNotContains"
+    when
+        CollectionTestFact( strings not contains "teststring" )
+    then
+        //consequences
+end
+
+rule "TestExcludes"
+    when
+        CollectionTestFact( strings excludes "teststring" )
+    then
+        //consequences
+end
+
+rule "TestMemberOf"
+    when
+        CollectionTestFact( s : strings )
+        String( this memberOf s )
+    then
+        //consequences
+end
+
+rule "TestNotMemberOf"
+    when
+        CollectionTestFact( s : strings )
+        String( this not memberOf s )
+    then
+        //consequences
+end
+
+rule "TestSoundslike"
+    when
+        String( this soundslike "foobar" )
+    then
+        //consequences
+end
+
+////////////////////////
+// Temporal operators //
+////////////////////////
+rule "TestAfter"
+    when
+        $e : String( )
+             Integer( this after[4m, 5m] $e )
+    then
+        //consequences
+end
+
+rule "TestBefore"
+    when
+        $e : String( )
+             Integer( this before[4m, 5m] $e )
+    then
+        //consequences
+end
+
+rule "TestCoincides"
+    when
+        $e : String( )
+             Integer( this coincides[10s, 1m] $e )
+    then
+        //consequences
+end
+
+rule "TestDuring"
+    when
+        $e : String( )
+             Integer( this during[1s, 1m, 1h, 1d] $e )
+    then
+        //consequences
+end
+
+rule "TestFinishes"
+    when
+        $e : String( )
+             Integer( this finishes[10s] $e )
+    then
+        //consequences
+end
+
+rule "TestFinishedBy"
+    when
+        $e : String( )
+             Integer( this finishedby[10s] $e )
+    then
+        //consequences
+end
+
+rule "TestIncludes"
+    when
+        $e : String( )
+             Integer( this includes[1s, 1m, 1h, 1d] $e )
+    then
+        //consequences
+end
+
+rule "TestMeets"
+    when
+        $e : String( )
+             Integer( this meets[10s] $e )
+    then
+        //consequences
+end
+
+rule "TestMetBy"
+    when
+        $e : String( )
+             Integer( this metby[1s] $e )
+    then
+        //consequences
+end
+
+rule "TestOverlaps"
+    when
+        $e : String( )
+             Integer( this overlaps[1s, 1m] $e )
+    then
+        //consequences
+end
+
+rule "TestOverlappedBy"
+    when
+        $e : String( )
+             Integer( this overlappedby[1s, 1m] $e )
+    then
+        //consequences
+end
+
+rule "TestStarts"
+    when
+        $e : String( )
+             Integer( this starts[1s] $e )
+    then
+        //consequences
+end
+
+rule "TestStartedBy"
+    when
+        $e : String( )
+             Integer( this startedby[1s] $e )
+    then
+        //consequences
+end

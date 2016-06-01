@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package org.drools.testcoverage.regression
+package org.drools.testcoverage.functional.parser
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
-import org.drools.testcoverage.regression.PropertyListenerTest.Person;
+import org.drools.testcoverage.common.model.*
 
-rule "Insert All Person Objects"
-    when
-        $people : ArrayList()
-    then 
-        for (Object person : $people) {
-            insert(person, true);
-        }
-        retract($people);
+expander dslQuery.dsl
+
+query "isMature"(Person p)
+    There is a person
+        - age is greater than 18
+        - equals p
 end
 
-rule "Print Person Name"
+rule "mature person"
     when
-        $person : Person($name:name)
-    then 
-        System.out.println("Print name of person: " + $name);
+        There is a person $person
+        Person $person is mature
+    then
+        Consequences
 end
