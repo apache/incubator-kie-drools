@@ -399,8 +399,8 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
     }
 
     @Override
-    public HardMediumSoftLongScore calculateScore() {
-        return HardMediumSoftLongScore.valueOf(hardScore, mediumScore, softScore);
+    public HardMediumSoftLongScore calculateScore(int initScore) {
+        return HardMediumSoftLongScore.valueOf(initScore, hardScore, mediumScore, softScore);
     }
 
     private class MachinePeriodPart {

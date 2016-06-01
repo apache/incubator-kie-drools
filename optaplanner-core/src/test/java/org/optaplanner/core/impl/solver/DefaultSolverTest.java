@@ -82,8 +82,7 @@ public class DefaultSolverTest {
 
         solution = solver.solve(solution);
         assertNotNull(solution);
-        // TODO Improve me when PLANNER-405 is fixed
-        assertEquals(false, ((DefaultSolver) solver).getSolverScope().isBestSolutionInitialized());
+        assertEquals(false, solution.getScore().isSolutionInitialized());
     }
 
     @Test
@@ -104,8 +103,7 @@ public class DefaultSolverTest {
 
         solution = solver.solve(solution);
         assertNotNull(solution);
-        // TODO Improve me when PLANNER-405 is fixed
-        assertEquals(false, ((DefaultSolver) solver).getSolverScope().isBestSolutionInitialized());
+        assertEquals(false, solution.getScore().isSolutionInitialized());
     }
 
 }

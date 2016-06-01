@@ -158,7 +158,8 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
             previousStandstill.setNextCustomer(customer);
         }
         vehicleRoutingSolution.setCustomerList(customerList);
-        vehicleRoutingSolution.setScore(HardSoftLongScore.valueOf(0, tspSolution.getScore().getScore()));
+        vehicleRoutingSolution.setScore(HardSoftLongScore.valueOf(tspSolution.getScore().getInitScore(),
+                0, tspSolution.getScore().getScore()));
         return vehicleRoutingSolution;
     }
 

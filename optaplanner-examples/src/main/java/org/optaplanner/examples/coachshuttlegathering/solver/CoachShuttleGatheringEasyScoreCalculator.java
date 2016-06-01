@@ -32,7 +32,7 @@ import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 public class CoachShuttleGatheringEasyScoreCalculator implements EasyScoreCalculator<CoachShuttleGatheringSolution> {
 
     @Override
-    public HardSoftLongScore calculateScore(CoachShuttleGatheringSolution solution) {
+    public HardSoftLongScore calculateScore(CoachShuttleGatheringSolution solution, int initScore) {
         long hardScore = 0L;
         long softScore = 0L;
         List<Bus> busList = solution.getBusList();
@@ -119,7 +119,7 @@ public class CoachShuttleGatheringEasyScoreCalculator implements EasyScoreCalcul
                 }
             }
         }
-        return HardSoftLongScore.valueOf(hardScore, softScore);
+        return HardSoftLongScore.valueOf(initScore, hardScore, softScore);
     }
 
 }

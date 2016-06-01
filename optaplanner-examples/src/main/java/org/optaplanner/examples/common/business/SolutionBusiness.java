@@ -200,14 +200,6 @@ public class SolutionBusiness<Solution_> {
         return solutionFileName;
     }
 
-    public int getUninitializedVariableCount() {
-        // TODO Remove after fixing https://issues.jboss.org/browse/PLANNER-405
-        if (solver instanceof DefaultSolver) {
-            return ((DefaultSolver<Solution_>) solver).getSolverScope().getBestUninitializedVariableCount();
-        }
-        return 0;
-    }
-
     public Score getScore() {
         return guiScoreDirector.calculateScore();
     }

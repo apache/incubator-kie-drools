@@ -89,8 +89,8 @@ public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalcu
     }
 
     @Override
-    public SimpleLongScore calculateScore() {
-        return SimpleLongScore.valueOf(score);
+    public SimpleLongScore calculateScore(int initScore) {
+        return SimpleLongScore.valueOf(initScore, score);
     }
 
 }

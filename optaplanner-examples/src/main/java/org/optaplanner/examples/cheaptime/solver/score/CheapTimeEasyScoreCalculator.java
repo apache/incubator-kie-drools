@@ -34,7 +34,7 @@ import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTimeSolution> {
 
     @Override
-    public HardMediumSoftLongScore calculateScore(CheapTimeSolution solution) {
+    public HardMediumSoftLongScore calculateScore(CheapTimeSolution solution, int initScore) {
         if (solution.getGlobalPeriodRangeFrom() != 0) {
             throw new IllegalStateException("The globalPeriodRangeFrom (" + solution.getGlobalPeriodRangeFrom()
                     + ") should be 0.");
@@ -107,7 +107,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                 }
             }
         }
-        return HardMediumSoftLongScore.valueOf(hardScore, mediumScore, softScore);
+        return HardMediumSoftLongScore.valueOf(initScore, hardScore, mediumScore, softScore);
     }
 
     private enum MachinePeriodStatus {

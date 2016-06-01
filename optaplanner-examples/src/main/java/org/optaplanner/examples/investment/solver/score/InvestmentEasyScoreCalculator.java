@@ -27,7 +27,7 @@ import org.optaplanner.examples.investment.domain.Sector;
 public class InvestmentEasyScoreCalculator implements EasyScoreCalculator<InvestmentSolution> {
 
     @Override
-    public HardSoftLongScore calculateScore(InvestmentSolution solution) {
+    public HardSoftLongScore calculateScore(InvestmentSolution solution, int initScore) {
         long hardScore = 0L;
         long softScore = 0L;
         long squaredFemtosMaximum = solution.getParametrization().calculateSquaredStandardDeviationFemtosMaximum();
@@ -54,7 +54,7 @@ public class InvestmentEasyScoreCalculator implements EasyScoreCalculator<Invest
         }
         // Maximize expected return
         softScore += solution.calculateExpectedReturnMicros();
-        return HardSoftLongScore.valueOf(hardScore, softScore);
+        return HardSoftLongScore.valueOf(initScore, hardScore, softScore);
     }
 
 }

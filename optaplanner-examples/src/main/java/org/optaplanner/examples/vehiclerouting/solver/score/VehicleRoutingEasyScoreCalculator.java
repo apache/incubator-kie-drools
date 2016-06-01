@@ -32,7 +32,7 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedV
 public class VehicleRoutingEasyScoreCalculator implements EasyScoreCalculator<VehicleRoutingSolution> {
 
     @Override
-    public HardSoftLongScore calculateScore(VehicleRoutingSolution solution) {
+    public HardSoftLongScore calculateScore(VehicleRoutingSolution solution, int initScore) {
         boolean timeWindowed = solution instanceof TimeWindowedVehicleRoutingSolution;
         List<Customer> customerList = solution.getCustomerList();
         List<Vehicle> vehicleList = solution.getVehicleList();
@@ -73,7 +73,7 @@ public class VehicleRoutingEasyScoreCalculator implements EasyScoreCalculator<Ve
             }
         }
         // Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter
-        return HardSoftLongScore.valueOf(hardScore, softScore);
+        return HardSoftLongScore.valueOf(initScore, hardScore, softScore);
     }
 
 }

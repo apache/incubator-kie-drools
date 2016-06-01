@@ -118,8 +118,8 @@ public class NQueensAdvancedIncrementalScoreCalculator extends AbstractIncrement
     }
 
     @Override
-    public SimpleScore calculateScore() {
-        return SimpleScore.valueOf(score);
+    public SimpleScore calculateScore(int initScore) {
+        return SimpleScore.valueOf(initScore, score);
     }
 
 }

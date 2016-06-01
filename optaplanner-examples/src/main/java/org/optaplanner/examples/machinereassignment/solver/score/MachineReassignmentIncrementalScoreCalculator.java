@@ -143,8 +143,8 @@ public class MachineReassignmentIncrementalScoreCalculator
     }
 
     @Override
-    public HardSoftLongScore calculateScore() {
-        return HardSoftLongScore.valueOf(hardScore, softScore);
+    public HardSoftLongScore calculateScore(int initScore) {
+        return HardSoftLongScore.valueOf(initScore, hardScore, softScore);
     }
 
     private class MrServiceScorePart {

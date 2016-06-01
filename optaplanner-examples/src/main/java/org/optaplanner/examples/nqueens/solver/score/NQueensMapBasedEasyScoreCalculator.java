@@ -28,7 +28,7 @@ import org.optaplanner.examples.nqueens.domain.Queen;
 public class NQueensMapBasedEasyScoreCalculator implements EasyScoreCalculator<NQueens> {
 
     @Override
-    public SimpleScore calculateScore(NQueens nQueens) {
+    public SimpleScore calculateScore(NQueens nQueens, int initScore) {
         int n = nQueens.getN();
         List<Queen> queenList = nQueens.getQueenList();
 
@@ -69,7 +69,7 @@ public class NQueensMapBasedEasyScoreCalculator implements EasyScoreCalculator<N
                 descendingDiagonalIndexCountMap.put(descendingDiagonalIndex, descendingDiagonalIndexCount);
             }
         }
-        return SimpleScore.valueOf(score);
+        return SimpleScore.valueOf(initScore, score);
     }
 
 }
