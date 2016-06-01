@@ -25,7 +25,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 
-public class DrlParserTest extends ParserTests {
+public class DrlParserTest extends ParserTest {
 
     public DrlParserTest(File file) {
         super(file);

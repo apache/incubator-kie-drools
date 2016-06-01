@@ -38,13 +38,13 @@ import org.junit.runners.Parameterized;
  * 
  */
 @RunWith(Parameterized.class)
-public abstract class ParserTests {
+public abstract class ParserTest {
     private static final String PARSER_RESOURCES_DIR_PATH = "src/test/resources/org/drools/testcoverage/functional/parser";
     private static final File PARSER_RESOURCES_DIR = new File(PARSER_RESOURCES_DIR_PATH);
 
     protected final File file;
 
-    public ParserTests(File file) {
+    public ParserTest(File file) {
         this.file = file;
     }
 

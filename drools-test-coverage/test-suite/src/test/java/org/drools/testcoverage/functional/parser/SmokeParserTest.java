@@ -25,7 +25,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 
-public class SmokeParserTest extends ParserTests {
+public class SmokeParserTest extends ParserTest {
 
     public SmokeParserTest(File file) {
         super(file);

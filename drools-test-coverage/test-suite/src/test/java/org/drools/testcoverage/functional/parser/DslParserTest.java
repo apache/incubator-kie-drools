@@ -27,7 +27,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieServices;
 import org.kie.api.io.Resource;
 
-public class DslParserTest extends ParserTests {
+public class DslParserTest extends ParserTest {
     private final File dsl;
 
     public DslParserTest(File dslr, File dsl) {
