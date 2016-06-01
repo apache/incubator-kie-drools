@@ -6087,4 +6087,52 @@ public class CepEspTest extends CommonTestMethodBase {
 
         assertEquals(0, counter.get());
     }
+
+    @Test
+    public void testLeftTupleExpiration() {
+        // RHBRMS-2463
+        String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
+                     "import " + AtomicInteger.class.getCanonicalName() + "\n" +
+                     "declare MyEvent\n" +
+                     "    @role( event )\n" +
+                     "    @timestamp( timestamp )\n" +
+                     "    @expires( 10ms )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     "       String()\n" +
+                     "       MyEvent ()\n" +
+                     "       $counter : AtomicInteger(get() == 0)\n" +
+                     "       Integer()\n" +
+                     "    then\n" +
+                     "        modify($counter){\n" +
+                     "            incrementAndGet()\n" +
+                     "        }\n" +
+                     "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler sessionClock = ksession.getSessionClock();
+        sessionClock.setStartupTime(0);
+
+        AtomicInteger counter = new AtomicInteger( 0 );
+        ksession.insert("test");
+        ksession.insert(counter);
+        ksession.insert(new MyEvent(0));
+
+        ksession.fireAllRules();
+        assertEquals(0, counter.get());
+
+        sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
+        ksession.insert( 1 );
+        ksession.fireAllRules(); // MyEvent is expired
+
+        assertEquals(0, counter.get());
+    }
 }
