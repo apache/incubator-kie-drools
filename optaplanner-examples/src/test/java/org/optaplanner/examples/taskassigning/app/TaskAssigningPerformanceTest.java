@@ -43,7 +43,7 @@ public class TaskAssigningPerformanceTest extends SolverPerformanceTest {
     @Test(timeout = 600000)
     public void solveModel_50tasks_5employees() {
         File unsolvedDataFile = new File("data/taskassigning/unsolved/50tasks-5employees.xml");
-        runSpeedTest(unsolvedDataFile, "[0]hard/[-3925/-6293940/-7772/-20463]soft)");
+        runSpeedTest(unsolvedDataFile, "[0]hard/[-3925/-6293940/-7772/-20463]soft");
     }
 
     @Test(timeout = 600000)

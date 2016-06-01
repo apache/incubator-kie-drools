@@ -70,7 +70,7 @@ public abstract class AbstractBendableScore<S extends FeasibilityScore<S>> exten
             throw new IllegalArgumentException("The scoreString (" + scoreString
                     + ") for the scoreClass (" + scoreClass.getSimpleName()
                     + ") doesn't follow the correct pattern (" + buildScorePattern(true, LEVEL_SUFFIXES) + "):"
-                    + " the suffix (" + scoreString.substring(startIndex) + ") is unsupported.");
+                    + " the suffix (" + scoreString.substring(startIndex - 1) + ") is unsupported.");
         }
         return scoreTokens;
     }
