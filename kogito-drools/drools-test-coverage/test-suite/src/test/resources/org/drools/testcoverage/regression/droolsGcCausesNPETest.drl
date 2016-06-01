@@ -24,22 +24,22 @@ declare Event
 end
 
 declare Absence
-	id   : long
+    id   : long
 end
 
 rule "detect absence"
 when
-	$event : Event(  )
+    $event : Event(  )
     not (
         Event(
-        	this != $event,
+            this != $event,
             id == $event.id,
             this after[0ms, 3100ms] $event
         )
     )
     not (Absence( 
             id == $event.id
-    	)
+        )
     )
     
 then
@@ -49,12 +49,12 @@ end
 
 rule "clear absence"
 when
-	$event : Event( )
+    $event : Event( )
     $absence : Absence (
         id == $event.id
     )
 then
-	delete($absence);
+    delete($absence);
 end
 
 

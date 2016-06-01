@@ -19,6 +19,7 @@ package org.drools.testcoverage.functional;
 import org.assertj.core.api.Assertions;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.ResourceUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -68,7 +69,7 @@ public class ResourcesTest {
     @Test
     public void testCSV() {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("sample.csv", getClass(), DecisionTableInputType.CSV);
+                ResourceUtil.getDecisionTableResourceFromClasspath("sample.csv", getClass(), DecisionTableInputType.CSV);
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
 
         Assertions.assertThat((long) kbase.getKiePackages().size()).as("Unexpected number of packages in kbase").isEqualTo((long) 2);

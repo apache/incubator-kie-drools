@@ -23,37 +23,37 @@ rule "Name"
     when
         $p : Person ( name == "" || == null )
     then
-    	modify ($p) {
-    		setName("Aquaman");
-    	}
+        modify ($p) {
+            setName("Aquaman");
+        }
 end
 
 rule "Message"
-	no-loop
-	when
-		$m : Message ( message == "" || == null )
-	then
-		modify ($m) {
-			setMessage("Hello world");
-		}
+    no-loop
+    when
+        $m : Message ( message == "" || == null )
+    then
+        modify ($m) {
+            setMessage("Hello world");
+        }
 end
 
 rule "Id"
     when
         $p : Person ( id == 0 )
     then
-    	modify ($p) {
-    		setId(5);
-    	}
+        modify ($p) {
+            setId(5);
+        }
 end
 
 rule "Message from"
-	salience -10
-	when
-		$p : Person ( name != "" && != null && id != 0)
-		$m : Message ( message == "Hello world" )
-	then
-		modify ($m) {
-			setMessage($m.getMessage() + " from " + $p.getName() + "[id=" + $p.getId() + "]");
-		}
+    salience -10
+    when
+        $p : Person ( name != "" && != null && id != 0)
+        $m : Message ( message == "Hello world" )
+    then
+        modify ($m) {
+            setMessage($m.getMessage() + " from " + $p.getName() + "[id=" + $p.getId() + "]");
+        }
 end

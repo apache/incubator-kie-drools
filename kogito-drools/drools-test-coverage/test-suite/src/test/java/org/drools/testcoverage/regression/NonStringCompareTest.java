@@ -63,7 +63,7 @@ public class NonStringCompareTest {
             throws IllegalAccessException, InstantiationException {
 
         final KieBuilder kbuilder = build(factFieldValueForDrl);
-        Assertions.assertThat(kbuilder.getResults().getMessages(Level.ERROR).size()).isEqualTo(0);
+        Assertions.assertThat(kbuilder.getResults().getMessages(Level.ERROR)).isEmpty();
 
         final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder);
         final KieSession ksession = kbase.newKieSession();

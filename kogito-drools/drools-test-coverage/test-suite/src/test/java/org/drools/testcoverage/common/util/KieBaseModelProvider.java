@@ -14,28 +14,14 @@
  * limitations under the License.
  */
 
-  template header
-name
-field
-fieldLower
-fieldUpper
-price
-tastes
+package org.drools.testcoverage.common.util;
 
-package org.drools.testcoverage.functional;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
 
-import  org.drools.testcoverage.functional.TemplatesTest.Vegetable;
-import  org.drools.testcoverage.functional.TemplatesTest.Taste;
-
-global java.util.List list;
-
-template "appropriateToBuy"
-
-rule "is appropriate @{row.rowNumber}"
-    when
-        Vegetable( $name : name == "@{name}", $field : @{field} >= @{fieldLower} && <= @{fieldUpper}, $price : price <= @{price}, $taste : taste @{tastes} )
-    then
-        list.add( $name );
-end
-
-end template
+/**
+ * Basic provider class for KieBaseModel instances.
+ */
+public interface KieBaseModelProvider {
+    KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel);
+}

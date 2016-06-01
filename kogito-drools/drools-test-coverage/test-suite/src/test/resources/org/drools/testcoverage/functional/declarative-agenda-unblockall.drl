@@ -48,5 +48,5 @@ when
     String(this == 'fireUnblockerRule')
     $i : Match( department == 'sales', active == true )
 then
-	kcontext.unblockAllMatches($i);
+    kcontext.unblockAllMatches($i);
 end

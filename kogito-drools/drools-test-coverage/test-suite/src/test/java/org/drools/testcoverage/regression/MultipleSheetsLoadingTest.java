@@ -58,7 +58,7 @@ public class MultipleSheetsLoadingTest {
         if (results.size() > 0) {
             LOGGER.error(results.toString());
         }
-        Assertions.assertThat(results.size()).as("Some errors/warnings found").isEqualTo(0);
+        Assertions.assertThat(results).as("Some errors/warnings found").isEmpty();
 
         final KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kbuilder);
         final StatelessKieSession ksession = kbase.newStatelessKieSession();
