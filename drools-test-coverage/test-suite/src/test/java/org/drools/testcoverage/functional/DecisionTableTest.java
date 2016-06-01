@@ -24,6 +24,7 @@ import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.model.Sample;
 import org.drools.testcoverage.common.model.Subject;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.ResourceUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -46,14 +47,14 @@ public class DecisionTableTest {
     @Test
     public void testSimpleXLS() {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("sample.xls", getClass(), DecisionTableInputType.XLS);
+                ResourceUtil.getDecisionTableResourceFromClasspath("sample.xls", getClass(), DecisionTableInputType.XLS);
         testSimpleDecisionTable(decisionTable);
     }
 
     @Test
     public void testSimpleCSV() {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("sample.csv", getClass(), DecisionTableInputType.CSV);
+                ResourceUtil.getDecisionTableResourceFromClasspath("sample.csv", getClass(), DecisionTableInputType.CSV);
         testSimpleDecisionTable(decisionTable);
     }
 
@@ -80,7 +81,7 @@ public class DecisionTableTest {
     public void testMultipleTableXLS() {
 
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("multiple_tables.xls", getClass(), DecisionTableInputType.XLS);
+                ResourceUtil.getDecisionTableResourceFromClasspath("multiple_tables.xls", getClass(), DecisionTableInputType.XLS);
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
 
@@ -120,7 +121,7 @@ public class DecisionTableTest {
     @Test
     public void testEvalTable() {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("eval_dt.xls", getClass(), DecisionTableInputType.XLS);
+                ResourceUtil.getDecisionTableResourceFromClasspath("eval_dt.xls", getClass(), DecisionTableInputType.XLS);
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
 
@@ -227,7 +228,7 @@ public class DecisionTableTest {
     public void testAdvancedTable() {
 
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("advanced_dt.xls", getClass(), DecisionTableInputType.XLS);
+                ResourceUtil.getDecisionTableResourceFromClasspath("advanced_dt.xls", getClass(), DecisionTableInputType.XLS);
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
         KieSession session = kbase.newKieSession();
@@ -257,7 +258,7 @@ public class DecisionTableTest {
     @Test
     public void testPushQueryWithFactDeclaration() throws IllegalAccessException, InstantiationException {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("queries.xls", getClass(), DecisionTableInputType.XLS);
+                ResourceUtil.getDecisionTableResourceFromClasspath("queries.xls", getClass(), DecisionTableInputType.XLS);
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
 
@@ -318,7 +319,7 @@ public class DecisionTableTest {
     @Test
     public void testPullQueryWithFactDeclaration() throws IllegalAccessException, InstantiationException {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("queries.xls", getClass(), DecisionTableInputType.XLS);
+                ResourceUtil.getDecisionTableResourceFromClasspath("queries.xls", getClass(), DecisionTableInputType.XLS);
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
 
@@ -382,7 +383,7 @@ public class DecisionTableTest {
     @Test
     public void testSequential() {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("sequential.csv", getClass(), DecisionTableInputType.CSV);
+                ResourceUtil.getDecisionTableResourceFromClasspath("sequential.csv", getClass(), DecisionTableInputType.CSV);
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
 
@@ -401,7 +402,7 @@ public class DecisionTableTest {
     @Test
     public void testLockOnActive() {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("agenda-group.csv", getClass(), DecisionTableInputType.CSV);
+                ResourceUtil.getDecisionTableResourceFromClasspath("agenda-group.csv", getClass(), DecisionTableInputType.CSV);
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
         final KieSession ksession = kbase.newKieSession();
@@ -423,7 +424,7 @@ public class DecisionTableTest {
     @Test
     public void testAutoFocus() {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("agenda-group.csv", getClass(), DecisionTableInputType.CSV);
+                ResourceUtil.getDecisionTableResourceFromClasspath("agenda-group.csv", getClass(), DecisionTableInputType.CSV);
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
         final KieSession ksession = kbase.newKieSession();
@@ -453,7 +454,7 @@ public class DecisionTableTest {
     @Test
     public void testActivationGroup() {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("agenda-group.csv", getClass(), DecisionTableInputType.CSV);
+                ResourceUtil.getDecisionTableResourceFromClasspath("agenda-group.csv", getClass(), DecisionTableInputType.CSV);
 
         final KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
         final KieSession ksession = kbase.newKieSession();
@@ -471,21 +472,21 @@ public class DecisionTableTest {
     @Test(expected = DecisionTableParseException.class)
     public void testEmptyConditionInXLS() {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("emptyCondition.xls", getClass(), DecisionTableInputType.XLS);
+                ResourceUtil.getDecisionTableResourceFromClasspath("emptyCondition.xls", getClass(), DecisionTableInputType.XLS);
         KieBaseUtil.getKieBuilderFromResources(true, decisionTable);
     }
 
     @Test(expected = DecisionTableParseException.class)
     public void testEmptyActionInCSV() {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("emptyAction.csv", getClass(), DecisionTableInputType.CSV);
+                ResourceUtil.getDecisionTableResourceFromClasspath("emptyAction.csv", getClass(), DecisionTableInputType.CSV);
         KieBaseUtil.getKieBuilderFromResources(true, decisionTable);
     }
 
     @Test
     public void testCSVWithDateAttributes() {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("sample_dates.csv", getClass(), DecisionTableInputType.CSV);
+                ResourceUtil.getDecisionTableResourceFromClasspath("sample_dates.csv", getClass(), DecisionTableInputType.CSV);
 
         testDecisionTableWithDateAttributes(decisionTable);
     }
@@ -493,7 +494,7 @@ public class DecisionTableTest {
     @Test
     public void testXLSWithDateAttributes() {
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("sample_dates.xls", getClass(), DecisionTableInputType.XLS);
+                ResourceUtil.getDecisionTableResourceFromClasspath("sample_dates.xls", getClass(), DecisionTableInputType.XLS);
 
         testDecisionTableWithDateAttributes(decisionTable);
     }

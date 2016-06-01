@@ -18,6 +18,7 @@ package org.drools.testcoverage.functional;
 
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.ResourceUtil;
 import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -150,7 +151,7 @@ public class UnicodeTest {
         final KieServices kieServices = KieServices.Factory.get();
 
         final Resource decisionTable =
-                KieBaseUtil.getDecisionTableResourceFromClasspath("unicode.csv", getClass(), DecisionTableInputType.CSV);
+                ResourceUtil.getDecisionTableResourceFromClasspath("unicode.csv", getClass(), DecisionTableInputType.CSV);
 
         KieBase kbase = KieBaseUtil.getKieBaseFromResources(true, decisionTable);
         KieSession ksession = kbase.newKieSession();

@@ -1,0 +1,23 @@
+package org.drools.testcoverage.regression
+
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+import org.drools.testcoverage.regression.PropertyListenerTest.Person;
+
+rule "Insert All Person Objects"
+    when
+        $people : ArrayList()
+    then 
+        for (Object person : $people) {
+            insert(person, true);
+        }
+        retract($people);
+end
+
+rule "Print Person Name"
+    when
+        $person : Person($name:name)
+    then 
+        System.out.println("Print name of person: " + $name);
+end

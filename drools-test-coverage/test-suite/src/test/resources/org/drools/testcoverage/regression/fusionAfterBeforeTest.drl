@@ -1,0 +1,25 @@
+package org.drools.testcoverage.regression
+
+import org.drools.testcoverage.common.model.*
+
+declare org.drools.testcoverage.common.model.MessageEvent
+    @role(event)
+end
+
+rule "AfterMessageEvent"
+when
+    $message1 : MessageEvent() from entry-point "EventStream"
+    $message2 : MessageEvent(this after[1s, 10s] $message1) from entry-point "EventStream"
+then
+    $message1.getType(); // just to test that both messages are not null 
+    $message2.getType();
+end
+
+rule "BeforeMessageEvent"
+when
+    $message1 : MessageEvent() from entry-point "EventStream"
+    $message2 : MessageEvent(this before[1s, 10s] $message1) from entry-point "EventStream"
+then
+    $message1.getType(); // just to test that both messages are not null 
+    $message2.getType();
+end

@@ -1,0 +1,20 @@
+package org.drools.testcoverage.functional
+
+import java.util.Collection;
+import org.drools.testcoverage.common.model.SimplePerson;
+
+rule "Insert all integers in collection"
+    when
+        $coll: Collection()
+        $obj : Integer() from $coll
+    then
+         insertLogical($obj);
+end
+
+rule "Insert all persons in collection"
+    when
+        $coll: Collection()
+        $person : SimplePerson(age < 50) from $coll
+    then 
+        insertLogical($person);
+end
