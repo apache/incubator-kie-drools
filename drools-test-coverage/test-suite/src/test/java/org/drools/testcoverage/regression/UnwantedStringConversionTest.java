@@ -53,7 +53,7 @@ public class UnwantedStringConversionTest {
     @Test
     public void testStringToDecimalConversion() {
         final Resource drlResource =
-                KieServices.Factory.get().getResources().newClassPathResource("unwanted-string-conversion.drl", getClass());
+                KieServices.Factory.get().getResources().newClassPathResource("unwantedStringConversionTest.drl", getClass());
         final KieBase kieBase = KieBaseUtil.getKieBaseAndBuildInstallModule(TestConstants.PACKAGE_REGRESSION,
                 kieBaseTestConfiguration, drlResource);
 

@@ -52,7 +52,7 @@ public class DroolsGcCausesNPETest {
     private static final Logger LOGGER = LoggerFactory.getLogger(DroolsGcCausesNPETest.class);
 
     private static final String KIE_BASE_NAME = "defaultBase";
-    private static final String DRL_FILE_NAME = "DroolsGcCausesNPE.drl";
+    private static final String DRL_FILE_NAME = "droolsGcCausesNPETest.drl";
 
     private static final KieServices services = KieServices.Factory.get();
 
