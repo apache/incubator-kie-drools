@@ -12,12 +12,12 @@ rule "Is It There"
     when
         TestEvent() from entry-point "test"
     then
-    	insert(new Message("Found a TestEvent"));
+        insert(new Message("Found a TestEvent"));
 end
 
 rule "Accumulate Count"
     when
         $n : Number() from accumulate($t : TestEvent() from entry-point "test", count($t))
     then
-    	insert(new Message("Found " + $n + " events"));
+        insert(new Message("Found " + $n + " events"));
 end

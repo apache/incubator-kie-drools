@@ -102,7 +102,7 @@ public class PropertyListenerTest {
                 LOGGER.info("Listener attached of type: " + listener);
             }
             // there should be no listeners
-            Assertions.assertThat(person.getBoundSupport().getPropertyChangeListeners().length).isEqualTo(0);
+            Assertions.assertThat(person.getBoundSupport().getPropertyChangeListeners()).isEmpty();
         }
     }
 

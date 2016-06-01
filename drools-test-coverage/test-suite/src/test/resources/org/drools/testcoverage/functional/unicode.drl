@@ -40,9 +40,9 @@ query jeObsažen (String x, String y)
 end
 
 rule "サンプルのルール"
-	when
-		$person : 人(歳 > 18)
-	then
+    when
+        $person : 人(歳 > 18)
+    then
         //System.out.println("adult Japanese!");	   
         一覧.add($person);
 end

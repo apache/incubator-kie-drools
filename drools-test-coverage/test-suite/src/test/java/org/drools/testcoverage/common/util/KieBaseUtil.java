@@ -170,7 +170,7 @@ public final class KieBaseUtil {
         }
 
         if (failIfBuildError) {
-            Assertions.assertThat(msgs.size()).as(msgs.toString()).isEqualTo(0);
+            Assertions.assertThat(msgs).as(msgs.toString()).isEmpty();
         }
 
         return kbuilder;

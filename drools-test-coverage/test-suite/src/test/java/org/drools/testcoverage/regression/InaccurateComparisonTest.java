@@ -63,6 +63,6 @@ public class InaccurateComparisonTest {
         KieSession ksession = kieBase.newKieSession();
 
         ksession.insert(new Message("90201304122000000000000015"));
-        Assertions.assertThat(1).isEqualTo(ksession.fireAllRules());
+        Assertions.assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 }

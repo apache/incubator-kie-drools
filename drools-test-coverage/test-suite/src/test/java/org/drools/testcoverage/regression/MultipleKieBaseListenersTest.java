@@ -60,7 +60,7 @@ public class MultipleKieBaseListenersTest {
 
         kieBase.removeEventListener(listener);
 
-        Assertions.assertThat(kieBase.getKieBaseEventListeners().size()).isEqualTo(0);
+        Assertions.assertThat(kieBase.getKieBaseEventListeners()).isEmpty();
     }
 
 }

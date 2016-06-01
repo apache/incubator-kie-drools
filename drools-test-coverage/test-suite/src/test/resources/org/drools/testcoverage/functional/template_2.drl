@@ -32,10 +32,10 @@ global java.util.List list;
 template "appropriateToBuy"
 
 rule "is appropriate @{row.rowNumber}"
-	when
-	    Vegetable( $name : name == "@{name}", $field : @{field} >= @{fieldLower} && <= @{fieldUpper}, $price : price <= @{price}, $taste : taste @{tastes} )
-	then
-	    list.add( $name );
+    when
+        Vegetable( $name : name == "@{name}", $field : @{field} >= @{fieldLower} && <= @{fieldUpper}, $price : price <= @{price}, $taste : taste @{tastes} )
+    then
+        list.add( $name );
 end
 
 end template

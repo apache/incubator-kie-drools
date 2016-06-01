@@ -7,7 +7,7 @@ rule "Insert all integers in collection"
     when
         $coll: Collection()
         $obj : Integer() from $coll
-	then 
+    then
          insertLogical($obj);
 end
 

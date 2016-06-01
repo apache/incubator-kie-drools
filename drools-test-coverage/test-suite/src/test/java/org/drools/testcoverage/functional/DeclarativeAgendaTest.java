@@ -160,7 +160,7 @@ public class DeclarativeAgendaTest {
         list.clear();
         ksession.delete(go1);
         ksession.fireAllRules();
-        Assertions.assertThat(list.size()).isEqualTo(0);
+        Assertions.assertThat(list).isEmpty();
         ksession.insert("go1");
         ksession.insert("go2");
         ksession.fireAllRules();

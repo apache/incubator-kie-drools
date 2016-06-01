@@ -25,53 +25,53 @@ import java.util.Map
 global Map results
 
 rule "TestCount"
-	when
-		Number ( $result : doubleValue ) from
-			accumulate (
-				AggregableFact ( $value : value != 0 ), count ( $value )
-			)
-	then
-		Message msg = new Message();
-		msg.setMessage(Double.toString($result));
+    when
+        Number ( $result : doubleValue ) from
+            accumulate (
+                AggregableFact ( $value : value != 0 ), count ( $value )
+            )
+    then
+        Message msg = new Message();
+        msg.setMessage(Double.toString($result));
 
-		results.put("count", msg);
+        results.put("count", msg);
 end
 
 rule "TestAverage"
-	when
-		Number ( $result : doubleValue ) from
-			accumulate (
-				AggregableFact ( $value : value != 0 ), average ( $value )
-			)
-	then
-		Message msg = new Message();
-		msg.setMessage(Double.toString($result));
+    when
+        Number ( $result : doubleValue ) from
+            accumulate (
+                AggregableFact ( $value : value != 0 ), average ( $value )
+            )
+    then
+        Message msg = new Message();
+        msg.setMessage(Double.toString($result));
 
-		results.put("average", msg);
+        results.put("average", msg);
 end
 
 rule "TestMin"
-	when
-		Number ( $result : doubleValue ) from
-			accumulate (
-				AggregableFact ( $value : value != 0 ), min ( $value )
-			)
-	then
-		Message msg = new Message();
-		msg.setMessage(Double.toString($result));
+    when
+        Number ( $result : doubleValue ) from
+            accumulate (
+                AggregableFact ( $value : value != 0 ), min ( $value )
+            )
+    then
+        Message msg = new Message();
+        msg.setMessage(Double.toString($result));
 
-		results.put("min", msg);
+        results.put("min", msg);
 end
 
 rule "TestMax"
-	when
-		Number ( $result : doubleValue ) from
-			accumulate (
-				AggregableFact ( $value : value != 0 ), max ( $value )
-			)
-	then
-		Message msg = new Message();
-		msg.setMessage(Double.toString($result));
+    when
+        Number ( $result : doubleValue ) from
+            accumulate (
+                AggregableFact ( $value : value != 0 ), max ( $value )
+            )
+    then
+        Message msg = new Message();
+        msg.setMessage(Double.toString($result));
 
-		results.put("max", msg);
+        results.put("max", msg);
 end
