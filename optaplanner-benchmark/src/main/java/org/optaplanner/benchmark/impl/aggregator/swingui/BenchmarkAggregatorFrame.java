@@ -483,15 +483,15 @@ public class BenchmarkAggregatorFrame extends JFrame {
     private MixedCheckBox createSolverBenchmarkCheckBox(SolverBenchmarkResult solverBenchmarkResult) {
         String solverCheckBoxName = solverBenchmarkResult.getName() + " (" + solverBenchmarkResult.getRanking() + ")";
         String solverBenchmarkDetail = String.format(
-                "Average score: %s%n"
-                + "Total score: %s%n"
-                + "Average time spent: %s%n"
-                + "Total winning score difference: %s",
-                solverBenchmarkResult.getAverageScoreWithUninitializedPrefix(),
-                solverBenchmarkResult.getTotalScoreWithUninitializedPrefix(),
+                "Total score: %s%n"
+                + "Average score: %s%n"
+                + "Total winning score difference: %s"
+                + "Average time spent: %s%n",
+                solverBenchmarkResult.getTotalScore(),
+                solverBenchmarkResult.getAverageScore(),
+                solverBenchmarkResult.getTotalWinningScoreDifference(),
                 solverBenchmarkResult.getAverageTimeMillisSpent() == null
-                        ? "" : millisecondsSpentNumberFormat.format(solverBenchmarkResult.getAverageTimeMillisSpent()),
-                solverBenchmarkResult.getTotalWinningScoreDifference());
+                        ? "" : millisecondsSpentNumberFormat.format(solverBenchmarkResult.getAverageTimeMillisSpent()));
         solverBenchmarkResultNameMapping.put(solverBenchmarkResult, solverBenchmarkResult.getName());
         return new MixedCheckBox(solverCheckBoxName, solverBenchmarkDetail, solverBenchmarkResult);
     }

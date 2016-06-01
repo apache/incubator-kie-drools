@@ -16,11 +16,9 @@
 
 package org.optaplanner.core.api.score.buildin.simple;
 
-import java.util.function.Consumer;
-
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
+import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
@@ -134,7 +132,7 @@ public class SimpleScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
-        assertScoreCompareToOrder(
+        PlannerAssert.assertCompareToOrder(
                 SimpleScore.valueOf(-8, 0),
                 SimpleScore.valueOf(-7, -20),
                 SimpleScore.valueOf(-7, -1),

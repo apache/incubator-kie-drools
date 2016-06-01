@@ -22,30 +22,28 @@ import org.optaplanner.core.api.score.Score;
 
 public interface BenchmarkResult {
 
-    public String getName();
+    String getName();
 
     /**
      * @return the name of the directory that holds the benchmark's results
      */
-    public String getResultDirectoryName();
+    String getResultDirectoryName();
 
     /**
      * @return the benchmark result directory as a file
      */
-    public File getResultDirectory();
+    File getResultDirectory();
 
     /**
      * @return true if there is a failed child benchmark and the variable is initialized
      */
-    public boolean hasAnyFailure();
+    boolean hasAnyFailure();
 
     /**
      * @return true if all child benchmarks were a success and the variable is initialized
      */
-    public boolean hasAllSuccess();
+    boolean hasAllSuccess();
 
-    public Integer getAverageUninitializedVariableCount();
-
-    public Score getAverageScore();
+    Score getAverageScore();
 
 }

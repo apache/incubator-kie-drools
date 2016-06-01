@@ -43,7 +43,6 @@ public class TotalScoreSolverRankingComparator implements Comparator<SolverBench
     public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {
         return new CompareToBuilder()
                 .append(b.getFailureCount(), a.getFailureCount()) // Reverse, less is better (redundant: failed benchmarks don't get ranked at all)
-                .append(b.getTotalUninitializedVariableCount(), a.getTotalUninitializedVariableCount()) // Reverse, less is better
                 .append(a.getTotalScore(), b.getTotalScore(), resilientScoreComparator)
                 .append(a, b, worstScoreSolverRankingComparator) // Tie breaker
                 .toComparison();

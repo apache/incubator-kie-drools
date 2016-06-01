@@ -18,8 +18,7 @@ package org.optaplanner.core.api.score.buildin.simpledouble;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
+import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
@@ -135,7 +134,7 @@ public class SimpleDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
-        assertScoreCompareToOrder(
+        PlannerAssert.assertCompareToOrder(
                 SimpleDoubleScore.valueOf(-8, -0.0),
                 SimpleDoubleScore.valueOf(-7, -20.0),
                 SimpleDoubleScore.valueOf(-7, -1.0),

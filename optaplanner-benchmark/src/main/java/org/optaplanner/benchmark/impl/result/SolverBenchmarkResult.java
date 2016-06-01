@@ -35,8 +35,6 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 
 /**
@@ -63,7 +61,6 @@ public class SolverBenchmarkResult {
 
     private Integer failureCount = null;
     private Integer uninitializedSolutionCount = null;
-    private Integer totalUninitializedVariableCount = null;
     private Integer infeasibleScoreCount = null;
     private Score totalScore = null;
     private Score averageScore = null;
@@ -133,10 +130,6 @@ public class SolverBenchmarkResult {
 
     public Integer getUninitializedSolutionCount() {
         return uninitializedSolutionCount;
-    }
-
-    public Integer getTotalUninitializedVariableCount() {
-        return totalUninitializedVariableCount;
     }
 
     public Integer getInfeasibleScoreCount() {
@@ -250,19 +243,6 @@ public class SolverBenchmarkResult {
         return StringEscapeUtils.ESCAPE_HTML4.translate(xml);
     }
 
-    public String getTotalScoreWithUninitializedPrefix() {
-        return ScoreUtils.getScoreWithUninitializedPrefix(totalUninitializedVariableCount, totalScore);
-    }
-
-    public String getAverageScoreWithUninitializedPrefix() {
-        if (getSuccessCount() == 0) {
-            return null;
-        }
-        return ScoreUtils.getScoreWithUninitializedPrefix(
-                ConfigUtils.ceilDivide(getTotalUninitializedVariableCount(), getSuccessCount()),
-                getAverageScore());
-    }
-
     public EnvironmentMode getEnvironmentMode() {
         return solverConfig.determineEnvironmentMode();
     }
@@ -295,7 +275,6 @@ public class SolverBenchmarkResult {
         long totalScoreCalculationSpeed = 0L;
         long totalTimeMillisSpent = 0L;
         uninitializedSolutionCount = 0;
-        totalUninitializedVariableCount = 0;
         infeasibleScoreCount = 0;
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             if (singleBenchmarkResult.hasAnyFailure()) {
@@ -303,7 +282,6 @@ public class SolverBenchmarkResult {
             } else {
                 if (!singleBenchmarkResult.isInitialized()) {
                     uninitializedSolutionCount++;
-                    totalUninitializedVariableCount += singleBenchmarkResult.getAverageUninitializedVariableCount();
                 } else if (!singleBenchmarkResult.isScoreFeasible()) {
                     infeasibleScoreCount++;
                 }

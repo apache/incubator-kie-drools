@@ -60,7 +60,6 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     private Long usedMemoryAfterInputSolution = null;
 
     private Boolean succeeded = null;
-    private Integer uninitializedVariableCount = null;
     private Score score = null;
     private long timeMillisSpent = -1L;
     private long scoreCalculationCount = -1L;
@@ -137,13 +136,6 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
         this.succeeded = succeeded;
     }
 
-    public Integer getUninitializedVariableCount() {
-        return uninitializedVariableCount;
-    }
-
-    public void setUninitializedVariableCount(Integer uninitializedVariableCount) {
-        this.uninitializedVariableCount = uninitializedVariableCount;
-    }
     public Score getScore() {
         return score;
     }
@@ -210,7 +202,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     }
 
     public boolean isInitialized() {
-        return uninitializedVariableCount != null && uninitializedVariableCount == 0;
+        return score != null && score.isSolutionInitialized();
     }
 
     @Override
@@ -241,15 +233,6 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
 
     public SubSingleStatistic getSubSingleStatistic(StatisticType statisticType) {
         return effectiveSubSingleStatisticMap.get(statisticType);
-    }
-
-    public String getScoreWithUninitializedPrefix() {
-        return ScoreUtils.getScoreWithUninitializedPrefix(uninitializedVariableCount, score);
-    }
-
-    @Override
-    public Integer getAverageUninitializedVariableCount() {
-        return getUninitializedVariableCount();
     }
 
     @Override
@@ -314,7 +297,6 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
         // Skip oldResult.usedMemoryAfterInputSolution
         newResult.succeeded = oldResult.succeeded;
         newResult.score = oldResult.score;
-        newResult.uninitializedVariableCount = oldResult.uninitializedVariableCount;
         newResult.timeMillisSpent = oldResult.timeMillisSpent;
         newResult.scoreCalculationCount = oldResult.scoreCalculationCount;
 

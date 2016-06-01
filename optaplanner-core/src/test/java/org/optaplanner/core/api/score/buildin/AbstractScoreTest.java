@@ -23,24 +23,6 @@ import static org.junit.Assert.*;
 
 public abstract class AbstractScoreTest {
 
-    public static void assertLesser(Score a, Score b) {
-        assertTrue("Score (" + a + ") must be lesser than score (" + b + ").", a.compareTo(b) < 0);
-        assertTrue("Score (" + b + ") must be greater than score (" + a + ").", b.compareTo(a) > 0);
-    }
-
-    public static void assertGreater(Score a, Score b) {
-        assertTrue("Score (" + a + ") must be greater than score (" + b + ").", a.compareTo(b) > 0);
-        assertTrue("Score (" + b + ") must be lesser than score (" + a + ").", b.compareTo(a) < 0);
-    }
-
-    public static void assertScoreCompareToOrder(Score... scores) {
-        for (int i = 0; i < scores.length; i++) {
-            for (int j = i + 1; j < scores.length; j++) {
-                assertLesser(scores[i], scores[j]);
-            }
-        }
-    }
-
     public static void assertScoresEqualsAndHashCode(Score... scores) {
         for (int i = 0; i < scores.length; i++) {
             for (int j = i + 1; j < scores.length; j++) {

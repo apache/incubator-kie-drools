@@ -157,9 +157,7 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
 
     protected AbstractScore(int initScore) {
         this.initScore = initScore;
-        if (initScore > 0) {
-            throw new IllegalArgumentException("The initScore (" + initScore + ") cannot be positive.");
-        }
+        // The initScore can be positive during statistical calculations.
     }
 
     @Override

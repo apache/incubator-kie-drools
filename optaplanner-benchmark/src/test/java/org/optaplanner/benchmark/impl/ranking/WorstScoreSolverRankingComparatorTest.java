@@ -24,15 +24,16 @@ import org.junit.Test;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class WorstScoreSolverRankingComparatorTest extends AbstractSolverRankingComparatorTest {
 
     private BenchmarkReport benchmarkReport;
     private WorstScoreSolverRankingComparator comparator;
-    private List<SolverBenchmarkResult> solverBenchmarkResultList;
     private SolverBenchmarkResult a;
     private SolverBenchmarkResult b;
     private List<SingleBenchmarkResult> aSingleBenchmarkResultList;
@@ -42,7 +43,6 @@ public class WorstScoreSolverRankingComparatorTest extends AbstractSolverRanking
     public void setUp() {
         benchmarkReport = mock(BenchmarkReport.class);
         comparator = new WorstScoreSolverRankingComparator();
-        solverBenchmarkResultList = new ArrayList<>();
         a = new SolverBenchmarkResult(null);
         b = new SolverBenchmarkResult(null);
         aSingleBenchmarkResultList = new ArrayList<>();
@@ -61,8 +61,7 @@ public class WorstScoreSolverRankingComparatorTest extends AbstractSolverRanking
         addSingleBenchmark(bSingleBenchmarkResultList, -30, -30, -2000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
-        assertEquals(-1, comparator.compare(a, b));
-        assertEquals(1, comparator.compare(b, a));
+        assertCompareToOrder(comparator, a, b);
     }
 
     @Test
@@ -77,8 +76,7 @@ public class WorstScoreSolverRankingComparatorTest extends AbstractSolverRanking
         addSingleBenchmark(bSingleBenchmarkResultList, -40, -40, -2000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
-        assertEquals(-1, comparator.compare(a, b));
-        assertEquals(1, comparator.compare(b, a));
+        assertCompareToOrder(comparator, a, b);
     }
 
     @Test
@@ -93,8 +91,7 @@ public class WorstScoreSolverRankingComparatorTest extends AbstractSolverRanking
         addSingleBenchmarkWithHardSoftLongScore(bSingleBenchmarkResultList, -7, -50, 0, -50, -10, -1000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
-        assertEquals(-1, comparator.compare(a, b));
-        assertEquals(1, comparator.compare(b, a));
+        assertCompareToOrder(comparator, a, b);
     }
 
     @Test
@@ -109,30 +106,26 @@ public class WorstScoreSolverRankingComparatorTest extends AbstractSolverRanking
         addSingleBenchmark(bSingleBenchmarkResultList, -30, -30, -1000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
-        assertEquals(0, comparator.compare(a, b));
-        assertEquals(0, comparator.compare(b, a));
+        assertCompareToEquals(comparator, a, b);
 
-        a0.setAverageUninitializedVariableCount(100);
-        b0.setAverageUninitializedVariableCount(100);
-        b1.setAverageUninitializedVariableCount(100);
+        a0.setAverageScore(SimpleScore.valueOf(-100, -1000));
+        b0.setAverageScore(SimpleScore.valueOf(-100, -1000));
+        b1.setAverageScore(SimpleScore.valueOf(-100, 400));
         a.accumulateResults(benchmarkReport);
         b.accumulateResults(benchmarkReport);
         // B is worse on uninitialized variable count in the second worst score
-        assertEquals(1, comparator.compare(a, b));
-        assertEquals(-1, comparator.compare(b, a));
+        assertCompareToOrder(comparator, b, a);
 
-        a0.setAverageUninitializedVariableCount(101);
+        a0.setAverageScore(SimpleScore.valueOf(-101, -1000));
         a.accumulateResults(benchmarkReport);
         // uninitialized variable count in a better score is bigger in A
-        assertEquals(-1, comparator.compare(a, b));
-        assertEquals(1, comparator.compare(b, a));
+        assertCompareToOrder(comparator, a, b);
 
         // uninitialized variable counts are equal, A is worse on score
-        b0.setAverageUninitializedVariableCount(0);
-        b1.setAverageUninitializedVariableCount(100);
+        b0.setAverageScore(SimpleScore.valueOfInitialized(-1000));
+        b1.setAverageScore(SimpleScore.valueOf(-100, 400));
         b.accumulateResults(benchmarkReport);
-        assertEquals(-1, comparator.compare(a, b));
-        assertEquals(1, comparator.compare(b, a));
+        assertCompareToOrder(comparator, a, b);
     }
 
 }

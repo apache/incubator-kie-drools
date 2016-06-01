@@ -177,8 +177,8 @@
                                 <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkResultList as solverBenchmarkResult>
                                     <tr<#if solverBenchmarkResult.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmarkResult.name}&nbsp;<@addSolverBenchmarkBadges solverBenchmarkResult=solverBenchmarkResult/></th>
-                                        <td>${solverBenchmarkResult.totalScoreWithUninitializedPrefix!""}</td>
-                                        <td>${solverBenchmarkResult.averageScoreWithUninitializedPrefix!""}</td>
+                                        <td>${solverBenchmarkResult.totalScore!""}</td>
+                                        <td>${solverBenchmarkResult.averageScore!""}</td>
                                         <td>${solverBenchmarkResult.standardDeviationString!""}</td>
                                         <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                             <#if !solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)??>
@@ -189,11 +189,11 @@
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <#if solverBenchmarkResult.subSingleCount lte 1>
-                                                        <td>${singleBenchmarkResult.averageScoreWithUninitializedPrefix!""}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/></td>
+                                                        <td>${singleBenchmarkResult.averageScore!""}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/></td>
                                                     <#else>
                                                         <td><div class="dropdown">
                                                             <span class="nav nav-pills dropdown-toggle" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                ${singleBenchmarkResult.averageScoreWithUninitializedPrefix!""}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/>
+                                                                ${singleBenchmarkResult.averageScore!""}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/>
                                                                 <span class="caret"></span>
                                                             </span>
                                                             <ul class="dropdown-menu" aria-labelledby="dLabel">
@@ -201,19 +201,19 @@
                                                                 <li role="separator" class="divider"></li>
                                                                 <#list singleBenchmarkResult.subSingleBenchmarkResultList as subSingleBenchmarkResult>
                                                                     <li class="dropdown-header"><strong>Run #${subSingleBenchmarkResult.getSubSingleBenchmarkIndex()}</strong></li>
-                                                                    <li>${subSingleBenchmarkResult.scoreWithUninitializedPrefix!""}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=subSingleBenchmarkResult/></li>
+                                                                    <li>${subSingleBenchmarkResult.score!""}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=subSingleBenchmarkResult/></li>
                                                                 </#list>
                                                                 <li role="separator" class="divider"></li>
                                                                 <li class="dropdown-header"><strong>Average</strong></li>
-                                                                <li>${singleBenchmarkResult.averageScoreWithUninitializedPrefix!""}</li>
+                                                                <li>${singleBenchmarkResult.averageScore!""}</li>
                                                                 <li class="dropdown-header"><strong>Standard Deviation</strong></li>
                                                                 <li>${singleBenchmarkResult.standardDeviationString!""}</li>
                                                                 <li class="dropdown-header"><strong>Best</strong></li>
-                                                                <li>${singleBenchmarkResult.best.scoreWithUninitializedPrefix!""}</li>
+                                                                <li>${singleBenchmarkResult.best.score!""}</li>
                                                                 <li class="dropdown-header"><strong>Worst</strong></li>
-                                                                <li>${singleBenchmarkResult.worst.scoreWithUninitializedPrefix!""}</li>
+                                                                <li>${singleBenchmarkResult.worst.score!""}</li>
                                                                 <li class="dropdown-header"><strong>Median</strong></li>
-                                                                <li>${singleBenchmarkResult.median.scoreWithUninitializedPrefix!""}</li>
+                                                                <li>${singleBenchmarkResult.median.score!""}</li>
                                                             </ul>
                                                         </div></td>
                                                     </#if>

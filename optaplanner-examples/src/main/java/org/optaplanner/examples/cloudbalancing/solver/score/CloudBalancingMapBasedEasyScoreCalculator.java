@@ -31,7 +31,7 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 public class CloudBalancingMapBasedEasyScoreCalculator implements EasyScoreCalculator<CloudBalance> {
 
     @Override
-    public HardSoftScore calculateScore(CloudBalance cloudBalance) {
+    public HardSoftScore calculateScore(CloudBalance cloudBalance, int initScore) {
         int computerListSize = cloudBalance.getComputerList().size();
         Map<CloudComputer, Integer> cpuPowerUsageMap = new HashMap<>(computerListSize);
         Map<CloudComputer, Integer> memoryUsageMap = new HashMap<>(computerListSize);
@@ -49,7 +49,7 @@ public class CloudBalancingMapBasedEasyScoreCalculator implements EasyScoreCalcu
         int hardScore = sumHardScore(cpuPowerUsageMap, memoryUsageMap, networkBandwidthUsageMap);
         int softScore = sumSoftScore(usedComputerSet);
 
-        return HardSoftScore.valueOf(hardScore, softScore);
+        return HardSoftScore.valueOf(initScore, hardScore, softScore);
     }
 
     private void visitProcessList(Map<CloudComputer, Integer> cpuPowerUsageMap,

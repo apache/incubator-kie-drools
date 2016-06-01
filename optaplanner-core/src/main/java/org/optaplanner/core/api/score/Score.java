@@ -41,7 +41,7 @@ public interface Score<S extends Score> extends Comparable<S> {
      * <p>
      * During {@link #compareTo(Object)}, it's even more important than the hard score:
      * if you don't want this behaviour, read about overconstrained planning in the reference manual.
-     * @return higher is better, always negative, 0 if all planning variables are initialized
+     * @return higher is better, always negative (except in statistical calculations), 0 if all planning variables are initialized
      */
     int getInitScore();
 
@@ -107,10 +107,7 @@ public interface Score<S extends Score> extends Comparable<S> {
     /**
      * Returns a Score whose value is (- this).
      * @return - this
-     * @deprecated Avoid usage, because it fails on a score with a non zero {@link #getInitScore()}
-     * https://issues.jboss.org/browse/PLANNER-584
      */
-    @Deprecated
     S negate();
 
     /**

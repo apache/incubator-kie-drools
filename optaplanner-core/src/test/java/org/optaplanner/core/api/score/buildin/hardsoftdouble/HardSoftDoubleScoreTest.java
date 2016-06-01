@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.hardsoftdouble;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
+import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
@@ -151,7 +152,7 @@ public class HardSoftDoubleScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
-        assertScoreCompareToOrder(
+        PlannerAssert.assertCompareToOrder(
                 HardSoftDoubleScore.valueOf(-8, 0.0, 0.0),
                 HardSoftDoubleScore.valueOf(-7, -20.0, -20.0),
                 HardSoftDoubleScore.valueOf(-7, -1.0, -300.0),

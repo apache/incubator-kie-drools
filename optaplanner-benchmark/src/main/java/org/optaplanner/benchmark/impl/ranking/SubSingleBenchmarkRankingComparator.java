@@ -31,7 +31,6 @@ public class SubSingleBenchmarkRankingComparator implements Comparator<SubSingle
     public int compare(SubSingleBenchmarkResult a, SubSingleBenchmarkResult b) {
         return new CompareToBuilder()
                 .append(b.hasAnyFailure(), a.hasAnyFailure()) // Reverse, less is better (redundant: failed benchmarks don't get ranked at all)
-                .append(b.getUninitializedVariableCount(), a.getUninitializedVariableCount()) // Reverse, less is better
                 .append(a.getAverageScore(), b.getAverageScore(), resilientScoreComparator)
                 .toComparison();
     }

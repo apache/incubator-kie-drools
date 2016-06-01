@@ -107,7 +107,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
 
         @Override
         public void bestSolutionChanged(BestSolutionChangedEvent<CloudBalance> event) { // In solver thread
-            if (event.isEveryProblemFactChangeProcessed() && event.isNewBestSolutionInitialized()
+            if (event.isEveryProblemFactChangeProcessed()
                     && event.getNewBestSolution().getScore().isFeasible()) {
                 // TODO bestSolutionChanged() is not the most reliable way to control this test's execution:
                 // With another termination, a Solver can terminate before a feasible best solution event is fired

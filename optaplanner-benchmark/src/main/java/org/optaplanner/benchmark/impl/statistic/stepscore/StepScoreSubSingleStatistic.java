@@ -55,7 +55,7 @@ public class StepScoreSubSingleStatistic<Solution_>
 
         @Override
         public void stepEnded(AbstractStepScope<Solution_> stepScope) {
-            if (stepScope.hasNoUninitializedVariables()) {
+            if (stepScope.getScore().isSolutionInitialized()) {
                 long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
                 pointList.add(new StepScoreStatisticPoint(timeMillisSpent, stepScope.getScore()));
             }

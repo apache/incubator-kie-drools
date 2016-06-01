@@ -60,9 +60,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     private Long usedMemoryAfterInputSolution = null;
 
     private Integer failureCount = null;
-    private Integer totalUninitializedVariableCount = null;
     private Score totalScore = null;
-    private Integer averageUninitializedVariableCount = null;
     private Score averageScore = null;
     private SubSingleBenchmarkResult median = null;
     private SubSingleBenchmarkResult best = null;
@@ -206,21 +204,8 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         return standardDeviationDoubles;
     }
 
-    @Override
-    public Integer getAverageUninitializedVariableCount() {
-        return averageUninitializedVariableCount;
-    }
-
-    public void setAverageUninitializedVariableCount(Integer averageUninitializedVariableCount) {
-        this.averageUninitializedVariableCount = averageUninitializedVariableCount;
-    }
-
     public Integer getInfeasibleScoreCount() {
         return infeasibleScoreCount;
-    }
-
-    public Integer getTotalUninitializedVariableCount() {
-        return totalUninitializedVariableCount;
     }
 
     public Integer getUninitializedSolutionCount() {
@@ -253,7 +238,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     }
 
     public boolean isInitialized() {
-        return averageUninitializedVariableCount != null && averageUninitializedVariableCount == 0;
+        return averageScore != null && averageScore.isSolutionInitialized();
     }
 
     @Override
@@ -284,12 +269,6 @@ public class SingleBenchmarkResult implements BenchmarkResult {
 
     public SubSingleStatistic getSubSingleStatistic(ProblemStatisticType problemStatisticType) {
         return getMedian().getEffectiveSubSingleStatisticMap().get(problemStatisticType);
-    }
-
-    public String getAverageScoreWithUninitializedPrefix() {
-        return ScoreUtils.getScoreWithUninitializedPrefix(
-                ConfigUtils.ceilDivide(getTotalUninitializedVariableCount(), getSuccessCount()),
-                getAverageScore());
     }
 
     public int getSuccessCount() {
@@ -365,7 +344,6 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         boolean firstNonFailure = true;
         totalScore = null;
         uninitializedSolutionCount = 0;
-        totalUninitializedVariableCount = 0;
         infeasibleScoreCount = 0;
         List<SubSingleBenchmarkResult> successResultList = new ArrayList<>(subSingleBenchmarkResultList);
         // Do not rank a SubSingleBenchmarkResult that has a failure
@@ -377,7 +355,6 @@ public class SingleBenchmarkResult implements BenchmarkResult {
             } else {
                 if (!subSingleBenchmarkResult.isInitialized()) {
                     uninitializedSolutionCount++;
-                    totalUninitializedVariableCount += subSingleBenchmarkResult.getUninitializedVariableCount();
                 } else if (!subSingleBenchmarkResult.isScoreFeasible()) {
                     infeasibleScoreCount++;
                 }
@@ -391,7 +368,6 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         }
         if (!firstNonFailure) {
             averageScore = totalScore.divide(getSuccessCount());
-            averageUninitializedVariableCount = ConfigUtils.ceilDivide(totalUninitializedVariableCount, getSuccessCount());
         }
         determineRanking(successResultList);
     }

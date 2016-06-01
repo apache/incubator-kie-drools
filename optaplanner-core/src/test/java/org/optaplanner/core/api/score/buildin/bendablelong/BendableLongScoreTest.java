@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.buildin.bendablelong;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
 import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
+import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
@@ -154,7 +155,7 @@ public class BendableLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareToHSS() {
-        assertScoreCompareToOrder(
+        PlannerAssert.assertCompareToOrder(
                 scoreDefinitionHSS.createScore(-8, 0L, 0L, 0L),
                 scoreDefinitionHSS.createScore(-7, -20L, -20L, -20L),
                 scoreDefinitionHSS.createScore(-7, -1L, -300L, -4000L),
@@ -254,7 +255,7 @@ public class BendableLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareToHHSSS() {
-        assertScoreCompareToOrder(
+        PlannerAssert.assertCompareToOrder(
                 scoreDefinitionHHSSS.createScoreInitialized(-20L, Long.MIN_VALUE, Long.MIN_VALUE, 0L, 0L),
                 scoreDefinitionHHSSS.createScoreInitialized(-20L, Long.MIN_VALUE, -20L, 0L, 0L),
                 scoreDefinitionHHSSS.createScoreInitialized(-20L, Long.MIN_VALUE, 1L, 0L, 0L),

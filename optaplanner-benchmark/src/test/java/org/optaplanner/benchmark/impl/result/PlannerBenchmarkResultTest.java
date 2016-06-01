@@ -102,7 +102,7 @@ public class PlannerBenchmarkResultTest {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
         solverBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
-        singleBenchmarkResult.setAverageScore(SimpleScore.valueOf(score));
+        singleBenchmarkResult.setAverageScore(SimpleScore.valueOfInitialized(score));
         singleBenchmarkResult.setSubSingleBenchmarkResultList(new ArrayList<>(1));
         createSubSingleBenchmarkResult(singleBenchmarkResult, 0);
         return singleBenchmarkResult;

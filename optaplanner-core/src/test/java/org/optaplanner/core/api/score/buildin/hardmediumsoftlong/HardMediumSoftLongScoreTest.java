@@ -18,6 +18,7 @@ package org.optaplanner.core.api.score.buildin.hardmediumsoftlong;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
+import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
@@ -151,7 +152,7 @@ public class HardMediumSoftLongScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
-        assertScoreCompareToOrder(
+        PlannerAssert.assertCompareToOrder(
                 HardMediumSoftLongScore.valueOf(-8, 0L, 0L, 0L),
                 HardMediumSoftLongScore.valueOf(-7, -20L, -20L, -20L),
                 HardMediumSoftLongScore.valueOf(-7, -1L, -300L, -4000L),

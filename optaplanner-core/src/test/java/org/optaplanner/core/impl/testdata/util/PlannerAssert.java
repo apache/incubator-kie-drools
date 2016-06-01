@@ -18,6 +18,7 @@
 package org.optaplanner.core.impl.testdata.util;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -83,6 +84,36 @@ public class PlannerAssert extends Assert {
             String cleanMessage = message == null ? "" : message;
             throw new ComparisonFailure(cleanMessage, "not " + expectedClass.getName(),
                     actualInstance == null ? "null" : actualInstance.getClass().getName());
+        }
+    }
+
+    public static <C extends Comparable<C>> void assertCompareToOrder(C... comparables) {
+        assertCompareToOrder(Comparator.naturalOrder(), comparables);
+    }
+
+    public static <T> void assertCompareToOrder(Comparator<T> comperator, T... objects) {
+        for (int i = 0; i < objects.length; i++) {
+            for (int j = i + 1; j < objects.length; j++) {
+                T a = objects[i];
+                T b = objects[j];
+                assertTrue("Object (" + a + ") must be lesser than object (" + b + ").", comperator.compare(a, b) < 0);
+                assertTrue("Object (" + b + ") must be greater than object (" + a + ").", comperator.compare(b, a) > 0);
+            }
+        }
+    }
+
+    public static <C extends Comparable<C>> void assertCompareToEquals(C... comparables) {
+        assertCompareToEquals(Comparator.naturalOrder(), comparables);
+    }
+
+    public static <T> void assertCompareToEquals(Comparator<T> comperator, T... objects) {
+        for (int i = 0; i < objects.length; i++) {
+            for (int j = i + 1; j < objects.length; j++) {
+                T a = objects[i];
+                T b = objects[j];
+                assertTrue("Object (" + a + ") must compare equal to object (" + b + ").", comperator.compare(a, b) == 0);
+                assertTrue("Object (" + b + ") must compare equal to object (" + a + ").", comperator.compare(b, a) == 0);
+            }
         }
     }
 

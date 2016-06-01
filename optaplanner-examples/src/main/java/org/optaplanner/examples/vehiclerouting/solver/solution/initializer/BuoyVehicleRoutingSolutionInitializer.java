@@ -87,7 +87,7 @@ public class BuoyVehicleRoutingSolutionInitializer extends AbstractCustomPhaseCo
                     customer.setPreviousStandstill(null);
                     scoreDirector.afterVariableChanged(customer, "previousStandstill");
                     scoreDirector.triggerVariableListeners();
-                    if (stepScore == null || score.compareTo(stepScore) > 0) {
+                    if (stepScore == null || score.toInitializedScore().compareTo(stepScore.toInitializedScore()) > 0) {
                         stepScore = score;
                         stepBuoyIndex = i;
                         stepEntity = customer;

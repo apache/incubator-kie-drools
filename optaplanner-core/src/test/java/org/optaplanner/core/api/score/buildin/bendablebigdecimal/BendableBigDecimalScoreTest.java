@@ -21,8 +21,8 @@ import java.math.BigDecimal;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
-import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
@@ -192,7 +192,7 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareToHSS() {
-        assertScoreCompareToOrder(
+        PlannerAssert.assertCompareToOrder(
                 scoreDefinitionHSS.createScore(-8, new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")),
                 scoreDefinitionHSS.createScore(-7, new BigDecimal("-20"), new BigDecimal("-20"), new BigDecimal("-20")),
                 scoreDefinitionHSS.createScore(-7, new BigDecimal("-1"), new BigDecimal("-300"), new BigDecimal("-4000")),
@@ -284,7 +284,7 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareToHHSSS() {
-        assertScoreCompareToOrder(
+        PlannerAssert.assertCompareToOrder(
                 scoreDefinitionHHSSS.createScoreInitialized(MINUS_20, MIN_INTEGER, MIN_INTEGER, ZERO, ZERO),
                 scoreDefinitionHHSSS.createScoreInitialized(MINUS_20, MIN_INTEGER, MINUS_20, ZERO, ZERO),
                 scoreDefinitionHHSSS.createScoreInitialized(MINUS_20, MIN_INTEGER, ONE, ZERO, ZERO),

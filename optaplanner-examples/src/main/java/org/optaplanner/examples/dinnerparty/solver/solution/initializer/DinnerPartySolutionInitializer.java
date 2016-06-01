@@ -43,7 +43,7 @@ public class DinnerPartySolutionInitializer extends AbstractCustomPhaseCommand<D
         // Assign one guest at a time
         List<Seat> undesignatedSeatList = new ArrayList<>(dinnerParty.getSeatList());
         for (SeatDesignation seatDesignation : dinnerParty.getSeatDesignationList()) {
-            Score bestScore = SimpleScore.valueOf(Integer.MIN_VALUE);
+            Score bestScore = SimpleScore.valueOfInitialized(Integer.MIN_VALUE);
             Seat bestSeat = null;
 
             // Try every seat for that guest
@@ -56,7 +56,7 @@ public class DinnerPartySolutionInitializer extends AbstractCustomPhaseCommand<D
                     scoreDirector.afterVariableChanged(seatDesignation, "seat");
                     scoreDirector.triggerVariableListeners();
                     Score score = scoreDirector.calculateScore();
-                    if (score.compareTo(bestScore) > 0) {
+                    if (score.toInitializedScore().compareTo(bestScore.toInitializedScore()) > 0) {
                         bestScore = score;
                         bestSeat = seat;
                     }

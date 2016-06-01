@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.AbstractScoreTest;
+import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
@@ -153,7 +154,7 @@ public class HardSoftBigDecimalScoreTest extends AbstractScoreTest {
 
     @Test
     public void compareTo() {
-        assertScoreCompareToOrder(
+        PlannerAssert.assertCompareToOrder(
                 HardSoftBigDecimalScore.valueOf(-8, new BigDecimal("0"), new BigDecimal("0")),
                 HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-20"), new BigDecimal("-20")),
                 HardSoftBigDecimalScore.valueOf(-7, new BigDecimal("-1"), new BigDecimal("-300")),
