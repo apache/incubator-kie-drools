@@ -78,7 +78,7 @@ public class CurriculumCoursePanel extends SolutionPanel<CourseSchedule> {
 
     @Override
     public boolean isRefreshScreenDuringSolving() {
-        return true;
+        return false;
     }
 
     @Override
