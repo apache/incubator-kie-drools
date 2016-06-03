@@ -125,7 +125,18 @@ public class MVELEvalExpression
         
         return clone;
     }
-    
+
+    public MVELEvalExpression clonePreservingDeclarations(MVELEvalExpression original) {
+        MVELCompilationUnit cloneUnit = unit.clone();
+        cloneUnit.setPreviousDeclarations( original.unit.getPreviousDeclarations() );
+        MVELEvalExpression clone = new MVELEvalExpression( cloneUnit,
+                                                           id );
+        // expr should be stateless, so it should be fine to share the reference
+        clone.expr = expr;
+
+        return clone;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
