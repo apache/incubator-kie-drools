@@ -6092,6 +6092,7 @@ public class CepEspTest extends CommonTestMethodBase {
         // RHBRMS-2463
         String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "import " + AtomicInteger.class.getCanonicalName() + "\n" +
+                     "global AtomicInteger counter;\n" +
                      "declare MyEvent\n" +
                      "    @role( event )\n" +
                      "    @timestamp( timestamp )\n" +
@@ -6100,13 +6101,11 @@ public class CepEspTest extends CommonTestMethodBase {
                      "\n" +
                      "rule R when\n" +
                      "       String()\n" +
-                     "       MyEvent ()\n" +
-                     "       $counter : AtomicInteger(get() == 0)\n" +
+                     "       MyEvent()\n" +
+                     "       Boolean()\n" +
                      "       Integer()\n" +
                      "    then\n" +
-                     "        modify($counter){\n" +
-                     "            incrementAndGet()\n" +
-                     "        }\n" +
+                     "       counter.incrementAndGet();\n" +
                      "end";
 
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
@@ -6121,9 +6120,12 @@ public class CepEspTest extends CommonTestMethodBase {
         sessionClock.setStartupTime(0);
 
         AtomicInteger counter = new AtomicInteger( 0 );
+        ksession.setGlobal( "counter", counter );
+
         ksession.insert("test");
-        ksession.insert(counter);
+        ksession.insert(true);
         ksession.insert(new MyEvent(0));
+        ksession.insert(new MyEvent(15));
 
         ksession.fireAllRules();
         assertEquals(0, counter.get());
@@ -6132,6 +6134,6 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.insert( 1 );
         ksession.fireAllRules(); // MyEvent is expired
 
-        assertEquals(0, counter.get());
+        assertEquals(1, counter.get());
     }
 }
