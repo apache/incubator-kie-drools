@@ -2960,7 +2960,6 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testLeakingActivationsWithDetachedExpiredNonCancelling() throws Exception {
         // JBRULES-3558 - DROOLS 311
         // TODO: it is still possible to get multiple insertions of the Recording object

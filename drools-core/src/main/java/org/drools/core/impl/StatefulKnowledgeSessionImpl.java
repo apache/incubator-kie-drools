@@ -161,6 +161,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class StatefulKnowledgeSessionImpl extends AbstractRuntime
@@ -1810,11 +1811,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         private void retractRightTuples( InternalWorkingMemory workingMemory ) {
-            PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-
-            // if the fact is still in the working memory (since it may have been previously retracted already
-            final PropagationContext context = pctxFactory.createPropagationContext( workingMemory.getNextPropagationIdCounter(), PropagationContext.EXPIRATION,
-                                                                                     null, null, this.factHandle );
+            final PropagationContext context = createPropagationContextForFact( workingMemory, factHandle, PropagationContext.EXPIRATION );
             for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; ) {
                 RightTuple nextRightTuple = rightTuple.getHandleNext();
                 rightTuple.retractTuple( context, workingMemory);

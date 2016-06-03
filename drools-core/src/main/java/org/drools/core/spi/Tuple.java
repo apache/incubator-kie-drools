@@ -159,6 +159,4 @@ public interface Tuple extends Serializable, Entry<Tuple> {
 
     void modifyTuple( PropagationContext context, InternalWorkingMemory workingMemory );
     void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory );
-
-    boolean isExpired();
 }

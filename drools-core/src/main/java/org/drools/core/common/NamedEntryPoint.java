@@ -528,7 +528,7 @@ public class NamedEntryPoint
             // If the equality key is now empty, then remove it, as it's no longer state either
             if ( key.isEmpty() && key.getLogicalFactHandle() == null ) {
                 tms.remove( key );
-            } else if ( key.getLogicalFactHandle() != null && propagationContext != null) {
+            } else if ( key.getLogicalFactHandle() != null ) {
                 // The justified set can be unstaged, now that the last stated has been deleted
                 final InternalFactHandle justifiedHandle = key.getLogicalFactHandle();
                 BeliefSet bs = justifiedHandle.getEqualityKey().getBeliefSet();

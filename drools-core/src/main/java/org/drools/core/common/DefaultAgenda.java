@@ -63,6 +63,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
+import static org.drools.core.reteoo.ObjectTypeNode.doRetractObject;
+
 /**
  * Rule-firing Agenda.
  * 
@@ -1118,6 +1121,7 @@ public class DefaultAgenda
                         if ( handle.isExpired() ) {
                             if ( handle.getActivationsCount() <= 0 ) {
                                 // and if no more activations, retract the handle
+                                doRetractObject( handle, createPropagationContextForFact( workingMemory, handle, PropagationContext.EXPIRATION ), workingMemory );
                                 handle.getEntryPoint().delete( handle );
                             }
                         }

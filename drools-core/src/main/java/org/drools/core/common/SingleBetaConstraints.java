@@ -143,8 +143,7 @@ public class SingleBetaConstraints
      */
     public boolean isAllowedCachedRight(final ContextEntry[] context,
                                         final Tuple tuple) {
-        return !tuple.isExpired() &&
-               this.constraint.isAllowedCachedRight(tuple, context[0]);
+        return this.constraint.isAllowedCachedRight(tuple, context[0]);
     }
 
     public boolean isIndexed() {

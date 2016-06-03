@@ -116,8 +116,7 @@ public class DoubleBetaConstraints extends MultipleBetaConstraint {
      */
     public boolean isAllowedCachedRight(final ContextEntry[] context,
                                         final Tuple tuple) {
-        return !tuple.isExpired() &&
-               constraints[0].isAllowedCachedRight( tuple, context[0] ) &&
+        return constraints[0].isAllowedCachedRight( tuple, context[0] ) &&
                constraints[1].isAllowedCachedRight( tuple, context[1] );
     }
 

@@ -92,7 +92,7 @@ public class EmptyBetaConstraints
      */
     public boolean isAllowedCachedRight(final ContextEntry[] context,
                                         final Tuple tuple) {
-        return !tuple.isExpired();
+        return true;
     }
 
     public boolean isIndexed() {
