@@ -8619,4 +8619,30 @@ public class Misc2Test extends CommonTestMethodBase {
         kieSession.insert( 1 );
         assertEquals( 1, kieSession.fireAllRules() );
     }
+
+    @Test
+    public void testCCEAfterDeserialization() throws Exception {
+        // DROOLS-1155
+        String drl =
+                "function boolean checkLength(int length) { return true; }\n" +
+                "rule R dialect \"mvel\" when\n" +
+                "    Boolean()" +
+                "    String( $length : length )\n" +
+                "    eval( checkLength($length) )\n" +
+                "    ( Integer( ) or eval( true ) )\n" +
+                "then\n" +
+                "end";
+
+        KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL ).build();
+        KieSession ksession1 = kbase1.newKieSession();
+        ksession1.insert( true );
+        ksession1.insert( "test" );
+        assertEquals(1, ksession1.fireAllRules());
+
+        KieBase kbase2 = SerializationHelper.serializeObject( kbase1, ( (InternalKnowledgeBase) kbase1 ).getRootClassLoader() );
+        KieSession ksession2 = kbase2.newKieSession();
+        ksession2.insert( true );
+        ksession2.insert( "test" );
+        assertEquals(1, ksession2.fireAllRules());
+    }
 }
