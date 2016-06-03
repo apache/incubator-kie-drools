@@ -34,7 +34,7 @@ import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public abstract class ConstructionHeuristicTest<Solution_> extends PhaseTest<Solution_> {
+public abstract class AbstractConstructionHeuristicTest<Solution_> extends AbstractPhaseTest<Solution_> {
 
     protected static <Solution_> Collection<Object[]> buildParameters(SolutionDao<Solution_> solutionDao,
             String... unsolvedFileNames) {
@@ -56,7 +56,7 @@ public abstract class ConstructionHeuristicTest<Solution_> extends PhaseTest<Sol
 
     protected ConstructionHeuristicType constructionHeuristicType;
 
-    protected ConstructionHeuristicTest(File dataFile,
+    protected AbstractConstructionHeuristicTest(File dataFile,
             ConstructionHeuristicType constructionHeuristicType) {
         super(dataFile);
         this.constructionHeuristicType = constructionHeuristicType;

@@ -34,7 +34,7 @@ import org.optaplanner.examples.common.persistence.SolutionDao;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 @RunWith(Parameterized.class)
-public abstract class ExhaustiveSearchTest<Solution_> extends PhaseTest<Solution_> {
+public abstract class AbstractExhaustiveSearchTest<Solution_> extends AbstractPhaseTest<Solution_> {
 
     protected static <Solution_> Collection<Object[]> buildParameters(SolutionDao<Solution_> solutionDao,
             String... unsolvedFileNames) {
@@ -44,7 +44,7 @@ public abstract class ExhaustiveSearchTest<Solution_> extends PhaseTest<Solution
 
     protected ExhaustiveSearchType exhaustiveSearchType;
 
-    protected ExhaustiveSearchTest(File dataFile,
+    protected AbstractExhaustiveSearchTest(File dataFile,
             ExhaustiveSearchType exhaustiveSearchType) {
         super(dataFile);
         this.exhaustiveSearchType = exhaustiveSearchType;

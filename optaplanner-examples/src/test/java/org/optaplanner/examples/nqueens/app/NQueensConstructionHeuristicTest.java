@@ -21,11 +21,11 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
-import org.optaplanner.examples.common.app.ConstructionHeuristicTest;
+import org.optaplanner.examples.common.app.AbstractConstructionHeuristicTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.persistence.NQueensDao;
 
-public class NQueensConstructionHeuristicTest extends ConstructionHeuristicTest {
+public class NQueensConstructionHeuristicTest extends AbstractConstructionHeuristicTest {
 
     @Parameterized.Parameters(name = "{index}: {0} - {1}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {

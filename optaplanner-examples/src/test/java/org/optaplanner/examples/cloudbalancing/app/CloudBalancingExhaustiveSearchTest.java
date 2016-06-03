@@ -22,10 +22,10 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
-import org.optaplanner.examples.common.app.ExhaustiveSearchTest;
+import org.optaplanner.examples.common.app.AbstractExhaustiveSearchTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
-public class CloudBalancingExhaustiveSearchTest extends ExhaustiveSearchTest {
+public class CloudBalancingExhaustiveSearchTest extends AbstractExhaustiveSearchTest {
 
     @Parameterized.Parameters(name = "{index}: {0} - {1}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {

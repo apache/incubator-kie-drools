@@ -21,11 +21,11 @@ import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
-import org.optaplanner.examples.common.app.ExhaustiveSearchTest;
+import org.optaplanner.examples.common.app.AbstractExhaustiveSearchTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
 
-public class CurriculumCourseExhaustiveSearchTest extends ExhaustiveSearchTest {
+public class CurriculumCourseExhaustiveSearchTest extends AbstractExhaustiveSearchTest {
 
     @Parameterized.Parameters(name = "{index}: {0} - {1}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {

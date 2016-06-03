@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 @RunWith(Parameterized.class)
-public abstract class PhaseTest<Solution_> extends LoggingTest {
+public abstract class AbstractPhaseTest<Solution_> extends LoggingTest {
 
     protected static <Solution_, Enum_ extends Enum> Collection<Object[]> buildParameters(
             SolutionDao<Solution_> solutionDao, Enum_[] types, String... unsolvedFileNames) {
@@ -59,7 +59,7 @@ public abstract class PhaseTest<Solution_> extends LoggingTest {
     protected SolutionDao<Solution_> solutionDao;
     protected File dataFile;
 
-    protected PhaseTest(File dataFile) {
+    protected AbstractPhaseTest(File dataFile) {
         this.dataFile = dataFile;
     }
 
