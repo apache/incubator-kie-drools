@@ -15,40 +15,36 @@
 
 package org.kie.internal.runtime.cdi;
 
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.spi.AnnotatedType;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.Extension;
-import javax.enterprise.inject.spi.ProcessAnnotatedType;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.AnnotatedType;
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ProcessAnnotatedType;
+import javax.enterprise.inject.spi.WithAnnotations;
 
 public class ActivateExtension implements Extension {
 
     private static final Logger logger = LoggerFactory.getLogger(ActivateExtension.class);
 
-    <X> void processAnnotatedType(@Observes final ProcessAnnotatedType<X> pat, BeanManager beanManager) {
+    <X> void processAnnotatedType(@Observes final @WithAnnotations(Activate.class) ProcessAnnotatedType<X> pat) {
         final AnnotatedType<X> annotatedType = pat.getAnnotatedType();
         final Class<X> javaClass = annotatedType.getJavaClass();
 
-        if (javaClass.isAnnotationPresent(Activate.class)) {
+        Activate veto = javaClass.getAnnotation(Activate.class);
+        String whenAvailable = veto.whenAvailable();
+        String whenNotAvailable = veto.whenNotAvailable();
 
-            Activate veto = javaClass.getAnnotation(Activate.class);
-            String whenAvailable = veto.whenAvailable();
-            String whenNotAvailable = veto.whenNotAvailable();
-
-            if (isNotEmpty(whenAvailable) && !isAvailable(whenAvailable, true)) {
-                // veto bean in case whenAvailable is not present
-                pat.veto();
-            }
-
-            if (isNotEmpty(whenNotAvailable) && isAvailable(whenNotAvailable, false)) {
-                // veto bean in case whenNotAvailable is present
-                pat.veto();
-            }
+        if (isNotEmpty(whenAvailable) && !isAvailable(whenAvailable, true)) {
+            // veto bean in case whenAvailable is not present
+            pat.veto();
         }
-        return;
+
+        if (isNotEmpty(whenNotAvailable) && isAvailable(whenNotAvailable, false)) {
+            // veto bean in case whenNotAvailable is present
+            pat.veto();
+        }
     }
 
     protected boolean isAvailable(String classname, boolean expected) {
