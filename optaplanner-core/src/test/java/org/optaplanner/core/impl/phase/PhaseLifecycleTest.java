@@ -20,7 +20,6 @@ import java.util.Arrays;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.optaplanner.core.api.solver.Solver;
@@ -33,14 +32,13 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
-@RunWith(MockitoJUnitRunner.class)
-public class PhaseLifecycleTest {
+import static org.mockito.Mockito.mock;
 
-    @Mock
-    private PhaseLifecycleListener<TestdataSolution> listener;
+public class PhaseLifecycleTest {
 
     @Test
     public void verifyEventCounts() {
+        PhaseLifecycleListener listener = mock(PhaseLifecycleListener.class);
         // prepare solver
         SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
                 TestdataSolution.class, TestdataEntity.class);
