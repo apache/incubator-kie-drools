@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerAssert;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 @RunWith(MockitoJUnitRunner.class)
-public class PhaseLifecyleTest {
+public class PhaseLifecycleTest {
 
     @Mock
     private PhaseLifecycleListener<TestdataSolution> listener;
