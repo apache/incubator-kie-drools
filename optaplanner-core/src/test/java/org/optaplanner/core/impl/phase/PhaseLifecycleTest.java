@@ -63,8 +63,7 @@ public class PhaseLifecycleTest {
         // step count = number of uninitialized entities (CH) + LS step count limit
         final int stepCount = entitiesCount + PlannerTestUtils.TERMINATION_STEP_COUNT_LIMIT;
         final int phaseCount = solverFactory.getSolverConfig().getPhaseConfigList().size();
-        final int solvingCount = 1;
-        PlannerAssert.verifyPhaseLifecycle(listener, solvingCount, phaseCount, stepCount);
+        PlannerAssert.verifyPhaseLifecycle(listener, 1, phaseCount, stepCount);
 
         // forget previous invocations
         Mockito.<PhaseLifecycleListener<?>>reset(listener);
@@ -72,7 +71,7 @@ public class PhaseLifecycleTest {
         // uninitialize 1 entity and solve again
         solvedSolution.getEntityList().get(0).setValue(null);
         solver.solve(solvedSolution);
-        PlannerAssert.verifyPhaseLifecycle(listener, solvingCount, phaseCount, 1 + PlannerTestUtils.TERMINATION_STEP_COUNT_LIMIT);
+        PlannerAssert.verifyPhaseLifecycle(listener, 1, phaseCount, 1 + PlannerTestUtils.TERMINATION_STEP_COUNT_LIMIT);
 
         // forget previous invocations
         Mockito.<PhaseLifecycleListener<?>>reset(listener);
@@ -82,4 +81,5 @@ public class PhaseLifecycleTest {
         solver.solve(solution);
         PlannerAssert.verifyPhaseLifecycle(listener, 0, 0, 0);
     }
+
 }

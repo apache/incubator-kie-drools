@@ -18,7 +18,12 @@ package org.optaplanner.core.impl.phase;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
@@ -28,10 +33,29 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
  */
 public interface Phase<Solution_> extends PhaseLifecycleListener<Solution_> {
 
-    void solve(DefaultSolverScope<Solution_> solverScope);
+    /**
+     * Used to make {@link DefaultSolver#addPhaseLifecycleListener(PhaseLifecycleListener)} work.
+     * @param solverPhaseLifecycleSupport never null
+     */
+    void setSolverPhaseLifecycleSupport(PhaseLifecycleSupport<Solution_> solverPhaseLifecycleSupport);
 
+    /**
+     * Add a {@link PhaseLifecycleListener} that is only notified
+     * of the {@link PhaseLifecycleListener#phaseStarted(AbstractPhaseScope) phase}
+     * and the {@link PhaseLifecycleListener#stepStarted(AbstractStepScope)} step} starting/ending events from this phase
+     * (and the {@link PhaseLifecycleListener#solvingStarted(DefaultSolverScope)} solving} events too of course).
+     * <p>
+     * To get notified for all phases, use {@link DefaultSolver#addPhaseLifecycleListener(PhaseLifecycleListener)} instead.
+     * @param phaseLifecycleListener never null
+     */
     void addPhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener);
 
+    /**
+     * @param phaseLifecycleListener never null
+     * @see #addPhaseLifecycleListener(PhaseLifecycleListener)
+     */
     void removePhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener);
+
+    void solve(DefaultSolverScope<Solution_> solverScope);
 
 }
