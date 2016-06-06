@@ -107,14 +107,12 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         // bestSolutionRecaller.solvingStarted(...) is called by DefaultSolver
         termination.solvingStarted(solverScope);
-        phaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
     @Override
     public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         // bestSolutionRecaller.solvingEnded(...) is called by DefaultSolver
         termination.solvingEnded(solverScope);
-        phaseLifecycleSupport.fireSolvingEnded(solverScope);
     }
 
     @Override

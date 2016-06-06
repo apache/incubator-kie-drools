@@ -28,6 +28,7 @@ import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
@@ -47,6 +48,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected SolverEventSupport<Solution_> solverEventSupport = new SolverEventSupport<>(this);
+    protected PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
 
     protected EnvironmentMode environmentMode;
     protected RandomFactory randomFactory;
@@ -214,6 +216,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         }
         int startingSolverCount = solverScope.getStartingSolverCount() + 1;
         solverScope.setStartingSolverCount(startingSolverCount);
+        phaseLifecycleSupport.fireSolvingStarted(solverScope);
         logger.info("Solving {}: time spent ({}), best score ({}), environment mode ({}), random ({}).",
                 (startingSolverCount == 1 ? "started" : "restarted"),
                 solverScope.calculateTimeMillisSpentUpToNow(),
@@ -240,6 +243,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         }
         bestSolutionRecaller.solvingEnded(solverScope);
         solverScope.endingNow();
+        phaseLifecycleSupport.fireSolvingEnded(solverScope);
     }
 
     public void outerSolvingEnded(DefaultSolverScope<Solution_> solverScope) {
@@ -297,14 +301,16 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
     }
 
     public void addPhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener) {
+        phaseLifecycleSupport.addEventListener(phaseLifecycleListener);
         for (Phase phase : phaseList) {
             phase.addPhaseLifecycleListener(phaseLifecycleListener);
         }
     }
 
     public void removePhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener) {
+        phaseLifecycleSupport.removeEventListener(phaseLifecycleListener);
         for (Phase phase : phaseList) {
-            phase.addPhaseLifecycleListener(phaseLifecycleListener);
+            phase.removePhaseLifecycleListener(phaseLifecycleListener);
         }
     }
 
