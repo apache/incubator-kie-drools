@@ -827,7 +827,6 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
             averageMemory = averageMemory + usedMemory;
             if ((i % numberOfAveragedIterations) == 0) {
                 averageMemory = averageMemory / numberOfAveragedIterations;
-                // Ignore the first comparison, because first average memory can be low due to some initialization not completed.
                 if (averageMemoryFootprints.size() > 0) {
                     final long previousAverageMemory = averageMemoryFootprints.get(averageMemoryFootprints.size() - 1);
                     if (averageMemory > previousAverageMemory) {
