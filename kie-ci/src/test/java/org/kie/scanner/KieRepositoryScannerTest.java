@@ -35,6 +35,8 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.scanner.embedder.MavenEmbedderUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +51,8 @@ import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 @RunWith(Parameterized.class)
 public class KieRepositoryScannerTest extends AbstractKieCiTest {
+
+    private static final Logger logger = LoggerFactory.getLogger(KieRepositoryScannerTest.class);
 
     private final boolean useWiredComponentProvider;
 
@@ -837,7 +841,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
                                     + getMemoryMeasurmentsString(averageMemoryFootprints),
                             memoryRaiseCount > acceptedNumberOfMemoryRaises);
                 }
-                System.out.println("Average memory: " + averageMemory);
+                logger.debug("Average memory: " + averageMemory);
                 averageMemoryFootprints.add(averageMemory);
                 averageMemory = 0;
             }
