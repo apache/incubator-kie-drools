@@ -97,4 +97,6 @@ public abstract class VariableDescriptor<Solution_> {
         variableMemberAccessor.executeSetter(entity, value);
     }
 
+    public abstract boolean isGenuineAndUninitialized(Object entity);
+
 }

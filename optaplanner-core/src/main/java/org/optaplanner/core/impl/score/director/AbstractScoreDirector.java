@@ -277,8 +277,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
-        if (variableDescriptor instanceof GenuineVariableDescriptor
-                && !((GenuineVariableDescriptor) variableDescriptor).isInitialized(entity)) {
+        if (variableDescriptor.isGenuineAndUninitialized(entity)) {
             workingInitScore++;
         }
         variableListenerSupport.beforeVariableChanged(variableDescriptor, entity);
@@ -286,8 +285,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
-        if (variableDescriptor instanceof GenuineVariableDescriptor
-                && !((GenuineVariableDescriptor) variableDescriptor).isInitialized(entity)) {
+        if (variableDescriptor.isGenuineAndUninitialized(entity)) {
             workingInitScore--;
         }
         variableListenerSupport.afterVariableChanged(variableDescriptor, entity);

@@ -253,6 +253,11 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
         return variable != null;
     }
 
+    @Override
+    public boolean isGenuineAndUninitialized(Object entity) {
+        return !isInitialized(entity);
+    }
+
     public boolean isReinitializable(ScoreDirector<Solution_> scoreDirector, Object entity) {
         return reinitializeVariableEntityFilter.accept(scoreDirector, entity);
     }

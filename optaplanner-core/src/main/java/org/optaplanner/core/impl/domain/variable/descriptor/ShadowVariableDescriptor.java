@@ -77,6 +77,15 @@ public abstract class ShadowVariableDescriptor<Solution_> extends VariableDescri
      */
     public abstract VariableListener<Solution_> buildVariableListener(InnerScoreDirector<Solution_> scoreDirector);
 
+    // ************************************************************************
+    // Extraction methods
+    // ************************************************************************
+
+    @Override
+    public boolean isGenuineAndUninitialized(Object entity) {
+        return false;
+    }
+
     @Override
     public String toString() {
         return getSimpleEntityAndVariableName() + " shadow";
