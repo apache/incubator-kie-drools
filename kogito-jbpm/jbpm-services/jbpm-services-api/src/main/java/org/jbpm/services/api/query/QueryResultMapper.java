@@ -95,7 +95,7 @@ public interface QueryResultMapper<T> extends Serializable {
     public static final String COLUMN_TASK_STATUS = "STATUS";
     public static final String COLUMN_TASKID = "TASKID";
     public static final String COLUMN_WORKITEMID = "WORKITEMID";
-    public static final String COLUMN_ORGANIZATIONAL_ENTITY = "OEID";
+    public static final String COLUMN_ORGANIZATIONAL_ENTITY = "ID";
     
     // task variables related
     public static final String COLUMN_TASK_VAR_NAME = "TVNAME";

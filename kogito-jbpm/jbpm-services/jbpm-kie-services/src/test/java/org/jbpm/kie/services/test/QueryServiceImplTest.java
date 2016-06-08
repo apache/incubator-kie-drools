@@ -405,10 +405,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     public void testGetTaskInstancesAsPotOwners() {
         
         query = new SqlQueryDefinition("getMyTaskInstances", dataSourceJNDIname, Target.PO_TASK);
-        query.setExpression("select ti.*, oe.id OEID from AuditTaskImpl ti,"
-                        + "PeopleAssignments_PotOwners po, "
-                        + "OrganizationalEntity oe "
-                        + "where ti.taskId = po.task_id and po.entity_id = oe.id ");
+        query.setExpression("select ti.activationTime, ti.actualOwner, ti.createdBy, ti.createdOn, ti.deploymentId, "
+                + "ti.description, ti.dueDate, ti.name, ti.parentId, ti.priority, ti.processId, ti.processInstanceId, "
+                + "ti.processSessionId, ti.status, ti.taskId, ti.workItemId,  oe.id "
+                + "from AuditTaskImpl ti,"
+                +      "PeopleAssignments_PotOwners po, "
+                +      "OrganizationalEntity oe "
+                + "where ti.taskId = po.task_id and po.entity_id = oe.id ");
         
         queryService.registerQuery(query);
         
@@ -460,10 +463,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     public void testGetTaskInstancesAsBA() {
         
         query = new SqlQueryDefinition("getBATaskInstances", dataSourceJNDIname, Target.BA_TASK);
-        query.setExpression("select ti.*, oe.id OEID from AuditTaskImpl ti,"
-                        + "PeopleAssignments_BAs bas, "
-                        + "OrganizationalEntity oe "
-                        + "where ti.taskId = bas.task_id and bas.entity_id = oe.id ");
+        query.setExpression( "select ti.activationTime, ti.actualOwner, ti.createdBy, ti.createdOn, ti.deploymentId, "
+                + "ti.description, ti.dueDate, ti.name, ti.parentId, ti.priority, ti.processId, ti.processInstanceId, "
+                + "ti.processSessionId, ti.status, ti.taskId, ti.workItemId,  oe.id "
+                + "from AuditTaskImpl ti,"
+                +      "PeopleAssignments_BAs bas, "
+                +      "OrganizationalEntity oe "
+                + "where ti.taskId = bas.task_id and bas.entity_id = oe.id ");
         
         queryService.registerQuery(query);
         
