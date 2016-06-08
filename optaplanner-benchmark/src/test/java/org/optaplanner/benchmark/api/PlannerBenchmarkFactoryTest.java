@@ -22,6 +22,7 @@ import java.util.Collections;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.core.api.solver.DivertingClassLoader;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.impl.phase.custom.DummyCustomPhaseCommand;
@@ -60,10 +61,21 @@ public class PlannerBenchmarkFactoryTest {
     public void uninitializedBenchmarkResult() {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
                 "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfig.xml");
+        SolverBenchmarkConfig solverBenchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig().getSolverBenchmarkConfigList().get(0);
         CustomPhaseConfig phaseConfig = new CustomPhaseConfig();
         phaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(DummyCustomPhaseCommand.class));
-        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getSolverBenchmarkConfigList().get(0).getSolverConfig()
-                .setPhaseConfigList(Collections.singletonList(phaseConfig));
+        solverBenchmarkConfig.getSolverConfig() .setPhaseConfigList(Collections.singletonList(phaseConfig));
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        assertNotNull(plannerBenchmark);
+        plannerBenchmark.benchmark();
+    }
+
+    @Test
+    public void subsingleBenchmarkConfig() {
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
+                "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfig.xml");
+        SolverBenchmarkConfig solverBenchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig().getSolverBenchmarkConfigList().get(0);
+        solverBenchmarkConfig.setSubSingleCount(3);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);
         plannerBenchmark.benchmark();
