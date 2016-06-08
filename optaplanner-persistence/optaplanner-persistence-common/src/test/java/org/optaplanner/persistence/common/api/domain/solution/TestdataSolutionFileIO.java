@@ -38,8 +38,9 @@ public class TestdataSolutionFileIO implements SolutionFileIO<TestdataSolution> 
     @Override
     public TestdataSolution read(File inputSolutionFile) {
         TestdataSolution solution = new TestdataSolution("s1");
-        solution.setValueList(Arrays.asList(new TestdataValue("v1")));
-        solution.setEntityList(Arrays.asList(new TestdataEntity("e1")));
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setEntityList(Arrays.asList(
+                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3")));
         return solution;
     }
 

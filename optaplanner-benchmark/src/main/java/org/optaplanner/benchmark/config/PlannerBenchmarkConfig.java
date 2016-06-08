@@ -33,7 +33,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig;
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
-import org.optaplanner.benchmark.impl.PlannerBenchmarkRunner;
+import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -195,13 +195,13 @@ public class PlannerBenchmarkConfig {
         PlannerBenchmarkResult plannerBenchmarkResult = new PlannerBenchmarkResult();
         plannerBenchmarkResult.setName(name);
         plannerBenchmarkResult.setAggregation(false);
-        PlannerBenchmarkRunner plannerBenchmarkRunner = new PlannerBenchmarkRunner(plannerBenchmarkResult, solverConfigContext);
-        plannerBenchmarkRunner.setBenchmarkDirectory(benchmarkDirectory);
+        DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark(plannerBenchmarkResult, solverConfigContext);
+        plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
         plannerBenchmarkResult.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
         plannerBenchmarkResult.setWarmUpTimeMillisSpentLimit(calculateWarmUpTimeMillisSpentLimit());
         BenchmarkReportConfig benchmarkReportConfig_ = benchmarkReportConfig == null ? new BenchmarkReportConfig()
                 : benchmarkReportConfig;
-        plannerBenchmarkRunner.setBenchmarkReport(benchmarkReportConfig_.buildBenchmarkReport(plannerBenchmarkResult));
+        plannerBenchmark.setBenchmarkReport(benchmarkReportConfig_.buildBenchmarkReport(plannerBenchmarkResult));
 
         plannerBenchmarkResult.setUnifiedProblemBenchmarkResultList(new ArrayList<>());
         plannerBenchmarkResult.setSolverBenchmarkResultList(new ArrayList<>(
@@ -209,7 +209,7 @@ public class PlannerBenchmarkConfig {
         for (SolverBenchmarkConfig solverBenchmarkConfig : effectiveSolverBenchmarkConfigList) {
             solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmarkResult);
         }
-        return plannerBenchmarkRunner;
+        return plannerBenchmark;
     }
 
     protected void validate() {

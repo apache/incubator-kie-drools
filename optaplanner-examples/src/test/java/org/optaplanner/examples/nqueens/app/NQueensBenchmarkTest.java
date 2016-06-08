@@ -25,7 +25,7 @@ import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
-import org.optaplanner.benchmark.impl.PlannerBenchmarkRunner;
+import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
 import org.optaplanner.examples.common.app.PlannerBenchmarkTest;
 
 public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
@@ -70,10 +70,10 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     @Test
     public void benchmarkDirectoryNameDuplication() {
         PlannerBenchmarkFactory plannerBenchmarkFactory = buildPlannerBenchmarkFactory(new File("data/nqueens/unsolved/4queens.xml"));
-        PlannerBenchmarkRunner plannerBenchmarkRunner = (PlannerBenchmarkRunner) plannerBenchmarkFactory.buildPlannerBenchmark();
-        plannerBenchmarkRunner.benchmarkingStarted();
-        plannerBenchmarkRunner.getPlannerBenchmarkResult().initBenchmarkReportDirectory(plannerBenchmarkFactory.getPlannerBenchmarkConfig().getBenchmarkDirectory());
-        plannerBenchmarkRunner.getPlannerBenchmarkResult().initBenchmarkReportDirectory(plannerBenchmarkFactory.getPlannerBenchmarkConfig().getBenchmarkDirectory());
+        DefaultPlannerBenchmark plannerBenchmark = (DefaultPlannerBenchmark) plannerBenchmarkFactory.buildPlannerBenchmark();
+        plannerBenchmark.benchmarkingStarted();
+        plannerBenchmark.getPlannerBenchmarkResult().initBenchmarkReportDirectory(plannerBenchmarkFactory.getPlannerBenchmarkConfig().getBenchmarkDirectory());
+        plannerBenchmark.getPlannerBenchmarkResult().initBenchmarkReportDirectory(plannerBenchmarkFactory.getPlannerBenchmarkConfig().getBenchmarkDirectory());
     }
 
 }

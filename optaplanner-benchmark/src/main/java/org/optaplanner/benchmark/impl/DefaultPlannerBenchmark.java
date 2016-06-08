@@ -47,7 +47,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PlannerBenchmarkRunner implements PlannerBenchmark {
+public class DefaultPlannerBenchmark implements PlannerBenchmark {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
     protected final transient Logger singleBenchmarkRunnerExceptionLogger = LoggerFactory.getLogger(
@@ -67,11 +67,11 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     private long startingSystemTimeMillis = -1L;
     private SubSingleBenchmarkRunner firstFailureSubSingleBenchmarkRunner = null;
 
-    public PlannerBenchmarkRunner(PlannerBenchmarkResult plannerBenchmarkResult) {
+    public DefaultPlannerBenchmark(PlannerBenchmarkResult plannerBenchmarkResult) {
         this(plannerBenchmarkResult, new SolverConfigContext());
     }
 
-    public PlannerBenchmarkRunner(PlannerBenchmarkResult plannerBenchmarkResult,
+    public DefaultPlannerBenchmark(PlannerBenchmarkResult plannerBenchmarkResult,
             SolverConfigContext solverConfigContext) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
         this.solverConfigContext = solverConfigContext;
