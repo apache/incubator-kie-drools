@@ -419,6 +419,15 @@ public class EntityDescriptor<Solution_> {
         return effectiveGenuineVariableDescriptorMap.size();
     }
 
+    public long getMaximumValueCount(Solution_ solution, Object entity) {
+        long maximumValueCount = 0L;
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+            maximumValueCount = Math.max(maximumValueCount, variableDescriptor.getValueCount(solution, entity));
+        }
+        return maximumValueCount;
+
+    }
+
     public long getProblemScale(Solution_ solution, Object entity) {
         long problemScale = 1L;
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {

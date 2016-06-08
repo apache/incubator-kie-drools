@@ -530,6 +530,7 @@
                     <p>
                         Entity count: ${problemBenchmarkResult.entityCount!""}<br/>
                         Variable count: ${problemBenchmarkResult.variableCount!""}<br/>
+                        Maximum value count: ${problemBenchmarkResult.maximumValueCount!""}<br/>
                         Problem scale: ${problemBenchmarkResult.problemScale!""}
                         <#if problemBenchmarkResult.averageUsedMemoryAfterInputSolution??>
                             <br/>Memory usage after loading the inputSolution (before creating the Solver): ${problemBenchmarkResult.averageUsedMemoryAfterInputSolution?string.number} bytes on average.

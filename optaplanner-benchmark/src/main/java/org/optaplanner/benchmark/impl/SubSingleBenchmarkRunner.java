@@ -108,6 +108,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
         SolutionDescriptor<Solution_> solutionDescriptor = solverScope.getSolutionDescriptor();
         problemBenchmarkResult.registerScale(solutionDescriptor.getEntityCount(outputSolution),
                 solutionDescriptor.getGenuineVariableCount(outputSolution),
+                solutionDescriptor.getMaximumValueCount(outputSolution),
                 solutionDescriptor.getProblemScale(outputSolution));
         subSingleBenchmarkResult.setScore(solutionDescriptor.getScore(outputSolution));
         subSingleBenchmarkResult.setTimeMillisSpent(timeMillisSpent);

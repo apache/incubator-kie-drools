@@ -654,13 +654,23 @@ public class SolutionDescriptor<Solution_> {
         return variableCount;
     }
 
+    public long getMaximumValueCount(Solution_ solution) {
+        long maximumValueCount = 0L;
+        for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext(); ) {
+            Object entity = it.next();
+            EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
+            maximumValueCount = Math.max(maximumValueCount, entityDescriptor.getMaximumValueCount(solution, entity));
+        }
+        return maximumValueCount;
+    }
+
     /**
      * @param solution never null
      * @return {@code >= 0}
      */
     public int getValueCount(Solution_ solution) {
         int valueCount = 0;
-        // TODO FIXME for ValueRatioTabuSizeStrategy
+        // TODO FIXME for ValueRatioTabuSizeStrategy (or reuse maximumValueCount() for that variable descriptor?)
         throw new UnsupportedOperationException(
                 "getValueCount is not yet supported - this blocks ValueRatioTabuSizeStrategy");
         // return valueCount;

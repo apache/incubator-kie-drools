@@ -75,6 +75,7 @@ public class ProblemBenchmarkResult<Solution_> {
 
     private Long entityCount = null;
     private Long variableCount = null;
+    private Long maximumValueCount = null;
     private Long problemScale = null;
 
     @XStreamOmitField // Loaded lazily from singleBenchmarkResults
@@ -158,6 +159,10 @@ public class ProblemBenchmarkResult<Solution_> {
 
     public Long getVariableCount() {
         return variableCount;
+    }
+
+    public Long getMaximumValueCount() {
+        return maximumValueCount;
     }
 
     public Long getProblemScale() {
@@ -377,11 +382,12 @@ public class ProblemBenchmarkResult<Solution_> {
      * @param registeringProblemScale {@code >= 0}
      */
     public void registerScale(long registeringEntityCount, long registeringVariableCount,
-            long registeringProblemScale) {
+            long registeringMaximumValueCount, long registeringProblemScale) {
         if (entityCount == null) {
             entityCount = registeringEntityCount;
         } else if (entityCount.longValue() != registeringEntityCount) {
-            logger.warn("The problemBenchmarkResult ({}) has different entityCount values ([{},{}]).",
+            logger.warn("The problemBenchmarkResult ({}) has different entityCount values ([{},{}]).\n"
+                    + "This is normally impossible for 1 inputSolutionFile.",
                     getName(), entityCount, registeringEntityCount);
             // The entityCount is not unknown (null), but known to be ambiguous
             entityCount = -1L;
@@ -389,15 +395,26 @@ public class ProblemBenchmarkResult<Solution_> {
         if (variableCount == null) {
             variableCount = registeringVariableCount;
         } else if (variableCount.longValue() != registeringVariableCount) {
-            logger.warn("The problemBenchmarkResult ({}) has different variableCount values ([{},{}]).",
+            logger.warn("The problemBenchmarkResult ({}) has different variableCount values ([{},{}]).\n"
+                    + "This is normally impossible for 1 inputSolutionFile.",
                     getName(), variableCount, registeringVariableCount);
             // The variableCount is not unknown (null), but known to be ambiguous
             variableCount = -1L;
         }
+        if (maximumValueCount == null) {
+            maximumValueCount = registeringMaximumValueCount;
+        } else if (maximumValueCount.longValue() != registeringMaximumValueCount) {
+            logger.warn("The problemBenchmarkResult ({}) has different maximumValueCount values ([{},{}]).\n"
+                    + "This is normally impossible for 1 inputSolutionFile.",
+                    getName(), maximumValueCount, registeringMaximumValueCount);
+            // The maximumValueCount is not unknown (null), but known to be ambiguous
+            maximumValueCount = -1L;
+        }
         if (problemScale == null) {
             problemScale = registeringProblemScale;
         } else if (problemScale.longValue() != registeringProblemScale) {
-            logger.warn("The problemBenchmarkResult ({}) has different problemScale values ([{},{}]).",
+            logger.warn("The problemBenchmarkResult ({}) has different problemScale values ([{},{}]).\n"
+                    + "This is normally impossible for 1 inputSolutionFile.",
                     getName(), problemScale, registeringProblemScale);
             // The problemScale is not unknown (null), but known to be ambiguous
             problemScale = -1L;
@@ -454,6 +471,7 @@ public class ProblemBenchmarkResult<Solution_> {
                             oldResult.singleBenchmarkResultList.size());
                     newResult.entityCount = oldResult.entityCount;
                     newResult.variableCount = oldResult.variableCount;
+                    newResult.maximumValueCount = oldResult.maximumValueCount;
                     newResult.problemScale = oldResult.problemScale;
                     fileToNewResultMap.put(oldResult.inputSolutionFile, newResult);
                     newPlannerBenchmarkResult.getUnifiedProblemBenchmarkResultList().add(newResult);
@@ -473,6 +491,7 @@ public class ProblemBenchmarkResult<Solution_> {
                     }
                     newResult.entityCount = ConfigUtils.meldProperty(oldResult.entityCount, newResult.entityCount);
                     newResult.variableCount = ConfigUtils.meldProperty(oldResult.variableCount, newResult.variableCount);
+                    newResult.maximumValueCount = ConfigUtils.meldProperty(oldResult.maximumValueCount, newResult.maximumValueCount);
                     newResult.problemScale = ConfigUtils.meldProperty(oldResult.problemScale, newResult.problemScale);
                 }
                 mergeMap.put(oldResult, newResult);
