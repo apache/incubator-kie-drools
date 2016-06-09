@@ -24,6 +24,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,9 +38,8 @@ import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
 
-import org.hibernate.tool.hbm2ddl.DatabaseMetadata;
+//import org.hibernate.tool.hbm2ddl.DatabaseMetadata;
 import org.kie.internal.query.ExtendedParametrizedQueryBuilder;
-import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,7 +71,7 @@ public abstract class QueryBuilderCoverageTestUtil {
                 Field loggerField;
                 Class objClass = null;
                 if( loggerObj == null ) {
-                    objClass = DatabaseMetadata.class;
+                    objClass = DatabaseMetaData.class;
                 } else {
                    objClass = loggerObj.getClass();
                 }

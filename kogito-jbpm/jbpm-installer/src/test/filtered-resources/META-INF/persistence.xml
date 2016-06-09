@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.0"
-             xmlns="http://java.sun.com/xml/ns/persistence"
-             xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
+<persistence version="2.1"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd">
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 
   <persistence-unit name="scriptRunner" transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>jdbc/testDS1</jta-data-source>
 
     <class>org.jbpm.persistence.scripts.oldentities.ProcessInstanceInfo</class>
@@ -50,7 +49,7 @@
     </properties>
   </persistence-unit>
   <persistence-unit name="dbTesting" transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>jdbc/testDS2</jta-data-source>
     <mapping-file>META-INF/JBPMorm.xml</mapping-file>
 
@@ -119,7 +118,7 @@
     </properties>
   </persistence-unit>
   <persistence-unit name="dbTestingUpdate" transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>jdbc/testDS3</jta-data-source>
     <mapping-file>META-INF/JBPMorm.xml</mapping-file>
 
@@ -192,7 +191,7 @@
     </properties>
   </persistence-unit>
   <persistence-unit name="clearSchema" transaction-type="JTA">
-    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
     <jta-data-source>jdbc/testDS4</jta-data-source>
     <mapping-file>META-INF/JBPMorm.xml</mapping-file>
     <!-- drools-persistence-jpa -->

@@ -58,7 +58,7 @@
             <!-- conflicts with Hibernate on WAS -->
             <exclusion>
               <groupId>org.hibernate.javax.persistence</groupId>
-              <artifactId>hibernate-jpa-2.0-api</artifactId>
+              <artifactId>hibernate-jpa-2.1-api</artifactId>
             </exclusion>
             <!-- conflicts with Weld and Hibernate on WAS -->
             <exclusion>
@@ -90,7 +90,7 @@
             <!-- conflicts with Hibernate on WAS -->
             <exclusion>
               <groupId>org.hibernate.javax.persistence</groupId>
-              <artifactId>hibernate-jpa-2.0-api</artifactId>
+              <artifactId>hibernate-jpa-2.1-api</artifactId>
             </exclusion>
             <!-- conflicts with Weld and Hibernate on WAS -->
             <exclusion>
@@ -132,7 +132,7 @@
             <!-- conflicts with Hibernate on EWS -->
             <exclusion>
               <groupId>org.hibernate.javax.persistence</groupId>
-              <artifactId>hibernate-jpa-2.0-api</artifactId>
+              <artifactId>hibernate-jpa-2.1-api</artifactId>
             </exclusion>
             <!-- conflicts with BTM/Hibernate on EWS -->
             <exclusion>
@@ -234,7 +234,7 @@
             </exclusion>
             <exclusion>
               <groupId>org.hibernate.javax.persistence</groupId>
-              <artifactId>hibernate-jpa-2.0-api</artifactId>
+              <artifactId>hibernate-jpa-2.1-api</artifactId>
             </exclusion>
             <exclusion>
               <groupId>org.javassist</groupId>
@@ -280,7 +280,7 @@
             </exclusion>
             <exclusion>
               <groupId>org.hibernate.javax.persistence</groupId>
-              <artifactId>hibernate-jpa-2.0-api</artifactId>
+              <artifactId>hibernate-jpa-2.1-api</artifactId>
             </exclusion>
             <exclusion>
               <groupId>org.javassist</groupId>

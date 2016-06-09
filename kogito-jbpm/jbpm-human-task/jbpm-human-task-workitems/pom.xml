@@ -53,7 +53,6 @@
     </dependency>    
 
     <!--test-->
-
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
@@ -69,6 +68,13 @@
       <artifactId>hibernate-validator</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- javax.el required by hibernate-validator -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.el</groupId>
+      <artifactId>jboss-el-api_3.0_spec</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>

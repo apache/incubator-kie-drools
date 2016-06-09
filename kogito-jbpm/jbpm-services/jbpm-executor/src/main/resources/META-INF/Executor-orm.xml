@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+<entity-mappings version="2.1"
+                 xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
-                 version="2.0">  
-    <named-query name="PendingRequests"> 
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_1.xsd">
+    <named-query name="PendingRequests">
         <query>
             Select r from RequestInfo as r where (r.status ='QUEUED' or r.status = 'RETRYING') and r.time &lt; :now ORDER BY r.time DESC
         </query>
     </named-query>
-    <named-query name="PendingRequestById"> 
+    <named-query name="PendingRequestById">
         <query>
             Select r from RequestInfo as r where (r.status ='QUEUED' or r.status ='RETRYING') and id = :id
         </query>
@@ -82,14 +82,14 @@
         </query>
     </named-query>
     
-    <named-query name="PendingRequestsForProcessing"> 
+    <named-query name="PendingRequestsForProcessing">
         <query>
             Select r from RequestInfo as r where (r.status ='QUEUED' or r.status = 'RETRYING') 
             and r.time &lt; :now and (r.owner = :owner or r.owner is null) order by r.priority desc
         </query>
     </named-query>
     
-        <named-query name="PendingRequestByIdForProcessing"> 
+        <named-query name="PendingRequestByIdForProcessing">
         <query>
             Select r from RequestInfo as r where (r.status ='QUEUED' or r.status = 'RETRYING') 
             and r.id = :requestId
