@@ -50,11 +50,7 @@
         <scoreDrl>org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
-        <!--
-          Official benchmark secondsSpentLimit allowed on:
-          - ge0ffrey's main pc: sprint 11, medium 700, long 42000
-        -->
-        <secondsSpentLimit>11</secondsSpentLimit>
+        <secondsSpentLimit>10</secondsSpentLimit>
       </termination>
       <constructionHeuristic>
         <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>

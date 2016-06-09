@@ -7,7 +7,6 @@
   <inheritedSolverBenchmark>
     <problemBenchmarks>
       <xStreamAnnotatedClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</xStreamAnnotatedClass>
-      <!--<inputSolutionFile>data/nurserostering/unsolved/medium_late01_initialized.xml</inputSolutionFile>-->
       <inputSolutionFile>data/nurserostering/unsolved/medium01.xml</inputSolutionFile>
       <inputSolutionFile>data/nurserostering/unsolved/medium02.xml</inputSolutionFile>
       <inputSolutionFile>data/nurserostering/unsolved/medium03.xml</inputSolutionFile>

@@ -16,37 +16,38 @@
     <![endif]-->
 </head>
 <#macro addSolverBenchmarkBadges solverBenchmarkResult>
-    <#if !solverBenchmarkResult.ranking??>
-        <span class="badge badge-important" data-toggle="tooltip" title="Failed benchmark">F</span>
-    <#else>
-        <#if solverBenchmarkResult.favorite>
-            <span class="badge badge-success">${solverBenchmarkResult.ranking}</span>
-        <#else>
-            <span class="badge">${solverBenchmarkResult.ranking}</span>
-        </#if>
+    <#if solverBenchmarkResult.favorite>
+        <span class="badge badge-success">${solverBenchmarkResult.ranking}</span>
+    <#elseif solverBenchmarkResult.ranking??>
+        <span class="badge">${solverBenchmarkResult.ranking}</span>
+    </#if>
 
-        <#if solverBenchmarkResult.hasAnyUninitializedSolution()>
-            <span class="badge badge-important" data-toggle="tooltip" title="Has an uninitialized solution">!</span>
-        <#elseif solverBenchmarkResult.hasAnyInfeasibleScore()>
-            <span class="badge badge-warning" data-toggle="tooltip" title="Has an infeasible score">!</span>
-        </#if>
+    <#if solverBenchmarkResult.hasAnyFailure()>
+        <span class="badge badge-important" data-toggle="tooltip" title="Failed benchmark">F</span>
+    <#elseif solverBenchmarkResult.hasAnyUninitializedSolution()>
+        <span class="badge badge-important" data-toggle="tooltip" title="Has an uninitialized solution">!</span>
+    <#elseif solverBenchmarkResult.hasAnyInfeasibleScore()>
+        <span class="badge badge-warning" data-toggle="tooltip" title="Has an infeasible score">!</span>
+    </#if>
+</#macro>
+<#macro addProlblemBenchmarkBadges problemBenchmarkResult>
+    <#if problemBenchmarkResult.hasAnyFailure()>
+        <span class="badge badge-important" data-toggle="tooltip" title="Failed benchmark">F</span>
     </#if>
 </#macro>
 <#macro addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult>
-    <#if !solverProblemBenchmarkResult.ranking??>
-        <span class="badge badge-important" data-toggle="tooltip" title="Failed benchmark">F</span>
-    <#else>
-        <#if solverProblemBenchmarkResult.winner>
-            <span class="badge badge-success">${solverProblemBenchmarkResult.ranking}</span>
-        <#else>
-            <span class="badge">${solverProblemBenchmarkResult.ranking}</span>
-        </#if>
+    <#if solverProblemBenchmarkResult.winner>
+        <span class="badge badge-success">${solverProblemBenchmarkResult.ranking}</span>
+    <#elseif solverProblemBenchmarkResult.ranking??>
+        <span class="badge">${solverProblemBenchmarkResult.ranking}</span>
+    </#if>
 
-        <#if !solverProblemBenchmarkResult.initialized>
-            <span class="badge badge-important" data-toggle="tooltip" title="Uninitialized solution">!</span>
-        <#elseif !solverProblemBenchmarkResult.scoreFeasible>
-            <span class="badge badge-warning" data-toggle="tooltip" title="Infeasible score">!</span>
-        </#if>
+    <#if solverProblemBenchmarkResult.hasAnyFailure()>
+        <span class="badge badge-important" data-toggle="tooltip" title="Failed benchmark">F</span>
+    <#elseif !solverProblemBenchmarkResult.initialized>
+        <span class="badge badge-important" data-toggle="tooltip" title="Uninitialized solution">!</span>
+    <#elseif !solverProblemBenchmarkResult.scoreFeasible>
+        <span class="badge badge-warning" data-toggle="tooltip" title="Infeasible score">!</span>
     </#if>
 </#macro>
 <#macro addScoreLevelChartList chartFileList idPrefix>
@@ -98,7 +99,7 @@
                         <li>
                             <ul class="nav nav-list">
                             <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
-                                <li><a href="#problemBenchmark_${problemBenchmarkResult.anchorId}">${problemBenchmarkResult.name}</a></li>
+                                <li><a href="#problemBenchmark_${problemBenchmarkResult.anchorId}">${problemBenchmarkResult.name}&nbsp;<@addProlblemBenchmarkBadges problemBenchmarkResult=problemBenchmarkResult/></a></li>
                             </#list>
                             </ul>
                         </li>
