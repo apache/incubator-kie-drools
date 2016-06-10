@@ -14,7 +14,7 @@
       <title>Problem Description</title>
 
       <para>Suppose your company owns a number of cloud computers and needs to run a number of processes on those
-      computers. Assign each process to a computer under the following four constraints.</para>
+      computers. Assign each process to a computer.</para>
 
       <para>The following hard constraints must be fulfilled:</para>
 
@@ -25,18 +25,18 @@
 
           <itemizedlist>
             <listitem>
-              <para>The CPU power of a computer must be at least the sum of the CPU power required by the processes
-              assigned to that computer.</para>
+              <para><emphasis role="bold">CPU capacity</emphasis>: The CPU power of a computer must be at least the sum
+              of the CPU power required by the processes assigned to that computer.</para>
             </listitem>
 
             <listitem>
-              <para>The RAM memory of a computer must be at least the sum of the RAM memory required by the processes
-              assigned to that computer.</para>
+              <para><emphasis role="bold">Memory capacity</emphasis>: The RAM memory of a computer must be at least the
+              sum of the RAM memory required by the processes assigned to that computer.</para>
             </listitem>
 
             <listitem>
-              <para>The network bandwidth of a computer must be at least the sum of the network bandwidth required by
-              the processes assigned to that computer.</para>
+              <para><emphasis role="bold">Network capacity</emphasis>: The network bandwidth of a computer must be at
+              least the sum of the network bandwidth required by the processes assigned to that computer.</para>
             </listitem>
           </itemizedlist>
         </listitem>
@@ -51,14 +51,14 @@
 
           <itemizedlist>
             <listitem>
-              <para>Minimize the total maintenance cost.</para>
+              <para><emphasis role="bold">Cost</emphasis>: Minimize the total maintenance cost.</para>
             </listitem>
           </itemizedlist>
         </listitem>
       </itemizedlist>
 
-      <para>This problem is a form of <emphasis>bin packing</emphasis>. The following is a simplified example, where we
-      assign four processes to two computers with two constraints (CPU and RAM) with a simple algorithm:</para>
+      <para>This problem is a form of <emphasis>bin packing</emphasis>. The following is a simplified example, in which
+      we assign four processes to two computers with two constraints (CPU and RAM) with a simple algorithm:</para>
 
       <mediaobject>
         <imageobject>
@@ -68,11 +68,24 @@
 
       <para>The simple algorithm used here is the <emphasis>First Fit Decreasing</emphasis> algorithm, which assigns the
       bigger processes first and assigns the smaller processes to the remaining space. As you can see, it is not
-      optimal, as it does not leave enough room to assign the yellow process "D".</para>
+      optimal, as it does not leave enough room to assign the yellow process <literal>D</literal>.</para>
 
-      <para>Planner does find the more optimal solution fast by using additional, smarter algorithms. It also scales:
-      both in data (more processes, more computers) and constraints (more hardware requirements, other constraints). So
+      <para>Planner does find the more optimal solution by using additional, smarter algorithms. It also scales: both in
+      data (more processes, more computers) and constraints (more hardware requirements, other constraints). So let's
       see how Planner can be used in this scenario.</para>
+    </section>
+
+    <section xml:id="cloudBalancingValueProposition">
+      <title>Value Proposition</title>
+
+      <para>Here's executive summary of this example and <link linkend="machineReassignment">a more advanced
+      implementation with more constraints</link>:</para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Quick_start/cloudOptimizationValueProposition.png"/>
+        </imageobject>
+      </mediaobject>
     </section>
 
     <section xml:id="cloudBalancingProblemSize">
@@ -458,7 +471,7 @@ public class CloudProcess ... {
         the planning solution.</para>
 
         <para>Planner needs to retrieve the collection of processes that it can change, therefore we annotate the getter
-        <literal>getProcessList()</literal> with <literal>@PlanningEntityCollectionProperty</literal>. </para>
+        <literal>getProcessList()</literal> with <literal>@PlanningEntityCollectionProperty</literal>.</para>
 
         <para>The <literal>CloudBalance</literal> class also has a <literal>@PlanningScore</literal> annotated property
         <literal>score</literal>, which is the <literal>Score</literal> of that solution in its current state. Planner

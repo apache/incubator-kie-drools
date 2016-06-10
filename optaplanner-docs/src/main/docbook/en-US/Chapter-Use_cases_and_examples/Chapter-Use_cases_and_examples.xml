@@ -1503,6 +1503,12 @@ comp14 has 68 teachers,  60 curricula,  85 courses, 275 lectures, 25 periods, 17
         Challenge 2012</link>.</para>
       </section>
 
+      <section xml:id="machineReassignmentValueProposition">
+        <title>Value Proposition</title>
+
+        <para>See <link linkend="cloudBalancingValueProposition">the Cloud Balancing value proposition</link>.</para>
+      </section>
+
       <section xml:id="machineReassignmentProblemSize">
         <title>Problem Size</title>
 
@@ -1929,8 +1935,9 @@ Schedule B-10 has 20 projects, 460 jobs, 1300 execution modes, 42 resources and 
           </listitem>
         </itemizedlist>
 
-        <para>The problem is a variant on <link xlink:href="https://people.cs.kuleuven.be/~wim.vancroonenburg/pas/">Kaho's Patient
-        Scheduling</link> and the datasets come from real world hospitals.</para>
+        <para>The problem is a variant on <link
+        xlink:href="https://people.cs.kuleuven.be/~wim.vancroonenburg/pas/">Kaho's Patient Scheduling</link> and the
+        datasets come from real world hospitals.</para>
       </section>
 
       <section xml:id="bedAllocationProblemSize">
@@ -2282,20 +2289,18 @@ exam_comp_set8 has  7718 students,  598 exams, 80 periods,  8 rooms,  20 period 
           </listitem>
         </itemizedlist>
 
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringHardConstraints.png"/>
-          </imageobject>
-        </mediaobject>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeShiftRosteringSoftConstraints.png"/>
-          </imageobject>
-        </mediaobject>
-
         <para>The problem is defined by <link xlink:href="http://www.kuleuven-kortrijk.be/nrpcompetition">the
         International Nurse Rostering Competition 2010</link>.</para>
+      </section>
+
+      <section xml:id="employeeRosteringValueProposition">
+        <title>Value Proposition</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/employeeRosteringValueProposition.png"/>
+          </imageobject>
+        </mediaobject>
       </section>
 
       <section xml:id="employeeRosteringProblemSize">
