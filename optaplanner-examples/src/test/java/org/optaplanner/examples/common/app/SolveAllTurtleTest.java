@@ -73,10 +73,6 @@ public abstract class SolveAllTurtleTest<Solution_> extends LoggingTest {
         }
         Solver<Solution_> solver = solverFactory.buildSolver();
         Solution_ bestSolution = solver.solve(planningProblem);
-        if (bestSolution == null) {
-            // Solver didn't make it past initialization // TODO remove me once getBestSolution() never returns null
-            bestSolution = planningProblem;
-        }
         return bestSolution;
     }
 
