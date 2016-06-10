@@ -10,7 +10,7 @@
   <section xml:id="plannerConfigurationOverview">
     <title>Overview</title>
 
-    <para>Solving a planning problem with Planner consists out of 5 steps:</para>
+    <para>Solving a planning problem with Planner consists of 5 steps:</para>
 
     <orderedlist>
       <listitem>
@@ -353,9 +353,9 @@
         <listitem>
           <para>The number of planning entities is recommended to be fixed during planning. When unsure of which
           property should be a planning variable and which should be a problem property, choose it so the number of
-          planning entities is fixed. For example in employee rostering: if the planning entity class would have been
+          planning entities is fixed. For example in employee rostering: if the planning entity class had been
           <literal>EmployeeAssignment</literal> with a problem property <literal>getEmployee()</literal> and a planning
-          variable <literal>getShift()</literal>, than it is impossible to accurately predict how many
+          variable <literal>getShift()</literal>, then it would have been impossible to accurately predict how many
           <literal>EmployeeAssignment</literal> instances to make per <literal>Employee</literal>.</para>
         </listitem>
       </itemizedlist>
