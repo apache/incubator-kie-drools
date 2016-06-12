@@ -44,7 +44,7 @@ public class DinnerPartyApp extends CommonApp<DinnerParty> {
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected DinnerPartyPanel createSolutionPanel() {
         return new DinnerPartyPanel();
     }
 

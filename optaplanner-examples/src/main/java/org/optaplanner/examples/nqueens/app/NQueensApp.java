@@ -120,7 +120,7 @@ public class NQueensApp extends CommonApp<NQueens> {
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected NQueensPanel createSolutionPanel() {
         return new NQueensPanel();
     }
 

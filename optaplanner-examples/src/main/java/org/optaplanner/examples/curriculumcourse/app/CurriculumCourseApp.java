@@ -46,7 +46,7 @@ public class CurriculumCourseApp extends CommonApp<CourseSchedule> {
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected CurriculumCoursePanel createSolutionPanel() {
         return new CurriculumCoursePanel();
     }
 

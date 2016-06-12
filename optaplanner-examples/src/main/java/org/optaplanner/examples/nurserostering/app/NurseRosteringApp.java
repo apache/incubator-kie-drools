@@ -46,7 +46,7 @@ public class NurseRosteringApp extends CommonApp<NurseRoster> {
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected NurseRosteringPanel createSolutionPanel() {
         return new NurseRosteringPanel();
     }
 

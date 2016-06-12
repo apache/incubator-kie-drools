@@ -41,7 +41,7 @@ public class MeetingSchedulingApp extends CommonApp<MeetingSchedule> {
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected MeetingSchedulingPanel createSolutionPanel() {
         return new MeetingSchedulingPanel();
     }
 

@@ -45,7 +45,7 @@ public class CoachShuttleGatheringApp extends CommonApp<CoachShuttleGatheringSol
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected CoachShuttleGatheringPanel createSolutionPanel() {
         return new CoachShuttleGatheringPanel();
     }
 

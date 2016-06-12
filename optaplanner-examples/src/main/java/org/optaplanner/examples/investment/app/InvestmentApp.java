@@ -44,7 +44,7 @@ public class InvestmentApp extends CommonApp<InvestmentSolution> {
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected InvestmentPanel createSolutionPanel() {
         return new InvestmentPanel();
     }
 

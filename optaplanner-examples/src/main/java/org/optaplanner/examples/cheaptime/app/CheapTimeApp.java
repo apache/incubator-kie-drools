@@ -49,7 +49,7 @@ public class CheapTimeApp extends CommonApp<CheapTimeSolution> {
     }
 
     @Override
-    protected SolutionPanel<CheapTimeSolution> createSolutionPanel() {
+    protected CheapTimePanel createSolutionPanel() {
         return new CheapTimePanel();
     }
 

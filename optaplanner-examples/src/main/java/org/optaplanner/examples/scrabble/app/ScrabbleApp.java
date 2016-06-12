@@ -44,7 +44,7 @@ public class ScrabbleApp extends CommonApp<ScrabbleSolution> {
     }
 
     @Override
-    protected SolutionPanel<ScrabbleSolution> createSolutionPanel() {
+    protected ScrabblePanel createSolutionPanel() {
         return new ScrabblePanel();
     }
 

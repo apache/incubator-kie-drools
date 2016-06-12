@@ -46,7 +46,7 @@ public class MachineReassignmentApp extends CommonApp<MachineReassignment> {
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected MachineReassignmentPanel createSolutionPanel() {
         return new MachineReassignmentPanel();
     }
 

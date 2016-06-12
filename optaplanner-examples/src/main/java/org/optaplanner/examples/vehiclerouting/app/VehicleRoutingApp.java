@@ -48,7 +48,7 @@ public class VehicleRoutingApp extends CommonApp<VehicleRoutingSolution> {
     }
 
     @Override
-    protected SolutionPanel<VehicleRoutingSolution> createSolutionPanel() {
+    protected VehicleRoutingPanel createSolutionPanel() {
         return new VehicleRoutingPanel();
     }
 

@@ -46,7 +46,7 @@ public class PatientAdmissionScheduleApp extends CommonApp<PatientAdmissionSched
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected PatientAdmissionSchedulePanel createSolutionPanel() {
         return new PatientAdmissionSchedulePanel();
     }
 

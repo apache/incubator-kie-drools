@@ -51,7 +51,7 @@ public class ExaminationApp extends CommonApp<Examination> {
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected ExaminationPanel createSolutionPanel() {
         return new ExaminationPanel();
     }
 
