@@ -44,7 +44,7 @@ public class TaskAssigningApp extends CommonApp<TaskAssigningSolution> {
     }
 
     @Override
-    protected SolutionPanel<TaskAssigningSolution> createSolutionPanel() {
+    protected TaskAssigningPanel createSolutionPanel() {
         return new TaskAssigningPanel();
     }
 

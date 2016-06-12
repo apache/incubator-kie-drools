@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/data/taskassigning</benchmarkDirectory>
+  <parallelBenchmarkCount>AUTO</parallelBenchmarkCount>
+  <warmUpSecondsSpentLimit>30</warmUpSecondsSpentLimit>
+
+  <inheritedSolverBenchmark>
+    <problemBenchmarks>
+      <xStreamAnnotatedClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</xStreamAnnotatedClass>
+      <inputSolutionFile>data/taskassigning/unsolved/24tasks-8employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/unsolved/50tasks-5employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/unsolved/100tasks-5employees.xml</inputSolutionFile>
+      <inputSolutionFile>data/taskassigning/unsolved/500tasks-20employees.xml</inputSolutionFile>
+      <problemStatisticType>BEST_SCORE</problemStatisticType>
+      <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
+      <!--<problemStatisticType>SCORE_CALCULATION_SPEED</problemStatisticType>-->
+      <!--<problemStatisticType>BEST_SOLUTION_MUTATION</problemStatisticType>-->
+      <!--<problemStatisticType>MOVE_COUNT_PER_STEP</problemStatisticType>-->
+      <!--<problemStatisticType>MEMORY_USE</problemStatisticType>-->
+      <!--<singleStatisticType>CONSTRAINT_MATCH_TOTAL_BEST_SCORE</singleStatisticType>-->
+      <!--<singleStatisticType>CONSTRAINT_MATCH_TOTAL_STEP_SCORE</singleStatisticType>-->
+      <!--<singleStatisticType>PICKED_MOVE_TYPE_BEST_SCORE_DIFF</singleStatisticType>-->
+      <!--<singleStatisticType>PICKED_MOVE_TYPE_STEP_SCORE_DIFF</singleStatisticType>-->
+    </problemBenchmarks>
+
+    <solver>
+      <solutionClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</solutionClass>
+      <entityClass>org.optaplanner.examples.taskassigning.domain.TaskOrEmployee</entityClass>
+      <entityClass>org.optaplanner.examples.taskassigning.domain.Task</entityClass>
+      <scoreDirectorFactory>
+        <scoreDefinitionType>BENDABLE</scoreDefinitionType>
+        <bendableHardLevelsSize>1</bendableHardLevelsSize>
+        <bendableSoftLevelsSize>4</bendableSoftLevelsSize>
+        <scoreDrl>org/optaplanner/examples/taskassigning/solver/taskAssigningScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <termination>
+        <minutesSpentLimit>5</minutesSpentLimit>
+      </termination>
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>First Fit</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+  <!--<solverBenchmark>-->
+    <!--<name>First Fit Decreasing</name>-->
+    <!--<solver>-->
+      <!--<constructionHeuristic>-->
+        <!--<constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>-->
+      <!--</constructionHeuristic>-->
+    <!--</solver>-->
+  <!--</solverBenchmark>-->
+
+  <solverBenchmark>
+    <name>Late Acceptance</name>
+    <solver>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>
