@@ -27,9 +27,11 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.taskassigning.domain.solver.MovableTaskSelectionFilter;
 import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
+import org.optaplanner.examples.taskassigning.domain.solver.TaskDifficultyComparator;
 
-@PlanningEntity(movableEntitySelectionFilter = MovableTaskSelectionFilter.class)
-@XStreamAlias("MsTask")
+@PlanningEntity(movableEntitySelectionFilter = MovableTaskSelectionFilter.class,
+        difficultyComparatorClass = TaskDifficultyComparator.class)
+@XStreamAlias("TaTask")
 public class Task extends TaskOrEmployee implements Labeled {
 
     private TaskType taskType;

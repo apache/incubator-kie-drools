@@ -25,8 +25,8 @@ import org.optaplanner.examples.nurserostering.domain.solver.EmployeeStrengthCom
 import org.optaplanner.examples.nurserostering.domain.solver.MovableShiftAssignmentSelectionFilter;
 import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentDifficultyComparator;
 
-@PlanningEntity(difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class,
-        movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class)
+@PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class,
+        difficultyComparatorClass = ShiftAssignmentDifficultyComparator.class)
 @XStreamAlias("ShiftAssignment")
 public class ShiftAssignment extends AbstractPersistable {
 

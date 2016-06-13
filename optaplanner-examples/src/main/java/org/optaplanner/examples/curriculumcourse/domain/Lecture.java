@@ -27,8 +27,8 @@ import org.optaplanner.examples.curriculumcourse.domain.solver.MovableLectureSel
 import org.optaplanner.examples.curriculumcourse.domain.solver.PeriodStrengthWeightFactory;
 import org.optaplanner.examples.curriculumcourse.domain.solver.RoomStrengthWeightFactory;
 
-@PlanningEntity(difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class,
-        movableEntitySelectionFilter = MovableLectureSelectionFilter.class)
+@PlanningEntity(movableEntitySelectionFilter = MovableLectureSelectionFilter.class,
+        difficultyWeightFactoryClass = LectureDifficultyWeightFactory.class)
 @XStreamAlias("Lecture")
 public class Lecture extends AbstractPersistable {
 
