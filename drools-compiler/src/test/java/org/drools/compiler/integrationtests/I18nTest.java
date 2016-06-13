@@ -16,20 +16,12 @@
 
 package org.drools.compiler.integrationtests;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.I18nPerson;
 import org.drools.compiler.Person;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
@@ -37,8 +29,18 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tests DRL's with foreign characters.
@@ -247,5 +249,23 @@ public class I18nTest extends CommonTestMethodBase {
         assertTrue(list.contains("名称は山田花子です"));
 
         ksession.dispose();
+    }
+
+    @Test
+    public void testMutibyteJavaDialect() {
+        // DROOLS-1200
+        String drl =
+                "rule R dialect \"java\" when\n" +
+                "  Ｄ: String( )\n" +
+                "then\n" +
+                "  System.out.println( Ｄ.toString() );\n" +
+                "end\n";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        kieSession.insert( "Hello" );
+        int fired = kieSession.fireAllRules();
+        Assertions.assertThat( fired ).isEqualTo( 1 );
     }
 }
