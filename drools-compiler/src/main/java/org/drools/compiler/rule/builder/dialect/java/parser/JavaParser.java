@@ -1,31 +1,24 @@
-// $ANTLR 3.5 src/main/resources/org/drools/compiler/semantics/java/parser/Java.g 2015-10-27 17:56:25
+// $ANTLR 3.5 src/main/resources/org/drools/compiler/semantics/java/parser/Java.g 2016-06-13 19:43:01
 
     package org.drools.compiler.rule.builder.dialect.java.parser;
-    import org.antlr.runtime.BaseRecognizer;
-import org.antlr.runtime.BitSet;
-import org.antlr.runtime.CommonToken;
-import org.antlr.runtime.DFA;
-import org.antlr.runtime.EarlyExitException;
-import org.antlr.runtime.FailedPredicateException;
-import org.antlr.runtime.IntStream;
-import org.antlr.runtime.MismatchedNotSetException;
-import org.antlr.runtime.MismatchedSetException;
-import org.antlr.runtime.MismatchedTokenException;
-import org.antlr.runtime.MismatchedTreeNodeException;
-import org.antlr.runtime.NoViableAltException;
-import org.antlr.runtime.Parser;
-import org.antlr.runtime.ParserRuleReturnScope;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.RecognizerSharedState;
-import org.antlr.runtime.Token;
-import org.antlr.runtime.TokenStream;
+    import java.util.Iterator;
+    import java.util.Queue;
+    import java.util.LinkedList;   
+    import java.util.Stack; 
+    
+    import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
+    import org.drools.compiler.rule.builder.dialect.java.parser.JavaRootBlockDescr;
+    import org.drools.compiler.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
+    import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
+    
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+
+import org.antlr.runtime.*;
 import java.util.Stack;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 /** A Java 1.5 grammar for ANTLR v3 derived from the spec
  *
@@ -109,7 +102,7 @@ public class JavaParser extends Parser {
 		"<invalid>", "<EOR>", "<DOWN>", "<UP>", "COMMENT", "CharacterLiteral", 
 		"DecimalLiteral", "ENUM", "EscapeSequence", "Exponent", "FloatTypeSuffix", 
 		"FloatingPointLiteral", "HexDigit", "HexLiteral", "Identifier", "IntegerTypeSuffix", 
-		"JavaIDDigit", "LINE_COMMENT", "Letter", "OctalEscape", "OctalLiteral", 
+		"JavaLetter", "JavaLetterOrDigit", "LINE_COMMENT", "OctalEscape", "OctalLiteral", 
 		"StringLiteral", "UnicodeEscape", "WS", "'!'", "'!='", "'%'", "'%='", 
 		"'&&'", "'&'", "'&='", "'('", "')'", "'*'", "'*='", "'+'", "'++'", "'+='", 
 		"','", "'-'", "'--'", "'-='", "'.'", "'...'", "'/'", "'/='", "':'", "';'", 
@@ -236,9 +229,9 @@ public class JavaParser extends Parser {
 	public static final int HexLiteral=13;
 	public static final int Identifier=14;
 	public static final int IntegerTypeSuffix=15;
-	public static final int JavaIDDigit=16;
-	public static final int LINE_COMMENT=17;
-	public static final int Letter=18;
+	public static final int JavaLetter=16;
+	public static final int JavaLetterOrDigit=17;
+	public static final int LINE_COMMENT=18;
 	public static final int OctalEscape=19;
 	public static final int OctalLiteral=20;
 	public static final int StringLiteral=21;
@@ -13459,39 +13452,11 @@ public class JavaParser extends Parser {
 
 	// Delegated rules
 
-	public final boolean synpred258_Java() {
+	public final boolean synpred222_Java() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred258_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred193_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred193_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred226_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred226_Java_fragment(); // can never throw exception
+			synpred222_Java_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -13515,109 +13480,11 @@ public class JavaParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred249_Java() {
+	public final boolean synpred228_Java() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred249_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred1_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred1_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred253_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred253_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred144_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred144_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred191_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred191_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred245_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred245_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred254_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred254_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred222_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred222_Java_fragment(); // can never throw exception
+			synpred228_Java_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -13641,81 +13508,11 @@ public class JavaParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred137_Java() {
+	public final boolean synpred172_Java() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred137_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred38_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred38_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred145_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred145_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred212_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred212_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred190_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred190_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred39_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred39_Java_fragment(); // can never throw exception
+			synpred172_Java_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -13739,11 +13536,11 @@ public class JavaParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred171_Java() {
+	public final boolean synpred1_Java() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred171_Java_fragment(); // can never throw exception
+			synpred1_Java_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -13753,95 +13550,11 @@ public class JavaParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred172_Java() {
+	public final boolean synpred144_Java() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred172_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred198_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred198_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred120_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred120_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred174_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred174_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred270_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred270_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred240_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred240_Java_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred85_Java() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred85_Java_fragment(); // can never throw exception
+			synpred144_Java_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -13865,11 +13578,11 @@ public class JavaParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred250_Java() {
+	public final boolean synpred190_Java() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred250_Java_fragment(); // can never throw exception
+			synpred190_Java_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -13879,11 +13592,39 @@ public class JavaParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred135_Java() {
+	public final boolean synpred174_Java() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred135_Java_fragment(); // can never throw exception
+			synpred174_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred258_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred258_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred171_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred171_Java_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -13907,11 +13648,263 @@ public class JavaParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred228_Java() {
+	public final boolean synpred240_Java() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred228_Java_fragment(); // can never throw exception
+			synpred240_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred212_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred212_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred249_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred249_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred193_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred193_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred135_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred135_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred254_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred254_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred39_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred39_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred191_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred191_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred270_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred270_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred85_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred85_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred137_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred137_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred245_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred245_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred38_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred38_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred120_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred120_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred226_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred226_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred198_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred198_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred253_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred253_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred145_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred145_Java_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred250_Java() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred250_Java_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
