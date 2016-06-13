@@ -1,44 +1,20 @@
-/*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
-*/
-
-// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g 2015-04-23 15:24:03
+// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g 2016-06-13 19:05:55
 
     package org.drools.compiler.lang.dsl;
-    import org.antlr.runtime.BitSet;
-import org.antlr.runtime.CommonToken;
-import org.antlr.runtime.EarlyExitException;
-import org.antlr.runtime.FailedPredicateException;
-import org.antlr.runtime.MismatchedSetException;
-import org.antlr.runtime.NoViableAltException;
-import org.antlr.runtime.Parser;
-import org.antlr.runtime.ParserRuleReturnScope;
-import org.antlr.runtime.RecognitionException;
-import org.antlr.runtime.RecognizerSharedState;
-import org.antlr.runtime.Token;
-import org.antlr.runtime.TokenStream;
-import org.antlr.runtime.tree.CommonTreeAdaptor;
-import org.antlr.runtime.tree.RewriteEarlyExitException;
-import org.antlr.runtime.tree.RewriteEmptyStreamException;
-import org.antlr.runtime.tree.RewriteRuleSubtreeStream;
-import org.antlr.runtime.tree.RewriteRuleTokenStream;
-import org.antlr.runtime.tree.TreeAdaptor;
-import org.drools.compiler.compiler.ParserError;
+    import java.util.List;
+    import java.util.ArrayList;
+    import java.util.regex.Pattern;
+    import org.drools.compiler.compiler.ParserError;
 
-import java.util.ArrayList;
+
+import org.antlr.runtime.*;
+import java.util.Stack;
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+
+import org.antlr.runtime.tree.*;
 
 
 @SuppressWarnings("all")
@@ -120,7 +96,7 @@ public class DSLMapParser extends Parser {
 	        return errors;
 	    }
 
-	    /** Override this method to not output mesages */
+	    /** Overridden to not output messages */
 	    public void emitErrorMessage(String msg) {
 	    }
 
@@ -368,13 +344,13 @@ public class DSLMapParser extends Parser {
 		Object EQUALS7_tree=null;
 		Object EOL9_tree=null;
 		Object EOF10_tree=null;
-		RewriteRuleTokenStream stream_EQUALS=new RewriteRuleTokenStream(adaptor,"token EQUALS");
 		RewriteRuleTokenStream stream_EOL=new RewriteRuleTokenStream(adaptor,"token EOL");
+		RewriteRuleTokenStream stream_EQUALS=new RewriteRuleTokenStream(adaptor,"token EQUALS");
 		RewriteRuleTokenStream stream_EOF=new RewriteRuleTokenStream(adaptor,"token EOF");
-		RewriteRuleSubtreeStream stream_meta_section=new RewriteRuleSubtreeStream(adaptor,"rule meta_section");
-		RewriteRuleSubtreeStream stream_key_section=new RewriteRuleSubtreeStream(adaptor,"rule key_section");
 		RewriteRuleSubtreeStream stream_scope_section=new RewriteRuleSubtreeStream(adaptor,"rule scope_section");
+		RewriteRuleSubtreeStream stream_key_section=new RewriteRuleSubtreeStream(adaptor,"rule key_section");
 		RewriteRuleSubtreeStream stream_value_section=new RewriteRuleSubtreeStream(adaptor,"rule value_section");
+		RewriteRuleSubtreeStream stream_meta_section=new RewriteRuleSubtreeStream(adaptor,"rule meta_section");
 
 		try {
 			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:119:8: ( scope_section ( meta_section )? key_section EQUALS ( value_section )? ( EOL | EOF ) -> ^( VT_ENTRY scope_section ( meta_section )? key_section ( value_section )? ) )
@@ -486,7 +462,7 @@ public class DSLMapParser extends Parser {
 			}
 
 			// AST REWRITE
-			// elements: meta_section, scope_section, key_section, value_section
+			// elements: key_section, value_section, scope_section, meta_section
 			// token labels: 
 			// rule labels: retval
 			// token list labels: 
@@ -577,12 +553,12 @@ public class DSLMapParser extends Parser {
 
 		Object LEFT_SQUARE11_tree=null;
 		Object RIGHT_SQUARE12_tree=null;
-		RewriteRuleTokenStream stream_RIGHT_SQUARE=new RewriteRuleTokenStream(adaptor,"token RIGHT_SQUARE");
 		RewriteRuleTokenStream stream_LEFT_SQUARE=new RewriteRuleTokenStream(adaptor,"token LEFT_SQUARE");
-		RewriteRuleSubtreeStream stream_any_key=new RewriteRuleSubtreeStream(adaptor,"rule any_key");
-		RewriteRuleSubtreeStream stream_condition_key=new RewriteRuleSubtreeStream(adaptor,"rule condition_key");
+		RewriteRuleTokenStream stream_RIGHT_SQUARE=new RewriteRuleTokenStream(adaptor,"token RIGHT_SQUARE");
 		RewriteRuleSubtreeStream stream_keyword_key=new RewriteRuleSubtreeStream(adaptor,"rule keyword_key");
 		RewriteRuleSubtreeStream stream_consequence_key=new RewriteRuleSubtreeStream(adaptor,"rule consequence_key");
+		RewriteRuleSubtreeStream stream_any_key=new RewriteRuleSubtreeStream(adaptor,"rule any_key");
+		RewriteRuleSubtreeStream stream_condition_key=new RewriteRuleSubtreeStream(adaptor,"rule condition_key");
 
 		try {
 			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:131:5: ( LEFT_SQUARE (value1= condition_key |value2= consequence_key |value3= keyword_key |value4= any_key ) RIGHT_SQUARE -> ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? ) )
@@ -596,10 +572,10 @@ public class DSLMapParser extends Parser {
 			int LA6_0 = input.LA(1);
 			if ( (LA6_0==LITERAL) ) {
 				int LA6_1 = input.LA(2);
-				if ( (((validateIdentifierKey("condition")||validateIdentifierKey("when"))&&synpred6_DSLMap())) ) {
+				if ( ((synpred6_DSLMap()&&(validateIdentifierKey("condition")||validateIdentifierKey("when")))) ) {
 					alt6=1;
 				}
-				else if ( ((synpred7_DSLMap()&&(validateIdentifierKey("consequence")||validateIdentifierKey("then")))) ) {
+				else if ( (((validateIdentifierKey("consequence")||validateIdentifierKey("then"))&&synpred7_DSLMap())) ) {
 					alt6=2;
 				}
 				else if ( ((synpred8_DSLMap()&&(validateIdentifierKey("keyword")))) ) {
@@ -679,19 +655,19 @@ public class DSLMapParser extends Parser {
 			if ( state.backtracking==0 ) stream_RIGHT_SQUARE.add(RIGHT_SQUARE12);
 
 			// AST REWRITE
-			// elements: value2, value3, value1, value4
+			// elements: value1, value4, value2, value3
 			// token labels: 
-			// rule labels: retval, value3, value4, value1, value2
+			// rule labels: value2, value1, value4, value3, retval
 			// token list labels: 
 			// rule list labels: 
 			// wildcard labels: 
 			if ( state.backtracking==0 ) {
 			retval.tree = root_0;
-			RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.getTree():null);
-			RewriteRuleSubtreeStream stream_value3=new RewriteRuleSubtreeStream(adaptor,"rule value3",value3!=null?value3.getTree():null);
-			RewriteRuleSubtreeStream stream_value4=new RewriteRuleSubtreeStream(adaptor,"rule value4",value4!=null?value4.getTree():null);
-			RewriteRuleSubtreeStream stream_value1=new RewriteRuleSubtreeStream(adaptor,"rule value1",value1!=null?value1.getTree():null);
 			RewriteRuleSubtreeStream stream_value2=new RewriteRuleSubtreeStream(adaptor,"rule value2",value2!=null?value2.getTree():null);
+			RewriteRuleSubtreeStream stream_value1=new RewriteRuleSubtreeStream(adaptor,"rule value1",value1!=null?value1.getTree():null);
+			RewriteRuleSubtreeStream stream_value4=new RewriteRuleSubtreeStream(adaptor,"rule value4",value4!=null?value4.getTree():null);
+			RewriteRuleSubtreeStream stream_value3=new RewriteRuleSubtreeStream(adaptor,"rule value3",value3!=null?value3.getTree():null);
+			RewriteRuleSubtreeStream stream_retval=new RewriteRuleSubtreeStream(adaptor,"rule retval",retval!=null?retval.getTree():null);
 
 			root_0 = (Object)adaptor.nil();
 			// 138:5: -> ^( VT_SCOPE[$LEFT_SQUARE, \"SCOPE SECTION\"] ( $value1)? ( $value2)? ( $value3)? ( $value4)? )
@@ -777,9 +753,9 @@ public class DSLMapParser extends Parser {
 		Object LEFT_SQUARE13_tree=null;
 		Object LITERAL14_tree=null;
 		Object RIGHT_SQUARE15_tree=null;
-		RewriteRuleTokenStream stream_RIGHT_SQUARE=new RewriteRuleTokenStream(adaptor,"token RIGHT_SQUARE");
 		RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
 		RewriteRuleTokenStream stream_LEFT_SQUARE=new RewriteRuleTokenStream(adaptor,"token LEFT_SQUARE");
+		RewriteRuleTokenStream stream_RIGHT_SQUARE=new RewriteRuleTokenStream(adaptor,"token RIGHT_SQUARE");
 
 		try {
 			// src/main/resources/org/drools/compiler/lang/dsl/DSLMap.g:145:5: ( LEFT_SQUARE ( LITERAL )? RIGHT_SQUARE -> ^( VT_META[$LEFT_SQUARE, \"META SECTION\"] ( LITERAL )? ) )
@@ -1632,10 +1608,10 @@ public class DSLMapParser extends Parser {
 		Object rc_tree=null;
 		Object COLON25_tree=null;
 		Object COLON26_tree=null;
-		RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
-		RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
-		RewriteRuleTokenStream stream_RIGHT_CURLY=new RewriteRuleTokenStream(adaptor,"token RIGHT_CURLY");
 		RewriteRuleTokenStream stream_LEFT_CURLY=new RewriteRuleTokenStream(adaptor,"token LEFT_CURLY");
+		RewriteRuleTokenStream stream_LITERAL=new RewriteRuleTokenStream(adaptor,"token LITERAL");
+		RewriteRuleTokenStream stream_COLON=new RewriteRuleTokenStream(adaptor,"token COLON");
+		RewriteRuleTokenStream stream_RIGHT_CURLY=new RewriteRuleTokenStream(adaptor,"token RIGHT_CURLY");
 		RewriteRuleSubtreeStream stream_pattern=new RewriteRuleSubtreeStream(adaptor,"rule pattern");
 
 
@@ -1720,7 +1696,7 @@ public class DSLMapParser extends Parser {
 			      isIdentifier( name );
 			    }
 			// AST REWRITE
-			// elements: name, name, q, q, name, name, q, q, name, name, name, q, name, q, q, q, q, name
+			// elements: q, name, q, name, q, q, q, name, q, q, name, q, name, name, q, name, name, name
 			// token labels: q, name
 			// rule labels: retval
 			// token list labels: 
@@ -2217,8 +2193,8 @@ public class DSLMapParser extends Parser {
 
 		Object lc_tree=null;
 		Object rc_tree=null;
-		RewriteRuleTokenStream stream_RIGHT_CURLY=new RewriteRuleTokenStream(adaptor,"token RIGHT_CURLY");
 		RewriteRuleTokenStream stream_LEFT_CURLY=new RewriteRuleTokenStream(adaptor,"token LEFT_CURLY");
+		RewriteRuleTokenStream stream_RIGHT_CURLY=new RewriteRuleTokenStream(adaptor,"token RIGHT_CURLY");
 		RewriteRuleSubtreeStream stream_variable_reference_expr=new RewriteRuleSubtreeStream(adaptor,"rule variable_reference_expr");
 
 
@@ -2905,6 +2881,34 @@ public class DSLMapParser extends Parser {
 
 	// Delegated rules
 
+	public final boolean synpred12_DSLMap() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred12_DSLMap_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred6_DSLMap() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred6_DSLMap_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
 	public final boolean synpred3_DSLMap() {
 		state.backtracking++;
 		int start = input.mark();
@@ -2919,11 +2923,25 @@ public class DSLMapParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred12_DSLMap() {
+	public final boolean synpred17_DSLMap() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred12_DSLMap_fragment(); // can never throw exception
+			synpred17_DSLMap_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred18_DSLMap() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred18_DSLMap_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -2961,25 +2979,11 @@ public class DSLMapParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred6_DSLMap() {
+	public final boolean synpred24_DSLMap() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred6_DSLMap_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred28_DSLMap() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred28_DSLMap_fragment(); // can never throw exception
+			synpred24_DSLMap_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -3003,25 +3007,11 @@ public class DSLMapParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred18_DSLMap() {
+	public final boolean synpred16_DSLMap() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred18_DSLMap_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred17_DSLMap() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred17_DSLMap_fragment(); // can never throw exception
+			synpred16_DSLMap_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -3045,25 +3035,11 @@ public class DSLMapParser extends Parser {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred16_DSLMap() {
+	public final boolean synpred28_DSLMap() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred16_DSLMap_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred24_DSLMap() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred24_DSLMap_fragment(); // can never throw exception
+			synpred28_DSLMap_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
