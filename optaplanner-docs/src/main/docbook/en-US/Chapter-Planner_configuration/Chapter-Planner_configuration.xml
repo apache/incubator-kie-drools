@@ -446,7 +446,8 @@
         <para>A planning entity class needs to be annotated with the <literal>@PlanningEntity</literal>
         annotation.</para>
 
-        <para>Each planning entity class has one or more <emphasis>planning variables</emphasis>. It should also have
+        <para>Each planning entity class has one or more <emphasis>planning variables</emphasis> (which can be <link
+        linkend="planningVariable">genuine</link> or <link linkend="shadowVariable">shadows</link>). It should also have
         one or more <emphasis>defining</emphasis> properties. For example in n queens, a <literal>Queen</literal> is
         defined by its <literal>Column</literal> and has a planning variable <literal>Row</literal>. This means that a
         Queen's column never changes during solving, while its row does change.</para>
@@ -574,19 +575,20 @@ public class Queen {
     </section>
 
     <section xml:id="planningVariable">
-      <title>Planning Variable</title>
+      <title>Planning Variable (genuine)</title>
 
       <section xml:id="planningVariableAnnotation">
         <title>Planning Variable Annotation</title>
 
         <para>A planning variable is a JavaBean property (so a getter and setter) on a planning entity. It points to a
         planning value, which changes during planning. For example, a <literal>Queen</literal>'s <literal>row</literal>
-        property is a planning variable. Note that even though a <literal>Queen</literal>'s <literal>row</literal>
-        property changes to another <literal>Row</literal> during planning, no <literal>Row</literal> instance itself is
-        changed.</para>
+        property is a genuine planning variable. Note that even though a <literal>Queen</literal>'s
+        <literal>row</literal> property changes to another <literal>Row</literal> during planning, no
+        <literal>Row</literal> instance itself is changed. Normally planning variables are genuine, but advanced cases
+        can also have <link linkend="shadowVariable">shadows</link>.</para>
 
-        <para>A planning variable getter needs to be annotated with the <literal>@PlanningVariable</literal> annotation,
-        which needs a non-empty <literal>valueRangeProviderRefs</literal> property.</para>
+        <para>A genuine planning variable getter needs to be annotated with the <literal>@PlanningVariable</literal>
+        annotation, which needs a non-empty <literal>valueRangeProviderRefs</literal> property.</para>
 
         <programlisting language="java">@PlanningEntity
 public class Queen {
@@ -686,9 +688,9 @@ public class Queen {
       <section xml:id="planningValue">
         <title>Planning Value</title>
 
-        <para>A planning value is a possible value for a planning variable. Usually, a planning value is a problem fact,
-        but it can also be any object, for example a <literal>double</literal>. It can even be another planning entity
-        or even a interface implemented by both a planning entity and a problem fact.</para>
+        <para>A planning value is a possible value for a genuine planning variable. Usually, a planning value is a
+        problem fact, but it can also be any object, for example a <literal>double</literal>. It can even be another
+        planning entity or even a interface implemented by both a planning entity and a problem fact.</para>
 
         <para>A planning value range is the set of possible planning values for a planning variable. This set can be a
         countable (for example row <literal>1</literal>, <literal>2</literal>, <literal>3</literal> or
@@ -1129,11 +1131,11 @@ public class Visit ... implements Standstill {
       <section xml:id="shadowVariableIntroduction">
         <title>Introduction</title>
 
-        <para>A shadow variable is a variable whose correct value can be deduced from the state of the genuine planning
-        variables. Even though such a variable violates the principle of normalization by definition, in some use cases
-        it can be very practical to use a shadow variable, especially to express the constraints more naturally. For
-        example in vehicle routing with time windows: the arrival time at a customer for a vehicle can be calculated
-        based on the previously visited customers of that vehicle (and the known travel times between two
+        <para>A shadow variable is a planning variable whose correct value can be deduced from the state of the genuine
+        planning variables. Even though such a variable violates the principle of normalization by definition, in some
+        use cases it can be very practical to use a shadow variable, especially to express the constraints more
+        naturally. For example in vehicle routing with time windows: the arrival time at a customer for a vehicle can be
+        calculated based on the previously visited customers of that vehicle (and the known travel times between two
         locations).</para>
 
         <mediaobject>
@@ -1156,8 +1158,9 @@ public class Visit ... implements Standstill {
           solver configuration (unless classes are <link linkend="automaticScanningForAnnotations">automatically
           scanned</link>) and be annotated accordingly.</para>
 
-          <para>An genuine planning entity class has at least one genuine planning variable. A shadow planning entity
-          class has no genuine planning variables and at least one shadow planning variable.</para>
+          <para>An genuine planning entity class has at least one genuine planning variable, but can have shadow
+          variables too. A shadow planning entity class has no genuine planning variables and at least one shadow
+          planning variable.</para>
         </important>
 
         <para>There are several build-in shadow variables:</para>
