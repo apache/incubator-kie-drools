@@ -815,7 +815,7 @@ public class RuleNetworkEvaluator {
 
         if ( rtm.getIndexType() != TupleMemory.IndexType.NONE) {
             for ( RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext() ) {
-                rtm.removeAdd( rightTuple );
+                rtm.remove( rightTuple );
             }
         }
 
@@ -866,6 +866,12 @@ public class RuleNetworkEvaluator {
                 LeftTuple childNext = childLeftTuple.getRightParentNext();
                 childLeftTuple.reAddLeft();
                 childLeftTuple = childNext;
+            }
+        }
+
+        if ( rtm.getIndexType() != TupleMemory.IndexType.NONE) {
+            for ( RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext() ) {
+                rtm.add( rightTuple );
             }
         }
     }
