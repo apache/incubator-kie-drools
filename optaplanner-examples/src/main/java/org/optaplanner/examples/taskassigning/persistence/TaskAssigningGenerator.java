@@ -243,10 +243,15 @@ public class TaskAssigningGenerator extends LoggingMain {
             String title = taskTypeNameGenerator.generateNextValue();
             taskType.setTitle(title);
             String code = title.replaceAll("(\\w)\\w* (\\w)\\w* (\\w)\\w*", "$1$2$3");
-            taskType.setCode(code);
-            if (!codeSet.add(code)) {
-                throw new IllegalStateException("The taskType code (" + codeSet.add(code) + ") already exists.");
+            if (codeSet.contains(code)) {
+                int codeSuffixNumber = 1;
+                while (codeSet.contains(code + codeSuffixNumber)) {
+                    codeSuffixNumber++;
+                }
+                code = code + codeSuffixNumber;
             }
+            codeSet.add(code);
+            taskType.setCode(code);
             taskType.setBaseDuration(
                     BASE_DURATION_MINIMUM + random.nextInt(BASE_DURATION_MAXIMUM - BASE_DURATION_MINIMUM));
             Employee randomEmployee = employeeList.get(random.nextInt(employeeList.size()));
