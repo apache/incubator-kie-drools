@@ -1,4 +1,4 @@
-// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/DRL5Expressions.g 2015-11-16 15:53:53
+// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/DRL5Expressions.g 2016-06-13 19:05:53
 
     package org.drools.compiler.lang;
 
@@ -708,7 +708,7 @@ public class DRL5Expressions extends DRLExpressions {
 			int LA11_0 = input.LA(1);
 			if ( (LA11_0==ID) ) {
 				int LA11_1 = input.LA(2);
-				if ( (((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))&&synpred1_DRL5Expressions())) ) {
+				if ( ((synpred1_DRL5Expressions()&&(((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))))) ) {
 					alt11=1;
 				}
 				else if ( (true) ) {
@@ -978,7 +978,7 @@ public class DRL5Expressions extends DRLExpressions {
 					// src/main/resources/org/drools/compiler/lang/DRL5Expressions.g:148:16: ( ( extends_key | super_key ) type )?
 					int alt14=2;
 					int LA14_0 = input.LA(1);
-					if ( (LA14_0==ID) && ((((helper.validateIdentifierKey(DroolsSoftKeywords.SUPER)))||((helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS)))))) {
+					if ( (LA14_0==ID) && ((((helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS)))||((helper.validateIdentifierKey(DroolsSoftKeywords.SUPER)))))) {
 						alt14=1;
 					}
 					switch (alt14) {
@@ -988,7 +988,7 @@ public class DRL5Expressions extends DRLExpressions {
 							// src/main/resources/org/drools/compiler/lang/DRL5Expressions.g:148:17: ( extends_key | super_key )
 							int alt13=2;
 							int LA13_0 = input.LA(1);
-							if ( (LA13_0==ID) && ((((helper.validateIdentifierKey(DroolsSoftKeywords.SUPER)))||((helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS)))))) {
+							if ( (LA13_0==ID) && ((((helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS)))||((helper.validateIdentifierKey(DroolsSoftKeywords.SUPER)))))) {
 								int LA13_1 = input.LA(2);
 								if ( (((helper.validateIdentifierKey(DroolsSoftKeywords.EXTENDS)))) ) {
 									alt13=1;
@@ -3732,7 +3732,7 @@ public class DRL5Expressions extends DRLExpressions {
 			// src/main/resources/org/drools/compiler/lang/DRL5Expressions.g:526:5: ( boolean_key | char_key | byte_key | short_key | int_key | long_key | float_key | double_key )
 			int alt55=8;
 			int LA55_0 = input.LA(1);
-			if ( (LA55_0==ID) && ((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))))) {
+			if ( (LA55_0==ID) && ((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))))) {
 				int LA55_1 = input.LA(2);
 				if ( (((helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN)))) ) {
 					alt55=1;
@@ -3920,7 +3920,7 @@ public class DRL5Expressions extends DRLExpressions {
 				else if ( ((synpred23_DRL5Expressions()&&((helper.validateIdentifierKey(DroolsSoftKeywords.NEW))))) ) {
 					alt60=5;
 				}
-				else if ( (((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))&&synpred24_DRL5Expressions())) ) {
+				else if ( ((synpred24_DRL5Expressions()&&(((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))))) ) {
 					alt60=6;
 				}
 				else if ( (synpred27_DRL5Expressions()) ) {
@@ -4733,10 +4733,10 @@ public class DRL5Expressions extends DRLExpressions {
 			int LA71_0 = input.LA(1);
 			if ( (LA71_0==ID) ) {
 				int LA71_1 = input.LA(2);
-				if ( (!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))))) ) {
+				if ( (!(((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))))))) ) {
 					alt71=1;
 				}
-				else if ( ((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR))))) ) {
+				else if ( ((((helper.validateIdentifierKey(DroolsSoftKeywords.SHORT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.LONG)))||((helper.validateIdentifierKey(DroolsSoftKeywords.CHAR)))||((helper.validateIdentifierKey(DroolsSoftKeywords.INT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.FLOAT)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BOOLEAN)))||((helper.validateIdentifierKey(DroolsSoftKeywords.DOUBLE)))||((helper.validateIdentifierKey(DroolsSoftKeywords.BYTE))))) ) {
 					alt71=2;
 				}
 
@@ -7188,11 +7188,11 @@ public class DRL5Expressions extends DRLExpressions {
 
 	// Delegated rules
 
-	public final boolean synpred37_DRL5Expressions() {
+	public final boolean synpred33_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred37_DRL5Expressions_fragment(); // can never throw exception
+			synpred33_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7202,11 +7202,11 @@ public class DRL5Expressions extends DRLExpressions {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred6_DRL5Expressions() {
+	public final boolean synpred21_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred6_DRL5Expressions_fragment(); // can never throw exception
+			synpred21_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7216,11 +7216,11 @@ public class DRL5Expressions extends DRLExpressions {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred5_DRL5Expressions() {
+	public final boolean synpred14_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred5_DRL5Expressions_fragment(); // can never throw exception
+			synpred14_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7230,95 +7230,11 @@ public class DRL5Expressions extends DRLExpressions {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred18_DRL5Expressions() {
+	public final boolean synpred17_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred18_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred15_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred15_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred28_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred28_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred40_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred40_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred31_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred31_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred39_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred39_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred2_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred2_DRL5Expressions_fragment(); // can never throw exception
+			synpred17_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7342,11 +7258,11 @@ public class DRL5Expressions extends DRLExpressions {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred1_DRL5Expressions() {
+	public final boolean synpred40_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred1_DRL5Expressions_fragment(); // can never throw exception
+			synpred40_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7356,11 +7272,11 @@ public class DRL5Expressions extends DRLExpressions {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred22_DRL5Expressions() {
+	public final boolean synpred29_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred22_DRL5Expressions_fragment(); // can never throw exception
+			synpred29_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7370,11 +7286,11 @@ public class DRL5Expressions extends DRLExpressions {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred10_DRL5Expressions() {
+	public final boolean synpred43_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred10_DRL5Expressions_fragment(); // can never throw exception
+			synpred43_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7384,11 +7300,11 @@ public class DRL5Expressions extends DRLExpressions {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred13_DRL5Expressions() {
+	public final boolean synpred12_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred13_DRL5Expressions_fragment(); // can never throw exception
+			synpred12_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7398,81 +7314,11 @@ public class DRL5Expressions extends DRLExpressions {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred25_DRL5Expressions() {
+	public final boolean synpred23_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred25_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred8_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred8_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred36_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred36_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred3_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred3_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred16_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred16_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred30_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred30_DRL5Expressions_fragment(); // can never throw exception
+			synpred23_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7510,151 +7356,11 @@ public class DRL5Expressions extends DRLExpressions {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred14_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred14_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred42_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred42_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred34_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred34_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred7_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred7_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred41_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred41_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred29_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred29_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred38_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred38_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred4_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred4_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
 	public final boolean synpred27_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
 			synpred27_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred32_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred32_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred21_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred21_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7678,11 +7384,235 @@ public class DRL5Expressions extends DRLExpressions {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred33_DRL5Expressions() {
+	public final boolean synpred30_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred33_DRL5Expressions_fragment(); // can never throw exception
+			synpred30_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred42_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred42_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred1_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred1_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred39_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred39_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred36_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred36_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred4_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred4_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred7_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred7_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred10_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred10_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred25_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred25_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred8_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred8_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred37_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred37_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred41_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred41_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred5_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred5_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred18_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred18_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred32_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred32_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred3_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred3_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred15_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred15_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7706,25 +7636,11 @@ public class DRL5Expressions extends DRLExpressions {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred17_DRL5Expressions() {
+	public final boolean synpred6_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred17_DRL5Expressions_fragment(); // can never throw exception
-		} catch (RecognitionException re) {
-			System.err.println("impossible: "+re);
-		}
-		boolean success = !state.failed;
-		input.rewind(start);
-		state.backtracking--;
-		state.failed=false;
-		return success;
-	}
-	public final boolean synpred43_DRL5Expressions() {
-		state.backtracking++;
-		int start = input.mark();
-		try {
-			synpred43_DRL5Expressions_fragment(); // can never throw exception
+			synpred6_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7748,11 +7664,11 @@ public class DRL5Expressions extends DRLExpressions {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred23_DRL5Expressions() {
+	public final boolean synpred38_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred23_DRL5Expressions_fragment(); // can never throw exception
+			synpred38_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7762,11 +7678,11 @@ public class DRL5Expressions extends DRLExpressions {
 		state.failed=false;
 		return success;
 	}
-	public final boolean synpred12_DRL5Expressions() {
+	public final boolean synpred2_DRL5Expressions() {
 		state.backtracking++;
 		int start = input.mark();
 		try {
-			synpred12_DRL5Expressions_fragment(); // can never throw exception
+			synpred2_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}
@@ -7781,6 +7697,90 @@ public class DRL5Expressions extends DRLExpressions {
 		int start = input.mark();
 		try {
 			synpred9_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred31_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred31_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred34_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred34_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred13_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred13_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred28_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred28_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred16_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred16_DRL5Expressions_fragment(); // can never throw exception
+		} catch (RecognitionException re) {
+			System.err.println("impossible: "+re);
+		}
+		boolean success = !state.failed;
+		input.rewind(start);
+		state.backtracking--;
+		state.failed=false;
+		return success;
+	}
+	public final boolean synpred22_DRL5Expressions() {
+		state.backtracking++;
+		int start = input.mark();
+		try {
+			synpred22_DRL5Expressions_fragment(); // can never throw exception
 		} catch (RecognitionException re) {
 			System.err.println("impossible: "+re);
 		}

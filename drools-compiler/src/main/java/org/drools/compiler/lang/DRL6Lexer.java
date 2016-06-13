@@ -1,4 +1,4 @@
-// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/DRL6Lexer.g 2015-11-02 10:08:36
+// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/DRL6Lexer.g 2016-06-13 19:05:52
 
     package org.drools.compiler.lang;
 
@@ -114,7 +114,7 @@ public class DRL6Lexer extends AbstractDRLLexer {
 	        return errors;
 	    }
 
-	    /** Overrided this method to not output mesages */
+	    /** Overridden to not output messages */
 	    public void emitErrorMessage(String msg) {
 	    }
 	    

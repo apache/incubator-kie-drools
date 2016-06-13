@@ -26,12 +26,14 @@ import org.kie.api.KieServices;
 import org.kie.api.command.Command;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.builder.DecisionTableInputType;
+import org.kie.internal.utils.KieHelper;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -293,5 +295,23 @@ public class UnicodeTest {
         public String getJméno() {
             return jméno;
         }
+    }
+
+    @Test
+    public void testMutibyteJavaDialect() {
+        // DROOLS-1200
+        String drl =
+                "rule R dialect \"java\" when\n" +
+                "  Ｄ: String( )\n" +
+                "then\n" +
+                "  System.out.println( Ｄ.toString() );\n" +
+                "end\n";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        kieSession.insert( "Hello" );
+        int fired = kieSession.fireAllRules();
+        Assertions.assertThat( fired ).isEqualTo( 1 );
     }
 }

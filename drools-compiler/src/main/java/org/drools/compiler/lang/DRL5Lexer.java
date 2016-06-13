@@ -1,19 +1,4 @@
-/*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
-*/
-
-// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/DRL5Lexer.g 2013-10-30 10:19:43
+// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/DRL5Lexer.g 2016-06-13 19:05:51
 
     package org.drools.compiler.lang;
 
@@ -128,7 +113,7 @@ public class DRL5Lexer extends AbstractDRLLexer {
 	        return errors;
 	    }
 
-	    /** Overrided this method to not output mesages */
+	    /** Overridden to not output messages */
 	    public void emitErrorMessage(String msg) {
 	    }
 	    
