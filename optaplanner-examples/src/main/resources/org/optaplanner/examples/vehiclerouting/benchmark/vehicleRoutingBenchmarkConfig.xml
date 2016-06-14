@@ -15,8 +15,14 @@
       <inputSolutionFile>data/vehiclerouting/import/belgium/basic/air/belgium-n2750-k55.vrp</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/import/belgium/basic/road-km/belgium-road-km-n50-k10.vrp</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/import/belgium/basic/road-km/belgium-road-km-n100-k10.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/belgium/basic/road-km/belgium-road-km-n500-k20.vrp</inputSolutionFile>
+      <!--<inputSolutionFile>data/vehiclerouting/import/belgium/basic/road-km/belgium-road-km-n1000-k20.vrp</inputSolutionFile>--><!-- Too big to include in git -->
+      <!--<inputSolutionFile>data/vehiclerouting/import/belgium/basic/road-km/belgium-road-km-n2750-k55.vrp</inputSolutionFile>--><!-- Too big to include in git -->
       <inputSolutionFile>data/vehiclerouting/import/belgium/basic/road-time/belgium-road-time-n50-k10.vrp</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/import/belgium/basic/road-time/belgium-road-time-n100-k10.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/belgium/basic/road-time/belgium-road-time-n500-k20.vrp</inputSolutionFile>
+      <!--<inputSolutionFile>data/vehiclerouting/import/belgium/basic/road-time/belgium-road-time-n1000-k20.vrp</inputSolutionFile>--><!-- Too big to include in git -->
+      <!--<inputSolutionFile>data/vehiclerouting/import/belgium/basic/road-time/belgium-road-time-n2750-k55.vrp</inputSolutionFile>--><!-- Too big to include in git -->
       <!-- USA datasets -->
       <inputSolutionFile>data/vehiclerouting/import/usa/basic/air/usa-n100-k10.vrp</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/import/usa/basic/air/usa-n500-k20.vrp</inputSolutionFile>
