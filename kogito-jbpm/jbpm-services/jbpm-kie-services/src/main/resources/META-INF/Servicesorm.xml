@@ -346,7 +346,7 @@
         ProcessInstanceLog log
       where log.status in (:states) and log.processInstanceId in 
       (select vlog.processInstanceId from VariableInstanceLog vlog where vlog.variableId=:variable and vlog.value like :variableValue
-      and vlog.id in (select max(vlog2.id) from VariableInstanceLog vlog2 group by vlog2.processInstanceId))
+      and vlog.id in (select max(vlog2.id) from VariableInstanceLog vlog2 where vlog2.variableId = vlog.variableId group by vlog2.processInstanceId))
       ORDER BY
         log.processId, log.start
     </query>
