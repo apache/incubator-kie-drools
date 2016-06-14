@@ -180,6 +180,7 @@
 
 
 
+
     inkscape:perspective
        sodipodi:type=&quot;inkscape:persp3d&quot;
        inkscape:vp_x=&quot;0 : 526.18109 : 1&quot;
@@ -789,8 +790,8 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.3633333"
-     inkscape:cx="400"
-     inkscape:cy="300"
+     inkscape:cx="316.38143"
+     inkscape:cy="300.00001"
      inkscape:document-units="px"
      inkscape:current-layer="layer4"
      showgrid="true"
@@ -3076,12 +3077,12 @@
       <polygon
          transform="matrix(0.18710212,0,0,0.14193527,594.34552,861.09925)"
          style="fill:#555753"
-         points="88.139,81.17 19.174,56.07 19.174,7.758 19.174,7.758 88.139,32.858 "
+         points="88.139,32.858 88.139,81.17 19.174,56.07 19.174,7.758 19.174,7.758 "
          id="polygon8367" />
       <polygon
          transform="matrix(0.18956255,0,0,0.14193527,594.29834,861.09925)"
          style="fill:#babdb6"
-         points="19.174,56.07 19.174,9.589 19.174,9.589 86.24,34 86.24,80.48 "
+         points="86.24,80.48 19.174,56.07 19.174,9.589 19.174,9.589 86.24,34 "
          id="polygon8369" />
       <path
          style="fill:#888a85"
@@ -3096,12 +3097,12 @@
       <polygon
          transform="matrix(-0.10482997,0,0,0.14193527,620.36105,861.09925)"
          style="fill:#555753"
-         points="19.174,56.07 19.174,7.758 19.174,7.758 88.139,32.858 88.139,81.17 "
+         points="88.139,81.17 19.174,56.07 19.174,7.758 19.174,7.758 88.139,32.858 "
          id="polygon8375" />
       <polygon
          transform="matrix(-0.10482997,0,0,0.14193527,620.36105,861.09925)"
          style="fill:#babdb6"
-         points="19.174,56.07 19.174,9.589 19.174,9.589 86.24,34 86.24,80.48 "
+         points="86.24,80.48 19.174,56.07 19.174,9.589 19.174,9.589 86.24,34 "
          id="polygon8377" />
       <path
          sodipodi:nodetypes="cscccc"
@@ -3245,12 +3246,12 @@
       <polygon
          transform="matrix(-0.10482997,0,0,0.14193527,625.23282,862.73427)"
          style="fill:#555753"
-         points="19.174,7.758 88.139,32.858 88.139,81.17 19.174,56.07 19.174,7.758 "
+         points="19.174,7.758 19.174,7.758 88.139,32.858 88.139,81.17 19.174,56.07 "
          id="polygon8421" />
       <polygon
          transform="matrix(-0.10482997,0,0,0.14193527,625.23282,862.73427)"
          style="fill:#555753"
-         points="19.174,9.589 86.24,34 86.24,80.48 19.174,56.07 19.174,9.589 "
+         points="19.174,9.589 19.174,9.589 86.24,34 86.24,80.48 19.174,56.07 "
          id="polygon8423" />
       <path
          sodipodi:nodetypes="ccscccccc"
@@ -3520,7 +3521,7 @@
            height="20"
            x="30"
            y="280" /></flowRegion><flowPara
-         id="flowPara10505"></flowPara></flowRoot>    <path
+         id="flowPara10505" /></flowRoot>    <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path10511"
@@ -3627,6 +3628,12 @@
          style="font-weight:normal;font-size:20px;text-align:center;text-anchor:middle"
          id="flowPara4350">&amp; airlines</flowPara><flowPara
          style="font-weight:normal;font-size:20px;text-align:center;text-anchor:middle"
+         id="flowPara4019" /><flowPara
+         style="font-weight:normal;font-size:20px;text-align:center;text-anchor:middle"
+         id="flowPara4021">Technicians</flowPara><flowPara
+         style="font-weight:normal;font-size:20px;text-align:center;text-anchor:middle"
+         id="flowPara4023">on the road</flowPara><flowPara
+         style="font-weight:normal;font-size:20px;text-align:center;text-anchor:middle"
          id="flowPara18737" /><flowPara
          style="font-weight:normal;font-size:20px;text-align:center;text-anchor:middle"
          id="flowPara18739" /></flowRoot>  </g>
@@ -3684,7 +3691,7 @@
            y="-16.723961"
            style="font-size:35px;text-align:center;text-anchor:middle;fill:#ce5c00" /></flowRegion><flowPara
          id="flowPara4302"
-         style="font-weight:bold;fill:#ce5c00">-20%</flowPara></flowRoot>    <flowRoot
+         style="font-weight:bold;fill:#ce5c00">-15%</flowPara></flowRoot>    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot4304"
        xml:space="preserve"
@@ -3756,7 +3763,7 @@
            height="50"
            width="120"
            id="rect4352" /></flowRegion><flowPara
-         id="flowPara4354">-7%</flowPara></flowRoot>    <flowRoot
+         id="flowPara4354">-9%</flowPara></flowRoot>    <flowRoot
        transform="translate(371.23422,578.47812)"
        xml:space="preserve"
        id="flowRoot4356"
@@ -3780,7 +3787,7 @@
            x="542.26074"
            y="-16.723961"
            style="font-size:15px;text-align:center;text-anchor:middle;fill:#888a85" /></flowRegion><flowPara
-         id="flowPara4370">-27%</flowPara></flowRoot>    <flowRoot
+         id="flowPara4370">-18%</flowPara></flowRoot>    <flowRoot
        transform="translate(-32.626219,579.35754)"
        xml:space="preserve"
        id="flowRoot4372"
@@ -3804,7 +3811,7 @@
            height="30"
            width="720"
            id="rect3777" /></flowRegion><flowPara
-         id="flowPara3779">5 mins Late Acceptance vs First Fit Decreasing</flowPara></flowRoot>    <flowRoot
+         id="flowPara3779">5 mins Late Acceptance Nearby vs First Fit Decreasing</flowPara></flowRoot>    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.5px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555753;fill-opacity:1;stroke:none"
        id="flowRoot3757"
        xml:space="preserve"

@@ -1606,6 +1606,16 @@ model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  48
         xlink:href="http://neo.lcc.uma.es/vrp/">the VRP web</link>.</para>
       </section>
 
+      <section xml:id="vehicleRoutingValueProposition">
+        <title>Value Proposition</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Use_cases_and_examples/vehicleRoutingValueProposition.png"/>
+          </imageobject>
+        </mediaobject>
+      </section>
+
       <section xml:id="vehicleRoutingProblemSize">
         <title>Problem Size</title>
 
