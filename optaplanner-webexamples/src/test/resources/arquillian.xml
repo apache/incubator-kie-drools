@@ -7,7 +7,7 @@
     <configuration>
       <property name="jbossHome">target/wildfly-${version.org.wildfly}</property>
       <!-- Port offset allows running the tests while a WildFly server is already running -->
-      <property name="javaVmArguments">-Djboss.socket.binding.port-offset=10000 -Xms512m -Xmx1024m -XX:MaxPermSize=512m</property>
+      <property name="javaVmArguments">-Djboss.socket.binding.port-offset=10000 -Xms512m -Xmx1024m</property>
       <property name="managementPort">19990</property>
     </configuration>
   </container>
