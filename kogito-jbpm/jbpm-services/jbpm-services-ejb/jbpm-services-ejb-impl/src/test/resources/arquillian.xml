@@ -6,7 +6,7 @@
   <container qualifier="jboss" default="true">
     <configuration>
       <property name="jbossHome">${jboss.server.home}</property>
-      <property name="javaVmArguments">-Xms512m -Xmx1024m -XX:MaxPermSize=512m</property>
+      <property name="javaVmArguments">-Xms512m -Xmx1024m</property>
     </configuration>
   </container>
 </arquillian>
