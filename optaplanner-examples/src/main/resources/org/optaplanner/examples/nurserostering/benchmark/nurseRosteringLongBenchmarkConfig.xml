@@ -42,15 +42,15 @@
       <termination>
         <minutesSpentLimit>5</minutesSpentLimit>
       </termination>
-      <constructionHeuristic>
-        <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
-      </constructionHeuristic>
     </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
     <name>absolute300SeqLength2and3PillarPart</name>
     <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
           <moveListFactory>
