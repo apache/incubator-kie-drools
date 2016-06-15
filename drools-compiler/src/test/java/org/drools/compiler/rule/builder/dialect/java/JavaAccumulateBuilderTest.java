@@ -15,11 +15,6 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.HashMap;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BoundIdentifiers;
@@ -31,11 +26,16 @@ import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.rule.Accumulate;
-import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.HashMap;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class JavaAccumulateBuilderTest {
 
@@ -90,7 +90,7 @@ public class JavaAccumulateBuilderTest {
         
         String code = "int x = 0;";
         String expected = "x = 0;";
-        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() );
+        BoundIdentifiers bindings = new BoundIdentifiers( new HashMap<String, Class<?>>(), null );
         JavaAnalysisResult analysis = analyzer.analyzeBlock( code, bindings);
         String result = builder.fixInitCode( analysis, code );
         assertEquals( expected, result );

@@ -15,8 +15,8 @@
 
 package org.drools.jsr94.rules;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.kie.api.runtime.rule.EntryPoint;
 
 import javax.rules.Handle;
@@ -60,7 +60,7 @@ public class Jsr94EventFactHandle extends EventFactHandle
                recency,
                timestamp,
                duration,
-               (InternalWorkingMemoryEntryPoint) entryPoint );
+               (WorkingMemoryEntryPoint) entryPoint );
     }
 
 }

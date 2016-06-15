@@ -35,7 +35,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -131,15 +130,19 @@ public class MVELDataProvider
                                final InternalWorkingMemory wm,
                                final PropagationContext ctx,
                                final Object executionContext) {
-        VariableResolverFactory factory = unit.getFactory( null, null, null, null, tuple, null, wm, wm.getGlobalResolver()  );
+        return asIterator( evaluate( tuple, wm ) );
+    }
 
-        //this.expression.
-        final Object result = MVELSafeHelper.getEvaluator().executeExpression( this.expr, factory );
+    protected Object evaluate( Tuple tuple, InternalWorkingMemory wm ) {
+        VariableResolverFactory factory = unit.getFactory( null, null, null, null, tuple, null, wm, wm.getGlobalResolver() );
+        return MVELSafeHelper.getEvaluator().executeExpression( this.expr, factory );
+    }
 
+    protected Iterator asIterator( Object result ) {
         if ( result == null ) {
             return Collections.EMPTY_LIST.iterator();
-        } else if ( result instanceof Collection ) {
-            return ((Collection) result).iterator();
+        } else if ( result instanceof Iterable ) {
+            return ((Iterable) result).iterator();
         } else if ( result instanceof Iterator ) {
             return (Iterator) result;
         } else if ( result.getClass().isArray() ) {
@@ -157,5 +160,9 @@ public class MVELDataProvider
         }
         clones.add(clone);
         return clone;
+    }
+
+    public boolean isReactive() {
+        return false;
     }
 }

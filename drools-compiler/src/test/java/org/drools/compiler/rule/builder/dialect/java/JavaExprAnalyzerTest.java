@@ -17,24 +17,17 @@
  */
 package org.drools.compiler.rule.builder.dialect.java;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.antlr.runtime.RecognitionException;
+import org.drools.compiler.compiler.BoundIdentifiers;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Set;
 
-import org.antlr.runtime.RecognitionException;
-import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.compiler.rule.builder.dialect.java.JavaAnalysisResult;
-import org.drools.compiler.rule.builder.dialect.java.JavaExprAnalyzer;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class JavaExprAnalyzerTest {
 
-    /**
-     * Test method for {@link org.kie.rule.builder.dialect.java.JavaExprAnalyzer#analyzeBlock(java.lang.String, java.util.Set[])}.
-     */
     @Test
     public void testAnalyzeBlock() {
         JavaExprAnalyzer analyzer = new JavaExprAnalyzer();
@@ -50,7 +43,7 @@ public class JavaExprAnalyzerTest {
                            "method();\n";
         try {
             
-            JavaAnalysisResult analysis = analyzer.analyzeBlock( codeBlock, new BoundIdentifiers( new HashMap<String, Class<?>>(), new HashMap<String, Class<?>>() ) );
+            JavaAnalysisResult analysis = analyzer.analyzeBlock( codeBlock, new BoundIdentifiers( new HashMap<String, Class<?>>(), null ) );
             Set<String> vars = analysis.getLocalVariables();
             assertEquals( 3, vars.size() );
             assertTrue( vars.contains( "x" ));

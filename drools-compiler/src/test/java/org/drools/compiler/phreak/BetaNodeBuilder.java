@@ -39,8 +39,8 @@ import org.drools.core.spi.InternalReadAccessor;
 public class BetaNodeBuilder {
     BuildContext buildContext;
     int          nodeType;
-    Class        leftType;
-    Class        rightType;
+    Class        leftType = Object.class;
+    Class        rightType = Object.class;
     String       leftFieldName;
     String       leftVariableName;
     String       constraintFieldName;

@@ -16,14 +16,16 @@
 
 package org.drools.core.common;
 
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
+import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.datasources.InternalDataSource;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public interface InternalFactHandle
     extends
@@ -71,8 +73,13 @@ public interface InternalFactHandle
 
     TraitTypeEnum getTraitType();
     
-    InternalWorkingMemoryEntryPoint getEntryPoint();
+    RightTuple getFirstRightTuple();
 
+    LeftTuple getFirstLeftTuple();
+
+    WorkingMemoryEntryPoint getEntryPoint();
+    void setEntryPoint( WorkingMemoryEntryPoint ep );
+    
     InternalFactHandle clone();
     
     String toExternalForm();
@@ -111,10 +118,7 @@ public interface InternalFactHandle
     RightTuple findFirstRightTuple(Predicate<RightTuple> rightTuplePredicate );
     LeftTuple findFirstLeftTuple(Predicate<LeftTuple> lefttTuplePredicate );
 
-    LeftTuple getFirstLeftTuple();
     void setFirstLeftTuple( LeftTuple firstLeftTuple );
-
-    RightTuple getFirstRightTuple();
 
     LinkedTuples detachLinkedTuples();
     LinkedTuples detachLinkedTuplesForPartition(int i);
@@ -149,5 +153,17 @@ public interface InternalFactHandle
         void setFirstLeftTuple( LeftTuple firstLeftTuple );
 
         RightTuple getFirstRightTuple();
+    }
+
+    default InternalDataSource<?> getDataSource() {
+        return null;
+    }
+
+    default InternalFactHandle getParentHandle() {
+        return null;
+    }
+
+    default void setParentHandle( InternalFactHandle parentHandle ) {
+        throw new UnsupportedOperationException();
     }
 }

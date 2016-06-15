@@ -15,11 +15,11 @@
 
 package org.drools.core.phreak;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
@@ -72,7 +72,7 @@ public interface PropagationEntry {
 
         @Override
         public void execute(InternalKnowledgeRuntime kruntime) {
-            execute( ((InternalWorkingMemoryEntryPoint) kruntime).getInternalWorkingMemory() );
+            execute( ((WorkingMemoryEntryPoint) kruntime).getInternalWorkingMemory() );
         }
 
         @Override

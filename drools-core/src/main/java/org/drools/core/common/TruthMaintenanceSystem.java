@@ -42,7 +42,7 @@ import static org.drools.core.common.ClassAwareObjectStore.getActualClass;
  */
 public class TruthMaintenanceSystem {
 
-    private NamedEntryPoint ep;
+    private InternalWorkingMemoryEntryPoint ep;
 
     private ObjectTypeConfigurationRegistry typeConfReg;
 
@@ -55,7 +55,7 @@ public class TruthMaintenanceSystem {
     public TruthMaintenanceSystem() {}
 
     public TruthMaintenanceSystem(StatefulKnowledgeSessionImpl wm,
-                                  NamedEntryPoint ep) {
+                                  InternalWorkingMemoryEntryPoint ep) {
         this.ep = ep;
 
         assertBehaviour = ep.getKnowledgeBase().getConfiguration().getAssertBehaviour();
@@ -139,7 +139,7 @@ public class TruthMaintenanceSystem {
         InternalWorkingMemory wm = ep.getInternalWorkingMemory();
 
         final PropagationContext propagationContext = ep.getPctxFactory().createPropagationContext( wm.getNextPropagationIdCounter(), PropagationContext.Type.DELETION,
-                                                                                                    null, null, ifh,  ep.entryPoint);
+                                                                                                    null, null, ifh,  ep.getEntryPoint());
 
         TruthMaintenanceSystemHelper.removeLogicalDependencies( ifh, propagationContext );
 

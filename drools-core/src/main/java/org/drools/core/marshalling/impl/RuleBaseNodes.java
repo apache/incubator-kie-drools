@@ -16,6 +16,9 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.common.BaseNode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -27,9 +30,6 @@ import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.WindowNode;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class RuleBaseNodes {
     public static Map<Integer, BaseNode> getNodeMap(InternalKnowledgeBase kBase) {
@@ -92,7 +92,7 @@ public class RuleBaseNodes {
             }
         } else if ( sink instanceof ObjectSource ) {
             // it may be a RIAN
-            nodes.put( sink.getId(), 
+            nodes.put( sink.getId(),
                        (ObjectSource) sink );
             for ( ObjectSink objectSink : ((ObjectSource)sink).getObjectSinkPropagator().getSinks() ) {
                 addObjectSink( kBase,

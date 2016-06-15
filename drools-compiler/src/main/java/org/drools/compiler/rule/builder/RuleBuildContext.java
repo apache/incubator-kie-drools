@@ -16,18 +16,24 @@
 
 package org.drools.compiler.rule.builder;
 
+import java.util.Optional;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
+import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.lang.descr.QueryDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.base.TypeResolver;
 import org.drools.core.beliefsystem.abductive.Abductive;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.AbductiveQuery;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.DeclarationScopeResolver;
+import org.kie.api.runtime.rule.RuleUnit;
 
 /**
  * A context for the current build
@@ -62,7 +68,6 @@ public class RuleBuildContext extends PackageBuildContext {
                             final DialectCompiletimeRegistry dialectCompiletimeRegistry,
                             final InternalKnowledgePackage pkg,
                             final Dialect defaultDialect) {
-        this.declarationResolver = new DeclarationScopeResolver( kBuilder.getGlobals(), pkg );
         this.ruleDescr = ruleDescr;
 
         if ( ruleDescr instanceof QueryDescr ) {
@@ -73,7 +78,7 @@ public class RuleBuildContext extends PackageBuildContext {
                 this.rule = new AbductiveQuery( ruleDescr.getName(), abductive.mode() );
             }
         } else {
-            this.rule = new RuleImpl(ruleDescr.getName());
+            this.rule = ruleDescr.toRule();
         }
         this.rule.setPackage(pkg.getName());
         this.rule.setDialect(ruleDescr.getDialect());
@@ -85,12 +90,17 @@ public class RuleBuildContext extends PackageBuildContext {
             this.rule.setDialect(getDialect().getId());
         }
 
+        if (ruleDescr.getUnit() != null) {
+            rule.setRuleUnitClassName( pkg.getName() + "." + ruleDescr.getUnit().getTarget() );
+        }
+
         Dialect dialect = getDialect();
         if (dialect != null ) {
             dialect.init( ruleDescr );
         }
 
-        compilerFactory = kBuilder.getBuilderConfiguration().getComponentFactory();
+        this.compilerFactory = kBuilder.getBuilderConfiguration().getComponentFactory();
+        this.declarationResolver = new DeclarationScopeResolver( kBuilder.getGlobals(), getPkg() );
     }
 
     /**
@@ -151,5 +161,46 @@ public class RuleBuildContext extends PackageBuildContext {
 
     public void setInXpath( boolean inXpath ) {
         this.inXpath = inXpath;
+    }
+
+    public void initRule() {
+        initRuleUnitClassName();
+        declarationResolver.setRule( rule );
+    }
+
+    private void initRuleUnitClassName() {
+        String ruleUnitClassName = rule.getRuleUnitClassName();
+        boolean nameInferredFromResource = false;
+
+        if ( ruleUnitClassName == null && rule.getResource() != null && rule.getResource().getSourcePath() != null ) {
+            String drlPath = rule.getResource().getSourcePath();
+            int lastSep = drlPath.lastIndexOf( '/' );
+            if (lastSep >= 0) {
+                drlPath = drlPath.substring( lastSep+1 );
+            }
+            ruleUnitClassName = rule.getPackage() + "." + drlPath.substring( 0, drlPath.lastIndexOf( '.' ) ).replace( '/', '.' );
+            nameInferredFromResource = true;
+        }
+
+        if (ruleUnitClassName != null) {
+            TypeResolver typeResolver = getPkg().getTypeResolver();
+            boolean unitFound = false;
+            try {
+                unitFound = RuleUnit.class.isAssignableFrom( typeResolver.resolveType( ruleUnitClassName ) );
+                if (unitFound && nameInferredFromResource) {
+                    rule.setRuleUnitClassName( ruleUnitClassName );
+                }
+            } catch (ClassNotFoundException e) {
+                // ignore
+            }
+            if (!unitFound && !nameInferredFromResource) {
+                addError( new RuleBuildError( rule, getParentDescr(), null,
+                                              ruleUnitClassName + " is not a valid RuleUnit class name" ) );
+            }
+        }
+    }
+
+    public Optional<EntryPointId> getEntryPointId(String name) {
+        return getPkg().getRuleUnitRegistry().getRuleUnitFor( getRule() ).flatMap( ruDescr -> ruDescr.getEntryPointId(name) );
     }
 }

@@ -191,7 +191,7 @@ public class LogicTransformer {
             DataProvider provider = ((From) element).getDataProvider();
             Declaration[] decl = provider.getRequiredDeclarations();
             for (Declaration aDecl : decl) {
-                Declaration resolved = resolver.getDeclaration(null, aDecl.getIdentifier());
+                Declaration resolved = resolver.getDeclaration(aDecl.getIdentifier());
                 if (resolved != null && resolved != aDecl) {
                     provider.replaceDeclaration(aDecl, resolved);
                 } else if (resolved == null) {
@@ -210,8 +210,7 @@ public class LogicTransformer {
             Pattern pattern = qe.getResultPattern();
 
             for ( Entry<String, Declaration> entry : pattern.getInnerDeclarations().entrySet() ) {
-                Declaration resolved = resolver.getDeclaration( null,
-                                                                entry.getValue().getIdentifier() );
+                Declaration resolved = resolver.getDeclaration( entry.getValue().getIdentifier() );
                 if ( resolved != null && resolved != entry.getValue() && resolved.getPattern() != pattern ) {
                     entry.setValue( resolved );
                 }
@@ -223,8 +222,7 @@ public class LogicTransformer {
                     continue;
                 }
                 Declaration declr = ((QueryArgument.Declr) qe.getArguments()[i]).getDeclaration();
-                Declaration resolved = resolver.getDeclaration( null,
-                                                                declr.getIdentifier() );
+                Declaration resolved = resolver.getDeclaration( declr.getIdentifier() );
                 if ( resolved != declr && resolved.getPattern() != pattern ) {
                     qe.getArguments()[i] = new QueryArgument.Declr(resolved);
                 }
@@ -261,8 +259,7 @@ public class LogicTransformer {
     private void replaceDeclarations( DeclarationScopeResolver resolver, Pattern pattern, Constraint constraint ) {
         Declaration[] decl = constraint.getRequiredDeclarations();
         for ( Declaration aDecl : decl ) {
-            Declaration resolved = resolver.getDeclaration( null,
-                                                            aDecl.getIdentifier() );
+            Declaration resolved = resolver.getDeclaration( aDecl.getIdentifier() );
 
             if ( constraint instanceof MvelConstraint && ( (MvelConstraint) constraint ).isUnification() ) {
                 if ( ClassObjectType.DroolsQuery_ObjectType.isAssignableFrom( resolved.getPattern().getObjectType() ) ) {
@@ -292,8 +289,7 @@ public class LogicTransformer {
     private void replaceDeclarations( DeclarationScopeResolver resolver, Accumulate accumulate ) {
         Declaration[] decl = accumulate.getRequiredDeclarations();
         for ( Declaration aDecl : decl ) {
-            Declaration resolved = resolver.getDeclaration( null,
-                                                            aDecl.getIdentifier() );
+            Declaration resolved = resolver.getDeclaration( aDecl.getIdentifier() );
 
             if ( resolved != null && resolved != aDecl ) {
                 accumulate.replaceDeclaration( aDecl,
@@ -330,8 +326,7 @@ public class LogicTransformer {
     private void processEvalCondition(DeclarationScopeResolver resolver, EvalCondition element) {
         Declaration[] decl = element.getRequiredDeclarations();
         for (Declaration aDecl : decl) {
-            Declaration resolved = resolver.getDeclaration(null,
-                    aDecl.getIdentifier());
+            Declaration resolved = resolver.getDeclaration(aDecl.getIdentifier());
             if (resolved != null && resolved != aDecl) {
                 element.replaceDeclaration( aDecl, resolved );
             }

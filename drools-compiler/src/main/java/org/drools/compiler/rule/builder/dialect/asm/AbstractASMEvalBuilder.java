@@ -51,7 +51,7 @@ public abstract class AbstractASMEvalBuilder implements RuleConditionBuilder {
                                                                           evalDescr,
                                                                           evalDescr.getContent(),
                                                                           new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( decls ),
-                                                                                                context.getKnowledgeBuilder().getGlobals() ) );
+                                                                                                context ) );
 
         List<Declaration> requiredDeclarations = new ArrayList<Declaration>();
         for (String usedIdentifier : analysis.getIdentifiers()) {
@@ -85,14 +85,14 @@ public abstract class AbstractASMEvalBuilder implements RuleConditionBuilder {
 
         Arrays.sort(declarations, RuleTerminalNode.SortDeclarations.instance);
 
-        final EvalCondition eval = new EvalCondition( declarations );
+        EvalCondition eval = new EvalCondition( declarations );
 
-        final Map vars = createVariableContext( className,
-                (String)evalDescr.getContent(),
-                context,
-                declarations,
-                null,
-                analysis.getBoundIdentifiers().getGlobals() );
+        Map<String, Object> vars = createVariableContext( className,
+                                                          (String)evalDescr.getContent(),
+                                                          context,
+                                                          declarations,
+                                                          null,
+                                                          analysis.getBoundIdentifiers().getGlobals() );
 
         generateMethodTemplate("evalMethod", context, vars);
 
@@ -106,7 +106,7 @@ public abstract class AbstractASMEvalBuilder implements RuleConditionBuilder {
         final List<Declaration> declarations = new ArrayList<Declaration>();
 
         for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
-            declarations.add( context.getDeclarationResolver().getDeclaration( context.getRule(), id ) );
+            declarations.add( context.getDeclarationResolver().getDeclaration( id ) );
         }
 
         createImplicitBindings( context,

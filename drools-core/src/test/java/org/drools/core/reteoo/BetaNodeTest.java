@@ -16,14 +16,14 @@
 
 package org.drools.core.reteoo;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class BetaNodeTest {
 
@@ -33,7 +33,7 @@ public class BetaNodeTest {
         final ObjectSource os = new MockObjectSource( 2 );
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        BuildContext buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
+        BuildContext buildContext = new BuildContext( kBase );
         
         final BetaNode j1 = new JoinNode( 1,
                                           ts,

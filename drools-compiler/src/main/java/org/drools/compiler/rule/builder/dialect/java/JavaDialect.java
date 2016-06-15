@@ -506,14 +506,14 @@ public class JavaDialect
 
             // Check if an invoker - returnvalue, predicate, eval or consequence has been associated
             // If so we add it to the PackageCompilationData as it will get wired up on compilation
-            final Object invoker = context.getInvokerLookups().get( className );
+            final Object invoker = context.getInvokerLookup( className );
             if ( invoker != null ) {
                 data.putInvoker( className,
                                  invoker );
             }
             final String text = invokers.getValue();
 
-            final BaseDescr descr = (BaseDescr) context.getDescrLookups().get( className );
+            final BaseDescr descr = context.getDescrLookup( className );
             addClassCompileTask( className,
                                  descr,
                                  text,

@@ -18,9 +18,9 @@ package org.drools.compiler.integrationtests.marshalling;
 import org.drools.compiler.Person;
 import org.drools.compiler.integrationtests.marshalling.util.OldOutputMarshallerMethods;
 import org.drools.core.SessionConfiguration;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.impl.EnvironmentFactory;
@@ -72,7 +72,7 @@ public class FactHandleMarshallingTest {
 
         RuleBasePartitionId partionId = RuleBasePartitionId.MAIN_PARTITION;
         EntryPointNode entryPointNode = nFacotry.buildEntryPointNode(1, partionId, false, (ObjectSource) rete , EntryPointId.DEFAULT);
-        InternalWorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint( EntryPointId.DEFAULT, entryPointNode, wm);
+        WorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint( EntryPointId.DEFAULT, entryPointNode, wm);
 
         EventFactHandle factHandle = new EventFactHandle(1, (Object) new Person(),0, (new Date()).getTime(), 0, wmEntryPoint);
         

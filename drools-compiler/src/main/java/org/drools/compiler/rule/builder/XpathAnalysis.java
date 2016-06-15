@@ -42,6 +42,10 @@ public class XpathAnalysis implements Iterable<XpathAnalysis.XpathPart> {
         return parts.iterator();
     }
 
+    public XpathPart getPart(int i) {
+        return parts.get( i );
+    }
+
     public static class XpathPart {
         private final String field;
         private final boolean iterate;

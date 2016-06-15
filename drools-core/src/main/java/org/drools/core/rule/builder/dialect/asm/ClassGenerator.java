@@ -15,13 +15,6 @@
 
 package org.drools.core.rule.builder.dialect.asm;
 
-import org.drools.core.base.TypeResolver;
-import org.drools.core.util.ByteArrayClassLoader;
-import org.drools.core.util.ClassUtils;
-import org.mvel2.asm.ClassWriter;
-import org.mvel2.asm.MethodVisitor;
-import org.mvel2.asm.Type;
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,13 +29,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.base.TypeResolver;
+import org.drools.core.util.ByteArrayClassLoader;
+import org.drools.core.util.ClassUtils;
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Type;
+
 import static java.lang.reflect.Modifier.isAbstract;
 import static org.drools.core.util.ClassUtils.*;
 import static org.mvel2.asm.Opcodes.*;
 
 public class ClassGenerator {
 
-    private static final boolean DUMP_GENERATED_CLASSES = false;
+    public static final boolean DUMP_GENERATED_CLASSES = false;
 
     private final String className;
     private final TypeResolver typeResolver;

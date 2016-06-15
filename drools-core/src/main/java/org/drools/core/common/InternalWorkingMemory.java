@@ -16,12 +16,20 @@
 
 package org.drools.core.common;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
+import org.drools.core.impl.InternalRuleUnitExecutor;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.PropagationList;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.process.InternalProcessRuntime;
@@ -33,13 +41,8 @@ import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.locks.Lock;
-
 public interface InternalWorkingMemory
-    extends WorkingMemory, InternalWorkingMemoryEntryPoint {
+    extends WorkingMemory, WorkingMemoryEntryPoint {
 
     InternalAgenda getAgenda();
 
@@ -201,4 +204,17 @@ public interface InternalWorkingMemory
     void removeGlobal(String identifier);
 
     void notifyWaitOnRest();
+
+    void cancelActivation(Activation activation, boolean declarativeAgenda);
+
+    default PropagationList getPropagationList() {
+        throw new UnsupportedOperationException();
+    }
+
+    default void onSuspend() { }
+    default void onResume() { }
+
+    default InternalRuleUnitExecutor getRuleUnitExecutor() {
+        return null;
+    }
 }

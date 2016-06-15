@@ -19,17 +19,18 @@ import org.drools.compiler.lang.api.AccumulateImportDescrBuilder;
 import org.drools.compiler.lang.api.AttributeDescrBuilder;
 import org.drools.compiler.lang.api.DeclareDescrBuilder;
 import org.drools.compiler.lang.api.DescrBuilder;
+import org.drools.compiler.lang.api.FunctionDescrBuilder;
 import org.drools.compiler.lang.api.GlobalDescrBuilder;
+import org.drools.compiler.lang.api.ImportDescrBuilder;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
+import org.drools.compiler.lang.api.QueryDescrBuilder;
+import org.drools.compiler.lang.api.RuleDescrBuilder;
+import org.drools.compiler.lang.api.UnitDescrBuilder;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.api.FunctionDescrBuilder;
-import org.drools.compiler.lang.api.ImportDescrBuilder;
-import org.drools.compiler.lang.api.QueryDescrBuilder;
-import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.descr.FunctionImportDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.kie.api.io.Resource;
 
 /**
@@ -75,6 +76,12 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
         return this;
     }
 
+    public UnitDescrBuilder newUnit() {
+        UnitDescrBuilder impl = new UnitDescrBuilderImpl( this );
+        descr.setUnit( initDescr(impl) );
+        return impl;
+    }
+
     public ImportDescrBuilder newImport() {
         ImportDescrBuilder impl = new ImportDescrBuilderImpl( this, false );
         descr.addImport( initDescr(impl) );
@@ -107,6 +114,7 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
     public RuleDescrBuilder newRule() {
         RuleDescrBuilder rule = new RuleDescrBuilderImpl( this );
         descr.addRule( initDescr(rule) );
+        rule.getDescr().setUnit( descr.getUnit() );
         return rule;
     }
 

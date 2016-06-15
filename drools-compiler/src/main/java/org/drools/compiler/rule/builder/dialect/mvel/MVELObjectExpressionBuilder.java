@@ -49,7 +49,7 @@ public class MVELObjectExpressionBuilder {
                                                                                            context.getRuleDescr(),
                                                                                            expression,
                                                                                            new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( decls ),
-                                                                                                                 context.getKnowledgeBuilder().getGlobals() ) );
+                                                                                                                 context ) );
             context.setTypesafe( analysis.isTypesafe() );
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
             int i = usedIdentifiers.getDeclrClasses().keySet().size();

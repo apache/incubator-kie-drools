@@ -16,50 +16,59 @@
 
 package org.drools.core.common;
 
+import org.drools.core.WorkingMemoryEntryPoint;
+import org.drools.core.base.TraitHelper;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.rule.EntryPointId;
+import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
-import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
-import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
-public interface InternalWorkingMemoryEntryPoint extends EntryPoint {
-    ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
+public interface InternalWorkingMemoryEntryPoint extends WorkingMemoryEntryPoint {
 
-    InternalKnowledgeBase getKnowledgeBase();
+    TraitHelper getTraitHelper();
 
-    void delete(FactHandle factHandle,
-                RuleImpl rule,
-                Activation activation);
+    PropagationContextFactory getPctxFactory();
 
-    void delete(FactHandle factHandle,
+    FactHandle insert( Object object,
+                       boolean dynamic,
+                       RuleImpl rule,
+                       Activation activation );
+
+    void insert(InternalFactHandle handle,
+                Object object,
                 RuleImpl rule,
                 Activation activation,
-                FactHandle.State fhState);
+                ObjectTypeConf typeConf );
 
-    void update(FactHandle handle,
+    void insert(InternalFactHandle handle,
                 Object object,
-                BitMask mask,
-                Class<?> modifiedClass,
-                Activation activation);
+                RuleImpl rule,
+                Activation activation,
+                ObjectTypeConf typeConf,
+                PropagationContext pctx );
 
-    TruthMaintenanceSystem getTruthMaintenanceSystem();
+    FactHandle insertAsync(Object object);
 
-    EntryPointId getEntryPoint();
-    InternalWorkingMemory getInternalWorkingMemory();
+    InternalFactHandle update(InternalFactHandle handle,
+                              Object object,
+                              BitMask mask,
+                              Class<?> modifiedClass,
+                              Activation activation);
 
-    FactHandle getFactHandleByIdentity(Object object);
-    
-    void reset();
-    
-    ObjectStore getObjectStore();
+    void update(InternalFactHandle handle,
+                Object object,
+                Object originalObject,
+                ObjectTypeConf typeConf,
+                RuleImpl rule,
+                PropagationContext propagationContext);
 
-    FactHandleFactory getHandleFactory();
-    
-    EntryPointNode getEntryPointNode();
+    PropagationContext delete(InternalFactHandle handle,
+                              Object object,
+                              ObjectTypeConf typeConf,
+                              RuleImpl rule,
+                              Activation activation);
 
     void removeFromObjectStore(InternalFactHandle handle);
 }

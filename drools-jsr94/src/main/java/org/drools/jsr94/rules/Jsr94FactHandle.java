@@ -15,8 +15,8 @@
 
 package org.drools.jsr94.rules;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.kie.api.runtime.rule.EntryPoint;
 
 import javax.rules.Handle;
@@ -47,8 +47,6 @@ public class Jsr94FactHandle extends DefaultFactHandle
      * @param recency A value indicating the recency of this <code>Handle</code>
      *        (more recently created <code>Handle</code>s have greater values
      *         than <code>Handle</code>s created further in the past)
-     *
-     * @see org.kie.conflict.RecencyConflictResolver
      */
     Jsr94FactHandle(final long id,
                     final Object object,
@@ -57,6 +55,6 @@ public class Jsr94FactHandle extends DefaultFactHandle
         super( (int) id,
                object,
                recency,
-               (InternalWorkingMemoryEntryPoint)entryPoint );
+               (WorkingMemoryEntryPoint)entryPoint );
     }
 }

@@ -41,4 +41,5 @@ public interface DataProvider
     void replaceDeclaration(Declaration declaration,
                             Declaration resolved);
 
+    boolean isReactive();
 }

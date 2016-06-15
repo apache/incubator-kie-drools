@@ -16,8 +16,6 @@
 
 package org.drools.core.reteoo.builder;
 
-import java.util.Iterator;
-
 import org.drools.core.rule.Forall;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElementFactory;
@@ -54,14 +52,14 @@ public class ForallBuilder
                 // The reason why this is here is because forall can inject a
                 //  "this == " + BASE_IDENTIFIER $__forallBaseIdentifier
                 // Which we don't want to actually count in the case of forall node linking                
-                context.setEmptyForAllBetaConstraints( true );
+                context.setEmptyForAllBetaConstraints();
             }
-            not2.addChild( (Pattern) forall.getRemainingPatterns().get( 0 ) );
+            not2.addChild( forall.getRemainingPatterns().get( 0 ) );
             and.addChild( not2 );
         } else if ( forall.getRemainingPatterns().size() > 1 ) {
             final GroupElement and2 = GroupElementFactory.newAndInstance();
-            for ( final Iterator it = forall.getRemainingPatterns().iterator(); it.hasNext(); ) {
-                and2.addChild( (Pattern) it.next() );
+            for ( Pattern pattern : forall.getRemainingPatterns() ) {
+                and2.addChild( pattern );
             }
             not2.addChild( and2 );
             and.addChild( not2 );

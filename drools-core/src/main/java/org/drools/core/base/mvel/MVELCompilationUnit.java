@@ -456,7 +456,6 @@ public class MVELCompilationUnit
             cls = classLoader.loadClass( className );
         }
         return cls;
-
     }
 
     public void replaceDeclaration( Declaration declaration,

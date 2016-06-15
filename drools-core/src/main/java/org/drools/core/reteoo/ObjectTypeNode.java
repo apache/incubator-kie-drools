@@ -16,8 +16,17 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.core.InitialFact;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.ClassAwareObjectStore;
@@ -26,7 +35,6 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
@@ -53,14 +61,6 @@ import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
@@ -148,6 +148,8 @@ public class ObjectTypeNode extends ObjectSource
         if (objectType != ClassObjectType.InitialFact_ObjectType && context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation()) {
             this.sink = new CompositePartitionAwareObjectSinkAdapter();
         }
+
+        initMemoryId( context );
     }
 
     private static class IdGenerator {
@@ -450,7 +452,7 @@ public class ObjectTypeNode extends ObjectSource
         InternalWorkingMemory[] workingMemories = context.getWorkingMemories();
         InternalWorkingMemory workingMemory = workingMemories.length > 0 ? workingMemories[0] : null;
         if ( workingMemory != null ) {
-            InternalWorkingMemoryEntryPoint wmEntryPoint = (InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint(((EntryPointNode) source).getEntryPoint().getEntryPointId());
+            WorkingMemoryEntryPoint wmEntryPoint = workingMemory.getWorkingMemoryEntryPoint( ((EntryPointNode) source).getEntryPoint().getEntryPointId() );
             ObjectTypeConf objectTypeConf = wmEntryPoint.getObjectTypeConfigurationRegistry().getObjectTypeConfByClass( ((ClassObjectType) objectType).getClassType() );
             if (objectTypeConf != null) {
                 objectTypeConf.resetCache();

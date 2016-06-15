@@ -16,6 +16,14 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
@@ -23,6 +31,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
+import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.BehaviorManager;
@@ -31,14 +40,6 @@ import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * <code>WindowNodes</code> are nodes in the <code>Rete</code> network used
@@ -53,7 +54,7 @@ import java.util.List;
 public class WindowNode extends ObjectSource
         implements ObjectSinkNode,
                    RightTupleSink,
-                   MemoryFactory {
+                   MemoryFactory<WindowMemory> {
 
     private static final long serialVersionUID = 540l;
     private List<AlphaNodeFieldConstraint> constraints;
@@ -95,6 +96,7 @@ public class WindowNode extends ObjectSource
             }
         }
         hashcode = calculateHashCode();
+        initMemoryId( context );
     }
 
     @SuppressWarnings("unchecked")
@@ -154,7 +156,7 @@ public class WindowNode extends ObjectSource
         rightTuple.setContextObject( clonedFh );
 
         // process the behavior
-        final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
+        final WindowMemory memory = workingMemory.getNodeMemory(this);
         if (!behavior.assertFact(memory.behaviorContext, clonedFh, pctx, workingMemory)) {
             return;
         }
@@ -167,7 +169,7 @@ public class WindowNode extends ObjectSource
         if (isInUse()) {
             // This retraction could be the effect of an event expiration, but this node could be no
             // longer in use since an incremental update could have concurrently removed it
-            WindowMemory memory = (WindowMemory) wm.getNodeMemory( this );
+            WindowMemory memory = wm.getNodeMemory( this );
             behavior.retractFact( memory.behaviorContext, rightTuple.getFactHandle(), pctx, wm );
         }
 
@@ -251,7 +253,7 @@ public class WindowNode extends ObjectSource
     /**
      * Creates the WindowNode's memory.
      */
-    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public WindowMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         WindowMemory memory = new WindowMemory();
         memory.behaviorContext = this.behavior.createBehaviorContext();
         return memory;

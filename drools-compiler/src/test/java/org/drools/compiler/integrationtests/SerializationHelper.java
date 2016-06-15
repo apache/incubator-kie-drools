@@ -15,6 +15,10 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.drools.core.util.DroolsStreamUtils;
 import org.kie.api.KieBase;
@@ -24,10 +28,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 /**
  * Marshalling helper class to perform serialize/de-serialize a given object
@@ -49,11 +49,7 @@ public class SerializationHelper {
 
     public static StatefulKnowledgeSession getSerialisedStatefulKnowledgeSession(KieSession ksession,
                                                                                  boolean dispose) throws Exception {
-//        if ( ((ReteooRuleBase)((KnowledgeBaseImpl) (ksession.getKieBase())).getRuleBase()).getConfiguration().isPhreakEnabled() ) {
-//            return ksession;
-//        }
-
-        return getSerialisedStatefulKnowledgeSession( ksession, 
+        return getSerialisedStatefulKnowledgeSession( ksession,
                                                       dispose, 
                                                       true );
         
@@ -75,10 +71,6 @@ public class SerializationHelper {
                                                                                  KieBase kbase,
                                                                                  boolean dispose,
                                                                                  boolean testRoundTrip ) throws Exception {
-//        if ( ((ReteooRuleBase)((KnowledgeBaseImpl) (ksession.getKieBase())).getRuleBase()).getConfiguration().isPhreakEnabled() ) {
-//            return ksession;
-//        }
-        
         ProtobufMarshaller marshaller = (ProtobufMarshaller) MarshallerFactory.newMarshaller( kbase,
                                                                  (ObjectMarshallingStrategy[])ksession.getEnvironment().get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES) );
         long time = ksession.<SessionClock>getSessionClock().getCurrentTime();

@@ -15,6 +15,7 @@
 
 package org.drools.core.common;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.Iterator;
 import org.kie.api.runtime.KieSession;
@@ -61,7 +62,7 @@ public class ActiveActivationIterator
     }
     
     public static Iterator iterator(KieSession ksession) {
-        InternalWorkingMemory wm = ((InternalWorkingMemoryEntryPoint) ksession).getInternalWorkingMemory();
+        InternalWorkingMemory wm = ((WorkingMemoryEntryPoint) ksession).getInternalWorkingMemory();
         return PhreakActiveActivationIterator.iterator(wm);
     }
 

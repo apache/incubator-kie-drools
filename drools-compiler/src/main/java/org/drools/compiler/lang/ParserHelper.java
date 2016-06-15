@@ -47,6 +47,7 @@ import org.drools.compiler.lang.api.PatternDescrBuilder;
 import org.drools.compiler.lang.api.QueryDescrBuilder;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.api.TypeDeclarationDescrBuilder;
+import org.drools.compiler.lang.api.UnitDescrBuilder;
 import org.drools.compiler.lang.api.WindowDeclarationDescrBuilder;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -66,6 +67,7 @@ import java.util.Stack;
 public class ParserHelper {
     public final String[]                             statementKeywords        = new String[]{
                                                                                DroolsSoftKeywords.PACKAGE,
+                                                                               DroolsSoftKeywords.UNIT,
                                                                                DroolsSoftKeywords.IMPORT,
                                                                                DroolsSoftKeywords.GLOBAL,
                                                                                DroolsSoftKeywords.DECLARE,
@@ -462,6 +464,14 @@ public class ParserHelper {
                 }
                 pushParaphrases( DroolsParaphraseTypes.IMPORT );
                 beginSentence( DroolsSentenceType.IMPORT_STATEMENT );
+                setStart( imp );
+                return (T) imp;
+            } else if ( UnitDescrBuilder.class.isAssignableFrom( clazz ) ) {
+                UnitDescrBuilder imp = ctxBuilder == null ?
+                          DescrFactory.newPackage().newUnit() :
+                          ((PackageDescrBuilder) ctxBuilder).newUnit();
+                pushParaphrases( DroolsParaphraseTypes.UNIT );
+                beginSentence( DroolsSentenceType.UNIT );
                 setStart( imp );
                 return (T) imp;
             } else if ( AccumulateImportDescrBuilder.class.isAssignableFrom( clazz ) ) {

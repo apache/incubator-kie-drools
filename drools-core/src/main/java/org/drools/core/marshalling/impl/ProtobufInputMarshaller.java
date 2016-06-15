@@ -18,6 +18,7 @@ package org.drools.core.marshalling.impl;
 
 import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.SessionConfiguration;
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.ActivationsFilter;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.DefaultFactHandle;
@@ -26,7 +27,6 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.PropagationContextFactory;
@@ -242,7 +242,7 @@ public class ProtobufInputMarshaller {
         List<PropagationContext> pctxs = new ArrayList<PropagationContext>();
 
         if ( _session.getRuleData().hasInitialFact() ) {
-            ((StatefulKnowledgeSessionImpl)context.wm).initInitialFact(context.kBase, context);
+            session.setInitialFactHandle( session.initInitialFact(context.kBase, context) );
             context.handles.put( session.getInitialFactHandle().getId(), session.getInitialFactHandle() );
         }
 
@@ -250,7 +250,7 @@ public class ProtobufInputMarshaller {
             EntryPoint wmep = ((StatefulKnowledgeSessionImpl)context.wm).getEntryPointMap().get(_ep.getEntryPointId());
             readFactHandles( context,
                              _ep,
-                             ((InternalWorkingMemoryEntryPoint) wmep).getObjectStore(),
+                             ((WorkingMemoryEntryPoint) wmep).getObjectStore(),
                              pctxs );
 
             context.filter.fireRNEAs( context.wm );
@@ -489,7 +489,7 @@ public class ProtobufInputMarshaller {
                                             InternalFactHandle handle,
                                             List<PropagationContext> pctxs) {
         Object object = handle.getObject();
-        InternalWorkingMemoryEntryPoint ep = handle.getEntryPoint();
+        WorkingMemoryEntryPoint ep = handle.getEntryPoint();
         ObjectTypeConf typeConf = ep.getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(), object );
 
         PropagationContextFactory pctxFactory = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
@@ -543,7 +543,7 @@ public class ProtobufInputMarshaller {
                 handle = new DefaultFactHandle( _handle.getId(),
                                                 object,
                                                 _handle.getRecency(),
-                                                (InternalWorkingMemoryEntryPoint) entryPoint,
+                                                (WorkingMemoryEntryPoint) entryPoint,
                                                 typeConf != null && typeConf.isTrait() );
                 break;
             }
@@ -559,7 +559,7 @@ public class ProtobufInputMarshaller {
                                               _handle.getRecency(),
                                               _handle.getTimestamp(),
                                               _handle.getDuration(),
-                                              (InternalWorkingMemoryEntryPoint) entryPoint,
+                                              (WorkingMemoryEntryPoint) entryPoint,
                                               typeConf != null && typeConf.isTrait() );
                 ((EventFactHandle) handle).setExpired( _handle.getIsExpired() );
                 ((EventFactHandle) handle).setOtnCount( _handle.getOtnCount() );

@@ -89,8 +89,7 @@ public class ReteooRuleBuilderTest {
         rule.setConsequence( consequence );
 
         final List terminals = this.builder.addRule( rule,
-                                               this.rulebase,
-                                               new ReteooBuilder.IdGenerator( 1 ) );
+                                               this.rulebase );
 
         assertEquals( "Rule must have a single terminal node",
                              1,

@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.concurrent.RuleEvaluator;
 import org.drools.core.concurrent.SequentialRuleEvaluator;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -258,7 +259,7 @@ public class DefaultAgenda
                new SynchronizedPropagationList( workingMemory );
     }
 
-    PropagationList getPropagationList() {
+    public PropagationList getPropagationList() {
         return propagationList;
     }
 
@@ -337,8 +338,8 @@ public class DefaultAgenda
     public void insertAndStageActivation(final AgendaItem activation) {
         if ( activationObjectTypeConf == null ) {
             EntryPointId ep = workingMemory.getEntryPoint();
-            activationObjectTypeConf = ((InternalWorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( ep.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep,
-                                                                                                                                                                                                    activation );
+            activationObjectTypeConf = ((WorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( ep.getEntryPointId() )).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep,
+                                                                                                                                                                                            activation );
         }
 
         InternalFactHandle factHandle = workingMemory.getFactHandleFactory().newFactHandle( activation, activationObjectTypeConf, workingMemory, workingMemory );
@@ -376,13 +377,14 @@ public class DefaultAgenda
         AgendaItem item = (AgendaItem) activation;
         item.removeAllBlockersAndBlocked( this );
 
-        if ( isDeclarativeAgenda() && activation.getActivationFactHandle() == null ) {
-            // This a control rule activation, nothing to do except update counters. As control rules are not in agenda-groups etc.
-            return;
-        } else if (isDeclarativeAgenda()) {
-            // we are cancelling an actual Activation, so also it's handle from the WM.
-            workingMemory.getEntryPointNode().retractActivation( activation.getActivationFactHandle(), activation.getPropagationContext(), workingMemory );
+        workingMemory.cancelActivation( activation, isDeclarativeAgenda() );
 
+        if ( isDeclarativeAgenda() ) {
+            if (activation.getActivationFactHandle() == null) {
+                // This a control rule activation, nothing to do except update counters. As control rules are not in agenda-groups etc.
+                return;
+            }
+            // we are cancelling an actual Activation, so also it's handle from the WM.
             if ( activation.getActivationGroupNode() != null ) {
                 activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
             }

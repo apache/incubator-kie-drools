@@ -15,6 +15,7 @@
 
 package org.drools.core.common;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.ArrayElements;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.factmodel.traits.TraitFactory;
@@ -222,7 +223,7 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
-    public InternalWorkingMemoryEntryPoint getEntryPoint() {
+    public WorkingMemoryEntryPoint getEntryPoint() {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
@@ -257,7 +258,7 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
-    public void setEntryPoint(InternalWorkingMemoryEntryPoint ep) {
+    public void setEntryPoint(WorkingMemoryEntryPoint ep ) {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 

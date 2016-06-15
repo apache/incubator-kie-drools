@@ -16,18 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.DroolsObjectInputStream;
-import org.drools.core.common.DroolsObjectOutputStream;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.MemoryFactory;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.phreak.AddRemoveRule;
-import org.drools.core.rule.InvalidPatternException;
-import org.drools.core.rule.WindowDeclaration;
-import org.kie.api.definition.rule.Rule;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Externalizable;
@@ -42,6 +30,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.NetworkNode;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.phreak.AddRemoveRule;
+import org.drools.core.rule.InvalidPatternException;
+import org.drools.core.rule.WindowDeclaration;
+import org.kie.api.definition.rule.Rule;
+
+import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
 
 /**
  * Builds the Rete-OO network for a <code>Package</code>.
@@ -87,7 +91,7 @@ public class ReteooBuilder
         this.namedWindows = new HashMap<String, WindowNode>();
 
         //Set to 1 as Rete node is set to 0
-        this.idGenerator = new IdGenerator( 1 );
+        this.idGenerator = new IdGenerator();
         this.ruleBuilder = kBase.getConfiguration().getComponentFactory().getRuleBuilderFactory().newRuleBuilder();
     }
 
@@ -104,8 +108,7 @@ public class ReteooBuilder
      */
     public synchronized void addRule(final RuleImpl rule) throws InvalidPatternException {
         final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule,
-                                                                       this.kBase,
-                                                                       this.idGenerator );
+                                                                       this.kBase );
 
         BaseNode[] nodes = terminals.toArray( new BaseNode[terminals.size()] );
         this.rules.put( rule.getFullyQualifiedName(), nodes );
@@ -116,14 +119,12 @@ public class ReteooBuilder
 
     public void addEntryPoint( String id ) {
         this.ruleBuilder.addEntryPoint( id,
-                                        this.kBase,
-                                        this.idGenerator );
+                                        this.kBase );
     }
 
     public synchronized void addNamedWindow( WindowDeclaration window ) {
         final WindowNode wnode = this.ruleBuilder.addWindowNode( window,
-                                                                 this.kBase,
-                                                                 this.idGenerator );
+                                                                 this.kBase );
 
         this.namedWindows.put( window.getName(),
                                wnode );
@@ -182,8 +183,6 @@ public class ReteooBuilder
 
     public void removeTerminalNode(RuleRemovalContext context, TerminalNode tn, InternalWorkingMemory[] workingMemories)  {
         AddRemoveRule.removeRule( tn, workingMemories, kBase );
-
-        RuleRemovalContext.CleanupAdapter adapter = null;
 
         BaseNode node = (BaseNode) tn;
         removeNodeAssociation(node, context.getRule());
@@ -363,26 +362,61 @@ public class ReteooBuilder
         }
     }
 
-    public static class IdGenerator
-            implements
-            Externalizable {
+    public static class IdGenerator implements Externalizable {
+        private static final String DEFAULT_TOPIC = "DEFAULT_TOPIC";
+
+        private Map<String, InternalIdGenerator> generators = new ConcurrentHashMap<>();
+
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            generators = (Map<String, InternalIdGenerator>) in.readObject();
+        }
+
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject( generators );
+        }
+
+        public int getNextId() {
+            return getNextId( DEFAULT_TOPIC );
+        }
+
+        public int getNextId(String topic) {
+            return generators.computeIfAbsent( topic, key -> new InternalIdGenerator( 1 ) ).getNextId();
+        }
+
+        public synchronized void releaseId( RuleImpl rule, NetworkNode node ) {
+            generators.get( DEFAULT_TOPIC ).releaseId( node.getId() );
+            if (node instanceof MemoryFactory) {
+                String unit = rule != null && rule.getRuleUnitClassName() != null ? rule.getRuleUnitClassName() : DEFAULT_RULE_UNIT;
+                generators.get( unit ).releaseId( ( (MemoryFactory) node ).getMemoryId() );
+            }
+        }
+
+        public int getLastId() {
+            return getLastId( DEFAULT_TOPIC );
+        }
+
+        public int getLastId(String topic) {
+            InternalIdGenerator gen = generators.get( topic );
+            return gen != null ? gen.getLastId() : 0;
+        }
+    }
+
+    private static class InternalIdGenerator implements Externalizable {
 
         private static final long serialVersionUID = 510l;
 
         private Queue<Integer>    recycledIds;
         private int               nextId;
 
-        public IdGenerator() {
-        }
+        public InternalIdGenerator() { }
 
-        public IdGenerator(final int firstId) {
+        public InternalIdGenerator(final int firstId) {
             this.nextId = firstId;
             this.recycledIds = new LinkedList<Integer>();
         }
 
         @SuppressWarnings("unchecked")
-        public void readExternal(ObjectInput in) throws IOException,
-                                                        ClassNotFoundException {
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             recycledIds = (Queue<Integer>) in.readObject();
             nextId = in.readInt();
         }
@@ -404,7 +438,6 @@ public class ReteooBuilder
         public int getLastId() {
             return this.nextId - 1;
         }
-
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

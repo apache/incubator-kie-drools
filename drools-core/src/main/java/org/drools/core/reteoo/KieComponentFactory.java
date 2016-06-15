@@ -16,6 +16,8 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Serializable;
+
 import org.drools.core.base.DefaultKnowledgeHelperFactory;
 import org.drools.core.base.FieldDataFactory;
 import org.drools.core.base.FieldFactory;
@@ -43,8 +45,6 @@ import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
 import org.drools.core.util.TripleStore;
 
-import java.io.Serializable;
-
 public class KieComponentFactory implements Serializable {
 
     public static final KieComponentFactory DEFAULT = new KieComponentFactory();
@@ -66,10 +66,6 @@ public class KieComponentFactory implements Serializable {
 
     public void setDefaultHandleFactoryProvider() {
         handleFactory = new ReteooFactHandleFactory();
-    }
-
-    public static FactHandleFactory getDefaultHandleFactoryProvider() {
-        return new ReteooFactHandleFactory();
     }
 
     private WorkingMemoryFactory wmFactory = PhreakWorkingMemoryFactory.getInstance();

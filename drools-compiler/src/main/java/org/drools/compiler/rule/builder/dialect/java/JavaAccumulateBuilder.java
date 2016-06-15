@@ -200,7 +200,7 @@ public class JavaAccumulateBuilder
                                                            null,
                                                            "Duplicate declaration for variable '" + fc.getBind() + "' in the rule '" + context.getRule().getName() + "'" ) );
                 } else {
-                    Declaration inner = context.getDeclarationResolver().getDeclaration( context.getRule(), fc.getBind() );
+                    Declaration inner = context.getDeclarationResolver().getDeclaration( fc.getBind() );
                     Constraint c = new MvelConstraint( Collections.singletonList( context.getPkg().getName() ),
                                                        index >= 0
                                                             ? "this[ " + index + " ] == " + fc.getBind()
@@ -209,7 +209,7 @@ public class JavaAccumulateBuilder
                                                        null,
                                                        null,
                                                        IndexUtil.ConstraintType.EQUAL,
-                                                       context.getDeclarationResolver().getDeclaration( context.getRule(), fc.getBind() ),
+                                                       context.getDeclarationResolver().getDeclaration( fc.getBind() ),
                                                        index >= 0
                                                             ? new ArrayElementReader( readAccessor, index, resultType )
                                                             : readAccessor,
@@ -273,8 +273,7 @@ public class JavaAccumulateBuilder
         final JavaAnalysisResult analysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                                     accumDescr,
                                                                                                     fc.getParams().length > 0 ? fc.getParams()[0] : "\"\"",
-                                                                                                    new BoundIdentifiers( declCls,
-                                                                                                                          context.getKnowledgeBuilder().getGlobals() ) );
+                                                                                                    new BoundIdentifiers( declCls, context ) );
 
         if ( analysis == null ) {
             // not possible to get the analysis results - compilation error has been already logged
@@ -353,8 +352,7 @@ public class JavaAccumulateBuilder
         final String className = "Accumulate" + context.getNextId();
         accumDescr.setClassName( className );
 
-        BoundIdentifiers available = new BoundIdentifiers( declCls,
-                                                           context.getKnowledgeBuilder().getGlobals() );
+        BoundIdentifiers available = new BoundIdentifiers( declCls, context );
 
         final JavaAnalysisResult initCodeAnalysis = (JavaAnalysisResult) context.getDialect().analyzeBlock( context,
                                                                                                             accumDescr,

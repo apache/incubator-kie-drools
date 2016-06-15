@@ -16,6 +16,7 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.AbstractFactHandleFactory;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
@@ -49,7 +50,7 @@ public class ReteooFactHandleFactory extends AbstractFactHandleFactory implement
                                              final long recency,
                                              final ObjectTypeConf conf,
                                              final InternalWorkingMemory workingMemory,
-                                             final InternalWorkingMemoryEntryPoint wmEntryPoint ) {
+                                             final WorkingMemoryEntryPoint wmEntryPoint ) {
         if ( conf != null && conf.isEvent() ) {
             TypeDeclaration type = conf.getTypeDeclaration();
             long timestamp;

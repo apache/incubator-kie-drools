@@ -50,6 +50,7 @@ import org.drools.compiler.lang.api.PatternDescrBuilder;
 import org.drools.compiler.lang.api.QueryDescrBuilder;
 import org.drools.compiler.lang.api.RuleDescrBuilder;
 import org.drools.compiler.lang.api.TypeDeclarationDescrBuilder;
+import org.drools.compiler.lang.api.UnitDescrBuilder;
 import org.drools.compiler.lang.api.WindowDeclarationDescrBuilder;
 import org.drools.compiler.lang.api.impl.AnnotationDescrBuilderImpl;
 import org.drools.compiler.lang.descr.AndDescr;
@@ -69,6 +70,7 @@ import org.drools.compiler.lang.descr.OrDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
+import org.drools.compiler.lang.descr.UnitDescr;
 import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.core.util.StringUtils;
 import org.kie.internal.builder.conf.LanguageLevelOption;
@@ -104,6 +106,12 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
                 pkg.name(pkgName);
                 if (state.failed)
                     return pkg.getDescr();
+
+                // unit declaration?
+                // this is only allowed immediately after the package declaration
+                if (input.LA(1) != DRL6Lexer.EOF && helper.validateIdentifierKey(DroolsSoftKeywords.UNIT)) {
+                    unitStatement(pkg);
+                }
             }
 
             // statements
@@ -273,6 +281,47 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
                     pkg);
         }
         return pkgName;
+    }
+
+    /**
+     * unitStatement := UNIT qualifiedIdentifier SEMICOLON?
+     */
+    public UnitDescr unitStatement( PackageDescrBuilder pkg ) throws RecognitionException {
+        UnitDescrBuilder imp = helper.start( pkg,
+                                             UnitDescrBuilder.class,
+                                             null );
+
+        try {
+            // import
+            match(input,
+                  DRL6Lexer.ID,
+                  DroolsSoftKeywords.UNIT,
+                  null,
+                  DroolsEditorType.KEYWORD);
+            if (state.failed) return null;
+
+            // qualifiedIdentifier
+            String target = qualifiedIdentifier();
+            if (state.failed)
+                return null;
+
+            if (state.backtracking == 0) {
+                imp.target( target );
+            }
+
+            if (input.LA(1) == DRL6Lexer.SEMICOLON) {
+                match(input,
+                      DRL6Lexer.SEMICOLON,
+                      null,
+                      null,
+                      DroolsEditorType.SYMBOL);
+                if (state.failed) return null;
+            }
+            return (imp != null) ? imp.getDescr() : null;
+        } finally {
+            helper.end(ImportDescrBuilder.class,
+                       imp);
+        }
     }
 
     /**

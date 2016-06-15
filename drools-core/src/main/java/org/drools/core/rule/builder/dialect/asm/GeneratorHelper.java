@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.core.util.ClassUtils.convertPrimitiveNameToType;
 import static org.mvel2.asm.Opcodes.*;
 
@@ -284,7 +285,12 @@ public final class GeneratorHelper {
                 mv.visitVarInsn(ALOAD, wmReg); // workingMemory
                 push(globals[i]);
                 invokeInterface(WorkingMemory.class, "getGlobal", Object.class, String.class);
-                mv.visitTypeInsn(CHECKCAST, internalName(globalTypes[i]));
+                Class<?> primitiveType = convertPrimitiveNameToType( globalTypes[i] );
+                if (primitiveType != null) {
+                    cast(convertFromPrimitiveType(primitiveType), primitiveType);
+                } else {
+                    mv.visitTypeInsn(CHECKCAST, internalName(globalTypes[i]));
+                }
                 methodDescr.append(typeDescr(globalTypes[i]));
             }
         }
