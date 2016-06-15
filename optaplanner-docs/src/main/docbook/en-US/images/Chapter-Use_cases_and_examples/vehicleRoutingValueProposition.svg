@@ -181,6 +181,7 @@
 
 
 
+
     inkscape:perspective
        sodipodi:type=&quot;inkscape:persp3d&quot;
        inkscape:vp_x=&quot;0 : 526.18109 : 1&quot;
@@ -790,10 +791,10 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.3633333"
-     inkscape:cx="316.38143"
+     inkscape:cx="317.84842"
      inkscape:cy="300.00001"
      inkscape:document-units="px"
-     inkscape:current-layer="layer4"
+     inkscape:current-layer="layer1"
      showgrid="true"
      width="800px"
      borderlayer="true"
@@ -1125,7 +1126,7 @@
            x="50"
            y="150.00014"
            style="font-size:15px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
-         id="flowPara4308-6">Assign delivery order of vehicles more efficiently.</flowPara></flowRoot>    <flowRoot
+         id="flowPara4308-6">Assign the delivery order of vehicles more efficiently.</flowPara></flowRoot>    <flowRoot
        transform="translate(-331.85071,502.3041)"
        xml:space="preserve"
        id="flowRoot12336"
@@ -3624,7 +3625,7 @@
          style="font-weight:normal;font-size:20px;text-align:center;text-anchor:middle"
          id="flowPara18721" /><flowPara
          style="font-weight:normal;font-size:20px;text-align:center;text-anchor:middle"
-         id="flowPara18747">Busses, taxi's</flowPara><flowPara
+         id="flowPara18747">Buses, taxi's</flowPara><flowPara
          style="font-weight:normal;font-size:20px;text-align:center;text-anchor:middle"
          id="flowPara4350">&amp; airlines</flowPara><flowPara
          style="font-weight:normal;font-size:20px;text-align:center;text-anchor:middle"
