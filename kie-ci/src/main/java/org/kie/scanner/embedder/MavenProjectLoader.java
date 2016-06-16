@@ -38,10 +38,16 @@ public class MavenProjectLoader {
         }
         MavenRequest mavenRequest = createMavenRequest(offline);
         mavenRequest.setPom( pomFile.getAbsolutePath() );
+        MavenEmbedder mavenEmbedder = null;
         try {
-            return new MavenEmbedder( mavenRequest ).readProject( pomFile );
+            mavenEmbedder = new MavenEmbedder( mavenRequest );
+            return mavenEmbedder.readProject( pomFile );
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            if (mavenEmbedder != null) {
+                mavenEmbedder.dispose();
+            }
         }
     }
 
@@ -50,12 +56,17 @@ public class MavenProjectLoader {
     }
 
     public static MavenProject parseMavenPom(InputStream pomStream, boolean offline) {
-        MavenEmbedder mavenEmbedder = newMavenEmbedder(offline);
+        MavenEmbedder mavenEmbedder = null;
         try {
+            mavenEmbedder = newMavenEmbedder(offline);
             return mavenEmbedder.readProject( pomStream );
         } catch (Exception e) {
             log.error("Unable to create MavenProject from InputStream", e);
             throw new RuntimeException(e);
+        } finally {
+            if (mavenEmbedder != null) {
+                mavenEmbedder.dispose();
+            }
         }
     }
 
