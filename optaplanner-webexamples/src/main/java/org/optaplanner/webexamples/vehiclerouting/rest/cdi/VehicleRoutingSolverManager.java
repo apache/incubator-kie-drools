@@ -74,6 +74,10 @@ public class VehicleRoutingSolverManager implements Serializable {
         VehicleRoutingSolution solution = sessionSolutionMap.get(sessionId);
         if (solution == null) {
             URL unsolvedSolutionURL = getClass().getResource(IMPORT_DATASET);
+            if (unsolvedSolutionURL == null) {
+                throw new IllegalArgumentException("The IMPORT_DATASET (" + IMPORT_DATASET
+                        + ") is not a valid classpath resource.");
+            }
             solution = (VehicleRoutingSolution) new VehicleRoutingImporter(true)
                     .readSolution(unsolvedSolutionURL);
             sessionSolutionMap.put(sessionId, solution);
