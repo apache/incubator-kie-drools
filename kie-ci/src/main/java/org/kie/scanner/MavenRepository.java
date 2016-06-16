@@ -241,6 +241,7 @@ public class MavenRepository {
                                                     .getAuthenticationSelector()
                                                     .getAuthentication( remoteRepoBuilder.build() );
             remoteRepoBuilder.setAuthentication( authentication );
+            embedder.dispose();
         }
 
         return remoteRepoBuilder.build();
