@@ -237,10 +237,14 @@ public class MavenRepository {
         Server server = MavenSettings.getSettings().getServer( deployRepo.getId() );
         if ( server != null ) {
             MavenEmbedder embedder = MavenProjectLoader.newMavenEmbedder( false );
-            Authentication authentication = embedder.getMavenSession().getRepositorySession()
-                                                    .getAuthenticationSelector()
-                                                    .getAuthentication( remoteRepoBuilder.build() );
-            remoteRepoBuilder.setAuthentication( authentication );
+            try {
+                Authentication authentication = embedder.getMavenSession().getRepositorySession()
+                                                        .getAuthenticationSelector()
+                                                        .getAuthentication( remoteRepoBuilder.build() );
+                remoteRepoBuilder.setAuthentication( authentication );
+            } finally {
+                embedder.dispose();
+            }
         }
 
         return remoteRepoBuilder.build();
