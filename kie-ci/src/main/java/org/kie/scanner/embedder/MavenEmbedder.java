@@ -41,6 +41,7 @@ import org.apache.maven.settings.building.SettingsBuilder;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsSource;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.Os;
@@ -356,5 +357,12 @@ public class MavenEmbedder {
 
     public MavenSession getMavenSession() {
         return mavenSession;
+    }
+
+    public void dispose() {
+        PlexusContainer plexusContainer = componentProvider.getPlexusContainer();
+        if (plexusContainer != null) {
+            plexusContainer.dispose();
+        }
     }
 }
