@@ -26,27 +26,26 @@ import org.junit.Before;
 
 public abstract class LDAPBaseTest {
 
-    public enum SearchScope {
+    private static final int PORT = 10389;
 
-        OBJECT_SCOPE, ONELEVEL_SCOPE, SUBTREE_SCOPE
-
-    }
+    protected static final String SERVER_URL = "ldap://localhost:" + PORT;
+    protected static final String BASE_DN = "dc=jbpm,dc=org";
+    protected static final String USER_DN = "uid=admin,ou=system";
+    protected static final String PASSWORD = "secret";
 
     public enum Configuration {
-
         CUSTOM, DEFAULT, SYSTEM
-
     }
 
     private InMemoryDirectoryServer server;
 
     @Before
     public void startDirectoryServer() throws LDAPException {
-        InMemoryListenerConfig listenerConfig = InMemoryListenerConfig.createLDAPConfig("default", 10389);
+        InMemoryListenerConfig listenerConfig = InMemoryListenerConfig.createLDAPConfig("default", PORT);
 
-        InMemoryDirectoryServerConfig serverConfig = new InMemoryDirectoryServerConfig(new DN("dc=jbpm,dc=org"));
+        InMemoryDirectoryServerConfig serverConfig = new InMemoryDirectoryServerConfig(new DN(BASE_DN));
         serverConfig.setListenerConfigs(listenerConfig);
-        serverConfig.addAdditionalBindCredentials("uid=admin,ou=system", "secret");
+        serverConfig.addAdditionalBindCredentials(USER_DN, PASSWORD);
         serverConfig.setSchema(null);
 
         server = new InMemoryDirectoryServer(serverConfig);

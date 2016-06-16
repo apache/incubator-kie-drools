@@ -15,12 +15,13 @@
 
 package org.jbpm.services.task.identity;
 
-import javax.naming.Context;
 import java.util.List;
 import java.util.Properties;
+import javax.naming.Context;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
+import org.jbpm.services.task.utils.LdapSearcher.SearchScope;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.task.UserGroupCallback;
@@ -284,7 +285,7 @@ public class LDAPUserGroupCallbackImplTest extends LDAPBaseTest {
 
     private Properties createUserGroupCallbackProperties() {
         Properties properties = new Properties();
-        properties.setProperty(Context.PROVIDER_URL, "ldap://localhost:10389");
+        properties.setProperty(Context.PROVIDER_URL, SERVER_URL);
         properties.setProperty(LDAPUserGroupCallbackImpl.USER_CTX, "ou=People,dc=jbpm,dc=org");
         properties.setProperty(LDAPUserGroupCallbackImpl.ROLE_CTX, "ou=Roles,dc=jbpm,dc=org");
         properties.setProperty(LDAPUserGroupCallbackImpl.USER_FILTER, "(uid={0})");
@@ -325,7 +326,7 @@ public class LDAPUserGroupCallbackImplTest extends LDAPBaseTest {
     }
 
     private void assertUsers(UserGroupCallback userGroupCallback, boolean john, boolean mary, boolean peter,
-            boolean mike) {
+                             boolean mike) {
         Assertions.assertThat(userGroupCallback).isNotNull();
 
         SoftAssertions assertions = new SoftAssertions();
@@ -337,7 +338,7 @@ public class LDAPUserGroupCallbackImplTest extends LDAPBaseTest {
     }
 
     private void assertGroups(UserGroupCallback userGroupCallback, boolean manager, boolean user, boolean analyst,
-            boolean developer) {
+                              boolean developer) {
         Assertions.assertThat(userGroupCallback).isNotNull();
 
         SoftAssertions assertions = new SoftAssertions();
