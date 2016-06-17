@@ -1800,6 +1800,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 return;
             }
             retractRightTuples( workingMemory );
+            expireLeftTuples();
             factHandle.decreaseOtnCount();
             if (factHandle.getOtnCount() == 0) {
                 factHandle.setExpired( true );
@@ -1807,6 +1808,25 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                     String epId = factHandle.getEntryPoint().getEntryPointId();
                     ( (InternalWorkingMemoryEntryPoint) workingMemory.getEntryPoint( epId ) ).removeFromObjectStore( factHandle );
                 }
+            }
+        }
+
+        private void expireLeftTuples() {
+            for ( LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext()) {
+                expireLeftTuple(leftTuple);
+                for ( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
+
+                }
+            }
+        }
+
+        private void expireLeftTuple(LeftTuple leftTuple) {
+            leftTuple.setExpired( true );
+            for ( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
+                expireLeftTuple(child);
+            }
+            for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
+                expireLeftTuple(peer);
             }
         }
 

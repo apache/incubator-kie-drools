@@ -659,4 +659,13 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     public void setStagedTypeForQueries( short stagedTypeForQueries ) {
         this.stagedTypeForQueries = stagedTypeForQueries;
     }
+
+    @Override
+    public boolean isExpired() {
+        return expired;
+    }
+
+    public void setExpired( boolean expired ) {
+        this.expired = expired;
+    }
 }

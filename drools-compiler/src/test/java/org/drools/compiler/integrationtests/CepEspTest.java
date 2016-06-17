@@ -6088,7 +6088,7 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testLeftTupleExpiration() {
+    public void testRightTupleExpiration() {
         // RHBRMS-2463
         String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
                      "import " + AtomicInteger.class.getCanonicalName() + "\n" +
@@ -6132,6 +6132,103 @@ public class CepEspTest extends CommonTestMethodBase {
 
         sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
         ksession.insert( 1 );
+        ksession.fireAllRules(); // MyEvent is expired
+
+        assertEquals(1, counter.get());
+    }
+
+    @Test
+    public void testLeftTupleExpiration() {
+        // RHBRMS-2463
+        String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
+                     "import " + AtomicInteger.class.getCanonicalName() + "\n" +
+                     "global AtomicInteger counter;\n" +
+                     "declare MyEvent\n" +
+                     "    @role( event )\n" +
+                     "    @timestamp( timestamp )\n" +
+                     "    @expires( 10ms )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     "       MyEvent()\n" +
+                     "       Boolean()\n" +
+                     "       Integer()\n" +
+                     "    then\n" +
+                     "       counter.incrementAndGet();\n" +
+                     "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler sessionClock = ksession.getSessionClock();
+        sessionClock.setStartupTime(0);
+
+        AtomicInteger counter = new AtomicInteger( 0 );
+        ksession.setGlobal( "counter", counter );
+
+        ksession.insert(true);
+        ksession.insert(new MyEvent(0));
+        ksession.insert(new MyEvent(15));
+
+        ksession.fireAllRules();
+        assertEquals(0, counter.get());
+
+        sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
+        ksession.insert( 1 );
+        ksession.fireAllRules(); // MyEvent is expired
+
+        assertEquals(1, counter.get());
+    }
+
+    @Test
+    public void testLeftTupleExpirationWithNot() {
+        // RHBRMS-2463
+        String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
+                     "import " + AtomicInteger.class.getCanonicalName() + "\n" +
+                     "global AtomicInteger counter;\n" +
+                     "declare MyEvent\n" +
+                     "    @role( event )\n" +
+                     "    @timestamp( timestamp )\n" +
+                     "    @expires( 10ms )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     "       MyEvent()\n" +
+                     "       Boolean()\n" +
+                     "       not Integer()\n" +
+                     "    then\n" +
+                     "       counter.incrementAndGet();\n" +
+                     "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler sessionClock = ksession.getSessionClock();
+        sessionClock.setStartupTime(0);
+
+        AtomicInteger counter = new AtomicInteger( 0 );
+        ksession.setGlobal( "counter", counter );
+
+        ksession.insert(true);
+        FactHandle iFh = ksession.insert( 1 );
+        ksession.insert(new MyEvent(0));
+        ksession.insert(new MyEvent(15));
+
+        ksession.fireAllRules();
+        assertEquals(0, counter.get());
+
+        sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
+        ksession.delete( iFh );
         ksession.fireAllRules(); // MyEvent is expired
 
         assertEquals(1, counter.get());
