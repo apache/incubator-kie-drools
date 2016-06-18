@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2016 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -9,20 +25,20 @@
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>optaplanner-persistence-xstream</artifactId>
+  <artifactId>optaplanner-persistence-jaxb</artifactId>
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
-  <name>OptaPlanner persistence XStream</name>
+  <name>OptaPlanner persistence JAXB</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
     to optimize business resource scheduling and planning.
 
-    This module contains the XStream integration.
+    This module contains the JAXB integration.
   </description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.optaplanner.persistence.xstream</osgi.Bundle-SymbolicName>
+    <osgi.Bundle-SymbolicName>org.optaplanner.persistence.jaxb</osgi.Bundle-SymbolicName>
   </properties>
 
   <dependencies>
@@ -67,8 +83,12 @@
     </dependency>
     <!-- XML and JSON -->
     <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.xml.bind</groupId>
+      <artifactId>jaxb-impl</artifactId>
     </dependency>
   </dependencies>
 
@@ -81,7 +101,7 @@
         <configuration>
           <instructions>
             <Export-Package>
-              org.optaplanner.persistence.xstream.*
+              org.optaplanner.persistence.jaxb.*
             </Export-Package>
           </instructions>
         </configuration>

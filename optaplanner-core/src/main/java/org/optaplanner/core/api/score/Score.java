@@ -29,6 +29,7 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
  * and therefore slightly violate the transitive requirement of {@link Comparable#compareTo(Object)}.
  * <p>
  * An implementation must extend {@link AbstractScore} to ensure backwards compatibility in future versions.
+ * @param <S> the actual score type
  * @see AbstractScore
  * @see HardSoftScore
  */

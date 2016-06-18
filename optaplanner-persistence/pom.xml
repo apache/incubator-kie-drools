@@ -23,8 +23,9 @@
 
   <modules>
     <module>optaplanner-persistence-common</module>
-    <module>optaplanner-persistence-jpa</module>
     <module>optaplanner-persistence-xstream</module>
+    <module>optaplanner-persistence-jaxb</module>
+    <module>optaplanner-persistence-jpa</module>
   </modules>
 
 </project>

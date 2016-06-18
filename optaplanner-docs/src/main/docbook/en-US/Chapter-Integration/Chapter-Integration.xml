@@ -261,6 +261,57 @@ public class Schedule {
 
       <para>Enrich the domain POJO's (solution, entities and problem facts) with JAXB annotations to serialize them
       to/from XML or JSON.</para>
+
+      <para>Add a dependency to the <literal>optaplanner-persistence-jaxb</literal> jar to take advantage of these extra
+      integration features:</para>
+
+      <section xml:id="jaxbMarshallingAScore">
+        <title>JAXB: Marshalling a <literal>Score</literal></title>
+
+        <para>When a <literal>Score</literal> is marshalled to XML or JSON by the default JAXB configuration, it's
+        corrupted. To fix that, configure the appropriate <literal>ScoreJaxbXmlAdapter</literal>:</para>
+
+        <programlisting language="java">@PlanningSolution
+@XmlRootElement
+public class CloudBalance {
+
+    @PlanningScore
+    @XmlJavaTypeAdapter(HardSoftScoreJaxbXmlAdapter.class)
+    private HardSoftScore score;
+
+    ...
+}</programlisting>
+
+        <para>For example, this will generate pretty XML:</para>
+
+        <programlisting language="xml">&lt;cloudBalance&gt;
+   ...
+   &lt;score&gt;0hard/-200soft&lt;/score&gt;
+&lt;/cloudBalance&gt;</programlisting>
+
+        <para>The same applies for a bendable score:</para>
+
+        <programlisting language="java">@PlanningSolution
+@XmlRootElement
+public class Schedule {
+
+    @PlanningScore
+    @XmlJavaTypeAdapter(BendableScoreJaxbXmlAdapter.class)
+    private BendableScore score;
+
+    ...
+}</programlisting>
+
+        <para>For example, this will generate:</para>
+
+        <programlisting language="xml">&lt;schedule&gt;
+   ...
+   &lt;score&gt;[0/0]hard/[-100/-20/-3]soft&lt;/score&gt;
+&lt;/schedule&gt;</programlisting>
+
+        <para>If you change the <literal>hardLevelsSize</literal> or <literal>softLevelsSize</literal> of an solver
+        configuration, migrate the XML sore representations accordingly too.</para>
+      </section>
     </section>
   </section>
 
