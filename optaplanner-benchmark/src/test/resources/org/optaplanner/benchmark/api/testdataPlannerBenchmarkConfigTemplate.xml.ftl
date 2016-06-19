@@ -4,7 +4,7 @@
 <#list ['FIRST_FIT', 'CHEAPEST_INSERTION'] as constructionHeuristicType>
   <solverBenchmark>
     <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.persistence.common.api.domain.solution.TestdataSolutionFileIO</solutionFileIOClass>
+      <solutionFileIOClass>org.optaplanner.persistence.common.api.domain.solution.RigidTestdataSolutionFileIO</solutionFileIOClass>
       <inputSolutionFile>target/benchmarkTest/input.xml</inputSolutionFile>
     </problemBenchmarks>
     <solver>

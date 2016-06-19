@@ -40,13 +40,9 @@ public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution
 
     private XStream xStream;
 
-    public XStreamSolutionFileIO() {
+    public XStreamSolutionFileIO(Class... xStreamAnnotatedClasses) {
         xStream = new XStream();
         xStream.setMode(XStream.ID_REFERENCES);
-    }
-
-    public XStreamSolutionFileIO(Class... xStreamAnnotatedClasses) {
-        this();
         xStream.processAnnotations(xStreamAnnotatedClasses);
     }
 
@@ -68,9 +64,7 @@ public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution
             // xStream.fromXml(InputStream) does not use UTF-8
             reader = new InputStreamReader(new FileInputStream(inputSolutionFile), "UTF-8");
             unsolvedSolution = (Solution_) xStream.fromXML(reader);
-        } catch (XStreamException e) {
-            throw new IllegalArgumentException("Problem reading inputSolutionFile (" + inputSolutionFile + ").", e);
-        } catch (IOException e) {
+        } catch (XStreamException | IOException e) {
             throw new IllegalArgumentException("Problem reading inputSolutionFile (" + inputSolutionFile + ").", e);
         } finally {
             IOUtils.closeQuietly(reader);

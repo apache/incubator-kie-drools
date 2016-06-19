@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class TestdataSolutionFileIO implements SolutionFileIO<TestdataSolution> {
+public class RigidTestdataSolutionFileIO implements SolutionFileIO<TestdataSolution> {
 
     @Override
     public String getInputFileExtension() {
