@@ -272,7 +272,7 @@ public class Schedule {
         corrupted. To fix that, configure the appropriate <literal>ScoreJaxbXmlAdapter</literal>:</para>
 
         <programlisting language="java">@PlanningSolution
-@XmlRootElement
+@XmlRootElement @XmlAccessorType(XmlAccessType.FIELD)
 public class CloudBalance {
 
     @PlanningScore
@@ -292,7 +292,7 @@ public class CloudBalance {
         <para>The same applies for a bendable score:</para>
 
         <programlisting language="java">@PlanningSolution
-@XmlRootElement
+@XmlRootElement @XmlAccessorType(XmlAccessType.FIELD)
 public class Schedule {
 
     @PlanningScore
@@ -302,15 +302,16 @@ public class Schedule {
     ...
 }</programlisting>
 
-        <para>For example, this will generate:</para>
+        <para>For example, with a <literal>hardLevelsSize</literal> of <literal>2</literal> and a
+        <literal>softLevelsSize</literal> of <literal>3</literal>, that will generate:</para>
 
         <programlisting language="xml">&lt;schedule&gt;
    ...
    &lt;score&gt;[0/0]hard/[-100/-20/-3]soft&lt;/score&gt;
 &lt;/schedule&gt;</programlisting>
 
-        <para>If you change the <literal>hardLevelsSize</literal> or <literal>softLevelsSize</literal> of an solver
-        configuration, migrate the XML sore representations accordingly too.</para>
+        <para>The <literal>hardLevelsSize</literal> and <literal>softLevelsSize</literal> implied by the XML element
+        must always be in sync with those definied in the solver configuration.</para>
       </section>
     </section>
   </section>
