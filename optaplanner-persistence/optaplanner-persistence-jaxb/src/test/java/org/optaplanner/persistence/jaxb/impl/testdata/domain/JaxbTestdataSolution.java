@@ -19,7 +19,10 @@ package org.optaplanner.persistence.jaxb.impl.testdata.domain;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
@@ -34,6 +37,7 @@ import org.optaplanner.persistence.jaxb.impl.score.buildin.simple.SimpleScoreJax
 
 @PlanningSolution
 @XmlRootElement
+@XmlType(propOrder = {"valueList", "entityList", "score"})
 public class JaxbTestdataSolution extends JaxbTestdataObject {
 
     public static SolutionDescriptor<JaxbTestdataSolution> buildSolutionDescriptor() {
@@ -54,7 +58,8 @@ public class JaxbTestdataSolution extends JaxbTestdataObject {
 
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
-    @XmlElement
+    @XmlElementWrapper(name="valueList")
+    @XmlElement(name="jaxbTestdataValue")
     public List<JaxbTestdataValue> getValueList() {
         return valueList;
     }
@@ -64,7 +69,8 @@ public class JaxbTestdataSolution extends JaxbTestdataObject {
     }
 
     @PlanningEntityCollectionProperty
-    @XmlElement
+    @XmlElementWrapper(name="entityList")
+    @XmlElement(name="jaxbTestdataEntity")
     public List<JaxbTestdataEntity> getEntityList() {
         return entityList;
     }

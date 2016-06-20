@@ -58,7 +58,10 @@ public class XStreamSolutionFileIOTest {
         assertCode("s1", copy);
         assertAllCodesOfIterator(copy.getValueList().iterator(), "v1", "v2");
         assertAllCodesOfIterator(copy.getEntityList().iterator(), "e1", "e2", "e3");
-        assertCode("v1", copy.getEntityList().get(1).getValue());
+        XStreamTestdataValue copyV1 = copy.getValueList().get(0);
+        XStreamTestdataEntity copyE2 = copy.getEntityList().get(1);
+        assertCode("v1", copyE2.getValue());
+        assertSame(copyV1, copyE2.getValue());
         assertEquals(SimpleScore.valueOfInitialized(-123), copy.getScore());
     }
 
