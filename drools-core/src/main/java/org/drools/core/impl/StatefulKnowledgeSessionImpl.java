@@ -1814,9 +1814,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         private void expireLeftTuples() {
             for ( LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext()) {
                 expireLeftTuple(leftTuple);
-                for ( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
-
-                }
             }
         }
 
