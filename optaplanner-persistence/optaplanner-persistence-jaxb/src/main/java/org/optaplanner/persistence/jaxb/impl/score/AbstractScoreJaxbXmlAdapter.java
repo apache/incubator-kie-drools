@@ -18,22 +18,13 @@ package org.optaplanner.persistence.jaxb.impl.score;
 
 import java.util.Arrays;
 import java.util.List;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
-import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
-import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.persistence.jaxb.impl.score.buildin.bendable.BendableScoreJaxbXmlAdapter;
 import org.optaplanner.persistence.jaxb.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreJaxbXmlAdapter;
 import org.optaplanner.persistence.jaxb.impl.score.buildin.bendablelong.BendableLongScoreJaxbXmlAdapter;
@@ -57,22 +48,6 @@ import org.optaplanner.persistence.jaxb.impl.score.buildin.simplelong.SimpleLong
  * @param <Score_> the actual score type
  */
 public abstract class AbstractScoreJaxbXmlAdapter<Score_ extends Score<Score_>> extends XmlAdapter<String, Score_> {
-
-    public static List<Class<? extends AbstractScoreJaxbXmlAdapter>> XML_ADAPTER_LIST = Arrays.asList(
-            SimpleScoreJaxbXmlAdapter.class,
-            SimpleLongScoreJaxbXmlAdapter.class,
-            SimpleDoubleScoreJaxbXmlAdapter.class,
-            SimpleBigDecimalScoreJaxbXmlAdapter.class,
-            HardSoftScoreJaxbXmlAdapter.class,
-            HardSoftLongScoreJaxbXmlAdapter.class,
-            HardSoftDoubleScoreJaxbXmlAdapter.class,
-            HardSoftBigDecimalScoreJaxbXmlAdapter.class,
-            HardMediumSoftScoreJaxbXmlAdapter.class,
-            HardMediumSoftLongScoreJaxbXmlAdapter.class,
-            BendableScoreJaxbXmlAdapter.class,
-            BendableLongScoreJaxbXmlAdapter.class,
-            BendableBigDecimalScoreJaxbXmlAdapter.class
-            );
 
     @Override
     public String marshal(Score_ score) {
