@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.xstream.impl.domain.solution;
+package org.optaplanner.persistence.jaxb.impl.domain.solution;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,14 +23,14 @@ import java.util.Arrays;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.persistence.xstream.impl.testdata.domain.XStreamTestdataEntity;
-import org.optaplanner.persistence.xstream.impl.testdata.domain.XStreamTestdataSolution;
-import org.optaplanner.persistence.xstream.impl.testdata.domain.XStreamTestdataValue;
+import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataEntity;
+import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataSolution;
+import org.optaplanner.persistence.jaxb.impl.testdata.domain.JaxbTestdataValue;
 
 import static org.junit.Assert.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
-public class XStreamSolutionFileIOTest {
+public class JaxbSolutionFileIOTest {
 
     private static File solutionTestDir;
 
@@ -42,17 +42,17 @@ public class XStreamSolutionFileIOTest {
 
     @Test
     public void readAndWrite() {
-        XStreamSolutionFileIO<XStreamTestdataSolution> solutionFileIO = new XStreamSolutionFileIO<>(XStreamTestdataSolution.class);
+        JaxbSolutionFileIO<JaxbTestdataSolution> solutionFileIO = new JaxbSolutionFileIO<>(JaxbTestdataSolution.class);
         File file = new File(solutionTestDir, "testdataSolution.xml");
 
-        XStreamTestdataSolution original = new XStreamTestdataSolution("s1");
-        XStreamTestdataValue originalV1 = new XStreamTestdataValue("v1");
-        original.setValueList(Arrays.asList(originalV1, new XStreamTestdataValue("v2")));
+        JaxbTestdataSolution original = new JaxbTestdataSolution("s1");
+        JaxbTestdataValue originalV1 = new JaxbTestdataValue("v1");
+        original.setValueList(Arrays.asList(originalV1, new JaxbTestdataValue("v2")));
         original.setEntityList(Arrays.asList(
-                new XStreamTestdataEntity("e1"), new XStreamTestdataEntity("e2", originalV1), new XStreamTestdataEntity("e3")));
+                new JaxbTestdataEntity("e1"), new JaxbTestdataEntity("e2", originalV1), new JaxbTestdataEntity("e3")));
         original.setScore(SimpleScore.valueOfInitialized(-123));
         solutionFileIO.write(original, file);
-        XStreamTestdataSolution copy = solutionFileIO.read(file);
+        JaxbTestdataSolution copy = solutionFileIO.read(file);
 
         assertNotSame(original, copy);
         assertCode("s1", copy);

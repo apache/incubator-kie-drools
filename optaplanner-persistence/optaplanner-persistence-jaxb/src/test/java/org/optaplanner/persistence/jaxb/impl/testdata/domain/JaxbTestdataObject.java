@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain;
+package org.optaplanner.persistence.jaxb.impl.testdata.domain;
+
+import javax.xml.bind.annotation.XmlID;
 
 import org.optaplanner.core.impl.testdata.util.CodeAssertable;
 
-public abstract class TestdataObject implements CodeAssertable {
+public abstract class JaxbTestdataObject implements CodeAssertable {
 
     protected String code;
 
-    public TestdataObject() {
+    public JaxbTestdataObject() {
     }
 
-    public TestdataObject(String code) {
+    public JaxbTestdataObject(String code) {
         this.code = code;
     }
 
     @Override
+    @XmlID
     public String getCode() {
         return code;
     }
