@@ -83,7 +83,7 @@
     <!-- cdi -->
     <dependency>
       <groupId>org.jboss.spec.javax.el</groupId>
-      <artifactId>jboss-el-api_2.2_spec</artifactId>
+      <artifactId>jboss-el-api_3.0_spec</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
@@ -123,7 +123,7 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
-      <artifactId>jboss-ejb-api_3.1_spec</artifactId>
+      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -85,7 +85,7 @@
     <!-- support for JMS based executor -->
     <dependency>
       <groupId>org.jboss.spec.javax.jms</groupId>
-      <artifactId>jboss-jms-api_1.1_spec</artifactId>
+      <artifactId>jboss-jms-api_2.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -142,8 +142,8 @@
       <optional>true</optional>
       <exclusions>
         <exclusion>
-          <artifactId>cdi-api</artifactId>
           <groupId>javax.enterprise</groupId>
+          <artifactId>cdi-api</artifactId>
         </exclusion>
       </exclusions>
 

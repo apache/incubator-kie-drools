@@ -18,6 +18,7 @@ package org.jbpm.process.audit.jms;
 import javax.jms.JMSException;
 import javax.jms.XAConnection;
 import javax.jms.XAConnectionFactory;
+import javax.jms.XAJMSContext;
 
 public class BitronixHornetQXAConnectionFactory implements XAConnectionFactory {
     
@@ -25,14 +26,23 @@ public class BitronixHornetQXAConnectionFactory implements XAConnectionFactory {
 
     @Override
     public XAConnection createXAConnection() throws JMSException {
-        
-        return (XAConnection) connectionFactory.createXAConnection();
+        return connectionFactory.createXAConnection();
     }
 
     @Override
     public XAConnection createXAConnection(String userName, String password)
             throws JMSException {
-        return (XAConnection) connectionFactory.createXAConnection();
+        return connectionFactory.createXAConnection();
+    }
+
+    @Override
+    public XAJMSContext createXAContext() {
+        return connectionFactory.createXAContext();
+    }
+
+    @Override
+    public XAJMSContext createXAContext(String userName, String password) {
+        return connectionFactory.createXAContext(userName, password);
     }
 
 }
