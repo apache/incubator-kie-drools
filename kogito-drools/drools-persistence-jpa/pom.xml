@@ -69,7 +69,7 @@
             <Export-Package>
               org.drools.persistence.*
             </Export-Package>
-            <Private-Package></Private-Package>
+            <Private-Package/>
             <Bundle-Activator>org.drools.persistence.osgi.Activator</Bundle-Activator>
           </instructions>
         </configuration>
@@ -142,7 +142,7 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.transaction</groupId>
-      <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
     </dependency>
 
     <!-- Testing deps-->
