@@ -224,7 +224,7 @@ public class ScorecardPMMLGenerator {
                 }
                 output.getOutputFields().add(outputField);
 
-                if ( pmmlScorecard.isUseReasonCodes() ) {
+                if ( pmmlScorecard.getUseReasonCodes() ) {
                     OutputField reasonCodeField = new OutputField();
                     reasonCodeField.setDataType( DATATYPE.STRING );
                     reasonCodeField.setFeature( RESULTFEATURE.REASON_CODE );
