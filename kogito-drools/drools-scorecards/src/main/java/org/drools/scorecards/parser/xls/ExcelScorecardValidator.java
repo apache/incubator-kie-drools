@@ -45,7 +45,7 @@ class ExcelScorecardValidator {
         ExcelScorecardValidator validator = new ExcelScorecardValidator(scorecard, parseErrors);
         validator.checkForInvalidDataTypes();
         validator.checkForMissingAttributes();
-        if (scorecard.isUseReasonCodes()){
+        if (scorecard.getUseReasonCodes()){
             validator.validateReasonCodes();
             validator.validateBaselineScores();
         }
