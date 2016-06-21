@@ -72,6 +72,16 @@
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.xml.bind</groupId>
+      <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
@@ -94,36 +104,57 @@
           </execution>
         </executions>
       </plugin>
-
-
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>jaxb2-maven-plugin</artifactId>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
+            <phase>generate-sources</phase>
+            <configuration>
+              <target>
+                <echo message="Creating ${project.build.directory}/generated-sources/java"/>
+                <mkdir dir="${project.build.directory}/generated-sources/java"/>
+              </target>
+            </configuration>
             <goals>
-              <goal>xjc</goal>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- TODO: This is a temporary workaround until org.codehaus.mojo:jaxb2-maven-plugin supports JDK9.
+                 (https://github.com/mojohaus/jaxb2-maven-plugin/issues/43). We need to add the plugin back
+                 once we are sure it works on both JDK8 and JDK9.
+           Using xjc directly (instead of jaxb2-maven-plugin) to support both JDK8 and JDK9 with single configuration.
+           See https://issues.jboss.org/browse/DROOLS-1170 for more info. -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>generate-schema-types</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>exec</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
-          <outputDirectory>${project.basedir}/target/generated-sources/java</outputDirectory>
-          <packageName>org.dmg.pmml.pmml_4_2.descr</packageName>
-          <sources>
-            <source>${project.basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_2/pmml-4-2.xsd</source>
-          </sources>
-          <xjbSources>
-            <xjbSource>${project.basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_2/bindings.xjb</xjbSource>
-            <xjbSource>${project.basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_2/bindings.xml</xjbSource>
-          </xjbSources>
-          <noGeneratedHeaderComments>true</noGeneratedHeaderComments>
-          <extension>true</extension>
-          <clearOutputDir>false</clearOutputDir>
+          <executable>${env.JAVA_HOME}/bin/xjc</executable>
+          <arguments>
+            <argument>-enableIntrospection</argument>
+            <argument>-p</argument>
+            <argument>org.dmg.pmml.pmml_4_2.descr</argument>
+            <argument>-extension</argument>
+            <argument>-d</argument>
+            <argument>${project.build.directory}/generated-sources/java</argument>
+            <argument>${project.basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_2/pmml-4-2.xsd</argument>
+            <argument>-b</argument>
+            <argument>${project.basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_2/bindings.xjb</argument>
+          </arguments>
         </configuration>
       </plugin>
-
     </plugins>
-
   </build>
 
 </project>
