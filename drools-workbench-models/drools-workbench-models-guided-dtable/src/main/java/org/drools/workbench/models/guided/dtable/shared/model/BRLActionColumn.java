@@ -15,6 +15,8 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import static java.lang.Math.min;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,11 +62,33 @@ public class BRLActionColumn extends ActionCol52
         // Field: childColumns.
         if ( !isEqualOrNull( this.getChildColumns(),
                              other.getChildColumns() ) ) {
-            result.add( new BaseColumnFieldDiffImpl( FIELD_CHILD_COLUMNS,
-                                                     this.getChildColumns(),
-                                                     other.getChildColumns() ) );
+            result.addAll( getColumnDiffs( other.getChildColumns() ) );
         }
 
+        return result;
+    }
+
+    private List<BaseColumnFieldDiff> getColumnDiffs( List<BRLActionVariableColumn> otherChildColumns ) {
+        int commonLength = min( this.childColumns.size(), otherChildColumns.size() );
+        List<BaseColumnFieldDiff> result = new ArrayList<>();
+        for ( int i = 0; i < commonLength; i ++ ) {
+            result.addAll( this.childColumns.get( i ).diff( otherChildColumns.get( i ) ) );
+        }
+        result.addAll( getDiffsForUnpairedColumns( this.childColumns, commonLength, false ) );
+        result.addAll( getDiffsForUnpairedColumns( otherChildColumns, commonLength, true ) );
+        return result;
+    }
+
+    private List<BaseColumnFieldDiff> getDiffsForUnpairedColumns( List<BRLActionVariableColumn> addedChildColumns,
+                                                                  int commonLength,
+                                                                  boolean added ) {
+        List<BaseColumnFieldDiff> result = new ArrayList<>();
+        if ( addedChildColumns.size() > commonLength ) {
+            for ( BRLActionVariableColumn column : addedChildColumns.subList( commonLength, addedChildColumns.size() ) )
+                result.add( new BaseColumnFieldDiffImpl( FIELD_CHILD_COLUMNS,
+                                                         (added) ? null : column,
+                                                         (added) ? column : null ) );
+        }
         return result;
     }
 
