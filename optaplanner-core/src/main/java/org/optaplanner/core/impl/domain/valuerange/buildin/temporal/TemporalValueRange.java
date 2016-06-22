@@ -48,9 +48,8 @@ public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super 
                     + " must have a incrementUnitType (" + incrementUnitType
                     + ") that is supported by its from (" + from + ") and to (" + to + ").");
         }
-        Comparable<Temporal_> comparableFrom = (Comparable<Temporal_>) from;
         // We cannot use Temporal.until() to check bounds due to rounding errors
-        if (comparableFrom.compareTo(to) > 0) {
+        if (from.compareTo(to) > 0) {
             throw new IllegalArgumentException("The " + getClass().getSimpleName()
                     + " cannot have a from (" + from + ") which is strictly higher than its to (" + to + ").");
         }
