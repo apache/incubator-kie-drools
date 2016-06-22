@@ -27,9 +27,8 @@ import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProp
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
-import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
+import org.optaplanner.persistence.xstream.api.score.buildin.simple.SimpleScoreXStreamConverter;
 
 @PlanningSolution
 @XStreamAlias("xStreamTestdataSolution")
@@ -42,7 +41,7 @@ public class XStreamTestdataSolution extends TestdataObject {
     private List<XStreamTestdataValue> valueList;
     private List<XStreamTestdataEntity> entityList;
 
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {SimpleScoreDefinition.class})
+    @XStreamConverter(SimpleScoreXStreamConverter.class)
     private SimpleScore score;
 
     public XStreamTestdataSolution() {

@@ -27,9 +27,8 @@ import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProp
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
-import org.optaplanner.core.impl.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
+import org.optaplanner.persistence.xstream.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreXStreamConverter;
 
 @PlanningSolution
 @XStreamAlias("CtCheapTimeSolution")
@@ -49,7 +48,7 @@ public class CheapTimeSolution extends AbstractPersistable {
 
     private List<TaskAssignment> taskAssignmentList;
 
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardMediumSoftLongScoreDefinition.class})
+    @XStreamConverter(HardMediumSoftLongScoreXStreamConverter.class)
     private HardMediumSoftLongScore score;
 
     public int getTimeResolutionInMinutes() {

@@ -27,9 +27,8 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
+import org.optaplanner.persistence.xstream.api.score.buildin.simple.SimpleScoreXStreamConverter;
 
 @PlanningSolution
 @XStreamAlias("DinnerParty")
@@ -43,7 +42,7 @@ public class DinnerParty extends AbstractPersistable {
 
     private List<SeatDesignation> seatDesignationList;
 
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {SimpleScoreDefinition.class})
+    @XStreamConverter(SimpleScoreXStreamConverter.class)
     private SimpleScore score;
 
     @ProblemFactCollectionProperty

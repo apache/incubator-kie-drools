@@ -91,7 +91,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     protected List<String> scoreDrlList = null;
     @XStreamImplicit(itemFieldName = "scoreDrlFile")
     protected List<File> scoreDrlFileList = null;
-    @XStreamConverter(value = KeyAsElementMapConverter.class)
+    @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> kieBaseConfigurationProperties = null;
 
     protected String initializingScoreTrend = null;

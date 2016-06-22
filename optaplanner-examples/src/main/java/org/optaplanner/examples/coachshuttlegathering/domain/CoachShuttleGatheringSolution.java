@@ -29,10 +29,9 @@ import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProp
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
+import org.optaplanner.persistence.xstream.api.score.buildin.hardsoftlong.HardSoftLongScoreXStreamConverter;
 
 @PlanningSolution
 @XStreamAlias("CsgCoachShuttleGatheringSolution")
@@ -45,7 +44,7 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable {
     protected List<BusStop> stopList;
     protected BusHub hub;
 
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftLongScoreDefinition.class})
+    @XStreamConverter(HardSoftLongScoreXStreamConverter.class)
     protected HardSoftLongScore score;
 
     public String getName() {

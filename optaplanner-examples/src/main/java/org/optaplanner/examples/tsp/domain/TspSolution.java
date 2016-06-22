@@ -29,11 +29,10 @@ import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProp
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
-import org.optaplanner.core.impl.score.buildin.simplelong.SimpleLongScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.examples.tsp.domain.location.Location;
-import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
+import org.optaplanner.persistence.xstream.api.score.buildin.simplelong.SimpleLongScoreXStreamConverter;
 
 @PlanningSolution
 @XStreamAlias("TspSolution")
@@ -47,7 +46,7 @@ public class TspSolution extends AbstractPersistable {
 
     private List<Visit> visitList;
 
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {SimpleLongScoreDefinition.class})
+    @XStreamConverter(SimpleLongScoreXStreamConverter.class)
     private SimpleLongScore score;
 
     public String getName() {

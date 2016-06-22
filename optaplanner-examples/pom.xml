@@ -84,9 +84,13 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-common</artifactId>
     </dependency>
-    <dependency>
+    <dependency><!-- Most examples use the XStream integration -->
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-xstream</artifactId>
+    </dependency>
+    <dependency><!-- Few examples use the JAXB integration -->
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-persistence-jaxb</artifactId>
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>

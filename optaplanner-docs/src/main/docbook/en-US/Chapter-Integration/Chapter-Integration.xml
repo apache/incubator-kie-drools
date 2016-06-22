@@ -213,14 +213,14 @@ public class Room {
         <title>XStream: Marshalling a <literal>Score</literal></title>
 
         <para>When a <literal>Score</literal> is marshalled to XML or JSON by the default XStream configuration, it's
-        verbose and ugly. To fix that, configure the <literal>XStreamScoreConverter</literal> and provide the
-        <literal>ScoreDefinition</literal> as a parameter:</para>
+        verbose and ugly. To fix that, configure the appropriate <literal>ScoreXStreamConverter</literal>:</para>
 
         <programlisting language="java">@PlanningSolution
 @XStreamAlias("CloudBalance")
 public class CloudBalance {
 
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
+    @PlanningScore
+    @XStreamConverter(HardSoftScoreXStreamConverter.class)
     private HardSoftScore score;
 
     ...
@@ -233,15 +233,14 @@ public class CloudBalance {
    &lt;score&gt;0hard/-200soft&lt;/score&gt;
 &lt;/CloudBalance&gt;</programlisting>
 
-        <para>To use this for any type of bendable score, also provide 2 <literal>int</literal> parameters to define
-        <literal>hardLevelsSize</literal> and <literal>softLevelsSize</literal>:</para>
+        <para>The same applies for a bendable score:</para>
 
         <programlisting language="java">@PlanningSolution
 @XStreamAlias("Schedule")
 public class Schedule {
 
     @PlanningScore
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {BendableScoreDefinition.class}, ints = {2, 3})
+    @XStreamConverter(BendableScoreXStreamConverter.class)
     private BendableScore score;
 
     ...
@@ -253,6 +252,9 @@ public class Schedule {
    ...
    &lt;score&gt;[0/0]hard/[-100/-20/-3]soft&lt;/score&gt;
 &lt;/Schedule&gt;</programlisting>
+
+        <para>The <literal>hardLevelsSize</literal> and <literal>softLevelsSize</literal> implied, when reading a
+        bendable score from an XML element, must always be in sync with those in the solver.</para>
       </section>
     </section>
 
@@ -310,8 +312,8 @@ public class Schedule {
    &lt;score&gt;[0/0]hard/[-100/-20/-3]soft&lt;/score&gt;
 &lt;/schedule&gt;</programlisting>
 
-        <para>The <literal>hardLevelsSize</literal> and <literal>softLevelsSize</literal> implied by the XML element
-        must always be in sync with those definied in the solver configuration.</para>
+        <para>The <literal>hardLevelsSize</literal> and <literal>softLevelsSize</literal> implied, when reading a
+        bendable score from an XML element, must always be in sync with those in the solver.</para>
       </section>
     </section>
   </section>

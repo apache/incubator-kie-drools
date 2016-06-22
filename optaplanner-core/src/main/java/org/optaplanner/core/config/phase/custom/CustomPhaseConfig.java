@@ -44,7 +44,7 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
     @XStreamImplicit(itemFieldName = "customPhaseCommandClass")
     protected List<Class<? extends CustomPhaseCommand>> customPhaseCommandClassList = null;
 
-    @XStreamConverter(value = KeyAsElementMapConverter.class)
+    @XStreamConverter(KeyAsElementMapConverter.class)
     protected Map<String, String> customProperties = null;
     protected Boolean forceUpdateBestSolution = null;
 
