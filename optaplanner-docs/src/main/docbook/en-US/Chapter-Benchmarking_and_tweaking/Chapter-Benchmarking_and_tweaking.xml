@@ -1045,18 +1045,13 @@
       <para>Matrix benchmarking is benchmarking a combination of value sets. For example: benchmark 4
       <literal>entityTabuSize</literal> values (<literal>5</literal>, <literal>7</literal>, <literal>11</literal> and
       <literal>13</literal>) combined with 3 <literal>acceptedCountLimit</literal> values (<literal>500</literal>,
-      <literal>1000</literal> and <literal>2000</literal>), resulting in 12 solver configurations. The same applies to
-      Simulated Annealing Matrix Benchmarking with 3 <literal>acceptedCountLimit</literal> values (<literal>1</literal>,
-      <literal>100</literal> and <literal>1000</literal>) combined with 4 <literal>startingTemperatur</literal> values
-      (<literal>1hard/5medium/10soft</literal>, <literal>1hard/10medium/20soft</literal>,
-      <literal>1hard/20medium/50soft</literal>, <literal>1hard/50medium/70soft</literal>).</para>
+      <literal>1000</literal> and <literal>2000</literal>), resulting in 12 solver configurations.</para>
 
       <para>To reduce the verbosity of such a benchmark configuration, you can use a <link
       xlink:href="http://freemarker.org//">Freemarker</link> template for the benchmark configuration instead:</para>
 
       <programlisting language="xml">&lt;plannerBenchmark&gt;
   ...
-
   &lt;inheritedSolverBenchmark&gt;
     ...
   &lt;/inheritedSolverBenchmark&gt;
@@ -1064,7 +1059,7 @@
 &lt;#list [5, 7, 11, 13] as entityTabuSize&gt;
 &lt;#list [500, 1000, 2000] as acceptedCountLimit&gt;
   &lt;solverBenchmark&gt;
-    &lt;name&gt;entityTabuSize ${entityTabuSize} acceptedCountLimit ${acceptedCountLimit}&lt;/name&gt;
+    &lt;name&gt;Tabu Search entityTabuSize ${entityTabuSize} acceptedCountLimit ${acceptedCountLimit}&lt;/name&gt;
     &lt;solver&gt;
       &lt;localSearch&gt;
         &lt;unionMoveSelector&gt;
@@ -1082,30 +1077,35 @@
   &lt;/solverBenchmark&gt;
 &lt;/#list&gt;
 &lt;/#list&gt;
+&lt;/plannerBenchmark&gt;</programlisting>
 
-&lt;#list [1, 100, 1000] as acceptedCountLimit&gt;
-&lt;#list [1hard/5medium/10soft, 1hard/10medium/20soft, 1hard/20medium/50soft, 1hard/50medium/70soft] as startingTemperature&gt;
+      <para>To configure Matrix Benchmarking for Simulated Annealing (or any other configuration that involves a
+      <literal>Score</literal> template variable), use the <literal>replace()</literal> method in the solver benchmark
+      name element:</para>
+
+      <programlisting language="xml">&lt;plannerBenchmark&gt;
+  ...
+  &lt;inheritedSolverBenchmark&gt;
+    ...
+  &lt;/inheritedSolverBenchmark&gt;
+
+&lt;#list ["1hard/10soft", "1hard/20soft", "1hard/50soft", "1hard/70soft"] as startingTemperature&gt;
   &lt;solverBenchmark&gt;
-    &lt;name&gt;SimulatedAnnealing acceptedCountLimit ${acceptedCountLimit} temperature ${startingTemperature?replace("/", "_")}&lt;/name&gt;
+    &lt;name&gt;Simulated Annealing startingTemperature ${startingTemperature?replace("/", "_")}&lt;/name&gt;
     &lt;solver&gt;
       &lt;localSearch&gt;
         &lt;acceptor&gt;
-          &lt;simulatedAnnealingStartingTemperature&gt;${startingTemperature?replace("/", "_")}&lt;/simulatedAnnealingStartingTemperature&gt;
+          &lt;simulatedAnnealingStartingTemperature&gt;${startingTemperature}&lt;/simulatedAnnealingStartingTemperature&gt;
         &lt;/acceptor&gt;
-        &lt;forager&gt;
-          &lt;acceptedCountLimit&gt;${acceptedCountLimit}&lt;/acceptedCountLimit&gt;
-        &lt;/forager&gt;
       &lt;/localSearch&gt;
     &lt;/solver&gt;
   &lt;/solverBenchmark&gt;
 &lt;/#list&gt;
-&lt;/#list&gt;
 &lt;/plannerBenchmark&gt;</programlisting>
 
       <note>
-        <para>When using Simulated Annealing Matrix Benchmarking on Windows it is necessary to replace the "/" from the
-        <literal>startingTemperature</literal> (<literal>?replace("/", "_")</literal>) so that it is not part of the
-        file name. Otherwise there is a problem with the naming conventions of files on Windows.</para>
+        <para>A solver benchmark name doesn't allow some characters (such a <literal>/</literal>) because the name is
+        also used a file name.</para>
       </note>
 
       <para>And build it with the class <literal>PlannerBenchmarkFactory</literal>:</para>
