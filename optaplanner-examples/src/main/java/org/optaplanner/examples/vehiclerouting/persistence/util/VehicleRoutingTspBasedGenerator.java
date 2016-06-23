@@ -152,14 +152,22 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
             if (visit.getPreviousStandstill() instanceof Domicile) {
                 previousStandstill = vehicle;
             } else {
-                previousStandstill = customerList.get(tspSolution.getVisitList().indexOf(visit.getPreviousStandstill()));
+                if (visit.getPreviousStandstill() == null) {
+                    previousStandstill = null;
+                } else {
+                    previousStandstill = customerList.get(tspSolution.getVisitList().indexOf(visit.getPreviousStandstill()));
+                }
             }
             customer.setPreviousStandstill(previousStandstill);
-            previousStandstill.setNextCustomer(customer);
+            if (previousStandstill != null) {
+                previousStandstill.setNextCustomer(customer);
+            }
         }
         vehicleRoutingSolution.setCustomerList(customerList);
-        vehicleRoutingSolution.setScore(HardSoftLongScore.valueOf(tspSolution.getScore().getInitScore(),
-                0, tspSolution.getScore().getScore()));
+        if (tspSolution.getScore() != null) {
+            vehicleRoutingSolution.setScore(HardSoftLongScore.valueOf(tspSolution.getScore().getInitScore(),
+                    0, tspSolution.getScore().getScore()));
+        }
         return vehicleRoutingSolution;
     }
 
