@@ -205,6 +205,11 @@
             <para>The draft part is needed to assure that the tentatively planned entities will allow room of a good,
             feasible planning afterwards. It prevents you from painting yourself in a corner.</para>
           </listitem>
+
+          <listitem>
+            <para>That draft part is usually not shared with the business yet, because it is too volatile. However, it
+            is stored in the database and used a starting point for the next plan.</para>
+          </listitem>
         </itemizedlist>
       </listitem>
 
@@ -222,9 +227,18 @@
       </listitem>
     </itemizedlist>
 
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Repeated_planning/continuousPlanningEmployeeRostering.png"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>In the employee rostering example above, we replan every 4 days. Each time, we actually plan a window of 12
+    days, but we only share the tentative roster of the next 4 days with the employees.</para>
+
     <note>
       <para>The start of the planning window (so the first tentative time period) does <emphasis>not</emphasis> need to
-      be now.</para>
+      be now. That too can be a week in advance.</para>
     </note>
 
     <mediaobject>
@@ -233,9 +247,9 @@
       </imageobject>
     </mediaobject>
 
-    <para>Notice the difference between the original planning of November 1th and the new planning of November 5th: some
-    problem facts (F, H, I, J, K) changed meanwhile, which results in unrelated planning entities (G) changing
-    too.</para>
+    <para>In the hospital bed planning example above, notice the difference between the original planning of November
+    1th and the new planning of November 5th: some problem facts (F, H, I, J, K) changed meanwhile, which results in
+    unrelated planning entities (G) changing too.</para>
 
     <section xml:id="immovablePlanningEntities">
       <title>Immovable Planning Entities</title>
