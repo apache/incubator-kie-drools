@@ -578,7 +578,7 @@ $ mvn exec:java
       from our improvements made on top of your improvements.</para>
 
       <para>Red Hat sponsors OptaPlanner development by employing the core team. For enterprise support and consulting,
-      take a look at <link xlink:href="http://www.optaplanner.org/community/product.html">the BRMS and BPMS
+      take a look at <link xlink:href="http://www.optaplanner.org/community/product.html">the BRMS and BPM Suite
       products</link> (which contain OptaPlanner) or <link
       xlink:href="http://www.redhat.com/en/about/contact/sales">contact Red Hat</link>.</para>
     </section>
