@@ -25,7 +25,5 @@ public enum AcceptorType {
     SOLUTION_TABU,
     SIMULATED_ANNEALING,
     LATE_ACCEPTANCE,
-    STEP_COUNTING_HILL_CLIMBING,
-    @Deprecated // Experimental feature (no backwards compatibility guarantee)
-    LATE_SIMULATED_ANNEALING;
+    STEP_COUNTING_HILL_CLIMBING;
 }

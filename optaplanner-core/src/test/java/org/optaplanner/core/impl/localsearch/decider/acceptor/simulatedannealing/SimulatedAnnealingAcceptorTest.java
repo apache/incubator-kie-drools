@@ -102,7 +102,7 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void negativeLateSimulatedAnnealingSize() {
+    public void negativeSimulatedAnnealingSize() {
         SimulatedAnnealingAcceptor acceptor = new SimulatedAnnealingAcceptor();
         acceptor.setStartingTemperature(HardMediumSoftScore.parseScore("1, -1, 2"));
         acceptor.phaseStarted(null);

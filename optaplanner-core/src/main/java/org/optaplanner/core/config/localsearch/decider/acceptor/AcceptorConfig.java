@@ -30,7 +30,6 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.Acceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.CompositeAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.hillclimbing.HillClimbingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.lateacceptance.LateAcceptanceAcceptor;
-import org.optaplanner.core.impl.localsearch.decider.acceptor.latesimulatedannealing.LateSimulatedAnnealingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing.SimulatedAnnealingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingAcceptor;
 import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.EntityTabuAcceptor;
@@ -73,9 +72,6 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
 
     protected Integer stepCountingHillClimbingSize = null;
     protected StepCountingHillClimbingType stepCountingHillClimbingType = null;
-
-    @Deprecated // Experimental feature (no backwards compatibility guarantee)
-    protected Integer lateSimulatedAnnealingSize = null;
 
     public List<Class<? extends Acceptor>> getAcceptorClassList() {
         return acceptorClassList;
@@ -237,16 +233,6 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
         this.stepCountingHillClimbingType = stepCountingHillClimbingType;
     }
 
-    @Deprecated // Experimental feature (no backwards compatibility guarantee)
-    public Integer getLateSimulatedAnnealingSize() {
-        return lateSimulatedAnnealingSize;
-    }
-
-    @Deprecated // Experimental feature (no backwards compatibility guarantee)
-    public void setLateSimulatedAnnealingSize(Integer lateSimulatedAnnealingSize) {
-        this.lateSimulatedAnnealingSize = lateSimulatedAnnealingSize;
-    }
-
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -401,12 +387,6 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
                     stepCountingHillClimbingSize_, stepCountingHillClimbingType_);
             acceptorList.add(acceptor);
         }
-        if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.LATE_SIMULATED_ANNEALING))
-                || lateSimulatedAnnealingSize != null) {
-            LateSimulatedAnnealingAcceptor acceptor = new LateSimulatedAnnealingAcceptor();
-            acceptor.setLateSimulatedAnnealingSize(defaultIfNull(lateSimulatedAnnealingSize, 400));
-            acceptorList.add(acceptor);
-        }
         if (acceptorList.size() == 1) {
             return acceptorList.get(0);
         } else if (acceptorList.size() > 1) {
@@ -466,8 +446,6 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
                 inheritedConfig.getStepCountingHillClimbingSize());
         stepCountingHillClimbingType = ConfigUtils.inheritOverwritableProperty(stepCountingHillClimbingType,
                 inheritedConfig.getStepCountingHillClimbingType());
-        lateSimulatedAnnealingSize = ConfigUtils.inheritOverwritableProperty(lateSimulatedAnnealingSize,
-                inheritedConfig.getLateSimulatedAnnealingSize());
     }
 
 }
