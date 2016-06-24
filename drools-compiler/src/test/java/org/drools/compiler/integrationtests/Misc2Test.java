@@ -21,6 +21,7 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.Person;
+import org.drools.compiler.Shift;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DrlParser;
@@ -8495,6 +8496,94 @@ public class Misc2Test extends CommonTestMethodBase {
         kieSession.update( fh2, p2 );
 
         kieSession.fireAllRules();
+    }
+
+    @Test
+    public void test() {
+        // DROOLS-1186
+        // two shifts for the same employee with no other shift between them
+        String drl =
+                "import " + Shift.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    Shift( $end1: end, $employee: employee )\n" +
+                "    Shift( employee == $employee, $end1 <= start, $start2: start )\n" +
+                "    not Shift( employee == $employee, $end1 <= start && start < $start2 )\n" +
+                "then\n" +
+                "end";
+
+        KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        Shift shift1 = new Shift(10, 11);
+        Shift shift2 = new Shift(20, 21);
+        Shift shift3 = new Shift(30, 31);
+        Shift shift4 = new Shift(40, 41);
+        Shift shift5 = new Shift(50, 51);
+        Shift shift6 = new Shift(60, 61);
+        Shift shift7 = new Shift(70, 71);
+        Shift shift8 = new Shift(80, 81);
+        String o = "o";
+        String x = "x";
+
+        kieSession.insert(shift1);
+        kieSession.insert(shift2);
+        kieSession.insert(shift3);
+        kieSession.insert(shift4);
+        kieSession.insert(shift5);
+        kieSession.insert(shift6);
+        kieSession.insert(shift7);
+        kieSession.insert(shift8);
+
+        // order doesn't seem to matter here
+        setEmployee(kieSession, shift1, o);
+        setEmployee(kieSession, shift2, o);
+        setEmployee(kieSession, shift4, o);
+        setEmployee(kieSession, shift5, o);
+        setEmployee(kieSession, shift6, o);
+        setEmployee(kieSession, shift7, o);
+        setEmployee(kieSession, shift8, o);
+        // ----result-----
+        // 1 2 3 4 5 6 7 8
+        // o o   o o o o o
+
+        kieSession.fireAllRules();
+
+        setEmployee(kieSession, shift1, x);
+        setEmployee(kieSession, shift4, x);
+        setEmployee(kieSession, shift8, x);
+        setEmployee(kieSession, shift5, x);
+        setEmployee(kieSession, shift7, x);
+        setEmployee(kieSession, shift2, x);
+        // ----result-----
+        // 1 2 3 4 5 6 7 8
+        // x x   x x o x x
+
+        // order doesn't matter here
+        setEmployee(kieSession, shift8, o);
+        setEmployee(kieSession, shift7, o);
+        setEmployee(kieSession, shift6, o);
+        setEmployee(kieSession, shift4, o);
+        setEmployee(kieSession, shift3, o);
+        // ----result-----
+        // 1 2 3 4 5 6 7 8
+        // x x o o x o o o
+
+        kieSession.fireAllRules();
+
+        setEmployee(kieSession, shift8, x);
+        setEmployee(kieSession, shift4, x);
+        // 6 must be after 7, otherwise order doesn't matter
+        setEmployee(kieSession, shift7, x);
+        setEmployee(kieSession, shift6, x);
+        // ----result-----
+        // 1 2 3 4 5 6 7 8
+        // x x o x x x x x
+
+        kieSession.fireAllRules();
+    }
+
+    private static void setEmployee(KieSession kieSession, Shift shift, String employee) {
+        shift.setEmployee(employee);
+        kieSession.update(kieSession.getFactHandle(shift), shift);
     }
 
     @Test
