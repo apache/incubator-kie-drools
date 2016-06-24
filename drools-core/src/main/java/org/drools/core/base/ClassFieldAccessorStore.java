@@ -263,9 +263,11 @@ public class ClassFieldAccessorStore
                     ClassObjectTypeLookupEntry lookupEntry = (ClassObjectTypeLookupEntry) this.lookup.get( entry.getKey() );
                     if ( lookupEntry == null ) {
                         // Create new entry with correct ClassObjectType and targets
-                        lookupEntry = new ClassObjectTypeLookupEntry(  cache.getClassObjectType( ((ClassObjectTypeLookupEntry) entry.getValue()).getClassObjectType(), true ) );
-                        this.lookup.put( entry.getKey(), lookupEntry );
-
+                        ClassObjectType oldObjectType = ((ClassObjectTypeLookupEntry) entry.getValue()).getClassObjectType();
+                        ClassObjectType newObjectType = cache.getClassObjectType( oldObjectType, true );
+                        this.lookup.put( entry.getKey(), new ClassObjectTypeLookupEntry( newObjectType ) );
+                        // also rewire the class of the old ClassObjectType in case it is still in use
+                        oldObjectType.setClassType( newObjectType.getClassType() );
                     }
                 }
             }
