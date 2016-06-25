@@ -125,10 +125,8 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
     }
 
     private InternalKnowledgeBase readKnowledgeBase(String drl) {
-        try {
-            //            logger.info(drl);
-            // read in the source
-            Reader source = new StringReader(drl);
+        // read in the source
+        try (Reader source = new StringReader(drl)) {
             KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
             builder.addPackageFromDrl(source);
             InternalKnowledgePackage pkg = builder.getPackage();
