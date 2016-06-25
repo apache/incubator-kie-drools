@@ -27,6 +27,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieSession;
 import org.kie.scanner.MavenRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -50,7 +52,8 @@ import static org.kie.scanner.MavenRepository.getMavenRepository;
  * This is the main class where all interfaces and code comes together. 
  */
 final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelper implements SingleKieModuleDeploymentHelper {
-    
+    private static final Logger logger = LoggerFactory.getLogger(KieModuleDeploymentHelperImpl.class);
+
     /**
      * package scope: Because users will do very unexpected things.
      */
@@ -551,14 +554,23 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
             int bangIndex = path.indexOf('!');
             String jarPath = path.substring("file:".length(), bangIndex);
             String classPath = path.substring(bangIndex+2); // no base /
-            
-            try { 
-                ZipFile zip = new ZipFile(new File(jarPath));
-                ZipEntry entry = zip.getEntry(classPath);
-                InputStream zipStream = zip.getInputStream(entry);
+            ZipFile zipFile = null;
+            try {
+                zipFile = new ZipFile(new File(jarPath));
+                ZipEntry entry = zipFile.getEntry(classPath);
+                InputStream zipStream = zipFile.getInputStream(entry);
+                // the zipStream is closed as part of the readStream() method
                 classByteCode = readStream(zipStream);
             } catch (Exception e) {
                 throw new RuntimeException("Unable to read from " + jarPath, e);
+            } finally {
+                if (zipFile != null ) {
+                    try {
+                        zipFile.close();
+                    } catch (IOException ioe) {
+                        logger.warn("Failed to close zip file '" + jarPath + "'!", ioe);
+                    }
+                }
             }
         }
 

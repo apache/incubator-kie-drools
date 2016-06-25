@@ -18,15 +18,19 @@ package org.drools.verifier.report.html;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.util.IoUtils;
 import org.mvel2.templates.TemplateRuntime;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 abstract class ReportVisitor {
+
+    private static final Logger logger = LoggerFactory.getLogger(ReportVisitor.class);
 
     protected static String processHeader(String folder) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -42,12 +46,12 @@ abstract class ReportVisitor {
     }
 
     protected static String readFile(String fileName) {
-        StringBuffer str = new StringBuffer("");
+        StringBuilder str = new StringBuilder();
+        InputStream resourceStream = ReportVisitor.class.getResourceAsStream(fileName);
+        BufferedReader reader = null;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    ReportVisitor.class.getResourceAsStream(fileName),
-                    IoUtils.UTF8_CHARSET));
-            String line = null;
+            reader = new BufferedReader(new InputStreamReader(resourceStream, IoUtils.UTF8_CHARSET));
+            String line;
             while ((line = reader.readLine()) != null) {
                 str.append(line);
                 str.append("\n");
@@ -57,6 +61,14 @@ abstract class ReportVisitor {
         } catch (NullPointerException e) {
             System.err.println("File " + fileName + " was not found.");
             e.printStackTrace();
+        } finally{
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException ioe) {
+                    logger.warn("Failed to  close reader!", ioe);
+                }
+            }
         }
         return str.toString();
     }

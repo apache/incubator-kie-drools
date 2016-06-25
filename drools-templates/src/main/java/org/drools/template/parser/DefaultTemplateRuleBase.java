@@ -22,7 +22,10 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.template.model.*;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -50,6 +53,8 @@ import java.util.Map;
  * end
  */
 public class DefaultTemplateRuleBase implements TemplateRuleBase {
+    private static final Logger logger = LoggerFactory.getLogger(DefaultTemplateRuleBase.class);
+
     private InternalKnowledgeBase kBase;
 
     public DefaultTemplateRuleBase(final TemplateContainer tc) {
@@ -125,10 +130,10 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
     }
 
     private InternalKnowledgeBase readKnowledgeBase(String drl) {
+        // read in the source
+        Reader source = null;
         try {
-            //            logger.info(drl);
-            // read in the source
-            Reader source = new StringReader(drl);
+            source = new StringReader(drl);
             KnowledgeBuilderImpl builder = new KnowledgeBuilderImpl();
             builder.addPackageFromDrl(source);
             InternalKnowledgePackage pkg = builder.getPackage();
@@ -140,6 +145,14 @@ public class DefaultTemplateRuleBase implements TemplateRuleBase {
 
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            if (source != null) {
+                try {
+                    source.close();
+                } catch (IOException ioe) {
+                    logger.warn("Failed to close reader!", ioe);
+                }
+            }
         }
     }
 
