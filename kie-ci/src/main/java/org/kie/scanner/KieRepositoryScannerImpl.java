@@ -87,7 +87,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
                                                    this.kieContainer.getCreationTimestamp());
 
         artifactResolver = getResolverFor(this.kieContainer, true);
-        usedDependencies = indexAtifacts(artifactResolver);
+        usedDependencies = indexArtifacts(artifactResolver);
 
         KieScannersRegistry.register(this);
         status = Status.STOPPED;
@@ -351,7 +351,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         return newArtifacts;
     }
 
-    private Map<ReleaseId, DependencyDescriptor> indexAtifacts(ArtifactResolver artifactResolver) {
+    private Map<ReleaseId, DependencyDescriptor> indexArtifacts(ArtifactResolver artifactResolver) {
         Map<ReleaseId, DependencyDescriptor> depsMap = new HashMap<ReleaseId, DependencyDescriptor>();
         for (DependencyDescriptor dep : artifactResolver.getAllDependecies()) {
             if ( !"test".equals(dep.getScope()) && !"provided".equals(dep.getScope()) && !"system".equals(dep.getScope()) ) {
@@ -368,14 +368,13 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     private boolean isKJar(File jar) {
-        ZipFile zipFile;
-        try {
-            zipFile = new ZipFile( jar );
+        try (ZipFile zipFile = new ZipFile( jar )) {
+            ZipEntry zipEntry = zipFile.getEntry( KieModuleModelImpl.KMODULE_JAR_PATH );
+            return zipEntry != null;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to open Zip file '" + jar.getAbsolutePath() + "'!", e);
         }
-        ZipEntry zipEntry = zipFile.getEntry( KieModuleModelImpl.KMODULE_JAR_PATH );
-        return zipEntry != null;
+
     }
     
     public synchronized KieScannerMBean getMBean() {
