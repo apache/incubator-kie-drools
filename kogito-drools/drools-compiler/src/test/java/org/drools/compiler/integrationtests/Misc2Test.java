@@ -8645,4 +8645,77 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession2.insert( "test" );
         assertEquals(1, ksession2.fireAllRules());
     }
+
+    @Test
+    public void testWiringClassOnPackageMerge() throws Exception {
+        String drl_init =
+                "package init;\n" +
+                "import org.kie.test.TestObject\n" +
+                "rule RInit when\n" +
+                "then\n" +
+                "    TestObject obj1 = new TestObject();\n" +
+                "    TestObject obj2 = new TestObject();" +
+                "    obj1.add(obj2);" +
+                "    insert(obj1);\n" +
+                "end";
+
+        String drl1 =
+                "package p1;\n" +
+                "import org.kie.test.TestObject\n" +
+                "global java.util.List list;\n" +
+                "rule R1 when\n" +
+                "    $obj : TestObject( $objs : objects )\n" +
+                "    $s : Object() from $objs\n" +
+                "then\n" +
+                "    list.add(\"R1\");\n" +
+                "end";
+
+        String drl2 =
+                "package p2;\n" +
+                "import org.kie.test.TestObject\n" +
+                "global java.util.List list;\n" +
+                "rule R2 when\n" +
+                "    $obj : TestObject( $objs : objects )\n" +
+                "    $s : TestObject() from $objs\n" +
+                "then\n" +
+                "    list.add(\"R2\");\n" +
+                "end";
+
+        String javaSrc =
+                "package org.kie.test;\n" +
+                "import java.util.*;\n" +
+                "\n" +
+                "public class TestObject {\n" +
+                "    private final List<TestObject> objects = new ArrayList<TestObject>();\n" +
+                "\n" +
+                "    public List<TestObject> getObjects() {\n" +
+                "        return objects;\n" +
+                "    }\n" +
+                "    public void add(TestObject obj) {\n" +
+                "        objects.add(obj);" +
+                "    }" +
+                "}\n";
+
+        String path = "org/kie/test/MyRuleUnit";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.writeKModuleXML(ks.newKieModuleModel().toXML())
+           .write("src/main/resources/a.drl", drl_init)
+           .write("src/main/resources/b.drl", drl1)
+           .write("src/main/resources/c.drl", drl2)
+           .write("src/main/java/org/kie/test/TestObject.java", javaSrc);
+
+        ks.newKieBuilder( kfs ).buildAll();
+        KieContainer kcontainer = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+        KieSession kSession = kcontainer.newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        kSession.setGlobal( "list", list );
+        kSession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "R1" ) );
+        assertTrue( list.contains( "R2" ) );
+    }
 }
