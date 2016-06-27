@@ -512,7 +512,7 @@ public class KieContainerImpl
         } else if (conf instanceof RuleBaseConfiguration) {
             ((RuleBaseConfiguration)conf).setClassLoader(cl);
         }
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( conf );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
 
         kBase.addKnowledgePackages( pkgs );
         return kBase;
