@@ -17,6 +17,8 @@
 package org.jbpm.kie.services.impl.query;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.jbpm.services.api.query.model.QueryDefinition;
 
@@ -30,6 +32,8 @@ public class SqlQueryDefinition implements QueryDefinition, Serializable {
     private String expression;
     
     private Target target = Target.CUSTOM;
+    
+    private Map<String, String> columnsMapping = new HashMap<String, String>();
 
     public SqlQueryDefinition(String name, String source) {
         this.name = name;
@@ -91,6 +95,14 @@ public class SqlQueryDefinition implements QueryDefinition, Serializable {
     public String toString() {
         return "SqlQueryDefinition [name=" + name + ", source=" + source  + ", target=" + target + ", "+ 
                 "{ expression=" + expression + "}]";
+    }
+
+    public Map<String, String> getColumnsMapping() {
+        return columnsMapping;
+    }
+
+    public void setColumnsMapping(Map<String, String> columnsMapping) {
+        this.columnsMapping = columnsMapping;
     }
 
 }

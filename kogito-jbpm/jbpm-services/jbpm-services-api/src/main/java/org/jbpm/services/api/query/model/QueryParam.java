@@ -17,6 +17,7 @@
 package org.jbpm.services.api.query.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -92,6 +93,34 @@ public class QueryParam implements Serializable {
         return new QueryParam(column, "NOT_IN", values);
     }
     
+    public static QueryParam count(String column) {
+        return new QueryParam(column, "COUNT", Arrays.asList(column));
+    }
+    
+    public static QueryParam distinct(String column) {
+        return new QueryParam(column, "DISTINCT", Arrays.asList(column));
+    }
+    
+    public static QueryParam average(String column) {
+        return new QueryParam(column, "AVERAGE", Arrays.asList(column));
+    }
+    
+    public static QueryParam sum(String column) {
+        return new QueryParam(column, "SUM", Arrays.asList(column));
+    }
+    
+    public static QueryParam min(String column) {
+        return new QueryParam(column, "MIN", Arrays.asList(column));
+    }
+    
+    public static QueryParam max(String column) {
+        return new QueryParam(column, "MAX", Arrays.asList(column));
+    }
+    
+    public static QueryParam[] groupBy(String column) {
+        return new QueryParam[] {new QueryParam(column, "group", Arrays.asList(column)), new QueryParam(column, null, Arrays.asList(column))};
+    }
+    
     public String getColumn() {
         return column;
     }
@@ -114,6 +143,24 @@ public class QueryParam implements Serializable {
     
     public void setValue(List<?> value) {
         this.value = value;
+    }
+    
+    public static Builder getBuilder() {
+        return new Builder();
+    }
+    
+    public static class Builder {
+        private List<QueryParam> parameters = new ArrayList<QueryParam>();
+        
+        public Builder append(QueryParam...params) {
+            this.parameters.addAll(Arrays.asList(params));
+            
+            return this;
+        }
+        
+        public QueryParam[] get() {
+            return this.parameters.toArray(new QueryParam[this.parameters.size()]);
+        }
     }
 
 }

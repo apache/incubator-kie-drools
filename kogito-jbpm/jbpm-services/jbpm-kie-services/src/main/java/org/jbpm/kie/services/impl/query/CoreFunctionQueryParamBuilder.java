@@ -16,14 +16,14 @@
 
 package org.jbpm.kie.services.impl.query;
 
-import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.dataset.filter.CoreFunctionFilter;
 import org.dashbuilder.dataset.filter.CoreFunctionType;
+import org.dashbuilder.dataset.group.AggregateFunctionType;
 import org.jbpm.services.api.query.QueryParamBuilder;
 import org.jbpm.services.api.query.model.QueryParam;
 
 
-public class CoreFunctionQueryParamBuilder implements QueryParamBuilder<ColumnFilter> {
+public class CoreFunctionQueryParamBuilder implements QueryParamBuilder<Object> {
 
     private QueryParam[] filterParams;
     private int index = 0;
@@ -32,18 +32,30 @@ public class CoreFunctionQueryParamBuilder implements QueryParamBuilder<ColumnFi
         this.filterParams = filterParams;
     }
     @Override
-    public ColumnFilter build() {
+    public Object build() {
         if (filterParams.length == 0 || filterParams.length <= index) {
             return null;
         }
         QueryParam param = filterParams[index];
         index++;
-        
-        CoreFunctionType type = CoreFunctionType.getByName(param.getOperator());
-        if (type == null) {
-            throw new IllegalArgumentException("Not supported core function type - " + param.getOperator());
+        if ("group".equalsIgnoreCase(param.getOperator())) {
+            // if operator is group consider it as group functions
+            return new GroupColumnFilter(param.getColumn(), (String)param.getValue().get(0));
         }
-        return new CoreFunctionFilter(param.getColumn(), type, param.getValue());
+        // check core functions
+        CoreFunctionType type = CoreFunctionType.getByName(param.getOperator());
+        if (type != null) {
+            return new CoreFunctionFilter(param.getColumn(), type, param.getValue());
+        }
+        // check aggregate functions
+        AggregateFunctionType aggregationType = AggregateFunctionType.getByName(param.getOperator());
+        
+        if (aggregationType != null) {
+            
+            return new AggregateColumnFilter(aggregationType, param.getColumn(), (String)param.getValue().get(0));
+        }
+
+        return new ExtraColumnFilter(param.getColumn(), (String)param.getValue().get(0));
     }
 
 }

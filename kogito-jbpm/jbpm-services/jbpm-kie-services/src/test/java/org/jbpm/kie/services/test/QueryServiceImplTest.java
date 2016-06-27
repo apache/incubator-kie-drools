@@ -16,6 +16,7 @@
 
 package org.jbpm.kie.services.test;
 
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSINSTANCEID;
 import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSID;
 import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_PROCESSNAME;
 import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_STATUS;
@@ -783,6 +784,102 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         processService.abortProcessInstance(processInstanceId2);
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;        
+    }
+    
+    @Test
+    public void testGetProcessInstancesCount() {
+        
+        query = new SqlQueryDefinition("getAllProcessInstances", dataSourceJNDIname);
+        query.setExpression("select * from processinstancelog");
+        
+        queryService.registerQuery(query);
+        
+        List<QueryDefinition> queries = queryService.getQueries(new QueryContext());
+        assertNotNull(queries);
+        assertEquals(1, queries.size());
+        
+        
+        Collection<List<Object>> instances = queryService.query(query.getName(), RawListQueryMapper.get(), new QueryContext(),
+                                                                                 QueryParam.count(COLUMN_PROCESSINSTANCEID));
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
+        
+        List<Object> result = instances.iterator().next();
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        
+        assertTrue(result.get(0) instanceof Number);
+        assertEquals(0, ((Number)result.get(0)).intValue());
+
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+
+        instances = queryService.query(query.getName(), RawListQueryMapper.get(), new QueryContext(),
+                QueryParam.count(COLUMN_PROCESSINSTANCEID));
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
+        
+        result = instances.iterator().next();
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        
+        assertTrue(result.get(0) instanceof Number);
+        assertEquals(1, ((Number)result.get(0)).intValue());
+        
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+        
+    }
+    
+    @Test
+    public void testGetProcessInstancesCountAndGroup() {
+        
+        query = new SqlQueryDefinition("getAllProcessInstances", dataSourceJNDIname);
+        query.setExpression("select * from processinstancelog");
+        
+        queryService.registerQuery(query);
+        
+        List<QueryDefinition> queries = queryService.getQueries(new QueryContext());
+        assertNotNull(queries);
+        assertEquals(1, queries.size());
+        
+        QueryParam[] parameters = QueryParam.getBuilder()
+                    .append(QueryParam.groupBy(COLUMN_PROCESSNAME))                
+                    .append(QueryParam.count(COLUMN_PROCESSINSTANCEID))
+                    .get();
+        
+        Collection<List<Object>> instances = queryService.query(query.getName(), RawListQueryMapper.get(), new QueryContext(), parameters);
+        assertNotNull(instances);
+        assertEquals(0, instances.size());
+        
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+        
+        long processInstanceId2 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jboss.qa.bpms.HumanTask");
+
+        instances = queryService.query(query.getName(), RawListQueryMapper.get(), new QueryContext(), parameters);
+        assertNotNull(instances);
+        assertEquals(2, instances.size());
+        // write document process
+        List<Object>result = instances.iterator().next();
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        
+        assertTrue(result.get(1) instanceof Number);
+        assertEquals(1, ((Number)result.get(1)).intValue());
+        
+        // org.jboss.qa.bpms.HumanTask task process
+        result = instances.iterator().next();
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        
+        assertTrue(result.get(1) instanceof Number);
+        assertEquals(1, ((Number)result.get(1)).intValue());
+        
+        processService.abortProcessInstance(processInstanceId2);
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+        
     }
     
     protected void setFieldValue(Object instance, String fieldName, Object value) {
