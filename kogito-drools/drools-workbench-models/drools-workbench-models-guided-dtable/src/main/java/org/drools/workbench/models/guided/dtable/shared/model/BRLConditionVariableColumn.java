@@ -61,7 +61,7 @@ public class BRLConditionVariableColumn extends ConditionCol52
             return null;
         }
 
-        List<BaseColumnFieldDiff> result = super.diff( otherColumn );
+        List<BaseColumnFieldDiff> result = conditionCol52SpecificDiff( otherColumn );
         BRLConditionVariableColumn other = (BRLConditionVariableColumn) otherColumn;
 
         // Field: varName.

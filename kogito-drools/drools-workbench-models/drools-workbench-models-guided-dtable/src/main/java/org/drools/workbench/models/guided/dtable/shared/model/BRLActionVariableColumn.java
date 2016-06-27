@@ -15,6 +15,7 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -67,7 +68,7 @@ public class BRLActionVariableColumn extends ActionCol52
             return null;
         }
 
-        List<BaseColumnFieldDiff> result = super.diff( otherColumn );
+        List<BaseColumnFieldDiff> result = new ArrayList<>();
         BRLActionVariableColumn other = (BRLActionVariableColumn) otherColumn;
 
         // Field: varName.
