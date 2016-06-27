@@ -52,6 +52,7 @@ literal
 	|   dateTimeLiteral
 	;
 
+// #62
 dateTimeLiteral
     :   'date and time' '(' StringLiteral ')'
     |   'date' '(' StringLiteral ')'
@@ -62,17 +63,20 @@ dateTimeLiteral
 /**************************
  *    OTHER CONSTRUCTS
  **************************/
+// #14
 simpleUnaryTests
     : simplePositiveUnaryTests
     | 'not' '(' simplePositiveUnaryTests ')'
     | '-'
     ;
 
+// #13
 simplePositiveUnaryTests
     : simplePositiveUnaryTest
     | simplePositiveUnaryTests ',' simplePositiveUnaryTest
     ;
 
+// #7
 simplePositiveUnaryTest
     : '<' endpoint
     | '>' endpoint
@@ -82,10 +86,12 @@ simplePositiveUnaryTest
     | 'null'
     ;
 
+// #18
 endpoint
     : additiveExpression
     ;
 
+// #8-#12
 interval
     : '(' endpoint '..' endpoint ')'
     | '(' endpoint '..' endpoint '['
@@ -98,23 +104,175 @@ interval
     | '[' endpoint '..' endpoint ']'
     ;
 
+// #20
 qualifiedName
     : Identifier
-    | Identifier '.' qualifiedName
+    | qualifiedName '.' Identifier
     ;
 
 /**************************
  *       EXPRESSIONS
  **************************/
-
 expressions
-    : expression ',' expressions
+    : expression
+    | expressions ',' expression
     ;
 
+// #1
 expression
-    :   conditionalOrExpression
+    : textualExpression
+    | boxedExpression
     ;
 
+// #2
+textualExpression
+    : functionDefinition
+    | forExpression
+    | ifExpression
+    | quantifiedExpression
+    | functionInvocation
+    | instanceOfExpression
+    | filterExpression
+    | pathExpression
+    | conditionalOrExpression
+    ;
+
+// #3
+textualExpressions
+    : textualExpression
+    | textualExpressions ',' textualExpression
+    ;
+
+// #40
+functionInvocation
+    : qualifiedName parameters
+    ;
+
+// #41
+parameters
+    : '(' ')'
+    | '(' namedParameters ')'
+    | '(' positionalParameters ')'
+    ;
+
+// #42 #43
+namedParameters
+    : namedParameter
+    | namedParameters ',' namedParameter
+    ;
+
+namedParameter
+    : Identifier ':' expression
+    ;
+
+// #44
+positionalParameters
+    : expression
+    | positionalParameters ',' expression
+    ;
+
+// #45
+pathExpression
+    : boxedExpression '.' Identifier
+    ;
+
+// #46
+forExpression
+    : 'for' idInExpressions 'return' expression
+    ;
+
+idInExpressions
+    : idInExpression
+    | idInExpressions ',' idInExpression
+    ;
+
+idInExpression
+    : Identifier 'in' expression
+    ;
+
+// #47
+ifExpression
+    : 'if' expression 'then' expression 'else' expression
+    ;
+
+// #48
+quantifiedExpression
+    : 'some' idInExpressions 'satisfies' expression
+    | 'every' idInExpressions 'satisfies' expression
+    ;
+
+// #52
+filterExpression
+    : list '[' expression ']'
+    ;
+
+// #53
+instanceOfExpression
+    : conditionalOrExpression 'instance' 'of' type
+    ;
+
+// #54
+type
+    : qualifiedName
+    ;
+
+// #55
+boxedExpression
+    : list
+    | functionDefinition
+    | context
+    ;
+
+// #56
+list
+    : '[' ']'
+    | '[' expressions ']'
+    ;
+
+// #57
+functionDefinition
+    : 'function' '(' ')' functionBody
+    | 'function' '(' formalParameters ')' functionBody
+    ;
+
+functionBody
+    : 'external' expression
+    | expression
+    ;
+
+formalParameters
+    : formalParameter
+    | formalParameters ',' formalParameter
+    ;
+
+// #58
+formalParameter
+    : Identifier
+    ;
+
+// #59
+context
+    : '{' '}'
+    | '{' contextEntries '}'
+    ;
+
+contextEntries
+    : contextEntry
+    | contextEntries ',' contextEntry
+    ;
+
+// #60
+contextEntry
+    : key ':' expression
+    ;
+
+// #61
+key
+    : Identifier
+    | StringLiteral
+    ;
+
+// several rules recursivelly
 conditionalOrExpression
 	:	conditionalAndExpression
 	|	conditionalOrExpression 'or' conditionalAndExpression
@@ -527,17 +685,7 @@ JavaLetterOrDigit
 	|	// covers UTF-16 surrogate pairs encodings for U+10000 to U+10FFFF
 		[\uD800-\uDBFF] [\uDC00-\uDFFF]
 		{Character.isJavaIdentifierPart(Character.toCodePoint((char)_input.LA(-2), (char)_input.LA(-1)))}?
-	|   AdditionalNameSymbols
 	;
-
-fragment
-AdditionalNameSymbols
-    :   '/'
-    |   '-'
-    |   '\''
-    |   '+'
-    |   '*'
-    ;
 
 //
 // Whitespace and comments

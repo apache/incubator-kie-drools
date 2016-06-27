@@ -51,7 +51,7 @@ public class MvelFEELEvaluator
 
     @Override
     public void exitExpression(FEEL_1_1Parser.ExpressionContext ctx) {
-        setMVEL( ctx, getMVEL( ctx.conditionalOrExpression() ) );
+        setMVEL( ctx, getMVEL( ctx.textualExpression() ) );
     }
 
     @Override
