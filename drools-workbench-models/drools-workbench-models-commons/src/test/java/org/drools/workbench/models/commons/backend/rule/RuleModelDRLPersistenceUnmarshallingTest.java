@@ -74,11 +74,8 @@ import org.drools.workbench.models.datamodel.rule.RuleModel;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.SingleFieldConstraintEBLeftSide;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.test.util.logging.LoggingPrintStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8431,6 +8428,110 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       afv2.getValue() );
         assertEquals( FieldNatureType.TYPE_LITERAL,
                       afv2.getNature() );
+    }
+
+    @Test
+    public void compositeFieldConstraintWithTwoPredicates() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Person( eval( age > 18 ) && eval(age < 45) )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        //LHS Pattern
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+
+        //LHS sub-patterns
+        assertEquals( 1,
+                      fp.getNumberOfConstraints() );
+        assertTrue( fp.getConstraint( 0 ) instanceof CompositeFieldConstraint );
+        CompositeFieldConstraint fp_cfp = (CompositeFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "&&",
+                      fp_cfp.getCompositeJunctionType() );
+        assertEquals( 2,
+                      fp_cfp.getNumberOfConstraints() );
+        assertTrue( fp_cfp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        assertTrue( fp_cfp.getConstraint( 1 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint fp_cfp_sfp1 = (SingleFieldConstraint) fp_cfp.getConstraint( 0 );
+        assertEquals( "age > 18",
+                      fp_cfp_sfp1.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_PREDICATE,
+                      fp_cfp_sfp1.getConstraintValueType() );
+
+        SingleFieldConstraint fp_cfp_sfp2 = (SingleFieldConstraint) fp_cfp.getConstraint( 1 );
+        assertEquals( "age < 45",
+                      fp_cfp_sfp2.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_PREDICATE,
+                      fp_cfp_sfp2.getConstraintValueType() );
+    }
+
+    @Test
+    public void compositeFieldConstraintWithOnePredicateAndOneLiteral() {
+        String drl = "rule \"rule1\"\n"
+                + "when\n"
+                + "Person( eval( age > 18 ) && age < 45 )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
+
+        assertNotNull( m );
+        assertEquals( "rule1",
+                      m.name );
+
+        //LHS Pattern
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+
+        //LHS sub-patterns
+        assertEquals( 1,
+                      fp.getNumberOfConstraints() );
+        assertTrue( fp.getConstraint( 0 ) instanceof CompositeFieldConstraint );
+        CompositeFieldConstraint fp_cfp = (CompositeFieldConstraint) fp.getConstraint( 0 );
+        assertEquals( "&&",
+                      fp_cfp.getCompositeJunctionType() );
+        assertEquals( 2,
+                      fp_cfp.getNumberOfConstraints() );
+        assertTrue( fp_cfp.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        assertTrue( fp_cfp.getConstraint( 1 ) instanceof SingleFieldConstraint );
+
+        SingleFieldConstraint fp_cfp_sfp1 = (SingleFieldConstraint) fp_cfp.getConstraint( 0 );
+        assertEquals( "age > 18",
+                      fp_cfp_sfp1.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_PREDICATE,
+                      fp_cfp_sfp1.getConstraintValueType() );
+
+        SingleFieldConstraint fp_cfp_sfp2 = (SingleFieldConstraint) fp_cfp.getConstraint( 1 );
+        assertEquals( "Person",
+                      fp_cfp_sfp2.getFactType() );
+        assertEquals( "age",
+                      fp_cfp_sfp2.getFieldName() );
+        assertEquals( "<",
+                      fp_cfp_sfp2.getOperator() );
+        assertEquals( "45",
+                      fp_cfp_sfp2.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      fp_cfp_sfp2.getConstraintValueType() );
     }
 
 }
