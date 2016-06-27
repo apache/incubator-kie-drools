@@ -21,13 +21,15 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.feel.MvelFEELEvaluator;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ParserTest {
+@Ignore
+public class MvelFEELEvaluatorTest {
 
     private MvelFEELEvaluator feel;
 
