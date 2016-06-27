@@ -15,12 +15,6 @@
  */
 package org.drools.persistence;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.drools.persistence.jta.JtaTransactionManagerFactory;
@@ -28,7 +22,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.Environment;
 
-import com.google.common.collect.Lists;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+
+import static org.junit.Assert.assertEquals;
 
 public class TransactionManagerFactoryTest {
 
@@ -98,12 +97,20 @@ public class TransactionManagerFactoryTest {
      * Creates a ClassLoader that will directly load the TransactionManagerFactory without
      * first delegating to the parent ClassLoader.  This is to allow the static block within
      * TransactionManagerFactory to be executed multiple times within the VM.
-     * 
-     * @return
+     *
+     * This an ugly hack. We should consider changing the TransactionManagerFactory so that it is easily testable
+     * without this hack.
      */
     private ClassLoader createFactoryClassLoader() {
-        ArrayList<URL> urls = Lists.newArrayList(((URLClassLoader) getClass().getClassLoader()).getURLs());
-        return new URLClassLoader(urls.toArray(new URL[0]), getClass().getClassLoader()) {
+        URL[] urls;
+        // we can not safely assume the getClass().getClassLoader() is a URLClassLoader as this is not the case in JDK 9
+        if (getClass().getClassLoader() instanceof URLClassLoader) {
+            final URLClassLoader ucl = (URLClassLoader) getClass().getClassLoader();
+            urls = ucl.getURLs();
+        } else {
+            urls = getClassPathURLs();
+        }
+        return new URLClassLoader(urls, getClass().getClassLoader()) {
             public Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
                 // Loads TransactionManagerFactory and subclasses without delegating to parent.
                 if (name.endsWith("TransactionManagerFactory")) {
@@ -121,10 +128,27 @@ public class TransactionManagerFactoryTest {
             }
         };
     }
+
+    private URL[] getClassPathURLs() {
+        // this of course only going to work as long as we use the classpath. Once we move to Java 9's module path
+        // it will no longer work (to support both JDK 8 and JDK9 we will likely need to stay with the classpath though)
+        String cp = System.getProperty("java.class.path");
+        String[] elements = cp.split(File.pathSeparator);
+        if (elements.length == 0) {
+            elements = new String[]{""};
+        }
+        URL[] urls = new URL[elements.length];
+        for (int i = 0; i < elements.length; i++) {
+            try {
+                URL url = new File(elements[i]).toURI().toURL();
+                urls[i] = url;
+            } catch (MalformedURLException ignore) {
+                // malformed file string or class path element does not exist
+            }
+        }
+        return urls;
+    }
     
-    /**
-     * 
-     */
     public static final class TestTransactionManagerFactory extends TransactionManagerFactory {
 
         @Override
