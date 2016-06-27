@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<persistence-unit name="org.jbpm.test.jpaWIH"
+		transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>jpaWIH</jta-data-source>
+
+		<class>org.jbpm.process.workitem.jpa.Product</class>
+
+		<properties>
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+
+			<!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem 
+				to cause problems -->
+			<property name="hibernate.id.new_generator_mappings" value="false" />
+			<property name="hibernate.transaction.jta.platform"
+				value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
+		</properties>
+	</persistence-unit>
+
+	<persistence-unit name="org.jbpm.persistence.jpa"
+		transaction-type="JTA">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<non-jta-data-source>jpaWIH</non-jta-data-source>
+		<mapping-file>META-INF/JBPMorm.xml</mapping-file>
+
+		<class>org.drools.persistence.info.SessionInfo</class>
+		<class>org.jbpm.persistence.processinstance.ProcessInstanceInfo</class>
+		<class>org.drools.persistence.info.WorkItemInfo</class>
+		<class>org.jbpm.persistence.correlation.CorrelationKeyInfo</class>
+		<class>org.jbpm.persistence.correlation.CorrelationPropertyInfo</class>
+		<class>org.jbpm.runtime.manager.impl.jpa.ContextMappingInfo</class>
+
+		<class>org.jbpm.process.audit.ProcessInstanceLog</class>
+		<class>org.jbpm.process.audit.NodeInstanceLog</class>
+		<class>org.jbpm.process.audit.VariableInstanceLog</class>
+		<properties>
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
+
+			<!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem 
+				to cause problems -->
+			<property name="hibernate.id.new_generator_mappings" value="false" />
+			<property name="hibernate.transaction.jta.platform"
+				value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
+		</properties>
+	</persistence-unit>
+
+</persistence>    
