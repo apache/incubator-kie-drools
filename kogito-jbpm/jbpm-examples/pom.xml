@@ -129,11 +129,21 @@
     	<artifactId>subethasmtp-wiser</artifactId>
     	<scope>provided</scope>
     	<exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
     	  <exclusion>
     	    <artifactId>log4j</artifactId>
     	    <groupId>log4j</groupId>
     	  </exclusion>
     	</exclusions>
+    </dependency>
+    <!-- Replacement for above excluded 'commons-logging:commons-logging' -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
     	<groupId>com.h2database</groupId>

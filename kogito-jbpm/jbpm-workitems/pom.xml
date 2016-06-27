@@ -191,7 +191,17 @@
           <groupId>commons-codec</groupId>
           <artifactId>commons-codec</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <!-- Replacement for above excluded 'commons-logging:commons-logging' -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
