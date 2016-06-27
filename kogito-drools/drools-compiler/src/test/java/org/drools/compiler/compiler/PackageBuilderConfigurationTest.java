@@ -50,11 +50,14 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.builder.conf.KBuilderSeverityOption;
 import org.kie.internal.utils.ChainedProperties;
 
@@ -67,6 +70,25 @@ import static org.junit.Assert.*;
 
 public class PackageBuilderConfigurationTest {
 
+    private static String droolsDialectJavaCompilerOrig;
+    private static String droolsDialectDefaultOrig;
+
+    @BeforeClass
+    public static void backupPropertyValues() {
+        droolsDialectJavaCompilerOrig = System.getProperty( JavaDialectConfiguration.JAVA_COMPILER_PROPERTY );
+        droolsDialectDefaultOrig = System.getProperty( DefaultDialectOption.PROPERTY_NAME );
+    }
+
+    @AfterClass
+    public static void restorePropertyValues() {
+        if ( droolsDialectJavaCompilerOrig != null ) {
+            System.setProperty( JavaDialectConfiguration.JAVA_COMPILER_PROPERTY, droolsDialectJavaCompilerOrig );
+        }
+        if ( droolsDialectDefaultOrig != null ) {
+            System.setProperty( DefaultDialectOption.PROPERTY_NAME, droolsDialectDefaultOrig );
+        }
+    }
+
     @Before
     public void setUp() throws Exception {
         System.getProperties().remove( "drools.dialect.java.compiler" );
@@ -77,7 +99,6 @@ public class PackageBuilderConfigurationTest {
     public void tearDown() throws Exception {
         System.getProperties().remove( "drools.dialect.java.compiler" );
         System.getProperties().remove( "drools.dialect.default" );
-        System.getProperties().remove( "drools.warning.filters" );
         System.getProperties().remove( "drools.kbuilder.severity." + DuplicateFunction.KEY );
     }
 
