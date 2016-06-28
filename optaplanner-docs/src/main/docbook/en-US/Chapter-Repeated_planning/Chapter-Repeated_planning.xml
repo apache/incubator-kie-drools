@@ -413,6 +413,12 @@ end</programlisting>
         told to the <literal>ScoreDirector</literal>.</para>
       </warning>
 
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Repeated_planning/realTimePlanningConcurrencySequenceDiagram.png"/>
+        </imageobject>
+      </mediaobject>
+
       <important>
         <para>To write a <literal>ProblemFactChange</literal> correctly, it's important to understand the behaviour of
         <link linkend="cloningASolution">a planning clone</link>:</para>
