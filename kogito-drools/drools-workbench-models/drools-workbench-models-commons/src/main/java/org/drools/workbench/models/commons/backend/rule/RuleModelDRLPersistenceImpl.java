@@ -3301,7 +3301,7 @@ public class RuleModelDRLPersistenceImpl
                             final boolean isJavaDialect,
                             final Map<String, String> boundParams,
                             final PackageDataModelOracle dmo ) {
-        if ( expr.startsWith( "eval(" ) ) {
+        if ( isSingleEval( expr ) ) {
             return new EvalExpr( unwrapParenthesis( expr ) );
         }
         List<String> splittedExpr = splitExpression( expr );
@@ -3312,7 +3312,7 @@ public class RuleModelDRLPersistenceImpl
                                   isJavaDialect,
                                   boundParams,
                                   dmo );
-            } else if ( singleExpr.startsWith( "eval(" ) ) {
+            } else if ( isSingleEval( singleExpr ) ) {
                 return new EvalExpr( unwrapParenthesis( singleExpr ) );
             } else {
                 return new SimpleExpr( singleExpr,
@@ -3329,6 +3329,28 @@ public class RuleModelDRLPersistenceImpl
                                                  dmo ) );
         }
         return complexExpr;
+    }
+
+    private boolean isSingleEval( final String expr ) {
+        if ( !expr.startsWith( "eval(" ) ) {
+            return false;
+        }
+        int nestingLevel = 0;
+        final char[] characters = expr.substring( 4 ).trim().toCharArray();
+        for ( int i = 0; i < characters.length; i++ ) {
+            final char ch = characters[ i ];
+            if ( ch == '(' ) {
+                nestingLevel++;
+            } else if ( ch == ')' ) {
+                nestingLevel--;
+                if ( nestingLevel == 0 ) {
+                    if ( i < characters.length - 1 ) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     private enum SplitterState {
