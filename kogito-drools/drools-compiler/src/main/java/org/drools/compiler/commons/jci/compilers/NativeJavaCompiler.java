@@ -89,7 +89,9 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             units.add(new CompilationUnit(sourcePath, pReader));
         }
 
-        if (compiler.getTask(null, fileManager, diagnostics, null, null, units).call()) {
+        Iterable<String> options = new NativeJavaCompilerSettings(pSettings).toOptionsList();
+
+        if (compiler.getTask(null, fileManager, diagnostics, options, null, units).call()) {
             for (CompilationOutput compilationOutput : fileManager.getOutputs()) {
                 pStore.write(compilationOutput.getBinaryName().replace('.', '/') + ".class", compilationOutput.toByteArray());
             }

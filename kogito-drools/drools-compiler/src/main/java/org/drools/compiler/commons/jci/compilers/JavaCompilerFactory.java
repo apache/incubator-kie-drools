@@ -98,20 +98,23 @@ public final class JavaCompilerFactory {
             }
             case JavaDialectConfiguration.NATIVE : {
                 compiler = createCompiler( "native" );
+                updateSettings( compiler.createDefaultSettings(), configuration );
                 break;
             }
             case JavaDialectConfiguration.ECLIPSE :
             default : {
                 compiler = createCompiler( "eclipse" );
-                JavaCompilerSettings settings = compiler.createDefaultSettings();
-
-                String lngLevel = configuration.getJavaLanguageLevel();
-                settings.setTargetVersion( lngLevel );
-
-                settings.setSourceVersion( lngLevel );
+                updateSettings( compiler.createDefaultSettings(), configuration );
                 break;
             }
         }
         return compiler;
+    }
+
+    private JavaCompilerSettings updateSettings( JavaCompilerSettings settings, JavaDialectConfiguration javaDialectConfiguration ) {
+        String lngLevel = javaDialectConfiguration.getJavaLanguageLevel();
+        settings.setTargetVersion( lngLevel );
+        settings.setSourceVersion( lngLevel );
+        return settings;
     }
 }
