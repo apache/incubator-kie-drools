@@ -1,6 +1,6 @@
 <!--
    This bindings file adds a base class to the JAXB generated
-   DMN model classes
+   DMN ast classes
   -->
 <jxb:bindings
         version="1.0"
