@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel;
+package org.kie.dmn.feel11;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeProperty;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.kie.dmn.grammar.FEEL_1_1BaseListener;
-import org.kie.dmn.grammar.FEEL_1_1Parser;
 import org.mvel2.MVEL;
 
 import java.util.ArrayList;
