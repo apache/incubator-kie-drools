@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.grammar;
+package org.kie.dmn.feel11;
 
 import org.junit.Assert;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -23,7 +23,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.dmn.feel.MvelFEELEvaluator;
 
 import java.util.HashMap;
 import java.util.Map;

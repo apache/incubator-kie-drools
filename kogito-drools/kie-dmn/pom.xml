@@ -50,6 +50,11 @@
       <artifactId>junit</artifactId>
       <version>4.12</version>
     </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.9.5</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -80,9 +85,9 @@
             <goals>
               <goal>antlr4</goal>
             </goals>
-            <!--configuration>
-              <outputDirectory>src/main/java</outputDirectory>
-            </configuration-->
+            <configuration>
+              <visitor>true</visitor>
+            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -90,6 +95,7 @@
       <plugin>
         <groupId>org.jvnet.jaxb2.maven2</groupId>
         <artifactId>maven-jaxb2-plugin</artifactId>
+        <version>0.13.1</version>
         <executions>
           <execution>
             <goals>
@@ -100,6 +106,16 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
       </plugin>
     </plugins>
   </build>
