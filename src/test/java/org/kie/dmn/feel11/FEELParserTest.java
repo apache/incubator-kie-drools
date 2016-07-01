@@ -415,6 +415,116 @@ public class FEELParserTest {
         assertThat( list.getElements().get( 3 ), is( instanceOf( VariableNode.class ) ) );
     }
 
+    @Test
+    public void testInUnaryTestList() {
+        String token = "x ** y in ( <=1000, >t, null, (2000..z[, ]z..2000], [(10+5)..(a*b)) )";
+        BaseNode inNode = parse( token );
+
+        assertThat( inNode, is( instanceOf( InNode.class ) ) );
+        assertThat( inNode.getText(), is( token ) );
+
+        InNode in = (InNode) inNode;
+        assertThat( in.getValue(), is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( in.getValue().getText(), is( "x ** y" ) );
+
+        assertThat( in.getExprs(), is( instanceOf( ListNode.class ) ) );
+        assertThat( in.getExprs().getText(), is( "<=1000, >t, null, (2000..z[, ]z..2000], [(10+5)..(a*b))" ) );
+
+        ListNode list = (ListNode) in.getExprs();
+        assertThat( list.getElements().get( 0 ), is( instanceOf( UnaryTestNode.class ) ) );
+        assertThat( list.getElements().get( 0 ).getText(), is( "<=1000" ) );
+
+        assertThat( list.getElements().get( 1 ), is( instanceOf( UnaryTestNode.class ) ) );
+        assertThat( list.getElements().get( 1 ).getText(), is( ">t" ) );
+
+        assertThat( list.getElements().get( 2 ), is( instanceOf( NullNode.class ) ) );
+        assertThat( list.getElements().get( 2 ).getText(), is( "null" ) );
+
+        assertThat( list.getElements().get( 3 ), is( instanceOf( IntervalNode.class ) ) );
+        IntervalNode interval = (IntervalNode) list.getElements().get( 3 );
+        assertThat( interval.getText(), is( "(2000..z[") );
+        assertThat( interval.getLowerBound(), is( IntervalNode.IntervalBoundary.OPEN ) );
+        assertThat( interval.getUpperBound(), is( IntervalNode.IntervalBoundary.OPEN ) );
+        assertThat( interval.getStart(), is( instanceOf( NumberNode.class ) ) );
+        assertThat( interval.getEnd(), is( instanceOf( VariableNode.class ) ) );
+
+        assertThat( list.getElements().get( 4 ), is( instanceOf( IntervalNode.class ) ) );
+        interval = (IntervalNode) list.getElements().get( 4 );
+        assertThat( interval.getText(), is( "]z..2000]") );
+        assertThat( interval.getLowerBound(), is( IntervalNode.IntervalBoundary.OPEN ) );
+        assertThat( interval.getUpperBound(), is( IntervalNode.IntervalBoundary.CLOSED ) );
+        assertThat( interval.getStart(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( interval.getEnd(), is( instanceOf( NumberNode.class ) ) );
+
+        assertThat( list.getElements().get( 5 ), is( instanceOf( IntervalNode.class ) ) );
+        interval = (IntervalNode) list.getElements().get( 5 );
+        assertThat( interval.getText(), is( "[(10+5)..(a*b))") );
+        assertThat( interval.getLowerBound(), is( IntervalNode.IntervalBoundary.CLOSED ) );
+        assertThat( interval.getUpperBound(), is( IntervalNode.IntervalBoundary.OPEN ) );
+        assertThat( interval.getStart(), is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( interval.getEnd(), is( instanceOf( InfixOpNode.class ) ) );
+
+    }
+
+    @Test
+    public void testInUnaryTest() {
+        String token = "x - y in [(10+5)..(a*b))";
+        BaseNode inNode = parse( token );
+
+        assertThat( inNode, is( instanceOf( InNode.class ) ) );
+        assertThat( inNode.getText(), is( token ) );
+
+        InNode in = (InNode) inNode;
+        assertThat( in.getValue(), is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( in.getValue().getText(), is( "x - y" ) );
+
+        assertThat( in.getExprs(), is( instanceOf( IntervalNode.class ) ) );
+        assertThat( in.getExprs().getText(), is( "[(10+5)..(a*b))" ) );
+    }
+
+    @Test
+    public void testComparisonInFixOp() {
+        String token = "foo >= bar * 10";
+        BaseNode infix = parse( token );
+
+        assertThat( infix, is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( infix.getText(), is( token ) );
+
+        InfixOpNode in = (InfixOpNode) infix;
+        assertThat( in.getLeft(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( in.getLeft().getText(), is( "foo" ) );
+
+        assertThat( in.getRight(), is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( in.getRight().getText(), is( "bar * 10" ) );
+    }
+
+    @Test
+    public void testConditionalLogicalOp() {
+        String token = "foo < 10 and bar = \"x\" or baz";
+        BaseNode infix = parse( token );
+
+        assertThat( infix, is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( infix.getText(), is( token ) );
+
+        InfixOpNode or = (InfixOpNode) infix;
+        assertThat( or.getLeft(), is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( or.getLeft().getText(), is( "foo < 10 and bar = \"x\"" ) );
+
+        assertThat( or.getOperator(), is( "or" ) );
+
+        assertThat( or.getRight(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( or.getRight().getText(), is( "baz" ) );
+
+        InfixOpNode and = (InfixOpNode) or.getLeft();
+        assertThat( and.getLeft(), is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( and.getLeft().getText(), is( "foo < 10" ) );
+
+        assertThat( and.getOperator(), is( "and" ) );
+
+        assertThat( and.getRight(), is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( and.getRight().getText(), is( "bar = \"x\"" ) );
+    }
+
     private void assertTokenLocation(String token, BaseNode number) {
         assertThat( number.getText(), is( token ) );
         assertThat( number.getStartChar(), is( 0 ) );
