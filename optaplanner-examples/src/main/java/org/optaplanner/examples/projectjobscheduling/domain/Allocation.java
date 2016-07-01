@@ -25,6 +25,7 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.DelayStrengthComparator;
 import org.optaplanner.examples.projectjobscheduling.domain.solver.ExecutionModeStrengthWeightFactory;
@@ -110,8 +111,8 @@ public class Allocation extends AbstractPersistable {
     }
 
     @CustomShadowVariable(variableListenerClass = PredecessorsDoneDateUpdatingVariableListener.class,
-            sources = {@CustomShadowVariable.Source(variableName = "executionMode"),
-                    @CustomShadowVariable.Source(variableName = "delay")})
+            sources = {@PlanningVariableReference(variableName = "executionMode"),
+                    @PlanningVariableReference(variableName = "delay")})
     public Integer getPredecessorsDoneDate() {
         return predecessorsDoneDate;
     }

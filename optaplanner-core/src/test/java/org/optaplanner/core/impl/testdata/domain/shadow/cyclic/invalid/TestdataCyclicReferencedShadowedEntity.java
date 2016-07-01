@@ -68,8 +68,8 @@ public class TestdataCyclicReferencedShadowedEntity extends TestdataObject {
     }
 
     @CustomShadowVariable(variableListenerClass = BarberAndCutsOwnHairUpdatingVariableListener.class,
-            sources = {@CustomShadowVariable.Source(variableName = "value"),
-                    @CustomShadowVariable.Source(variableName = "cutsOwnHair")})
+            sources = {@PlanningVariableReference(variableName = "value"),
+                    @PlanningVariableReference(variableName = "cutsOwnHair")})
     public boolean isBarber() {
         return barber;
     }

@@ -58,30 +58,6 @@ public @interface CustomShadowVariable {
      * The source variables (masters) that trigger a change to this shadow variable (slave).
      * @return never null (unless {@link #variableListenerRef()} is not null), at least 1
      */
-    Source[] sources() default {};
-
-    /**
-     * Declares which genuine variable (or other shadow variable) causes the shadow variable to change.
-     */
-    // TODO Replace with @PlanningVariableReference when upgrading to 7.0
-    public static @interface Source {
-
-        /**
-         * Specified if the source variable is on a different {@link Class} than the shadow variable.
-         * @return {@link NullEntityClass} when it is null (workaround for annotation limitation).
-         * Defaults to the same {@link Class} as the one that contains the {@link CustomShadowVariable} annotation.
-         */
-        Class<?> entityClass() default NullEntityClass.class;
-
-        /** Workaround for annotation limitation in {@link #entityClass()}. */
-        interface NullEntityClass {}
-
-        /**
-         * A source variable that causes the shadow variable to change.
-         * @return never null, a genuine or shadow variable
-         */
-        String variableName();
-
-    }
+    PlanningVariableReference[] sources() default {};
 
 }

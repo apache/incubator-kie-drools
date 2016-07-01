@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.testdata.domain.shadow.extended;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListenerAdapter;
@@ -46,7 +47,7 @@ public class TestdataExtendedShadowedChildEntity extends TestdataExtendedShadowe
     }
 
     @CustomShadowVariable(variableListenerClass = SecondShadowUpdatingVariableListener.class,
-            sources = {@CustomShadowVariable.Source(variableName = "firstShadow")})
+            sources = {@PlanningVariableReference(variableName = "firstShadow")})
     public String getSecondShadow() {
         return secondShadow;
     }

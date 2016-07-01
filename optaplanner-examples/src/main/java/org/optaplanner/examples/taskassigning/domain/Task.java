@@ -24,6 +24,7 @@ import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
+import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 import org.optaplanner.examples.taskassigning.domain.solver.MovableTaskSelectionFilter;
 import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
@@ -53,7 +54,7 @@ public class Task extends TaskOrEmployee implements Labeled {
     @CustomShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
             // Arguable, to adhere to API specs (although this works), nextTask and employee should also be a source,
             // because this shadow must be triggered after nextTask and employee (but there is no need to be triggered by those)
-            sources = {@CustomShadowVariable.Source(variableName = "previousTaskOrEmployee")})
+            sources = {@PlanningVariableReference(variableName = "previousTaskOrEmployee")})
     private Integer startTime; // In minutes
 
     public TaskType getTaskType() {

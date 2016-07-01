@@ -35,8 +35,8 @@ public class ScrabbleCell extends AbstractPersistable {
     private int y;
 
     @CustomShadowVariable(variableListenerClass = CellUpdatingVariableListener.class,
-            sources = {@CustomShadowVariable.Source(entityClass = ScrabbleWordAssignment.class, variableName = "startCell"),
-                    @CustomShadowVariable.Source(entityClass = ScrabbleWordAssignment.class, variableName = "direction"),})
+            sources = {@PlanningVariableReference(entityClass = ScrabbleWordAssignment.class, variableName = "startCell"),
+                    @PlanningVariableReference(entityClass = ScrabbleWordAssignment.class, variableName = "direction"),})
     @DeepPlanningClone // TODO Why is this needed? This is already a shadow var
     private Set<ScrabbleWordAssignment> wordSet;
 

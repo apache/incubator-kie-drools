@@ -72,8 +72,8 @@ public class TestdataManyToManyShadowedEntity extends TestdataObject {
     }
 
     @CustomShadowVariable(variableListenerClass = ComposedValuesUpdatingVariableListener.class,
-            sources = {@CustomShadowVariable.Source(variableName = "primaryValue"),
-                    @CustomShadowVariable.Source(variableName = "secondaryValue")})
+            sources = {@PlanningVariableReference(variableName = "primaryValue"),
+                    @PlanningVariableReference(variableName = "secondaryValue")})
     public String getComposedCode() {
         return composedCode;
     }

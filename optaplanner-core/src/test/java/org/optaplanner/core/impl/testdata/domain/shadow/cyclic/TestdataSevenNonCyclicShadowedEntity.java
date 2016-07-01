@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.testdata.domain.shadow.cyclic;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -72,7 +73,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
     }
 
     @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class,
-            sources = {@CustomShadowVariable.Source(variableName = "secondShadow")})
+            sources = {@PlanningVariableReference(variableName = "secondShadow")})
     public String getThirdShadow() {
         return thirdShadow;
     }
@@ -82,7 +83,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
     }
 
     @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class,
-            sources = {@CustomShadowVariable.Source(variableName = "fourthShadow")})
+            sources = {@PlanningVariableReference(variableName = "fourthShadow")})
     public String getFifthShadow() {
         return fifthShadow;
     }
@@ -92,7 +93,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
     }
 
     @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class,
-            sources = {@CustomShadowVariable.Source(variableName = "value")})
+            sources = {@PlanningVariableReference(variableName = "value")})
     public String getFirstShadow() {
         return firstShadow;
     }
@@ -102,7 +103,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
     }
 
     @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class,
-            sources = {@CustomShadowVariable.Source(variableName = "thirdShadow")})
+            sources = {@PlanningVariableReference(variableName = "thirdShadow")})
     public String getFourthShadow() {
         return fourthShadow;
     }
@@ -112,7 +113,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
     }
 
     @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class,
-            sources = {@CustomShadowVariable.Source(variableName = "firstShadow")})
+            sources = {@PlanningVariableReference(variableName = "firstShadow")})
     public String getSecondShadow() {
         return secondShadow;
     }
@@ -122,7 +123,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
     }
 
     @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class,
-            sources = {@CustomShadowVariable.Source(variableName = "sixthShadow")})
+            sources = {@PlanningVariableReference(variableName = "sixthShadow")})
     public String getSeventhShadow() {
         return seventhShadow;
     }
@@ -132,7 +133,7 @@ public class TestdataSevenNonCyclicShadowedEntity extends TestdataObject {
     }
 
     @CustomShadowVariable(variableListenerClass = VariableListenerAdapter.class,
-            sources = {@CustomShadowVariable.Source(variableName = "fifthShadow")})
+            sources = {@PlanningVariableReference(variableName = "fifthShadow")})
     public String getSixthShadow() {
         return sixthShadow;
     }

@@ -65,7 +65,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
         if (variableListenerClass == CustomShadowVariable.NullVariableListener.class) {
             variableListenerClass = null;
         }
-        CustomShadowVariable.Source[] sources = shadowVariableAnnotation.sources();
+        PlanningVariableReference[] sources = shadowVariableAnnotation.sources();
         if (variableListenerRef != null) {
             if (variableListenerClass != null || sources.length > 0) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
@@ -147,12 +147,12 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
             }
             refVariableDescriptor.registerSinkVariableDescriptor(this);
         } else {
-            CustomShadowVariable.Source[] sources = shadowVariableAnnotation.sources();
+            PlanningVariableReference[] sources = shadowVariableAnnotation.sources();
             sourceVariableDescriptorList = new ArrayList<>(sources.length);
-            for (CustomShadowVariable.Source source : sources) {
+            for (PlanningVariableReference source : sources) {
                 EntityDescriptor<Solution_> sourceEntityDescriptor;
                 Class<?> sourceEntityClass = source.entityClass();
-                if (sourceEntityClass.equals(CustomShadowVariable.Source.NullEntityClass.class)) {
+                if (sourceEntityClass.equals(PlanningVariableReference.NullEntityClass.class)) {
                     sourceEntityDescriptor = entityDescriptor;
                 } else {
                     sourceEntityDescriptor = entityDescriptor.getSolutionDescriptor()

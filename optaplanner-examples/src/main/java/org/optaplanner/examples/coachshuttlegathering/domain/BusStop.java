@@ -24,6 +24,7 @@ import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
+import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.coachshuttlegathering.domain.solver.DepotAngleBusStopDifficultyWeightFactory;
 import org.optaplanner.examples.coachshuttlegathering.domain.solver.TransportTimeToHubUpdatingVariableListener;
@@ -122,9 +123,9 @@ public class BusStop extends AbstractPersistable implements BusOrStop, StopOrHub
     }
 
     @CustomShadowVariable(variableListenerClass = TransportTimeToHubUpdatingVariableListener.class,
-            sources = {@CustomShadowVariable.Source(variableName = "nextStop"),
-                    @CustomShadowVariable.Source(variableName = "bus"),
-                    @CustomShadowVariable.Source(entityClass = Shuttle.class, variableName = "destination")})
+            sources = {@PlanningVariableReference(variableName = "nextStop"),
+                    @PlanningVariableReference(variableName = "bus"),
+                    @PlanningVariableReference(entityClass = Shuttle.class, variableName = "destination")})
     @Override
     public Integer getTransportTimeToHub() {
         return transportTimeToHub;

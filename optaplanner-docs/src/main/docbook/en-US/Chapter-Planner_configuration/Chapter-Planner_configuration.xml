@@ -1287,7 +1287,7 @@ public class Customer {
     }
 
     @CustomShadowVariable(variableListenerClass = VehicleUpdatingVariableListener.class,
-            sources = {@CustomShadowVariable.Source(variableName = "previousStandstill")})
+            sources = {@PlanningVariableReference(variableName = "previousStandstill")})
     public Vehicle getVehicle() {
         return vehicle;
     }</programlisting>
@@ -1297,7 +1297,7 @@ public class Customer {
 
         <note>
           <para>If the class of the trigger variable is different than the shadow variable, also specify the
-          <literal>entityClass</literal> on <literal>@CustomShadowVariable.Source</literal>. In that case, make sure
+          <literal>entityClass</literal> on <literal>@PlanningVariableReference</literal>. In that case, make sure
           that that <literal>entityClass</literal> is also properly configured as a planning entity class in the solver
           config, or the <literal>VariableListener</literal> will simply never trigger.</para>
         </note>
@@ -1352,7 +1352,7 @@ public class Customer {
     }
 
     @CustomShadowVariable(variableListenerClass = TransportTimeAndCapacityUpdatingVariableListener.class,
-            sources = {@CustomShadowVariable.Source(variableName = "previousStandstill")})
+            sources = {@PlanningVariableReference(variableName = "previousStandstill")})
     public Integer getTransportTime() {
         return transportTime;
     }
