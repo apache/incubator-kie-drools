@@ -18,20 +18,41 @@ package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.math.BigDecimal;
-
-public class BooleanNode
+public class BetweenNode
         extends BaseNode {
 
-    Boolean value;
+    private BaseNode value;
+    private BaseNode start;
+    private BaseNode end;
 
-    public BooleanNode(ParserRuleContext ctx) {
+    public BetweenNode(ParserRuleContext ctx, BaseNode value, BaseNode start, BaseNode end) {
         super( ctx );
-        value = Boolean.valueOf( ctx.getText() );
+        this.value = value;
+        this.start = start;
+        this.end = end;
     }
 
-    public Boolean getValue() {
+    public BaseNode getValue() {
         return value;
     }
 
+    public void setValue(BaseNode value) {
+        this.value = value;
+    }
+
+    public BaseNode getStart() {
+        return start;
+    }
+
+    public void setStart(BaseNode start) {
+        this.start = start;
+    }
+
+    public BaseNode getEnd() {
+        return end;
+    }
+
+    public void setEnd(BaseNode end) {
+        this.end = end;
+    }
 }

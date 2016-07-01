@@ -18,20 +18,41 @@ package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.math.BigDecimal;
-
-public class BooleanNode
+public class InfixOpNode
         extends BaseNode {
 
-    Boolean value;
+    private String   operator;
+    private BaseNode left;
+    private BaseNode right;
 
-    public BooleanNode(ParserRuleContext ctx) {
+    public InfixOpNode(ParserRuleContext ctx, BaseNode left, String op, BaseNode right) {
         super( ctx );
-        value = Boolean.valueOf( ctx.getText() );
+        this.left = left;
+        this.operator = op;
+        this.right = right;
     }
 
-    public Boolean getValue() {
-        return value;
+    public String getOperator() {
+        return operator;
     }
 
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
+
+    public BaseNode getLeft() {
+        return left;
+    }
+
+    public void setLeft(BaseNode left) {
+        this.left = left;
+    }
+
+    public BaseNode getRight() {
+        return right;
+    }
+
+    public void setRight(BaseNode right) {
+        this.right = right;
+    }
 }

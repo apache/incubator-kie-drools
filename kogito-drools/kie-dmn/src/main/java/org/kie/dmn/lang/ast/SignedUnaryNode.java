@@ -16,7 +16,7 @@
 
 package org.kie.dmn.lang.ast;
 
-import org.kie.dmn.feel11.FEEL_1_1Parser;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 public class SignedUnaryNode
         extends BaseNode {
@@ -24,20 +24,20 @@ public class SignedUnaryNode
     public static enum Sign {
         POSITIVE, NEGATIVE;
 
-        public static Sign determineSign( String str ) {
-            if( "-".equals( str ) ) {
+        public static Sign determineSign(String str) {
+            if ( "-".equals( str ) ) {
                 return NEGATIVE;
-            } else if( "+".equals( str ) ) {
+            } else if ( "+".equals( str ) ) {
                 return POSITIVE;
             }
-            throw new IllegalArgumentException( "Unknown sign: '"+str+"'. Expecting either '+' or '-'." );
+            throw new IllegalArgumentException( "Unknown sign: '" + str + "'. Expecting either '+' or '-'." );
         }
     }
 
     private Sign     sign;
     private BaseNode expression;
 
-    public SignedUnaryNode(FEEL_1_1Parser.SignedUnaryExpressionContext ctx, BaseNode expr) {
+    public SignedUnaryNode(ParserRuleContext ctx, BaseNode expr) {
         super( ctx );
         sign = Sign.determineSign( ctx.start.getText() );
         expression = expr;

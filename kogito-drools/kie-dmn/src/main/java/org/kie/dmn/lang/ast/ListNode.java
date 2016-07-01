@@ -18,20 +18,28 @@ package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
-public class BooleanNode
+public class ListNode
         extends BaseNode {
 
-    Boolean value;
+    private List<BaseNode> elements = new ArrayList<>();
 
-    public BooleanNode(ParserRuleContext ctx) {
+    public ListNode(ParserRuleContext ctx) {
         super( ctx );
-        value = Boolean.valueOf( ctx.getText() );
     }
 
-    public Boolean getValue() {
-        return value;
+    public ListNode(ParserRuleContext ctx, List<BaseNode> elements) {
+        super( ctx );
+        this.elements = elements;
     }
 
+    public List<BaseNode> getElements() {
+        return elements;
+    }
+
+    public void setElements(List<BaseNode> elements) {
+        this.elements = elements;
+    }
 }

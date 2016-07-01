@@ -17,6 +17,7 @@
 package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.misc.Interval;
 
 public class BaseNode {
     private int startChar;
@@ -38,7 +39,7 @@ public class BaseNode {
         this.setEndChar( ctx.getStop().getStopIndex() );
         this.setEndLine( ctx.getStop().getLine() );
         this.setEndColumn( ctx.getStop().getCharPositionInLine() + ctx.getStop().getText().length() );
-        this.setText( ctx.getText() );
+        this.setText( getOriginalText( ctx ) );
     }
 
     public int getStartChar() {
@@ -101,4 +102,12 @@ public class BaseNode {
     public String toString() {
         return getClass().getSimpleName()+"{" + text + "}";
     }
+
+    private String getOriginalText( ParserRuleContext ctx ) {
+        int a = ctx.start.getStartIndex();
+        int b = ctx.stop.getStopIndex();
+        Interval interval = new Interval(a,b);
+        return ctx.getStart().getInputStream().getText(interval);
+    }
+
 }

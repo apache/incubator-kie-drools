@@ -19,6 +19,8 @@ package org.kie.dmn.lang.ast;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel11.FEEL_1_1Parser;
 
+import java.util.List;
+
 public class ASTBuilderFactory {
 
     public static BaseNode newNumberNode(ParserRuleContext ctx) {
@@ -29,7 +31,47 @@ public class ASTBuilderFactory {
         return new BooleanNode( ctx );
     }
 
-    public static BaseNode newSignedUnaryNode(FEEL_1_1Parser.SignedUnaryExpressionContext ctx, BaseNode expr) {
+    public static BaseNode newSignedUnaryNode(ParserRuleContext ctx, BaseNode expr) {
         return new SignedUnaryNode( ctx, expr );
+    }
+
+    public static BaseNode newNullNode(ParserRuleContext ctx) {
+        return new NullNode( ctx );
+    }
+
+    public static BaseNode newStringNode(ParserRuleContext ctx) {
+        return new StringNode( ctx );
+    }
+
+    public static BaseNode newNameNode(ParserRuleContext ctx) {
+        return new VariableNode( ctx );
+    }
+
+    public static BaseNode newNotNode(ParserRuleContext ctx, BaseNode expr) {
+        return new NotNode( ctx, expr );
+    }
+
+    public static BaseNode newInfixOpNode(ParserRuleContext ctx, BaseNode left, String op, BaseNode right) {
+        return new InfixOpNode( ctx, left, op, right );
+    }
+
+    public static BaseNode newBetweenNode(ParserRuleContext ctx, BaseNode value, BaseNode start, BaseNode end) {
+        return new BetweenNode( ctx, value, start, end );
+    }
+
+    public static BaseNode newListNode(ParserRuleContext ctx, List<BaseNode> exprs) {
+        return new ListNode( ctx, exprs );
+    }
+
+    public static BaseNode newInNode(ParserRuleContext ctx, BaseNode value, BaseNode list) {
+        return new InNode( ctx, value, list );
+    }
+
+    public static BaseNode newIntervalNode(ParserRuleContext ctx, IntervalNode.IntervalBoundary low, BaseNode start, BaseNode end, IntervalNode.IntervalBoundary up) {
+        return new IntervalNode( ctx, low, start, end, up );
+    }
+
+    public static BaseNode newUnaryTestNode(ParserRuleContext ctx, String op, BaseNode value) {
+        return new UnaryTestNode( ctx, op, value );
     }
 }
