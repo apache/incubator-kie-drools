@@ -20,78 +20,6 @@ grammar FEEL_1_1;
     }
 }
 
-/********************************
- *      GENERAL RULES
- ********************************/
-
-literal
-	:	IntegerLiteral          #numberLiteral
-	|	FloatingPointLiteral    #numberLiteral
-	|	BooleanLiteral          #booleanLiteral
-	|	CharacterLiteral        #charLiteral
-	|	StringLiteral           #stringLiteral
-	|	NullLiteral             #nullLiteral
-	|   dateTimeLiteral         #dtLiteral
-	;
-
-// #62
-dateTimeLiteral
-    :   'date and time' '(' StringLiteral ')'
-    |   'date' '(' StringLiteral ')'
-    |   'time' '(' StringLiteral ')'
-    |   'duration' '(' StringLiteral ')'
-    ;
-
-/**************************
- *    OTHER CONSTRUCTS
- **************************/
-// #14
-simpleUnaryTests
-    : simplePositiveUnaryTests
-    | 'not' '(' simplePositiveUnaryTests ')'
-    | '-'
-    ;
-
-// #13
-simplePositiveUnaryTests
-    : simplePositiveUnaryTest
-    | simplePositiveUnaryTests ',' simplePositiveUnaryTest
-    ;
-
-// #7
-simplePositiveUnaryTest
-    : '<' endpoint
-    | '>' endpoint
-    | '<=' endpoint
-    | '>=' endpoint
-    | interval
-    | 'null'
-    ;
-
-// #18
-endpoint
-    : additiveExpression
-    ;
-
-// #8-#12
-interval
-    : '(' endpoint '..' endpoint ')'
-    | '(' endpoint '..' endpoint '['
-    | '(' endpoint '..' endpoint ']'
-    | ']' endpoint '..' endpoint ')'
-    | ']' endpoint '..' endpoint '['
-    | ']' endpoint '..' endpoint ']'
-    | '[' endpoint '..' endpoint ')'
-    | '[' endpoint '..' endpoint '['
-    | '[' endpoint '..' endpoint ']'
-    ;
-
-// #20
-qualifiedName
-    : Identifier
-    | qualifiedName '.' Identifier
-    ;
-
 /**************************
  *       EXPRESSIONS
  **************************/
@@ -255,6 +183,20 @@ key
     ;
 
 // several rules recursivelly
+//mathExpression
+//    : textualExpression 'or' textualExpression
+//    | textualExpression 'and' textualExpression
+//    | textualExpression ( '=' | '!=' | '<=' | '>=' | '<' | '>' ) textualExpression
+//    | textualExpression 'between' textualExpression 'and' textualExpression
+//    | textualExpression 'in' '(' valueList ')'
+//    | textualExpression 'in' '(' simplePositiveUnaryTests ')'
+//    | textualExpression 'in' simplePositiveUnaryTest
+//    | textualExpression ( '+' | '-' ) textualExpression
+//    | textualExpression ( '*' | '/' ) textualExpression
+//    | textualExpression '**' textualExpression
+//    | unaryExpression
+//    ;
+
 conditionalOrExpression
 	:	conditionalAndExpression
 	|	conditionalOrExpression 'or' conditionalAndExpression
@@ -266,40 +208,39 @@ conditionalAndExpression
 	;
 
 equalityExpression
-	:	relationalExpression
-	|	equalityExpression '=' relationalExpression
-	|	equalityExpression '!=' relationalExpression
+	:	relationalExpression                                                                 #equalExpressionRel
+	|   left=equalityExpression op=('<'|'>'|'<='|'>='|'='|'!=') right=relationalExpression   #equalExpression
 	;
 
 relationalExpression
-	:	additiveExpression                                                          #relationalExpression_single
-	|   relationalExpression '<' additiveExpression                                 #relationalExpression_less
-	|	relationalExpression '>' additiveExpression                                 #relationalExpression_greater
-	|	relationalExpression '<=' additiveExpression                                #relationalExpression_lessEqual
-	|	relationalExpression '>=' additiveExpression                                #relationalExpression_greaterEqual
-	|	relationalExpression 'between' additiveExpression 'and' additiveExpression  #relationalExpression_between
-	|   relationalExpression 'in' '(' valueList ')'                                 #relationalExpression_valueList
-	|   relationalExpression 'in' '(' simplePositiveUnaryTests ')'                  #relationalExpression_unaryList
-	|   relationalExpression 'in' simplePositiveUnaryTest                           #relationalExpression_unary
+	:	additiveExpression                                                                         #relExpressionAdd
+	|	val=relationalExpression 'between' start=additiveExpression 'and' end=additiveExpression   #relExpressionBetween
+	|   val=relationalExpression 'in' '(' valueList ')'                                            #relExpressionValueList
+	|   val=relationalExpression 'in' '(' simplePositiveUnaryTests ')'                             #relExpressionTestList
+	|   val=relationalExpression 'in' simplePositiveUnaryTest                                      #relExpressionTest
 	;
 
 valueList
-    :   additiveExpression
-    |   valueList ',' additiveExpression
+    :   expression  (',' expression)*
+//    :   expression                 #valueListExpr
+//    |   valueList ',' expression   #valueListList
     ;
 
 additiveExpression
-	:	multiplicativeExpression
-	|	additiveExpression '+' multiplicativeExpression
-	|	additiveExpression '-' multiplicativeExpression
+	:	multiplicativeExpression                            #addExpressionMult
+	|	additiveExpression op='+' multiplicativeExpression  #addExpression
+	|	additiveExpression op='-' multiplicativeExpression  #addExpression
 	;
 
 multiplicativeExpression
-	:	unaryExpression
-	|	multiplicativeExpression '*' unaryExpression
-	|	multiplicativeExpression '/' unaryExpression
-	|	multiplicativeExpression '**' unaryExpression
+	:	powerExpression                                              #multExpressionPow
+	|	multiplicativeExpression op=( '*' | '/' ) powerExpression    #multExpression
 	;
+
+powerExpression
+    :   unaryExpression                           #powExpressionUnary
+    |   powerExpression op='**' unaryExpression   #powExpression
+    ;
 
 unaryExpression
 	:	'+' unaryExpression          #signedUnaryExpression
@@ -308,32 +249,82 @@ unaryExpression
 	;
 
 unaryExpressionNotPlusMinus
-	:	'not' unaryExpression
-	|   primary
+	:	'not' unaryExpression  #logicalNegation
+	|   primary                #uenpmPrimary
 	;
 
 primary
-    : literal
-    | '(' expression ')'
-    | Identifier
+    : literal                   #primaryLiteral
+    | '(' expression ')'        #primaryParens
+    // the following needs to be replaced by a "name" that includes special characters and spaces
+    | Identifier                #primaryName
     ;
 
-// LEXER
+// #33 - #39
+literal
+    :	IntegerLiteral          #numberLiteral
+    |	FloatingPointLiteral    #numberLiteral
+    |	BooleanLiteral          #booleanLiteral
+    |	StringLiteral           #stringLiteral
+    |	NullLiteral             #nullLiteral
+    ;
 
-// Keywords
+/**************************
+ *    OTHER CONSTRUCTS
+ **************************/
+    // #14
+    simpleUnaryTests
+        : simplePositiveUnaryTests
+        | 'not' '(' simplePositiveUnaryTests ')'
+        | '-'
+        ;
 
-ELSE : 'else';
-FOR : 'for';
-IF : 'if';
-INSTANCE : 'instance';
-OF : 'of';
-DATETIME : 'date and time';
-DATE : 'date';
-TIME : 'time';
-DURATION : 'duration';
+    // #13
+    simplePositiveUnaryTests
+        : simplePositiveUnaryTest ( ',' simplePositiveUnaryTest )*
+//        : simplePositiveUnaryTest
+//        | simplePositiveUnaryTests ',' simplePositiveUnaryTest
+        ;
 
-// Integer Literals
+    // #7
+    simplePositiveUnaryTest
+        : op='<' endpoint    #positiveUnaryTestIneq
+        | op='>' endpoint    #positiveUnaryTestIneq
+        | op='<=' endpoint   #positiveUnaryTestIneq
+        | op='>=' endpoint   #positiveUnaryTestIneq
+        | interval           #positiveUnaryTestInterval
+        | 'null'             #positiveUnaryTestNull
+        ;
 
+    // #18
+    endpoint
+        : unaryExpression
+        ;
+
+    // #8-#12
+    interval
+        : low=('('|']'|'[') start=endpoint '..' end=endpoint up=(')'|'['|']')
+        ;
+
+    // #20
+    qualifiedName
+        : Identifier
+        | qualifiedName '.' Identifier
+        ;
+
+/********************************
+ *      LEXER RULES
+ *
+ * Include:
+ *      - number literals
+ *      - boolean literals
+ *      - string literals
+ *      - null literal
+ ********************************/
+
+// Number Literals
+
+// #37
 IntegerLiteral
 	:	DecimalIntegerLiteral
 	|	HexIntegerLiteral
@@ -482,8 +473,7 @@ BinaryDigitOrUnderscore
 	|	'_'
 	;
 
-// §3.10.2 Floating-Point Literals
-
+// #37
 FloatingPointLiteral
 	:	DecimalFloatingPointLiteral
 	|	HexadecimalFloatingPointLiteral
@@ -543,23 +533,10 @@ BinaryExponentIndicator
 	:	[pP]
 	;
 
-// §3.10.3 Boolean Literals
-
+// #36
 BooleanLiteral
 	:	'true'
 	|	'false'
-	;
-
-// §3.10.4 Character Literals
-
-CharacterLiteral
-	:	'\'' SingleCharacter '\''
-	|	'\'' EscapeSequence '\''
-	;
-
-fragment
-SingleCharacter
-	:	~['\\]
 	;
 
 // String Literals
