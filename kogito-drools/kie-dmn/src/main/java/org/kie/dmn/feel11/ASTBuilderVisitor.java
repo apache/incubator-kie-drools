@@ -144,4 +144,45 @@ public class ASTBuilderVisitor
         }
         return ASTBuilderFactory.newListNode( ctx, tests );
     }
+
+    @Override
+    public BaseNode visitRelExpressionTestList(FEEL_1_1Parser.RelExpressionTestListContext ctx) {
+        BaseNode value = visit( ctx.val );
+        BaseNode list = visit( ctx.simplePositiveUnaryTests() );
+        return ASTBuilderFactory.newInNode( ctx, value, list );
+    }
+
+    @Override
+    public BaseNode visitRelExpressionTest(FEEL_1_1Parser.RelExpressionTestContext ctx) {
+        BaseNode value = visit( ctx.val );
+        BaseNode test = visit( ctx.simplePositiveUnaryTest() );
+        return ASTBuilderFactory.newInNode( ctx, value, test );
+    }
+
+    @Override
+    public BaseNode visitPositiveUnaryTestNull(FEEL_1_1Parser.PositiveUnaryTestNullContext ctx) {
+        return ASTBuilderFactory.newNullNode( ctx );
+    }
+
+    @Override
+    public BaseNode visitCompExpression(FEEL_1_1Parser.CompExpressionContext ctx) {
+        BaseNode left = visit( ctx.left );
+        BaseNode right = visit( ctx.right );
+        return ASTBuilderFactory.newInfixOpNode( ctx, left, ctx.op.getText(), right );
+    }
+
+    @Override
+    public BaseNode visitCondOr(FEEL_1_1Parser.CondOrContext ctx) {
+        BaseNode left = visit( ctx.left );
+        BaseNode right = visit( ctx.right );
+        return ASTBuilderFactory.newInfixOpNode( ctx, left, ctx.op.getText(), right );
+    }
+
+    @Override
+    public BaseNode visitCondAnd(FEEL_1_1Parser.CondAndContext ctx) {
+        BaseNode left = visit( ctx.left );
+        BaseNode right = visit( ctx.right );
+        return ASTBuilderFactory.newInfixOpNode( ctx, left, ctx.op.getText(), right );
+    }
+
 }

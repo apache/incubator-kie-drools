@@ -182,34 +182,19 @@ key
     | StringLiteral
     ;
 
-// several rules recursivelly
-//mathExpression
-//    : textualExpression 'or' textualExpression
-//    | textualExpression 'and' textualExpression
-//    | textualExpression ( '=' | '!=' | '<=' | '>=' | '<' | '>' ) textualExpression
-//    | textualExpression 'between' textualExpression 'and' textualExpression
-//    | textualExpression 'in' '(' valueList ')'
-//    | textualExpression 'in' '(' simplePositiveUnaryTests ')'
-//    | textualExpression 'in' simplePositiveUnaryTest
-//    | textualExpression ( '+' | '-' ) textualExpression
-//    | textualExpression ( '*' | '/' ) textualExpression
-//    | textualExpression '**' textualExpression
-//    | unaryExpression
-//    ;
-
 conditionalOrExpression
-	:	conditionalAndExpression
-	|	conditionalOrExpression 'or' conditionalAndExpression
+	:	conditionalAndExpression                                               #condOrAnd
+ 	|	left=conditionalOrExpression op='or' right=conditionalAndExpression    #condOr
 	;
 
 conditionalAndExpression
-	:	equalityExpression
-	|	conditionalAndExpression 'and' equalityExpression
+	:	comparisonExpression                                                   #condAndComp
+	|	left=conditionalAndExpression op='and' right=comparisonExpression      #condAnd
 	;
 
-equalityExpression
-	:	relationalExpression                                                                 #equalExpressionRel
-	|   left=equalityExpression op=('<'|'>'|'<='|'>='|'='|'!=') right=relationalExpression   #equalExpression
+comparisonExpression
+	:	relationalExpression                                                                   #compExpressionRel
+	|   left=comparisonExpression op=('<'|'>'|'<='|'>='|'='|'!=') right=relationalExpression   #compExpression
 	;
 
 relationalExpression
@@ -481,7 +466,7 @@ FloatingPointLiteral
 
 fragment
 DecimalFloatingPointLiteral
-	:	Digits '.' Digits? ExponentPart? FloatTypeSuffix?
+	:	Digits '.' Digits ExponentPart? FloatTypeSuffix?
 	|	'.' Digits ExponentPart? FloatTypeSuffix?
 	|	Digits ExponentPart FloatTypeSuffix?
 	|	Digits FloatTypeSuffix
