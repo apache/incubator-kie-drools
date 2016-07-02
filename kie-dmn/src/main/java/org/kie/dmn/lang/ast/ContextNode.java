@@ -18,29 +18,25 @@ package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ListNode
+public class ContextNode
         extends BaseNode {
 
-    private List<BaseNode> elements;
+    private ListNode entries;
 
-    public ListNode(ParserRuleContext ctx) {
+    public ContextNode(ParserRuleContext ctx) {
         super( ctx );
-        elements = new ArrayList<>();
     }
 
-    public ListNode(ParserRuleContext ctx, List<BaseNode> elements) {
+    public ContextNode(ParserRuleContext ctx, ListNode entries) {
         super( ctx );
-        this.elements = elements;
+        this.entries = entries;
     }
 
-    public List<BaseNode> getElements() {
-        return elements;
+    public ListNode getEntries() {
+        return entries;
     }
 
-    public void setElements(List<BaseNode> elements) {
-        this.elements = elements;
+    public void setEntries(ListNode entries) {
+        this.entries = entries;
     }
 }
