@@ -22,6 +22,8 @@ import org.kie.dmn.lang.ast.*;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class FEELParserTest {
@@ -523,6 +525,85 @@ public class FEELParserTest {
 
         assertThat( and.getRight(), is( instanceOf( InfixOpNode.class ) ) );
         assertThat( and.getRight().getText(), is( "bar = \"x\"" ) );
+    }
+
+    @Test
+    public void testEmptyList() {
+        String token = "[]";
+        BaseNode list = parse( token );
+
+        assertThat( list, is( instanceOf( ListNode.class ) ) );
+        assertThat( list.getText(), is( token ) );
+
+        ListNode ln = (ListNode) list;
+        assertThat( ln.getElements(), is( empty() ));
+    }
+
+    @Test
+    public void testExpressionList() {
+        String token = "[ 10, foo * bar, true ]";
+        BaseNode list = parse( token );
+
+        assertThat( list, is( instanceOf( ListNode.class ) ) );
+        assertThat( list.getText(), is( "10, foo * bar, true" ) );
+
+        ListNode ln = (ListNode) list;
+        assertThat( ln.getElements().size(), is( 3 ) );
+        assertThat( ln.getElements().get( 0 ), is( instanceOf( NumberNode.class ) ) );
+        assertThat( ln.getElements().get( 1 ), is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( ln.getElements().get( 2 ), is( instanceOf( BooleanNode.class ) ) );
+    }
+
+    @Test
+    public void testEmptyContext() {
+        String token = "{}";
+        BaseNode list = parse( token );
+
+        assertThat( list, is( instanceOf( ContextNode.class ) ) );
+        assertThat( list.getText(), is( token ) );
+
+        ContextNode ctx = (ContextNode) list;
+        assertThat( ctx.getEntries().getElements(), is( empty() ));
+    }
+
+    @Test
+    public void testContextWithMultipleEntries() {
+        String token = "{ \"a string key\" : 10,"
+                       + " a non-string key : foo+bar,"
+                       + " a key.with + /' odd chars : [10..50] }";
+        BaseNode ctxbase = parse( token );
+
+        assertThat( ctxbase, is( instanceOf( ContextNode.class ) ) );
+        assertThat( ctxbase.getText(), is( token ) );
+
+        ContextNode ctx = (ContextNode) ctxbase;
+        assertThat( ctx.getEntries().getElements().size(), is( 3 ) );
+
+        ContextEntryNode entry = (ContextEntryNode) ctx.getEntries().getElements().get( 0 );
+        assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
+        NameDefNode name = (NameDefNode) entry.getName();
+        assertThat( name.getName(), is( notNullValue() ) );
+        assertThat( name.getName(), is("\"a string key\"") );
+        assertThat( entry.getValue(), is( instanceOf( NumberNode.class ) ) );
+        assertThat( entry.getValue().getText(), is("10") );
+
+        entry = (ContextEntryNode) ctx.getEntries().getElements().get( 1 );
+        assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
+        name = (NameDefNode) entry.getName();
+        assertThat( name.getParts(), is( notNullValue() ) );
+        assertThat( name.getParts().size(), is( 5 ) );
+        assertThat( entry.getName().getText(), is("a non-string key") );
+        assertThat( entry.getValue(), is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( entry.getValue().getText(), is( "foo+bar" ) );
+
+        entry = (ContextEntryNode) ctx.getEntries().getElements().get( 2 );
+        assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
+        name = (NameDefNode) entry.getName();
+        assertThat( name.getParts(), is( notNullValue() ) );
+        assertThat( name.getParts().size(), is( 9 ) );
+        assertThat( entry.getName().getText(), is("a key.with + /' odd chars") );
+        assertThat( entry.getValue(), is( instanceOf( IntervalNode.class ) ) );
+        assertThat( entry.getValue().getText(), is( "[10..50]" ) );
     }
 
     private void assertTokenLocation(String token, BaseNode number) {

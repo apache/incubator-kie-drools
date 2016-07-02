@@ -16,9 +16,9 @@
 
 package org.kie.dmn.feel11;
 
-import org.kie.dmn.lang.ast.ASTBuilderFactory;
-import org.kie.dmn.lang.ast.BaseNode;
-import org.kie.dmn.lang.ast.IntervalNode;
+import org.antlr.v4.runtime.Token;
+import org.kie.dmn.lang.ast.*;
+import org.kie.dmn.lang.builder.ASTBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,10 +101,10 @@ public class ASTBuilderVisitor
     }
 
     @Override
-    public BaseNode visitValueList(FEEL_1_1Parser.ValueListContext ctx) {
-        List<BaseNode> exprs = new ArrayList<>(  );
-        for( int i = 0; i < ctx.getChildCount(); i++ ) {
-            if( ctx.getChild( i ) instanceof FEEL_1_1Parser.ExpressionContext ) {
+    public BaseNode visitExpressionList(FEEL_1_1Parser.ExpressionListContext ctx) {
+        List<BaseNode> exprs = new ArrayList<>();
+        for ( int i = 0; i < ctx.getChildCount(); i++ ) {
+            if ( ctx.getChild( i ) instanceof FEEL_1_1Parser.ExpressionContext ) {
                 exprs.add( visit( ctx.getChild( i ) ) );
             }
         }
@@ -114,7 +114,7 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitRelExpressionValueList(FEEL_1_1Parser.RelExpressionValueListContext ctx) {
         BaseNode value = visit( ctx.val );
-        BaseNode list = visit( ctx.valueList() );
+        BaseNode list = visit( ctx.expressionList() );
         return ASTBuilderFactory.newInNode( ctx, value, list );
     }
 
@@ -136,9 +136,9 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitSimplePositiveUnaryTests(FEEL_1_1Parser.SimplePositiveUnaryTestsContext ctx) {
-        List<BaseNode> tests = new ArrayList<>(  );
-        for( int i = 0; i < ctx.getChildCount(); i++ ) {
-            if( ctx.getChild( i ) instanceof FEEL_1_1Parser.SimplePositiveUnaryTestContext ) {
+        List<BaseNode> tests = new ArrayList<>();
+        for ( int i = 0; i < ctx.getChildCount(); i++ ) {
+            if ( ctx.getChild( i ) instanceof FEEL_1_1Parser.SimplePositiveUnaryTestContext ) {
                 tests.add( visit( ctx.getChild( i ) ) );
             }
         }
@@ -185,4 +185,50 @@ public class ASTBuilderVisitor
         return ASTBuilderFactory.newInfixOpNode( ctx, left, ctx.op.getText(), right );
     }
 
+    @Override
+    public BaseNode visitList(FEEL_1_1Parser.ListContext ctx) {
+        if ( ctx.expressionList() == null ) {
+            // empty list -> children are [ ]
+            return ASTBuilderFactory.newListNode( ctx, new ArrayList<>() );
+        } else {
+            // returns actual list
+            return visit( ctx.expressionList() );
+        }
+    }
+
+    @Override
+    public BaseNode visitNameDefinition(FEEL_1_1Parser.NameDefinitionContext ctx) {
+        List<String> tokens = new ArrayList<>();
+        for( int i = 0; i < ctx.getChildCount(); i++ ) {
+            tokens.add( ctx.getChild( i ).getText() );
+        }
+        return ASTBuilderFactory.newNameDefNode( ctx, tokens );
+    }
+
+    @Override
+    public BaseNode visitKeyString(FEEL_1_1Parser.KeyStringContext ctx) {
+        return ASTBuilderFactory.newNameDefNode( ctx, ctx.getText() );
+    }
+
+    @Override
+    public BaseNode visitContextEntry(FEEL_1_1Parser.ContextEntryContext ctx) {
+        BaseNode name = visit( ctx.key() );
+        BaseNode value = visit( ctx.expression() );
+        return ASTBuilderFactory.newContextEntry( ctx, name, value );
+    }
+
+    @Override
+    public BaseNode visitContextEntries(FEEL_1_1Parser.ContextEntriesContext ctx) {
+        List<BaseNode> nodes = new ArrayList<>(  );
+        for( FEEL_1_1Parser.ContextEntryContext c : ctx.contextEntry() ) {
+            nodes.add( visit( c ) );
+        }
+        return ASTBuilderFactory.newListNode( ctx, nodes );
+    }
+
+    @Override
+    public BaseNode visitContext(FEEL_1_1Parser.ContextContext ctx) {
+        ListNode list = ctx.contextEntries() != null ? (ListNode) visit( ctx.contextEntries() ) : ASTBuilderFactory.newListNode( ctx, new ArrayList<>(  ) );
+        return ASTBuilderFactory.newContextNode( ctx, list );
+    }
 }
