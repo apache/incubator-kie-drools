@@ -132,7 +132,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         // None of the normal Java libraries support BigDecimal.pow(BigDecimal)
         return new SimpleBigDecimalScore(
                 (int) Math.floor(Math.pow(initScore, exponent)),
-                score.pow(exponentBigDecimal.intValue()).setScale(score.scale()));
+                score.pow(exponentBigDecimal.intValue()).setScale(score.scale(), RoundingMode.FLOOR));
     }
 
     @Override

@@ -164,8 +164,8 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
         // None of the normal Java libraries support BigDecimal.pow(BigDecimal)
         return new HardSoftBigDecimalScore(
                 (int) Math.floor(Math.pow(initScore, exponent)),
-                hardScore.pow(exponentBigDecimal.intValue()).setScale(hardScore.scale()),
-                softScore.pow(exponentBigDecimal.intValue()).setScale(softScore.scale()));
+                hardScore.pow(exponentBigDecimal.intValue()).setScale(hardScore.scale(), RoundingMode.FLOOR),
+                softScore.pow(exponentBigDecimal.intValue()).setScale(softScore.scale(), RoundingMode.FLOOR));
     }
 
     @Override

@@ -261,11 +261,11 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
         // None of the normal Java libraries support BigDecimal.pow(BigDecimal)
         for (int i = 0; i < newHardScores.length; i++) {
             BigDecimal hardScore = hardScores[i];
-            newHardScores[i] = hardScore.pow(actualExponent.intValue()).setScale(hardScore.scale());
+            newHardScores[i] = hardScore.pow(actualExponent.intValue()).setScale(hardScore.scale(), RoundingMode.FLOOR);
         }
         for (int i = 0; i < newSoftScores.length; i++) {
             BigDecimal softScore = softScores[i];
-            newSoftScores[i] = softScore.pow(actualExponent.intValue()).setScale(softScore.scale());
+            newSoftScores[i] = softScore.pow(actualExponent.intValue()).setScale(softScore.scale(), RoundingMode.FLOOR);
         }
         return new BendableBigDecimalScore(
                 (int) Math.floor(Math.pow(initScore, exponent)),
