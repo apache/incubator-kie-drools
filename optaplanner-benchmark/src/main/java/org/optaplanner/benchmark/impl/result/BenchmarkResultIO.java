@@ -56,15 +56,11 @@ public class BenchmarkResultIO {
     public void writePlannerBenchmarkResult(File benchmarkReportDirectory,
             PlannerBenchmarkResult plannerBenchmarkResult) {
         File plannerBenchmarkResultFile = new File(benchmarkReportDirectory, PLANNER_BENCHMARK_RESULT_FILENAME);
-        Writer writer = null;
-        try {
-            writer = new OutputStreamWriter(new FileOutputStream(plannerBenchmarkResultFile), "UTF-8");
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(plannerBenchmarkResultFile), "UTF-8")) {
             xStream.toXML(plannerBenchmarkResult, writer);
         } catch (IOException e) {
             throw new IllegalArgumentException(
-                    "Problem writing plannerBenchmarkResultFile: " + plannerBenchmarkResultFile, e);
-        } finally {
-            IOUtils.closeQuietly(writer);
+                    "Failed writing plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
         }
     }
 
@@ -97,25 +93,18 @@ public class BenchmarkResultIO {
                     + ") does not exist.");
         }
         PlannerBenchmarkResult plannerBenchmarkResult;
-        Reader reader = null;
-        try {
-            reader = new InputStreamReader(new FileInputStream(plannerBenchmarkResultFile), "UTF-8");
+        try (Reader reader = new InputStreamReader(new FileInputStream(plannerBenchmarkResultFile), "UTF-8")) {
             plannerBenchmarkResult = (PlannerBenchmarkResult) xStream.fromXML(reader);
         } catch (ConversionException e) {
             logger.warn(
-                    "Problem reading plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
+                    "Failed reading plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
             // If the plannerBenchmarkResultFile's format has changed, the app should not crash entirely
             String benchmarkReportDirectoryName = plannerBenchmarkResultFile.getParentFile().getName();
             plannerBenchmarkResult = PlannerBenchmarkResult.createUnmarshallingFailedResult(
                     benchmarkReportDirectoryName);
-        } catch (XStreamException e) {
+        } catch (XStreamException | IOException e) {
             throw new IllegalArgumentException(
-                    "Problem reading plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(
-                    "Problem reading plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
-        } finally {
-            IOUtils.closeQuietly(reader);
+                    "Failed reading plannerBenchmarkResultFile (" + plannerBenchmarkResultFile + ").", e);
         }
         plannerBenchmarkResult.setBenchmarkReportDirectory(plannerBenchmarkResultFile.getParentFile());
         restoreOmittedBidirectionalFields(plannerBenchmarkResult);

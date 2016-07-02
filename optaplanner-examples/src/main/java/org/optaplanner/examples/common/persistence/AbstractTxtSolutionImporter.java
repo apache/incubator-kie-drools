@@ -72,9 +72,8 @@ public abstract class AbstractTxtSolutionImporter<Solution_> extends AbstractSol
     }
 
     public Solution_ readSolution(URL inputURL) {
-        BufferedReader bufferedReader = null;
-        try {
-            bufferedReader = new BufferedReader(new InputStreamReader(inputURL.openStream(), "UTF-8"));
+        try (BufferedReader bufferedReader = new BufferedReader(
+                new InputStreamReader(inputURL.openStream(), "UTF-8"))) {
             TxtInputBuilder<Solution_> txtInputBuilder = createTxtInputBuilder();
             txtInputBuilder.setInputFile(new File(inputURL.getFile()));
             txtInputBuilder.setBufferedReader(bufferedReader);
@@ -87,8 +86,6 @@ public abstract class AbstractTxtSolutionImporter<Solution_> extends AbstractSol
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not read the inputURL (" + inputURL + ").", e);
-        } finally {
-            IOUtils.closeQuietly(bufferedReader);
         }
     }
 

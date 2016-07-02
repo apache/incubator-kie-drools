@@ -141,9 +141,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
         }
 
         private void readProjectFile(Project project, File projectFile) {
-            BufferedReader bufferedReader = null;
-            try {
-                bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(projectFile), "UTF-8"));
+            try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(projectFile), "UTF-8"))) {
                 ProjectFileInputBuilder projectFileInputBuilder = new ProjectFileInputBuilder(schedule, project);
                 projectFileInputBuilder.setInputFile(projectFile);
                 projectFileInputBuilder.setBufferedReader(bufferedReader);
@@ -156,8 +154,6 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Sc
                 }
             } catch (IOException e) {
                 throw new IllegalArgumentException("Could not read the projectFile (" + projectFile + ").", e);
-            } finally {
-                IOUtils.closeQuietly(bufferedReader);
             }
         }
 

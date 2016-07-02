@@ -283,10 +283,8 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
                 throw new IllegalArgumentException("The forecastInputFile (" + forecastInputFile
                         + ") for instanceInputFile (" + inputFile + ") does not exist.");
             }
-            BufferedReader forecastBufferedReader = null;
-            try {
-                forecastBufferedReader = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(forecastInputFile), "UTF-8"));
+            try (BufferedReader forecastBufferedReader = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(forecastInputFile), "UTF-8"))) {
                 ForecastInputBuilder forecastInputBuilder = new ForecastInputBuilder();
                 forecastInputBuilder.setInputFile(forecastInputFile);
                 forecastInputBuilder.setBufferedReader(forecastBufferedReader);
@@ -300,9 +298,7 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
                             + forecastInputFile + ")", e);
                 }
             } catch (IOException e) {
-                throw new IllegalArgumentException("Could not read the file (" + forecastInputFile.getName() + ").", e);
-            } finally {
-                IOUtils.closeQuietly(forecastBufferedReader);
+                throw new IllegalArgumentException("Could not read the forecastInputFile (" + forecastInputFile.getName() + ").", e);
             }
         }
 

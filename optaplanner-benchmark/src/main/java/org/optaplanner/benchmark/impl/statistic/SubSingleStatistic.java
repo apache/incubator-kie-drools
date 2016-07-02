@@ -119,9 +119,7 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
 
     private void writeCsvStatisticFile() {
         File csvFile = getCsvFile();
-        Writer writer = null;
-        try {
-            writer = new OutputStreamWriter(new FileOutputStream(csvFile), "UTF-8");
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(csvFile), "UTF-8")){
             writer.append(getCsvHeader()).append("\n");
             for (StatisticPoint point : getPointList()) {
                 writer.append(point.toCsvLine()).append("\n");
@@ -131,8 +129,6 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Failed writing csvFile (" + csvFile + ").", e);
-        } finally {
-            IOUtils.closeQuietly(writer);
         }
     }
 
@@ -151,9 +147,7 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
                 throw new IllegalStateException("The csvFile (" + csvFile + ") does not exist.");
             }
         }
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), "UTF-8"));
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), "UTF-8"))) {
             String line = reader.readLine();
             if (!getCsvHeader().equals(line)) {
                 throw new IllegalStateException("The read line (" + line
@@ -190,8 +184,6 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Failed reading csvFile (" + csvFile + ").", e);
-        } finally {
-            IOUtils.closeQuietly(reader);
         }
     }
 

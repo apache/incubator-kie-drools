@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import com.thoughtworks.xstream.XStream;
@@ -29,7 +30,7 @@ import static org.junit.Assert.*;
 public class XStreamXmlSolverFactoryTest {
 
     @Test
-    public void configFileRemainsSameAfterReadWrite() throws Exception {
+    public void configFileRemainsSameAfterReadWrite() throws IOException {
         String solverConfigResource = "testdataSolverConfigXStream.xml";
         String originalXml = IOUtils.toString(getClass().getResourceAsStream(solverConfigResource), "UTF-8");
         InputStream originalConfigInputStream = getClass().getResourceAsStream(solverConfigResource);

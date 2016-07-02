@@ -79,9 +79,7 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
             throw new IllegalArgumentException("The vrpOutputFile parent directory (" + vrpOutputFile.getParentFile()
                     + ") does not exist.");
         }
-        BufferedWriter vrpWriter = null;
-        try {
-            vrpWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(vrpOutputFile), "UTF-8"));
+        try (BufferedWriter vrpWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(vrpOutputFile), "UTF-8"))) {
             vrpWriter.write("NAME: " + name + "\n");
             vrpWriter.write("COMMENT: Generated from " + tspInputFile.getName() + "\n");
             vrpWriter.write("TYPE: CVRP\n");
@@ -116,8 +114,6 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not read the tspInputFile (" + tspInputFile.getName()
                     + ") or write the vrpOutputFile (" + vrpOutputFile.getName() + ").", e);
-        } finally {
-            IOUtils.closeQuietly(vrpWriter);
         }
         logger.info("Generated: {}", vrpOutputFile);
     }

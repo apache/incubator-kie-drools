@@ -71,29 +71,19 @@ public class JaxbSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> 
 
     @Override
     public Solution_ read(File inputSolutionFile) {
-        Solution_ unsolvedSolution;
-        Reader reader = null;
-        try {
-            reader = new InputStreamReader(new FileInputStream(inputSolutionFile), "UTF-8");
-            unsolvedSolution = (Solution_) unmarshaller.unmarshal(reader);
+        try (Reader reader = new InputStreamReader(new FileInputStream(inputSolutionFile), "UTF-8")) {
+            return (Solution_) unmarshaller.unmarshal(reader);
         } catch (IOException | JAXBException e) {
-            throw new IllegalArgumentException("Problem reading inputSolutionFile (" + inputSolutionFile + ").", e);
-        } finally {
-            IOUtils.closeQuietly(reader);
+            throw new IllegalArgumentException("Failed reading inputSolutionFile (" + inputSolutionFile + ").", e);
         }
-        return unsolvedSolution;
     }
 
     @Override
     public void write(Solution_ solution, File outputSolutionFile) {
-        Writer writer = null;
-        try {
-            writer = new OutputStreamWriter(new FileOutputStream(outputSolutionFile), "UTF-8");
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(outputSolutionFile), "UTF-8")) {
             marshaller.marshal(solution, writer);
         } catch (IOException | JAXBException e) {
-            throw new IllegalArgumentException("Problem writing outputSolutionFile (" + outputSolutionFile + ").", e);
-        } finally {
-            IOUtils.closeQuietly(writer);
+            throw new IllegalArgumentException("Failed writing outputSolutionFile (" + outputSolutionFile + ").", e);
         }
     }
 

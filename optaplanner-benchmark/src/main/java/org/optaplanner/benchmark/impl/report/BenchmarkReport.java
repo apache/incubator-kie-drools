@@ -687,14 +687,10 @@ public class BenchmarkReport {
     private File writeChartToImageFile(JFreeChart chart, String fileNameBase) {
         BufferedImage chartImage = chart.createBufferedImage(1024, 768);
         File summaryChartFile = new File(summaryDirectory, fileNameBase + ".png");
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(summaryChartFile);
+        try (OutputStream out = new FileOutputStream(summaryChartFile)) {
             ImageIO.write(chartImage, "png", out);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Problem writing summaryChartFile: " + summaryChartFile, e);
-        } finally {
-            IOUtils.closeQuietly(out);
+            throw new IllegalArgumentException("Failed writing summaryChartFile (" + summaryChartFile + ").", e);
         }
         return summaryChartFile;
     }
@@ -748,10 +744,8 @@ public class BenchmarkReport {
         model.put("benchmarkReport", this);
         model.put("reportHelper", new ReportHelper());
 
-        Writer writer = null;
-        try {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "UTF-8")){
             Template template = freemarkerCfg.getTemplate(templateFilename);
-            writer = new OutputStreamWriter(new FileOutputStream(htmlOverviewFile), "UTF-8");
             template.process(model, writer);
         } catch (IOException e) {
             throw new IllegalArgumentException("Can not read templateFilename (" + templateFilename
@@ -759,8 +753,6 @@ public class BenchmarkReport {
         } catch (TemplateException e) {
             throw new IllegalArgumentException("Can not process Freemarker templateFilename (" + templateFilename
                     + ") to htmlOverviewFile (" + htmlOverviewFile + ").", e);
-        } finally {
-            IOUtils.closeQuietly(writer);
         }
     }
 

@@ -354,23 +354,17 @@ public class MachineReassignmentImporter extends AbstractTxtSolutionImporter<Mac
             }
             File assignmentInputFile = new File(inputFile.getParent(),
                     inputFileName.replaceFirst(inputFilePrefix, "assignment_").replaceAll("\\.txt$", ".sol"));
-            BufferedReader assignmentBufferedReader = null;
-            try {
-                assignmentBufferedReader = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(assignmentInputFile), "UTF-8"));
-                try {
-                    return assignmentBufferedReader.readLine();
-                } catch (IllegalArgumentException e) {
-                    throw new IllegalArgumentException("Exception in assignmentInputFile ("
-                            + assignmentInputFile + ")", e);
-                } catch (IllegalStateException e) {
-                    throw new IllegalStateException("Exception in assignmentInputFile ("
-                            + assignmentInputFile + ")", e);
-                }
+            try (BufferedReader assignmentBufferedReader = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(assignmentInputFile), "UTF-8"))) {
+                return assignmentBufferedReader.readLine();
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Exception in assignmentInputFile ("
+                        + assignmentInputFile + ")", e);
+            } catch (IllegalStateException e) {
+                throw new IllegalStateException("Exception in assignmentInputFile ("
+                        + assignmentInputFile + ")", e);
             } catch (IOException e) {
                 throw new IllegalArgumentException("Could not read the file (" + assignmentInputFile.getName() + ").", e);
-            } finally {
-                IOUtils.closeQuietly(assignmentBufferedReader);
             }
         }
 
