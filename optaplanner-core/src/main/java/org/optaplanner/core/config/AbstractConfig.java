@@ -47,11 +47,7 @@ public abstract class AbstractConfig<C extends AbstractConfig> {
         Class<C> configClass = (Class<C>) getClass();
         try {
             return configClass.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalStateException("The configClass (" + configClass
-                    + ") does not have a public no-arg constructor.\n"
-                    + "This is a bug, please report an issue with this stacktrace.", e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalStateException("The configClass (" + configClass
                     + ") does not have a public no-arg constructor.\n"
                     + "This is a bug, please report an issue with this stacktrace.", e);

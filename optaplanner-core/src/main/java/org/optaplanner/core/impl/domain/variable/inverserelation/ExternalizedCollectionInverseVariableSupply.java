@@ -98,7 +98,7 @@ public class ExternalizedCollectionInverseVariableSupply implements StatefulVari
         }
         Set<Object> inverseEntitySet = inverseEntitySetMap.get(value);
         if (inverseEntitySet == null) {
-            inverseEntitySet = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
+            inverseEntitySet = Collections.newSetFromMap(new IdentityHashMap<>());
             inverseEntitySetMap.put(value, inverseEntitySet);
         }
         boolean addSucceeded = inverseEntitySet.add(entity);
