@@ -10,13 +10,27 @@ grammar FEEL_1_1;
 
 @parser::header {
     import org.kie.dmn.lang.types.SymbolTable;
+    import org.kie.dmn.lang.Scope;
+    import org.kie.dmn.lang.types.LocalScope;
 }
 
 @parser::members {
+    private static final String GLOBAL = "<global>";
+    private static final String ANONYMOUS = "<local>";
+
     private SymbolTable symbols = new SymbolTable();
+    private Scope currentScope = new LocalScope( GLOBAL, symbols.getBuiltInScope() );
+    private String currentName = ANONYMOUS;
 
     public SymbolTable getSymbolTable() {
         return symbols;
+    }
+
+    private String getOriginalText( ParserRuleContext ctx ) {
+        int a = ctx.start.getStartIndex();
+        int b = ctx.stop.getStopIndex();
+        Interval interval = new Interval(a,b);
+        return ctx.getStart().getInputStream().getText(interval);
     }
 }
 
@@ -158,6 +172,15 @@ formalParameter
 
 // #59
 context
+@init {
+    System.out.println("Creating scope: "+currentName+" . Parent scope: "+currentScope.getName() );
+    currentScope = new LocalScope( currentName, currentScope );
+}
+@after {
+    currentScope = currentScope.getParentScope();
+    System.out.println("Leaving scope: "+currentName+" . Current scope now: "+currentScope.getName() );
+
+}
     : '{' '}'
     | '{' contextEntries '}'
     ;
@@ -168,7 +191,8 @@ contextEntries
 
 // #60
 contextEntry
-    : key ':' expression
+    : key { String previousName = currentName; currentName = getOriginalText( $key.ctx ); }
+      ':' expression { currentName = previousName; }
     ;
 
 // #61
