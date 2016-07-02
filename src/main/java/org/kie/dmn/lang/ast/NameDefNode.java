@@ -17,30 +17,46 @@
 package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListNode
+/**
+ * A name is defined either as a sequence of
+ * tokens or as a String. This class supports
+ * both, although they should not be used
+ * interchangeably.
+ */
+public class NameDefNode
         extends BaseNode {
 
-    private List<BaseNode> elements;
+    private List<String> parts;
+    private String name;
 
-    public ListNode(ParserRuleContext ctx) {
+    public NameDefNode(ParserRuleContext ctx, List<String> parts) {
         super( ctx );
-        elements = new ArrayList<>();
+        this.parts = parts;
     }
 
-    public ListNode(ParserRuleContext ctx, List<BaseNode> elements) {
+    public NameDefNode(ParserRuleContext ctx, String name) {
         super( ctx );
-        this.elements = elements;
+        this.name = name;
     }
 
-    public List<BaseNode> getElements() {
-        return elements;
+    public List<String> getParts() {
+        return parts;
     }
 
-    public void setElements(List<BaseNode> elements) {
-        this.elements = elements;
+    public void setParts(List<String> parts) {
+        this.parts = parts;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

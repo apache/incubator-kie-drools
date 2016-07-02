@@ -23,55 +23,71 @@ import java.util.List;
 
 public class ASTBuilderFactory {
 
-    public static BaseNode newNumberNode(ParserRuleContext ctx) {
+    public static NumberNode newNumberNode(ParserRuleContext ctx) {
         return new NumberNode( ctx );
     }
 
-    public static BaseNode newBooleanNode(ParserRuleContext ctx) {
+    public static BooleanNode newBooleanNode(ParserRuleContext ctx) {
         return new BooleanNode( ctx );
     }
 
-    public static BaseNode newSignedUnaryNode(ParserRuleContext ctx, BaseNode expr) {
+    public static SignedUnaryNode newSignedUnaryNode(ParserRuleContext ctx, BaseNode expr) {
         return new SignedUnaryNode( ctx, expr );
     }
 
-    public static BaseNode newNullNode(ParserRuleContext ctx) {
+    public static NullNode newNullNode(ParserRuleContext ctx) {
         return new NullNode( ctx );
     }
 
-    public static BaseNode newStringNode(ParserRuleContext ctx) {
+    public static StringNode newStringNode(ParserRuleContext ctx) {
         return new StringNode( ctx );
     }
 
-    public static BaseNode newNameNode(ParserRuleContext ctx) {
+    public static VariableNode newNameNode(ParserRuleContext ctx) {
         return new VariableNode( ctx );
     }
 
-    public static BaseNode newNotNode(ParserRuleContext ctx, BaseNode expr) {
+    public static NotNode newNotNode(ParserRuleContext ctx, BaseNode expr) {
         return new NotNode( ctx, expr );
     }
 
-    public static BaseNode newInfixOpNode(ParserRuleContext ctx, BaseNode left, String op, BaseNode right) {
+    public static InfixOpNode newInfixOpNode(ParserRuleContext ctx, BaseNode left, String op, BaseNode right) {
         return new InfixOpNode( ctx, left, op, right );
     }
 
-    public static BaseNode newBetweenNode(ParserRuleContext ctx, BaseNode value, BaseNode start, BaseNode end) {
+    public static BetweenNode newBetweenNode(ParserRuleContext ctx, BaseNode value, BaseNode start, BaseNode end) {
         return new BetweenNode( ctx, value, start, end );
     }
 
-    public static BaseNode newListNode(ParserRuleContext ctx, List<BaseNode> exprs) {
+    public static ListNode newListNode(ParserRuleContext ctx, List<BaseNode> exprs) {
         return new ListNode( ctx, exprs );
     }
 
-    public static BaseNode newInNode(ParserRuleContext ctx, BaseNode value, BaseNode list) {
+    public static InNode newInNode(ParserRuleContext ctx, BaseNode value, BaseNode list) {
         return new InNode( ctx, value, list );
     }
 
-    public static BaseNode newIntervalNode(ParserRuleContext ctx, IntervalNode.IntervalBoundary low, BaseNode start, BaseNode end, IntervalNode.IntervalBoundary up) {
+    public static IntervalNode newIntervalNode(ParserRuleContext ctx, IntervalNode.IntervalBoundary low, BaseNode start, BaseNode end, IntervalNode.IntervalBoundary up) {
         return new IntervalNode( ctx, low, start, end, up );
     }
 
-    public static BaseNode newUnaryTestNode(ParserRuleContext ctx, String op, BaseNode value) {
+    public static UnaryTestNode newUnaryTestNode(ParserRuleContext ctx, String op, BaseNode value) {
         return new UnaryTestNode( ctx, op, value );
+    }
+
+    public static NameDefNode newNameDefNode(ParserRuleContext ctx, List<String> tokens) {
+        return new NameDefNode( ctx, tokens );
+    }
+
+    public static NameDefNode newNameDefNode(ParserRuleContext ctx, String name) {
+        return new NameDefNode( ctx, name );
+    }
+
+    public static ContextEntryNode newContextEntry(ParserRuleContext ctx, BaseNode name, BaseNode value) {
+        return new ContextEntryNode( ctx, name, value );
+    }
+
+    public static ContextNode newContextNode(ParserRuleContext ctx, ListNode list) {
+        return new ContextNode( ctx, list );
     }
 }

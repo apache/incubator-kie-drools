@@ -23,11 +23,6 @@ grammar FEEL_1_1;
 /**************************
  *       EXPRESSIONS
  **************************/
-expressions
-    : expression
-    | expressions ',' expression
-    ;
-
 // #1
 expression
     : textualExpression
@@ -45,6 +40,7 @@ textualExpression
     | pathExpression
     | filterExpression
     | functionInvocation
+    | simplePositiveUnaryTest
     ;
 
 // #3
@@ -136,7 +132,7 @@ boxedExpression
 // #56
 list
     : '[' ']'
-    | '[' expressions ']'
+    | '[' expressionList ']'
     ;
 
 // #57
@@ -167,8 +163,7 @@ context
     ;
 
 contextEntries
-    : contextEntry
-    | contextEntries ',' contextEntry
+    : contextEntry ( ',' contextEntry )*
     ;
 
 // #60
@@ -178,8 +173,16 @@ contextEntry
 
 // #61
 key
-    : Identifier
-    | StringLiteral
+    : nameDefinition   #keyName
+    | StringLiteral    #keyString
+    ;
+
+nameDefinition
+    : Identifier ( Identifier | additionalNameSymbol )*
+    ;
+
+additionalNameSymbol
+    : ( '.' | '/' | '-' | '\'' | '+' | '*' )
     ;
 
 conditionalOrExpression
@@ -200,15 +203,13 @@ comparisonExpression
 relationalExpression
 	:	additiveExpression                                                                         #relExpressionAdd
 	|	val=relationalExpression 'between' start=additiveExpression 'and' end=additiveExpression   #relExpressionBetween
-	|   val=relationalExpression 'in' '(' valueList ')'                                            #relExpressionValueList
+	|   val=relationalExpression 'in' '(' expressionList ')'                                       #relExpressionValueList
 	|   val=relationalExpression 'in' '(' simplePositiveUnaryTests ')'                             #relExpressionTestList
 	|   val=relationalExpression 'in' simplePositiveUnaryTest                                      #relExpressionTest
 	;
 
-valueList
+expressionList
     :   expression  (',' expression)*
-//    :   expression                 #valueListExpr
-//    |   valueList ',' expression   #valueListList
     ;
 
 additiveExpression
