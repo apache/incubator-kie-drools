@@ -112,24 +112,30 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
     @Override
     public void beforeVariableChanged(Object entity, String variableName) {
         TaskAssignment taskAssignment = (TaskAssignment) entity;
-        if (variableName.equals("machine")) {
-            oldMachine = taskAssignment.getMachine();
-        } else if (variableName.equals("startPeriod")) {
-            oldStartPeriod = taskAssignment.getStartPeriod();
-        } else {
-            throw new IllegalArgumentException("The variableName (" + variableName + ") is not supported.");
+        switch (variableName) {
+            case "machine":
+                oldMachine = taskAssignment.getMachine();
+                break;
+            case "startPeriod":
+                oldStartPeriod = taskAssignment.getStartPeriod();
+                break;
+            default:
+                throw new IllegalArgumentException("The variableName (" + variableName + ") is not supported.");
         }
     }
 
     @Override
     public void afterVariableChanged(Object entity, String variableName) {
         TaskAssignment taskAssignment = (TaskAssignment) entity;
-        if (variableName.equals("machine")) {
-            modifyMachine(taskAssignment, oldMachine, taskAssignment.getMachine());
-        } else if (variableName.equals("startPeriod")) {
-            modifyStartPeriod(taskAssignment, oldStartPeriod, taskAssignment.getStartPeriod());
-        } else {
-            throw new IllegalArgumentException("The variableName (" + variableName + ") is not supported.");
+        switch (variableName) {
+            case "machine":
+                modifyMachine(taskAssignment, oldMachine, taskAssignment.getMachine());
+                break;
+            case "startPeriod":
+                modifyStartPeriod(taskAssignment, oldStartPeriod, taskAssignment.getStartPeriod());
+                break;
+            default:
+                throw new IllegalArgumentException("The variableName (" + variableName + ") is not supported.");
         }
     }
 

@@ -80,16 +80,21 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         if (entity instanceof Vehicle) {
             return;
         }
-        if (variableName.equals("previousStandstill")) {
-            retractPreviousStandstill((Customer) entity);
-        } else if (variableName.equals("vehicle"))   {
-            retractVehicle((Customer) entity);
-        } else if (variableName.equals("nextCustomer"))   {
-            retractNextCustomer((Customer) entity);
-        } else if (variableName.equals("arrivalTime"))   {
-            retractArrivalTime((TimeWindowedCustomer) entity);
-        } else {
-            throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
+        switch (variableName) {
+            case "previousStandstill":
+                retractPreviousStandstill((Customer) entity);
+                break;
+            case "vehicle":
+                retractVehicle((Customer) entity);
+                break;
+            case "nextCustomer":
+                retractNextCustomer((Customer) entity);
+                break;
+            case "arrivalTime":
+                retractArrivalTime((TimeWindowedCustomer) entity);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
         }
     }
 
@@ -98,16 +103,21 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         if (entity instanceof Vehicle) {
             return;
         }
-        if (variableName.equals("previousStandstill")) {
-            insertPreviousStandstill((Customer) entity);
-        } else if (variableName.equals("vehicle"))   {
-            insertVehicle((Customer) entity);
-        } else if (variableName.equals("nextCustomer"))   {
-            insertNextCustomer((Customer) entity);
-        } else if (variableName.equals("arrivalTime"))   {
-            insertArrivalTime((TimeWindowedCustomer) entity);
-        } else {
-            throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
+        switch (variableName) {
+            case "previousStandstill":
+                insertPreviousStandstill((Customer) entity);
+                break;
+            case "vehicle":
+                insertVehicle((Customer) entity);
+                break;
+            case "nextCustomer":
+                insertNextCustomer((Customer) entity);
+                break;
+            case "arrivalTime":
+                insertArrivalTime((TimeWindowedCustomer) entity);
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported variableName (" + variableName + ").");
         }
     }
 
