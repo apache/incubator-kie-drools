@@ -392,20 +392,13 @@ public abstract class AbstractSolutionClonerTest {
         TestdataSetBasedEntity d = new TestdataSetBasedEntity("d", val3);
 
         TestdataSetBasedSolution original = new TestdataSetBasedSolution("solution");
-        Comparator<TestdataValue> valueComparator = new Comparator<TestdataValue>() {
-            @Override
-            public int compare(TestdataValue a, TestdataValue b) {
-                return b.getCode().compareTo(a.getCode()); // Reverse alphabetic
-            }
-        };
-        Set<TestdataValue> valueSet = new TreeSet<>(valueComparator);
+        Set<TestdataValue> valueSet = new TreeSet<>((a1, b1) -> {
+            return b1.getCode().compareTo(a1.getCode()); // Reverse alphabetic
+        });
         valueSet.addAll(Arrays.asList(val1, val2, val3));
         original.setValueSet(valueSet);
-        Comparator<TestdataSetBasedEntity> entityComparator = new Comparator<TestdataSetBasedEntity>() {
-            @Override
-            public int compare(TestdataSetBasedEntity a, TestdataSetBasedEntity b) {
-                return b.getCode().compareTo(a.getCode()); // Reverse alphabetic
-            }
+        Comparator<TestdataSetBasedEntity> entityComparator = (a1, b1) -> {
+            return b1.getCode().compareTo(a1.getCode()); // Reverse alphabetic
         };
         Set<TestdataSetBasedEntity> originalEntitySet = new TreeSet<>(entityComparator);
         originalEntitySet.addAll(Arrays.asList(a, b, c, d));

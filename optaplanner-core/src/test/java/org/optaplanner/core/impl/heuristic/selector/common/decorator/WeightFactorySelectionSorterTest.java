@@ -33,12 +33,7 @@ public class WeightFactorySelectionSorterTest {
     @Test
     public void sortAscending() {
         SelectionSorterWeightFactory<TestdataSolution, TestdataEntity> weightFactory
-                = new SelectionSorterWeightFactory<TestdataSolution, TestdataEntity>() {
-            @Override
-            public Comparable createSorterWeight(TestdataSolution solution, TestdataEntity selection) {
-                return Integer.valueOf(selection.getCode().charAt(0));
-            }
-        };
+                = (solution, selection) -> Integer.valueOf(selection.getCode().charAt(0));
         WeightFactorySelectionSorter<TestdataSolution, TestdataEntity> selectionSorter = new WeightFactorySelectionSorter<>(
                 weightFactory, SelectionSorterOrder.ASCENDING);
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
@@ -54,12 +49,7 @@ public class WeightFactorySelectionSorterTest {
     @Test
     public void sortDescending() {
         SelectionSorterWeightFactory<TestdataSolution, TestdataEntity> weightFactory
-                = new SelectionSorterWeightFactory<TestdataSolution, TestdataEntity>() {
-            @Override
-            public Comparable createSorterWeight(TestdataSolution solution, TestdataEntity selection) {
-                return Integer.valueOf(selection.getCode().charAt(0));
-            }
-        };
+                = (solution, selection) -> Integer.valueOf(selection.getCode().charAt(0));
         WeightFactorySelectionSorter<TestdataSolution, TestdataEntity> selectionSorter = new WeightFactorySelectionSorter<>(
                 weightFactory, SelectionSorterOrder.DESCENDING);
         ScoreDirector scoreDirector = mock(ScoreDirector.class);

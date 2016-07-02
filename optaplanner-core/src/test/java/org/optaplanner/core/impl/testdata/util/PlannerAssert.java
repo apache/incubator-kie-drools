@@ -211,22 +211,12 @@ public class PlannerAssert extends Assert {
             ChangeMove changeMove = (ChangeMove) o;
             final String code = convertToCodeAssertable(changeMove.getEntity()).getCode()
                     + "->" + convertToCodeAssertable(changeMove.getToPlanningValue()).getCode();
-            return new CodeAssertable() {
-                @Override
-                public String getCode() {
-                    return code;
-                }
-            };
+            return () -> code;
         } else if (o instanceof SwapMove) {
             SwapMove swapMove = (SwapMove) o;
             final String code = convertToCodeAssertable(swapMove.getLeftEntity()).getCode()
                     + "<->" + convertToCodeAssertable(swapMove.getRightEntity()).getCode();
-            return new CodeAssertable() {
-                @Override
-                public String getCode() {
-                    return code;
-                }
-            };
+            return () -> code;
         } else if (o instanceof CompositeMove) {
             CompositeMove compositeMove = (CompositeMove) o;
             StringBuilder codeBuilder = new StringBuilder(compositeMove.getMoves().length * 80);
@@ -234,12 +224,7 @@ public class PlannerAssert extends Assert {
                 codeBuilder.append("+").append(convertToCodeAssertable(move).getCode());
             }
             final String code = codeBuilder.substring(1);
-            return new CodeAssertable() {
-                @Override
-                public String getCode() {
-                    return code;
-                }
-            };
+            return () -> code;
         } else if (o instanceof List) {
             List list = (List) o;
             StringBuilder codeBuilder = new StringBuilder("[");
@@ -254,21 +239,11 @@ public class PlannerAssert extends Assert {
             }
             codeBuilder.append("]");
             final String code = codeBuilder.toString();
-            return new CodeAssertable() {
-                @Override
-                public String getCode() {
-                    return code;
-                }
-            };
+            return () -> code;
         } else if (o instanceof SubChain) {
             SubChain subChain = (SubChain) o;
             final String code = convertToCodeAssertable(subChain.getEntityList()).getCode();
-            return new CodeAssertable() {
-                @Override
-                public String getCode() {
-                    return code;
-                }
-            };
+            return () -> code;
         }
         throw new AssertionError(("o's class (" + o.getClass() + ") cannot be converted to CodeAssertable."));
     }

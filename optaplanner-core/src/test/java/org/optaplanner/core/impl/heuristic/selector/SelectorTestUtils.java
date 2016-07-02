@@ -81,33 +81,13 @@ public class SelectorTestUtils {
         EntitySelector entitySelector = mock(EntitySelector.class);
         when(entitySelector.getEntityDescriptor()).thenReturn(entityDescriptor);
         final List<Object> entityList = Arrays.<Object>asList(entities);
-        when(entitySelector.iterator()).thenAnswer(new Answer<Iterator<Object>>() {
-            @Override
-            public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
-                return entityList.iterator();
-            }
-        });
-        when(entitySelector.listIterator()).thenAnswer(new Answer<ListIterator<Object>>() {
-            @Override
-            public ListIterator<Object> answer(InvocationOnMock invocation) throws Throwable {
-                return entityList.listIterator();
-            }
-        });
+        when(entitySelector.iterator()).thenAnswer(invocation -> entityList.iterator());
+        when(entitySelector.listIterator()).thenAnswer(invocation -> entityList.listIterator());
         for (int i = 0; i < entityList.size(); i++) {
             final int index = i;
-            when(entitySelector.listIterator(index)).thenAnswer(new Answer<ListIterator<Object>>() {
-                @Override
-                public ListIterator<Object> answer(InvocationOnMock invocation) throws Throwable {
-                    return entityList.listIterator(index);
-                }
-            });
+            when(entitySelector.listIterator(index)).thenAnswer(invocation -> entityList.listIterator(index));
         }
-        when(entitySelector.endingIterator()).thenAnswer(new Answer<Iterator<Object>>() {
-            @Override
-            public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
-                return entityList.iterator();
-            }
-        });
+        when(entitySelector.endingIterator()).thenAnswer(invocation -> entityList.iterator());
         when(entitySelector.isCountable()).thenReturn(true);
         when(entitySelector.isNeverEnding()).thenReturn(false);
         when(entitySelector.getSize()).thenReturn((long) entityList.size());
@@ -129,12 +109,7 @@ public class SelectorTestUtils {
         ValueSelector valueSelector = mock(ValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         final List<Object> valueList = Arrays.<Object>asList(values);
-        when(valueSelector.iterator(any())).thenAnswer(new Answer<Iterator<Object>>() {
-            @Override
-            public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
-                return valueList.iterator();
-            }
-        });
+        when(valueSelector.iterator(any())).thenAnswer(invocation -> valueList.iterator());
         when(valueSelector.isCountable()).thenReturn(true);
         when(valueSelector.isNeverEnding()).thenReturn(false);
         when(valueSelector.getSize(any())).thenReturn((long) valueList.size());
@@ -160,18 +135,8 @@ public class SelectorTestUtils {
         for (Map.Entry<Object, Collection<Object>> entry : entityToValues.asMap().entrySet()) {
             Object entity = entry.getKey();
             final List<Object> valueList = (List<Object>) entry.getValue();
-            when(valueSelector.getSize(entity)).thenAnswer(new Answer<Long>() {
-                @Override
-                public Long answer(InvocationOnMock invocation) {
-                    return (long) valueList.size();
-                }
-            });
-            when(valueSelector.iterator(entity)).thenAnswer(new Answer<Iterator<Object>>() {
-                @Override
-                public Iterator<Object> answer(InvocationOnMock invocation) {
-                    return valueList.iterator();
-                }
-            });
+            when(valueSelector.getSize(entity)).thenAnswer(invocation -> (long) valueList.size());
+            when(valueSelector.iterator(entity)).thenAnswer(invocation -> valueList.iterator());
             when(valueSelector.getSize(entity)).thenReturn((long) valueList.size());
         }
         when(valueSelector.isCountable()).thenReturn(true);
@@ -191,24 +156,9 @@ public class SelectorTestUtils {
         EntityIndependentValueSelector valueSelector = mock(EntityIndependentValueSelector.class);
         when(valueSelector.getVariableDescriptor()).thenReturn(variableDescriptor);
         final List<Object> valueList = Arrays.<Object>asList(values);
-        when(valueSelector.iterator(any())).thenAnswer(new Answer<Iterator<Object>>() {
-            @Override
-            public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
-                return valueList.iterator();
-            }
-        });
-        when(valueSelector.endingIterator(any())).thenAnswer(new Answer<Iterator<Object>>() {
-            @Override
-            public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
-                return valueList.iterator();
-            }
-        });
-        when(valueSelector.iterator()).thenAnswer(new Answer<Iterator<Object>>() {
-            @Override
-            public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
-                return valueList.iterator();
-            }
-        });
+        when(valueSelector.iterator(any())).thenAnswer(invocation -> valueList.iterator());
+        when(valueSelector.endingIterator(any())).thenAnswer(invocation -> valueList.iterator());
+        when(valueSelector.iterator()).thenAnswer(invocation -> valueList.iterator());
         when(valueSelector.isCountable()).thenReturn(true);
         when(valueSelector.isNeverEnding()).thenReturn(false);
         when(valueSelector.getSize(any())).thenReturn((long) valueList.size());
@@ -220,12 +170,7 @@ public class SelectorTestUtils {
             Move... moves) {
         MoveSelector moveSelector = mock(MoveSelector.class);
         final List<Move> moveList = Arrays.<Move>asList(moves);
-        when(moveSelector.iterator()).thenAnswer(new Answer<Iterator<Move>>() {
-            @Override
-            public Iterator<Move> answer(InvocationOnMock invocation) throws Throwable {
-                return moveList.iterator();
-            }
-        });
+        when(moveSelector.iterator()).thenAnswer(invocation -> moveList.iterator());
         when(moveSelector.isCountable()).thenReturn(true);
         when(moveSelector.isNeverEnding()).thenReturn(false);
         when(moveSelector.getCacheType()).thenReturn(SelectionCacheType.JUST_IN_TIME);
@@ -235,16 +180,13 @@ public class SelectorTestUtils {
 
     public static SingletonInverseVariableSupply mockSingletonInverseVariableSupply(
             final TestdataChainedEntity[] allEntities) {
-        return new SingletonInverseVariableSupply() {
-            @Override
-            public Object getInverseSingleton(Object planningValue) {
-                for (TestdataChainedEntity entity : allEntities) {
-                    if (entity.getChainedObject().equals(planningValue)) {
-                        return entity;
-                    }
+        return planningValue -> {
+            for (TestdataChainedEntity entity : allEntities) {
+                if (entity.getChainedObject().equals(planningValue)) {
+                    return entity;
                 }
-                return null;
             }
+            return null;
         };
     }
 
