@@ -121,7 +121,7 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
             return new AbstractRandomSwapIterator<Move, SubChain>(leftSubChainSelector, rightSubChainSelector) {
                 @Override
                 protected Move newSwapSelection(SubChain leftSubSelection, SubChain rightSubSelection) {
-                    boolean reversing = selectReversingMoveToo ? workingRandom.nextBoolean() : false;
+                    boolean reversing = selectReversingMoveToo && workingRandom.nextBoolean();
                     return reversing
                             ? new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply, leftSubSelection, rightSubSelection)
                             : new SubChainSwapMove(variableDescriptor, inverseVariableSupply, leftSubSelection, rightSubSelection);

@@ -192,7 +192,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
             }
             Object toValue = valueIterator.next();
 
-            boolean reversing = selectReversingMoveToo ? workingRandom.nextBoolean() : false;
+            boolean reversing = selectReversingMoveToo && workingRandom.nextBoolean();
             return reversing
                     ? new SubChainReversingChangeMove(subChain, valueSelector.getVariableDescriptor(), inverseVariableSupply, toValue)
                     : new SubChainChangeMove(subChain, valueSelector.getVariableDescriptor(), inverseVariableSupply, toValue);
