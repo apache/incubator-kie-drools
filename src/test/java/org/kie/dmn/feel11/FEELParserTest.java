@@ -563,7 +563,7 @@ public class FEELParserTest {
         assertThat( list.getText(), is( token ) );
 
         ContextNode ctx = (ContextNode) list;
-        assertThat( ctx.getEntries().getElements(), is( empty() ));
+        assertThat( ctx.getEntries(), is( empty() ));
     }
 
     @Test
@@ -577,9 +577,9 @@ public class FEELParserTest {
         assertThat( ctxbase.getText(), is( token ) );
 
         ContextNode ctx = (ContextNode) ctxbase;
-        assertThat( ctx.getEntries().getElements().size(), is( 3 ) );
+        assertThat( ctx.getEntries().size(), is( 3 ) );
 
-        ContextEntryNode entry = (ContextEntryNode) ctx.getEntries().getElements().get( 0 );
+        ContextEntryNode entry = ctx.getEntries().get( 0 );
         assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
         NameDefNode name = (NameDefNode) entry.getName();
         assertThat( name.getName(), is( notNullValue() ) );
@@ -587,7 +587,7 @@ public class FEELParserTest {
         assertThat( entry.getValue(), is( instanceOf( NumberNode.class ) ) );
         assertThat( entry.getValue().getText(), is("10") );
 
-        entry = (ContextEntryNode) ctx.getEntries().getElements().get( 1 );
+        entry = ctx.getEntries().get( 1 );
         assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
         name = (NameDefNode) entry.getName();
         assertThat( name.getParts(), is( notNullValue() ) );
@@ -596,7 +596,7 @@ public class FEELParserTest {
         assertThat( entry.getValue(), is( instanceOf( InfixOpNode.class ) ) );
         assertThat( entry.getValue().getText(), is( "foo+bar" ) );
 
-        entry = (ContextEntryNode) ctx.getEntries().getElements().get( 2 );
+        entry = ctx.getEntries().get( 2 );
         assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
         name = (NameDefNode) entry.getName();
         assertThat( name.getParts(), is( notNullValue() ) );
@@ -604,6 +604,52 @@ public class FEELParserTest {
         assertThat( entry.getName().getText(), is("a key.with + /' odd chars") );
         assertThat( entry.getValue(), is( instanceOf( IntervalNode.class ) ) );
         assertThat( entry.getValue().getText(), is( "[10..50]" ) );
+    }
+
+    @Test
+    public void testNestedContexts() {
+        String token = "{ a value : 10,"
+                       + " an applicant : { "
+                       + "    first name : \"Edson\", "
+                       + "    last name : \"Tirelli\", "
+                       + "    address : {"
+                       + "        street : \"55 broadway st\","
+                       + "        city : \"New York\" "
+                       + "    }"
+                       + " } "
+                       + "}";
+        BaseNode ctxbase = parse( token );
+
+        assertThat( ctxbase, is( instanceOf( ContextNode.class ) ) );
+        assertThat( ctxbase.getText(), is( token ) );
+
+        ContextNode ctx = (ContextNode) ctxbase;
+        assertThat( ctx.getEntries().size(), is( 2 ) );
+
+        ContextEntryNode entry = ctx.getEntries().get( 0 );
+        assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
+        NameDefNode name = (NameDefNode) entry.getName();
+        assertThat( name.getText(), is("a value") );
+        assertThat( entry.getValue(), is( instanceOf( NumberNode.class ) ) );
+        assertThat( entry.getValue().getText(), is("10") );
+
+        entry = ctx.getEntries().get( 1 );
+        assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
+        name = (NameDefNode) entry.getName();
+        assertThat( name.getText(), is( "an applicant" ) );
+        assertThat( entry.getValue(), is( instanceOf( ContextNode.class ) ) );
+
+        ContextNode applicant = (ContextNode) entry.getValue();
+        assertThat( applicant.getEntries().size(), is( 3 ) );
+        assertThat( applicant.getEntries().get( 0 ).getName().getText(), is("first name") );
+        assertThat( applicant.getEntries().get( 1 ).getName().getText(), is("last name") );
+        assertThat( applicant.getEntries().get( 2 ).getName().getText(), is("address") );
+        assertThat( applicant.getEntries().get( 2 ).getValue(), is( instanceOf( ContextNode.class ) ) );
+
+        ContextNode address = (ContextNode) applicant.getEntries().get( 2 ).getValue();
+        assertThat( address.getEntries().size(), is( 2 ) );
+        assertThat( address.getEntries().get( 0 ).getName().getText(), is("street") );
+        assertThat( address.getEntries().get( 1 ).getName().getText(), is("city") );
     }
 
     private void assertTokenLocation(String token, BaseNode number) {
