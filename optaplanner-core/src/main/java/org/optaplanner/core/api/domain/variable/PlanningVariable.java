@@ -55,8 +55,8 @@ public @interface PlanningVariable {
      * In repeated planning use cases, it's recommended to specify a {@link #reinitializeVariableEntityFilter()}
      * for every nullable planning variable too.
      * <p>
-     * {@link #nullable()} true is not compatible with {@link PlanningVariableGraphType#CHAINED} true.
-     * {@link #nullable()} true is not compatible with a primitive property type.
+     * Nullable true is not compatible with {@link PlanningVariableGraphType#CHAINED} true.
+     * Nullable true is not compatible with a primitive property type.
      * @return true if null is a valid value for this planning variable
      */
     boolean nullable() default false;
@@ -67,7 +67,7 @@ public @interface PlanningVariable {
      * This is especially useful in repeated planning use cases,
      * in which starting from scratch would waste previous results and time.
      * <p>
-     * If no {@link #reinitializeVariableEntityFilter} is specified,
+     * If no reinitializeVariableEntityFilter is specified,
      * the default considers an entity uninitialized for a variable if its value is null
      * (even if {@link #nullable()} is true).
      * <p>
