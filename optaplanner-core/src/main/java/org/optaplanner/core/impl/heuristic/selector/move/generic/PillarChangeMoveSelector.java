@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -92,7 +93,7 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
         private OriginalPillarChangeMoveIterator() {
             pillarIterator = pillarSelector.iterator();
             // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
-            valueIterator = Iterators.emptyIterator();
+            valueIterator = Collections.emptyIterator();
         }
 
         @Override
@@ -123,7 +124,7 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
         private RandomPillarChangeMoveIterator() {
             pillarIterator = pillarSelector.iterator();
             // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
-            valueIterator = Iterators.emptyIterator();
+            valueIterator = Collections.emptyIterator();
         }
 
         @Override

@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.composite;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -119,7 +120,7 @@ public class UnionMoveSelector extends CompositeMoveSelector {
     @Override
     public Iterator<Move> iterator() {
         if (!randomSelection) {
-            Iterator<Move> iterator = Iterators.emptyIterator();
+            Iterator<Move> iterator = Collections.emptyIterator();
             for (MoveSelector moveSelector : childMoveSelectorList) {
                 iterator = Iterators.concat(iterator, moveSelector.iterator());
             }

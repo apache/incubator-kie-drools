@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.constructionheuristic.placer;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class QueuedEntityPlacer extends AbstractEntityPlacer implements EntityPl
 
         private QueuedEntityPlacingIterator(Iterator<Object> entityIterator) {
             this.entityIterator = entityIterator;
-            moveSelectorIterator = Iterators.emptyIterator();
+            moveSelectorIterator = Collections.emptyIterator();
         }
 
         @Override

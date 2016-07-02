@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.common.iterator;
 
+import java.util.Collections;
 import java.util.Iterator;
 
 import com.google.common.collect.Iterators;
@@ -38,7 +39,7 @@ public abstract class AbstractOriginalChangeIterator<S extends Move> extends Upc
         this.valueSelector = valueSelector;
         entityIterator = entitySelector.iterator();
         // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
-        valueIterator = Iterators.emptyIterator();
+        valueIterator = Collections.emptyIterator();
     }
 
     @Override
