@@ -39,8 +39,8 @@ grammar FEEL_1_1;
  **************************/
 // #1
 expression
-    : textualExpression
-    | boxedExpression
+    : expr=textualExpression ( '[' filter=expression ']' )?  #expressionTextual
+    | expr=boxedExpression ( '[' filter=expression ']' )?    #expressionBoxed
     ;
 
 // #2
@@ -52,7 +52,6 @@ textualExpression
     | conditionalOrExpression
     | instanceOfExpression
     | pathExpression
-    | filterExpression
     | functionInvocation
     | simplePositiveUnaryTest
     ;
@@ -70,30 +69,29 @@ functionInvocation
 
 // #41
 parameters
-    : '(' ')'
-    | '(' namedParameters ')'
-    | '(' positionalParameters ')'
+    : '(' ')'                       #parametersEmpty
+    | '(' namedParameters ')'       #parametersNamed
+    | '(' positionalParameters ')'  #parametersPositional
     ;
 
 // #42 #43
 namedParameters
-    : namedParameter
-    | namedParameters ',' namedParameter
+    : namedParameter (',' namedParameter)*
     ;
 
 namedParameter
-    : Identifier ':' expression
+    : name=nameDefinition ':' value=expression
     ;
 
 // #44
 positionalParameters
-    : expression
-    | positionalParameters ',' expression
+    : expression ( ',' expression )*
     ;
 
 // #45
 pathExpression
-    : boxedExpression '.' Identifier
+    // might need to change boxedExpression by expression
+    : expr=boxedExpression '.' name=nameRef
     ;
 
 // #46
@@ -116,13 +114,7 @@ ifExpression
 
 // #48
 quantifiedExpression
-    : 'some' iterationContext 'satisfies' expression
-    | 'every' iterationContext 'satisfies' expression
-    ;
-
-// #52
-filterExpression
-    : list '[' expression ']'
+    : k=('some'|'every') iterationContexts 'satisfies' expression
     ;
 
 // #53
@@ -191,7 +183,7 @@ key
     ;
 
 nameDefinition
-    : Identifier ( Identifier | additionalNameSymbol )*
+    : Identifier ( Identifier | additionalNameSymbol | IntegerLiteral | FloatingPointLiteral )*
     ;
 
 additionalNameSymbol
@@ -270,43 +262,47 @@ literal
 /**************************
  *    OTHER CONSTRUCTS
  **************************/
-    // #14
-    simpleUnaryTests
-        : simplePositiveUnaryTests
-        | 'not' '(' simplePositiveUnaryTests ')'
-        | '-'
-        ;
+// #14
+simpleUnaryTests
+    : simplePositiveUnaryTests
+    | 'not' '(' simplePositiveUnaryTests ')'
+    | '-'
+    ;
 
-    // #13
-    simplePositiveUnaryTests
-        : simplePositiveUnaryTest ( ',' simplePositiveUnaryTest )*
-        ;
+// #13
+simplePositiveUnaryTests
+    : simplePositiveUnaryTest ( ',' simplePositiveUnaryTest )*
+    ;
 
-    // #7
-    simplePositiveUnaryTest
-        : op='<' endpoint    #positiveUnaryTestIneq
-        | op='>' endpoint    #positiveUnaryTestIneq
-        | op='<=' endpoint   #positiveUnaryTestIneq
-        | op='>=' endpoint   #positiveUnaryTestIneq
-        | interval           #positiveUnaryTestInterval
-        | 'null'             #positiveUnaryTestNull
-        ;
+// #7
+simplePositiveUnaryTest
+    : op='<' endpoint    #positiveUnaryTestIneq
+    | op='>' endpoint    #positiveUnaryTestIneq
+    | op='<=' endpoint   #positiveUnaryTestIneq
+    | op='>=' endpoint   #positiveUnaryTestIneq
+    | interval           #positiveUnaryTestInterval
+    | 'null'             #positiveUnaryTestNull
+    ;
 
-    // #18
-    endpoint
-        : unaryExpression
-        ;
+// #18
+endpoint
+    : unaryExpression
+    ;
 
-    // #8-#12
-    interval
-        : low=('('|']'|'[') start=endpoint '..' end=endpoint up=(')'|'['|']')
-        ;
+// #8-#12
+interval
+    : low=('('|']'|'[') start=endpoint '..' end=endpoint up=(')'|'['|']')
+    ;
 
-    // #20
-    qualifiedName
-        // this needs to change into "name" instead of "identifier"
-        : Identifier ( '.' Identifier )*
-        ;
+// #20
+qualifiedName
+    : nameRef ( '.' nameRef )*
+    ;
+
+nameRef
+    // this needs to change into a sequence of "name" tokens
+    : Identifier
+    ;
 
 /********************************
  *      LEXER RULES

@@ -18,10 +18,31 @@ package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class NameRefNode
+public class PathExpressionNode
         extends BaseNode {
 
-    public NameRefNode(ParserRuleContext ctx) {
+    private BaseNode    expression;
+    private NameRefNode name;
+
+    public PathExpressionNode(ParserRuleContext ctx, BaseNode expression, NameRefNode name) {
         super( ctx );
+        this.expression = expression;
+        this.name = name;
+    }
+
+    public BaseNode getExpression() {
+        return expression;
+    }
+
+    public void setExpression(BaseNode expression) {
+        this.expression = expression;
+    }
+
+    public NameRefNode getName() {
+        return name;
+    }
+
+    public void setName(NameRefNode name) {
+        this.name = name;
     }
 }

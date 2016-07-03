@@ -101,7 +101,7 @@ public class ASTBuilderFactory {
         return new ForExpressionNode( ctx, list, expr );
     }
 
-    public static NameRefNode newNameRefNode( TerminalNode ctx ) {
+    public static NameRefNode newNameRefNode( ParserRuleContext ctx ) {
         return new NameRefNode( ctx );
     }
 
@@ -111,5 +111,29 @@ public class ASTBuilderFactory {
 
     public static IfExpressionNode newIfExpression(ParserRuleContext ctx, BaseNode c, BaseNode t, BaseNode e) {
         return new IfExpressionNode( ctx, c, t, e );
+    }
+
+    public static QuantifiedExpressionNode newQuantifiedExpression(ParserRuleContext ctx, QuantifiedExpressionNode.Quantifier quant, ListNode list, BaseNode expr) {
+        return new QuantifiedExpressionNode( ctx, quant, list, expr );
+    }
+
+    public static InstanceOfNode newInstanceOfNode(ParserRuleContext ctx, BaseNode expr, QualifiedNameNode type) {
+        return new InstanceOfNode( ctx, expr, type );
+    }
+
+    public static PathExpressionNode newPathExpressionNode(ParserRuleContext ctx, BaseNode expr, NameRefNode name) {
+        return new PathExpressionNode( ctx, expr, name );
+    }
+
+    public static FilterExpressionNode newFilterExpressionNode(ParserRuleContext ctx, BaseNode expr, BaseNode filter) {
+        return new FilterExpressionNode( ctx, expr, filter );
+    }
+
+    public static NamedParameterNode newNamedParameterNode(ParserRuleContext ctx, NameDefNode name, BaseNode value) {
+        return new NamedParameterNode( ctx, name, value );
+    }
+
+    public static FunctionInvocationNode newFunctionInvocationNode(FEEL_1_1Parser.FunctionInvocationContext ctx, QualifiedNameNode name, ListNode params) {
+        return new FunctionInvocationNode( ctx, name, params );
     }
 }
