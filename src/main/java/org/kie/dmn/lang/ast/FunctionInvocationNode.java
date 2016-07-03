@@ -18,10 +18,34 @@ package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class NameRefNode
+import java.util.ArrayList;
+import java.util.List;
+
+public class FunctionInvocationNode
         extends BaseNode {
 
-    public NameRefNode(ParserRuleContext ctx) {
+    private QualifiedNameNode name;
+    private ListNode params;
+
+    public FunctionInvocationNode(ParserRuleContext ctx, QualifiedNameNode name, ListNode params) {
         super( ctx );
+        this.name = name;
+        this.params = params;
+    }
+
+    public QualifiedNameNode getName() {
+        return name;
+    }
+
+    public void setName(QualifiedNameNode name) {
+        this.name = name;
+    }
+
+    public ListNode getParams() {
+        return params;
+    }
+
+    public void setParams(ListNode params) {
+        this.params = params;
     }
 }
