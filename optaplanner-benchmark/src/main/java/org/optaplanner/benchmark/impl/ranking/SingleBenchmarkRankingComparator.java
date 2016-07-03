@@ -29,10 +29,11 @@ public class SingleBenchmarkRankingComparator implements Comparator<SingleBenchm
 
     @Override
     public int compare(SingleBenchmarkResult a, SingleBenchmarkResult b) {
-        return new CompareToBuilder()
-                .append(b.hasAnyFailure(), a.hasAnyFailure()) // Reverse, less is better (redundant: failed benchmarks don't get ranked at all)
-                .append(a.getAverageScore(), b.getAverageScore(), resilientScoreComparator)
-                .toComparison();
+        return Comparator
+                // Reverse, less is better (redundant: failed benchmarks don't get ranked at all)
+                .comparing(SingleBenchmarkResult::hasAnyFailure, Comparator.reverseOrder())
+                .thenComparing(SingleBenchmarkResult::getAverageScore, resilientScoreComparator)
+                .compare(a, b);
     }
 
 }
