@@ -18,6 +18,7 @@ package org.kie.dmn.feel11;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.kie.dmn.lang.ast.*;
+import org.kie.dmn.lang.builder.ASTBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -272,7 +273,7 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitQualifiedName(FEEL_1_1Parser.QualifiedNameContext ctx) {
         ArrayList<NameRefNode> parts = new ArrayList<>(  );
-        for( TerminalNode t : ctx.Identifier() ) {
+        for( FEEL_1_1Parser.NameRefContext t : ctx.nameRef() ) {
             parts.add( ASTBuilderFactory.newNameRefNode( t ) );
         }
         return parts.size() > 1 ? ASTBuilderFactory.newQualifiedNameNode( ctx, parts ) : parts.get( 0 );
@@ -284,5 +285,89 @@ public class ASTBuilderVisitor
         BaseNode t = visit( ctx.t );
         BaseNode e = visit( ctx.e );
         return ASTBuilderFactory.newIfExpression( ctx, c, t, e );
+    }
+
+    @Override
+    public BaseNode visitQuantifiedExpression(FEEL_1_1Parser.QuantifiedExpressionContext ctx) {
+        QuantifiedExpressionNode.Quantifier quant = QuantifiedExpressionNode.Quantifier.resolve( ctx.k.getText() );
+        ListNode list = (ListNode) visit( ctx.iterationContexts() );
+        BaseNode expr = visit( ctx.expression() );
+        return ASTBuilderFactory.newQuantifiedExpression( ctx, quant, list, expr );
+    }
+
+    @Override
+    public BaseNode visitInstanceOfExpression(FEEL_1_1Parser.InstanceOfExpressionContext ctx) {
+        BaseNode expr = visit( ctx.conditionalOrExpression() );
+        QualifiedNameNode type = (QualifiedNameNode) visit( ctx.type() );
+        return ASTBuilderFactory.newInstanceOfNode( ctx, expr, type );
+    }
+
+    @Override
+    public BaseNode visitPathExpression(FEEL_1_1Parser.PathExpressionContext ctx) {
+        BaseNode expr = visit( ctx.expr );
+        NameRefNode name = (NameRefNode) visit( ctx.name );
+        return ASTBuilderFactory.newPathExpressionNode( ctx, expr, name );
+    }
+
+    @Override
+    public BaseNode visitNameRef(FEEL_1_1Parser.NameRefContext ctx) {
+        return ASTBuilderFactory.newNameRefNode( ctx );
+    }
+
+    @Override
+    public BaseNode visitExpressionBoxed(FEEL_1_1Parser.ExpressionBoxedContext ctx) {
+        BaseNode expr = visit( ctx.expr );
+        if( ctx.filter != null ) {
+            BaseNode filter = visit( ctx.filter );
+            return ASTBuilderFactory.newFilterExpressionNode( ctx, expr, filter );
+        }
+        return expr;
+    }
+
+    @Override
+    public BaseNode visitPositionalParameters(FEEL_1_1Parser.PositionalParametersContext ctx) {
+        List<BaseNode> params = new ArrayList<>(  );
+        for( FEEL_1_1Parser.ExpressionContext ec : ctx.expression() ) {
+            params.add( visit( ec ) );
+        }
+        return ASTBuilderFactory.newListNode( ctx, params );
+    }
+
+    @Override
+    public BaseNode visitNamedParameter(FEEL_1_1Parser.NamedParameterContext ctx) {
+        NameDefNode name = (NameDefNode) visit( ctx.name );
+        BaseNode value = visit( ctx.value );
+        return ASTBuilderFactory.newNamedParameterNode( ctx, name, value );
+    }
+
+    @Override
+    public BaseNode visitNamedParameters(FEEL_1_1Parser.NamedParametersContext ctx) {
+        List<BaseNode> params = new ArrayList<>(  );
+        for( FEEL_1_1Parser.NamedParameterContext npc : ctx.namedParameter() ) {
+            params.add( visit( npc ) );
+        }
+        return ASTBuilderFactory.newListNode( ctx, params );
+    }
+
+    @Override
+    public BaseNode visitParametersEmpty(FEEL_1_1Parser.ParametersEmptyContext ctx) {
+        return ASTBuilderFactory.newListNode( ctx, new ArrayList<>(  ) );
+    }
+
+    @Override
+    public BaseNode visitParametersNamed(FEEL_1_1Parser.ParametersNamedContext ctx) {
+        return visit( ctx.namedParameters() );
+    }
+
+    @Override
+    public BaseNode visitParametersPositional(FEEL_1_1Parser.ParametersPositionalContext ctx) {
+        return visit( ctx.positionalParameters() );
+    }
+
+    @Override
+    public BaseNode visitFunctionInvocation(FEEL_1_1Parser.FunctionInvocationContext ctx) {
+        QualifiedNameNode name = (QualifiedNameNode) visit( ctx.qualifiedName() );
+        ListNode params = (ListNode) visit( ctx.parameters() );
+        return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
     }
 }
