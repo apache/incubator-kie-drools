@@ -16,9 +16,8 @@
 
 package org.kie.dmn.feel11;
 
-import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.kie.dmn.lang.ast.*;
-import org.kie.dmn.lang.builder.ASTBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,11 +49,6 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitStringLiteral(FEEL_1_1Parser.StringLiteralContext ctx) {
         return ASTBuilderFactory.newStringNode( ctx );
-    }
-
-    @Override
-    public BaseNode visitPrimaryName(FEEL_1_1Parser.PrimaryNameContext ctx) {
-        return ASTBuilderFactory.newNameNode( ctx );
     }
 
     @Override
@@ -199,7 +193,7 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitNameDefinition(FEEL_1_1Parser.NameDefinitionContext ctx) {
         List<String> tokens = new ArrayList<>();
-        for( int i = 0; i < ctx.getChildCount(); i++ ) {
+        for ( int i = 0; i < ctx.getChildCount(); i++ ) {
             tokens.add( ctx.getChild( i ).getText() );
         }
         return ASTBuilderFactory.newNameDefNode( ctx, tokens );
@@ -219,8 +213,8 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitContextEntries(FEEL_1_1Parser.ContextEntriesContext ctx) {
-        List<BaseNode> nodes = new ArrayList<>(  );
-        for( FEEL_1_1Parser.ContextEntryContext c : ctx.contextEntry() ) {
+        List<BaseNode> nodes = new ArrayList<>();
+        for ( FEEL_1_1Parser.ContextEntryContext c : ctx.contextEntry() ) {
             nodes.add( visit( c ) );
         }
         return ASTBuilderFactory.newListNode( ctx, nodes );
@@ -228,7 +222,67 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitContext(FEEL_1_1Parser.ContextContext ctx) {
-        ListNode list = ctx.contextEntries() != null ? (ListNode) visit( ctx.contextEntries() ) : ASTBuilderFactory.newListNode( ctx, new ArrayList<>(  ) );
+        ListNode list = ctx.contextEntries() != null ? (ListNode) visit( ctx.contextEntries() ) : ASTBuilderFactory.newListNode( ctx, new ArrayList<>() );
         return ASTBuilderFactory.newContextNode( ctx, list );
+    }
+
+    @Override
+    public BaseNode visitFormalParameters(FEEL_1_1Parser.FormalParametersContext ctx) {
+        List<BaseNode> list = new ArrayList<>(  );
+        for( FEEL_1_1Parser.FormalParameterContext fpc : ctx.formalParameter() ) {
+            list.add( visit( fpc ) );
+        }
+        return ASTBuilderFactory.newListNode( ctx, list );
+    }
+
+    @Override
+    public BaseNode visitFunctionDefinition(FEEL_1_1Parser.FunctionDefinitionContext ctx) {
+        ListNode parameters = null;
+        if( ctx.formalParameters() != null ) {
+            parameters = (ListNode) visit( ctx.formalParameters() );
+        }
+        boolean external = ctx.external != null;
+        BaseNode body = visit( ctx.body );
+        return ASTBuilderFactory.newFunctionDefinition( ctx, parameters, external, body );
+    }
+
+    @Override
+    public BaseNode visitIterationContext(FEEL_1_1Parser.IterationContextContext ctx) {
+        NameDefNode name = (NameDefNode) visit( ctx.nameDefinition() );
+        BaseNode expr = visit( ctx.expression() );
+        return ASTBuilderFactory.newIterationContextNode( ctx, name, expr );
+    }
+
+    @Override
+    public BaseNode visitIterationContexts(FEEL_1_1Parser.IterationContextsContext ctx) {
+        ArrayList<BaseNode> ctxs = new ArrayList<>(  );
+        for( FEEL_1_1Parser.IterationContextContext ic : ctx.iterationContext() ) {
+            ctxs.add( visit( ic ) );
+        }
+        return ASTBuilderFactory.newListNode( ctx, ctxs );
+    }
+
+    @Override
+    public BaseNode visitForExpression(FEEL_1_1Parser.ForExpressionContext ctx) {
+        ListNode list = (ListNode) visit( ctx.iterationContexts() );
+        BaseNode expr = visit( ctx.expression() );
+        return ASTBuilderFactory.newForExpression( ctx, list, expr );
+    }
+
+    @Override
+    public BaseNode visitQualifiedName(FEEL_1_1Parser.QualifiedNameContext ctx) {
+        ArrayList<NameRefNode> parts = new ArrayList<>(  );
+        for( TerminalNode t : ctx.Identifier() ) {
+            parts.add( ASTBuilderFactory.newNameRefNode( t ) );
+        }
+        return parts.size() > 1 ? ASTBuilderFactory.newQualifiedNameNode( ctx, parts ) : parts.get( 0 );
+    }
+
+    @Override
+    public BaseNode visitIfExpression(FEEL_1_1Parser.IfExpressionContext ctx) {
+        BaseNode c = visit( ctx.c );
+        BaseNode t = visit( ctx.t );
+        BaseNode e = visit( ctx.e );
+        return ASTBuilderFactory.newIfExpression( ctx, c, t, e );
     }
 }

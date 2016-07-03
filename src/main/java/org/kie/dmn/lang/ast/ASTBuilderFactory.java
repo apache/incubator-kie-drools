@@ -17,8 +17,10 @@
 package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.kie.dmn.feel11.FEEL_1_1Parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ASTBuilderFactory {
@@ -41,10 +43,6 @@ public class ASTBuilderFactory {
 
     public static StringNode newStringNode(ParserRuleContext ctx) {
         return new StringNode( ctx );
-    }
-
-    public static VariableNode newNameNode(ParserRuleContext ctx) {
-        return new VariableNode( ctx );
     }
 
     public static NotNode newNotNode(ParserRuleContext ctx, BaseNode expr) {
@@ -89,5 +87,29 @@ public class ASTBuilderFactory {
 
     public static ContextNode newContextNode(ParserRuleContext ctx, ListNode list) {
         return new ContextNode( ctx, list );
+    }
+
+    public static FunctionDefNode newFunctionDefinition(ParserRuleContext ctx, ListNode parameters, boolean external, BaseNode body) {
+        return new FunctionDefNode( ctx, parameters, external, body );
+    }
+
+    public static IterationContextNode newIterationContextNode(ParserRuleContext ctx, NameDefNode name, BaseNode expr) {
+        return new IterationContextNode( ctx, name, expr );
+    }
+
+    public static ForExpressionNode newForExpression(ParserRuleContext ctx, ListNode list, BaseNode expr) {
+        return new ForExpressionNode( ctx, list, expr );
+    }
+
+    public static NameRefNode newNameRefNode( TerminalNode ctx ) {
+        return new NameRefNode( ctx );
+    }
+
+    public static QualifiedNameNode newQualifiedNameNode(ParserRuleContext ctx, ArrayList<NameRefNode> parts) {
+        return new QualifiedNameNode( ctx, parts );
+    }
+
+    public static IfExpressionNode newIfExpression(ParserRuleContext ctx, BaseNode c, BaseNode t, BaseNode e) {
+        return new IfExpressionNode( ctx, c, t, e );
     }
 }
