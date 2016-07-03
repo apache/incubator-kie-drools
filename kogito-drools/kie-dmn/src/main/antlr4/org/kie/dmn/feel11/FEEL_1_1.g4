@@ -98,27 +98,26 @@ pathExpression
 
 // #46
 forExpression
-    : 'for' idInExpressions 'return' expression
+    : 'for' iterationContexts 'return' expression
     ;
 
-idInExpressions
-    : idInExpression
-    | idInExpressions ',' idInExpression
+iterationContexts
+    : iterationContext ( ',' iterationContext )*
     ;
 
-idInExpression
-    : Identifier 'in' expression
+iterationContext
+    : nameDefinition 'in' expression
     ;
 
 // #47
 ifExpression
-    : 'if' expression 'then' expression 'else' expression
+    : 'if' c=expression 'then' t=expression 'else' e=expression
     ;
 
 // #48
 quantifiedExpression
-    : 'some' idInExpressions 'satisfies' expression
-    | 'every' idInExpressions 'satisfies' expression
+    : 'some' iterationContext 'satisfies' expression
+    | 'every' iterationContext 'satisfies' expression
     ;
 
 // #52
@@ -151,35 +150,25 @@ list
 
 // #57
 functionDefinition
-    : 'function' '(' ')' functionBody
-    | 'function' '(' formalParameters ')' functionBody
-    ;
-
-functionBody
-    : 'external' expression
-    | expression
+    : 'function' '(' formalParameters? ')' external='external'? body=expression
     ;
 
 formalParameters
-    : formalParameter
-    | formalParameters ',' formalParameter
+    : formalParameter ( ',' formalParameter )*
     ;
 
 // #58
 formalParameter
-    : Identifier
+    : nameDefinition
     ;
 
 // #59
 context
 @init {
-    System.out.println("Creating scope: "+currentName+" . Parent scope: "+currentScope.getName() );
     currentScope = new LocalScope( currentName, currentScope );
 }
 @after {
     currentScope = currentScope.getParentScope();
-    System.out.println("Leaving scope: "+currentName+" . Current scope now: "+currentScope.getName() );
-
 }
     : '{' '}'
     | '{' contextEntries '}'
@@ -266,8 +255,7 @@ unaryExpressionNotPlusMinus
 primary
     : literal                   #primaryLiteral
     | '(' expression ')'        #primaryParens
-    // the following needs to be replaced by a "name" that includes special characters and spaces
-    | Identifier                #primaryName
+    | qualifiedName             #primaryName
     ;
 
 // #33 - #39
@@ -292,8 +280,6 @@ literal
     // #13
     simplePositiveUnaryTests
         : simplePositiveUnaryTest ( ',' simplePositiveUnaryTest )*
-//        : simplePositiveUnaryTest
-//        | simplePositiveUnaryTests ',' simplePositiveUnaryTest
         ;
 
     // #7
@@ -318,8 +304,8 @@ literal
 
     // #20
     qualifiedName
-        : Identifier
-        | qualifiedName '.' Identifier
+        // this needs to change into "name" instead of "identifier"
+        : Identifier ( '.' Identifier )*
         ;
 
 /********************************

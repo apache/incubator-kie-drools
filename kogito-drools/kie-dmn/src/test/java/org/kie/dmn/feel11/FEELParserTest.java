@@ -17,6 +17,7 @@
 package org.kie.dmn.feel11;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.lang.ast.*;
 
@@ -143,7 +144,7 @@ public class FEELParserTest {
         String token = "someSimpleName";
         BaseNode nullLit = parse( token );
 
-        assertThat( nullLit, is( instanceOf( VariableNode.class ) ) );
+        assertThat( nullLit, is( instanceOf( NameRefNode.class ) ) );
         assertTokenLocation( token, nullLit );
     }
 
@@ -183,7 +184,7 @@ public class FEELParserTest {
 
         assertThat( mult.getOperator(), is( "*" ) );
 
-        assertThat( mult.getRight(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( mult.getRight(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( mult.getRight().getText(), is( "x" ) );
     }
 
@@ -200,7 +201,7 @@ public class FEELParserTest {
         assertThat( mult.getLeft().getText(), is( "y / 5" ) );
 
         InfixOpNode div = (InfixOpNode) mult.getLeft();
-        assertThat( div.getLeft(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( div.getLeft(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( div.getLeft().getText(), is( "y" ) );
 
         assertThat( div.getOperator(), is( "/" ) );
@@ -210,7 +211,7 @@ public class FEELParserTest {
 
         assertThat( mult.getOperator(), is( "*" ) );
 
-        assertThat( mult.getRight(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( mult.getRight(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( mult.getRight().getText(), is( "x" ) );
     }
 
@@ -223,7 +224,7 @@ public class FEELParserTest {
         assertThat( infix.getText(), is( token ) );
 
         InfixOpNode mult = (InfixOpNode) infix;
-        assertThat( mult.getLeft(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( mult.getLeft(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( mult.getLeft().getText(), is( "y" ) );
 
         assertThat( mult.getOperator(), is( "*" ) );
@@ -259,7 +260,7 @@ public class FEELParserTest {
         assertThat( exp.getRight().getText(), is( "3" ) );
 
         InfixOpNode mult = (InfixOpNode) exp.getLeft();
-        assertThat( mult.getLeft(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( mult.getLeft(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( mult.getLeft().getText(), is( "y" ) );
 
         assertThat( mult.getOperator(), is( "*" ) );
@@ -286,7 +287,7 @@ public class FEELParserTest {
         assertThat( mult.getRight().getText(), is( "3" ) );
 
         InfixOpNode exp = (InfixOpNode) mult.getLeft();
-        assertThat( exp.getLeft(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( exp.getLeft(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( exp.getLeft().getText(), is( "y" ) );
 
         assertThat( exp.getOperator(), is( "**" ) );
@@ -304,7 +305,7 @@ public class FEELParserTest {
         assertThat( infix.getText(), is( token ) );
 
         InfixOpNode exp = (InfixOpNode) infix;
-        assertThat( exp.getLeft(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( exp.getLeft(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( exp.getLeft().getText(), is( "y" ) );
 
         assertThat( exp.getOperator(), is( "**" ) );
@@ -331,7 +332,7 @@ public class FEELParserTest {
         assertThat( infix.getText(), is( token ) );
 
         InfixOpNode add = (InfixOpNode) infix;
-        assertThat( add.getLeft(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( add.getLeft(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( add.getLeft().getText(), is( "y" ) );
 
         assertThat( add.getOperator(), is( "+" ) );
@@ -367,7 +368,7 @@ public class FEELParserTest {
         assertThat( sub.getRight().getText(), is( "3" ) );
 
         InfixOpNode mult = (InfixOpNode) sub.getLeft();
-        assertThat( mult.getLeft(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( mult.getLeft(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( mult.getLeft().getText(), is( "y" ) );
 
         assertThat( mult.getOperator(), is( "-" ) );
@@ -385,7 +386,7 @@ public class FEELParserTest {
         assertThat( between.getText(), is( token ) );
 
         BetweenNode btw = (BetweenNode) between;
-        assertThat( btw.getValue(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( btw.getValue(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( btw.getValue().getText(), is( "x" ) );
 
         assertThat( btw.getStart(), is( instanceOf( InfixOpNode.class ) ) );
@@ -414,7 +415,7 @@ public class FEELParserTest {
         assertThat( list.getElements().get( 0 ), is( instanceOf( InfixOpNode.class ) ) );
         assertThat( list.getElements().get( 1 ), is( instanceOf( BooleanNode.class ) ) );
         assertThat( list.getElements().get( 2 ), is( instanceOf( NumberNode.class ) ) );
-        assertThat( list.getElements().get( 3 ), is( instanceOf( VariableNode.class ) ) );
+        assertThat( list.getElements().get( 3 ), is( instanceOf( NameRefNode.class ) ) );
     }
 
     @Test
@@ -448,14 +449,14 @@ public class FEELParserTest {
         assertThat( interval.getLowerBound(), is( IntervalNode.IntervalBoundary.OPEN ) );
         assertThat( interval.getUpperBound(), is( IntervalNode.IntervalBoundary.OPEN ) );
         assertThat( interval.getStart(), is( instanceOf( NumberNode.class ) ) );
-        assertThat( interval.getEnd(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( interval.getEnd(), is( instanceOf( NameRefNode.class ) ) );
 
         assertThat( list.getElements().get( 4 ), is( instanceOf( IntervalNode.class ) ) );
         interval = (IntervalNode) list.getElements().get( 4 );
         assertThat( interval.getText(), is( "]z..2000]") );
         assertThat( interval.getLowerBound(), is( IntervalNode.IntervalBoundary.OPEN ) );
         assertThat( interval.getUpperBound(), is( IntervalNode.IntervalBoundary.CLOSED ) );
-        assertThat( interval.getStart(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( interval.getStart(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( interval.getEnd(), is( instanceOf( NumberNode.class ) ) );
 
         assertThat( list.getElements().get( 5 ), is( instanceOf( IntervalNode.class ) ) );
@@ -493,7 +494,7 @@ public class FEELParserTest {
         assertThat( infix.getText(), is( token ) );
 
         InfixOpNode in = (InfixOpNode) infix;
-        assertThat( in.getLeft(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( in.getLeft(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( in.getLeft().getText(), is( "foo" ) );
 
         assertThat( in.getRight(), is( instanceOf( InfixOpNode.class ) ) );
@@ -514,7 +515,7 @@ public class FEELParserTest {
 
         assertThat( or.getOperator(), is( "or" ) );
 
-        assertThat( or.getRight(), is( instanceOf( VariableNode.class ) ) );
+        assertThat( or.getRight(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( or.getRight().getText(), is( "baz" ) );
 
         InfixOpNode and = (InfixOpNode) or.getLeft();
@@ -650,6 +651,114 @@ public class FEELParserTest {
         assertThat( address.getEntries().size(), is( 2 ) );
         assertThat( address.getEntries().get( 0 ).getName().getText(), is("street") );
         assertThat( address.getEntries().get( 1 ).getName().getText(), is("city") );
+    }
+
+    @Test @Ignore("requires implementing name ref for multi-token names")
+    public void testFunctionDefinition() {
+        String token = "{ is minor : function( person's age ) person's age < 21 }";
+        BaseNode ctxbase = parse( token );
+
+        assertThat( ctxbase, is( instanceOf( ContextNode.class ) ) );
+        assertThat( ctxbase.getText(), is( token ) );
+
+        ContextNode ctx = (ContextNode) ctxbase;
+        assertThat( ctx.getEntries().size(), is( 1 ) );
+
+        ContextEntryNode entry = ctx.getEntries().get( 0 );
+        assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
+        NameDefNode name = (NameDefNode) entry.getName();
+        assertThat( name.getText(), is("is minor") );
+        assertThat( entry.getValue(), is( instanceOf( FunctionDefNode.class ) ) );
+        assertThat( entry.getValue().getText(), is("function( person's age ) person's age < 21") );
+
+        FunctionDefNode isMinorFunc = (FunctionDefNode) entry.getValue();
+        assertThat( isMinorFunc.getFormalParameters().size(), is( 1 ) );
+        assertThat( isMinorFunc.getFormalParameters().get( 0 ).getText(), is( "person's age" ) );
+        assertThat( isMinorFunc.isExternal(), is( false ) );
+        assertThat( isMinorFunc.getBody(), is( instanceOf( InfixOpNode.class ) ) );
+    }
+
+    @Test
+    public void testExternalFunctionDefinition() {
+        String token = "{ trigonometric cosine : function( angle ) external {"
+                       + "    java : {"
+                       + "        class : \"java.lang.Math\","
+                       + "        method signature : \"cos(double)\""
+                       + "    }"
+                       + "}}";
+        BaseNode ctxbase = parse( token );
+
+        assertThat( ctxbase, is( instanceOf( ContextNode.class ) ) );
+        assertThat( ctxbase.getText(), is( token ) );
+
+        ContextNode ctx = (ContextNode) ctxbase;
+        assertThat( ctx.getEntries().size(), is( 1 ) );
+
+        ContextEntryNode entry = ctx.getEntries().get( 0 );
+        assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
+        NameDefNode name = (NameDefNode) entry.getName();
+        assertThat( name.getText(), is("trigonometric cosine") );
+        assertThat( entry.getValue(), is( instanceOf( FunctionDefNode.class ) ) );
+        assertThat( entry.getValue().getText(), is("function( angle ) external {"
+                                                 + "    java : {"
+                                                 + "        class : \"java.lang.Math\","
+                                                 + "        method signature : \"cos(double)\""
+                                                 + "    }"
+                                                 + "}" ) );
+
+        FunctionDefNode cos = (FunctionDefNode) entry.getValue();
+        assertThat( cos.getFormalParameters().size(), is( 1 ) );
+        assertThat( cos.getFormalParameters().get( 0 ).getText(), is( "angle" ) );
+        assertThat( cos.isExternal(), is( true ) );
+        assertThat( cos.getBody(), is( instanceOf( ContextNode.class ) ) );
+
+        ContextNode body = (ContextNode) cos.getBody();
+        assertThat( body.getEntries().size(), is( 1 ) );
+        ContextEntryNode java = body.getEntries().get( 0 );
+        assertThat( java.getName().getText(), is( "java" ) );
+        assertThat( java.getValue(), is( instanceOf( ContextNode.class ) ) );
+
+        ContextNode def = (ContextNode) java.getValue();
+        assertThat( def.getEntries().size(), is( 2 ) );
+        assertThat( def.getEntries().get( 0 ).getName().getText(), is( "class" ) );
+        assertThat( def.getEntries().get( 0 ).getValue(), is( instanceOf( StringNode.class ) ) );
+        assertThat( def.getEntries().get( 0 ).getValue().getText(), is( "\"java.lang.Math\"" ) );
+        assertThat( def.getEntries().get( 1 ).getName().getText(), is( "method signature" ) );
+        assertThat( def.getEntries().get( 1 ).getValue(), is( instanceOf( StringNode.class ) ) );
+        assertThat( def.getEntries().get( 1 ).getValue().getText(), is( "\"cos(double)\"" ) );
+    }
+
+    @Test
+    public void testForExpression() {
+        String token = "for item in order.items return item.price * item.quantity";
+        BaseNode forbase = parse( token );
+
+        assertThat( forbase, is( instanceOf( ForExpressionNode.class ) ) );
+        assertThat( forbase.getText(), is( token ) );
+
+        ForExpressionNode forExpr = (ForExpressionNode) forbase;
+        assertThat( forExpr.getIterationContexts().size(), is( 1 ) );
+        assertThat( forExpr.getExpression(), is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( forExpr.getExpression().getText(), is( "item.price * item.quantity" ) );
+
+        IterationContextNode ic = forExpr.getIterationContexts().get( 0 );
+        assertThat( ic.getName().getText(), is("item") );
+        assertThat( ic.getExpression(), is( instanceOf( QualifiedNameNode.class ) ) );
+        assertThat( ic.getExpression().getText(), is("order.items") );
+    }
+
+    @Test
+    public void testIfExpression() {
+        String token = "if applicant.age < 18 then \"declined\" else \"accepted\"";
+        BaseNode ifBase = parse( token );
+
+        assertThat( ifBase, is( instanceOf( IfExpressionNode.class ) ) );
+        assertThat( ifBase.getText(), is( token ) );
+
+        IfExpressionNode ifExpr = (IfExpressionNode) ifBase;
+        assertThat( ifExpr.getCondition().getText(), is( "applicant.age < 18" ) );
+        assertThat( ifExpr.getThenExpression().getText(), is( "\"declined\"" ) );
+        assertThat( ifExpr.getElseExpression().getText(), is( "\"accepted\"" ) );
     }
 
     private void assertTokenLocation(String token, BaseNode number) {

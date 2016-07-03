@@ -14,11 +14,27 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.lang.types;
+package org.kie.dmn.lang.ast;
 
-public class BuiltInScope extends BaseScope {
+import org.antlr.v4.runtime.ParserRuleContext;
 
-    public BuiltInScope() {
-        super("<built-in>", null);
+import java.util.List;
+
+public class QualifiedNameNode
+        extends BaseNode {
+
+    private List<NameRefNode> parts;
+
+    public QualifiedNameNode(ParserRuleContext ctx, List<NameRefNode> parts) {
+        super( ctx );
+        this.parts = parts;
+    }
+
+    public List<NameRefNode> getParts() {
+        return parts;
+    }
+
+    public void setParts(List<NameRefNode> parts) {
+        this.parts = parts;
     }
 }

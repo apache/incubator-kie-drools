@@ -18,11 +18,34 @@ package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-public class VariableNode
+import java.util.ArrayList;
+import java.util.List;
+
+public class IterationContextNode
         extends BaseNode {
 
-    public VariableNode(ParserRuleContext ctx) {
+    private NameDefNode name;
+    private BaseNode expression;
+
+    public IterationContextNode(ParserRuleContext ctx, NameDefNode name, BaseNode expression) {
         super( ctx );
+        this.name = name;
+        this.expression = expression;
     }
 
+    public NameDefNode getName() {
+        return name;
+    }
+
+    public void setName(NameDefNode name) {
+        this.name = name;
+    }
+
+    public BaseNode getExpression() {
+        return expression;
+    }
+
+    public void setExpression(BaseNode expression) {
+        this.expression = expression;
+    }
 }
