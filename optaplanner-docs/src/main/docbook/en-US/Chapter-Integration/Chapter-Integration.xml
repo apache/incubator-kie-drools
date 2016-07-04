@@ -26,7 +26,7 @@
 
       <listitem>
         <para>To expose the Solver as a REST Service that reads the planning problem and responds with the best
-        solution, annotate the domain POJO's with XStream or JAXB annotations and hook the <literal>Solver</literal> in
+        solution, annotate the domain POJO's with XStream, JAXB or Jackson annotations and hook the <literal>Solver</literal> in
         Camel or RESTEasy.</para>
       </listitem>
     </itemizedlist>
@@ -314,6 +314,66 @@ public class Schedule {
 
         <para>The <literal>hardLevelsSize</literal> and <literal>softLevelsSize</literal> implied, when reading a
         bendable score from an XML element, must always be in sync with those in the solver.</para>
+      </section>
+    </section>
+
+    <section xml:id="integrationWithJackson">
+      <title>JSON: Jackson</title>
+
+      <para>Enrich the domain POJO's (solution, entities and problem facts) with Jackson annotations to serialize them
+      to/from JSON.</para>
+
+      <para>Add a dependency to the <literal>optaplanner-persistence-jackson</literal> jar to take advantage of these extra
+      integration features:</para>
+
+      <section xml:id="jacksonMarshallingAScore">
+        <title>JAXB: Marshalling a <literal>Score</literal></title>
+
+        <para>When a <literal>Score</literal> is marshalled to JSON by the default Jackson configuration, it
+          fails. To fix that, configure a <literal>ScoreJacksonJsonSerializer</literal> and the appropriate
+          <literal>ScoreJacksonJsonDeserializer</literal>:</para>
+
+        <programlisting language="java">@PlanningSolution
+public class CloudBalance {
+
+    @PlanningScore
+    @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+    @JsonDeserialize(using = HardSoftScoreJacksonJsonDeserializer.class)
+    private HardSoftScore score;
+
+    ...
+}</programlisting>
+
+        <para>For example, this will generate pretty JSON:</para>
+
+        <programlisting language="json">{
+   ...
+   "score":"0hard/-200soft"
+}</programlisting>
+
+        <para>The same applies for a bendable score:</para>
+
+        <programlisting language="java">@PlanningSolution
+public class Schedule {
+
+    @PlanningScore
+    @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+    @JsonDeserialize(using = BendableScoreJacksonXmlAdapter.class)
+    private BendableScore score;
+
+    ...
+}</programlisting>
+
+        <para>For example, with a <literal>hardLevelsSize</literal> of <literal>2</literal> and a
+        <literal>softLevelsSize</literal> of <literal>3</literal>, that will generate:</para>
+
+        <programlisting language="json">{
+   ...
+   "score":"[0/0]hard/[-100/-20/-3]soft"
+}</programlisting>
+
+        <para>The <literal>hardLevelsSize</literal> and <literal>softLevelsSize</literal> implied, when reading a
+        bendable score from a JSON element, must always be in sync with those in the solver.</para>
       </section>
     </section>
   </section>
