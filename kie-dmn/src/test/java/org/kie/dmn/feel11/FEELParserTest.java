@@ -653,7 +653,7 @@ public class FEELParserTest {
         assertThat( address.getEntries().get( 1 ).getName().getText(), is("city") );
     }
 
-    @Test @Ignore("requires implementing name ref for multi-inputExpression names")
+    @Test
     public void testFunctionDefinition() {
         String inputExpression = "{ is minor : function( person's age ) person's age < 21 }";
         BaseNode ctxbase = parse( inputExpression );
@@ -895,6 +895,73 @@ public class FEELParserTest {
         assertThat( function.getName().getText(), is( "my.test.Function" ) );
         assertThat( function.getParams(), is( instanceOf( ListNode.class ) ) );
         assertThat( function.getParams().getElements(), is( empty() ) );
+    }
+
+    @Test
+    public void testFunctionDecisionTableInvocation() {
+        String inputExpression = "decision table( "
+                                 + "    outputs: \"Applicant Risk Rating\","
+                                 + "    input expression list: [Applicant Age, Medical History],"
+                                 + "    rule list: ["
+                                 + "        [ >60      , \"good\" , \"Medium\" ],"
+                                 + "        [ >60      , \"bad\"  , \"High\"   ],"
+                                 + "        [ [25..60] , -        , \"Medium\" ],"
+                                 + "        [ <25      , \"good\" , \"Low\"    ],"
+                                 + "        [ <25      , \"bad\"  , \"Medium\" ] ],"
+                                 + "    hit policy: \"Unique\" )";
+        BaseNode functionBase = parse( inputExpression );
+
+        assertThat( functionBase, is( instanceOf( FunctionInvocationNode.class ) ) );
+        assertThat( functionBase.getText(), is( inputExpression ) );
+
+        FunctionInvocationNode function = (FunctionInvocationNode) functionBase;
+        assertThat( function.getName(), is( instanceOf( QualifiedNameNode.class ) ) );
+        assertThat( function.getName().getText(), is( "decision table" ) );
+        assertThat( function.getParams(), is( instanceOf( ListNode.class ) ) );
+        assertThat( function.getParams().getElements().size(), is( 4 ) );
+        assertThat( function.getParams().getElements().get( 0 ), is( instanceOf( NamedParameterNode.class ) ) );
+        assertThat( function.getParams().getElements().get( 1 ), is( instanceOf( NamedParameterNode.class ) ) );
+        assertThat( function.getParams().getElements().get( 3 ), is( instanceOf( NamedParameterNode.class ) ) );
+        assertThat( function.getParams().getElements().get( 4 ), is( instanceOf( NamedParameterNode.class ) ) );
+
+        NamedParameterNode named = (NamedParameterNode) function.getParams().getElements().get( 0 );
+        assertThat( named.getText(), is( "outputs: \"Applicant Risk Rating\"" ) );
+        assertThat( named.getName().getText(), is( "outputs" ) );
+        assertThat( named.getExpression(), is( instanceOf( StringNode.class ) ) );
+        assertThat( named.getExpression().getText(), is( "\"Applicant Risk Rating\"" ) );
+
+        named = (NamedParameterNode) function.getParams().getElements().get( 1 );
+        assertThat( named.getName().getText(), is( "input expression list" ) );
+        assertThat( named.getExpression(), is( instanceOf( ListNode.class ) ) );
+
+        ListNode list = (ListNode) named.getExpression();
+        assertThat( list.getElements().size(), is( 2 ) );
+        assertThat( list.getElements().get( 0 ), is( instanceOf( QualifiedNameNode.class ) ) );
+        assertThat( list.getElements().get( 0 ).getText(), is( "Applicant Age" ) );
+        assertThat( list.getElements().get( 1 ), is( instanceOf( QualifiedNameNode.class ) ) );
+        assertThat( list.getElements().get( 1 ).getText(), is( "Medical History" ) );
+
+        named = (NamedParameterNode) function.getParams().getElements().get( 2 );
+        assertThat( named.getName().getText(), is( "rule list" ) );
+        assertThat( named.getExpression(), is( instanceOf( ListNode.class ) ) );
+
+        list = (ListNode) named.getExpression();
+        assertThat( list.getElements().size(), is( 5 ) );
+        assertThat( list.getElements().get( 0 ), is( instanceOf( ListNode.class ) ) );
+
+        ListNode rule = (ListNode) list.getElements().get( 0 );
+        assertThat( rule.getElements().size(), is( 3 ) );
+        assertThat( rule.getElements().get( 0 ), is( instanceOf( UnaryTestNode.class ) ) );
+        assertThat( rule.getElements().get( 0 ).getText(), is( ">60" ) );
+        assertThat( rule.getElements().get( 1 ), is( instanceOf( StringNode.class ) ) );
+        assertThat( rule.getElements().get( 1 ).getText(), is( "\"good\"" ) );
+        assertThat( rule.getElements().get( 2 ), is( instanceOf( StringNode.class ) ) );
+        assertThat( rule.getElements().get( 2 ).getText(), is( "\"Medium\"" ) );
+
+        named = (NamedParameterNode) function.getParams().getElements().get( 3 );
+        assertThat( named.getName().getText(), is( "hit policy" ) );
+        assertThat( named.getExpression(), is( instanceOf( StringNode.class ) ) );
+        assertThat( named.getExpression().getText(), is( "\"Unique\"" ) );
     }
 
     private void assertLocation(String inputExpression, BaseNode number) {
