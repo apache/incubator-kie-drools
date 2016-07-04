@@ -16,9 +16,7 @@
 
 package org.kie.dmn.feel11;
 
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.kie.dmn.lang.ast.*;
-import org.kie.dmn.lang.builder.ASTBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -229,8 +227,8 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitFormalParameters(FEEL_1_1Parser.FormalParametersContext ctx) {
-        List<BaseNode> list = new ArrayList<>(  );
-        for( FEEL_1_1Parser.FormalParameterContext fpc : ctx.formalParameter() ) {
+        List<BaseNode> list = new ArrayList<>();
+        for ( FEEL_1_1Parser.FormalParameterContext fpc : ctx.formalParameter() ) {
             list.add( visit( fpc ) );
         }
         return ASTBuilderFactory.newListNode( ctx, list );
@@ -239,7 +237,7 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitFunctionDefinition(FEEL_1_1Parser.FunctionDefinitionContext ctx) {
         ListNode parameters = null;
-        if( ctx.formalParameters() != null ) {
+        if ( ctx.formalParameters() != null ) {
             parameters = (ListNode) visit( ctx.formalParameters() );
         }
         boolean external = ctx.external != null;
@@ -256,8 +254,8 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitIterationContexts(FEEL_1_1Parser.IterationContextsContext ctx) {
-        ArrayList<BaseNode> ctxs = new ArrayList<>(  );
-        for( FEEL_1_1Parser.IterationContextContext ic : ctx.iterationContext() ) {
+        ArrayList<BaseNode> ctxs = new ArrayList<>();
+        for ( FEEL_1_1Parser.IterationContextContext ic : ctx.iterationContext() ) {
             ctxs.add( visit( ic ) );
         }
         return ASTBuilderFactory.newListNode( ctx, ctxs );
@@ -272,8 +270,8 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitQualifiedName(FEEL_1_1Parser.QualifiedNameContext ctx) {
-        ArrayList<NameRefNode> parts = new ArrayList<>(  );
-        for( FEEL_1_1Parser.NameRefContext t : ctx.nameRef() ) {
+        ArrayList<NameRefNode> parts = new ArrayList<>();
+        for ( FEEL_1_1Parser.NameRefContext t : ctx.nameRef() ) {
             parts.add( ASTBuilderFactory.newNameRefNode( t ) );
         }
         return parts.size() > 1 ? ASTBuilderFactory.newQualifiedNameNode( ctx, parts ) : parts.get( 0 );
@@ -317,7 +315,7 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitExpressionBoxed(FEEL_1_1Parser.ExpressionBoxedContext ctx) {
         BaseNode expr = visit( ctx.expr );
-        if( ctx.filter != null ) {
+        if ( ctx.filter != null ) {
             BaseNode filter = visit( ctx.filter );
             return ASTBuilderFactory.newFilterExpressionNode( ctx, expr, filter );
         }
@@ -326,8 +324,8 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitPositionalParameters(FEEL_1_1Parser.PositionalParametersContext ctx) {
-        List<BaseNode> params = new ArrayList<>(  );
-        for( FEEL_1_1Parser.ExpressionContext ec : ctx.expression() ) {
+        List<BaseNode> params = new ArrayList<>();
+        for ( FEEL_1_1Parser.ExpressionContext ec : ctx.expression() ) {
             params.add( visit( ec ) );
         }
         return ASTBuilderFactory.newListNode( ctx, params );
@@ -342,8 +340,8 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitNamedParameters(FEEL_1_1Parser.NamedParametersContext ctx) {
-        List<BaseNode> params = new ArrayList<>(  );
-        for( FEEL_1_1Parser.NamedParameterContext npc : ctx.namedParameter() ) {
+        List<BaseNode> params = new ArrayList<>();
+        for ( FEEL_1_1Parser.NamedParameterContext npc : ctx.namedParameter() ) {
             params.add( visit( npc ) );
         }
         return ASTBuilderFactory.newListNode( ctx, params );
@@ -351,7 +349,7 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitParametersEmpty(FEEL_1_1Parser.ParametersEmptyContext ctx) {
-        return ASTBuilderFactory.newListNode( ctx, new ArrayList<>(  ) );
+        return ASTBuilderFactory.newListNode( ctx, new ArrayList<>() );
     }
 
     @Override

@@ -9,29 +9,11 @@
 grammar FEEL_1_1;
 
 @parser::header {
-    import org.kie.dmn.lang.types.SymbolTable;
-    import org.kie.dmn.lang.Scope;
-    import org.kie.dmn.lang.types.LocalScope;
+    import org.kie.dmn.feel11.ParserHelper;
 }
 
 @parser::members {
-    private static final String GLOBAL = "<global>";
-    private static final String ANONYMOUS = "<local>";
-
-    private SymbolTable symbols = new SymbolTable();
-    private Scope currentScope = new LocalScope( GLOBAL, symbols.getBuiltInScope() );
-    private String currentName = ANONYMOUS;
-
-    public SymbolTable getSymbolTable() {
-        return symbols;
-    }
-
-    private String getOriginalText( ParserRuleContext ctx ) {
-        int a = ctx.start.getStartIndex();
-        int b = ctx.stop.getStopIndex();
-        Interval interval = new Interval(a,b);
-        return ctx.getStart().getInputStream().getText(interval);
-    }
+    private ParserHelper helper = new ParserHelper();
 }
 
 /**************************
@@ -96,6 +78,12 @@ pathExpression
 
 // #46
 forExpression
+@init {
+    helper.pushScope();
+}
+@after {
+    helper.popScope();
+}
     : 'for' iterationContexts 'return' expression
     ;
 
@@ -114,6 +102,12 @@ ifExpression
 
 // #48
 quantifiedExpression
+@init {
+    helper.pushScope();
+}
+@after {
+    helper.popScope();
+}
     : k=('some'|'every') iterationContexts 'satisfies' expression
     ;
 
@@ -142,6 +136,12 @@ list
 
 // #57
 functionDefinition
+@init {
+    helper.pushScope();
+}
+@after {
+    helper.popScope();
+}
     : 'function' '(' formalParameters? ')' external='external'? body=expression
     ;
 
@@ -157,10 +157,10 @@ formalParameter
 // #59
 context
 @init {
-    currentScope = new LocalScope( currentName, currentScope );
+    helper.pushScope();
 }
 @after {
-    currentScope = currentScope.getParentScope();
+    helper.popScope();
 }
     : '{' '}'
     | '{' contextEntries '}'
@@ -172,8 +172,8 @@ contextEntries
 
 // #60
 contextEntry
-    : key { String previousName = currentName; currentName = getOriginalText( $key.ctx ); }
-      ':' expression { currentName = previousName; }
+    : key { helper.pushName( $key.ctx ); }
+      ':' expression { helper.popName(); }
     ;
 
 // #61
@@ -183,8 +183,13 @@ key
     ;
 
 nameDefinition
+    : nameDefinitionTokens { helper.defineVariable( $nameDefinitionTokens.ctx ); }
+    ;
+
+nameDefinitionTokens
     : Identifier ( Identifier | additionalNameSymbol | IntegerLiteral | FloatingPointLiteral )*
     ;
+
 
 additionalNameSymbol
     : ( '.' | '/' | '-' | '\'' | '+' | '*' )
@@ -300,8 +305,8 @@ qualifiedName
     ;
 
 nameRef
-    // this needs to change into a sequence of "name" tokens
-    : Identifier
+    : st=Identifier { helper.startVariable( $st ); }
+      { helper.followUp( _input.LT(1) ) }? ( Identifier | additionalNameSymbol | IntegerLiteral | FloatingPointLiteral )*
     ;
 
 /********************************
