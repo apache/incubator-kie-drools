@@ -20,6 +20,7 @@ import org.kie.dmn.lang.Scope;
 import org.kie.dmn.lang.Symbol;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class BaseScope implements Scope {
@@ -27,7 +28,8 @@ public class BaseScope implements Scope {
     private String name;
     private Scope  parentScope;
 
-    private Map<String, Symbol> symbols = new HashMap<String, Symbol>();
+    private Map<String, Symbol> symbols     = new LinkedHashMap<>();
+    private Map<String, Scope>  childScopes = new LinkedHashMap<>();
 
     public BaseScope() {
     }
@@ -35,6 +37,9 @@ public class BaseScope implements Scope {
     public BaseScope(String name, Scope parentScope) {
         this.name = name;
         this.parentScope = parentScope;
+        if( parentScope != null ) {
+            parentScope.addChildScope( this );
+        }
     }
 
     public String getName() {
@@ -70,12 +75,23 @@ public class BaseScope implements Scope {
         this.parentScope = parentScope;
     }
 
+    public void addChildScope( Scope scope ) {
+        this.childScopes.put( scope.getName(), scope );
+    }
+
+    public Map<String, Scope> getChildScopes() {
+        return childScopes;
+    }
+
+    public void setChildScopes(Map<String, Scope> childScopes) {
+        this.childScopes = childScopes;
+    }
+
     @Override
     public String toString() {
         return "Scope{" +
                " name='" + name + '\'' +
-               ", parentScope=" + parentScope +
-               ", symbols=" + symbols +
-               " }";
+               ", parentScope='" + ( parentScope != null ? parentScope.getName() : "<null>" ) +
+               "' }";
     }
 }

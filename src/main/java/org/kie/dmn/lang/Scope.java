@@ -16,13 +16,19 @@
 
 package org.kie.dmn.lang;
 
+import java.util.Map;
+
 public interface Scope {
 
     String getName();
 
     Scope getParentScope();
 
-    boolean define( Symbol symbol );
+    void addChildScope(Scope scope);
 
-    Symbol resolve( String id );
+    public Map<String, Scope> getChildScopes();
+
+    boolean define(Symbol symbol);
+
+    Symbol resolve(String id);
 }

@@ -37,6 +37,11 @@ public class BaseSymbol implements Symbol {
         this.type = type;
     }
 
+    public BaseSymbol(String id, Scope scope) {
+        this.id = id;
+        this.scope = scope;
+    }
+
     public BaseSymbol(String id, Type type, Scope scope) {
         this.id = id;
         this.type = type;
@@ -44,15 +49,15 @@ public class BaseSymbol implements Symbol {
     }
 
     public String getId() {
-        return null;
+        return id;
     }
 
     public Type getType() {
-        return null;
+        return type;
     }
 
     public Scope getScope() {
-        return null;
+        return scope;
     }
 
     public void setId(String id) {
@@ -92,8 +97,8 @@ public class BaseSymbol implements Symbol {
     public String toString() {
         return "Symbol{" +
                " id='" + id + '\'' +
-               ", type=" + type.getName() +
-               ", scope=" + scope.getName() +
+               ", type=" + ( type != null ? type.getName() : "<null>" ) +
+               ", scope=" + ( scope != null ? scope.getName() : "<null>" ) +
                " }";
     }
 }
