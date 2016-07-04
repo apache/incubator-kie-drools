@@ -9,20 +9,20 @@
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>optaplanner-persistence-jaxb</artifactId>
+  <artifactId>optaplanner-persistence-jackson</artifactId>
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
-  <name>OptaPlanner persistence JAXB</name>
+  <name>OptaPlanner persistence jackson</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
     to optimize business resource scheduling and planning.
 
-    This module contains the JAXB integration.
+    This module contains the jackson integration.
   </description>
 
   <properties>
-    <osgi.Bundle-SymbolicName>org.optaplanner.persistence.jaxb</osgi.Bundle-SymbolicName>
+    <osgi.Bundle-SymbolicName>org.optaplanner.persistence.jackson</osgi.Bundle-SymbolicName>
   </properties>
 
   <dependencies>
@@ -54,12 +54,16 @@
     </dependency>
     <!-- XML and JSON -->
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-core</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
     </dependency>
   </dependencies>
 
@@ -72,7 +76,7 @@
         <configuration>
           <instructions>
             <Export-Package>
-              org.optaplanner.persistence.jaxb.*
+              org.optaplanner.persistence.jackson.*
             </Export-Package>
           </instructions>
         </configuration>

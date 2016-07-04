@@ -14,58 +14,45 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jaxb.api.score;
+package org.optaplanner.persistence.jackson.api.score;
 
+import java.io.IOException;
 import java.io.Serializable;
-import java.io.StringReader;
-import java.io.StringWriter;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.persistence.jaxb.api.score.buildin.hardsoft.HardSoftScoreJaxbXmlAdapter;
 
 import static org.junit.Assert.*;
 
-public abstract class AbstractScoreJaxbXmlAdapterTest {
+public abstract class AbstractScoreJacksonJsonSerializerAndDeserializerTest {
 
     // ************************************************************************
     // Helper methods
     // ************************************************************************
 
     protected <S extends Score, W extends TestScoreWrapper<S>> void assertSerializeAndDeserialize(S expectedScore, W input) {
-        String xmlString;
+        String jsonString;
         W output;
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(input.getClass());
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-            StringWriter writer = new StringWriter();
-            jaxbMarshaller.marshal(input, writer);
-            xmlString = writer.toString();
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-            StringReader reader = new StringReader(xmlString);
-            output = (W) unmarshaller.unmarshal(reader);
-        } catch (JAXBException e) {
+            ObjectMapper objectMapper = new ObjectMapper();
+            jsonString = objectMapper.writeValueAsString(input);
+            output = (W) objectMapper.readValue(jsonString, input.getClass());
+        } catch (IOException e) {
             throw new IllegalStateException("Marshalling or unmarshalling for input (" + input + ") failed.", e);
         }
         assertEquals(expectedScore, output.getScore());
         String regex;
         if (expectedScore != null) {
-            regex = "<\\?[^\\?]*\\?>" // XML header
-                    + "<([\\w\\-\\.]+)>\\s*" // Start of element
-                    + "<score>"
+            regex = "\\{\\s*" // Start of element
+                    + "\"score\":\""
                     + expectedScore.toString().replaceAll("\\[", "\\\\[").replaceAll("\\]", "\\\\]") // Score
-                    + "</score>"
-                    + "\\s*</\\1>"; // End of element
+                    + "\""
+                    + "\\s*\\}"; // End of element
         } else {
-            regex = "<\\?[^\\?]*\\?>" // XML header
-                    + "<([\\w\\-\\.]+)/>"; // Start and end of element
+            regex = "\\{\"score\":null\\}"; // Start and end of element
         }
-        if (!xmlString.matches(regex)) {
-            fail("Regular expression match failed.\nExpected regular expression: " + regex + "\nActual string: " + xmlString);
+        if (!jsonString.matches(regex)) {
+            fail("Regular expression match failed.\nExpected regular expression: " + regex + "\nActual string: " + jsonString);
         }
     }
 
