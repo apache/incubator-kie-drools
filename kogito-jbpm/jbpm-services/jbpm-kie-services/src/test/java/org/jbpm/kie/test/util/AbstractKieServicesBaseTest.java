@@ -144,6 +144,7 @@ public abstract class AbstractKieServicesBaseTest {
 		// set runtime data service as listener on deployment service
 		((KModuleDeploymentService)deploymentService).addListener(((RuntimeDataServiceImpl) runtimeDataService));
 		((KModuleDeploymentService)deploymentService).addListener(((BPMN2DataServiceImpl) bpmn2Service));
+		((KModuleDeploymentService)deploymentService).addListener(((QueryServiceImpl) queryService));
 
 		// build process service
 		processService = new ProcessServiceImpl();

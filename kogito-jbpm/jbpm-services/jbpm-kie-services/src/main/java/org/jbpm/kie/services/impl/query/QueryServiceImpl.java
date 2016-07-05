@@ -17,6 +17,8 @@
 package org.jbpm.kie.services.impl.query;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,10 +36,16 @@ import org.dashbuilder.dataset.def.DataSetDefFactory;
 import org.dashbuilder.dataset.def.DataSetDefRegistry;
 import org.dashbuilder.dataset.def.SQLDataSetDefBuilder;
 import org.dashbuilder.dataset.filter.ColumnFilter;
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.kie.services.impl.query.persistence.PersistDataSetListener;
 import org.jbpm.kie.services.impl.query.persistence.QueryDefinitionEntity;
 import org.jbpm.kie.services.impl.query.preprocessor.BusinessAdminTasksPreprocessor;
+import org.jbpm.kie.services.impl.query.preprocessor.DeploymentIdsPreprocessor;
 import org.jbpm.kie.services.impl.query.preprocessor.PotOwnerTasksPreprocessor;
+import org.jbpm.kie.services.impl.security.DeploymentRolesManager;
+import org.jbpm.services.api.DeploymentEvent;
+import org.jbpm.services.api.DeploymentEventListener;
+import org.jbpm.services.api.model.DeployedAsset;
 import org.jbpm.services.api.query.QueryAlreadyRegisteredException;
 import org.jbpm.services.api.query.QueryNotFoundException;
 import org.jbpm.services.api.query.QueryParamBuilder;
@@ -55,7 +63,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class QueryServiceImpl implements QueryService {
+public class QueryServiceImpl implements QueryService, DeploymentEventListener {
     
     private static final Logger logger = LoggerFactory.getLogger(QueryServiceImpl.class);
 
@@ -66,6 +74,13 @@ public class QueryServiceImpl implements QueryService {
     
     private IdentityProvider identityProvider;
     private TransactionalCommandService commandService;
+    
+    private DeploymentRolesManager deploymentRolesManager = new DeploymentRolesManager();
+
+    
+    public void setDeploymentRolesManager(DeploymentRolesManager deploymentRolesManager) {
+        this.deploymentRolesManager = deploymentRolesManager;
+    }
 
     public void setIdentityProvider(IdentityProvider identityProvider) {
         this.identityProvider = identityProvider;
@@ -146,6 +161,8 @@ public class QueryServiceImpl implements QueryService {
                 dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminTasksPreprocessor(identityProvider));
             } else if (queryDefinition.getTarget().equals(Target.PO_TASK)) {
                 dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new PotOwnerTasksPreprocessor(identityProvider));
+            } else if (queryDefinition.getTarget().equals(Target.FILTERED_PROCESS)) {
+                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider));
             }
             DataSetMetadata metadata = dataSetManager.getDataSetMetadata(sqlDef.getUUID());
             for (String columnId : metadata.getColumnIds()) {
@@ -267,5 +284,37 @@ public class QueryServiceImpl implements QueryService {
                 }
             }
         }
+    }
+    
+    public void onDeploy(DeploymentEvent event) {
+        Collection<DeployedAsset> assets = event.getDeployedUnit().getDeployedAssets();
+        List<String> roles = null;
+        for( DeployedAsset asset : assets ) {
+            if( asset instanceof ProcessAssetDesc ) {                
+                if (roles == null) {
+                    roles = ((ProcessAssetDesc) asset).getRoles();
+                }
+            }
+        }
+        if (roles == null) {
+            roles = Collections.emptyList();
+        }
+        deploymentRolesManager.addRolesForDeployment(event.getDeploymentId(), roles);
+    }
+
+    public void onUnDeploy(DeploymentEvent event) {
+
+        deploymentRolesManager.removeRolesForDeployment(event.getDeploymentId());
+    }
+
+    @Override
+    public void onActivate(DeploymentEvent event) {
+        // no op
+    }
+
+    @Override
+    public void onDeactivate(DeploymentEvent event) {
+        // no op
+        
     }
 }

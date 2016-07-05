@@ -18,6 +18,7 @@ package org.jbpm.services.cdi.impl.query;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,6 +27,12 @@ import org.dashbuilder.dataprovider.DataSetProviderRegistry;
 import org.dashbuilder.dataset.DataSetManager;
 import org.dashbuilder.dataset.def.DataSetDefRegistry;
 import org.jbpm.kie.services.impl.query.QueryServiceImpl;
+import org.jbpm.kie.services.impl.security.DeploymentRolesManager;
+import org.jbpm.services.api.DeploymentEvent;
+import org.jbpm.services.cdi.Activate;
+import org.jbpm.services.cdi.Deactivate;
+import org.jbpm.services.cdi.Deploy;
+import org.jbpm.services.cdi.Undeploy;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.cdi.BootOnLoad;
@@ -54,6 +61,12 @@ public class QueryServiceCDIImpl extends QueryServiceImpl {
         super.setCommandService(commandService);
     }
 
+    @Inject
+    @Override
+    public void setDeploymentRolesManager(DeploymentRolesManager deploymentRolesManager) {
+        super.setDeploymentRolesManager(deploymentRolesManager);
+    }
+
     @PostConstruct
     @Override
     public void init() {
@@ -67,6 +80,26 @@ public class QueryServiceCDIImpl extends QueryServiceImpl {
             setProviderRegistry(providerRegistryInstance.get());
         }
         super.init();
+    }
+    
+    @Override
+    public void onDeploy(@Observes@Deploy DeploymentEvent event) {
+        super.onDeploy(event);
+    }
+    
+    @Override
+    public void onUnDeploy(@Observes@Undeploy DeploymentEvent event) {
+        super.onUnDeploy(event);
+    }
+
+    @Override
+    public void onActivate(@Observes@Activate DeploymentEvent event) {
+        super.onActivate(event);
+    }
+
+    @Override
+    public void onDeactivate(@Observes@Deactivate DeploymentEvent event) {
+        super.onDeactivate(event);
     }
 
 }

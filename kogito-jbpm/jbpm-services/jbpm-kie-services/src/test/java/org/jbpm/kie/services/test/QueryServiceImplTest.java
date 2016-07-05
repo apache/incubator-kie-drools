@@ -52,6 +52,7 @@ import org.jbpm.kie.services.impl.query.mapper.UserTaskInstanceWithCustomVarsQue
 import org.jbpm.kie.services.impl.query.mapper.UserTaskInstanceWithVarsQueryMapper;
 import org.jbpm.kie.services.test.objects.TestQueryParamBuilderFactory;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
+import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
@@ -75,6 +76,7 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
@@ -109,8 +111,16 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         processes.add("repo/processes/general/BPMN2-UserTask.bpmn2");
         processes.add("repo/processes/general/SimpleHTProcess.bpmn2");
         processes.add("repo/processes/general/AdHocSubProcess.bpmn2");
+        
+        DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+        customDescriptor.getBuilder()
+        .addRequiredRole("view:managers");
+        
+        Map<String, String> resources = new HashMap<String, String>();
+        resources.put("src/main/resources/" + DeploymentDescriptor.META_INF_LOCATION, customDescriptor.toXml());
+        
 
-        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes, resources);
         File pom = new File("target/kmodule", "pom.xml");
         pom.getParentFile().mkdir();
         try {
@@ -880,6 +890,55 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;
         
+    }
+    
+    @Test
+    public void testGetFilteredProcessInstances() {
+        
+        // let's grant managers role so process can be started
+        List<String> roles = new ArrayList<String>();
+        roles.add("managers");
+        identityProvider.setRoles(roles);
+        
+        query = new SqlQueryDefinition("getAllProcessInstances", dataSourceJNDIname, Target.FILTERED_PROCESS);
+        query.setExpression("select * from processinstancelog");
+        
+        
+        queryService.registerQuery(query);
+        
+        List<QueryDefinition> queries = queryService.getQueries(new QueryContext());
+        assertNotNull(queries);
+        assertEquals(1, queries.size());
+
+        QueryDefinition registeredQuery = queryService.getQuery(query.getName());
+        
+        assertNotNull(registeredQuery);
+        assertEquals(query.getName(), registeredQuery.getName());
+        assertEquals(query.getSource(), registeredQuery.getSource());
+        assertEquals(query.getExpression(), registeredQuery.getExpression());
+        assertEquals(query.getTarget(), registeredQuery.getTarget());
+        
+        Collection<ProcessInstanceDesc> instances = queryService.query(query.getName(), ProcessInstanceQueryMapper.get(), new QueryContext());
+        assertNotNull(instances);
+        assertEquals(0, instances.size());
+
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+
+        instances = queryService.query(query.getName(), ProcessInstanceQueryMapper.get(), new QueryContext());
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
+        assertEquals(1, (int)instances.iterator().next().getState());
+        
+        // let's now change the roles so user should not see instances
+        roles.clear();
+        roles.add("employees");
+        identityProvider.setRoles(roles);
+        identityProvider.setName("anotherUser");
+ 
+        instances = queryService.query(query.getName(), ProcessInstanceQueryMapper.get(), new QueryContext());
+        assertNotNull(instances);
+        assertEquals(0, instances.size());
     }
     
     protected void setFieldValue(Object instance, String fieldName, Object value) {

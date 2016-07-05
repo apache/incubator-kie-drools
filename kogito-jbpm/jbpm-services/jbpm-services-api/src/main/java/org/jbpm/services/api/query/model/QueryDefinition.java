@@ -29,6 +29,7 @@ public interface QueryDefinition {
         BA_TASK,
         PO_TASK,
         JOBS,
+        FILTERED_PROCESS,
         CUSTOM;
     }
 
