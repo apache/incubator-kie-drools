@@ -130,7 +130,7 @@ public class InstitutionParametrizationDialog extends JDialog {
         examinationPanel.doProblemFactChange(scoreDirector -> {
             Examination examination = scoreDirector.getWorkingSolution();
             InstitutionParametrization institutionParametrization = examination.getInstitutionParametrization();
-            scoreDirector.beforeProblemFactChanged(institutionParametrization);
+            scoreDirector.beforeProblemPropertyChanged(institutionParametrization);
             institutionParametrization.setTwoInARowPenalty(twoInARowPenalty);
             institutionParametrization.setTwoInADayPenalty(twoInADayPenalty);
             institutionParametrization.setPeriodSpreadLength(periodSpreadLength);
@@ -139,7 +139,7 @@ public class InstitutionParametrizationDialog extends JDialog {
             institutionParametrization.setFrontLoadLargeTopicSize(frontLoadLargeTopicSize);
             institutionParametrization.setFrontLoadLastPeriodSize(frontLoadLastPeriodSize);
             institutionParametrization.setFrontLoadPenalty(frontLoadPenalty);
-            scoreDirector.afterProblemFactChanged(institutionParametrization);
+            scoreDirector.afterProblemPropertyChanged(institutionParametrization);
         }, true);
     }
 

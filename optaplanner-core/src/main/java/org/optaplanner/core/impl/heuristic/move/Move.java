@@ -76,8 +76,8 @@ public interface Move {
     /**
      * Does the move (which indirectly affects the {@link ScoreDirector#getWorkingSolution()}).
      * When the {@link PlanningSolution working solution} is modified, the {@link ScoreDirector} must be correctly notified
-     * (through {@link ScoreDirector#beforeVariableChanged(Object, String)},
-     * {@link ScoreDirector#afterProblemFactChanged(Object)}, etc),
+     * (through {@link ScoreDirector#beforeVariableChanged(Object, String)} and
+     * {@link ScoreDirector#afterVariableChanged(Object, String)}),
      * otherwise later calculated {@link Score}s will be corrupted.
      * <p>
      * This method must end with calling {@link ScoreDirector#triggerVariableListeners()} to ensure all shadow variables are updated.

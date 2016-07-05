@@ -136,9 +136,9 @@ public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment>
             // First remove the problem fact from all planning entities that use it
             for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
                 if (Objects.equals(processAssignment.getOriginalMachine(), machine)) {
-                    scoreDirector.beforeProblemFactChanged(processAssignment);
+                    scoreDirector.beforeProblemPropertyChanged(processAssignment);
                     processAssignment.setOriginalMachine(null);
-                    scoreDirector.afterProblemFactChanged(processAssignment);
+                    scoreDirector.afterProblemPropertyChanged(processAssignment);
                 }
                 if (Objects.equals(processAssignment.getMachine(), machine)) {
                     scoreDirector.beforeVariableChanged(processAssignment, "machine");

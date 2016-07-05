@@ -300,9 +300,9 @@ public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
         doProblemFactChange(scoreDirector -> {
             InvestmentSolution solution = scoreDirector.getWorkingSolution();
             InvestmentParametrization parametrization = solution.getParametrization();
-            scoreDirector.beforeProblemFactChanged(parametrization);
+            scoreDirector.beforeProblemPropertyChanged(parametrization);
             parametrization.setStandardDeviationMillisMaximum(standardDeviationMillisMaximum);
-            scoreDirector.afterProblemFactChanged(parametrization);
+            scoreDirector.afterProblemPropertyChanged(parametrization);
         }, true);
     }
 
@@ -311,9 +311,9 @@ public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
             InvestmentSolution solution = scoreDirector.getWorkingSolution();
             for (Region workingRegion : solution.getRegionList()) {
                 if (region.getId().equals(workingRegion.getId())) {
-                    scoreDirector.beforeProblemFactChanged(workingRegion);
+                    scoreDirector.beforeProblemPropertyChanged(workingRegion);
                     workingRegion.setQuantityMillisMaximum(quantityMillisMaximum);
-                    scoreDirector.afterProblemFactChanged(workingRegion);
+                    scoreDirector.afterProblemPropertyChanged(workingRegion);
                     break;
                 }
             }
@@ -325,9 +325,9 @@ public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
             InvestmentSolution solution = scoreDirector.getWorkingSolution();
             for (Sector workingSector : solution.getSectorList()) {
                 if (sector.getId().equals(workingSector.getId())) {
-                    scoreDirector.beforeProblemFactChanged(workingSector);
+                    scoreDirector.beforeProblemPropertyChanged(workingSector);
                     workingSector.setQuantityMillisMaximum(quantityMillisMaximum);
-                    scoreDirector.afterProblemFactChanged(workingSector);
+                    scoreDirector.afterProblemPropertyChanged(workingSector);
                     break;
                 }
             }

@@ -47,8 +47,8 @@ public interface CustomPhaseCommand<Solution_> {
     /**
      * Changes {@link PlanningSolution working solution} of {@link ScoreDirector#getWorkingSolution()}.
      * When the {@link PlanningSolution working solution} is modified, the {@link ScoreDirector} must be correctly notified
-     * (through {@link ScoreDirector#beforeVariableChanged(Object, String)},
-     * {@link ScoreDirector#afterProblemFactChanged(Object)}, etc),
+     * (through {@link ScoreDirector#beforeVariableChanged(Object, String)} and
+     * {@link ScoreDirector#afterVariableChanged(Object, String)}),
      * otherwise calculated {@link Score}s will be corrupted.
      * <p>
      * Don't forget to call {@link ScoreDirector#triggerVariableListeners()} after each set of changes

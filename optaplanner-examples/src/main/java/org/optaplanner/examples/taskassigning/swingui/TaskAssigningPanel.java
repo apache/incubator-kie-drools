@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -33,15 +32,12 @@ import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.Timer;
 
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.taskassigning.domain.Affinity;
 import org.optaplanner.examples.taskassigning.domain.Customer;
 import org.optaplanner.examples.taskassigning.domain.Priority;
 import org.optaplanner.examples.taskassigning.domain.Task;
 import org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution;
 import org.optaplanner.examples.taskassigning.domain.TaskType;
-import org.optaplanner.examples.taskassigning.persistence.TaskAssigningGenerator;
 
 import static org.optaplanner.examples.taskassigning.persistence.TaskAssigningGenerator.*;
 
@@ -139,15 +135,15 @@ public class TaskAssigningPanel extends SolutionPanel<TaskAssigningSolution> {
             for (Task task : solution.getTaskList()) {
                 if (!task.isLocked()) {
                     if (task.getStartTime() != null && task.getStartTime() < consumedDuration) {
-                        scoreDirector.beforeProblemFactChanged(task);
+                        scoreDirector.beforeProblemPropertyChanged(task);
                         task.setLocked(true);
-                        scoreDirector.afterProblemFactChanged(task);
+                        scoreDirector.afterProblemPropertyChanged(task);
                         logger.trace("Consumed task ({}).", task);
                     } else if (task.getReadyTime() < consumedDuration) {
                         // Prevent a non-locked task from being assigned retroactively
-                        scoreDirector.beforeProblemFactChanged(task);
+                        scoreDirector.beforeProblemPropertyChanged(task);
                         task.setReadyTime(consumedDuration);
-                        scoreDirector.afterProblemFactChanged(task);
+                        scoreDirector.afterProblemPropertyChanged(task);
                     }
                 }
             }

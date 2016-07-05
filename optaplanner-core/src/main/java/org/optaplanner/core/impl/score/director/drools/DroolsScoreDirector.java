@@ -200,26 +200,26 @@ public class DroolsScoreDirector<Solution_>
                     + "Maybe that specific instance is already in the "
                     + PlanningSolution.class.getSimpleName() + "'s problem fact members ("
                     + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").\n"
-                    + "Maybe use before/afterProblemFactChanged() instead of before/afterProblemFactAdded().");
+                    + "Maybe use before/afterProblemPropertyChanged() instead of before/afterProblemFactAdded().");
         }
         kieSession.insert(problemFact);
         super.afterProblemFactAdded(problemFact);
     }
 
-    // public void beforeProblemFactChanged(Object problemFact) // Do nothing
+    // public void beforeProblemPropertyChanged(Object problemFactOrEntity) // Do nothing
 
     @Override
-    public void afterProblemFactChanged(Object problemFact) {
-        FactHandle factHandle = kieSession.getFactHandle(problemFact);
+    public void afterProblemPropertyChanged(Object problemFactOrEntity) {
+        FactHandle factHandle = kieSession.getFactHandle(problemFactOrEntity);
         if (factHandle == null) {
-            throw new IllegalArgumentException("The problemFact (" + problemFact
+            throw new IllegalArgumentException("The problemFact (" + problemFactOrEntity
                     + ") was never added to this ScoreDirector.\n"
                     + "Maybe that specific instance is not in the "
                     + PlanningSolution.class.getSimpleName() + "'s problem fact members ("
                     + getSolutionDescriptor().getProblemFactMemberAndProblemFactCollectionMemberNames() + ").");
         }
-        kieSession.update(factHandle, problemFact);
-        super.afterProblemFactChanged(problemFact);
+        kieSession.update(factHandle, problemFactOrEntity);
+        super.afterProblemPropertyChanged(problemFactOrEntity);
     }
 
     // public void beforeProblemFactRemoved(Object problemFact) // Do nothing

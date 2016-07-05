@@ -144,14 +144,14 @@ public class IncrementalScoreDirector<Solution_>
     }
 
     @Override
-    public void beforeProblemFactChanged(Object problemFact) {
-        super.beforeProblemFactChanged(problemFact);
+    public void beforeProblemPropertyChanged(Object problemFactOrEntity) {
+        super.beforeProblemPropertyChanged(problemFactOrEntity);
     }
 
     @Override
-    public void afterProblemFactChanged(Object problemFact) {
+    public void afterProblemPropertyChanged(Object problemFactOrEntity) {
         incrementalScoreCalculator.resetWorkingSolution(workingSolution); // TODO do not nuke it
-        super.afterProblemFactChanged(problemFact);
+        super.afterProblemPropertyChanged(problemFactOrEntity);
     }
 
     @Override

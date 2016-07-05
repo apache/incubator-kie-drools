@@ -229,9 +229,10 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
             }
             windowStartIndex++;
             ShiftDate newPlanningWindowStart = shiftDateList.get(windowStartIndex);
+            scoreDirector.beforeProblemPropertyChanged(nurseRosterParametrization);
             nurseRosterParametrization.setPlanningWindowStart(newPlanningWindowStart);
             nurseRosterParametrization.setLastShiftDate(newShiftDate);
-            scoreDirector.afterProblemFactChanged(nurseRosterParametrization);
+            scoreDirector.afterProblemPropertyChanged(nurseRosterParametrization);
         }, true);
     }
 

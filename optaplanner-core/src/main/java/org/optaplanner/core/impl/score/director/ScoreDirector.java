@@ -99,9 +99,9 @@ public interface ScoreDirector<Solution_> {
 
     void afterProblemFactAdded(Object problemFact);
 
-    void beforeProblemFactChanged(Object problemFact);
+    void beforeProblemPropertyChanged(Object problemFactOrEntity);
 
-    void afterProblemFactChanged(Object problemFact);
+    void afterProblemPropertyChanged(Object problemFactOrEntity);
 
     void beforeProblemFactRemoved(Object problemFact);
 

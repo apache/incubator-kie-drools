@@ -325,12 +325,12 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     @Override
-    public void beforeProblemFactChanged(Object problemFact) {
+    public void beforeProblemPropertyChanged(Object problemFactOrEntity) {
         // Do nothing
     }
 
     @Override
-    public void afterProblemFactChanged(Object problemFact) {
+    public void afterProblemPropertyChanged(Object problemFactOrEntity) {
         variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
     }
 
