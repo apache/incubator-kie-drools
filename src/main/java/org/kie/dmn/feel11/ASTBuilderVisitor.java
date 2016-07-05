@@ -16,6 +16,7 @@
 
 package org.kie.dmn.feel11;
 
+import org.antlr.v4.runtime.Token;
 import org.kie.dmn.lang.ast.*;
 
 import java.util.ArrayList;
@@ -191,11 +192,16 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitNameDefinition(FEEL_1_1Parser.NameDefinitionContext ctx) {
-        List<String> tokens = new ArrayList<>();
+        List<String> tokenStrs = new ArrayList<>();
+        List<Token> tokens = new ArrayList<>(  );
         for ( int i = 0; i < ctx.getChildCount(); i++ ) {
-            tokens.add( ctx.getChild( i ).getText() );
+            visit( ctx.getChild( i ) );
         }
-        return ASTBuilderFactory.newNameDefNode( ctx, tokens );
+        ParserHelper.getAllTokens( ctx, tokens );
+        for( Token t : tokens ) {
+            tokenStrs.add( t.getText() );
+        }
+        return ASTBuilderFactory.newNameDefNode( ctx, tokenStrs );
     }
 
     @Override
