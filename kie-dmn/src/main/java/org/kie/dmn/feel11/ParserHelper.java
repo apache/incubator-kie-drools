@@ -93,7 +93,7 @@ public class ParserHelper {
         return ctx.getStart().getInputStream().getText( interval );
     }
 
-    private List<Token> getAllTokens( ParseTree ctx, List<Token> tokens ) {
+    public static List<Token> getAllTokens( ParseTree ctx, List<Token> tokens ) {
         for( int i = 0; i < ctx.getChildCount(); i++ ) {
             ParseTree child = ctx.getChild( i );
             if( child instanceof TerminalNode ) {
