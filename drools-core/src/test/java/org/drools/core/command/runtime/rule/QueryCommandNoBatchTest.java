@@ -15,16 +15,12 @@
  */
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.QueryResultsImpl;
 import org.drools.core.QueryResultsRowImpl;
 import org.junit.*;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.QueryResults;
 import org.drools.core.command.GetVariableCommand;
 import org.drools.core.command.KnowledgeContextResolveFromContextCommand;
 import org.drools.core.command.ResolvingKnowledgeCommandContext;
@@ -32,8 +28,7 @@ import org.drools.core.command.SetVariableCommandFromCommand;
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.drools.core.world.impl.WorldImpl;
+import org.drools.core.world.impl.ContextManagerImpl;
 import static org.junit.Assert.*;
 
 /**
@@ -50,12 +45,12 @@ public class QueryCommandNoBatchTest {
 
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        KieSession ksession = kbase.newKieSession();
+        KieSession          ksession      = kbase.newKieSession();
         ExecutionResultImpl localKresults = new ExecutionResultImpl();
-        WorldImpl worldImpl = new WorldImpl();
+        ContextManagerImpl  worldImpl     = new ContextManagerImpl();
         worldImpl.createContext("__TEMP__");
         worldImpl.getContext("__TEMP__").set("__TEMP__", new ContextImpl("__TEMP__", null));
-        ResolvingKnowledgeCommandContext kContext = new ResolvingKnowledgeCommandContext(worldImpl);
+        ResolvingKnowledgeCommandContext kContext = new ResolvingKnowledgeCommandContext(worldImpl.createContext("temp"));
         kContext.set("localResults", localKresults);
         kContext.set("ksession", ksession);
 

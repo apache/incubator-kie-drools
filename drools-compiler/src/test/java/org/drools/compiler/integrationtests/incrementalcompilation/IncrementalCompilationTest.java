@@ -125,11 +125,11 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         createAndDeployAndTest( kc, "7", header, drl3, "R3" );
     }
 
-    private void createAndDeployAndTest( KieContainer kc,
-                                         String version,
-                                         String header,
-                                         String drls,
-                                         String... ruleNames ) {
+    public static void createAndDeployAndTest( KieContainer kc,
+                                               String version,
+                                               String header,
+                                               String drls,
+                                               String... ruleNames ) {
         if ( ruleNames == null ) {
             ruleNames = new String[ 0 ];
         }

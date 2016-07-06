@@ -23,12 +23,14 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.common.InternalFactHandle;
 import org.kie.internal.command.Context;
+import org.kie.internal.fluent.Scope;
 
 public class SetVariableCommandFromLastReturn
     implements
     GenericCommand<Object> {
     private String identifier;
     private String contextName;
+    private Scope scope = Scope.REQUEST;
 
     public SetVariableCommandFromLastReturn(String identifier) {
         this.identifier = identifier;
@@ -38,6 +40,14 @@ public class SetVariableCommandFromLastReturn
                                             String identifier) {
         this.identifier = identifier;
         this.contextName = contextName;
+    }
+
+    public SetVariableCommandFromLastReturn(String contextName,
+                                            String identifier,
+                                            Scope scope) {
+        this.identifier = identifier;
+        this.contextName = contextName;
+        this.scope = scope;
     }
 
     public Object execute(Context context) {

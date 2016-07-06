@@ -16,12 +16,20 @@
 
 package org.drools.core.command;
 
+import org.drools.core.ClockType;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.SessionConfigurationImpl;
+import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.GenericCommand;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.utils.KieService;
+
+import java.util.Map;
 
 public class NewKieSessionCommand
     implements
@@ -31,16 +39,41 @@ public class NewKieSessionCommand
     private String sessionId;
     private ReleaseId releaseId;
 
+    public NewKieSessionCommand(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
     public NewKieSessionCommand(ReleaseId releaseId, String sessionId) {
         this.sessionId = sessionId;
         this.releaseId = releaseId;
     }
 
     public KieSession execute(Context context) {
-        // use the new API to retrieve the session by ID
-        KieServices kieServices = KieServices.Factory.get();
-        KieContainer kieContainer = kieServices.newKieContainer( releaseId ); 
-        return sessionId != null ? kieContainer.newKieSession( sessionId ) : kieContainer.newKieSession();
+        KieContainer kieContainer;
+
+        if ( releaseId != null ) {
+            // use the new API to retrieve the session by ID
+            KieServices  kieServices  = KieServices.Factory.get();
+            kieContainer = kieServices.newKieContainer(releaseId);
+        } else {
+            kieContainer = (KieContainer) ((Map<String, Object>)context.get(ContextImpl.REGISTRY)).get(KieContainer.class.getName());
+            if ( kieContainer == null ) {
+                throw new RuntimeException("ReleaseId was not specfied, nor was an existing KieContainer assigned to the Registry");
+            }
+        }
+
+        KieSession ksession  = sessionId != null ? kieContainer.newKieSession(sessionId) : kieContainer.newKieSession();
+
+        ((Map<String, Object>)context.get(ContextImpl.REGISTRY)).put(KieSession.class.getName(), ksession);
+
+        return ksession;
     }
 
+    @Override
+    public String toString() {
+        return "NewKieSessionCommand{" +
+               "sessionId='" + sessionId + '\'' +
+               ", releaseId=" + releaseId +
+               '}';
+    }
 }
