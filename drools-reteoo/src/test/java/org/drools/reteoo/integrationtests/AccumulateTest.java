@@ -2019,7 +2019,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.dispose();
         assertEquals( 1,
                 results.size() );
-        assertEquals( 9.0,
+        assertEquals( 9L,
                 results.get( 0 ) );
     }
 

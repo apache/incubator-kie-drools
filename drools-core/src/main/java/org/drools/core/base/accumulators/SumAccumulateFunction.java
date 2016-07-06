@@ -16,26 +16,22 @@
 
 package org.drools.core.base.accumulators;
 
+import org.kie.api.runtime.rule.AccumulateFunction;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
-import org.kie.api.runtime.rule.AccumulateFunction;
-
 /**
  * An implementation of an accumulator capable of calculating sum of values
  */
 public class SumAccumulateFunction implements AccumulateFunction {
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException { }
 
-    }
-
-    public void writeExternal(ObjectOutput out) throws IOException {
-
-    }
+    public void writeExternal(ObjectOutput out) throws IOException { }
 
     protected static class SumData implements Externalizable {
         public double total = 0;
@@ -52,59 +48,36 @@ public class SumAccumulateFunction implements AccumulateFunction {
 
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.base.accumulators.AccumulateFunction#createContext()
-     */
     public Serializable createContext() {
         return new SumData();
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.base.accumulators.AccumulateFunction#init(java.lang.Object)
-     */
     public void init(Serializable context) throws Exception {
         SumData data = (SumData) context;
         data.total = 0;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.base.accumulators.AccumulateFunction#accumulate(java.lang.Object, java.lang.Object)
-     */
     public void accumulate(Serializable context,
                            Object value) {
         SumData data = (SumData) context;
         data.total += ((Number) value).doubleValue();
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
-     */
     public void reverse(Serializable context,
                         Object value) throws Exception {
         SumData data = (SumData) context;
         data.total -= ((Number) value).doubleValue();
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
-     */
     public Object getResult(Serializable context) throws Exception {
-        SumData data = (SumData) context;
-        return new Double( data.total );
+        return ((SumData) context).total;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.base.accumulators.AccumulateFunction#supportsReverse()
-     */
     public boolean supportsReverse() {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public Class< ? > getResultType() {
+    public Class<?> getResultType() {
         return Number.class;
     }
-
 }

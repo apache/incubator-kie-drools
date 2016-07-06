@@ -2003,7 +2003,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.dispose();
         assertEquals( 1,
                       results.size() );
-        assertEquals( 9.0,
+        assertEquals( 9L,
                       results.get( 0 ) );
     }
 
@@ -3012,7 +3012,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<Double> list = new ArrayList<Double>();
+        List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( 1 );
@@ -3021,7 +3021,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
-        assertEquals( "hello".length(), (double)list.get(0), 0.01 );
+        assertEquals( "hello".length(), (int)list.get(0), 0.01 );
     }
 
     @Test
@@ -3054,7 +3054,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
-        assertEquals( "hello".length(), (double)list.get(0), 0.01 );
+        assertEquals( "hello".length(), list.get(0), 0.01 );
     }
 
     public static class Converter {
@@ -3089,5 +3089,33 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         assertEquals( 1, list.size() );
+    }
+
+    @Test
+    public void testTypedSumOnAccumulate() {
+        // DROOLS-1175
+        String drl1 =
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $i : Integer()\n" +
+                "  accumulate ( $s : String(), $result : sum( $s.length() ) )\n" +
+                "then\n" +
+                "  list.add($result);\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( drl1, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( 1 );
+        ksession.insert( "hello" );
+        ksession.insert( "hi" );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "hello".length() + "hi".length(), (int)list.get(0) );
     }
 }

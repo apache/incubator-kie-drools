@@ -3627,8 +3627,8 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 2, map.size() );
-        assertEquals( 160.0, map.get( 4 ) );
-        assertEquals( 120.0, map.get( 3 ) );
+        assertEquals( 160, map.get( 4 ) );
+        assertEquals( 120, map.get( 3 ) );
 
     }
 
@@ -4712,9 +4712,9 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 4, list.size() );
-        assertEquals( 160.0, list.get( 0 ) );
+        assertEquals( 160, list.get( 0 ) );
         assertEquals( 4, list.get( 1 ) );
-        assertEquals( 120.0, list.get( 2 ) );
+        assertEquals( 120, list.get( 2 ) );
         assertEquals( 3, list.get( 3 ) );
     }
 
@@ -5052,9 +5052,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 100, list.size() );
     }
 
-
     @Test
-    @Ignore
     public void testQueryCorruption() {
 
         String drl = "package drl;\n" +
