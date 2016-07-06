@@ -14,6 +14,8 @@
   <logger name="bitronix.tm" level="error"/>
   <logger name="org.hibernate" level="warn"/>
   
+  <logger name="org.dashbuilder.dataprovider.sql.SQLDataSetProvider" level="info"/>
+  
   <root level="info">
     <appender-ref ref="consoleAppender" />
   </root>

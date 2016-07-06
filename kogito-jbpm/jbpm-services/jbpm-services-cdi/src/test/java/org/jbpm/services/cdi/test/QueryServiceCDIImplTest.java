@@ -16,6 +16,8 @@
 
 package org.jbpm.services.cdi.test;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -189,5 +191,8 @@ public class QueryServiceCDIImplTest extends QueryServiceImplTest {
         deleted += commandService.execute(new UpdateStringCommand("delete from  TaskEventImpl te"));
         deleted += commandService.execute(new UpdateStringCommand("delete from  TaskVariableImpl te"));
         logger.debug("Deleted " + deleted);
+        
+        identityProvider.setRoles(new ArrayList<String>());
+        identityProvider.setName("testUser");
     }
 }

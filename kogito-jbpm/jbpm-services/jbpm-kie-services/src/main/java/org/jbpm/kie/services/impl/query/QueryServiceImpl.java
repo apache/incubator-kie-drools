@@ -62,6 +62,9 @@ import org.kie.internal.identity.IdentityProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_EXTERNALID;
+import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_DEPLOYMENTID;;
+
 
 public class QueryServiceImpl implements QueryService, DeploymentEventListener {
     
@@ -162,7 +165,13 @@ public class QueryServiceImpl implements QueryService, DeploymentEventListener {
             } else if (queryDefinition.getTarget().equals(Target.PO_TASK)) {
                 dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new PotOwnerTasksPreprocessor(identityProvider));
             } else if (queryDefinition.getTarget().equals(Target.FILTERED_PROCESS)) {
-                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider));
+                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_EXTERNALID));
+            } else if (queryDefinition.getTarget().equals(Target.FILTERED_BA_TASK)) {
+                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new BusinessAdminTasksPreprocessor(identityProvider));
+                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_DEPLOYMENTID));
+            } else if (queryDefinition.getTarget().equals(Target.FILTERED_PO_TASK)) {
+                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new PotOwnerTasksPreprocessor(identityProvider));
+                dataSetDefRegistry.registerPreprocessor(sqlDef.getUUID(), new DeploymentIdsPreprocessor(deploymentRolesManager, identityProvider, COLUMN_DEPLOYMENTID));
             }
             DataSetMetadata metadata = dataSetManager.getDataSetMetadata(sqlDef.getUUID());
             for (String columnId : metadata.getColumnIds()) {

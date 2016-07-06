@@ -16,7 +16,6 @@
 package org.jbpm.kie.services.impl.query.preprocessor;
 
 import static org.dashbuilder.dataset.filter.FilterFactory.in;
-import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_EXTERNALID;
 
 import java.util.List;
 
@@ -29,12 +28,13 @@ import org.kie.internal.identity.IdentityProvider;
 public class DeploymentIdsPreprocessor implements DataSetPreprocessor {
 
     private DeploymentRolesManager deploymentRolesManager;
-
     private IdentityProvider identityProvider;
+    private String columnId;
 
-    public DeploymentIdsPreprocessor(DeploymentRolesManager deploymentRolesManager, IdentityProvider identityProvider) {
+    public DeploymentIdsPreprocessor(DeploymentRolesManager deploymentRolesManager, IdentityProvider identityProvider, String columnId) {
         this.deploymentRolesManager = deploymentRolesManager;
         this.identityProvider = identityProvider;
+        this.columnId = columnId;
     }
 
     @Override
@@ -46,10 +46,10 @@ public class DeploymentIdsPreprocessor implements DataSetPreprocessor {
                 
         
         if (lookup.getFirstFilterOp() != null) {
-            lookup.getFirstFilterOp().addFilterColumn(in(COLUMN_EXTERNALID, deploymentIds));
+            lookup.getFirstFilterOp().addFilterColumn(in(columnId, deploymentIds));
         } else {
             DataSetFilter filter = new DataSetFilter();
-            filter.addFilterColumn(in(COLUMN_EXTERNALID, deploymentIds));
+            filter.addFilterColumn(in(columnId, deploymentIds));
             lookup.addOperation(filter);
         }
     }
