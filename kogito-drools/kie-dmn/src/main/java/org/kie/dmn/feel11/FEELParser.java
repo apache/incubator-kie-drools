@@ -20,13 +20,17 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import java.util.stream.Stream;
+
 public class FEELParser {
 
-    public static ParseTree parse( String source ) {
+    public static ParseTree parse(String source, String... symbols) {
         ANTLRInputStream input = new ANTLRInputStream(source);
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
         FEEL_1_1Parser parser = new FEEL_1_1Parser( tokens );
+        // pre-loads the parser with symbols
+        Stream.of( symbols ).forEach( s -> parser.getHelper().defineVariable( s ) );
         ParseTree tree = parser.expression();
         return tree;
     }

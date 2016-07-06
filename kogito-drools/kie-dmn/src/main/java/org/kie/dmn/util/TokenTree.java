@@ -16,8 +16,6 @@
 
 package org.kie.dmn.util;
 
-import org.antlr.v4.runtime.Token;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +28,9 @@ public class TokenTree {
         root.children = new ArrayList<Node>();
     }
 
-    public void addName( List<Token> tokens ) {
-        System.out.println(" ++ tokens = "+tokens);
+    public void addName( List<String> tokens ) {
         Node current = root;
-        for( Token t : tokens ) {
+        for( String t : tokens ) {
             Node next = findToken( current, t );
             if( next == null ) {
                 next = new Node( t, current);
@@ -43,11 +40,11 @@ public class TokenTree {
         }
     }
 
-    public void start( Token t ) {
+    public void start( String t ) {
         currentNode = findToken( root, t );
     }
 
-    public boolean followUp( Token t ) {
+    public boolean followUp( String t ) {
         if( currentNode == null ) {
             // this happens when the start() call above does not
             // find a root token
@@ -57,9 +54,9 @@ public class TokenTree {
         return currentNode != null;
     }
 
-    private Node findToken(Node current, Token t) {
+    private Node findToken(Node current, String t) {
         for( Node n : current.children ) {
-            if( n.token.getType() == t.getType() && n.token.getText().equals( t.getText() ) ) {
+            if( n.token.equals( t ) ) {
                 return n;
             }
         }
@@ -67,7 +64,7 @@ public class TokenTree {
     }
 
     private static class Node {
-        public Token      token;
+        public String      token;
         public Node       parent;
         public List<Node> children;
 
@@ -75,7 +72,7 @@ public class TokenTree {
             this.children = new ArrayList<>(  );
         }
 
-        public Node(Token token, Node parent) {
+        public Node(String token, Node parent) {
             this.token = token;
             this.parent = parent;
             this.children = new ArrayList<>(  );

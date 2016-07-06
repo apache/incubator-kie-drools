@@ -25,9 +25,7 @@ import org.kie.dmn.lang.Scope;
 import org.kie.dmn.lang.types.LocalScope;
 import org.kie.dmn.lang.types.SymbolTable;
 import org.kie.dmn.lang.types.VariableSymbol;
-import org.kie.dmn.util.TokenTree;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -39,7 +37,6 @@ public class ParserHelper {
     private SymbolTable   symbols      = new SymbolTable();
     private Scope         currentScope = new LocalScope( GLOBAL, symbols.getBuiltInScope() );
     private Stack<String> currentName  = new Stack<>();
-    private TokenTree     tokenTree    = new TokenTree();
 
     public ParserHelper() {
         // initial context is loaded
@@ -52,11 +49,9 @@ public class ParserHelper {
 
     public void pushScope() {
         currentScope = new LocalScope( currentName.peek(), currentScope );
-        System.out.println( "Pushing scope: " + currentScope );
     }
 
     public void popScope() {
-        System.out.println( "Popping scope: " + currentScope );
         currentScope = currentScope.getParentScope();
     }
 
@@ -69,21 +64,20 @@ public class ParserHelper {
     }
 
     public void defineVariable(ParserRuleContext ctx) {
-        VariableSymbol var = new VariableSymbol( getOriginalText( ctx ) );
-        System.out.println( " --> var = " + var.getId() );
-        tokenTree.addName( getAllTokens( ctx, new ArrayList<>(  ) ) );
+        defineVariable( getOriginalText( ctx ) );
+    }
+
+    public void defineVariable( String variable ) {
+        VariableSymbol var = new VariableSymbol( variable );
         this.currentScope.define( var );
     }
 
-    public void startVariable( Token t ) {
-        this.tokenTree.start( t );
+    public void startVariable(Token t) {
+        this.currentScope.start( t.getText() );
     }
 
-    public boolean followUp( Token t ) {
-        if( t.getText().equals( "decision" ) | t.getText().equals( "table" ) ) {
-            return true;
-        }
-        return this.tokenTree.followUp( t );
+    public boolean followUp(Token t) {
+        return this.currentScope.followUp( t.getText() );
     }
 
     private String getOriginalText(ParserRuleContext ctx) {
@@ -93,10 +87,10 @@ public class ParserHelper {
         return ctx.getStart().getInputStream().getText( interval );
     }
 
-    public static List<Token> getAllTokens( ParseTree ctx, List<Token> tokens ) {
-        for( int i = 0; i < ctx.getChildCount(); i++ ) {
+    public static List<Token> getAllTokens(ParseTree ctx, List<Token> tokens) {
+        for ( int i = 0; i < ctx.getChildCount(); i++ ) {
             ParseTree child = ctx.getChild( i );
-            if( child instanceof TerminalNode ) {
+            if ( child instanceof TerminalNode ) {
                 tokens.add( ((TerminalNode) child).getSymbol() );
             } else {
                 getAllTokens( child, tokens );

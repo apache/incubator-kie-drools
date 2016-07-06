@@ -909,20 +909,21 @@ public class FEELParserTest {
                                  + "        [ <25      , \"good\" , \"Low\"    ],"
                                  + "        [ <25      , \"bad\"  , \"Medium\" ] ],"
                                  + "    hit policy: \"Unique\" )";
-        BaseNode functionBase = parse( inputExpression );
+        // need to call parse passing in the input variables
+        BaseNode functionBase = parse( inputExpression, "Applicant Age", "Medical History" );
 
         assertThat( functionBase, is( instanceOf( FunctionInvocationNode.class ) ) );
         assertThat( functionBase.getText(), is( inputExpression ) );
 
         FunctionInvocationNode function = (FunctionInvocationNode) functionBase;
-        assertThat( function.getName(), is( instanceOf( QualifiedNameNode.class ) ) );
+        assertThat( function.getName(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( function.getName().getText(), is( "decision table" ) );
         assertThat( function.getParams(), is( instanceOf( ListNode.class ) ) );
         assertThat( function.getParams().getElements().size(), is( 4 ) );
         assertThat( function.getParams().getElements().get( 0 ), is( instanceOf( NamedParameterNode.class ) ) );
         assertThat( function.getParams().getElements().get( 1 ), is( instanceOf( NamedParameterNode.class ) ) );
+        assertThat( function.getParams().getElements().get( 2 ), is( instanceOf( NamedParameterNode.class ) ) );
         assertThat( function.getParams().getElements().get( 3 ), is( instanceOf( NamedParameterNode.class ) ) );
-        assertThat( function.getParams().getElements().get( 4 ), is( instanceOf( NamedParameterNode.class ) ) );
 
         NamedParameterNode named = (NamedParameterNode) function.getParams().getElements().get( 0 );
         assertThat( named.getText(), is( "outputs: \"Applicant Risk Rating\"" ) );
@@ -936,9 +937,9 @@ public class FEELParserTest {
 
         ListNode list = (ListNode) named.getExpression();
         assertThat( list.getElements().size(), is( 2 ) );
-        assertThat( list.getElements().get( 0 ), is( instanceOf( QualifiedNameNode.class ) ) );
+        assertThat( list.getElements().get( 0 ), is( instanceOf( NameRefNode.class ) ) );
         assertThat( list.getElements().get( 0 ).getText(), is( "Applicant Age" ) );
-        assertThat( list.getElements().get( 1 ), is( instanceOf( QualifiedNameNode.class ) ) );
+        assertThat( list.getElements().get( 1 ), is( instanceOf( NameRefNode.class ) ) );
         assertThat( list.getElements().get( 1 ).getText(), is( "Medical History" ) );
 
         named = (NamedParameterNode) function.getParams().getElements().get( 2 );
@@ -974,8 +975,8 @@ public class FEELParserTest {
         assertThat( number.getEndColumn(), is( inputExpression.length() ) );
     }
 
-    private BaseNode parse(String input) {
-        ParseTree tree = FEELParser.parse( input );
+    private BaseNode parse(String input, String... symbols) {
+        ParseTree tree = FEELParser.parse( input, symbols );
         ASTBuilderVisitor v = new ASTBuilderVisitor();
         BaseNode expr = v.visit( tree );
         return expr;

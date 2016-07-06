@@ -33,6 +33,11 @@ public class SymbolTable {
     private void init() {
         builtInScope.define( new BuiltInTypeSymbol( "true", BuiltInType.BOOLEAN, builtInScope ) );
         builtInScope.define( new BuiltInTypeSymbol( "false", BuiltInType.BOOLEAN, builtInScope ) );
+        builtInScope.define( new FunctionSymbol( "date" ) );
+        builtInScope.define( new FunctionSymbol( "time" ) );
+        builtInScope.define( new FunctionSymbol( "date and time" ) );
+        builtInScope.define( new FunctionSymbol( "duration" ) );
+        builtInScope.define( new FunctionSymbol( "decision table" ) );
     }
 
     public Scope getBuiltInScope() {

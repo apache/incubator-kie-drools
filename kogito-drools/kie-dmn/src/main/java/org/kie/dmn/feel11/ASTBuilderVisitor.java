@@ -129,10 +129,10 @@ public class ASTBuilderVisitor
     }
 
     @Override
-    public BaseNode visitSimplePositiveUnaryTests(FEEL_1_1Parser.SimplePositiveUnaryTestsContext ctx) {
+    public BaseNode visitSimpleUnaryTests(FEEL_1_1Parser.SimpleUnaryTestsContext ctx) {
         List<BaseNode> tests = new ArrayList<>();
         for ( int i = 0; i < ctx.getChildCount(); i++ ) {
-            if ( ctx.getChild( i ) instanceof FEEL_1_1Parser.SimplePositiveUnaryTestContext ) {
+            if ( ctx.getChild( i ) instanceof FEEL_1_1Parser.SimpleUnaryTestContext ) {
                 tests.add( visit( ctx.getChild( i ) ) );
             }
         }
@@ -142,20 +142,25 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitRelExpressionTestList(FEEL_1_1Parser.RelExpressionTestListContext ctx) {
         BaseNode value = visit( ctx.val );
-        BaseNode list = visit( ctx.simplePositiveUnaryTests() );
+        BaseNode list = visit( ctx.simpleUnaryTests() );
         return ASTBuilderFactory.newInNode( ctx, value, list );
     }
 
     @Override
     public BaseNode visitRelExpressionTest(FEEL_1_1Parser.RelExpressionTestContext ctx) {
         BaseNode value = visit( ctx.val );
-        BaseNode test = visit( ctx.simplePositiveUnaryTest() );
+        BaseNode test = visit( ctx.simpleUnaryTest() );
         return ASTBuilderFactory.newInNode( ctx, value, test );
     }
 
     @Override
     public BaseNode visitPositiveUnaryTestNull(FEEL_1_1Parser.PositiveUnaryTestNullContext ctx) {
         return ASTBuilderFactory.newNullNode( ctx );
+    }
+
+    @Override
+    public BaseNode visitPositiveUnaryTestDash(FEEL_1_1Parser.PositiveUnaryTestDashContext ctx) {
+        return ASTBuilderFactory.newDashNode( ctx );
     }
 
     @Override
@@ -370,7 +375,7 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitFunctionInvocation(FEEL_1_1Parser.FunctionInvocationContext ctx) {
-        QualifiedNameNode name = (QualifiedNameNode) visit( ctx.qualifiedName() );
+        BaseNode name = visit( ctx.qualifiedName() );
         ListNode params = (ListNode) visit( ctx.parameters() );
         return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
     }
