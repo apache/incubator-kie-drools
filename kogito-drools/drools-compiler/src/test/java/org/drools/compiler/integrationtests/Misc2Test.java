@@ -8718,4 +8718,95 @@ public class Misc2Test extends CommonTestMethodBase {
         assertTrue( list.contains( "R1" ) );
         assertTrue( list.contains( "R2" ) );
     }
+
+    @Test
+    public void testChildLeftTuplesIterationOnLeftUpdate() {
+        // DROOLS-1186
+        String drl =
+                "import " + Shift.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    Shift( $end1: end, $employee: employee )\n" +
+                "    Shift( employee == $employee, start > $end1 )\n" +
+                "    not Shift( employee == $employee, start > $end1 )\n" +
+                "then\n" +
+                "end";
+
+        KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        String o = "o";
+        String x = "x";
+
+        Shift shift1 = new Shift(10, 11, o);
+        Shift shift2 = new Shift(20, 21, o);
+        Shift shift3 = new Shift(30, 31, x);
+        Shift shift4 = new Shift(40, 41, o);
+        Shift shift5 = new Shift(50, 51, o);
+        Shift shift6 = new Shift(60, 61, o);
+        Shift shift7 = new Shift(70, 71, o);
+        Shift shift8 = new Shift(80, 81, o);
+
+        FactHandle fh1 = kieSession.insert(shift1);
+        FactHandle fh2 = kieSession.insert(shift2);
+        FactHandle fh3 = kieSession.insert(shift3);
+        FactHandle fh4 = kieSession.insert(shift4);
+        FactHandle fh5 = kieSession.insert(shift5);
+        FactHandle fh6 = kieSession.insert(shift6);
+        FactHandle fh7 = kieSession.insert(shift7);
+        FactHandle fh8 = kieSession.insert(shift8);
+
+        assertEquals( 0, kieSession.fireAllRules() );
+
+        kieSession.update(fh1, shift1.setEmployee(x));
+        kieSession.update(fh4, shift4);
+        kieSession.update(fh8, shift8);
+        kieSession.update(fh5, shift5.setEmployee(x));
+        kieSession.update(fh7, shift7);
+        kieSession.update(fh2, shift2.setEmployee(x));
+        kieSession.update(fh6, shift6);
+        kieSession.update(fh3, shift3.setEmployee(o));
+
+        assertEquals( 0, kieSession.fireAllRules() );
+
+        kieSession.update(fh8, shift8.setEmployee(x));
+        kieSession.update(fh4, shift4.setEmployee(x));
+        kieSession.update(fh7, shift7.setEmployee(x));
+        kieSession.update(fh6, shift6.setEmployee(x));
+
+        assertEquals( 0, kieSession.fireAllRules() );
+    }
+
+    public static class Shift {
+
+        private final int start;
+        private final int end;
+        private String employee;
+
+        public Shift(int start, int end, String employee) {
+            this.start = start;
+            this.end = end;
+            this.employee = employee;
+        }
+
+        public int getStart() {
+            return start;
+        }
+
+        public int getEnd() {
+            return end;
+        }
+
+        public String getEmployee() {
+            return employee;
+        }
+
+        public Shift setEmployee(String employee) {
+            this.employee = employee;
+            return this;
+        }
+
+        @Override
+        public String toString() {
+            return "Shift " + employee + " from " + start + " to " + end;
+        }
+    }
 }
