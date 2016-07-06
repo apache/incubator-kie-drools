@@ -23,7 +23,7 @@ import org.kie.internal.fluent.runtime.WorkItemManagerFluent;
 /**
  * see {@link ProcessRuntime}
  */
-public interface ProcessFluent<T> {
+public interface ProcessFluent<T, U> {
 
     /**
      * Start a new process instance.  The process (definition) that should
@@ -120,5 +120,5 @@ public interface ProcessFluent<T> {
      *
      * @return the <code>WorkItemManager</code> related to this session
      */
-    WorkItemManagerFluent<WorkItemManagerFluent, T> getWorkItemManager();
+    WorkItemManagerFluent<WorkItemManagerFluent, T, U> getWorkItemManager();
 }

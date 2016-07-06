@@ -18,7 +18,7 @@ package org.kie.internal.command;
 
 public interface Context {
 
-    World getContextManager();
+    ContextManager getContextManager();
 
     String getName();
 

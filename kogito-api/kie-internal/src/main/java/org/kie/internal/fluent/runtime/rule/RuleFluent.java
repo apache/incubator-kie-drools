@@ -23,7 +23,7 @@ import org.kie.api.runtime.rule.StatefulRuleSession;
 /**
  * See {@link RuleRuntime} and {@link StatefulRuleSession}
  */
-public interface RuleFluent<T> {
+public interface RuleFluent<T, U> {
 
     T fireAllRules();
 
@@ -36,5 +36,7 @@ public interface RuleFluent<T> {
     T update( FactHandle handle, Object object );
 
     T delete(FactHandle handle);
+
+    U dispose();
 
 }

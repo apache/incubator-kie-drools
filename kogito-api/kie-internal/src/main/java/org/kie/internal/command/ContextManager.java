@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2010 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.internal.fluent.test;
+package org.kie.internal.command;
 
-import org.kie.internal.command.Context;
 
-public interface ReflectiveMatcherAssert {
-
-    void eval(Context context);
-
+public interface ContextManager{
+    Context getContext(String identifier);
+    Context createContext(String identifier);
 }
