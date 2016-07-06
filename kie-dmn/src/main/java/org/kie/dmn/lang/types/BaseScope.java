@@ -16,12 +16,17 @@
 
 package org.kie.dmn.lang.types;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Token;
+import org.kie.dmn.feel11.FEEL_1_1Lexer;
 import org.kie.dmn.lang.Scope;
 import org.kie.dmn.lang.Symbol;
+import org.kie.dmn.util.TokenTree;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class BaseScope implements Scope {
 
@@ -31,13 +36,15 @@ public class BaseScope implements Scope {
     private Map<String, Symbol> symbols     = new LinkedHashMap<>();
     private Map<String, Scope>  childScopes = new LinkedHashMap<>();
 
+    private TokenTree tokenTree;
+
     public BaseScope() {
     }
 
     public BaseScope(String name, Scope parentScope) {
         this.name = name;
         this.parentScope = parentScope;
-        if( parentScope != null ) {
+        if ( parentScope != null ) {
             parentScope.addChildScope( this );
         }
     }
@@ -56,6 +63,10 @@ public class BaseScope implements Scope {
             return false;
         }
         symbols.put( symbol.getId(), symbol );
+        if( tokenTree != null ) {
+            // also load the symbol into the token tree
+            tokenTree.addName( tokenize( symbol.getId() ) );
+        }
         return true;
     }
 
@@ -85,6 +96,43 @@ public class BaseScope implements Scope {
 
     public void setChildScopes(Map<String, Scope> childScopes) {
         this.childScopes = childScopes;
+    }
+
+    public void start( String token ) {
+        if( tokenTree == null ) {
+            initializeTokenTree();
+        }
+        this.tokenTree.start( token );
+        if( this.parentScope != null ) {
+            this.parentScope.start( token );
+        }
+    }
+
+    public boolean followUp( String token ) {
+        // must call followup on parent scope
+        boolean parent = this.parentScope != null ? this.parentScope.followUp( token ) : false;
+        return this.tokenTree.followUp( token ) || parent;
+    }
+
+    private void initializeTokenTree() {
+        tokenTree = new TokenTree();
+        for( String symbol : symbols.keySet() ) {
+            List<String> tokens = tokenize( symbol );
+            tokenTree.addName( tokens );
+        }
+    }
+
+    private List<String> tokenize(String symbol) {
+        ANTLRInputStream input = new ANTLRInputStream(symbol);
+        FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
+        List<String> tokens = new ArrayList<>(  );
+
+        for (Token token = lexer.nextToken();
+             token.getType() != Token.EOF;
+             token = lexer.nextToken()) {
+            tokens.add( token.getText() );
+        }
+        return tokens;
     }
 
     @Override

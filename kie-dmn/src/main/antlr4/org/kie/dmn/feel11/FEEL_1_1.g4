@@ -14,6 +14,10 @@ grammar FEEL_1_1;
 
 @parser::members {
     private ParserHelper helper = new ParserHelper();
+
+    public ParserHelper getHelper() {
+        return helper;
+    }
 }
 
 /**************************
@@ -35,7 +39,7 @@ textualExpression
     | instanceOfExpression
     | pathExpression
     | functionInvocation
-    | simplePositiveUnaryTest
+    | simpleUnaryTest
     ;
 
 // #3
@@ -214,8 +218,8 @@ relationalExpression
 	:	additiveExpression                                                                         #relExpressionAdd
 	|	val=relationalExpression 'between' start=additiveExpression 'and' end=additiveExpression   #relExpressionBetween
 	|   val=relationalExpression 'in' '(' expressionList ')'                                       #relExpressionValueList
-	|   val=relationalExpression 'in' '(' simplePositiveUnaryTests ')'                             #relExpressionTestList
-	|   val=relationalExpression 'in' simplePositiveUnaryTest                                      #relExpressionTest
+	|   val=relationalExpression 'in' '(' simpleUnaryTests ')'                                     #relExpressionTestList
+	|   val=relationalExpression 'in' simpleUnaryTest                                              #relExpressionTest
 	;
 
 expressionList
@@ -267,26 +271,20 @@ literal
 /**************************
  *    OTHER CONSTRUCTS
  **************************/
-// #14
-simpleUnaryTests
-    : simplePositiveUnaryTests
-    | 'not' '(' simplePositiveUnaryTests ')'
-    | '-'
-    ;
-
 // #13
-simplePositiveUnaryTests
-    : simplePositiveUnaryTest ( ',' simplePositiveUnaryTest )*
+simpleUnaryTests
+    : simpleUnaryTest ( ',' simpleUnaryTest )*
     ;
 
 // #7
-simplePositiveUnaryTest
+simpleUnaryTest
     : op='<' endpoint    #positiveUnaryTestIneq
     | op='>' endpoint    #positiveUnaryTestIneq
     | op='<=' endpoint   #positiveUnaryTestIneq
     | op='>=' endpoint   #positiveUnaryTestIneq
     | interval           #positiveUnaryTestInterval
     | 'null'             #positiveUnaryTestNull
+    | '-'                #positiveUnaryTestDash
     ;
 
 // #18

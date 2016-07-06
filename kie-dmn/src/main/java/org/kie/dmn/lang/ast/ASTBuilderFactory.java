@@ -17,7 +17,6 @@
 package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.TerminalNode;
 import org.kie.dmn.feel11.FEEL_1_1Parser;
 
 import java.util.ArrayList;
@@ -133,7 +132,11 @@ public class ASTBuilderFactory {
         return new NamedParameterNode( ctx, name, value );
     }
 
-    public static FunctionInvocationNode newFunctionInvocationNode(FEEL_1_1Parser.FunctionInvocationContext ctx, QualifiedNameNode name, ListNode params) {
+    public static FunctionInvocationNode newFunctionInvocationNode(FEEL_1_1Parser.FunctionInvocationContext ctx, BaseNode name, ListNode params) {
         return new FunctionInvocationNode( ctx, name, params );
+    }
+
+    public static DashNode newDashNode(ParserRuleContext ctx) {
+        return new DashNode( ctx );
     }
 }
