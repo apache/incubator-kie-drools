@@ -20,12 +20,10 @@ import java.util.List;
 
 import org.drools.core.QueryResultsRowImpl;
 import org.junit.*;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.KieBase;
 import org.kie.api.command.*;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.drools.core.command.ExecuteCommand;
@@ -37,7 +35,7 @@ import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.world.impl.WorldImpl;
+import org.drools.core.world.impl.ContextManagerImpl;
 import static org.junit.Assert.*;
 
 public class ExecuteCommandDisconnectedTest {
@@ -97,12 +95,12 @@ public class ExecuteCommandDisconnectedTest {
 
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        KieSession ksession = kbase.newKieSession();
+        KieSession          ksession      = kbase.newKieSession();
         ExecutionResultImpl localKresults = new ExecutionResultImpl();
-        WorldImpl worldImpl = new WorldImpl();
+        ContextManagerImpl  worldImpl     = new ContextManagerImpl();
         worldImpl.createContext("__TEMP__");
         worldImpl.getContext(CONTEXT_ID).set(CONTEXT_ID, new ContextImpl(CONTEXT_ID, null));
-        ResolvingKnowledgeCommandContext kContext = new ResolvingKnowledgeCommandContext(worldImpl);
+        ResolvingKnowledgeCommandContext kContext = new ResolvingKnowledgeCommandContext(worldImpl.createContext("temp"));
         kContext.set("localResults", localKresults);
         kContext.set("ksession", ksession);
 

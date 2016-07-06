@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.drools.core.base.RuleNameSerializationAgendaFilter;
 import org.drools.core.command.IdentifiableResult;
+import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -32,6 +33,8 @@ import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
+
+import java.util.Map;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -99,7 +102,8 @@ public class FireAllRulesCommand implements GenericCommand<Integer>, Identifiabl
     }
 
     public Integer execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        //KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = (KieSession) ((Map<String, Object>)context.get(ContextImpl.REGISTRY)).get(KieSession.class.getName());
         int fired;
         if ( max != -1 && agendaFilter != null ) {
             fired = ((StatefulKnowledgeSessionImpl) ksession).fireAllRules( agendaFilter, max );

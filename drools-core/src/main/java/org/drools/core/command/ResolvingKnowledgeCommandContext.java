@@ -19,7 +19,7 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.command.Context;
-import org.kie.internal.command.World;
+import org.kie.internal.command.ContextManager;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -62,7 +62,7 @@ public class ResolvingKnowledgeCommandContext implements KnowledgeCommandContext
         return ( EntryPoint ) context.get( EntryPoint.class.getName() );
     }
     
-    public World getContextManager() {
+    public ContextManager getContextManager() {
         return context.getContextManager();
     }
 

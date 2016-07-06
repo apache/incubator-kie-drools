@@ -19,7 +19,7 @@ package org.drools.core.command.impl;
 import org.kie.api.KieBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.command.Context;
-import org.kie.internal.command.World;
+import org.kie.internal.command.ContextManager;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -98,7 +98,7 @@ public class FixedKnowledgeCommandContext
         this.kbase = kbase;
     }
 
-    public World getContextManager() {
+    public ContextManager getContextManager() {
         return context.getContextManager();
     }
 
