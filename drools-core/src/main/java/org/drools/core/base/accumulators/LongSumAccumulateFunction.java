@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,28 +24,24 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 
-/**
- * An implementation of an accumulator capable of calculating sum of values
- */
-public class SumAccumulateFunction implements AccumulateFunction {
+public class LongSumAccumulateFunction implements AccumulateFunction {
 
-    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException { }
+    public void readExternal(ObjectInput in ) throws IOException, ClassNotFoundException { }
 
-    public void writeExternal(ObjectOutput out) throws IOException { }
+    public void writeExternal(ObjectOutput out ) throws IOException { }
 
     protected static class SumData implements Externalizable {
-        public double total = 0;
+        public long total = 0L;
 
         public SumData() {}
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            total   = in.readDouble();
+            total = in.readLong();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeDouble(total);
+            out.writeLong(total);
         }
-
     }
 
     public Serializable createContext() {
@@ -53,20 +49,19 @@ public class SumAccumulateFunction implements AccumulateFunction {
     }
 
     public void init(Serializable context) {
-        SumData data = (SumData) context;
-        data.total = 0;
+        ((SumData) context).total = 0;
     }
 
-    public void accumulate(Serializable context,
-                           Object value) {
-        SumData data = (SumData) context;
-        data.total += ((Number) value).doubleValue();
+    public void accumulate(Serializable context, Object value) {
+        if (value != null) {
+            ( (SumData) context ).total += ( (Long) value );
+        }
     }
 
-    public void reverse(Serializable context,
-                        Object value) {
-        SumData data = (SumData) context;
-        data.total -= ((Number) value).doubleValue();
+    public void reverse(Serializable context, Object value) {
+        if (value != null) {
+            ( (SumData) context ).total -= ( (Long) value );
+        }
     }
 
     public Object getResult(Serializable context) {
@@ -78,6 +73,6 @@ public class SumAccumulateFunction implements AccumulateFunction {
     }
 
     public Class<?> getResultType() {
-        return Double.class;
+        return Long.class;
     }
 }

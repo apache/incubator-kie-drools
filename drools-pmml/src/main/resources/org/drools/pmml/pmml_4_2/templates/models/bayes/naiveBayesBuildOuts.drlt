@@ -74,7 +74,8 @@ when
                 accumulate( $key : String() from $cts.keySet()
                             and
                             $num : Double() from ( (java.util.List) $cts.get( $key ) ).get( $values.indexOf( $tgt ) ),
-                            $tot : sumBD( $num )
+                            // FIXME: DROOLS-1248
+                            $tot : sumBD( java.math.BigDecimal.valueOf( $num ) )
                           ),
                 init( java.util.List m = new java.util.ArrayList( $values ); ),
                 action( m.set( $values.indexOf( $tgt ), $tot.doubleValue() ); ),
@@ -93,7 +94,8 @@ rule "NaiveBayesMapToOutput_@{name}"
 when
     $bcs : @{ pmmlPackageName }.BayesPosterior( context == "@{name}", $wgts : prob )
            @{ pmmlPackageName }.BayesPriors( context == "@{name}", $values : values )
-           accumulate( $x : Double() from $wgts, $den : sumBD( $x ) )
+           // FIXME: DROOLS-1248
+           accumulate( $x : Double() from $wgts, $den : sumBD( java.math.BigDecimal.valueOf( $x ) ) )
     $val : @{ mapDatatype( datatype, true ) }() from $values
 then
     @{ field } x = new @{ field }();

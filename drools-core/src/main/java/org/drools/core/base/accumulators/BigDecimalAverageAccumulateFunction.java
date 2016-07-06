@@ -66,7 +66,7 @@ public class BigDecimalAverageAccumulateFunction implements AccumulateFunction {
     /* (non-Javadoc)
      * @see org.kie.base.accumulators.AccumulateFunction#init(java.lang.Object)
      */
-    public void init(Serializable context) throws Exception {
+    public void init(Serializable context) {
         AverageData data = (AverageData) context;
         data.count = 0;
         data.total = BigDecimal.ZERO;
@@ -77,25 +77,29 @@ public class BigDecimalAverageAccumulateFunction implements AccumulateFunction {
      */
     public void accumulate(Serializable context,
                            Object value) {
-        AverageData data = (AverageData) context;
-        data.count++;
-        data.total = data.total.add( BigDecimal.valueOf( ((Number) value).doubleValue() ) );
+        if (value != null) {
+            AverageData data = (AverageData) context;
+            data.count++;
+            data.total = data.total.add( (BigDecimal) value );
+        }
     }
 
     /* (non-Javadoc)
      * @see org.kie.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
      */
     public void reverse(Serializable context,
-                        Object value) throws Exception {
-        AverageData data = (AverageData) context;
-        data.count--;
-        data.total = data.total.subtract( BigDecimal.valueOf( ((Number) value).doubleValue() ) );
+                        Object value) {
+        if (value != null) {
+            AverageData data = (AverageData) context;
+            data.count--;
+            data.total = data.total.subtract( (BigDecimal) value );
+        }
     }
 
     /* (non-Javadoc)
      * @see org.kie.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
-    public Object getResult(Serializable context) throws Exception {
+    public Object getResult(Serializable context) {
         AverageData data = (AverageData) context;
         return data.count == 0 ? BigDecimal.ZERO : data.total.divide( BigDecimal.valueOf( data.count ) );
     }
