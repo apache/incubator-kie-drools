@@ -15,6 +15,7 @@
 
 package org.jbpm.kie.services.impl.xml;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -92,10 +93,11 @@ public class ServicesProcessDataEventListener implements ProcessDataEventListene
 
             task.setTaskInputMappings(inputParams);
             task.setTaskOutputMappings(outputParams);
-            task.setComment(inputParams.get("Comment"));
-            task.setCreatedBy(inputParams.get("CreatedBy"));
-            task.setPriority(getInteger(inputParams.get("Priority")));
-            task.setSkippable("true".equalsIgnoreCase(inputParams.get("Skippable")));
+                    
+            task.setComment(asString(humanTaskNode.getWork().getParameter("Comment")));
+            task.setCreatedBy(asString(humanTaskNode.getWork().getParameter("CreatedBy")));
+            task.setPriority(asInt(humanTaskNode.getWork().getParameter("Priority")));
+            task.setSkippable(asBoolean(humanTaskNode.getWork().getParameter("Skippable")));
             
             processDescriptor.getTaskInputMappings().put(task.getName(), inputParams);
             processDescriptor.getTaskOutputMappings().put(task.getName(), outputParams);
@@ -288,5 +290,29 @@ public class ServicesProcessDataEventListener implements ProcessDataEventListene
             }
         }
     }
-
+    
+    protected Integer asInt(Object value) {
+        if (value == null) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(value.toString());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+    
+    protected Boolean asBoolean(Object value) {
+        if (value == null) {
+            return true;
+        }        
+        return Boolean.valueOf(value.toString());
+    }
+    
+    protected String asString(Object value) {
+        if (value == null) {
+            return "";
+        }        
+        return value.toString();
+    }
 }

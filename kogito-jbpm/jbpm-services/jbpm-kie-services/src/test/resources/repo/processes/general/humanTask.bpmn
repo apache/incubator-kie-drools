@@ -42,11 +42,13 @@
         <dataInput id="_B4912911-1965-4D1F-9532-81580D8200EE_CommentInput" name="Comment" />
         <dataInput id="_B4912911-1965-4D1F-9532-81580D8200EE_TaskNameInput" name="TaskName" />
         <dataInput id="_B4912911-1965-4D1F-9532-81580D8200EE_PriorityInput" name="Priority" />
+        <dataInput id="_B4912911-1965-4D1F-9532-81580D8200EE_SkippableInput" name="Skippable" />
         <dataOutput id="_B4912911-1965-4D1F-9532-81580D8200EE_ResultOutput" name="Result" />
         <inputSet>
           <dataInputRefs>_B4912911-1965-4D1F-9532-81580D8200EE_CommentInput</dataInputRefs>
           <dataInputRefs>_B4912911-1965-4D1F-9532-81580D8200EE_TaskNameInput</dataInputRefs>
           <dataInputRefs>_B4912911-1965-4D1F-9532-81580D8200EE_PriorityInput</dataInputRefs>
+          <dataInputRefs>_B4912911-1965-4D1F-9532-81580D8200EE_SkippableInput</dataInputRefs>
         </inputSet>
         <outputSet>
           <dataOutputRefs>_B4912911-1965-4D1F-9532-81580D8200EE_ResultOutput</dataOutputRefs>
@@ -69,8 +71,15 @@
       <dataInputAssociation>
         <targetRef>_B4912911-1965-4D1F-9532-81580D8200EE_PriorityInput</targetRef>
         <assignment>
-          <from xsi:type="tFormalExpression">null</from>
+          <from xsi:type="tFormalExpression">9</from>
           <to xsi:type="tFormalExpression">_B4912911-1965-4D1F-9532-81580D8200EE_PriorityInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_B4912911-1965-4D1F-9532-81580D8200EE_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">true</from>
+          <to xsi:type="tFormalExpression">_B4912911-1965-4D1F-9532-81580D8200EE_SkippableInput</to>
         </assignment>
       </dataInputAssociation>
       <dataOutputAssociation>
@@ -115,9 +124,11 @@
     <userTask id="_406504CA-672D-4D8D-A344-4817683B167F" name="Review Document" >
       <ioSpecification>
         <dataInput id="_406504CA-672D-4D8D-A344-4817683B167F_TaskNameInput" name="TaskName" />
+        <dataInput id="_406504CA-672D-4D8D-A344-4817683B167F_SkippableInput" name="Skippable" />
         <dataOutput id="_406504CA-672D-4D8D-A344-4817683B167F_ResultOutput" name="Result" />
         <inputSet>
           <dataInputRefs>_406504CA-672D-4D8D-A344-4817683B167F_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_406504CA-672D-4D8D-A344-4817683B167F_SkippableInput</dataInputRefs>
         </inputSet>
         <outputSet>
           <dataOutputRefs>_406504CA-672D-4D8D-A344-4817683B167F_ResultOutput</dataOutputRefs>
@@ -128,6 +139,13 @@
         <assignment>
           <from xsi:type="tFormalExpression">Review Document</from>
           <to xsi:type="tFormalExpression">_406504CA-672D-4D8D-A344-4817683B167F_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_406504CA-672D-4D8D-A344-4817683B167F_SkippableInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">false</from>
+          <to xsi:type="tFormalExpression">_406504CA-672D-4D8D-A344-4817683B167F_SkippableInput</to>
         </assignment>
       </dataInputAssociation>
       <dataOutputAssociation>

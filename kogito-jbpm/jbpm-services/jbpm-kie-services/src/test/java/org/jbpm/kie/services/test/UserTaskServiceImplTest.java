@@ -385,7 +385,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
     	assertNotNull(task);
     	assertEquals(Status.Reserved.toString(), task.getStatus());
-    	assertEquals(0, (int)task.getPriority());
+    	assertEquals(9, (int)task.getPriority());
     	    	
     	userTaskService.setPriority(taskId, 8);
     	
@@ -500,12 +500,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	
     	Map<String, Object> input = userTaskService.getTaskInputContentByTaskId(taskId);
     	assertNotNull(input);
-    	assertEquals(5, input.size());
+    	assertEquals(6, input.size());
     	assertTrue(input.containsKey("ActorId"));
     	assertTrue(input.containsKey("Comment"));
     	assertTrue(input.containsKey("TaskName"));
     	assertTrue(input.containsKey("NodeName"));
     	assertTrue(input.containsKey("Priority"));
+    	assertTrue(input.containsKey("Skippable"));
     	
     	// now let's add some output data
     	Map<String, Object> values = new HashMap<String, Object>();

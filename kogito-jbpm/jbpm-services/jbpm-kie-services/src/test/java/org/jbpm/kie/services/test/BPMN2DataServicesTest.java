@@ -18,6 +18,7 @@ package org.jbpm.kie.services.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
@@ -25,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -123,9 +125,41 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         assertEquals("String", processData.get("approval_reviewComment"));
         
         assertEquals(3, processData.keySet().size());
+        
+        Collection<UserTaskDefinition> userTasks = bpmn2Service.getTasksDefinitions(deploymentUnit.getIdentifier(), processId);
+        assertNotNull(userTasks);
+        assertEquals(3, userTasks.size());
+        
+        Map<String, UserTaskDefinition> tasksByName = new HashMap<String, UserTaskDefinition>();
+        for (UserTaskDefinition userTask : userTasks) {
+            tasksByName.put(userTask.getName(), userTask);
+        }
+        
+        assertTrue(tasksByName.containsKey("Write a Document"));
+        assertTrue(tasksByName.containsKey("Translate Document"));
+        assertTrue(tasksByName.containsKey("Review Document"));
+        
+        UserTaskDefinition task = tasksByName.get("Write a Document");
+        assertEquals(true, task.isSkippable());
+        assertEquals("Write a Document", task.getName());
+        assertEquals(9, task.getPriority().intValue());
+        assertEquals("Write a Document", task.getComment());
+        
+        task = tasksByName.get("Translate Document");
+        assertEquals(true, task.isSkippable());
+        assertEquals("Translate Document", task.getName());
+        assertEquals(0, task.getPriority().intValue());
+        assertEquals("", task.getComment());
+        
+        task = tasksByName.get("Review Document");
+        assertEquals(false, task.isSkippable());
+        assertEquals("Review Document", task.getName());
+        assertEquals(0, task.getPriority().intValue());
+        assertEquals("", task.getComment());
+        
         Map<String, String> taskInputMappings = bpmn2Service.getTaskInputMappings(deploymentUnit.getIdentifier(), processId, "Write a Document" );
         
-        assertEquals(3, taskInputMappings.keySet().size());
+        assertEquals(4, taskInputMappings.keySet().size());
         
         Map<String, String> taskOutputMappings = bpmn2Service.getTaskOutputMappings(deploymentUnit.getIdentifier(), processId, "Write a Document" );
         

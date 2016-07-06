@@ -391,7 +391,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         assertEquals(1, taskInstanceLogs.size());
 
         UserTaskInstanceWithVarsDesc instance = taskInstanceLogs.get(0); 
-        assertEquals(2, instance.getVariables().size());
+        assertEquals(3, instance.getVariables().size());
         
         taskInstanceLogs = queryService.query(query.getName(), UserTaskInstanceWithVarsQueryMapper.get(), new QueryContext(), 
                                                             QueryParam.equalsTo(COLUMN_TASK_VAR_NAME, "Comment"), 
