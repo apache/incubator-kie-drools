@@ -18,34 +18,11 @@ package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class FunctionInvocationNode
+public class DashNode
         extends BaseNode {
 
-    private BaseNode name;
-    private ListNode params;
-
-    public FunctionInvocationNode(ParserRuleContext ctx, BaseNode name, ListNode params) {
+    public DashNode(ParserRuleContext ctx) {
         super( ctx );
-        this.name = name;
-        this.params = params;
     }
 
-    public BaseNode getName() {
-        return name;
-    }
-
-    public void setName(BaseNode name) {
-        this.name = name;
-    }
-
-    public ListNode getParams() {
-        return params;
-    }
-
-    public void setParams(ListNode params) {
-        this.params = params;
-    }
 }
