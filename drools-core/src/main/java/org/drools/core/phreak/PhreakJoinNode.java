@@ -202,23 +202,22 @@ public class PhreakJoinNode {
                                                                 null,
                                                                 it);
 
-            LeftTuple childLeftTuple = leftTuple.getFirstChild();
-
             // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
             // if rightTuple is null, we assume there was a bucket change and that bucket is empty
-            if (childLeftTuple != null && rtm.isIndexed() && !it.isFullIterator() && (rightTuple == null || (rightTuple.getMemory() != childLeftTuple.getRightParent().getMemory()))) {
+            if (rtm.isIndexed() && !it.isFullIterator()) {
                 // our index has changed, so delete all the previous propagations
-                while (childLeftTuple != null) {
+                for (LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; ) {
                     LeftTuple nextChild = childLeftTuple.getHandleNext();
-                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    if (rightTuple == null || rightTuple.getMemory() != childLeftTuple.getRightParent().getMemory()) {
+                        RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    }
                     childLeftTuple = nextChild;
                 }
-                // childLeftTuple is now null, so the next check will attempt matches for new bucket
             }
 
             // we can't do anything if RightTupleMemory is empty
             if (rightTuple != null) {
-                doLeftUpdatesProcessChildren(childLeftTuple, leftTuple, rightTuple, stagedLeftTuples, contextEntry, constraints, sink, it, trgLeftTuples);
+                doLeftUpdatesProcessChildren(leftTuple.getFirstChild(), leftTuple, rightTuple, stagedLeftTuples, contextEntry, constraints, sink, it, trgLeftTuples);
             }
             leftTuple.clearStaged();
             leftTuple = next;
