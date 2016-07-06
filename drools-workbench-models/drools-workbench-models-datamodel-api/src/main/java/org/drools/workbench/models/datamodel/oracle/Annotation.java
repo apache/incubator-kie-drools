@@ -27,7 +27,7 @@ import org.drools.workbench.models.datamodel.util.PortablePreconditions;
 public class Annotation {
 
     private String qualifiedTypeName;
-    private Map<String, String> attributes = new HashMap<String, String>();
+    private Map<String, Object> parameters = new HashMap<String, Object>();
 
     public Annotation() {
         //Needed for Errai marshalling
@@ -43,15 +43,16 @@ public class Annotation {
         return qualifiedTypeName;
     }
 
-    public Map<String, String> getAttributes() {
-        return Collections.unmodifiableMap( attributes );
+    public Map<String, Object> getParameters() {
+        return Collections.unmodifiableMap( parameters );
     }
 
-    public void addAttribute( final String name,
-                              final String value ) {
+    public void addParameter( final String name,
+                              final Object value ) {
         PortablePreconditions.checkNotNull( "name",
                                             name );
-        this.attributes.put( name,
+        this.parameters.put( name,
                              value );
     }
+
 }
