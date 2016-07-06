@@ -48,7 +48,7 @@ public class GameUI extends Canvas{
         frame.getContentPane().setBackground(Color.BLACK);
 
 
-        panel = (JPanel) frame.getContentPane(); 
+        panel = (JPanel) frame.getContentPane();
         panel.setPreferredSize(new Dimension(conf.getWindowWidth(), conf.getWindowHeight()));
         panel.setLayout(null);
 
@@ -115,5 +115,4 @@ public class GameUI extends Canvas{
             this.keyReleasedEntryPoint.insert( e );
         }        
     }
-
 }

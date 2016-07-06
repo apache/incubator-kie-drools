@@ -16,43 +16,70 @@
 
 package org.drools.core.command.impl;
 
+import org.kie.internal.command.Context;
+import org.kie.internal.command.ContextManager;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.kie.internal.command.Context;
-import org.kie.internal.command.World;
-
 public class ContextImpl
-    implements
+        implements
     Context {
 
-    private World               manager;
+    public static final String         REGISTRY = "__REGISTRY__";
+
+    private Map<String, Object> map = new ConcurrentHashMap<String, Object>();
+
+    private ContextManager      manager;
 
     private String              name;
 
-    private Map<String, Object> context = new ConcurrentHashMap<String, Object>();
-
-    private Context             parent;
+    private Context             delegate;
 
     public ContextImpl(String name,
-                       World manager) {
-        this.name = name;
-        this.manager = manager;
-    }
-
-    public ContextImpl(String name,
-                       World manager,
+                       ContextManager manager,
                        Context delegate) {
         this.name = name;
         this.manager = manager;
-        setParent( delegate );
+        this.delegate = delegate;
     }
 
-    public void setParent(Context delegate) {
-        this.parent = delegate;
+    public ContextImpl(String name,
+                       ContextManager manager) {
+        this.name = name;
+        this.manager = manager;
     }
 
-    public World getContextManager() {
+    public Object get(String identifier) {
+        if(identifier == null || identifier.equals("")){
+            return null;
+        }
+
+        Object object = null;
+        if ( map.containsKey(identifier) ) {
+            object = map.get( identifier );
+        } else if ( delegate != null ) {
+            object = delegate.get( identifier );
+        }
+
+        return object;
+    }
+
+    @Override
+    public void set(String identifier, Object value) {
+        map.put( identifier, value );
+    }
+
+    @Override
+    public void remove(String identifier) {
+        map.remove( identifier );
+    }
+
+    public boolean has(String identifier) {
+        return map.containsKey( identifier );
+    }
+
+    public ContextManager getContextManager() {
         return this.manager;
     }
 
@@ -60,30 +87,10 @@ public class ContextImpl
         return this.name;
     }
 
-    public Object get(String identifier) {
-        if(identifier == null || identifier.equals("")){
-            return null;
-        }
-        Object object = context.get( identifier );
-        if ( object == null && parent != null ) {
-            object = this.parent.get( identifier );
-        }
-        return object;
-    }
-
-    public void set(String name,
-                    Object object) {
-        context.put( name,
-                     object );
-    }
-
-    public void remove(String name) {
-        context.remove( name );
-    }
-
     @Override
     public String toString() {
-        return "ContextImpl [name=" + name + ", parent=" + parent.getName() + ", context=" + context + "]";
+        return "ContextImpl{" +
+               "name='" + name + '\'' +
+               '}';
     }
-
 }

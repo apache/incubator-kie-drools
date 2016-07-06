@@ -19,7 +19,7 @@ package org.drools.core.command;
 import org.drools.core.command.impl.GenericCommand;
 import org.kie.api.command.Command;
 import org.kie.internal.command.Context;
-import org.kie.internal.command.World;
+import org.kie.internal.command.ContextManager;
 
 public class SetVariableCommandFromCommand
     implements
@@ -37,13 +37,13 @@ public class SetVariableCommandFromCommand
     }
 
     public Void execute(Context context) {
-        if ( this.contextName == null ) {
-            context.getContextManager().getContext( World.ROOT ).set( this.identifier,
-                         ((GenericCommand) this.cmd).execute( context ) );
-        } else {
-            context.getContextManager().getContext( this.contextName ).set( this.identifier,
-                                                                            ((GenericCommand) this.cmd).execute( context ) );
-        }
+//        if ( this.contextName == null ) {
+//            context.getContextManager().getContext(ContextManager.ROOT).set(this.identifier,
+//                                                                            ((GenericCommand) this.cmd).execute( context ));
+//        } else {
+//            context.getContextManager().getContext( this.contextName ).set( this.identifier,
+//                                                                            ((GenericCommand) this.cmd).execute( context ) );
+//        }
         return null;
     }
 

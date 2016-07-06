@@ -21,14 +21,14 @@ import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.GenericCommand;
 import org.kie.api.command.Command;
 import org.kie.internal.command.Context;
-import org.kie.internal.command.World;
+import org.kie.internal.command.ContextManager;
 import org.kie.api.runtime.CommandExecutor;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class WorldImpl
-        implements World, GetDefaultValue, CommandExecutor {
+public class ContextManagerImpl
+        implements ContextManager, GetDefaultValue, CommandExecutor {
 
 
     private Context                       root;
@@ -40,19 +40,21 @@ public class WorldImpl
 
     private Object                        lastReturnValue;
 
-    public WorldImpl() {
+    public ContextManagerImpl(Map<String, Context>          contexts) {
         this.root = new ContextImpl( ROOT,
                                      this );
-        
-        this.root.set( "world", 
+
+        this.root.set( "world",
                        this );
 
-        this.contexts = new HashMap<String, Context>();
+        this.contexts = contexts;
         this.contexts.put( ROOT,
                            this.root );
     }
-    
-    
+
+    public ContextManagerImpl() {
+        this( new HashMap<String, Context>() );
+    }
 
     public <T> T execute(Command<T> command) {
         return null;
@@ -150,7 +152,7 @@ public class WorldImpl
         return lastReturnValue;
     }
 
-	public World getContextManager() {
+	public ContextManager getContextManager() {
 		return this;
 	}
 

@@ -18,8 +18,8 @@ package org.drools.core.command.runtime.rule;
 
 
 import org.drools.core.command.IdentifiableResult;
+import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.StringUtils;
@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.Map;
 
 @XmlRootElement(name="insert-object-command")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -78,7 +79,7 @@ public class InsertObjectCommand
     }
 
     public FactHandle execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = (KieSession) ((Map<String, Object>)context.get(ContextImpl.REGISTRY)).get(KieSession.class.getName()); //((KnowledgeCommandContext) context).getKieSession();
         
         FactHandle factHandle;
         if ( StringUtils.isEmpty( this.entryPoint ) ) {
@@ -89,14 +90,6 @@ public class InsertObjectCommand
 
         InternalWorkingMemory session = ((InternalWorkingMemory)ksession);
 
-        if ( outIdentifier != null ) {
-            if ( this.returnObject ) {
-                session.getExecutionResult().getResults().put( this.outIdentifier,
-                                                               object );
-            }
-            session.getExecutionResult().getFactHandles().put( this.outIdentifier,
-                                                         factHandle );
-        }
         if ( disconnected ) {
             DefaultFactHandle disconnectedHandle = ((DefaultFactHandle)factHandle).clone();
             disconnectedHandle.disconnect();

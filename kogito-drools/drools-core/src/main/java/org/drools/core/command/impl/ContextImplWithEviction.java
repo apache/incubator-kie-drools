@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.kie.internal.command.Context;
-import org.kie.internal.command.World;
+import org.kie.internal.command.ContextManager;
 
 public class ContextImplWithEviction extends ContextImpl{
 
@@ -41,11 +41,11 @@ public class ContextImplWithEviction extends ContextImpl{
     
     //private LinkedBlockingQueue<ChangeSet> queue;
     
-    public ContextImplWithEviction(String name, World manager, Context delegate) {
+    public ContextImplWithEviction(String name, ContextManager manager, Context delegate) {
         super(name, manager, delegate);
     }
 
-    public ContextImplWithEviction(String name, World manager) {
+    public ContextImplWithEviction(String name, ContextManager manager) {
         super(name, manager);
         
     }

@@ -21,6 +21,6 @@ import org.kie.api.runtime.CommandExecutor;
 
 public interface CommandService extends CommandExecutor {
 
-    public Context getContext();
+    Context getContext();
 
 }

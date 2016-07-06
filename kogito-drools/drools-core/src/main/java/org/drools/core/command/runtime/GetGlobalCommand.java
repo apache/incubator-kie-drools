@@ -22,12 +22,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.IdentifiableResult;
+import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
+
+import java.util.Map;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -68,7 +71,7 @@ public class GetGlobalCommand
     }
 
     public Object execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = (KieSession) ((Map<String, Object>)context.get(ContextImpl.REGISTRY)).get(KieSession.class.getName()); //((KnowledgeCommandContext) context).getKieSession();
 
         Object object = ksession.getGlobal( identifier );
         ExecutionResultImpl results = ((StatefulKnowledgeSessionImpl) ksession).getExecutionResult();
