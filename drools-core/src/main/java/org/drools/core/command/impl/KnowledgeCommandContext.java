@@ -25,18 +25,18 @@ import org.kie.api.runtime.rule.EntryPoint;
 
 public interface KnowledgeCommandContext extends Context {
     
-    public KnowledgeBuilder getKnowledgeBuilder();
+    KnowledgeBuilder getKnowledgeBuilder();
     
-    public void setKnowledgeBuilder(KnowledgeBuilder kbuilder);
+    void setKnowledgeBuilder(KnowledgeBuilder kbuilder);
 
-    public KieBase getKieBase();
+    KieBase getKieBase();
 
-    public KieSession getKieSession();
+    KieSession getKieSession();
 
-    public WorkItemManager getWorkItemManager();
+    WorkItemManager getWorkItemManager();
 
-    public ExecutionResults getExecutionResults();
+    ExecutionResults getExecutionResults();
 
-    public EntryPoint getWorkingMemoryEntryPoint();
+    EntryPoint getWorkingMemoryEntryPoint();
 
 }
