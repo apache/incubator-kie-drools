@@ -10,6 +10,7 @@ grammar FEEL_1_1;
 
 @parser::header {
     import org.kie.dmn.feel11.ParserHelper;
+    import org.kie.dmn.feel11.Keywords;
 }
 
 @parser::members {
@@ -17,6 +18,11 @@ grammar FEEL_1_1;
 
     public ParserHelper getHelper() {
         return helper;
+    }
+
+    private boolean isKeyword( Keywords k ) {
+        System.out.println( "k="+k+" input='"+_input.LT(1).getText()+"'   -> "+k.symbol.equals( _input.LT(1).getText() ) );
+        return k.symbol.equals( _input.LT(1).getText() );
     }
 }
 
@@ -88,7 +94,7 @@ forExpression
 @after {
     helper.popScope();
 }
-    : 'for' iterationContexts 'return' expression
+    : for_key iterationContexts return_key expression
     ;
 
 iterationContexts
@@ -96,12 +102,12 @@ iterationContexts
     ;
 
 iterationContext
-    : nameDefinition 'in' expression
+    : nameDefinition in_key expression
     ;
 
 // #47
 ifExpression
-    : 'if' c=expression 'then' t=expression 'else' e=expression
+    : if_key c=expression then_key t=expression else_key e=expression
     ;
 
 // #48
@@ -112,12 +118,13 @@ quantifiedExpression
 @after {
     helper.popScope();
 }
-    : k=('some'|'every') iterationContexts 'satisfies' expression
+    : some_key iterationContexts satisfies_key expression     #quantExprSome
+    | every_key iterationContexts satisfies_key expression    #quantExprEvery
     ;
 
 // #53
 instanceOfExpression
-    : conditionalOrExpression 'instance' 'of' type
+    : conditionalOrExpression instance_key of_key type
     ;
 
 // #54
@@ -146,7 +153,7 @@ functionDefinition
 @after {
     helper.popScope();
 }
-    : 'function' '(' formalParameters? ')' external='external'? body=expression
+    : function_key '(' formalParameters? ')' external=external_key? body=expression
     ;
 
 formalParameters
@@ -200,13 +207,13 @@ additionalNameSymbol
     ;
 
 conditionalOrExpression
-	:	conditionalAndExpression                                               #condOrAnd
- 	|	left=conditionalOrExpression op='or' right=conditionalAndExpression    #condOr
+	:	conditionalAndExpression                                                 #condOrAnd
+ 	|	left=conditionalOrExpression op=or_key right=conditionalAndExpression    #condOr
 	;
 
 conditionalAndExpression
 	:	comparisonExpression                                                   #condAndComp
-	|	left=conditionalAndExpression op='and' right=comparisonExpression      #condAnd
+	|	left=conditionalAndExpression op=and_key right=comparisonExpression      #condAnd
 	;
 
 comparisonExpression
@@ -216,10 +223,10 @@ comparisonExpression
 
 relationalExpression
 	:	additiveExpression                                                                         #relExpressionAdd
-	|	val=relationalExpression 'between' start=additiveExpression 'and' end=additiveExpression   #relExpressionBetween
-	|   val=relationalExpression 'in' '(' expressionList ')'                                       #relExpressionValueList
-	|   val=relationalExpression 'in' '(' simpleUnaryTests ')'                                     #relExpressionTestList
-	|   val=relationalExpression 'in' simpleUnaryTest                                              #relExpressionTest
+	|	val=relationalExpression between_key start=additiveExpression and_key end=additiveExpression   #relExpressionBetween
+	|   val=relationalExpression in_key '(' expressionList ')'                                       #relExpressionValueList
+	|   val=relationalExpression in_key '(' simpleUnaryTests ')'                                     #relExpressionTestList
+	|   val=relationalExpression in_key simpleUnaryTest                                              #relExpressionTest
 	;
 
 expressionList
@@ -249,7 +256,7 @@ unaryExpression
 	;
 
 unaryExpressionNotPlusMinus
-	:	'not' unaryExpression  #logicalNegation
+	:	not_key unaryExpression  #logicalNegation
 	|   primary                #uenpmPrimary
 	;
 
@@ -263,9 +270,14 @@ primary
 literal
     :	IntegerLiteral          #numberLiteral
     |	FloatingPointLiteral    #numberLiteral
-    |	BooleanLiteral          #booleanLiteral
+    |	booleanLiteral          #boolLiteral
     |	StringLiteral           #stringLiteral
-    |	NullLiteral             #nullLiteral
+    |	null_key                #nullLiteral
+    ;
+
+booleanLiteral
+    :   true_key
+    |   false_key
     ;
 
 /**************************
@@ -283,7 +295,7 @@ simpleUnaryTest
     | op='<=' endpoint   #positiveUnaryTestIneq
     | op='>=' endpoint   #positiveUnaryTestIneq
     | interval           #positiveUnaryTestInterval
-    | 'null'             #positiveUnaryTestNull
+    | null_key           #positiveUnaryTestNull
     | '-'                #positiveUnaryTestDash
     ;
 
@@ -305,6 +317,89 @@ qualifiedName
 nameRef
     : st=Identifier { helper.startVariable( $st ); }
       { helper.followUp( _input.LT(1) ) }? ( Identifier | additionalNameSymbol | IntegerLiteral | FloatingPointLiteral )*
+    ;
+
+/********************************
+ *      SOFT KEYWORDS
+ ********************************/
+for_key
+    : {isKeyword(Keywords.FOR)}? Identifier
+    ;
+
+return_key
+    : {isKeyword(Keywords.RETURN)}? Identifier
+    ;
+
+in_key
+    : {isKeyword(Keywords.IN)}? Identifier
+    ;
+
+if_key
+    : {isKeyword(Keywords.IF)}? Identifier
+    ;
+
+then_key
+    : {isKeyword(Keywords.THEN)}? Identifier
+    ;
+
+else_key
+    : {isKeyword(Keywords.ELSE)}? Identifier
+    ;
+
+some_key
+    : {isKeyword(Keywords.SOME)}? Identifier
+    ;
+
+every_key
+    : {isKeyword(Keywords.EVERY)}? Identifier
+    ;
+
+satisfies_key
+    : {isKeyword(Keywords.SATISFIES)}? Identifier
+    ;
+
+instance_key
+    : {isKeyword(Keywords.INSTANCE)}? Identifier
+    ;
+
+of_key
+    : {isKeyword(Keywords.OF)}? Identifier
+    ;
+
+function_key
+    : {isKeyword(Keywords.FUNCTION)}? Identifier
+    ;
+
+external_key
+    : {isKeyword(Keywords.EXTERNAL)}? Identifier
+    ;
+
+or_key
+    : {isKeyword(Keywords.OR)}? Identifier
+    ;
+
+and_key
+    : {isKeyword(Keywords.AND)}? Identifier
+    ;
+
+between_key
+    : {isKeyword(Keywords.BETWEEN)}? Identifier
+    ;
+
+not_key
+    : {isKeyword(Keywords.NOT)}? Identifier
+    ;
+
+null_key
+    : {isKeyword(Keywords.NULL)}? Identifier
+    ;
+
+true_key
+    : {isKeyword(Keywords.TRUE)}? Identifier
+    ;
+
+false_key
+    : {isKeyword(Keywords.FALSE)}? Identifier
     ;
 
 /********************************
@@ -528,12 +623,6 @@ BinaryExponentIndicator
 	:	[pP]
 	;
 
-// #36
-BooleanLiteral
-	:	'true'
-	|	'false'
-	;
-
 // String Literals
 
 StringLiteral
@@ -579,10 +668,6 @@ UnicodeEscape
     ;
 
 // The Null Literal
-
-NullLiteral
-	:	'null'
-	;
 
 // Separators
 
