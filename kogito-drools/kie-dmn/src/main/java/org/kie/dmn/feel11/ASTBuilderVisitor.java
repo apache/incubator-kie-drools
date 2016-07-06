@@ -297,11 +297,17 @@ public class ASTBuilderVisitor
     }
 
     @Override
-    public BaseNode visitQuantifiedExpression(FEEL_1_1Parser.QuantifiedExpressionContext ctx) {
-        QuantifiedExpressionNode.Quantifier quant = QuantifiedExpressionNode.Quantifier.resolve( ctx.k.getText() );
+    public BaseNode visitQuantExprSome(FEEL_1_1Parser.QuantExprSomeContext ctx) {
         ListNode list = (ListNode) visit( ctx.iterationContexts() );
         BaseNode expr = visit( ctx.expression() );
-        return ASTBuilderFactory.newQuantifiedExpression( ctx, quant, list, expr );
+        return ASTBuilderFactory.newQuantifiedExpression( ctx, QuantifiedExpressionNode.Quantifier.SOME, list, expr );
+    }
+
+    @Override
+    public BaseNode visitQuantExprEvery(FEEL_1_1Parser.QuantExprEveryContext ctx) {
+        ListNode list = (ListNode) visit( ctx.iterationContexts() );
+        BaseNode expr = visit( ctx.expression() );
+        return ASTBuilderFactory.newQuantifiedExpression( ctx, QuantifiedExpressionNode.Quantifier.EVERY, list, expr );
     }
 
     @Override

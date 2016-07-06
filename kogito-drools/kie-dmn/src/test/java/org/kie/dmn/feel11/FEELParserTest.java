@@ -868,7 +868,7 @@ public class FEELParserTest {
     @Test
     public void testFunctionInvocationPositionalParams() {
         String inputExpression = "my.test.Function( x+10, \"foo\" )";
-        BaseNode functionBase = parse( inputExpression );
+        BaseNode functionBase = parse( inputExpression, "x" );
 
         assertThat( functionBase, is( instanceOf( FunctionInvocationNode.class ) ) );
         assertThat( functionBase.getText(), is( inputExpression ) );
