@@ -67,6 +67,7 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
+        <version>3.0.1</version>
         <configuration>
           <instructions>
             <Import-Package>
