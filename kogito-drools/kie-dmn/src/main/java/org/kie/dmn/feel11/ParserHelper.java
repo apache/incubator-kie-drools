@@ -73,13 +73,11 @@ public class ParserHelper {
     }
 
     public void startVariable(Token t) {
-        System.out.println("> start = '"+t.getText()+"'");
         this.currentScope.start( t.getText() );
     }
 
     public boolean followUp(Token t) {
         boolean follow = this.currentScope.followUp( t.getText() );
-        System.out.println( "  + follow = '" + t.getText() + "' -> "+follow );
         return follow;
     }
 
