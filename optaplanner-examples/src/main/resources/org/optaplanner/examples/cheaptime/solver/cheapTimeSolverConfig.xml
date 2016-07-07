@@ -8,7 +8,6 @@
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
-    <scoreDefinitionType>HARD_MEDIUM_SOFT_LONG</scoreDefinitionType>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator</easyScoreCalculatorClass>-->
     <incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.solver.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <!--<scoreDrl>org/optaplanner/examples/cheaptime/solver/cheapTimeScoreRules.drl</scoreDrl>-->

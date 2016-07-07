@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
 
@@ -82,7 +83,8 @@ public class PlannerBenchmarkResultTest {
         SingleBenchmarkResult p1SolverYProblemB = createSingleBenchmarkResult(p1SolverY, p1ProblemB, -4000);
         SingleBenchmarkResult p2SolverZProblemA = createSingleBenchmarkResult(p2SolverZ, p2ProblemA, -50000);
 
-        PlannerBenchmarkResult mergedResult = PlannerBenchmarkResult.createMergedResult(Arrays.asList(
+        SolverConfigContext configContext = new SolverConfigContext();
+        PlannerBenchmarkResult mergedResult = PlannerBenchmarkResult.createMergedResult(configContext, Arrays.asList(
                 p1SolverXProblemA, p1SolverXProblemB, p1SolverYProblemA, p1SolverYProblemB, p2SolverZProblemA));
 
         assertEquals(true, mergedResult.getAggregation());

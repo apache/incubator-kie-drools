@@ -13,8 +13,8 @@
     <section xml:id="whatIsAScore">
       <title>What is a Score?</title>
 
-      <para>Every initialized <literal>Solution</literal> has a score. The score is an objective way to compare two
-      solutions. The solution with the higher score is better. The <literal>Solver</literal> aims to find the
+      <para>Every <literal>Solution</literal> has a score. The score is an objective way to compare two solutions. The
+      solution with the higher score is better. The <literal>Solver</literal> aims to find the
       <literal>Solution</literal> with the highest <literal>Score</literal> of all possible solutions. The
       <emphasis>best solution</emphasis> is the <literal>Solution</literal> with the highest <literal>Score</literal>
       that <literal>Solver</literal> has encountered during solving, which might be the <emphasis>optimal
@@ -282,19 +282,23 @@
 
       <para>The <literal>Score</literal> implementation (for example <literal>HardSoftScore</literal>) must be the same
       throughout a <literal>Solver</literal> runtime. The <literal>Score</literal> implementation is configured in the
-      solver configuration as a ScoreDefinition:</para>
+      solution domain class:</para>
 
-      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
+      <programlisting language="java">@PlanningSolution
+public class CloudBalance {
     ...
-  &lt;/scoreDirectorFactory&gt;</programlisting>
+
+    @PlanningScore
+    private HardSoftScore score;
+
+}</programlisting>
     </section>
 
     <section xml:id="avoidFloatingPointNumbersInScoreCalculation">
       <title>Avoid Floating Point Numbers in Score Calculation</title>
 
-      <para>Avoid the use of <literal>float</literal> and <literal>double</literal> for score calculation. Use
-      <literal>BigDecimal</literal> instead.</para>
+      <para>Avoid the use of <literal>float</literal> or <literal>double</literal> in score calculation. Use
+      <literal>BigDecimal</literal> or scaled <literal>long</literal> instead.</para>
 
       <para>Floating point numbers (<literal>float</literal> and <literal>double</literal>) cannot represent a decimal
       number correctly. For example: a <literal>double</literal> cannot hold the value <literal>0.05</literal>
@@ -320,8 +324,8 @@
         <literal>double</literal> arithmetic. In experiments we have seen the score calculation speed get divided by
         5.</para>
 
-        <para>Therefore, in some cases, it can be worthwhile to multiply <emphasis>all</emphasis> numbers for a single
-        score weight by a plural of ten, so the score weight fits in an <literal>int</literal> or
+        <para>Therefore, in many cases, it can be worthwhile to multiply <emphasis>all</emphasis> numbers for a single
+        score weight by a plural of ten, so the score weight fits in a scaled <literal>int</literal> or
         <literal>long</literal>. For example, if we multiple all weights by <literal>1000</literal>, a fuelCost of
         <literal>0.07</literal> becomes a fuelCostMillis of <literal>70</literal> and no longer uses a decimal score
         weight.</para>
@@ -329,15 +333,15 @@
     </section>
   </section>
 
-  <section xml:id="scoreDefinition">
-    <title>Choose a Score Definition</title>
+  <section xml:id="scoreType">
+    <title>Choose a Score Type</title>
 
-    <para>Each <literal>Score</literal> implementation also has a <literal>ScoreDefinition</literal> implementation. For
-    example: <literal>SimpleScore</literal> is defined by <literal>SimpleScoreDefinition</literal>.</para>
+    <para>Depending on the number of score levels and type of score weights you need, choose a <literal>Score</literal>
+    type. Most use cases use a <literal>HardSoftScore</literal>.</para>
 
     <note>
       <para>To properly write a <literal>Score</literal> to database (with JPA/Hibernate) or to XML/JSON (with
-      XStream/JAXB), see <link linkend="integration">the integration chapter</link>.</para>
+      XStream/JAXB/Jackson), see <link linkend="integration">the integration chapter</link>.</para>
     </note>
 
     <section xml:id="simpleScore">
@@ -346,28 +350,26 @@
       <para>A <literal>SimpleScore</literal> has a single <literal>int</literal> value, for example
       <literal>-123</literal>. It has a single score level.</para>
 
-      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
-    ...
-  &lt;/scoreDirectorFactory&gt;</programlisting>
+      <programlisting language="java">    @PlanningScore
+    private SimpleScore score;</programlisting>
 
-      <para>Variants of this <literal>scoreDefinitionType</literal>:</para>
+      <para>Variants of this <literal>Score</literal> type:</para>
 
       <itemizedlist>
         <listitem>
-          <para><literal>SIMPLE_LONG</literal>: Uses <literal>SimpleLongScore</literal> which has a
-          <literal>long</literal> value instead of an <literal>int</literal> value.</para>
+          <para><literal>SimpleLongScore</literal> uses a <literal>long</literal> value instead of an
+          <literal>int</literal> value.</para>
         </listitem>
 
         <listitem>
-          <para><literal>SIMPLE_DOUBLE</literal>: Uses <literal>SimpleDoubleScore</literal> which has a
-          <literal>double</literal> value instead of an <literal>int</literal> value. <link
-          linkend="avoidFloatingPointNumbersInScoreCalculation">Not recommended to use.</link></para>
+          <para><literal>SimpleDoubleScore</literal> uses a <literal>double</literal> value instead of an
+          <literal>int</literal> value. <link linkend="avoidFloatingPointNumbersInScoreCalculation">Not recommended to
+          use.</link></para>
         </listitem>
 
         <listitem>
-          <para><literal>SIMPLE_BIG_DECIMAL</literal>: Uses <literal>SimpleBigDecimalScore</literal> which has a
-          <literal>BigDecimal</literal> value instead of an <literal>int</literal> value.</para>
+          <para><literal>SimpleBigDecimalScore</literal> uses a <literal>BigDecimal</literal> value instead of an
+          <literal>int</literal> value.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -378,28 +380,26 @@
       <para>A <literal>HardSoftScore</literal> has a hard <literal>int</literal> value and a soft <literal>int</literal>
       value, for example <literal>-123hard/-456soft</literal>. It has 2 score levels (hard and soft).</para>
 
-      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
-    ...
-  &lt;/scoreDirectorFactory&gt;</programlisting>
+      <programlisting language="java">    @PlanningScore
+    private HardSoftScore score;</programlisting>
 
-      <para>Variants of this <literal>scoreDefinitionType</literal>:</para>
+      <para>Variants of this <literal>Score</literal> type:</para>
 
       <itemizedlist>
         <listitem>
-          <para><literal>HARD_SOFT_LONG</literal>: Uses <literal>HardSoftLongScore</literal> which has
-          <literal>long</literal> values instead of <literal>int</literal> values.</para>
+          <para><literal>HardSoftLongScore</literal> uses <literal>long</literal> values instead of
+          <literal>int</literal> values.</para>
         </listitem>
 
         <listitem>
-          <para><literal>HARD_SOFT_DOUBLE</literal>: Uses <literal>HardSoftDoubleScore</literal> which has
-          <literal>double</literal> values instead of <literal>int</literal> values. <link
-          linkend="avoidFloatingPointNumbersInScoreCalculation">Not recommended to use.</link></para>
+          <para><literal>HardSoftDoubleScore</literal> uses <literal>double</literal> values instead of
+          <literal>int</literal> values. <link linkend="avoidFloatingPointNumbersInScoreCalculation">Not recommended to
+          use.</link></para>
         </listitem>
 
         <listitem>
-          <para><literal>HARD_SOFT_BIG_DECIMAL</literal>: Uses <literal>HardSoftBigDecimalScore</literal> which has
-          <literal>BigDecimal</literal> values instead of <literal>int</literal> values.</para>
+          <para><literal>HardSoftBigDecimalScore</literal> uses <literal>BigDecimal</literal> values instead of
+          <literal>int</literal> values.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -411,17 +411,15 @@
       <literal>int</literal> value and a soft <literal>int</literal> value, for example
       <literal>-123hard/-456medium/-789soft</literal>. It has 3 score levels (hard, medium and soft).</para>
 
-      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_MEDIUM_SOFT&lt;/scoreDefinitionType&gt;
-    ...
-  &lt;/scoreDirectorFactory&gt;</programlisting>
+      <programlisting language="java">    @PlanningScore
+    private HardMediumSoftScore score;</programlisting>
 
-      <para>Variants of this <literal>scoreDefinitionType</literal>:</para>
+      <para>Variants of this <literal>Score</literal> type:</para>
 
       <itemizedlist>
         <listitem>
-          <para><literal>HARD_MEDIUM_SOFT_LONG</literal>: Uses <literal>HardMediumSoftLongScore</literal> which has
-          <literal>long</literal> values instead of <literal>int</literal> values.</para>
+          <para><literal>HardMediumSoftLongScore</literal> uses <literal>long</literal> values instead of
+          <literal>int</literal> values.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -431,29 +429,32 @@
 
       <para>A <literal>BendableScore</literal> has a configurable number of score levels. It has an array of hard
       <literal>int</literal> values and an array of soft <literal>int</literal> value, for example with 2 hard levels
-      and 3 soft levels, the score can be <literal>[-123/-456]hard/[-789/-012/-345]soft</literal>.</para>
+      and 3 soft levels, the score can be <literal>[-123/-456]hard/[-789/-012/-345]soft</literal>. In that case, it has
+      5 score levels.</para>
 
-      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;BENDABLE&lt;/scoreDefinitionType&gt;
-    &lt;bendableHardLevelsSize&gt;2&lt;/bendableHardLevelsSize&gt;
-    &lt;bendableSoftLevelsSize&gt;3&lt;/bendableSoftLevelsSize&gt;
-    ...
-  &lt;/scoreDirectorFactory&gt;</programlisting>
+      <programlisting language="java">    @PlanningScore(bendableHardLevelsSize = 2, bendableSoftLevelsSize = 3)
+    private BendableScore score;</programlisting>
 
-      <para>The number of hard and soft score levels need to be set at configuration time. It is not flexible to change
+      <para>The number of hard and soft score levels need to be set at compilation time. It is not flexible to change
       during solving.</para>
 
-      <para>Variants of this <literal>scoreDefinitionType</literal>:</para>
+      <note>
+        <para>Don't use a <literal>BendableScore</literal> with 7 levels just because you have 7 constraints. It's
+        extremely rare to use a different score level for each constraint. Usually, multiple constraints share the same
+        level and are weighted against each other.</para>
+      </note>
+
+      <para>Variants of this <literal>Score</literal> type:</para>
 
       <itemizedlist>
         <listitem>
-          <para><literal>BENDABLE_LONG</literal>: Uses <literal>BendableLongScore</literal> which has
-          <literal>long</literal> values instead of <literal>int</literal> values.</para>
+          <para><literal>BendableLongScore</literal> uses <literal>long</literal> values instead of
+          <literal>int</literal> values.</para>
         </listitem>
 
         <listitem>
-          <para><literal>BENDABLE_BIG_DECIMAL</literal>: Uses <literal>BendableBigDecimalScore</literal> which has
-          <literal>BigDecimal</literal> values instead of <literal>int</literal> values.</para>
+          <para><literal>BendableBigDecimalScore</literal> uses <literal>BigDecimal</literal> values instead of
+          <literal>int</literal> values.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -461,20 +462,21 @@
     <section xml:id="customScore">
       <title>Implementing a Custom Score</title>
 
-      <para>The <literal>ScoreDefinition</literal> interface defines the score representation.</para>
+      <para>Internally, each <literal>Score</literal> implementation also has a <literal>ScoreDefinition</literal>
+      implementation. For example: <literal>SimpleScore</literal> is defined by
+      <literal>SimpleScoreDefinition</literal>. The <literal>ScoreDefinition</literal> interface defines the score
+      representation.</para>
 
-      <para>To implement a custom <literal>Score</literal>, you also need to implement such a custom
+      <para>To implement a custom <literal>Score</literal>, also implement such a custom
       <literal>ScoreDefinition</literal>. Extend <literal>AbstractScoreDefinition</literal> (preferably by copy pasting
       <literal>HardSoftScoreDefinition</literal>) and start from there. Then hook your custom
-      <literal>ScoreDefinition</literal> in your <filename>SolverConfig.xml</filename>:</para>
+      <literal>ScoreDefinition</literal> in the domain:</para>
 
-      <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionClass&gt;...MyScoreDefinition&lt;/scoreDefinitionClass&gt;
-    ...
-  &lt;/scoreDirectorFactory&gt;</programlisting>
+      <programlisting language="java">    @PlanningScore(scoreDefinitionClass = MyCustomScoreDefinition.class)
+    private MyCustomScore score;</programlisting>
 
       <para>To have it integrate seamlessly with <link linkend="jpaAndHibernatePersistingAScore">JPA/Hibernate</link>,
-      <link linkend="integrationWithXStream">XStream</link>, ... you might need to write some glue code.</para>
+      <link linkend="integrationWithXStream">XStream</link>, ..., you 'll need to write some glue code.</para>
     </section>
   </section>
 
@@ -599,7 +601,6 @@
       <para>Configure it in your solver configuration:</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
     &lt;easyScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator&lt;/easyScoreCalculatorClass&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
@@ -786,7 +787,6 @@
       <para>Configure it in your solver configuration:</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
     &lt;incrementalScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensAdvancedIncrementalScoreCalculator&lt;/incrementalScoreCalculatorClass&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
@@ -914,7 +914,6 @@
           element:</para>
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
     &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
@@ -935,7 +934,6 @@
           issues):</para>
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    ...
     &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
     &lt;kieBaseConfigurationProperties&gt;
       &lt;drools.equalityBehavior&gt;...&lt;/drools.equalityBehavior&gt;
@@ -950,7 +948,6 @@
           rules DRL file in the solver configuration as a <literal>&lt;scoreDrlFile&gt;</literal> element:</para>
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
     &lt;scoreDrlFile&gt;/home/ge0ffrey/tmp/nQueensScoreRules.drl&lt;/scoreDrlFile&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
@@ -988,13 +985,14 @@
           element:</para>
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
     &lt;ksessionName&gt;nQueensKsession&lt;/ksessionName&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
           <para>In this approach, it's required to use a
           <literal>SolverFactory.createFromKieContainerXmlResource(...)</literal> method to <link
-          linkend="solverConfigurationByXML">build the <literal>SolverFactory</literal></link>.</para>
+          linkend="solverConfigurationByXML">build the <literal>SolverFactory</literal></link>. If no
+          <literal>&lt;ksessionName&gt;</literal> element is specified, the default ksession of the
+          <literal>kmodule.xml</literal> is used.</para>
         </section>
       </section>
 
@@ -1167,7 +1165,6 @@ end</programlisting>
       <literal>InitializingScoreTrend</literal> that only goes down:</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     &lt;scoreDrl&gt;.../cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;
     &lt;initializingScoreTrend&gt;ONLY_DOWN&lt;/initializingScoreTrend&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
@@ -1175,7 +1172,6 @@ end</programlisting>
       <para>Alternatively, you can also specify the trend for each score level separately:</para>
 
       <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     &lt;scoreDrl&gt;.../cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;
     &lt;initializingScoreTrend&gt;ONLY_DOWN/ONLY_DOWN&lt;/initializingScoreTrend&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
@@ -1198,7 +1194,6 @@ end</programlisting>
       <programlisting language="xml">  &lt;environmentMode&gt;FAST_ASSERT&lt;/environmentMode&gt;
   ...
   &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
     &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
     &lt;assertionScoreDirectorFactory&gt;
       &lt;easyScoreCalculatorClass&gt;org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator&lt;/easyScoreCalculatorClass&gt;

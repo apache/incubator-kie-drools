@@ -48,6 +48,7 @@ public class TaskAssigningSolution extends AbstractPersistable {
     private List<Task> taskList;
 
     @XStreamConverter(BendableScoreXStreamConverter.class)
+    @PlanningScore(bendableHardLevelsSize = 1, bendableSoftLevelsSize = 4)
     private BendableScore score;
 
     public List<Skill> getSkillList() {
@@ -90,7 +91,6 @@ public class TaskAssigningSolution extends AbstractPersistable {
         this.taskList = taskList;
     }
 
-    @PlanningScore
     public BendableScore getScore() {
         return score;
     }

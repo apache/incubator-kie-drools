@@ -34,6 +34,7 @@ import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -267,7 +268,8 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     // Merger methods
     // ************************************************************************
 
-    protected static SubSingleBenchmarkResult createMerge(SingleBenchmarkResult singleBenchmarkResult, SubSingleBenchmarkResult oldResult, int subSingleBenchmarkIndex) {
+    protected static SubSingleBenchmarkResult createMerge(SolverConfigContext configContext,
+            SingleBenchmarkResult singleBenchmarkResult, SubSingleBenchmarkResult oldResult, int subSingleBenchmarkIndex) {
         SubSingleBenchmarkResult newResult = new SubSingleBenchmarkResult(singleBenchmarkResult, subSingleBenchmarkIndex);
         newResult.pureSubSingleStatisticList = new ArrayList<>(oldResult.pureSubSingleStatisticList.size());
         for (PureSubSingleStatistic oldSubSingleStatistic : oldResult.pureSubSingleStatisticList) {
@@ -289,9 +291,9 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
                             + ") sub single statistic's (" + oldSubSingleStatistic + ") CSV file.");
                 }
             }
-            oldSubSingleStatistic.unhibernatePointList();
+            oldSubSingleStatistic.unhibernatePointList(configContext);
             newSubSingleStatistic.setPointList(oldSubSingleStatistic.getPointList());
-            oldSubSingleStatistic.hibernatePointList();
+            oldSubSingleStatistic.hibernatePointList(configContext);
         }
         // Skip oldResult.reportDirectory
         // Skip oldResult.usedMemoryAfterInputSolution

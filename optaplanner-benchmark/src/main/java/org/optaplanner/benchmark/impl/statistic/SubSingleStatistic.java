@@ -33,10 +33,10 @@ import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,10 +132,10 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
         }
     }
 
-    private void readCsvStatisticFile() {
+    private void readCsvStatisticFile(SolverConfigContext configContext) {
         File csvFile = getCsvFile();
-        ScoreDefinition scoreDefinition = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig()
-                .getScoreDirectorFactoryConfig().buildScoreDefinition();
+        ScoreDefinition scoreDefinition = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult()
+                .getSolverConfig().buildSolutionDescriptor(configContext).getScoreDefinition();
         if (!pointList.isEmpty()) {
             throw new IllegalStateException("The pointList with size (" + pointList.size() + ") should be empty.");
         }
@@ -161,7 +161,7 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
                         continue;
                     }
                     throw new IllegalStateException("SubSingleStatistic (" + this + ") failed even though the "
-                            + "corresponding SinglesubSingleBenchmarkResult (" + subSingleBenchmarkResult + ") is a success.");
+                            + "corresponding subSingleBenchmarkResult (" + subSingleBenchmarkResult + ") is a success.");
                 }
                 List<String> csvLine = StatisticPoint.parseCsvLine(line);
                 // HACK
@@ -187,7 +187,7 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
         }
     }
 
-    public void unhibernatePointList() {
+    public void unhibernatePointList(SolverConfigContext configContext) {
         if (!getCsvFile().exists()) {
             throw new IllegalStateException("The csvFile (" + getCsvFile() + ") of the statistic (" + getStatisticType()
                     + ") of the single benchmark (" + subSingleBenchmarkResult + ") doesn't exist.");
@@ -196,10 +196,10 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
                     + ") of the single benchmark (" + subSingleBenchmarkResult + ") should be null when unhibernating.");
         }
         initPointList();
-        readCsvStatisticFile();
+        readCsvStatisticFile(configContext);
     }
 
-    public void hibernatePointList() {
+    public void hibernatePointList(SolverConfigContext configContext) {
         writeCsvStatisticFile();
         pointList = null;
     }

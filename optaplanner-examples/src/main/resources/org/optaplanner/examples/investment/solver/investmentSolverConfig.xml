@@ -8,7 +8,6 @@
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
-    <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.investment.solver.score.InvestmentEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.investment.solver.score.InvestmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>org/optaplanner/examples/investment/solver/investmentScoreRules.drl</scoreDrl>

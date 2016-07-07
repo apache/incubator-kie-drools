@@ -5,7 +5,6 @@
       <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
       <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
       <scoreDirectorFactory>
-        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
         <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>

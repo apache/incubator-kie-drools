@@ -75,6 +75,7 @@ import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.swing.impl.SwingUncaughtExceptionHandler;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.slf4j.Logger;
@@ -535,7 +536,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
         @Override
         protected File doInBackground() {
-            return benchmarkAggregator.aggregate(singleBenchmarkResultList, solverBenchmarkResultNameMapping);
+            SolverConfigContext configContext = new SolverConfigContext();
+            return benchmarkAggregator.aggregate(configContext, singleBenchmarkResultList, solverBenchmarkResultNameMapping);
         }
 
         @Override

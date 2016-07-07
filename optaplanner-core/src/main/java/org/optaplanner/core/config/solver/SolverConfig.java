@@ -35,6 +35,7 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.Phase;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -250,7 +251,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return randomFactory;
     }
 
-    protected <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(SolverConfigContext configContext) {
+    public <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(SolverConfigContext configContext) {
+        ScoreDefinition deprecatedScoreDefinition = scoreDirectorFactoryConfig == null ? null
+                : scoreDirectorFactoryConfig.buildDeprecatedScoreDefinition();
         if (scanAnnotatedClassesConfig != null) {
             if (solutionClass != null || entityClassList != null) {
                 throw new IllegalArgumentException("The solver configuration with scanAnnotatedClasses ("
@@ -258,7 +261,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                         + ") or an entityClass (" + entityClassList + ").\n"
                         + "  Please decide between automatic scanning or manual referencing.");
             }
-            return scanAnnotatedClassesConfig.buildSolutionDescriptor(configContext);
+            return scanAnnotatedClassesConfig.buildSolutionDescriptor(configContext, deprecatedScoreDefinition);
         } else {
             if (solutionClass == null) {
                 throw new IllegalArgumentException("The solver configuration must have a solutionClass (" + solutionClass
@@ -269,7 +272,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                         "The solver configuration must have at least 1 entityClass (" + entityClassList
                         + "), if it has no scanAnnotatedClasses (" + scanAnnotatedClassesConfig + ").");
             }
-            return SolutionDescriptor.buildSolutionDescriptor((Class<Solution_>) solutionClass, entityClassList);
+            return SolutionDescriptor.buildSolutionDescriptor((Class<Solution_>) solutionClass, entityClassList, deprecatedScoreDefinition);
         }
     }
 

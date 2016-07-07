@@ -28,6 +28,7 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,11 +59,12 @@ public class BenchmarkAggregator {
     // Aggregate methods
     // ************************************************************************
 
-    public File aggregate(List<SingleBenchmarkResult> singleBenchmarkResultList) {
-        return aggregate(singleBenchmarkResultList, null);
+    public File aggregate(SolverConfigContext configContext, List<SingleBenchmarkResult> singleBenchmarkResultList) {
+        return aggregate(configContext, singleBenchmarkResultList, null);
     }
 
-    public File aggregate(List<SingleBenchmarkResult> singleBenchmarkResultList,
+    public File aggregate(SolverConfigContext configContext,
+            List<SingleBenchmarkResult> singleBenchmarkResultList,
             Map<SolverBenchmarkResult, String> solverBenchmarkResultNameMap) {
         if (benchmarkDirectory == null) {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory + ") must not be null.");
@@ -97,13 +99,14 @@ public class BenchmarkAggregator {
             }
         }
 
-        PlannerBenchmarkResult plannerBenchmarkResult = PlannerBenchmarkResult.createMergedResult(singleBenchmarkResultList);
+        PlannerBenchmarkResult plannerBenchmarkResult = PlannerBenchmarkResult.createMergedResult(
+                configContext, singleBenchmarkResultList);
         plannerBenchmarkResult.setStartingTimestamp(startingTimestamp);
         plannerBenchmarkResult.initBenchmarkReportDirectory(benchmarkDirectory);
 
         BenchmarkReport benchmarkReport = benchmarkReportConfig.buildBenchmarkReport(plannerBenchmarkResult);
         plannerBenchmarkResult.accumulateResults(benchmarkReport);
-        benchmarkReport.writeReport();
+        benchmarkReport.writeReport(configContext);
 
         logger.info("Aggregation ended: statistic html overview ({}).",
                 benchmarkReport.getHtmlOverviewFile().getAbsolutePath());

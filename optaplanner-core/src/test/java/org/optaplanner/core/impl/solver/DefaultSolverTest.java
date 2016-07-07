@@ -24,6 +24,7 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
+import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.phase.custom.DummyCustomPhaseCommand;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -56,6 +57,8 @@ public class DefaultSolverTest {
     public void solveLegacy() {
         SolverFactory<TestdataLegacySolution> solverFactory = PlannerTestUtils.buildSolverFactory(
                 TestdataLegacySolution.class, TestdataEntity.class);
+        solverFactory.getSolverConfig().getScoreDirectorFactoryConfig()
+                .setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
         Solver<TestdataLegacySolution> solver = solverFactory.buildSolver();
 
         TestdataLegacySolution solution = new TestdataLegacySolution("s1");

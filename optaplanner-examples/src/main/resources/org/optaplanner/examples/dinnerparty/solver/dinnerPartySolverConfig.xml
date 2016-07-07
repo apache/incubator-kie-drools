@@ -5,7 +5,6 @@
   <entityClass>org.optaplanner.examples.dinnerparty.domain.SeatDesignation</entityClass>
 
   <scoreDirectorFactory>
-    <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     <scoreDrl>org/optaplanner/examples/dinnerparty/solver/dinnerPartyScoreRules.drl</scoreDrl>
     <scoreDrl>org/optaplanner/examples/dinnerparty/solver/dinnerPartyExtraScoreRules.xls</scoreDrl>
   </scoreDirectorFactory>

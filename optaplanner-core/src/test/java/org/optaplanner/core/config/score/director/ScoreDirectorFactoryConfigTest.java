@@ -31,7 +31,7 @@ public class ScoreDirectorFactoryConfigTest {
     public void buildSimpleScoreDefinition() {
         ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
         config.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
-        ScoreDefinition scoreDefinition = config.buildScoreDefinition();
+        ScoreDefinition scoreDefinition = config.buildDeprecatedScoreDefinition();
         assertInstanceOf(SimpleScoreDefinition.class, scoreDefinition);
     }
 
@@ -41,7 +41,7 @@ public class ScoreDirectorFactoryConfigTest {
         config.setScoreDefinitionType(ScoreDefinitionType.BENDABLE);
         config.setBendableHardLevelsSize(2);
         config.setBendableSoftLevelsSize(3);
-        BendableScoreDefinition scoreDefinition = (BendableScoreDefinition) config.buildScoreDefinition();
+        BendableScoreDefinition scoreDefinition = (BendableScoreDefinition) config.buildDeprecatedScoreDefinition();
         assertEquals(2, scoreDefinition.getHardLevelsSize());
         assertEquals(3, scoreDefinition.getSoftLevelsSize());
     }

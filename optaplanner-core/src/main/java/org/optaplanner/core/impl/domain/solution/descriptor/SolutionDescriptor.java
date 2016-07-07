@@ -20,6 +20,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,17 +46,46 @@ import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.score.AbstractBendableScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
+import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.optaplanner.core.impl.domain.solution.cloner.PlanningCloneableSolutionCloner;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardsoftdouble.HardSoftDoubleScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.simplebigdecimal.SimpleBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.simpledouble.SimpleDoubleScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.simplelong.SimpleLongScoreDefinition;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,14 +99,14 @@ public class SolutionDescriptor<Solution_> {
 
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(Class<Solution_> solutionClass,
             Class<?>... entityClasses) {
-        return buildSolutionDescriptor(solutionClass, Arrays.asList(entityClasses));
+        return buildSolutionDescriptor(solutionClass, Arrays.asList(entityClasses), null);
     }
 
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(Class<Solution_> solutionClass,
-            List<Class<?>> entityClassList) {
+            List<Class<?>> entityClassList, ScoreDefinition deprecatedScoreDefinition) {
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         SolutionDescriptor<Solution_> solutionDescriptor = new SolutionDescriptor<>(solutionClass);
-        solutionDescriptor.processAnnotations(descriptorPolicy);
+        solutionDescriptor.processAnnotations(descriptorPolicy, deprecatedScoreDefinition);
         for (Class<?> entityClass : sortEntityClassList(entityClassList)) {
             EntityDescriptor<Solution_> entityDescriptor = new EntityDescriptor<>(solutionDescriptor, entityClass);
             solutionDescriptor.addEntityDescriptor(entityDescriptor);
@@ -118,6 +149,7 @@ public class SolutionDescriptor<Solution_> {
     private final Map<String, MemberAccessor> entityMemberAccessorMap;
     private final Map<String, MemberAccessor> entityCollectionMemberAccessorMap;
     private MemberAccessor scoreMemberAccessor;
+    private ScoreDefinition scoreDefinition;
 
     private final Map<Class<?>, EntityDescriptor<Solution_>> entityDescriptorMap;
     private final List<Class<?>> reversedEntityClassList;
@@ -148,7 +180,7 @@ public class SolutionDescriptor<Solution_> {
         lowestEntityDescriptorCache.put(entityClass, entityDescriptor);
     }
 
-    public void processAnnotations(DescriptorPolicy descriptorPolicy) {
+    public void processAnnotations(DescriptorPolicy descriptorPolicy, ScoreDefinition deprecatedScoreDefinition) {
         processSolutionAnnotations(descriptorPolicy);
         // Iterate inherited members too (unlike for EntityDescriptor where each one is declared)
         // to make sure each one is registered
@@ -158,7 +190,7 @@ public class SolutionDescriptor<Solution_> {
                 processValueRangeProviderAnnotation(descriptorPolicy, member);
                 processProblemFactPropertyAnnotation(descriptorPolicy, member);
                 processPlanningEntityPropertyAnnotation(descriptorPolicy, member);
-                processScoreAnnotation(descriptorPolicy, member);
+                processScoreAnnotation(descriptorPolicy, member, deprecatedScoreDefinition);
             }
         }
         if (entityCollectionMemberAccessorMap.isEmpty() && entityMemberAccessorMap.isEmpty()) {
@@ -168,7 +200,7 @@ public class SolutionDescriptor<Solution_> {
                     + PlanningEntityProperty.class.getSimpleName() + " annotation.");
         }
         if (Solution.class.isAssignableFrom(solutionClass)) {
-            processLegacySolution(descriptorPolicy);
+            processLegacySolution(descriptorPolicy, deprecatedScoreDefinition);
             return;
         }
         // Do not check if problemFactCollectionMemberAccessorMap and problemFactMemberAccessorMap are empty
@@ -180,7 +212,7 @@ public class SolutionDescriptor<Solution_> {
         }
     }
 
-    private void processLegacySolution(DescriptorPolicy descriptorPolicy) {
+    private void processLegacySolution(DescriptorPolicy descriptorPolicy, ScoreDefinition deprecatedScoreDefinition) {
         if (!problemFactMemberAccessorMap.isEmpty()) {
             MemberAccessor memberAccessor = problemFactMemberAccessorMap.values().iterator().next();
             throw new IllegalStateException("The solutionClass (" + solutionClass
@@ -221,6 +253,17 @@ public class SolutionDescriptor<Solution_> {
             throw new IllegalStateException("Impossible situation: the solutionClass (" + solutionClass
                     + ") which implements the legacy interface " + Solution.class.getSimpleName()
                     + ", lacks its getScore() method.", e);
+        }
+        if (deprecatedScoreDefinition == null) {
+            deprecatedScoreDefinition = new SimpleScoreDefinition();
+        }
+        scoreDefinition = deprecatedScoreDefinition;
+        Class<? extends Score> scoreClass = extractScoreClass();
+        if (!scoreClass.isAssignableFrom(scoreDefinition.getScoreClass())) {
+            throw new IllegalArgumentException("The scoreClass (" + scoreClass
+                    + ") of solutionClass (" + solutionClass
+                    + ") is not the same or a superclass as the scoreDefinition's scoreClass ("
+                    + scoreDefinition.getScoreClass() + ").");
         }
     }
 
@@ -343,10 +386,19 @@ public class SolutionDescriptor<Solution_> {
                 : "Maybe 2 mutually exclusive annotations are configured."));
     }
 
-    private void processScoreAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
+    private void processScoreAnnotation(DescriptorPolicy descriptorPolicy, Member member,
+            ScoreDefinition deprecatedScoreDefinition) {
         if (((AnnotatedElement) member).isAnnotationPresent(PlanningScore.class)) {
             MemberAccessor memberAccessor = ConfigUtils.buildMemberAccessor(
                     member, FIELD_OR_GETTER_METHOD_WITH_SETTER, PlanningScore.class);
+            if (deprecatedScoreDefinition != null) {
+                throw new IllegalStateException("The solutionClass (" + solutionClass
+                        + ") has a " + PlanningScore.class.getSimpleName()
+                        + " annotated member (" + memberAccessor
+                        + ") but the solver configuration still has a deprecated scoreDefinitionType"
+                        + " or scoreDefinitionClass element.\n"
+                        + "  Maybe remove the <scoreDefinitionType>, <bendableHardLevelsSize>, <bendableSoftLevelsSize> and <scoreDefinitionClass> elements from the solver configuration.");
+            }
             if (scoreMemberAccessor != null) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
                         + ") has a " + PlanningScore.class.getSimpleName()
@@ -359,6 +411,140 @@ public class SolutionDescriptor<Solution_> {
                         + " annotated member (" + memberAccessor + ") that does not return a subtype of Score.");
             }
             scoreMemberAccessor = memberAccessor;
+            Class<? extends Score> scoreType = (Class<? extends Score>) scoreMemberAccessor.getType();
+            PlanningScore annotation = memberAccessor.getAnnotation(PlanningScore.class);
+            scoreDefinition = buildScoreDefinition(scoreType, annotation);
+        }
+    }
+
+    public ScoreDefinition buildScoreDefinition(Class<? extends Score> scoreType, PlanningScore annotation) {
+        Class<? extends ScoreDefinition> scoreDefinitionClass = annotation.scoreDefinitionClass();
+        if (scoreDefinitionClass != PlanningScore.NullScoreDefinition.class) {
+            if (annotation.bendableHardLevelsSize() != PlanningScore.NO_LEVEL_SIZE
+                    || annotation.bendableSoftLevelsSize() != PlanningScore.NO_LEVEL_SIZE) {
+                throw new IllegalArgumentException("The solutionClass (" + solutionClass
+                        + ") has a " + PlanningScore.class.getSimpleName()
+                        + " annotated member (" + scoreMemberAccessor
+                        + ") that has a scoreDefinition (" + scoreDefinitionClass
+                        + ") that must not have a bendableHardLevelsSize (" + annotation.bendableHardLevelsSize()
+                        + ") or a bendableSoftLevelsSize (" + annotation.bendableSoftLevelsSize() + ").");
+            }
+            return ConfigUtils.newInstance(this, "scoreDefinitionClass", scoreDefinitionClass);
+        }
+        if (scoreType == Score.class) {
+            if (!AbstractSolution.class.isAssignableFrom(solutionClass)) {
+                throw new IllegalStateException("The solutionClass (" + solutionClass
+                        + ") has a " + PlanningScore.class.getSimpleName()
+                        + " annotated member (" + scoreMemberAccessor
+                        + ") that doesn't return a non-abstract " + Score.class.getSimpleName() + " class.\n"
+                        + "  Maybe make it return " + HardSoftScore.class.getSimpleName()
+                        + " or another specific " + Score.class.getSimpleName() + " implementation.");
+            } else {
+                // Magic to support AbstractSolution
+                if (solutionClass == AbstractSolution.class) {
+                    throw new IllegalArgumentException(
+                            "The solutionClass (" + solutionClass + ") cannot be directly a "
+                            + AbstractSolution.class.getSimpleName() + ", but a subclass would be ok.");
+                }
+                Class baseClass = solutionClass;
+                while (baseClass.getSuperclass() != AbstractSolution.class) {
+                    baseClass = baseClass.getSuperclass();
+                    if (baseClass == null) {
+                        throw new IllegalStateException(
+                                "Impossible situation because the solutionClass (" + solutionClass
+                                + ") is assignable from " + AbstractSolution.class.getSimpleName() + ".");
+                    }
+                }
+                Type genericAbstractSolution = solutionClass.getGenericSuperclass();
+                if (!(genericAbstractSolution instanceof ParameterizedType)) {
+                    throw new IllegalStateException(
+                            "Impossible situation because the genericAbstractSolution (" + genericAbstractSolution
+                                    + ") is a " + AbstractSolution.class.getSimpleName() + ".");
+                }
+                ParameterizedType parameterizedAbstractSolution = (ParameterizedType) genericAbstractSolution;
+                Type[] typeArguments = parameterizedAbstractSolution.getActualTypeArguments();
+                if (typeArguments.length != 1) {
+                    throw new IllegalStateException(
+                            "Impossible situation because the parameterizedAbstractSolution ("
+                                    + parameterizedAbstractSolution
+                                    + ") is a " + AbstractSolution.class.getSimpleName() + ".");
+                }
+                Type typeArgument = typeArguments[0];
+                if (!(typeArgument instanceof Class)) {
+                    throw new IllegalStateException(
+                            "Impossible situation because a (" + AbstractSolution.class.getSimpleName()
+                            + "'s typeArgument (" + typeArgument + ") must be a " + Score.class.getSimpleName() + ".");
+                }
+                scoreType = (Class<? extends Score>) typeArgument;
+            }
+        }
+        if (!AbstractBendableScore.class.isAssignableFrom(scoreType)) {
+            if (annotation.bendableHardLevelsSize() != PlanningScore.NO_LEVEL_SIZE
+                    || annotation.bendableSoftLevelsSize() != PlanningScore.NO_LEVEL_SIZE) {
+                throw new IllegalArgumentException("The solutionClass (" + solutionClass
+                        + ") has a " + PlanningScore.class.getSimpleName()
+                        + " annotated member (" + scoreMemberAccessor
+                        + ") that returns a scoreType (" + scoreType
+                        + ") that must not have a bendableHardLevelsSize (" + annotation.bendableHardLevelsSize()
+                        + ") or a bendableSoftLevelsSize (" + annotation.bendableSoftLevelsSize() + ").");
+            }
+            if (scoreType.equals(SimpleScore.class)) {
+                return new SimpleScoreDefinition();
+            } else if (scoreType.equals(SimpleLongScore.class)) {
+                return new SimpleLongScoreDefinition();
+            } else if (scoreType.equals(SimpleDoubleScore.class)) {
+                return new SimpleDoubleScoreDefinition();
+            } else if (scoreType.equals(SimpleBigDecimalScore.class)) {
+                return new SimpleBigDecimalScoreDefinition();
+            } else if (scoreType.equals(HardSoftScore.class)) {
+                return new HardSoftScoreDefinition();
+            } else if (scoreType.equals(HardSoftLongScore.class)) {
+                return new HardSoftLongScoreDefinition();
+            } else if (scoreType.equals(HardSoftDoubleScore.class)) {
+                return new HardSoftDoubleScoreDefinition();
+            } else if (scoreType.equals(HardSoftBigDecimalScore.class)) {
+                return new HardSoftBigDecimalScoreDefinition();
+            } else if (scoreType.equals(HardMediumSoftScore.class)) {
+                return new HardMediumSoftScoreDefinition();
+            } else if (scoreType.equals(HardMediumSoftLongScore.class)) {
+                return new HardMediumSoftLongScoreDefinition();
+            } else {
+                throw new IllegalArgumentException("The solutionClass (" + solutionClass
+                        + ") has a " + PlanningScore.class.getSimpleName()
+                        + " annotated member (" + scoreMemberAccessor
+                        + ") that returns a scoreType (" + scoreType
+                        + ") that is not recognized as a default " + Score.class.getSimpleName() + " implementation.\n"
+                        + "  If you intend to use a custom implementation,"
+                        + " maybe set a scoreDefinition in the " + PlanningScore.class.getSimpleName()
+                        + " annotation.");
+            }
+        } else {
+            int bendableHardLevelsSize = annotation.bendableHardLevelsSize();
+            int bendableSoftLevelsSize = annotation.bendableSoftLevelsSize();
+            if (bendableHardLevelsSize == PlanningScore.NO_LEVEL_SIZE
+                    || bendableSoftLevelsSize == PlanningScore.NO_LEVEL_SIZE) {
+                throw new IllegalArgumentException("The solutionClass (" + solutionClass
+                        + ") has a " + PlanningScore.class.getSimpleName()
+                        + " annotated member (" + scoreMemberAccessor
+                        + ") that returns a scoreType (" + scoreType
+                        + ") that must have a bendableHardLevelsSize (" + annotation.bendableHardLevelsSize()
+                        + ") and a bendableSoftLevelsSize (" + annotation.bendableSoftLevelsSize() + ").");
+            }
+            if (scoreType.equals(BendableScore.class)) {
+                return new BendableScoreDefinition(bendableHardLevelsSize, bendableSoftLevelsSize);
+            } else if (scoreType.equals(BendableLongScore.class)) {
+                return new BendableLongScoreDefinition(bendableHardLevelsSize, bendableSoftLevelsSize);
+            } else if (scoreType.equals(BendableBigDecimalScore.class)) {
+                return new BendableBigDecimalScoreDefinition(bendableHardLevelsSize, bendableSoftLevelsSize);
+            } else {
+                throw new IllegalArgumentException("The solutionClass (" + solutionClass
+                        + ") has a " + PlanningScore.class.getSimpleName()
+                        + " annotated member (" + scoreMemberAccessor
+                        + ") that returns a bendable scoreType (" + scoreType
+                        + ") that is not recognized as a default " + Score.class.getSimpleName() + " implementation.\n"
+                        + "  If you intend to use a custom implementation,"
+                        + " maybe set a scoreDefinition in the annotation.");
+            }
         }
     }
 
@@ -437,6 +623,10 @@ public class SolutionDescriptor<Solution_> {
      */
     public Class<? extends Score> extractScoreClass() {
         return (Class<? extends Score>) scoreMemberAccessor.getType();
+    }
+
+    public ScoreDefinition getScoreDefinition() {
+        return scoreDefinition;
     }
 
     public SolutionCloner<Solution_> getSolutionCloner() {

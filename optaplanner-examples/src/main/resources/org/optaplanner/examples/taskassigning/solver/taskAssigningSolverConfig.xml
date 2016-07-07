@@ -6,9 +6,6 @@
   <entityClass>org.optaplanner.examples.taskassigning.domain.Task</entityClass>
 
   <scoreDirectorFactory>
-    <scoreDefinitionType>BENDABLE</scoreDefinitionType>
-    <bendableHardLevelsSize>1</bendableHardLevelsSize>
-    <bendableSoftLevelsSize>4</bendableSoftLevelsSize>
     <scoreDrl>org/optaplanner/examples/taskassigning/solver/taskAssigningScoreRules.drl</scoreDrl>
   </scoreDirectorFactory>
 

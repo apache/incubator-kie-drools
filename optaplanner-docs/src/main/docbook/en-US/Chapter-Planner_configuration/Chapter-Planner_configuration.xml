@@ -102,7 +102,6 @@
 
   &lt;!-- Define the score function --&gt;
   &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
     &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;
 
@@ -246,8 +245,8 @@
         <itemizedlist>
           <listitem>
             <para>Add class annotations and JavaBean property annotations on the domain model (recommended). The
-            property annotations must be the getter method, not on the setter method. Such a getter does not need to be
-            public.</para>
+            property annotations must be on the getter method, not on the setter method. Such a getter does not need to
+            be public.</para>
           </listitem>
 
           <listitem>
@@ -1297,8 +1296,8 @@ public class Customer {
 
         <note>
           <para>If the class of the trigger variable is different than the shadow variable, also specify the
-          <literal>entityClass</literal> on <literal>@PlanningVariableReference</literal>. In that case, make sure
-          that that <literal>entityClass</literal> is also properly configured as a planning entity class in the solver
+          <literal>entityClass</literal> on <literal>@PlanningVariableReference</literal>. In that case, make sure that
+          that <literal>entityClass</literal> is also properly configured as a planning entity class in the solver
           config, or the <literal>VariableListener</literal> will simply never trigger.</para>
         </note>
 
@@ -1539,7 +1538,7 @@ public class CloudBalance {
 
 }</programlisting>
 
-        <para>Some use cases use <link linkend="scoreDefinition">other <literal>Score</literal> types</link>.</para>
+        <para>Some use cases use <link linkend="scoreType">other <literal>Score</literal> types</link>.</para>
       </section>
 
       <section xml:id="getProblemFacts">

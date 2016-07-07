@@ -44,9 +44,6 @@
       <entityClass>org.optaplanner.examples.projectjobscheduling.domain.Allocation</entityClass>
 
       <scoreDirectorFactory>
-        <scoreDefinitionType>BENDABLE</scoreDefinitionType>
-        <bendableHardLevelsSize>1</bendableHardLevelsSize>
-        <bendableSoftLevelsSize>2</bendableSoftLevelsSize>
         <incrementalScoreCalculatorClass>org.optaplanner.examples.projectjobscheduling.solver.score.ProjectJobSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
       </scoreDirectorFactory>
       <termination>

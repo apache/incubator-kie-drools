@@ -8,7 +8,6 @@
   <entityClass>org.optaplanner.examples.coachshuttlegathering.domain.Shuttle</entityClass>
 
   <scoreDirectorFactory>
-    <scoreDefinitionType>HARD_SOFT_LONG</scoreDefinitionType>
     <!--<easyScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.CoachShuttleGatheringEasyScoreCalculator</easyScoreCalculatorClass>-->
     <!--<incrementalScoreCalculatorClass>org.optaplanner.examples.coachshuttlegathering.solver.score.CoachShuttleGatheringIncrementalScoreCalculator</incrementalScoreCalculatorClass>-->
     <scoreDrl>org/optaplanner/examples/coachshuttlegathering/solver/coachShuttleGatheringScoreRules.drl</scoreDrl>

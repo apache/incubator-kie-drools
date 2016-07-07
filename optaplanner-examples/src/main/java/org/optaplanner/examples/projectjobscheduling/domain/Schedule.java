@@ -98,7 +98,7 @@ public class Schedule extends AbstractPersistable {
         this.allocationList = allocationList;
     }
 
-    @PlanningScore
+    @PlanningScore(bendableHardLevelsSize = 1, bendableSoftLevelsSize = 2)
     public BendableScore getScore() {
         return score;
     }

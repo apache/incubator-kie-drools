@@ -7,7 +7,6 @@
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
-    <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     <ksessionName>testdataKsession</ksessionName>
   </scoreDirectorFactory>
 </solver>

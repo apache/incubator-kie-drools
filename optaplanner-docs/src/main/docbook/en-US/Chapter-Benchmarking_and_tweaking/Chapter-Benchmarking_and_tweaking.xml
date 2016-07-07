@@ -280,7 +280,6 @@
     &lt;solver&gt;
       &lt;scanAnnotatedClasses/&gt;
       &lt;scoreDirectorFactory&gt;
-        &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
         &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
         &lt;initializingScoreTrend&gt;ONLY_DOWN&lt;/initializingScoreTrend&gt;
       &lt;/scoreDirectorFactory&gt;

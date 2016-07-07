@@ -28,13 +28,24 @@ public class SolverConfigContext {
     private ClassLoader classLoader;
     private KieContainer kieContainer;
 
+    /**
+     * Vanilla context.
+     */
     public SolverConfigContext() {
     }
 
+    /**
+     * Useful for OSGi, JBoss modules, ... (without a kjar deployment).
+     * @param classLoader if null behaves as {@link #SolverConfigContext()}
+     */
     public SolverConfigContext(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
+    /**
+     * Useful for a kjar deployment. The {@link KieContainer} also defines the non-vanilla {@link ClassLoader}.
+     * @param kieContainer if null behaves as {@link #SolverConfigContext()}
+     */
     public SolverConfigContext(KieContainer kieContainer) {
         this.kieContainer = kieContainer;
     }

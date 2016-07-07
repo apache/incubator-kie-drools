@@ -36,6 +36,7 @@ import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
@@ -394,13 +395,14 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     // Merger methods
     // ************************************************************************
 
-    protected static SingleBenchmarkResult createMerge(SolverBenchmarkResult solverBenchmarkResult,
-            ProblemBenchmarkResult problemBenchmarkResult, SingleBenchmarkResult oldResult) {
+    protected static SingleBenchmarkResult createMerge(SolverConfigContext configContext,
+            SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult,
+            SingleBenchmarkResult oldResult) {
         SingleBenchmarkResult newResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
         newResult.subSingleBenchmarkResultList = new ArrayList<>(oldResult.getSubSingleBenchmarkResultList().size());
         int subSingleBenchmarkIndex = 0;
         for (SubSingleBenchmarkResult oldSubResult : oldResult.subSingleBenchmarkResultList) {
-            SubSingleBenchmarkResult.createMerge(newResult, oldSubResult, subSingleBenchmarkIndex);
+            SubSingleBenchmarkResult.createMerge(configContext, newResult, oldSubResult, subSingleBenchmarkIndex);
             subSingleBenchmarkIndex++;
         }
         newResult.median = oldResult.median;

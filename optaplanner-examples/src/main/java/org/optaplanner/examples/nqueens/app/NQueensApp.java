@@ -91,7 +91,6 @@ public class NQueensApp extends CommonApp<NQueens> {
         solverConfig.setEntityClassList(Collections.<Class<?>>singletonList(Queen.class));
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
-        scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
         scoreDirectorFactoryConfig.setScoreDrlList(
                 Arrays.asList("org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl"));
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);

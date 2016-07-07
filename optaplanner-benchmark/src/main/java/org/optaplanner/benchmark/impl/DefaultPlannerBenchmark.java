@@ -312,7 +312,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         plannerBenchmarkResult.setBenchmarkTimeMillisSpent(calculateTimeMillisSpent());
         benchmarkResultIO.writePlannerBenchmarkResult(plannerBenchmarkResult.getBenchmarkReportDirectory(),
                 plannerBenchmarkResult);
-        benchmarkReport.writeReport();
+        benchmarkReport.writeReport(solverConfigContext);
         if (plannerBenchmarkResult.getFailureCount() == 0) {
             logger.info("Benchmarking ended: time spent ({}), favoriteSolverBenchmark ({}), statistic html overview ({}).",
                     plannerBenchmarkResult.getBenchmarkTimeMillisSpent(),

@@ -38,6 +38,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
@@ -420,7 +421,8 @@ public class PlannerBenchmarkResult {
     // Merger methods
     // ************************************************************************
 
-    public static PlannerBenchmarkResult createMergedResult(List<SingleBenchmarkResult> singleBenchmarkResultList) {
+    public static PlannerBenchmarkResult createMergedResult(SolverConfigContext configContext,
+            List<SingleBenchmarkResult> singleBenchmarkResultList) {
         PlannerBenchmarkResult mergedResult = createMergeSingleton(singleBenchmarkResultList);
         Map<SolverBenchmarkResult, SolverBenchmarkResult> solverMergeMap
                 = SolverBenchmarkResult.createMergeMap(mergedResult, singleBenchmarkResultList);
@@ -431,7 +433,8 @@ public class PlannerBenchmarkResult {
                     singleBenchmarkResult.getSolverBenchmarkResult());
             ProblemBenchmarkResult problemBenchmarkResult = problemMergeMap.get(
                     singleBenchmarkResult.getProblemBenchmarkResult());
-            SingleBenchmarkResult.createMerge(solverBenchmarkResult, problemBenchmarkResult, singleBenchmarkResult);
+            SingleBenchmarkResult.createMerge(configContext,
+                    solverBenchmarkResult, problemBenchmarkResult, singleBenchmarkResult);
         }
         return mergedResult;
     }

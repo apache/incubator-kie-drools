@@ -323,7 +323,6 @@
 
   &lt;!-- Score configuration --&gt;
   &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     &lt;easyScoreCalculatorClass&gt;org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator&lt;/easyScoreCalculatorClass&gt;
     &lt;!--&lt;scoreDrl&gt;org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;--&gt;
   &lt;/scoreDirectorFactory&gt;
@@ -350,12 +349,11 @@
         <listitem>
           <para><emphasis role="bold">Score configuration</emphasis>: How should Planner optimize the planning
           variables? What is our goal? Since we have hard and soft constraints, we use a
-          <literal>HardSoftScore</literal>. But we also need to tell Planner how to calculate the score, depending on
-          our business requirements. Further down, we will look into two alternatives to calculate the score: using an
-          easy Java implementation, or using Drools DRL.</para>
+          <literal>HardSoftScore</literal>. But we need to tell Planner how to calculate the score, depending on our
+          business requirements. Further down, we will look into two alternatives to calculate the score: using an easy
+          Java implementation, or using Drools DRL.</para>
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     &lt;easyScoreCalculatorClass&gt;org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator&lt;/easyScoreCalculatorClass&gt;
     &lt;!--&lt;scoreDrl&gt;org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;--&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
@@ -372,8 +370,8 @@
 
           <para>Planner should get a good result in seconds (and even in less than 15 milliseconds with <link
           linkend="realTimePlanning">real-time planning</link>), but the more time it has, the better the result will
-          be. Advanced use cases will likely use a different <link linkend="termination">termination criteria</link>
-          than a hard time limit.</para>
+          be. Advanced use cases might use a different <link linkend="termination">termination criteria</link> than a
+          hard time limit.</para>
 
           <para>The default algorithms will already easily surpass human planners and most in-house implementations. Use
           the <link linkend="benchmarker">Benchmarker</link> to <link linkend="powerTweaking">power tweak</link> to get
@@ -559,7 +557,6 @@ public class CloudBalance ... {
         plain Java.</para>
 
         <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     &lt;easyScoreCalculatorClass&gt;org.optaplanner.examples.cloudbalancing.solver.score.CloudBalancingEasyScoreCalculator&lt;/easyScoreCalculatorClass&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
@@ -632,7 +629,6 @@ public class CloudBalance ... {
         the classpath:</para>
 
         <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
-    &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
     &lt;scoreDrl&gt;org/optaplanner/examples/cloudbalancing/solver/cloudBalancingScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;</programlisting>
 

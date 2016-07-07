@@ -15,7 +15,6 @@
       <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
       <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
       <scoreDirectorFactory>
-        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
       <termination>

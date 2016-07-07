@@ -21,6 +21,10 @@ import org.optaplanner.core.api.score.FeasibilityScore;
 public abstract class AbstractBendableScoreDefinition<S extends FeasibilityScore<S>> extends AbstractFeasibilityScoreDefinition<S> {
 
     protected static String[] generateLevelLabels(int hardLevelsSize, int softLevelsSize) {
+        if (hardLevelsSize < 0 || softLevelsSize < 0) {
+            throw new IllegalArgumentException("The hardLevelsSize (" + hardLevelsSize
+                    + ") and softLevelsSize (" + softLevelsSize + ") should be positive.");
+        }
         String[] levelLabels = new String[hardLevelsSize + softLevelsSize];
         for (int i = 0; i < levelLabels.length; i++) {
             String labelPrefix;

@@ -65,7 +65,6 @@ public class PlannerTestUtils {
         solverConfig.setSolutionClass(solutionClass);
         solverConfig.setEntityClassList(Arrays.asList(entityClasses));
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
-        scoreDirectorFactoryConfig.setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
         scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(DummySimpleScoreEasyScoreCalculator.class);
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
         List<PhaseConfig> phaseConfigList = new ArrayList<>(2);
@@ -98,7 +97,6 @@ public class PlannerTestUtils {
         EasyScoreDirectorFactory<Solution_> scoreDirectorFactory =
                 new EasyScoreDirectorFactory<>((EasyScoreCalculator<Solution_>) (solution_, initScore) -> SimpleScore.valueOf(initScore, 0));
         scoreDirectorFactory.setSolutionDescriptor(solutionDescriptor);
-        scoreDirectorFactory.setScoreDefinition(new SimpleScoreDefinition());
         scoreDirectorFactory.setInitializingScoreTrend(
                 InitializingScoreTrend.buildUniformTrend(InitializingScoreTrendLevel.ONLY_DOWN, 1));
         return mock(InnerScoreDirector.class, AdditionalAnswers.delegatesTo(scoreDirectorFactory.buildScoreDirector(false)));

@@ -5,7 +5,6 @@
 
   <!-- Score configuration -->
   <scoreDirectorFactory>
-    <scoreDefinitionType>SIMPLE</scoreDefinitionType>
     <scoreDrl>org/optaplanner/core/api/solver/testdataScoreRules.drl</scoreDrl>
   </scoreDirectorFactory>
 </solver>

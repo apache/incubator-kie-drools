@@ -16,7 +16,6 @@
 
       <!-- Score configuration -->
       <scoreDirectorFactory>
-        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
         <scoreDrl>divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>

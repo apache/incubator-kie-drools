@@ -34,7 +34,6 @@ public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerSc
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected SolutionDescriptor<Solution_> solutionDescriptor;
-    protected ScoreDefinition scoreDefinition;
 
     protected InitializingScoreTrend initializingScoreTrend;
 
@@ -53,11 +52,7 @@ public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerSc
 
     @Override
     public ScoreDefinition getScoreDefinition() {
-        return scoreDefinition;
-    }
-
-    public void setScoreDefinition(ScoreDefinition scoreDefinition) {
-        this.scoreDefinition = scoreDefinition;
+        return solutionDescriptor.getScoreDefinition();
     }
 
     @Override

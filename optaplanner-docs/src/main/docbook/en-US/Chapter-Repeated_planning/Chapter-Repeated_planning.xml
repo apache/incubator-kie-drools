@@ -95,7 +95,7 @@
       <orderedlist>
         <listitem>
           <para>Add a additional score level (usually a medium level between the hard and soft level) by switching <link
-          linkend="scoreDefinition">ScoreDefinition</link>.</para>
+          linkend="scoreType"><literal>Score</literal> type</link>.</para>
         </listitem>
 
         <listitem>
@@ -120,7 +120,7 @@
       <orderedlist>
         <listitem>
           <para>Add a additional score level (usually a medium level between the hard and soft level) by switching <link
-          linkend="scoreDefinition">ScoreDefinition</link>.</para>
+          linkend="scoreType"><literal>Score</literal> type</link>.</para>
         </listitem>
 
         <listitem>
