@@ -39,13 +39,18 @@ public class FEELParser {
     public static class FEELErrorHandler extends DefaultErrorStrategy {
 
         @Override
-        public void recover(Parser recognizer, RecognitionException e) {
-            if( e instanceof FailedPredicateException ) {
-                // not an error, don't try to recover
-                return;
-            }
-            super.recover( recognizer, e );
+        protected void reportFailedPredicate(Parser recognizer, FailedPredicateException e) {
+            // don't do anything
         }
+
+//        @Override
+//        public void recover(Parser recognizer, RecognitionException e) {
+//            if( e instanceof FailedPredicateException ) {
+//                // not an error, don't try to recover
+//                return;
+//            }
+//            super.recover( recognizer, e );
+//        }
     }
 
 }
