@@ -316,90 +316,118 @@ qualifiedName
 
 nameRef
     : st=Identifier { helper.startVariable( $st ); }
-      { helper.followUp( _input.LT(1) ) }? ( Identifier | additionalNameSymbol | IntegerLiteral | FloatingPointLiteral )*
+    ( { helper.followUp( _input.LT(1) ) }? ( Identifier | additionalNameSymbol | IntegerLiteral | FloatingPointLiteral )*
+    )
     ;
 
 /********************************
  *      SOFT KEYWORDS
  ********************************/
+keywords
+    : for_key | return_key | in_key | if_key | then_key | else_key
+    | some_key | every_key | satisfies_key | instance_key | of_key
+    | function_key | external_key | and_key | or_key | not_key
+    | between_key | null_key | true_key | false_key
+    ;
+
 for_key
-    : {isKeyword(Keywords.FOR)}? Identifier
+//    : {isKeyword(Keywords.FOR)}? Identifier
+    : 'for'
     ;
 
 return_key
-    : {isKeyword(Keywords.RETURN)}? Identifier
+//    : {isKeyword(Keywords.RETURN)}? Identifier
+    : 'return'
     ;
 
 in_key
-    : {isKeyword(Keywords.IN)}? Identifier
+//    : {isKeyword(Keywords.IN)}? Identifier
+    : 'in'
     ;
 
 if_key
-    : {isKeyword(Keywords.IF)}? Identifier
+//    : {isKeyword(Keywords.IF)}? Identifier
+    : 'if'
     ;
 
 then_key
-    : {isKeyword(Keywords.THEN)}? Identifier
+//    : {isKeyword(Keywords.THEN)}? Identifier
+    : 'then'
     ;
 
 else_key
-    : {isKeyword(Keywords.ELSE)}? Identifier
+//    : {isKeyword(Keywords.ELSE)}? Identifier
+    : 'else'
     ;
 
 some_key
-    : {isKeyword(Keywords.SOME)}? Identifier
+//    : {isKeyword(Keywords.SOME)}? Identifier
+    : 'some'
     ;
 
 every_key
-    : {isKeyword(Keywords.EVERY)}? Identifier
+//    : {isKeyword(Keywords.EVERY)}? Identifier
+    : 'every'
     ;
 
 satisfies_key
-    : {isKeyword(Keywords.SATISFIES)}? Identifier
+//    : {isKeyword(Keywords.SATISFIES)}? Identifier
+    : 'satisfies'
     ;
 
 instance_key
-    : {isKeyword(Keywords.INSTANCE)}? Identifier
+//    : {isKeyword(Keywords.INSTANCE)}? Identifier
+    : 'instance'
     ;
 
 of_key
-    : {isKeyword(Keywords.OF)}? Identifier
+//    : {isKeyword(Keywords.OF)}? Identifier
+    : 'of'
     ;
 
 function_key
-    : {isKeyword(Keywords.FUNCTION)}? Identifier
+//    : {isKeyword(Keywords.FUNCTION)}? Identifier
+    : 'function'
     ;
 
 external_key
-    : {isKeyword(Keywords.EXTERNAL)}? Identifier
+//    : {isKeyword(Keywords.EXTERNAL)}? Identifier
+    : 'external'
     ;
 
 or_key
-    : {isKeyword(Keywords.OR)}? Identifier
+//    : {isKeyword(Keywords.OR)}? Identifier
+    : 'or'
     ;
 
 and_key
-    : {isKeyword(Keywords.AND)}? Identifier
+//    : {isKeyword(Keywords.AND)}? Identifier
+    : 'and'
     ;
 
 between_key
-    : {isKeyword(Keywords.BETWEEN)}? Identifier
+//    : {isKeyword(Keywords.BETWEEN)}? Identifier
+    : 'between'
     ;
 
 not_key
-    : {isKeyword(Keywords.NOT)}? Identifier
+//    : {isKeyword(Keywords.NOT)}? Identifier
+    : 'not'
     ;
 
 null_key
-    : {isKeyword(Keywords.NULL)}? Identifier
+//    : {isKeyword(Keywords.NULL)}? Identifier
+    : 'null'
     ;
 
 true_key
-    : {isKeyword(Keywords.TRUE)}? Identifier
+//    : {isKeyword(Keywords.TRUE)}? Identifier
+    : 'true'
     ;
 
 false_key
-    : {isKeyword(Keywords.FALSE)}? Identifier
+//    : {isKeyword(Keywords.FALSE)}? Identifier
+    : 'false'
     ;
 
 /********************************
