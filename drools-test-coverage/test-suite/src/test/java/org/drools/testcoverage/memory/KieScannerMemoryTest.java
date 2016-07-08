@@ -109,7 +109,7 @@ public class KieScannerMemoryTest {
                     assertFalse(
                             "Memory raised during " + (acceptedNumberOfMemoryRaises + 1)
                                     + " consecutive measurements, there is probably some memory leak! "
-                                    + getMemoryMeasurmentsString(averageMemoryFootprints),
+                                    + getMemoryMeasurementsString(averageMemoryFootprints),
                             memoryRaiseCount > acceptedNumberOfMemoryRaises);
                 }
                 logger.debug("Average memory: " + averageMemory);
@@ -125,7 +125,7 @@ public class KieScannerMemoryTest {
         }
     }
 
-    private String getMemoryMeasurmentsString(final List<Long> memoryMeasurements) {
+    private String getMemoryMeasurementsString(final List<Long> memoryMeasurements) {
         final StringBuilder builder = new StringBuilder();
         builder.append("Measured used memory: ");
         for (int i = 1; i <= memoryMeasurements.size(); i++) {
