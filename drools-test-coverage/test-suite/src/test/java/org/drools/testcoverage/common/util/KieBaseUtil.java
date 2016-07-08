@@ -101,6 +101,14 @@ public final class KieBaseUtil {
     }
 
     public static KieModule buildAndInstallKieModuleIntoRepo(final String groupId,
+            final KieBaseTestConfiguration kieBaseConfiguration, final String drl) {
+        final ReleaseId releaseId = generateReleaseId(groupId);
+        final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
+        drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
+        return buildAndInstallKieModuleIntoRepo(releaseId, kieBaseConfiguration, drlResource);
+    }
+
+    public static KieModule buildAndInstallKieModuleIntoRepo(final String groupId,
             final KieBaseTestConfiguration kieBaseConfiguration, final Resource... resources) {
         final ReleaseId releaseId = generateReleaseId(groupId);
         return buildAndInstallKieModuleIntoRepo(releaseId, kieBaseConfiguration, resources);
