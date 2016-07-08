@@ -15,7 +15,6 @@
 
 package org.drools.example.api.defaultkiesessionfromfile;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
