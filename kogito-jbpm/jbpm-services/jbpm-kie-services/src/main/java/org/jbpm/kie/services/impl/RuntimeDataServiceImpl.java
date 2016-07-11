@@ -857,7 +857,11 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
                 boolean orderBySet = false;
                 for( TaskSummaryQueryBuilder.OrderBy orderByEnum: TaskSummaryQueryBuilder.OrderBy.values() ) {
                     if( orderBy.equals(orderByEnum.toString().toLowerCase()) ) {
-                        queryBuilder.ascending(orderByEnum);
+                        if (queryContext.isAscending()) {
+                            queryBuilder.ascending(orderByEnum);
+                        } else {
+                            queryBuilder.descending(orderByEnum);
+                        }
                         orderBySet = true;
                         break;
                     }
