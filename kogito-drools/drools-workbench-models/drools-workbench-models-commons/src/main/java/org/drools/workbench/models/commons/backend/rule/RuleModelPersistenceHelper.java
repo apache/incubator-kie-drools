@@ -319,7 +319,8 @@ class RuleModelPersistenceHelper {
         }
         for ( ModelField modelField : modelFields ) {
             if ( modelField.getName().equals( field ) ) {
-                return modelField.getType();
+                return getSimpleFactType( modelField.getType(),
+                                          dmo );
             }
         }
         return null;
