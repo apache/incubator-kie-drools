@@ -52,7 +52,7 @@ public class SumAccumulateFunction implements AccumulateFunction {
         return new SumData();
     }
 
-    public void init(Serializable context) throws Exception {
+    public void init(Serializable context) {
         SumData data = (SumData) context;
         data.total = 0;
     }
@@ -64,12 +64,12 @@ public class SumAccumulateFunction implements AccumulateFunction {
     }
 
     public void reverse(Serializable context,
-                        Object value) throws Exception {
+                        Object value) {
         SumData data = (SumData) context;
         data.total -= ((Number) value).doubleValue();
     }
 
-    public Object getResult(Serializable context) throws Exception {
+    public Object getResult(Serializable context) {
         return ((SumData) context).total;
     }
 

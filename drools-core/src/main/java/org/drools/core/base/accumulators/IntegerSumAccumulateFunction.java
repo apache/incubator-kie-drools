@@ -48,19 +48,19 @@ public class IntegerSumAccumulateFunction implements AccumulateFunction {
         return new SumData();
     }
 
-    public void init(Serializable context) throws Exception {
+    public void init(Serializable context) {
         ((SumData) context).total = 0;
     }
 
     public void accumulate(Serializable context, Object value) {
-        ((SumData) context).total += ((Number) value).intValue();
+        ((SumData) context).total += ((Integer) value);
     }
 
-    public void reverse(Serializable context, Object value) throws Exception {
-        ((SumData) context).total -= ((Number) value).intValue();
+    public void reverse(Serializable context, Object value) {
+        ((SumData) context).total -= ((Integer) value);
     }
 
-    public Object getResult(Serializable context) throws Exception {
+    public Object getResult(Serializable context) {
         return ((SumData) context).total;
     }
 

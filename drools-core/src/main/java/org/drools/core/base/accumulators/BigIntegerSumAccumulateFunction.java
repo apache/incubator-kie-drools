@@ -52,7 +52,7 @@ public class BigIntegerSumAccumulateFunction implements AccumulateFunction {
         return new SumData();
     }
 
-    public void init(Serializable context) throws Exception {
+    public void init(Serializable context) {
         SumData data = (SumData) context;
         data.total = BigInteger.ZERO;
     }
@@ -60,16 +60,16 @@ public class BigIntegerSumAccumulateFunction implements AccumulateFunction {
     public void accumulate(Serializable context,
                            Object value) {
         SumData data = (SumData) context;
-        data.total = data.total.add( BigInteger.valueOf( ( (Number) value ).longValue() ) );
+        data.total = data.total.add( (BigInteger) value );
     }
 
     public void reverse(Serializable context,
-                        Object value) throws Exception {
+                        Object value) {
         SumData data = (SumData) context;
-        data.total = data.total.subtract( BigInteger.valueOf( ( (Number) value ).longValue() ) );
+        data.total = data.total.subtract( (BigInteger) value );
     }
 
-    public Object getResult(Serializable context) throws Exception {
+    public Object getResult(Serializable context) {
         SumData data = (SumData) context;
         return data.total;
     }

@@ -61,7 +61,7 @@ public class MinAccumulateFunction implements AccumulateFunction {
     /* (non-Javadoc)
      * @see org.kie.base.accumulators.AccumulateFunction#init(java.lang.Object)
      */
-    public void init(Serializable context) throws Exception {
+    public void init(Serializable context) {
         MinData data = (MinData) context;
         data.min = Double.MAX_VALUE;
     }
@@ -79,13 +79,13 @@ public class MinAccumulateFunction implements AccumulateFunction {
      * @see org.kie.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
      */
     public void reverse(Serializable context,
-                        Object value) throws Exception {
+                        Object value) {
     }
 
     /* (non-Javadoc)
      * @see org.kie.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
-    public Object getResult(Serializable context) throws Exception {
+    public Object getResult(Serializable context) {
         MinData data = (MinData) context;
         return new Double( data.min );
     }
