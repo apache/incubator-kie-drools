@@ -43,4 +43,18 @@ public class DMNXMLLoader {
         assertNotNull( root );
     }
 
+    @Test
+    public void testLoadingDishDecision() throws JAXBException {
+        final JAXBContext jaxbContext = JAXBContext.newInstance( TDefinitions.class );
+        final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
+        final InputStream is = this.getClass().getResourceAsStream( "/dish-decision.xml" );
+        final InputStreamReader isr = new InputStreamReader( is );
+        final Object o = unmarshaller.unmarshal( isr );
+
+        final TDefinitions root = (TDefinitions) JAXBIntrospector.getValue( o );
+
+        assertNotNull( root );
+    }
+
 }
