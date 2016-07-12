@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.testcoverage.common.util;
+package org.drools.testcoverage.common.model;
 
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
+public class EventB extends EventA {
 
-/**
- * Basic provider class for KieBaseModel instances.
- */
-public interface KieBaseModelProvider {
-    KieBaseModel getKieBaseModel(KieModuleModel kieModuleModel);
-    KieBaseConfiguration getKieBaseConfiguration();
+    @Override
+    public String toString() {
+        return "EventB{" +
+                "timeValue=" + getTimeValue() +
+                ", duration=" + getDuration() +
+                '}';
+    }
 }
