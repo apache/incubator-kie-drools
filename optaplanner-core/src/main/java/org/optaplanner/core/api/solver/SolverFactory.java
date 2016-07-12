@@ -40,28 +40,8 @@ import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 public abstract class SolverFactory<Solution_> {
 
     // ************************************************************************
-    // Static creation methods
+    // Static creation methods: XML
     // ************************************************************************
-
-    /**
-     * Useful to build configuration programmatically, although it's almost always recommended
-     * to instead load a partial configuration with {@link #createFromXmlResource(String)}
-     * and configure the remainder programmatically with {@link #getSolverConfig()}.
-     * @return never null
-     */
-    public static <Solution_> SolverFactory<Solution_> createEmpty() {
-        return new EmptySolverFactory<>();
-    }
-
-    /**
-     * See {@link #createEmpty()}.
-     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     *      null to use the default {@link ClassLoader}
-     * @return never null
-     */
-    public static <Solution_> SolverFactory<Solution_> createEmpty(ClassLoader classLoader) {
-        return new EmptySolverFactory<>(new SolverConfigContext(classLoader));
-    }
 
     /**
      * Uses {@link KieServices#getKieClasspathContainer()}.
@@ -181,6 +161,47 @@ public abstract class SolverFactory<Solution_> {
     public static <Solution_> SolverFactory<Solution_> createFromXmlReader(Reader reader, ClassLoader classLoader) {
         return new XStreamXmlSolverFactory<Solution_>(new SolverConfigContext(classLoader))
                 .configure(reader);
+    }
+
+    // ************************************************************************
+    // Static creation methods: empty
+    // ************************************************************************
+
+    /**
+     * Useful to build configuration programmatically, although it's almost always recommended
+     * to instead load a partial configuration with {@link #createFromXmlResource(String)}
+     * and configure the remainder programmatically with {@link #getSolverConfig()}.
+     * @return never null
+     */
+    public static <Solution_> SolverFactory<Solution_> createEmpty() {
+        return new EmptySolverFactory<>();
+    }
+
+    /**
+     * See {@link #createEmpty()}.
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     *      null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static <Solution_> SolverFactory<Solution_> createEmpty(ClassLoader classLoader) {
+        return new EmptySolverFactory<>(new SolverConfigContext(classLoader));
+    }
+
+    /**
+     * @param releaseId never null
+     * @return never null
+     */
+    public static <Solution_> SolverFactory<Solution_> createEmptyFromKieContainer(ReleaseId releaseId) {
+        KieContainer kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
+        return createEmptyFromKieContainer(kieContainer);
+    }
+
+    /**
+     * @param kieContainer never null
+     * @return never null
+     */
+    public static <Solution_> SolverFactory<Solution_> createEmptyFromKieContainer(KieContainer kieContainer) {
+        return new EmptySolverFactory<>(new SolverConfigContext(kieContainer));
     }
 
     // ************************************************************************
