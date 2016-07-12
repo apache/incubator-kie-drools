@@ -113,12 +113,12 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         ConstructionHeuristicType constructionHeuristicType_ = defaultIfNull(
                 constructionHeuristicType, ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
         phaseConfigPolicy.setEntitySorterManner(entitySorterManner != null ? entitySorterManner
-                : constructionHeuristicType_.getDefaultEntitySorterManner());
+                : ConstructionHeuristicTypeHelper.getDefaultEntitySorterManner(constructionHeuristicType_));
         phaseConfigPolicy.setValueSorterManner(valueSorterManner != null ? valueSorterManner
-                : constructionHeuristicType_.getDefaultValueSorterManner());
+                : ConstructionHeuristicTypeHelper.getDefaultValueSorterManner(constructionHeuristicType_));
         EntityPlacerConfig entityPlacerConfig;
         if (ConfigUtils.isEmptyCollection(entityPlacerConfigList)) {
-            entityPlacerConfig = constructionHeuristicType_.newEntityPlacerConfig();
+            entityPlacerConfig = ConstructionHeuristicTypeHelper.newEntityPlacerConfig(constructionHeuristicType_);
         } else if (entityPlacerConfigList.size() == 1) {
             entityPlacerConfig = entityPlacerConfigList.get(0);
             if (constructionHeuristicType != null) {

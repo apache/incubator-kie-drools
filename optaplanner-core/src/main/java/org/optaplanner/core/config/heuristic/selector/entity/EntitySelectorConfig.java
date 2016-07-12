@@ -427,10 +427,10 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
             SelectionSorter sorter;
             if (sorterManner != null) {
                 EntityDescriptor entityDescriptor = entitySelector.getEntityDescriptor();
-                if (!sorterManner.hasSorter(entityDescriptor)) {
+                if (!EntitySorterMannerHelper.hasSorter(sorterManner, entityDescriptor)) {
                     return entitySelector;
                 }
-                sorter = sorterManner.determineSorter(entityDescriptor);
+                sorter = EntitySorterMannerHelper.determineSorter(sorterManner, entityDescriptor);
             } else if (sorterComparatorClass != null) {
                 Comparator<Object> sorterComparator = ConfigUtils.newInstance(this,
                         "sorterComparatorClass", sorterComparatorClass);

@@ -17,8 +17,6 @@
 package org.optaplanner.core.config.heuristic.selector.entity;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
 
 /**
  * The manner of sorting {@link PlanningEntity} instances.
@@ -27,40 +25,4 @@ public enum EntitySorterManner {
     NONE,
     DECREASING_DIFFICULTY,
     DECREASING_DIFFICULTY_IF_AVAILABLE;
-
-    public boolean hasSorter(EntityDescriptor entityDescriptor) {
-        switch (this) {
-            case NONE:
-                return false;
-            case DECREASING_DIFFICULTY:
-                return true;
-            case DECREASING_DIFFICULTY_IF_AVAILABLE:
-                return entityDescriptor.getDecreasingDifficultySorter() != null;
-            default:
-                throw new IllegalStateException("The sorterManner ("
-                        + this + ") is not implemented.");
-        }
-    }
-
-    public SelectionSorter determineSorter(EntityDescriptor entityDescriptor) {
-        SelectionSorter sorter;
-        switch (this) {
-            case NONE:
-                throw new IllegalStateException("Impossible state: hasSorter() should have returned null.");
-            case DECREASING_DIFFICULTY:
-            case DECREASING_DIFFICULTY_IF_AVAILABLE:
-                sorter = entityDescriptor.getDecreasingDifficultySorter();
-                if (sorter == null) {
-                    throw new IllegalArgumentException("The sorterManner (" + this
-                            + ") on entity class (" + entityDescriptor.getEntityClass()
-                            + ") fails because that entity class's @" + PlanningEntity.class.getSimpleName()
-                            + " annotation does not declare any difficulty comparison.");
-                }
-                return sorter;
-            default:
-                throw new IllegalStateException("The sorterManner ("
-                        + this + ") is not implemented.");
-        }
-    }
-
 }

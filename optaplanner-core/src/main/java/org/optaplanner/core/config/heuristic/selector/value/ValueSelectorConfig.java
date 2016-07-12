@@ -495,10 +495,10 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
             SelectionSorter sorter;
             if (sorterManner != null) {
                 GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
-                if (!sorterManner.hasSorter(variableDescriptor)) {
+                if (!ValueSorterMannerHelper.hasSorter(sorterManner, variableDescriptor)) {
                     return valueSelector;
                 }
-                sorter = sorterManner.determineSorter(variableDescriptor);
+                sorter = ValueSorterMannerHelper.determineSorter(sorterManner, variableDescriptor);
             } else if (sorterComparatorClass != null) {
                 Comparator<Object> sorterComparator = ConfigUtils.newInstance(this,
                         "sorterComparatorClass", sorterComparatorClass);

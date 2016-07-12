@@ -26,11 +26,13 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterMannerHelper;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSorterMannerHelper;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedValuePlacer;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -121,7 +123,7 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
             GenuineVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, null);
             valueSelectorConfig_.setId(entityClass.getName() + "." + variableDescriptor.getVariableName());
             valueSelectorConfig_.setVariableName(variableDescriptor.getVariableName());
-            if (configPolicy.getValueSorterManner().hasSorter(variableDescriptor)) {
+            if (ValueSorterMannerHelper.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
                 valueSelectorConfig_.setCacheType(SelectionCacheType.PHASE);
                 valueSelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
                 valueSelectorConfig_.setSorterManner(configPolicy.getValueSorterManner());
@@ -145,7 +147,7 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
         EntitySelectorConfig changeEntitySelectorConfig = new EntitySelectorConfig();
         EntityDescriptor entityDescriptor = variableDescriptor.getEntityDescriptor();
         changeEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
-        if (configPolicy.getEntitySorterManner().hasSorter(entityDescriptor)) {
+        if (EntitySorterMannerHelper.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
             changeEntitySelectorConfig.setCacheType(SelectionCacheType.PHASE);
             changeEntitySelectorConfig.setSelectionOrder(SelectionOrder.SORTED);
             changeEntitySelectorConfig.setSorterManner(configPolicy.getEntitySorterManner());

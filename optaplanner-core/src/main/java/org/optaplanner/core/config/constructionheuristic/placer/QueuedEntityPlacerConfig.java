@@ -27,10 +27,12 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterMannerHelper;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSorterMannerHelper;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.placer.QueuedEntityPlacer;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -113,7 +115,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
             Class<?> entityClass = entityDescriptor.getEntityClass();
             entitySelectorConfig_.setId(entityClass.getName());
             entitySelectorConfig_.setEntityClass(entityClass);
-            if (configPolicy.getEntitySorterManner().hasSorter(entityDescriptor)) {
+            if (EntitySorterMannerHelper.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
                 entitySelectorConfig_.setCacheType(SelectionCacheType.PHASE);
                 entitySelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
                 entitySelectorConfig_.setSorterManner(configPolicy.getEntitySorterManner());
@@ -139,7 +141,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
         changeMoveSelectorConfig.setEntitySelectorConfig(changeEntitySelectorConfig);
         ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
         changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
-        if (configPolicy.getValueSorterManner().hasSorter(variableDescriptor)) {
+        if (ValueSorterMannerHelper.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
             if (variableDescriptor.isValueRangeEntityIndependent()) {
                 changeValueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
             } else {
