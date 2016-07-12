@@ -1,0 +1,1381 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.omg.org/spec/DMN/20151101/ch11example.xml"
+             xmlns:ex="http://www.omg.org/spec/DMN/20151101/ch11example.xml"
+             name="Loan Origination Decision Model" id="LoanOriginationModel"
+             xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd">
+  <description>Implements model from chapter 11 of DMN 1.1 spec</description>
+  <itemDefinition name="Applicant data" id="applicantData_t">
+    <itemComponent name="Age" id="age_t">
+      <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:number</typeRef>
+    </itemComponent>
+    <itemComponent name="MaritalStatus" id="maritalStatus_t">
+      <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:string</typeRef>
+      <allowedValues>
+        <text>"S","M"</text>
+      </allowedValues>
+    </itemComponent>
+    <itemComponent name="EmploymentStatus" id="employmentStatus_t">
+      <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:string</typeRef>
+    </itemComponent>
+    <itemComponent name="ExistingCustomer" id="existingCustomer_t">
+      <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:boolean</typeRef>
+    </itemComponent>
+    <itemComponent name="Monthly" id="monthly">
+      <itemComponent name="Income" id="income_t">
+        <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:number</typeRef>
+      </itemComponent>
+      <itemComponent name="Repayments" id="repayments_t">
+        <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:number</typeRef>
+      </itemComponent>
+      <itemComponent name="Expenses" id="expenses_t">
+        <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:number</typeRef>
+      </itemComponent>
+    </itemComponent>
+  </itemDefinition>
+  <itemDefinition name="Bureau data" id="bureauData_t">
+    <itemComponent name="Bankrupt" id="bankrupt_t">
+      <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:boolean</typeRef>
+    </itemComponent>
+    <itemComponent name="CreditScore" id="creditScore_t">
+      <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:number</typeRef>
+    </itemComponent>
+  </itemDefinition>
+  <itemDefinition name="Requested product" id="requestedProduct_t">
+    <itemComponent name="ProductType" id="productType">
+      <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:string</typeRef>
+      <allowedValues>
+        <text>"STANDARD LOAN","SPECIAL LOAN"</text>
+      </allowedValues>
+    </itemComponent>
+    <itemComponent name="Rate" id="rate">
+      <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:number</typeRef>
+    </itemComponent>
+    <itemComponent name="Term" id="term">
+      <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:number</typeRef>
+    </itemComponent>
+    <itemComponent name="Amount" id="amount">
+      <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:number</typeRef>
+    </itemComponent>
+  </itemDefinition>
+  <itemDefinition name="Eligibility" id="eligigbility_t">
+    <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:string</typeRef>
+    <allowedValues>
+      <text>"ELIGIBLE","INELIGIBLE"</text>
+    </allowedValues>
+  </itemDefinition>
+  <itemDefinition name="Bureau Call Type" id="bureauCallType_t">
+    <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:string</typeRef>
+    <allowedValues>
+      <text>"FULL","MINI","NONE"</text>
+    </allowedValues>
+  </itemDefinition>
+  <itemDefinition name="Stategy" id="strategy_t">
+    <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:string</typeRef>
+    <allowedValues>
+      <text>"BUREAU","DECLINE","THROUGH"</text>
+    </allowedValues>
+  </itemDefinition>
+  <itemDefinition name="Routing" id="routing_t">
+    <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:string</typeRef>
+    <allowedValues>
+      <text>"ACCEPT","DECLINE","REFER"</text>
+    </allowedValues>
+  </itemDefinition>
+  <itemDefinition name="Risk Category" id="riskCategory_t">
+    <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:string</typeRef>
+  </itemDefinition>
+  <itemDefinition name="Required Monthly Installment" id="monthlyInstallment_t">
+    <typeRef xmlns:ns2="http://www.omg.org/spec/FEEL/20140401">ns2:number</typeRef>
+  </itemDefinition>
+  <inputData name="Applicant data" id="applicantData_id">
+    <variable typeRef="ex:ApplicantData" name="Applicant data" id="applicantId_ii"/>
+  </inputData>
+  <inputData name="Requested product" id="requestedProduct_id">
+    <variable typeRef="ex:RequestedProduct" name="Requested product" id="requestedProduct_ii"/>
+  </inputData>
+  <inputData name="Supporting documents" id="supportingDocuments_id">
+    <variable typeRef="ex:SupportingDocs" name="Supporting documents" id="supportingDocuments_ii"/>
+  </inputData>
+  <inputData name="Bureau data" id="bureauData_id">
+    <variable typeRef="ex:BureauData" name="Bureau data" id="bureauData_ii"/>
+  </inputData>
+  <knowledgeSource name="Risk Manager" id="riskManager_ks"/>
+  <knowledgeSource name="Analytics" id="analytics_ks"/>
+  <knowledgeSource name="Product specification" id="productSpecification_ks"/>
+  <knowledgeSource name="Credit officer" id="creditOfficer_ks"/>
+  <knowledgeSource name="Affordability Spreadsheet" id="affordabilitySpreadsheet_ks"/>
+  <businessKnowledgeModel name="Bureau call type table" id="bureauCallTypeTable_bkm">
+    <encapsulatedLogic>
+      <formalParameter typeRef="ns2:string" name="Pre-Bureau Risk Category" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <decisionTable hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row" id="_72_dt">
+        <input label="Pre-Bureau Risk Category">
+          <inputExpression>
+            <text>Pre-Bureau Risk Category</text>
+          </inputExpression>
+        </input>
+        <output name="Bureau Call Type"/>
+        <rule>
+          <inputEntry>
+            <text>"HIGH","MEDIUM"</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"FULL"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>"LOW"</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"MINI"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>"VERY LOW","DECLINE"</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"NONE"</text>
+          </outputEntry>
+        </rule>
+      </decisionTable>
+    </encapsulatedLogic>
+    <authorityRequirement>
+      <requiredAuthority href="#riskManager_ks"/>
+    </authorityRequirement>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel name="Pre-bureau risk category table" id="preBureauRiskCategoryTable_bkm">
+    <encapsulatedLogic>
+      <formalParameter typeRef="ns2:boolean" name="Existing Customer" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:number" name="￼Application Risk Score" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <decisionTable hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row" id="_76_dt">
+        <input label="Existing Customer">
+          <inputExpression>
+            <text>Existing Customer</text>
+          </inputExpression>
+        </input>
+        <input label="Application Risk Score">
+          <inputExpression>
+            <text>Application Risk Score</text>
+          </inputExpression>
+        </input>
+        <output name="Pre-Bureau Risk Category"/>
+        <rule>
+          <inputEntry>
+            <text>false</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;100</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"HIGH"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>false</text>
+          </inputEntry>
+          <inputEntry>
+            <text>[100-120)</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"MEDIUM"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>false</text>
+          </inputEntry>
+          <inputEntry>
+            <text>[120-130]</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"LOW"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>false</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&gt;130</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"VERY LOW"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>true</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;80</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"DECLINE"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>true</text>
+          </inputEntry>
+          <inputEntry>
+            <text>[80..90)</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"HIGH"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>true</text>
+          </inputEntry>
+          <inputEntry>
+            <text>[90..110]</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"MEDIUM"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>true</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&gt;110</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"LOW"</text>
+          </outputEntry>
+        </rule>
+      </decisionTable>
+    </encapsulatedLogic>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel name="Application risk score model" id="applicationRiskScoreModel_bkm">
+    <encapsulatedLogic>
+      <formalParameter typeRef="ns2:number" name="Age" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:string" name="MaritalStatus" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:string" name="Employment Status" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <decisionTable hitPolicy="COLLECT" aggregation="SUM" preferredOrientation="Rule-as-Row" id="applicationRiskScoreModel_dt">
+        <input>
+          <inputExpression>
+            <text>Age</text>
+          </inputExpression>
+          <inputValues>
+            <text>[18..120]</text>
+          </inputValues>
+        </input>
+        <input>
+          <inputExpression>
+            <text>Marital Status</text>
+          </inputExpression>
+          <inputValues>
+            <text>"S","M"</text>
+          </inputValues>
+        </input>
+        <input>
+          <inputExpression>
+            <text>Employment Status</text>
+          </inputExpression>
+          <inputValues>
+            <text>"UNEMPLOYED","EMPLOYED","SELF-EMPLOYED","STUDENT"</text>
+          </inputValues>
+        </input>
+        <output name="Partial score"/>
+        <rule>
+          <inputEntry>
+            <text>[18..21]</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>32</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>[22..25]</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>35</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>[26..35]</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>40</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>[36..49]</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>43</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>&gt;=50</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>48</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>"S"</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>25</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>"M"</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>45</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>"UNEMPLOYED"</text>
+          </inputEntry>
+          <outputEntry>
+            <text>15</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>"STUDENT"</text>
+          </inputEntry>
+          <outputEntry>
+            <text>18</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>"EMPLOYED"</text>
+          </inputEntry>
+          <outputEntry>
+            <text>45</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>"SELF-EMPLOYED"</text>
+          </inputEntry>
+          <outputEntry>
+            <text>36</text>
+          </outputEntry>
+        </rule>
+      </decisionTable>
+    </encapsulatedLogic>
+    <authorityRequirement>
+      <requiredAuthority href="#analytics_ks"/>
+    </authorityRequirement>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel name="Credit contingency factor table" id="creditContingencyFactorTable_bkm">
+    <encapsulatedLogic>
+      <formalParameter typeRef="ex:RiskCategory" name="Risk Category"/>
+      <decisionTable hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row" id="creditContingencyFactor_dt">
+        <input>
+          <inputExpression>
+            <text>Risk Category</text>
+          </inputExpression>
+          <inputValues>
+            <text>"DECLINE","HIGH","MEDIUM","LOW","VERY LOW"</text>
+          </inputValues>
+        </input>
+        <output name="Credit Contingency Factor"/>
+        <rule>
+          <inputEntry>
+            <text>"HIGH","DECLINE"</text>
+          </inputEntry>
+          <outputEntry>
+            <text>0.6</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>"MEDIUM"</text>
+          </inputEntry>
+          <outputEntry>
+            <text>0.7</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>"LOW","VERY LOW"</text>
+          </inputEntry>
+          <outputEntry>
+            <text>0.8</text>
+          </outputEntry>
+        </rule>
+      </decisionTable>
+    </encapsulatedLogic>
+    <authorityRequirement>
+      <requiredAuthority href="#riskManager_ks"/>
+    </authorityRequirement>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel name="Affordability calculation" id="AffordabilityCalculation_bkm">
+    <encapsulatedLogic>
+      <formalParameter typeRef="ns2:number" name="Monthly Income" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:number" name="Monthly Repayments" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:number" name="Monthly Expenses" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:string" name="Risk Category" id="riskCategory_ii" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:number" name="Required Monthly Installment" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <context>
+        <contextEntry>
+          <variable name="Disposible Income"/>
+          <literalExpression>
+            <text>Monthly Income – (Monthly Repayments + Monthly Expenses)</text>
+          </literalExpression>
+        </contextEntry>
+        <contextEntry>
+          <variable name="Credit Contingency Factor"/>
+          <invocation>
+            <literalExpression>
+              <text>Credit contingency factor table</text>
+            </literalExpression>
+            <binding>
+              <parameter name="Risk Category"/>
+              <literalExpression>
+                <text>Risk Category</text>
+              </literalExpression>
+            </binding>
+          </invocation>
+        </contextEntry>
+        <contextEntry>
+          <variable name="Affordability"/>
+          <literalExpression>
+            <text>if Disposable Income * Credit Contingency Factor &gt; Required Monthly Installment then true
+              else false</text>
+          </literalExpression>
+        </contextEntry>
+        <contextEntry>
+          <literalExpression>
+            <text>Affordability</text>
+          </literalExpression>
+        </contextEntry>
+      </context>
+    </encapsulatedLogic>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#creditContingencyFactorTable_bkm"/>
+    </knowledgeRequirement>
+    <authorityRequirement>
+      <requiredAuthority href="#affordabilitySpreadsheet_ks"/>
+    </authorityRequirement>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel name="Eligibility rules" id="eligibilityRules_bkm">
+    <encapsulatedLogic>
+      <formalParameter typeRef="ns2:number" name="Pre-Bureau Affordability" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:string" name="Pre-Bureau Risk Category" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:number" name="Age" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <decisionTable hitPolicy="PRIORITY" preferredOrientation="Rule-as-Row" id="_74_dt">
+        <input label="Pre-Bureau Risk Category">
+          <inputExpression>
+            <text>Pre-Bureau Risk Category</text>
+          </inputExpression>
+        </input>
+        <input label="Pre-Bureau Affordability">
+          <inputExpression>
+            <text>Pre-Bureau Affordability</text>
+          </inputExpression>
+        </input>
+        <input label="Age">
+          <inputExpression>
+            <text>Age</text>
+          </inputExpression>
+        </input>
+        <output name="Eligibility">
+          <outputValues>
+            <text>"INELIGIBLE","ELIGIBLE"</text>
+          </outputValues>
+        </output>
+        <rule>
+          <inputEntry>
+            <text>"DECLINE"</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"INELIGIBLE"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>false</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"INELIGIBLE"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;18</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"INELIGIBLE"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"ELIGIBLE"</text>
+          </outputEntry>
+        </rule>
+      </decisionTable>
+    </encapsulatedLogic>
+    <authorityRequirement>
+      <requiredAuthority href="#productSpecification_ks"/>
+    </authorityRequirement>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel name="Routing rules" id="routingRules_bkm">
+    <encapsulatedLogic>
+      <formalParameter typeRef="ns2:boolean" name="Bankrupt" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:number" name="Credit Score" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:number" name="Post-Bureau Risk Category" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:number" name="Post-Bureau Affordability" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <decisionTable hitPolicy="PRIORITY" preferredOrientation="Rule-as-Row" id="routingRules_dt">
+        <input>
+          <inputExpression>
+            <text>Post-Bureau Risk Category</text>
+          </inputExpression>
+        </input>
+        <input>
+          <inputExpression>
+            <text>Post-Bureau Affordability</text>
+          </inputExpression>
+        </input>
+        <input>
+          <inputExpression>
+            <text>Bankrupt</text>
+          </inputExpression>
+        </input>
+        <input>
+          <inputExpression>
+            <text>Credit Score</text>
+          </inputExpression>
+          <inputValues>
+            <text>"null",[0..999]</text>
+          </inputValues>
+        </input>
+        <output name="Routing">
+          <outputValues>
+            <text>"DECLINE","REFER","ACCEPT"</text>
+          </outputValues>
+        </output>
+        <rule>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>false</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>DECLINE</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>true</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>DECLINE</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>"HIGH"</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>REFER</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;580</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"REFER"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"ACCEPT"</text>
+          </outputEntry>
+        </rule>
+      </decisionTable>
+    </encapsulatedLogic>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel name="Installment calculation" id="installmentCalculation_bkm">
+    <encapsulatedLogic>
+      <formalParameter typeRef="ns2:string" name="Product Type" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:number" name="Rate" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:number" name="Term" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:number" name="Amount" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <context>
+        <contextEntry>
+          <variable name="Monthly Fee"/>
+          <literalExpression>
+            <text>if Product Type = "STANDARD LOAN" then 20.00
+              else if Product Type = "SPECIAL LOAN" then 25.00
+              else null</text>
+          </literalExpression>
+        </contextEntry>
+        <contextEntry>
+          <variable name="Monthly Repayment"/>
+          <literalExpression>
+            <text>PMT(Rate, Term, Amount)</text>
+          </literalExpression>
+        </contextEntry>
+        <contextEntry>
+          <literalExpression>
+            <text>Monthly Repayment + Monthly Fee</text>
+          </literalExpression>
+        </contextEntry>
+      </context>
+    </encapsulatedLogic>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel name="Post-bureau risk category table" id="postBureauRiskCategoryTable_bkm">
+    <encapsulatedLogic>
+      <formalParameter typeRef="ns2:boolean" name="Existing Customer" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:number" name="Application Risk Score" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <formalParameter typeRef="ns2:number" name="Credit Score" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+      <decisionTable hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row" id="postBureauRiskCategory_dt">
+        <input>
+          <inputExpression>
+            <text>Existing Customer</text>
+          </inputExpression>
+        </input>
+        <input>
+          <inputExpression>
+            <text>Application Risk Score</text>
+          </inputExpression>
+        </input>
+        <input>
+          <inputExpression>
+            <text>Credit Score</text>
+          </inputExpression>
+        </input>
+        <output name="Post Bureau Risk Category"/>
+        <rule>
+          <inputEntry>
+            <text>false</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;120</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;590</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"HIGH"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>false</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;120</text>
+          </inputEntry>
+          <inputEntry>
+            <text>[590..610]</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"MEDIUM"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>false</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;120</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&gt;610</text>
+          </inputEntry>
+          <outputEntry>
+            <text>LOW</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>false</text>
+          </inputEntry>
+          <inputEntry>
+            <text>[120..130]</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;600</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"HIGH"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>false</text>
+          </inputEntry>
+          <inputEntry>
+            <text>[120..130]</text>
+          </inputEntry>
+          <inputEntry>
+            <text>[600..625]</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"MEDIUM"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>false</text>
+          </inputEntry>
+          <inputEntry>
+            <text>[120..130]</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&gt;625</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"LOW"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>false</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&gt;130</text>
+          </inputEntry>
+          <inputEntry>
+            <text>-</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"VERY LOW"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>true</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;=100</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;580</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"HIGH"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>true</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;=100</text>
+          </inputEntry>
+          <inputEntry>
+            <text>[580.600]</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"MEDIUM"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>true</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;=100</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&gt;600</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"LOW"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>true</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&gt;100</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&lt;590</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"HIGH"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>true</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&gt;100</text>
+          </inputEntry>
+          <inputEntry>
+            <text>[590..615]</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"MEDIUM"</text>
+          </outputEntry>
+        </rule>
+        <rule>
+          <inputEntry>
+            <text>true</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&gt;100</text>
+          </inputEntry>
+          <inputEntry>
+            <text>&gt;615</text>
+          </inputEntry>
+          <outputEntry>
+            <text>"LOW"</text>
+          </outputEntry>
+        </rule>
+      </decisionTable>
+    </encapsulatedLogic>
+    <authorityRequirement>
+      <requiredAuthority href="#riskManager_ks"/>
+    </authorityRequirement>
+  </businessKnowledgeModel>
+  <decision name="Bureau call type" id="bureauCallType_d">
+    <variable typeRef="ns2:string" name="Bureau Call Type" id="bureauCallType_ii" xmlns:ns2="http://www.omg.org/spec/FEEL/20140401"/>
+    <informationRequirement>
+      <requiredDecision href="#preBureauRiskCategoryTable_bkm"/>
+    </informationRequirement>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#bureauCallTypeTable_bkm"/>
+    </knowledgeRequirement>
+    <invocation>
+      <literalExpression>
+        <text>Bureau call type table</text>
+      </literalExpression>
+      <binding>
+        <parameter name="Pre-Bureau Risk Category"/>
+        <literalExpression>
+          <text>Pre-Bureau Risk Category</text>
+        </literalExpression>
+      </binding>
+    </invocation>
+  </decision>
+  <decision name="Strategy" id="_70_d">
+    <description>The Strategy decision logic (Figure 70) defines a complete, unique-hit decision table deriving Strategy from Eligibility and Bureau Call Type.</description>
+    <question>Is credit bureau call required?</question>
+    <allowedAnswers>Yes: Bureau; No: Decline or Through</allowedAnswers>
+    <informationRequirement>
+      <requiredDecision href="#eligibility_d"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredDecision href="#bureauCallType_d"/>
+    </informationRequirement>
+    <decisionTable hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row" id="_70_dt">
+      <input label="Eligibility">
+        <inputExpression>
+          <text>eligibility</text>
+        </inputExpression>
+      </input>
+      <input label="Bureau Call Type">
+        <inputExpression>
+          <text>bureauCallType</text>
+        </inputExpression>
+      </input>
+      <output name="Strategy">
+        <outputValues>
+          <text>"DECLINE","BUREAU","THROUGH"</text>
+        </outputValues>
+      </output>
+      <rule>
+        <inputEntry>
+          <text>"INELIGIBLE"</text>
+        </inputEntry>
+        <inputEntry>
+          <text>-</text>
+        </inputEntry>
+        <outputEntry>
+          <text>"DECLINE"</text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry>
+          <text>"ELIGIBLE"</text>
+        </inputEntry>
+        <inputEntry>
+          <text>"FULL"</text>
+        </inputEntry>
+        <outputEntry>
+          <text>"BUREAU"</text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry>
+          <text>"ELIGIBLE"</text>
+        </inputEntry>
+        <inputEntry>
+          <text>"NONE"</text>
+        </inputEntry>
+        <outputEntry>
+          <text>"THROUGH"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision name="Eligibility" id="eligibility_d">
+    <informationRequirement>
+      <requiredDecision href="#preBureauRiskCategory_d"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredDecision href="#preBureauAffordability_d"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="#applicantData_id"/>
+    </informationRequirement>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#eligibilityRules_bkm"/>
+    </knowledgeRequirement>
+    <invocation>
+      <literalExpression>
+        <text>Eligibility rules</text>
+      </literalExpression>
+      <binding>
+        <parameter name="Age"/>
+        <literalExpression>
+          <text>Applicant data.Age</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Pre-Bureau Risk Category"/>
+        <literalExpression>
+          <text>Pre-bureau risk category</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Pre-Bureau Affordability"/>
+        <literalExpression>
+          <text>Pre-bureau affordability</text>
+        </literalExpression>
+      </binding>
+    </invocation>
+  </decision>
+  <decision name="Pre-bureau risk category" id="preBureauRiskCategory_d">
+    <informationRequirement>
+      <requiredDecision href="#applicationRiskScore_d"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="#applicantData_id"/>
+    </informationRequirement>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#preBureauRiskCategoryTable_bkm"/>
+    </knowledgeRequirement>
+    <invocation>
+      <literalExpression>
+        <text>Pre-bureau risk category table</text>
+      </literalExpression>
+      <binding>
+        <parameter name="Existing Customer"/>
+        <literalExpression>
+          <text>Applicant data . ExistingCustomer</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Application Risk Score"/>
+        <literalExpression>
+          <text>Application risk score</text>
+        </literalExpression>
+      </binding>
+    </invocation>
+  </decision>
+  <decision name="Application risk score" id="applicationRiskScore_d">
+    <knowledgeRequirement>
+      <requiredKnowledge href="#applicationRiskScoreModel_bkm"/>
+    </knowledgeRequirement>
+    <invocation>
+      <literalExpression>
+        <text>Application risk score model</text>
+      </literalExpression>
+      <binding>
+        <parameter name="Age"/>
+        <literalExpression>
+          <text>Applicant data . Age</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Marital Status"/>
+        <literalExpression>
+          <text>Applicant data . MaritalStatus</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Employment Status"/>
+        <literalExpression>
+          <text>Applicant data . EmploymentStatus</text>
+        </literalExpression>
+      </binding>
+    </invocation>
+  </decision>
+  <decision name="Pre-bureau affordability" id="preBureauAffordability_d">
+    <informationRequirement>
+      <requiredInput href="#applicantData_id"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredDecision href="#preBureauRiskCategory_d"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredDecision href="#RequiredMonthlyInstallment_d"/>
+    </informationRequirement>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#AffordabilityCalculation_bkm"/>
+    </knowledgeRequirement>
+    <invocation>
+      <literalExpression>
+        <text>Affordability calculation</text>
+      </literalExpression>
+      <binding>
+        <parameter name="Monthly Income"/>
+        <literalExpression>
+          <text>Applicant data . Monthly . Income</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Monthly Repayments"/>
+        <literalExpression>
+          <text>Applicant data . Monthly . Repayments</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Monthly Expenses"/>
+        <literalExpression>
+          <text>Applicant data . Monthly . Expenses</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Risk Category"/>
+        <literalExpression>
+          <text>Pre-bureau risk category</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Required Monthly Installment"/>
+        <literalExpression>
+          <text>Required monthly installment</text>
+        </literalExpression>
+      </binding>
+    </invocation>
+  </decision>
+  <decision name="Post-bureau affordability" id="postBureauAffordability_d">
+    <knowledgeRequirement>
+      <requiredKnowledge href="#AffordabilityCalculation_bkm"/>
+    </knowledgeRequirement>
+    <invocation>
+      <literalExpression>
+        <text>Affordability calculation</text>
+      </literalExpression>
+      <binding>
+        <parameter name="Monthly Income"/>
+        <literalExpression>
+          <text>Applicant data . Monthly . Income</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Monthly Repayments"/>
+        <literalExpression>
+          <text>Applicant data . Monthly . Repayments</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Monthly Expenses"/>
+        <literalExpression>
+          <text>Applicant data . Monthly . Expenses</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Risk Category"/>
+        <literalExpression>
+          <text>Post-bureau risk category</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Required Monthly Installment"/>
+        <literalExpression>
+          <text>Required monthly installment</text>
+        </literalExpression>
+      </binding>
+    </invocation>
+  </decision>
+  <decision name="Required monthly installment" id="RequiredMonthlyInstallment_d">
+    <informationRequirement>
+      <requiredInput href="#requestedProduct_id"/>
+    </informationRequirement>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#installmentCalculation_bkm"/>
+    </knowledgeRequirement>
+    <invocation>
+      <literalExpression>
+        <text>Installment calculation</text>
+      </literalExpression>
+      <binding>
+        <parameter name="Product Type"/>
+        <literalExpression>
+          <text>Requested product . ProductType</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Rate"/>
+        <literalExpression>
+          <text>Requested product . Rate</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Term"/>
+        <literalExpression>
+          <text>Requested product . Term</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Amount"/>
+        <literalExpression>
+          <text>Requested product . Amount</text>
+        </literalExpression>
+      </binding>
+    </invocation>
+  </decision>
+  <decision name="Post-bureau risk category" id="postBureauRiskCategory_d">
+    <informationRequirement>
+      <requiredInput href="#applicantData_id"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="#bureauData_id"/>
+    </informationRequirement>
+    <knowledgeRequirement>
+      <requiredKnowledge href="#postBureauRiskCategoryTable_bkm"/>
+    </knowledgeRequirement>
+    <authorityRequirement>
+      <requiredAuthority href="#riskManager_ks"/>
+    </authorityRequirement>
+    <invocation>
+      <literalExpression>
+        <text>Post-bureau risk category table</text>
+      </literalExpression>
+      <binding>
+        <parameter name="Existing Customer"/>
+        <literalExpression>
+          <text>Applicant data . ExistingCustomer</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Credit Score"/>
+        <literalExpression>
+          <text>Bureau data . CreditScore</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="￼Application Risk Score"/>
+        <literalExpression>
+          <text>Application risk score</text>
+        </literalExpression>
+      </binding>
+    </invocation>
+  </decision>
+  <decision name="Routing" id="routing_d">
+    <informationRequirement>
+      <requiredDecision href="#postBureauAffordability_d"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredDecision href="#postBureauRiskCategory_d"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="#bureauData_id"/>
+    </informationRequirement>
+    <authorityRequirement>
+      <requiredAuthority href="#routingRules_bkm"/>
+    </authorityRequirement>
+    <invocation>
+      <literalExpression>
+        <text>Routing rules</text>
+      </literalExpression>
+      <binding>
+        <parameter name="Bankrupt"/>
+        <literalExpression>
+          <text>Bureau data . Bankrupt</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Credit Score"/>
+        <literalExpression>
+          <text>Bureau data . CreditScore</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="￼Post-Bureau Risk Category"/>
+        <literalExpression>
+          <text>Post-bureau risk category</text>
+        </literalExpression>
+      </binding>
+      <binding>
+        <parameter name="Post-Bureau Affordability"/>
+        <literalExpression>
+          <text>Post-bureau affordability</text>
+        </literalExpression>
+      </binding>
+    </invocation>
+  </decision>
+  <decision name="Adjudication" id="adjudication_d">
+    <informationRequirement>
+      <requiredInput href="#applicantData_id"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="#bureauData_id"/>
+    </informationRequirement>
+    <informationRequirement>
+      <requiredInput href="#supportingDocuments_id"/>
+    </informationRequirement>
+    <authorityRequirement>
+      <requiredAuthority href="#creditOfficer_ks"/>
+    </authorityRequirement>
+  </decision>
+</definitions>
