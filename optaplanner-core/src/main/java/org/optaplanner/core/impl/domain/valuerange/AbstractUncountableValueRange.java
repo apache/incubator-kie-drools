@@ -29,13 +29,4 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
  */
 public abstract class AbstractUncountableValueRange<T> implements ValueRange<T>, Serializable {
 
-    // TODO Remove this temporary implementation in 7.0
-    /**
-     * If you extend this class, then just must override this method!
-     */
-    @Override
-    public boolean isEmpty() {
-        return false;
-    }
-
 }
