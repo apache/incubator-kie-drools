@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 
@@ -39,6 +40,16 @@ public abstract class VariableDescriptor<Solution_> {
         this.entityDescriptor = entityDescriptor;
         this.variableMemberAccessor = variableMemberAccessor;
         variableName = variableMemberAccessor.getName();
+        if (variableMemberAccessor.getType().isPrimitive()) {
+            throw new IllegalStateException("The entityClass (" + entityDescriptor.getEntityClass()
+                    + ") has a " + PlanningVariable.class.getSimpleName()
+                    + " annotated member (" + variableMemberAccessor
+                    + ") that returns a primitive type (" + variableMemberAccessor.getType()
+                    + "). This means it cannot represent an uninitialized variable as null"
+                    + " and the Construction Heuristics think it's already initialized.\n"
+                    + "  Maybe let the member (" + getSimpleEntityAndVariableName()
+                    + ") return its primitive wrapper type instead.");
+        }
     }
 
     // ************************************************************************
