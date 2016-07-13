@@ -42,7 +42,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * But the planning solution class must also be annotated with {@link PlanningSolution}
  * describes declarative properties.
  * @param <S> the {@link Score} type used by this use case
- * @deprecated In favor of {@link PlanningScore}, {@link ProblemFactCollectionProperty} and {@link ProblemFactProperty}.
+ * @deprecated Use {@link PlanningScore}, {@link ProblemFactCollectionProperty} and {@link ProblemFactProperty} instead. Will be removed in 8.0.
  */
 @Deprecated
 public interface Solution<S extends Score> {

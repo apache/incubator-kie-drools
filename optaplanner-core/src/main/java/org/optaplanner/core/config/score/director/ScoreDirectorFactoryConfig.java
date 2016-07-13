@@ -35,6 +35,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
@@ -100,7 +101,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @return sometimes null
-     * @deprecated Use {@link PlanningScore#scoreDefinitionClass()} instead.
+     * @deprecated Use {@link PlanningScore#scoreDefinitionClass()} instead. Will be removed in 8.0.
      */
     @Deprecated public Class<? extends ScoreDefinition> getScoreDefinitionClass() {
         return scoreDefinitionClass;
@@ -108,7 +109,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @param scoreDefinitionClass sometimes null
-     * @deprecated Use {@link PlanningScore#scoreDefinitionClass()} instead.
+     * @deprecated Use {@link PlanningScore#scoreDefinitionClass()} instead. Will be removed in 8.0.
      */
     @Deprecated public void setScoreDefinitionClass(Class<? extends ScoreDefinition> scoreDefinitionClass) {
         this.scoreDefinitionClass = scoreDefinitionClass;
@@ -116,7 +117,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @return sometimes null
-     * @deprecated Use {@link PlanningScore} instead.
+     * @deprecated Use {@link PlanningScore} instead. Will be removed in 8.0.
      */
     @Deprecated public ScoreDefinitionType getScoreDefinitionType() {
         return scoreDefinitionType;
@@ -124,7 +125,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @param scoreDefinitionType sometimes null
-     * @deprecated Use {@link PlanningScore} instead.
+     * @deprecated Use {@link PlanningScore} instead. Will be removed in 8.0.
      */
     @Deprecated public void setScoreDefinitionType(ScoreDefinitionType scoreDefinitionType) {
         this.scoreDefinitionType = scoreDefinitionType;
@@ -132,7 +133,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @return sometimes null
-     * @deprecated Use {@link PlanningScore#bendableHardLevelsSize()} instead.
+     * @deprecated Use {@link PlanningScore#bendableHardLevelsSize()} instead. Will be removed in 8.0.
      */
     @Deprecated public Integer getBendableHardLevelsSize() {
         return bendableHardLevelsSize;
@@ -140,7 +141,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @param bendableHardLevelsSize sometimes null
-     * @deprecated Use {@link PlanningScore#bendableHardLevelsSize()} instead.
+     * @deprecated Use {@link PlanningScore#bendableHardLevelsSize()} instead. Will be removed in 8.0.
      */
     @Deprecated public void setBendableHardLevelsSize(Integer bendableHardLevelsSize) {
         this.bendableHardLevelsSize = bendableHardLevelsSize;
@@ -148,7 +149,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @return sometimes null
-     * @deprecated Use {@link PlanningScore#bendableSoftLevelsSize()} instead.
+     * @deprecated Use {@link PlanningScore#bendableSoftLevelsSize()} instead. Will be removed in 8.0.
      */
     @Deprecated public Integer getBendableSoftLevelsSize() {
         return bendableSoftLevelsSize;
@@ -156,7 +157,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @param bendableSoftLevelsSize sometimes null
-     * @deprecated Use {@link PlanningScore#bendableSoftLevelsSize()} instead.
+     * @deprecated Use {@link PlanningScore#bendableSoftLevelsSize()} instead. Will be removed in 8.0.
      */
     @Deprecated public void setBendableSoftLevelsSize(Integer bendableSoftLevelsSize) {
         this.bendableSoftLevelsSize = bendableSoftLevelsSize;
@@ -188,7 +189,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @return sometimes null
-     * @deprecated Use {@link #getKsessionName()} instead.
+     * @deprecated Use {@link #setKsessionName(String)} and {@link SolverFactory#createFromKieContainerXmlResource(KieContainer, String)} instead. Might be removed in 8.0.
      */
     @Deprecated public KieBase getKieBase() {
         return kieBase;
@@ -196,7 +197,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
 
     /**
      * @param kieBase sometimes null
-     * @deprecated Use {@link #setKsessionName(String)} instead.
+     * @deprecated Use {@link #setKsessionName(String)} and {@link SolverFactory#createFromKieContainerXmlResource(KieContainer, String)} instead. Might be removed in 8.0.
      */
     @Deprecated public void setKieBase(KieBase kieBase) {
         this.kieBase = kieBase;

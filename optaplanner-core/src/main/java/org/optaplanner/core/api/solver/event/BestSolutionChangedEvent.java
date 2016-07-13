@@ -94,7 +94,7 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
 
     /**
      * @return true if all the planning entities have planning variables that are initialized.
-     * @deprecated Use {@link #getNewBestScore()}'s {@link Score#isSolutionInitialized()} instead.
+     * @deprecated Use {@link #getNewBestScore()}'s {@link Score#isSolutionInitialized()} instead. Will be removed in 8.0.
      */
     @Deprecated
     public boolean isNewBestSolutionInitialized() {

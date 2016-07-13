@@ -31,7 +31,7 @@ public enum ProblemStatisticType implements StatisticType {
     BEST_SCORE,
     STEP_SCORE,
     /**
-     * @deprecated use {@link #SCORE_CALCULATION_SPEED} instead
+     * @deprecated Use {@link #SCORE_CALCULATION_SPEED} instead. Will be removed in 8.0.
      */
     @Deprecated
     CALCULATE_COUNT_PER_SECOND,

@@ -68,7 +68,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     private Integer unimprovedStepCountLimit = null;
 
     /**
-     * @deprecated Use {@link #scoreCalculationCountLimit} instead.
+     * @deprecated Use {@link #scoreCalculationCountLimit} instead. Will be removed in 8.0.
      */
     @Deprecated
     private Long calculateCountLimit = null;
@@ -206,7 +206,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     }
 
     /**
-     * @deprecated Use {@link #getScoreCalculationCountLimit()} instead.
+     * @deprecated Use {@link #getScoreCalculationCountLimit()} instead. Will be removed in 8.0.
      */
     @Deprecated
     public Long getCalculateCountLimit() {
@@ -214,7 +214,7 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     }
 
     /**
-     * @deprecated Use {@link #setScoreCalculationCountLimit(Long)} instead.
+     * @deprecated Use {@link #setScoreCalculationCountLimit(Long)} instead. Will be removed in 8.0.
      */
     @Deprecated
     public void setCalculateCountLimit(Long calculateCountLimit) {
