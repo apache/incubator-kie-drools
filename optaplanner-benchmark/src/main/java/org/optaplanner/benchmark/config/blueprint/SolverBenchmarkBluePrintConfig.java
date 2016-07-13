@@ -49,10 +49,6 @@ public class SolverBenchmarkBluePrintConfig {
                     "The solverBenchmarkBluePrint must have"
                             + " a solverBenchmarkBluePrintType (" + solverBenchmarkBluePrintType + ").");
         }
-        // TODO Remove Backwards compatibility workaround in 7.0
-        if (solverBenchmarkBluePrintType == SolverBenchmarkBluePrintType.ALL_CONSTRUCTION_HEURISTIC_TYPES) {
-            solverBenchmarkBluePrintType = SolverBenchmarkBluePrintType.EVERY_CONSTRUCTION_HEURISTIC_TYPE;
-        }
     }
 
 }

@@ -29,11 +29,6 @@ import org.optaplanner.core.config.solver.SolverConfig;
 
 public enum SolverBenchmarkBluePrintType {
     /**
-     * @deprecated in favor of {@link #EVERY_CONSTRUCTION_HEURISTIC_TYPE}. This will be removed in 7.0.
-     */
-    @Deprecated
-    ALL_CONSTRUCTION_HEURISTIC_TYPES,
-    /**
      * Run every {@link ConstructionHeuristicType}.
      */
     EVERY_CONSTRUCTION_HEURISTIC_TYPE,
