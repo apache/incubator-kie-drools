@@ -29,7 +29,6 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
-import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningEntity
 public class TestdataValueRangeEntity extends TestdataObject {
@@ -45,8 +44,8 @@ public class TestdataValueRangeEntity extends TestdataObject {
         return entityDescriptor.getGenuineVariableDescriptor("value");
     }
 
-    private int intValue;
-    private long longValue;
+    private Integer integerValue;
+    private Long longValue;
     private BigInteger bigIntegerValue;
     private BigDecimal bigDecimalValue;
     private LocalDate localDateValue;
@@ -61,21 +60,21 @@ public class TestdataValueRangeEntity extends TestdataObject {
         super(code);
     }
 
-    @PlanningVariable(valueRangeProviderRefs = "intValueRange")
-    public int getIntValue() {
-        return intValue;
+    @PlanningVariable(valueRangeProviderRefs = "integerValueRange")
+    public Integer getIntegerValue() {
+        return integerValue;
     }
 
-    public void setIntValue(int intValue) {
-        this.intValue = intValue;
+    public void setIntegerValue(Integer integerValue) {
+        this.integerValue = integerValue;
     }
 
     @PlanningVariable(valueRangeProviderRefs = "longValueRange")
-    public long getLongValue() {
+    public Long getLongValue() {
         return longValue;
     }
 
-    public void setLongValue(long longValue) {
+    public void setLongValue(Long longValue) {
         this.longValue = longValue;
     }
 

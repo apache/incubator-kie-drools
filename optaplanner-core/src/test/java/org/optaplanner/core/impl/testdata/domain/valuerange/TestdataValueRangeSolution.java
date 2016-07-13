@@ -78,7 +78,7 @@ public class TestdataValueRangeSolution extends TestdataObject {
     // Complex methods
     // ************************************************************************
 
-    @ValueRangeProvider(id = "intValueRange")
+    @ValueRangeProvider(id = "integerValueRange")
     public CountableValueRange<Integer> createIntValueRange() {
         return ValueRangeFactory.createIntValueRange(0, 3);
     }
