@@ -136,7 +136,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
             return true;
         }
         if (aspirationEnabled) {
-            // Doesn't use the deciderScoreComparator because shifting penalties don't apply
+            // Natural comparison because shifting penalties don't apply
             if (moveScope.getScore().compareTo(
                     moveScope.getStepScope().getPhaseScope().getBestScore()) > 0) {
                 logger.trace("        Proposed move ({}) is tabu, but is accepted anyway due to aspiration.",
