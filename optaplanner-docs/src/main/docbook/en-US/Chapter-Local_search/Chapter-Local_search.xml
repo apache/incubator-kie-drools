@@ -88,7 +88,7 @@ DEBUG     LS step (0), time spent (20), score (-3), new best score (-3), accepte
 DEBUG     LS step (1), time spent (31), score (-1), new best score (-1), accepted/selected move count (12/12), picked move (Queen-3 {Row-0 -&gt; Row-2}).
 DEBUG     LS step (2), time spent (40), score (0), new best score (0), accepted/selected move count (12/12), picked move (Queen-0 {Row-0 -&gt; Row-1}).
 INFO  Local Search phase (0) ended: time spent (41), best score (0), score calculation speed (5000/sec), step total (3).
-INFO  Solving ended: time spent (41), best score (0), score calculation speed (5000/sec), environment mode (REPRODUCIBLE).</programlisting>
+INFO  Solving ended: time spent (41), best score (0), score calculation speed (5000/sec), phase total (1), environment mode (REPRODUCIBLE).</programlisting>
 
       <para>Notice that a log message includes the <literal>toString()</literal> method of the <literal>Move</literal>
       implementation which returns for example "<literal>Queen-1 {Row-0 -&gt; Row-3}</literal>".</para>

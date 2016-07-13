@@ -2068,7 +2068,7 @@ INFO  Construction Heuristic phase (0) ended: time spent (12), best score (-1), 
 DEBUG     LS step (0), time spent (19), score (-1),     best score (-1), accepted/selected move count (12/12), picked move (Queen-1 {Row-2 -&gt; Row-3}).
 DEBUG     LS step (1), time spent (24), score (0), new best score (0), accepted/selected move count (9/12), picked move (Queen-3 {Row-3 -&gt; Row-2}).
 INFO  Local Search phase (1) ended: time spent (24), best score (0), score calculation speed (4000/sec), step total (2).
-INFO  Solving ended: time spent (24), best score (0), score calculation speed (7000/sec), environment mode (REPRODUCIBLE).</programlisting>
+INFO  Solving ended: time spent (24), best score (0), score calculation speed (7000/sec), phase total (2), environment mode (REPRODUCIBLE).</programlisting>
 
       <para>All time spent values are in milliseconds.</para>
 

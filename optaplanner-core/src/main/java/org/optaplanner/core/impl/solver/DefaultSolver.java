@@ -255,10 +255,11 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         // Must be kept open for doProblemFactChange
         solverScope.getScoreDirector().dispose();
         logger.info("Solving ended: time spent ({}), best score ({}), score calculation speed ({}/sec),"
-                        + " environment mode ({}).",
+                        + " phase total ({}), environment mode ({}).",
                 solverScope.getTimeMillisSpent(),
                 solverScope.getBestScore(),
                 solverScope.getScoreCalculationSpeed(),
+                phaseList.size(),
                 environmentMode.name());
         solving.set(false);
     }
