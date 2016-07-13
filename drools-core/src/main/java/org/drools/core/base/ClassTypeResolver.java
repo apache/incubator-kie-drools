@@ -302,6 +302,8 @@ public class ClassTypeResolver
                 clazz = this.classLoader.loadClass( qualifiedClass );
             } catch ( final ClassNotFoundException e ) {
                 clazz = null;
+            } catch ( final NoClassDefFoundError e ) {	// potential mis-match induced by Mac/OSX
+                clazz = null;
             }
 
             // maybe its a nested class?
@@ -313,6 +315,8 @@ public class ClassTypeResolver
                                                                lastIndex ) + "$" + qualifiedClass.substring( lastIndex + 1 );
                     clazz = this.classLoader.loadClass( qualifiedClass );
                 } catch ( final ClassNotFoundException e ) {
+                    clazz = null;
+                } catch ( final NoClassDefFoundError e ) {	// potential mis-match induced by Mac/OSX
                     clazz = null;
                 }
             }
