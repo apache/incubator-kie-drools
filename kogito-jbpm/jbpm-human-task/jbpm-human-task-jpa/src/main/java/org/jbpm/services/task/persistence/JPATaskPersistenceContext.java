@@ -109,7 +109,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		Task task = null;
 		if( this.pessimisticLocking ) {
-			task = this.em.find( TaskImpl.class, taskId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
+			return this.em.find( TaskImpl.class, taskId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
         }
 		task = this.em.find( TaskImpl.class, taskId );
 		return task;
