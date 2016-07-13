@@ -26,13 +26,11 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
-import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterMannerHelper;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
-import org.optaplanner.core.config.heuristic.selector.value.ValueSorterMannerHelper;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -173,7 +171,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
             entitySelectorConfig_ = new EntitySelectorConfig();
             EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
             entitySelectorConfig_.setEntityClass(entityDescriptor.getEntityClass());
-            if (EntitySorterMannerHelper.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
+            if (EntitySelectorConfig.hasSorter(configPolicy.getEntitySorterManner(), entityDescriptor)) {
                 entitySelectorConfig_.setCacheType(SelectionCacheType.PHASE);
                 entitySelectorConfig_.setSelectionOrder(SelectionOrder.SORTED);
                 entitySelectorConfig_.setSorterManner(configPolicy.getEntitySorterManner());
@@ -244,7 +242,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
                 changeMoveSelectorConfig.setEntitySelectorConfig(changeEntitySelectorConfig);
                 ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
                 changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
-                if (ValueSorterMannerHelper.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
+                if (ValueSelectorConfig.hasSorter(configPolicy.getValueSorterManner(), variableDescriptor)) {
                     if (variableDescriptor.isValueRangeEntityIndependent()) {
                         changeValueSelectorConfig.setCacheType(SelectionCacheType.PHASE);
                     } else {

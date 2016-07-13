@@ -23,6 +23,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.config.constructionheuristic.decider.forager.ConstructionHeuristicForagerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
+import org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig;
+import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
+import org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
@@ -113,12 +116,12 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         ConstructionHeuristicType constructionHeuristicType_ = defaultIfNull(
                 constructionHeuristicType, ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
         phaseConfigPolicy.setEntitySorterManner(entitySorterManner != null ? entitySorterManner
-                : ConstructionHeuristicTypeHelper.getDefaultEntitySorterManner(constructionHeuristicType_));
+                : constructionHeuristicType_.getDefaultEntitySorterManner());
         phaseConfigPolicy.setValueSorterManner(valueSorterManner != null ? valueSorterManner
-                : ConstructionHeuristicTypeHelper.getDefaultValueSorterManner(constructionHeuristicType_));
+                : constructionHeuristicType_.getDefaultValueSorterManner());
         EntityPlacerConfig entityPlacerConfig;
         if (ConfigUtils.isEmptyCollection(entityPlacerConfigList)) {
-            entityPlacerConfig = ConstructionHeuristicTypeHelper.newEntityPlacerConfig(constructionHeuristicType_);
+            entityPlacerConfig = newEntityPlacerConfig(constructionHeuristicType_);
         } else if (entityPlacerConfigList.size() == 1) {
             entityPlacerConfig = entityPlacerConfigList.get(0);
             if (constructionHeuristicType != null) {
@@ -159,6 +162,26 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
             decider.setAssertExpectedUndoMoveScore(true);
         }
         return decider;
+    }
+
+    private EntityPlacerConfig newEntityPlacerConfig(ConstructionHeuristicType constructionHeuristicType) {
+        switch (constructionHeuristicType) {
+            case FIRST_FIT:
+            case FIRST_FIT_DECREASING:
+            case WEAKEST_FIT:
+            case WEAKEST_FIT_DECREASING:
+            case STRONGEST_FIT:
+            case STRONGEST_FIT_DECREASING:
+            case ALLOCATE_ENTITY_FROM_QUEUE:
+                return new QueuedEntityPlacerConfig();
+            case ALLOCATE_TO_VALUE_FROM_QUEUE:
+                return new QueuedValuePlacerConfig();
+            case CHEAPEST_INSERTION:
+            case ALLOCATE_FROM_POOL:
+                return new PooledEntityPlacerConfig();
+            default:
+                throw new IllegalStateException("The constructionHeuristicType (" + constructionHeuristicType + ") is not implemented.");
+        }
     }
 
     @Override

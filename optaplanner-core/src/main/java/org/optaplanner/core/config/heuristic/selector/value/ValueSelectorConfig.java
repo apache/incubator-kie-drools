@@ -24,6 +24,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -495,10 +496,10 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
             SelectionSorter sorter;
             if (sorterManner != null) {
                 GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
-                if (!ValueSorterMannerHelper.hasSorter(sorterManner, variableDescriptor)) {
+                if (!hasSorter(sorterManner, variableDescriptor)) {
                     return valueSelector;
                 }
-                sorter = ValueSorterMannerHelper.determineSorter(sorterManner, variableDescriptor);
+                sorter = determineSorter(sorterManner, variableDescriptor);
             } else if (sorterComparatorClass != null) {
                 Comparator<Object> sorterComparator = ConfigUtils.newInstance(this,
                         "sorterComparatorClass", sorterComparatorClass);
@@ -689,6 +690,50 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + variableName + ")";
+    }
+
+    public static boolean hasSorter(ValueSorterManner valueSorterManner, GenuineVariableDescriptor variableDescriptor) {
+        switch (valueSorterManner) {
+            case NONE:
+                return false;
+            case INCREASING_STRENGTH:
+            case DECREASING_STRENGTH:
+                return true;
+            case INCREASING_STRENGTH_IF_AVAILABLE:
+                return variableDescriptor.getIncreasingStrengthSorter() != null;
+            case DECREASING_STRENGTH_IF_AVAILABLE:
+                return variableDescriptor.getDecreasingStrengthSorter() != null;
+            default:
+                throw new IllegalStateException("The sorterManner ("
+                        + valueSorterManner + ") is not implemented.");
+        }
+    }
+
+    public static SelectionSorter determineSorter(ValueSorterManner valueSorterManner, GenuineVariableDescriptor variableDescriptor) {
+        SelectionSorter sorter;
+        switch (valueSorterManner) {
+            case NONE:
+                throw new IllegalStateException("Impossible state: hasSorter() should have returned null.");
+            case INCREASING_STRENGTH:
+            case INCREASING_STRENGTH_IF_AVAILABLE:
+                sorter = variableDescriptor.getIncreasingStrengthSorter();
+                break;
+            case DECREASING_STRENGTH:
+            case DECREASING_STRENGTH_IF_AVAILABLE:
+                sorter = variableDescriptor.getDecreasingStrengthSorter();
+                break;
+            default:
+                throw new IllegalStateException("The sorterManner ("
+                        + valueSorterManner + ") is not implemented.");
+        }
+        if (sorter == null) {
+            throw new IllegalArgumentException("The sorterManner (" + valueSorterManner
+                    + ") on entity class (" + variableDescriptor.getEntityDescriptor().getEntityClass()
+                    + ")'s variable (" + variableDescriptor.getVariableName()
+                    + ") fails because that variable getter's " + PlanningVariable.class.getSimpleName()
+                    + " annotation does not declare any strength comparison.");
+        }
+        return sorter;
     }
 
 }

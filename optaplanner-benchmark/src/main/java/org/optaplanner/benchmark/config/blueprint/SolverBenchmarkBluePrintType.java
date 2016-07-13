@@ -22,7 +22,6 @@ import java.util.List;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
-import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicTypeHelper;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchType;
 import org.optaplanner.core.config.phase.PhaseConfig;
@@ -62,7 +61,7 @@ public enum SolverBenchmarkBluePrintType {
     }
 
     private List<SolverBenchmarkConfig> buildEveryConstructionHeuristicType() {
-        ConstructionHeuristicType[] chTypes = ConstructionHeuristicTypeHelper.getBluePrintTypes();
+        ConstructionHeuristicType[] chTypes = ConstructionHeuristicType.getBluePrintTypes();
         List<SolverBenchmarkConfig> solverBenchmarkConfigList = new ArrayList<>(chTypes.length);
         for (ConstructionHeuristicType chType : chTypes) {
             solverBenchmarkConfigList.add(buildSolverBenchmarkConfig(chType, null));
@@ -80,7 +79,7 @@ public enum SolverBenchmarkBluePrintType {
     }
 
     private List<SolverBenchmarkConfig> buildEveryConstructionHeuristicTypeWithEveryLocalSearchType() {
-        ConstructionHeuristicType[] chTypes = ConstructionHeuristicTypeHelper.getBluePrintTypes();
+        ConstructionHeuristicType[] chTypes = ConstructionHeuristicType.getBluePrintTypes();
         LocalSearchType[] lsTypes = LocalSearchType.getBluePrintTypes();
         List<SolverBenchmarkConfig> solverBenchmarkConfigList = new ArrayList<>(
                 chTypes.length * lsTypes.length);
