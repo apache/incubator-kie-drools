@@ -79,58 +79,57 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
         }
         if (collectionWrapping) {
             Type genericType = memberAccessor.getGenericType();
-            // TODO PLANNER-383 As of 7.0, it should fail fast if a ValueRangeProvider's Collection is unparameterized
-//            if (!(genericType instanceof ParameterizedType)) {
-//                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-//                        + ") has a " + PlanningVariable.class.getSimpleName()
-//                        + " annotated property (" + variableDescriptor.getVariableName()
-//                        + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
-//                        + " annotated member (" + memberAccessor
-//                        + ") that returns a " + Collection.class.getSimpleName()
-//                        + " which has no generic parameters.");
-//            }
-            if (genericType instanceof ParameterizedType) { // TODO PLANNER-383 remove this if statement
-                ParameterizedType parameterizedType = (ParameterizedType) genericType;
-                Type[] typeArguments = parameterizedType.getActualTypeArguments();
-                if (typeArguments.length != 1) {
-                    throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                            + ") has a " + PlanningVariable.class.getSimpleName()
-                            + " annotated property (" + variableDescriptor.getVariableName()
-                            + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
-                            + " annotated member (" + memberAccessor
-                            + ") that returns a parameterized " + Collection.class.getSimpleName()
-                            + ") with an unsupported number of generic parameters (" + typeArguments.length + ").");
-                }
-                Type typeArgument = typeArguments[0];
-                if (typeArgument instanceof ParameterizedType) {
-                    // TODO fail fast if the type arguments don't match
-                    // with the variableDescriptor's generic type's type arguments
-                    typeArgument = ((ParameterizedType) typeArgument).getRawType();
-                }
-                Class collectionElementClass;
-                if (typeArgument instanceof Class) {
-                    collectionElementClass = ((Class) typeArgument);
-                } else {
-                    throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                            + ") has a " + PlanningVariable.class.getSimpleName()
-                            + " annotated property (" + variableDescriptor.getVariableName()
-                            + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
-                            + " annotated member (" + memberAccessor
-                            + ") that returns a parameterized " + Collection.class.getSimpleName()
-                            + " with an unsupported type arguments (" + typeArgument + ").");
-                }
-                Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
-                if (!variablePropertyType.isAssignableFrom(collectionElementClass)) {
-                    throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                            + ") has a " + PlanningVariable.class.getSimpleName()
-                            + " annotated property (" + variableDescriptor.getVariableName()
-                            + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
-                            + " annotated member (" + memberAccessor
-                            + ") that returns a " + Collection.class.getSimpleName()
-                            + " with elements of type (" + collectionElementClass
-                            + ") which cannot be assigned to the " + PlanningVariable.class.getSimpleName()
-                            + "'s type (" + variablePropertyType + ").");
-                }
+            if (!(genericType instanceof ParameterizedType)) {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a " + PlanningVariable.class.getSimpleName()
+                        + " annotated property (" + variableDescriptor.getVariableName()
+                        + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                        + " annotated member (" + memberAccessor
+                        + ") that returns a " + Collection.class.getSimpleName()
+                        + " which has no generic parameters.\n"
+                        + "Maybe the member (" + memberAccessor + " should return a typed "
+                        + Collection.class.getSimpleName() + ".");
+            }
+            ParameterizedType parameterizedType = (ParameterizedType) genericType;
+            Type[] typeArguments = parameterizedType.getActualTypeArguments();
+            if (typeArguments.length != 1) {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a " + PlanningVariable.class.getSimpleName()
+                        + " annotated property (" + variableDescriptor.getVariableName()
+                        + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                        + " annotated member (" + memberAccessor
+                        + ") that returns a parameterized " + Collection.class.getSimpleName()
+                        + ") with an unsupported number of generic parameters (" + typeArguments.length + ").");
+            }
+            Type typeArgument = typeArguments[0];
+            if (typeArgument instanceof ParameterizedType) {
+                // TODO fail fast if the type arguments don't match
+                // with the variableDescriptor's generic type's type arguments
+                typeArgument = ((ParameterizedType) typeArgument).getRawType();
+            }
+            Class collectionElementClass;
+            if (typeArgument instanceof Class) {
+                collectionElementClass = ((Class) typeArgument);
+            } else {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a " + PlanningVariable.class.getSimpleName()
+                        + " annotated property (" + variableDescriptor.getVariableName()
+                        + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                        + " annotated member (" + memberAccessor
+                        + ") that returns a parameterized " + Collection.class.getSimpleName()
+                        + " with an unsupported type arguments (" + typeArgument + ").");
+            }
+            Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
+            if (!variablePropertyType.isAssignableFrom(collectionElementClass)) {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a " + PlanningVariable.class.getSimpleName()
+                        + " annotated property (" + variableDescriptor.getVariableName()
+                        + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                        + " annotated member (" + memberAccessor
+                        + ") that returns a " + Collection.class.getSimpleName()
+                        + " with elements of type (" + collectionElementClass
+                        + ") which cannot be assigned to the " + PlanningVariable.class.getSimpleName()
+                        + "'s type (" + variablePropertyType + ").");
             }
         } else if (arrayWrapping) {
             Class<?> arrayElementClass = type.getComponentType();
