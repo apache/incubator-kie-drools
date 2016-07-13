@@ -32,15 +32,12 @@ import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.io.impl.BaseResource;
 import org.drools.core.io.impl.InputStreamResource;
-import org.drools.core.rule.ConsequenceMetaData.Field;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
-
-import com.sun.tools.xjc.Options;
 
 public class DroolsJaxbHelperTest {
 
@@ -80,8 +77,7 @@ public class DroolsJaxbHelperTest {
         assertNotNull( "Could not find resource: " + simpleXsdRelativePath,  simpleXsdStream );
         BaseResource xsdResource = new InputStreamResource(simpleXsdStream);
 
-        Options xjcOptions = new Options();
-        xsdResource.setConfiguration(new JaxbConfigurationImpl(xjcOptions, "test-system-id"));
+        xsdResource.setConfiguration(new JaxbConfigurationImpl("test-system-id"));
         kh.addResource( xsdResource, ResourceType.XSD );
 
         // Verify that build succeeded
@@ -143,12 +139,11 @@ public class DroolsJaxbHelperTest {
         try {
             Method m2 = xsdClass.getMethod( "getContent" );
             assertNotNull( m2 );
-            assertEquals( List.class, m2.getReturnType() );
+            assertEquals( String.class, m2.getReturnType() );
 
             assertEquals( 0, xsdClass.getFields().length );
             java.lang.reflect.Field[] declaredFields = xsdClass.getDeclaredFields();
-            assertEquals( 1, declaredFields.length );
-            assertEquals( "content", declaredFields[0].getName() );
+            assertEquals( 2, declaredFields.length );
         } catch ( Exception e ) {
             e.printStackTrace();
             fail( e.getMessage() );

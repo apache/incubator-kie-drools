@@ -26,12 +26,6 @@
       <artifactId>drools-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
@@ -60,11 +54,6 @@
       <artifactId>antlr-runtime</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.antlr</groupId>
-      <artifactId>gunit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.jdt.core.compiler</groupId>
       <artifactId>ecj</artifactId>
     </dependency>
@@ -88,6 +77,7 @@
       <artifactId>protobuf-java</artifactId>
     </dependency>
 
+    <!-- XSD based class generation -->
     <dependency>
       <groupId>com.sun.codemodel</groupId>
       <artifactId>codemodel</artifactId>
@@ -95,10 +85,29 @@
     </dependency>
 
     <dependency>
+      <groupId>org.codehaus.castor</groupId>
+      <artifactId>castor-codegen</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.castor</groupId>
+      <artifactId>castor-xml-schema</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.castor</groupId>
+      <artifactId>castor-xml</artifactId>
+    </dependency>
+    <!-- needed instead of commons-logging for castor -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+    
+    <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
       <scope>provided</scope>
     </dependency>
+    
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-core</artifactId>
@@ -119,6 +128,7 @@
       <artifactId>stax-api</artifactId>
       <scope>provided</scope>
     </dependency>
+    
     <dependency>
       <groupId>javax.activation</groupId>
       <artifactId>activation</artifactId>
@@ -146,18 +156,30 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
 
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope><!-- HACK for OSGi: should be <optional>true</optional> instead -->
     </dependency>
-    
+   
+    <!--  TEST --> 
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>gunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency><!-- It works in any CDI container, but the weld CDI container is used for testing -->
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
@@ -195,8 +217,6 @@
         <configuration>
           <instructions>
             <Import-Package>
-              com.sun.tools.xjc.*;resolution:=optional,
-              com.sun.codemodel;resolution:=optional,
               javax.enterprise.*;resolution:=optional,
               org.antlr.*;resolution:=optional,
               org.codehaus.janino.*;resolution:=optional,

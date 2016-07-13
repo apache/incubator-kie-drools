@@ -16,20 +16,25 @@
 
 package org.drools.compiler.runtime.pipeline.impl;
 
-import com.sun.codemodel.CodeWriter;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JPackage;
-import com.sun.tools.xjc.BadCommandLineException;
-import com.sun.tools.xjc.ErrorReceiver;
-import com.sun.tools.xjc.ModelLoader;
-import com.sun.tools.xjc.Options;
-import com.sun.tools.xjc.model.Model;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.commons.jci.readers.MemoryResourceReader;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ProjectJavaCompiler;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialect;
+import org.drools.compiler.runtime.pipeline.impl.castor.DroolsExtendedSourceGenerator;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.GetGlobalCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
@@ -58,22 +63,6 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.help.DroolsJaxbHelperProvider;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXParseException;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import java.io.ByteArrayOutputStream;
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class DroolsJaxbHelperProviderImpl
     implements DroolsJaxbHelperProvider {
@@ -102,53 +91,47 @@ public class DroolsJaxbHelperProviderImpl
 
     public static String[] addXsdModel(Resource resource,
                                        KnowledgeBuilderImpl kBuilder,
-                                       Options xjcOpts,
                                        String systemId) throws IOException {
+
+        Map<String, byte[]> generatedClassesMap = generateXsdModelClasses(resource, systemId);
+
+        List<String> classNames = addGeneratedClassesAndReturnClassNames(kBuilder, generatedClassesMap);
+        return classNames.toArray( new String[classNames.size()] );
+    }
+
+    private static Map<String, byte[]> generateXsdModelClasses(Resource resource, String systemId) throws IOException {
         InputSource source = new InputSource( new CachingRewindableReader( resource.getReader() ) );
         source.setSystemId( systemId.trim().startsWith( "." ) ? systemId : "." + systemId );
 
-        xjcOpts.addGrammar( source );
+        DroolsExtendedSourceGenerator sgen = new DroolsExtendedSourceGenerator();
+        sgen.generateSource(source);
+        return sgen.getMap();
+    }
 
-        try {
-            xjcOpts.parseArguments( new String[]{"-npa"} );
-        } catch ( BadCommandLineException e ) {
-            throw new IllegalArgumentException( "Unable to parse arguments",
-                                                e );
-        }
-
-        ErrorReceiver errorReceiver = new JaxbErrorReceiver4Drools();
-
-        Model model = ModelLoader.load( xjcOpts,
-                                        new JCodeModel(),
-                                        errorReceiver );
-
-        model.generateCode( xjcOpts, errorReceiver );
-
-        MapVfsCodeWriter codeWriter = new MapVfsCodeWriter();
-        model.codeModel.build( xjcOpts.createCodeWriter( codeWriter ) );
+    private static List<String> addGeneratedClassesAndReturnClassNames(KnowledgeBuilderImpl kBuilder, Map<String, byte[]> classNameBytesMap) {
+        boolean useProjectClassLoader = kBuilder.getRootClassLoader() instanceof ProjectClassLoader;
 
         MemoryResourceReader src = new MemoryResourceReader();
-
-        boolean useProjectClassLoader = kBuilder.getRootClassLoader() instanceof ProjectClassLoader;
 
         List<String> classNames = new ArrayList<String>();
         List<String> srcNames = new ArrayList<String>();
 
-        for ( Entry<String, byte[]> entry : codeWriter.getMap().entrySet() ) {
+        for ( Entry<String, byte[]> entry : classNameBytesMap.entrySet() ) {
             String name = entry.getKey();
+
+            if ( !name.endsWith( "package-info.java" ) ) {
+                classNames.add( name );
+            }
 
             int dotPos = name.lastIndexOf( '.' );
             String pkgName = name.substring( 0, dotPos );
-
-            if ( !name.endsWith( "package-info.java" ) ) {
-                classNames.add( pkgName );
-            }
-
-            dotPos = pkgName.lastIndexOf( '.' );
             if ( dotPos != -1 ) {
                 pkgName = pkgName.substring( 0, dotPos );
             }
 
+            // we need to ad ".java", otherwise (ECJ) compilation will throw errors
+            // (not completely sure why? But that's how it works.. )
+            name += ".java";
             PackageRegistry pkgReg = kBuilder.getPackageRegistry( pkgName );
             if ( pkgReg == null ) {
                 kBuilder.addPackage( new PackageDescr( pkgName ) );
@@ -156,12 +139,12 @@ public class DroolsJaxbHelperProviderImpl
             }
 
             if (useProjectClassLoader) {
-                String srcName = convertToResource( entry.getKey() );
+                String srcName = convertToResource( name );
                 src.add( srcName, entry.getValue() );
                 srcNames.add( srcName );
             } else {
                 JavaDialect dialect = (JavaDialect) pkgReg.getDialectCompiletimeRegistry().getDialect( "java" );
-                dialect.addSrc( convertToResource( entry.getKey() ),
+                dialect.addSrc( convertToResource( name ),
                                 entry.getValue() );
             }
         }
@@ -189,7 +172,7 @@ public class DroolsJaxbHelperProviderImpl
             kBuilder.updateResults();
         }
 
-        return classNames.toArray( new String[classNames.size()] );
+        return classNames;
     }
 
     public static JAXBContext createDroolsJaxbContext(List<String> classNames, Map<String, ?> properties) throws ClassNotFoundException, JAXBException {
@@ -209,9 +192,8 @@ public class DroolsJaxbHelperProviderImpl
 
     public String[] addXsdModel(Resource resource,
                                 KnowledgeBuilder kbuilder,
-                                Options xjcOpts,
                                 String systemId) throws IOException {
-        return addXsdModel( resource, (KnowledgeBuilderImpl)kbuilder, xjcOpts, systemId );
+        return addXsdModel( resource, (KnowledgeBuilderImpl)kbuilder, systemId );
     }
 
     public JAXBContext newJAXBContext(String[] classNames,
@@ -249,76 +231,6 @@ public class DroolsJaxbHelperProviderImpl
                                  lastDot ).replace( '.',
                                                     '/' ) + string.substring( lastDot,
                                                                               string.length() );
-    }
-
-    public static class MapVfsCodeWriter extends CodeWriter {
-
-        private final Map<String, byte[]> map;
-
-        private ByteArrayOutputStream     currentBaos;
-        private String                    currentPath;
-
-        public MapVfsCodeWriter() {
-            this.map = new LinkedHashMap<String, byte[]>();
-        }
-
-        public OutputStream openBinary(JPackage pkg,
-                                       String fileName) throws IOException {
-            String pkgName = pkg.name();
-
-            if ( pkgName.length() != 0 ) {
-                pkgName += '.';
-            }
-
-            if ( this.currentBaos != null ) {
-                this.currentBaos.close();
-                this.map.put( this.currentPath,
-                              this.currentBaos.toByteArray() );
-            }
-
-            this.currentPath = pkgName + fileName;
-            this.currentBaos = new ByteArrayOutputStream();
-
-            return new FilterOutputStream( this.currentBaos ) {
-                public void close() {
-                    // don't let this stream close
-                }
-            };
-        }
-
-        public void close() throws IOException {
-            if ( this.currentBaos != null ) {
-                this.currentBaos.close();
-                this.map.put( this.currentPath,
-                              this.currentBaos.toByteArray() );
-            }
-        }
-
-        public Map<String, byte[]> getMap() {
-            return this.map;
-        }
-
-    }
-
-    public static class JaxbErrorReceiver4Drools extends ErrorReceiver {
-
-        public String stage = "processing";
-
-        public void warning(SAXParseException e) {
-            e.printStackTrace();
-        }
-
-        public void error(SAXParseException e) {
-            e.printStackTrace();
-        }
-
-        public void fatalError(SAXParseException e) {
-            e.printStackTrace();
-        }
-
-        public void info(SAXParseException e) {
-            e.printStackTrace();
-        }
     }
 
     public static class CachingRewindableReader extends Reader {
