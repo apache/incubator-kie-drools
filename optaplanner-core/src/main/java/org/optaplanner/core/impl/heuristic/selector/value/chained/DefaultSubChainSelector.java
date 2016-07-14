@@ -130,8 +130,7 @@ public class DefaultSubChainSelector extends AbstractSelector
                     + ") with valueSize (" + valueSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        // Temporary LinkedList to avoid using a bad initialCapacity
-        List<Object> anchorList = new LinkedList<>();
+        List<Object> anchorList = new ArrayList<>();
         for (Object value : valueSelector) {
             if (variableDescriptor.isValuePotentialAnchor(value)) {
                 anchorList.add(value);

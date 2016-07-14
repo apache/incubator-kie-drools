@@ -16,11 +16,11 @@
 
 package org.optaplanner.core.impl.localsearch.decider.acceptor.tabu;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.impl.localsearch.decider.acceptor.AbstractAcceptor;
@@ -43,7 +43,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     protected boolean assertTabuHashCodeCorrectness = false;
 
     protected Map<Object, Integer> tabuToStepIndexMap;
-    protected List<Object> tabuSequenceList;
+    protected Deque<Object> tabuSequenceDeque;
 
     protected int workingTabuSize = -1;
     protected int workingFadingTabuSize = -1;
@@ -77,14 +77,14 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
         workingFadingTabuSize = fadingTabuSizeStrategy == null ? 0 : fadingTabuSizeStrategy.determineTabuSize(lastCompletedStepScope);
         int totalTabuListSize = workingTabuSize + workingFadingTabuSize; // is at least 1
         tabuToStepIndexMap = new HashMap<>(totalTabuListSize);
-        tabuSequenceList = new LinkedList<>();
+        tabuSequenceDeque = new ArrayDeque<>();
     }
 
     @Override
     public void phaseEnded(LocalSearchPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
         tabuToStepIndexMap = null;
-        tabuSequenceList = null;
+        tabuSequenceDeque = null;
         workingTabuSize = -1;
         workingFadingTabuSize = -1;
     }
@@ -101,7 +101,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     protected void adjustTabuList(int tabuStepIndex, Collection<? extends Object> tabus) {
         int totalTabuListSize = workingTabuSize + workingFadingTabuSize; // is at least 1
         // Remove the oldest tabu(s)
-        for (Iterator<Object> it = tabuSequenceList.iterator(); it.hasNext();) {
+        for (Iterator<Object> it = tabuSequenceDeque.iterator(); it.hasNext();) {
             Object oldTabu = it.next();
             Integer oldTabuStepIndexInteger = tabuToStepIndexMap.get(oldTabu);
             if (oldTabuStepIndexInteger == null) {
@@ -121,10 +121,10 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
             // Push tabu to the end of the line
             if (tabuToStepIndexMap.containsKey(tabu)) {
                 tabuToStepIndexMap.remove(tabu);
-                tabuSequenceList.remove(tabu);
+                tabuSequenceDeque.remove(tabu);
             }
             tabuToStepIndexMap.put(tabu, tabuStepIndex);
-            tabuSequenceList.add(tabu);
+            tabuSequenceDeque.add(tabu);
         }
     }
 
@@ -170,7 +170,7 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
                 maximumTabuStepIndex = Math.max(tabuStepIndexInteger, maximumTabuStepIndex);
             }
             if (assertTabuHashCodeCorrectness) {
-                for (Object tabu : tabuSequenceList) {
+                for (Object tabu : tabuSequenceDeque) {
                     if (tabu.equals(checkingTabu)) {
                         if (tabu.hashCode() != checkingTabu.hashCode()) {
                             throw new IllegalStateException("HashCode/equals contract violation: tabu (" + tabu

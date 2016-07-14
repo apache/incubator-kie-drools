@@ -51,7 +51,7 @@ public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
         // Add the starting solution to the tabu list
         Object tabu = phaseScope.getScoreDirector().cloneWorkingSolution();
         tabuToStepIndexMap.put(tabu, 0); // TODO should -1 when AbstractTabuAcceptor can handle that
-        tabuSequenceList.add(tabu);
+        tabuSequenceDeque.add(tabu);
     }
 
 }
