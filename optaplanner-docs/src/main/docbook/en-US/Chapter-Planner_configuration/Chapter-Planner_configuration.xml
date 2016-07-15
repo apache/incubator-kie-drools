@@ -1406,6 +1406,23 @@ public class Customer {
         <para>Planner does not guarantee the order in which the <literal>after*()</literal> methods are called for the
         <emphasis>same</emphasis> <literal>VariableListener</literal> with different parameters (such as A1 and A2 in
         the example above), although they are likely to be in the order in which they were affected.</para>
+
+        <para>By default, Planner does not guarantee that the events are unique. For example, if a shadow variable on an
+        entity is changed twice in the same move (for example by 2 different genuine variables), then that will cause
+        the same event twice on the <literal>VariableListener</literal>s that are listening to that original shadow
+        variable. To avoid dealing with that complexity, overwrite the method
+        <literal>requiresUniqueEntityEvents()</literal> to receive unique events at the cost of a small performance
+        penalty:</para>
+
+        <programlisting language="java">public class StartTimeUpdatingVariableListener implements VariableListener&lt;Task&gt; {
+
+    @Override
+    public boolean requiresUniqueEntityEvents() {
+        return true;
+    }
+
+    ...
+}</programlisting>
       </section>
     </section>
 
