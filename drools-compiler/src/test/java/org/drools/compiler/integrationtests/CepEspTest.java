@@ -5606,7 +5606,8 @@ public class CepEspTest extends CommonTestMethodBase {
 
         Thread.sleep(2L);
         ksession.fireAllRules();
-        assertEquals( 0, ksession.getObjects().size() );
+        Thread.sleep(100);
+        assertEquals(0, ksession.getObjects().size());
     }
 
     @Test
