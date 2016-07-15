@@ -22,7 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.compiler.TurtleTestCategory;
 import org.junit.Assert;
+import org.junit.experimental.categories.Category;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
@@ -35,16 +37,13 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 /**
  * Abstract class for tests that test adding and removing rules at runtime.
  */
+@Category(TurtleTestCategory.class)
 public abstract class AbstractAddRemoveRulesTest {
 
     protected static final String PKG_NAME_TEST = "com.rules";
     protected static final String RULE1_NAME = "R1";
     protected static final String RULE2_NAME = "R2";
     protected static final String RULE3_NAME = "R3";
-
-    protected static void checkRunTurtleTests() {
-        assumeTrue("true".equals(System.getProperty("runTurtleTests")));
-    }
 
     // TODO - remove these two methods - they are also in TestContext
     protected KnowledgeBuilder createKnowledgeBuilder(final KnowledgeBase kbase, final String drl) {
