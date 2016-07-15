@@ -28,6 +28,7 @@ import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.TaskNotFoundException;
 import org.jbpm.services.api.UserTaskService;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
+import org.jbpm.services.task.commands.AddAttachmentCommand;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
@@ -53,7 +54,6 @@ import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.InternalAttachment;
 import org.kie.internal.task.api.model.InternalComment;
-import org.kie.internal.task.api.model.InternalContent;
 import org.kie.internal.task.api.model.InternalI18NText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -829,13 +829,8 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			att.setAttachedBy(TaskModelProvider.getFactory().newUser(userId));
 			att.setContentType(attachment.getClass().getName());
 	        
-			Content content = TaskModelProvider.getFactory().newContent();
-	        
-	        ContentMarshallerContext ctx = TaskContentRegistry.get().getMarshallerContext(task.getDeploymentId());
-	        
-	        ((InternalContent)content).setContent(ContentMarshallerHelper.marshallContent(taskService.getTaskById(taskId), attachment, ctx.getEnvironment()));
-	        att.setSize(content.getContent().length);
-			return ((InternalTaskService)taskService).addAttachment(taskId, att, content);
+			
+			return ((InternalTaskService)taskService).execute(new AddAttachmentCommand(taskId, att, attachment));
 		} finally {
 			disposeRuntimeEngine(manager, engine);
 		}

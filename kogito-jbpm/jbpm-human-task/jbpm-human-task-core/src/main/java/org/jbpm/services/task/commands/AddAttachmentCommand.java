@@ -21,11 +21,18 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.impl.model.xml.JaxbAttachment;
 import org.jbpm.services.task.impl.model.xml.JaxbContent;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Task;
 import org.kie.internal.command.Context;
+import org.kie.internal.task.api.ContentMarshallerContext;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalAttachment;
+import org.kie.internal.task.api.model.InternalContent;
 
 
 @XmlRootElement(name="add-attachment-command")
@@ -45,6 +52,9 @@ public class AddAttachmentCommand extends UserGroupCallbackTaskCommand<Long> {
 
 	@XmlTransient
 	private Content content;
+	
+	@XmlTransient
+    private Object rawContent;
     
     public AddAttachmentCommand() {
     }
@@ -53,6 +63,12 @@ public class AddAttachmentCommand extends UserGroupCallbackTaskCommand<Long> {
     	this.taskId = taskId;
     	setAttachment(attachment);
         setContent(content);
+    }
+    
+    public AddAttachmentCommand(Long taskId, Attachment attachment, Object rawContent) {
+        this.taskId = taskId;
+        setAttachment(attachment);
+        setRawContent(rawContent);
     }
 
 
@@ -67,6 +83,16 @@ public class AddAttachmentCommand extends UserGroupCallbackTaskCommand<Long> {
         Content contentImpl = content;
         if (contentImpl == null) {
         	contentImpl = jaxbContent;
+        }
+        
+        if (rawContent != null && contentImpl == null) {
+            Task task = context.getPersistenceContext().findTask(taskId);
+            contentImpl = TaskModelProvider.getFactory().newContent();
+            
+            ContentMarshallerContext ctx = TaskContentRegistry.get().getMarshallerContext(task.getTaskData().getDeploymentId());
+            
+            ((InternalContent)contentImpl).setContent(ContentMarshallerHelper.marshallContent(task, rawContent, ctx.getEnvironment()));
+            ((InternalAttachment)attachmentImpl).setSize(contentImpl.getContent().length);
         }
         
         doCallbackOperationForAttachment(attachmentImpl, context);
@@ -116,4 +142,12 @@ public class AddAttachmentCommand extends UserGroupCallbackTaskCommand<Long> {
 	public Attachment getAttachment() {
 		return attachment;
 	}
+    
+    public Object getRawContent() {
+        return rawContent;
+    }
+    
+    public void setRawContent(Object rawContent) {
+        this.rawContent = rawContent;
+    }
 }
