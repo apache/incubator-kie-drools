@@ -28,6 +28,17 @@ public class CloudComputer extends AbstractPersistable implements Labeled {
     private int networkBandwidth; // in gigabyte per hour
     private int cost; // in euro per month
 
+    public CloudComputer() {
+    }
+
+    public CloudComputer(long id, int cpuPower, int memory, int networkBandwidth, int cost) {
+        super(id);
+        this.cpuPower = cpuPower;
+        this.memory = memory;
+        this.networkBandwidth = networkBandwidth;
+        this.cost = cost;
+    }
+
     public int getCpuPower() {
         return cpuPower;
     }

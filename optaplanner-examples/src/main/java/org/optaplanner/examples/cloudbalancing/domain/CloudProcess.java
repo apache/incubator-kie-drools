@@ -34,6 +34,16 @@ public class CloudProcess extends AbstractPersistable {
     // Planning variables: changes during planning, between score calculations.
     private CloudComputer computer;
 
+    public CloudProcess() {
+    }
+
+    public CloudProcess(long id, int requiredCpuPower, int requiredMemory, int requiredNetworkBandwidth) {
+        super(id);
+        this.requiredCpuPower = requiredCpuPower;
+        this.requiredMemory = requiredMemory;
+        this.requiredNetworkBandwidth = requiredNetworkBandwidth;
+    }
+
     public int getRequiredCpuPower() {
         return requiredCpuPower;
     }
