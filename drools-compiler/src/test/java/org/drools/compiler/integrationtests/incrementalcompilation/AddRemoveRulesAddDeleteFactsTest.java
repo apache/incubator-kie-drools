@@ -42,7 +42,6 @@ public class AddRemoveRulesAddDeleteFactsTest extends AbstractAddRemoveRulesTest
 
     @Test
     public void testAddRemoveRulesAddRemoveFacts() {
-        checkRunTurtleTests();
         final List resultsList = new ArrayList();
         final Map<String, Object> sessionGlobals = new HashMap<String, Object>();
         sessionGlobals.put("list", resultsList);
