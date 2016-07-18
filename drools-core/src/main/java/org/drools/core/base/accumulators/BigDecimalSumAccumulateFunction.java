@@ -52,7 +52,7 @@ public class BigDecimalSumAccumulateFunction implements AccumulateFunction {
         return new SumData();
     }
 
-    public void init(Serializable context) throws Exception {
+    public void init(Serializable context) {
         SumData data = (SumData) context;
         data.total = BigDecimal.ZERO;
     }
@@ -60,16 +60,15 @@ public class BigDecimalSumAccumulateFunction implements AccumulateFunction {
     public void accumulate(Serializable context,
                            Object value) {
         SumData data = (SumData) context;
-        data.total = data.total.add( BigDecimal.valueOf( ( (Number) value ).doubleValue() ) );
+        data.total = data.total.add( (BigDecimal) value );
     }
 
-    public void reverse(Serializable context,
-                        Object value) throws Exception {
+    public void reverse(Serializable context, Object value) {
         SumData data = (SumData) context;
-        data.total = data.total.subtract( BigDecimal.valueOf( ( (Number) value ).doubleValue() ) );
+        data.total = data.total.subtract( (BigDecimal) value );
     }
 
-    public Object getResult(Serializable context) throws Exception {
+    public Object getResult(Serializable context) {
         SumData data = (SumData) context;
         return data.total;
     }

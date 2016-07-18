@@ -31,7 +31,7 @@ public class LongSumAccumulateFunction implements AccumulateFunction {
     public void writeExternal(ObjectOutput out ) throws IOException { }
 
     protected static class SumData implements Externalizable {
-        public long total = 0;
+        public long total = 0L;
 
         public SumData() {}
 
@@ -48,19 +48,19 @@ public class LongSumAccumulateFunction implements AccumulateFunction {
         return new SumData();
     }
 
-    public void init(Serializable context) throws Exception {
+    public void init(Serializable context) {
         ((SumData) context).total = 0;
     }
 
     public void accumulate(Serializable context, Object value) {
-        ((SumData) context).total += ((Number) value).longValue();
+        ((SumData) context).total += ((Long) value);
     }
 
-    public void reverse(Serializable context, Object value) throws Exception {
-        ((SumData) context).total -= ((Number) value).longValue();
+    public void reverse(Serializable context, Object value) {
+        ((SumData) context).total -= ((Long) value);
     }
 
-    public Object getResult(Serializable context) throws Exception {
+    public Object getResult(Serializable context) {
         return ((SumData) context).total;
     }
 
