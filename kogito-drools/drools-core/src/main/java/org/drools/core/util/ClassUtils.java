@@ -791,4 +791,13 @@ public final class ClassUtils {
         }
         return className;
     }
+
+    public static Class<?> safeLoadClass(ClassLoader cl, String name) {
+        try {
+            return cl.loadClass( name );
+        }
+        catch ( final ClassNotFoundException cnfe ) { } // class doesn't exist
+        catch ( final NoClassDefFoundError ncdfe ) { } // potential mis-match induced by Mac/OSX
+        return null;
+    }
 }
