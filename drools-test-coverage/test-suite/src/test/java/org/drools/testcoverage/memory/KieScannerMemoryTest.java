@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import org.drools.compiler.TurtleTestCategory;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.util.FileManager;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -30,6 +31,7 @@ import org.drools.testcoverage.common.util.TestConstants;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieScanner;
@@ -39,6 +41,7 @@ import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Category(TurtleTestCategory.class)
 public class KieScannerMemoryTest {
 
     private static final Logger logger = LoggerFactory.getLogger(KieScannerMemoryTest.class);
