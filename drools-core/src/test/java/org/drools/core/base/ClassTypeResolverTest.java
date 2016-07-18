@@ -16,15 +16,15 @@
 
 package org.drools.core.base;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.HashSet;
-
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.FirstClass;
 import org.drools.core.test.model.SecondClass;
 import org.junit.Test;
+
+import java.util.HashSet;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class ClassTypeResolverTest {
 
@@ -260,5 +260,42 @@ public class ClassTypeResolverTest {
                       resolver.resolveType( "Nested3" ) );
         
     }
-    
+
+    @Test
+    public void testMacOSXClassLoaderBehavior() throws Exception {
+        SimulateMacOSXClassLoader simulatedMacOSXClassLoader = new SimulateMacOSXClassLoader( Thread.currentThread().getContextClassLoader(), new HashSet() );
+        simulatedMacOSXClassLoader.addClassInScope( org.drools.core.test.model.Cheese.class );
+
+        final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), simulatedMacOSXClassLoader );
+        resolver.addImport("org.drools.core.test.model.*");
+
+        assertEquals( org.drools.core.test.model.Cheese.class,
+                      resolver.resolveType( "Cheese" ) );
+        try {
+            resolver.resolveType( "cheese" );	// <<- on Mac/OSX throws NoClassDefFoundError which escapes the try/catch and fail the test.
+            //     while on say Linux, it passes the test (catched as ClassNotFoundException)
+            fail( "the type cheese (lower-case c) should not exists at all" );
+        } catch ( ClassNotFoundException e) {
+            // swallow as this should be thrown
+        }
+    }
+
+    @Test
+    public void testMacOSXClassLoaderBehaviorNested() throws Exception {
+        SimulateMacOSXClassLoader simulatedMacOSXClassLoader = new SimulateMacOSXClassLoader( Thread.currentThread().getContextClassLoader(), new HashSet() );
+        simulatedMacOSXClassLoader.addClassInScope( org.drools.core.test.model.Person.Nested1.Nested2.class );
+
+        final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), simulatedMacOSXClassLoader );
+        resolver.addImport("org.drools.core.test.model.*");
+
+        assertEquals( org.drools.core.test.model.Person.Nested1.Nested2.class,
+                      resolver.resolveType( "Person.Nested1.Nested2" ) );
+        try {
+            resolver.resolveType( "Person.nested1.nested2" );	// <<- on Mac/OSX throws NoClassDefFoundError which escapes the try/catch and fail the test.
+            //     while on say Linux, it passes the test (catched as ClassNotFoundException)
+            fail( "should have resolved nothing." );
+        } catch ( ClassNotFoundException e) {
+            // swallow as this should be thrown
+        }
+    }
 }
