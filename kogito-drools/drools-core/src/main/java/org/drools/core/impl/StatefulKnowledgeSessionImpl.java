@@ -1818,12 +1818,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         private void expireLeftTuple(LeftTuple leftTuple) {
-            leftTuple.setExpired( true );
-            for ( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
-                expireLeftTuple(child);
-            }
-            for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
-                expireLeftTuple(peer);
+            if (!leftTuple.isExpired()) {
+                leftTuple.setExpired( true );
+                for ( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
+                    expireLeftTuple(child);
+                }
+                for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
+                    expireLeftTuple(peer);
+                }
             }
         }
 

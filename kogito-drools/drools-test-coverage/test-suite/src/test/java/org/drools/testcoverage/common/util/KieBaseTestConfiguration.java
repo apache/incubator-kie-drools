@@ -16,10 +16,12 @@
 
 package org.drools.testcoverage.common.util;
 
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.internal.KnowledgeBaseFactory;
 
 /**
  * Represents various tested KieBase configurations.
@@ -40,6 +42,14 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             kieBaseModel.setDefault(true);
             return kieBaseModel;
         }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
+            return kieBaseConfiguration;
+        }
     },
 
     /**
@@ -55,6 +65,14 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
             kieBaseModel.setDefault(true);
             return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.CLOUD);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            return kieBaseConfiguration;
         }
     },
 
@@ -72,6 +90,14 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             kieBaseModel.setDefault(true);
             return kieBaseModel;
         }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.IDENTITY);
+            return kieBaseConfiguration;
+        }
     },
 
     /**
@@ -87,6 +113,14 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
             kieBaseModel.setEqualsBehavior(EqualityBehaviorOption.EQUALITY);
             kieBaseModel.setDefault(true);
             return kieBaseModel;
+        }
+
+        @Override
+        public KieBaseConfiguration getKieBaseConfiguration() {
+            final KieBaseConfiguration kieBaseConfiguration = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+            kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
+            kieBaseConfiguration.setOption(EqualityBehaviorOption.EQUALITY);
+            return kieBaseConfiguration;
         }
     }
 }
