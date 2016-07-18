@@ -15,7 +15,6 @@
 
 package org.drools.example.api.kiecontainerfromkierepo;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -28,7 +27,6 @@ public class KieContainerFromKieRepoExampleTest {
     private static final String NL = System.getProperty("line.separator");
     
     @Test
-    @Ignore
     public void testGo() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = new PrintStream(baos);
