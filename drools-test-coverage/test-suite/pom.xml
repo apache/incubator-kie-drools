@@ -15,6 +15,10 @@
   <name>Drools :: Test Coverage :: Test Suite</name>
   <description>Drools test coverage test suite (tests not requiring specific dependencies)</description>
 
+  <properties>
+    <excludedGroups>org.drools.compiler.TurtleTestCategory</excludedGroups>
+  </properties>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -24,7 +28,19 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -48,6 +64,11 @@
       <artifactId>kie-internal</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-ci</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <!-- External dependencies -->
     <dependency>
@@ -67,4 +88,18 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>runTurtleTests</id>
+      <activation>
+        <property>
+          <name>runTurtleTests</name>
+        </property>
+      </activation>
+      <properties>
+        <excludedGroups/>
+      </properties>
+    </profile>
+  </profiles>
 </project>
