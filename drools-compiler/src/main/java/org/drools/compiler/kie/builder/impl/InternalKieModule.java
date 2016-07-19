@@ -17,6 +17,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.compiler.kproject.xml.PomModel;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.ResourceProvider;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
@@ -85,4 +86,8 @@ public interface InternalKieModule extends KieModule {
     InputStream getPomAsStream();
 
     PomModel getPomModel();
+
+    ProjectClassLoader getClassLoader();
+
+    void setClassLoader(ProjectClassLoader classLoader);
 }
