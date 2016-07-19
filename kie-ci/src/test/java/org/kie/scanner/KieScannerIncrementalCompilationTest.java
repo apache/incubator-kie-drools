@@ -128,7 +128,7 @@ public class KieScannerIncrementalCompilationTest extends AbstractKieCiTest {
                "end\n";
     }
 
-    private String createJavaSource(int value) {
+    protected String createJavaSource(int value) {
         return "package org.kie.test;\n" +
                "public class Value {\n" +
                "   public static int getValue() {\n" +
