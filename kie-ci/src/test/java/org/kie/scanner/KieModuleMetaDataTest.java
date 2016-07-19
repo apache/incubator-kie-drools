@@ -216,7 +216,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         ReleaseId dependency = ks.newReleaseId( "org.drools", "drools-core", "5.5.0.Final" );
         ReleaseId releaseId = ks.newReleaseId( "org.kie", "metadata-test", "1.0-SNAPSHOT" );
 
-        InternalKieModule kieModule = createKieJarWithClass( ks, releaseId, useTypeDeclaration, 2, 7, dependency );
+        InternalKieModule kieModule = createKieJarWithClass( ks, releaseId, useTypeDeclaration, false, 2, 7, dependency );
         KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( kieModule );
         checkDroolsCoreDep( kieModuleMetaData );
 
@@ -243,7 +243,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         KieServices ks = KieServices.Factory.get();
         ReleaseId dependency = ks.newReleaseId( "org.drools", "drools-core", "5.5.0.Final" );
         ReleaseId releaseId = ks.newReleaseId( "org.kie", "metadata-test", "1.0-SNAPSHOT" );
-        InternalKieModule kieModule = createKieJarWithClass( ks, releaseId, useTypeDeclaration, 2, 7, dependency );
+        InternalKieModule kieModule = createKieJarWithClass( ks, releaseId, useTypeDeclaration, false, 2, 7, dependency );
         String pomText = getPom( dependency );
         File pomFile = new File( System.getProperty( "java.io.tmpdir" ), MavenRepository.toFileName( releaseId, null ) + ".pom" );
         try {
@@ -294,7 +294,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         ReleaseId dependency = ks.newReleaseId( "org.drools", "drools-core", "5.5.0.Final" );
         ReleaseId releaseId = ks.newReleaseId( "org.kie", "metadata-test", "1.0-SNAPSHOT" );
 
-        InternalKieModule kieModule = createKieJarWithClass( ks, releaseId, useTypeDeclaration, 2, 7, dependency );
+        InternalKieModule kieModule = createKieJarWithClass( ks, releaseId, useTypeDeclaration, false, 2, 7, dependency );
         KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( kieModule );
         checkDroolsCoreDep( kieModuleMetaData );
 
