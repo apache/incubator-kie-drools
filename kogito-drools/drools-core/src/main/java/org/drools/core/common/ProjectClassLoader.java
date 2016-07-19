@@ -204,6 +204,7 @@ public class ProjectClassLoader extends ClassLoader {
         }
         Class<?> clazz = typesClassLoader.defineClass(name, bytecode);
         definedTypes.put(name, new ClassBytecode(clazz, bytecode));
+        loadedClasses.put(name, clazz);
         return clazz;
     }
 
