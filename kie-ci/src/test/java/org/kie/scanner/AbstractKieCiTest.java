@@ -213,7 +213,7 @@ public class AbstractKieCiTest {
                 "end\n";
     }
 
-    private String createJavaSource(int factor) {
+    protected String createJavaSource(int factor) {
         return "package org.kie.test;\n" +
                 "import org.kie.api.definition.type.Role;\n" +
                 "@Role(Role.Type.EVENT)\n" +
