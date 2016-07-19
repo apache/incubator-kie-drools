@@ -228,35 +228,59 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
     @Test
     public void testKScannerWithKJarContainingClasses() throws Exception {
-        testKScannerWithType(false);
+        testKScannerWithType(false, false);
+    }
+
+    @Test
+    public void testKScannerWithKJarContainingClassesLoadedFromCL() throws Exception {
+        testKScannerWithType(false, true);
     }
 
     @Test
     public void testKScannerWithKJarContainingTypeDeclaration() throws Exception {
-        testKScannerWithType(true);
+        testKScannerWithType(true, false);
     }
 
-    private void testKScannerWithType(boolean useTypeDeclaration) throws Exception {
+    private void testKScannerWithType(boolean useTypeDeclaration, boolean loadBeanFromCL) throws Exception {
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
 
-        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId, useTypeDeclaration, 2, 7);
+        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId, useTypeDeclaration, loadBeanFromCL, 2, 7);
 
         MavenRepository repository = getMavenRepository();
         repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
+        ks.getRepository().removeKieModule(releaseId);
 
         KieContainer kieContainer = ks.newKieContainer(releaseId);
         KieScanner scanner = ks.newKieScanner(kieContainer);
 
         KieSession ksession = kieContainer.newKieSession("KSession1");
+
+        if (loadBeanFromCL) {
+            Class<?> beanClass = kieContainer.getClassLoader().loadClass( "org.kie.test.Bean" );
+//            Class<?> beanClass = Class.forName( "org.kie.test.Bean", true, kieContainer.getClassLoader() );
+            Object bean = beanClass.getDeclaredConstructors()[0].newInstance( 2 );
+            ksession.insert( bean );
+        }
+
         checkKSession(ksession, 14);
 
-        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId, useTypeDeclaration, 3, 5);
+        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId, useTypeDeclaration, loadBeanFromCL, 3, 5);
         repository.installArtifact(releaseId, kJar2, createKPom(fileManager, releaseId));
+        ks.getRepository().removeKieModule(releaseId);
 
-        scanner.scanNow();
+        //scanner.scanNow();
+        kieContainer.updateToVersion( releaseId );
 
         KieSession ksession2 = kieContainer.newKieSession("KSession1");
+
+        if (loadBeanFromCL) {
+            Class<?> beanClass = kieContainer.getClassLoader().loadClass( "org.kie.test.Bean" );
+//            Class<?> beanClass = Class.forName( "org.kie.test.Bean", true, kieContainer.getClassLoader() );
+            Object bean = beanClass.getDeclaredConstructors()[0].newInstance( 3 );
+            ksession2.insert( bean );
+        }
+
         checkKSession(ksession2, 15);
 
         ks.getRepository().removeKieModule(releaseId);
@@ -396,7 +420,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         resetFileManager();
 
-        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId1, false, 2, 7);
+        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId1, false, false, 2, 7);
         repository.installArtifact(releaseId1, kJar1, createKPom(fileManager, releaseId1));
 
         KieContainer kieContainer = ks.newKieContainer(ks.newReleaseId("org.kie", "scanner-master-test", "LATEST"));
@@ -405,7 +429,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         KieScanner scanner = ks.newKieScanner(kieContainer);
 
-        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId2, false, 3, 5);
+        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId2, false, false, 3, 5);
         repository.installArtifact(releaseId2, kJar2, createKPom(fileManager, releaseId1));
 
         scanner.scanNow();
@@ -428,7 +452,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         resetFileManager();
 
-        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId1, false, 2, 7);
+        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId1, false, false, 2, 7);
         repository.installArtifact(releaseId1, kJar1, createKPom(fileManager, releaseId1));
 
         KieContainer kieContainer = ks.newKieContainer(ks.newReleaseId("org.kie", "scanner-master-test", "LATEST"));
@@ -438,7 +462,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         KieScanner scanner = ks.newKieScanner(kieContainer);
 
         repository.deployPomArtifact("org.kie", "scanner-master-test", "2.0", createMasterKPom("scanner-test", "2.0"));
-        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId2, false, 3, 5);
+        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId2, false, false, 3, 5);
         repository.installArtifact(releaseId2, kJar2, createKPom(fileManager, releaseId1));
 
         scanner.scanNow();
@@ -461,7 +485,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         resetFileManager();
 
-        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId1, true, 2, 7);
+        InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId1, true, false, 2, 7);
         repository.installArtifact(releaseId1, kJar1, createKPom(fileManager, releaseId1));
 
         KieContainer kieContainer = ks.newKieContainer(ks.newReleaseId("org.kie", "scanner-master-test", "LATEST"));
@@ -471,7 +495,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         KieScanner scanner = ks.newKieScanner(kieContainer);
 
         repository.deployPomArtifact("org.kie", "scanner-master-test", "2.0", createMasterKPom("scanner-test", "2.0"));
-        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId2, true, 3, 5);
+        InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId2, true, false, 3, 5);
         repository.installArtifact(releaseId2, kJar2, createKPom(fileManager, releaseId1));
 
         scanner.scanNow();

@@ -109,14 +109,15 @@ public class AbstractKieCiTest {
         return createKieJar(ks, releaseId, false, rules);
     }
 
-    protected InternalKieModule createKieJarWithClass(KieServices ks, ReleaseId releaseId, boolean useTypeDeclaration, int value, int factor, ReleaseId... dependencies) throws IOException {
+    protected InternalKieModule createKieJarWithClass(KieServices ks, ReleaseId releaseId, boolean useTypeDeclaration,
+                                                      boolean loadBeanFromCL, int value, int factor, ReleaseId... dependencies) throws IOException {
         KieFileSystem kfs = createKieFileSystemWithKProject(ks, false);
         kfs.writePomXML(getPom(releaseId, dependencies));
 
         if (useTypeDeclaration) {
             kfs.write("src/main/resources/KBase1/rule1.drl", createDRLWithTypeDeclaration(value, factor));
         } else {
-            kfs.write("src/main/resources/KBase1/rule1.drl", createDRLForJavaSource(value))
+            kfs.write("src/main/resources/KBase1/rule1.drl", createDRLForJavaSource(!loadBeanFromCL, value))
                     .write("src/main/java/org/kie/test/Bean.java", createJavaSource(factor));
         }
 
@@ -228,20 +229,16 @@ public class AbstractKieCiTest {
                 "}";
     }
 
-    private String createDRLForJavaSource(int value) {
+    private String createDRLForJavaSource(boolean addInitRule, int value) {
         return "package org.kie.test\n" +
-                "global java.util.List list\n" +
-                "rule Init salience 100\n" +
-                "when\n" +
-                "then\n" +
-                "insert( new Bean(" + value + ") );\n" +
-                "end\n" +
-                "rule R1\n" +
-                "when\n" +
-                "   $b : Bean( value > 0 )\n" +
-                "then\n" +
-                "   list.add( $b.getValue() );\n" +
-                "end\n";
+               "global java.util.List list\n" +
+               (addInitRule ? getInitRule(value) : "") +
+               "rule R1\n" +
+               "when\n" +
+               "   $b : Bean( value > 0 )\n" +
+               "then\n" +
+               "   list.add( $b.getValue() );\n" +
+               "end\n";
     }
 
     protected String createDRLWithTypeDeclaration(int value, int factor) {
@@ -258,17 +255,21 @@ public class AbstractKieCiTest {
 
     protected String getDRLWithRules(int value, int factor) {
         return "global java.util.List list\n" +
-                "rule Init salience 100\n" +
-                "when\n" +
-                "then\n" +
-                "insert( new Bean(" + value + ") );\n" +
-                "end\n" +
-                "rule R1\n" +
-                "when\n" +
-                "   $b : Bean()\n" +
-                "then\n" +
-                "   list.add( $b.getValue() * " + factor + " );\n" +
-                "end\n";
+               getInitRule(value) +
+               "rule R1\n" +
+               "when\n" +
+               "   $b : Bean()\n" +
+               "then\n" +
+               "   list.add( $b.getValue() * " + factor + " );\n" +
+               "end\n";
+    }
+
+    protected String getInitRule(int value) {
+        return "rule Init salience 100\n" +
+               "when\n" +
+               "then\n" +
+               "insert( new Bean(" + value + ") );\n" +
+               "end\n";
     }
 
     public static byte[] createKJar(KieServices ks,
