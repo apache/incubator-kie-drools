@@ -15,6 +15,8 @@
 
 package org.kie.scanner;
 
+import org.drools.compiler.kie.builder.impl.InternalKieScanner;
+import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
 import org.kie.api.Service;
 import org.kie.api.builder.KieScannerFactoryService;
 import org.kie.internal.utils.ClassLoaderResolver;
@@ -36,12 +38,18 @@ public class Activator implements BundleActivator {
     @Override
     public void start(BundleContext context) throws Exception {
         logger.info( "registering kiescanner services" );
+
+        KieScannerFactoryService scannerFactoryService = new KieScannerFactoryServiceImpl();
+        KieRepositoryImpl.setInternalKieScanner( (InternalKieScanner) scannerFactoryService.newKieScanner() );
+
         this.scannerReg = context.registerService( new String[]{ KieScannerFactoryService.class.getName(), Service.class.getName() },
-                                                   new KieScannerFactoryServiceImpl(),
+                                                   scannerFactoryService,
                                                    new Hashtable() );
+
         this.classResolverReg = context.registerService( new String[]{ ClassLoaderResolver.class.getName(), Service.class.getName() },
                                                          new MavenClassLoaderResolver(),
                                                          new Hashtable() );
+
         logger.info( "kiescanner services registered" );
     }
 

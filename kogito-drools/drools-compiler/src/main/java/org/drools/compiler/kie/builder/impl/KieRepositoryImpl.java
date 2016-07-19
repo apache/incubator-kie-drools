@@ -69,17 +69,29 @@ public class KieRepositoryImpl
 
     private final KieModuleRepo kieModuleRepo;
 
+    public static void setInternalKieScanner(InternalKieScanner scanner) {
+        synchronized (KieScannerHolder.class) {
+            KieScannerHolder.kieScanner = scanner;
+        }
+    }
+
     private static class KieScannerHolder {
         // Use holder class idiom to lazily initialize the kieScanner
-        private static final InternalKieScanner KIE_SCANNER = getInternalKieScanner();
+        private static volatile InternalKieScanner kieScanner = getInternalKieScanner();
 
         private static InternalKieScanner getInternalKieScanner() {
-            try {
-                KieScannerFactoryService scannerFactoryService = ServiceRegistryImpl.getInstance().get( KieScannerFactoryService.class );
-                return (InternalKieScanner)scannerFactoryService.newKieScanner();
-            } catch (Exception e) {
-                // kie-ci is not on the classpath
-                return new DummyKieScanner();
+            synchronized (KieScannerHolder.class) {
+                if ( kieScanner != null ) {
+                    return kieScanner;
+                }
+                try {
+                    KieScannerFactoryService scannerFactoryService = ServiceRegistryImpl.getInstance().get( KieScannerFactoryService.class );
+                    return (InternalKieScanner) scannerFactoryService.newKieScanner();
+                } catch (Exception e) {
+                    log.debug( "Cannot load a KieRepositoryScanner, using the DummyKieScanner", e );
+                    // kie-ci is not on the classpath
+                    return new DummyKieScanner();
+                }
             }
         }
     }
@@ -115,7 +127,7 @@ public class KieRepositoryImpl
     }
 
     public KieModule getKieModule(ReleaseId releaseId, PomModel pomModel) {
-        KieModule kieModule = kieModuleRepo.load( KieScannerHolder.KIE_SCANNER, releaseId );
+        KieModule kieModule = kieModuleRepo.load( KieScannerHolder.kieScanner, releaseId );
         if (kieModule == null) {
             log.debug("KieModule Lookup. ReleaseId {} was not in cache, checking classpath",
                       releaseId.toExternalForm());
@@ -139,7 +151,7 @@ public class KieRepositoryImpl
     }
 
     private KieModule loadKieModuleFromMavenRepo(ReleaseId releaseId, PomModel pomModel) {
-        return KieScannerHolder.KIE_SCANNER.loadArtifact( releaseId, pomModel );
+        return KieScannerHolder.kieScanner.loadArtifact( releaseId, pomModel );
     }
 
     private static class DummyKieScanner
