@@ -795,4 +795,77 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 
+    @Test
+    public void testKJarContainingClassLoadedFromClassLoaderSameKBase() throws Exception {
+        testKScannerWithKJarContainingClassLoadedFromClassLoader(false);
+    }
+
+    @Test
+    public void testKJarContainingClassLoadedFromClassLoaderDifferentKBase() throws Exception {
+        testKScannerWithKJarContainingClassLoadedFromClassLoader(true);
+    }
+
+    private void testKScannerWithKJarContainingClassLoadedFromClassLoader(boolean differentKbases) throws Exception {
+        // DROOLS-1231
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
+
+        InternalKieModule kJar1 = createKieJarWithJavaClass(ks, releaseId, "KBase1", 7);
+
+        MavenRepository repository = getMavenRepository();
+        repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
+        ks.getRepository().removeKieModule(releaseId);
+
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+
+        Class<?> beanClass = kieContainer.getClassLoader().loadClass( "org.kie.test.Bean" );
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+
+        Object bean = beanClass.getDeclaredConstructors()[0].newInstance( 2 );
+        ksession.insert( bean );
+
+        checkKSession(ksession, 14);
+
+        InternalKieModule kJar2 = createKieJarWithJavaClass(ks, releaseId, differentKbases ? "KBase2" : "KBase1", 5);
+        repository.installArtifact(releaseId, kJar2, createKPom(fileManager, releaseId));
+        ks.getRepository().removeKieModule(releaseId);
+
+        // forces cache of old Bean class definition before updating to newer release
+        Class<?> beanClass1 = Class.forName( "org.kie.test.Bean", true, kieContainer.getClassLoader() );
+
+        kieContainer.updateToVersion( releaseId );
+
+        beanClass = kieContainer.getClassLoader().loadClass( "org.kie.test.Bean" );
+        KieSession ksession2 = kieContainer.newKieSession("KSession1");
+
+        bean = beanClass.getDeclaredConstructors()[0].newInstance( 3 );
+        ksession2.insert( bean );
+
+        checkKSession(ksession2, 15);
+
+        ks.getRepository().removeKieModule(releaseId);
+    }
+
+    private InternalKieModule createKieJarWithJavaClass(KieServices ks, ReleaseId releaseId, String kbaseName, int factor) throws IOException {
+        String drl = "package org.kie.test.drl\n" +
+                     "import org.kie.test.Bean\n" +
+                     "global java.util.List list\n" +
+                     "rule R1\n" +
+                     "when\n" +
+                     "   $b : Bean( value > 0 )\n" +
+                     "then\n" +
+                     "   list.add( $b.getValue() );\n" +
+                     "end\n";
+
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks, false, kbaseName, "KSession1");
+        kfs.writePomXML(getPom(releaseId));
+
+        kfs.write("src/main/resources/KBase1/rule1.drl", drl)
+           .write("src/main/java/org/kie/test/Bean.java", createJavaSource(factor));
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        return (InternalKieModule) kieBuilder.getKieModule();
+    }
 }

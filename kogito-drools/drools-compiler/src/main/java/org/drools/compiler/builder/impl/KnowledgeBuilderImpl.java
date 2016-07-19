@@ -2198,30 +2198,13 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return modified;
     }
 
-    public void setAllRuntimesDirty(Collection<String> packages) {
+    public void rewireAllClassObjectTypes() {
         if (kBase != null) {
-            for (String pkgName : packages) {
-                InternalKnowledgePackage pkg = kBase.getPackage(pkgName);
-                if (pkg != null) {
-                    pkg.getDialectRuntimeRegistry().getDialectData("java").setDirty(true);
-                }
+            for (InternalKnowledgePackage pkg : kBase.getPackagesMap().values()) {
+                pkg.getDialectRuntimeRegistry().getDialectData("java").setDirty(true);
+                pkg.getClassFieldAccessorStore().wire();
             }
         }
-    }
-
-    public void rewireClassObjectTypes(Collection<String> packages) {
-        if (kBase != null) {
-            for (String pkgName : packages) {
-                InternalKnowledgePackage pkg = kBase.getPackage(pkgName);
-                if (pkg != null) {
-                    pkg.getClassFieldAccessorStore().wire();
-                }
-            }
-        }
-    }
-
-    public boolean isClassInUse(String className) {
-        return !(rootClassLoader instanceof ProjectClassLoader) || ((ProjectClassLoader) rootClassLoader).isClassInUse(className);
     }
 
     public interface AssetFilter {

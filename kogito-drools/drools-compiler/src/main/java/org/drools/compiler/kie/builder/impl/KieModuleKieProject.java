@@ -68,7 +68,6 @@ public class KieModuleKieProject extends AbstractKieProject {
             parent = resolver.getClassLoader( kieModule );
         }
         this.cl = createProjectClassLoader( parent, kieModule.createResourceProvider() );
-        kieModule.setClassLoader(this.cl);
     }
 
     public void init() {
@@ -146,9 +145,6 @@ public class KieModuleKieProject extends AbstractKieProject {
 
         synchronized (this) {
             cleanIndex();
-            if (updatedKieModule.getClassLoader() != null) {
-                this.cl = updatedKieModule.getClassLoader();
-            }
             init(); // this might override class definitions, not sure we can do it any other way though
         }
     }
