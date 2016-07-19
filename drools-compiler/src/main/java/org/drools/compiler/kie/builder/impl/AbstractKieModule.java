@@ -28,6 +28,7 @@ import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.ResourceProvider;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
@@ -103,6 +104,16 @@ public abstract class AbstractKieModule
     protected PomModel pomModel;
 
     private Collection<ReleaseId> unresolvedDependencies;
+
+    public ProjectClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    public void setClassLoader(ProjectClassLoader classLoader) {
+        this.classLoader = classLoader;
+    }
+
+    private ProjectClassLoader classLoader;
 
     public AbstractKieModule(ReleaseId releaseId, KieModuleModel kModuleModel) {
         this.releaseId = releaseId;
