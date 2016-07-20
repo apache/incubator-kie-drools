@@ -16,6 +16,7 @@
 
 package org.drools.core.base;
 
+import org.drools.core.QueryResultsImpl;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
@@ -24,8 +25,10 @@ import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EqualityKey;
+import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -50,8 +53,11 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.event.KieRuntimeEventManager;
+import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessContext;
@@ -60,7 +66,9 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
+import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.beliefs.Mode;
 
 import java.io.Externalizable;
@@ -83,22 +91,22 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     private Activation                                activation;
     private Tuple                                     tuple;
-    private InternalWorkingMemoryActions              workingMemory;
+    private WrappedStatefulKnowledgeSessionForRHS     workingMemory;
 
     private LinkedList<LogicalDependency<T>>          previousJustified;
 
     private LinkedList<LogicalDependency<SimpleMode>> previousBlocked;
-
+    
     public DefaultKnowledgeHelper() {
 
     }
 
     public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
-        this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
+        this.workingMemory = new WrappedStatefulKnowledgeSessionForRHS( workingMemory );
     }
 
     public DefaultKnowledgeHelper(Activation activation, final WorkingMemory workingMemory) {
-        this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
+        this.workingMemory = new WrappedStatefulKnowledgeSessionForRHS( workingMemory );
         this.activation = activation;
     }
 
@@ -106,7 +114,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                                             ClassNotFoundException {
         activation = (Activation) in.readObject();
         tuple = (LeftTuple) in.readObject();
-        workingMemory = (InternalWorkingMemoryActions) in.readObject();
+        workingMemory = (WrappedStatefulKnowledgeSessionForRHS) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -460,7 +468,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public KnowledgeRuntime getKnowledgeRuntime() {
-        return (StatefulKnowledgeSessionImpl) this.workingMemory;
+        return this.workingMemory;
     }
 
     public Activation getMatch() {

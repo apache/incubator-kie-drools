@@ -772,8 +772,19 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public String getEntryPointId() {
         return EntryPointId.DEFAULT.getEntryPointId();
     }
-
+    
+    /**
+     * (This shall NOT be exposed on public API)  
+     */
+    public QueryResultsImpl getQueryResultsFromRHS(String queryName, Object... arguments) {
+    	return internalGetQueryResult(true, queryName, arguments);
+    }
+    
     public QueryResultsImpl getQueryResults(String queryName, Object... arguments) {
+    	return internalGetQueryResult(false, queryName, arguments);
+    }
+
+    protected QueryResultsImpl internalGetQueryResult(boolean calledFromRHS, String queryName, Object... arguments) {
 
         try {
             startOperation();
@@ -802,7 +813,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                                                                  null, null, handle, getEntryPoint());
 
 
-            BaseNode[] tnodes = evalQuery(queryName, queryObject, handle, pCtx);
+            BaseNode[] tnodes = evalQuery(queryName, queryObject, handle, pCtx, calledFromRHS);
 
             List<Map<String, Declaration>> decls = new ArrayList<Map<String, Declaration>>();
             if ( tnodes != null ) {
@@ -861,7 +872,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             final PropagationContext pCtx = pctxFactory.createPropagationContext(getNextPropagationIdCounter(), PropagationContext.INSERTION,
                                                                                  null, null, handle, getEntryPoint());
 
-            evalQuery( queryObject.getName(), queryObject, handle, pCtx );
+            evalQuery( queryObject.getName(), queryObject, handle, pCtx, false );
 
             return new LiveQueryImpl( this,
                                       handle );
@@ -871,8 +882,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    protected BaseNode[] evalQuery(final String queryName, final DroolsQuery queryObject, final InternalFactHandle handle, final PropagationContext pCtx) {
-        ExecuteQuery executeQuery = new ExecuteQuery( queryName, queryObject, handle, pCtx );
+    protected BaseNode[] evalQuery(final String queryName, final DroolsQuery queryObject, final InternalFactHandle handle, final PropagationContext pCtx, final boolean isCalledFromRHS) {
+        ExecuteQuery executeQuery = new ExecuteQuery( queryName, queryObject, handle, pCtx, isCalledFromRHS);
         addPropagation( executeQuery );
         return executeQuery.getResult();
     }
@@ -883,12 +894,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         private final DroolsQuery queryObject;
         private final InternalFactHandle handle;
         private final PropagationContext pCtx;
+        private final boolean calledFromRHS;
 
-        private ExecuteQuery( String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx ) {
+        private ExecuteQuery( String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx, boolean calledFromRHS ) {
             this.queryName = queryName;
             this.queryObject = queryObject;
             this.handle = handle;
             this.pCtx = pCtx;
+            this.calledFromRHS = calledFromRHS;
         }
 
         @Override
@@ -918,6 +931,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
 
             done(tnodes);
+        }
+        
+        @Override
+        public boolean isCalledFromRHS() {
+        	return calledFromRHS;
         }
     }
 
