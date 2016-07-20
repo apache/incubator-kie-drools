@@ -64,12 +64,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
@@ -165,6 +163,8 @@ public class KieContainerImpl
         final KieJarChangeSet cs = csb.build( currentKM, newKM );
 
         final List<String> modifiedClasses = getModifiedClasses(cs);
+        final boolean modifyingUsedClass = isModifyingUsedClass( modifiedClasses, getClassLoader() );
+        reinitModifiedClasses( newKM, modifiedClasses, getClassLoader() );
         final List<String> unchangedResources = getUnchangedResources( newKM, cs );
 
         ((KieModuleKieProject) kProject).updateToModule( newKM );
@@ -184,7 +184,8 @@ public class KieContainerImpl
                 kBase.enqueueModification( new Runnable() {
                     @Override
                     public void run() {
-                        updateKBase( kBase, currentKM, newReleaseId, newKM, cs, modifiedClasses, unchangedResources, results, kieBaseModel );
+                        updateKBase( kBase, currentKM, newReleaseId, newKM, cs, modifiedClasses, modifyingUsedClass,
+                                     unchangedResources, results, kieBaseModel);
                     }
                 } );
             }
@@ -214,14 +215,14 @@ public class KieContainerImpl
     }
 
     private void updateKBase( InternalKnowledgeBase kBase, InternalKieModule currentKM, ReleaseId newReleaseId,
-                              InternalKieModule newKM, KieJarChangeSet cs, List<String> modifiedClasses, List<String> unchangedResources,
-                              ResultsImpl results, KieBaseModel kieBaseModel ) {
+                              InternalKieModule newKM, KieJarChangeSet cs, List<String> modifiedClasses, boolean modifyingUsedClass,
+                              List<String> unchangedResources, ResultsImpl results, KieBaseModel kieBaseModel ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kBase );
         KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
         boolean shouldRebuild = applyResourceChanges(currentKM, newKM, cs, modifiedClasses,
-                                                     kBase, kieBaseModel, pkgbuilder, ckbuilder);
+                                                     kBase, kieBaseModel, pkgbuilder, ckbuilder, modifyingUsedClass);
         // remove resources first
         for ( ResourceChangeSet rcs : cs.getChanges().values() ) {
             if ( rcs.getChangeType() == ChangeType.REMOVED ) {
@@ -239,7 +240,7 @@ public class KieContainerImpl
                     newKM.addResourceToCompiler(ckbuilder, kieBaseModel, dslFile);
                 }
             }
-            rebuildAll(newReleaseId, results, newKM, modifiedClasses, kieBaseModel, pkgbuilder, ckbuilder);
+            rebuildAll(newReleaseId, results, newKM, modifyingUsedClass, kieBaseModel, pkgbuilder, ckbuilder);
         }
 
         for ( InternalWorkingMemory wm : kBase.getWorkingMemories() ) {
@@ -268,15 +269,9 @@ public class KieContainerImpl
         return false;
     }
 
-    private boolean applyResourceChanges(InternalKieModule currentKM, InternalKieModule newKM, KieJarChangeSet cs, List<String> modifiedClasses, KieBase kBase, KieBaseModel kieBaseModel, KnowledgeBuilderImpl pkgbuilder, CompositeKnowledgeBuilder ckbuilder) {
-        boolean modifyingUsedClass = false;
-        for (String modifiedClass : modifiedClasses) {
-            if ( pkgbuilder.isClassInUse( convertResourceToClassName(modifiedClass) ) ) {
-                modifyingUsedClass = true;
-                break;
-            }
-        }
-
+    private boolean applyResourceChanges(InternalKieModule currentKM, InternalKieModule newKM, KieJarChangeSet cs,
+                                         List<String> modifiedClasses, KieBase kBase, KieBaseModel kieBaseModel,
+                                         KnowledgeBuilderImpl pkgbuilder, CompositeKnowledgeBuilder ckbuilder, boolean modifyingUsedClass) {
         boolean shouldRebuild = modifyingUsedClass;
         if (modifyingUsedClass) {
             // there are modified classes used by this kbase, so it has to be completely updated
@@ -287,6 +282,19 @@ public class KieContainerImpl
                                                          kieBaseModel, pkgbuilder, ckbuilder) > 0;
         }
         return shouldRebuild;
+    }
+
+    private boolean isModifyingUsedClass( List<String> modifiedClasses, ClassLoader classLoader ) {
+        for (String modifiedClass : modifiedClasses) {
+            if ( isClassInUse( classLoader, convertResourceToClassName(modifiedClass) ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isClassInUse(ClassLoader rootClassLoader, String className) {
+        return !(rootClassLoader instanceof ProjectClassLoader) || ((ProjectClassLoader) rootClassLoader).isClassInUse(className);
     }
 
     private boolean isFileInKBase(InternalKieModule kieModule, KieBaseModel kieBase, String fileName) {
@@ -364,26 +372,10 @@ public class KieContainerImpl
     private void rebuildAll(ReleaseId newReleaseId,
                             ResultsImpl results,
                             InternalKieModule newKM,
-                            List<String> modifiedClasses,
+                            boolean modifyingUsedClass,
                             KieBaseModel kieBaseModel,
                             KnowledgeBuilderImpl kbuilder,
                             CompositeKnowledgeBuilder ckbuilder) {
-        Set<String> modifiedPackages = new HashSet<String>();
-        if (!modifiedClasses.isEmpty()) {
-            ClassLoader rootClassLoader = kbuilder.getRootClassLoader();
-            if ( rootClassLoader instanceof ProjectClassLoader) {
-                ProjectClassLoader projectClassLoader = (ProjectClassLoader) rootClassLoader;
-                projectClassLoader.reinitTypes();
-                for (String resourceName : modifiedClasses) {
-                    String className = convertResourceToClassName( resourceName );
-                    byte[] bytes = newKM.getBytes(resourceName);
-                    Class<?> clazz = projectClassLoader.defineClass(className, resourceName, bytes);
-                    modifiedPackages.add(clazz.getPackage().getName());
-                }
-                kbuilder.setAllRuntimesDirty(modifiedPackages);
-            }
-        }
-
         ckbuilder.build();
 
         PackageBuilderErrors errors = kbuilder.getErrors();
@@ -394,8 +386,22 @@ public class KieContainerImpl
             log.error("Unable to update KieBase: " + kieBaseModel.getName() + " to release " + newReleaseId + "\n" + errors.toString());
         }
 
+        if (modifyingUsedClass) {
+            kbuilder.rewireAllClassObjectTypes();
+        }
+    }
+
+    private void reinitModifiedClasses( InternalKieModule newKM, List<String> modifiedClasses, ClassLoader classLoader ) {
         if (!modifiedClasses.isEmpty()) {
-            kbuilder.rewireClassObjectTypes(modifiedPackages);
+            if ( classLoader instanceof ProjectClassLoader ) {
+                ProjectClassLoader projectClassLoader = (ProjectClassLoader) classLoader;
+                projectClassLoader.reinitTypes();
+                for (String resourceName : modifiedClasses) {
+                    String className = convertResourceToClassName( resourceName );
+                    byte[] bytes = newKM.getBytes(resourceName);
+                    Class<?> clazz = projectClassLoader.defineClass(className, resourceName, bytes);
+                }
+            }
         }
     }
 

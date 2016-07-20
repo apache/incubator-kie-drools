@@ -796,12 +796,21 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
     }
 
     @Test
-    public void testKScannerWithKJarContainingClassLoadedFromClassLoader() throws Exception {
+    public void testKJarContainingClassLoadedFromClassLoaderSameKBase() throws Exception {
+        testKScannerWithKJarContainingClassLoadedFromClassLoader(false);
+    }
+
+    @Test
+    public void testKJarContainingClassLoadedFromClassLoaderDifferentKBase() throws Exception {
+        testKScannerWithKJarContainingClassLoadedFromClassLoader(true);
+    }
+
+    private void testKScannerWithKJarContainingClassLoadedFromClassLoader(boolean differentKbases) throws Exception {
         // DROOLS-1231
         KieServices ks = KieServices.Factory.get();
         ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
 
-        InternalKieModule kJar1 = createKieJarWithJavaClass(ks, releaseId, 7);
+        InternalKieModule kJar1 = createKieJarWithJavaClass(ks, releaseId, "KBase1", 7);
 
         MavenRepository repository = getMavenRepository();
         repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
@@ -818,7 +827,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
         checkKSession(ksession, 14);
 
-        InternalKieModule kJar2 = createKieJarWithJavaClass(ks, releaseId, 5);
+        InternalKieModule kJar2 = createKieJarWithJavaClass(ks, releaseId, differentKbases ? "KBase2" : "KBase1", 5);
         repository.installArtifact(releaseId, kJar2, createKPom(fileManager, releaseId));
         ks.getRepository().removeKieModule(releaseId);
 
@@ -838,8 +847,9 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ks.getRepository().removeKieModule(releaseId);
     }
 
-    private InternalKieModule createKieJarWithJavaClass(KieServices ks, ReleaseId releaseId, int factor) throws IOException {
-        String drl = "package org.kie.test\n" +
+    private InternalKieModule createKieJarWithJavaClass(KieServices ks, ReleaseId releaseId, String kbaseName, int factor) throws IOException {
+        String drl = "package org.kie.test.drl\n" +
+                     "import org.kie.test.Bean\n" +
                      "global java.util.List list\n" +
                      "rule R1\n" +
                      "when\n" +
@@ -848,7 +858,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
                      "   list.add( $b.getValue() );\n" +
                      "end\n";
 
-        KieFileSystem kfs = createKieFileSystemWithKProject(ks, false);
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks, false, kbaseName, "KSession1");
         kfs.writePomXML(getPom(releaseId));
 
         kfs.write("src/main/resources/KBase1/rule1.drl", drl)
