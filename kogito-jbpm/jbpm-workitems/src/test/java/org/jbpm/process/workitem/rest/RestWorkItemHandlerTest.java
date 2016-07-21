@@ -378,7 +378,7 @@ public class RestWorkItemHandlerTest {
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "Url", serverURL+"/xml");
         workItem.setParameter( "Method", "POST" );
-        workItem.setParameter( "ContentType", "application/xml" );
+        workItem.setParameter( "ContentType", "Application/XML;charset=utf-8" );
         workItem.setParameter( "Content", "<person><name>john</name><age>25</age></person>" );
         workItem.setParameter( "ResultClass", Person.class.getName() );
         
@@ -405,7 +405,7 @@ public class RestWorkItemHandlerTest {
         WorkItemImpl workItem = new WorkItemImpl();
         workItem.setParameter( "Url", serverURL+"/xml");
         workItem.setParameter( "Method", "PUT" );
-        workItem.setParameter( "ContentType", "application/xml" );
+        workItem.setParameter( "ContentType", "Application/Xml;charset=utf-8" );
         workItem.setParameter( "Content", "<person><name>john</name><age>25</age></person>" );
         workItem.setParameter( "ResultClass", Person.class.getName() );
         
