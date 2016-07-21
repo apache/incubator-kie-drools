@@ -39,8 +39,8 @@ public interface ScoreHolder {
      * Extracts the {@link Score}, calculated by the {@link KieSession} for {@link DroolsScoreDirector}.
      * <p>
      * Should not be called directly, use {@link ScoreDirector#calculateScore()} instead.
-     * @param initScore <= 0, managed by OptaPlanner, needed as a parameter in the {@link Score}'s creation method,
-     * see {@link Score#getInitScore()}
+     * @param initScore {@code <= 0}, managed by OptaPlanner, needed as a parameter in the {@link Score}'s creation
+     * method, see {@link Score#getInitScore()}
      * @return never null, the {@link Score} of the working {@link PlanningSolution}
      */
     Score extractScore(int initScore);

@@ -37,7 +37,7 @@ public interface Score<S extends Score> extends Comparable<S> {
 
     /**
      * The init score is the negative of the number of uninitialized genuine planning variables.
-     * If it's 0 (which is usually is), the {@link PlanningSolution} is fully initialized
+     * If it's 0 (which it usually is), the {@link PlanningSolution} is fully initialized
      * and the score's {@link #toString()} does not mention it.
      * <p>
      * During {@link #compareTo(Object)}, it's even more important than the hard score:
@@ -74,7 +74,7 @@ public interface Score<S extends Score> extends Comparable<S> {
 
     /**
      * Returns a Score whose value is (this * multiplicand).
-     * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}.
+     * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}).
      * <p>
      * If the implementation has a scale/precision, then the unspecified scale/precision of the double multiplicand
      * should have no impact on the returned scale/precision.
@@ -85,7 +85,7 @@ public interface Score<S extends Score> extends Comparable<S> {
 
     /**
      * Returns a Score whose value is (this / divisor).
-     * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}.
+     * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}).
      * <p>
      * If the implementation has a scale/precision, then the unspecified scale/precision of the double divisor
      * should have no impact on the returned scale/precision.
@@ -96,7 +96,7 @@ public interface Score<S extends Score> extends Comparable<S> {
 
     /**
      * Returns a Score whose value is (this ^ exponent).
-     * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}.
+     * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}).
      * <p>
      * If the implementation has a scale/precision, then the unspecified scale/precision of the double exponent
      * should have no impact on the returned scale/precision.
@@ -115,7 +115,7 @@ public interface Score<S extends Score> extends Comparable<S> {
      * Returns an array of numbers representing the Score. Each number represents 1 score level.
      * A greater score level uses a lower array index than a lesser score level.
      * <p>
-     * When rounding is needed, each rounding should be floored (as defined by {@link Math#floor(double)}.
+     * When rounding is needed, each rounding should be floored (as defined by {@link Math#floor(double)}).
      * The length of the returned array must be stable for a specific {@link Score} implementation.
      * <p>
      * For example: {@code -0hard/-7soft} returns {@code new int{-0, -7}}

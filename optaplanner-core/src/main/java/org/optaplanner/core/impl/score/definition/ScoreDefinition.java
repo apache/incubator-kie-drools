@@ -78,8 +78,8 @@ public interface ScoreDefinition<S extends Score> {
 
     /**
      * The opposite of {@link Score#toLevelNumbers()}.
-     * @param initScore <= 0, managed by OptaPlanner, needed as a parameter in the {@link Score}'s creation method,
-     * see {@link Score#getInitScore()}
+     * @param initScore {@code <= 0}, managed by OptaPlanner, needed as a parameter in the {@link Score}'s creation
+     * method, see {@link Score#getInitScore()}
      * @param levelNumbers never null
      * @return never null
      */

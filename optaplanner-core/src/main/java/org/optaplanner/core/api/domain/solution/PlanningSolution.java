@@ -38,7 +38,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * the same solution instance (called the working solution per move thread) is continuously modified.
  * It's cloned to recall the best solution.
  * <p>
- * Each planning solution must have at exactly 1 {@link PlanningScore} property.
+ * Each planning solution must have exactly 1 {@link PlanningScore} property.
  * <p>
  * Each planning solution must have at least 1 {@link PlanningEntityCollectionProperty}
  * or {@link PlanningEntityProperty} property.
@@ -56,7 +56,7 @@ public @interface PlanningSolution {
     /**
      * Overrides the default {@link SolutionCloner} to implement a custom {@link PlanningSolution} cloning implementation.
      * <p>
-     * If this is not specified and the {@link PlanningSolution} does not implements {@link PlanningCloneable},
+     * If this is not specified and the {@link PlanningSolution} does not implement {@link PlanningCloneable},
      * the default reflection-based {@link SolutionCloner} is used, so you don't have to worry about it.
      * @return {@link NullSolutionCloner} when it is null (workaround for annotation limitation)
      */
