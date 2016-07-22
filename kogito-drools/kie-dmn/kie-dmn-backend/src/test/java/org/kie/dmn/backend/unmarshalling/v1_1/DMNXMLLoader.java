@@ -13,46 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.feel.lang.feel11;
+package org.kie.dmn.backend.unmarshalling.v1_1;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.JAXBIntrospector;
-import javax.xml.bind.Unmarshaller;
 
+import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.dmn.feel.lang.model_1_1.TDefinitions;
+import org.kie.dmn.feel.model.v1_1.Definitions;
+import org.kie.dmn.unmarshalling.v1_1.Unmarshaller;
 
 import static org.junit.Assert.*;
 
 public class DMNXMLLoader {
 
     @Test
-    public void testLoadingExample() throws JAXBException {
-        final JAXBContext jaxbContext = JAXBContext.newInstance( TDefinitions.class );
-        final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+    @Ignore("No unmarshaller implemented")
+    public void testLoadingExample() {
+        final Unmarshaller unmarshaller = new DefaultUnmarshaller();
 
-        final InputStream is = this.getClass().getResourceAsStream( "/ch11example.xml" );
+        final InputStream is = this.getClass().getResourceAsStream( "/src/test/resources/ch11example.xml" );
         final InputStreamReader isr = new InputStreamReader( is );
         final Object o = unmarshaller.unmarshal( isr );
 
-        final TDefinitions root = (TDefinitions) JAXBIntrospector.getValue( o );
+        final Definitions root = (Definitions) o;
 
         assertNotNull( root );
     }
 
     @Test
-    public void testLoadingDishDecision() throws JAXBException {
-        final JAXBContext jaxbContext = JAXBContext.newInstance( TDefinitions.class );
-        final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+    @Ignore("No unmarshaller implemented")
+    public void testLoadingDishDecision() {
+        final Unmarshaller unmarshaller = new DefaultUnmarshaller();
 
-        final InputStream is = this.getClass().getResourceAsStream( "/dish-decision.xml" );
+        final InputStream is = this.getClass().getResourceAsStream( "/src/test/resources/dish-decision.xml" );
         final InputStreamReader isr = new InputStreamReader( is );
         final Object o = unmarshaller.unmarshal( isr );
 
-        final TDefinitions root = (TDefinitions) JAXBIntrospector.getValue( o );
+        final Definitions root = (Definitions) o;
 
         assertNotNull( root );
     }
