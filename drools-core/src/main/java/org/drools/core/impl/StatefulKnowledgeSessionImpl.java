@@ -68,6 +68,7 @@ import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.PropagationEntry.AbstractPropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.SegmentUtilities;
@@ -84,7 +85,6 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
-import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
@@ -162,6 +162,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
+import static org.drools.core.reteoo.ObjectTypeNode.retractRightTuples;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class StatefulKnowledgeSessionImpl extends AbstractRuntime
@@ -1290,7 +1291,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    private static class Halt extends PropagationEntry.AbstractPropagationEntry {
+    private static class Halt extends AbstractPropagationEntry {
 
         @Override
         public void execute( InternalWorkingMemory wm ) {
@@ -1656,7 +1657,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public static class WorkingMemoryReteAssertAction
-            extends PropagationEntry.AbstractPropagationEntry
+            extends AbstractPropagationEntry
             implements WorkingMemoryAction {
         private final InternalFactHandle factHandle;
 
@@ -1738,7 +1739,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public static class WorkingMemoryReteExpireAction
-            extends PropagationEntry.AbstractPropagationEntry
+            extends AbstractPropagationEntry
             implements WorkingMemoryAction {
 
         private EventFactHandle factHandle;
@@ -1799,8 +1800,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             if (!factHandle.isValid()) {
                 return;
             }
-            retractRightTuples( workingMemory );
+
+            PropagationContext context = createPropagationContextForFact( workingMemory, factHandle, PropagationContext.EXPIRATION );
+            retractRightTuples( factHandle, context, workingMemory );
             expireLeftTuples();
+            workingMemory.getAgenda().registerExpiration( context );
+
             factHandle.decreaseOtnCount();
             if (factHandle.getOtnCount() == 0) {
                 factHandle.setExpired( true );
@@ -1827,16 +1832,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                     expireLeftTuple(peer);
                 }
             }
-        }
-
-        private void retractRightTuples( InternalWorkingMemory workingMemory ) {
-            final PropagationContext context = createPropagationContextForFact( workingMemory, factHandle, PropagationContext.EXPIRATION );
-            for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; ) {
-                RightTuple nextRightTuple = rightTuple.getHandleNext();
-                rightTuple.retractTuple( context, workingMemory);
-                rightTuple = nextRightTuple;
-            }
-            factHandle.clearRightTuples();
         }
 
         @Override
