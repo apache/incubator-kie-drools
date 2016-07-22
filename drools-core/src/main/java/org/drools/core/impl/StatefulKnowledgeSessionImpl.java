@@ -157,6 +157,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -251,6 +252,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private Map<String, Object> runtimeServices;
 
     protected PropagationList propagationList;
+
+    private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
+    private DroolsManagementAgent.CBSKey mbeanRegisteredCBSKey;
 
     // ------------------------------------------------------------
     // Constructors
@@ -369,10 +373,15 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.opCounter = new AtomicLong(0);
         this.lastIdleTimestamp = new AtomicLong(-1);
 
-        initManagementBeans();
-
         if (initInitFactHandle) {
             initInitialFact(kBase, null);
+        }
+    }
+
+    public void initMBeans(String containerId, String kbaseName, String ksessionName) {
+        if (((InternalKnowledgeBase) kBase).getConfiguration() != null && ((InternalKnowledgeBase) kBase).getConfiguration().isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
+            this.mbeanRegisteredCBSKey = new DroolsManagementAgent.CBSKey(containerId, kbaseName, ksessionName);
+            DroolsManagementAgent.getInstance().registerKnowledgeSessionUnderName(mbeanRegisteredCBSKey, this);
         }
     }
 
@@ -519,8 +528,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         this.kBase.disposeStatefulSession( this );
-        if (this.kBase.getConfiguration().isMBeansEnabled()) {
-            DroolsManagementAgent.getInstance().unregisterKnowledgeSession(this);
+
+        if (this.mbeanRegistered.get()) {
+            DroolsManagementAgent.getInstance().unregisterKnowledgeSessionUnderName(mbeanRegisteredCBSKey, this);
         }
     }
 
@@ -763,12 +773,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                                                          context );
 
         otc.getConcreteObjectTypeNode().assertInitialFact(this.initialFactHandle, pctx, this);
-    }
-
-    private void initManagementBeans() {
-        if ( this.kBase.getConfiguration().isMBeansEnabled() ) {
-            DroolsManagementAgent.getInstance().registerKnowledgeSession( this );
-        }
     }
 
     public String getEntryPointId() {

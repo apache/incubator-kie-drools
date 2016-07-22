@@ -18,10 +18,13 @@ package org.drools.core.management;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.management.KieSessionMonitoringImpl.AgendaStats.AgendaStatsData;
 import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessInstanceStatsData;
 import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessStatsData;
 import org.kie.api.cdi.KBase;
+import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
@@ -31,14 +34,22 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.ObjectDeletedEvent;
+import org.kie.api.event.rule.ObjectInsertedEvent;
+import org.kie.api.event.rule.ObjectUpdatedEvent;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.management.KieSessionMonitoringMBean;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.event.KnowledgeRuntimeEventManager;
 
 import javax.management.ObjectName;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -49,29 +60,82 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
 
     private static final long NANO_TO_MILLISEC = 1000000;
     
-    private InternalWorkingMemory ksession;
-    private InternalKnowledgeBase kbase;
+    private List<KieRuntimeEventManager> ksessions = new CopyOnWriteArrayList<KieRuntimeEventManager>();
     private ObjectName name;
     public AgendaStats agendaStats;
     public ProcessStats processStats;
+    public RuleRuntimeStats ruleRuntimeStats;
+
+    private String containerId;
+    private String kbaseId;
+    private String ksessionName;
     
-    public KieSessionMonitoringImpl(InternalWorkingMemory ksession) {
-        this.ksession = ksession;
-        this.kbase = ksession.getKnowledgeBase();
-        this.name = DroolsManagementAgent.createObjectNameFor(ksession);
+    public KieSessionMonitoringImpl(String containerId, String kbaseId, String ksessionName) {
+        this.containerId = containerId;
+        this.kbaseId = kbaseId;
+        this.ksessionName = ksessionName;
+        this.name = DroolsManagementAgent.createObjectNameBy(containerId, kbaseId, ksessionName);
         this.agendaStats = new AgendaStats();
         this.processStats = new ProcessStats();
-        this.ksession.addEventListener( agendaStats );
-        if (ksession.internalGetProcessRuntime() != null) {
-            this.ksession.internalGetProcessRuntime().addEventListener( processStats );
+        this.ruleRuntimeStats = new RuleRuntimeStats();
+    }
+    
+    public void attach(KieRuntimeEventManager ksession) {
+        ksession.addEventListener( agendaStats );
+        if (ksession instanceof StatefulKnowledgeSessionImpl && ((StatefulKnowledgeSessionImpl)ksession).internalGetProcessRuntime() != null) {
+            ksession.addEventListener( processStats );
+        } else if (ksession instanceof StatelessKnowledgeSessionImpl && ((StatelessKnowledgeSessionImpl)ksession).getKieBase().getProcesses().size()>0) {
+            ksession.addEventListener( processStats );
         }
+        ksession.addEventListener( ruleRuntimeStats );
+        ksessions.add(ksession);
+    }
+    
+    public void detach(KieRuntimeEventManager ksession) {
+        ksession.removeEventListener( agendaStats );
+        if (ksession instanceof StatefulKnowledgeSessionImpl && ((StatefulKnowledgeSessionImpl)ksession).internalGetProcessRuntime() != null) {
+            ksession.removeEventListener( processStats );
+        } else if (ksession instanceof StatelessKnowledgeSessionImpl && ((StatelessKnowledgeSessionImpl)ksession).getKieBase().getProcesses().size()>0) {
+            ksession.removeEventListener( processStats );
+        }
+        ksession.removeEventListener( ruleRuntimeStats );
+        ksessions.remove(ksession);
     }
     
     public void dispose() {
-        this.ksession.removeEventListener( agendaStats );
-        if (ksession.internalGetProcessRuntime() != null) {
-            this.ksession.internalGetProcessRuntime().removeEventListener( processStats );
+        for (KieRuntimeEventManager ksession : ksessions) {
+            if (ksession instanceof StatefulKnowledgeSessionImpl && ((StatefulKnowledgeSessionImpl)ksession).isAlive()) {
+                ksession.removeEventListener( agendaStats );
+                if (((StatefulKnowledgeSessionImpl)ksession).internalGetProcessRuntime() != null) {
+                    ksession.removeEventListener( processStats );
+                }
+                ksession.removeEventListener( ruleRuntimeStats );
+            } else {
+                ksession.removeEventListener( agendaStats );
+                if (ksession instanceof StatelessKnowledgeSessionImpl && ((StatelessKnowledgeSessionImpl)ksession).getKieBase().getProcesses().size()>0) {
+                    ksession.removeEventListener( processStats );
+                }
+                ksession.removeEventListener( ruleRuntimeStats );
+            }
         }
+        ksessions.clear();
+    }
+    
+    @Override
+    public long getTotalSessions() {
+        if (ksessions.size() > 0) {
+            KieRuntimeEventManager ksession0 = ksessions.get(0);
+            if (ksession0 instanceof StatelessKnowledgeSessionImpl) {
+                long totalCount = 0;
+                for (KieRuntimeEventManager kr : ksessions) {
+                    totalCount += ((StatelessKnowledgeSessionImpl) kr).getWorkingMemoryCreatec();
+                }
+                return totalCount;
+            } else {
+                return ksessions.size();
+            }
+        }
+        return 0;
     }
     
     /* (non-Javadoc)
@@ -80,14 +144,7 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
     public void reset() {
         this.agendaStats.reset();
         this.processStats.reset();
-    }
-
-    public InternalWorkingMemory getKsession() {
-        return ksession;
-    }
-
-    public InternalKnowledgeBase getKbase() {
-        return kbase;
+        this.ruleRuntimeStats.reset();
     }
 
     /* (non-Javadoc)
@@ -101,21 +158,22 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
      * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getKnowledgeBaseId()
      */
     public String getKieBaseId() {
-        return kbase.getId();
+        return kbaseId;
     }
     
-    /* (non-Javadoc)
-     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getKnowledgeSessionId()
-     */
-    public int getKieSessionId() {
-        return ((KieSession)ksession).getId();
+    @Override
+    public String getKieSessionName() {
+        return this.ksessionName;
     }
-
-    /* (non-Javadoc)
-     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getTotalFactCount()
-     */
-    public long getTotalFactCount() {
-        return ksession.getTotalFactCount();
+    
+    @Override
+    public long getTotalObjectsInserted() {
+        return this.ruleRuntimeStats.getConsolidatedStats().objectsInserted.get();
+    }
+    
+    @Override
+    public long getTotalObjectsDeleted() {
+        return this.ruleRuntimeStats.getConsolidatedStats().objectsDeleted.get();
     }
     
     /* (non-Javadoc)
@@ -176,6 +234,58 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
             result.put( entry.getKey(), entry.getValue().toString() );
         }
         return result;
+    }
+    
+    public static class RuleRuntimeStats implements org.kie.api.event.rule.RuleRuntimeEventListener {
+        private RuleRuntimeStatsData data = new RuleRuntimeStatsData();
+
+        public RuleRuntimeStats() {
+        }
+        
+        public RuleRuntimeStatsData getConsolidatedStats() {
+            return this.data;
+        }
+        
+        public void reset() {
+            this.data.reset();
+        }
+        
+        @Override
+        public void objectInserted(ObjectInsertedEvent event) {
+            this.data.objectsInserted.incrementAndGet();
+        }
+
+        @Override
+        public void objectUpdated(ObjectUpdatedEvent event) { }
+
+        @Override
+        public void objectDeleted(ObjectDeletedEvent event) {
+            this.data.objectsDeleted.incrementAndGet();
+        }
+        
+        public static class RuleRuntimeStatsData {
+            public AtomicLong objectsInserted;
+            public AtomicLong objectsDeleted;
+
+            public AtomicReference<Date> lastReset;
+            
+            public RuleRuntimeStatsData() {
+                this.objectsInserted = new AtomicLong(0);
+                this.objectsDeleted = new AtomicLong(0);
+                this.lastReset = new AtomicReference<Date>(new Date());
+            }
+            
+            public void reset() {
+                this.objectsInserted.set( 0 );
+                this.objectsDeleted.set( 0 );
+                this.lastReset.set( new Date() );
+            }
+            
+            public String toString() {
+                return "objectsInserted="+objectsInserted.get()+" objectsDeleted="+objectsDeleted.get();
+            }
+        }
+        
     }
     
     public static class AgendaStats implements org.kie.api.event.rule.AgendaEventListener {
@@ -502,5 +612,4 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
         }
 
     }
-    
 }
