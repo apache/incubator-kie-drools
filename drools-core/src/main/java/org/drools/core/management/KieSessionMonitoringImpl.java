@@ -21,6 +21,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.management.KieSessionMonitoringImpl.AgendaStats.AgendaStatsData;
 import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessInstanceStatsData;
 import org.drools.core.management.KieSessionMonitoringImpl.ProcessStats.ProcessStatsData;
+import org.kie.api.cdi.KBase;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
@@ -46,8 +47,6 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
 
-    private static final String KSESSION_PREFIX = "org.drools.kbases";
-    
     private static final long NANO_TO_MILLISEC = 1000000;
     
     private InternalWorkingMemory ksession;
@@ -59,7 +58,7 @@ public class KieSessionMonitoringImpl implements KieSessionMonitoringMBean {
     public KieSessionMonitoringImpl(InternalWorkingMemory ksession) {
         this.ksession = ksession;
         this.kbase = ksession.getKnowledgeBase();
-        this.name = DroolsManagementAgent.createObjectName(KSESSION_PREFIX + ":type="+kbase.getId()+",group=Sessions,sessionId=Session-"+ksession.getIdentifier());
+        this.name = DroolsManagementAgent.createObjectNameFor(ksession);
         this.agendaStats = new AgendaStats();
         this.processStats = new ProcessStats();
         this.ksession.addEventListener( agendaStats );
