@@ -63,8 +63,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
-import static org.drools.core.reteoo.ObjectTypeNode.doRetractObject;
+import static org.drools.core.reteoo.ObjectTypeNode.retractLeftTuples;
 
 /**
  * Rule-firing Agenda.
@@ -130,6 +129,8 @@ public class DefaultAgenda
     private volatile boolean                                     wasFiringUntilHalt = false;
 
     private volatile ExecutionState                              currentState = ExecutionState.INACTIVE;
+
+    private volatile List<PropagationContext>                    expirationContexts = new ArrayList<PropagationContext>();
 
     public enum ExecutionState {     // fireAllRule | fireUntilHalt | executeTask <-- required action
         INACTIVE( false ),           // fire        | fire          | exec
@@ -1121,7 +1122,6 @@ public class DefaultAgenda
                         if ( handle.isExpired() ) {
                             if ( handle.getActivationsCount() <= 0 ) {
                                 // and if no more activations, retract the handle
-                                doRetractObject( handle, createPropagationContextForFact( workingMemory, handle, PropagationContext.EXPIRATION ), workingMemory );
                                 handle.getEntryPoint().delete( handle );
                             }
                         }
@@ -1358,7 +1358,7 @@ public class DefaultAgenda
                     group = null; // set the group to null in case the fire limit has been reached
                 }
 
-                if ( returnedFireCount == 0 && head == null && ( group == null || !group.isAutoDeactivate() ) ) {
+                if ( returnedFireCount == 0 && head == null && ( group == null || !group.isAutoDeactivate() ) && !flushExpirations() ) {
                     // if true, the engine is now considered potentially at rest
                     head = restHandler.handleRest( workingMemory, this );
                 }
@@ -1518,5 +1518,22 @@ public class DefaultAgenda
 
     public KnowledgeHelper getKnowledgeHelper() {
         return knowledgeHelper;
+    }
+
+    public void registerExpiration(PropagationContext ectx) {
+        // it is safe to add into the expirationContexts list without any synchronization because
+        // the state machine already guarantees that only one thread at time can access it
+        expirationContexts.add(ectx);
+    }
+
+    private boolean flushExpirations() {
+        if (expirationContexts.isEmpty()) {
+            return false;
+        }
+        for (PropagationContext ectx : expirationContexts) {
+            retractLeftTuples( ( (InternalFactHandle) ectx.getFactHandle() ), ectx, workingMemory );
+        }
+        expirationContexts.clear();
+        return true;
     }
 }
