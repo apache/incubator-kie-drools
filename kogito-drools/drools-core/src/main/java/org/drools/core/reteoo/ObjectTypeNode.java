@@ -326,21 +326,28 @@ public class ObjectTypeNode extends ObjectSource
     public static void doRetractObject(final InternalFactHandle factHandle,
                                        final PropagationContext context,
                                        final InternalWorkingMemory workingMemory) {
-        for (RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; ) {
+        retractRightTuples( factHandle, context, workingMemory );
+        retractLeftTuples( factHandle, context, workingMemory );
+    }
+
+    public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
+        for ( LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext()) {
+            // must go via the LiaNode, so that the fact counter is updated, for linking
+            LeftTupleSink sink = leftTuple.getTupleSink();
+            ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple( leftTuple,
+                                                                                 context,
+                                                                                 workingMemory );
+        }
+        factHandle.clearLeftTuples();
+    }
+
+    public static void retractRightTuples( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
+        for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; ) {
             RightTuple nextRightTuple = rightTuple.getHandleNext();
             rightTuple.retractTuple( context, workingMemory);
             rightTuple = nextRightTuple;
         }
         factHandle.clearRightTuples();
-
-        for (LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext()) {
-            // must go via the LiaNode, so that the fact counter is updated, for linking
-            LeftTupleSink sink = leftTuple.getTupleSink();
-            ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple(leftTuple,
-                                                                                context,
-                                                                                workingMemory);
-        }
-        factHandle.clearLeftTuples();
     }
 
     protected void resetIdGenerator() {

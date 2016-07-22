@@ -6233,4 +6233,42 @@ public class CepEspTest extends CommonTestMethodBase {
 
         assertEquals(1, counter.get());
     }
+
+    @Test
+    public void testExpireLogicallyInsertedEvent() {
+        // RHBRMS-2515
+        String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
+                     "declare MyEvent\n" +
+                     "    @role( event )\n" +
+                     "    @timestamp( timestamp )\n" +
+                     "    @expires( 10ms )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     "  $e : MyEvent()\n" +
+                     "then\n" +
+                     "  insertLogical($e.toString());\n" +
+                     "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler sessionClock = ksession.getSessionClock();
+        sessionClock.setStartupTime(0);
+
+        ksession.insert(new MyEvent(0));
+        assertEquals( 1L, ksession.getFactCount() );
+
+        ksession.fireAllRules();
+        assertEquals( 2L, ksession.getFactCount() );
+
+        sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
+        ksession.fireAllRules();
+        assertEquals( 0L, ksession.getFactCount() );
+    }
 }
