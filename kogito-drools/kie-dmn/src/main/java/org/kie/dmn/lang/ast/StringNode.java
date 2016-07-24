@@ -17,6 +17,8 @@
 package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.util.EvalHelper;
 
 public class StringNode
         extends BaseNode {
@@ -25,4 +27,8 @@ public class StringNode
         super( ctx );
     }
 
+    @Override
+    public Object evaluate(EvaluationContextImpl ctx) {
+        return EvalHelper.stripQuotes( getText() );
+    }
 }

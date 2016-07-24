@@ -108,7 +108,7 @@
               <goal>generate</goal>
             </goals>
             <configuration>
-              <generatePackage>org.kie.dmn.model_1_1</generatePackage>
+              <generatePackage>org.kie.dmn.lang.model_1_1</generatePackage>
             </configuration>
           </execution>
         </executions>

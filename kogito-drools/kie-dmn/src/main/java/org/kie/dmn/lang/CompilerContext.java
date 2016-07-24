@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.lang.ast;
+package org.kie.dmn.lang;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.lang.impl.EvaluationContextImpl;
+import java.util.Map;
 
-public class DashNode
-        extends BaseNode {
+public interface CompilerContext {
 
-    public DashNode(ParserRuleContext ctx) {
-        super( ctx );
-    }
+    CompilerContext addInputVariable( String name, Type type );
 
-    @Override
-    public Object evaluate(EvaluationContextImpl ctx) {
-        return Boolean.TRUE;
-    }
+    Map<String, Type> getInputVariables();
+
 }

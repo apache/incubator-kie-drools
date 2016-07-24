@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel11;
+package org.kie.dmn.lang.feel11;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
@@ -31,16 +31,13 @@ import java.util.Stack;
 
 public class ParserHelper {
 
-    private static final String GLOBAL = "<global>";
-    private static final String LOCAL  = "<local>";
-
     private SymbolTable   symbols      = new SymbolTable();
-    private Scope         currentScope = new LocalScope( GLOBAL, symbols.getBuiltInScope() );
+    private Scope         currentScope = symbols.getGlobalScope();
     private Stack<String> currentName  = new Stack<>();
 
     public ParserHelper() {
         // initial context is loaded
-        currentName.push( LOCAL );
+        currentName.push( Scope.LOCAL );
     }
 
     public SymbolTable getSymbolTable() {

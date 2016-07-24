@@ -9,8 +9,8 @@
 grammar FEEL_1_1;
 
 @parser::header {
-    import org.kie.dmn.feel11.ParserHelper;
-    import org.kie.dmn.feel11.Keywords;
+    import org.kie.dmn.lang.feel11.ParserHelper;
+    import org.kie.dmn.lang.feel11.Keywords;
 }
 
 @parser::members {

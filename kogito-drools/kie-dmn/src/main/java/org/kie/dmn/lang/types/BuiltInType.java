@@ -20,6 +20,8 @@ import org.kie.dmn.lang.Type;
 
 public enum BuiltInType implements Type {
 
+    UNKNOWN("unknown"),
+    NULL("null"),
     NUMBER("number"),
     STRING("string"),
     DATE("date"),
@@ -30,11 +32,12 @@ public enum BuiltInType implements Type {
     RANGE("range"),
     FUNCTION("function"),
     LIST("list"),
-    CONTEXT("context");
+    CONTEXT("context"),
+    UNARY_TEST("unary test");
 
     private final String name;
 
-    private BuiltInType(String name) {
+    BuiltInType(String name) {
         this.name = name;
     }
 

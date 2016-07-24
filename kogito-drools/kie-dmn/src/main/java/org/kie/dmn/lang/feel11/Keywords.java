@@ -14,20 +14,35 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.lang.ast;
+package org.kie.dmn.lang.feel11;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.lang.impl.EvaluationContextImpl;
+public enum Keywords {
 
-public class DashNode
-        extends BaseNode {
+    FOR("for"),
+    RETURN("return"),
+    IN("in"),
+    IF("if"),
+    THEN("then"),
+    ELSE("else"),
+    SOME("some"),
+    EVERY("every"),
+    SATISFIES("satisfies"),
+    INSTANCE("instance"),
+    OF("of"),
+    FUNCTION("function"),
+    EXTERNAL("external"),
+    OR("or"),
+    AND("and"),
+    BETWEEN("between"),
+    NOT("not"),
+    NULL("null"),
+    TRUE("true"),
+    FALSE("false")
+    ;
 
-    public DashNode(ParserRuleContext ctx) {
-        super( ctx );
-    }
+    public final String symbol;
 
-    @Override
-    public Object evaluate(EvaluationContextImpl ctx) {
-        return Boolean.TRUE;
+    private Keywords(String symbol) {
+        this.symbol = symbol;
     }
 }

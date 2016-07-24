@@ -17,6 +17,7 @@
 package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.lang.impl.EvaluationContextImpl;
 
 import java.math.BigDecimal;
 
@@ -34,4 +35,8 @@ public class BooleanNode
         return value;
     }
 
+    @Override
+    public Object evaluate(EvaluationContextImpl ctx) {
+        return value;
+    }
 }

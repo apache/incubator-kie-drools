@@ -20,6 +20,10 @@ import java.util.Map;
 
 public interface Scope {
 
+    String BUILT_IN = "<built-in>";
+    String GLOBAL   = "<global>";
+    String LOCAL    = "<local>";
+
     /**
      * Returns the scope name
      *
