@@ -17,6 +17,13 @@
 package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.util.EvalHelper;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class SignedUnaryNode
         extends BaseNode {
@@ -50,4 +57,17 @@ public class SignedUnaryNode
     public BaseNode getExpression() {
         return expression;
     }
+
+    @Override
+    public Object evaluate(EvaluationContextImpl ctx) {
+        BigDecimal result = EvalHelper.getBigDecimalOrNull( expression.evaluate( ctx ) );
+        if( result == null ) {
+            return null;
+        } else if( Sign.NEGATIVE == sign ) {
+            return BigDecimal.valueOf( -1 ).multiply( result );
+        } else {
+            return result;
+        }
+    }
+
 }

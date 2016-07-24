@@ -31,6 +31,10 @@ public class SymbolTable {
     }
 
     private void init() {
+        // the following automatically adds the GLOBAL scope as a child to the built-in scope
+        new LocalScope( Scope.GLOBAL, builtInScope );
+
+        // pre-loads all the built in functions
         builtInScope.define( new BuiltInTypeSymbol( "true", BuiltInType.BOOLEAN, builtInScope ) );
         builtInScope.define( new BuiltInTypeSymbol( "false", BuiltInType.BOOLEAN, builtInScope ) );
         builtInScope.define( new FunctionSymbol( "date" ) );
@@ -43,4 +47,6 @@ public class SymbolTable {
     public Scope getBuiltInScope() {
         return builtInScope;
     }
+
+    public Scope getGlobalScope() { return builtInScope.getChildScopes().get( Scope.GLOBAL ); }
 }

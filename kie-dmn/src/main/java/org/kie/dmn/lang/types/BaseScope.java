@@ -17,16 +17,13 @@
 package org.kie.dmn.lang.types;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
-import org.kie.dmn.feel11.FEEL_1_1Lexer;
+import org.kie.dmn.lang.feel11.FEEL_1_1Lexer;
 import org.kie.dmn.lang.Scope;
 import org.kie.dmn.lang.Symbol;
 import org.kie.dmn.util.TokenTree;
 
 import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class BaseScope implements Scope {
 

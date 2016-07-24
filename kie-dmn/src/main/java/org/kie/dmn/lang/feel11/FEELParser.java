@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel11;
+package org.kie.dmn.lang.feel11;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 
 public class FEELParser {
 
-    public static ParseTree parse(String source, String... symbols) {
+    public static FEEL_1_1Parser parse(String source, String... symbols) {
         ANTLRInputStream input = new ANTLRInputStream(source);
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
@@ -32,8 +32,7 @@ public class FEELParser {
 
         // pre-loads the parser with symbols
         Stream.of( symbols ).forEach( s -> parser.getHelper().defineVariable( s ) );
-        ParseTree tree = parser.expression();
-        return tree;
+        return parser;
     }
 
     public static class FEELErrorHandler extends DefaultErrorStrategy {
@@ -43,14 +42,6 @@ public class FEELParser {
             // don't do anything
         }
 
-//        @Override
-//        public void recover(Parser recognizer, RecognitionException e) {
-//            if( e instanceof FailedPredicateException ) {
-//                // not an error, don't try to recover
-//                return;
-//            }
-//            super.recover( recognizer, e );
-//        }
     }
 
 }

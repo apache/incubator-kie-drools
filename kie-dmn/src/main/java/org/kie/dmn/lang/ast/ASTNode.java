@@ -16,18 +16,28 @@
 
 package org.kie.dmn.lang.ast;
 
-import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.lang.Type;
 import org.kie.dmn.lang.impl.EvaluationContextImpl;
 
-public class DashNode
-        extends BaseNode {
+/**
+ * A super interface for all AST nodes
+ */
+public interface ASTNode {
+    int getStartChar();
 
-    public DashNode(ParserRuleContext ctx) {
-        super( ctx );
-    }
+    int getEndChar();
 
-    @Override
-    public Object evaluate(EvaluationContextImpl ctx) {
-        return Boolean.TRUE;
-    }
+    int getStartLine();
+
+    int getStartColumn();
+
+    int getEndLine();
+
+    int getEndColumn();
+
+    String getText();
+
+    Type getResultType();
+
+    Object evaluate(EvaluationContextImpl ctx);
 }

@@ -18,8 +18,12 @@ package org.kie.dmn.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
+import org.kie.dmn.lang.Type;
+import org.kie.dmn.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.lang.types.BuiltInType;
 
-public class BaseNode {
+public class BaseNode
+        implements ASTNode {
     private int startChar;
     private int endChar;
     private int startLine;
@@ -42,6 +46,7 @@ public class BaseNode {
         this.setText( getOriginalText( ctx ) );
     }
 
+    @Override
     public int getStartChar() {
         return startChar;
     }
@@ -50,6 +55,7 @@ public class BaseNode {
         this.startChar = startChar;
     }
 
+    @Override
     public int getEndChar() {
         return endChar;
     }
@@ -58,6 +64,7 @@ public class BaseNode {
         this.endChar = endChar;
     }
 
+    @Override
     public int getStartLine() {
         return startLine;
     }
@@ -66,6 +73,7 @@ public class BaseNode {
         this.startLine = startLine;
     }
 
+    @Override
     public int getStartColumn() {
         return startColumn;
     }
@@ -74,6 +82,7 @@ public class BaseNode {
         this.startColumn = startColumn;
     }
 
+    @Override
     public int getEndLine() {
         return endLine;
     }
@@ -82,6 +91,7 @@ public class BaseNode {
         this.endLine = endLine;
     }
 
+    @Override
     public int getEndColumn() {
         return endColumn;
     }
@@ -90,6 +100,7 @@ public class BaseNode {
         this.endColumn = endColumn;
     }
 
+    @Override
     public String getText() {
         return text;
     }
@@ -101,6 +112,16 @@ public class BaseNode {
     @Override
     public String toString() {
         return getClass().getSimpleName()+"{" + text + "}";
+    }
+
+    @Override
+    public Type getResultType() {
+        return BuiltInType.UNKNOWN;
+    }
+
+    @Override
+    public Object evaluate(EvaluationContextImpl ctx) {
+        return null;
     }
 
     private String getOriginalText( ParserRuleContext ctx ) {

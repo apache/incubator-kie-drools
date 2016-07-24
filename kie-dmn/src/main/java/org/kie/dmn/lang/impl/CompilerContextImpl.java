@@ -14,35 +14,25 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel11;
+package org.kie.dmn.lang.impl;
 
-public enum Keywords {
+import org.kie.dmn.lang.CompilerContext;
+import org.kie.dmn.lang.Type;
 
-    FOR("for"),
-    RETURN("return"),
-    IN("in"),
-    IF("if"),
-    THEN("then"),
-    ELSE("else"),
-    SOME("some"),
-    EVERY("every"),
-    SATISFIES("satisfies"),
-    INSTANCE("instance"),
-    OF("of"),
-    FUNCTION("function"),
-    EXTERNAL("external"),
-    OR("or"),
-    AND("and"),
-    BETWEEN("between"),
-    NOT("not"),
-    NULL("null"),
-    TRUE("true"),
-    FALSE("false")
-    ;
+import java.util.HashMap;
+import java.util.Map;
 
-    public final String symbol;
+public class CompilerContextImpl implements CompilerContext {
+    private Map<String, Type> inputVariables = new HashMap<>();
 
-    private Keywords(String symbol) {
-        this.symbol = symbol;
+    @Override
+    public CompilerContext addInputVariable(String name, Type type) {
+        inputVariables.put( name, type );
+        return this;
+    }
+
+    @Override
+    public Map<String, Type> getInputVariables() {
+        return this.inputVariables;
     }
 }

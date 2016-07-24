@@ -14,20 +14,38 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.lang.ast;
+package org.kie.dmn.lang.impl;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.lang.types.SymbolTable;
 
-public class DashNode
-        extends BaseNode {
+import java.util.Stack;
 
-    public DashNode(ParserRuleContext ctx) {
-        super( ctx );
+public class EvaluationContextImpl {
+
+    private final SymbolTable   symbols;
+    private       Stack<Object> stack;
+
+    public EvaluationContextImpl(SymbolTable symbols) {
+        this.symbols = symbols;
     }
 
-    @Override
-    public Object evaluate(EvaluationContextImpl ctx) {
-        return Boolean.TRUE;
+    public void push(Object obj) {
+        stack.push( obj );
+    }
+
+    public Object pop() {
+        return stack.pop();
+    }
+
+    public Object peek() {
+        return stack.peek();
+    }
+
+    public Stack<Object> getStack() {
+        return this.stack;
+    }
+
+    public SymbolTable getSymbols() {
+        return symbols;
     }
 }
