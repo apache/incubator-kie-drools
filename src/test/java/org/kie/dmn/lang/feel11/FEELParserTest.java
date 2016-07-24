@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel11;
+package org.kie.dmn.lang.feel11;
 
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.lang.ast.*;
 
@@ -976,7 +975,8 @@ public class FEELParserTest {
     }
 
     private BaseNode parse(String input, String... symbols) {
-        ParseTree tree = FEELParser.parse( input, symbols );
+        FEEL_1_1Parser parser = FEELParser.parse( input, symbols );
+        ParseTree tree = parser.expression();
         ASTBuilderVisitor v = new ASTBuilderVisitor();
         BaseNode expr = v.visit( tree );
         return expr;
