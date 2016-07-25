@@ -40,7 +40,10 @@
   </scm>
 
   <modules>
+    <module>kie-dmn-api</module>
+    <module>kie-dmn-model</module>
     <module>kie-dmn-feel</module>
+    <module>kie-dmn-backend</module>
   </modules>
 
   <dependencyManagement>
@@ -51,6 +54,22 @@
         <version>${version.org.kie}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-api</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-model</artifactId>
+        <version>${version.org.kie}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-feel</artifactId>
+        <version>${version.org.kie}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
