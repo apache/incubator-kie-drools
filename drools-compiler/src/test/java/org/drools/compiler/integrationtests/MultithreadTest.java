@@ -24,11 +24,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.conf.TimedRuleExectionOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
@@ -770,6 +772,48 @@ public class MultithreadTest extends CommonTestMethodBase {
         @Override
         public String toString() {
             return "" + id;
+        }
+    }
+
+    @Test
+    public void testConcurrentFireAndDispose() throws InterruptedException {
+        // DROOLS-1103
+        String drl = "rule R no-loop timer( int: 1s )\n" +
+                     "when\n" +
+                     "    String()\n" +
+                     "then\n" +
+                     "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
+        ksconf.setOption( TimedRuleExectionOption.YES );
+        final KieSession ksession = kbase.newKieSession(ksconf, null);
+
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException _e) {
+                }
+                ksession.dispose();
+            }
+        }.start();
+
+        try {
+            int i = 0;
+            while (true) {
+                ksession.insert("" + i++);
+                ksession.fireAllRules();
+            }
+        } catch (IllegalStateException e) {
+            // java.lang.IllegalStateException: Illegal method call. This session was previously disposed.
+            // ignore and exit
+        } catch (java.util.concurrent.RejectedExecutionException e) {
+            e.printStackTrace();
+            fail( "java.util.concurrent.RejectedExecutionException should not happen" );
         }
     }
 }
