@@ -63,6 +63,13 @@ public class EvalHelper {
         return (BigDecimal) value;
     }
 
+    public static Boolean getBooleanOrNull(Object value) {
+        if( value == null || ! (value instanceof Boolean ) ) {
+            return null;
+        }
+        return (Boolean) value;
+    }
+
     public static String stripQuotes(String text) {
         if( text == null ) {
             return null;
