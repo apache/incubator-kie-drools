@@ -98,11 +98,19 @@ public class InfixOpNode
         Object left = this.left.evaluate( ctx );
         Object right = this.right.evaluate( ctx );
         switch( operator ) {
-            case ADD: return math( left, right, ctx, (l, r) -> l.add(r) );
+            case ADD: return math( left, right, ctx, (l, r) -> l.add( r ) );
             case SUB: return math( left, right, ctx, (l, r) -> l.subtract( r ) );
             case MULT: return math( left, right, ctx, (l, r) -> l.multiply( r ) );
             case DIV: return math( left, right, ctx, (l, r) -> l.divide( r ) );
             case POW: return math( left, right, ctx, (l, r) -> l.pow( r.intValue() ) );
+            case AND: return and( left, right, ctx );
+            case OR: return or( left, right, ctx );
+            case LTE: return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) <= 0 );
+            case LT: return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) < 0 );
+            case EQ: return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) == 0 );
+            case NE: return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) != 0 );
+            case GT: return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) > 0 );
+            case GTE: return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) >= 0 );
             default: return null;
         }
     }
@@ -121,17 +129,46 @@ public class InfixOpNode
         }
     }
 
-    private Object comparison(Object left, Object right, EvaluationContextImpl ctx, BiPredicate<Object, Object> op ) {
-        BigDecimal l = EvalHelper.getBigDecimalOrNull( left );
-        BigDecimal r = EvalHelper.getBigDecimalOrNull( right );
-        if( l == null || r == null ) {
+    /**
+     * Implements the ternary logic AND operation
+     */
+    private Object and(Object left, Object right, EvaluationContextImpl ctx ) {
+        Boolean l = EvalHelper.getBooleanOrNull( left );
+        Boolean r = EvalHelper.getBooleanOrNull( right );
+        // have to check for all nulls first to avoid NPE
+        if( ( l == null && r == null ) || ( l == null && r == true ) || ( r == null && l == true ) ) {
             return null;
+        } else if( l == null || r == null ) {
+            return false;
         }
-        try {
+        return l && r;
+    }
+
+    /**
+     * Implements the ternary logic OR operation
+     */
+    private Object or(Object left, Object right, EvaluationContextImpl ctx ) {
+        Boolean l = EvalHelper.getBooleanOrNull( left );
+        Boolean r = EvalHelper.getBooleanOrNull( right );
+        // have to check for all nulls first to avoid NPE
+        if( ( l == null && r == null ) || ( l == null && r == false ) || ( r == null && l == false ) ) {
+            return null;
+        } else if( l == null || r == null ) {
+            return true;
+        }
+        return l || r;
+    }
+
+    private Object comparison(Object left, Object right, EvaluationContextImpl ctx, BiPredicate<Comparable, Comparable> op ) {
+        if( left == null && right == null ) {
+            return null;
+        } else if( ( left instanceof String && right instanceof String ) ||
+                   ( left instanceof Number && right instanceof Number ) ||
+                   ( left instanceof Boolean && right instanceof Boolean )) {
+            Comparable l = (Comparable) left;
+            Comparable r = (Comparable) right;
             return op.test( l, r );
-        } catch( ArithmeticException e ) {
-            // happens in cases like division by 0
-            return null;
         }
+        return null;
     }
 }
