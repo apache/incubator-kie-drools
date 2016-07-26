@@ -18,21 +18,23 @@ package org.kie.dmn.feel.lang.runtime;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.is;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
+@RunWith(Parameterized.class)
 public class FEELTest {
 
     private static final Map<String, Object> EMPTY_INPUT = Collections.EMPTY_MAP;
 
-    @Test
-    public void testExpressions() {
+    @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
+    public static Collection<Object[]> data() {
         Object[][] cases = new Object[][] {
                 // constants
                 { "null", EMPTY_INPUT, null },
@@ -140,30 +142,37 @@ public class FEELTest {
                 // null comparisons and comparisons between different types
 
 
-//                { "", EMPTY_INPUT,  },
-//                { "", EMPTY_INPUT,  },
-//                { "", EMPTY_INPUT,  },
-//                { "", EMPTY_INPUT,  },
-//                { "", EMPTY_INPUT,  },
+                //                { "", EMPTY_INPUT,  },
+                //                { "", EMPTY_INPUT,  },
+                //                { "", EMPTY_INPUT,  },
+                //                { "", EMPTY_INPUT,  },
+                //                { "", EMPTY_INPUT,  },
 
         };
-        for( Object[] c : cases ) {
-            assertCase( (String) c[0], (Map<String, Object>) c[1], c[2] );
-        }
+        return Arrays.asList( cases );
     }
 
-    private void assertCase( String expr, Map<String, Object> input, Object result ) {
+    @Parameterized.Parameter(0)
+    public String expression;
+
+    @Parameterized.Parameter(1)
+    public Map<String, Object> inputVariables;
+
+    @Parameterized.Parameter(2)
+    public Object result;
+
+    @Test
+    public void testExpression() {
         if( result == null ) {
-            assertThat( "Evaluating: '"+expr+"'", FEEL.evaluate( expr, input ), is( nullValue() ) );
+            assertThat( "Evaluating: '"+expression+"'", FEEL.evaluate( expression, inputVariables ), is( nullValue() ) );
         } else {
-            assertThat( "Evaluating: '"+expr+"'", FEEL.evaluate( expr, input ), is( result ) );
+            assertThat( "Evaluating: '"+expression+"'", FEEL.evaluate( expression, inputVariables ), is( result ) );
         }
     }
 
-
-    @Test @Ignore( "Java BigDecimals do not support negative numbers as power. Need to figure out what to do." )
-    public void testMathExprPow2() {
-        assertThat( FEEL.evaluate( "10 ** -5", EMPTY_INPUT ), is( BigDecimal.valueOf( -0.00001 ) ) );
-    }
+//    @Test @Ignore( "Java BigDecimals do not support negative numbers as power. Need to figure out what to do." )
+//    public void testMathExprPow2() {
+//        assertThat( FEEL.evaluate( "10 ** -5", EMPTY_INPUT ), is( BigDecimal.valueOf( -0.00001 ) ) );
+//    }
 
 }
