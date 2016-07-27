@@ -110,7 +110,8 @@ public class DTColumnConfig52
 
     /**
      * Clones the configuration (width, header, hide, default value) of the argument into this instance.
-     * @param model column instance to be cloned
+     * @param model
+     *         column instance to be cloned
      */
     public void cloneCommonColumnConfigFrom( DTColumnConfig52 model ) {
         setWidth( model.getWidth() );
@@ -120,6 +121,9 @@ public class DTColumnConfig52
     }
 
     protected Object extractDefaultValue( final DTCellValue52 dcv ) {
+        if ( dcv == null ) {
+            return null;
+        }
         switch ( dcv.getDataType() ) {
             case BOOLEAN:
                 return dcv.getBooleanValue();
