@@ -109,6 +109,9 @@ public class DTColumnConfig52
     }
 
     protected Object extractDefaultValue( final DTCellValue52 dcv ) {
+        if ( dcv == null ) {
+            return null;
+        }
         switch ( dcv.getDataType() ) {
             case BOOLEAN:
                 return dcv.getBooleanValue();

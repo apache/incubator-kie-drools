@@ -94,8 +94,10 @@ public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
 
     /**
      * Check whether two Objects are equal or both null.
-     * @param s1 The object.
-     * @param s2 The other  object.
+     * @param s1
+     *         The object.
+     * @param s2
+     *         The other  object.
      * @return Whether two Objects are equal or both null
      */
     public static boolean isEqualOrNull( Object s1,
@@ -113,14 +115,20 @@ public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
 
     /**
      * Check whether two Objects are equal or both null.
-     * @param dcv1 The DTCellValue52.
-     * @param dcv2 The other DTCellValue52.
+     * @param dcv1
+     *         The DTCellValue52.
+     * @param dcv2
+     *         The other DTCellValue52.
      * @return Whether two DTCellValue52s are equal or both null
      */
     public static boolean isEqualOrNull( final DTCellValue52 dcv1,
                                          final DTCellValue52 dcv2 ) {
         if ( dcv1 == null && dcv2 == null ) {
             return true;
+        } else if ( dcv1 == null && dcv2 != null ) {
+            return false;
+        } else if ( dcv1 != null && dcv2 == null ) {
+            return false;
         } else if ( !dcv1.getDataType().equals( dcv2.getDataType() ) ) {
             return false;
         } else {
@@ -180,8 +188,10 @@ public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
 
     /**
      * Check whether two List are same size or both null.
-     * @param s1 The fist list..
-     * @param s2 The other  list.
+     * @param s1
+     *         The fist list..
+     * @param s2
+     *         The other  list.
      * @return Whether two List are same size or both null
      */
     public static boolean isEqualOrNull( List s1,
@@ -199,8 +209,10 @@ public class BaseColumnFieldDiffImpl implements BaseColumnFieldDiff {
 
     /**
      * Check whether two Map are same size or both null.
-     * @param s1 The fist Map..
-     * @param s2 The other  Map.
+     * @param s1
+     *         The fist Map..
+     * @param s2
+     *         The other  Map.
      * @return Whether two Map are same size or both null
      */
 
