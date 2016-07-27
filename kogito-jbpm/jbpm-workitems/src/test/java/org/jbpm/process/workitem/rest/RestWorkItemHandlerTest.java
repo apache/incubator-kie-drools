@@ -503,6 +503,62 @@ public class RestWorkItemHandlerTest {
         assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
     }
     
+    @Test
+    public void testPUTOperationWithDefaultCharset() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        String nonAsciiData = "\u0418\u0432\u0430\u043d";
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+                "<person><age>25</age><name>Put ????</name></person>";
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "Url", serverURL+"/xml-charset");
+        workItem.setParameter( "Method", "PUT" );
+        workItem.setParameter( "ContentType", "application/xml" );
+        workItem.setParameter( "Content", "<person><name>" + nonAsciiData + "</name><age>25</age></person>" );
+        
+        
+        WorkItemManager manager = new TestWorkItemManager(workItem);
+        handler.executeWorkItem(workItem, manager);
+        
+        String result = (String) workItem.getResult("Result");
+        assertNotNull("result cannot be null", result);
+        assertEquals(expected, result);
+        int responseCode = (Integer) workItem.getResult("Status");
+        assertNotNull(responseCode);
+        assertEquals(200, responseCode);
+        String responseMsg = (String) workItem.getResult("StatusMsg");
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
+    }
+    @Test
+    
+    public void testPUTOperationWithCharsetSpecified() {
+        RESTWorkItemHandler handler = new RESTWorkItemHandler();
+        String nonAsciiData = "\u0418\u0432\u0430\u043d";
+        String expected = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+                "<person><age>25</age><name>Put " + nonAsciiData + "</name></person>";
+        
+        WorkItemImpl workItem = new WorkItemImpl();
+        workItem.setParameter( "Url", serverURL+"/xml-charset");
+        workItem.setParameter( "Method", "PUT" );
+        workItem.setParameter( "ContentType", "application/xml; charset=utf-8" );
+        workItem.setParameter( "Content", "<person><name>" + nonAsciiData + "</name><age>25</age></person>" );
+        
+        
+        WorkItemManager manager = new TestWorkItemManager(workItem);
+        handler.executeWorkItem(workItem, manager);
+        
+        String result = (String) workItem.getResult("Result");
+        assertNotNull("result cannot be null", result);
+        assertEquals(expected, result);
+        int responseCode = (Integer) workItem.getResult("Status");
+        assertNotNull(responseCode);
+        assertEquals(200, responseCode);
+        String responseMsg = (String) workItem.getResult("StatusMsg");
+        assertNotNull(responseMsg);
+        assertEquals("request to endpoint " + workItem.getParameter("Url") +" successfully completed OK", responseMsg);
+    }
+    
     private class TestWorkItemManager implements WorkItemManager {
         
         private WorkItem workItem;

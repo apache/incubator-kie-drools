@@ -62,6 +62,15 @@ public class TestRESTResource {
         return person;
     }
     
+    @PUT
+    @Path("/xml-charset")
+    @Consumes("application/xml")
+    @Produces("application/xml; charset=UTF-8")
+    public Person putXmlWithCharset(Person person) {
+        person.setName("Put " + person.getName());
+        return person;
+    }
+    
     @DELETE
     @Path("/xml/{name}")    
     @Produces("application/xml")
