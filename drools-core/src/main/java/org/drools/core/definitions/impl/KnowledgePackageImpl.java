@@ -589,21 +589,6 @@ public class KnowledgePackageImpl
         return this.name.hashCode();
     }
 
-    /**
-     * Returns true if clazz is imported as an Event class in this package
-     *
-     * @param clazz
-     * @return true if clazz is imported as an Event class in this package
-     */
-    public boolean isEvent( Class clazz ) {
-        TypeDeclaration typeDeclaration = getTypeDeclaration(clazz);
-        if (typeDeclaration != null) {
-            return typeDeclaration.getRole() == Role.Type.EVENT;
-        }
-        Role role = (Role) clazz.getAnnotation( Role.class );
-        return role != null && role.value() == Role.Type.EVENT;
-    }
-
     public void clear() {
         this.rules.clear();
         this.dialectRuntimeRegistry.clear();

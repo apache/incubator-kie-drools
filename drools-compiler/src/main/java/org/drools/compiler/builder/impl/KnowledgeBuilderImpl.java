@@ -322,7 +322,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return resource;
     }
 
-    InternalKnowledgeBase getKnowledgeBase() {
+    public InternalKnowledgeBase getKnowledgeBase() {
         return kBase;
     }
 

@@ -2808,53 +2808,70 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testRemoveRuleWithNonInitializedPath() {
-        // DROOLS-1177
+    public void testEventDeclarationInSeparatedDRL() throws Exception {
+        // DROOLS-1241
         String drl1 =
-                "import " + MyEvent.class.getCanonicalName() + "\n" +
-                "declare MyEvent @role( event ) end\n" +
-                "rule \"RG_TEST_1\"\n" +
-                "    when\n" +
-                "       $dummy: MyEvent (id == 1)\n" +
-                "		$other: MyEvent (this != $dummy)\n" +
-                "    then\n" +
-                "        retract($other);\n" +
-                "end\n" +
-                "rule \"RG_TEST_2\"\n" +
-                "    when\n" +
-                "       $dummy: MyEvent (id == 1)\n" +
-                "    then\n" +
-                "        retract($dummy);\n" +
+                "import " + SimpleEvent.class.getCanonicalName() + ";\n"+
+                "declare SimpleEvent\n" +
+                "    @role( event )\n" +
+                "    @timestamp( timestamp )\n" +
+                "    @expires( 2d )\n" +
                 "end\n";
 
         String drl2 =
-                "import " + MyEvent.class.getCanonicalName() + "\n" +
-                "declare IMyEvent @role( event ) end\n" +
-                "rule \"RG_TEST_2\"\n" +
-                "    when\n" +
-                "       $dummy: MyEvent (id == 1)\n" +
-                "    then\n" +
-                "        retract($dummy);\n" +
+                "import " + SimpleEvent.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n"+
+                "rule R1 when\n" +
+                "    $s:SimpleEvent(code==\"MY_CODE\") over window:time( 1s )\n" +
+                "then\n" +
+                "    list.add(\"MY_CODE\");\n" +
+                "end\n";
+
+        String drl3 =
+                "import " + SimpleEvent.class.getCanonicalName() + ";\n"+
+                "global java.util.List list;\n"+
+                "rule R2 when\n" +
+                "    $s:SimpleEvent(code==\"YOUR_CODE\") over window:time( 1s )\n" +
+                "then\n" +
+                "    list.add(\"YOUR_CODE\");\n" +
                 "end\n";
 
         KieServices ks = KieServices.Factory.get();
 
         KieModuleModel kproj = ks.newKieModuleModel();
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "KBase1" ).setDefault( true )
-                                          .setEventProcessingMode(EventProcessingOption.STREAM);
-        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1").setDefault(true)
-                                                 .setType(KieSessionModel.KieSessionType.STATEFUL);
+                                          .setEventProcessingMode( EventProcessingOption.STREAM );
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel( "KSession1" ).setDefault( true )
+                                                 .setType( KieSessionModel.KieSessionType.STATEFUL )
+                                                 .setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
-        deployJar( ks, createKJar( ks, kproj, releaseId1, null, drl1 ) );
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-cep-upgrade", "1.1.1" );
+        KieModule km = deployJar( ks, createKJar( ks, kproj, releaseId1, null, drl1, drl2 ) );
 
-        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+
         KieSession ksession = kc.newKieSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
 
-        ksession.insert( new MyEvent( 0 ) );
+        ksession.insert( new SimpleEvent("1", "MY_CODE", 0) );
+        ksession.insert( new SimpleEvent("2", "YOUR_CODE", 0) );
+        ksession.fireAllRules();
 
-        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
-        deployJar( ks, createKJar( ks, kproj, releaseId2, null, drl2 ) );
-        kc.updateToVersion( releaseId2 );
+        assertEquals( 1, list.size() );
+        assertEquals( "MY_CODE", list.get(0) );
+        list.clear();
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-cep-upgrade", "1.1.2");
+        // the null drl placeholder is used to have the same drl with a different file name
+        // this causes the removal and readdition of both rules
+        km = deployJar( ks, createKJar( ks, kproj, releaseId2, null, drl1, drl2, drl3 ) );
+        Results results = kc.updateToVersion(releaseId2);
+        assertEquals( 0, results.getMessages().size() );
+
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "YOUR_CODE", list.get(0) );
     }
 }
