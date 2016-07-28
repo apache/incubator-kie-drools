@@ -42,7 +42,7 @@ public class ProcessDescriptor implements Serializable {
     private static final long serialVersionUID = -6304675827486128074L;
 
     private static final Logger logger = LoggerFactory.getLogger(ProcessDescriptor.class);
-            
+
     private ProcessAssetDesc process;
     private Map<String, UserTaskDefinition> tasks = new HashMap<String, UserTaskDefinition>();
     private Map<String, Map<String, String>> taskInputMappings = new HashMap<String, Map<String, String>>();
@@ -52,14 +52,14 @@ public class ProcessDescriptor implements Serializable {
     private Map<String, String> itemDefinitions = new HashMap<String, String>();
     private Map<String, String> serviceTasks = new HashMap<String, String>();
     private Map<String, String> globalItemDefinitions = new HashMap<String, String>();
- 
+
     private Collection<String> reusableSubProcesses = new HashSet<String>(1);
     private Set<String> referencedClasses = new HashSet<String>(1);
     private Set<String> unqualifiedClasses = new HashSet<String>(1);
     private Set<String> referencedRules = new HashSet<String>(1);
-    
+
     private Queue<String> unresolvedReusableSubProcessNames = new ArrayDeque<String>();
-    
+
     public ProcessDescriptor() {
     }
 
@@ -67,42 +67,42 @@ public class ProcessDescriptor implements Serializable {
         this.process = process;
     }
 
-    public boolean hasUnresolvedReusableSubProcessNames() { 
-       return ! unresolvedReusableSubProcessNames.isEmpty(); 
+    public boolean hasUnresolvedReusableSubProcessNames() {
+       return ! unresolvedReusableSubProcessNames.isEmpty();
     }
-    
+
     public void resolveReusableSubProcessNames( Collection<Process> deploymentProcesses ) {
         // build map of process name -> process id
         Map<String, Process> processNameProcessIdMap = new HashMap<String, Process>(deploymentProcesses.size());
-        for( Process process : deploymentProcesses ) { 
+        for( Process process : deploymentProcesses ) {
             String processName = process.getName();
            Process previousProcess = processNameProcessIdMap.put(processName, process);
-           if( previousProcess != null ) { 
+           if( previousProcess != null ) {
                Comparator<Process> processComparator = StartProcessHelper.getComparator(processName);
-               if( processComparator.compare(previousProcess, process) > 0 ) { 
+               if( processComparator.compare(previousProcess, process) > 0 ) {
                   processNameProcessIdMap.put(processName, previousProcess);
                }
            }
         }
-        
+
         // resolve process names called in process
-        synchronized(unresolvedReusableSubProcessNames) { 
+        synchronized(unresolvedReusableSubProcessNames) {
             Iterator<String> iter = unresolvedReusableSubProcessNames.iterator();
-            while( iter.hasNext() ) { 
+            while( iter.hasNext() ) {
                 String processName  = iter.next();
                 Process deploymentProcess = processNameProcessIdMap.get(processName);
-                if( deploymentProcess == null ) { 
+                if( deploymentProcess == null ) {
                     logger.error("Unable to resolve process name '{}' called in process '{}'", processName, getProcess().getId());
-                } else { 
+                } else {
                     String processIdForProcessName = deploymentProcess.getId();
                     reusableSubProcesses.add(processIdForProcessName);
                     iter.remove();
                 }
             }
-        } 
+        }
     }
 
-    
+
     public ProcessAssetDesc getProcess() {
         return process;
     }
@@ -114,7 +114,7 @@ public class ProcessDescriptor implements Serializable {
     public Map<String, Map<String, String>> getTaskInputMappings() {
         return taskInputMappings;
     }
-    
+
     public Map<String, Map<String, String>> getTaskOutputMappings() {
         return taskOutputMappings;
     }
@@ -144,11 +144,11 @@ public class ProcessDescriptor implements Serializable {
     }
 
     public void addReusableSubProcessName(String processName) {
-        synchronized(unresolvedReusableSubProcessNames) { 
+        synchronized(unresolvedReusableSubProcessNames) {
             unresolvedReusableSubProcessNames.add(processName);
         }
     }
-    
+
     public Set<String> getReferencedClasses() {
         return referencedClasses;
     }
@@ -156,7 +156,7 @@ public class ProcessDescriptor implements Serializable {
     public Set<String> getUnqualifiedClasses() {
         return unqualifiedClasses;
     }
-    
+
     public Set<String> getReferencedRules() {
         return referencedRules;
     }
@@ -174,31 +174,6 @@ public class ProcessDescriptor implements Serializable {
         globalItemDefinitions.clear();
         referencedClasses.clear();
         referencedRules.clear();
-    }
-
-    public void resolveUnqualifiedClasses() {
-        Set<String> qualifiedClassSimpleNames = new HashSet<String>();
-        for( String className : referencedClasses ) { 
-            qualifiedClassSimpleNames.add(className.substring(className.lastIndexOf('.') + 1)); 
-        }
-        for( Iterator<String> iter = unqualifiedClasses.iterator(); iter.hasNext(); ) { 
-            if( qualifiedClassSimpleNames.contains(iter.next()) ) { 
-                iter.remove();
-            }
-        }
-        for( Iterator<String> iter = unqualifiedClasses.iterator(); iter.hasNext(); ) { 
-            String name = iter.next();
-            if( "Object".equals(name) || "String".equals(name) 
-                || "Float".equals(name) || "Integer".equals(name) 
-                || "Boolean".equals(name) ) { 
-               referencedClasses.add("java.lang." + name );
-               iter.remove();
-            }
-        }
-        for( String className : unqualifiedClasses ) { 
-            logger.warn("Unable to resolve unqualified class name, adding to list of classes: '{}'", className );
-            referencedClasses.add(className);
-        }
     }
 
 }
