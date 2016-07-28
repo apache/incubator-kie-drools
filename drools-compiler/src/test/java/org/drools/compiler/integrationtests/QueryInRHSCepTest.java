@@ -16,15 +16,7 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.drools.core.time.SessionPseudoClock;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -36,10 +28,17 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.internal.io.ResourceFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class QueryInRHSCepTest {
 	private KieSession ksession;
     private SessionPseudoClock clock;
-	private List<?> myGlobal;
+	private List<QueryResults> myGlobal;
 	
     public static class QueryItemPojo {
     	// empty pojo.
@@ -87,7 +86,7 @@ public class QueryInRHSCepTest {
         ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
         
         clock = ksession.getSessionClock();
-        myGlobal = new ArrayList<>();
+        myGlobal = new ArrayList<QueryResults>();
         ksession.setGlobal("myGlobal", myGlobal);
     }
 
@@ -100,7 +99,7 @@ public class QueryInRHSCepTest {
         int fired = ksession.fireAllRules();
         assertEquals(1, fired);
         assertEquals(1, myGlobal.size());
-        assertEquals(1, ((QueryResults) myGlobal.get(0)).size());
+        assertEquals(1, myGlobal.get(0).size());
     }
     @Test
     public void withResultOfSize1AnotherTest() {
@@ -111,7 +110,7 @@ public class QueryInRHSCepTest {
         int fired = ksession.fireAllRules();
         assertEquals(1, fired);
         assertEquals(1, myGlobal.size());
-        assertEquals(1, ((QueryResults) myGlobal.get(0)).size());
+        assertEquals(1, myGlobal.get(0).size());
     }
     @Test
     public void withResultOfSize0Test() {
@@ -121,7 +120,7 @@ public class QueryInRHSCepTest {
         int fired = ksession.fireAllRules();
         assertEquals(1, fired);
         assertEquals(1, myGlobal.size());
-        assertEquals(0, ((QueryResults) myGlobal.get(0)).size());
+        assertEquals(0, myGlobal.get(0).size());
     }
     
     @Test
@@ -161,7 +160,7 @@ public class QueryInRHSCepTest {
         assertTrue(ks.newKieBuilder(kfs).buildAll().getResults().getMessages().isEmpty());
         ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
         
-        myGlobal = new ArrayList<>();
+        myGlobal = new ArrayList<QueryResults>();
         ksession.setGlobal("myGlobal", myGlobal);
         
         ksession.insert(new QueryItemPojo());
@@ -169,6 +168,6 @@ public class QueryInRHSCepTest {
         int fired = ksession.fireAllRules();
         assertEquals(1, fired);
         assertEquals(1, myGlobal.size());
-        assertEquals(2, ((QueryResults) myGlobal.get(0)).size()); // notice 1 is manually inserted, 1 get inserted from rule's RHS, for a total of 2.
+        assertEquals(2, myGlobal.get(0).size()); // notice 1 is manually inserted, 1 get inserted from rule's RHS, for a total of 2.
     }
 }
