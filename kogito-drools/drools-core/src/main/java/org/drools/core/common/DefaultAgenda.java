@@ -63,6 +63,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static org.drools.core.impl.StatefulKnowledgeSessionImpl.ERRORMSG;
 import static org.drools.core.reteoo.ObjectTypeNode.retractLeftTuples;
 
 /**
@@ -138,7 +139,8 @@ public class DefaultAgenda
         FIRING_UNTIL_HALT( true ),   // do nothing  | do nothing    | enqueue
         HALTING( false ),            // wait + fire | wait + fire   | enqueue
         EXECUTING_TASK( false ),     // wait + fire | wait + fire   | wait + exec
-        DEACTIVATED( false );        // wait + fire | wait + fire   | wait + exec
+        DEACTIVATED( false ),        // wait + fire | wait + fire   | wait + exec
+        DISPOSED( false );           // no further action is allowed
 
         private final boolean firing;
 
@@ -148,6 +150,10 @@ public class DefaultAgenda
 
         public boolean isFiring() {
             return firing;
+        }
+
+        public boolean isAlive() {
+            return this != ExecutionState.DISPOSED;
         }
     }
 
@@ -1404,6 +1410,9 @@ public class DefaultAgenda
     }
 
     private void waitAndEnterExecutionState( ExecutionState newState ) {
+        if (!currentState.isAlive() && newState.isAlive()) {
+            throw new IllegalStateException( ERRORMSG );
+        }
         waitInactive();
         setCurrentState( newState );
     }
@@ -1496,13 +1505,34 @@ public class DefaultAgenda
         }
     }
 
-    public void setCurrentState(ExecutionState state) {
+    private void setCurrentState(ExecutionState state) {
+        if (!currentState.isAlive()) {
+            return;
+        }
         if ( log.isDebugEnabled() ) {
             log.debug("State was {} is now {}", currentState, state);
         }
         currentState = state;
     }
 
+    public boolean dispose() {
+        synchronized (stateMachineLock) {
+            if (currentState == ExecutionState.DISPOSED) {
+                return false;
+            }
+            if (currentState.isFiring()) {
+                setCurrentState( ExecutionState.HALTING );
+            }
+            waitAndEnterExecutionState( ExecutionState.DISPOSED );
+            return true;
+        }
+    }
+
+    public boolean isAlive() {
+        synchronized (stateMachineLock) {
+            return currentState.isAlive();
+        }
+    }
 
     public ConsequenceExceptionHandler getConsequenceExceptionHandler() {
         return this.legacyConsequenceExceptionHandler;

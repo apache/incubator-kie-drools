@@ -178,7 +178,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         CorrelationAwareProcessRuntime,
         Externalizable {
 
-    private static final String ERRORMSG = "Illegal method call. This session was previously disposed.";
+    public static final String ERRORMSG = "Illegal method call. This session was previously disposed.";
 
     private static final long serialVersionUID = 510l;
     public    byte[] bytes;
@@ -249,8 +249,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private InternalProcessRuntime processRuntime;
 
     private Map<String, Object> runtimeServices;
-
-    private boolean alive = true;
 
     protected PropagationList propagationList;
 
@@ -490,6 +488,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void dispose() {
+        if (!agenda.dispose()) {
+            return;
+        }
+
         if (logger != null) {
             try {
                 logger.close();
@@ -504,6 +506,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         for (KieBaseEventListener listener : kieBaseEventListeners) {
             this.kBase.removeEventListener(listener);
         }
+
         if (processRuntime != null) {
             this.processRuntime.dispose();
         }
@@ -515,8 +518,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             ((org.drools.core.process.instance.WorkItemManager)this.workItemManager).dispose();
         }
 
-        alive = false;
-
         this.kBase.disposeStatefulSession( this );
         if (this.kBase.getConfiguration().isMBeansEnabled()) {
             DroolsManagementAgent.getInstance().unregisterKnowledgeSession(this);
@@ -524,7 +525,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public boolean isAlive() {
-        return alive;
+        return agenda.isAlive();
     }
 
     public void destroy() {
@@ -1105,8 +1106,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.processRuntime = null;
 
         initInitialFact(kBase, null);
-
-        alive = true;
     }
 
     public void reset(int handleId,
@@ -1261,7 +1260,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     protected void checkAlive() {
-        if (!alive) {
+        if (!isAlive()) {
             throw new IllegalStateException( ERRORMSG );
         }
     }
@@ -1304,7 +1303,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             // This will place a halt command on the propagation queue
             // that will allow the engine to halt safely
             if ( agenda.isFiring() ) {
-                propagationList.addEntry(new Halt());
+                addPropagation(new Halt());
             }
         }
     }

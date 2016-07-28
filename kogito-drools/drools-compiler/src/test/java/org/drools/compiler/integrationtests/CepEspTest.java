@@ -118,7 +118,7 @@ public class CepEspTest extends CommonTestMethodBase {
                  "   @timestamp( getProperties().get( 'timestamp' )-1 ) \n" +
                  "   @duration( getProperties().get( 'duration' )+1 ) \n" +
                 "end\n";
-        
+
         KnowledgeBase kbase = loadKnowledgeBaseFromString( rule );
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         Message msg = new Message();
