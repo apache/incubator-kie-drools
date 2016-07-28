@@ -109,6 +109,4 @@ public interface InternalKnowledgePackage extends KnowledgePackage, Externalizab
 
     boolean hasTraitRegistry();
     TraitRegistry getTraitRegistry();
-
-    boolean isEvent( Class clazz );
 }
