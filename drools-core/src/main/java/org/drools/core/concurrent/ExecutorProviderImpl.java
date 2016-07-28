@@ -17,6 +17,8 @@ package org.drools.core.concurrent;
 
 import org.kie.api.concurrent.KieExecutors;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
@@ -29,29 +31,50 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecutorProviderImpl implements KieExecutors {
 
+    public static final String EXECUTOR_SERVICE_PROPERTY = "drools.executorService";
+    public static final String DEFAULT_JEE_EXECUTOR_SERVICE_NAME = "java:comp/env/concurrent/ThreadPool";
+
     public static final String THREAD_FACTORY_PROPERTY = "drools.threadFactory";
 
     private static class ExecutorHolder {
         private static final java.util.concurrent.ExecutorService executor;
 
         static {
-            String threadFactoryClass = System.getProperty( THREAD_FACTORY_PROPERTY );
-            ThreadFactory threadFactory;
+            java.util.concurrent.ExecutorService newExecutor = null;
 
-            if (threadFactoryClass == null) {
-                threadFactory = new DaemonThreadFactory();
-            } else {
-                try {
-                    threadFactory = (ThreadFactory) Class.forName( threadFactoryClass ).newInstance();
-                } catch (Exception e) {
-                    throw new RuntimeException( "Unable to instance a ThreadFactory of class " + threadFactoryClass, e );
+            String executorServiceName = System.getProperty( EXECUTOR_SERVICE_PROPERTY );
+            try {
+                InitialContext ctx = new InitialContext();
+                newExecutor = (java.util.concurrent.ExecutorService) ctx.lookup(executorServiceName != null ? executorServiceName : DEFAULT_JEE_EXECUTOR_SERVICE_NAME);
+            } catch (NamingException e) {
+                // not in a JEE container, throws an Exception only if user explicitly defined
+                // a JNDI name for the ExecutorService, otherwise ignore
+                if (executorServiceName != null) {
+                    throw new RuntimeException( "Unable to find an ExecutorService with JNDI name: " + executorServiceName, e );
                 }
             }
 
-            executor = new ThreadPoolExecutor(Pool.SIZE, Pool.SIZE,
-                                              60L, TimeUnit.SECONDS,
-                                              new LinkedBlockingQueue<Runnable>(),
-                                              threadFactory);
+            if (newExecutor == null) {
+                String threadFactoryClass = System.getProperty( THREAD_FACTORY_PROPERTY );
+                ThreadFactory threadFactory;
+
+                if ( threadFactoryClass == null ) {
+                    threadFactory = new DaemonThreadFactory();
+                } else {
+                    try {
+                        threadFactory = (ThreadFactory) Class.forName( threadFactoryClass ).newInstance();
+                    } catch (Exception e) {
+                        throw new RuntimeException( "Unable to instance a ThreadFactory of class " + threadFactoryClass, e );
+                    }
+                }
+
+                newExecutor = new ThreadPoolExecutor( Pool.SIZE, Pool.SIZE,
+                                                      60L, TimeUnit.SECONDS,
+                                                      new LinkedBlockingQueue<Runnable>(),
+                                                      threadFactory );
+            }
+
+            executor = newExecutor;
         }
     }
 
