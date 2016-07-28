@@ -16,12 +16,7 @@
 package org.jbpm.process.workitem;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.drools.core.process.core.ParameterDefinition;
 import org.drools.core.process.core.datatype.DataType;
@@ -36,6 +31,10 @@ public class WorkItemRepository {
     private static final Logger logger = LoggerFactory.getLogger(WorkItemRepository.class);
 
 	public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path) {
+		return getWorkDefinitions(path, null);
+	}
+
+	public static Map<String, WorkDefinitionImpl> getWorkDefinitions(String path, String[] definitionNames) {
 		Map<String, WorkDefinitionImpl> workDefinitions = new HashMap<String, WorkDefinitionImpl>();
 		List<Map<String, Object>> workDefinitionsMaps = getAllWorkDefinitionsMap(path);
 		for (Map<String, Object> workDefinitionMap : workDefinitionsMaps) {
@@ -67,8 +66,30 @@ public class WorkItemRepository {
 				workDefinition.setResults(results);
 				workDefinition.setDefaultHandler((String) workDefinitionMap.get("defaultHandler"));
 				workDefinition.setDependencies(((List<String>) workDefinitionMap.get("dependencies")).toArray(new String[0]));
+
+				if(workDefinitionMap.get("mavenDependencies") != null) {
+					workDefinition.setMavenDependencies(((List<String>) workDefinitionMap.get("mavenDependencies")).toArray(new String[0]));
+				}
+
+				if(workDefinitionMap.get("version") != null) {
+					workDefinition.setVersion((String) workDefinitionMap.get("version"));
+				}
+
+				if(workDefinitionMap.get("description") != null) {
+					workDefinition.setDescription((String) workDefinitionMap.get("description"));
+				}
+
 				workDefinitions.put(workDefinition.getName(), workDefinition);
 			}
+		}
+
+		if(definitionNames!= null) {
+			if(definitionNames.length > 0) {
+				workDefinitions.keySet().retainAll(new HashSet(Arrays.asList(definitionNames)));
+			} else {
+				return new HashMap<String, WorkDefinitionImpl>();
+			}
+
 		}
 		return workDefinitions;
 	}
@@ -119,7 +140,7 @@ public class WorkItemRepository {
 			}
 			return result;
 		} catch (Throwable t) {
-		    logger.error("Error occured while loading work definitions " + path, t);
+			logger.error("Error occured while loading work definitions " + path, t);
 			throw new RuntimeException("Could not parse work definitions " + path + ": " + t.getMessage());
 		}
 	}

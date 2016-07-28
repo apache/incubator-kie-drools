@@ -20,12 +20,15 @@ public class WorkDefinitionImpl extends org.drools.core.process.core.impl.WorkDe
 	private static final long serialVersionUID = 5L;
 	
 	private String[] dependencies;
+	private String[] mavenDependencies;
+	private String description;
 	private String defaultHandler;
 	private String category;
 	private String path;
 	private String file;
 	private String documentation;
 	private String iconEncoded;
+	private String version;
 	
 	public String getDocumentation() {
 		return documentation;
@@ -81,6 +84,30 @@ public class WorkDefinitionImpl extends org.drools.core.process.core.impl.WorkDe
 
 	public void setIconEncoded(String iconEncoded) {
 		this.iconEncoded = iconEncoded;
+	}
+
+	public String[] getMavenDependencies() {
+		return mavenDependencies;
+	}
+
+	public void setMavenDependencies(String[] mavenDependencies) {
+		this.mavenDependencies = mavenDependencies;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 }
