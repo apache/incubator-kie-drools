@@ -31,6 +31,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecutorProviderImpl implements KieExecutors {
 
+    public static final String EXECUTOR_SERVICE_PROPERTY = "drools.executorService";
+    public static final String DEFAULT_JEE_EXECUTOR_SERVICE_NAME = "java:comp/env/concurrent/ThreadPool";
+
     public static final String THREAD_FACTORY_PROPERTY = "drools.threadFactory";
 
     private static class ExecutorHolder {
@@ -39,11 +42,16 @@ public class ExecutorProviderImpl implements KieExecutors {
         static {
             java.util.concurrent.ExecutorService newExecutor = null;
 
+            String executorServiceName = System.getProperty( EXECUTOR_SERVICE_PROPERTY );
             try {
                 InitialContext ctx = new InitialContext();
-                newExecutor = (java.util.concurrent.ExecutorService) ctx.lookup("java:comp/env/concurrent/ThreadPool");
+                newExecutor = (java.util.concurrent.ExecutorService) ctx.lookup(executorServiceName != null ? executorServiceName : DEFAULT_JEE_EXECUTOR_SERVICE_NAME);
             } catch (NamingException e) {
-                // not in a J2EE container -- ignore
+                // not in a JEE container, throws an Exception only if user explicitly defined
+                // a JNDI name for the ExecutorService, otherwise ignore
+                if (executorServiceName != null) {
+                    throw new RuntimeException( "Unable to find an ExecutorService with JNDI name: " + executorServiceName, e );
+                }
             }
 
             if (newExecutor == null) {
