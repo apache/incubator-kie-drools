@@ -249,6 +249,10 @@ public interface InternalAgenda
      */
     void fireUntilHalt(AgendaFilter agendaFilter);
 
+    boolean dispose();
+
+    boolean isAlive();
+
     AgendaGroup getAgendaGroup(String name);
 
     AgendaGroup getAgendaGroup(final String name,

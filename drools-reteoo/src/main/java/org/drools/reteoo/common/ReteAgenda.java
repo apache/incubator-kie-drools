@@ -147,6 +147,8 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     // @TODO make serialisation work
     private InternalActivationGroup stagedActivations;
 
+    private boolean alive = true;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -1511,4 +1513,16 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     }
 
     public void registerExpiration(PropagationContext ectx) { }
+
+    @Override
+    public boolean dispose() {
+        boolean wasAlive = alive;
+        alive = false;
+        return wasAlive;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return alive;
+    }
 }
