@@ -48,14 +48,14 @@ public class SequentialKnowledgeHelper
 
     private static final long                  serialVersionUID = 510l;
 
-    private RuleImpl                           rule;
-    private GroupElement                       subrule;
-    private Activation                         activation;
-    private Tuple                              tuple;
-    private final InternalWorkingMemoryActions workingMemory;
+    private RuleImpl                                    rule;
+    private GroupElement                                subrule;
+    private Activation                                  activation;
+    private Tuple                                       tuple;
+    private final WrappedStatefulKnowledgeSessionForRHS workingMemory;
 
     public SequentialKnowledgeHelper(final WorkingMemory workingMemory) {
-        this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
+        this.workingMemory = new WrappedStatefulKnowledgeSessionForRHS( workingMemory );
     }
 
     public void setActivation(final Activation agendaItem) {
@@ -103,7 +103,7 @@ public class SequentialKnowledgeHelper
     }
     
     public KnowledgeRuntime getKnowledgeRuntime() {
-        return (StatefulKnowledgeSessionImpl) this.workingMemory;
+        return this.workingMemory;
      }
 
     public KieRuntime getKieRuntime() {

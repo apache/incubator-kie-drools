@@ -26,6 +26,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionClock;
 
 import java.util.Collection;
@@ -198,7 +199,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @throws IllegalArgumentException
      *         if no query named "query" is found in the rulebase
      */
-    QueryResultsImpl getQueryResults(String query, Object... arguments);
+    QueryResults getQueryResults(String query, Object... arguments);
 
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda

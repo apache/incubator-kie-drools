@@ -37,21 +37,25 @@ public class SynchronizedPropagationList implements PropagationList {
     @Override
     public void addEntry(final PropagationEntry entry) {
         if (entry.requiresImmediateFlushing()) {
-            workingMemory.getAgenda().executeTask( new ExecutableEntry() {
-                @Override
-                public void execute() {
-                    if (entry instanceof PhreakTimerNode.TimerAction) {
-                        ( (PhreakTimerNode.TimerAction) entry ).execute( workingMemory, true );
-                    } else {
-                        entry.execute( workingMemory );
+        	if (entry.isCalledFromRHS()) {
+        		entry.execute(workingMemory);
+        	} else {
+        		workingMemory.getAgenda().executeTask( new ExecutableEntry() {
+        			@Override
+                    public void execute() {
+                        if (entry instanceof PhreakTimerNode.TimerAction) {
+                            ( (PhreakTimerNode.TimerAction) entry ).execute( workingMemory, true );
+                        } else {
+                            entry.execute( workingMemory );
+                        }
                     }
-                }
 
-                @Override
-                public void enqueue() {
-                    internalAddEntry( entry );
-                }
-            } );
+                    @Override
+                    public void enqueue() {
+                        internalAddEntry( entry );
+                    }
+                } );
+        	}
         } else {
             internalAddEntry( entry );
         }

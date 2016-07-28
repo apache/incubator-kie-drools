@@ -203,7 +203,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
     }
 
     @Override
-    protected BaseNode[] evalQuery(String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx) {
+    protected BaseNode[] evalQuery(final String queryName, final DroolsQuery queryObject, final InternalFactHandle handle, final PropagationContext pCtx, final boolean isCalledFromRHS) {
         initInitialFact();
 
         BaseNode[] tnodes = kBase.getReteooBuilder().getTerminalNodesForQuery( queryName );
