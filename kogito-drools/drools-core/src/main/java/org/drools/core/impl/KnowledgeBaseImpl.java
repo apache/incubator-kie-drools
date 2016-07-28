@@ -1835,20 +1835,6 @@ public class KnowledgeBaseImpl
         return Collections.unmodifiableList( this.partitionIDs );
     }
 
-    public boolean isEvent( Class<?> clazz ) {
-        readLock();
-        try {
-            for (InternalKnowledgePackage pkg : this.pkgs.values()) {
-                if (pkg.isEvent( clazz )) {
-                    return true;
-                }
-            }
-            return false;
-        } finally {
-            readUnlock();
-        }
-    }
-
     public FactType getFactType(String packageName,
                                 String typeName) {
         return getFactType(packageName + "." + typeName);

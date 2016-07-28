@@ -16,6 +16,7 @@
 
 package org.drools.compiler.rule.builder;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -97,6 +98,7 @@ import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.drools.core.util.index.IndexUtil;
 import org.kie.api.definition.rule.Watch;
+import org.kie.api.definition.type.Role;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
 import org.mvel2.MVEL;
@@ -289,7 +291,7 @@ public class PatternBuilder
             return new FactTemplateObjectType( factTemplate );
         } else {
             try {
-                final Class< ? > userProvidedClass = context.getDialect().getTypeResolver().resolveType( objectType );
+                final Class<?> userProvidedClass = context.getDialect().getTypeResolver().resolveType( objectType );
                 if ( !Modifier.isPublic(userProvidedClass.getModifiers()) ) {
                     context.addError(new DescrBuildError(context.getParentDescr(),
                                                          patternDescr,
@@ -297,14 +299,33 @@ public class PatternBuilder
                                                          "The class '" + objectType + "' is not public"));
                     return null;
                 }
-                PackageRegistry pkgr = context.getKnowledgeBuilder().getPackageRegistry( ClassUtils.getPackage( userProvidedClass ) );
-                InternalKnowledgePackage pkg = pkgr == null ? context.getPkg() : pkgr.getPackage();
-                return new ClassObjectType( userProvidedClass, pkg.isEvent( userProvidedClass ) );
+                return new ClassObjectType( userProvidedClass, isEvent(context, userProvidedClass) );
             } catch ( final ClassNotFoundException e ) {
                 // swallow as we'll do another check in a moment and then record the problem
             }
         }
         return null;
+    }
+
+    private boolean isEvent(RuleBuildContext context, Class<?> userProvidedClass) {
+        String packageName = ClassUtils.getPackage( userProvidedClass );
+        KnowledgeBuilderImpl kbuilder = context.getKnowledgeBuilder();
+        PackageRegistry pkgr = kbuilder.getPackageRegistry( packageName );
+        TypeDeclaration typeDeclaration = pkgr != null ? pkgr.getPackage().getTypeDeclaration( userProvidedClass ) : null;
+        if (typeDeclaration == null && kbuilder.getKnowledgeBase() != null) {
+            // check if the type declaration is contained only in the already existing kbase (possible during incremental compilation)
+            InternalKnowledgePackage pkg = kbuilder.getKnowledgeBase().getPackage( packageName );
+            typeDeclaration = pkg != null ? pkg.getTypeDeclaration( userProvidedClass ) : null;
+        }
+        if (typeDeclaration == null) {
+            typeDeclaration = context.getPkg().getTypeDeclaration( userProvidedClass );
+        }
+
+        if (typeDeclaration != null) {
+            return typeDeclaration.getRole() == Role.Type.EVENT;
+        }
+        Role role = (Role) userProvidedClass.getAnnotation( Role.class );
+        return role != null && role.value() == Role.Type.EVENT;
     }
 
     private void processSource( RuleBuildContext context, PatternDescr patternDescr, Pattern pattern ) {
