@@ -43,6 +43,8 @@ public interface PropagationEntry {
     boolean isMarshallable();
 
     boolean requiresImmediateFlushing();
+    
+    boolean isCalledFromRHS();
 
     abstract class AbstractPropagationEntry implements PropagationEntry {
         private PropagationEntry next;
@@ -62,6 +64,11 @@ public interface PropagationEntry {
 
         @Override
         public boolean requiresImmediateFlushing() {
+            return false;
+        }
+        
+        @Override
+        public boolean isCalledFromRHS() {
             return false;
         }
 
