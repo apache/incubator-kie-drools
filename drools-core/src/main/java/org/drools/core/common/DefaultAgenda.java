@@ -133,19 +133,22 @@ public class DefaultAgenda
 
     private volatile List<PropagationContext>                    expirationContexts = new ArrayList<PropagationContext>();
 
-    public enum ExecutionState {     // fireAllRule | fireUntilHalt | executeTask <-- required action
-        INACTIVE( false ),           // fire        | fire          | exec
-        FIRING_ALL_RULES( true ),    // do nothing  | wait + fire   | enqueue
-        FIRING_UNTIL_HALT( true ),   // do nothing  | do nothing    | enqueue
-        HALTING( false ),            // wait + fire | wait + fire   | enqueue
-        EXECUTING_TASK( false ),     // wait + fire | wait + fire   | wait + exec
-        DEACTIVATED( false ),        // wait + fire | wait + fire   | wait + exec
-        DISPOSED( false );           // no further action is allowed
+    public enum ExecutionState {         // fireAllRule | fireUntilHalt | executeTask <-- required action
+        INACTIVE( false, true ),         // fire        | fire          | exec
+        FIRING_ALL_RULES( true, true ),  // do nothing  | wait + fire   | enqueue
+        FIRING_UNTIL_HALT( true, true ), // do nothing  | do nothing    | enqueue
+        HALTING( false, true ),          // wait + fire | wait + fire   | enqueue
+        EXECUTING_TASK( false, true ),   // wait + fire | wait + fire   | wait + exec
+        DEACTIVATED( false, true ),      // wait + fire | wait + fire   | wait + exec
+        DISPOSING( false, false ),       // no further action is allowed
+        DISPOSED( false, false );        // no further action is allowed
 
         private final boolean firing;
+        private final boolean alive;
 
-        ExecutionState( boolean firing ) {
+        ExecutionState( boolean firing, boolean alive ) {
             this.firing = firing;
+            this.alive = alive;
         }
 
         public boolean isFiring() {
@@ -153,7 +156,7 @@ public class DefaultAgenda
         }
 
         public boolean isAlive() {
-            return this != ExecutionState.DISPOSED;
+            return alive;
         }
     }
 
@@ -1436,7 +1439,10 @@ public class DefaultAgenda
     public void executeTask( ExecutableEntry executable ) {
         synchronized (stateMachineLock) {
             // state is never changed outside of a sync block, so this is safe.
-            if (isFiring()) {
+            if (!currentState.isAlive()) {
+                return;
+            }
+            if (currentState.isFiring()) {
                 executable.enqueue();
                 return;
             } else if (currentState != ExecutionState.EXECUTING_TASK) {
@@ -1499,14 +1505,14 @@ public class DefaultAgenda
         synchronized (stateMachineLock) {
             if (currentState != ExecutionState.INACTIVE) {
                 setCurrentState( ExecutionState.INACTIVE );
-                stateMachineLock.notify();
+                stateMachineLock.notifyAll();
                 workingMemory.notifyEngineInactive();
             }
         }
     }
 
     private void setCurrentState(ExecutionState state) {
-        if (!currentState.isAlive()) {
+        if (currentState == ExecutionState.DISPOSED) {
             return;
         }
         if ( log.isDebugEnabled() ) {
@@ -1517,11 +1523,12 @@ public class DefaultAgenda
 
     public boolean dispose() {
         synchronized (stateMachineLock) {
-            if (currentState == ExecutionState.DISPOSED) {
+            if (!currentState.isAlive()) {
                 return false;
             }
             if (currentState.isFiring()) {
-                setCurrentState( ExecutionState.HALTING );
+                setCurrentState( ExecutionState.DISPOSING );
+                workingMemory.notifyWaitOnRest();
             }
             waitAndEnterExecutionState( ExecutionState.DISPOSED );
             return true;
