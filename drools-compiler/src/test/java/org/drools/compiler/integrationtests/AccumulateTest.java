@@ -66,6 +66,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -3089,5 +3090,33 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         assertEquals( 1, list.size() );
+    }
+    
+    @Test
+    public void testCCEAtRuntimeFromAccumulate() {
+    	// DROOLS-1243
+        String drl =
+        		"import " + MyPerson.class.getCanonicalName() + ";\n" +
+        		"import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" + 
+                "  $theFrom : BigDecimal() from accumulate(MyPerson( $val : age ); \n" +
+                "                                          sum( $val ) )\n" + 
+                "then\n" + 
+                "  list.add($theFrom);\n" + 
+                "end\n";
+        System.out.println(drl);
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<Object> list = new ArrayList<Object>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(new MyPerson("Matteo", 7, null));
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+        Object result = list.get(0);
+		System.out.println(result.getClass() + " " + result.toString());
     }
 }
