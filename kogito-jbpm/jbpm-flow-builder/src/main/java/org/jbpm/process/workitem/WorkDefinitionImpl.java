@@ -29,6 +29,7 @@ public class WorkDefinitionImpl extends org.drools.core.process.core.impl.WorkDe
 	private String documentation;
 	private String iconEncoded;
 	private String version;
+	private String widType;
 	
 	public String getDocumentation() {
 		return documentation;
@@ -66,9 +67,7 @@ public class WorkDefinitionImpl extends org.drools.core.process.core.impl.WorkDe
 		return dependencies;
 	}
 	
-	public void setDependencies(String[] dependencies) {
-		this.dependencies = dependencies;
-	}
+	public void setDependencies(String[] dependencies) { this.dependencies = dependencies; }
 	
 	public String getDefaultHandler() {
 		return defaultHandler;
@@ -94,20 +93,18 @@ public class WorkDefinitionImpl extends org.drools.core.process.core.impl.WorkDe
 		this.mavenDependencies = mavenDependencies;
 	}
 
-	public String getVersion() {
-		return version;
-	}
+	public String getVersion() { return version; }
 
 	public void setVersion(String version) {
 		this.version = version;
 	}
 
-	public String getDescription() {
-		return description;
-	}
+	public String getDescription() { return description; }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+	public void setDescription(String description) { this.description = description; }
+
+	public String getWidType() { return widType; }
+
+	public void setWidType(String widType) { this.widType = widType; }
 	
 }

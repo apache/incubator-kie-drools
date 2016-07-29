@@ -65,6 +65,7 @@ public class WorkItemRepository {
 				}
 				workDefinition.setResults(results);
 				workDefinition.setDefaultHandler((String) workDefinitionMap.get("defaultHandler"));
+
 				workDefinition.setDependencies(((List<String>) workDefinitionMap.get("dependencies")).toArray(new String[0]));
 
 				if(workDefinitionMap.get("mavenDependencies") != null) {
@@ -77,6 +78,10 @@ public class WorkItemRepository {
 
 				if(workDefinitionMap.get("description") != null) {
 					workDefinition.setDescription((String) workDefinitionMap.get("description"));
+				}
+
+				if(workDefinitionMap.get("widType") != null) {
+					workDefinition.setWidType((String) workDefinitionMap.get("widType"));
 				}
 
 				workDefinitions.put(workDefinition.getName(), workDefinition);
@@ -130,18 +135,30 @@ public class WorkItemRepository {
 			// Do nothing
 		}
 		if (content == null) {
-			return new ArrayList<Map<String, Object>>();
+			return new ArrayList();
 		}
 		try {
 			List<Map<String, Object>> result = (List<Map<String, Object>>) MVELSafeHelper.getEvaluator().eval(content, new HashMap());
 			for (Map<String, Object> wid: result) {
 				wid.put("path", parentPath + "/" + file);
 				wid.put("file", file + ".wid");
+				wid.put("widType", "mvel");
 			}
 			return result;
 		} catch (Throwable t) {
-			logger.error("Error occured while loading work definitions " + path, t);
-			throw new RuntimeException("Could not parse work definitions " + path + ": " + t.getMessage());
+			logger.warn("Could not parse work definition as mvel. Trying as json.");
+			try {
+				List<Map<String, Object>> result = JsonWorkItemParser.parse(content);
+				for (Map<String, Object> wid: result) {
+					wid.put("path", parentPath + "/" + file);
+					wid.put("file", file + ".wid");
+					wid.put("widType", "json");
+				}
+				return result;
+			} catch( Throwable tt) {
+				logger.error("Error occured while loading work definitions " + path, tt);
+				throw new RuntimeException("Could not parse work definitions " + path + ": " + tt.getMessage());
+			}
 		}
 	}
 
