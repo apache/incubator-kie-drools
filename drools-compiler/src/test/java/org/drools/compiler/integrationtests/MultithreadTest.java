@@ -775,7 +775,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testConcurrentFireAndDispose() throws InterruptedException {
         // DROOLS-1103
         String drl = "rule R no-loop timer( int: 1s )\n" +
@@ -815,5 +815,45 @@ public class MultithreadTest extends CommonTestMethodBase {
             e.printStackTrace();
             fail( "java.util.concurrent.RejectedExecutionException should not happen" );
         }
+    }
+
+    @Test(timeout = 10000)
+    public void testFireUntilHaltAndDispose() throws InterruptedException {
+        // DROOLS-1103
+        String drl = "rule R no-loop timer( int: 1s )\n" +
+                     "when\n" +
+                     "    String()\n" +
+                     "then\n" +
+                     "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSessionConfiguration ksconf = KieServices.Factory.get().newKieSessionConfiguration();
+        ksconf.setOption( TimedRuleExectionOption.YES );
+        final KieSession ksession = kbase.newKieSession(ksconf, null);
+
+        new Thread() {
+            @Override
+            public void run() {
+                ksession.fireUntilHalt();
+            }
+        }.start();
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            // do nothing
+        }
+
+        ksession.insert("xxx");
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            // do nothing
+        }
+
+        ksession.dispose();
     }
 }
