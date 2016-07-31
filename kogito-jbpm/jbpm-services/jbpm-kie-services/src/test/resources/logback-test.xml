@@ -22,6 +22,7 @@
   <logger name="org.jbpm.kie.services.impl.store" level="info"/>
   <logger name="org.dashbuilder.dataprovider.sql.SQLDataSetProvider" level="info"/>
   
+  <logger name="org.drools.persistence.SingleSessionCommandService" level="off" />
   
   <root level="info">
     <appender-ref ref="consoleAppender" />

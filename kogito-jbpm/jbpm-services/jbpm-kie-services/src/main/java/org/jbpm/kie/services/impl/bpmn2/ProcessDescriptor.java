@@ -18,6 +18,7 @@ package org.jbpm.kie.services.impl.bpmn2;
 import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,6 +58,9 @@ public class ProcessDescriptor implements Serializable {
     private Set<String> referencedClasses = new HashSet<String>(1);
     private Set<String> unqualifiedClasses = new HashSet<String>(1);
     private Set<String> referencedRules = new HashSet<String>(1);
+
+    private Collection<String> signals = Collections.emptySet();
+    private Collection<String> globals = Collections.emptySet();
 
     private Queue<String> unresolvedReusableSubProcessNames = new ArrayDeque<String>();
 
@@ -160,6 +164,22 @@ public class ProcessDescriptor implements Serializable {
     public Set<String> getReferencedRules() {
         return referencedRules;
     }
+
+    public Collection<String> getSignals() {
+        return signals;
+    }
+
+    public void setSignals( Collection<String> signals ) {
+       this.signals = signals;
+    }
+
+    public Collection<String> getGlobals() {
+        return globals;
+    }
+
+    public void setGlobals( Collection<String> globals ) {
+        this.globals = globals;
+     }
 
     public void clear(){
         process = null;

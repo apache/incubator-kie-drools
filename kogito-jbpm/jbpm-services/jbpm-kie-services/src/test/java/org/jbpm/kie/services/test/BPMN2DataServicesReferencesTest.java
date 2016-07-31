@@ -64,30 +64,33 @@ import org.slf4j.LoggerFactory;
 public class BPMN2DataServicesReferencesTest extends AbstractKieServicesBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(DeploymentIdResolver.class);
-    
+
     private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
     private DeploymentUnit deploymentUnit;
     private String deploymentId;
- 
+
     private boolean loadBusinesRuleProcesses = true;
     private static final String PROC_ID_BUSINESS_RULE =          "org.jbpm.kie.test.references.business";
     private static final String RULE_BUSINESS_RULE_PROCESS =     "org.jbpm.kie.test.references.rules";
-    
+
     private boolean loadCallActivityProcesses = true;
     private static final String PROC_ID_CALL_ACTIVITY =          "org.jbpm.kie.test.references.parent";
     private static final String PROC_ID_CALL_ACTIVITY_BY_NAME =  "org.jbpm.kie.test.references.parent.name";
     private static final String PROC_ID_ACTIVITY_CALLED =        "org.jbpm.kie.test.references.subprocess";
-    
+
     private boolean loadGlobalImportProcesses = true;
     private static final String PROC_ID_GLOBAL =                 "org.jbpm.kie.test.references.global";
     private static final String PROC_ID_IMPORT =                 "org.jbpm.kie.test.references.import";
-    
+
     private boolean loadJavaMvelScriptProcesses = true;
     private static final String PROC_ID_JAVA_SCRIPT_QUALIFIED_CLASS = "org.jbpm.kie.test.references.qualified.java";
     private static final String PROC_ID_JAVA_THING_SCRIPT_QUALIFIED_CLASS = "org.jbpm.kie.test.references.qualified.java.thing";
     private static final String PROC_ID_MVEL_SCRIPT_QUALIFIED_CLASS = "org.jbpm.kie.test.references.qualified.mvel";
     private static final String PROC_ID_RULE_SCRIPT_QUALIFIED_CLASS = "org.jbpm.kie.test.references.qualified.drools";
-    
+
+    private boolean loadSignalGlobalInfoProcess = true;
+    private static final String PROC_ID_SIGNAL = "org.jbpm.signal";
+
     @Before
     public void prepare() {
     	configureServices();
@@ -96,36 +99,41 @@ public class BPMN2DataServicesReferencesTest extends AbstractKieServicesBaseTest
         List<String> resources = new ArrayList<String>();
 
         // extension
-        if( loadGlobalImportProcesses ) { 
+        if( loadGlobalImportProcesses ) {
             resources.add("repo/processes/references/importWithScriptTask.bpmn2");
             resources.add("repo/processes/references/globalBasedOnEntryExitScriptProcess.bpmn2");
         }
 
         // call activity (referenced sub processes)
-        if( loadCallActivityProcesses ) { 
+        if( loadCallActivityProcesses ) {
             resources.add("repo/processes/references/callActivityByNameParent.bpmn2");
             resources.add("repo/processes/references/callActivityParent.bpmn2");
             resources.add("repo/processes/references/callActivitySubProcess.bpmn2");
         }
-        
+
         // item def, business rules
-        if( loadBusinesRuleProcesses ) { 
+        if( loadBusinesRuleProcesses ) {
             resources.add("repo/processes/references/businessRuleTask.bpmn2");
             resources.add("repo/processes/references/businessRuleTask.drl");
         }
-       
+
         // qualified class in script
-        if( loadJavaMvelScriptProcesses ) { 
+        if( loadJavaMvelScriptProcesses ) {
             resources.add("repo/processes/references/javaScriptTaskWithQualifiedClass.bpmn2");
             resources.add("repo/processes/references/javaScriptTaskWithQualifiedClassItemDefinition.bpmn2");
             resources.add("repo/processes/references/mvelScriptTaskWithQualifiedClass.bpmn2");
             resources.add("repo/processes/references/rulesScriptTaskWithQualifiedClass.bpmn2");
         }
-        
+
+        // qualified class in script
+        if( loadSignalGlobalInfoProcess ) {
+            resources.add("repo/processes/general/signal.bpmn");
+        }
+
         InternalKieModule kJar1 = createKieJar(ks, releaseId, resources);
         File pom = new File("target/kmodule", "pom.xml");
         pom.getParentFile().mkdir();
-        
+
         FileOutputStream fs = null;
         try {
             fs = new FileOutputStream(pom);
@@ -133,28 +141,39 @@ public class BPMN2DataServicesReferencesTest extends AbstractKieServicesBaseTest
         } catch (Exception e) {
             fail( "Unable to write pom.xml to filesystem: " + e.getMessage());
         }
-        
+
         try {
             fs.close();
         } catch (Exception e) {
            logger.info("Unable to close fileystem used to write pom.xml" );
         }
-        
+
         MavenRepository repository = getMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
-        
+
         // check
         assertNotNull(deploymentService);
-        
+
         deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
         deploymentId = deploymentUnit.getIdentifier();
+
+        procInstIds.clear();
     }
-    
+
+    private Set<Long> procInstIds = new HashSet<>();
+
     @After
     public void cleanup() {
+        for( long procInstId : procInstIds ) {
+            try {
+                processService.abortProcessInstance(procInstId);
+            } catch( Exception e ) {
+                // ignore if it fails..
+            }
+        }
     	cleanupSingletonSessionId();
         if (units != null && !units.isEmpty()) {
             for (DeploymentUnit unit : units) {
@@ -165,274 +184,324 @@ public class BPMN2DataServicesReferencesTest extends AbstractKieServicesBaseTest
         close();
     }
 
+    @SafeVarargs
+    private final long startProcess(String deploymentId, String processId, Map<String, Object>... params) {
+        Long procInstId;
+        if( params != null && params.length > 0 ) {
+            procInstId = processService.startProcess(deploymentId, processId, params[0]);
+        } else {
+            procInstId = processService.startProcess(deploymentId, processId);
+        }
+        procInstIds.add(procInstId);
+        return procInstId;
+    }
+
     @Test
     public void testImport() throws IOException {
         Assume.assumeTrue("Skip import/global tests", loadGlobalImportProcesses);
         String processId = PROC_ID_IMPORT;
-        
+
         ProcessDefinition procDef = bpmn2Service.getProcessDefinition(deploymentId, processId);
         assertNotNull(procDef);
-      
+
         // check that process runs
         Person person = new Person();
         person.setName("Max Rockatansky");
         person.setId(1979l);
         person.setTime(3l);
-       
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("person", person);
-        Long procId = processService.startProcess(deploymentId, processId, params);
-        
+        Long procId = startProcess(deploymentId, processId, params);
+
         ProcessInstance procInst = processService.getProcessInstance(procId);
         assertNull(procInst);
-        
+
         // verify process information
         Collection<String> refClasses = bpmn2Service.getJavaClasses(deploymentId, processId);
         assertNotNull( "Null set of referenced classes", refClasses );
         assertFalse( "Empty set of referenced classes", refClasses.isEmpty() );
         assertEquals( "Number referenced classes", 1, refClasses.size() );
         assertEquals( "Imported class in process", refClasses.iterator().next(), Person.class.getName() );
-    } 
-    
+    }
+
     @Test
     public void testGlobal() throws IOException {
         Assume.assumeTrue("Skip import/global tests", loadGlobalImportProcesses);
         String processId = PROC_ID_GLOBAL;
-        
+
         ProcessDefinition procDef = bpmn2Service.getProcessDefinition(deploymentId, processId);
         assertNotNull(procDef);
-       
+
         // check that process runs
         Person person = new Person();
         person.setName("Max Rockatansky");
         person.setId(1979l);
         person.setTime(3l);
-       
+
         KieSession ksession = deploymentService.getRuntimeManager(deploymentId).getRuntimeEngine(null).getKieSession();
         ksession.setGlobal("person", person);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new SystemOutWorkItemHandler());
-        
-        Long procId = processService.startProcess(deploymentId, processId);
+
+        Long procId = startProcess(deploymentId, processId);
         ProcessInstance procInst = processService.getProcessInstance(procId);
         assertNull(procInst);
         String log = person.getLog();
         assertFalse( "Empty log" , log == null || log.trim().isEmpty() );
         assertEquals( "Empty log" , log.split(":").length, 4);
-        
+
         // verify process information
         Collection<String> refClasses = bpmn2Service.getJavaClasses(deploymentId, processId);
         assertNotNull( "Null set of referenced classes", refClasses );
         assertFalse( "Empty set of referenced classes", refClasses.isEmpty() );
         assertEquals( "Number referenced classes", 1, refClasses.size() );
         assertEquals( "Imported class in process", refClasses.iterator().next(), Person.class.getName() );
-    } 
-    
+    }
+
     @Test
     public void testCallActivityByName() throws IOException {
         Assume.assumeTrue("Skip call activity tests", loadCallActivityProcesses);
         String processId = PROC_ID_CALL_ACTIVITY_BY_NAME;
-      
+
         ProcessDefinition procDef = bpmn2Service.getProcessDefinition(deploymentId, processId);
         assertNotNull(procDef);
-        
+
         // run process (to verify that it works)
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "oldValue");
-        Long procId = processService.startProcess(deploymentId, processId, params);
+        Long procId = startProcess(deploymentId, processId, params);
         ProcessInstance procInst = processService.getProcessInstance(procId);
-  
+
         assertNull(procInst);
-       
-        AuditService auditService 
+
+        AuditService auditService
             = deploymentService.getRuntimeManager(deploymentId).getRuntimeEngine(null).getAuditService();
         List<? extends VariableInstanceLog> logs = auditService.findVariableInstances(procId);
-       
+
         boolean foundY = false;
-        for( VariableInstanceLog log: logs ) { 
-           if( log.getVariableId().equals("y") && log.getValue().equals("new value") ) { 
-              foundY = true; 
+        for( VariableInstanceLog log: logs ) {
+           if( log.getVariableId().equals("y") && log.getValue().equals("new value") ) {
+              foundY = true;
            }
         }
         assertTrue( "Parent process did not call sub process", foundY);
-       
-        // check information about process 
+
+        // check information about process
         Collection<String> refProcesses = bpmn2Service.getReusableSubProcesses(deploymentId, processId);
         assertNotNull( "Null set of referenced processes", refProcesses );
         assertFalse( "Empty set of referenced processes", refProcesses.isEmpty() );
         assertEquals( "Number referenced processes", 1, refProcesses.size() );
         assertEquals( "Imported class in processes", PROC_ID_ACTIVITY_CALLED, refProcesses.iterator().next() );
     }
-    
+
     @Test
     public void testCallActivity() throws IOException {
         Assume.assumeTrue("Skip call activity tests", loadCallActivityProcesses);
         String processId = PROC_ID_CALL_ACTIVITY;
-        
+
         ProcessDefinition procDef = bpmn2Service.getProcessDefinition(deploymentId, processId);
         assertNotNull(procDef);
-        
+
         // run process (to verify that it works)
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "oldValue");
-        Long procId = processService.startProcess(deploymentId, processId, params);
+        Long procId = startProcess(deploymentId, processId, params);
         ProcessInstance procInst = processService.getProcessInstance(procId);
-  
+
         assertNull(procInst);
-       
-        AuditService auditService 
+
+        AuditService auditService
             = deploymentService.getRuntimeManager(deploymentId).getRuntimeEngine(null).getAuditService();
         List<? extends VariableInstanceLog> logs = auditService.findVariableInstances(procId);
-       
+
         boolean foundY = false;
-        for( VariableInstanceLog log: logs ) { 
-           if( log.getVariableId().equals("y") && log.getValue().equals("new value") ) { 
-              foundY = true; 
+        for( VariableInstanceLog log: logs ) {
+           if( log.getVariableId().equals("y") && log.getValue().equals("new value") ) {
+              foundY = true;
            }
         }
         assertTrue( "Parent process did not call sub process", foundY);
-       
-        // check information about process 
+
+        // check information about process
         Collection<String> refProcesses = bpmn2Service.getReusableSubProcesses(deploymentId, processId);
         assertNotNull( "Null set of referenced processes", refProcesses );
         assertFalse( "Empty set of referenced processes", refProcesses.isEmpty() );
         assertEquals( "Number referenced processes", 1, refProcesses.size() );
         assertEquals( "Imported class in processes", PROC_ID_ACTIVITY_CALLED, refProcesses.iterator().next() );
     }
-   
+
     @Test
     public void testBusinessRuleTask() throws IOException {
         Assume.assumeTrue("Skip business rule tests", loadBusinesRuleProcesses);
         String processId = PROC_ID_BUSINESS_RULE;
-        
+
         ProcessDefinition procDef = bpmn2Service.getProcessDefinition(deploymentId, processId);
         assertNotNull(procDef);
-       
+
         // check that process runs
         Person person = new Person();
         person.setName("Max Rockatansky");
         person.setId(1979l);
         person.setTime(3l);
-        
+
         KieSession ksession = deploymentService.getRuntimeManager(deploymentId).getRuntimeEngine(null).getKieSession();
         List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
-        Long procId = processService.startProcess(deploymentId, processId);
+        Long procId = startProcess(deploymentId, processId);
 
         String ruleOutput = "Executed";
         assertEquals("Global did not contain output from rule!", 1, list.size());
         assertEquals("Global did not contain correct output of rule!", ruleOutput, list.get(0));
-        
-        ProcessInstance procInst = processService.getProcessInstance(procId); 
+
+        ProcessInstance procInst = processService.getProcessInstance(procId);
         assertNull( "Process instance did not complete!", procInst );
-        
-        // check information about process 
+
+        // check information about process
         Collection<String> refRules = bpmn2Service.getRuleSets(deploymentId, processId);
         assertNotNull( "Null set of imported rules", refRules );
         assertFalse( "Empty set of imported rules", refRules.isEmpty() );
         assertEquals( "Number imported rules", 1, refRules.size() );
-        assertEquals( "Name of imported ruleset", RULE_BUSINESS_RULE_PROCESS, refRules.iterator().next() ); 
+        assertEquals( "Name of imported ruleset", RULE_BUSINESS_RULE_PROCESS, refRules.iterator().next() );
+
+        refRules = procDef.getReferencedRules();
+        assertNotNull( "Null set of imported rules", refRules );
+        assertFalse( "Empty set of imported rules", refRules.isEmpty() );
+        assertEquals( "Number imported rules", 1, refRules.size() );
+        assertEquals( "Name of imported ruleset", RULE_BUSINESS_RULE_PROCESS, refRules.iterator().next() );
     }
-    
-    
+
+
     @Test
     public void testJavaScriptWithQualifiedClass() throws IOException {
         runScriptTest(PROC_ID_JAVA_SCRIPT_QUALIFIED_CLASS);
     }
-   
+
     @Test
     public void testJavaThingScriptWithQualifiedClass() throws IOException {
         runScriptTest(PROC_ID_JAVA_THING_SCRIPT_QUALIFIED_CLASS);
     }
-   
+
     @Test
     public void testMvelScriptWithQualifiedClass() throws IOException {
         runScriptTest(PROC_ID_MVEL_SCRIPT_QUALIFIED_CLASS);
     }
-    
-    private void runScriptTest(String processId) { 
+
+    private void runScriptTest(String processId) {
         Assume.assumeTrue("Skip script/expr tests", loadJavaMvelScriptProcesses);
-        
+
         ProcessDefinition procDef = bpmn2Service.getProcessDefinition(deploymentId, processId);
         assertNotNull(procDef);
-        
+
         // check that process runs
         Person person = new Person();
         person.setName("Max Rockatansky");
         person.setId(1979l);
         person.setTime(3l);
-       
+
         Map<String, Object> params = new HashMap<String, Object>(1);
         params.put("person", person);
-        Long procId = processService.startProcess(deploymentId, processId, params);
-        
+        Long procId = startProcess(deploymentId, processId, params);
+
         assertNull( "Process instance did not complete" , processService.getProcessInstance(procId));
         assertTrue( "Script did not modify variable!", person.getLog().startsWith("Hello") );
-        
+
         Collection<String> javaClasses = bpmn2Service.getJavaClasses(deploymentId, processId);
         assertNotNull( "Null set of java classes", javaClasses );
         assertFalse( "Empty set of java classes", javaClasses.isEmpty() );
-        
+
         assertEquals( "Number java classes", 4, javaClasses.size() );
-        String [] expected = { 
+        String [] expected = {
                 "java.lang.Object",
-                Person.class.getCanonicalName(), 
-                OtherPerson.class.getCanonicalName(), 
+                Person.class.getCanonicalName(),
+                OtherPerson.class.getCanonicalName(),
                 Thing.class.getCanonicalName()
         };
         Set<String> expectedClasses = new HashSet<String>(Arrays.asList(expected));
-        for( String className : javaClasses ) { 
+        for( String className : javaClasses ) {
             assertTrue( "Class name is not qualified: " + className, className.contains(".") );
             assertTrue( "Unexpected class: " + className, expectedClasses.remove(className) );
         }
-        if( ! expectedClasses.isEmpty() ) { 
-            fail( "Expected class not found to be referenced: " + expectedClasses.iterator().next() ); 
+        if( ! expectedClasses.isEmpty() ) {
+            fail( "Expected class not found to be referenced: " + expectedClasses.iterator().next() );
         }
     }
-    
+
     @Test
     @Ignore // TODO!
     public void testDroolsScriptWithQualifiedClass() throws Exception {
         Assume.assumeTrue("Skip script/expr tests", loadJavaMvelScriptProcesses);
         String processId = PROC_ID_RULE_SCRIPT_QUALIFIED_CLASS;
-        
+
         ProcessDefinition procDef = bpmn2Service.getProcessDefinition(deploymentId, processId);
         assertNotNull(procDef);
-       
+
         // check that process runs
         Person person = new Person();
         person.setName("Max");
         person.setId(1979l);
         person.setTime(3l);
-      
+
         KieSession ksession = deploymentService.getRuntimeManager(deploymentId).getRuntimeEngine(null).getKieSession();
         ksession.insert(person);
         ksession.insert(new Thing());
         ksession.insert(new OtherPerson(person));
         ksession.insert(person.getName());
         ksession.insert(person.getId());
-        
-        Long procId = processService.startProcess(deploymentId, processId);
+
+        Long procId = startProcess(deploymentId, processId);
 
         assertNull( "Process instance did not complete:" , processService.getProcessInstance(procId));
-        
+
         Collection<String> javaClasses = bpmn2Service.getJavaClasses(deploymentId, processId);
         assertNotNull( "Null set of java classes", javaClasses );
         assertFalse( "Empty set of java classes", javaClasses.isEmpty() );
-        
+
         assertEquals( "Number java classes", 4, javaClasses.size() );
-        String [] expected = { 
+        String [] expected = {
                 "java.lang.Object",
-                Person.class.getCanonicalName(), 
-                OtherPerson.class.getCanonicalName(), 
+                Person.class.getCanonicalName(),
+                OtherPerson.class.getCanonicalName(),
                 Thing.class.getCanonicalName()
         };
         Set<String> expectedClasses = new HashSet<String>(Arrays.asList(expected));
-        for( String className : javaClasses ) { 
+        for( String className : javaClasses ) {
             assertTrue( "Class name is not qualified: " + className, className.contains(".") );
             assertTrue( "Unexpected class: " + className, expectedClasses.remove(className) );
         }
-        if( ! expectedClasses.isEmpty() ) { 
-            fail( "Expected class not found to be referenced: " + expectedClasses.iterator().next() ); 
+        if( ! expectedClasses.isEmpty() ) {
+            fail( "Expected class not found to be referenced: " + expectedClasses.iterator().next() );
         }
     }
-} 
+
+
+    @Test
+    public void testSignalsAndGlobals() throws IOException {
+        Assume.assumeTrue("Skip signal/global tests", loadSignalGlobalInfoProcess);
+        String processId = PROC_ID_SIGNAL;
+
+        // check that process starts
+        KieSession ksession = deploymentService.getRuntimeManager(deploymentId).getRuntimeEngine(null).getKieSession();
+        ksession.setGlobal("person", new Person());
+        long procInstId = startProcess(deploymentId, processId);
+
+        ProcessDefinition procDef = bpmn2Service.getProcessDefinition(deploymentId, processId);
+        assertNotNull(procDef);
+
+        // check information about process
+        assertNotNull( "Null signals list", procDef.getSignals() );
+        assertFalse( "Empty signals list", procDef.getSignals().isEmpty() );
+        assertEquals( "Unexpected signal", "MySignal", procDef.getSignals().iterator().next() );
+
+        Collection<String> globalNames = procDef.getGlobals();
+        assertNotNull( "Null globals list", globalNames );
+        assertFalse( "Empty globals list", globalNames.isEmpty() );
+        assertEquals( "globals list size", 2, globalNames.size() );
+        for( String globalName : globalNames ) {
+            assertTrue( "Unexpected global: " + globalName,
+                    "person".equals(globalName) || "name".equals(globalName) );
+        }
+
+        // cleanup
+        processService.abortProcessInstance(procInstId);
+    }
+}

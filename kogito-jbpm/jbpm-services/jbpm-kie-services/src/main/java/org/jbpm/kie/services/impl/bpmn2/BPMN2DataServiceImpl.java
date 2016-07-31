@@ -27,6 +27,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.util.StringUtils;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
+import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentEventListener;
@@ -83,7 +84,7 @@ public class BPMN2DataServiceImpl implements DefinitionService, DeploymentEventL
             throw new IllegalStateException( msg.toString() );
         }
     }
-    
+
     public void addProcessDefinition(String deploymentId, String processId, Object processDescriptor, KieContainer kieContainer) {
         Map<String, ProcessDescriptor> definitions = null;
         synchronized (definitionCache) {
@@ -94,17 +95,8 @@ public class BPMN2DataServiceImpl implements DefinitionService, DeploymentEventL
             }
 
             ProcessDescriptor descriptor = (ProcessDescriptor) processDescriptor;
-            ProcessAssetDesc definition = descriptor.getProcess();
-            
-            definition.setAssociatedEntities(descriptor.getTaskAssignments());
-            definition.setProcessVariables(descriptor.getInputs());
-            definition.setServiceTasks(descriptor.getServiceTasks());
+            fillProcessDefinition(descriptor, kieContainer);
 
-            if( kieContainer != null && descriptor.hasUnresolvedReusableSubProcessNames() ) {
-                descriptor.resolveReusableSubProcessNames(kieContainer.getKieBase().getProcesses());
-            }
-            definition.setReusableSubProcesses(descriptor.getReusableSubProcesses());
-            
             definitions.put(processId, descriptor);
         }
     }
@@ -115,8 +107,6 @@ public class BPMN2DataServiceImpl implements DefinitionService, DeploymentEventL
 		if (StringUtils.isEmpty(bpmn2Content)) {
             return null;
         }
-
-		validateNonEmptyDeploymentIdAndProcessId(deploymentId, "no proc id");
 
         KnowledgeBuilder kbuilder = null;
 
@@ -140,19 +130,11 @@ public class BPMN2DataServiceImpl implements DefinitionService, DeploymentEventL
         Process process = pckg.getProcesses().iterator().next();
 
         ProcessDescriptor helper = (ProcessDescriptor) process.getMetaData().get("ProcessDescriptor");
-        ProcessAssetDesc definition = helper.getProcess();
-        
-        definition.setAssociatedEntities(helper.getTaskAssignments());
-        definition.setProcessVariables(helper.getInputs());
-        definition.setServiceTasks(helper.getServiceTasks());
-
-        if( kieContainer != null && helper.hasUnresolvedReusableSubProcessNames() ) {
-           helper.resolveReusableSubProcessNames(kieContainer.getKieBase().getProcesses());
-        }
-        definition.setReusableSubProcesses(helper.getReusableSubProcesses());
+        ProcessAssetDesc definition = fillProcessDefinition(helper, kieContainer);
 
         // cache the data if requested
         if (cache) {
+            validateNonEmptyDeploymentIdAndProcessId(deploymentId, "no proc id");
         	Map<String, ProcessDescriptor> definitions = null;
         	synchronized (definitionCache) {
         		Map<String, ProcessDescriptor> newDef = new ConcurrentHashMap<String, ProcessDescriptor>();
@@ -167,6 +149,26 @@ public class BPMN2DataServiceImpl implements DefinitionService, DeploymentEventL
 
         return definition;
 
+	}
+
+	private ProcessAssetDesc fillProcessDefinition(ProcessDescriptor helper, KieContainer kieContainer ) {
+
+        ProcessAssetDesc definition = helper.getProcess();
+
+	    definition.setAssociatedEntities(helper.getTaskAssignments());
+	    definition.setProcessVariables(helper.getInputs());
+	    definition.setServiceTasks(helper.getServiceTasks());
+
+	    definition.setSignals(helper.getSignals() );
+	    definition.setGlobals(helper.getGlobals() );
+	    definition.setReferencedRules(helper.getReferencedRules() );
+
+        if( kieContainer != null && helper.hasUnresolvedReusableSubProcessNames() ) {
+            helper.resolveReusableSubProcessNames(kieContainer.getKieBase().getProcesses());
+         }
+         definition.setReusableSubProcesses(helper.getReusableSubProcesses());
+
+         return definition;
 	}
 
 

@@ -19,24 +19,23 @@ package org.jbpm.bpmn2.core;
 import java.io.Serializable;
 
 public class Signal implements Serializable {
-    
+
 	private static final long serialVersionUID = 510l;
-	
+
     private String id;
     private String name;
     private String structureRef;
-    
+
     public Signal(String id, String structureRef) {
         this.id = id;
         this.structureRef = structureRef;
     }
-    
-    public Signal(String id, String structureRef, String name) {
-        this.id = id;
+
+    public Signal(String id, String name, String structureRef) {
+        this(id, structureRef);
         this.name = name;
-        this.structureRef = structureRef;
     }
-    
+
     public String getId() {
         return id;
     }

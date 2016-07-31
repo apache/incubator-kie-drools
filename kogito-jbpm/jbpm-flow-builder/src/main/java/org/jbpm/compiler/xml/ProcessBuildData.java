@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -14,7 +14,7 @@
 */
 
 /**
- * 
+ *
  */
 package org.jbpm.compiler.xml;
 
@@ -30,17 +30,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProcessBuildData {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(ProcessBuildData.class);
-    
+
     private static List<ProcessDataEventListenerProvider> providers = collectProviders();
-    
+
     private List<Process> processes = new ArrayList<Process>();
     private Map<Long, Node> nodes = new HashMap<Long, Node>();
     private Map<String, Object> metaData = new HashMap<String, Object>();
-    
+
     private List<ProcessDataEventListener> listeners = new ArrayList<ProcessDataEventListener>();
-    
+
     public ProcessBuildData() {
         if (providers != null) {
             for (ProcessDataEventListenerProvider provider : providers) {
@@ -53,7 +53,7 @@ public class ProcessBuildData {
         for (Process process : processes) {
             onComplete(process);
         }
-        
+
         return processes;
     }
 
@@ -72,47 +72,47 @@ public class ProcessBuildData {
     public boolean addNode(Node node) {
         onNode(node);
         return( this.nodes.put( node.getId(), node ) != null );
-    }               
-    
+    }
+
     public Node getNode(Long id) {
         return this.nodes.get( id );
     }
-    
+
     public Object getMetaData(String name) {
         return metaData.get(name);
     }
-    
+
     public void setMetaData(String name, Object data) {
         onMetaData(name, data);
         this.metaData.put(name, data);
     }
-    
+
     // listener support
-    
+
     protected void onNode(Node node) {
         for (ProcessDataEventListener listener : listeners) {
             listener.onNodeAdded(node);
         }
     }
-    
+
     protected void onProcess(Process process) {
         for (ProcessDataEventListener listener : listeners) {
             listener.onProcessAdded(process);
         }
     }
-    
+
     protected void onMetaData(String name, Object data) {
         for (ProcessDataEventListener listener : listeners) {
             listener.onMetaDataAdded(name, data);
         }
     }
-    
+
     protected void onComplete(Process process) {
         for (ProcessDataEventListener listener : listeners) {
             listener.onComplete(process);
         }
     }
-    
+
     public void onBuildComplete(Process process) {
         for (ProcessDataEventListener listener : listeners) {
             listener.onBuildComplete(process);

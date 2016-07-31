@@ -48,28 +48,28 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 public class StartEventHandler extends AbstractNodeHandler {
-	
+
 	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 
     protected Node createNode(Attributes attrs) {
         return new StartNode();
     }
-    
+
     @SuppressWarnings("unchecked")
 	public Class generateNodeFor() {
         return StartNode.class;
     }
 
     @SuppressWarnings("unchecked")
-    protected void handleNode(final Node node, final Element element, final String uri, 
+    protected void handleNode(final Node node, final Element element, final String uri,
             final String localName, final ExtensibleXmlParser parser) throws SAXException {
         super.handleNode(node, element, uri, localName, parser);
         StartNode startNode = (StartNode) node;
         // TODO: StartEventHandler.handleNode(): the parser doesn't discriminate between the schema default and the actual set value
         // However, while the schema says the "isInterrupting" attr should default to true
-        // The spec says that Escalation start events should default to not interrupting.. 
+        // The spec says that Escalation start events should default to not interrupting..
         startNode.setInterrupting(Boolean.parseBoolean(element.getAttribute("isInterrupting")));
-        
+
         org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
             String nodeName = xmlNode.getNodeName();
@@ -77,7 +77,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                 readDataOutput(xmlNode, startNode);
             } else if ("dataOutputAssociation".equals(nodeName)) {
                 readDataOutputAssociation(xmlNode, startNode);
-            } else if ("outputSet".equals(nodeName)) { 
+            } else if ("outputSet".equals(nodeName)) {
                 // p. 225, BPMN2 spec (2011-01-03)
                 // InputSet and OutputSet elements imply that process execution should wait for them to be filled
                 // and are therefore not applicable to catch events
@@ -103,15 +103,9 @@ public class StartEventHandler extends AbstractNodeHandler {
                 break;
             } else if ("signalEventDefinition".equals(nodeName)) {
                 String type = ((Element) xmlNode).getAttribute("signalRef");
-                Map<String, Signal> signals = (Map<String, Signal>) ((ProcessBuildData) parser.getData()).getMetaData("Signals");
-                
-                if (signals != null && signals.containsKey(type)) {
-                    Signal signal = signals.get(type);                      
-                    type = signal.getName();
-                    if (type == null) {
-                        throw new IllegalArgumentException("Signal definition must have a name attribute");
-                    }
-                }
+
+                type = checkSignalAndConvertToRealSignalNam(parser, type);
+
                 if (type != null && type.trim().length() > 0) {
                     addTriggerWithInMappings(startNode, type);
                 }
@@ -128,15 +122,15 @@ public class StartEventHandler extends AbstractNodeHandler {
                 }
                 startNode.setMetaData("MessageType", message.getType());
 
-                
+
                 addTriggerWithInMappings(startNode, "Message-" + messageRef);
-            } else if ("timerEventDefinition".equals(nodeName)) {            	
+            } else if ("timerEventDefinition".equals(nodeName)) {
             	handleTimerNode(startNode, element, uri, localName, parser);
                 // following event definitions are only for event sub process and will be validated to not be included in top process definitions
             } else if ("errorEventDefinition".equals(nodeName)) {
-                if( ! startNode.isInterrupting() ) { 
-                    // BPMN2 spec (p.245-246, (2011-01-03)) implies that 
-                    //   - a <startEvent> in an Event Sub-Process 
+                if( ! startNode.isInterrupting() ) {
+                    // BPMN2 spec (p.245-246, (2011-01-03)) implies that
+                    //   - a <startEvent> in an Event Sub-Process
                     //    - *without* the 'isInterupting' attribute always interrupts (containing process)
                     String errorMsg = "Error Start Events in an Event Sub-Process always interrupt the containing (sub)process(es).";
                     throw new IllegalArgumentException(errorMsg);
@@ -148,8 +142,8 @@ public class StartEventHandler extends AbstractNodeHandler {
                         throw new IllegalArgumentException("No errors found");
                     }
                     Error error = null;
-                    for( Error listError : errors ) { 
-                        if( errorRef.equals(listError.getId()) ) { 
+                    for( Error listError : errors ) {
+                        if( errorRef.equals(listError.getId()) ) {
                             error = listError;
                         }
                     }
@@ -170,8 +164,8 @@ public class StartEventHandler extends AbstractNodeHandler {
                     Escalation escalation = escalations.get(escalationRef);
                     if (escalation == null) {
                         throw new IllegalArgumentException("Could not find escalation " + escalationRef);
-                    }                    
-                
+                    }
+
                     addTriggerWithInMappings(startNode, "Escalation-" + escalation.getEscalationCode());
                 }
             } else if ("compensateEventDefinition".equals(nodeName)) {
@@ -180,42 +174,42 @@ public class StartEventHandler extends AbstractNodeHandler {
             xmlNode = xmlNode.getNextSibling();
         }
     }
-    
-    private void addTriggerWithInMappings(StartNode startNode, String triggerEventType) { 
+
+    private void addTriggerWithInMappings(StartNode startNode, String triggerEventType) {
         EventTrigger trigger = new EventTrigger();
         EventTypeFilter eventFilter = new EventTypeFilter();
         eventFilter.setType(triggerEventType);
         trigger.addEventFilter(eventFilter);
-        
+
         String mapping = (String) startNode.getMetaData("TriggerMapping");
         if (mapping != null) {
             trigger.addInMapping(mapping, startNode.getOutMapping(mapping));
         }
-        
+
         startNode.addTrigger(trigger);
     }
-    
+
     public Object end(final String uri, final String localName,
             final ExtensibleXmlParser parser) throws SAXException {
         StartNode startNode = (StartNode) super.end(uri, localName, parser);
-   
+
         return startNode;
     }
-    
+
     protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, StartNode startNode) {
-        // sourceRef 
+        // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
         if( ! "sourceRef".equals(subNode.getNodeName()) ) {
             throw new IllegalArgumentException("No sourceRef found in dataOutputAssociation in startEvent");
         }
         String source = subNode.getTextContent();
-        if( dataOutputs.get(source) == null ) { 
+        if( dataOutputs.get(source) == null ) {
            throw new IllegalArgumentException( "No dataOutput could be found for the dataOutputAssociation." );
         }
-        
+
         // targetRef
         subNode = subNode.getNextSibling();
-        if( ! "targetRef".equals(subNode.getNodeName()) ) { 
+        if( ! "targetRef".equals(subNode.getNodeName()) ) {
             throw new IllegalArgumentException("No targetRef found in dataOutputAssociation in startEvent");
         }
         String target = subNode.getTextContent();
@@ -229,46 +223,46 @@ public class StartEventHandler extends AbstractNodeHandler {
   			DataTransformer transformer = transformerRegistry.find(lang);
   			if (transformer == null) {
   				throw new IllegalArgumentException("No transformer registered for language " + lang);
-  			}    			
+  			}
   			transformation = new Transformation(lang, expression, dataOutputs.get(source));
   			startNode.setMetaData("Transformation", transformation);
-  			
+
   			startNode.setEventTransformer(new EventTransformerImpl(transformation));
   	        subNode = subNode.getNextSibling();
   		}
 
-        if( subNode != null ) { 
+        if( subNode != null ) {
             // no support for assignments
             throw new UnsupportedOperationException(subNode.getNodeName() + " elements in dataOutputAssociations are not yet supported.");
         }
         startNode.addOutMapping(target, dataOutputs.get(source));
     }
-    
+
     // The results of this method are only used to check syntax
     protected void readDataOutput(org.w3c.dom.Node xmlNode, StartNode startNode) {
         String id = ((Element) xmlNode).getAttribute("id");
         String outputName = ((Element) xmlNode).getAttribute("name");
         dataOutputs.put(id, outputName);
     }
-    
+
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		StartNode startNode = (StartNode) node;
 		writeNode("startEvent", startNode, xmlDump, metaDataType);
 		xmlDump.append(" isInterrupting=\"" );
 		if (startNode.isInterrupting()) {
 		    xmlDump.append("true");
-		} else { 
+		} else {
 		    xmlDump.append("false");
 		}
 		xmlDump.append("\">" + EOL);
 		writeExtensionElements(startNode, xmlDump);
-		
+
 		List<Trigger> triggers = startNode.getTriggers();
 		if (triggers != null) {
 		    if (triggers.size() > 1) {
 		        throw new IllegalArgumentException("Multiple start triggers not supported");
 		    }
-		    
+
 		    Trigger trigger = triggers.get(0);
 		    if (trigger instanceof ConstraintTrigger) {
 		    	ConstraintTrigger constraintTrigger = (ConstraintTrigger) trigger;
@@ -285,11 +279,11 @@ public class StartEventHandler extends AbstractNodeHandler {
 		            mapping = eventTrigger.getInMappings().keySet().iterator().next();
 		            nameMapping = eventTrigger.getInMappings().values().iterator().next();
 		        }
-		        else { 
+		        else {
 		            mapping = (String) startNode.getMetaData("TriggerMapping");
 		        }
-		        
-		        if( mapping != null ) { 
+
+		        if( mapping != null ) {
 		            xmlDump.append(
 	                    "      <dataOutput id=\"_" + startNode.getId() + "_Output\" name=\""+ nameMapping +"\" />" + EOL +
                         "      <dataOutputAssociation>" + EOL +
@@ -297,7 +291,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                         "        <targetRef>" + mapping + "</targetRef>" + EOL +
                         "      </dataOutputAssociation>" + EOL);
 		        }
-		        
+
 		        String type = ((EventTypeFilter) eventTrigger.getEventFilters().get(0)).getType();
 		        if (type.startsWith("Message-")) {
                     type = type.substring(8);
@@ -317,9 +311,9 @@ public class StartEventHandler extends AbstractNodeHandler {
             } else {
 		        throw new IllegalArgumentException("Unsupported trigger type " + trigger);
 		    }
-		    
+
 		    if (startNode.getTimer() != null) {
-	            Timer timer = startNode.getTimer(); 
+	            Timer timer = startNode.getTimer();
 	            xmlDump.append("      <timerEventDefinition>" + EOL);
 	            if (timer != null && (timer.getDelay() != null || timer.getDate() != null)) {
 	                if (timer.getTimeType() == Timer.TIME_DATE) {
@@ -327,20 +321,20 @@ public class StartEventHandler extends AbstractNodeHandler {
                     } else if (timer.getTimeType() == Timer.TIME_DURATION) {
 	                    xmlDump.append("        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDuration>" + EOL);
 	                } else if (timer.getTimeType() == Timer.TIME_CYCLE) {
-	                    
+
 	                    if (timer.getPeriod() != null) {
 	                        xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "###" + XmlDumper.replaceIllegalChars(timer.getPeriod()) + "</timeCycle>" + EOL);
 	                    } else {
 	                        xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeCycle>" + EOL);
 	                    }
 	                } else if (timer.getTimeType() == Timer.TIME_DATE) {
-	                    xmlDump.append("        <timeDate xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDate>" + EOL);           
+	                    xmlDump.append("        <timeDate xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDate>" + EOL);
 	                }
 	            }
 	            xmlDump.append("      </timerEventDefinition>" + EOL);
 		    }
 		} else if (startNode.getTimer() != null) {
-            Timer timer = startNode.getTimer(); 
+            Timer timer = startNode.getTimer();
             xmlDump.append("      <timerEventDefinition>" + EOL);
             if (timer != null && (timer.getDelay() != null || timer.getDate() != null)) {
                 if (timer.getTimeType() == Timer.TIME_DATE) {
@@ -348,21 +342,21 @@ public class StartEventHandler extends AbstractNodeHandler {
                 } else if (timer.getTimeType() == Timer.TIME_DURATION) {
                     xmlDump.append("        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDuration>" + EOL);
                 } else if (timer.getTimeType() == Timer.TIME_CYCLE) {
-                    
+
                     if (timer.getPeriod() != null) {
                         xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "###" + XmlDumper.replaceIllegalChars(timer.getPeriod()) + "</timeCycle>" + EOL);
                     } else {
                         xmlDump.append("        <timeCycle xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeCycle>" + EOL);
                     }
                 } else if (timer.getTimeType() == Timer.TIME_DATE) {
-                    xmlDump.append("        <timeDate xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDate>" + EOL);           
+                    xmlDump.append("        <timeDate xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDate>" + EOL);
                 }
             }
             xmlDump.append("      </timerEventDefinition>" + EOL);
         }
     	endNode("startEvent", xmlDump);
 	}
-    
+
     protected void handleTimerNode(final Node node, final Element element,
             final String uri, final String localName,
             final ExtensibleXmlParser parser) throws SAXException {
@@ -405,7 +399,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                 startNode.setTimer(timer);
                 if (parser.getParent() instanceof EventSubProcessNode) {
                   // handle timer on start events like normal (non rule) timers for event sub process
-                  
+
                   EventTrigger trigger = new EventTrigger();
                   EventTypeFilter eventFilter = new EventTypeFilter();
                   eventFilter.setType("Timer-" + ((EventSubProcessNode) parser.getParent()).getId());
@@ -424,28 +418,28 @@ public class StartEventHandler extends AbstractNodeHandler {
 
     protected void handleCompensationNode(final StartNode startNode, final Element element, final org.w3c.dom.Node xmlNode,
             final ExtensibleXmlParser parser) throws SAXException {
-        if( startNode.isInterrupting() ) { 
+        if( startNode.isInterrupting() ) {
             logger.warn( "Compensation Event Sub-Processes [" + startNode.getMetaData("UniqueId") + "] may not be specified as interrupting:" +
             		" overriding attribute and setting to not-interrupting.");
         }
         startNode.setInterrupting(false);
-        
+
         /** From the BPMN2 spec, P.264:
          * "For a Start Event:
          *  This Event "catches" the compensation for an Event Sub-Process. No further information is required.
          *  The Event Sub-Process will provide the id necessary to match the Compensation Event with the Event
          *  that threw the compensation"
-         *  
-         *  In other words, the id of the Sub-Process containing this Event Sub-Process is what should be used 
-         *  as the activityRef value in any Intermediate (throw) or End compensation event that targets 
-         *  this particular Event Sub-Process. 
-         *  
+         *
+         *  In other words, the id of the Sub-Process containing this Event Sub-Process is what should be used
+         *  as the activityRef value in any Intermediate (throw) or End compensation event that targets
+         *  this particular Event Sub-Process.
+         *
          *  This is similar to the logic used for a Compensation Boundary Event: it's signaled using
-         *  the id of the activity to which the CBE is attached to. 
+         *  the id of the activity to which the CBE is attached to.
          */
         String activityRef = ((Element) xmlNode).getAttribute("activityRef");
-        if( activityRef != null && activityRef.length() > 0 ) { 
-            logger.warn("activityRef value [" + activityRef + "] on Start Event '" + startNode.getMetaData("UniqueId") 
+        if( activityRef != null && activityRef.length() > 0 ) {
+            logger.warn("activityRef value [" + activityRef + "] on Start Event '" + startNode.getMetaData("UniqueId")
                     + "' ignored per the BPMN2 specification.");
         }
 

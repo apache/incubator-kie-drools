@@ -61,10 +61,10 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
 
-private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentServiceTest.class);   
-    
+private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentServiceTest.class);
+
     private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
-       
+
     @Before
     public void prepare() {
     	configureServices();
@@ -76,7 +76,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         processes.add("repo/processes/general/humanTask.bpmn");
         processes.add("repo/processes/general/import.bpmn");
         processes.add("repo/processes/general/signal.bpmn");
-        
+
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
         pom.getParentFile().mkdir();
@@ -85,13 +85,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
             fs.write(getPom(releaseId).getBytes());
             fs.close();
         } catch (Exception e) {
-            
+
         }
         MavenRepository repository = getMavenRepository();
         repository.deployArtifact(releaseId, kJar1, pom);
-        
+
         ReleaseId releaseId3 = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
-        
+
         InternalKieModule kJar3 = createKieJar(ks, releaseId3, processes);
         File pom3 = new File("target/kmodule3", "pom.xml");
         pom3.getParentFile().mkdirs();
@@ -100,12 +100,12 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
             fs.write(getPom(releaseId3).getBytes());
             fs.close();
         } catch (Exception e) {
-            
+
         }
         repository = getMavenRepository();
         repository.deployArtifact(releaseId3, kJar3, pom3);
     }
-    
+
     @After
     public void cleanup() {
         cleanupSingletonSessionId();
@@ -121,281 +121,281 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         }
         close();
     }
-    
+
     @Test
     public void testStartProcess() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
     	assertNotNull(processService);
-    	
+
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "customtask");
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);
     	assertNull(pi);
     }
-    
+
     @Test
     public void testStartProcessWithParms() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
     	assertNotNull(processService);
-    	
+
     	Map<String, Object> params = new HashMap<String, Object>();
         params.put("id", "test");
-    	
+
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "customtask", params);
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);
     	assertNull(pi);
     }
-    
+
     @Test
     public void testStartProcessWithCorrelationKey() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
     	assertNotNull(processService);
-    	
+
     	CorrelationKey key = KieInternalServices.Factory.get().newCorrelationKeyFactory().newCorrelationKey("my business key");
-    	
+
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "customtask", key);
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(key);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(key);
     	assertNull(pi);
     }
-    
+
     @Test
     public void testStartProcessWithParmsWithCorrelationKey() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
     	assertNotNull(processService);
-    	
+
     	Map<String, Object> params = new HashMap<String, Object>();
         params.put("id", "test");
-        
+
         CorrelationKey key = KieInternalServices.Factory.get().newCorrelationKeyFactory().newCorrelationKey("my business key");
-    	
+
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "customtask", key, params);
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(key);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(key);
     	assertNull(pi);
     }
-    
+
     @Test
     public void testStartAndAbortProcess() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
     	assertNotNull(processService);
-    	
+
     	boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
     	assertTrue(isDeployed);
-    	
+
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);
     	assertNotNull(pi);
-    	
+
     	processService.abortProcessInstance(processInstanceId);
-    	
-    	pi = processService.getProcessInstance(processInstanceId);    	
+
+    	pi = processService.getProcessInstance(processInstanceId);
     	assertNull(pi);
     }
-    
+
     @Test
     public void testStartAndAbortProcesses() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
     	assertTrue(isDeployed);
-    	
+
     	assertNotNull(processService);
     	// first start first instance
     	long processInstanceId1 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId1);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(processInstanceId1);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId1);
     	assertNotNull(pi);
     	// then start second instance
     	long processInstanceId2 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId2);
-    	
-    	ProcessInstance pi2 = processService.getProcessInstance(processInstanceId2);    	
+
+    	ProcessInstance pi2 = processService.getProcessInstance(processInstanceId2);
     	assertNotNull(pi2);
-    	
+
     	List<Long> instances = new ArrayList<Long>();
     	instances.add(processInstanceId1);
     	instances.add(processInstanceId2);
     	// and lastly cancel both
     	processService.abortProcessInstances(instances);
-    	
-    	pi = processService.getProcessInstance(processInstanceId1);    	
+
+    	pi = processService.getProcessInstance(processInstanceId1);
     	assertNull(pi);
-    	pi2 = processService.getProcessInstance(processInstanceId2);    	
+    	pi2 = processService.getProcessInstance(processInstanceId2);
     	assertNull(pi2);
     }
-    
+
     @Test
     public void testStartAndSignalProcess() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
     	assertTrue(isDeployed);
-    	
+
     	assertNotNull(processService);
-    	
-    	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "signal");
+
+    	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.signal");
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);
     	assertNotNull(pi);
-    	
+
     	Collection<String> signals = processService.getAvailableSignals(processInstanceId);
     	assertNotNull(signals);
     	assertEquals(1, signals.size());
     	assertTrue(signals.contains("MySignal"));
-    	
+
     	processService.signalProcessInstance(processInstanceId, "MySignal", null);
-    	
-    	pi = processService.getProcessInstance(processInstanceId);    	
+
+    	pi = processService.getProcessInstance(processInstanceId);
     	assertNull(pi);
     }
-    
+
     @Test
     public void testStartAndSignalProcesses() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
     	assertTrue(isDeployed);
-    	
+
     	assertNotNull(processService);
     	// first start first instance
-    	long processInstanceId1 = processService.startProcess(deploymentUnit.getIdentifier(), "signal");
+    	long processInstanceId1 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.signal");
     	assertNotNull(processInstanceId1);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(processInstanceId1);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId1);
     	assertNotNull(pi);
     	// then start second instance
-    	long processInstanceId2 = processService.startProcess(deploymentUnit.getIdentifier(), "signal");
+    	long processInstanceId2 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.signal");
     	assertNotNull(processInstanceId2);
-    	
-    	ProcessInstance pi2 = processService.getProcessInstance(processInstanceId2);    	
+
+    	ProcessInstance pi2 = processService.getProcessInstance(processInstanceId2);
     	assertNotNull(pi2);
-    	
+
     	List<Long> instances = new ArrayList<Long>();
     	instances.add(processInstanceId1);
     	instances.add(processInstanceId2);
     	// and lastly cancel both
     	processService.signalProcessInstances(instances, "MySignal", null);
-    	
-    	pi = processService.getProcessInstance(processInstanceId1);    	
+
+    	pi = processService.getProcessInstance(processInstanceId1);
     	assertNull(pi);
-    	pi2 = processService.getProcessInstance(processInstanceId2);    	
+    	pi2 = processService.getProcessInstance(processInstanceId2);
     	assertNull(pi2);
     }
-    
+
     @Test
     public void testStartAndSignal() {
         assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
         assertTrue(isDeployed);
-        
+
         assertNotNull(processService);
-        
-        long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "signal");
+
+        long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.signal");
         assertNotNull(processInstanceId);
-        
-        long processInstanceId2 = processService.startProcess(deploymentUnit.getIdentifier(), "signal");
+
+        long processInstanceId2 = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.signal");
         assertNotNull(processInstanceId2);
-        
-        ProcessInstance pi = processService.getProcessInstance(processInstanceId);      
+
+        ProcessInstance pi = processService.getProcessInstance(processInstanceId);
         assertNotNull(pi);
-        
-        pi = processService.getProcessInstance(processInstanceId2);      
+
+        pi = processService.getProcessInstance(processInstanceId2);
         assertNotNull(pi);
-        
+
         processService.signalEvent(deploymentUnit.getIdentifier(), "MySignal", null);
-        
-        pi = processService.getProcessInstance(processInstanceId);      
+
+        pi = processService.getProcessInstance(processInstanceId);
         assertNull(pi);
-        pi = processService.getProcessInstance(processInstanceId2);      
+        pi = processService.getProcessInstance(processInstanceId2);
         assertNull(pi);
     }
-    
+
     @Test
     public void testStartProcessAndChangeVariables() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
     	assertTrue(isDeployed);
-        
+
     	assertNotNull(processService);
-    	
+
     	Map<String, Object> params = new HashMap<String, Object>();
         params.put("approval_document", "test");
         params.put("approval_reviewComment", "need review");
-    	
+
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);
     	assertNotNull(pi);
-    	
+
     	// get variable by name
     	Object variableValue = processService.getProcessInstanceVariable(processInstanceId, "approval_document");
     	assertNotNull(variableValue);
     	assertTrue(variableValue instanceof String);
     	assertEquals("test", variableValue);
-    	
+
     	// get all variables
     	Map<String, Object> variables = processService.getProcessInstanceVariables(processInstanceId);
     	assertNotNull(variables);
@@ -404,7 +404,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	assertTrue(variables.containsKey("approval_reviewComment"));
     	assertEquals("test", variables.get("approval_document"));
     	assertEquals("need review", variables.get("approval_reviewComment"));
-    	
+
     	// now change single variable
     	processService.setProcessVariable(processInstanceId, "approval_reviewComment", "updated review comment");
     	// let's verify it
@@ -412,12 +412,12 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	assertNotNull(variableValue);
     	assertTrue(variableValue instanceof String);
     	assertEquals("updated review comment", variableValue);
-    	
+
     	// and lastly let's update both variables
     	params = new HashMap<String, Object>();
     	params.put("approval_document", "updated document");
         params.put("approval_reviewComment", "final review");
-        
+
         processService.setProcessVariables(processInstanceId, params);
         variables = processService.getProcessInstanceVariables(processInstanceId);
     	assertNotNull(variables);
@@ -426,245 +426,245 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	assertTrue(variables.containsKey("approval_reviewComment"));
     	assertEquals("updated document", variables.get("approval_document"));
     	assertEquals("final review", variables.get("approval_reviewComment"));
-    	
+
     	processService.abortProcessInstance(processInstanceId);
-    	
-    	pi = processService.getProcessInstance(processInstanceId);    	
+
+    	pi = processService.getProcessInstance(processInstanceId);
     	assertNull(pi);
     }
-    
+
     @Test
     public void testStartProcessAndCompleteWorkItem() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
     	assertTrue(isDeployed);
-    	
+
     	assertNotNull(processService);
-    	
+
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);
     	assertNotNull(pi);
-    	
+
     	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
-    	assertEquals(1, activeNodes.size());    	
+    	assertEquals(1, activeNodes.size());
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
-    	
+
     	Map<String, Object> outcome = new HashMap<String, Object>();
     	outcome.put("Result", "here is my first document");
     	processService.completeWorkItem(activeNodes.iterator().next().getWorkItemId(), outcome);
-    	
+
     	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
-    	assertEquals(2, activeNodes.size()); 
-    	
+    	assertEquals(2, activeNodes.size());
+
     	Object variableValue = processService.getProcessInstanceVariable(processInstanceId, "approval_document");
     	assertNotNull(variableValue);
     	assertTrue(variableValue instanceof String);
     	assertEquals("here is my first document", variableValue);
 
     	processService.abortProcessInstance(processInstanceId);
-    	
-    	pi = processService.getProcessInstance(processInstanceId);    	
+
+    	pi = processService.getProcessInstance(processInstanceId);
     	assertNull(pi);
     }
-    
+
     @Test
     public void testStartProcessAndAbortWorkItem() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
     	assertTrue(isDeployed);
-    	    	
+
     	assertNotNull(processService);
-    	
+
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);
     	assertNotNull(pi);
-    	
+
     	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
-    	assertEquals(1, activeNodes.size());    	
+    	assertEquals(1, activeNodes.size());
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
-    	 
+
     	processService.abortWorkItem(activeNodes.iterator().next().getWorkItemId());
-    	
+
     	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
-    	assertEquals(2, activeNodes.size()); 
-    	
+    	assertEquals(2, activeNodes.size());
+
     	Object variableValue = processService.getProcessInstanceVariable(processInstanceId, "approval_document");
     	assertNull(variableValue);
-    	
+
     	processService.abortProcessInstance(processInstanceId);
-    	
-    	pi = processService.getProcessInstance(processInstanceId);    	
+
+    	pi = processService.getProcessInstance(processInstanceId);
     	assertNull(pi);
     }
-    
-    
+
+
     @Test
     public void testStartProcessAndGetWorkItem() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
     	assertTrue(isDeployed);
-    	
+
     	assertNotNull(processService);
-    	
+
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);
     	assertNotNull(pi);
-    	
+
     	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
-    	assertEquals(1, activeNodes.size());    	
+    	assertEquals(1, activeNodes.size());
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
-    	 
+
     	WorkItem wi =processService.getWorkItem(activeNodes.iterator().next().getWorkItemId());
     	assertNotNull(wi);
     	assertEquals("Human Task", wi.getName());
     	assertEquals("Write a Document", wi.getParameter("NodeName"));
-    	
+
     	processService.abortProcessInstance(processInstanceId);
-    	
-    	pi = processService.getProcessInstance(processInstanceId);    	
+
+    	pi = processService.getProcessInstance(processInstanceId);
     	assertNull(pi);
     }
-    
+
     @Test
     public void testStartProcessAndGetWorkItems() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
     	assertTrue(isDeployed);
-    	
+
     	assertNotNull(processService);
-    	
+
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);
     	assertNotNull(pi);
-    	
+
     	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
-    	assertEquals(1, activeNodes.size());    	
+    	assertEquals(1, activeNodes.size());
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
-    	 
+
     	List<WorkItem> wis =processService.getWorkItemByProcessInstance(processInstanceId);
     	assertNotNull(wis);
     	assertEquals(1, wis.size());
     	assertEquals("Human Task", wis.get(0).getName());
     	assertEquals("Write a Document", wis.get(0).getParameter("NodeName"));
-    	
+
     	processService.abortProcessInstance(processInstanceId);
-    	
-    	pi = processService.getProcessInstance(processInstanceId);    	
+
+    	pi = processService.getProcessInstance(processInstanceId);
     	assertNull(pi);
     }
-    
+
     @Test
     public void testStartProcessAndExecuteCmd() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
     	assertTrue(isDeployed);
-    	
+
     	assertNotNull(processService);
-    	
+
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.execute(deploymentUnit.getIdentifier(), new GetProcessInstanceCommand(processInstanceId));    	
+
+    	ProcessInstance pi = processService.execute(deploymentUnit.getIdentifier(), new GetProcessInstanceCommand(processInstanceId));
     	assertNotNull(pi);
-    	
+
     	processService.abortProcessInstance(processInstanceId);
-    	
-    	pi = processService.getProcessInstance(processInstanceId);    	
+
+    	pi = processService.getProcessInstance(processInstanceId);
     	assertNull(pi);
     }
-    
+
     @Test
     public void testStartProcessFromLatestDeployment() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         KModuleDeploymentUnit deploymentUnit2 = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
     	assertTrue(isDeployed);
-    	
+
         deploymentService.deploy(deploymentUnit2);
         units.add(deploymentUnit2);
-        
+
         isDeployed = deploymentService.isDeployed(deploymentUnit2.getIdentifier());
     	assertTrue(isDeployed);
-    	
+
     	assertNotNull(processService);
-    	
+
     	long processInstanceId = processService.startProcess(GROUP_ID+":"+ARTIFACT_ID+":LATEST", "customtask");
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);
     	assertNull(pi);
-    	
+
     	ProcessInstanceDesc piDesc = runtimeDataService.getProcessInstanceById(processInstanceId);
     	assertNotNull(piDesc);
     	assertEquals(deploymentUnit2.getIdentifier(), piDesc.getDeploymentId());
     }
-    
+
     @Test
     public void testStartProcessAfterDeactivation() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
     	assertTrue(isDeployed);
-    	
+
     	assertNotNull(processService);
-    	
+
     	deploymentService.deactivate(deploymentUnit.getIdentifier());
-    	
+
     	try {
     		processService.startProcess(deploymentUnit.getIdentifier(), "customtask");
     		fail("Deployment is deactivated so cannot start new process instances");
@@ -673,158 +673,158 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	}
 
     }
-    
+
     @Test
     public void testStartProcessAndCompleteWorkItemAfterDeactivation() {
     	assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
     	assertTrue(isDeployed);
-    	
+
     	assertNotNull(processService);
-    	
+
     	long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
     	assertNotNull(processInstanceId);
-    	
-    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
+
+    	ProcessInstance pi = processService.getProcessInstance(processInstanceId);
     	assertNotNull(pi);
-    	
+
     	deploymentService.deactivate(deploymentUnit.getIdentifier());
-    	
+
     	Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
-    	assertEquals(1, activeNodes.size());    	
+    	assertEquals(1, activeNodes.size());
     	assertEquals("Write a Document", activeNodes.iterator().next().getName());
-    	
+
     	Map<String, Object> outcome = new HashMap<String, Object>();
     	outcome.put("Result", "here is my first document");
     	processService.completeWorkItem(activeNodes.iterator().next().getWorkItemId(), outcome);
-    	
+
     	activeNodes = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
     	assertNotNull(activeNodes);
-    	assertEquals(2, activeNodes.size()); 
-    	
+    	assertEquals(2, activeNodes.size());
+
     	Object variableValue = processService.getProcessInstanceVariable(processInstanceId, "approval_document");
     	assertNotNull(variableValue);
     	assertTrue(variableValue instanceof String);
     	assertEquals("here is my first document", variableValue);
 
     	processService.abortProcessInstance(processInstanceId);
-    	
-    	pi = processService.getProcessInstance(processInstanceId);    	
+
+    	pi = processService.getProcessInstance(processInstanceId);
     	assertNull(pi);
     }
-    
+
     @Test
     public void testStartAndAbortProcessInExternalTransactionsSingleton() throws Exception {
         testStartAndAbortProcessInExternalTransactions(RuntimeStrategy.SINGLETON);
     }
-    
+
     @Test
     public void testStartAndAbortProcessInExternalTransactionsPerRequest() throws Exception {
         testStartAndAbortProcessInExternalTransactions(RuntimeStrategy.PER_REQUEST);
     }
-    
+
     @Test
     public void testStartAndAbortProcessInExternalTransactionsPerProcessInstance() throws Exception {
         testStartAndAbortProcessInExternalTransactions(RuntimeStrategy.PER_PROCESS_INSTANCE);
     }
-    
-    
+
+
     protected void testStartAndAbortProcessInExternalTransactions(RuntimeStrategy strategy) throws Exception {
         assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
         customDescriptor.getBuilder()
         .runtimeStrategy(strategy);
         deploymentUnit.setDeploymentDescriptor(customDescriptor);
-        
-        
+
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
         assertNotNull(processService);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
         assertTrue(isDeployed);
-        
+
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
         ut.begin();
-        
+
         long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
         assertNotNull(processInstanceId);
-        
-        processService.signalEvent(deploymentUnit.getIdentifier(), "test", null);      
-        
+
+        processService.signalEvent(deploymentUnit.getIdentifier(), "test", null);
+
         ut.commit();
         // now let's start another transaction
         ut.begin();
-        
-        processService.abortProcessInstance(processInstanceId);        
+
+        processService.abortProcessInstance(processInstanceId);
         ut.commit();
-        
+
         try {
-            processService.getProcessInstance(processInstanceId);      
+            processService.getProcessInstance(processInstanceId);
         } catch (SessionNotFoundException e) {
-            
+
         }
-        
+
     }
-    
+
     @Test
     public void testStartAndGetProcessInExternalTransactionsSingleton() throws Exception {
         testStartAndGetProcessInExternalTransactions(RuntimeStrategy.SINGLETON);
     }
-    
+
     @Test
     public void testStartAndGetProcessInExternalTransactionsPerRequest() throws Exception {
         testStartAndGetProcessInExternalTransactions(RuntimeStrategy.PER_REQUEST);
     }
-    
+
     @Test
     public void testStartAndGetProcessInExternalTransactionsPerProcessInstance() throws Exception {
         testStartAndGetProcessInExternalTransactions(RuntimeStrategy.PER_PROCESS_INSTANCE);
     }
-    
+
     protected void testStartAndGetProcessInExternalTransactions(RuntimeStrategy strategy) throws Exception {
         assertNotNull(deploymentService);
-        
+
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
         DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
         customDescriptor.getBuilder()
         .runtimeStrategy(strategy);
         deploymentUnit.setDeploymentDescriptor(customDescriptor);
-        
-        
+
+
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
         assertNotNull(processService);
-        
+
         boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
         assertTrue(isDeployed);
-        
+
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
         ut.begin();
-        
+
         long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
         assertNotNull(processInstanceId);
-        
+
         ProcessInstance pi = processService.getProcessInstance(processInstanceId);
         assertNotNull(pi);
-        
-        processService.abortProcessInstance(processInstanceId);        
+
+        processService.abortProcessInstance(processInstanceId);
         ut.commit();
-        
+
         try {
-            processService.getProcessInstance(processInstanceId);      
+            processService.getProcessInstance(processInstanceId);
         } catch (SessionNotFoundException e) {
-            
+
         }
-        
+
     }
 }

@@ -12,8 +12,13 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
-  <process processType="Private" isExecutable="true" id="signal" name="Default Process" tns:packageName="defaultPackage" tns:version="1" >
+  <process processType="Private" isExecutable="true" id="org.jbpm.signal" name="Default Process" tns:packageName="defaultPackage" tns:version="1" >
 
+    <extensionElements>
+      <tns:global identifier="person" type="org.jbpm.kie.test.objects.Person" />
+      <tns:global identifier="name" type="String" />
+    </extensionElements>
+    
     <!-- nodes -->
     <startEvent id="StartEvent_1" name="StartProcess" />
     <intermediateCatchEvent id="IntermediateCatchEvent_1" name="Catch" >

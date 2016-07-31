@@ -31,15 +31,20 @@ public interface ProcessDefinition extends Serializable, DeployedAsset {
     String getPackageName();
 
     String getType();
-    
+
     String getDeploymentId();
-    
+
     Map<String, Collection<String>> getAssociatedEntities();
-    
+
     Map<String, String> getServiceTasks();
-    
+
     Map<String, String> getProcessVariables();
-    
+
     Collection<String> getReusableSubProcesses();
 
+    Collection<String> getSignals();
+
+    Collection<String> getGlobals();
+
+    Collection<String> getReferencedRules();
 }

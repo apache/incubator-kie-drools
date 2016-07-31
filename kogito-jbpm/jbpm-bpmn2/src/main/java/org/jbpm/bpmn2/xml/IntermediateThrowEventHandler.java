@@ -42,7 +42,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 public class IntermediateThrowEventHandler extends AbstractNodeHandler {
-	
+
 	private DataTransformerRegistry transformerRegistry = DataTransformerRegistry.get();
 
 	public static final String LINK_NAME = "linkName";
@@ -114,7 +114,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 		NamedNodeMap linkAttr = xmlLinkNode.getAttributes();
 		String name = linkAttr.getNamedItem("name").getNodeValue();
 
-		
+
 		String id = element.getAttribute("id");
 		node.setMetaData("UniqueId", id);
 		node.setMetaData(LINK_NAME, name);
@@ -193,25 +193,18 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 			} else if ("signalEventDefinition".equals(nodeName)) {
 				String signalName = ((Element) xmlNode).getAttribute("signalRef");
 				String variable = (String) actionNode.getMetaData("MappingVariable");
-				
-				Map<String, Signal> signals = (Map<String, Signal>) ((ProcessBuildData) parser.getData()).getMetaData("Signals");
-                
-                if (signals != null && signals.containsKey(signalName)) {
-                    Signal signal = signals.get(signalName);                      
-                    signalName = signal.getName();
-                    if (signalName == null) {
-                        throw new IllegalArgumentException("Signal definition must have a name attribute");
-                    }
-                }
+
+				signalName = checkSignalAndConvertToRealSignalNam(parser, signalName);
+
                 actionNode.setMetaData("EventType", "signal");
                 actionNode.setMetaData("Ref", signalName);
                 actionNode.setMetaData("Variable", variable);
-                
+
 				// check if signal should be send async
 				if (dataInputs.containsValue("async")) {
 				    signalName = "ASYNC-" + signalName;
 				}
-				
+
 				String signalExpression = getSignalExpression(actionNode, signalName, "tVariable");
 
 				actionNode
@@ -327,7 +320,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 											+ "\");"
 											+ EOL
 											+ "if (scopeInstance != null) {"
-											+ EOL 
+											+ EOL
 											+ " Object tVariable = "+ (variable == null ? "null" : variable)+";"
 											+ "org.jbpm.workflow.core.node.Transformation transformation = (org.jbpm.workflow.core.node.Transformation)kcontext.getNodeInstance().getNode().getMetaData().get(\"Transformation\");"
 											+ "if (transformation != null) {"
@@ -342,7 +335,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 											+ EOL
 											+ "    ((org.jbpm.process.instance.ProcessInstance) kcontext.getProcessInstance()).setState(org.jbpm.process.instance.ProcessInstance.STATE_ABORTED);"
 											+ EOL + "}"));
-				} else { 
+				} else {
 				    throw new IllegalArgumentException("General escalation is not yet supported");
 				}
 			}
@@ -364,15 +357,15 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 		if (subNode != null && "transformation".equals(subNode.getNodeName())) {
 			String lang = subNode.getAttributes().getNamedItem("language").getNodeValue();
 			String expression = subNode.getTextContent();
-			
+
 			DataTransformer transformer = transformerRegistry.find(lang);
 			if (transformer == null) {
 				throw new IllegalArgumentException("No transformer registered for language " + lang);
-			}    			
+			}
 			transformation = new Transformation(lang, expression, dataInputs.get(target));
-			actionNode.setMetaData("Transformation", transformation);		
+			actionNode.setMetaData("Transformation", transformation);
 		}
-		
+
 		if (eventVariable != null && eventVariable.trim().length() > 0) {
 			actionNode.setMetaData("MappingVariable", eventVariable);
 		}

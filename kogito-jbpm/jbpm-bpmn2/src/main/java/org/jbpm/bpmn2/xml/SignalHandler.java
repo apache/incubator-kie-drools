@@ -31,19 +31,19 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
- * This class isn't currently used because we don't really check thrown or caught event content 
- * (itemDefiniton references) to see if it matches the definition in the process. 
- * 
+ * This class isn't currently used because we don't really check thrown or caught event content
+ * (itemDefiniton references) to see if it matches the definition in the process.
+ *
  * </p>In fact, at this moment, the whole <code>&lt;signal&gt;</code> element is ignored because that (specifying
- * event content) is it's only function. 
- * 
+ * event content) is it's only function.
+ *
  * </p>This handler is just here for two reasons: <ol>
  * <li>So we can process <code>&lt;signal&gt;</code> elements in process definitions</li>
  * <li>When we do end up actively supporting event content, we'll need the functionality in this class</li>
- * </ol> 
+ * </ol>
  */
 public class SignalHandler extends BaseAbstractHandler implements Handler {
-	
+
 	@SuppressWarnings("unchecked")
 	public SignalHandler() {
 		if ((this.validParents == null) && (this.validPeers == null)) {
@@ -71,8 +71,9 @@ public class SignalHandler extends BaseAbstractHandler implements Handler {
 			throws SAXException {
 		parser.startElementBuilder(localName, attrs);
 
+		// according to the (Semantic.)xsd, both the name and structureRef are optional
 		String id = attrs.getValue("id");
-		String name = attrs.getValue("name");
+		String name = attrs.getValue("name"); // referred to by the signalEventDefinition.signalRef attr
 		String structureRef = attrs.getValue("structureRef");
 
         ProcessBuildData buildData = (ProcessBuildData) parser.getData();
@@ -81,10 +82,10 @@ public class SignalHandler extends BaseAbstractHandler implements Handler {
             signals = new HashMap<String, Signal>();
             buildData.setMetaData("Signals", signals);
         }
-        
-        Signal s = new Signal(id, structureRef, name);
+
+        Signal s = new Signal(id, name, structureRef);
         signals.put(id, s);
-        
+
 		return s;
 	}
 
