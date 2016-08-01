@@ -233,7 +233,7 @@ public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler implem
         
         for(String interf : interfaces) {
             try {
-                c = Class.forName(interf);
+                c = Class.forName(interf, true, getInternalClassLoader());
                 break;
             } catch (ClassNotFoundException cnfe) {
                 if(interf.compareTo(interfaces[interfaces.length - 1]) == 0) {
