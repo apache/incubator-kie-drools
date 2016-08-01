@@ -98,7 +98,7 @@ public class InfixOpNode
         Object left = this.left.evaluate( ctx );
         Object right = this.right.evaluate( ctx );
         switch( operator ) {
-            case ADD: return math( left, right, ctx, (l, r) -> l.add( r ) );
+            case ADD: return add( left, right, ctx );
             case SUB: return math( left, right, ctx, (l, r) -> l.subtract( r ) );
             case MULT: return math( left, right, ctx, (l, r) -> l.multiply( r ) );
             case DIV: return math( left, right, ctx, (l, r) -> l.divide( r ) );
@@ -107,11 +107,21 @@ public class InfixOpNode
             case OR: return or( left, right, ctx );
             case LTE: return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) <= 0 );
             case LT: return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) < 0 );
-            case EQ: return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) == 0 );
-            case NE: return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) != 0 );
             case GT: return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) > 0 );
             case GTE: return comparison( left, right, ctx, (l, r) -> l.compareTo( r ) >= 0 );
+            case EQ: return equality( left, right, ctx, (l, r) -> l.compareTo( r ) == 0 );
+            case NE: return equality( left, right, ctx, (l, r) -> l.compareTo( r ) != 0 );
             default: return null;
+        }
+    }
+
+    private Object add(Object left, Object right, EvaluationContextImpl ctx ) {
+        if( left == null || right == null ) {
+            return null;
+        } else if( left instanceof String && right instanceof String ) {
+            return ((String)left)+((String)right);
+        } else {
+            return math( left, right, ctx, (l, r) -> l.add( r ) );
         }
     }
 
@@ -171,4 +181,14 @@ public class InfixOpNode
         }
         return null;
     }
+
+    private Object equality(Object left, Object right, EvaluationContextImpl ctx, BiPredicate<Comparable, Comparable> op ) {
+        if( left == null && right == null ) {
+            return operator == InfixOperator.EQ;
+        } else  if( left == null || right == null ) {
+            return operator == InfixOperator.NE;
+        }
+        return comparison( left, right, ctx, op );
+    }
+
 }

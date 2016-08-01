@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.types;
+package org.kie.dmn.feel.lang.runtime.functions;
 
-import org.kie.dmn.feel.lang.Scope;
+public interface FEELFunction {
 
-public class BuiltInScope extends BaseScope {
+    String getName();
 
-    public BuiltInScope() {
-        super( Scope.BUILT_IN, null);
-    }
+    Object applyReflectively(Object[] params);
+
 }

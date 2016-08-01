@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 
 public class NotNode
         extends BaseNode {
@@ -30,5 +31,14 @@ public class NotNode
 
     public BaseNode getExpression() {
         return expression;
+    }
+
+    @Override
+    public Object evaluate(EvaluationContextImpl ctx) {
+        Object val = expression.evaluate( ctx );
+        if( val != null && val instanceof Boolean ) {
+            return !((Boolean) val);
+        }
+        return null;
     }
 }

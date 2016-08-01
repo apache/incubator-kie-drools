@@ -17,9 +17,16 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.Symbol;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.types.FunctionSymbol;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FunctionInvocationNode
         extends BaseNode {
+
+    private static final Logger logger = LoggerFactory.getLogger( FunctionInvocationNode.class );
 
     private BaseNode name;
     private ListNode params;
@@ -44,5 +51,30 @@ public class FunctionInvocationNode
 
     public void setParams(ListNode params) {
         this.params = params;
+    }
+
+    @Override
+    public Object evaluate(EvaluationContextImpl ctx) {
+        FunctionSymbol function = null;
+        Symbol symbol = null;
+        if( name instanceof NameRefNode ) {
+            // simple name
+            symbol = ctx.resolveSymbol( name.getText() );
+        } else {
+            QualifiedNameNode qn = (QualifiedNameNode) name;
+            String[] qns = qn.getPartsAsStringArray();
+            symbol = ctx.resolveSymbol( qns );
+        }
+        if( symbol instanceof FunctionSymbol ) {
+            function = (FunctionSymbol) symbol;
+        }
+        if( function != null ) {
+            Object[] p = params.getElements().stream().map( e -> e.evaluate( ctx ) ).toArray( Object[]::new );
+            Object result = function.getEvaluator().applyReflectively( p );
+            return result;
+        } else {
+            logger.error("Function not found: '"+name.getText()+"'");
+        }
+        return null;
     }
 }

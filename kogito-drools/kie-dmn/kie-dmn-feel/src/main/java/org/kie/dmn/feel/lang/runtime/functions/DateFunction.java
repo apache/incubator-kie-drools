@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.types;
+package org.kie.dmn.feel.lang.runtime.functions;
 
-import org.kie.dmn.feel.lang.Scope;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 
-public class BuiltInScope extends BaseScope {
+public class DateFunction
+        extends BaseFEELFunction {
 
-    public BuiltInScope() {
-        super( Scope.BUILT_IN, null);
+    public TemporalAccessor apply(String val) {
+        if ( val != null ) {
+            return DateTimeFormatter.ISO_DATE.parseBest( val, ZonedDateTime::from, LocalDate::from );
+        }
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return "date";
     }
 }

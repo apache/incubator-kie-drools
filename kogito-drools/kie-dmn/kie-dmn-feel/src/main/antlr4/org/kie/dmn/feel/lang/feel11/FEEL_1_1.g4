@@ -21,7 +21,6 @@ grammar FEEL_1_1;
     }
 
     private boolean isKeyword( Keywords k ) {
-        System.out.println( "k="+k+" input='"+_input.LT(1).getText()+"'   -> "+k.symbol.equals( _input.LT(1).getText() ) );
         return k.symbol.equals( _input.LT(1).getText() );
     }
 }
@@ -41,10 +40,10 @@ textualExpression
     | forExpression
     | ifExpression
     | quantifiedExpression
+    | functionInvocation
     | conditionalOrExpression
     | instanceOfExpression
     | pathExpression
-    | functionInvocation
     | simpleUnaryTest
     ;
 
@@ -56,7 +55,8 @@ textualExpressions
 
 // #40
 functionInvocation
-    : qualifiedName parameters
+//    : qualifiedName parameters
+    : qualifiedName '(' (namedParameters|positionalParameters)? ')'
     ;
 
 // #41
@@ -314,10 +314,14 @@ qualifiedName
     : nameRef ( '.' nameRef )*
     ;
 
+dummy
+    : Identifier ('/'|'*'|'+'|'-')
+    ;
+
 nameRef
     : st=Identifier { helper.startVariable( $st ); }
-    ( { helper.followUp( _input.LT(1) ) }? ( Identifier | additionalNameSymbol | IntegerLiteral | FloatingPointLiteral )*
-    )
+    ( { helper.followUp( _input.LT(1), _localctx==null ) }? ( Identifier | additionalNameSymbol | IntegerLiteral | FloatingPointLiteral )
+    )*
     ;
 
 /********************************
@@ -401,8 +405,8 @@ or_key
     ;
 
 and_key
-//    : {isKeyword(Keywords.AND)}? Identifier
-    : 'and'
+    : {isKeyword(Keywords.AND)}? Identifier
+//    : 'and'
     ;
 
 between_key

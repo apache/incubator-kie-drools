@@ -37,4 +37,8 @@ public class QualifiedNameNode
     public void setParts(List<NameRefNode> parts) {
         this.parts = parts;
     }
+
+    public String[] getPartsAsStringArray() {
+        return parts.stream().map( p -> p.getText() ).toArray( String[]::new );
+    }
 }

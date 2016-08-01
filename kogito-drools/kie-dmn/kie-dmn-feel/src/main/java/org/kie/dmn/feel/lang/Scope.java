@@ -75,13 +75,25 @@ public interface Scope {
     Symbol resolve(String id);
 
     /**
+     * Searches and returns a symbol with the given
+     * qualified name if it exists. The search is recursive
+     * up, so if a symbol is not found in the current scope,
+     * the algorith searches the parend scopes all the
+     * way to the root built-in scope.
+     *
+     * @param qualifiedName
+     * @return
+     */
+    Symbol resolve(String[] qualifiedName);
+
+    /**
      * This method is used during context-aware parsing
      * to find multi-token symbols iteratively. It is used
      * in conjunction with the #followUp method below.
      *
      * @param token
      */
-    void start( String token );
+    void start(String token);
 
     /**
      * This method is used during context-aware parsing
@@ -90,6 +102,6 @@ public interface Scope {
      *
      * @param token
      */
-    boolean followUp( String token );
+    boolean followUp(String token, boolean isPredict);
 
 }

@@ -16,36 +16,62 @@
 
 package org.kie.dmn.feel.lang.impl;
 
+import org.kie.dmn.feel.lang.Scope;
+import org.kie.dmn.feel.lang.Symbol;
+import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.types.SymbolTable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 public class EvaluationContextImpl {
 
     private final SymbolTable   symbols;
-    private       Stack<Object> stack;
+    private       Stack<ExecutionFrame> stack;
 
     public EvaluationContextImpl(SymbolTable symbols) {
         this.symbols = symbols;
-    }
-
-    public void push(Object obj) {
-        stack.push( obj );
-    }
-
-    public Object pop() {
-        return stack.pop();
-    }
-
-    public Object peek() {
-        return stack.peek();
-    }
-
-    public Stack<Object> getStack() {
-        return this.stack;
+        this.stack = new Stack<>();
+        ExecutionFrame rootFrame = new ExecutionFrame( null, symbols, symbols.getGlobalScope() );
+        push( rootFrame );
     }
 
     public SymbolTable getSymbols() {
         return symbols;
     }
+
+    public void push(ExecutionFrame obj) {
+        stack.push( obj );
+    }
+
+    public ExecutionFrame pop() {
+        return stack.pop();
+    }
+
+    public ExecutionFrame peek() {
+        return stack.peek();
+    }
+
+    public Stack<ExecutionFrame> getStack() {
+        return this.stack;
+    }
+
+    public void enterScope( String scopeName ) {
+        Scope scope = peek().getCurrentScope().getChildScopes().get( scopeName );
+        push( new ExecutionFrame( peek(), symbols, scope ) );
+    }
+
+    public void exitScope() {
+        pop();
+    }
+
+    public Symbol resolveSymbol( String name ) {
+        return peek().getCurrentScope().resolve( name );
+    }
+
+    public Symbol resolveSymbol( String[] name ) {
+        return peek().getCurrentScope().resolve( name );
+    }
+
 }
