@@ -319,9 +319,11 @@ dummy
     ;
 
 nameRef
-    : st=Identifier { helper.startVariable( $st ); }
-    ( { helper.followUp( _input.LT(1), _localctx==null ) }? ( Identifier | additionalNameSymbol | IntegerLiteral | FloatingPointLiteral )
-    )*
+    : st=Identifier { helper.startVariable( $st ); } nameRefOtherToken*
+    ;
+
+nameRefOtherToken
+    : { helper.followUp( _input.LT(1), _localctx==null ) }? ( Identifier | additionalNameSymbol | IntegerLiteral | FloatingPointLiteral )
     ;
 
 /********************************
