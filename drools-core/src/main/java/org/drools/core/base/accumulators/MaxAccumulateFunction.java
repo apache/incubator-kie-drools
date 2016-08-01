@@ -60,7 +60,7 @@ public class MaxAccumulateFunction implements AccumulateFunction {
     /* (non-Javadoc)
      * @see org.kie.base.accumulators.AccumulateFunction#init(java.lang.Object)
      */
-    public void init(Serializable context) throws Exception {
+    public void init(Serializable context) {
         MaxData data = (MaxData) context;
         data.max = -Double.MAX_VALUE;
     }
@@ -78,13 +78,13 @@ public class MaxAccumulateFunction implements AccumulateFunction {
      * @see org.kie.base.accumulators.AccumulateFunction#reverse(java.lang.Object, java.lang.Object)
      */
     public void reverse(Serializable context,
-                        Object value) throws Exception {
+                        Object value) {
     }
 
     /* (non-Javadoc)
      * @see org.kie.base.accumulators.AccumulateFunction#getResult(java.lang.Object)
      */
-    public Object getResult(Serializable context) throws Exception {
+    public Object getResult(Serializable context) {
         MaxData data = (MaxData) context;
         return new Double( data.max );
     }

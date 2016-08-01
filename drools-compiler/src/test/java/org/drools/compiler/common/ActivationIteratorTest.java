@@ -658,7 +658,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isQueued() );
         }
 
-        assertContains( new String[]{"rule1:6.0:true", "rule2:6.0:true", "rule3:6.0:false"},
+        assertContains( new String[]{"rule1:6:true", "rule2:6:true", "rule3:6:false"},
                         list );
     }
 

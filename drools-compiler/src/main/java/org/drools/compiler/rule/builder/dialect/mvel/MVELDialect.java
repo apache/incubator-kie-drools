@@ -132,8 +132,6 @@ public class MVELDialect
         initBuilder();
     }
 
-    private static final MVELExprAnalyzer  analyzer     = new MVELExprAnalyzer();
-
     private final Map                      interceptors = MVELCompilationUnit.INTERCEPTORS;
 
     protected List<KnowledgeBuilderResult> results;
@@ -509,12 +507,12 @@ public class MVELDialect
         BaseDescr temp = context.getParentDescr();
         context.setParentDescr( descr );
         try {
-            result = analyzer.analyzeExpression( context,
-                                                 (String) content,
-                                                 availableIdentifiers,
-                                                 localTypes,
-                                                 "drools",
-                                                 KnowledgeHelper.class );
+            result = MVELExprAnalyzer.analyzeExpression( context,
+                                                         (String) content,
+                                                         availableIdentifiers,
+                                                         localTypes,
+                                                         "drools",
+                                                         KnowledgeHelper.class );
         } catch ( final Exception e ) {
             DialectUtil.copyErrorLocation( e, descr );
             context.addError( new DescrBuildError( context.getParentDescr(),
@@ -547,12 +545,12 @@ public class MVELDialect
                                        String contextIndeifier,
                                        Class kcontextClass) {
 
-        return analyzer.analyzeExpression( context,
-                                           text,
-                                           availableIdentifiers,
-                                           localTypes,
-                                           contextIndeifier,
-                                           kcontextClass );
+        return MVELExprAnalyzer.analyzeExpression( context,
+                                                   text,
+                                                   availableIdentifiers,
+                                                   localTypes,
+                                                   contextIndeifier,
+                                                   kcontextClass );
     }
 
     public MVELCompilationUnit getMVELCompilationUnit(final String expression,
