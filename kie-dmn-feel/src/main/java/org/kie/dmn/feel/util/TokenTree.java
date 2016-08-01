@@ -34,7 +34,7 @@ public class TokenTree {
             Node next = findToken( current, t );
             if( next == null ) {
                 next = new Node( t, current);
-                root.children.add( next );
+                current.children.add( next );
             }
             current = next;
         }
@@ -44,14 +44,17 @@ public class TokenTree {
         currentNode = findToken( root, t );
     }
 
-    public boolean followUp( String t ) {
+    public boolean followUp( String t, boolean commit ) {
         if( currentNode == null ) {
             // this happens when the start() call above does not
             // find a root token
             return false;
         }
-        currentNode = findToken( currentNode, t );
-        return currentNode != null;
+        Node node = findToken( currentNode, t );
+        if( commit ) {
+            currentNode = node;
+        }
+        return node != null;
     }
 
     private Node findToken(Node current, String t) {

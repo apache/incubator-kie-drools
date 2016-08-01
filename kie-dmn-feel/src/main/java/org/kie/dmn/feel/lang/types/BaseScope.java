@@ -69,8 +69,22 @@ public class BaseScope implements Scope {
 
     public Symbol resolve(String id) {
         Symbol s = symbols.get( id );
-        if ( s == null && parentScope == null ) {
+        if ( s == null && parentScope != null ) {
             return parentScope.resolve( id );
+        }
+        return s;
+    }
+
+    public Symbol resolve(String[] qualifiedName) {
+        Symbol root = symbols.get( qualifiedName[0] );
+        if ( root == null && parentScope != null ) {
+            return parentScope.resolve( qualifiedName );
+        } else if( root != null ) {
+            Symbol currentSymbol = root;
+            for( int i = 1; i < qualifiedName.length && currentSymbol != null; i++ ) {
+                currentSymbol = currentSymbol.getScope().resolve( qualifiedName[1] );
+            }
+            return currentSymbol;
         }
         return null;
     }
@@ -105,10 +119,10 @@ public class BaseScope implements Scope {
         }
     }
 
-    public boolean followUp( String token ) {
+    public boolean followUp( String token, boolean isPredict ) {
         // must call followup on parent scope
-        boolean parent = this.parentScope != null ? this.parentScope.followUp( token ) : false;
-        return this.tokenTree.followUp( token ) || parent;
+        boolean parent = this.parentScope != null ? this.parentScope.followUp( token, isPredict ) : false;
+        return this.tokenTree.followUp( token, !isPredict ) || parent;
     }
 
     private void initializeTokenTree() {

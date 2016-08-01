@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.lang.feel11;
 
 import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.PredictionMode;
 
 import java.util.stream.Stream;
 
@@ -40,6 +41,8 @@ public class FEELParser {
         protected void reportFailedPredicate(Parser recognizer, FailedPredicateException e) {
             // don't do anything
         }
+
+
 
     }
 

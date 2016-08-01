@@ -26,6 +26,8 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.is;
 
 import java.math.BigDecimal;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RunWith(Parameterized.class)
@@ -83,6 +85,8 @@ public class FEELTest {
                 { "null / 10", EMPTY_INPUT, null },
                 { "10 + 20 / -5 - 3", EMPTY_INPUT, BigDecimal.valueOf( 3 ) },
                 { "10 + 20 / ( -5 - 3 )", EMPTY_INPUT, BigDecimal.valueOf( 7.5 ) },
+                // string concatenation
+                { "\"foo\"+\"bar\"", EMPTY_INPUT, "foobar" },
 
                 // ternary logic operations as per the spec
                 { "true and true", EMPTY_INPUT, Boolean.TRUE },
@@ -140,12 +144,39 @@ public class FEELTest {
                 { "true != false", EMPTY_INPUT, Boolean.TRUE },
 
                 // null comparisons and comparisons between different types
+                { "10.4 < null", EMPTY_INPUT, null },
+                { "null <= 30.6", EMPTY_INPUT, null },
+                { "40 > null", EMPTY_INPUT, null },
+                { "null >= 30", EMPTY_INPUT, null },
+                { "\"foo\" > null", EMPTY_INPUT, null },
+                { "10 > \"foo\"", EMPTY_INPUT, null },
+                { "false > \"foo\"", EMPTY_INPUT, null },
+                { "\"bar\" != true", EMPTY_INPUT, null },
+                { "null = \"bar\"", EMPTY_INPUT, Boolean.FALSE },
+                { "false != null", EMPTY_INPUT, Boolean.TRUE },
+                { "null = true", EMPTY_INPUT, Boolean.FALSE },
+                { "12 = null", EMPTY_INPUT, Boolean.FALSE},
+                { "12 != null", EMPTY_INPUT, Boolean.TRUE},
+                { "null = null", EMPTY_INPUT, Boolean.TRUE },
+                { "null != null", EMPTY_INPUT, Boolean.FALSE },
+
+                // 'not' expression
+                { "not( true )", EMPTY_INPUT, Boolean.FALSE },
+                { "not( false )", EMPTY_INPUT, Boolean.TRUE },
+                { "not( 10 = 3 )", EMPTY_INPUT, Boolean.TRUE },
+                { "not( \"foo\" )", EMPTY_INPUT, null },
+
+                // function invocation
+                { "date(\"2016-07-29\")", EMPTY_INPUT, DateTimeFormatter.ISO_DATE.parse( "2016-07-29", LocalDate::from ) },
+                { "date(\"-0105-07-29\")", EMPTY_INPUT, DateTimeFormatter.ISO_DATE.parse( "-0105-07-29", LocalDate::from ) }, // 105 BC
+                { "date(\"2016-15-29\")", EMPTY_INPUT, null },
+                { "date( 10 )", EMPTY_INPUT, null },
+                { "time(\"23:59:00\")", EMPTY_INPUT, DateTimeFormatter.ISO_TIME.parse( "23:59:00", LocalTime::from ) },
+                { "time(\"13:20:00-05:00\")", EMPTY_INPUT, DateTimeFormatter.ISO_TIME.parse( "13:20:00-05:00", OffsetTime::from ) },
+                { "time(\"05:48:23.765\")", EMPTY_INPUT, DateTimeFormatter.ISO_TIME.parse( "05:48:23.765", LocalTime::from ) },
+                { "date and time(\"2016-07-29T05:48:23.765-05:00\")", EMPTY_INPUT, DateTimeFormatter.ISO_DATE_TIME.parse( "2016-07-29T05:48:23.765-05:00", OffsetDateTime::from ) },
 
 
-                //                { "", EMPTY_INPUT,  },
-                //                { "", EMPTY_INPUT,  },
-                //                { "", EMPTY_INPUT,  },
-                //                { "", EMPTY_INPUT,  },
                 //                { "", EMPTY_INPUT,  },
 
         };

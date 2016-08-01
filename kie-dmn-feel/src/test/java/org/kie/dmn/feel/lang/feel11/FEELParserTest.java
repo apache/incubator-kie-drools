@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.lang.feel11;
 
+import org.antlr.v4.runtime.DiagnosticErrorListener;
+import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.ast.*;
@@ -882,6 +884,22 @@ public class FEELParserTest {
     }
 
     @Test
+    public void testFunctionInvocationWithKeyword() {
+        String inputExpression = "date and time( \"2016-07-29T19:47:53\" )";
+        BaseNode functionBase = parse( inputExpression );
+
+        assertThat( functionBase, is( instanceOf( FunctionInvocationNode.class ) ) );
+        assertThat( functionBase.getText(), is( inputExpression ) );
+
+        FunctionInvocationNode function = (FunctionInvocationNode) functionBase;
+        assertThat( function.getName(), is( instanceOf( NameRefNode.class ) ) );
+        assertThat( function.getName().getText(), is( "date and time" ) );
+        assertThat( function.getParams(), is( instanceOf( ListNode.class ) ) );
+        assertThat( function.getParams().getElements().size(), is( 1 ) );
+        assertThat( function.getParams().getElements().get( 0 ), is( instanceOf( StringNode.class ) ) );
+    }
+
+    @Test
     public void testFunctionInvocationEmptyParams() {
         String inputExpression = "my.test.Function()";
         BaseNode functionBase = parse( inputExpression );
@@ -976,7 +994,10 @@ public class FEELParserTest {
 
     private BaseNode parse(String input, String... symbols) {
         FEEL_1_1Parser parser = FEELParser.parse( input, symbols );
+
         ParseTree tree = parser.expression();
+        System.out.println(tree.toStringTree( parser ));
+
         ASTBuilderVisitor v = new ASTBuilderVisitor();
         BaseNode expr = v.visit( tree );
         return expr;
