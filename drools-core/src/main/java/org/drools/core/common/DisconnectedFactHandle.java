@@ -268,7 +268,7 @@ public class DisconnectedFactHandle
     }
 
     public InternalFactHandle clone() {
-        return clone();
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
     public String toExternalForm() {

@@ -223,7 +223,7 @@ public class LogicTransformer {
                 Declaration declr = (Declaration) qe.getArgTemplate()[qe.getDeclIndexes()[i]];
                 Declaration resolved = resolver.getDeclaration( null,
                                                                 declr.getIdentifier() );
-                if ( resolved != null && resolved != declr && resolved.getPattern() != pattern ) {
+                if ( resolved != declr && resolved.getPattern() != pattern ) {
                     qe.getArgTemplate()[qe.getDeclIndexes()[i]] = resolved;
                 }
                 

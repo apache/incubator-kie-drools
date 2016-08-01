@@ -74,10 +74,6 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
         this.rootHandle = rootHandle;
     }
 
-    public DefeasibleLogicalDependency getLogicalDependency() {
-        return getLogicalDependency();
-    }
-
     public BeliefSystem<M> getBeliefSystem() {
         return beliefSystem;
     }
@@ -94,8 +90,7 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
         return tailUndefeated;
     }
 
-    public void add( M node ) {
-        M newDep = node;
+    public void add( M newDep ) {
         newDep.setStatus( resolveStatus( newDep ) );
 
         RuleImpl rule = newDep.getLogicalDependency().getJustifier().getRule();
@@ -149,9 +144,7 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
         }
     }
 
-    public void remove( M node) {
-        DefeasibleMode<M> dep = node;
-
+    public void remove( M dep) {
         if (dep.getDefeatedBy() != null) {
             // Defeated deps do not have defeated defeated lists of their own, so just remove.
             DefeasibleMode<M> defeater = dep.getDefeatedBy();
@@ -184,7 +177,7 @@ public class DefeasibleBeliefSet<M extends DefeasibleMode<M>> implements JTMSBel
     }
 
     public void addUndefeated( M dep ) {
-        boolean pos = ! ( dep.getValue() != null && MODE.NEGATIVE.getId().equals( dep.getValue().toString() ) );
+        boolean pos = ! ( dep.getValue() != null && MODE.NEGATIVE.getId().equals( dep.getValue() ) );
         switch( dep.getStatus() ) {
             case DEFINITELY:
                 if ( pos ) {

@@ -43,17 +43,17 @@ public class FieldFactory implements FieldDataFactory, Serializable {
 
     public FieldValue getFieldValue( String value,
                                      ValueType valueType) {
-        FieldValue field = null;
         if ( value == null || "null".equals( value )) {
-            valueType = ValueType.NULL_TYPE;
+            return null;
         }
-        
+
         value = value.trim();
         if ( (value.startsWith( "\"" ) && value.endsWith( "\"" )) ||
               value.startsWith( "'" ) && value.endsWith( "'" ) ) {
             value = value.substring( 1, value.length() - 1 );
         }
 
+        FieldValue field = null;
         if ( valueType == ValueType.NULL_TYPE ) {
             field = new ObjectFieldImpl( null );
         } else if ( valueType == ValueType.PCHAR_TYPE ) {
