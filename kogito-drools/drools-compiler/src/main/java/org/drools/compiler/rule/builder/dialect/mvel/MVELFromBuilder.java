@@ -38,6 +38,9 @@ import org.drools.core.spi.KnowledgeHelper;
 import java.util.Arrays;
 import java.util.Map;
 
+import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.core.util.ClassUtils.isIterable;
+
 /**
  * A builder for "from" conditional element
  */
@@ -78,6 +81,17 @@ public class MVELFromBuilder
             if ( analysis == null ) {
                 // something bad happened
                 return null;
+            }
+
+            Class<?> returnType = ( (MVELAnalysisResult) analysis ).getReturnType();
+            if ( prefixPattern != null && !isPatternTypeCompatibleWithFromReturnType( prefixPattern, returnType ) ) {
+                context.addError( new DescrBuildError( descr,
+                                                       context.getRuleDescr(),
+                                                       null,
+                                                       "Pattern of type: '" + prefixPattern.getObjectType() + "' on rule '" + context.getRuleDescr().getName() +
+                                                       "' is not compatible with type " + returnType.getCanonicalName() + " returned by source") );
+                return null;
+
             }
             
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();            
@@ -122,6 +136,14 @@ public class MVELFromBuilder
             context.setTypesafe( typeSafe );
         }
 
+        from.setResultPattern( prefixPattern );
         return from;
+    }
+
+    public static boolean isPatternTypeCompatibleWithFromReturnType( Pattern pattern, Class<?> returnType ) {
+        return returnType == null ||
+               returnType == Object.class ||
+               isIterable( returnType ) ||
+               pattern.getObjectType().isAssignableFrom( convertFromPrimitiveType(returnType) );
     }
 }

@@ -70,7 +70,6 @@ import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.From;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.PatternSource;
@@ -332,12 +331,7 @@ public class PatternBuilder
         if ( patternDescr.getSource() != null ) {
             // we have a pattern source, so build it
             RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( patternDescr.getSource().getClass() );
-
-            PatternSource source = (PatternSource) builder.build( context, patternDescr.getSource() );
-            if ( source instanceof From ) {
-                ((From) source).setResultPattern( pattern );
-            }
-            pattern.setSource( source );
+            pattern.setSource( (PatternSource) builder.build( context, patternDescr.getSource(), pattern ) );
         }
     }
 

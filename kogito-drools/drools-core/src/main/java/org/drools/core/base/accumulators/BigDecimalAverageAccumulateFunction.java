@@ -111,7 +111,7 @@ public class BigDecimalAverageAccumulateFunction implements AccumulateFunction {
      * {@inheritDoc}
      */
     public Class< ? > getResultType() {
-        return Number.class;
+        return BigDecimal.class;
     }
 
 }

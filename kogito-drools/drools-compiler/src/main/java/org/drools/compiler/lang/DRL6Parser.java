@@ -3069,7 +3069,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
 
         try {
             if (state.backtracking == 0) {
-                pattern.type("Object[]");
+                pattern.type("Object");
                 pattern.isQuery(false);
                 // might have to add the implicit bindings as well
             }

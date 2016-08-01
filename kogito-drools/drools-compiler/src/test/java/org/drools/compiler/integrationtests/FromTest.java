@@ -26,6 +26,9 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -36,6 +39,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class FromTest {
 
@@ -45,6 +49,9 @@ public class FromTest {
         }
         public List<String> getList2() {
             return Arrays.asList( "1", "22", "333" );
+        }
+        public String getSingleValue() {
+            return "a";
         }
     }
 
@@ -165,5 +172,49 @@ public class FromTest {
         assertEquals( 2, ( (List) output1.get( 0 ) ).size() );
         assertEquals( 1, output2.size() );
         assertEquals( 2, ( (List) output2.get( 0 ) ).size() );
+    }
+
+    @Test
+    public void testFromWithSingleValue() {
+        String drl =
+                "import " + ListsContainer.class.getCanonicalName() + "\n" +
+                "global java.util.List out;\n" +
+                "rule R1 when\n" +
+                "    $list : ListsContainer( )\n" +
+                "    $s : String() from $list.singleValue\n" +
+                "then\n" +
+                "    out.add($s);\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
+        KieSession ksession = kbase.newKieSession();
+
+        List<String> out = new ArrayList<String>();
+        ksession.setGlobal( "out", out );
+
+        ksession.insert( new ListsContainer() );
+        ksession.fireAllRules();
+
+        assertEquals( 1, out.size() );
+        assertEquals( "a", out.get(0) );
+    }
+
+    @Test
+    public void testFromWithSingleValueAndIncompatibleType() {
+        // DROOLS-1243
+        String drl =
+                "import " + ListsContainer.class.getCanonicalName() + "\n" +
+                "global java.util.List out;\n" +
+                "rule R1 when\n" +
+                "    $list : ListsContainer( )\n" +
+                "    $s : Integer() from $list.singleValue\n" +
+                "then\n" +
+                "    out.add($s);\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertFalse( results.getMessages().isEmpty() );
     }
 }

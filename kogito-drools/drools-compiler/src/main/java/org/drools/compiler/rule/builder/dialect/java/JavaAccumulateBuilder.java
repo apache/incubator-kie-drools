@@ -60,6 +60,7 @@ import java.util.TreeSet;
 
 import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.createVariableContext;
 import static org.drools.compiler.rule.builder.dialect.java.JavaRuleBuilderHelper.generateTemplates;
+import static org.drools.compiler.rule.builder.dialect.mvel.MVELFromBuilder.isPatternTypeCompatibleWithFromReturnType;
 
 /**
  * A builder for the java dialect accumulate version
@@ -166,6 +167,16 @@ public class JavaAccumulateBuilder
             AccumulateFunctionCallDescr fc = accumDescr.getFunctions().get(0);
             AccumulateFunction function = getAccumulateFunction(context, accumDescr, fc);
             if (function == null) {
+                return null;
+            }
+
+            Class<?> returnType = function.getResultType();
+            if (!isPatternTypeCompatibleWithFromReturnType(pattern, returnType)) {
+                context.addError( new DescrBuildError( accumDescr,
+                                                       context.getRuleDescr(),
+                                                       null,
+                                                       "Pattern of type: '" + pattern.getObjectType() + "' on rule '" + context.getRuleDescr().getName() +
+                                                       "' is not compatible with type " + returnType.getCanonicalName() + " returned by accumulate function.") );
                 return null;
             }
 

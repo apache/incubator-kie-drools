@@ -3051,7 +3051,7 @@ public class RuleParserTest extends TestCase {
                       rule.getLhs().getDescrs().size() );
 
         PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        assertEquals( "Object[]",
+        assertEquals( "Object",
                       out.getObjectType() );
         AccumulateDescr accum = (AccumulateDescr) out.getSource();
         assertTrue( accum.isExternalFunction() );
@@ -3105,7 +3105,7 @@ public class RuleParserTest extends TestCase {
                       rule.getLhs().getDescrs().size() );
 
         PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        assertEquals( "Object[]",
+        assertEquals( "Object",
                       out.getObjectType() );
         AccumulateDescr accum = (AccumulateDescr) out.getSource();
         assertTrue( accum.isExternalFunction() );
@@ -3200,7 +3200,7 @@ public class RuleParserTest extends TestCase {
                       rule.getLhs().getDescrs().size() );
 
         PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        assertEquals( "Object[]",
+        assertEquals( "Object",
                       out.getObjectType() );
         AccumulateDescr accum = (AccumulateDescr) out.getSource();
         assertTrue( accum.isExternalFunction() );
@@ -3240,7 +3240,7 @@ public class RuleParserTest extends TestCase {
                       rule.getLhs().getDescrs().size() );
 
         PatternDescr out = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        assertEquals( "Object[]",
+        assertEquals( "Object",
                       out.getObjectType() );
         assertEquals( 2, 
                       out.getConstraint().getDescrs().size() );

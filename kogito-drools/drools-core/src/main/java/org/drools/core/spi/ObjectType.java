@@ -16,18 +16,18 @@
 
 package org.drools.core.spi;
 
-import java.io.Externalizable;
-
 import org.drools.core.base.ValueType;
+
+import java.io.Externalizable;
 
 /**
  * Semantic object type differentiator.
- *
- * @see org.kie.rule.Declaration
  */
 public interface ObjectType
     extends
     Externalizable {
+
+    boolean isAssignableFrom(Class<?> clazz);
 
     boolean isAssignableFrom(ObjectType objectType);
 

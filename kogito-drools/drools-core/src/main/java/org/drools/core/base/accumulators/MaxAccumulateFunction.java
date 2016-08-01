@@ -100,7 +100,7 @@ public class MaxAccumulateFunction implements AccumulateFunction {
      * {@inheritDoc}
      */
     public Class< ? > getResultType() {
-        return Number.class;
+        return Double.class;
     }
 
 }

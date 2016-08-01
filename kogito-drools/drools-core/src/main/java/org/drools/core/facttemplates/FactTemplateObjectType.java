@@ -103,6 +103,10 @@ public class FactTemplateObjectType
         return this.factTemplate.equals( object );
     }
 
+    public boolean isAssignableFrom(Class<?> clazz) {
+        return false;
+    }
+
     public boolean isAssignableFrom(ObjectType objectType) {
         if ( !(objectType instanceof FactTemplateObjectType) ) {
             return false;
