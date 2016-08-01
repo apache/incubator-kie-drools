@@ -16,13 +16,13 @@
 
 package org.drools.core.base.accumulators;
 
+import org.kie.api.runtime.rule.AccumulateFunction;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-
-import org.kie.api.runtime.rule.AccumulateFunction;
 
 /**
  * An implementation of an accumulator capable of counting occurences
@@ -104,7 +104,7 @@ public class CountAccumulateFunction implements AccumulateFunction {
      * {@inheritDoc}
      */
     public Class< ? > getResultType() {
-        return Number.class;
+        return Long.class;
     }
 
 }
