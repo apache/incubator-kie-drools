@@ -79,7 +79,7 @@ public class ProtobufMarshaller
     public ProtobufMarshaller(KieBase kbase,
                               MarshallingConfiguration marshallingConfig) {
         this.kbase = kbase;
-        this.ruleBaseConfig = (ruleBaseConfig != null) ? ruleBaseConfig : RuleBaseConfiguration.getDefaultInstance();
+        this.ruleBaseConfig = RuleBaseConfiguration.getDefaultInstance();
         this.marshallingConfig = marshallingConfig;
         this.strategyStore = this.marshallingConfig.getObjectMarshallingStrategyStore();
     }

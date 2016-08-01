@@ -366,10 +366,6 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         return declarations;
     }
 
-    public Declaration getIndexingDeclaration() {
-        return indexingDeclaration;
-    }
-
     public EvaluatorWrapper[] getOperators() {
         return operators;
     }
@@ -450,9 +446,6 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     private BitMask calculateMask(Condition condition, List<String> settableProperties) {
-        if (condition instanceof SingleCondition) {
-            return calculateMask(condition, settableProperties);
-        }
         BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());
         for (Condition c : ((CombinedCondition)condition).getConditions()) {
             String propertyName = getFirstInvokedPropertyName(((SingleCondition) c).getLeft());
@@ -484,7 +477,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                     return null;
                 }
             }
-            return getter2property(method.getName());
+            return method != null ? getter2property(method.getName()) : null;
         }
 
         if (invocation instanceof FieldAccessInvocation) {

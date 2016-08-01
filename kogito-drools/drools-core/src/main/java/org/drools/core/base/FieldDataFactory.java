@@ -22,29 +22,25 @@ import org.drools.core.spi.FieldValue;
 
 public interface FieldDataFactory {
 
-    public FieldValue getFieldValue( String value, ValueType valueType );
+    FieldValue getFieldValue( Object value, ValueType valueType );
 
-    public FieldValue getFieldValue( Object value, ValueType valueType );
+    FieldValue getFieldValue(final Object value);
 
-    public FieldValue getFieldValue(final Object value);
+    FieldValue getFieldValue(final byte value);
 
-    public FieldValue getFieldValue(final byte value);
+    FieldValue getFieldValue(final short value);
 
-    public FieldValue getFieldValue(final short value);
+    FieldValue getFieldValue(final char value);
 
-    public FieldValue getFieldValue(final char value);
+    FieldValue getFieldValue(final int value);
 
-    public FieldValue getFieldValue(final int value);
+    FieldValue getFieldValue(final long value);
 
-    public FieldValue getFieldValue(final long value);
+    FieldValue getFieldValue(final boolean value);
 
-    public FieldValue getFieldValue(final boolean value);
+    FieldValue getFieldValue(final float value);
 
-    public FieldValue getFieldValue(final float value);
+    FieldValue getFieldValue(final double value);
 
-    public FieldValue getFieldValue(final double value);
-
-    public FieldValue getFieldValue(final Class value);
-
-
+    FieldValue getFieldValue(final Class value);
 }
