@@ -150,44 +150,12 @@ public class ClassObjectType
         this.valueType = ValueType.determineValueType( cls );
     }
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // org.kie.spi.ObjectType
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-    //    /**
-    //     * Determine if the passed <code>Class</code> matches to the object type
-    //     * defined by this <code>objectType</code> instance.
-    //     *
-    //     * @param clazz
-    //     *            The <code>Class</code> to test.
-    //     *
-    //     * @return <code>true</code> if the <code>Class</code> matches this
-    //     *         object type, else <code>false</code>.
-    //     */
-    //    public boolean matchesClass(final Class clazz) {
-    //        return getClassType().isAssignableFrom( clazz );
-    //    }
-    //
-    //    /**
-    //     * Determine if the passed <code>Object</code> belongs to the object type
-    //     * defined by this <code>objectType</code> instance.
-    //     *
-    //     * @param object
-    //     *            The <code>Object</code> to test.
-    //     *
-    //     * @return <code>true</code> if the <code>Object</code> matches this
-    //     *         object type, else <code>false</code>.
-    //     */
-    //    public boolean matches(final Object object) {
-    //        return getClassType().isInstance( object );
-    //    }
-    //
-    //    public boolean isAssignableFrom(Object object) {
-    //        return this.objectTypeClass.isAssignableFrom( (Class) object );
-    //    }
-
     public boolean isAssignableFrom(ObjectType objectType) {
-        return objectType instanceof ClassObjectType && this.cls.isAssignableFrom( ( (ClassObjectType) objectType ).getClassType() );
+        return objectType instanceof ClassObjectType && isAssignableFrom( ( (ClassObjectType) objectType ).getClassType() );
+    }
+
+    public boolean isAssignableFrom(Class<?> clazz) {
+        return this.cls.isAssignableFrom( clazz );
     }
 
     public ValueType getValueType() {

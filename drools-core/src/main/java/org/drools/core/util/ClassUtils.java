@@ -532,6 +532,10 @@ public final class ClassUtils {
         return false;
     }
 
+    public static boolean isIterable(Class<?> clazz) {
+        return Iterable.class.isAssignableFrom( clazz ) || clazz.isArray();
+    }
+
     private static class SetterInClass implements Comparable {
         private final String setter;
         private final Class<?> clazz;
