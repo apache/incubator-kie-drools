@@ -379,10 +379,24 @@ public class ASTBuilderVisitor
         return visit( ctx.positionalParameters() );
     }
 
+//    @Override
+//    public BaseNode visitFunctionInvocation(FEEL_1_1Parser.FunctionInvocationContext ctx) {
+//        BaseNode name = visit( ctx.qualifiedName() );
+//        ListNode params = (ListNode) visit( ctx.parameters() );
+//        return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
+//    }
+
     @Override
     public BaseNode visitFunctionInvocation(FEEL_1_1Parser.FunctionInvocationContext ctx) {
         BaseNode name = visit( ctx.qualifiedName() );
-        ListNode params = (ListNode) visit( ctx.parameters() );
+        ListNode params = null;
+        if( ctx.positionalParameters() != null ) {
+            params = (ListNode) visit( ctx.positionalParameters() );
+        } else if( ctx.namedParameters() != null ) {
+            params = (ListNode) visit( ctx.namedParameters() );
+        } else {
+            params = ASTBuilderFactory.newListNode( ctx, new ArrayList<>(  ) );
+        }
         return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
     }
 }

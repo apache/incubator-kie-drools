@@ -18,6 +18,9 @@ package org.kie.dmn.feel.lang.types;
 
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.runtime.functions.DateFunction;
+import org.kie.dmn.feel.lang.runtime.functions.DateTimeFunction;
+import org.kie.dmn.feel.lang.runtime.functions.TimeFunction;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,11 +40,11 @@ public class SymbolTable {
         // pre-loads all the built in functions
         builtInScope.define( new BuiltInTypeSymbol( "true", BuiltInType.BOOLEAN, builtInScope ) );
         builtInScope.define( new BuiltInTypeSymbol( "false", BuiltInType.BOOLEAN, builtInScope ) );
-        builtInScope.define( new FunctionSymbol( "date" ) );
-        builtInScope.define( new FunctionSymbol( "time" ) );
-        builtInScope.define( new FunctionSymbol( "date and time" ) );
-        builtInScope.define( new FunctionSymbol( "duration" ) );
-        builtInScope.define( new FunctionSymbol( "decision table" ) );
+        builtInScope.define( new FunctionSymbol( "date", new DateFunction() ) );
+        builtInScope.define( new FunctionSymbol( "time", new TimeFunction() ) );
+        builtInScope.define( new FunctionSymbol( "date and time", new DateTimeFunction() ) );
+        builtInScope.define( new FunctionSymbol( "duration", null ) );
+        builtInScope.define( new FunctionSymbol( "decision table", null ) );
     }
 
     public Scope getBuiltInScope() {
