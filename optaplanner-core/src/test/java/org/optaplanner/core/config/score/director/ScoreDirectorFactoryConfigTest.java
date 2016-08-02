@@ -22,8 +22,8 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
-import static org.junit.Assert.assertEquals;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import static org.junit.Assert.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
 
 public class ScoreDirectorFactoryConfigTest {
 
@@ -46,4 +46,15 @@ public class ScoreDirectorFactoryConfigTest {
         assertEquals(3, scoreDefinition.getSoftLevelsSize());
     }
 
+    @Test
+    public void testGenerateDroolsTestOption() {
+        ScoreDirectorFactoryConfig config = new ScoreDirectorFactoryConfig();
+        assertNull(config.isGenerateDroolsTestOnError());
+        config.setGenerateDroolsTestOnError(true);
+        assertTrue(config.isGenerateDroolsTestOnError());
+        config.setGenerateDroolsTestOnError(Boolean.FALSE);
+        assertFalse(config.isGenerateDroolsTestOnError());
+        config.setGenerateDroolsTestOnError(null);
+        assertNull(config.isGenerateDroolsTestOnError());
+    }
 }
