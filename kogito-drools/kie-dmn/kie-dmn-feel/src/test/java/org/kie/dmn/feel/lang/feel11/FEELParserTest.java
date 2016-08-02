@@ -190,7 +190,7 @@ public class FEELParserTest {
         assertThat( mult.getRight().getText(), is( "x" ) );
     }
 
-    @Test @Ignore("Currently failing due to ANTLR issue with semantic predicates")
+    @Test
     public void testDivision() {
         String inputExpression = "y / 5 * ( x )";
         BaseNode infix = parse( inputExpression );
@@ -614,11 +614,13 @@ public class FEELParserTest {
         String inputExpression = "{ a value : 10,"
                        + " an applicant : { "
                        + "    first name : \"Edson\", "
-                       + "    last name : \"Tirelli\", "
+                       + "    last + name : \"Tirelli\", "
+                       + "    full name : first name + last + name, "
                        + "    address : {"
                        + "        street : \"55 broadway st\","
                        + "        city : \"New York\" "
-                       + "    }"
+                       + "    }, "
+                       + "    xxx: last + name"
                        + " } "
                        + "}";
         BaseNode ctxbase = parse( inputExpression );
@@ -643,13 +645,14 @@ public class FEELParserTest {
         assertThat( entry.getValue(), is( instanceOf( ContextNode.class ) ) );
 
         ContextNode applicant = (ContextNode) entry.getValue();
-        assertThat( applicant.getEntries().size(), is( 3 ) );
+        assertThat( applicant.getEntries().size(), is( 5 ) );
         assertThat( applicant.getEntries().get( 0 ).getName().getText(), is("first name") );
-        assertThat( applicant.getEntries().get( 1 ).getName().getText(), is("last name") );
-        assertThat( applicant.getEntries().get( 2 ).getName().getText(), is("address") );
-        assertThat( applicant.getEntries().get( 2 ).getValue(), is( instanceOf( ContextNode.class ) ) );
+        assertThat( applicant.getEntries().get( 1 ).getName().getText(), is("last + name") );
+        assertThat( applicant.getEntries().get( 2 ).getName().getText(), is("full name") );
+        assertThat( applicant.getEntries().get( 3 ).getName().getText(), is("address") );
+        assertThat( applicant.getEntries().get( 3 ).getValue(), is( instanceOf( ContextNode.class ) ) );
 
-        ContextNode address = (ContextNode) applicant.getEntries().get( 2 ).getValue();
+        ContextNode address = (ContextNode) applicant.getEntries().get( 3 ).getValue();
         assertThat( address.getEntries().size(), is( 2 ) );
         assertThat( address.getEntries().get( 0 ).getName().getText(), is("street") );
         assertThat( address.getEntries().get( 1 ).getName().getText(), is("city") );

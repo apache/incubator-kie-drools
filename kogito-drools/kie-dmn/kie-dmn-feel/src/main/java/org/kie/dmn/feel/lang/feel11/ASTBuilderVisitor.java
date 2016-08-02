@@ -310,12 +310,12 @@ public class ASTBuilderVisitor
         return ASTBuilderFactory.newQuantifiedExpression( ctx, QuantifiedExpressionNode.Quantifier.EVERY, list, expr );
     }
 
-    @Override
-    public BaseNode visitInstanceOfExpression(FEEL_1_1Parser.InstanceOfExpressionContext ctx) {
-        BaseNode expr = visit( ctx.conditionalOrExpression() );
-        QualifiedNameNode type = (QualifiedNameNode) visit( ctx.type() );
-        return ASTBuilderFactory.newInstanceOfNode( ctx, expr, type );
-    }
+//    @Override
+//    public BaseNode visitInstanceOfExpression(FEEL_1_1Parser.InstanceOfExpressionContext ctx) {
+//        BaseNode expr = visit( ctx.conditionalOrExpression() );
+//        QualifiedNameNode type = (QualifiedNameNode) visit( ctx.type() );
+//        return ASTBuilderFactory.newInstanceOfNode( ctx, expr, type );
+//    }
 
     @Override
     public BaseNode visitPathExpression(FEEL_1_1Parser.PathExpressionContext ctx) {
