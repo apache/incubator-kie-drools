@@ -105,7 +105,7 @@ public class BigDecimalSumAccumulateFunction implements AccumulateFunction {
      * {@inheritDoc}
      */
     public Class< ? > getResultType() {
-        return Number.class;
+        return BigDecimal.class;
     }
 
 }
