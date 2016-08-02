@@ -42,9 +42,9 @@ then
 end
 
 rule Look agenda-group "commands"  when
-    lc : LookCommand(  c : character )
-    l : Location( thing == c )
-    ?look( c, things, exits; )
+    lc : LookCommand( )
+    l : Location( thing == lc.character )
+    ?look( lc.character, things, exits; )
 then
     str = "You are in the " + l.target.name + "\n";
     str +="You can see " + thingsToString( things ) + "\n";
@@ -63,8 +63,8 @@ end
 
 rule Move agenda-group "commands" when
     mc : MoveCommand(r : room )
-    l  : Location( thing == mc.character, ltarget : target ) @watch( !target )
-    ?connect( d, r, ltarget; )
+    l  : Location( thing == mc.character ) @watch( !target )
+    ?connect( d, r, l.target; )
 then
     exit = new ExitEvent( mc.character, (Room) l.target );
     enter = new EnterEvent( mc.character, r );
@@ -80,8 +80,8 @@ end
 rule UnlockingDoors agenda-group "commands"  when
     uc : UseCommand()
     r : Room() from uc.target
-    cl  : Location( thing == uc.character, ltarget : target  )
-    ?connect( door, ltarget, r; )
+    cl  : Location( thing == uc.character  )
+    ?connect( door, cl.target, r; )
     if( door.key != uc.thing) break[wrongKey]
     if( door.lockStatus == LockStatus.UNLOCKED) break[alreadyUnlocked]
 then
@@ -162,9 +162,9 @@ then
 end
 
 rule Search agenda-group "commands"  when
-    sc : SearchCommand( t : thing, t != null )
+    sc : SearchCommand( thing != null )
     session : UserSession( )
-    acc( ?isContainedIn(child, r, t;);
+    acc( ?isContainedIn(child, r, sc.thing;);
          strThings : collectList( child.name + " in " + r.name ),
          things : collectList( child ))
 then

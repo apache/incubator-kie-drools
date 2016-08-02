@@ -174,7 +174,7 @@ public class PatternBuilder
 
         ObjectType objectType = getObjectType(context, patternDescr);
         if ( objectType == null ) { // if the objectType doesn't exist it has to be query
-            return buildQuery( context, patternDescr, prefixPattern, patternDescr );
+            return buildQuery( context, patternDescr, patternDescr );
         }
 
         Pattern pattern = buildPattern( context, patternDescr, objectType );
@@ -323,7 +323,7 @@ public class PatternBuilder
         if (typeDeclaration != null) {
             return typeDeclaration.getRole() == Role.Type.EVENT;
         }
-        Role role = (Role) userProvidedClass.getAnnotation( Role.class );
+        Role role = userProvidedClass.getAnnotation( Role.class );
         return role != null && role.value() == Role.Type.EVENT;
     }
 
@@ -357,12 +357,12 @@ public class PatternBuilder
         }
     }
 
-    private RuleConditionElement buildQuery( RuleBuildContext context, PatternDescr descr, Pattern prefixPattern, PatternDescr patternDescr ) {
+    private RuleConditionElement buildQuery( RuleBuildContext context, PatternDescr descr, PatternDescr patternDescr ) {
         RuleConditionElement rce = null;
         // it might be a recursive query, so check for same names
         if ( context.getRule().getName().equals( patternDescr.getObjectType() ) ) {
             // it's a query so delegate to the QueryElementBuilder
-            rce = buildQueryElement(context, descr, prefixPattern, (QueryImpl) context.getRule());
+            rce = buildQueryElement(context, descr, (QueryImpl) context.getRule());
         }
 
         if ( rce == null ) {
@@ -370,7 +370,7 @@ public class PatternBuilder
             RuleImpl rule = context.getPkg().getRule( patternDescr.getObjectType() );
             if ( rule instanceof QueryImpl ) {
                 // it's a query so delegate to the QueryElementBuilder
-                rce = buildQueryElement(context, descr, prefixPattern, (QueryImpl) rule);
+                rce = buildQueryElement(context, descr, (QueryImpl) rule);
             }
         }
 
@@ -387,7 +387,7 @@ public class PatternBuilder
                         RuleImpl rule = pkgReg.getPackage().getRule( patternDescr.getObjectType() );
                         if ( rule instanceof QueryImpl) {
                             // it's a query so delegate to the QueryElementBuilder
-                            rce = buildQueryElement(context, descr, prefixPattern, (QueryImpl) rule);
+                            rce = buildQueryElement(context, descr, (QueryImpl) rule);
                             break;
                         }
                     }
@@ -405,11 +405,11 @@ public class PatternBuilder
         return rce;
     }
 
-    private RuleConditionElement buildQueryElement(RuleBuildContext context, BaseDescr descr, Pattern prefixPattern, QueryImpl rule) {
+    private RuleConditionElement buildQueryElement(RuleBuildContext context, BaseDescr descr, QueryImpl rule) {
         if (context.getRule() != rule) {
             context.getRule().addUsedQuery(rule);
         }
-        return QueryElementBuilder.getInstance().build( context, descr, prefixPattern, rule );
+        return QueryElementBuilder.getInstance().build( context, descr, rule );
     }
 
     protected void processDuplicateBindings( boolean isUnification,
@@ -641,9 +641,7 @@ public class PatternBuilder
                     declarations.add(declaration);
                 }
             }
-            for ( EvaluatorWrapper operator : constraint.getOperators() ) {
-                operators.add( operator );
-            }
+            Collections.addAll( operators, constraint.getOperators() );
         }
 
         String expression = expressionBuilder.toString();
