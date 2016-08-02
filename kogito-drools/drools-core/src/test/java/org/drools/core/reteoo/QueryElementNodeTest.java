@@ -22,21 +22,20 @@ import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
-
+import org.drools.core.test.model.DroolsTestCase;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.KnowledgeBaseFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class QueryElementNodeTest extends DroolsTestCase {
     private PropagationContext  context;
@@ -58,7 +57,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
 
     @Test
     public void testAttach() throws Exception {
-        QueryElement queryElement = new QueryElement(null, null, new Object[0], null, null, null, false, false);
+        QueryElement queryElement = new QueryElement(null, null, new QueryArgument[0], null, null, false, false);
 
         final MockTupleSource source = new MockTupleSource( 12 );
 
@@ -88,10 +87,10 @@ public class QueryElementNodeTest extends DroolsTestCase {
         Pattern p = new Pattern();
         QueryElement qe = new QueryElement( p,
                                             "queryName1",
-                                            new Object[]{Variable.v, "x1", Variable.v, "x3", "x4",Variable.v,"x6",},
-                                            new Declaration[0],
-                                            new int[0],
+                                            new QueryArgument[]{QueryArgument.VAR, new QueryArgument.Literal( "x1" ), QueryArgument.VAR,
+                                                    new QueryArgument.Literal( "x3" ), new QueryArgument.Literal( "x4" ), QueryArgument.VAR, new QueryArgument.Literal( "x6" ),},
                                             new int[] { 0, 2, 5 },
+                                            new Declaration[0],
                                             false,
                                             false );
        

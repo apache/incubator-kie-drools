@@ -14,22 +14,6 @@
 */
 package org.drools.compiler.integrationtests;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.xml.bind.JAXBContext;
-
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -47,7 +31,6 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
-import org.drools.core.rule.Declaration;
 import org.drools.core.runtime.rule.impl.FlatQueryResultRow;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
@@ -55,6 +38,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.definition.rule.Rule;
@@ -70,6 +55,21 @@ import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.utils.KieHelper;
+
+import javax.xml.bind.JAXBContext;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class QueryTest extends CommonTestMethodBase {
 
@@ -1160,5 +1160,111 @@ public class QueryTest extends CommonTestMethodBase {
         ks.fireAllRules();
 
         assertEquals( Arrays.asList( "Bye" ), list );
+    }
+
+    @Test
+    public void testQueryWithAccessorAsArgument() throws Exception {
+        // DROOLS-414
+        String str =
+                "import org.drools.compiler.Person\n" +
+                "global java.util.List persons;\n" +
+                "\n" +
+                "query contains(String $s, String $c)\n" +
+                "    $s := String( this.contains( $c ) )\n" +
+                "end\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person()\n" +
+                "    contains( $p.name, \"a\"; )\n" +
+                "then\n" +
+                "    persons.add( $p );\n" +
+                "end\n";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( str, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        List<Person> personsWithA = new ArrayList<Person>();
+        ksession.setGlobal("persons", personsWithA);
+
+        ksession.insert("Mark");
+        ksession.insert("Edson");
+        ksession.insert("Mario");
+        ksession.insert(new Person("Mark"));
+        ksession.insert(new Person("Edson"));
+        ksession.insert(new Person("Mario"));
+        ksession.fireAllRules();
+
+        assertEquals(2, personsWithA.size());
+        for (Person p : personsWithA) {
+            assertTrue( p.getName().equals( "Mark" ) || p.getName().equals( "Mario" ) );
+        }
+    }
+
+    @Test
+    public void testQueryWithExpressionAsArgument() throws Exception {
+        // DROOLS-414
+        String str =
+                "import org.drools.compiler.Person\n" +
+                "global java.util.List persons;\n" +
+                "\n" +
+                "query checkLength(String $s, int $l)\n" +
+                "    $s := String( length == $l )\n" +
+                "end\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $i : Integer()\n" +
+                "    $p : Person()\n" +
+                "    checkLength( $p.name, 1 + $i + $p.age; )\n" +
+                "then\n" +
+                "    persons.add( $p );\n" +
+                "end\n";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( str, ResourceType.DRL );
+        KieSession ksession = helper.build().newKieSession();
+
+        List<Person> list = new ArrayList<Person>();
+        ksession.setGlobal("persons", list);
+
+        ksession.insert(1);
+        ksession.insert("Mark");
+        ksession.insert("Edson");
+        ksession.insert("Mario");
+        ksession.insert(new Person("Mark", 2));
+        ksession.insert(new Person("Edson", 3));
+        ksession.insert(new Person("Mario", 4));
+        ksession.fireAllRules();
+
+        System.out.println(list);
+        assertEquals(2, list.size());
+        for (Person p : list) {
+            assertTrue( p.getName().equals( "Mark" ) || p.getName().equals( "Edson" ) );
+        }
+    }
+
+    @Test
+    public void testNotExistingDeclarationInQuery() {
+        // DROOLS-414
+        String drl =
+                "import org.drools.compiler.Person\n" +
+                "global java.util.List persons;\n" +
+                "\n" +
+                "query checkLength(String $s, int $l)\n" +
+                "    $s := String( length == $l )\n" +
+                "end\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $i : Integer()\n" +
+                "    $p : Person()\n" +
+                "    checkLength( $p.name, 1 + $x + $p.age; )\n" +
+                "then\n" +
+                "    persons.add( $p );\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertFalse( results.getMessages().isEmpty() );
     }
 }

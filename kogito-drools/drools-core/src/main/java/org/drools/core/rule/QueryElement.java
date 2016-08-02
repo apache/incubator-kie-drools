@@ -16,8 +16,6 @@
 
 package org.drools.core.rule;
 
-import org.kie.api.runtime.rule.Variable;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -31,13 +29,12 @@ public class QueryElement extends ConditionalElement
     implements
     Externalizable {
     
-    private Pattern       resultPattern;
-    private String        queryName;
-    private Object[]      argTemplate;
-    private int[]         declIndexes;
-    private int[]         variableIndexes;
-    private boolean       openQuery;
-    private boolean       abductive;
+    private Pattern         resultPattern;
+    private String          queryName;
+    private QueryArgument[] arguments;
+    private int[]           variableIndexes;
+    private boolean         openQuery;
+    private boolean         abductive;
 
     private Declaration[] requiredDeclarations;
 
@@ -45,72 +42,57 @@ public class QueryElement extends ConditionalElement
         // for serialisation
     }
     
-    public QueryElement(Pattern       resultPattern,
+    public QueryElement(Pattern resultPattern,
                         String queryName,
-                        Object[] argTemplate,
+                        QueryArgument[] arguments,
+                        int[] variableIndexes,
                         Declaration[] requiredDeclarations,
-                        int[] declIndexes,
-                        int[] variableIndexes, 
                         boolean openQuery,
                         boolean abductive) {
         this.resultPattern = resultPattern;
         this.queryName = queryName;
-        this.argTemplate = argTemplate;
-        this.requiredDeclarations = requiredDeclarations;
-        this.declIndexes = declIndexes;
+        this.arguments = arguments;
         this.variableIndexes = variableIndexes;
+        this.requiredDeclarations = requiredDeclarations;
         this.openQuery = openQuery;
         this.abductive = abductive;
     }
-    
-    
+
     public void writeExternal(ObjectOutput out) throws IOException {
        out.writeObject( this.resultPattern );
        out.writeObject( this.queryName );
-       out.writeObject( this.argTemplate );
-       out.writeObject( this.requiredDeclarations );
-       out.writeObject( this.declIndexes );
+       out.writeObject( this.arguments );
        out.writeObject( this.variableIndexes );
+       out.writeObject( this.requiredDeclarations );
        out.writeBoolean( this.openQuery );
-        out.writeBoolean( this.abductive );
+       out.writeBoolean( this.abductive );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         this.resultPattern = ( Pattern ) in.readObject();
         this.queryName = (String) in.readObject();
-        this.argTemplate = (Object[]) in.readObject();
-        for ( int i = 0; i < argTemplate.length; i++ ) {
-            if ( argTemplate[i] instanceof Variable ) {
-                argTemplate[i] = Variable.v; // we need to reset this as we do == checks later in DroolsQuery
-            }
-        }
+        this.arguments = (QueryArgument[]) in.readObject();
+        this.variableIndexes = (int[]) in.readObject();
         this.requiredDeclarations = ( Declaration[] ) in.readObject();
-        this.declIndexes = ( int[] ) in.readObject();
-        this.variableIndexes = ( int[] ) in.readObject();
         this.openQuery = in.readBoolean();
         this.abductive = in.readBoolean();
     }
-    
+
+    public int[] getVariableIndexes() {
+        return variableIndexes;
+    }
+
+    public void setVariableIndexes( int[] variableIndexes ) {
+        this.variableIndexes = variableIndexes;
+    }
 
     public String getQueryName() {
         return queryName;
     }
 
-    public Object[] getArgTemplate() {
-        return argTemplate;
-    }
-
-    public int[] getDeclIndexes() {
-        return declIndexes;
-    }
-    
-    public void setVariableIndexes(int[] varIndexes) {
-        variableIndexes = varIndexes;
-    }
-
-    public int[] getVariableIndexes() {
-        return variableIndexes;
+    public QueryArgument[] getArguments() {
+        return arguments;
     }
 
     public Map<String,Declaration> getInnerDeclarations() {
@@ -154,15 +136,14 @@ public class QueryElement extends ConditionalElement
 
     @Override
     public QueryElement clone() {
-        return new QueryElement( resultPattern.clone(), queryName, argTemplate, requiredDeclarations, declIndexes, variableIndexes, openQuery, abductive );
+        return new QueryElement( resultPattern.clone(), queryName, arguments, variableIndexes, requiredDeclarations, openQuery, abductive );
     }
 
     @Override
     public String toString() {
         return "QueryElement [resultPattern=" + resultPattern + 
-                   ", queryName=" + queryName + ", argTemplate=" + Arrays.toString( argTemplate ) + 
-                   ", declIndexes=" + Arrays.toString( declIndexes ) + ", variableIndexes="+ Arrays.toString( variableIndexes ) + 
-                   ", openQuery=" + openQuery + 
+                   ", queryName=" + queryName + ", argTemplate=" + Arrays.toString( arguments ) +
+                   ", openQuery=" + openQuery +
                    ", abductive=" + abductive +
                    ", requiredDeclarations=" + Arrays.toString( requiredDeclarations ) + "]";
     }
@@ -171,14 +152,12 @@ public class QueryElement extends ConditionalElement
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + Arrays.hashCode( argTemplate );
-        result = prime * result + Arrays.hashCode( declIndexes );
+        result = prime * result + Arrays.hashCode( arguments );
         result = prime * result + (openQuery ? 1231 : 1237);
         result = prime * result + (abductive ? 1231 : 1237);
         result = prime * result + ((queryName == null) ? 0 : queryName.hashCode());
         result = prime * result + Arrays.hashCode( requiredDeclarations );
         result = prime * result + ((resultPattern == null) ? 0 : resultPattern.hashCode());
-        result = prime * result + Arrays.hashCode( variableIndexes );
         return result;
     }
 
@@ -188,10 +167,8 @@ public class QueryElement extends ConditionalElement
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
         QueryElement other = (QueryElement) obj;
-        if ( !Arrays.equals( argTemplate,
-                             other.argTemplate ) ) return false;
-        if ( !Arrays.equals( declIndexes,
-                             other.declIndexes ) ) return false;
+        if ( !Arrays.equals( arguments,
+                             other.arguments ) ) return false;
         if ( openQuery != other.openQuery ) return false;
         if ( abductive != other.abductive ) return false;
         if ( queryName == null ) {
@@ -202,9 +179,6 @@ public class QueryElement extends ConditionalElement
         if ( resultPattern == null ) {
             if ( other.resultPattern != null ) return false;
         } else if ( !resultPattern.equals( other.resultPattern ) ) return false;
-        if ( !Arrays.equals( variableIndexes,
-                             other.variableIndexes ) ) return false;
         return true;
     }
-
 }

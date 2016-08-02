@@ -15,6 +15,8 @@
 
 package org.drools.compiler.rule.builder;
 
+import org.drools.compiler.compiler.AnalysisResult;
+import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.compiler.compiler.DroolsParserException;
@@ -30,22 +32,25 @@ import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
-import org.kie.api.runtime.rule.Variable;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import static org.drools.core.rule.LogicTransformer.toIntArray;
 import static org.drools.core.util.StringUtils.isDereferencingIdentifier;
 
 public class QueryElementBuilder
@@ -60,35 +65,24 @@ public class QueryElementBuilder
 
     public RuleConditionElement build( RuleBuildContext context,
                                        BaseDescr descr ) {
-        return this.build( context,
-                           descr,
-                           null );
+        throw new UnsupportedOperationException();
     }
     
     public RuleConditionElement build( RuleBuildContext context,
                                        BaseDescr descr,
                                        Pattern prefixPattern ) {
         throw new UnsupportedOperationException();
-        
     }
 
     @SuppressWarnings("unchecked")
     public RuleConditionElement build( RuleBuildContext context,
                                        BaseDescr descr,
-                                       Pattern prefixPattern,
                                        QueryImpl query) {
         PatternDescr patternDescr = (PatternDescr) descr;
 
         Declaration[] params = query.getParameters();
 
         List<BaseDescr> args = (List<BaseDescr>) patternDescr.getDescrs();
-        List<Integer> declrIndexes = new ArrayList<Integer>();
-        List<Integer> varIndexes = new ArrayList<Integer>();
-        List<Object> arguments = new ArrayList<Object>( params.length );
-        for ( int i = 0; i < params.length; i++ ) {
-            // as these could be set in any order, initialise first, to allow setting later.
-            arguments.add( null );
-        }
         List<Declaration> requiredDeclarations = new ArrayList<Declaration>();
 
         ObjectType argsObjectType = ClassObjectType.ObjectArray_ObjectType;
@@ -125,6 +119,8 @@ public class QueryElementBuilder
             extraDescr.setType( ExprConstraintDescr.Type.POSITIONAL );
             args.add( extraDescr );
         }
+
+        QueryArgument[] arguments = new QueryArgument[params.length];
 
         // Deal with the constraints, both positional and bindings
         for ( BaseDescr base : args ) {
@@ -180,8 +176,6 @@ public class QueryElementBuilder
                 processPositional( context,
                                    query,
                                    params,
-                                   declrIndexes,
-                                   varIndexes,
                                    arguments,
                                    requiredDeclarations,
                                    arrayReader,
@@ -194,31 +188,24 @@ public class QueryElementBuilder
                 processBinding( context,
                                 descr,
                                 params,
-                                declrIndexes,
-                                varIndexes,
                                 arguments,
                                 requiredDeclarations,
                                 arrayReader,
                                 pattern,
                                 bind );
             }
-
         }
 
-        Declaration[] declrsArray = requiredDeclarations.toArray( new Declaration[requiredDeclarations.size()] );
-        int[] declrIndexArray = new int[declrIndexes.size()];
-        for ( int i = 0; i < declrsArray.length; i++ ) {
-            declrIndexArray[i] = declrIndexes.get( i );
-        }
-        int[] varIndexesArray = new int[varIndexes.size()];
-        for ( int i = 0; i < varIndexesArray.length; i++ ) {
-            varIndexesArray[i] = varIndexes.get( i );
-        }
-
-        for ( Integer declIndex : declrIndexes ) {
-            Declaration knownInputArg = (Declaration) arguments.get( declIndex );
-            Declaration formalArgument = query.getParameters()[ declIndex ];
-            Class actual = knownInputArg.getDeclarationClass();
+        List<Integer> varIndexList = new ArrayList<Integer>();
+        for (int i = 0; i < arguments.length; i++) {
+            if (!(arguments[i] instanceof QueryArgument.Declr)) {
+                if (arguments[i] instanceof QueryArgument.Var) {
+                    varIndexList.add(i);
+                }
+                continue;
+            }
+            Class actual = ((QueryArgument.Declr) arguments[i]).getArgumentClass();
+            Declaration formalArgument = query.getParameters()[i];
             Class formal = formalArgument.getDeclarationClass();
 
             // with queries invoking each other, we won't know until runtime whether a declaration is input, output or else
@@ -228,16 +215,15 @@ public class QueryElementBuilder
                                                        descr,
                                                            null,
                                                        "Query is being invoked with known argument of type " + actual +
-                                                       " at position " + declIndex + ", but the expected query argument is of type " + formal ) );
+                                                       " at position " + i + ", but the expected query argument is of type " + formal ) );
             }
         }
 
         return new QueryElement( pattern,
                                  query.getName(),
-                                 arguments.toArray( new Object[arguments.size()] ),
-                                 declrsArray,
-                                 declrIndexArray,
-                                 varIndexesArray,
+                                 arguments,
+                                 toIntArray( varIndexList ),
+                                 requiredDeclarations.toArray( new Declaration[requiredDeclarations.size()] ),
                                  !patternDescr.isQuery(),
                                  query.isAbductive() );
     }
@@ -246,9 +232,7 @@ public class QueryElementBuilder
     private void processBinding( RuleBuildContext context,
                                  BaseDescr descr,
                                  Declaration[] params,
-                                 List<Integer> declrIndexes,
-                                 List<Integer> varIndexes,
-                                 List<Object> arguments,
+                                 QueryArgument[] arguments,
                                  List<Declaration> requiredDeclarations,
                                  InternalReadAccessor arrayReader,
                                  Pattern pattern,
@@ -271,17 +255,13 @@ public class QueryElementBuilder
         }
 
         // left does not already exist, is it a slot?
-        int pos = getPos( bind.getVariable(),
-                          params );
+        int pos = getPos( bind.getVariable(), params );
         if ( pos >= 0 ) {
             // it's an input on a slot, is the input using bindings?
-            declr = context.getDeclarationResolver().getDeclaration( context.getRule(),
-                                                                     bind.getExpression() );
+            declr = context.getDeclarationResolver().getDeclaration( context.getRule(), bind.getExpression() );
             if ( declr != null ) {
-                arguments.set( pos,
-                               declr );
-                declrIndexes.add( pos );
                 requiredDeclarations.add( declr );
+                arguments[pos] = new QueryArgument.Declr( declr );
             } else {
                 // it must be a literal/expression
                 // it's an expression and thus an input
@@ -297,30 +277,12 @@ public class QueryElementBuilder
                     return;
                 }
 
-                MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
-                String expr = context.getCompilerFactory().getExpressionProcessor().dump( bresult,
-                                                                                          mvelCtx );
-                try {
-                    MVELDialectRuntimeData data = ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-                    ParserConfiguration conf = data.getParserConfiguration();
-                    conf.setClassLoader( context.getKnowledgeBuilder().getRootClassLoader() );
-
-                    arguments.set( pos,
-                    MVELSafeHelper.getEvaluator().executeExpression( MVEL.compileExpression( expr, new ParserContext( conf ) ) ) );
-                } catch ( Exception e ) {
-                    context.addError( new DescrBuildError( context.getParentDescr(),
-                                                                  descr,
-                                                                  null,
-                                                                  "Unable to compile expression:\n" + expr ) );
-                }                       
+                arguments[pos] = getLiteralQueryArgument( context, descr, bresult );
             }
         } else {
             // this is creating a new output binding
             // we know it doesn't exist, as we already checked for left == var                    
-            declr = pattern.addDeclaration( bind.getVariable() );
-
-            pos = getPos( bind.getExpression(),
-                          params );
+            pos = getPos( bind.getExpression(), params );
             if ( pos < 0 ) {
                 // error this must be a binding on a slot
                 context.addError( new DescrBuildError( context.getParentDescr(),
@@ -330,85 +292,103 @@ public class QueryElementBuilder
                 return;                
             }
 
-            // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
-            ArrayElementReader reader = new ArrayElementReader( arrayReader,
-                                                                pos,
-                                                                params[pos].getDeclarationClass() );
-
-            // Should the reader be registered like the others? Probably yes...
-            // PatternBuilder.registerReadAccessor(  );
-
-            declr.setReadAccessor( reader );
-
-            varIndexes.add( pos );
-            arguments.set( pos,
-                           Variable.v );
+            arguments[pos] = getVariableQueryArgument( arrayReader, params, pos, pattern, bind.getVariable() );
         }
     }
 
     private void processPositional( RuleBuildContext context,
                                     QueryImpl query,
                                     Declaration[] params,
-                                    List<Integer> declrIndexes,
-                                    List<Integer> varIndexes,
-                                    List<Object> arguments,
+                                    QueryArgument[] arguments,
                                     List<Declaration> requiredDeclarations,
                                     InternalReadAccessor arrayReader,
                                     Pattern pattern,
                                     BaseDescr base,
                                     String expression,
                                     ConstraintConnectiveDescr result ) {
-        int position = ((ExprConstraintDescr) base).getPosition();
-        if ( position >= arguments.size() ) {
+        int pos = ((ExprConstraintDescr) base).getPosition();
+        if ( pos >= arguments.length ) {
             context.addError( new DescrBuildError( context.getParentDescr(),
                                                    base,
                                                    null,
-                                                   "Unable to parse query '" + query.getName() + "', as postion " + position + " for expression '" + expression + "' does not exist on query size " + arguments.size()) );
+                                                   "Unable to parse query '" + query.getName() + "', as postion " + pos + " for expression '" + expression + "' does not exist on query size " + arguments.length) );
             return;
         }
 
         boolean isVariable = isVariable( expression );
-        Declaration declr = isVariable ?
-                            context.getDeclarationResolver().getDeclaration( query, expression ) :
-                            null;
+
+        DeclarationScopeResolver declarationResolver = context.getDeclarationResolver();
+        Declaration declr = isVariable ? declarationResolver.getDeclaration( query, expression ) : null;
 
         if ( declr != null ) {
             // it exists, so it's an input
-            arguments.set( position, declr );
-            declrIndexes.add( position );
             requiredDeclarations.add( declr );
+            arguments[pos] = new QueryArgument.Declr(declr);
         } else if( isVariable && expression.indexOf( '.' ) < 0 ) {
-            // it's a variable that doesn't exist and doesn't contain a dot, so it's an output
-            arguments.set( position, Variable.v );
-
-            varIndexes.add( position );
-
-            declr = pattern.addDeclaration( expression );
-
-            // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
-            ArrayElementReader reader = new ArrayElementReader( arrayReader,
-                                                                position,
-                                                                params[position].getDeclarationClass() );
-
-            declr.setReadAccessor( reader );
+            arguments[pos] = getVariableQueryArgument( arrayReader, params, pos, pattern, expression);
         } else {
             // it's an expression and thus an input
-            MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
-            String rewrittenExpr = context.getCompilerFactory().getExpressionProcessor().dump( result, mvelCtx );
-
-            try {
-                MVELDialectRuntimeData data = ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-                ParserConfiguration conf = data.getParserConfiguration();
-                conf.setClassLoader( context.getKnowledgeBuilder().getRootClassLoader() );
-
-                arguments.set( position, MVELSafeHelper.getEvaluator().executeExpression( MVEL.compileExpression( rewrittenExpr, new ParserContext( conf ) ) ) );
-            } catch ( Exception e ) {
-                context.addError( new DescrBuildError( context.getParentDescr(), base, null, "Unable to compile expression:\n" + rewrittenExpr ) );
+            AnalysisResult analysisResult = analyzeExpression( context, base, expression );
+            if (analysisResult == null || analysisResult.getIdentifiers().isEmpty()) {
+                arguments[pos] = getLiteralQueryArgument( context, base, result );
+            } else {
+                List<Declaration> declarations = new ArrayList<Declaration>();
+                for (String identifier : analysisResult.getIdentifiers()) {
+                    Declaration declaration = declarationResolver.getDeclaration( query, identifier );
+                    if (declaration != null) {
+                        declarations.add( declaration );
+                    }
+                }
+                if (declarations.size() == analysisResult.getIdentifiers().size()) {
+                    arguments[pos] = new QueryArgument.Expression( declarations, expression, getParserContext( context ) );
+                } else {
+                    arguments[pos] = getLiteralQueryArgument( context, base, result );
+                }
             }
         }
     }
 
-    public static int getPos( String identifier,
+    private AnalysisResult analyzeExpression( RuleBuildContext context, BaseDescr base, String expression ) {
+        Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations( context.getRule() );
+        Map<String, Class< ? >> declarationClasses = DeclarationScopeResolver.getDeclarationClasses( decls );
+        BoundIdentifiers boundIds = new BoundIdentifiers( declarationClasses, context.getKnowledgeBuilder().getGlobals() );
+        return context.getDialect().analyzeBlock( context, base, expression, boundIds );
+    }
+
+    private QueryArgument getVariableQueryArgument( InternalReadAccessor arrayReader, Declaration[] params, int pos, Pattern pattern, String expression) {
+        // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
+        ArrayElementReader reader = new ArrayElementReader( arrayReader,
+                                                            pos,
+                                                            params[pos].getDeclarationClass() );
+
+        // it's a variable that doesn't exist and doesn't contain a dot, so it's an output
+        pattern.addDeclaration( expression ).setReadAccessor( reader );
+        return QueryArgument.VAR;
+    }
+
+    private QueryArgument getLiteralQueryArgument( RuleBuildContext context, BaseDescr descr, ConstraintConnectiveDescr result ) {
+        MVELDumper.MVELDumperContext mvelCtx = new MVELDumper.MVELDumperContext();
+        String expr = context.getCompilerFactory().getExpressionProcessor().dump( result, mvelCtx );
+        try {
+            Object value = MVELSafeHelper.getEvaluator().executeExpression( MVEL.compileExpression( expr, getParserContext(context) ) );
+            return new QueryArgument.Literal( value );
+        } catch ( Exception e ) {
+            context.addError( new DescrBuildError( context.getParentDescr(),
+                                                   descr,
+                                                   null,
+                                                   "Unable to compile expression: " + expr ) );
+        }
+        return null;
+    }
+
+    private ParserContext getParserContext(RuleBuildContext context) {
+        MVELDialectRuntimeData data = ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+        ParserConfiguration conf = data.getParserConfiguration();
+        conf.setClassLoader( context.getKnowledgeBuilder().getRootClassLoader() );
+        return new ParserContext( conf );
+    }
+
+    private static int getPos( String identifier,
                               Declaration[] params ) {
         for ( int i = 0; i < params.length; i++ ) {
             if ( params[i].getIdentifier().trim().equals( identifier ) ) {
@@ -436,12 +416,9 @@ public class QueryElementBuilder
         return result;
     }
 
-    public static boolean isVariable( String str ) {
+    private static boolean isVariable( String str ) {
         str = str.trim();
-        if (!isDereferencingIdentifier(str)) {
-            return false;
-        }
-        return !str.endsWith( ".class" );
+        return isDereferencingIdentifier( str ) && !str.endsWith( ".class" );
     }
 
 }
