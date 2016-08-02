@@ -16,7 +16,6 @@
 package org.drools.core.phreak;
 
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.TupleSets;
@@ -25,11 +24,8 @@ import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
-import org.drools.core.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
 import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PropagationContext;
-import org.kie.api.runtime.rule.Variable;
 
 public class PhreakQueryNode {
     public void doNode(QueryElementNode queryNode,
@@ -92,53 +88,7 @@ public class PhreakQueryNode {
 
             InternalFactHandle fh = (InternalFactHandle) leftTuple.getContextObject();
             DroolsQuery dquery = (DroolsQuery) fh.getObject();
-
-            Object[] argTemplate = queryNode.getQueryElement().getArgTemplate(); // an array of declr, variable and literals
-            Object[] args = new Object[argTemplate.length]; // the actual args, to be created from the  template
-
-            // first copy everything, so that we get the literals. We will rewrite the declarations and variables next
-            System.arraycopy(argTemplate,
-                             0,
-                             args,
-                             0,
-                             args.length);
-
-            int[] declIndexes = queryNode.getQueryElement().getDeclIndexes();
-
-            for ( int declIndexe : declIndexes ) {
-                Declaration declr = (Declaration) argTemplate[declIndexe];
-
-                Object tupleObject = leftTuple.get( declr ).getObject();
-
-                Object o;
-
-                if ( tupleObject instanceof DroolsQuery ) {
-                    // If the query passed in a Variable, we need to use it
-                    ArrayElementReader arrayReader = (ArrayElementReader) declr.getExtractor();
-                    if ( ( (DroolsQuery) tupleObject ).getVariables()[arrayReader.getIndex()] != null ) {
-                        o = Variable.v;
-                    } else {
-                        o = declr.getValue( wm,
-                                            tupleObject );
-                    }
-                } else {
-                    o = declr.getValue( wm,
-                                        tupleObject );
-                }
-
-                args[declIndexe] = o;
-            }
-
-            int[] varIndexes = queryNode.getQueryElement().getVariableIndexes();
-            for ( int varIndexe : varIndexes ) {
-                if ( argTemplate[varIndexe] == Variable.v ) {
-                    // Need to check against the arg template, as the varIndexes also includes re-declared declarations
-                    args[varIndexe] = Variable.v;
-                }
-            }
-
-            dquery.setParameters(args);
-            ((UnificationNodeViewChangedEventListener) dquery.getQueryResultCollector()).setVariables(varIndexes);
+            dquery.setParameters( queryNode.getActualArguments( leftTuple, wm ) );
 
             SegmentMemory qsmem = qmem.getQuerySegmentMemory();
             LeftInputAdapterNode lian = (LeftInputAdapterNode) qsmem.getRootNode();
@@ -153,7 +103,6 @@ public class PhreakQueryNode {
                 LiaNodeMemory lm = (LiaNodeMemory) qmem.getQuerySegmentMemory().getNodeMemories().get(0);
                 LeftInputAdapterNode.doInsertObject(fh, leftTuple.getPropagationContext(), lian, wm, lm, false, dquery.isOpen());
             }
-
 
             leftTuple.clearStaged();
             leftTuple = next;
