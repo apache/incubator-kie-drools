@@ -1000,7 +1000,6 @@ public class FEELParserTest {
         FEEL_1_1Parser parser = FEELParser.parse( input, symbols );
 
         ParseTree tree = parser.expression();
-        System.out.println(tree.toStringTree( parser ));
 
         ASTBuilderVisitor v = new ASTBuilderVisitor();
         BaseNode expr = v.visit( tree );

@@ -76,7 +76,6 @@ public class ParserHelper {
 
     public boolean followUp(Token t, boolean isPredict) {
         boolean follow = this.currentScope.followUp( t.getText(), isPredict );
-        System.out.println(" follow up: t="+t.getText()+" -> "+follow);
         return follow;
     }
 

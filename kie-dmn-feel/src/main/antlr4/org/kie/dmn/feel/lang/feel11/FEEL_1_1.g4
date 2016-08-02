@@ -51,12 +51,6 @@ textualExpressions
     | textualExpressions ',' textualExpression
     ;
 
-// #40
-functionInvocation
-//    : qualifiedName parameters
-    : qualifiedName '(' (namedParameters|positionalParameters)? ')'
-    ;
-
 // #41
 parameters
     : '(' ')'                       #parametersEmpty
@@ -307,10 +301,6 @@ interval
 // #20
 qualifiedName
     : nameRef ( '.' nameRef )*
-    ;
-
-dummy
-    : Identifier ('/'|'*'|'+'|'-')
     ;
 
 nameRef
