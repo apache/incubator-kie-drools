@@ -16,8 +16,12 @@
 
 package org.kie.dmn.feel.lang.feel11;
 
+import java.util.List;
+import java.util.Stack;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -26,14 +30,11 @@ import org.kie.dmn.feel.lang.types.LocalScope;
 import org.kie.dmn.feel.lang.types.SymbolTable;
 import org.kie.dmn.feel.lang.types.VariableSymbol;
 
-import java.util.List;
-import java.util.Stack;
-
 public class ParserHelper {
 
-    private SymbolTable   symbols      = new SymbolTable();
-    private Scope         currentScope = symbols.getGlobalScope();
-    private Stack<String> currentName  = new Stack<>();
+    private SymbolTable symbols = new SymbolTable();
+    private Scope currentScope = symbols.getGlobalScope();
+    private Stack<String> currentName = new Stack<>();
 
     public ParserHelper() {
         // initial context is loaded
@@ -52,7 +53,7 @@ public class ParserHelper {
         currentScope = currentScope.getParentScope();
     }
 
-    public void pushName(ParserRuleContext ctx) {
+    public void pushName( ParserRuleContext ctx ) {
         this.currentName.push( getOriginalText( ctx ) );
     }
 
@@ -60,7 +61,7 @@ public class ParserHelper {
         this.currentName.pop();
     }
 
-    public void defineVariable(ParserRuleContext ctx) {
+    public void defineVariable( ParserRuleContext ctx ) {
         defineVariable( getOriginalText( ctx ) );
     }
 
@@ -79,18 +80,19 @@ public class ParserHelper {
         return follow;
     }
 
-    private String getOriginalText(ParserRuleContext ctx) {
+    private String getOriginalText( ParserRuleContext ctx ) {
         int a = ctx.start.getStartIndex();
         int b = ctx.stop.getStopIndex();
         Interval interval = new Interval( a, b );
         return ctx.getStart().getInputStream().getText( interval );
     }
 
-    public static List<Token> getAllTokens(ParseTree ctx, List<Token> tokens) {
+    public static List<Token> getAllTokens( ParseTree ctx,
+                                            List<Token> tokens ) {
         for ( int i = 0; i < ctx.getChildCount(); i++ ) {
             ParseTree child = ctx.getChild( i );
             if ( child instanceof TerminalNode ) {
-                tokens.add( ((TerminalNode) child).getSymbol() );
+                tokens.add( ( (TerminalNode) child ).getSymbol() );
             } else {
                 getAllTokens( child, tokens );
             }

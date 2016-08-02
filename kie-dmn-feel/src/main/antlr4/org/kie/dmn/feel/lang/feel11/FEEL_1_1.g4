@@ -36,13 +36,11 @@ expression
 
 // #2
 textualExpression
-    : functionDefinition
+    : conditionalOrExpression
+    | functionDefinition
     | forExpression
     | ifExpression
     | quantifiedExpression
-    | functionInvocation
-    | conditionalOrExpression
-    | instanceOfExpression
     | pathExpression
     | simpleUnaryTest
     ;
@@ -123,9 +121,6 @@ quantifiedExpression
     ;
 
 // #53
-instanceOfExpression
-    : conditionalOrExpression instance_key of_key type
-    ;
 
 // #54
 type
@@ -263,7 +258,7 @@ unaryExpressionNotPlusMinus
 primary
     : literal                   #primaryLiteral
     | '(' expression ')'        #primaryParens
-    | qualifiedName             #primaryName
+    | qualifiedName (parameters| instance_key of_key type)? #primaryName
     ;
 
 // #33 - #39
@@ -323,7 +318,7 @@ nameRef
     ;
 
 nameRefOtherToken
-    : { helper.followUp( _input.LT(1), _localctx==null ) }? ( Identifier | additionalNameSymbol | IntegerLiteral | FloatingPointLiteral )
+    : { helper.followUp( _input.LT(1), _localctx==null ) }? .
     ;
 
 /********************************
