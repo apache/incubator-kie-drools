@@ -132,7 +132,7 @@ public class ASTBuilderFactory {
         return new NamedParameterNode( ctx, name, value );
     }
 
-    public static FunctionInvocationNode newFunctionInvocationNode(FEEL_1_1Parser.FunctionInvocationContext ctx, BaseNode name, ListNode params) {
+    public static FunctionInvocationNode newFunctionInvocationNode(ParserRuleContext ctx, BaseNode name, ListNode params) {
         return new FunctionInvocationNode( ctx, name, params );
     }
 
