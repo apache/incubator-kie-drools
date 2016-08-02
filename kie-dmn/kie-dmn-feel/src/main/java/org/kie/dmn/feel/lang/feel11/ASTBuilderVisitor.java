@@ -310,13 +310,6 @@ public class ASTBuilderVisitor
         return ASTBuilderFactory.newQuantifiedExpression( ctx, QuantifiedExpressionNode.Quantifier.EVERY, list, expr );
     }
 
-//    @Override
-//    public BaseNode visitInstanceOfExpression(FEEL_1_1Parser.InstanceOfExpressionContext ctx) {
-//        BaseNode expr = visit( ctx.conditionalOrExpression() );
-//        QualifiedNameNode type = (QualifiedNameNode) visit( ctx.type() );
-//        return ASTBuilderFactory.newInstanceOfNode( ctx, expr, type );
-//    }
-
     @Override
     public BaseNode visitPathExpression(FEEL_1_1Parser.PathExpressionContext ctx) {
         BaseNode expr = visit( ctx.expr );
@@ -379,24 +372,17 @@ public class ASTBuilderVisitor
         return visit( ctx.positionalParameters() );
     }
 
-//    @Override
-//    public BaseNode visitFunctionInvocation(FEEL_1_1Parser.FunctionInvocationContext ctx) {
-//        BaseNode name = visit( ctx.qualifiedName() );
-//        ListNode params = (ListNode) visit( ctx.parameters() );
-//        return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
-//    }
-
     @Override
-    public BaseNode visitFunctionInvocation(FEEL_1_1Parser.FunctionInvocationContext ctx) {
+    public BaseNode visitPrimaryName(FEEL_1_1Parser.PrimaryNameContext ctx) {
         BaseNode name = visit( ctx.qualifiedName() );
-        ListNode params = null;
-        if( ctx.positionalParameters() != null ) {
-            params = (ListNode) visit( ctx.positionalParameters() );
-        } else if( ctx.namedParameters() != null ) {
-            params = (ListNode) visit( ctx.namedParameters() );
+        if( ctx.parameters() != null ) {
+            ListNode params = (ListNode) visit( ctx.parameters() );
+            return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
+        } else if( ctx.type() != null ) {
+            QualifiedNameNode type = (QualifiedNameNode) visit( ctx.type() );
+            return ASTBuilderFactory.newInstanceOfNode( ctx, name, type );
         } else {
-            params = ASTBuilderFactory.newListNode( ctx, new ArrayList<>(  ) );
+            return name;
         }
-        return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
     }
 }
