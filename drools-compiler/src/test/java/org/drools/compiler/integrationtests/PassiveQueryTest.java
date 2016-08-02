@@ -332,10 +332,6 @@ public class PassiveQueryTest {
         Memory memory1 = wm.getNodeMemory(q1);
         assertTrue(memory1.getSegmentMemory().getStagedLeftTuples().isEmpty());
 
-        Memory memory2 = wm.getNodeMemory(q2);
-        assertFalse(memory2.getSegmentMemory().getStagedLeftTuples().isEmpty());
-        assertNotNull(memory2.getSegmentMemory().getStagedLeftTuples().getInsertFirst());
-
         ksession.fireAllRules();
         assertEquals(1, list.size());
         assertEquals("R2", list.get(0));

@@ -17,7 +17,6 @@ package org.drools.reteoo.nodes;
 
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.InternalViewChangedEventListener;
-import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
@@ -48,7 +47,6 @@ import org.drools.core.rule.QueryElement;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.index.TupleList;
-import org.kie.api.runtime.rule.Variable;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -129,52 +127,7 @@ public class ReteQueryElementNode extends QueryElementNode {
             return;
         }
 
-        Object[] argTemplate = this.queryElement.getArgTemplate(); // an array of declr, variable and literals
-        Object[] args = new Object[argTemplate.length]; // the actual args, to be created from the  template
-
-        // first copy everything, so that we get the literals. We will rewrite the declarations and variables next
-        System.arraycopy(argTemplate,
-                         0,
-                         args,
-                         0,
-                         args.length);
-
-        int[] declIndexes = this.queryElement.getDeclIndexes();
-
-        for ( int declIndexe : declIndexes ) {
-            Declaration declr = (Declaration) argTemplate[declIndexe];
-
-            Object tupleObject = leftTuple.get( declr ).getObject();
-
-            Object o;
-
-            if ( tupleObject instanceof DroolsQuery ) {
-                // If the query passed in a Variable, we need to use it
-                ArrayElementReader arrayReader = (ArrayElementReader) declr.getExtractor();
-                if ( ( (DroolsQuery) tupleObject ).getVariables()[arrayReader.getIndex()] != null ) {
-                    o = Variable.v;
-                } else {
-                    o = declr.getValue( workingMemory,
-                                        tupleObject );
-                }
-            } else {
-                o = declr.getValue( workingMemory,
-                                    tupleObject );
-            }
-
-            args[declIndexe] = o;
-        }
-
-        int[] varIndexes = this.queryElement.getVariableIndexes();
-        for ( int varIndexe : varIndexes ) {
-            if ( argTemplate[varIndexe] == Variable.v ) {
-                // Need to check against the arg template, as the varIndexes also includes re-declared declarations
-                args[varIndexe] = Variable.v;
-            }
-        }
-
-        queryObject.setParameters(args);
-        ((ReteUnificationNodeViewChangedEventListener) queryObject.getQueryResultCollector()).setVariables(varIndexes);
+        queryObject.setParameters(getActualArguments( leftTuple, workingMemory ));
 
         QueryUpdateAction action = new QueryUpdateAction(context,
                                                          handle,
