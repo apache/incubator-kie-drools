@@ -41,12 +41,12 @@ then
     setFocus( "commands" );
 end
 
-rule lookCmd agenda-group "commands"  when
+rule Look agenda-group "commands"  when
     lc : LookCommand(  c : character )
-    Location( thing == c, $room : target )
+    l : Location( thing == c )
     ?look( c, things, exits; )
 then
-    str = "You are in the " + $room.name + "\n";
+    str = "You are in the " + l.target.name + "\n";
     str +="You can see " + thingsToString( things ) + "\n";
     str +="Available exits are  " + thingsToString( exits ) + "\n";
     str +="\n";
@@ -54,13 +54,20 @@ then
     lc.session.channels["output"].send( str );
 end
 
-rule validMove agenda-group "commands" when
-    mc : MoveCommand( c : character, r : room )
-    l  : Location( thing == c, ltarget : target ) @watch( !target )
+rule Locked extends Move agenda-group "commands" when
+    Door( lockStatus == LockStatus.LOCKED ) from d
+then
+    mc.session.channels["output"].send( "The  " + r.name + " Door is locked\n" );
+    delete( mc );
+end
+
+rule Move agenda-group "commands" when
+    mc : MoveCommand(r : room )
+    l  : Location( thing == mc.character, ltarget : target ) @watch( !target )
     ?connect( d, r, ltarget; )
 then
-    exit = new ExitEvent( c, (Room) l.target );
-    enter = new EnterEvent( c, r );
+    exit = new ExitEvent( mc.character, (Room) l.target );
+    enter = new EnterEvent( mc.character, r );
 
     modify( l ) { target = r };
 
@@ -70,20 +77,12 @@ then
     mc.session.channels["output"].send( "You have entered the " + l.target.name + "\n" );
 end
 
-rule roomLocked extends validMove agenda-group "commands" salience 10 when
-    Door( lockStatus == LockStatus.LOCKED ) from d
-then
-    mc.session.channels["output"].send( "The  " + r.name + " Door is locked\n" );
-    delete( mc );
-end
-
-rule unlockingDoors agenda-group "commands"  when
-    uc : UseCommand( c : character, t : thing)
-    k : Key() from uc.thing
+rule UnlockingDoors agenda-group "commands"  when
+    uc : UseCommand()
     r : Room() from uc.target
-    cl  : Location( thing == c, ltarget : target  )
+    cl  : Location( thing == uc.character, ltarget : target  )
     ?connect( door, ltarget, r; )
-    if( door.key != k) break[wrongKey]
+    if( door.key != uc.thing) break[wrongKey]
     if( door.lockStatus == LockStatus.UNLOCKED) break[alreadyUnlocked]
 then
     modify(door){ lockStatus = LockStatus.UNLOCKED };
@@ -97,33 +96,42 @@ then[alreadyUnlocked]
     retract ( uc );
 end
 
-rule killMonster agenda-group "commands"  when
+rule KillMonster agenda-group "commands"  when
     uc : UseCommand( c : character, thing.name == "umbrella", uc.target.name == "monster")
+    mc : Character( this == uc.target )
+    lc : Location( thing == mc )
 then
     uc.session.channels["output"].send(  "You have killed the Monster\n" );
-    retract ( uc );
+    delete( mc );
+    delete( lc );
+    delete ( uc );
 end
 
-rule invalidUse agenda-group "commands" when
+rule InvalidUse agenda-group "commands" when
     uc : UseCommand( c : character)
 then
     uc.session.channels["output"].send(  "The " + uc.thing.name + " cannot be used with the " + uc.target.name + "\n" );
-    retract ( uc );
 end
 
-rule validPickup agenda-group "commands"  when
-    pc : PickupCommand( c : character, t : thing)
-    cl  : Location( thing == c )
-    tl : Location( thing == t, target == cl.target )
+rule Pickup agenda-group "commands"  when
+    pc : PickupCommand( c : character, t : thing )
+    cl  : Location( thing == c, $room : target)
+    ?isContainedIn(t, x, $room;)
+    tl : Location( thing == t )
+    if ( t.portable != true) break[nonportable]
+    session : UserSession( $char : character )
+    things( $char, $things; )  
 then
     insert( new Holding(  c, t ) );
     modify( tl ) { target =  c };
     insert( new PickupEvent( c, t ) );
-
+    session.channels["things"].send( $things );
     pc.session.channels["output"].send(  "You have picked up the " + t.name + "\n" );
+then[nonportable]
+    pc.session.channels["output"].send(  "Unable to picked up the " + t.name + "\n" );
 end
 
-rule validDrop agenda-group "commands" when
+rule Drop agenda-group "commands" when
     dc : DropCommand( c : character, t : thing)
 
     cl : Location( thing == c )
@@ -137,7 +145,7 @@ then
     dc.session.channels["output"].send( "You have dropped the " + t.name + "\n" );
 end
 
-rule validGive agenda-group "commands" when
+rule Give agenda-group "commands" when
     gc : GiveCommand( $giver : giver, $thing : thing )
 
     // They are in the same room
@@ -151,6 +159,25 @@ then
     insert( new GiveEvent( gc.giver, gc.thing, gc.receiver ) );
 
     gc.session.channels["output"].send( "You have given the " + gc.thing.name + " to " + gc.receiver.name + "\n" );
+end
+
+rule Search agenda-group "commands"  when
+    sc : SearchCommand( t : thing, t != null )
+    session : UserSession( )
+    acc( ?isContainedIn(child, r, t;);
+         strThings : collectList( child.name + " in " + r.name ),
+         things : collectList( child ))
+then
+    sc.session.channels["output"].send( "found " + strThings + "\n" );
+    session.channels["things"].send( things );
+end
+
+rule SearchNoArgs agenda-group "commands"  when
+    sc : SearchCommand( t : thing, t == null )
+    session : UserSession( $char : character )
+    things( $char, $things; )
+then
+    session.channels["things"].send( $things );
 end
 
 rule retractCommand agenda-group "commands" salience -100 when

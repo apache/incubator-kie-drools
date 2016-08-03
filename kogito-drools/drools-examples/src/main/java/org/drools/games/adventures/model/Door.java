@@ -33,7 +33,7 @@ public class Door extends Thing {
     private Key key;
 
     public Door(Room fromRoom, Room toRoom) {
-        super( "Door from " + fromRoom.getName() +" to "+ toRoom.toString() );
+        super( "Door from " + fromRoom.getName() +" to "+ toRoom.toString(), false );
         this.fromRoom = fromRoom;
         this.toRoom = toRoom;
         lockStatus = LockStatus.UNLOCKED;

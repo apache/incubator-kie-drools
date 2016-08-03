@@ -19,22 +19,46 @@ import org.kie.api.definition.type.Position;
 import org.kie.api.definition.type.PropertyReactive;
 
 @PropertyReactive
-public class Item extends Thing {
+public class SearchCommand extends Command {
+    @Position(1)
+    private Thing     thing;
 
-    public Item(String name) {
-        this( name, true);
+    public SearchCommand() {
+
     }
 
-    public Item(String name, boolean portable) {
-        super( name, portable );
+    public SearchCommand(Thing thing) {
+        this.thing = thing;
     }
 
-    public Item(long id, String name, boolean portable) {
-        super(name, portable );
+    public Thing getThing() {
+        return thing;
+    }
+
+    public void setThing(Thing thing) {
+        this.thing = thing;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) { return true; }
+        if (o == null || getClass() != o.getClass()) { return false; }
+
+        SearchCommand that = (SearchCommand) o;
+
+        return thing != null ? thing.equals(that.thing) : that.thing == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return thing != null ? thing.hashCode() : 0;
     }
 
     @Override
     public String toString() {
-        return "Item{id=" + getId() +", name=" + getName() + "} ";
+        return "SearchCommand{" +
+               ", thing=" + thing +
+               '}';
     }
 }

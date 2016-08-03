@@ -17,15 +17,8 @@ package org.drools.games.adventures;
 
 import net.miginfocom.layout.ConstraintParser;
 import net.miginfocom.swing.MigLayout;
+import org.drools.games.adventures.model.*;
 import org.drools.games.adventures.model.Character;
-import org.drools.games.adventures.model.DropCommand;
-import org.drools.games.adventures.model.GiveCommand;
-import org.drools.games.adventures.model.LookCommand;
-import org.drools.games.adventures.model.MoveCommand;
-import org.drools.games.adventures.model.PickupCommand;
-import org.drools.games.adventures.model.Room;
-import org.drools.games.adventures.model.Thing;
-import org.drools.games.adventures.model.UseCommand;
 import org.kie.api.runtime.Channel;
 
 import javax.swing.*;
@@ -445,6 +438,17 @@ public class AdventureFrame extends JFrame {
                 cmd = new ArrayList();
                 cmd.add( LookCommand.class );
                 cmd.add( characterSelectCombo.getSelectedObjects()[0] );
+            }
+        } );
+
+        JButton searchBtn = new JButton( "Search" );
+        giveBtn.setToolTipText("Select the item to search, then press send.");
+        actionsPanel.add( searchBtn );
+        searchBtn.addActionListener( new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cmdTextField.setText( "Search " );
+                cmd = new ArrayList();
+                cmd.add( SearchCommand.class);
             }
         } );
 

@@ -37,10 +37,17 @@ end
  */
 
 rule updateThings salience 5  when                            
-    session : UserSession( $char : character )
-    things( $char, $things; )                                                      
+    session : UserSession( c : character )
+    things( c, things; )                                                      
 then
-    session.channels["things"].send( $things );
+    session.channels["things"].send( things );
+end
+
+rule updateExits salience 5  when                            
+    session : UserSession( c : character )
+    exits( c, exits; )                                                      
+then
+    session.channels["exits"].send( exits );
 end
 
 rule updateInventory salience 5  when                            
@@ -50,9 +57,3 @@ then
     session.channels["inventory"].send( $things );
 end
 
-rule updateExits salience 5  when                            
-    session : UserSession( $char : character )
-    exits( $char, $exits; )                                                      
-then
-    session.channels["exits"].send( $exits );
-end

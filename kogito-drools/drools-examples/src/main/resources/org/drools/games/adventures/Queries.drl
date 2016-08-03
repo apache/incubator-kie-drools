@@ -23,40 +23,41 @@ import java.util.List
 import org.drools.games.adventures.model.*;
 import org.drools.games.adventures.UserSession;
 
-query connect( Door $d, Room $x, Room $y )
-    $d := Door($id, $name, $x, $y;)
+query connect( Door d, Room x, Room y )
+    d := Door(id, name, x, y;)
     or 
-    $d :=Door($id, $name, $y, $x;)
+    d := Door(id, name, y, x;)
 end
 
-query isContainedIn( Thing $x, Thing $y ) 
-    Location($x, $y;)
+query isContainedIn( Thing $x, Thing $r, Thing $y )
+    (Location($x, $y;) and
+    $r := Thing() from $y)
     or 
-    ( Location($z, $y;) and ?isContainedIn($x, $z;) )
+    ( Location($z, $y;) and ?isContainedIn($x, $r, $z;) )
 end
 
-query things(Character $char, List $things)
-    $char := Character()
-    Location( $char, $room; )
-    $things := List() from accumulate( Location($thing, $room; thing != $char),
-                                       collectList( $thing ) )      
+query things(Character character, List things)
+    character := Character()
+    Location( character, room; )
+    things := List() from acc( Location(thing, room; thing != character),
+                                collectList( thing ) )
 end
 
-query exits(Character $char, List $exits)
-    $char := Character()
-    Location( $char, $room; )
-    $exits := List() from accumulate( connect($door, $room, $exit;),
-                                      collectList( $exit ) )      
+query exits(Character character, List exits)
+    character := Character()
+    Location( character, room; )
+    exits := List() from acc( connect(door, room, exit;),
+                              collectList( exit ) )
 end
 
-query look(Character $char, List $things, List $exits)
-   $char := Character()
-   things( $char, $things; )
-   exits( $char, $exits; )
+query look(Character character, List things, List exits)
+   character := Character()
+   things( character, things; )
+   exits( character, exits; )
 end
 
 query inventory(Character $char, List $inventory) 
     $char := Character()    
-    $inventory := List() from accumulate( Holding( $char, $thing; ),
-                                          collectList( $thing ) )   
+    $inventory := List() from acc( Holding( $char, $thing; ),
+                                   collectList( $thing ) )
 end
