@@ -17,6 +17,8 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.CompiledExpression;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 
 public class BetweenNode
         extends BaseNode {
@@ -54,5 +56,19 @@ public class BetweenNode
 
     public void setEnd(BaseNode end) {
         this.end = end;
+    }
+
+    @Override
+    public Object evaluate(EvaluationContextImpl ctx) {
+        if( value != null && start != null && end != null ) {
+            Comparable val = (Comparable) value.evaluate( ctx );
+            Comparable s = (Comparable) start.evaluate( ctx );
+            Comparable e = (Comparable) end.evaluate( ctx );
+            if( val != null && s != null && e != null &&
+                val.getClass().isAssignableFrom( s.getClass() ) && val.getClass().isAssignableFrom( e.getClass() ) ) {
+                return val.compareTo( s ) >= 0 && val.compareTo( e ) <= 0;
+            }
+        }
+        return null;
     }
 }

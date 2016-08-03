@@ -36,11 +36,11 @@ expression
 
 // #2
 textualExpression
-    : conditionalOrExpression
-    | functionDefinition
+    : functionDefinition
     | forExpression
     | ifExpression
     | quantifiedExpression
+    | conditionalOrExpression
     | pathExpression
     | simpleUnaryTest
     ;
@@ -392,8 +392,8 @@ or_key
     ;
 
 and_key
-    : {isKeyword(Keywords.AND)}? Identifier
-//    : 'and'
+//    : {isKeyword(Keywords.AND)}? Identifier
+    : 'and'
     ;
 
 between_key

@@ -32,7 +32,7 @@ public abstract class BaseFEELFunction implements FEELFunction {
     public Object applyReflectively(Object[] params) {
         // use reflection to call the appropriate apply method
         try {
-            Class[] classes = Stream.of( params ).map( p -> p.getClass() ).toArray( Class[]::new );
+            Class[] classes = Stream.of( params ).map( p -> p != null ? p.getClass() : null ).toArray( Class[]::new );
             Method apply = null;
             for( Method m : getClass().getDeclaredMethods() ) {
                 Class<?>[] parameterTypes = m.getParameterTypes();
@@ -41,7 +41,7 @@ public abstract class BaseFEELFunction implements FEELFunction {
                 }
                 boolean found = true;
                 for( int i = 0; i < parameterTypes.length; i++ ) {
-                    if ( ! parameterTypes[i].isAssignableFrom( classes[i] ) ) {
+                    if ( classes[i] != null && ! parameterTypes[i].isAssignableFrom( classes[i] ) ) {
                         found = false;
                         break;
                     }

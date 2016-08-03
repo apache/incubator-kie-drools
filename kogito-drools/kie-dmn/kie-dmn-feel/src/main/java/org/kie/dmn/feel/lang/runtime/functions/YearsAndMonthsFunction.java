@@ -17,36 +17,21 @@
 package org.kie.dmn.feel.lang.runtime.functions;
 
 import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
+import java.time.Period;
+import java.time.temporal.TemporalAmount;
 
-public class DateFunction
+public class YearsAndMonthsFunction
         extends BaseFEELFunction {
 
-    public TemporalAccessor apply(String val) {
-        if ( val != null ) {
-            return DateTimeFormatter.ISO_DATE.parseBest( val, LocalDate::from, ZonedDateTime::from  );
-        }
-        return null;
-    }
-
-    public TemporalAccessor apply(Number year, Number month, Number day) {
-        if ( year != null && month != null && day != null ) {
-            return LocalDate.of( year.intValue(), month.intValue(), day.intValue() );
-        }
-        return null;
-    }
-
-    public TemporalAccessor apply(TemporalAccessor date) {
-        if ( date != null ) {
-            return LocalDate.from( date );
+    public TemporalAmount apply(LocalDate from, LocalDate to) {
+        if ( from != null && to != null ) {
+            return Period.between( from, to ).withDays( 0 );
         }
         return null;
     }
 
     @Override
     public String getName() {
-        return "date";
+        return "years and months duration";
     }
 }

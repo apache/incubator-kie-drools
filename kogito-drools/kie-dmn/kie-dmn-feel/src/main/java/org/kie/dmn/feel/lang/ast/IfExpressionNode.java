@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 
 public class IfExpressionNode
         extends BaseNode {
@@ -54,5 +55,18 @@ public class IfExpressionNode
 
     public void setElseExpression(BaseNode elseExpression) {
         this.elseExpression = elseExpression;
+    }
+
+    @Override
+    public Object evaluate(EvaluationContextImpl ctx) {
+        Object cond = this.condition.evaluate( ctx );
+        if( cond instanceof Boolean ) {
+            if( ((Boolean) cond) ) {
+                return this.thenExpression.evaluate( ctx );
+            } else {
+                return  this.elseExpression.evaluate( ctx );
+            }
+        }
+        return null;
     }
 }

@@ -16,37 +16,38 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.OffsetTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAmount;
 
-public class DateFunction
+public class DurationFunction
         extends BaseFEELFunction {
 
-    public TemporalAccessor apply(String val) {
+    public TemporalAmount apply(String val) {
         if ( val != null ) {
-            return DateTimeFormatter.ISO_DATE.parseBest( val, LocalDate::from, ZonedDateTime::from  );
-        }
-        return null;
-    }
-
-    public TemporalAccessor apply(Number year, Number month, Number day) {
-        if ( year != null && month != null && day != null ) {
-            return LocalDate.of( year.intValue(), month.intValue(), day.intValue() );
-        }
-        return null;
-    }
-
-    public TemporalAccessor apply(TemporalAccessor date) {
-        if ( date != null ) {
-            return LocalDate.from( date );
+            try {
+                // try to parse as days/hours/minute/seconds
+                return Duration.parse( val );
+            } catch( DateTimeParseException e ) {
+                // if it failed, try to parse as years/months
+                try {
+                    return Period.parse( val );
+                } catch( DateTimeParseException e2 ) {
+                    // failed to parse, so return null according to the spec
+                    return null;
+                }
+            }
         }
         return null;
     }
 
     @Override
     public String getName() {
-        return "date";
+        return "duration";
     }
 }

@@ -18,9 +18,7 @@ package org.kie.dmn.feel.lang.types;
 
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.runtime.functions.DateFunction;
-import org.kie.dmn.feel.lang.runtime.functions.DateTimeFunction;
-import org.kie.dmn.feel.lang.runtime.functions.TimeFunction;
+import org.kie.dmn.feel.lang.runtime.functions.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +41,8 @@ public class SymbolTable {
         builtInScope.define( new FunctionSymbol( "date", new DateFunction() ) );
         builtInScope.define( new FunctionSymbol( "time", new TimeFunction() ) );
         builtInScope.define( new FunctionSymbol( "date and time", new DateTimeFunction() ) );
-        builtInScope.define( new FunctionSymbol( "duration", null ) );
+        builtInScope.define( new FunctionSymbol( "duration", new DurationFunction() ) );
+        builtInScope.define( new FunctionSymbol( "years and months duration", new YearsAndMonthsFunction() ) );
         builtInScope.define( new FunctionSymbol( "decision table", null ) );
     }
 
