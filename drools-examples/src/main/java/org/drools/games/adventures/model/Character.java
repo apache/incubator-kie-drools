@@ -22,11 +22,11 @@ public class Character extends Thing {
 
 
     public Character(String name) {
-        super(name);
+        super(name, false);
     }
 
     public Character(long id, String name) {
-        super(id, name);
+        super(id, name, false);
     }
 
     @Override
