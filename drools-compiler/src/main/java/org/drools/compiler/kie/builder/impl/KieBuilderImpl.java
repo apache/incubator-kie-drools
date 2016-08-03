@@ -283,6 +283,22 @@ public class KieBuilderImpl
         return null;
     }
 
+    public void setkModule( final MemoryKieModule kModule ) {
+        this.kModule = kModule;
+    }
+
+    public MemoryKieModule getkModule() {
+        return kModule;
+    }
+
+    public void setTrgMfs( final MemoryFileSystem trgMfs ) {
+        this.trgMfs = trgMfs;
+    }
+
+    public MemoryFileSystem getTrgMfs() {
+        return trgMfs;
+    }
+
     void cloneKieModuleForIncrementalCompilation() {
         if ( !Arrays.equals( pomXml, getOrGeneratePomXml( srcMfs ) ) ) {
             pomModel = null;
