@@ -43,6 +43,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.core.util.ClassUtils.isIterable;
+
 public class Pattern
     implements
     RuleConditionElement,
@@ -519,5 +522,17 @@ public class Pattern
 
     public List<Class<?>> getXpathBackReferenceClasses() {
         return backRefDeclarations != null ? backRefDeclarations.getBackReferenceClasses() : Collections.EMPTY_LIST;
+    }
+
+    public boolean isCompatibleWithAccumulateReturnType( Class<?> returnType ) {
+        return returnType == null ||
+               returnType == Object.class ||
+               isIterable( returnType ) ||
+               objectType.isAssignableFrom( convertFromPrimitiveType(returnType) );
+    }
+
+    public boolean isCompatibleWithFromReturnType( Class<?> returnType ) {
+        return isCompatibleWithAccumulateReturnType( returnType ) ||
+               ( objectType instanceof ClassObjectType && returnType.isAssignableFrom(((ClassObjectType)objectType).getClassType()) );
     }
 }

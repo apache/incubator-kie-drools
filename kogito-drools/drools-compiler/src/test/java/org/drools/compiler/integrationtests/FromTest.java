@@ -50,8 +50,8 @@ public class FromTest {
         public List<String> getList2() {
             return Arrays.asList( "1", "22", "333" );
         }
-        public String getSingleValue() {
-            return "a";
+        public Number getSingleValue() {
+            return 1;
         }
     }
 
@@ -176,12 +176,13 @@ public class FromTest {
 
     @Test
     public void testFromWithSingleValue() {
+        // DROOLS-1243
         String drl =
                 "import " + ListsContainer.class.getCanonicalName() + "\n" +
                 "global java.util.List out;\n" +
                 "rule R1 when\n" +
                 "    $list : ListsContainer( )\n" +
-                "    $s : String() from $list.singleValue\n" +
+                "    $s : Integer() from $list.singleValue\n" +
                 "then\n" +
                 "    out.add($s);\n" +
                 "end\n";
@@ -189,14 +190,14 @@ public class FromTest {
         KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
         KieSession ksession = kbase.newKieSession();
 
-        List<String> out = new ArrayList<String>();
+        List<Integer> out = new ArrayList<Integer>();
         ksession.setGlobal( "out", out );
 
         ksession.insert( new ListsContainer() );
         ksession.fireAllRules();
 
         assertEquals( 1, out.size() );
-        assertEquals( "a", out.get(0) );
+        assertEquals( 1, (int)out.get(0) );
     }
 
     @Test
@@ -207,7 +208,7 @@ public class FromTest {
                 "global java.util.List out;\n" +
                 "rule R1 when\n" +
                 "    $list : ListsContainer( )\n" +
-                "    $s : Integer() from $list.singleValue\n" +
+                "    $s : String() from $list.singleValue\n" +
                 "then\n" +
                 "    out.add($s);\n" +
                 "end\n";
