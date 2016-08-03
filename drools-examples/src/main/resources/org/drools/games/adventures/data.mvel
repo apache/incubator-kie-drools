@@ -38,6 +38,9 @@ for( character : characters.values ) {
 
 items = [
     "umbrella" : new Item( "umbrella" ),
+    "desk" : new Item( "desk", false ),
+    "draw" : new Item( "draw", false ),
+    "envelop" : new Item( "envelop" ),
     "key1" : new Key("basement key")
 ];
 
@@ -51,7 +54,10 @@ locations = [
     "monster" :  new Location( characters["monster"], rooms["basement"] ),
     "hero" :  new Location( characters["hero"], rooms["ground floor hallway"] ),
     "umbrella" :  new Location( items["umbrella"], rooms["lounge"] ),
-    "key1" :  new Location( items["key1"], rooms["office"] )
+    "desk" :  new Location( items["desk"], rooms["office"] ),
+    "draw" :  new Location( items["draw"], items["desk"] ),
+    "envelop" :  new Location( items["envelop"], items["draw"] ),
+    "key1" :  new Location( items["key1"], items["envelop"] )
 ];
 
 return [ "rooms" : rooms, "doors" : doors, "characters" : characters,
