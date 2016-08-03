@@ -35,12 +35,18 @@ import java.util.List;
 
 import static org.drools.core.util.IoUtils.readFileAsString;
 import static org.junit.Assert.*;
+import static org.kie.scanner.embedder.MavenSettings.CUSTOM_SETTINGS_PROPERTY;
 
 public class MavenEmbedderTest {
 
     @Test
     public void testExternalRepositories() {
+        String oldSettingsXmlPath = System.getProperty( CUSTOM_SETTINGS_PROPERTY );
         try {
+            if (oldSettingsXmlPath != null) {
+                System.clearProperty( CUSTOM_SETTINGS_PROPERTY );
+                MavenSettings.reinitSettings();
+            }
             final MavenRequest mavenRequest = createMavenRequest(null);
             final MavenEmbedder embedder = new MavenEmbedderMock( mavenRequest );
             final MavenExecutionRequest request = embedder.buildMavenExecutionRequest( mavenRequest );
@@ -60,6 +66,11 @@ public class MavenEmbedderTest {
 
         } catch ( ComponentLookupException cle ) {
             fail( cle.getMessage() );
+        } finally {
+            if (oldSettingsXmlPath != null) {
+                System.setProperty( CUSTOM_SETTINGS_PROPERTY, oldSettingsXmlPath );
+                MavenSettings.reinitSettings();
+            }
         }
     }
 
