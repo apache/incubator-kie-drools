@@ -22,11 +22,11 @@ import org.kie.api.definition.type.PropertyReactive;
 public class Room extends Thing {
 
     public Room(String name) {
-        super(name);
+        super(name, false);
     }
 
     public Room(long id, String name) {
-        super(id, name);
+        super(id, name, false);
     }
 
     @Override

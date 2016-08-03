@@ -21,6 +21,8 @@ import org.drools.games.adventures.model.Command;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.mvel2.MVEL;
+import org.mvel2.util.ParseTools;
+import org.mvel2.util.ReflectionUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -95,7 +97,12 @@ public class GameEngine {
 
             Object[] args = cmdList.subList(1, cmdList.size() ).toArray();
 
-            Command cmd = (Command) cls.getDeclaredConstructors()[0].newInstance(args);
+            Class[] params = new Class[args.length];
+            for ( int i = 0; i < params.length; i++ ) {
+                params[i] = args[i].getClass();
+            }
+
+            Command cmd = (Command) ParseTools.getBestConstructorCandidate(args, cls, true).newInstance(args);
             cmd.setSession( session );
             ksession.insert( cmd );
             ksession.fireAllRules();
