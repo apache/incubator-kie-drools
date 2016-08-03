@@ -3111,4 +3111,24 @@ public class AccumulateTest extends CommonTestMethodBase {
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         assertFalse( results.getMessages().isEmpty() );
     }
+
+    @Test
+    public void testIncompatibleListOnAccumulateFunction() {
+        // DROOLS-1243
+        String drl =
+                "import " + MyPerson.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $theFrom : String() from accumulate(MyPerson( $val : age ); \n" +
+                "                                          collectList( $val ) )\n" +
+                "then\n" +
+                "  list.add($theFrom);\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertFalse( results.getMessages().isEmpty() );
+    }
 }

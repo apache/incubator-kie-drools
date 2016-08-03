@@ -527,12 +527,12 @@ public class Pattern
     public boolean isCompatibleWithAccumulateReturnType( Class<?> returnType ) {
         return returnType == null ||
                returnType == Object.class ||
-               isIterable( returnType ) ||
                objectType.isAssignableFrom( convertFromPrimitiveType(returnType) );
     }
 
     public boolean isCompatibleWithFromReturnType( Class<?> returnType ) {
         return isCompatibleWithAccumulateReturnType( returnType ) ||
+               isIterable( returnType ) ||
                ( objectType instanceof ClassObjectType && returnType.isAssignableFrom(((ClassObjectType)objectType).getClassType()) );
     }
 }
