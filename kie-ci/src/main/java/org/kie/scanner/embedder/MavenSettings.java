@@ -37,7 +37,7 @@ public class MavenSettings {
 
     private static final Logger log = LoggerFactory.getLogger(MavenSettings.class);
 
-    private static final String CUSTOM_SETTINGS_PROPERTY = "kie.maven.settings.custom";
+    public static final String CUSTOM_SETTINGS_PROPERTY = "kie.maven.settings.custom";
 
     private static class SettingsHolder {
         private static SettingsSource userSettingsSource = initUserSettingsSource();
@@ -55,7 +55,7 @@ public class MavenSettings {
     }
 
     // USE ONLY FOR TESTING PURPOSES
-    static void reinitSettings() {
+    public static void reinitSettings() {
         SettingsHolder.reinitSettings();
     }
 
