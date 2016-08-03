@@ -16,10 +16,11 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.time.LocalTime;
-import java.time.OffsetTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
 
 public class TimeFunction
         extends BaseFEELFunction {
@@ -30,6 +31,25 @@ public class TimeFunction
         }
         return null;
     }
+
+    public TemporalAccessor apply(Number hour, Number minute, Number seconds, Duration offset ) {
+        if ( hour != null && minute != null && seconds != null ) {
+            if( offset == null ) {
+                return LocalTime.of( hour.intValue(), minute.intValue(), seconds.intValue() );
+            } else {
+                return OffsetTime.of( hour.intValue(), minute.intValue(), seconds.intValue(), 0, ZoneOffset.ofTotalSeconds( (int) offset.getSeconds() ) );
+            }
+        }
+        return null;
+    }
+
+    public TemporalAccessor apply(TemporalAccessor date) {
+        if ( date != null ) {
+            return OffsetTime.from( date );
+        }
+        return null;
+    }
+
 
     @Override
     public String getName() {

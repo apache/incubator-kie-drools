@@ -170,11 +170,12 @@ public class InfixOpNode
     }
 
     private Object comparison(Object left, Object right, EvaluationContextImpl ctx, BiPredicate<Comparable, Comparable> op ) {
-        if( left == null && right == null ) {
+        if( left == null || right == null ) {
             return null;
         } else if( ( left instanceof String && right instanceof String ) ||
                    ( left instanceof Number && right instanceof Number ) ||
-                   ( left instanceof Boolean && right instanceof Boolean )) {
+                   ( left instanceof Boolean && right instanceof Boolean ) ||
+                   ( left instanceof Comparable && left.getClass().isAssignableFrom( right.getClass() ) ) ) {
             Comparable l = (Comparable) left;
             Comparable r = (Comparable) right;
             return op.test( l, r );

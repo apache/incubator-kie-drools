@@ -16,7 +16,6 @@
 
 package org.kie.dmn.feel.lang.runtime;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -166,7 +165,7 @@ public class FEELTest {
                 { "not( 10 = 3 )", EMPTY_INPUT, Boolean.TRUE },
                 { "not( \"foo\" )", EMPTY_INPUT, null },
 
-                // function invocation
+                // date/time/duration function invocations
                 { "date(\"2016-07-29\")", EMPTY_INPUT, DateTimeFormatter.ISO_DATE.parse( "2016-07-29", LocalDate::from ) },
                 { "date(\"-0105-07-29\")", EMPTY_INPUT, DateTimeFormatter.ISO_DATE.parse( "-0105-07-29", LocalDate::from ) }, // 105 BC
                 { "date(\"2016-15-29\")", EMPTY_INPUT, null },
@@ -174,7 +173,32 @@ public class FEELTest {
                 { "time(\"23:59:00\")", EMPTY_INPUT, DateTimeFormatter.ISO_TIME.parse( "23:59:00", LocalTime::from ) },
                 { "time(\"13:20:00-05:00\")", EMPTY_INPUT, DateTimeFormatter.ISO_TIME.parse( "13:20:00-05:00", OffsetTime::from ) },
                 { "time(\"05:48:23.765\")", EMPTY_INPUT, DateTimeFormatter.ISO_TIME.parse( "05:48:23.765", LocalTime::from ) },
-               // { "date and time(\"2016-07-29T05:48:23.765-05:00\")", EMPTY_INPUT, DateTimeFormatter.ISO_DATE_TIME.parse( "2016-07-29T05:48:23.765-05:00", OffsetDateTime::from ) },
+                { "date and time(\"2016-07-29T05:48:23.765-05:00\")", EMPTY_INPUT, DateTimeFormatter.ISO_DATE_TIME.parse( "2016-07-29T05:48:23.765-05:00", ZonedDateTime::from ) },
+                { "date( 2016, 8, 2 )", EMPTY_INPUT, LocalDate.of( 2016, 8, 2 ) },
+                { "date( date and time(\"2016-07-29T05:48:23.765-05:00\") )", EMPTY_INPUT, LocalDate.of( 2016, 7, 29 ) },
+                { "time( 14, 52, 25, null )", EMPTY_INPUT, LocalTime.of( 14, 52, 25 ) },
+                { "time( 14, 52, 25, duration(\"PT5H\"))", EMPTY_INPUT, OffsetTime.of( 14, 52, 25, 0, ZoneOffset.ofHours( 5 ) ) },
+                { "time( date and time(\"2016-07-29T05:48:23.765-05:00\") )", EMPTY_INPUT, OffsetTime.of( 5, 48, 23, 765000000, ZoneOffset.ofHours( -5 ) ) },
+                { "duration( \"P2DT20H14M\" )", EMPTY_INPUT, Duration.parse( "P2DT20H14M" ) },
+                { "duration( \"P2Y2M\" )", EMPTY_INPUT, Period.parse( "P2Y2M" ) },
+                { "duration( \"P26M\" )", EMPTY_INPUT, Period.parse( "P26M" ) },
+                { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") )", EMPTY_INPUT, Period.parse( "P1Y8M" ) },
+
+                // if expressions
+                { "if true then 10+5 else 10-5", EMPTY_INPUT, BigDecimal.valueOf( 15 ) },
+                { "if false then \"foo\" else \"bar\"", EMPTY_INPUT, "bar" },
+                { "if date(\"2016-08-02\") > date(\"2015-12-25\") then \"yey\" else \"nay\"", EMPTY_INPUT, "yey" },
+                { "if null then \"foo\" else \"bar\"", EMPTY_INPUT, null },
+
+                // between
+                { "10 between 5 and 12", EMPTY_INPUT, Boolean.TRUE },
+                { "10 between 20 and 30", EMPTY_INPUT, Boolean.FALSE },
+                { "\"foo\" between 5 and 12", EMPTY_INPUT, null },
+                { "\"foo\" between \"bar\" and \"zap\"", EMPTY_INPUT, Boolean.TRUE },
+                { "\"foo\" between null and \"zap\"", EMPTY_INPUT, null },
+                { "date(\"2016-08-02\") between date(\"2016-01-01\") and date(\"2016-12-31\")", EMPTY_INPUT, Boolean.TRUE },
+
+
 
 
                 //                { "", EMPTY_INPUT,  },
