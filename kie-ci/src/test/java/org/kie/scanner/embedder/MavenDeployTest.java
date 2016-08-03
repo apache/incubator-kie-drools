@@ -33,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.kie.scanner.MavenRepository.getMavenRepository;
+import static org.kie.scanner.embedder.MavenSettings.CUSTOM_SETTINGS_PROPERTY;
 
 public class MavenDeployTest extends AbstractKieCiTest {
 
@@ -44,8 +45,9 @@ public class MavenDeployTest extends AbstractKieCiTest {
         Path m2Folder = Files.createTempDirectory( "temp-m2" );
         Path settingsXmlPath = generateSettingsXml( m2Folder );
 
+        String oldSettingsXmlPath = System.getProperty( CUSTOM_SETTINGS_PROPERTY );
         try {
-            System.setProperty( "kie.maven.settings.custom", settingsXmlPath.toString() );
+            System.setProperty( CUSTOM_SETTINGS_PROPERTY, settingsXmlPath.toString() );
             MavenSettings.reinitSettings();
 
             InternalKieModule kJar1 = createKieJar( ks, releaseId, "rule1", "rule2" );
@@ -77,7 +79,11 @@ public class MavenDeployTest extends AbstractKieCiTest {
 
             ks.getRepository().removeKieModule(releaseId);
         } finally {
-            System.clearProperty( "kie.maven.settings.custom");
+            if (oldSettingsXmlPath == null) {
+                System.clearProperty( CUSTOM_SETTINGS_PROPERTY );
+            } else {
+                System.setProperty( CUSTOM_SETTINGS_PROPERTY, oldSettingsXmlPath );
+            }
             MavenSettings.reinitSettings();
         }
     }
@@ -131,8 +137,9 @@ public class MavenDeployTest extends AbstractKieCiTest {
         Path m2Folder = Files.createTempDirectory( "temp-m2-dist" );
         Path settingsXmlPath = generateSettingsXml( m2Folder );
 
+        String oldSettingsXmlPath = System.getProperty( CUSTOM_SETTINGS_PROPERTY );
         try {
-            System.setProperty( "kie.maven.settings.custom", settingsXmlPath.toString() );
+            System.setProperty( CUSTOM_SETTINGS_PROPERTY, settingsXmlPath.toString() );
             MavenSettings.reinitSettings();
 
             InternalKieModule kJar1 = createKieJar( ks, releaseId, "rule1", "rule2" );
@@ -163,7 +170,11 @@ public class MavenDeployTest extends AbstractKieCiTest {
 
             ks.getRepository().removeKieModule(releaseId);
         } finally {
-            System.clearProperty( "kie.maven.settings.custom");
+            if (oldSettingsXmlPath == null) {
+                System.clearProperty( CUSTOM_SETTINGS_PROPERTY );
+            } else {
+                System.setProperty( CUSTOM_SETTINGS_PROPERTY, oldSettingsXmlPath );
+            }
             MavenSettings.reinitSettings();
         }
     }
