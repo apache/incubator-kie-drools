@@ -8809,4 +8809,53 @@ public class Misc2Test extends CommonTestMethodBase {
             return "Shift " + employee + " from " + start + " to " + end;
         }
     }
+
+    @Test(timeout = 10000L)
+    public void testSegMemInitializationWithForceEagerActivation() throws InterruptedException {
+        // DROOLS-1247
+        String drl = "global java.util.List list\n" +
+                     "declare  SimpleFact end\n" +
+                     "declare  AnotherFact end\n" +
+                     "\n" +
+                     "rule Init when\n" +
+                     "    not (SimpleFact())\n" +
+                     "    not (AnotherFact())\n" +
+                     "then\n" +
+                     "    insert(new SimpleFact());\n" +
+                     "    insert(new AnotherFact());\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R1 no-loop when\n" +
+                     "    $f : SimpleFact()  \n" +
+                     "    $h : AnotherFact() \n" +
+                     "    $s : String() \n" +
+                     "    eval(true)\n" +
+                     "then\n" +
+                     "    list.add(\"1\");\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R2 no-loop when\n" +
+                     "    $f : SimpleFact()  \n" +
+                     "    $h : AnotherFact()  \n" +
+                     "    $s : String() \n" +
+                     "then\n" +
+                     "    list.add(\"2\");\n" +
+                     "end";
+
+        KieSessionConfiguration config = KieServices.Factory.get().newKieSessionConfiguration();
+        config.setOption( ForceEagerActivationOption.YES );
+
+        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                                   .build()
+                                                   .newKieSession( config, null );
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( "test" );
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.containsAll( asList("1", "2") ) );
+    }
 }

@@ -32,7 +32,7 @@ public class RuleAgendaItem extends AgendaItemImpl implements LinkedListNode<Rul
     public           RuleExecutor   executor;
     private          RuleAgendaItem previous;
     private          RuleAgendaItem next;
-    private          boolean        blocked;
+    private          boolean        eagerEvaluated;
 
     public RuleAgendaItem() {
 
@@ -78,12 +78,12 @@ public class RuleAgendaItem extends AgendaItemImpl implements LinkedListNode<Rul
         return previous != null || next != null || list.getFirst() == this;
     }
 
-    public boolean isBlocked() {
-        return blocked;
+    public boolean isEagerEvaluated() {
+        return eagerEvaluated;
     }
 
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
+    public void setEagerEvaluated( boolean eagerEvaluated ) {
+        this.eagerEvaluated = eagerEvaluated;
     }
 
     public void nullPrevNext() {
