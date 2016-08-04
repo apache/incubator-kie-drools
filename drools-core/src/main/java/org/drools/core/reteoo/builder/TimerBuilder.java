@@ -16,19 +16,10 @@
 
 package org.drools.core.reteoo.builder;
 
-import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.time.impl.BaseTimer;
-import org.drools.core.time.impl.CronTimer;
-import org.drools.core.time.impl.DurationTimer;
-import org.drools.core.time.impl.ExpressionIntervalTimer;
-import org.drools.core.time.impl.IntervalTimer;
 import org.drools.core.time.impl.Timer;
-
-import java.util.Arrays;
-import java.util.Map;
 
 public class TimerBuilder
     implements
@@ -44,7 +35,7 @@ public class TimerBuilder
                                  ((BaseTimer)timer).getTimerDeclarations(context.getSubRule().getOuterDeclarations()) :
                                  null;
 
-        context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
+        context.setTupleSource( utils.attachNode( context,
                                 context.getComponentFactory().getNodeFactoryService().buildTimerNode( context.getNextId(),
                                                                                                       timer,
                                                                                                       context.getRule().getCalendars(),

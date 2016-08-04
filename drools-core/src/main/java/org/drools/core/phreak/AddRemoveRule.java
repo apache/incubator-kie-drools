@@ -617,7 +617,7 @@ public class AddRemoveRule {
                           sm.getPathMemories().get(0) :
                           sm.getFirstDataDrivenPathMemory();
 
-        if (pmem == null) {
+        if ( pmem == null || (leftTuple == null && !pmem.isRuleLinked()) ) {
             return false;
         }
 
@@ -625,11 +625,27 @@ public class AddRemoveRule {
         if (leftTuple != null) {
             leftTupleSets.addInsert(leftTuple);
         }
-        forceFlushLeftTuple(pmem, sm, wm, leftTupleSets);
+
+        forceFlushLeftTuple( pmem, sm, wm, leftTupleSets );
+
+        if (pmem.isDataDriven() && pmem.getNodeType() == NodeTypeEnums.RightInputAdaterNode) {
+            for (PathEndNode pnode : pmem.getPathEndNode().getPathEndNodes()) {
+                if ( pnode instanceof TerminalNode ) {
+                    PathMemory outPmem = wm.getNodeMemory( (TerminalNode) pnode );
+                    if (outPmem.isDataDriven()) {
+                        SegmentMemory outSmem = outPmem.getSegmentMemories()[0];
+                        if (outSmem != null) {
+                            forceFlushLeftTuple( outPmem, outSmem, wm, new TupleSetsImpl<LeftTuple>() );
+                        }
+                    }
+                }
+            }
+        }
+
         return true;
     }
 
-    private static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, TupleSets<LeftTuple> leftTupleSets) {
+    public static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, TupleSets<LeftTuple> leftTupleSets) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
 
         LeftTupleNode node;
@@ -645,12 +661,9 @@ public class AddRemoveRule {
             mem = sm.getNodeMemories().get(0);
         }
 
-        PathMemory rtnPmem;
-        if ( NodeTypeEnums.isTerminalNode(pmem.getPathEndNode()) ) {
-            rtnPmem = pmem;
-        } else {
-            rtnPmem = wm.getNodeMemory((AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
-        }
+        PathMemory rtnPmem = NodeTypeEnums.isTerminalNode(pmem.getPathEndNode()) ?
+                             pmem :
+                             wm.getNodeMemory((AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
 
         new RuleNetworkEvaluator().outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, wm,
                                              new LinkedList<StackEntry>(),
