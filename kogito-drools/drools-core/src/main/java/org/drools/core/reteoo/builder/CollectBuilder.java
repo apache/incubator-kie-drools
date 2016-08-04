@@ -21,7 +21,6 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Collect;
@@ -29,6 +28,7 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +48,8 @@ public class CollectBuilder
         final Collect collect = (Collect) rce;
         context.pushRuleComponent( collect );
 
-        final List resultBetaConstraints = context.getBetaconstraints();
-        final List resultAlphaConstraints = context.getAlphaConstraints();
+        final List<BetaNodeFieldConstraint> resultBetaConstraints = context.getBetaconstraints();
+        final List<AlphaNodeFieldConstraint> resultAlphaConstraints = context.getAlphaConstraints();
 
         final Pattern sourcePattern = collect.getSourcePattern();
         final Pattern resultPattern = collect.getResultPattern();
@@ -74,15 +74,14 @@ public class CollectBuilder
                                                                                                                        context );
 
             // attach right input adapter node to convert tuple source into an object source
-            context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                      riaNode ) );
+            context.setObjectSource( utils.attachNode( context, riaNode ) );
 
             // restore tuple source from before the start of the sub network
             context.setTupleSource( tupleSource );
 
             // create a tuple start equals constraint and set it in the context
             final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-            final List betaConstraints = new ArrayList();
+            final List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<BetaNodeFieldConstraint>();
             betaConstraints.add( constraint );
             context.setBetaconstraints( betaConstraints );
             existSubNetwort = true;
@@ -105,15 +104,14 @@ public class CollectBuilder
         AccumulateNode accNode = context.getComponentFactory().getNodeFactoryService().buildAccumulateNode( context.getNextId(),
                                                                                                             context.getTupleSource(),
                                                                                                             context.getObjectSource(),
-                                                                                                            (AlphaNodeFieldConstraint[]) resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
+                                                                                                            resultAlphaConstraints.toArray( new AlphaNodeFieldConstraint[resultAlphaConstraints.size()] ),
                                                                                                             binder, // source binder
                                                                                                             resultBinder,
                                                                                                             accumulate,
                                                                                                             existSubNetwort,
                                                                                                             context );
 
-        context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                    accNode ) );
+        context.setTupleSource( utils.attachNode( context, accNode ) );
 
 
         // source pattern was bound, so nulling context

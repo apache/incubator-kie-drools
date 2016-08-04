@@ -18,7 +18,6 @@
 package org.drools.core.reteoo.builder;
 
 
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -29,6 +28,7 @@ import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.ExistsNode;
+import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -36,8 +36,10 @@ import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
+import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.Behavior;
@@ -56,108 +58,127 @@ import java.util.List;
 
 public interface NodeFactory {
 
-    public EntryPointNode buildEntryPointNode(final int id,
-                                               final ObjectSource objectSource,
-                                               final BuildContext context);
+    EntryPointNode buildEntryPointNode(final int id,
+                                       final ObjectSource objectSource,
+                                       final BuildContext context);
 
-    public EntryPointNode buildEntryPointNode(final int id,
-                                              final RuleBasePartitionId partitionId,
-                                              final boolean partitionsEnabled,
+    EntryPointNode buildEntryPointNode(final int id,
+                                       final RuleBasePartitionId partitionId,
+                                       final boolean partitionsEnabled,
+                                       final ObjectSource objectSource,
+                                       final EntryPointId entryPoint);
+
+
+    AlphaNode buildAlphaNode( final int id,
+                              final AlphaNodeFieldConstraint constraint,
+                              final ObjectSource objectSource,
+                              final BuildContext context );
+
+    TerminalNode buildTerminalNode( int id,
+                                    LeftTupleSource source,
+                                    RuleImpl rule,
+                                    GroupElement subrule,
+                                    int subruleIndex,
+                                    BuildContext context );
+
+    ObjectTypeNode buildObjectTypeNode( int id,
+                                        EntryPointNode objectSource,
+                                        ObjectType objectType,
+                                        BuildContext context );
+
+    EvalConditionNode buildEvalNode(final int id,
+                                    final LeftTupleSource tupleSource,
+                                    final EvalCondition eval,
+                                    final BuildContext context);
+
+    LeftTupleSource buildQueryRiaFixerNode( final int id,
+                                            final LeftTupleSource tupleSource,
+                                            final BuildContext context);
+
+    ObjectSource buildPropagationQueuingNode( final int id,
                                               final ObjectSource objectSource,
-                                              final EntryPointId entryPoint);
+                                              final BuildContext context);
 
-
-    public AlphaNode buildAlphaNode( final int id,
-                                     final AlphaNodeFieldConstraint constraint,
-                                     final ObjectSource objectSource,
-                                     final BuildContext context );
-
-    public TerminalNode buildTerminalNode( int id,
-                                           LeftTupleSource source,
-                                           RuleImpl rule,
-                                           GroupElement subrule,
-                                           int subruleIndex,
-                                           BuildContext context );
-
-    public ObjectTypeNode buildObjectTypeNode( int id,
-                                               EntryPointNode objectSource,
-                                               ObjectType objectType,
+    RightInputAdapterNode buildRightInputNode( int id,
+                                               LeftTupleSource leftInput,
+                                               LeftTupleSource startTupleSource,
                                                BuildContext context );
 
-    public EvalConditionNode buildEvalNode(final int id,
-                                           final LeftTupleSource tupleSource,
-                                           final EvalCondition eval,
-                                           final BuildContext context);
+    JoinNode buildJoinNode( final int id,
+                            final LeftTupleSource leftInput,
+                            final ObjectSource rightInput,
+                            final BetaConstraints binder,
+                            final BuildContext context );
 
-    public LeftTupleSource buildQueryRiaFixerNode(final int id,
-                                                    final LeftTupleSource tupleSource,
-                                                    final BuildContext context);
+    NotNode buildNotNode( int id,
+                          LeftTupleSource leftInput,
+                          ObjectSource rightInput,
+                          BetaConstraints binder,
+                          BuildContext context );
 
-    public ObjectSource buildPropagationQueuingNode(final int id,
-                                                              final ObjectSource objectSource,
-                                                              final BuildContext context);
+    ExistsNode buildExistsNode( int id,
+                                LeftTupleSource leftInput,
+                                ObjectSource rightInput,
+                                BetaConstraints binder,
+                                BuildContext context );
 
-    public RightInputAdapterNode buildRightInputNode( int id, LeftTupleSource leftInput, LeftTupleSource startTupleSource, BuildContext context );
+    AccumulateNode buildAccumulateNode(int id,
+                                       LeftTupleSource leftInput,
+                                       ObjectSource rightInput,
+                                       AlphaNodeFieldConstraint[] resultConstraints,
+                                       BetaConstraints sourceBinder,
+                                       BetaConstraints resultBinder,
+                                       Accumulate accumulate,
+                                       boolean unwrapRightObject,
+                                       BuildContext context );
 
-    public JoinNode buildJoinNode( final int id,
-                                   final LeftTupleSource leftInput,
-                                   final ObjectSource rightInput,
-                                   final BetaConstraints binder,
-                                   final BuildContext context );
+    LeftInputAdapterNode buildLeftInputAdapterNode( int nextId,
+                                                    ObjectSource objectSource,
+                                                    BuildContext context );
 
-    public NotNode buildNotNode( int id, LeftTupleSource leftInput, ObjectSource rightInput, BetaConstraints binder, BuildContext context );
+    TerminalNode buildQueryTerminalNode( int id,
+                                         LeftTupleSource source,
+                                         RuleImpl rule,
+                                         GroupElement subrule,
+                                         int subruleIndex,
+                                         BuildContext context );
 
-    public ExistsNode buildExistsNode( int id, LeftTupleSource leftInput, ObjectSource rightInput, BetaConstraints binder, BuildContext context );
+    QueryElementNode buildQueryElementNode( int nextId,
+                                            LeftTupleSource tupleSource,
+                                            QueryElement qe,
+                                            boolean tupleMemoryEnabled,
+                                            boolean openQuery,
+                                            BuildContext context );
 
-    public AccumulateNode buildAccumulateNode(int id, LeftTupleSource leftInput, ObjectSource rightInput,
-                                              AlphaNodeFieldConstraint[] resultConstraints, BetaConstraints sourceBinder,
-                                              BetaConstraints resultBinder, Accumulate accumulate, boolean unwrapRightObject, BuildContext context );
+    FromNode buildFromNode( int id,
+                            DataProvider dataProvider,
+                            LeftTupleSource tupleSource,
+                            AlphaNodeFieldConstraint[] alphaNodeFieldConstraints,
+                            BetaConstraints betaConstraints,
+                            boolean tupleMemoryEnabled,
+                            BuildContext context,
+                            From from );
 
-    public LeftInputAdapterNode buildLeftInputAdapterNode( int nextId,
-                                                           ObjectSource objectSource,
-                                                           BuildContext context );
+    ReactiveFromNode buildReactiveFromNode( int id,
+                                            DataProvider dataProvider,
+                                            LeftTupleSource tupleSource,
+                                            AlphaNodeFieldConstraint[] alphaNodeFieldConstraints,
+                                            BetaConstraints betaConstraints,
+                                            boolean tupleMemoryEnabled,
+                                            BuildContext context,
+                                            From from );
 
-    public TerminalNode buildQueryTerminalNode( int id,
-                                                LeftTupleSource source,
-                                                RuleImpl rule,
-                                                GroupElement subrule,
-                                                int subruleIndex,
-                                                BuildContext context );
+    TimerNode buildTimerNode( int id,
+                              Timer timer,
+                              final String[] calendarNames,
+                              final Declaration[][]   declarations,
+                              LeftTupleSource tupleSource,
+                              BuildContext context );
 
-    public QueryElementNode buildQueryElementNode( int nextId,
-                                                   LeftTupleSource tupleSource,
-                                                   QueryElement qe,
-                                                   boolean tupleMemoryEnabled,
-                                                   boolean openQuery,
-                                                   BuildContext context );
-
-    public BaseNode buildFromNode( int id,
-                                   DataProvider dataProvider,
-                                   LeftTupleSource tupleSource,
-                                   AlphaNodeFieldConstraint[] alphaNodeFieldConstraints,
-                                   BetaConstraints betaConstraints,
-                                   boolean tupleMemoryEnabled,
-                                   BuildContext context,
-                                   From from );
-
-    public BaseNode buildReactiveFromNode( int id,
-                                           DataProvider dataProvider,
-                                           LeftTupleSource tupleSource,
-                                           AlphaNodeFieldConstraint[] alphaNodeFieldConstraints,
-                                           BetaConstraints betaConstraints,
-                                           boolean tupleMemoryEnabled,
-                                           BuildContext context,
-                                           From from );
-
-    public BaseNode buildTimerNode( int id,
-                                    Timer timer,
-                                    final String[] calendarNames,
-                                    final Declaration[][]   declarations,
-                                    LeftTupleSource tupleSource,
-                                    BuildContext context  );
-
-    ConditionalBranchNode buildConditionalBranchNode(int id, LeftTupleSource tupleSource,
-                                                     ConditionalBranchEvaluator branchEvaluator, BuildContext context);
+    ConditionalBranchNode buildConditionalBranchNode(int id,
+                                                     LeftTupleSource tupleSource,
+                                                     ConditionalBranchEvaluator branchEvaluator,
+                                                     BuildContext context);
 
     WindowNode buildWindowNode(int id,
                                List<AlphaNodeFieldConstraint> constraints,

@@ -77,7 +77,7 @@ public class MockLeftTupleSink extends LeftTupleSource
     }
 
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
-        return new PathMemory(null);
+        return new PathMemory(null, null);
     }
 
     public void updateSink(final LeftTupleSink sink,

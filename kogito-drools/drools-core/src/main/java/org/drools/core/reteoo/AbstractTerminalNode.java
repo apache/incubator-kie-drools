@@ -61,7 +61,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     public AbstractTerminalNode(int id, RuleBasePartitionId partitionId, boolean partitionsEnabled, LeftTupleSource source, final BuildContext context) {
         super(id, partitionId, partitionsEnabled);
         this.tupleSource = source;
-        context.getPathEndNodes().add(this);
+        context.addPathEndNode(this);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -151,7 +151,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     
 
     public PathMemory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
-        PathMemory pmem = new PathMemory(this);
+        PathMemory pmem = new PathMemory(this, wm);
         initPathMemory(pmem, null, wm, null);
         return pmem;
     }

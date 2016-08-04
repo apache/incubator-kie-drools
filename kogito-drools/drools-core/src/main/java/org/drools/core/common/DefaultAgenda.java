@@ -104,7 +104,7 @@ public class DefaultAgenda
 
     private LinkedList<AgendaGroup>                              focusStack;
 
-    private InternalAgendaGroup                                  main;
+    private InternalAgendaGroup                                  mainAgendaGroup;
 
     private final org.drools.core.util.LinkedList<RuleAgendaItem> eager = new org.drools.core.util.LinkedList<RuleAgendaItem>();
 
@@ -184,13 +184,13 @@ public class DefaultAgenda
         if ( initMain ) {
             // MAIN should always be the first AgendaGroup and can never be
             // removed
-            this.main = agendaGroupFactory.createAgendaGroup( AgendaGroup.MAIN,
-                                                              kBase );
+            this.mainAgendaGroup = agendaGroupFactory.createAgendaGroup( AgendaGroup.MAIN,
+                                                                         kBase );
 
             this.agendaGroups.put( AgendaGroup.MAIN,
-                                   this.main );
+                                   this.mainAgendaGroup );
 
-            this.focusStack.add( this.main );
+            this.focusStack.add( this.mainAgendaGroup );
         }
 
         Object object = ClassUtils.instantiateObject( kBase.getConfiguration().getConsequenceExceptionHandler(),
@@ -211,7 +211,7 @@ public class DefaultAgenda
         agendaGroups = (Map) in.readObject();
         activationGroups = (Map) in.readObject();
         focusStack = (LinkedList) in.readObject();
-        main = (InternalAgendaGroup) in.readObject();
+        mainAgendaGroup = (InternalAgendaGroup) in.readObject();
         agendaGroupFactory = (AgendaGroupFactory) in.readObject();
         knowledgeHelper = (KnowledgeHelper) in.readObject();
         legacyConsequenceExceptionHandler = (ConsequenceExceptionHandler) in.readObject();
@@ -224,7 +224,7 @@ public class DefaultAgenda
         out.writeObject( agendaGroups );
         out.writeObject( activationGroups );
         out.writeObject( focusStack );
-        out.writeObject( main );
+        out.writeObject( mainAgendaGroup );
         out.writeObject( agendaGroupFactory );
         out.writeObject( knowledgeHelper );
         out.writeObject( legacyConsequenceExceptionHandler );
@@ -264,18 +264,10 @@ public class DefaultAgenda
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
         RuleBaseConfiguration rbc = this.workingMemory.getKnowledgeBase().getConfiguration();
-//        if ( rbc.isSequential() ) {
-//            this.knowledgeHelper = rbc.getComponentFactory().getKnowledgeHelperFactory().newSequentialKnowledgeHelper( this.workingMemory );
-//        } else {
-            this.knowledgeHelper = rbc.getComponentFactory().getKnowledgeHelperFactory().newStatefulKnowledgeHelper( this.workingMemory );
-//        }
+        this.knowledgeHelper = rbc.getComponentFactory().getKnowledgeHelperFactory().newStatefulKnowledgeHelper( this.workingMemory );
+        this.mainAgendaGroup = (InternalAgendaGroup) getAgendaGroup( AgendaGroup.MAIN );
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#getWorkingMemory()
-     */
     public InternalWorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
@@ -283,11 +275,6 @@ public class DefaultAgenda
     @Override
     public void addEagerRuleAgendaItem(RuleAgendaItem item) {
         if ( sequential ) {
-            return;
-        }
-
-        if ( workingMemory.getSessionConfiguration().getForceEagerActivationFilter().accept(item.getRule()) ) {
-            item.getRuleExecutor().evaluateNetwork(workingMemory);
             return;
         }
 
@@ -606,11 +593,6 @@ public class DefaultAgenda
         return (RuleAgendaItem) ((InternalAgendaGroup) this.focusStack.peekLast()).peek();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#getAgendaGroup(java.lang.String)
-     */
     public AgendaGroup getAgendaGroup(final String name) {
         return getAgendaGroup( name, workingMemory == null ? null : workingMemory.getKnowledgeBase() );
     }
@@ -633,11 +615,6 @@ public class DefaultAgenda
         return agendaGroup;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#getAgendaGroups()
-     */
     public AgendaGroup[] getAgendaGroups() {
         return this.agendaGroups.values().toArray( new AgendaGroup[this.agendaGroups.size()] );
     }
@@ -646,19 +623,6 @@ public class DefaultAgenda
         return this.agendaGroups;
     }
 
-    public InternalAgendaGroup getMainAgendaGroup() {
-        if ( this.main == null ) {
-            this.main = (InternalAgendaGroup) getAgendaGroup( AgendaGroup.MAIN );
-        }
-
-        return this.main;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#getStack()
-     */
     public AgendaGroup[] getStack() {
         return this.focusStack.toArray( new AgendaGroup[this.focusStack.size()] );
     }
@@ -677,11 +641,6 @@ public class DefaultAgenda
         return this.activationGroups;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#getActivationGroup(java.lang.String)
-     */
     public InternalActivationGroup getActivationGroup(final String name) {
         ActivationGroupImpl activationGroup = (ActivationGroupImpl) this.activationGroups.get( name );
         if ( activationGroup == null ) {
@@ -801,7 +760,7 @@ public class DefaultAgenda
     public void clear() {
         // reset focus stack
         clearFocusStack();
-        this.focusStack.add(getMainAgendaGroup());
+        this.focusStack.add( this.mainAgendaGroup );
 
         //reset all agenda groups
         for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
@@ -820,7 +779,7 @@ public class DefaultAgenda
     public void reset() {
         // reset focus stack
         clearFocusStack();
-        this.focusStack.add( getMainAgendaGroup() );
+        this.focusStack.add( this.mainAgendaGroup );
 
         //reset all agenda groups
         for ( InternalAgendaGroup group : this.agendaGroups.values() ) {
@@ -1001,15 +960,8 @@ public class DefaultAgenda
                              int fireCount,
                              int fireLimit,
                              InternalAgendaGroup group) throws ConsequenceException {
-        RuleAgendaItem item;
         int localFireCount = 0;
-
-        if ( workingMemory.getKnowledgeBase().getConfiguration().isSequential() ) {
-            item = (RuleAgendaItem) group.remove();
-            item.setBlocked(true);
-        }   else {
-            item = (RuleAgendaItem) group.peek();
-        }
+        RuleAgendaItem item = sequential ? (RuleAgendaItem) group.remove() : (RuleAgendaItem) group.peek();
 
         if (item != null) {
             // there was a rule, so evaluate it
@@ -1310,7 +1262,7 @@ public class DefaultAgenda
         int fireCount = 0;
         try {
             PropagationEntry head = workingMemory.takeAllPropagations();
-            int returnedFireCount = 0;
+            int returnedFireCount;
 
             boolean limitReached = fireLimit == 0; // -1 or > 0 will return false. No reason for user to give 0, just handled for completeness.
 
@@ -1373,9 +1325,9 @@ public class DefaultAgenda
                 }
             }
 
-            if ( this.focusStack.size() == 1 && getMainAgendaGroup().isEmpty() ) {
+            if ( this.focusStack.size() == 1 && this.mainAgendaGroup.isEmpty() ) {
                 // the root MAIN agenda group is empty, reset active to false, so it can receive more activations.
-                getMainAgendaGroup().setActive( false );
+                this.mainAgendaGroup.setActive( false );
             }
         } finally {
             // makes sure the engine is inactive, if an exception is thrown.

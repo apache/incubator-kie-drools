@@ -331,9 +331,9 @@ public class EvalConditionNode extends LeftTupleSource
     }
 
     @Override
-    public void addAssociation( Rule rule, RuleComponent ruleComponent ) {
-        super.addAssociation(rule, ruleComponent);
-        componentsMap.put(rule, ruleComponent);
+    public void addAssociation( BuildContext context, Rule rule ) {
+        super.addAssociation(context, rule);
+        componentsMap.put(rule, context.peekRuleComponent());
     }
 
     @Override

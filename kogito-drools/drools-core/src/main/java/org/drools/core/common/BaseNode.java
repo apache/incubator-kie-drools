@@ -20,7 +20,6 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.spi.RuleComponent;
 import org.drools.core.util.Bag;
 import org.kie.api.definition.rule.Rule;
 
@@ -162,7 +161,7 @@ public abstract class BaseNode
         this.associations.add( rule );
     }
 
-    public void addAssociation( Rule rule, RuleComponent ruleComponent ) {
+    public void addAssociation( BuildContext context, Rule rule ) {
         addAssociation( rule );
     }
 

@@ -20,7 +20,10 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
+
+import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
 
 public class SegmentPropagator {
 
@@ -35,10 +38,10 @@ public class SegmentPropagator {
             SegmentUtilities.createChildSegments( wm, sourceSegment, source.getSinkPropagator() );
         }
                 
-        processPeers(sourceSegment, leftTuples);
+        processPeers(sourceSegment, leftTuples, wm);
     }    
     
-    private static void processPeers(SegmentMemory sourceSegment, TupleSets<LeftTuple> leftTuples) {
+    private static void processPeers(SegmentMemory sourceSegment, TupleSets<LeftTuple> leftTuples, InternalWorkingMemory wm) {
         SegmentMemory firstSmem = sourceSegment.getFirst();
 
         // Process Deletes
@@ -76,6 +79,11 @@ public class SegmentPropagator {
                     } else {
                         peer = ((LeftTupleSink)smem.getRootNode()).createPeer( peer );
                         smem.getStagedLeftTuples().addInsert( peer );
+
+                        PathMemory dataDrivenPmem = smem.getFirstDataDrivenPathMemory();
+                        if (dataDrivenPmem != null) {
+                            forceFlushLeftTuple(dataDrivenPmem, smem, wm, smem.getStagedLeftTuples());
+                        }
                     }
                 }
             }

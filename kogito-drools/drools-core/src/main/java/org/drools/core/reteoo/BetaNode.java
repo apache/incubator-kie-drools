@@ -290,13 +290,17 @@ public abstract class BetaNode extends LeftTupleSource
         if ( isLogTraceEnabled ) {
             log.trace("BetaNode stagedInsertWasEmpty={}", stagedInsertWasEmpty );
         }
+
+        boolean shouldFlush = isStreamMode();
         if ( memory.getAndIncCounter() == 0 ) {
-            memory.linkNode(wm, !rightInputIsPassive);
+            shouldFlush = memory.linkNode(wm, !rightInputIsPassive) | shouldFlush;
         } else if ( stagedInsertWasEmpty ) {
-            memory.setNodeDirty( wm, !rightInputIsPassive );
+            shouldFlush = memory.setNodeDirty( wm, !rightInputIsPassive ) | shouldFlush;
         }
 
-        flushLeftTupleIfNecessary(wm, memory.getSegmentMemory(), null, isStreamMode());
+        if (shouldFlush) {
+            flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), null, isStreamMode() );
+        }
     }
 
     public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory wm) {

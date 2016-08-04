@@ -123,8 +123,8 @@ public class GroupElementBuilder
 
 
                 // adapt it to a Tuple source
-                context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                            context.getComponentFactory().getNodeFactoryService().buildLeftInputAdapterNode( context.getNextId(),
+                context.setTupleSource( utils.attachNode( context,
+                                                          context.getComponentFactory().getNodeFactoryService().buildLeftInputAdapterNode( context.getNextId(),
                                                                                                                                                              context.getObjectSource(),
                                                                                                                                                              context ) ) );
 
@@ -140,8 +140,8 @@ public class GroupElementBuilder
                                                                                         context.getBetaconstraints(),
                                                                                         false );
 
-                context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                            context.getComponentFactory().getNodeFactoryService().buildJoinNode( context.getNextId(),
+                context.setTupleSource( utils.attachNode( context,
+                                                          context.getComponentFactory().getNodeFactoryService().buildJoinNode( context.getNextId(),
                                                                                                                                                  context.getTupleSource(),
                                                                                                                                                  context.getObjectSource(),
                                                                                                                                                  betaConstraints,
@@ -229,8 +229,7 @@ public class GroupElementBuilder
                                                                                                                           context);
 
                 // attach right input adapter node to convert tuple source into an object source
-                context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                          riaNode ) );
+                context.setObjectSource( utils.attachNode( context, riaNode ) );
 
                 // restore tuple source from before the start of the sub network
                 context.setTupleSource( tupleSource );
@@ -248,7 +247,7 @@ public class GroupElementBuilder
 
             if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
                 // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
-                context.setTupleSource( (LeftTupleSource) utils.attachNode( context, nfactory.buildQueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );
+                context.setTupleSource( utils.attachNode( context, nfactory.buildQueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );
             }
 
             final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
@@ -267,8 +266,7 @@ public class GroupElementBuilder
 
             node.setEmptyBetaConstraints( context.getBetaconstraints().isEmpty() );
 
-            context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                        node ) );
+            context.setTupleSource( utils.attachNode( context, node ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
 
@@ -323,8 +321,7 @@ public class GroupElementBuilder
                                                                                                                            context );
 
                 // attach right input adapter node to convert tuple source into an object source
-                context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                          riaNode ) );
+                context.setObjectSource( utils.attachNode( context, riaNode ) );
 
                 // restore tuple source from before the start of the sub network
                 context.setTupleSource( tupleSource );
@@ -342,7 +339,7 @@ public class GroupElementBuilder
 
             if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
                 // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
-                context.setTupleSource( (LeftTupleSource) utils.attachNode( context, nfactory.buildQueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );
+                context.setTupleSource( utils.attachNode( context, nfactory.buildQueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );
             }
 
             final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
@@ -358,8 +355,7 @@ public class GroupElementBuilder
             // then attach the EXISTS node. It will work both as a simple exists node
             // or as subnetwork join node as the context was set appropriatelly
             // in each case
-            context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                        node ) );
+            context.setTupleSource( utils.attachNode( context, node ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
 

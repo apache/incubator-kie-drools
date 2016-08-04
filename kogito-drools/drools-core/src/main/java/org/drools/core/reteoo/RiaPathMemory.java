@@ -16,6 +16,7 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.definitions.rule.impl.RuleImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,21 @@ public class RiaPathMemory extends PathMemory {
 
     private List<String> terminalNodeNames;
     
-    public RiaPathMemory(RightInputAdapterNode riaNode) {
-        super( riaNode );
+    public RiaPathMemory(RightInputAdapterNode riaNode, InternalWorkingMemory wm) {
+        super( riaNode, wm );
+    }
+
+    @Override
+    protected boolean initDataDriven( InternalWorkingMemory wm ) {
+        for (PathEndNode pnode : getPathEndNode().getPathEndNodes()) {
+            if (pnode instanceof TerminalNode) {
+                RuleImpl rule = ( (TerminalNode) pnode ).getRule();
+                if ( isRuleDataDriven( wm, rule ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public RightInputAdapterNode getRightInputAdapterNode() {

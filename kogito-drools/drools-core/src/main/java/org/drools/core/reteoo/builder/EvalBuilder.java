@@ -16,8 +16,6 @@
 
 package org.drools.core.reteoo.builder;
 
-import org.drools.core.reteoo.EvalConditionNode;
-import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.rule.RuleConditionElement;
 
@@ -36,13 +34,13 @@ public class EvalBuilder
         context.pushRuleComponent( rce );
         utils.checkUnboundDeclarations( context,
                                         eval.getRequiredDeclarations() );
-        context.setTupleSource( (LeftTupleSource) utils.attachNode( context,
-                                                                    context.getComponentFactory()
-                                                                           .getNodeFactoryService()
-                                                                           .buildEvalNode( context.getNextId(),
-                                                                                           context.getTupleSource(),
-                                                                                           eval,
-                                                                                           context ) ) );
+        context.setTupleSource( utils.attachNode( context,
+                                                  context.getComponentFactory()
+                                                         .getNodeFactoryService()
+                                                         .buildEvalNode( context.getNextId(),
+                                                                         context.getTupleSource(),
+                                                                         eval,
+                                                                         context ) ) );
         context.popRuleComponent();
 
     }

@@ -84,16 +84,14 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         return context;
     }
 
-    public void linkNode(InternalWorkingMemory wm) {
-        linkNode(wm, true);
+    public boolean linkNode(InternalWorkingMemory wm) {
+        return linkNode(wm, true);
     }
 
-    public void linkNode(InternalWorkingMemory wm, boolean notify) {
-        if (notify) {
-            segmentMemory.linkNode(nodePosMaskBit, wm);
-        } else {
-            segmentMemory.linkNodeWithoutRuleNotify(nodePosMaskBit);
-        }
+    public boolean linkNode(InternalWorkingMemory wm, boolean notify) {
+        return notify ?
+               segmentMemory.linkNode(nodePosMaskBit, wm) :
+               segmentMemory.linkNodeWithoutRuleNotify(nodePosMaskBit);
     }
 
     public void unlinkNode(InternalWorkingMemory wm) {
@@ -136,16 +134,14 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
         return counter--;
     }
 
-    public void setNodeDirty(InternalWorkingMemory wm) {
-        setNodeDirty(wm, true);
+    public boolean setNodeDirty(InternalWorkingMemory wm) {
+        return setNodeDirty(wm, true);
     }
 
-    public void setNodeDirty(InternalWorkingMemory wm, boolean notify) {
-        if (notify) {
-            segmentMemory.notifyRuleLinkSegment(wm, nodePosMaskBit);
-        } else {
-            segmentMemory.linkSegmentWithoutRuleNotify(wm, nodePosMaskBit);
-        }
+    public boolean setNodeDirty(InternalWorkingMemory wm, boolean notify) {
+        return notify ?
+               segmentMemory.notifyRuleLinkSegment(wm, nodePosMaskBit) :
+               segmentMemory.linkSegmentWithoutRuleNotify(wm, nodePosMaskBit);
     }
 
     public void setNodeDirtyWithoutNotify() {
