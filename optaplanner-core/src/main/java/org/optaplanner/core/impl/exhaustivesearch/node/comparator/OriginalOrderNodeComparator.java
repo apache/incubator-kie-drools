@@ -36,7 +36,7 @@ public class OriginalOrderNodeComparator implements Comparator<ExhaustiveSearchN
         } else if (aDepth > bDepth) {
             return 1;
         }
-        // Investigate lower breath index first (to respect ValueSortingManner)
+        // Investigate lower breadth index first (to respect ValueSortingManner)
         long aBreadth = a.getBreadth();
         long bBreadth = b.getBreadth();
         if (aBreadth < bBreadth) {

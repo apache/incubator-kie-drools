@@ -37,7 +37,7 @@ public enum InitializingScoreTrendLevel {
      * will give a {@link PlanningSolution} for which the {@link Score} is better or equal to A.
      * <p>
      * In practice, this means that the score constraints of this score level are all positive,
-     * and initializing a variable cannot unmatch a already matched positive constraint.
+     * and initializing a variable cannot unmatch an already matched positive constraint.
      * <p>
      * Also implies the perfect minimum score is 0.
      */
@@ -49,7 +49,7 @@ public enum InitializingScoreTrendLevel {
      * will give a {@link PlanningSolution} for which the {@link Score} is worse or equal to A.
      * <p>
      * In practice, this means that the score constraints of this score level are all negative,
-     * and initializing a variable cannot unmatch a already matched negative constraint.
+     * and initializing a variable cannot unmatch an already matched negative constraint.
      * <p>
      * Also implies the perfect maximum score is 0.
      */

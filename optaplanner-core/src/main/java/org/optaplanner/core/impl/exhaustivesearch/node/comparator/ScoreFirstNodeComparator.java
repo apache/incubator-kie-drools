@@ -57,7 +57,7 @@ public class ScoreFirstNodeComparator implements Comparator<ExhaustiveSearchNode
         } else if (aDepth > bDepth) {
             return 1;
         }
-        // Investigate higher parent breath index first (to reduce on the churn on workingSolution)
+        // Investigate higher parent breadth index first (to reduce on the churn on workingSolution)
         long aParentBreadth = a.getParentBreadth();
         long bParentBreadth = b.getParentBreadth();
         if (aParentBreadth < bParentBreadth) {
@@ -65,7 +65,7 @@ public class ScoreFirstNodeComparator implements Comparator<ExhaustiveSearchNode
         } else if (aParentBreadth > bParentBreadth) {
             return 1;
         }
-        // Investigate lower breath index first (to respect ValueSortingManner)
+        // Investigate lower breadth index first (to respect ValueSortingManner)
         long aBreadth = a.getBreadth();
         long bBreadth = b.getBreadth();
         if (aBreadth < bBreadth) {

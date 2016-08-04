@@ -74,8 +74,9 @@
         for a bound which is always higher.</para>
       </note>
 
-      <para>For example: at index 15, it can prune away all unvisited solutions with queen A on row 0, because none will
-      be better than the solution of index 14 with a score of <literal>-1</literal>.</para>
+      <para>For example: at index 14, it sets the global pessimistic bound to <literal>-2</literal>. Because all
+      solutions reachable from the node visited at index 11 will have a score lower or equal to
+      <literal>-2</literal> (the node's optimistic bound), they can be pruned away.</para>
 
       <mediaobject>
         <imageobject>
