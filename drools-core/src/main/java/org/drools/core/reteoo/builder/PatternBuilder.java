@@ -23,7 +23,6 @@ import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InstanceNotEqualsConstraint;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Behavior;
@@ -97,7 +96,7 @@ public class PatternBuilder
             }
         }
 
-        Constraints constraints = createConstraints(context, utils, pattern);
+        Constraints constraints = createConstraints(context, pattern);
 
         // Create BetaConstraints object
         context.setBetaconstraints( constraints.betaConstraints );
@@ -152,7 +151,7 @@ public class PatternBuilder
                                                                                                    behaviors,
                                                                                                    context.getObjectSource(),
                                                                                                    context );
-            context.setObjectSource( (WindowNode) utils.attachNode( context, wn ) );
+            context.setObjectSource( utils.attachNode( context, wn ) );
 
             // alpha constraints added to the window node already
             constraints.alphaConstraints.clear();
@@ -194,7 +193,7 @@ public class PatternBuilder
         }
     }
 
-    private Constraints createConstraints(BuildContext context, BuildUtils utils, Pattern pattern) {
+    private Constraints createConstraints(BuildContext context, Pattern pattern) {
         Constraints constraints = new Constraints();
         // check if cross products for identity patterns should be disabled
         checkRemoveIdentities( context,
@@ -316,8 +315,8 @@ public class PatternBuilder
         
         if ( context.getCurrentEntryPoint() != EntryPointId.DEFAULT && context.isAttachPQN() ) {
             if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
-                context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                          nfactory.buildPropagationQueuingNode( context.getNextId(),
+                context.setObjectSource( utils.attachNode( context,
+                                                           nfactory.buildPropagationQueuingNode( context.getNextId(),
                                                                                                                 context.getObjectSource(),
                                                                                                                 context ) ) );
             }
@@ -329,8 +328,8 @@ public class PatternBuilder
     protected void buildAlphaNodeChain( BuildContext context, BuildUtils utils, Pattern pattern, List<AlphaNodeFieldConstraint> alphaConstraints ) {
         for ( final AlphaNodeFieldConstraint constraint : alphaConstraints ) {
             context.pushRuleComponent( constraint );
-            context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                      context.getComponentFactory().getNodeFactoryService().buildAlphaNode( context.getNextId(),
+            context.setObjectSource( utils.attachNode( context,
+                                                       context.getComponentFactory().getNodeFactoryService().buildAlphaNode( context.getNextId(),
                                                                                                                                             constraint,
                                                                                                                                             context.getObjectSource(),
                                                                                                                                             context) ) );
@@ -382,8 +381,7 @@ public class PatternBuilder
             }
         }
 
-        context.setObjectSource( (ObjectSource) utils.attachNode( context,
-                                                                  otn ) );
+        context.setObjectSource( utils.attachNode( context, otn ) );
         context.setObjectTypeNodeMemoryEnabled( objectMemory );
     }
 
