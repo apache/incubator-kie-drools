@@ -318,6 +318,10 @@ public class BuildContext {
         return pathEndNodes;
     }
 
+    public void addPathEndNode(PathEndNode node) {
+        pathEndNodes.add(node);
+    }
+
     public void setXpathConstraints(List<XpathConstraint> xpathConstraints) {
         this.xpathConstraints = xpathConstraints;
     }
