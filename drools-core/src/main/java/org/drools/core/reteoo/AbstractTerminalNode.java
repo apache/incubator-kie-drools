@@ -151,7 +151,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     
 
     public PathMemory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
-        PathMemory pmem = new PathMemory(this);
+        PathMemory pmem = new PathMemory(this, wm);
         initPathMemory(pmem, null, wm, null);
         return pmem;
     }

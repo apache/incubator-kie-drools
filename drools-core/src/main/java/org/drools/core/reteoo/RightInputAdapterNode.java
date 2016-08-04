@@ -61,7 +61,7 @@ public class RightInputAdapterNode extends ObjectSource
 
     private LeftTupleNode[] pathNodes;
 
-    private transient PathEndNode[] pathEndNodes;
+    private PathEndNode[] pathEndNodes;
 
     public RightInputAdapterNode() {
     }
@@ -98,6 +98,7 @@ public class RightInputAdapterNode extends ObjectSource
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         startTupleSource = ( LeftTupleSource ) in.readObject();
+        pathEndNodes = ( PathEndNode[] ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -107,6 +108,7 @@ public class RightInputAdapterNode extends ObjectSource
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
         out.writeObject( startTupleSource );
+        out.writeObject( pathEndNodes );
     }
 
     @Override
@@ -133,7 +135,7 @@ public class RightInputAdapterNode extends ObjectSource
     public RiaNodeMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         RiaNodeMemory rianMem = new RiaNodeMemory();
 
-        RiaPathMemory pmem = new RiaPathMemory(this);
+        RiaPathMemory pmem = new RiaPathMemory(this, wm);
         AbstractTerminalNode.initPathMemory(pmem, getStartTupleSource(), wm, null);
         rianMem.setRiaPathMemory(pmem);
         

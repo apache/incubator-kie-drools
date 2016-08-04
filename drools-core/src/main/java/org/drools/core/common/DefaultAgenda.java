@@ -274,14 +274,7 @@ public class DefaultAgenda
 
     @Override
     public void addEagerRuleAgendaItem(RuleAgendaItem item) {
-        if ( sequential || item.isEagerEvaluated() ) {
-            return;
-        }
-
-        if ( workingMemory.getSessionConfiguration().getForceEagerActivationFilter().accept(item.getRule()) ) {
-            item.setEagerEvaluated( true );
-            item.getRuleExecutor().evaluateNetwork(workingMemory);
-            item.setEagerEvaluated( false );
+        if ( sequential ) {
             return;
         }
 
