@@ -54,27 +54,27 @@ public class FileKieModule extends AbstractKieModule implements InternalKieModul
 
 
     @Override
-    public byte[] getBytes(String pResourceName) {
-    	FileInputStream input = null;
-    	try {
+    public byte[] getBytes(String pResourceName ) {
+        FileInputStream input = null;
+        try {
             File resource = new File( file, pResourceName);
             if( resource.exists() ) {
-            	input = new FileInputStream( resource );
-				return IoUtils.readBytesFromInputStream( input );
+                input = new FileInputStream( resource );
+                return IoUtils.readBytesFromInputStream( input );
             } else {
                 return null;
             }
         } catch ( IOException e ) {
-            throw new RuntimeException("Unable to get bytes for: " + new File( file, pResourceName) +" "+ e.getMessage());
+            throw new RuntimeException("Unable to get bytes for: " + new File( file, pResourceName) + " " +e.getMessage());
         } finally {
-			if( input != null ) {
-				try {
-					input.close();
-				} catch ( IOException e ) {
-					e.printStackTrace();
-				}
-			}
-		}
+            if( input != null ){
+                try {
+                    input.close();
+                } catch ( IOException e ) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
