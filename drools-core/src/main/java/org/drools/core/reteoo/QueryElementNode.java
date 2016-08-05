@@ -19,12 +19,10 @@ package org.drools.core.reteoo;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.InternalViewChangedEventListener;
-import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ObjectStore;
@@ -42,12 +40,12 @@ import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.AbductiveQuery;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.kie.api.runtime.rule.Variable;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -71,7 +69,7 @@ public class QueryElementNode extends LeftTupleSource
 
     private   boolean         dataDriven;
 
-    private Object[]          argsTemplate;
+    private QueryArgument[]   argsTemplate;
 
     public QueryElementNode() {
         // for serialization
@@ -90,26 +88,19 @@ public class QueryElementNode extends LeftTupleSource
         this.openQuery = openQuery;
         this.dataDriven = context != null && context.getRule().isDataDriven();
         initMasks( context, tupleSource );
-        initArgsTemplate( context );
+        this.argsTemplate = initArgsTemplate( context );
 
         hashcode = calculateHashCode();
     }
 
-    private void initArgsTemplate(BuildContext context) {
-        Object[] originalArgs = this.queryElement.getArgTemplate();
-        argsTemplate = new Object[originalArgs.length];
+    private QueryArgument[] initArgsTemplate(BuildContext context) {
+        ClassLoader classLoader = context.getKnowledgeBase().getRootClassLoader();
+        QueryArgument[] originalArgs = this.queryElement.getArguments();
+        QueryArgument[] args = new QueryArgument[originalArgs.length];
         for (int i = 0; i < originalArgs.length; i++) {
-            if (originalArgs[i] instanceof Class) {
-                try {
-                    // Class literals have to be normalized to the classes loaded from the current kbase's ClassLoader
-                    argsTemplate[i] = context.getKnowledgeBase().getRootClassLoader().loadClass(((Class)originalArgs[i]).getName());
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                argsTemplate[i] = originalArgs[i];
-            }
+            args[i] = originalArgs[i] == null ? QueryArgument.NULL : originalArgs[i].normalize( classLoader );
         }
+        return args;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -119,12 +110,7 @@ public class QueryElementNode extends LeftTupleSource
         tupleMemoryEnabled = in.readBoolean();
         openQuery = in.readBoolean();
         dataDriven = in.readBoolean();
-        this.argsTemplate = (Object[]) in.readObject();
-        for ( int i = 0; i < argsTemplate.length; i++ ) {
-            if ( argsTemplate[i] instanceof Variable ) {
-                argsTemplate[i] = Variable.v; // we need to reset this as we do == checks later in DroolsQuery
-            }
-        }
+        this.argsTemplate = (QueryArgument[]) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -155,7 +141,6 @@ public class QueryElementNode extends LeftTupleSource
     public boolean isOpenQuery() {
         return openQuery;
     }
-
 
     @SuppressWarnings("unchecked")
     public InternalFactHandle createFactHandle(final PropagationContext context,
@@ -188,49 +173,7 @@ public class QueryElementNode extends LeftTupleSource
                                          QueryElementNodeMemory qmem,
                                          LeftTupleSink sink,
                                          InternalWorkingMemory workingMemory) {
-        Object[] args = new Object[argsTemplate.length]; // the actual args, to be created from the  template
-
-        // first copy everything, so that we get the literals. We will rewrite the declarations and variables next
-        System.arraycopy( argsTemplate,
-                          0,
-                          args,
-                          0,
-                          args.length );
-
-        int[] declIndexes = this.queryElement.getDeclIndexes();
-
-        for ( int declIndexe : declIndexes ) {
-            Declaration declr = (Declaration) argsTemplate[declIndexe];
-
-            Object tupleObject = leftTuple.get( declr ).getObject();
-
-            Object o;
-
-            if ( tupleObject instanceof DroolsQuery && declr.getExtractor() instanceof ArrayElementReader &&
-                 ( (DroolsQuery) tupleObject ).getVariables()[declr.getExtractor().getIndex()] != null ) {
-                // If the query passed in a Variable, we need to use it
-                o = Variable.v;
-            } else {
-                o = declr.getValue( workingMemory,
-                                    tupleObject );
-            }
-
-            if ( o == null ) {
-                o = declr.getValue( workingMemory, tupleObject );
-            }
-
-            args[declIndexe] = o;
-        }
-
-        int[] varIndexes = this.queryElement.getVariableIndexes();
-        for (int varIndex : varIndexes) {
-            if (argsTemplate[varIndex] == Variable.v) {
-                // Need to check against the arg template, as the varIndexes also includes re-declared declarations
-                args[varIndex] = Variable.v;
-            }
-        }
-
-        UnificationNodeViewChangedEventListener collector = createCollector( leftTuple, varIndexes, this.tupleMemoryEnabled );
+        UnificationNodeViewChangedEventListener collector = createCollector( leftTuple, queryElement.getVariableIndexes(), this.tupleMemoryEnabled );
         
         boolean executeAsOpenQuery = openQuery;
         if ( executeAsOpenQuery ) {
@@ -242,7 +185,7 @@ public class QueryElementNode extends LeftTupleSource
         }
 
         DroolsQuery queryObject = new DroolsQuery( this.queryElement.getQueryName(),
-                                                   args,
+                                                   getActualArguments( leftTuple, workingMemory ),
                                                    collector,
                                                    executeAsOpenQuery,
                                                    stackEntry,
@@ -250,14 +193,18 @@ public class QueryElementNode extends LeftTupleSource
                                                    qmem != null ? qmem.getResultLeftTuples() : null,
                                                    qmem,
                                                    sink);
-
         collector.setFactHandle( handle );
-
         handle.setObject( queryObject );
-
         leftTuple.setContextObject( handle ); // so it can be retracted later and destroyed
-
         return queryObject;
+    }
+
+    public Object[] getActualArguments( LeftTuple leftTuple, InternalWorkingMemory workingMemory ) {
+        Object[] args = new Object[argsTemplate.length]; // the actual args, to be created from the  template
+        for (int i = 0; i < argsTemplate.length; i++) {
+            args[i] = argsTemplate[i].getValue( workingMemory, leftTuple );
+        }
+        return args;
     }
 
     protected UnificationNodeViewChangedEventListener createCollector( LeftTuple leftTuple, int[] varIndexes, boolean tupleMemoryEnabled ) {
@@ -393,10 +340,10 @@ public class QueryElementNode extends LeftTupleSource
                         abduced = handle.getObject();
                         firstAssertion = false;
                     } else {
-                        handle = ((InternalWorkingMemoryActions) workingMemory).getTruthMaintenanceSystem().insert( abduced,
-                                                                                                                    MODE.POSITIVE.getId(),
-                                                                                                                    query,
-                                                                                                                    (RuleTerminalNodeLeftTuple) resultLeftTuple );
+                        handle = workingMemory.getTruthMaintenanceSystem().insert( abduced,
+                                                                                   MODE.POSITIVE.getId(),
+                                                                                   query,
+                                                                                   (RuleTerminalNodeLeftTuple) resultLeftTuple );
                     }
                     BeliefSet bs = handle.getEqualityKey() != null ? handle.getEqualityKey().getBeliefSet() : null;
                     if ( bs == null ) {
@@ -406,10 +353,10 @@ public class QueryElementNode extends LeftTupleSource
                             pass = false;
                         } else {
                             if ( !firstAssertion ) {
-                                ( (InternalWorkingMemoryActions) workingMemory ).getTruthMaintenanceSystem().insert( abduced,
-                                                                                                                     MODE.POSITIVE.getId(),
-                                                                                                                     query,
-                                                                                                                     (RuleTerminalNodeLeftTuple) resultLeftTuple );
+                                workingMemory.getTruthMaintenanceSystem().insert( abduced,
+                                                                                  MODE.POSITIVE.getId(),
+                                                                                  query,
+                                                                                  (RuleTerminalNodeLeftTuple) resultLeftTuple );
                             }
                         }
                     }
