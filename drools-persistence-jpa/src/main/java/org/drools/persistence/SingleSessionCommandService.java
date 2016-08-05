@@ -389,21 +389,21 @@ public class SingleSessionCommandService
         rollbackTransaction(t1, transactionOwner, true);
     }
 
-    private void rollbackTransaction(Exception t1,
-            boolean transactionOwner, boolean logstack) {
+    private void rollbackTransaction(Exception cause, boolean transactionOwner, boolean logstack) {
         try {
 
             if (logstack) {
-                logger.warn( "Could not commit session", t1 );
+                logger.warn( "Could not commit session", cause );
             } else {
-                logger.warn( "Could not commit session due to {}", t1.getMessage() );
+                logger.warn( "Could not commit session due to {}", cause.getMessage() );
             }
             txm.rollback( transactionOwner );
-        } catch ( Exception t2 ) {
-            logger.error( "Could not rollback",
-                    t2 );
-            throw new RuntimeException( "Could not commit session or rollback",
-                    t2 );
+        } catch ( Exception rollbackError ) {
+            String errorMessage = "Could not rollback due to '" + rollbackError.getMessage() + "' rollback caused by " + cause.getMessage();
+            // log rollback exception
+            logger.error( "Could not rollback", rollbackError );
+            // propagate original exception that caused the rollback
+            throw new RuntimeException( errorMessage, cause );
         }
     }
 
