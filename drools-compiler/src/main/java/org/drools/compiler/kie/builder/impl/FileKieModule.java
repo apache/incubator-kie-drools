@@ -65,12 +65,12 @@ public class FileKieModule extends AbstractKieModule implements InternalKieModul
                 return null;
             }
         } catch ( IOException e ) {
-            throw new RuntimeException("Unable to get bytes for: " + new File( file, pResourceName) +" "+e.getMessage());
+            throw new RuntimeException("Unable to get bytes for: " + new File( file, pResourceName) +" "+ e.getMessage());
         } finally {
-			if(input != null){
+			if( input != null ) {
 				try {
 					input.close();
-				} catch (IOException e) {
+				} catch ( IOException e ) {
 					e.printStackTrace();
 				}
 			}
