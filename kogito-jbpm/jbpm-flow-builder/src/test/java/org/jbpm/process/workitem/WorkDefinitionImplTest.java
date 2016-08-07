@@ -30,7 +30,7 @@ public class WorkDefinitionImplTest extends AbstractBaseTest {
         Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString());
         assertNotNull(repoResults);
         assertFalse(repoResults.isEmpty());
-        assertEquals(repoResults.size(), 5);
+        assertEquals(repoResults.size(), 6);
 
         WorkDefinitionImpl testServiceOne = repoResults.get("TestServiceOne");
         assertNotNull(testServiceOne);
@@ -86,6 +86,14 @@ public class WorkDefinitionImplTest extends AbstractBaseTest {
         assertEquals(3, testServiceFour2.getDependencies().length);
         assertEquals(2, testServiceFour2.getMavenDependencies().length);
         assertEquals("json", testServiceFour2.getWidType());
+
+        // workitem with no dependency defined
+        WorkDefinitionImpl testServiceFive = repoResults.get("TestServiceFive");
+        assertNotNull(testServiceFive);
+        assertEquals("TestServiceFive", testServiceFive.getName());
+        assertEquals("TestServiceFive", testServiceFive.getDisplayName());
+        assertNull(testServiceFive.getDependencies());
+
     }
 
 }

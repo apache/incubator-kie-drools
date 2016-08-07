@@ -64,9 +64,12 @@ public class WorkItemRepository {
 					}
 				}
 				workDefinition.setResults(results);
+
 				workDefinition.setDefaultHandler((String) workDefinitionMap.get("defaultHandler"));
 
-				workDefinition.setDependencies(((List<String>) workDefinitionMap.get("dependencies")).toArray(new String[0]));
+				if(workDefinitionMap.get("dependencies") != null) {
+					workDefinition.setDependencies(((List<String>) workDefinitionMap.get("dependencies")).toArray(new String[0]));
+				}
 
 				if(workDefinitionMap.get("mavenDependencies") != null) {
 					workDefinition.setMavenDependencies(((List<String>) workDefinitionMap.get("mavenDependencies")).toArray(new String[0]));

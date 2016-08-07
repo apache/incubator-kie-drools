@@ -29,7 +29,7 @@ public class WorkItemRepositoryTest extends AbstractBaseTest {
         Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString());
         assertNotNull(repoResults);
         assertFalse(repoResults.isEmpty());
-        assertEquals(repoResults.size(), 5);
+        assertEquals(repoResults.size(), 6);
     }
 
     @Test
