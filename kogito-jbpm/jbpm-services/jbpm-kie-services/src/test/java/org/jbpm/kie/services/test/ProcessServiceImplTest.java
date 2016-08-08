@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
 
-private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentServiceTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentServiceTest.class);
 
     private List<DeploymentUnit> units = new ArrayList<DeploymentUnit>();
 
