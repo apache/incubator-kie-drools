@@ -78,8 +78,8 @@
 
       <para>Out of the box, this works and all properties of the <literal>changeMoveSelector</literal> are defaulted
       sensibly (unless that fails fast due to ambiguity). On the other hand, the configuration can be customized
-      significantly for specific use cases. For example: you might want to configure a filter to discard pointless
-      moves.</para>
+      significantly for specific use cases. For example: you might want to configure a <link
+      linkend="filteredSelection">filter</link> to discard pointless moves.</para>
     </section>
 
     <section xml:id="subselectingOfEntitiesValuesAndOtherMoves">
@@ -904,9 +904,7 @@
         </listitem>
       </itemizedlist>
 
-      <para>Filtered selection can happen on any Selector in the selector tree, including any
-      <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or <literal>ValueSelector</literal>. It works
-      with any <literal>cacheType</literal> and <literal>selectionOrder</literal>.</para>
+      <para>If a move is unaccepted by the filter, it's not executed and the score isn't calculated.</para>
 
       <mediaobject>
         <imageobject>
@@ -916,17 +914,30 @@
 
       <para>Filtering uses the interface <literal>SelectionFilter</literal>:</para>
 
-      <programlisting language="java">public interface SelectionFilter&lt;T&gt; {
+      <programlisting language="java">public interface SelectionFilter&lt;Solution_, T&gt; {
 
-    boolean accept(ScoreDirector scoreDirector, T selection);
+    boolean accept(ScoreDirector&lt;Solution_&gt; scoreDirector, T selection);
 
 }</programlisting>
 
       <para>Implement the <literal>accept</literal> method to return <literal>false</literal> on a discarded
-      <literal>selection</literal>. Unaccepted moves will not be selected and will therefore never have their
-      <literal>doMove</literal> method called.</para>
+      <literal>selection</literal> (see below). Filtered selection can happen on any Selector in the selector tree,
+      including any <literal>MoveSelector</literal>, <literal>EntitySelector</literal> or
+      <literal>ValueSelector</literal>. It works with any <literal>cacheType</literal> and
+      <literal>selectionOrder</literal>.</para>
 
-      <programlisting language="java">public class DifferentCourseSwapMoveFilter implements SelectionFilter&lt;SwapMove&gt; {
+      <note>
+        <para>Apply the filter on the lowest level possible. In most cases, you'll need to know both the entity and the
+        value involved so you'll have to apply it on the move selector.</para>
+      </note>
+
+      <section xml:id="filteredMoveSelection">
+        <title>Filtered Move Selection</title>
+
+        <para>Unaccepted moves will not be selected and will therefore never have their <literal>doMove()</literal>
+        method called:</para>
+
+        <programlisting language="java">public class DifferentCourseSwapMoveFilter implements SelectionFilter&lt;SwapMove&gt; {
 
     public boolean accept(ScoreDirector scoreDirector, SwapMove move) {
         Lecture leftLecture = (Lecture) move.getLeftEntity();
@@ -936,24 +947,69 @@
 
 }</programlisting>
 
-      <para>Apply the filter on the lowest level possible. In most cases, you'll need to know both the entity and the
-      value involved and you'll have to apply a <literal>filterClass</literal> on the
-      <literal>moveSelector</literal>:</para>
+        <para>Configure the <literal>filterClass</literal> on every targeted <literal>moveSelector</literal>
+        (potentially both in the Local Search and the Construction Heuristics if it filters
+        <literal>ChangeMove</literal>s):</para>
 
-      <programlisting language="xml">    &lt;swapMoveSelector&gt;
+        <programlisting language="xml">    &lt;swapMoveSelector&gt;
       &lt;filterClass&gt;org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter&lt;/filterClass&gt;
     &lt;/swapMoveSelector&gt;</programlisting>
 
-      <para>But if possible, apply it on a lower levels, such as a <literal>filterClass</literal> on the
-      <literal>entitySelector</literal> or <literal>valueSelector</literal>:</para>
+        <para>You can configure multiple <literal>filterClass</literal> elements on a single move selector.</para>
+      </section>
 
-      <programlisting language="xml">    &lt;changeMoveSelector&gt;
+      <section xml:id="filteredEntitySelection">
+        <title>Filtered Entity Selection</title>
+
+        <para>Unaccepted entities will not be selected and will therefore never be used to create a move.</para>
+
+        <programlisting language="java">public class LongLectureSelectionFilter implements SelectionFilter&lt;Lecture&gt; {
+
+    public boolean accept(ScoreDirector&lt;CourseSchedule&gt; scoreDirector, Lecture lecture) {
+        return lecture.isLong();
+    }
+
+}</programlisting>
+
+        <para>Configure the <literal>filterClass</literal> on every targeted <literal>entitySelector</literal>
+        (potentially both in the Local Search and the Construction Heuristics):</para>
+
+        <programlisting language="xml">    &lt;changeMoveSelector&gt;
       &lt;entitySelector&gt;
-        &lt;filterClass&gt;...EntityFilter&lt;/filterClass&gt;
+        &lt;filterClass&gt;org.optaplanner.examples.curriculumcourse.solver.move.LongLectureSelectionFilter&lt;/filterClass&gt;
       &lt;/entitySelector&gt;
     &lt;/changeMoveSelector&gt;</programlisting>
 
-      <para>You can configure multiple <literal>filterClass</literal> elements on a single selector.</para>
+        <para>If that filter should apply on all entities, configure it as a <link
+        linkend="immovablePlanningEntities">global movableEntitySelectionFilter</link> instead.</para>
+
+        <para>You can configure multiple <literal>filterClass</literal> elements on a single entity selector.</para>
+      </section>
+
+      <section xml:id="filteredValueSelection">
+        <title>Filtered Value Selection</title>
+
+        <para>Unaccepted values will not be selected and will therefore never be used to create a move.</para>
+
+        <programlisting language="java">public class LongPeriodSelectionFilter implements SelectionFilter&lt;Period&gt; {
+
+    public boolean accept(ScoreDirector&lt;CourseSchedule&gt; scoreDirector, Period period) {
+        return period();
+    }
+
+}</programlisting>
+
+        <para>Configure the <literal>filterClass</literal> on every targeted <literal>valueSelector</literal>
+        (potentially both in the Local Search and the Construction Heuristics):</para>
+
+        <programlisting language="xml">    &lt;changeMoveSelector&gt;
+      &lt;valueSelector&gt;
+        &lt;filterClass&gt;org.optaplanner.examples.curriculumcourse.solver.move.LongPeriodSelectionFilter&lt;/filterClass&gt;
+      &lt;/valueSelector&gt;
+    &lt;/changeMoveSelector&gt;</programlisting>
+
+        <para>You can configure multiple <literal>filterClass</literal> elements on a single value selector.</para>
+      </section>
     </section>
 
     <section xml:id="sortedSelection">
