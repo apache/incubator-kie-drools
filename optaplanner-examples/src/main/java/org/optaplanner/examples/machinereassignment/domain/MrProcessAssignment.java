@@ -49,7 +49,7 @@ public class MrProcessAssignment extends AbstractPersistable {
         this.originalMachine = originalMachine;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"machineRange"}) // TODO strengthComparatorClass = BedStrengthComparator.class)
+    @PlanningVariable(valueRangeProviderRefs = {"machineRange"})
     public MrMachine getMachine() {
         return machine;
     }
