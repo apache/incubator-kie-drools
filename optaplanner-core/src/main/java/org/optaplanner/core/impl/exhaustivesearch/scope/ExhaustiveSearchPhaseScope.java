@@ -92,7 +92,7 @@ public class ExhaustiveSearchPhaseScope<Solution_> extends AbstractPhaseScope<So
             for (Iterator<ExhaustiveSearchNode> iterator = expandableNodeQueue.iterator(); iterator.hasNext(); ) {
                 // Prune it
                 ExhaustiveSearchNode node = iterator.next();
-                if (node.getOptimisticBound().compareTo(bestPessimisticBound) < 0) {
+                if (node.getOptimisticBound().compareTo(bestPessimisticBound) <= 0) {
                     iterator.remove();
                 }
             }
