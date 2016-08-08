@@ -10,7 +10,7 @@
   <section xml:id="plannerConfigurationOverview">
     <title>Overview</title>
 
-    <para>Solving a planning problem with Planner consists of 5 steps:</para>
+    <para>Solving a planning problem with Planner consists of the following steps:</para>
 
     <orderedlist>
       <listitem>

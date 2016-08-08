@@ -1119,7 +1119,7 @@ end</programlisting>
       are initialized (while the already initialized variables do not change). Some optimization algorithms (such
       Construction Heuristics and Exhaustive Search) run faster if they have such information.</para>
 
-      <para>For for the Score (or each <link linkend="scoreLevel">score level</link> separately), specify a
+      <para>For the Score (or each <link linkend="scoreLevel">score level</link> separately), specify a
       trend:</para>
 
       <itemizedlist>
