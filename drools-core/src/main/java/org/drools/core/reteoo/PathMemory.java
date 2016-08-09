@@ -40,9 +40,23 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     private          SegmentMemory[]   segmentMemories;
     private          SegmentMemory     segmentMemory;
 
-    public PathMemory(PathEndNode pathEndNode) {
+    public  final    boolean           dataDriven;
+
+    public PathMemory(PathEndNode pathEndNode, InternalWorkingMemory wm) {
         this.pathEndNode = pathEndNode;
         this.linkedSegmentMask = 0L;
+        this.dataDriven = initDataDriven( wm );
+    }
+
+    protected boolean initDataDriven( InternalWorkingMemory wm ) {
+        return isRuleDataDriven( wm, getRule() );
+    }
+
+    protected boolean isRuleDataDriven( InternalWorkingMemory wm, RuleImpl rule ) {
+        return rule != null &&
+               ( rule.isDataDriven() ||
+                 ( wm != null &&
+                   wm.getSessionConfiguration().getForceEagerActivationFilter().accept(rule) ));
     }
 
     public PathEndNode getPathEndNode() {
@@ -171,8 +185,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     public boolean isDataDriven() {
-        RuleImpl rule = getRule();
-        return rule != null && rule.isDataDriven();
+        return dataDriven;
     }
 
     public short getNodeType() {
