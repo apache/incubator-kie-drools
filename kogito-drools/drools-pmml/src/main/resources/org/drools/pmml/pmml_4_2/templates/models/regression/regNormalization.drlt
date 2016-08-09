@@ -32,7 +32,8 @@ when
                                          target == "@{target}",
                                          $wgt : weight,
                                          normalized == false ),
-                $den     : sumBD( $wgt ),
+                // FIXME: DROOLS-1248
+                $den     : sumBD( java.math.BigDecimal.valueOf( $wgt ) ),
                 $list    : collectList( $bit ) )
 then
     insert( new @{ pmmlPackageName }.RegNormalizationFactor( "@{context}", "@{target}", $den.doubleValue() ) );

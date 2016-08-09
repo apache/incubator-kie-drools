@@ -940,8 +940,8 @@ public class AccumulateTest extends CommonTestMethodBase {
         wm.fireAllRules();
 
         assertEquals( 2, list.size() );
-        assertEquals( "r1:10.0", list.get( 0 ) );
-        assertEquals( "r2:10.0", list.get( 1 ) );
+        assertEquals( "r1:10", list.get( 0 ) );
+        assertEquals( "r2:10", list.get( 1 ) );
     }
 
     public void execTestAccumulateSum( String fileName ) throws Exception {
@@ -2004,7 +2004,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.dispose();
         assertEquals( 1,
                       results.size() );
-        assertEquals( 9.0,
+        assertEquals( 9L,
                       results.get( 0 ) );
     }
 
@@ -2661,8 +2661,8 @@ public class AccumulateTest extends CommonTestMethodBase {
                 "   Double() " +
                 "   String() " +
                 "   $list : java.util.List(  this not contains \"XX\" ) " +
-                "   $sum  : Double( ) from accumulate ( $i : Integer(), " +
-                "                                       sum( $i ) ) " +
+                "   $sum  : Integer( ) from accumulate ( $i : Integer(), " +
+                "                                        sum( $i ) ) " +
                 "then " +
                 "    $list.add( \"XX\" );\n" +
                 "    update( $list );\n" +
@@ -3013,7 +3013,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        List<Double> list = new ArrayList<Double>();
+        List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal( "list", list );
 
         ksession.insert( 1 );
@@ -3022,7 +3022,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
-        assertEquals( "hello".length(), (double)list.get(0), 0.01 );
+        assertEquals( "hello".length(), (int)list.get(0), 0.01 );
     }
 
     @Test
@@ -3055,7 +3055,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
-        assertEquals( "hello".length(), (double)list.get(0), 0.01 );
+        assertEquals( "hello".length(), list.get(0), 0.01 );
     }
 
     public static class Converter {
@@ -3130,5 +3130,138 @@ public class AccumulateTest extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         assertFalse( results.getMessages().isEmpty() );
+    }
+
+    @Test
+    public void testTypedSumOnAccumulate() {
+        // DROOLS-1175
+        String drl1 =
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  $i : Integer()\n" +
+                "  accumulate ( $s : String(), $result : sum( $s.length() ) )\n" +
+                "then\n" +
+                "  list.add($result);\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( drl1, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( 1 );
+        ksession.insert( "hello" );
+        ksession.insert( "hi" );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "hello".length() + "hi".length(), (int)list.get(0) );
+    }
+
+    @Test
+    public void testSumAccumulateOnNullValue() {
+        // DROOLS-1242
+        String drl1 =
+                "import " + PersonWithBoxedAge.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  accumulate ( $p : PersonWithBoxedAge(), $result : sum( $p.getAge() ) )\n" +
+                "then\n" +
+                "  list.add($result);\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( drl1, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new PersonWithBoxedAge("me", 30) );
+        ksession.insert( new PersonWithBoxedAge("you", 40) );
+        ksession.insert( new PersonWithBoxedAge("she", null) );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( 70, (int)list.get(0) );
+    }
+
+    @Test
+    public void testMinAccumulateOnComparable() {
+        String drl1 =
+                "import " + PersonWithBoxedAge.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  accumulate ( $p : PersonWithBoxedAge(), $result : min( $p ) )\n" +
+                "then\n" +
+                "  list.add($result);\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( drl1, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<PersonWithBoxedAge> list = new ArrayList<PersonWithBoxedAge>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new PersonWithBoxedAge("me", 30) );
+        ksession.insert( new PersonWithBoxedAge("you", 40) );
+        ksession.insert( new PersonWithBoxedAge("she", 25) );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "she", list.get(0).getName() );
+    }
+
+    @Test
+    public void testMaxAccumulateOnComparable() {
+        String drl1 =
+                "import " + PersonWithBoxedAge.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  accumulate ( $p : PersonWithBoxedAge(), $result : max( $p ) )\n" +
+                "then\n" +
+                "  list.add($result);\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( drl1, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<PersonWithBoxedAge> list = new ArrayList<PersonWithBoxedAge>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new PersonWithBoxedAge("me", 30) );
+        ksession.insert( new PersonWithBoxedAge("you", 40) );
+        ksession.insert( new PersonWithBoxedAge("she", 25) );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "you", list.get(0).getName() );
+    }
+
+    public static class PersonWithBoxedAge implements Comparable<PersonWithBoxedAge> {
+        private final String name;
+        private final Integer age;
+
+        public PersonWithBoxedAge( String name, Integer age ) {
+            this.name = name;
+            this.age = age;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Integer getAge() {
+            return age;
+        }
+
+        @Override
+        public int compareTo( PersonWithBoxedAge other ) {
+            return age.compareTo( other.getAge() );
+        }
     }
 }

@@ -70,8 +70,9 @@ when
                           $tot  : sum( $x );
                           $num == $numChi
                           )
+    // FIXME: DROOLS-1248
     $map : java.util.Map() from accumulate ( $kj : String() from $keys
-                 and accumulate( $m : Map() from $subs, $x : sumBD( $m[ $kj ] != null ? $m[ $kj ] : 0 ) ),
+                 and accumulate( $m : Map() from $subs, $x : sumBD( $m[ $kj ] != null ? java.math.BigDecimal.valueOf( (Double) $m[ $kj ] ) : java.math.BigDecimal.ZERO ) ),
         init( java.util.Map mapp = new java.util.HashMap() ),
         action( mapp.put( $kj, $x.doubleValue() ); ),
         result( mapp )

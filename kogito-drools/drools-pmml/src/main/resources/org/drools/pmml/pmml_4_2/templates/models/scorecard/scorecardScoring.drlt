@@ -33,10 +33,10 @@ when
     accumulate(
         @{ pmmlPackageName }.PartialScore( scoreCard == $ctx, $val : value, $wgt : weight ),
         $tot : @{aggregator}( $val @if{ weighted } * $wgt @end{} );
-        $tot.doubleValue() + $zero != $card.getScore() )
+        ((Double)$tot) + $zero != $card.getScore() )
 then
     modify ( $card ) {
-        setScore( $zero + $tot.doubleValue() );
+        setScore( $zero + ((Double)$tot) );
     }
 end
 
@@ -52,7 +52,8 @@ when
     accumulate( @{ pmmlPackageName }.PartialScore( scoreCard == $ctx, reasonCode == $code, $val : value, $char : characteristic )
                 and
                 @{ pmmlPackageName }.BaselineScore( scoreCard == $ctx, characteristic == $char, $base : value ),
-                $sum : sumBD( $below ? ($base - $val) : ($val - $base) ) )
+                // FIXME: DROOLS-1248
+                $sum : sumBD( java.math.BigDecimal.valueOf( $below ? ($base - $val) : ($val - $base) ) ) )
 then
 //    System.out.println( "The CUMULATED score for code " + $code + " from set " + $set + " is >>> " + $sum );
     insertLogical( new @{ pmmlPackageName }.CodeScore( $card, $code, $sum.doubleValue() ) );

@@ -29,7 +29,7 @@ import java.util.Set;
  */
 public class MemoryResourceReader implements ResourceReader {
     
-    private Map resources;
+    private Map<String, byte[]> resources;
 
     private Set<String> modifiedResourcesSinceLastMark;
 

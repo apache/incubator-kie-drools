@@ -30,7 +30,7 @@ rule "SVM Output Collection @{context}"
 salience -1
 when
     accumulate( @{ pmmlPackageName }.@{context}SVMVote_@{target}( $wgt : weight ), $minWgt : min( $wgt ) )
-    @{ pmmlPackageName }.@{context}SVMVote_@{target}( $wgt : weight == $minWgt.doubleValue(), $out : outcome )
+    @{ pmmlPackageName }.@{context}SVMVote_@{target}( $wgt : weight == (Double) $minWgt, $out : outcome )
 then
     @{ target } x = new @{ target }();
                 x.setContext( "@{context}" );

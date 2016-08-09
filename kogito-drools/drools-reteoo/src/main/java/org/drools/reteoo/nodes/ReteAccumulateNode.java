@@ -606,6 +606,14 @@ public class ReteAccumulateNode extends AccumulateNode {
                                              leftTuple,
                                              workingMemory);
         if (result == null) {
+            if (accctx.propagated) {
+                PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
+                PropagationContext cancelContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), org.kie.api.runtime.rule.PropagationContext.DELETION, (RuleImpl) context.getRule(),
+                                                                                        context.getLeftTupleOrigin(), (InternalFactHandle) context.getFactHandle());
+                this.sink.propagateRetractLeftTuple( leftTuple,
+                                                     cancelContext,
+                                                     workingMemory );
+            }
             return;
         }
 

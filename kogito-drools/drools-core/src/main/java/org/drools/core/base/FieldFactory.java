@@ -19,6 +19,7 @@ package org.drools.core.base;
 import org.drools.core.base.field.BooleanFieldImpl;
 import org.drools.core.base.field.ClassFieldImpl;
 import org.drools.core.base.field.DoubleFieldImpl;
+import org.drools.core.base.field.IntegerFieldImpl;
 import org.drools.core.base.field.LongFieldImpl;
 import org.drools.core.base.field.ObjectFieldImpl;
 import org.drools.core.spi.FieldValue;
@@ -114,9 +115,9 @@ public class FieldFactory implements FieldDataFactory, Serializable {
             }
         } else if ( valueType == ValueType.PBOOLEAN_TYPE || valueType == ValueType.BOOLEAN_TYPE ) {
             if( value instanceof String ) {
-                field = new BooleanFieldImpl( Boolean.valueOf( (String) value).booleanValue() );
+                field = new BooleanFieldImpl( Boolean.valueOf( (String) value) );
             } else {
-                field = new BooleanFieldImpl( ((Boolean) value).booleanValue() );
+                field = new BooleanFieldImpl( (Boolean) value );
             }
         }  else if ( valueType == ValueType.STRING_TYPE ) {
             field = new ObjectFieldImpl( value );
@@ -165,7 +166,7 @@ public class FieldFactory implements FieldDataFactory, Serializable {
     }
 
     public FieldValue getFieldValue(final int value) {
-        return new LongFieldImpl( value );
+        return new IntegerFieldImpl( value );
     }
 
     public FieldValue getFieldValue(final long value) {

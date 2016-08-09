@@ -1229,8 +1229,8 @@ when
                  $rows > 0 && $cols > 0
                )
 then
-    int c = $nc != null ? Math.max( $nc.intValue(), $cols.intValue() ) : $cols.intValue();
-    int r = $nr != null ? Math.max( $nr.intValue(), $rows.intValue() ) : $rows.intValue();
+    int c = $nc != null ? Math.max( $nc.intValue(), (Integer) $cols ) : (Integer) $cols;
+    int r = $nr != null ? Math.max( $nr.intValue(), (Integer) $rows ) : (Integer) $rows;
     insert( new DoubleMatrix( r, c, $mat, new Double[ r ][ c ] ) );
 end
 

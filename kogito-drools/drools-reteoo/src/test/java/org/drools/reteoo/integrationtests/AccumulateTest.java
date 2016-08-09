@@ -936,8 +936,8 @@ public class AccumulateTest extends CommonTestMethodBase {
         wm.fireAllRules();
 
         assertEquals(2, list.size() );
-        assertEquals( "r1:10.0", list.get(0));
-        assertEquals( "r2:10.0", list.get(1));
+        assertEquals( "r1:10", list.get(0));
+        assertEquals( "r2:10", list.get(1));
     }
 
     public void execTestAccumulateSum( String fileName ) throws Exception {
@@ -2019,7 +2019,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         ksession.dispose();
         assertEquals( 1,
                 results.size() );
-        assertEquals( 9.0,
+        assertEquals( 9L,
                 results.get( 0 ) );
     }
 

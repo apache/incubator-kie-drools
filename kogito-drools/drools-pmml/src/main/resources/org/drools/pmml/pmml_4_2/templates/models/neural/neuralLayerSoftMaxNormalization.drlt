@@ -38,7 +38,8 @@ when
                     $in : value != null
                 ) @watch( normalized, ! value ),
             $list : collectList( $neur ),
-            $den  : sumBD( Math.exp( $in ) );
+            // FIXME: DROOLS-1248
+            $den  : sumBD( java.math.BigDecimal.valueOf( Math.exp( $in ) ) );
             $list.size == @{ neurons.size() }
         )
 then

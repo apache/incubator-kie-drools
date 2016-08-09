@@ -161,7 +161,6 @@ public class KnowledgeBuilderConfigurationImpl
 
     /**
      * Programmatic properties file, added with lease precedence
-     * @param properties
      */
     public KnowledgeBuilderConfigurationImpl(Properties properties) {
         init(properties,
@@ -170,8 +169,6 @@ public class KnowledgeBuilderConfigurationImpl
 
     /**
      * Programmatic properties file, added with lease precedence
-     * @param classLoaders
-     * @param properties
      */
     public KnowledgeBuilderConfigurationImpl(Properties properties,
             ClassLoader... classLoaders) {
@@ -535,21 +532,6 @@ public class KnowledgeBuilderConfigurationImpl
                     loadAccumulateFunction(identifier,
                             entry.getValue()));
         }
-    }
-
-    /**
-     * This method is deprecated and will be removed 
-     * @return
-     * 
-     * @deprecated
-     */
-    public Map<String, String> getAccumulateFunctionsMap() {
-        Map<String, String> result = new HashMap<String, String>();
-        for (Map.Entry<String, AccumulateFunction> entry : this.accumulateFunctions.entrySet()) {
-            result.put(entry.getKey(),
-                    entry.getValue().getClass().getName());
-        }
-        return result;
     }
 
     public void addAccumulateFunction(String identifier,
