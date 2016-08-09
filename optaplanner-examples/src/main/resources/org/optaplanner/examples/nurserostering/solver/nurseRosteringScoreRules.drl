@@ -80,9 +80,9 @@ rule "insertEmployeeAssignmentTotal"
         MinMaxContractLine(contractLineType == ContractLineType.TOTAL_ASSIGNMENTS, enabled == true,
             $contract : contract)
         $employee : Employee(contract == $contract)
-        $assignmentTotal : Long() from accumulate(
-            $assignment : ShiftAssignment(employee == $employee),
-            count($assignment)
+        accumulate(
+            $assignment : ShiftAssignment(employee == $employee);
+            $assignmentTotal : count($assignment)
         )
     then
         insertLogical(new EmployeeAssignmentTotal($employee, $assignmentTotal.intValue()));
@@ -442,13 +442,14 @@ rule "identicalShiftTypesDuringWeekend"
         $employee : Employee(contract == $contract, $weekendLength : weekendLength)
         ShiftDate(dayOfWeek == DayOfWeek.SUNDAY, $sundayIndex : dayIndex)
         $shiftType : ShiftType()
-        $weekendAssignmentTotal : Long(this > 0 && < $weekendLength) from accumulate(
+        accumulate(
             $assignment : ShiftAssignment(
                 weekend == true,
                 weekendSundayIndex == $sundayIndex,
                 employee == $employee,
-                shiftType == $shiftType),
-            count($assignment)
+                shiftType == $shiftType);
+            $weekendAssignmentTotal : count($assignment);
+            $weekendAssignmentTotal > 0 && $weekendAssignmentTotal < $weekendLength
         )
     then
         scoreHolder.addSoftConstraintMatch(kcontext,

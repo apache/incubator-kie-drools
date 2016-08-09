@@ -92,9 +92,9 @@ end
 rule "Maximize merges per word"
     when
         $w : ScrabbleWordAssignment()
-        $total : Long() from accumulate(
-            $c : ScrabbleCell(wordSet.contains($w), hasMerge() == true),
-            count($c)
+        accumulate(
+            $c : ScrabbleCell(wordSet.contains($w), hasMerge() == true);
+            $total : count($c)
         )
     then
         scoreHolder.addMediumConstraintMatch(kcontext, $total.intValue() * $total.intValue());

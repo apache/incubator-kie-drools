@@ -57,16 +57,17 @@ rule "periodDurationTooShort"
 end
 
 // More seating required during a period in a room than available in that room.
-rule "roomCapacityTooSmall" // TODO improve performance, as it takes 50% of the performance
+rule "roomCapacityTooSmall"
     when
         $period : Period()
         $room : Room($capacity : capacity)
-        $totalStudentSize : Number(intValue > $capacity) from accumulate(
-            Exam(period == $period, room == $room, $studentSize : topicStudentSize),
-            sum($studentSize) // Vote for http://jira.jboss.com/jira/browse/JBRULES-1075
+        accumulate(
+            Exam(period == $period, room == $room, $studentSize : topicStudentSize);
+            $totalStudentSize : sum($studentSize);
+            $totalStudentSize > $capacity
         )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, $capacity - $totalStudentSize.intValue());
+        scoreHolder.addHardConstraintMatch(kcontext, $capacity - $totalStudentSize);
 end
 
 // Period hard constraints

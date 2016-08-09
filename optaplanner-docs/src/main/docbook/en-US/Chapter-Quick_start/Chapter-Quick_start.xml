@@ -653,14 +653,15 @@ global HardSoftScoreHolder scoreHolder;
 rule "requiredCpuPowerTotal"
     when
         $computer : CloudComputer($cpuPower : cpuPower)
-        $requiredCpuPowerTotal : Number(intValue &gt; $cpuPower) from accumulate(
+        accumulate(
             CloudProcess(
                 computer == $computer,
-                $requiredCpuPower : requiredCpuPower),
-            sum($requiredCpuPower)
+                $requiredCpuPower : requiredCpuPower);
+            $requiredCpuPowerTotal : sum($requiredCpuPower);
+            $requiredCpuPowerTotal &gt; $cpuPower
         )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, $cpuPower - $requiredCpuPowerTotal.intValue());
+        scoreHolder.addHardConstraintMatch(kcontext, $cpuPower - $requiredCpuPowerTotal);
 end
 
 rule "requiredMemoryTotal"

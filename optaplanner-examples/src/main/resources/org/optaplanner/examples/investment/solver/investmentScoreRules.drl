@@ -35,37 +35,40 @@ global HardSoftLongScoreHolder scoreHolder;
 rule "Standard deviation maximum"
     when
         InvestmentParametrization($squaredStandardDeviationFemtosMaximum : calculateSquaredStandardDeviationFemtosMaximum())
-        $squaredStandardDeviationFemtos : Number(longValue > $squaredStandardDeviationFemtosMaximum) from accumulate(
-            $a : AssetClassAllocation() and $b : AssetClassAllocation(),
-            sum(AssetClassAllocation.calculateSquaredStandardDeviationFemtosFromTo($a, $b))
+        accumulate(
+            $a : AssetClassAllocation() and $b : AssetClassAllocation();
+            $squaredStandardDeviationFemtos : sum(AssetClassAllocation.calculateSquaredStandardDeviationFemtosFromTo($a, $b));
+            $squaredStandardDeviationFemtos > $squaredStandardDeviationFemtosMaximum
         )
     then
         scoreHolder.addHardConstraintMatch(kcontext,
-                $squaredStandardDeviationFemtosMaximum - $squaredStandardDeviationFemtos.longValue());
+                $squaredStandardDeviationFemtosMaximum - $squaredStandardDeviationFemtos);
 end
 
 rule "Region quantity maximum"
     when
         $region : Region($quantityMillisMaximum : quantityMillisMaximum)
-        $quantityMillisTotal : Number(longValue > $quantityMillisMaximum) from accumulate(
-            AssetClassAllocation(region == $region, quantityMillis != null, $quantityMillis : quantityMillis),
-            sum($quantityMillis)
+        accumulate(
+            AssetClassAllocation(region == $region, quantityMillis != null, $quantityMillis : quantityMillis);
+            $quantityMillisTotal : sum($quantityMillis);
+            $quantityMillisTotal > $quantityMillisMaximum
         )
     then
         scoreHolder.addHardConstraintMatch(kcontext,
-                $quantityMillisMaximum - $quantityMillisTotal.longValue());
+                $quantityMillisMaximum - $quantityMillisTotal);
 end
 
 rule "Sector quantity maximum"
     when
         $sector : Sector($quantityMillisMaximum : quantityMillisMaximum)
-        $quantityMillisTotal : Number(longValue > $quantityMillisMaximum) from accumulate(
-            AssetClassAllocation(sector == $sector, quantityMillis != null, $quantityMillis : quantityMillis),
-            sum($quantityMillis)
+        accumulate(
+            AssetClassAllocation(sector == $sector, quantityMillis != null, $quantityMillis : quantityMillis);
+            $quantityMillisTotal : sum($quantityMillis);
+            $quantityMillisTotal > $quantityMillisMaximum
         )
     then
         scoreHolder.addHardConstraintMatch(kcontext,
-                $quantityMillisMaximum - $quantityMillisTotal.longValue());
+                $quantityMillisMaximum - $quantityMillisTotal);
 end
 
 // ############################################################################

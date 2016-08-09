@@ -100,10 +100,11 @@ end
 rule "minimumWorkingDays"
     when
         $course : Course($minWorkingDaySize : minWorkingDaySize)
-        $dayCount : Long(this < $minWorkingDaySize) from accumulate(
+        accumulate(
             $day : Day()
-            and exists Lecture(course == $course, day == $day),
-            count($day)
+            and exists Lecture(course == $course, day == $day);
+            $dayCount : count($day);
+            $dayCount < $minWorkingDaySize
         )
         // An uninitialized schedule should have no constraints broken
         exists Lecture(course == $course, period != null)
@@ -138,10 +139,11 @@ end
 rule "roomStability"
     when
         $course : Course()
-        $roomCount : Long(this > 1) from accumulate(
+        accumulate(
             $room : Room()
-            and exists Lecture(course == $course, room == $room),
-            count($room)
+            and exists Lecture(course == $course, room == $room);
+            $roomCount : count($room);
+            $roomCount > 1
         )
     then
         scoreHolder.addSoftConstraintMatch(kcontext, -($roomCount.intValue() - 1));

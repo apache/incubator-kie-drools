@@ -42,22 +42,22 @@ rule "machineUsage"
     when
         $machineCapacity : MrMachineCapacity($machine : machine, $resource : resource)
         accumulate(
-                $processAssignment : MrProcessAssignment(machine == $machine),
+            $processAssignment : MrProcessAssignment(machine == $machine);
             $usageTotal : sum($processAssignment.getUsage($resource))
         )
     then
-        insertLogical(new MrMachineUsage($machineCapacity, $usageTotal.intValue()));
+        insertLogical(new MrMachineUsage($machineCapacity, $usageTotal));
 end
 rule "machineTransientUsage"
         salience 1 // Do these rules first (optional, for performance)
     when
         $machineCapacity : MrMachineCapacity(transientlyConsumed == true, $machine : machine, $resource : resource)
         accumulate(
-                $processAssignment : MrProcessAssignment(originalMachine == $machine, moved == true),
+            $processAssignment : MrProcessAssignment(originalMachine == $machine, moved == true);
             $usageTotal : sum($processAssignment.getUsage($resource))
         )
     then
-        insertLogical(new MrMachineTransientUsage($machineCapacity, $usageTotal.intValue()));
+        insertLogical(new MrMachineTransientUsage($machineCapacity, $usageTotal));
 end
 
 // ############################################################################
@@ -95,10 +95,11 @@ end
 rule "serviceLocationSpread"
     when
         $service : MrService($locationSpread : locationSpread)
-        $spreadCount : Long(this < $locationSpread) from accumulate(
-                $location : MrLocation()
-                and exists MrProcessAssignment(service == $service, location == $location),
-            count($location)
+        accumulate(
+            $location : MrLocation()
+            and exists MrProcessAssignment(service == $service, location == $location);
+            $spreadCount : count($location);
+            $spreadCount < $locationSpread
         )
     then
         scoreHolder.addHardConstraintMatch(kcontext, $spreadCount - $locationSpread);
@@ -156,7 +157,7 @@ rule "serviceMovedProcessesCount"
     when
         $service : MrService()
         accumulate(
-                $processAssignment : MrProcessAssignment(service == $service, moved == true),
+            $processAssignment : MrProcessAssignment(service == $service, moved == true);
             $movedProcessesCount : count($processAssignment)
         )
     then
