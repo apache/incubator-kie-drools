@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jbpm</groupId>
@@ -9,11 +9,11 @@
   <artifactId>jbpm-executor-ejb</artifactId>
   <name>jBPM :: Executor Service EJB add-ons</name>
 
-   <!--  skip tests from maven build for now as they require server installation -->
+  <!--  skip tests from maven build for now as they require server installation -->
   <properties>
-    <skipTests>true</skipTests>    
+    <skipTests>true</skipTests>
   </properties>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>
@@ -93,7 +93,7 @@
       <artifactId>jboss-jms-api_2.0_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- test -->
     <dependency>
       <groupId>org.jboss.weld.se</groupId>
@@ -195,26 +195,42 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
-    
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <finalName>executor-war</finalName>
-          <descriptors>
-            <descriptor>src/main/assembly/assembly-ejb-war.xml</descriptor>
-          </descriptors>
-        </configuration>
-      </plugin>
-    </plugins>
+
   </build>
+
+  <profiles>
+    <!-- Create the test WAR only in case we actually need it - when the tests are enabled -->
+    <profile>
+      <id>ejb-war</id>
+      <activation>
+        <property>
+          <name>skipTests</name>
+          <value>false</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <finalName>executor-war</finalName>
+              <descriptors>
+                <descriptor>src/main/assembly/assembly-ejb-war.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>

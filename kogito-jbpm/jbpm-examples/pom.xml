@@ -13,25 +13,6 @@
   <name>jBPM :: Examples</name>
   <description>Run JBPMExamplesApp to try the jBPM examples.</description>
 
-  <repositories>
-    <!-- TODO remove this once maven central replicates the jboss repository -->
-    <!-- Included so the examples sources in the distribution zip build out-of-the-box with maven -->
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <layout>default</layout>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-
   <build>
     <pluginManagement>
       <plugins>
@@ -68,7 +49,7 @@
         						</goals>
         					</pluginExecutionFilter>
         					<action>
-        						<ignore></ignore>
+        						<ignore/>
         					</action>
         				</pluginExecution>
         			</pluginExecutions>

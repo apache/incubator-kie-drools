@@ -21,8 +21,8 @@
 
   <properties>
     <!--
-     These are properties used in the database profiles. Some of them must be initialized
-     empty so that Maven applies them via filtering to the resources. 
+     These properties are used in the database profiles. Some of them must be initialized as empty strings
+     so that Maven applies them via filtering.
      -->
     <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
     <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
@@ -57,7 +57,7 @@
   </repositories>
 
   <scm>
-    <connection>scm:git:git@github.com:droolsjbpm/jbpm.git</connection>
+    <connection>scm:git:https://github.com:droolsjbpm/jbpm.git</connection>
     <developerConnection>scm:git:git@github.com:droolsjbpm/jbpm.git</developerConnection>
     <url>https://github.com/droolsjbpm/jbpm</url>
   </scm>
@@ -87,28 +87,12 @@
   </modules>
 
   <build>
-    <testResources>
-      <testResource>
-        <!-- TODO this overwrite is not normal -->
-        <directory>src/test/java</directory>
-      </testResource>
-      <testResource>
-        <directory>src/test/resources</directory>
-      </testResource>
-    </testResources>
      <pluginManagement>
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
-            <includes>
-              <include>**/*Test.java</include>
-            </includes>
-            <excludes>
-              <exclude>**/*AbstractTest.java</exclude>
-              <exclude>**/*JMS*Test.java</exclude>
-            </excludes>
             <additionalClasspathElements>
               <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
             </additionalClasspathElements>

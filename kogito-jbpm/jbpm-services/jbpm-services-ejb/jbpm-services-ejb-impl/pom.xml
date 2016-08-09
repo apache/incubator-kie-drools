@@ -165,28 +165,40 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <finalName>sample-war</finalName>
-          <descriptors>
-            <descriptor>src/main/assembly/assembly-ejb-war.xml</descriptor>
-          </descriptors>          
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+
+  <profiles>
+    <!-- Create the test WAR only in case we actually need it - when the tests are enabled -->
+    <profile>
+      <id>ejb-war</id>
+      <activation>
+        <property>
+          <name>skipTests</name>
+          <value>false</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <finalName>executor-war</finalName>
+              <descriptors>
+                <descriptor>src/main/assembly/assembly-ejb-war.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

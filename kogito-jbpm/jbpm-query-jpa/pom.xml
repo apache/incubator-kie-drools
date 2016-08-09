@@ -58,7 +58,7 @@
             <Import-Package>
               *
             </Import-Package>
-            <Private-Package></Private-Package>
+            <Private-Package/>
             <Export-Package>
                 org.jbpm.query.*,
             </Export-Package>

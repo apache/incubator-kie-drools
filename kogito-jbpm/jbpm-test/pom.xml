@@ -130,14 +130,6 @@
     </testResources>
     <plugins>  
       <plugin>
-      <!-- we need to fork always as we have mixture of both arquillian tests and regular 
-    and to avoid clashing between them as both need to setup data source and bound it to JNDI -->
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <forkMode>always</forkMode>
-        </configuration>
-      </plugin>   
-      <plugin>
         <!--  ensure that db/tx log files are deleted before runs -->
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>

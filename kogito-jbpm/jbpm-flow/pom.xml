@@ -67,7 +67,7 @@
                 org.jbpm.persistence.timer;resolution:=optional,
                 *
             </Import-Package>
-            <Private-Package></Private-Package>
+            <Private-Package/>
             <Export-Package>
                 org.jbpm.flow.util.*,
                 org.jbpm.marshalling.*,

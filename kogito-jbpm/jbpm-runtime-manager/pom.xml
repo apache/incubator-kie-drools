@@ -282,7 +282,7 @@
               org.eclipse.aether.artifact;resolution:=optional,
               org.xml.sax
             </Import-Package>
-            <Private-Package></Private-Package>
+            <Private-Package/>
             <Export-Package>
               org.jbpm.runtime.manager.api*,
               org.jbpm.runtime.manager.impl*
