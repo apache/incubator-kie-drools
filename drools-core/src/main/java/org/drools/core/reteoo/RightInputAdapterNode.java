@@ -30,10 +30,12 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.definition.rule.Rule;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +87,6 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleSource = source;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.startTupleSource = startTupleSource;
-        context.getPathEndNodes().add(this);
 
         hashcode = calculateHashCode();
     }
@@ -271,11 +272,8 @@ public class RightInputAdapterNode extends ObjectSource
 
     @Override
     protected boolean internalEquals( Object object ) {
-        if ( object == null || !(object instanceof RightInputAdapterNode) || this.hashCode() != object.hashCode() ) {
-            return false;
-        }
-
-        return this.tupleMemoryEnabled == ((RightInputAdapterNode)object).tupleMemoryEnabled;
+        return object instanceof RightInputAdapterNode && this.hashCode() == object.hashCode() &&
+               this.tupleMemoryEnabled == ( (RightInputAdapterNode) object ).tupleMemoryEnabled;
     }
 
     @Override
@@ -414,5 +412,24 @@ public class RightInputAdapterNode extends ObjectSource
 
     public LeftTupleSinkPropagator getSinkPropagator() {
         return EmptyLeftTupleSinkAdapter.getInstance();
+    }
+
+    @Override
+    public void addAssociation( BuildContext context, Rule rule ) {
+        super.addAssociation(context, rule);
+        context.addPathEndNode( this );
+    }
+
+    @Override
+    public boolean removeAssociation( Rule rule ) {
+        boolean result = super.associations.remove(rule);
+        List<PathEndNode> remainingPathNodes = new ArrayList<PathEndNode>();
+        for (PathEndNode pathEndNode : pathEndNodes) {
+            if (pathEndNode.getAssociationsSize() > 0) {
+                remainingPathNodes.add(pathEndNode);
+            }
+        }
+        pathEndNodes = remainingPathNodes.toArray( new PathEndNode[remainingPathNodes.size()] );
+        return result;
     }
 }

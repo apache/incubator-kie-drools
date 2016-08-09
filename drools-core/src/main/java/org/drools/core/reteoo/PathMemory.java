@@ -163,7 +163,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
         if ( agendaItem.getRule().isQuery() ) {
             wm.getAgenda().addQueryAgendaItem( agendaItem );
-        } else if ( agendaItem.getRule().isEager() && !isDataDriven() ) {
+        } else if ( agendaItem.getRule().isEager() ) {
             wm.getAgenda().addEagerRuleAgendaItem( agendaItem );
         }
     }
