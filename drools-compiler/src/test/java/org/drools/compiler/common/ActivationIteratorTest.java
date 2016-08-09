@@ -624,17 +624,17 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         String str = "package org.kie.test \n" +
                      "\n" +
                      "rule rule1 @Propagation(EAGER) when\n" +
-                     "    $s1 : Double() from accumulate( $i : Integer(), sum ( $i ) )    " +
+                     "    $s1 : Integer() from accumulate( $i : Integer(), sum ( $i ) )    " +
                      "then\n" +
                      "end\n" +
                      "rule rule2 @Propagation(EAGER) when\n" +
-                     "    $s1 : Double() from accumulate( $i : Integer(), sum ( $i ) )    " +
+                     "    $s1 : Integer() from accumulate( $i : Integer(), sum ( $i ) )    " +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
                      "end\n" +
                      "rule rule3  salience 10 when\n" +
                      "    eval( 1 == 1 ) \n" +
-                     "    $s1 : Double() from accumulate( $i : Integer(), sum ( $i ) )    " +
+                     "    $s1 : Integer() from accumulate( $i : Integer(), sum ( $i ) )    " +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
                      "    kcontext.getKieRuntime().halt();\n" +
@@ -658,7 +658,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isQueued() );
         }
 
-        assertContains( new String[]{"rule1:6.0:true", "rule2:6.0:true", "rule3:6.0:false"},
+        assertContains( new String[]{"rule1:6:true", "rule2:6:true", "rule3:6:false"},
                         list );
     }
 

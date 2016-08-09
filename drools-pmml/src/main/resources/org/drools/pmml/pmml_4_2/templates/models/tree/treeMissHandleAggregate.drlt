@@ -41,9 +41,10 @@ when
     $wgts : java.util.Map() from accumulate (
                  $key : String() from $keys
                  and
+                 // FIXME: DROOLS-1248
                  accumulate (
                          $pmap : java.util.Map() from $res.values(),
-                         $acc  : sumBD( $pmap.get( $key ) != null ? $pmap.get( $key ) : 0.0 )
+                         $acc  : sumBD( $pmap.get( $key ) != null ? java.math.BigDecimal.valueOf( (Double) $pmap.get( $key ) ) : java.math.BigDecimal.ZERO )
                      ),
                  init( java.util.Map mapp = new java.util.HashMap(); ),
                  action( mapp.put( $key, $acc.doubleValue() ); ),
@@ -65,7 +66,7 @@ then
     modify ( $tok ) {
         setOutcome( (@{ box( mapDatatype( tgtType ) ) }) $outcome ),
         setTotalCount( $tot ),
-        setConfidence( $maxConf.doubleValue() ),
+        setConfidence( (Double) $maxConf ),
         setCurrent( "null" );
     }
 end

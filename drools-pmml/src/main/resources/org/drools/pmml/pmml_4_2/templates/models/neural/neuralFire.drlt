@@ -35,7 +35,8 @@ when
                   )
     accumulate( $c : @{ pmmlPackageName }.Charge( context == @{ ctx }, index == $neur.index, $in : value ),
                 $list : collectList( $c ),
-                $val : sumBD( $in );
+                // FIXME: DROOLS-1248
+                $val : sumBD( java.math.BigDecimal.valueOf( $in ) );
                 $list.size() == $neur.fanIn )
 then
     double x = $neur.getBias() + $val.doubleValue();

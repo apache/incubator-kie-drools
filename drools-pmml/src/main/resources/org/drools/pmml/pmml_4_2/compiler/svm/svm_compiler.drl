@@ -70,7 +70,7 @@ then
             map.put( "svmId", utils.context + $info.indexOf( $svm ) );
             map.put( "absoluteValue", $bias );
             map.put( "indexes", $ix );
-            map.put( "maxIndex", $mX.intValue() );
+            map.put( "maxIndex", (Integer) $mX );
             map.put( "coeffs", $cx );
             map.put( "target", $target );
             map.put( "alt", $alt );

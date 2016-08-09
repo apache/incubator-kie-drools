@@ -35,7 +35,7 @@ when
                 $num : count( 1 ),
                 $max : max( $wgt ) )
 then
-    insertLogical( new @{context}SVMPoll_@{target}( $tgt, $num, $max.doubleValue() ) );
+    insertLogical( new @{context}SVMPoll_@{target}( $tgt, $num, (Double) $max ) );
 end
 
 rule "Sort @{context}"
@@ -43,7 +43,7 @@ rule "Sort @{context}"
 salience -2
 when
     accumulate( @{ pmmlPackageName }.@{context}SVMPoll_@{target}( $num : num ), $max : max( $num ) )
-    @{ pmmlPackageName }.@{context}SVMPoll_@{target}( num == $max.intValue(), $val : outcome, $wgt : weight )
+    @{ pmmlPackageName }.@{context}SVMPoll_@{target}( num == (Long) $max, $val : outcome, $wgt : weight )
 then
     @{ target } x = new @{ target }();
             x.setContext( "@{context}" );

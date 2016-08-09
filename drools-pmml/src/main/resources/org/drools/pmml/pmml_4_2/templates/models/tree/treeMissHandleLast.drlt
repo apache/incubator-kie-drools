@@ -44,7 +44,7 @@ then
     modify ( $tok ) {
         setOutcome( $out ),
         setTotalCount( $count ),
-        setConfidence( $maxConf.doubleValue() ),
+        setConfidence( (Double) $maxConf ),
         setCurrent( "null" );
     }
 end
