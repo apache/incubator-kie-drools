@@ -8614,4 +8614,312 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       afv0.getType() );
     }
 
+    @Test
+    public void actionUpdateFieldWithFormula() throws Exception {
+        String drl = "package org.mortgages;\n"
+                + "rule \"r1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "$a : Application()\n"
+                + "then\n"
+                + "modify( $a ) {\n"
+                + "  setName( \"Pupa\" + 20 + \"Smurf\" )"
+                + "}\n"
+                + "end";
+
+        addModelField( "org.mortgages.Applicant",
+                       "this",
+                       "org.mortgages.Applicant",
+                       DataType.TYPE_THIS );
+        addModelField( "org.mortgages.Applicant",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.mortgages" );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.emptyList(),
+                                                                           dmo );
+
+        assertNotNull( m );
+        assertEquals( "r1",
+                      m.name );
+
+        //LHS Pattern
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Application",
+                      fp.getFactType() );
+        assertEquals( 0,
+                      fp.getNumberOfConstraints() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+
+        assertTrue( m.rhs[ 0 ] instanceof ActionUpdateField );
+        ActionUpdateField auf = (ActionUpdateField) m.rhs[ 0 ];
+        assertEquals( "$a",
+                      auf.getVariable() );
+        assertEquals( 1,
+                      auf.getFieldValues().length );
+        ActionFieldValue afv0 = auf.getFieldValues()[ 0 ];
+        assertEquals( "name",
+                      afv0.getField() );
+        assertEquals( "\"Pupa\" + 20 + \"Smurf\"",
+                      afv0.getValue() );
+        assertEquals( FieldNatureType.TYPE_FORMULA,
+                      afv0.getNature() );
+    }
+
+    @Test
+    public void actionUpdateFieldWithFormulaNotEndWithString() throws Exception {
+        String drl = "package org.mortgages;\n"
+                + "rule \"r1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "$a : Application()\n"
+                + "then\n"
+                + "modify( $a ) {\n"
+                + "  setName( \"Pupa\" + 20 )"
+                + "}\n"
+                + "end";
+
+        addModelField( "org.mortgages.Applicant",
+                       "this",
+                       "org.mortgages.Applicant",
+                       DataType.TYPE_THIS );
+        addModelField( "org.mortgages.Applicant",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.mortgages" );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.emptyList(),
+                                                                           dmo );
+
+        assertNotNull( m );
+        assertEquals( "r1",
+                      m.name );
+
+        //LHS Pattern
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Application",
+                      fp.getFactType() );
+        assertEquals( 0,
+                      fp.getNumberOfConstraints() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+
+        assertTrue( m.rhs[ 0 ] instanceof ActionUpdateField );
+        ActionUpdateField auf = (ActionUpdateField) m.rhs[ 0 ];
+        assertEquals( "$a",
+                      auf.getVariable() );
+        assertEquals( 1,
+                      auf.getFieldValues().length );
+        ActionFieldValue afv0 = auf.getFieldValues()[ 0 ];
+        assertEquals( "name",
+                      afv0.getField() );
+        assertEquals( "\"Pupa\" + 20",
+                      afv0.getValue() );
+        assertEquals( FieldNatureType.TYPE_FORMULA,
+                      afv0.getNature() );
+    }
+
+    @Test
+    public void actionUpdateFieldWithFormulaWithEscapedQuote() throws Exception {
+        String drl = "package org.mortgages;\n"
+                + "rule \"r1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "$a : Application()\n"
+                + "then\n"
+                + "modify( $a ) {\n"
+                + "  setName( \"Pupa \\\"\" + 20 + \"\\\" Smurf\" )"
+                + "}\n"
+                + "end";
+
+        addModelField( "org.mortgages.Applicant",
+                       "this",
+                       "org.mortgages.Applicant",
+                       DataType.TYPE_THIS );
+        addModelField( "org.mortgages.Applicant",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.mortgages" );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.emptyList(),
+                                                                           dmo );
+
+        assertNotNull( m );
+        assertEquals( "r1",
+                      m.name );
+
+        //LHS Pattern
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Application",
+                      fp.getFactType() );
+        assertEquals( 0,
+                      fp.getNumberOfConstraints() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+
+        assertTrue( m.rhs[ 0 ] instanceof ActionUpdateField );
+        ActionUpdateField auf = (ActionUpdateField) m.rhs[ 0 ];
+        assertEquals( "$a",
+                      auf.getVariable() );
+        assertEquals( 1,
+                      auf.getFieldValues().length );
+        ActionFieldValue afv0 = auf.getFieldValues()[ 0 ];
+        assertEquals( "name",
+                      afv0.getField() );
+        assertEquals( "\"Pupa \\\"\" + 20 + \"\\\" Smurf\"",
+                      afv0.getValue() );
+        assertEquals( FieldNatureType.TYPE_FORMULA,
+                      afv0.getNature() );
+    }
+
+    @Test
+    public void actionSetFieldWithFormula() throws Exception {
+        String drl = "package org.mortgages;\n"
+                + "rule \"r1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "$a : Application()\n"
+                + "then\n"
+                + "$a.setName( \"Pupa\" + 20 + \"Smurf\" );"
+                + "end";
+
+        addModelField( "org.mortgages.Applicant",
+                       "this",
+                       "org.mortgages.Applicant",
+                       DataType.TYPE_THIS );
+        addModelField( "org.mortgages.Applicant",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.mortgages" );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.emptyList(),
+                                                                           dmo );
+
+        assertNotNull( m );
+        assertEquals( "r1",
+                      m.name );
+
+        //LHS Pattern
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Application",
+                      fp.getFactType() );
+        assertEquals( 0,
+                      fp.getNumberOfConstraints() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+
+        assertTrue( m.rhs[ 0 ] instanceof ActionSetField );
+        ActionSetField asf = (ActionSetField) m.rhs[ 0 ];
+        assertEquals( "$a",
+                      asf.getVariable() );
+        assertEquals( 1,
+                      asf.getFieldValues().length );
+        ActionFieldValue afv0 = asf.getFieldValues()[ 0 ];
+        assertEquals( "name",
+                      afv0.getField() );
+        assertEquals( "\"Pupa\" + 20 + \"Smurf\"",
+                      afv0.getValue() );
+        assertEquals( FieldNatureType.TYPE_FORMULA,
+                      afv0.getNature() );
+    }
+
+    @Test
+    public void actionInsertFactWithFormula() throws Exception {
+        String drl = "package org.mortgages;\n"
+                + "rule \"r1\"\n"
+                + "dialect \"mvel\"\n"
+                + "when\n"
+                + "$a : Application()\n"
+                + "then\n"
+                + "Applicant $a = new Applicant();\n"
+                + "$a.setName( \"Pupa\" + 20 + \"Smurf\" );\n"
+                + "insert( $a );\n"
+                + "end";
+
+        addModelField( "org.mortgages.Applicant",
+                       "this",
+                       "org.mortgages.Applicant",
+                       DataType.TYPE_THIS );
+        addModelField( "org.mortgages.Applicant",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.mortgages" );
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.emptyList(),
+                                                                           dmo );
+
+        assertNotNull( m );
+        assertEquals( "r1",
+                      m.name );
+
+        //LHS Pattern
+        assertEquals( 1,
+                      m.lhs.length );
+        IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+
+        FactPattern fp = (FactPattern) p;
+        assertEquals( "Application",
+                      fp.getFactType() );
+        assertEquals( 0,
+                      fp.getNumberOfConstraints() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+
+        assertTrue( m.rhs[ 0 ] instanceof ActionInsertFact );
+        ActionInsertFact aif = (ActionInsertFact) m.rhs[ 0 ];
+        assertEquals( "$a",
+                      aif.getBoundName() );
+        assertEquals( 1,
+                      aif.getFieldValues().length );
+        ActionFieldValue afv0 = aif.getFieldValues()[ 0 ];
+        assertEquals( "name",
+                      afv0.getField() );
+        assertEquals( "\"Pupa\" + 20 + \"Smurf\"",
+                      afv0.getValue() );
+        assertEquals( FieldNatureType.TYPE_FORMULA,
+                      afv0.getNature() );
+    }
+
 }
