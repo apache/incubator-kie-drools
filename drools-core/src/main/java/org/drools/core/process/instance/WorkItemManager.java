@@ -19,26 +19,47 @@ package org.drools.core.process.instance;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.core.WorkItemHandlerNotFoundException;
+import org.drools.core.command.runtime.process.GetWorkItemIdsCommand;
+
 public interface WorkItemManager extends org.kie.api.runtime.process.WorkItemManager {
 
     void internalExecuteWorkItem(WorkItem workItem);
 
     void internalAddWorkItem(WorkItem workItem);
 
+    /**
+     * This method is called by the jBPM engine when cancelling a WorkItemNodeInstance
+     * @param id
+     */
     void internalAbortWorkItem(long id);
-    
+
+    /**
+     * This method does (really) not seem to be used anywhere -- and is also *not* implemented by the
+     * JPAWorkItemManager. The one exception is the {@link GetWorkItemIdsCommand} command -- however, this is also
+     * not used anywhere.
+     * </p>
+     * @return A set of the current {@link WorkItem}s
+     */
+    @Deprecated
     Set<WorkItem> getWorkItems();
 
     WorkItem getWorkItem(long id);
 
+    /**
+     * This deletes all work items from the {@link WorkItemManager}'s cache
+     */
     void clear();
-    
+
     public void signalEvent(String type, Object event);
-    
+
     public void signalEvent(String type, Object event, long processInstanceId);
 
     void dispose();
-    
+
     void retryWorkItem( Long workItemID, Map<String, Object> params ) ;
 
+    default void throwWorkItemHandlerNotFoundException( WorkItem workItem ) {
+        throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(), workItem.getName() );
+    }
 }

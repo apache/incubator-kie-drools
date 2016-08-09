@@ -37,9 +37,9 @@ import java.util.Set;
 
 public class JPAWorkItemManager implements WorkItemManager {
 
-    private InternalKnowledgeRuntime kruntime;
+    protected InternalKnowledgeRuntime kruntime;
     private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
-    private transient Map<Long, WorkItemInfo> workItems;
+    protected transient Map<Long, WorkItemInfo> workItems;
     private transient volatile boolean pessimisticLocking;
 
     public JPAWorkItemManager(InternalKnowledgeRuntime kruntime) {
@@ -68,13 +68,8 @@ public class JPAWorkItemManager implements WorkItemManager {
         if ( handler != null ) {
             handler.executeWorkItem( workItem, this );
         } else {
-            throwWorkItemNotFoundException( workItem );
+            throwWorkItemHandlerNotFoundException( workItem );
         }
-    }
-
-    private void throwWorkItemNotFoundException( WorkItem workItem ) {
-        throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                workItem.getName() );
     }
 
     public WorkItemHandler getWorkItemHandler( String name ) {
@@ -104,11 +99,15 @@ public class JPAWorkItemManager implements WorkItemManager {
             if ( handler != null ) {
                 handler.executeWorkItem( workItem, this );
             } else {
-                throwWorkItemNotFoundException( workItem );
+                throwWorkItemHandlerNotFoundException( workItem );
             }
         }
     }
 
+    /**
+     * This method is called by jBPM when WorkItemNodeInstances are cancelled
+     */
+    @Override
     public void internalAbortWorkItem( long id ) {
         PersistenceContext context = getPersistenceContext();
 
@@ -116,19 +115,22 @@ public class JPAWorkItemManager implements WorkItemManager {
         // work item may have been aborted
         if ( workItemInfo != null ) {
             WorkItemImpl workItem = (WorkItemImpl) internalGetWorkItem( workItemInfo );
+
             WorkItemHandler handler = (WorkItemHandler) this.workItemHandlers.get( workItem.getName() );
-            if ( handler != null ) {
-                handler.abortWorkItem( workItem, this );
-            } else {
-                if ( workItems != null ) {
-                    workItems.remove( id );
-                    throwWorkItemNotFoundException( workItem );
-                }
-            }
-            if ( workItems != null ) {
-                workItems.remove( id );
-            }
-            context.remove( workItemInfo );
+            internalAbortAndRemoveWorkItem(handler, workItemInfo, workItem);
+        }
+    }
+
+    /**
+     * This method is overridden by the jBPM WorkItemManager implementation
+     */
+    protected void internalAbortAndRemoveWorkItem( WorkItemHandler handler, WorkItemInfo workItemInfo, WorkItem workItem ) {
+        if ( handler != null ) {
+            handler.abortWorkItem( workItem, this );
+        }
+        removeWorkItem(workItemInfo, workItem.getId());
+        if( workItems != null && handler == null ) {
+            throwWorkItemHandlerNotFoundException( workItem );
         }
     }
 
@@ -141,66 +143,49 @@ public class JPAWorkItemManager implements WorkItemManager {
     public void internalAddWorkItem( WorkItem workItem ) {
     }
 
-    public void completeWorkItem( long id, Map<String, Object> results ) {
-        PersistenceContext context = getPersistenceContext();
-
-        WorkItemInfo workItemInfo = null;
-        if ( this.workItems != null ) {
-            workItemInfo = this.workItems.get( id );
-            if ( workItemInfo != null ) {
-                workItemInfo = context.merge( workItemInfo );
-            }
-        }
-
-        if ( workItemInfo == null ) {
-            workItemInfo = context.findWorkItemInfo( id );
-        }
+    public void completeWorkItem(long id, Map<String, Object> results) {
+        WorkItemInfo workItemInfo = getWorkItemInfo(id);
 
         // work item may have been aborted
-        if ( workItemInfo != null ) {
-            WorkItem workItem = internalGetWorkItem( workItemInfo );
-            workItem.setResults( results );
-            ProcessInstance processInstance = kruntime.getProcessInstance( workItem.getProcessInstanceId() );
-            workItem.setState( WorkItem.COMPLETED );
-            // process instance may have finished already
-            if ( processInstance != null ) {
-                processInstance.signalEvent( "workItemCompleted", workItem );
-            }
-            context.remove( workItemInfo );
-            if ( workItems != null ) {
-                this.workItems.remove( workItem.getId() );
-            }
+        if (workItemInfo != null) {
+            WorkItem workItem = internalGetWorkItem(workItemInfo);
+            workItem.setResults(results);
+            workItem.setState(WorkItem.COMPLETED);
+
+            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
+            signalEventAndRemoveWorkItem(processInstance, "workItemCompleted", workItem, workItemInfo);
         }
     }
 
-    public void abortWorkItem( long id ) {
-        PersistenceContext context = getPersistenceContext();
-
-        WorkItemInfo workItemInfo = null;
-        if ( this.workItems != null ) {
-            workItemInfo = this.workItems.get( id );
-            if ( workItemInfo != null ) {
-                workItemInfo = context.merge( workItemInfo );
-            }
-        }
-
-        if ( workItemInfo == null ) {
-            workItemInfo = context.findWorkItemInfo( id );
-        }
+    public void abortWorkItem(long id) {
+        WorkItemInfo workItemInfo = getWorkItemInfo(id);
 
         // work item may have been aborted
-        if ( workItemInfo != null ) {
-            WorkItem workItem = (WorkItemImpl) internalGetWorkItem( workItemInfo );
-            ProcessInstance processInstance = kruntime.getProcessInstance( workItem.getProcessInstanceId() );
-            workItem.setState( WorkItem.ABORTED );
-            // process instance may have finished already
-            if ( processInstance != null ) {
-                processInstance.signalEvent( "workItemAborted", workItem );
-            }
-            context.remove( workItemInfo );
-            if ( workItems != null ) {
-                workItems.remove( workItem.getId() );
-            }
+        if (workItemInfo != null) {
+            WorkItem workItem = (WorkItemImpl) internalGetWorkItem(workItemInfo);
+            workItem.setState(WorkItem.ABORTED);
+
+            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
+            signalEventAndRemoveWorkItem(processInstance, "workItemAborted", workItem, workItemInfo);
+        }
+    }
+
+    /**
+     * This method is overridden by the jBPM WorkItemManager implementation
+     */
+    protected void signalEventAndRemoveWorkItem(ProcessInstance processInstance, String event, WorkItem workItem, WorkItemInfo workItemInfo) {
+        // process instance may have finished already
+        if (processInstance != null) {
+            processInstance.signalEvent(event, workItem);
+        }
+        removeWorkItem(workItemInfo, workItem.getId());
+    }
+
+    protected void removeWorkItem(WorkItemInfo workItemInfo, long workItemId) {
+        PersistenceContext context = getPersistenceContext();
+        context.remove(workItemInfo);
+        if (workItems != null) {
+            workItems.remove(workItemId);
         }
     }
 
@@ -226,34 +211,53 @@ public class JPAWorkItemManager implements WorkItemManager {
         return internalGetWorkItem( workItemInfo );
     }
 
-    private WorkItem internalGetWorkItem( WorkItemInfo workItemInfo ) {
+    protected WorkItemInfo getWorkItemInfo(long id) {
+        Environment env = this.kruntime.getEnvironment();
+        PersistenceContext context = ((PersistenceContextManager) env.get( EnvironmentName.PERSISTENCE_CONTEXT_MANAGER )).getCommandScopedPersistenceContext();
+
+        WorkItemInfo workItemInfo = null;
+        if (this.workItems != null) {
+            workItemInfo = this.workItems.get(id);
+            if (workItemInfo != null) {
+                workItemInfo = context.merge(workItemInfo);
+            }
+        }
+
+        if (workItemInfo == null) {
+            workItemInfo = context.findWorkItemInfo( id );
+        }
+        return workItemInfo;
+    }
+
+    protected WorkItem internalGetWorkItem( WorkItemInfo workItemInfo ) {
         Environment env = kruntime.getEnvironment();
         WorkItem workItem = workItemInfo.getWorkItem( env, (InternalKnowledgeBase) kruntime.getKieBase() );
         return workItem;
     }
 
+    @Override
     public Set<WorkItem> getWorkItems() {
         return new HashSet<WorkItem>();
     }
 
+    @Override
     public void registerWorkItemHandler( String workItemName, WorkItemHandler handler ) {
         this.workItemHandlers.put( workItemName, handler );
     }
 
-    public void clearWorkItems() {
+    @Override
+    public void clear() {
         if ( workItems != null ) {
             workItems.clear();
         }
     }
 
-    public void clear() {
-        clearWorkItems();
-    }
-
+    @Override
     public void signalEvent( String type, Object event ) {
         this.kruntime.signalEvent( type, event );
     }
 
+    @Override
     public void signalEvent( String type, Object event, long processInstanceId ) {
         this.kruntime.signalEvent( type, event, processInstanceId );
     }

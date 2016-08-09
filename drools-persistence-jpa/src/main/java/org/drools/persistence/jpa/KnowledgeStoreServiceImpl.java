@@ -20,6 +20,7 @@ import org.drools.core.command.CommandService;
 import org.drools.core.command.EntryPointCreator;
 import org.drools.core.command.impl.CommandBasedEntryPoint;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.drools.core.process.instance.WorkItemManagerFactory;
@@ -52,7 +53,9 @@ public class KnowledgeStoreServiceImpl
     protected void setDefaultImplementations() {
         setCommandServiceClass( SingleSessionCommandService.class );
         setProcessInstanceManagerFactoryClass( "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory" );
-        setWorkItemManagerFactoryClass( JPAWorkItemManagerFactory.class );
+        setWorkItemManagerFactoryClass(
+                "org.jbpm.persistence.processinstance.JPAProcessInstanceWorkItemManagerFactory",
+                JPAWorkItemManagerFactory.class.getCanonicalName() );
         setProcessSignalManagerFactoryClass( "org.jbpm.persistence.processinstance.JPASignalManagerFactory" );
     }
 
@@ -218,11 +221,22 @@ public class KnowledgeStoreServiceImpl
                          processInstanceManagerFactoryClass );
     }
 
-    public void setWorkItemManagerFactoryClass(Class< ? extends WorkItemManagerFactory> workItemManagerFactoryClass) {
-        if ( workItemManagerFactoryClass != null ) {
-            this.workItemManagerFactoryClass = workItemManagerFactoryClass;
-            configProps.put( "drools.workItemManagerFactory",
-                             workItemManagerFactoryClass.getName() );
+    public void setWorkItemManagerFactoryClass( String jbpmClassName, String droolsClassName ) {
+        ClassLoader classLoader = ProjectClassLoader.getClassLoader(null, getClass(), false);
+
+        Class<WorkItemManagerFactory> clazz = null;
+        try {
+            clazz = (Class<WorkItemManagerFactory>) classLoader.loadClass( jbpmClassName );
+        } catch ( ClassNotFoundException e ) {
+            try {
+                clazz = (Class<WorkItemManagerFactory>) classLoader.loadClass( droolsClassName );
+            } catch ( ClassNotFoundException e2 ) {
+            }
+        }
+
+        if ( clazz != null ) {
+            this.workItemManagerFactoryClass = clazz;
+            configProps.put( "drools.workItemManagerFactory", workItemManagerFactoryClass.getName() );
         }
     }
 
