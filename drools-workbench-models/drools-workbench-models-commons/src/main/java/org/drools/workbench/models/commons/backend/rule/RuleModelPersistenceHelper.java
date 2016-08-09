@@ -119,7 +119,7 @@ class RuleModelPersistenceHelper {
             }
 
         } else if ( DataType.TYPE_STRING.equals( dataType ) ) {
-            if ( value.startsWith( "\"" ) ) {
+            if ( isStringLiteral( value ) ) {
                 return FieldNatureType.TYPE_LITERAL;
             } else {
                 return FieldNatureType.TYPE_FORMULA;
@@ -204,6 +204,34 @@ class RuleModelPersistenceHelper {
         }
 
         return nature;
+    }
+
+    private static boolean isStringLiteral( final String value ) {
+        boolean escape = false;
+        boolean inString = false;
+        for ( char c : value.toCharArray() ) {
+            if ( escape ) {
+                escape = false;
+                continue;
+            }
+            if ( !inString ) {
+                if ( !( c == ' ' || c == '\t' || c == '"' ) ) {
+                    return false;
+                }
+            }
+            if ( c == '"' ) {
+                if ( inString ) {
+                    inString = false;
+                } else {
+                    inString = true;
+                }
+            } else if ( c == '\\' ) {
+                escape = true;
+            } else {
+                escape = false;
+            }
+        }
+        return true;
     }
 
     static ModelField[] findFields( final RuleModel m,
