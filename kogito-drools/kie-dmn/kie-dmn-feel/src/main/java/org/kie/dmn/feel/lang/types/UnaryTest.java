@@ -16,14 +16,9 @@
 
 package org.kie.dmn.feel.lang.types;
 
-import org.kie.dmn.feel.lang.Scope;
+import java.util.function.Function;
 
-public class LocalScope extends BaseScope {
+@FunctionalInterface
+public interface UnaryTest extends Function<Object, Boolean> {
 
-    public LocalScope() {
-    }
-
-    public LocalScope(String name, Scope parentScope) {
-        super( name, parentScope );
-    }
 }

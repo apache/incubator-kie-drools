@@ -17,7 +17,7 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.util.EvalHelper;
 
 public class StringNode
@@ -28,7 +28,7 @@ public class StringNode
     }
 
     @Override
-    public Object evaluate(EvaluationContextImpl ctx) {
+    public Object evaluate(EvaluationContext ctx) {
         return EvalHelper.stripQuotes( getText() );
     }
 }

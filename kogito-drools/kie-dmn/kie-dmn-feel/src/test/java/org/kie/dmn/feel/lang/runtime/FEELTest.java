@@ -16,13 +16,16 @@
 
 package org.kie.dmn.feel.lang.runtime;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.feel.lang.types.UnaryTest;
+import sun.jvm.hotspot.types.basic.BasicOopField;
 
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.is;
 
 import java.math.BigDecimal;
 import java.time.*;
@@ -43,7 +46,7 @@ public class FEELTest {
                 { "false", EMPTY_INPUT, Boolean.FALSE },
                 // dash is an unary test that always matches, so for now, returning true.
                 // have to double check to know if this is not the case
-                { "-", EMPTY_INPUT, Boolean.TRUE },
+                { "-", EMPTY_INPUT, UnaryTest.class },
                 { "50", EMPTY_INPUT, new BigDecimal( "50" ) },
                 { "-50", EMPTY_INPUT, new BigDecimal( "-50" ) },
                 { "50.872", EMPTY_INPUT, new BigDecimal( "50.872" ) },
@@ -198,6 +201,35 @@ public class FEELTest {
                 { "\"foo\" between null and \"zap\"", EMPTY_INPUT, null },
                 { "date(\"2016-08-02\") between date(\"2016-01-01\") and date(\"2016-12-31\")", EMPTY_INPUT, Boolean.TRUE },
 
+                // lists
+                { "[ 5, 10+2, \"foo\"+\"bar\", true ]", EMPTY_INPUT, Arrays.asList( BigDecimal.valueOf( 5 ), BigDecimal.valueOf( 12 ), "foobar", Boolean.TRUE ) },
+
+                // in operator
+                { "10 in ( 3, 5*2, 20 )", EMPTY_INPUT, Boolean.TRUE },
+                { "null in ( 10, \"foo\", null )", EMPTY_INPUT, Boolean.TRUE },
+                { "\"foo\" in ( \"bar\", \"baz\" )", EMPTY_INPUT, Boolean.FALSE },
+                { "\"foo\" in null", EMPTY_INPUT, null },
+                { "\"foo\" in ( 10, false, \"foo\" )", EMPTY_INPUT, Boolean.TRUE },
+                { "10 in < 20", EMPTY_INPUT, Boolean.TRUE },
+                { "10 in ( > 50, < 5 )", EMPTY_INPUT, Boolean.FALSE },
+                { "10 in ( > 5, < -40 )", EMPTY_INPUT, Boolean.TRUE },
+                { "null in ( > 20, null )", EMPTY_INPUT, Boolean.TRUE },
+                { "null in -", EMPTY_INPUT, Boolean.TRUE },
+                { "10 in [5..20]", EMPTY_INPUT, Boolean.TRUE },
+                { "10 in [10..20)", EMPTY_INPUT, Boolean.TRUE },
+                { "10 in (10..20)", EMPTY_INPUT, Boolean.FALSE },
+                { "10 in (5..10)", EMPTY_INPUT, Boolean.FALSE },
+                { "10 in ]5..10[", EMPTY_INPUT, Boolean.FALSE },
+                { "10 in (5..10]", EMPTY_INPUT, Boolean.TRUE },
+                { "\"b\" in (\"a\"..\"z\"]", EMPTY_INPUT, Boolean.TRUE },
+
+                // quantified expressions
+                { "some price in [ 80, 11, 110 ] satisfies price > 100", EMPTY_INPUT, Boolean.TRUE },
+                { "some price in [ 80, 11, 90 ] satisfies price > 100", EMPTY_INPUT, Boolean.FALSE },
+                { "every price in [ 80, 11, 90 ] satisfies price > 10", EMPTY_INPUT, Boolean.TRUE },
+
+
+
 
 
 
@@ -219,7 +251,9 @@ public class FEELTest {
     @Test
     public void testExpression() {
         if( result == null ) {
-            assertThat( "Evaluating: '"+expression+"'", FEEL.evaluate( expression, inputVariables ), is( nullValue() ) );
+            assertThat( "Evaluating: '" + expression + "'", FEEL.evaluate( expression, inputVariables ), is( nullValue() ) );
+        } else if( result instanceof Class<?> ) {
+            assertThat( "Evaluating: '" + expression + "'", FEEL.evaluate( expression, inputVariables ), is( instanceOf( (Class<?>) result ) ) );
         } else {
             assertThat( "Evaluating: '"+expression+"'", FEEL.evaluate( expression, inputVariables ), is( result ) );
         }

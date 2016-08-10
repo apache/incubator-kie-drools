@@ -17,6 +17,10 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.types.UnaryTest;
+
+import java.util.Collection;
 
 public class InNode
         extends BaseNode {
@@ -44,5 +48,41 @@ public class InNode
 
     public void setExprs(BaseNode exprs) {
         this.exprs = exprs;
+    }
+
+    @Override
+    public Boolean evaluate(EvaluationContext ctx) {
+        Object value = this.value.evaluate( ctx );
+        Object expr = this.exprs.evaluate( ctx );
+        if ( expr != null ) {
+            if ( expr instanceof Collection ) {
+                // evaluate in the collection
+                for ( Object e : ((Collection) expr) ) {
+                    // have to compare to Boolean.TRUE because in() might return null
+                    if ( in( value, e ) == Boolean.TRUE ) {
+                        return true;
+                    }
+                }
+                return false;
+            } else {
+                // evaluate single entity
+                return in( value, expr );
+            }
+        }
+        return null;
+    }
+
+    private Boolean in(Object value, Object expr) {
+        // need to improve this to work with unary tests
+        if ( expr == null ) {
+            return value == expr;
+        } else if ( expr instanceof UnaryTest ) {
+            return ((UnaryTest) expr).apply( value );
+        } else if ( value != null ) {
+            return value.equals( expr );
+        } else {
+            // value == null, expr != null and not Unary test
+            return Boolean.FALSE;
+        }
     }
 }

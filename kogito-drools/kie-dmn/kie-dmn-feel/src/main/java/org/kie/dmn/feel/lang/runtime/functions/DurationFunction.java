@@ -28,6 +28,10 @@ import java.time.temporal.TemporalAmount;
 public class DurationFunction
         extends BaseFEELFunction {
 
+    public DurationFunction() {
+        super( "duration" );
+    }
+
     public TemporalAmount apply(String val) {
         if ( val != null ) {
             try {
@@ -46,8 +50,4 @@ public class DurationFunction
         return null;
     }
 
-    @Override
-    public String getName() {
-        return "duration";
-    }
 }

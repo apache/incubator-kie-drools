@@ -17,9 +17,12 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ListNode
         extends BaseNode {
@@ -42,5 +45,10 @@ public class ListNode
 
     public void setElements(List<BaseNode> elements) {
         this.elements = elements;
+    }
+
+    @Override
+    public Object evaluate(EvaluationContext ctx) {
+        return elements.stream().map( e -> e != null ? e.evaluate( ctx ) : null ).collect( Collectors.toList() );
     }
 }

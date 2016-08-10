@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.types;
+package org.kie.dmn.feel.lang.runtime.functions;
 
-import org.kie.dmn.feel.lang.Scope;
+public class DecisionTableFunction
+        extends BaseFEELFunction {
 
-public class BuiltInScope extends BaseScope {
-
-    public BuiltInScope() {
-        super( Scope.BUILT_IN, null);
+    public DecisionTableFunction() {
+        super( "decision table" );
     }
+
 }

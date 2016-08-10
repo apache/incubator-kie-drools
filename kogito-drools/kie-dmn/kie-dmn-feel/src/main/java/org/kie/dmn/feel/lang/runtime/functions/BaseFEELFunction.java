@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
+import org.kie.dmn.feel.lang.Symbol;
+import org.kie.dmn.feel.lang.types.FunctionSymbol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +28,24 @@ import java.util.stream.Stream;
 public abstract class BaseFEELFunction implements FEELFunction {
 
     private final Logger logger = LoggerFactory.getLogger( getClass() );
+
+    private String name;
+    private Symbol symbol;
+
+    public BaseFEELFunction( String name ) {
+        this.name = name;
+        this.symbol = new FunctionSymbol( name, this );
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Symbol getSymbol() {
+        return symbol;
+    }
 
     // TODO: can this method be improved somehow??
     @Override
@@ -63,4 +83,5 @@ public abstract class BaseFEELFunction implements FEELFunction {
         }
         return null;
     }
+
 }

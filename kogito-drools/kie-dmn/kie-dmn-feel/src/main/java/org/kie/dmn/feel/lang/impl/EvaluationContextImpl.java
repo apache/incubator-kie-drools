@@ -16,29 +16,34 @@
 
 package org.kie.dmn.feel.lang.impl;
 
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.lang.runtime.functions.BuiltInFunctions;
+import org.kie.dmn.feel.lang.runtime.functions.FEELFunction;
 import org.kie.dmn.feel.lang.types.SymbolTable;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-public class EvaluationContextImpl {
+public class EvaluationContextImpl implements EvaluationContext {
 
-    private final SymbolTable   symbols;
     private       Stack<ExecutionFrame> stack;
 
-    public EvaluationContextImpl(SymbolTable symbols) {
-        this.symbols = symbols;
+    public EvaluationContextImpl() {
         this.stack = new Stack<>();
-        ExecutionFrame rootFrame = new ExecutionFrame( null, symbols, symbols.getGlobalScope() );
+        // we create a rootFrame to hold all the built in functions
+        ExecutionFrame rootFrame = new ExecutionFrame( null );
+        for( FEELFunction f : BuiltInFunctions.getFunctions() ) {
+            rootFrame.setValue( f.getName(), f );
+        }
         push( rootFrame );
-    }
-
-    public SymbolTable getSymbols() {
-        return symbols;
+        // and then create a global frame to be the starting frame
+        // for function evaluation
+        ExecutionFrame global = new ExecutionFrame( rootFrame );
+        push( global );
     }
 
     public void push(ExecutionFrame obj) {
@@ -57,21 +62,29 @@ public class EvaluationContextImpl {
         return this.stack;
     }
 
-    public void enterScope( String scopeName ) {
-        Scope scope = peek().getCurrentScope().getChildScopes().get( scopeName );
-        push( new ExecutionFrame( peek(), symbols, scope ) );
+    @Override
+    public void enterFrame() {
+        push( new ExecutionFrame( peek() /*, symbols, scope*/ ) );
     }
 
-    public void exitScope() {
+    @Override
+    public void exitFrame() {
         pop();
     }
 
-    public Symbol resolveSymbol( String name ) {
-        return peek().getCurrentScope().resolve( name );
+    @Override
+    public void setValue(String name, Object value) {
+        peek().setValue( name, value );
     }
 
-    public Symbol resolveSymbol( String[] name ) {
-        return peek().getCurrentScope().resolve( name );
+    @Override
+    public Object getValue(String name) {
+        return peek().getValue( name );
+    }
+
+    @Override
+    public Object getValue(String[] name) {
+        return peek().getValue( name );
     }
 
 }

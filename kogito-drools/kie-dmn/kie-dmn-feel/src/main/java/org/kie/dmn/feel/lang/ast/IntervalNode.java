@@ -17,6 +17,8 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.types.UnaryTest;
 
 public class IntervalNode
         extends BaseNode {
@@ -27,8 +29,8 @@ public class IntervalNode
 
     private IntervalBoundary lowerBound;
     private IntervalBoundary upperBound;
-    private BaseNode start;
-    private BaseNode end;
+    private BaseNode         start;
+    private BaseNode         end;
 
     public IntervalNode(ParserRuleContext ctx, IntervalBoundary lowerBound, BaseNode start, BaseNode end, IntervalBoundary upperBound) {
         super( ctx );
@@ -68,5 +70,22 @@ public class IntervalNode
 
     public void setEnd(BaseNode end) {
         this.end = end;
+    }
+
+    @Override
+    public UnaryTest evaluate(EvaluationContext ctx) {
+        Comparable s = (Comparable) start.evaluate( ctx );
+        Comparable e = (Comparable) end.evaluate( ctx );
+
+        if ( lowerBound == IntervalBoundary.OPEN && upperBound == IntervalBoundary.OPEN ) {
+            return o -> o == null || s == null || e == null ? null : ((Comparable) o).compareTo( s ) > 0 && ((Comparable) o).compareTo( e ) < 0;
+        } else if ( lowerBound == IntervalBoundary.OPEN && upperBound == IntervalBoundary.CLOSED ) {
+            return o -> o == null || s == null || e == null ? null : ((Comparable) o).compareTo( s ) > 0 && ((Comparable) o).compareTo( e ) <= 0;
+        } else if ( lowerBound == IntervalBoundary.CLOSED && upperBound == IntervalBoundary.OPEN ) {
+            return o -> o == null || s == null || e == null ? null : ((Comparable) o).compareTo( s ) >= 0 && ((Comparable) o).compareTo( e ) < 0;
+        } else if ( lowerBound == IntervalBoundary.CLOSED && upperBound == IntervalBoundary.CLOSED ) {
+            return o -> o == null || s == null || e == null ? null : ((Comparable) o).compareTo( s ) >= 0 && ((Comparable) o).compareTo( e ) <= 0;
+        }
+        return null;
     }
 }

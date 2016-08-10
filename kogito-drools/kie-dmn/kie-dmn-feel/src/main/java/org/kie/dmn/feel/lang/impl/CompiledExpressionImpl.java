@@ -24,23 +24,17 @@ import java.util.Map;
 
 public class CompiledExpressionImpl implements CompiledExpression {
     private ASTNode     expression;
-    private SymbolTable symbols;
 
-    public CompiledExpressionImpl(ASTNode expression, SymbolTable symbols) {
+    public CompiledExpressionImpl(ASTNode expression) {
         this.expression = expression;
-        this.symbols = symbols;
     }
 
     public ASTNode getExpression() {
         return expression;
     }
 
-    public SymbolTable getSymbols() {
-        return symbols;
-    }
-
     public Object evaluate(Map<String, Object> inputVariables) {
-        EvaluationContextImpl ctx = new EvaluationContextImpl( symbols );
+        EvaluationContextImpl ctx = new EvaluationContextImpl();
         return expression.evaluate( ctx );
     }
 

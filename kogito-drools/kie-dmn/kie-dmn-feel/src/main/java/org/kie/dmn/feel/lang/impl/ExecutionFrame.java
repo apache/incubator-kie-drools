@@ -16,25 +16,16 @@
 
 package org.kie.dmn.feel.lang.impl;
 
-import org.kie.dmn.feel.lang.Scope;
-import org.kie.dmn.feel.lang.Symbol;
-import org.kie.dmn.feel.lang.types.SymbolTable;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public class ExecutionFrame {
     private ExecutionFrame parentFrame;
 
-    private SymbolTable symbols;
-    private Scope       currentScope;
+    private Map<String, Object> variables = new HashMap<>();
 
-    private Map<Symbol, Object> variables = new HashMap<>();
-
-    public ExecutionFrame(ExecutionFrame parentFrame, SymbolTable symbols, Scope currentScope) {
+    public ExecutionFrame(ExecutionFrame parentFrame) {
         this.parentFrame = parentFrame;
-        this.symbols = symbols;
-        this.currentScope = currentScope;
     }
 
     public ExecutionFrame getParentFrame() {
@@ -45,23 +36,7 @@ public class ExecutionFrame {
         this.parentFrame = parentFrame;
     }
 
-    public SymbolTable getSymbols() {
-        return symbols;
-    }
-
-    public void setSymbols(SymbolTable symbols) {
-        this.symbols = symbols;
-    }
-
-    public Scope getCurrentScope() {
-        return currentScope;
-    }
-
-    public void setCurrentScope(Scope currentScope) {
-        this.currentScope = currentScope;
-    }
-
-    public Object getValue(Symbol symbol) {
+    public Object getValue(String symbol) {
         if ( variables.containsKey( symbol ) ) {
             return variables.get( symbol );
         }
@@ -69,5 +44,13 @@ public class ExecutionFrame {
             return parentFrame.getValue( symbol );
         }
         return null;
+    }
+
+    public Object getValue(String[] symbol) {
+        return null;
+    }
+
+    public void setValue(String symbol, Object value) {
+        this.variables.put( symbol, value );
     }
 }

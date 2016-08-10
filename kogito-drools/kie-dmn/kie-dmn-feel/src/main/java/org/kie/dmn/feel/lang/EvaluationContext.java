@@ -17,4 +17,14 @@
 package org.kie.dmn.feel.lang;
 
 public interface EvaluationContext {
+
+    void enterFrame();
+
+    void exitFrame();
+
+    void setValue(String name, Object value );
+
+    Object getValue(String name );
+
+    Object getValue(String[] name );
 }
