@@ -46,6 +46,9 @@ public class GetKieContainerCommand
         return kieContainer;
     }
 
+    public ReleaseId getReleaseId() {
+        return releaseId;
+    }
 
     @Override
     public String toString() {

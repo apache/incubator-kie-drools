@@ -26,12 +26,11 @@ import java.util.Map;
 public class RequestContextImpl extends ContextImpl implements Context {
 
     private ContextImpl         appContext;
-    private ContextImpl         conversationContext;
+    private ConversationContext conversationContext;
 
     private ConversationManager cvnManager;
 
     private long                requestId;
-    private long                conversationId;
 
     private Object              lastReturned;
 
@@ -39,6 +38,7 @@ public class RequestContextImpl extends ContextImpl implements Context {
 
     private Map<String, Object> out;
     private Map<String, Object> registry;
+    private Exception           exception;
 
 
     public RequestContextImpl(long requestId, long conversationId, ContextManager ctxManager, ConversationManager cvnManager) {
@@ -63,12 +63,12 @@ public class RequestContextImpl extends ContextImpl implements Context {
         this.appContext = (ContextImpl)appContext;
     }
 
-    public Context getConversationContext() {
+    public ConversationContext getConversationContext() {
         return conversationContext;
     }
 
-    public void setConversationContext(Context conversationContext) {
-        this.conversationContext = (ContextImpl)conversationContext;
+    public void setConversationContext(ConversationContext conversationContext) {
+        this.conversationContext = conversationContext;
     }
 
     public ConversationManager getConversationManager() {
@@ -103,14 +103,6 @@ public class RequestContextImpl extends ContextImpl implements Context {
         this.requestId = requestId;
     }
 
-    public long getConversationId() {
-        return conversationId;
-    }
-
-    public void setConversationId(long conversationId) {
-        this.conversationId = conversationId;
-    }
-
     public Object getLastReturned() {
         return lastReturned;
     }
@@ -123,7 +115,7 @@ public class RequestContextImpl extends ContextImpl implements Context {
         return lastSet;
     }
 
-    public void setLastSet(String lastSet) {
+    public void setLastSetOrGet(String lastSet) {
         this.lastSet = lastSet;
     }
 
@@ -133,6 +125,14 @@ public class RequestContextImpl extends ContextImpl implements Context {
 
     public Map<String, Object> getRegistry() {
         return registry;
+    }
+
+    public Exception getException() {
+        return exception;
+    }
+
+    public void setException(Exception exception) {
+        this.exception = exception;
     }
 
     @Override
