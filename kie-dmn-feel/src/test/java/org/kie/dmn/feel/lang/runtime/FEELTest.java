@@ -226,6 +226,7 @@ public class FEELTest {
                 // quantified expressions
                 { "some price in [ 80, 11, 110 ] satisfies price > 100", EMPTY_INPUT, Boolean.TRUE },
                 { "some price in [ 80, 11, 90 ] satisfies price > 100", EMPTY_INPUT, Boolean.FALSE },
+                { "some x in [ 5, 6, 7 ], y in [ 10, 11, 6 ] satisfies x > y", EMPTY_INPUT, Boolean.TRUE },
                 { "every price in [ 80, 11, 90 ] satisfies price > 10", EMPTY_INPUT, Boolean.TRUE },
 
 

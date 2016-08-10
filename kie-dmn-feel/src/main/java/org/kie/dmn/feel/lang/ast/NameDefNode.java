@@ -17,8 +17,10 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A name is defined either as a sequence of
@@ -56,5 +58,15 @@ public class NameDefNode
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public Object evaluate(EvaluationContext ctx) {
+        if( parts != null ) {
+            return parts.stream().collect( Collectors.joining( " " ) );
+        } else if( name != null ) {
+            return name;
+        }
+        return null;
     }
 }
