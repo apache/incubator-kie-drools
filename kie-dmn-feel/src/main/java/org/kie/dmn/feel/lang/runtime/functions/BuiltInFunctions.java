@@ -14,27 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.ast;
+package org.kie.dmn.feel.lang.runtime.functions;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.EvaluationContext;
+public class BuiltInFunctions {
 
-public class BooleanNode
-        extends BaseNode {
+    protected final static FEELFunction[] FUNCTIONS = new FEELFunction[]{
+            new DateFunction(),
+            new TimeFunction(),
+            new DateTimeFunction(),
+            new DurationFunction(),
+            new YearsAndMonthsFunction(),
+            new DecisionTableFunction()
+    };
 
-    Boolean value;
-
-    public BooleanNode(ParserRuleContext ctx) {
-        super( ctx );
-        value = Boolean.valueOf( ctx.getText() );
-    }
-
-    public Boolean getValue() {
-        return value;
-    }
-
-    @Override
-    public Object evaluate(EvaluationContext ctx) {
-        return value;
+    public static FEELFunction[] getFunctions() {
+        return FUNCTIONS;
     }
 }

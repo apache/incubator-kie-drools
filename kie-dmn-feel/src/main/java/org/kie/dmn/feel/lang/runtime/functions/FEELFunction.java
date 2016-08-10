@@ -16,9 +16,13 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
+import org.kie.dmn.feel.lang.Symbol;
+
 public interface FEELFunction {
 
     String getName();
+
+    Symbol getSymbol();
 
     Object applyReflectively(Object[] params);
 

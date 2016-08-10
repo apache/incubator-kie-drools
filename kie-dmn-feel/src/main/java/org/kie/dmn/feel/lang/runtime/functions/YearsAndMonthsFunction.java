@@ -23,6 +23,10 @@ import java.time.temporal.TemporalAmount;
 public class YearsAndMonthsFunction
         extends BaseFEELFunction {
 
+    public YearsAndMonthsFunction() {
+        super( "years and months duration" );
+    }
+
     public TemporalAmount apply(LocalDate from, LocalDate to) {
         if ( from != null && to != null ) {
             return Period.between( from, to ).withDays( 0 );
@@ -30,8 +34,4 @@ public class YearsAndMonthsFunction
         return null;
     }
 
-    @Override
-    public String getName() {
-        return "years and months duration";
-    }
 }

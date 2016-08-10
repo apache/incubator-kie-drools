@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
@@ -120,7 +121,7 @@ public class BaseNode
     }
 
     @Override
-    public Object evaluate(EvaluationContextImpl ctx) {
+    public Object evaluate(EvaluationContext ctx) {
         return null;
     }
 

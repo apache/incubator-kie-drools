@@ -17,7 +17,7 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.EvaluationContext;
 
 import java.math.BigDecimal;
 
@@ -40,7 +40,7 @@ public class NumberNode
     }
 
     @Override
-    public Object evaluate(EvaluationContextImpl ctx) {
+    public Object evaluate(EvaluationContext ctx) {
         return value;
     }
 }

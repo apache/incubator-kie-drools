@@ -17,7 +17,8 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.types.UnaryTest;
 
 public class DashNode
         extends BaseNode {
@@ -27,7 +28,8 @@ public class DashNode
     }
 
     @Override
-    public Object evaluate(EvaluationContextImpl ctx) {
-        return Boolean.TRUE;
+    public UnaryTest evaluate(EvaluationContext ctx) {
+        // a dash is a unary test that always evaluates to true
+        return o -> Boolean.TRUE;
     }
 }

@@ -43,7 +43,7 @@ public class FEEL {
         ParseTree tree = parser.expression();
         ASTBuilderVisitor v = new ASTBuilderVisitor();
         BaseNode expr = v.visit( tree );
-        CompiledExpression ce = new CompiledExpressionImpl( expr, parser.getHelper().getSymbolTable() );
+        CompiledExpression ce = new CompiledExpressionImpl( expr );
         return ce;
     }
 

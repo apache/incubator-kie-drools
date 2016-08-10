@@ -17,7 +17,7 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.util.EvalHelper;
 
 import java.math.BigDecimal;
@@ -56,11 +56,11 @@ public class SignedUnaryNode
     }
 
     @Override
-    public Object evaluate(EvaluationContextImpl ctx) {
+    public Object evaluate(EvaluationContext ctx) {
         BigDecimal result = EvalHelper.getBigDecimalOrNull( expression.evaluate( ctx ) );
-        if( result == null ) {
+        if ( result == null ) {
             return null;
-        } else if( Sign.NEGATIVE == sign ) {
+        } else if ( Sign.NEGATIVE == sign ) {
             return BigDecimal.valueOf( -1 ).multiply( result );
         } else {
             return result;

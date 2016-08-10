@@ -17,8 +17,13 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Symbol;
+import org.kie.dmn.feel.lang.types.VariableSymbol;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class QuantifiedExpressionNode
@@ -28,7 +33,7 @@ public class QuantifiedExpressionNode
         SOME, EVERY;
 
         public static Quantifier resolve(String text) {
-            if( "some".equals( text ) ) {
+            if ( "some".equals( text ) ) {
                 return SOME;
             } else {
                 return EVERY;
@@ -43,9 +48,9 @@ public class QuantifiedExpressionNode
     public QuantifiedExpressionNode(ParserRuleContext ctx, Quantifier quantifier, ListNode list, BaseNode expression) {
         super( ctx );
         this.quantifier = quantifier;
-        this.iterationContexts = new ArrayList<>(  );
+        this.iterationContexts = new ArrayList<>();
         this.expression = expression;
-        for( BaseNode n : list.getElements() ) {
+        for ( BaseNode n : list.getElements() ) {
             this.iterationContexts.add( (IterationContextNode) n );
         }
     }
@@ -72,5 +77,54 @@ public class QuantifiedExpressionNode
 
     public void setExpression(BaseNode expression) {
         this.expression = expression;
+    }
+
+    @Override
+    public Object evaluate(EvaluationContext ctx) {
+        switch ( quantifier ) {
+            case SOME:
+                ctx.enterFrame();
+                Iterable[] iterables = new Iterable[iterationContexts.size()];
+                Iterator[] iterators = new Iterator[iterables.length];
+                String[] names = new String[iterators.length];
+                int i = 0;
+                for ( IterationContextNode icn : iterationContexts ) {
+                    names[i] = icn.evaluateName( ctx );
+                    Object result = icn.evaluate( ctx );
+                    iterables[i] = result instanceof Iterable ? (Iterable) result : Collections.singletonList( result );
+                    iterators[i] = iterables[i].iterator();
+                }
+                while ( i >= 0 ) {
+                    while ( i < iterators.length ) {
+                        iterators[i] = iterables[i].iterator();
+                        Object value = iterators[i].hasNext() ? iterators[i].next() : null;
+                        ctx.setValue( names[i], value );
+                        i++;
+                    }
+                    Boolean result = (Boolean) expression.evaluate( ctx );
+                    if ( result != null && result.equals( Boolean.TRUE ) ) {
+                        // then "some" evaluates to true
+                        return Boolean.TRUE;
+                    }
+                    i--;
+                    while ( i >= 0 && i < iterators.length ) {
+                        if ( iterators[i] == null ) {
+                            iterators[i] = iterables[i].iterator();
+                        }
+                        if ( iterators[i].hasNext() ) {
+                            Object value = iterators[i].hasNext() ? iterators[i].next() : null;
+                            ctx.setValue( names[i], value );
+                            i++;
+                        } else {
+                            iterators[i] = null;
+                            i--;
+                        }
+                    }
+                }
+                return Boolean.FALSE;
+            case EVERY:
+                break;
+        }
+        return null;
     }
 }

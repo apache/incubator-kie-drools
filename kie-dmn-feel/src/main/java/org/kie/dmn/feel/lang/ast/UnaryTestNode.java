@@ -17,24 +17,48 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.types.UnaryTest;
 
 public class UnaryTestNode
         extends BaseNode {
 
-    private String   operator;
-    private BaseNode value;
+    private UnaryOperator operator;
+    private BaseNode      value;
+
+    public static enum UnaryOperator {
+        LTE( "<=" ),
+        LT( "<" ),
+        GT( ">" ),
+        GTE( ">=" );
+
+        public final String symbol;
+
+        UnaryOperator(String symbol) {
+            this.symbol = symbol;
+        }
+
+        public static UnaryOperator determineOperator(String symbol) {
+            for ( UnaryOperator op : UnaryOperator.values() ) {
+                if ( op.symbol.equals( symbol ) ) {
+                    return op;
+                }
+            }
+            throw new IllegalArgumentException( "No operator found for symbol '" + symbol + "'" );
+        }
+    }
 
     public UnaryTestNode(ParserRuleContext ctx, String op, BaseNode value) {
         super( ctx );
-        this.operator = op;
+        this.operator = UnaryOperator.determineOperator( op );
         this.value = value;
     }
 
-    public String getOperator() {
+    public UnaryOperator getOperator() {
         return operator;
     }
 
-    public void setOperator(String operator) {
+    public void setOperator(UnaryOperator operator) {
         this.operator = operator;
     }
 
@@ -44,5 +68,21 @@ public class UnaryTestNode
 
     public void setValue(BaseNode value) {
         this.value = value;
+    }
+
+    @Override
+    public UnaryTest evaluate(EvaluationContext ctx) {
+        Comparable val = (Comparable) value.evaluate( ctx );
+        switch ( operator ) {
+            case LTE:
+                return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) <= 0;
+            case LT:
+                return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) < 0;
+            case GT:
+                return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) > 0;
+            case GTE:
+                return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) >= 0;
+        }
+        return null;
     }
 }

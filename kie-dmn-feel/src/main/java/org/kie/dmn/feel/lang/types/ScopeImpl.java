@@ -25,7 +25,8 @@ import org.kie.dmn.feel.util.TokenTree;
 
 import java.util.*;
 
-public class BaseScope implements Scope {
+public class ScopeImpl
+        implements Scope {
 
     private String name;
     private Scope  parentScope;
@@ -35,10 +36,10 @@ public class BaseScope implements Scope {
 
     private TokenTree tokenTree;
 
-    public BaseScope() {
+    public ScopeImpl() {
     }
 
-    public BaseScope(String name, Scope parentScope) {
+    public ScopeImpl(String name, Scope parentScope) {
         this.name = name;
         this.parentScope = parentScope;
         if ( parentScope != null ) {

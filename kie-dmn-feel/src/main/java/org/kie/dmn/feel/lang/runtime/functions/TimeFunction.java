@@ -25,6 +25,10 @@ import java.time.temporal.TemporalUnit;
 public class TimeFunction
         extends BaseFEELFunction {
 
+    public TimeFunction() {
+        super( "time" );
+    }
+
     public TemporalAccessor apply(String val) {
         if ( val != null ) {
             return DateTimeFormatter.ISO_TIME.parseBest( val , OffsetTime::from, LocalTime::from );
@@ -50,9 +54,4 @@ public class TimeFunction
         return null;
     }
 
-
-    @Override
-    public String getName() {
-        return "time";
-    }
 }
