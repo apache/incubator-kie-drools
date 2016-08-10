@@ -17,8 +17,9 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
-import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.lang.runtime.functions.FEELFunction;
 import org.kie.dmn.feel.lang.types.FunctionSymbol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,26 +55,26 @@ public class FunctionInvocationNode
     }
 
     @Override
-    public Object evaluate(EvaluationContextImpl ctx) {
-        FunctionSymbol function = null;
-        Symbol symbol = null;
-        if( name instanceof NameRefNode ) {
+    public Object evaluate(EvaluationContext ctx) {
+        FEELFunction function = null;
+        Object value = null;
+        if ( name instanceof NameRefNode ) {
             // simple name
-            symbol = ctx.resolveSymbol( name.getText() );
+            value = ctx.getValue( name.getText() );
         } else {
             QualifiedNameNode qn = (QualifiedNameNode) name;
             String[] qns = qn.getPartsAsStringArray();
-            symbol = ctx.resolveSymbol( qns );
+            value = ctx.getValue( qns );
         }
-        if( symbol instanceof FunctionSymbol ) {
-            function = (FunctionSymbol) symbol;
+        if ( value instanceof FEELFunction ) {
+            function = (FEELFunction) value;
         }
-        if( function != null ) {
+        if ( function != null ) {
             Object[] p = params.getElements().stream().map( e -> e.evaluate( ctx ) ).toArray( Object[]::new );
-            Object result = function.getEvaluator().applyReflectively( p );
+            Object result = function.applyReflectively( p );
             return result;
         } else {
-            logger.error("Function not found: '"+name.getText()+"'");
+            logger.error( "Function not found: '" + name.getText() + "'" );
         }
         return null;
     }

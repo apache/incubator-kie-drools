@@ -17,15 +17,11 @@
 package org.kie.dmn.feel.lang.types;
 
 import org.kie.dmn.feel.lang.Scope;
-import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.runtime.functions.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.kie.dmn.feel.lang.runtime.functions.BuiltInFunctions;
+import org.kie.dmn.feel.lang.runtime.functions.FEELFunction;
 
 public class SymbolTable {
-    BuiltInScope      builtInScope = new BuiltInScope();
-    Map<String, Type> types        = new HashMap<>();
+    private Scope builtInScope = new ScopeImpl( Scope.BUILT_IN, null );
 
     public SymbolTable() {
         init();
@@ -33,22 +29,19 @@ public class SymbolTable {
 
     private void init() {
         // the following automatically adds the GLOBAL scope as a child to the built-in scope
-        new LocalScope( Scope.GLOBAL, builtInScope );
+        new ScopeImpl( Scope.GLOBAL, builtInScope );
 
         // pre-loads all the built in functions
-        builtInScope.define( new BuiltInTypeSymbol( "true", BuiltInType.BOOLEAN, builtInScope ) );
-        builtInScope.define( new BuiltInTypeSymbol( "false", BuiltInType.BOOLEAN, builtInScope ) );
-        builtInScope.define( new FunctionSymbol( "date", new DateFunction() ) );
-        builtInScope.define( new FunctionSymbol( "time", new TimeFunction() ) );
-        builtInScope.define( new FunctionSymbol( "date and time", new DateTimeFunction() ) );
-        builtInScope.define( new FunctionSymbol( "duration", new DurationFunction() ) );
-        builtInScope.define( new FunctionSymbol( "years and months duration", new YearsAndMonthsFunction() ) );
-        builtInScope.define( new FunctionSymbol( "decision table", null ) );
+        for ( FEELFunction f : BuiltInFunctions.getFunctions() ) {
+            builtInScope.define( f.getSymbol() );
+        }
     }
 
     public Scope getBuiltInScope() {
         return builtInScope;
     }
 
-    public Scope getGlobalScope() { return builtInScope.getChildScopes().get( Scope.GLOBAL ); }
+    public Scope getGlobalScope() {
+        return builtInScope.getChildScopes().get( Scope.GLOBAL );
+    }
 }

@@ -25,6 +25,10 @@ import java.time.temporal.TemporalAccessor;
 public class DateTimeFunction
         extends BaseFEELFunction {
 
+    public DateTimeFunction() {
+        super( "date and time" );
+    }
+
     public TemporalAccessor apply(String val) {
         if ( val != null ) {
             return DateTimeFormatter.ISO_OFFSET_DATE_TIME.parseBest( val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from );
@@ -32,8 +36,4 @@ public class DateTimeFunction
         return null;
     }
 
-    @Override
-    public String getName() {
-        return "date and time";
-    }
 }

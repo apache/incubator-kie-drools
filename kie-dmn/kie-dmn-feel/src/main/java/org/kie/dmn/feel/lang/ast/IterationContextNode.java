@@ -17,12 +17,13 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
 
 public class IterationContextNode
         extends BaseNode {
 
     private NameDefNode name;
-    private BaseNode expression;
+    private BaseNode    expression;
 
     public IterationContextNode(ParserRuleContext ctx, NameDefNode name, BaseNode expression) {
         super( ctx );
@@ -44,5 +45,14 @@ public class IterationContextNode
 
     public void setExpression(BaseNode expression) {
         this.expression = expression;
+    }
+
+    public String evaluateName(EvaluationContext ctx) {
+        return (String) this.name.evaluate( ctx );
+    }
+
+    @Override
+    public Object evaluate(EvaluationContext ctx) {
+        return expression != null ? expression.evaluate( ctx ) : null;
     }
 }
