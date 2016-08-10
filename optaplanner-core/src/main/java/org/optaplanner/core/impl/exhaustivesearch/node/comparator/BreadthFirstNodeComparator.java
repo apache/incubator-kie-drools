@@ -49,7 +49,7 @@ public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNo
         } else if (aDepth > bDepth) {
             return -1;
         }
-        // Investigate better score first
+        // Investigate better score first (ignore initScore to avoid depth first ordering)
         int scoreComparison = a.getScore().toInitializedScore().compareTo(b.getScore().toInitializedScore());
         if (scoreComparison < 0) {
             return -1;
@@ -67,15 +67,7 @@ public class BreadthFirstNodeComparator implements Comparator<ExhaustiveSearchNo
         }
         // No point to investigating higher parent breadth index first (no impact on the churn on workingSolution)
         // Investigate lower breadth index first (to respect ValueSortingManner)
-        long aBreadth = a.getBreadth();
-        long bBreadth = b.getBreadth();
-        if (aBreadth < bBreadth) {
-            return 1;
-        } else if (aBreadth > bBreadth) {
-            return -1;
-        } else {
-            return 0;
-        }
+        return Long.compare(b.getBreadth(), a.getBreadth());
     }
 
 }

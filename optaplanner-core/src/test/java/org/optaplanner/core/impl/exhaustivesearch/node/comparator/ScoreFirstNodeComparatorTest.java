@@ -24,6 +24,7 @@ public class ScoreFirstNodeComparatorTest extends AbstractNodeComparatorTest {
     public void compare() {
         ScoreFirstNodeComparator comparator = new ScoreFirstNodeComparator(true);
         assertScoreCompareToOrder(comparator,
+                buildNode(1, "-110", 5, 41),
                 buildNode(1, "-110", 5, 40),
                 buildNode(1, "-110", 7, 40),
                 buildNode(2, "-110", 5, 40),

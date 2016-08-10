@@ -66,14 +66,7 @@ public class ScoreFirstNodeComparator implements Comparator<ExhaustiveSearchNode
             return 1;
         }
         // Investigate lower breadth index first (to respect ValueSortingManner)
-        long aBreadth = a.getBreadth();
-        long bBreadth = b.getBreadth();
-        if (aBreadth < bBreadth) {
-            return 1;
-        } else if (aBreadth > bBreadth) {
-            return -1;
-        }
-        return 0;
+        return Long.compare(b.getBreadth(), a.getBreadth());
     }
 
 }

@@ -24,7 +24,7 @@ public class BreadthFirstNodeComparatorTest extends AbstractNodeComparatorTest {
     public void compare() {
         BreadthFirstNodeComparator comparator = new BreadthFirstNodeComparator(true);
         assertScoreCompareToOrder(comparator,
-                buildNode(2, "-110", 7, 51),
+                buildNode(2, "-110", 5, 51),
                 buildNode(2, "-110", 5, 50),
                 buildNode(2, "-90", 7, 41),
                 buildNode(2, "-90", 5, 40),
