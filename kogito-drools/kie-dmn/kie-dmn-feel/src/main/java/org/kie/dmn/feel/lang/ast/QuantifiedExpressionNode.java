@@ -84,47 +84,59 @@ public class QuantifiedExpressionNode
         switch ( quantifier ) {
             case SOME:
                 ctx.enterFrame();
-                Iterable[] iterables = new Iterable[iterationContexts.size()];
-                Iterator[] iterators = new Iterator[iterables.length];
-                String[] names = new String[iterators.length];
-                int i = 0;
-                for ( IterationContextNode icn : iterationContexts ) {
-                    names[i] = icn.evaluateName( ctx );
-                    Object result = icn.evaluate( ctx );
-                    iterables[i] = result instanceof Iterable ? (Iterable) result : Collections.singletonList( result );
-                    iterators[i] = iterables[i].iterator();
-                }
-                while ( i >= 0 ) {
-                    while ( i < iterators.length ) {
+                try {
+                    Iterable[] iterables = new Iterable[iterationContexts.size()];
+                    Iterator[] iterators = new Iterator[iterables.length];
+                    String[] names = new String[iterators.length];
+                    int i = 0;
+                    for ( IterationContextNode icn : iterationContexts ) {
+                        names[i] = icn.evaluateName( ctx );
+                        Object result = icn.evaluate( ctx );
+                        iterables[i] = result instanceof Iterable ? (Iterable) result : Collections.singletonList( result );
                         iterators[i] = iterables[i].iterator();
                         Object value = iterators[i].hasNext() ? iterators[i].next() : null;
                         ctx.setValue( names[i], value );
                         i++;
                     }
-                    Boolean result = (Boolean) expression.evaluate( ctx );
-                    if ( result != null && result.equals( Boolean.TRUE ) ) {
-                        // then "some" evaluates to true
-                        return Boolean.TRUE;
-                    }
-                    i--;
-                    while ( i >= 0 && i < iterators.length ) {
-                        if ( iterators[i] == null ) {
-                            iterators[i] = iterables[i].iterator();
+                    while ( i >= 0 ) {
+                        Boolean result = (Boolean) expression.evaluate( ctx );
+                        if ( result != null && result.equals( Boolean.TRUE ) ) {
+                            // then "some" evaluates to true
+                            return Boolean.TRUE;
                         }
-                        if ( iterators[i].hasNext() ) {
-                            Object value = iterators[i].hasNext() ? iterators[i].next() : null;
-                            ctx.setValue( names[i], value );
-                            i++;
-                        } else {
-                            iterators[i] = null;
-                            i--;
+                        i--;
+                        while ( i >= 0 && i < iterators.length ) {
+                            if ( iterators[i] == null ) {
+                                iterators[i] = iterables[i].iterator();
+                            }
+                            if ( iterators[i].hasNext() ) {
+                                Object value = iterators[i].hasNext() ? iterators[i].next() : null;
+                                ctx.setValue( names[i], value );
+                                i++;
+                            } else {
+                                iterators[i] = null;
+                                i--;
+                            }
                         }
                     }
+                    return Boolean.FALSE;
+                } finally {
+                    ctx.exitFrame();
                 }
-                return Boolean.FALSE;
             case EVERY:
                 break;
         }
         return null;
+    }
+
+    private static class QEIteration {
+        public String name;
+        public Iterable values;
+        public Iterator iterator;
+
+        public QEIteration(String name, Iterable values) {
+            this.name = name;
+            this.values = values;
+        }
     }
 }

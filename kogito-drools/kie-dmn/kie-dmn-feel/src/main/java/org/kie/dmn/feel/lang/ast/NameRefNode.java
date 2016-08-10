@@ -17,11 +17,17 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
 
 public class NameRefNode
         extends BaseNode {
 
     public NameRefNode(ParserRuleContext ctx) {
         super( ctx );
+    }
+
+    @Override
+    public Object evaluate(EvaluationContext ctx) {
+        return ctx.getValue( getText() );
     }
 }
