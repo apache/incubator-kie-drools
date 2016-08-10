@@ -35,8 +35,8 @@ public class ScoreFirstNodeComparator implements Comparator<ExhaustiveSearchNode
 
     @Override
     public int compare(ExhaustiveSearchNode a, ExhaustiveSearchNode b) {
-        // Investigate better score first
-        int scoreComparison = a.getScore().compareTo(b.getScore());
+        // Investigate better score first (ignore initScore to avoid depth first ordering)
+        int scoreComparison = a.getScore().toInitializedScore().compareTo(b.getScore().toInitializedScore());
         if (scoreComparison < 0) {
             return -1;
         } else if (scoreComparison > 0) {

@@ -26,24 +26,30 @@ import static org.mockito.Mockito.*;
 
 public abstract class AbstractNodeComparatorTest {
 
-    protected ExhaustiveSearchNode buildNode(int depth, int score, long parentBreadth, long breadth) {
-        ExhaustiveSearchNode node = mock(ExhaustiveSearchNode.class);
-        when(node.getDepth()).thenReturn(depth);
-        when(node.getScore()).thenReturn(SimpleScore.valueOfInitialized(score));
-        when(node.getOptimisticBound()).thenReturn(SimpleScore.valueOfInitialized(score));
-        when(node.getParentBreadth()).thenReturn(parentBreadth);
-        when(node.getBreadth()).thenReturn(breadth);
-        return node;
+    protected ExhaustiveSearchNode buildNode(int depth, String score, long parentBreadth, long breadth) {
+        return buildNode(depth,
+                SimpleScore.parseScore(score),
+                SimpleScore.parseScore(score).toInitializedScore(),
+                parentBreadth, breadth);
     }
 
-    protected ExhaustiveSearchNode buildNode(int depth, int score, int optimisticBound,
+    protected ExhaustiveSearchNode buildNode(int depth, String score, int optimisticBound,
+            long parentBreadth, long breadth) {
+        return buildNode(depth,
+                SimpleScore.parseScore(score),
+                SimpleScore.valueOfInitialized(optimisticBound),
+                parentBreadth, breadth);
+    }
+
+    protected ExhaustiveSearchNode buildNode(int depth, SimpleScore score, SimpleScore optimisticBound,
             long parentBreadth, long breadth) {
         ExhaustiveSearchNode node = mock(ExhaustiveSearchNode.class);
         when(node.getDepth()).thenReturn(depth);
-        when(node.getScore()).thenReturn(SimpleScore.valueOfInitialized(score));
-        when(node.getOptimisticBound()).thenReturn(SimpleScore.valueOfInitialized(optimisticBound));
+        when(node.getScore()).thenReturn(score);
+        when(node.getOptimisticBound()).thenReturn(optimisticBound);
         when(node.getParentBreadth()).thenReturn(parentBreadth);
         when(node.getBreadth()).thenReturn(breadth);
+        when(node.toString()).thenReturn(score.toString());
         return node;
     }
 

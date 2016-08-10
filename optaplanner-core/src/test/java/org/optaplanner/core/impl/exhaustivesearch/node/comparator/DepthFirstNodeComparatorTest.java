@@ -24,14 +24,15 @@ public class DepthFirstNodeComparatorTest extends AbstractNodeComparatorTest {
     public void compare() {
         DepthFirstNodeComparator comparator = new DepthFirstNodeComparator(true);
         assertScoreCompareToOrder(comparator,
-                buildNode(1, -110, 5, 40),
-                buildNode(1, -110, 7, 40),
-                buildNode(1, -90, 5, 40),
-                buildNode(1, -90, 7, 40),
-                buildNode(2, -110, 5, 40),
-                buildNode(2, -110, 7, 40),
-                buildNode(2, -90, 5, 40),
-                buildNode(2, -90, 7, 40));
+                buildNode(1, "-110", 5, 40),
+                buildNode(1, "-110", 7, 40),
+                buildNode(1, "-90", 5, 40),
+                buildNode(1, "-90", 7, 40),
+                buildNode(2, "-110", 5, 40),
+                buildNode(2, "-110", 7, 40),
+                buildNode(2, "-90", 5, 40),
+                buildNode(2, "-90", 7, 40),
+                buildNode(2, "-1init/-80", 7, 40));
     }
 
 }

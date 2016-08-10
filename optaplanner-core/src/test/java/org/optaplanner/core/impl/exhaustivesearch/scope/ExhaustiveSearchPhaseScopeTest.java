@@ -33,9 +33,9 @@ public class ExhaustiveSearchPhaseScopeTest extends AbstractNodeComparatorTest {
         ExhaustiveSearchPhaseScope<TestdataSolution> phase
                 = new ExhaustiveSearchPhaseScope<TestdataSolution>(new DefaultSolverScope<TestdataSolution>());
         phase.setExpandableNodeQueue(new TreeSet<>(new ScoreFirstNodeComparator(true)));
-        phase.addExpandableNode(buildNode(0, 0, 0, 0));
-        phase.addExpandableNode(buildNode(0, 1, 0, 0));
-        phase.addExpandableNode(buildNode(0, 2, 0, 0));
+        phase.addExpandableNode(buildNode(0, "0", 0, 0));
+        phase.addExpandableNode(buildNode(0, "1", 0, 0));
+        phase.addExpandableNode(buildNode(0, "2", 0, 0));
         phase.setBestPessimisticBound(SimpleScore.valueOfInitialized(Integer.MIN_VALUE));
         phase.registerPessimisticBound(SimpleScore.valueOfInitialized(1));
         assertEquals(1, phase.getExpandableNodeQueue().size());
