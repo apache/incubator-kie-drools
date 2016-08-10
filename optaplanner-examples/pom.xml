@@ -76,12 +76,6 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-common</artifactId>
     </dependency>
     <dependency><!-- Most examples use the XStream integration -->
