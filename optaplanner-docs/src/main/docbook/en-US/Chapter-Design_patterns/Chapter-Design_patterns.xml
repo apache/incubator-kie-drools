@@ -40,16 +40,6 @@
 
           <listitem>
             <para>Requires Java 8 or higher.</para>
-
-            <itemizedlist>
-              <listitem>
-                <para>On Java 7 use its backport called <emphasis>ThreeTen Backport</emphasis> instead.</para>
-              </listitem>
-
-              <listitem>
-                <para>On Java 6 or lower, use its predecessor called <emphasis>Joda Time</emphasis> instead.</para>
-              </listitem>
-            </itemizedlist>
           </listitem>
         </itemizedlist>
       </listitem>
