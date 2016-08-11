@@ -15,16 +15,6 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.drools.core.util.DateUtils;
@@ -39,6 +29,16 @@ import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 class RuleModelPersistenceHelper {
 
@@ -220,15 +220,9 @@ class RuleModelPersistenceHelper {
                 }
             }
             if ( c == '"' ) {
-                if ( inString ) {
-                    inString = false;
-                } else {
-                    inString = true;
-                }
-            } else if ( c == '\\' ) {
-                escape = true;
+                inString = !inString;
             } else {
-                escape = false;
+                escape = c == '\\';
             }
         }
         return true;
