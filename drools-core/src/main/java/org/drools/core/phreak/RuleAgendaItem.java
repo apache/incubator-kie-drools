@@ -32,7 +32,6 @@ public class RuleAgendaItem extends AgendaItemImpl implements LinkedListNode<Rul
     public           RuleExecutor   executor;
     private          RuleAgendaItem previous;
     private          RuleAgendaItem next;
-    private          boolean        blocked;
 
     public RuleAgendaItem() {
 
@@ -76,14 +75,6 @@ public class RuleAgendaItem extends AgendaItemImpl implements LinkedListNode<Rul
 
     public boolean isInList( LinkedList<RuleAgendaItem> list ) {
         return previous != null || next != null || list.getFirst() == this;
-    }
-
-    public boolean isBlocked() {
-        return blocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
     }
 
     public void nullPrevNext() {

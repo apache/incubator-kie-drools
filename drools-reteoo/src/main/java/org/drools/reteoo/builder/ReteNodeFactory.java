@@ -19,7 +19,6 @@ package org.drools.reteoo.builder;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
-import org.drools.core.common.BaseNode;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -31,6 +30,7 @@ import org.drools.core.reteoo.ConditionalBranchNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.ExistsNode;
+import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -40,8 +40,10 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryRiaFixerNode;
+import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TraitObjectTypeNode;
 import org.drools.core.reteoo.TraitProxyObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
@@ -168,20 +170,20 @@ public class ReteNodeFactory implements NodeFactory, Serializable {
         return new ReteQueryElementNode( id, tupleSource, qe, tupleMemoryEnabled, openQuery, context );
     }
 
-    public BaseNode buildFromNode(int id, DataProvider dataProvider, LeftTupleSource tupleSource, AlphaNodeFieldConstraint[] alphaNodeFieldConstraints, BetaConstraints betaConstraints, boolean tupleMemoryEnabled, BuildContext context, From from) {
+    public FromNode buildFromNode( int id, DataProvider dataProvider, LeftTupleSource tupleSource, AlphaNodeFieldConstraint[] alphaNodeFieldConstraints, BetaConstraints betaConstraints, boolean tupleMemoryEnabled, BuildContext context, From from ) {
         return new ReteFromNode( id, dataProvider, tupleSource, alphaNodeFieldConstraints, betaConstraints, tupleMemoryEnabled, context, from );
     }
 
-    public BaseNode buildReactiveFromNode(int id, DataProvider dataProvider, LeftTupleSource tupleSource, AlphaNodeFieldConstraint[] alphaNodeFieldConstraints, BetaConstraints betaConstraints, boolean tupleMemoryEnabled, BuildContext context, From from) {
+    public ReactiveFromNode buildReactiveFromNode( int id, DataProvider dataProvider, LeftTupleSource tupleSource, AlphaNodeFieldConstraint[] alphaNodeFieldConstraints, BetaConstraints betaConstraints, boolean tupleMemoryEnabled, BuildContext context, From from ) {
         throw new UnsupportedOperationException("Cannot create a ReactiveFromNode with RETE engine");
     }
 
-    public BaseNode buildTimerNode( int id,
-                                    Timer timer,
-                                    final String[] calendarNames,
-                                    final Declaration[][]   declarations,
-                                    LeftTupleSource tupleSource,
-                                    BuildContext context ) {
+    public TimerNode buildTimerNode( int id,
+                                     Timer timer,
+                                     final String[] calendarNames,
+                                     final Declaration[][]   declarations,
+                                     LeftTupleSource tupleSource,
+                                     BuildContext context ) {
         throw new UnsupportedOperationException();
     }
 

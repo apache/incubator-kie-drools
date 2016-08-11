@@ -90,8 +90,7 @@ public class BuildUtils {
      * @return the actual attached node that may be the one given as parameter
      *         or eventually one that was already in the cache if sharing is enabled
      */
-    public BaseNode attachNode(final BuildContext context,
-                               final BaseNode candidate) {
+    public <T extends BaseNode> T attachNode(BuildContext context, T candidate) {
         BaseNode node = null;
         RuleBasePartitionId partition = null;
         if ( candidate.getType() == NodeTypeEnums.EntryPointNode ) {
@@ -149,8 +148,8 @@ public class BuildUtils {
             // undo previous id assignment
             context.releaseId( candidate.getId() );
         }
-        node.addAssociation( context.getRule(), context.peekRuleComponent() );
-        return node;
+        node.addAssociation( context, context.getRule() );
+        return (T)node;
     }
 
     private void mergeNodes(BaseNode node, BaseNode duplicate) {
