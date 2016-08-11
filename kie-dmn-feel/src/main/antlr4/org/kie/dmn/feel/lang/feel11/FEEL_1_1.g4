@@ -30,6 +30,10 @@ grammar FEEL_1_1;
  **************************/
 // #1
 expression
+    : expr=expressionTypes (instance_key of_key type)?       #expressionInstanceOf
+    ;
+
+expressionTypes
     : expr=textualExpression ( '[' filter=expression ']' )?  #expressionTextual
     | expr=boxedExpression ( '[' filter=expression ']' )?    #expressionBoxed
     ;
@@ -43,12 +47,6 @@ textualExpression
     | conditionalOrExpression
     | pathExpression
     | simpleUnaryTest
-    ;
-
-// #3
-textualExpressions
-    : textualExpression
-    | textualExpressions ',' textualExpression
     ;
 
 // #41
@@ -114,11 +112,9 @@ quantifiedExpression
     | every_key iterationContexts satisfies_key expression    #quantExprEvery
     ;
 
-// #53
-
 // #54
 type
-    : qualifiedName
+    : ( function_key | qualifiedName )
     ;
 
 // #55
@@ -314,13 +310,6 @@ nameRefOtherToken
 /********************************
  *      SOFT KEYWORDS
  ********************************/
-keywords
-    : for_key | return_key | in_key | if_key | then_key | else_key
-    | some_key | every_key | satisfies_key | instance_key | of_key
-    | function_key | external_key | and_key | or_key | not_key
-    | between_key | null_key | true_key | false_key
-    ;
-
 for_key
 //    : {isKeyword(Keywords.FOR)}? Identifier
     : 'for'

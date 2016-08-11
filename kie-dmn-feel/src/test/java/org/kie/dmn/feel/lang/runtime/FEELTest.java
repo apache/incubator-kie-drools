@@ -231,25 +231,40 @@ public class FEELTest {
 
                 // contexts
                 { "{ first name : \"Bob\", birthday : date(\"1978-09-12\"), salutation : \"Hello \"+first name }", EMPTY_INPUT,
-                  new Context() {{
-                      addEntry( "first name", "Bob" );
-                      addEntry( "birthday", LocalDate.of(1978, 9, 12) );
-                      addEntry( "salutation", "Hello Bob" );
+                  new HashMap<String,Object>() {{
+                      put( "first name", "Bob" );
+                      put( "birthday", LocalDate.of(1978, 9, 12) );
+                      put( "salutation", "Hello Bob" );
                 }} },
                 // nested contexts + qualified name
                 { "{ full name : { first name: \"Bob\", last name : \"Doe\" }, birthday : date(\"1978-09-12\"), salutation : \"Hello \"+full name.first name }", EMPTY_INPUT,
-                  new Context() {{
-                      addEntry( "full name", new Context() {{
-                          addEntry( "first name", "Bob" );
-                          addEntry( "last name", "Doe" );
+                  new HashMap<String,Object>() {{
+                      put( "full name", new HashMap<String,Object>() {{
+                          put( "first name", "Bob" );
+                          put( "last name", "Doe" );
                       }} );
-                      addEntry( "birthday", LocalDate.of(1978, 9, 12) );
-                      addEntry( "salutation", "Hello Bob" );
+                      put( "birthday", LocalDate.of(1978, 9, 12) );
+                      put( "salutation", "Hello Bob" );
                   }} },
 
                 // for
                 {"for x in [ 10, 20, 30 ], y in [ 1, 2, 3 ] return x * y", EMPTY_INPUT,
                  Arrays.asList( 10, 20, 30, 20, 40, 60, 30, 60, 90 ).stream().map( x -> BigDecimal.valueOf( x ) ).collect( Collectors.toList() ) },
+
+                // instance of
+                {"10 instance of number", EMPTY_INPUT, Boolean.TRUE },
+                {"\"foo\" instance of string", EMPTY_INPUT, Boolean.TRUE },
+                {"date(\"2016-08-11\") instance of date", EMPTY_INPUT, Boolean.TRUE },
+                {"time(\"23:59:00\") instance of time", EMPTY_INPUT, Boolean.TRUE },
+                {"date and time(\"2016-07-29T05:48:23.765-05:00\") instance of date and time", EMPTY_INPUT, Boolean.TRUE },
+                {"duration( \"P2Y2M\" ) instance of duration", EMPTY_INPUT, Boolean.TRUE },
+                {"true instance of boolean", EMPTY_INPUT, Boolean.TRUE },
+                {"< 10 instance of unary test", EMPTY_INPUT, Boolean.TRUE },
+                {"[10..20) instance of unary test", EMPTY_INPUT, Boolean.TRUE },
+                {"[10, 20, 30] instance of list", EMPTY_INPUT, Boolean.TRUE },
+                {"{ foo : \"foo\" } instance of context", EMPTY_INPUT, Boolean.TRUE },
+                {"null instance of unknown", EMPTY_INPUT, Boolean.TRUE },
+                {"duration instance of function", EMPTY_INPUT, Boolean.TRUE },
 
 
 
