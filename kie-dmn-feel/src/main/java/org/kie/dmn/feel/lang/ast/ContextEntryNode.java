@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
 
 public class ContextEntryNode
         extends BaseNode {
@@ -48,5 +49,14 @@ public class ContextEntryNode
 
     public void setValue(BaseNode value) {
         this.value = value;
+    }
+
+    public String evaluateName( EvaluationContext ctx ) {
+        return (String) name.evaluate( ctx );
+    }
+
+    @Override
+    public Object evaluate(EvaluationContext ctx) {
+        return value.evaluate( ctx );
     }
 }

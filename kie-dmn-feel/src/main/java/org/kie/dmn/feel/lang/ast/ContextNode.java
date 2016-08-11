@@ -17,6 +17,8 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.runtime.Context;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,5 +45,23 @@ public class ContextNode
 
     public void setEntries(List<ContextEntryNode> entries) {
         this.entries = entries;
+    }
+
+    @Override
+    public Object evaluate(EvaluationContext ctx) {
+        try {
+            ctx.enterFrame();
+            Context c = new Context();
+            for( ContextEntryNode cen : entries ) {
+                String name = cen.evaluateName( ctx );
+                Object value = cen.evaluate( ctx );
+
+                ctx.setValue( name, value );
+                c.addEntry( name, value );
+            }
+            return c;
+        } finally {
+            ctx.exitFrame();
+        }
     }
 }

@@ -17,15 +17,9 @@
 package org.kie.dmn.feel.lang.impl;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.Scope;
-import org.kie.dmn.feel.lang.Symbol;
-import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.lang.runtime.functions.BuiltInFunctions;
-import org.kie.dmn.feel.lang.runtime.functions.FEELFunction;
-import org.kie.dmn.feel.lang.types.SymbolTable;
+import org.kie.dmn.feel.lang.runtime.FEELFunction;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Stack;
 
 public class EvaluationContextImpl implements EvaluationContext {

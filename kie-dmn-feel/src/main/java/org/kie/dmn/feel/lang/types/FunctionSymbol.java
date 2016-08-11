@@ -18,7 +18,7 @@ package org.kie.dmn.feel.lang.types;
 
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.runtime.functions.FEELFunction;
+import org.kie.dmn.feel.lang.runtime.FEELFunction;
 
 public class FunctionSymbol
         extends BaseSymbol {
