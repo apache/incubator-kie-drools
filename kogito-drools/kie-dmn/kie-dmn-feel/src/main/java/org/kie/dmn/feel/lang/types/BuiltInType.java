@@ -19,9 +19,9 @@ package org.kie.dmn.feel.lang.types;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.runtime.FEELFunction;
 import org.kie.dmn.feel.lang.runtime.UnaryTest;
-import org.kie.dmn.feel.model.v1_1.List;
 
 import java.time.*;
+import java.util.List;
 import java.util.Map;
 
 public enum BuiltInType implements Type {

@@ -48,7 +48,7 @@ public class ListNode
     }
 
     @Override
-    public Object evaluate(EvaluationContext ctx) {
+    public List evaluate(EvaluationContext ctx) {
         return elements.stream().map( e -> e != null ? e.evaluate( ctx ) : null ).collect( Collectors.toList() );
     }
 }
