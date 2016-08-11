@@ -55,9 +55,9 @@ public class InNode
         Object value = this.value.evaluate( ctx );
         Object expr = this.exprs.evaluate( ctx );
         if ( expr != null ) {
-            if ( expr instanceof Collection ) {
+            if ( expr instanceof Iterable ) {
                 // evaluate in the collection
-                for ( Object e : ((Collection) expr) ) {
+                for ( Object e : ((Iterable) expr) ) {
                     // have to compare to Boolean.TRUE because in() might return null
                     if ( in( value, e ) == Boolean.TRUE ) {
                         return true;

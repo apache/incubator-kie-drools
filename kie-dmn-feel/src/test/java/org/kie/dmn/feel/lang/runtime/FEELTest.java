@@ -267,14 +267,6 @@ public class FEELTest {
                 {"duration instance of function", EMPTY_INPUT, Boolean.TRUE },
 
 
-
-
-
-
-
-
-
-
                 //                { "", EMPTY_INPUT,  },
 
         };
