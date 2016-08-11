@@ -378,11 +378,23 @@ public class ASTBuilderVisitor
         if( ctx.parameters() != null ) {
             ListNode params = (ListNode) visit( ctx.parameters() );
             return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
-        } else if( ctx.type() != null ) {
-            QualifiedNameNode type = (QualifiedNameNode) visit( ctx.type() );
-            return ASTBuilderFactory.newInstanceOfNode( ctx, name, type );
         } else {
             return name;
         }
+    }
+
+    @Override
+    public TypeNode visitType(FEEL_1_1Parser.TypeContext ctx) {
+        return ASTBuilderFactory.newTypeNode( ctx );
+    }
+
+    @Override
+    public BaseNode visitExpressionInstanceOf(FEEL_1_1Parser.ExpressionInstanceOfContext ctx) {
+        BaseNode expr = visit( ctx.expr );
+        if( ctx.instance_key() != null ) {
+            TypeNode type = (TypeNode) visit( ctx.type() );
+            return ASTBuilderFactory.newInstanceOfNode( ctx, expr, type );
+        }
+        return expr;
     }
 }

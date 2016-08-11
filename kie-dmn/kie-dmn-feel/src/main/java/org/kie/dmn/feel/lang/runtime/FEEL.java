@@ -25,6 +25,7 @@ import org.kie.dmn.feel.lang.feel11.FEELParser;
 import org.kie.dmn.feel.lang.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 import org.kie.dmn.feel.lang.impl.CompilerContextImpl;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.EvalHelper;
 
 import java.util.Map;
@@ -50,7 +51,7 @@ public class FEEL {
     public static Object evaluate(String expression, Map<String, Object> inputVariables) {
         CompilerContext ctx = newCompilerContext();
         if ( inputVariables != null ) {
-            inputVariables.entrySet().stream().forEach( e -> ctx.addInputVariable( e.getKey(), EvalHelper.determineFeelType( e ) ) );
+            inputVariables.entrySet().stream().forEach( e -> ctx.addInputVariable( e.getKey(), BuiltInType.determineTypeFromInstance( e ) ) );
         }
         CompiledExpression expr = compile( expression, ctx );
         return evaluate( expr, inputVariables );

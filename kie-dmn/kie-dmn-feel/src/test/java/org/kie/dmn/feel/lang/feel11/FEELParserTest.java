@@ -798,17 +798,32 @@ public class FEELParserTest {
 
     @Test
     public void testInstanceOfExpression() {
-        String inputExpression = "order.item.product instance of a.Product";
+        String inputExpression = "\"foo\" instance of string";
         BaseNode instanceOfBase = parse( inputExpression );
 
         assertThat( instanceOfBase, is( instanceOf( InstanceOfNode.class ) ) );
         assertThat( instanceOfBase.getText(), is( inputExpression ) );
 
         InstanceOfNode ioExpr = (InstanceOfNode) instanceOfBase;
-        assertThat( ioExpr.getExpression(), is( instanceOf( QualifiedNameNode.class ) ) );
-        assertThat( ioExpr.getExpression().getText(), is( "order.item.product" ) );
-        assertThat( ioExpr.getType(), is( instanceOf( QualifiedNameNode.class ) ) );
-        assertThat( ioExpr.getType().getText(), is( "a.Product" ) );
+        assertThat( ioExpr.getExpression(), is( instanceOf( StringNode.class ) ) );
+        assertThat( ioExpr.getExpression().getText(), is( "\"foo\"" ) );
+        assertThat( ioExpr.getType(), is( instanceOf( TypeNode.class ) ) );
+        assertThat( ioExpr.getType().getText(), is( "string" ) );
+    }
+
+    @Test
+    public void testInstanceOfExpressionFunction() {
+        String inputExpression = "duration instance of function";
+        BaseNode instanceOfBase = parse( inputExpression );
+
+        assertThat( instanceOfBase, is( instanceOf( InstanceOfNode.class ) ) );
+        assertThat( instanceOfBase.getText(), is( inputExpression ) );
+
+        InstanceOfNode ioExpr = (InstanceOfNode) instanceOfBase;
+        assertThat( ioExpr.getExpression(), is( instanceOf( NameRefNode.class ) ) );
+        assertThat( ioExpr.getExpression().getText(), is( "duration" ) );
+        assertThat( ioExpr.getType(), is( instanceOf( TypeNode.class ) ) );
+        assertThat( ioExpr.getType().getText(), is( "function" ) );
     }
 
     @Test
