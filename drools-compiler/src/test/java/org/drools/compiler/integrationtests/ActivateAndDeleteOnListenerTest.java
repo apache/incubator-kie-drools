@@ -223,6 +223,55 @@ public class ActivateAndDeleteOnListenerTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testOneLinkedAndOneUnlinkedPath() throws Exception {
+        String str =
+                "package org.simple \n" +
+                "rule xxx \n" +
+                "when \n" +
+                "  String()\n" +
+                "  Integer()\n" +
+                "  Long()\n" +
+                "then \n" +
+                "end  \n" +
+                "rule yyy \n" +
+                "when \n" +
+                "  String()\n" +
+                "  Integer()\n" +
+                "  Boolean()\n" +
+                "then \n" +
+                "end  \n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption(ForceEagerActivationOption.YES);
+
+        KieSession ksession = new KieHelper()
+                .addContent(str, ResourceType.DRL)
+                .build()
+                .newKieSession(conf, null);
+
+        final List list = new ArrayList();
+
+        AgendaEventListener agendaEventListener = new org.kie.api.event.rule.DefaultAgendaEventListener() {
+            public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) {
+                list.add(event.getMatch().getRule().getName());
+            }
+        };
+        ksession.addEventListener(agendaEventListener);
+
+        ksession.insert("test");
+        assertEquals(0, list.size());
+
+        ksession.insert(Boolean.TRUE);
+        assertEquals(0, list.size());
+
+        ksession.insert(1);
+        assertEquals(1, list.size());
+        assertEquals("yyy", list.get(0));
+    }
+
+    @Test
     public void testOneLazyAndOneImmediateSubPath() throws Exception {
         String str =
                 "package org.simple \n" +

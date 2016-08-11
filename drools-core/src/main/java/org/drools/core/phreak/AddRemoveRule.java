@@ -617,8 +617,23 @@ public class AddRemoveRule {
                           sm.getPathMemories().get(0) :
                           sm.getFirstDataDrivenPathMemory();
 
-        if ( pmem == null || (leftTuple == null && !pmem.isRuleLinked()) ) {
+        if ( pmem == null ) {
             return false;
+        }
+
+        if ( !streamMode && leftTuple == null && !pmem.isRuleLinked() ) {
+            pmem = null;
+            List<PathMemory> dataDrivenPmems = sm.getDataDrivenPathMemories();
+            // skip the first, we already know it isn't linked
+            for (int i = 1; i < dataDrivenPmems.size(); i++) {
+                if (dataDrivenPmems.get(i).isRuleLinked()) {
+                    pmem = dataDrivenPmems.get(i);
+                    break;
+                }
+            }
+            if ( pmem == null ) {
+                return false;
+            }
         }
 
         TupleSets<LeftTuple> leftTupleSets = new TupleSetsImpl<LeftTuple>();
