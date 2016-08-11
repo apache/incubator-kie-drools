@@ -263,38 +263,6 @@
     <mkdir dir="${install.home}/lib"/>
   	<get src="${jBPM.console.url}" dest="${install.home}/lib/jbpm-console-${jBPM.version}-${jboss.war.type}.war"  />
   </target>
-  <!-- temporary fix: updating hibernate version in wildfly to avoid bug in hibernate -->
-  <target name="check.wildfly">
-    <condition property="check.wildfly.property">
-      <equals arg1="${jboss.server.version}" arg2="wildfly-${jboss.server.wildfly.version}" />
-    </condition>
-  </target>
-  <target name="download.hibernate.check">
-    <echo message="Checking Hibernate download ..." />
-    <condition property="hibernate.not.available">
-      <or>
-    	<not>
-          <available file="${install.home}/lib/hibernate4/hibernate-core-4.3.11.Final.jar" />
-        </not>
-    	<not>
-          <available file="${install.home}/lib/hibernate4/hibernate-entitymanager-4.3.11.Final.jar" />
-        </not>
-       	<not>
-          <available file="${install.home}/lib/hibernate4/hibernate-envers-4.3.11.Final.jar" />
-        </not>
-      	<not>
-          <available file="${install.home}/lib/hibernate4/hibernate-infinispan-4.3.11.Final.jar" />
-        </not>
-      </or>
-    </condition>
-  </target>
-  <target name="download.hibernate" depends="download.hibernate.check" if="hibernate.not.available">
-    <mkdir dir="${install.home}/lib/hibernate4"/>
-    <get src="${hibernate4.download.url}/hibernate-core/4.3.11.Final/hibernate-core-4.3.11.Final.jar" dest="${install.home}/lib/hibernate4" />
-    <get src="${hibernate4.download.url}/hibernate-entitymanager/4.3.11.Final/hibernate-entitymanager-4.3.11.Final.jar" dest="${install.home}/lib/hibernate4" />
-    <get src="${hibernate4.download.url}/hibernate-envers/4.3.11.Final/hibernate-envers-4.3.11.Final.jar" dest="${install.home}/lib/hibernate4" />
-    <get src="${hibernate4.download.url}/hibernate-infinispan/4.3.11.Final/hibernate-infinispan-4.3.11.Final.jar" dest="${install.home}/lib/hibernate4" />
-  </target>
 	
   <!-- Download kie-server -->
   <target name="download.kie.server.check">
@@ -337,10 +305,6 @@
     <copy todir="${install.home}/target/jbpm-console-war/WEB-INF/classes" overwrite="true">
       <fileset dir="${install.home}/conf"/>
     </copy>
-  	<!-- copy user defined persistence configuration if exists -->
-  	<copy tofile="${install.home}/target/jbpm-console-war/WEB-INF/classes/META-INF/persistence.xml" overwrite="true" 
-  		file="${install.home}/db/jbpm-persistence-JPA2.xml" failonerror="false"/>
-
   	<!-- install dependencies -->
   	<antcall target="install.dependencies" />
     <zip basedir="${install.home}/target/jbpm-console-war"
@@ -363,16 +327,6 @@
           overwrite="true" />
     <copy file="${install.home}/auth/roles.properties"
           tofile="${jboss.server.conf.dir}/roles.properties"
-          overwrite="true" />
-  </target>
-  <!-- temporary fix: updating hibernate version in wildfly to avoid bug in hibernate -->
-  <target name="install.hibernate4.into.jboss" depends="check.wildfly,download.hibernate" if="check.wildfly.property">
-    <copy file="${install.home}/lib/hibernate4/hibernate-core-4.3.11.Final.jar" todir="${jboss.home}/modules/system/layers/base/org/hibernate/main" />
-    <copy file="${install.home}/lib/hibernate4/hibernate-entitymanager-4.3.11.Final.jar" todir="${jboss.home}/modules/system/layers/base/org/hibernate/main" />
-    <copy file="${install.home}/lib/hibernate4/hibernate-envers-4.3.11.Final.jar" todir="${jboss.home}/modules/system/layers/base/org/hibernate/main" />
-    <copy file="${install.home}/lib/hibernate4/hibernate-infinispan-4.3.11.Final.jar" todir="${jboss.home}/modules/system/layers/base/org/hibernate/main" />
-    <copy file="${install.home}/wildfly-hibernate4-main-module.xml"
-          tofile="${jboss.home}/modules/system/layers/base/org/hibernate/main/module.xml"
           overwrite="true" />
   </target>
   <!-- Install jBPM console -->
@@ -490,13 +444,13 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.hibernate4.into.jboss,install.kie-server.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
+  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.kie-server.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
 
   <!-- Install Demo (Eclipse) -->
   <target name="install.demo.eclipse" depends="install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
 
   <!-- Install Demo (No Eclipse) -->
-  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.hibernate4.into.jboss,install.kie-server.into.jboss" />
+  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.kie-server.into.jboss" />
   
   <!-- ############ START/STOP ############ -->
   <target name="start.h2.check">
@@ -533,7 +487,10 @@
       <arg value="--server-config=standalone-full.xml" />
       <arg value="-Dorg.kie.demo=true" />
       <arg value="-Dorg.kie.example=false" />
+      <arg value="-Dorg.kie.server.id=default-kieserver" />
       <arg value="-Dorg.kie.server.persistence.ds=java:jboss/datasources/jbpmDS" />
+      <arg value="-Dorg.kie.server.controller=http://localhost:8080/jbpm-console/rest/controller" />
+      <arg value="-Dorg.kie.server.location=http://localhost:8080/kie-server/services/rest/server" />
       <!--arg value="-Dorg.uberfire.nio.git.daemon.port=${org.uberfire.nio.git.daemon.port}" />
       <arg value="-Dorg.uberfire.nio.git.ssh.port=${org.uberfire.nio.git.ssh.port}" />
       <arg value="-Djboss.socket.binding.port-offset=${jboss.port.offset}" />
@@ -548,7 +505,10 @@
       <arg value="--server-config=standalone-full.xml" />
       <arg value="-Dorg.kie.demo=true" />
       <arg value="-Dorg.kie.example=false" />
+      <arg value="-Dorg.kie.server.id=default-kieserver" />
       <arg value="-Dorg.kie.server.persistence.ds=java:jboss/datasources/jbpmDS" />
+      <arg value="-Dorg.kie.server.controller=http://localhost:8080/jbpm-console/rest/controller" />
+      <arg value="-Dorg.kie.server.location=http://localhost:8080/kie-server/services/rest/server" />
       <!--arg value="-Dorg.uberfire.nio.git.daemon.port=${org.uberfire.nio.git.daemon.port}" />
       <arg value="-Dorg.uberfire.nio.git.ssh.port=${org.uberfire.nio.git.ssh.port}" />
       <arg value="-Djboss.socket.binding.port-offset=${jboss.port.offset}" />
