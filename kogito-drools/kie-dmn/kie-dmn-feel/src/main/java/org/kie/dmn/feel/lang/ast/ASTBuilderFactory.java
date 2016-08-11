@@ -116,7 +116,7 @@ public class ASTBuilderFactory {
         return new QuantifiedExpressionNode( ctx, quant, list, expr );
     }
 
-    public static InstanceOfNode newInstanceOfNode(ParserRuleContext ctx, BaseNode expr, QualifiedNameNode type) {
+    public static InstanceOfNode newInstanceOfNode(ParserRuleContext ctx, BaseNode expr, TypeNode type) {
         return new InstanceOfNode( ctx, expr, type );
     }
 
@@ -138,5 +138,9 @@ public class ASTBuilderFactory {
 
     public static DashNode newDashNode(ParserRuleContext ctx) {
         return new DashNode( ctx );
+    }
+
+    public static TypeNode newTypeNode(ParserRuleContext ctx) {
+        return new TypeNode( ctx );
     }
 }

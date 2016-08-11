@@ -17,11 +17,16 @@
 package org.kie.dmn.feel.lang.types;
 
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.runtime.FEELFunction;
+import org.kie.dmn.feel.lang.runtime.UnaryTest;
+import org.kie.dmn.feel.model.v1_1.List;
+
+import java.time.*;
+import java.util.Map;
 
 public enum BuiltInType implements Type {
 
     UNKNOWN("unknown"),
-    NULL("null"),
     NUMBER("number"),
     STRING("string"),
     DATE("date"),
@@ -29,7 +34,6 @@ public enum BuiltInType implements Type {
     DATE_TIME("date and time"),
     DURATION("duration"),
     BOOLEAN("boolean"),
-    RANGE("range"),
     FUNCTION("function"),
     LIST("list"),
     CONTEXT("context"),
@@ -50,5 +54,51 @@ public enum BuiltInType implements Type {
         return "Type{ " +
                name +
                " }";
+    }
+
+    public static Type determineTypeFromName( String name ) {
+        for( BuiltInType t : BuiltInType.values() ) {
+            if( t.getName().equals( name ) ) {
+                return t;
+            }
+        }
+        return UNKNOWN;
+    }
+
+    public static Type determineTypeFromInstance( Object o ) {
+        if( o == null ) {
+            return UNKNOWN;
+        } else if( o instanceof Number ) {
+            return NUMBER;
+        } else if( o instanceof String ) {
+            return STRING;
+        } else if( o instanceof LocalDate ) {
+            return DATE;
+        } else if( o instanceof LocalTime || o instanceof OffsetTime ) {
+            return TIME;
+        } else if( o instanceof ZonedDateTime || o instanceof OffsetDateTime || o instanceof LocalDateTime ) {
+            return DATE_TIME;
+        } else if( o instanceof Duration || o instanceof Period ) {
+            return DURATION;
+        } else if( o instanceof Boolean ) {
+            return BOOLEAN;
+        } else if( o instanceof UnaryTest ) {
+            return UNARY_TEST;
+        } else if( o instanceof FEELFunction ) {
+            return FUNCTION;
+        } else if( o instanceof List ) {
+            return LIST;
+        } else if( o instanceof Map ) {
+            return CONTEXT;
+        }
+        return UNKNOWN;
+    }
+
+    public static boolean isInstanceOf( Object o, Type t ) {
+        return determineTypeFromInstance( o ) == t;
+    }
+
+    public static boolean isInstanceOf( Object o, String name ) {
+        return determineTypeFromInstance( o ) == determineTypeFromName( name );
     }
 }
