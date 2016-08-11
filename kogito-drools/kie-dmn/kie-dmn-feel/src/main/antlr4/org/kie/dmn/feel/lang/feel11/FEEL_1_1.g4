@@ -248,7 +248,7 @@ unaryExpressionNotPlusMinus
 primary
     : literal                   #primaryLiteral
     | '(' expression ')'        #primaryParens
-    | qualifiedName (parameters| instance_key of_key type)? #primaryName
+    | qualifiedName (parameters)? #primaryName
     ;
 
 // #33 - #39
