@@ -18,7 +18,7 @@ package org.kie.dmn.feel.lang.types;
 
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.runtime.functions.BuiltInFunctions;
-import org.kie.dmn.feel.lang.runtime.functions.FEELFunction;
+import org.kie.dmn.feel.lang.runtime.FEELFunction;
 
 public class SymbolTable {
     private Scope builtInScope = new ScopeImpl( Scope.BUILT_IN, null );

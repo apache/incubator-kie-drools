@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
+import org.kie.dmn.feel.lang.runtime.FEELFunction;
+
 public class BuiltInFunctions {
 
     protected final static FEELFunction[] FUNCTIONS = new FEELFunction[]{

@@ -16,12 +16,9 @@
 
 package org.kie.dmn.feel.lang.runtime;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.kie.dmn.feel.lang.types.UnaryTest;
-import sun.jvm.hotspot.types.basic.BasicOopField;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
@@ -31,6 +28,7 @@ import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RunWith(Parameterized.class)
 public class FEELTest {
@@ -228,6 +226,34 @@ public class FEELTest {
                 { "some price in [ 80, 11, 90 ] satisfies price > 100", EMPTY_INPUT, Boolean.FALSE },
                 { "some x in [ 5, 6, 7 ], y in [ 10, 11, 6 ] satisfies x > y", EMPTY_INPUT, Boolean.TRUE },
                 { "every price in [ 80, 11, 90 ] satisfies price > 10", EMPTY_INPUT, Boolean.TRUE },
+                { "every price in [ 80, 11, 90 ] satisfies price > 70", EMPTY_INPUT, Boolean.FALSE },
+                { "some x in [ 5, 6, 7 ], y in [ 10, 11, 12 ] satisfies x < y", EMPTY_INPUT, Boolean.TRUE },
+
+                // contexts
+                { "{ first name : \"Bob\", birthday : date(\"1978-09-12\"), salutation : \"Hello \"+first name }", EMPTY_INPUT,
+                  new Context() {{
+                      addEntry( "first name", "Bob" );
+                      addEntry( "birthday", LocalDate.of(1978, 9, 12) );
+                      addEntry( "salutation", "Hello Bob" );
+                }} },
+                // nested contexts + qualified name
+                { "{ full name : { first name: \"Bob\", last name : \"Doe\" }, birthday : date(\"1978-09-12\"), salutation : \"Hello \"+full name.first name }", EMPTY_INPUT,
+                  new Context() {{
+                      addEntry( "full name", new Context() {{
+                          addEntry( "first name", "Bob" );
+                          addEntry( "last name", "Doe" );
+                      }} );
+                      addEntry( "birthday", LocalDate.of(1978, 9, 12) );
+                      addEntry( "salutation", "Hello Bob" );
+                  }} },
+
+                // for
+                {"for x in [ 10, 20, 30 ], y in [ 1, 2, 3 ] return x * y", EMPTY_INPUT,
+                 Arrays.asList( 10, 20, 30, 20, 40, 60, 30, 60, 90 ).stream().map( x -> BigDecimal.valueOf( x ) ).collect( Collectors.toList() ) },
+
+
+
+
 
 
 

@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.types;
+package org.kie.dmn.feel.lang.runtime;
 
-import java.util.function.Function;
+import org.kie.dmn.feel.lang.Symbol;
 
-@FunctionalInterface
-public interface UnaryTest extends Function<Object, Boolean> {
+public interface FEELFunction {
+
+    String getName();
+
+    Symbol getSymbol();
+
+    Object applyReflectively(Object[] params);
 
 }

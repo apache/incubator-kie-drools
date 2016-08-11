@@ -18,9 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.Symbol;
-import org.kie.dmn.feel.lang.runtime.functions.FEELFunction;
-import org.kie.dmn.feel.lang.types.FunctionSymbol;
+import org.kie.dmn.feel.lang.runtime.FEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

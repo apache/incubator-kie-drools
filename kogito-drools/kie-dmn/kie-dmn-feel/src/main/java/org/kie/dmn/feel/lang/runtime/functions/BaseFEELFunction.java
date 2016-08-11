@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.lang.runtime.functions;
 
 import org.kie.dmn.feel.lang.Symbol;
+import org.kie.dmn.feel.lang.runtime.FEELFunction;
 import org.kie.dmn.feel.lang.types.FunctionSymbol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
