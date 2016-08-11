@@ -59,8 +59,11 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of a RuleFlow process instance.
@@ -71,6 +74,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		org.jbpm.workflow.instance.NodeInstanceContainer {
 
 	private static final long serialVersionUID = 510l;
+	private static final Logger logger = LoggerFactory.getLogger(WorkflowProcessInstanceImpl.class);
 
 	private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
 
@@ -87,6 +91,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	private Object faultData;
 
 	private boolean signalCompletion = true;
+	
+	private String deploymentId;
 
     public NodeContainer getNodeContainer() {
 		return getWorkflowProcess();
@@ -457,6 +463,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			if (getState() != ProcessInstance.STATE_ACTIVE) {
 				return;
 			}
+			InternalRuntimeManager manager = (InternalRuntimeManager) getKnowledgeRuntime().getEnvironment().get("RuntimeManager");
+	        if (manager != null) {            
+	            // check if process instance is owned by the same manager as the one owning ksession
+	            if (!manager.getIdentifier().equals(getDeploymentId())) {	                
+	                logger.debug("Skipping signal on process instance " + getId() + " as it's owned by another deployment " +
+	                                                    getDeploymentId() + " != " + manager.getIdentifier());	                
+	                return;
+	            }
+	        }
 			List<NodeInstance> currentView = new ArrayList<NodeInstance>(this.nodeInstances);
 
 			try {
@@ -649,5 +664,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     public void setSignalCompletion(boolean signalCompletion) {
         this.signalCompletion = signalCompletion;
     }
-
+    
+    public String getDeploymentId() {
+        return deploymentId;
+    }
+    
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
+    }
 }

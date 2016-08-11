@@ -43,6 +43,7 @@ message ProcessInstance {
     optional int64 parent_process_instance_id = 12;
     optional string description = 15;
     optional bool signal_completion = 16 [default = true];
+    optional string deploymentId = 17;
 
     repeated SwimlaneContextInstance swimlane_context = 6;
     repeated NodeInstance node_instance = 7;

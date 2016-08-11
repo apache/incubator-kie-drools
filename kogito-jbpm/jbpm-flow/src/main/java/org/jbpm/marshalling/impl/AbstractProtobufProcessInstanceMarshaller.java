@@ -94,7 +94,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         if (workFlow.getDescription() != null) {
             _instance.setDescription(workFlow.getDescription());
         }
-        
+        if (workFlow.getDeploymentId() != null) {
+            _instance.setDeploymentId(workFlow.getDeploymentId());
+        }
         _instance.addAllCompletedNodeIds(workFlow.getCompletedNodeIds());
 
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) workFlow.getContextInstance( SwimlaneContext.SWIMLANE_SCOPE );
@@ -501,6 +503,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.setState( _instance.getState() );
         processInstance.setParentProcessInstanceId(_instance.getParentProcessInstanceId());
         processInstance.setSignalCompletion(_instance.getSignalCompletion());
+        processInstance.setDeploymentId(_instance.getDeploymentId());
         long nodeInstanceCounter = _instance.getNodeInstanceCounter();
         processInstance.setKnowledgeRuntime( wm.getKnowledgeRuntime() );
         processInstance.internalSetNodeInstanceCounter( nodeInstanceCounter );

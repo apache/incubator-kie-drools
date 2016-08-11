@@ -213,7 +213,7 @@ public class MigrationManager {
     			current = JPAKnowledgeService.newStatefulKnowledgeSession(currentManager.getEnvironment().getKieBase(), null, currentManager.getEnvironment().getEnvironment());
     			tobe = JPAKnowledgeService.newStatefulKnowledgeSession(toBeManager.getEnvironment().getKieBase(), null, toBeManager.getEnvironment().getEnvironment());
     			
-    			upgradeProcessInstance(current, tobe, migrationSpec.getProcessInstanceId(), migrationSpec.getToProcessId(), nodeMapping, em);
+    			upgradeProcessInstance(current, tobe, migrationSpec.getProcessInstanceId(), migrationSpec.getToProcessId(), nodeMapping, em, toBeManager.getIdentifier());
     			
     			em.flush();
 			} finally {
@@ -304,7 +304,7 @@ public class MigrationManager {
     		KieRuntime kruntime,
     		long processInstanceId,
     		String processId,
-    		Map<String, String> nodeMapping, EntityManager em) {
+    		Map<String, String> nodeMapping, EntityManager em, String deploymentId) {
     	if (nodeMapping == null) {
     		nodeMapping = new HashMap<String, String>();
     	}
@@ -328,6 +328,7 @@ public class MigrationManager {
 	        processInstance.setProcess(oldProcess);
 	        updateNodeInstances(processInstance, nodeMapping, (NodeContainer) process, em);
 	        processInstance.setKnowledgeRuntime((InternalKnowledgeRuntime) extractIfNeeded(kruntime));
+	        processInstance.setDeploymentId(deploymentId);
 	        processInstance.setProcess(process);
 	        processInstance.reconnect();
 		}
