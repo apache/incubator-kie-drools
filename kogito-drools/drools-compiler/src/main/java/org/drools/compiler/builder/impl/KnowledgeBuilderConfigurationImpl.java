@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -349,7 +350,7 @@ public class KnowledgeBuilderConfigurationImpl
         this.chainedProperties.mapStartsWith(dialectProperties,
                 "drools.dialect",
                 false);
-        setDefaultDialect((String) dialectProperties.remove(DefaultDialectOption.PROPERTY_NAME));
+        setDefaultDialect(dialectProperties.remove(DefaultDialectOption.PROPERTY_NAME));
 
         for (Map.Entry<String, String> entry : dialectProperties.entrySet()) {
             String str = entry.getKey();
@@ -557,6 +558,11 @@ public class KnowledgeBuilderConfigurationImpl
 
     public AccumulateFunction getAccumulateFunction(String identifier) {
         return this.accumulateFunctions.get(identifier);
+    }
+
+    // Used by droolsjbpm-tools
+    public Collection<String> getAccumulateFunctionNames() {
+        return this.accumulateFunctions.keySet();
     }
 
     @SuppressWarnings("unchecked")
