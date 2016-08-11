@@ -15,6 +15,9 @@
  */
 package org.jbpm.runtime.manager.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.tx.DestroySessionTransactionSynchronization;
 import org.jbpm.runtime.manager.impl.tx.DisposeSessionTransactionSynchronization;
@@ -48,7 +51,14 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     private SessionFactory factory;
     private TaskServiceFactory taskServiceFactory;
     
-    private static ThreadLocal<RuntimeEngine> local = new ThreadLocal<RuntimeEngine>();
+    private static ThreadLocal<Map<String, RuntimeEngine>> local = new ThreadLocal<Map<String, RuntimeEngine>>() {
+
+        @Override
+        protected Map<String, RuntimeEngine> initialValue() {
+            return new HashMap<String, RuntimeEngine>();
+        }
+        
+    };
     
     public PerRequestRuntimeManager(RuntimeEnvironment environment, SessionFactory factory, TaskServiceFactory taskServiceFactory, String identifier) {
         super(environment, identifier);
@@ -64,8 +74,8 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     	}
     	checkPermission();
     	RuntimeEngine runtime = null;
-        if (local.get() != null) {
-        	RuntimeEngine engine = local.get();
+        if (local.get().get(identifier) != null) {
+        	RuntimeEngine engine = local.get().get(identifier);
         	// check if engine is not already disposed as afterCompletion might be issued from another thread
         	if (engine != null && ((RuntimeEngineImpl) engine).isDisposed()) {
         		return null;
@@ -87,7 +97,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     		runtime = new RuntimeEngineImpl(context, new PerRequestInitializer());
 	        ((RuntimeEngineImpl) runtime).setManager(this);
     	}
-        local.set(runtime);
+        local.get().put(identifier, runtime);
         return runtime;
     }
     
@@ -108,7 +118,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     	if (isClosed()) {
     		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
     	}
-        RuntimeEngine runtimeInUse = local.get();
+        RuntimeEngine runtimeInUse = local.get().get(identifier);
         if (runtimeInUse == null || runtimeInUse.getKieSession().getIdentifier() != ksession.getIdentifier()) {
             throw new IllegalStateException("Invalid session was used for this context " + context);
         }
@@ -120,7 +130,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
     	}
     	if (canDispose(runtime)) {
-            local.set(null);
+    	    local.get().remove(identifier);
             try {
                 if (canDestroy(runtime)) {
                     runtime.getKieSession().destroy();
@@ -141,7 +151,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     @Override
     public void softDispose(RuntimeEngine runtimeEngine) {        
         super.softDispose(runtimeEngine);
-        local.set(null);
+        local.get().remove(identifier);
     }
 
     @Override
@@ -186,7 +196,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     	
     	@Override
     	public KieSession initKieSession(Context<?> context, InternalRuntimeManager manager, RuntimeEngine engine) {
-    		RuntimeEngine inUse = local.get();
+    		RuntimeEngine inUse = local.get().get(identifier);
     		if (inUse != null && ((RuntimeEngineImpl) inUse).internalGetKieSession() != null) {
                 return inUse.getKieSession();
             }

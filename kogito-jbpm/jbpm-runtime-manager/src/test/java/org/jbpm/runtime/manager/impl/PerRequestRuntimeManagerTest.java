@@ -517,4 +517,45 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         manager2.disposeRuntimeEngine(runtime2);
         manager2.close();
     }
+    
+    @Test
+    public void testMultiplePerRequestManagerFromSingleThread() {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-IntermediateCatchEventSignalWithRef.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment, "first");        
+        assertNotNull(manager);
+        
+        RuntimeEnvironment environment2 = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        RuntimeManager manager2 = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment2, "second");        
+        assertNotNull(manager2);
+        // start first process instance with first manager
+        RuntimeEngine runtime1 = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession1 = runtime1.getKieSession();
+        assertNotNull(ksession1);                 
+        ProcessInstance processInstance = ksession1.startProcess("IntermediateCatchEventWithRef");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        // start another process instance of the same process just owned by another manager
+        RuntimeEngine runtime2 = manager2.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession2 = runtime2.getKieSession();
+        assertNotNull(ksession2);         
+        ProcessInstance processInstance2 = ksession2.startProcess("UserTask");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance2.getState());
+        
+        manager.disposeRuntimeEngine(runtime1);
+        manager.disposeRuntimeEngine(runtime2);
+        
+        // close manager which will close session maintained by the manager
+        manager.close();
+        manager2.close();
+    }
 }
