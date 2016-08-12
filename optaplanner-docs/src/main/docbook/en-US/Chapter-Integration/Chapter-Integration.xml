@@ -26,8 +26,8 @@
 
       <listitem>
         <para>To expose the Solver as a REST Service that reads the planning problem and responds with the best
-        solution, annotate the domain POJO's with XStream, JAXB or Jackson annotations and hook the <literal>Solver</literal> in
-        Camel or RESTEasy.</para>
+        solution, annotate the domain POJO's with XStream, JAXB or Jackson annotations and hook the
+        <literal>Solver</literal> in Camel or RESTEasy.</para>
       </listitem>
     </itemizedlist>
 
@@ -323,15 +323,15 @@ public class Schedule {
       <para>Enrich the domain POJO's (solution, entities and problem facts) with Jackson annotations to serialize them
       to/from JSON.</para>
 
-      <para>Add a dependency to the <literal>optaplanner-persistence-jackson</literal> jar to take advantage of these extra
-      integration features:</para>
+      <para>Add a dependency to the <literal>optaplanner-persistence-jackson</literal> jar to take advantage of these
+      extra integration features:</para>
 
       <section xml:id="jacksonMarshallingAScore">
         <title>JAXB: Marshalling a <literal>Score</literal></title>
 
-        <para>When a <literal>Score</literal> is marshalled to JSON by the default Jackson configuration, it
-          fails. To fix that, configure a <literal>ScoreJacksonJsonSerializer</literal> and the appropriate
-          <literal>ScoreJacksonJsonDeserializer</literal>:</para>
+        <para>When a <literal>Score</literal> is marshalled to JSON by the default Jackson configuration, it fails. To
+        fix that, configure a <literal>ScoreJacksonJsonSerializer</literal> and the appropriate
+        <literal>ScoreJacksonJsonDeserializer</literal>:</para>
 
         <programlisting language="java">@PlanningSolution
 public class CloudBalance {
@@ -530,7 +530,7 @@ public class Schedule {
     <para>A good Planner implementation beats any good human planner for non-trivial datasets. Many human planners fail
     to accept this, often because they feel threatened by an automated system.</para>
 
-    <para>But despite that, both can benefit if the human planner acts as supervisor to Planner:</para>
+    <para>But despite that, both can benefit if the human planner becomes the supervisor of Planner:</para>
 
     <itemizedlist>
       <listitem>
@@ -584,5 +584,277 @@ public class Schedule {
         <imagedata fileref="images/Chapter-Integration/keepTheUserInControl.png"/>
       </imageobject>
     </mediaobject>
+  </section>
+
+  <section xml:id="sizingHardwareAndSoftware">
+    <title>Sizing Hardware and Software</title>
+
+    <para>Before sizing a Planner service, first understand the typical behaviour of a <literal>Solver.solve()</literal>
+    call:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Integration/sizingHardware.png"/>
+      </imageobject>
+    </mediaobject>
+
+    <para>Understand these guidelines to decide the hardware for a Planner service:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">RAM memory</emphasis>: Provision plenty, but no need to provide more.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>The problem dataset, loaded before Planner is called, often consumes the most memory. It depends on
+            the problem scale.</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>For example, in the Machine Reassignment example some datasets use over 1GB in memory. But in most
+                examples, they use just few MB.</para>
+              </listitem>
+
+              <listitem>
+                <para>If this is a problem, review the domain class structure: remove classes or fields that Planner
+                doesn't need during solving.</para>
+              </listitem>
+
+              <listitem>
+                <para>Planner usually has up to 3 solution instances: the internal working solution, the best solution
+                and the old best solution (when it's being replaced). However, these are all a <link
+                linkend="cloningASolution">planning clone</link> of each other, so many problem fact instances are
+                shared between those solution instances.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>During solving, the memory is very volatile, because solving creates many short-lived objects. The
+            Garbage Collector deletes these in bulk and therefore needs some heap space as a buffer.</para>
+          </listitem>
+
+          <listitem>
+            <para>The maximum size of the JVM heap space can be in 3 states:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para><emphasis role="bold">Insufficient</emphasis>: An <literal>OutOfMemoryException</literal> is
+                thrown (often because the Garbage Collector is using more than 98% of the CPU time).</para>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">Narrow</emphasis>: The heap buffer for those short-lived instances is too
+                small, therefore the Garbage Collector needs to run more than it would like to, which causes a
+                performance loss.</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>Profiling shows that in the heap chart, the used heap space frequently touches the max heap
+                    space during solving. It also shows that the Garbage Collector has a significant CPU usage
+                    impact.</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>Adding more heap space increases the <link linkend="scoreCalculationSpeed">score calculation
+                    speed</link>.</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+
+              <listitem>
+                <para><emphasis role="bold">Plenty</emphasis>: There is enough heap space. The Garbage Collector is
+                active, but its CPU usage is low.</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>Adding more heap space does <emphasis>not</emphasis> increase performance.</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>Usually, this is around 300 to 500MB above the dataset size, <emphasis>regardless of the
+                    problem scale</emphasis> (except with <link linkend="nearbySelection">nearby selection</link> and
+                    caching move selector, neither are used by default).</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">CPU power</emphasis>: More is better.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Improving CPU speed directly increases the <link linkend="scoreCalculationSpeed">score calculation
+            speed</link>.</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>If the CPU power is twice as fast, it takes half the time to find the same result. However, this
+                does not guarantee that it finds a better result in the same time, nor that it finds a similar result
+                for a problem twice as a big in the same time.</para>
+              </listitem>
+
+              <listitem>
+                <para>Increasing CPU power usually does not resolve scaling issues, because planning problems scale
+                exponentially. Power tweaking the solver configuration has far better results for scaling issues than
+                throwing hardware at it.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>During the <literal>solve()</literal> method, the CPU power will max out until it returns (except in
+            <link linkend="daemon">daemon mode</link> or if your <link
+            linkend="SolverEventListener">SolverEventListener</link> writes the best solution to disk or the
+            network).</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">Number of CPU cores</emphasis>: 1 CPU core per active Solver, plus at least one 1
+        for the operating system.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>So in a multitenant application, which has 1 Solver per tenant, this means 1 CPU core per tenant,
+            unless the number of solver threads is limited, as that limits the number of tenants being solved in
+            parallel.</para>
+          </listitem>
+
+          <listitem>
+            <para>With Partitioned Search, presume 1 CPU core per partition (per active tenant), unless the number of
+            partition threads is limited.</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>To reduce the number of used cores, it can be better to reduce the partition threads (so solve
+                some partitions sequentially) than to reduce the number of partitions.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>In use cases with many tenants (such as scheduling Software as a Service) or many partitions, it might
+            not be affordable to provision that many CPU's.</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Reduce the number of active Solvers at a time. For example: give each tenant only 1 minute of
+                machine time and use a <literal>ExecutorService</literal> with a fixed thread pool to queue
+                requests.</para>
+              </listitem>
+
+              <listitem>
+                <para>Distribute the Solver runs across the day (or night). This is especially an opportunity in SaaS
+                that's used across the globe, due to timezones: UK and India can use the same CPU core when scheduling
+                at night.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>The SolverManager will take care of the orchestration, especially in those underfunded environments in
+            which solvers (and partitions) are forced to share CPU cores or wait in line.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">I/O (network, disk, ...)</emphasis>: Not used during solving.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Planner is not a web server: a solver thread does not block (unlike a servlet thread), each one fully
+            drains a CPU.</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>A web server can handle 24 active servlets threads with 8 cores without performance loss, because
+                most servlets threads are blocking on I/O.</para>
+              </listitem>
+
+              <listitem>
+                <para>However, 24 active solver threads with 8 cores will cause each solver's <link
+                linkend="scoreCalculationSpeed">score calculation speed</link> to be 3 times slower, causing a big
+                performance loss.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>Note that calling any I/O during solving, for example a remote service in your score calculation,
+            causes a huge performance loss because it's called thousands of times per second, so it should complete in
+            microseconds. So no good implementation does that.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+    </itemizedlist>
+
+    <para>Keep these guidelines in mind when selecting and configuring the software. See <link
+    xlink:href="http://www.optaplanner.org/blog/archive.html">our blog archive</link> for the details of our
+    experiments, which use our diverse set of examples. Your mileage may vary.</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Operating System</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>No experimentally proven advice yet (but prefer Linux anyway).</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>JDK</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Version: Java 7 can be between 10% and 25% faster than Java 6. But Java 8 however is usually not
+            significantly faster than Java 7.</para>
+          </listitem>
+
+          <listitem>
+            <para>Garbage Collector: ParallelGC (the default in Java 8) can be potentially between 5% and 35% faster
+            than G1GC (the default in Java 9). Unlike web servers, Planner needs a GC focused on throughput, not
+            latency. Use <literal>-XX:+UseParallelGC</literal> to turn on ParallelGC.</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>Logging can have a severe impact on performance.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Debug logging <literal>org.drools</literal> can reduce performance by a factor of 7.</para>
+          </listitem>
+
+          <listitem>
+            <para>Debug logging <literal>org.optaplanner</literal> can be between 0% and 15% slower than info logging.
+            Trace logging can be between 5% and 70% slower than info logging.</para>
+          </listitem>
+
+          <listitem>
+            <para>Synchronous logging to a file has an additional significant impact for debug and trace logging (but
+            not for info logging).</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>Avoid a cloud environment in which you share your CPU core(s) with other virtual machines or containers.
+        Performance (and therefore solution quality) can be unreliable when the available CPU power varies
+        greatly.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Keep in mind that the perfect hardware/software environment will probably <emphasis>not</emphasis> solve
+    scaling issues (even Moore's law is too slow). There is no need to follow these guidelines to the letter.</para>
   </section>
 </chapter>
