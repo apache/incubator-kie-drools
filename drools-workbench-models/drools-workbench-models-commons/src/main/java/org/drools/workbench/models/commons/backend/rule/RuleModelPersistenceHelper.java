@@ -15,16 +15,6 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.drools.core.util.DateUtils;
@@ -39,6 +29,16 @@ import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
 import org.drools.workbench.models.datamodel.rule.FieldNatureType;
 import org.drools.workbench.models.datamodel.rule.RuleModel;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 class RuleModelPersistenceHelper {
 
@@ -119,7 +119,7 @@ class RuleModelPersistenceHelper {
             }
 
         } else if ( DataType.TYPE_STRING.equals( dataType ) ) {
-            if ( value.startsWith( "\"" ) ) {
+            if ( isStringLiteral( value ) ) {
                 return FieldNatureType.TYPE_LITERAL;
             } else {
                 return FieldNatureType.TYPE_FORMULA;
@@ -204,6 +204,28 @@ class RuleModelPersistenceHelper {
         }
 
         return nature;
+    }
+
+    private static boolean isStringLiteral( final String value ) {
+        boolean escape = false;
+        boolean inString = false;
+        for ( char c : value.toCharArray() ) {
+            if ( escape ) {
+                escape = false;
+                continue;
+            }
+            if ( !inString ) {
+                if ( !( c == ' ' || c == '\t' || c == '"' ) ) {
+                    return false;
+                }
+            }
+            if ( c == '"' ) {
+                inString = !inString;
+            } else {
+                escape = c == '\\';
+            }
+        }
+        return true;
     }
 
     static ModelField[] findFields( final RuleModel m,
