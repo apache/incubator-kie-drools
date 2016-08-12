@@ -266,8 +266,11 @@ public class FEELTest {
                 {"null instance of unknown", EMPTY_INPUT, Boolean.TRUE },
                 {"duration instance of function", EMPTY_INPUT, Boolean.TRUE },
 
+                // path expressions
+                {"{ full name: { first name: \"John\", last name: \"Doe\" } }.full name.last name", EMPTY_INPUT, "Doe" },
 
-                //                { "", EMPTY_INPUT,  },
+                // function definition
+//                {"function( person's age ) person's age > 18", EMPTY_INPUT, }
 
         };
         return Arrays.asList( cases );

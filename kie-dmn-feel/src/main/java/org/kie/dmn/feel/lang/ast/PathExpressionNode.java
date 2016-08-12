@@ -17,12 +17,18 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.util.EvalHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PathExpressionNode
         extends BaseNode {
 
-    private BaseNode    expression;
-    private BaseNode    name;
+    private static final Logger logger = LoggerFactory.getLogger( PathExpressionNode.class );
+
+    private BaseNode expression;
+    private BaseNode name;
 
     public PathExpressionNode(ParserRuleContext ctx, BaseNode expression, BaseNode name) {
         super( ctx );
@@ -44,5 +50,23 @@ public class PathExpressionNode
 
     public void setName(BaseNode name) {
         this.name = name;
+    }
+
+    @Override
+    public Object evaluate(EvaluationContext ctx) {
+        try {
+            Object o = this.expression.evaluate( ctx );
+            if ( name instanceof NameRefNode ) {
+                o = EvalHelper.getValue( o, name.getText() );
+            } else if ( name instanceof QualifiedNameNode ) {
+                for ( NameRefNode nr : ((QualifiedNameNode) name).getParts() ) {
+                    o = EvalHelper.getValue( o, nr.getText() );
+                }
+            }
+            return o;
+        } catch ( Exception e ) {
+            logger.error( "Error evaluating path expression: " + expression.getText() + "." + name.getText(), e );
+        }
+        return null;
     }
 }
