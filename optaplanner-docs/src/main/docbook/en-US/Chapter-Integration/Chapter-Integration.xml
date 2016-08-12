@@ -612,7 +612,7 @@ public class Schedule {
             <itemizedlist>
               <listitem>
                 <para>For example, in the Machine Reassignment example some datasets use over 1GB in memory. But in most
-                examples, they use just few MB.</para>
+                examples, they use just a few MB.</para>
               </listitem>
 
               <listitem>
