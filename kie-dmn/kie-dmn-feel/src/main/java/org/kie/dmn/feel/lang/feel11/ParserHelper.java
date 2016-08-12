@@ -60,6 +60,23 @@ public class ParserHelper {
         this.currentName.pop();
     }
 
+    public void recoverScope() {
+        recoverScope( currentName.peek() );
+    }
+
+    public void recoverScope( String name ) {
+        Scope s = this.currentScope.getChildScopes().get( name );
+        if( s != null ) {
+            currentScope = s;
+        } else {
+            pushScope();
+        }
+    }
+
+    public void dismissScope() {
+        popScope();
+    }
+
     public void defineVariable(ParserRuleContext ctx) {
         defineVariable( getOriginalText( ctx ) );
     }

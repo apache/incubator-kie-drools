@@ -23,6 +23,13 @@ grammar FEEL_1_1;
     private boolean isKeyword( Keywords k ) {
         return k.symbol.equals( _input.LT(1).getText() );
     }
+
+    private String getOriginalText( ParserRuleContext ctx ) {
+        int a = ctx.start.getStartIndex();
+        int b = ctx.stop.getStopIndex();
+        Interval interval = new Interval(a,b);
+        return ctx.getStart().getInputStream().getText(interval);
+    }
 }
 
 /**************************
@@ -72,8 +79,7 @@ positionalParameters
 
 // #45
 pathExpression
-    // might need to change boxedExpression by expression
-    : expr=boxedExpression '.' name=nameRef
+    : expr=boxedExpression '.' {helper.recoverScope();} name=qualifiedName {helper.dismissScope();}
     ;
 
 // #46
@@ -241,8 +247,8 @@ unaryExpression
 	;
 
 unaryExpressionNotPlusMinus
-	:	not_key unaryExpression  #logicalNegation
-	|   primary                #uenpmPrimary
+	:	not_key unaryExpression        #logicalNegation
+	|   primary ('.' qualifiedName)?   #uenpmPrimary
 	;
 
 primary
@@ -296,7 +302,10 @@ interval
 
 // #20
 qualifiedName
-    : nameRef ( '.' nameRef )*
+@init {
+    String name = null;
+}
+    : n1=nameRef { name = getOriginalText( $n1.ctx ); } ( '.' {helper.recoverScope( name );} n2=nameRef {name=getOriginalText( $n2.ctx ); helper.dismissScope();} )*
     ;
 
 nameRef
