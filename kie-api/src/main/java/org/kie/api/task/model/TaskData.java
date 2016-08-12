@@ -20,6 +20,7 @@ package org.kie.api.task.model;
 import java.io.Externalizable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface TaskData extends Externalizable {
 
@@ -68,5 +69,9 @@ public interface TaskData extends Externalizable {
     List<Attachment> getAttachments();
 
     long getParentId();
+    
+    Map<String, Object> getTaskInputVariables();
+    
+    Map<String, Object> getTaskOutputVariables();
 
 }

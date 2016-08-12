@@ -19,6 +19,7 @@ package org.kie.internal.task.api.model;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
@@ -153,5 +154,9 @@ public interface InternalTaskData extends TaskData {
     long getParentId();
 
     void setParentId(long parentId);
+    
+    void setTaskInputVariables(Map<String, Object> taskInputVariables);
+    
+    void setTaskOutputVariables(Map<String, Object> taskOutputVariables);
 
 }

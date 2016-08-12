@@ -50,4 +50,6 @@ public interface TaskContentService {
     void removeMarshallerContext(String ownerId);
     
     ContentMarshallerContext getMarshallerContext(Task task);
+    
+    Task loadTaskVariables(Task task);
 }

@@ -58,6 +58,21 @@
         "old": "method parameter void org.kie.api.runtime.ClassObjectFilter::<init>(===java.lang.Class===)",
         "new": "method parameter void org.kie.api.runtime.ClassObjectFilter::<init>(===java.lang.Class<?>===)",
         "justification": "Using generics is generally preferable."
+      },
+      {
+         "code": "java.method.addedToInterface",
+         "new": "method org.kie.api.task.model.Task org.kie.api.task.TaskContext::loadTaskVariables(org.kie.api.task.model.Task)",
+         "justification": "Allows to load task variables (both input and output) for given task"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method java.util.Map<java.lang.String, java.lang.Object> org.kie.api.task.model.TaskData::getTaskInputVariables()",
+        "justification": "Provides access to task input variables directly from a task"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method java.util.Map<java.lang.String, java.lang.Object> org.kie.api.task.model.TaskData::getTaskOutputVariables()",
+        "justification": "Provides access to task output variables directly from a task"
       }
     ]
   }
