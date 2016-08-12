@@ -22,9 +22,9 @@ public class PathExpressionNode
         extends BaseNode {
 
     private BaseNode    expression;
-    private NameRefNode name;
+    private BaseNode    name;
 
-    public PathExpressionNode(ParserRuleContext ctx, BaseNode expression, NameRefNode name) {
+    public PathExpressionNode(ParserRuleContext ctx, BaseNode expression, BaseNode name) {
         super( ctx );
         this.expression = expression;
         this.name = name;
@@ -38,11 +38,11 @@ public class PathExpressionNode
         this.expression = expression;
     }
 
-    public NameRefNode getName() {
+    public BaseNode getName() {
         return name;
     }
 
-    public void setName(NameRefNode name) {
+    public void setName(BaseNode name) {
         this.name = name;
     }
 }

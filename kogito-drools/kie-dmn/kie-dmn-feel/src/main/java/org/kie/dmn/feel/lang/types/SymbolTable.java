@@ -20,6 +20,8 @@ import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.runtime.functions.BuiltInFunctions;
 import org.kie.dmn.feel.lang.runtime.FEELFunction;
 
+import java.util.stream.Stream;
+
 public class SymbolTable {
     private Scope builtInScope = new ScopeImpl( Scope.BUILT_IN, null );
 
@@ -31,10 +33,9 @@ public class SymbolTable {
         // the following automatically adds the GLOBAL scope as a child to the built-in scope
         new ScopeImpl( Scope.GLOBAL, builtInScope );
 
-        // pre-loads all the built in functions
-        for ( FEELFunction f : BuiltInFunctions.getFunctions() ) {
-            builtInScope.define( f.getSymbol() );
-        }
+        // pre-loads all the built in functions and types
+        Stream.of( BuiltInFunctions.getFunctions() ).forEach( f -> builtInScope.define( f.getSymbol() ) );
+        Stream.of( BuiltInType.values() ).forEach( t -> builtInScope.define( t.getSymbol() ) );
     }
 
     public Scope getBuiltInScope() {

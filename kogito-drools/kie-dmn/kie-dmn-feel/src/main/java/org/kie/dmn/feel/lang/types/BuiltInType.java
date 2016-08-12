@@ -16,6 +16,7 @@
 
 package org.kie.dmn.feel.lang.types;
 
+import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.runtime.FEELFunction;
 import org.kie.dmn.feel.lang.runtime.UnaryTest;
@@ -40,14 +41,18 @@ public enum BuiltInType implements Type {
     UNARY_TEST("unary test");
 
     private final String name;
+    private final BuiltInTypeSymbol symbol;
 
     BuiltInType(String name) {
         this.name = name;
+        this.symbol = new BuiltInTypeSymbol( name, this );
     }
 
     public String getName() {
         return name;
     }
+
+    public Symbol getSymbol() { return symbol; }
 
     @Override
     public String toString() {

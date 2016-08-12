@@ -1001,6 +1001,51 @@ public class FEELParserTest {
         assertThat( named.getExpression().getText(), is( "\"Unique\"" ) );
     }
 
+    @Test
+    public void testContextPathExpression() {
+        String inputExpression = "{ x : \"foo\" }.x";
+        BaseNode pathBase = parse( inputExpression );
+
+        assertThat( pathBase, is( instanceOf( PathExpressionNode.class ) ) );
+        assertThat( pathBase.getText(), is( inputExpression ) );
+
+        PathExpressionNode pathExpr = (PathExpressionNode) pathBase;
+        assertThat( pathExpr.getExpression(), is( instanceOf( ContextNode.class ) ) );
+        assertThat( pathExpr.getExpression().getText(), is( "{ x : \"foo\" }" ) );
+        assertThat( pathExpr.getName(), is( instanceOf( NameRefNode.class ) ) );
+        assertThat( pathExpr.getName().getText(), is( "x" ) );
+    }
+
+    @Test
+    public void testContextPathExpression2() {
+        String inputExpression = "{ x : { y : \"foo\" } }.x.y";
+        BaseNode pathBase = parse( inputExpression );
+
+        assertThat( pathBase, is( instanceOf( PathExpressionNode.class ) ) );
+        assertThat( pathBase.getText(), is( inputExpression ) );
+
+        PathExpressionNode pathExpr = (PathExpressionNode) pathBase;
+        assertThat( pathExpr.getExpression(), is( instanceOf( ContextNode.class ) ) );
+        assertThat( pathExpr.getExpression().getText(), is( "{ x : { y : \"foo\" } }" ) );
+        assertThat( pathExpr.getName(), is( instanceOf( QualifiedNameNode.class ) ) );
+        assertThat( pathExpr.getName().getText(), is( "x.y" ) );
+    }
+
+    @Test
+    public void testContextPathExpression3() {
+        String inputExpression = "{ first name : \"bob\" }.first name";
+        BaseNode pathBase = parse( inputExpression );
+
+        assertThat( pathBase, is( instanceOf( PathExpressionNode.class ) ) );
+        assertThat( pathBase.getText(), is( inputExpression ) );
+
+        PathExpressionNode pathExpr = (PathExpressionNode) pathBase;
+        assertThat( pathExpr.getExpression(), is( instanceOf( ContextNode.class ) ) );
+        assertThat( pathExpr.getExpression().getText(), is( "{ first name : \"bob\" }" ) );
+        assertThat( pathExpr.getName(), is( instanceOf( NameRefNode.class ) ) );
+        assertThat( pathExpr.getName().getText(), is( "first name" ) );
+    }
+
     private void assertLocation(String inputExpression, BaseNode number) {
         assertThat( number.getText(), is( inputExpression ) );
         assertThat( number.getStartChar(), is( 0 ) );
