@@ -15,16 +15,6 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.naming.InitialContext;
-import javax.transaction.UserTransaction;
-
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -80,6 +70,15 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.naming.InitialContext;
+import javax.transaction.UserTransaction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class ActivityTest extends JbpmBpmn2TestCase {
@@ -366,7 +365,6 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         ksession.addEventListener(new AgendaEventListener() {
             public void matchCreated(MatchCreatedEvent event) {
-                ksession.fireAllRules();
             }
 
             public void matchCancelled(MatchCancelledEvent event) {
