@@ -28,6 +28,7 @@ import org.jbpm.services.task.rule.TaskRuleService;
 import org.kie.api.task.model.Task;
 import org.kie.internal.command.Context;
 import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 
 /**
@@ -71,6 +72,8 @@ public class CompleteTaskCommand extends UserGroupCallbackTaskCommand<Void> {
         
         Task task = context.getTaskQueryService().getTaskInstanceById(taskId);        
         context.getTaskRuleService().executeRules(task, userId, data, TaskRuleService.COMPLETE_TASK_SCOPE);
+        
+        ((InternalTaskData)task.getTaskData()).setTaskOutputVariables(data);
         
         TaskInstanceService instanceService = context.getTaskInstanceService();
         instanceService.complete(taskId, userId, data);

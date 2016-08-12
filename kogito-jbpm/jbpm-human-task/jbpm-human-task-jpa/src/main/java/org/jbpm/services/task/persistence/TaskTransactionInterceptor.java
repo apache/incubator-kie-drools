@@ -153,6 +153,11 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
 			public UserGroupCallback getUserGroupCallback() {
 				return null;
 			}
+
+            @Override
+            public Task loadTaskVariables(Task task) {
+                return task;
+            }
 		};
 	}
 	

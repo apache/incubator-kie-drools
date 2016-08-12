@@ -106,6 +106,7 @@ public class AddTaskCommand extends UserGroupCallbackTaskCommand<Long> {
 	    if (data != null) {
 	    	taskId = context.getTaskInstanceService().addTask(taskImpl, data);
         } else {
+            ((InternalTaskData)taskImpl.getTaskData()).setTaskInputVariables(params);
         	taskId = context.getTaskInstanceService().addTask(taskImpl, params);
         }      
     	

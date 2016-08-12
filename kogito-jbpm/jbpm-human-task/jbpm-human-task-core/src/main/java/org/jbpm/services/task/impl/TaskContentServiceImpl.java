@@ -16,6 +16,7 @@
 package org.jbpm.services.task.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,7 +87,7 @@ public class TaskContentServiceImpl implements TaskContentService {
             persistenceContext.persistContent(outputContent);
             contentId = outputContentId;
         }
-        
+        ((InternalTaskData)task.getTaskData()).setTaskOutputVariables(params);
         taskEventSupport.fireAfterTaskOutputVariablesChanged(task, context, params);
         
         return contentId;
@@ -140,5 +141,44 @@ public class TaskContentServiceImpl implements TaskContentService {
 
     public ContentMarshallerContext getMarshallerContext(Task task) {
         return TaskContentRegistry.get().getMarshallerContext(task);
+    }
+
+    @Override
+    public Task loadTaskVariables(Task task) {
+        // load input
+        if (task.getTaskData().getTaskInputVariables() == null) {
+            Map<String, Object> input = loadContentData(task.getTaskData().getDocumentContentId(), task);
+            ((InternalTaskData)task.getTaskData()).setTaskInputVariables(input);
+        }
+        // load output
+        if (task.getTaskData().getTaskOutputVariables() == null) {
+            Map<String, Object> output = loadContentData(task.getTaskData().getOutputContentId(), task);
+            ((InternalTaskData)task.getTaskData()).setTaskOutputVariables(output);
+        }
+        return task;
+    }
+    
+    @SuppressWarnings("unchecked")
+    protected Map<String, Object> loadContentData(Long contentId, Task task) {
+        
+        if (contentId != null) {           
+            Map<String, Object> data = null;
+            Content contentById = getContentById(contentId);
+            
+            if (contentById != null) {
+                ContentMarshallerContext mContext = getMarshallerContext(task);
+                Object unmarshalledObject = ContentMarshallerHelper.unmarshall(contentById.getContent(), mContext.getEnvironment(), mContext.getClassloader());
+                if (!(unmarshalledObject instanceof Map)) {            
+                    data = new HashMap<String, Object>();
+                    data.put("Content", unmarshalledObject);
+        
+                } else {
+                    data = (Map<String, Object>) unmarshalledObject;
+                }
+                
+                return data;
+            }  
+        }
+        return null;
     }
 }

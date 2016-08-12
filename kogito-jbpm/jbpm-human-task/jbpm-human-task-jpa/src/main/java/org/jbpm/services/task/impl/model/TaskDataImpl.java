@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -111,6 +112,31 @@ public class TaskDataImpl implements InternalTaskData {
     @JoinColumn(name = "TaskData_Attachments_Id", nullable = true)
     @OrderBy("id ASC")
     private List<Attachment> attachments = Collections.emptyList();
+   
+
+    // transient task variables for improved access
+    private transient Map<String, Object> taskInputVariables;
+    private transient Map<String, Object> taskOutputVariables;
+    
+    @Override
+    public Map<String, Object> getTaskInputVariables() {
+        return taskInputVariables;
+    }
+
+    @Override
+    public void setTaskInputVariables(Map<String, Object> taskInputVariables) {
+        this.taskInputVariables = taskInputVariables;
+    }
+
+    @Override
+    public Map<String, Object> getTaskOutputVariables() {
+        return taskOutputVariables;
+    }
+
+    @Override
+    public void setTaskOutputVariables(Map<String, Object> taskOutputVariables) {
+        this.taskOutputVariables = taskOutputVariables;
+    }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         if (status != null) {

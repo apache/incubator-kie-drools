@@ -130,6 +130,8 @@ public abstract class AbstractTaskSerializationTest {
         InternalTaskData taskData = (InternalTaskData) task.getTaskData();
         taskData.setOutputAccessType(AccessType.Inline);
         taskData.setFaultAccessType(AccessType.Unknown);
+        taskData.setTaskInputVariables(new HashMap<String, Object>());
+        taskData.setTaskOutputVariables(new HashMap<String, Object>());
 
         // fill task -> task data -> comment
         String payload = "brainwashArmitageRecruitCaseGetPasswordFromLady3JaneAscentToStraylightIcebreakerUniteWithNeuromancer";
@@ -168,7 +170,7 @@ public abstract class AbstractTaskSerializationTest {
         assertNotNull(bornAgainTask.getNames());
         assertTrue("Round-tripped task has empty 'names' list!", !bornAgainTask.getNames().isEmpty());
 
-        ComparePair compare = new ComparePair(task, bornAgainTask, Task.class);
+        ComparePair compare = new ComparePair(task, bornAgainTask, Task.class);        
         compare.recursiveCompare();
 
         assertNotNull(((InternalTask) xmlTask).getFormName());
@@ -176,7 +178,7 @@ public abstract class AbstractTaskSerializationTest {
 
         Task realTask = xmlTask.getTask();
         verifyThatXmlFieldsAreFilled(realTask, xmlTask, InternalTask.class, "deadlines");
-        verifyThatXmlFieldsAreFilled(realTask.getTaskData(), xmlTask.getTaskData(), TaskData.class);
+        verifyThatXmlFieldsAreFilled(realTask.getTaskData(), xmlTask.getTaskData(), TaskData.class, "taskInputVariables", "taskOutputVariables");
     }
 
     private void verifyThatXmlFieldsAreFilled(Object realInst, Object xmlInst, Class interfaze, String... ignoreFields ) {

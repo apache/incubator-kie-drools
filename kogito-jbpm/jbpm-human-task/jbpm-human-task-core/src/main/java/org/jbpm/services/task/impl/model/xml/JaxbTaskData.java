@@ -18,7 +18,9 @@ package org.jbpm.services.task.impl.model.xml;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -442,6 +444,16 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
 
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
+    }
+
+    @Override
+    public Map<String, Object> getTaskInputVariables() {
+        return new HashMap<String, Object>();
+    }
+
+    @Override
+    public Map<String, Object> getTaskOutputVariables() {
+        return new HashMap<String, Object>();
     }
 
 }

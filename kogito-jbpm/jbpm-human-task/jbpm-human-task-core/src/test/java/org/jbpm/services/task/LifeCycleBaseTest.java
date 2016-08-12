@@ -23,18 +23,20 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.StringReader;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.impl.model.xml.JaxbContent;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.Test;
+import org.kie.api.task.TaskEvent;
+import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Group;
@@ -44,6 +46,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.ContentData;
@@ -2388,7 +2391,151 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertNotNull(archiveddTasks);
         assertEquals(1,  archiveddTasks.size());
     }
+    
+    @Test
+    public void testCompleteWithContentAndVarInputListener() {
+        testCompleteWithContentAndVarListener(new DefaultTaskEventListener(){
 
+            @Override
+            public void beforeTaskStartedEvent(TaskEvent event) {
+                assertNull(event.getTask().getTaskData().getTaskInputVariables());
+                assertNull(event.getTask().getTaskData().getTaskOutputVariables());
+                
+                event.getTaskContext().loadTaskVariables(event.getTask());
+                
+                assertNotNull(event.getTask().getTaskData().getTaskInputVariables());
+                assertEquals(1, event.getTask().getTaskData().getTaskInputVariables().size());
+                assertTrue(event.getTask().getTaskData().getTaskInputVariables().containsKey("input"));
+                
+                assertNull(event.getTask().getTaskData().getTaskOutputVariables());
+            }
+
+            @Override
+            public void beforeTaskCompletedEvent(TaskEvent event) {
+                assertNull(event.getTask().getTaskData().getTaskInputVariables());                
+                assertNotNull(event.getTask().getTaskData().getTaskOutputVariables());
+                assertEquals(1, event.getTask().getTaskData().getTaskOutputVariables().size());
+                assertTrue(event.getTask().getTaskData().getTaskOutputVariables().containsKey("content"));
+                
+                event.getTaskContext().loadTaskVariables(event.getTask());
+                
+                assertNotNull(event.getTask().getTaskData().getTaskInputVariables());
+                assertEquals(1, event.getTask().getTaskData().getTaskInputVariables().size());
+                assertTrue(event.getTask().getTaskData().getTaskInputVariables().containsKey("input"));
+                
+                assertNotNull(event.getTask().getTaskData().getTaskOutputVariables());                
+                assertEquals(1, event.getTask().getTaskData().getTaskOutputVariables().size());
+                assertTrue(event.getTask().getTaskData().getTaskOutputVariables().containsKey("content"));
+            }
+
+            @Override
+            public void beforeTaskAddedEvent(TaskEvent event) {
+                assertNotNull(event.getTask().getTaskData().getTaskInputVariables());
+                assertEquals(1, event.getTask().getTaskData().getTaskInputVariables().size());
+                assertTrue(event.getTask().getTaskData().getTaskInputVariables().containsKey("input"));
+                
+                assertNull(event.getTask().getTaskData().getTaskOutputVariables());
+                
+                event.getTaskContext().loadTaskVariables(event.getTask());
+                
+                assertNotNull(event.getTask().getTaskData().getTaskInputVariables());
+                assertEquals(1, event.getTask().getTaskData().getTaskInputVariables().size());
+                assertTrue(event.getTask().getTaskData().getTaskInputVariables().containsKey("input"));
+                
+                assertNull(event.getTask().getTaskData().getTaskOutputVariables());
+            }
+            
+        });
+
+    }
+    
+    @Test
+    public void testCompleteWithContentAndVarOutputListener() {
+        
+        testCompleteWithContentAndVarListener(new DefaultTaskEventListener(){
+
+            @Override
+            public void afterTaskStartedEvent(TaskEvent event) {
+                assertNull(event.getTask().getTaskData().getTaskInputVariables());
+                assertNull(event.getTask().getTaskData().getTaskOutputVariables());
+                
+                event.getTaskContext().loadTaskVariables(event.getTask());
+                
+                assertNotNull(event.getTask().getTaskData().getTaskInputVariables());
+                assertEquals(1, event.getTask().getTaskData().getTaskInputVariables().size());
+                assertTrue(event.getTask().getTaskData().getTaskInputVariables().containsKey("input"));
+                
+                assertNull(event.getTask().getTaskData().getTaskOutputVariables());
+            }
+
+            @Override
+            public void afterTaskCompletedEvent(TaskEvent event) {
+                assertNull(event.getTask().getTaskData().getTaskInputVariables());                
+                assertNotNull(event.getTask().getTaskData().getTaskOutputVariables());
+                assertEquals(1, event.getTask().getTaskData().getTaskOutputVariables().size());
+                assertTrue(event.getTask().getTaskData().getTaskOutputVariables().containsKey("content"));
+                
+                event.getTaskContext().loadTaskVariables(event.getTask());
+                
+                assertNotNull(event.getTask().getTaskData().getTaskInputVariables());
+                assertEquals(1, event.getTask().getTaskData().getTaskInputVariables().size());
+                assertTrue(event.getTask().getTaskData().getTaskInputVariables().containsKey("input"));
+                
+                assertNotNull(event.getTask().getTaskData().getTaskOutputVariables());                
+                assertEquals(1, event.getTask().getTaskData().getTaskOutputVariables().size());
+                assertTrue(event.getTask().getTaskData().getTaskOutputVariables().containsKey("content"));
+            }
+
+            @Override
+            public void afterTaskAddedEvent(TaskEvent event) {
+                assertNotNull(event.getTask().getTaskData().getTaskInputVariables());
+                assertEquals(1, event.getTask().getTaskData().getTaskInputVariables().size());
+                assertTrue(event.getTask().getTaskData().getTaskInputVariables().containsKey("input"));
+                
+                assertNull(event.getTask().getTaskData().getTaskOutputVariables());
+                
+                event.getTaskContext().loadTaskVariables(event.getTask());
+                
+                assertNotNull(event.getTask().getTaskData().getTaskInputVariables());
+                assertEquals(1, event.getTask().getTaskData().getTaskInputVariables().size());
+                assertTrue(event.getTask().getTaskData().getTaskInputVariables().containsKey("input"));
+                
+                assertNull(event.getTask().getTaskData().getTaskOutputVariables());
+            }
+            
+        });
+
+    }
+
+    
+    protected void testCompleteWithContentAndVarListener(TaskLifeCycleEventListener listener) {
+        
+
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "name =  'This is my task name' })";
+
+        ((EventService<TaskLifeCycleEventListener>)taskService).registerTaskEventListener(listener);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("input", "simple input");
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, params);
+        long taskId = task.getId();
+        
+        // start task
+        taskService.start(taskId, "Darth Vader");
+        Task task1 = taskService.getTaskById(taskId);
+        assertEquals(Status.InProgress, task1.getTaskData().getStatus());
+        assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
+
+        // complete task with output
+        params = new HashMap<String, Object>();
+        params.put("content", "content");
+        taskService.complete(taskId, "Darth Vader", params);
+    }
+    
     private User createUser(String id) {
         return TaskModelProvider.getFactory().newUser(id);
     }

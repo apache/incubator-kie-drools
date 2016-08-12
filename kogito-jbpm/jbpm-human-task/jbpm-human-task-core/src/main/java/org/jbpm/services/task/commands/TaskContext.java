@@ -33,6 +33,7 @@ import org.jbpm.services.task.rule.impl.TaskRuleServiceImpl;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.task.UserGroupCallback;
+import org.kie.api.task.model.Task;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.World;
 import org.kie.internal.task.api.TaskAdminService;
@@ -166,6 +167,11 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
 
     public void remove(String string) {
         throw new UnsupportedOperationException("Not supported for this type of context.");
+    }
+
+    @Override
+    public Task loadTaskVariables(Task task) {
+        return getTaskContentService().loadTaskVariables(task);
     }    
 
 }
