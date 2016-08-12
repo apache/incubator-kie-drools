@@ -18,10 +18,10 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -56,14 +56,7 @@ public class QualifiedNameNode
             if ( current != null ) {
                 for ( int i = 1; i < parts.size(); i++ ) {
                     String n = parts.get( i ).getText();
-                    if ( current == null ) {
-                        return null;
-                    } else if ( current instanceof Map ) {
-                        current = ((Map) current).get( n );
-                    } else {
-                        Method getter = getAccessor( current.getClass(), n );
-                        current = getter.invoke( current );
-                    }
+                    current = EvalHelper.getValue( current, n );
                 }
                 return current;
             }
@@ -72,26 +65,6 @@ public class QualifiedNameNode
             return null;
         }
         return null;
-    }
-
-    public static Method getAccessor(Class<?> clazz, String field) {
-        try {
-            return clazz.getMethod( "get" + ucFirst( field ) );
-        } catch ( NoSuchMethodException e ) {
-            try {
-                return clazz.getMethod( field );
-            } catch ( NoSuchMethodException e1 ) {
-                try {
-                    return clazz.getMethod( "is" + ucFirst( field ) );
-                } catch ( NoSuchMethodException e2 ) {
-                    return null;
-                }
-            }
-        }
-    }
-
-    public static String ucFirst(final String name) {
-        return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
 
 }

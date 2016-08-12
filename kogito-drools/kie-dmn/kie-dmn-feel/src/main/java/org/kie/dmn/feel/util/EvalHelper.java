@@ -16,8 +16,11 @@
 
 package org.kie.dmn.feel.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -56,4 +59,38 @@ public class EvalHelper {
         // not sure this is ever possible, but using some defensive code here
         return text;
     }
+
+    public static Object getValue(Object current, String property)
+            throws IllegalAccessException, InvocationTargetException {
+        if ( current == null ) {
+            return null;
+        } else if ( current instanceof Map ) {
+            current = ((Map) current).get( property );
+        } else {
+            Method getter = getAccessor( current.getClass(), property );
+            current = getter.invoke( current );
+        }
+        return current;
+    }
+
+    public static Method getAccessor(Class<?> clazz, String field) {
+        try {
+            return clazz.getMethod( "get" + ucFirst( field ) );
+        } catch ( NoSuchMethodException e ) {
+            try {
+                return clazz.getMethod( field );
+            } catch ( NoSuchMethodException e1 ) {
+                try {
+                    return clazz.getMethod( "is" + ucFirst( field ) );
+                } catch ( NoSuchMethodException e2 ) {
+                    return null;
+                }
+            }
+        }
+    }
+
+    public static String ucFirst(final String name) {
+        return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
+    }
+
 }
