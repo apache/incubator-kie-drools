@@ -24,14 +24,12 @@ import org.optaplanner.examples.cloudbalancing.app.CloudBalancingApp;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
-import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreConstraintTest;
+import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
 
-public class CloudBalancingScoreConstraintTest extends HardSoftScoreConstraintTest<CloudBalance> {
+public class CloudBalancingScoreConstraintTest {
 
-    @Override
-    protected SolverFactory<CloudBalance> createSolverFactory() {
-        return SolverFactory.createFromXmlResource(CloudBalancingApp.SOLVER_CONFIG);
-    }
+    private HardSoftScoreVerifier<CloudBalance> scoreVerifier = new HardSoftScoreVerifier<>(
+            SolverFactory.createFromXmlResource(CloudBalancingApp.SOLVER_CONFIG));
 
     @Test
     public void requiredCpuPowerTotal() {
@@ -44,17 +42,17 @@ public class CloudBalancingScoreConstraintTest extends HardSoftScoreConstraintTe
         CloudBalance solution = new CloudBalance(0L,
                 Arrays.asList(c1, c2, c3),
                 Arrays.asList(p1, p2, p3));
-        assertHardConstraintWeight("requiredCpuPowerTotal", 0, solution);
+        scoreVerifier.assertHard("requiredCpuPowerTotal", 0, solution);
         p1.setComputer(c1);
         p2.setComputer(c1);
-        assertHardConstraintWeight("requiredCpuPowerTotal", 0, solution);
+        scoreVerifier.assertHard("requiredCpuPowerTotal", 0, solution);
         p1.setComputer(c2);
         p2.setComputer(c2);
-        assertHardConstraintWeight("requiredCpuPowerTotal", -570, solution);
+        scoreVerifier.assertHard("requiredCpuPowerTotal", -570, solution);
         p3.setComputer(c3);
-        assertHardConstraintWeight("requiredCpuPowerTotal", -570, solution);
+        scoreVerifier.assertHard("requiredCpuPowerTotal", -570, solution);
         p2.setComputer(c3);
-        assertHardConstraintWeight("requiredCpuPowerTotal", -547, solution);
+        scoreVerifier.assertHard("requiredCpuPowerTotal", -547, solution);
     }
 
     @Test
@@ -68,17 +66,17 @@ public class CloudBalancingScoreConstraintTest extends HardSoftScoreConstraintTe
         CloudBalance solution = new CloudBalance(0L,
                 Arrays.asList(c1, c2, c3),
                 Arrays.asList(p1, p2, p3));
-        assertHardConstraintWeight("requiredMemoryTotal", 0, solution);
+        scoreVerifier.assertHard("requiredMemoryTotal", 0, solution);
         p1.setComputer(c1);
         p2.setComputer(c1);
-        assertHardConstraintWeight("requiredMemoryTotal", 0, solution);
+        scoreVerifier.assertHard("requiredMemoryTotal", 0, solution);
         p1.setComputer(c2);
         p2.setComputer(c2);
-        assertHardConstraintWeight("requiredMemoryTotal", -570, solution);
+        scoreVerifier.assertHard("requiredMemoryTotal", -570, solution);
         p3.setComputer(c3);
-        assertHardConstraintWeight("requiredMemoryTotal", -570, solution);
+        scoreVerifier.assertHard("requiredMemoryTotal", -570, solution);
         p2.setComputer(c3);
-        assertHardConstraintWeight("requiredMemoryTotal", -547, solution);
+        scoreVerifier.assertHard("requiredMemoryTotal", -547, solution);
     }
 
     @Test
@@ -92,17 +90,17 @@ public class CloudBalancingScoreConstraintTest extends HardSoftScoreConstraintTe
         CloudBalance solution = new CloudBalance(0L,
                 Arrays.asList(c1, c2, c3),
                 Arrays.asList(p1, p2, p3));
-        assertHardConstraintWeight("requiredNetworkBandwidthTotal", 0, solution);
+        scoreVerifier.assertHard("requiredNetworkBandwidthTotal", 0, solution);
         p1.setComputer(c1);
         p2.setComputer(c1);
-        assertHardConstraintWeight("requiredNetworkBandwidthTotal", 0, solution);
+        scoreVerifier.assertHard("requiredNetworkBandwidthTotal", 0, solution);
         p1.setComputer(c2);
         p2.setComputer(c2);
-        assertHardConstraintWeight("requiredNetworkBandwidthTotal", -570, solution);
+        scoreVerifier.assertHard("requiredNetworkBandwidthTotal", -570, solution);
         p3.setComputer(c3);
-        assertHardConstraintWeight("requiredNetworkBandwidthTotal", -570, solution);
+        scoreVerifier.assertHard("requiredNetworkBandwidthTotal", -570, solution);
         p2.setComputer(c3);
-        assertHardConstraintWeight("requiredNetworkBandwidthTotal", -547, solution);
+        scoreVerifier.assertHard("requiredNetworkBandwidthTotal", -547, solution);
     }
 
     @Test
@@ -116,12 +114,12 @@ public class CloudBalancingScoreConstraintTest extends HardSoftScoreConstraintTe
         CloudBalance solution = new CloudBalance(0L,
                 Arrays.asList(c1, c2, c3),
                 Arrays.asList(p1, p2, p3));
-        assertSoftConstraintWeight("computerCost", 0, solution);
+        scoreVerifier.assertSoft("computerCost", 0, solution);
         p1.setComputer(c1);
         p2.setComputer(c1);
-        assertSoftConstraintWeight("computerCost", -200, solution);
+        scoreVerifier.assertSoft("computerCost", -200, solution);
         p3.setComputer(c3);
-        assertSoftConstraintWeight("computerCost", -204, solution);
+        scoreVerifier.assertSoft("computerCost", -204, solution);
     }
 
 }

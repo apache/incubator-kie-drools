@@ -19,7 +19,6 @@ package org.optaplanner.test.impl.score;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import org.junit.Before;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -28,28 +27,30 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
-import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreConstraintTest;
+import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * Do not extend this class directly, instead extend a specific subclass if your {@link Score} type,
- * such as {@link HardSoftScoreConstraintTest}.
+ * Do not use this class directly, instead use the specific subclass for your {@link Score} type,
+ * such as {@link HardSoftScoreVerifier}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
- * @see HardSoftScoreConstraintTest
+ * @see HardSoftScoreVerifier
  */
-public abstract class AbstractScoreConstraintTest<Solution_> {
+public abstract class AbstractScoreVerifier<Solution_> {
 
-    protected ScoreDirectorFactory<Solution_> scoreDirectorFactory;
+    protected final ScoreDirectorFactory<Solution_> scoreDirectorFactory;
 
-    @Before
-    public void init() {
-        SolverFactory<Solution_> solverFactory = createSolverFactory();
+    /**
+     * @param solverFactory never null, the {@link SolverFactory} of which you want to test the constraints.
+     * @param expectedScoreClass never null, used to fail fast if a {@link SolverFactory} with another {@link Score} type is used.
+     */
+    public AbstractScoreVerifier(SolverFactory<Solution_> solverFactory,
+            Class<? extends Score> expectedScoreClass) {
         if (solverFactory == null) {
             throw new IllegalStateException("The solverFactory (" + solverFactory + ") cannot be null.");
         }
         scoreDirectorFactory = solverFactory.buildSolver().getScoreDirectorFactory();
-        Class<? extends Score> expectedScoreClass = getExpectedScoreClass();
         SolutionDescriptor<Solution_> solutionDescriptor = ((InnerScoreDirectorFactory<Solution_>) scoreDirectorFactory).getSolutionDescriptor();
         Class<? extends Score> scoreClass = solutionDescriptor.getScoreDefinition().getScoreClass();
         if (expectedScoreClass != scoreClass) {
@@ -57,19 +58,6 @@ public abstract class AbstractScoreConstraintTest<Solution_> {
                     + ") differs from the test's expectedScoreClass (" + expectedScoreClass + ").");
         }
     }
-
-    /**
-     * This method is implemented by the specific subclass of the {@link Score} type,
-     * to fail fast if a {@link SolverFactory} with another {@link Score} type is used.
-     * @return never null
-     */
-    protected abstract Class<? extends Score> getExpectedScoreClass();
-
-    /**
-     * Return the {@link SolverFactory} of which you want to test the constraints.
-     * @return never null
-     */
-    protected abstract SolverFactory<Solution_> createSolverFactory();
 
     /**
      * Assert that the constraint (which is usually a score rule) of {@link PlanningSolution}

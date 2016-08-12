@@ -16,35 +16,25 @@
 
 package org.optaplanner.test.impl.score.buildin.hardsoft;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
-import org.junit.Before;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
-import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
-import org.optaplanner.test.impl.score.AbstractScoreConstraintTest;
+import org.optaplanner.test.impl.score.AbstractScoreVerifier;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * To test the constraints (including score rules) of a {@link SolverFactory}
+ * To assert the constraints (including score rules) of a {@link SolverFactory}
  * that uses a {@link HardSoftScore}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public abstract class HardSoftScoreConstraintTest<Solution_> extends AbstractScoreConstraintTest<Solution_> {
+public class HardSoftScoreVerifier<Solution_> extends AbstractScoreVerifier<Solution_> {
 
-    @Override
-    protected Class<? extends Score> getExpectedScoreClass() {
-        return HardSoftScore.class;
+    /**
+     * @param solverFactory never null, the {@link SolverFactory} of which you want to test the constraints.
+     */
+    public HardSoftScoreVerifier(SolverFactory<Solution_> solverFactory) {
+        super(solverFactory, HardSoftScore.class);
     }
 
     /**
@@ -54,8 +44,8 @@ public abstract class HardSoftScoreConstraintTest<Solution_> extends AbstractSco
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
-    protected void assertHardConstraintWeight(String constraintName, int expectedWeight, Solution_ solution) {
-        assertHardConstraintWeight(null, constraintName, expectedWeight, solution);
+    public void assertHard(String constraintName, int expectedWeight, Solution_ solution) {
+        assertHard(null, constraintName, expectedWeight, solution);
     }
 
     /**
@@ -67,7 +57,7 @@ public abstract class HardSoftScoreConstraintTest<Solution_> extends AbstractSco
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
-    protected void assertHardConstraintWeight(String constraintPackage, String constraintName, int expectedWeight, Solution_ solution) {
+    public void assertHard(String constraintPackage, String constraintName, int expectedWeight, Solution_ solution) {
         assertConstraintWeight(constraintPackage, constraintName, 0, Integer.valueOf(expectedWeight), solution);
     }
 
@@ -78,8 +68,8 @@ public abstract class HardSoftScoreConstraintTest<Solution_> extends AbstractSco
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
-    protected void assertSoftConstraintWeight(String constraintName, int expectedWeight, Solution_ solution) {
-        assertSoftConstraintWeight(null, constraintName, expectedWeight, solution);
+    public void assertSoft(String constraintName, int expectedWeight, Solution_ solution) {
+        assertSoft(null, constraintName, expectedWeight, solution);
     }
 
     /**
@@ -91,7 +81,7 @@ public abstract class HardSoftScoreConstraintTest<Solution_> extends AbstractSco
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
-    protected void assertSoftConstraintWeight(String constraintPackage, String constraintName, int expectedWeight, Solution_ solution) {
+    public void assertSoft(String constraintPackage, String constraintName, int expectedWeight, Solution_ solution) {
         assertConstraintWeight(constraintPackage, constraintName, 1, Integer.valueOf(expectedWeight), solution);
     }
 
