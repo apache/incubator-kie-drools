@@ -93,9 +93,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public void addNodeInstance(final NodeInstance nodeInstance) {
-	    long id;
-	    id = singleNodeInstanceCounter.getAndIncrement();
-		((NodeInstanceImpl) nodeInstance).setId(id);
+	    if (nodeInstance.getId() == 0) {
+            // assign new id only if it does not exist as it might already be set by marshalling 
+            // it's important to keep same ids of node instances as they might be references e.g. exclusive group
+    	    long id = singleNodeInstanceCounter.getAndIncrement();
+    		((NodeInstanceImpl) nodeInstance).setId(id);
+	    }
 		this.nodeInstances.add(nodeInstance);
 	}
 

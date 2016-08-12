@@ -2601,4 +2601,45 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         assertProcessInstanceFinished(processInstance, ksession);
     }
+    
+    @Test(timeout=10000)
+    public void testEventBasedSplitWithCronTimerAndSignal() throws Exception {
+        System.setProperty("jbpm.enable.multi.con", "true");
+        try {
+            CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Request photos of order in use", 1);
+            CountDownProcessEventListener countDownListener2 = new CountDownProcessEventListener("Request an online review", 1);
+            CountDownProcessEventListener countDownListener3 = new CountDownProcessEventListener("Send a thank you card", 1);
+            CountDownProcessEventListener countDownListener4 = new CountDownProcessEventListener("Request an online review", 1);
+            KieBase kbase = createKnowledgeBase("timer/BPMN2-CronTimerWithEventBasedGateway.bpmn2");
+            ksession = createKnowledgeSession(kbase);
+            
+            TestWorkItemHandler handler = new TestWorkItemHandler();
+            ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);       
+            ksession.addEventListener(countDownListener);
+            ksession.addEventListener(countDownListener2);
+            ksession.addEventListener(countDownListener3);
+            ksession.addEventListener(countDownListener4);
+            
+            ProcessInstance processInstance = ksession.startProcess("timerWithEventBasedGateway");
+            assertProcessInstanceActive(processInstance.getId(), ksession);
+            
+            countDownListener.waitTillCompleted();
+            logger.debug("First timer triggered");
+            countDownListener2.waitTillCompleted();
+            logger.debug("Second timer triggered");
+            countDownListener3.waitTillCompleted();
+            logger.debug("Third timer triggered");
+            countDownListener4.waitTillCompleted();
+            logger.debug("Fourth timer triggered");
+            
+            List<WorkItem> wi = handler.getWorkItems();
+            assertNotNull(wi);
+            assertEquals(3, wi.size());
+    
+            ksession.abortProcessInstance(processInstance.getId());
+        } finally {
+            // clear property only as the only relevant value is when it's set to true
+            System.clearProperty("jbpm.enable.multi.con");
+        }
+    }
 }

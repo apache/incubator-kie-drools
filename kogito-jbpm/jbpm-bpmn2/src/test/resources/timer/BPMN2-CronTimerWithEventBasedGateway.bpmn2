@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_GP8NITgxEeaYrZUqxlNC8A" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" exporter="jBPM Designer" exporterVersion="6.2.0" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_isRecontactItem" structureRef="String"/>
+  <bpmn2:itemDefinition id="_MessageCustomerResponseItem" structureRef="Object"/>
+  <bpmn2:signal id="_10aec353-53f9-3409-aa71-c38654c3d402" name="cancel"/>
+  <bpmn2:itemDefinition id="CustomerResponseType"/>
+  <bpmn2:message id="CustomerResponse" itemRef="CustomerResponseType"/>
+  <bpmn2:process id="timerWithEventBasedGateway" drools:packageName="org.jbpm" drools:version="1.0" name="timerWithEventBasedGateway">
+    <bpmn2:property id="isRecontact" itemSubjectRef="_isRecontactItem"/>
+    <bpmn2:property id="MessageCustomerResponse" itemSubjectRef="_MessageCustomerResponseItem"/>
+    <bpmn2:subProcess id="_C5F530B0-DC7A-49B3-9C62-A128FD9CFCC8" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Post Sale">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Post Sale]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_9A61B531-15D3-48CD-9EBE-74100E3323D8</bpmn2:incoming>
+      <bpmn2:outgoing>_E8E4D36D-4AE5-41D8-AC4D-0AF201B562FE</bpmn2:outgoing>
+      <bpmn2:startEvent id="_E56BB581-DB3D-4251-866F-14D30BA86181" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:outgoing>_86498908-227D-46F5-AC42-6936178F9A31</bpmn2:outgoing>
+      </bpmn2:startEvent>
+      <bpmn2:parallelGateway id="_99EFB5CD-3C9C-45CF-877B-2060A7C4660E" drools:selectable="true" color:background-color="#f0e68c" color:border-color="#a67f00" color:color="#000000" name="" gatewayDirection="Diverging">
+        <bpmn2:incoming>_86498908-227D-46F5-AC42-6936178F9A31</bpmn2:incoming>
+        <bpmn2:outgoing>_05ECA062-8936-42F5-9D68-532422F405A9</bpmn2:outgoing>
+        <bpmn2:outgoing>_946ABB06-F6D4-4419-9D43-18DEDABDDA15</bpmn2:outgoing>
+        <bpmn2:outgoing>_170E109E-ED9B-40CD-B79B-FC8963C8FFA8</bpmn2:outgoing>
+      </bpmn2:parallelGateway>
+      <bpmn2:intermediateCatchEvent id="_4912AFCC-0C79-47A7-B829-C4913D379E97" drools:selectable="true" drools:boundaryca="true" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="Request photos of order in use">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[Request photos of order in use]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>_05ECA062-8936-42F5-9D68-532422F405A9</bpmn2:incoming>
+        <bpmn2:outgoing>_2092D580-49DF-444D-94F6-E93B4D0DB651</bpmn2:outgoing>
+        <bpmn2:timerEventDefinition id="_GQAekDgxEeaYrZUqxlNC8A">
+          <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="_GQAekTgxEeaYrZUqxlNC8A">2s</bpmn2:timeDuration>
+        </bpmn2:timerEventDefinition>
+      </bpmn2:intermediateCatchEvent>
+      <bpmn2:intermediateCatchEvent id="_03F033E3-B414-4CB2-8CD1-F7166C87B121" drools:selectable="true" drools:boundaryca="true" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="Send a thank you card">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[Send a thank you card]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>_946ABB06-F6D4-4419-9D43-18DEDABDDA15</bpmn2:incoming>
+        <bpmn2:outgoing>_9B208016-9261-407E-9970-72104517EE86</bpmn2:outgoing>
+        <bpmn2:timerEventDefinition id="_GQAekjgxEeaYrZUqxlNC8A">
+          <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="_GQAekzgxEeaYrZUqxlNC8A">4s</bpmn2:timeDuration>
+        </bpmn2:timerEventDefinition>
+      </bpmn2:intermediateCatchEvent>
+      <bpmn2:userTask id="_4C1FFD1D-2477-4075-9C3B-3E67ECBCE2AD" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Send thank you card">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[Send thank you card]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>_9B208016-9261-407E-9970-72104517EE86</bpmn2:incoming>
+        <bpmn2:outgoing>_4315F67E-27D9-4586-86F5-89198AF04AE8</bpmn2:outgoing>
+        <bpmn2:ioSpecification id="_GQAelDgxEeaYrZUqxlNC8A">
+          <bpmn2:dataInput id="_4C1FFD1D-2477-4075-9C3B-3E67ECBCE2AD_TaskNameInputX" drools:dtype="String" name="TaskName"/>
+          <bpmn2:inputSet id="_GQAelTgxEeaYrZUqxlNC8A">            
+            <bpmn2:dataInputRefs>_4C1FFD1D-2477-4075-9C3B-3E67ECBCE2AD_TaskNameInputX</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+          <bpmn2:outputSet id="_GQAeljgxEeaYrZUqxlNC8A"/>
+        </bpmn2:ioSpecification>      
+      </bpmn2:userTask>
+      <bpmn2:userTask id="_0A7810DB-5A61-4B84-BD1E-856AF8C19612" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Request an online review">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[Request an online review]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>_24A46D2D-C169-4587-A002-17C735884B83</bpmn2:incoming>
+        <bpmn2:incoming>_CF652509-9E81-4170-893A-CE0D58105133</bpmn2:incoming>
+        <bpmn2:outgoing>_54305BA8-6191-4470-BF8B-CC6484679742</bpmn2:outgoing>
+        <bpmn2:ioSpecification id="_GQBFqzgxEeaYrZUqxlNC8A">
+          <bpmn2:dataInput id="_0A7810DB-5A61-4B84-BD1E-856AF8C19612_TaskNameInputX" drools:dtype="String" name="TaskName"/>
+          <bpmn2:inputSet id="_GQBFrDgxEeaYrZUqxlNC8A">
+            <bpmn2:dataInputRefs>_0A7810DB-5A61-4B84-BD1E-856AF8C19612_TaskNameInputX</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+          <bpmn2:outputSet id="_GQBFrTgxEeaYrZUqxlNC8A"/>
+        </bpmn2:ioSpecification>      
+      </bpmn2:userTask>
+      <bpmn2:userTask id="_A6496E49-112C-4DD1-88E2-2DA79F3B9F4E" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Request photos of order in use">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[Request photos of order in use]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>_2092D580-49DF-444D-94F6-E93B4D0DB651</bpmn2:incoming>
+        <bpmn2:outgoing>_58C749F6-0A6A-49EB-B13C-263104EB35A8</bpmn2:outgoing>
+        <bpmn2:ioSpecification id="_GQBFwjgxEeaYrZUqxlNC8A">
+          <bpmn2:dataInput id="_A6496E49-112C-4DD1-88E2-2DA79F3B9F4E_TaskNameInputX" drools:dtype="String" name="TaskName"/>
+          <bpmn2:inputSet id="_GQBFwzgxEeaYrZUqxlNC8A">
+            <bpmn2:dataInputRefs>_A6496E49-112C-4DD1-88E2-2DA79F3B9F4E_TaskNameInputX</bpmn2:dataInputRefs>
+          </bpmn2:inputSet>
+          <bpmn2:outputSet id="_GQBssDgxEeaYrZUqxlNC8A"/>
+        </bpmn2:ioSpecification>       
+      </bpmn2:userTask>
+      <bpmn2:parallelGateway id="_09EDA59D-CDFD-4975-965D-9F4E9D7CA60F" drools:selectable="true" color:background-color="#f0e68c" color:border-color="#a67f00" color:color="#000000" name="" gatewayDirection="Converging">
+        <bpmn2:incoming>_4315F67E-27D9-4586-86F5-89198AF04AE8</bpmn2:incoming>
+        <bpmn2:incoming>_54305BA8-6191-4470-BF8B-CC6484679742</bpmn2:incoming>
+        <bpmn2:incoming>_58C749F6-0A6A-49EB-B13C-263104EB35A8</bpmn2:incoming>
+        <bpmn2:outgoing>_A04EF9ED-E069-469D-9C03-459F1126BEEE</bpmn2:outgoing>
+      </bpmn2:parallelGateway>
+      <bpmn2:endEvent id="_7A449CE3-54C6-46DB-AD41-CBFFCDACF0EA" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="Post sale completed">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[Post sale completed]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>_A04EF9ED-E069-469D-9C03-459F1126BEEE</bpmn2:incoming>
+      </bpmn2:endEvent>
+      <bpmn2:intermediateCatchEvent id="_BC678DEE-1AED-44AC-BA1E-702EB7D7F03D" drools:selectable="true" drools:boundaryca="true" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="Customer response for Request an online review">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[Customer response for Request an online review]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>_D902482A-2DD7-43A8-9031-5C98560449FC</bpmn2:incoming>
+        <bpmn2:outgoing>_24A46D2D-C169-4587-A002-17C735884B83</bpmn2:outgoing>
+        <bpmn2:dataOutput id="_BC678DEE-1AED-44AC-BA1E-702EB7D7F03D_MessageCustomerResponse" drools:dtype="Object" name="MessageCustomerResponse"/>
+        <bpmn2:dataOutputAssociation id="_GQBsxjgxEeaYrZUqxlNC8A">
+          <bpmn2:sourceRef>_BC678DEE-1AED-44AC-BA1E-702EB7D7F03D_MessageCustomerResponse</bpmn2:sourceRef>
+          <bpmn2:targetRef>MessageCustomerResponse</bpmn2:targetRef>
+        </bpmn2:dataOutputAssociation>
+        <bpmn2:outputSet id="_GQBsxTgxEeaYrZUqxlNC8A">
+          <bpmn2:dataOutputRefs>_BC678DEE-1AED-44AC-BA1E-702EB7D7F03D_MessageCustomerResponse</bpmn2:dataOutputRefs>
+        </bpmn2:outputSet>
+        <bpmn2:messageEventDefinition id="_GQBsxzgxEeaYrZUqxlNC8A" drools:msgref="CustomerResponse" messageRef="CustomerResponse"/>
+      </bpmn2:intermediateCatchEvent>
+      <bpmn2:intermediateCatchEvent id="_7B5C1442-13E7-4D6E-BF52-AC9B6B9CA848" drools:selectable="true" drools:boundaryca="true" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="Request an online review 2">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[Request an online review 2]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>_2BAA1824-C53A-4BC5-B022-D7ADB45CDE3B</bpmn2:incoming>
+        <bpmn2:outgoing>_CF652509-9E81-4170-893A-CE0D58105133</bpmn2:outgoing>
+        <bpmn2:timerEventDefinition id="_GQBsyDgxEeaYrZUqxlNC8A">
+          <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="_GQBsyTgxEeaYrZUqxlNC8A">2s</bpmn2:timeDuration>
+        </bpmn2:timerEventDefinition>
+      </bpmn2:intermediateCatchEvent>
+      <bpmn2:eventBasedGateway id="_A333D43D-989E-466F-A9B8-A06B65510359" drools:selectable="true" color:background-color="#f0e68c" color:border-color="#a67f00" color:color="#000000" name="" gatewayDirection="Diverging">
+        <bpmn2:incoming>_91E0A9ED-4180-4368-80F0-0B16930474B3</bpmn2:incoming>
+        <bpmn2:outgoing>_2BAA1824-C53A-4BC5-B022-D7ADB45CDE3B</bpmn2:outgoing>
+        <bpmn2:outgoing>_D902482A-2DD7-43A8-9031-5C98560449FC</bpmn2:outgoing>
+      </bpmn2:eventBasedGateway>
+      <bpmn2:intermediateCatchEvent id="_49C40EF6-E703-4526-9336-B746CB7E52AB" drools:selectable="true" drools:boundaryca="true" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="Request an online review">
+        <bpmn2:extensionElements>
+          <drools:metaData name="elementname">
+            <drools:metaValue><![CDATA[Request an online review]]></drools:metaValue>
+          </drools:metaData>
+        </bpmn2:extensionElements>
+        <bpmn2:incoming>_170E109E-ED9B-40CD-B79B-FC8963C8FFA8</bpmn2:incoming>
+        <bpmn2:outgoing>_91E0A9ED-4180-4368-80F0-0B16930474B3</bpmn2:outgoing>
+        <bpmn2:timerEventDefinition id="_GQBsyjgxEeaYrZUqxlNC8A">
+          <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="_GQBsyzgxEeaYrZUqxlNC8A">1s</bpmn2:timeDuration>
+        </bpmn2:timerEventDefinition>
+      </bpmn2:intermediateCatchEvent>
+      <bpmn2:sequenceFlow id="_05ECA062-8936-42F5-9D68-532422F405A9" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_99EFB5CD-3C9C-45CF-877B-2060A7C4660E" targetRef="_4912AFCC-0C79-47A7-B829-C4913D379E97"/>
+      <bpmn2:sequenceFlow id="_946ABB06-F6D4-4419-9D43-18DEDABDDA15" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_99EFB5CD-3C9C-45CF-877B-2060A7C4660E" targetRef="_03F033E3-B414-4CB2-8CD1-F7166C87B121"/>
+      <bpmn2:sequenceFlow id="_2092D580-49DF-444D-94F6-E93B4D0DB651" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_4912AFCC-0C79-47A7-B829-C4913D379E97" targetRef="_A6496E49-112C-4DD1-88E2-2DA79F3B9F4E"/>
+      <bpmn2:sequenceFlow id="_9B208016-9261-407E-9970-72104517EE86" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_03F033E3-B414-4CB2-8CD1-F7166C87B121" targetRef="_4C1FFD1D-2477-4075-9C3B-3E67ECBCE2AD"/>
+      <bpmn2:sequenceFlow id="_58C749F6-0A6A-49EB-B13C-263104EB35A8" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_A6496E49-112C-4DD1-88E2-2DA79F3B9F4E" targetRef="_09EDA59D-CDFD-4975-965D-9F4E9D7CA60F"/>
+      <bpmn2:sequenceFlow id="_54305BA8-6191-4470-BF8B-CC6484679742" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_0A7810DB-5A61-4B84-BD1E-856AF8C19612" targetRef="_09EDA59D-CDFD-4975-965D-9F4E9D7CA60F"/>
+      <bpmn2:sequenceFlow id="_4315F67E-27D9-4586-86F5-89198AF04AE8" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_4C1FFD1D-2477-4075-9C3B-3E67ECBCE2AD" targetRef="_09EDA59D-CDFD-4975-965D-9F4E9D7CA60F"/>
+      <bpmn2:sequenceFlow id="_86498908-227D-46F5-AC42-6936178F9A31" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_E56BB581-DB3D-4251-866F-14D30BA86181" targetRef="_99EFB5CD-3C9C-45CF-877B-2060A7C4660E"/>
+      <bpmn2:sequenceFlow id="_A04EF9ED-E069-469D-9C03-459F1126BEEE" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_09EDA59D-CDFD-4975-965D-9F4E9D7CA60F" targetRef="_7A449CE3-54C6-46DB-AD41-CBFFCDACF0EA"/>
+      <bpmn2:sequenceFlow id="_D902482A-2DD7-43A8-9031-5C98560449FC" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_A333D43D-989E-466F-A9B8-A06B65510359" targetRef="_BC678DEE-1AED-44AC-BA1E-702EB7D7F03D"/>
+      <bpmn2:sequenceFlow id="_24A46D2D-C169-4587-A002-17C735884B83" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_BC678DEE-1AED-44AC-BA1E-702EB7D7F03D" targetRef="_0A7810DB-5A61-4B84-BD1E-856AF8C19612"/>
+      <bpmn2:sequenceFlow id="_170E109E-ED9B-40CD-B79B-FC8963C8FFA8" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_99EFB5CD-3C9C-45CF-877B-2060A7C4660E" targetRef="_49C40EF6-E703-4526-9336-B746CB7E52AB"/>
+      <bpmn2:sequenceFlow id="_CF652509-9E81-4170-893A-CE0D58105133" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_7B5C1442-13E7-4D6E-BF52-AC9B6B9CA848" targetRef="_0A7810DB-5A61-4B84-BD1E-856AF8C19612"/>
+      <bpmn2:sequenceFlow id="_2BAA1824-C53A-4BC5-B022-D7ADB45CDE3B" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_A333D43D-989E-466F-A9B8-A06B65510359" targetRef="_7B5C1442-13E7-4D6E-BF52-AC9B6B9CA848"/>
+      <bpmn2:sequenceFlow id="_91E0A9ED-4180-4368-80F0-0B16930474B3" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_49C40EF6-E703-4526-9336-B746CB7E52AB" targetRef="_A333D43D-989E-466F-A9B8-A06B65510359"/>
+    </bpmn2:subProcess>
+    <bpmn2:startEvent id="_AB11D430-B37F-4D37-916C-15199D8E3F52" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:documentation id="_GQCTwDgxEeaYrZUqxlNC8A"><![CDATA[StarterRoles:customer_service]]></bpmn2:documentation>
+      <bpmn2:outgoing>_9A61B531-15D3-48CD-9EBE-74100E3323D8</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="_9A61B531-15D3-48CD-9EBE-74100E3323D8" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_AB11D430-B37F-4D37-916C-15199D8E3F52" targetRef="_C5F530B0-DC7A-49B3-9C62-A128FD9CFCC8"/>
+    <bpmn2:endEvent id="_67A45C6F-D268-46B5-A099-211C14B31008" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="Post sale completed">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Post sale completed]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_E8E4D36D-4AE5-41D8-AC4D-0AF201B562FE</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_E8E4D36D-4AE5-41D8-AC4D-0AF201B562FE" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_C5F530B0-DC7A-49B3-9C62-A128FD9CFCC8" targetRef="_67A45C6F-D268-46B5-A099-211C14B31008"/>
+    <bpmn2:sequenceFlow id="_E15CF3B6-7708-4BE4-8FF6-C13E5F3E9EAC" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_0919A099-8D79-46A1-BE7F-91B34492BBBF" targetRef="_908845B1-AE4D-4711-92C3-87D63A5DAA71"/>
+    <bpmn2:endEvent id="_908845B1-AE4D-4711-92C3-87D63A5DAA71" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="post sale cancelled">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[post sale cancelled]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_E15CF3B6-7708-4BE4-8FF6-C13E5F3E9EAC</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:boundaryEvent id="_0919A099-8D79-46A1-BE7F-91B34492BBBF" drools:selectable="true" drools:boundaryca="true" drools:dockerinfo="372.0^687.0|" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="Cancel post sale" attachedToRef="_C5F530B0-DC7A-49B3-9C62-A128FD9CFCC8">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Cancel post sale]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>_E15CF3B6-7708-4BE4-8FF6-C13E5F3E9EAC</bpmn2:outgoing>
+      <bpmn2:signalEventDefinition id="_GQCTwTgxEeaYrZUqxlNC8A" signalRef="_10aec353-53f9-3409-aa71-c38654c3d402"/>
+    </bpmn2:boundaryEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_GQCTwjgxEeaYrZUqxlNC8A">
+    <bpmndi:BPMNPlane id="_GQCTwzgxEeaYrZUqxlNC8A" bpmnElement="timerWithEventBasedGateway">
+      <bpmndi:BPMNShape id="_GQCTxDgxEeaYrZUqxlNC8A" bpmnElement="_C5F530B0-DC7A-49B3-9C62-A128FD9CFCC8">
+        <dc:Bounds height="691.0" width="1036.0" x="135.0" y="810.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQCTxTgxEeaYrZUqxlNC8A" bpmnElement="_E56BB581-DB3D-4251-866F-14D30BA86181">
+        <dc:Bounds height="30.0" width="30.0" x="165.0" y="908.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQCTxjgxEeaYrZUqxlNC8A" bpmnElement="_99EFB5CD-3C9C-45CF-877B-2060A7C4660E">
+        <dc:Bounds height="40.0" width="40.0" x="288.0" y="906.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQCTxzgxEeaYrZUqxlNC8A" bpmnElement="_4912AFCC-0C79-47A7-B829-C4913D379E97">
+        <dc:Bounds height="30.0" width="30.0" x="397.0" y="908.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQCTyDgxEeaYrZUqxlNC8A" bpmnElement="_03F033E3-B414-4CB2-8CD1-F7166C87B121">
+        <dc:Bounds height="30.0" width="30.0" x="390.0" y="1245.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQCTyTgxEeaYrZUqxlNC8A" bpmnElement="_4C1FFD1D-2477-4075-9C3B-3E67ECBCE2AD">
+        <dc:Bounds height="80.0" width="100.0" x="480.0" y="1230.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQCTyjgxEeaYrZUqxlNC8A" bpmnElement="_0A7810DB-5A61-4B84-BD1E-856AF8C19612">
+        <dc:Bounds height="80.0" width="100.0" x="720.0" y="1035.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQCTyzgxEeaYrZUqxlNC8A" bpmnElement="_A6496E49-112C-4DD1-88E2-2DA79F3B9F4E">
+        <dc:Bounds height="80.0" width="100.0" x="495.0" y="883.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQC60DgxEeaYrZUqxlNC8A" bpmnElement="_09EDA59D-CDFD-4975-965D-9F4E9D7CA60F">
+        <dc:Bounds height="40.0" width="40.0" x="870.0" y="903.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQC60TgxEeaYrZUqxlNC8A" bpmnElement="_7A449CE3-54C6-46DB-AD41-CBFFCDACF0EA">
+        <dc:Bounds height="28.0" width="28.0" x="1033.0" y="912.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQC60jgxEeaYrZUqxlNC8A" bpmnElement="_BC678DEE-1AED-44AC-BA1E-702EB7D7F03D">
+        <dc:Bounds height="30.0" width="30.0" x="615.0" y="1140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQC60zgxEeaYrZUqxlNC8A" bpmnElement="_7B5C1442-13E7-4D6E-BF52-AC9B6B9CA848">
+        <dc:Bounds height="30.0" width="30.0" x="615.0" y="1060.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQC61DgxEeaYrZUqxlNC8A" bpmnElement="_A333D43D-989E-466F-A9B8-A06B65510359">
+        <dc:Bounds height="40.0" width="40.0" x="495.0" y="1055.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQC61TgxEeaYrZUqxlNC8A" bpmnElement="_49C40EF6-E703-4526-9336-B746CB7E52AB">
+        <dc:Bounds height="30.0" width="30.0" x="397.0" y="1060.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_GQC61jgxEeaYrZUqxlNC8A" bpmnElement="_05ECA062-8936-42F5-9D68-532422F405A9">
+        <di:waypoint xsi:type="dc:Point" x="461.0" y="1022.0"/>
+        <di:waypoint xsi:type="dc:Point" x="380.0" y="926.0"/>
+        <di:waypoint xsi:type="dc:Point" x="380.0" y="926.0"/>
+        <di:waypoint xsi:type="dc:Point" x="674.0" y="1021.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC61zgxEeaYrZUqxlNC8A" bpmnElement="_946ABB06-F6D4-4419-9D43-18DEDABDDA15">
+        <di:waypoint xsi:type="dc:Point" x="461.0" y="1022.0"/>
+        <di:waypoint xsi:type="dc:Point" x="308.0" y="1260.0"/>
+        <di:waypoint xsi:type="dc:Point" x="660.0" y="1695.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC62DgxEeaYrZUqxlNC8A" bpmnElement="_2092D580-49DF-444D-94F6-E93B4D0DB651">
+        <di:waypoint xsi:type="dc:Point" x="674.0" y="1021.0"/>
+        <di:waypoint xsi:type="dc:Point" x="905.0" y="996.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC62TgxEeaYrZUqxlNC8A" bpmnElement="_9B208016-9261-407E-9970-72104517EE86">
+        <di:waypoint xsi:type="dc:Point" x="660.0" y="1695.0"/>
+        <di:waypoint xsi:type="dc:Point" x="875.0" y="1690.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC62jgxEeaYrZUqxlNC8A" bpmnElement="_58C749F6-0A6A-49EB-B13C-263104EB35A8">
+        <di:waypoint xsi:type="dc:Point" x="905.0" y="996.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1625.0" y="1016.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC62zgxEeaYrZUqxlNC8A" bpmnElement="_54305BA8-6191-4470-BF8B-CC6484679742">
+        <di:waypoint xsi:type="dc:Point" x="1355.0" y="1300.0"/>
+        <di:waypoint xsi:type="dc:Point" x="890.0" y="1075.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1625.0" y="1016.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC63DgxEeaYrZUqxlNC8A" bpmnElement="_4315F67E-27D9-4586-86F5-89198AF04AE8">
+        <di:waypoint xsi:type="dc:Point" x="875.0" y="1690.0"/>
+        <di:waypoint xsi:type="dc:Point" x="890.0" y="1270.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1625.0" y="1016.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC63TgxEeaYrZUqxlNC8A" bpmnElement="_86498908-227D-46F5-AC42-6936178F9A31">
+        <di:waypoint xsi:type="dc:Point" x="210.0" y="1021.0"/>
+        <di:waypoint xsi:type="dc:Point" x="461.0" y="1022.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC63jgxEeaYrZUqxlNC8A" bpmnElement="_A04EF9ED-E069-469D-9C03-459F1126BEEE">
+        <di:waypoint xsi:type="dc:Point" x="1625.0" y="1016.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1945.0" y="1028.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC63zgxEeaYrZUqxlNC8A" bpmnElement="_D902482A-2DD7-43A8-9031-5C98560449FC">
+        <di:waypoint xsi:type="dc:Point" x="875.0" y="1320.0"/>
+        <di:waypoint xsi:type="dc:Point" x="515.0" y="1155.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1110.0" y="1485.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC64DgxEeaYrZUqxlNC8A" bpmnElement="_24A46D2D-C169-4587-A002-17C735884B83">
+        <di:waypoint xsi:type="dc:Point" x="1110.0" y="1485.0"/>
+        <di:waypoint xsi:type="dc:Point" x="770.0" y="1155.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1355.0" y="1300.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC64TgxEeaYrZUqxlNC8A" bpmnElement="_170E109E-ED9B-40CD-B79B-FC8963C8FFA8">
+        <di:waypoint xsi:type="dc:Point" x="461.0" y="1022.0"/>
+        <di:waypoint xsi:type="dc:Point" x="342.0" y="1075.0"/>
+        <di:waypoint xsi:type="dc:Point" x="674.0" y="1325.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC64jgxEeaYrZUqxlNC8A" bpmnElement="_CF652509-9E81-4170-893A-CE0D58105133">
+        <di:waypoint xsi:type="dc:Point" x="1110.0" y="1325.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1355.0" y="1300.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC64zgxEeaYrZUqxlNC8A" bpmnElement="_2BAA1824-C53A-4BC5-B022-D7ADB45CDE3B">
+        <di:waypoint xsi:type="dc:Point" x="875.0" y="1320.0"/>
+        <di:waypoint xsi:type="dc:Point" x="1110.0" y="1325.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC65DgxEeaYrZUqxlNC8A" bpmnElement="_91E0A9ED-4180-4368-80F0-0B16930474B3">
+        <di:waypoint xsi:type="dc:Point" x="674.0" y="1325.0"/>
+        <di:waypoint xsi:type="dc:Point" x="875.0" y="1320.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_GQC65TgxEeaYrZUqxlNC8A" bpmnElement="_AB11D430-B37F-4D37-916C-15199D8E3F52">
+        <dc:Bounds height="30.0" width="30.0" x="62.0" y="1140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_GQC65jgxEeaYrZUqxlNC8A" bpmnElement="_9A61B531-15D3-48CD-9EBE-74100E3323D8">
+        <di:waypoint xsi:type="dc:Point" x="77.0" y="1155.0"/>
+        <di:waypoint xsi:type="dc:Point" x="653.0" y="1155.5"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_GQC65zgxEeaYrZUqxlNC8A" bpmnElement="_67A45C6F-D268-46B5-A099-211C14B31008">
+        <dc:Bounds height="28.0" width="28.0" x="1260.0" y="1141.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_GQC66DgxEeaYrZUqxlNC8A" bpmnElement="_E8E4D36D-4AE5-41D8-AC4D-0AF201B562FE">
+        <di:waypoint xsi:type="dc:Point" x="653.0" y="1155.5"/>
+        <di:waypoint xsi:type="dc:Point" x="1274.0" y="1155.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_GQC66TgxEeaYrZUqxlNC8A" bpmnElement="_E15CF3B6-7708-4BE4-8FF6-C13E5F3E9EAC">
+        <di:waypoint xsi:type="dc:Point" x="505.0" y="1501.0"/>
+        <di:waypoint xsi:type="dc:Point" x="520.0" y="1544.0"/>
+        <di:waypoint xsi:type="dc:Point" x="629.0" y="1544.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_GQC66jgxEeaYrZUqxlNC8A" bpmnElement="_908845B1-AE4D-4711-92C3-87D63A5DAA71">
+        <dc:Bounds height="28.0" width="28.0" x="615.0" y="1530.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_GQC66zgxEeaYrZUqxlNC8A" bpmnElement="_0919A099-8D79-46A1-BE7F-91B34492BBBF">
+        <dc:Bounds height="30.0" width="30.0" x="490.0" y="1486.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram> 
+</bpmn2:definitions>

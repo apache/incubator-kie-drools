@@ -67,13 +67,14 @@ public class DynamicUtils {
 		workItem.setDeploymentId( (String) ksession.getEnvironment().get("deploymentId"));
 		workItem.setName(workItemName);
 		workItem.setParameters(parameters);
-		final WorkItemNodeInstance workItemNodeInstance = new WorkItemNodeInstance();
-    	workItemNodeInstance.setNodeInstanceContainer(dynamicContext == null ? processInstance : dynamicContext);
-		workItemNodeInstance.setProcessInstance(processInstance);
+		final WorkItemNodeInstance workItemNodeInstance = new WorkItemNodeInstance();	    
 		workItemNodeInstance.internalSetWorkItem(workItem);
-    	workItemNodeInstance.addEventListeners();
+    	
         workItem.setNodeInstanceId(workItemNodeInstance.getId());
     	if (ksession instanceof StatefulKnowledgeSessionImpl) {
+    	    workItemNodeInstance.setProcessInstance(processInstance);
+            workItemNodeInstance.setNodeInstanceContainer(dynamicContext == null ? processInstance : dynamicContext);
+            workItemNodeInstance.addEventListeners();
     		executeWorkItem((StatefulKnowledgeSessionImpl) ksession, workItem, workItemNodeInstance);
 		} else if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
     		CommandService commandService = ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
@@ -89,6 +90,7 @@ public class DynamicUtils {
                     	DynamicNodeInstance realDynamicContext = findDynamicContext(realProcessInstance, dynamicContext.getUniqueId());
                     	workItemNodeInstance.setNodeInstanceContainer(realDynamicContext);
                     }
+                    workItemNodeInstance.addEventListeners();
                     executeWorkItem((StatefulKnowledgeSessionImpl) ksession, workItem, workItemNodeInstance);
                     return null;
                 }

@@ -503,6 +503,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.setSignalCompletion(_instance.getSignalCompletion());
         long nodeInstanceCounter = _instance.getNodeInstanceCounter();
         processInstance.setKnowledgeRuntime( wm.getKnowledgeRuntime() );
+        processInstance.internalSetNodeInstanceCounter( nodeInstanceCounter );
         for( String completedNodeId : _instance.getCompletedNodeIdsList() ) { 
             processInstance.addCompletedNodeId(completedNodeId);
         }
@@ -555,8 +556,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             for ( JBPMMessages.IterationLevel _level : _instance.getIterationLevelsList()) {
                 processInstance.getIterationLevels().put(_level.getId(), _level.getLevel());
             }
-        }
-        processInstance.internalSetNodeInstanceCounter( nodeInstanceCounter );
+        }        
     	processInstance.reconnect();
         return processInstance;
     }
@@ -572,10 +572,10 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                                                                  context, 
                                                                  processInstance);
 
-        nodeInstance.setNodeId( _node.getNodeId() );
+        nodeInstance.setNodeId( _node.getNodeId() );                
+        nodeInstance.setId( _node.getId() );
         nodeInstance.setNodeInstanceContainer( nodeInstanceContainer );
         nodeInstance.setProcessInstance( (org.jbpm.workflow.instance.WorkflowProcessInstance) processInstance );
-        nodeInstance.setId( _node.getId() );
         nodeInstance.setLevel(_node.getLevel()==0?1:_node.getLevel());
 
         switch ( _node.getContent().getType() ) {
