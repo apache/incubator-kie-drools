@@ -313,7 +313,7 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitPathExpression(FEEL_1_1Parser.PathExpressionContext ctx) {
         BaseNode expr = visit( ctx.expr );
-        NameRefNode name = (NameRefNode) visit( ctx.name );
+        BaseNode name = visit( ctx.name );
         return ASTBuilderFactory.newPathExpressionNode( ctx, expr, name );
     }
 

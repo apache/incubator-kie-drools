@@ -120,7 +120,7 @@ public class ASTBuilderFactory {
         return new InstanceOfNode( ctx, expr, type );
     }
 
-    public static PathExpressionNode newPathExpressionNode(ParserRuleContext ctx, BaseNode expr, NameRefNode name) {
+    public static PathExpressionNode newPathExpressionNode(ParserRuleContext ctx, BaseNode expr, BaseNode name) {
         return new PathExpressionNode( ctx, expr, name );
     }
 
