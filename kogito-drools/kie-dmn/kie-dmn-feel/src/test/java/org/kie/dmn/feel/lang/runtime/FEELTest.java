@@ -269,8 +269,15 @@ public class FEELTest {
                 // path expressions
                 {"{ full name: { first name: \"John\", last name: \"Doe\" } }.full name.last name", EMPTY_INPUT, "Doe" },
 
-                // function definition
-//                {"function( person's age ) person's age > 18", EMPTY_INPUT, }
+                // function definition and invocation
+                {"{ hello world : function() \"Hello World!\", message : hello world() }.message", EMPTY_INPUT, "Hello World!" },
+                {"{ is minor : function( person's age ) person's age < 18, bob is minor : is minor( 16 ) }.bob is minor", EMPTY_INPUT, Boolean.TRUE },
+
+                // named parameters: in this case foo is null
+                {"{ is minor : function( foo, person's age ) foo = null and person's age < 18, bob is minor : is minor( person's age : 16 ) }.bob is minor", EMPTY_INPUT, Boolean.TRUE },
+
+
+
 
         };
         return Arrays.asList( cases );

@@ -61,12 +61,7 @@ public class NameDefNode
     }
 
     @Override
-    public Object evaluate(EvaluationContext ctx) {
-        if( parts != null ) {
-            return parts.stream().collect( Collectors.joining( " " ) );
-        } else if( name != null ) {
-            return name;
-        }
-        return null;
+    public String evaluate(EvaluationContext ctx) {
+        return getText();
     }
 }

@@ -21,6 +21,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class TimeFunction
         extends BaseFEELFunction {
@@ -28,6 +31,15 @@ public class TimeFunction
     public TimeFunction() {
         super( "time" );
     }
+
+    @Override
+    public List<List<String>> getParameterNames() {
+        return Arrays.asList(
+                Arrays.asList( "from" ),
+                Arrays.asList( "hour", "minute", "second", "offset" )
+        );
+    }
+
 
     public TemporalAccessor apply(String val) {
         if ( val != null ) {

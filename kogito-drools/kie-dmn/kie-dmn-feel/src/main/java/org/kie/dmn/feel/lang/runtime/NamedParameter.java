@@ -16,19 +16,25 @@
 
 package org.kie.dmn.feel.lang.runtime;
 
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.Symbol;
+public class NamedParameter {
+    private final String name;
+    private final Object value;
 
-import java.util.List;
+    public NamedParameter(String name, Object value) {
+        this.name = name;
+        this.value = value;
+    }
 
-public interface FEELFunction {
+    public String getName() {
+        return name;
+    }
 
-    String getName();
+    public Object getValue() {
+        return value;
+    }
 
-    List<List<String>> getParameterNames();
-
-    Symbol getSymbol();
-
-    Object applyReflectively(EvaluationContext ctx, Object[] params);
-
+    @Override
+    public String toString() {
+        return name + " : " + value;
+    }
 }
