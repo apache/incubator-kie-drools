@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -117,13 +118,25 @@ public abstract class BaseFEELFunction implements FEELFunction {
                     logger.error( "Unable to find function '" + getName() + "( " + ps.substring( 1, ps.length()-1 ) +" )'" );
                 }
             } else {
-                Object result = ((CustomFEELFunction)this).apply( ctx, params );
-                return result;
+                Object result = null;
+                if( this instanceof CustomFEELFunction ) {
+                    result = ((CustomFEELFunction)this).apply( ctx, params );
+                } else if( this instanceof JavaFunction ) {
+                    result = ((JavaFunction)this).apply( ctx, params );
+                } else {
+                    logger.error( "Unable to find function '" + toString() +"'" );
+                }
+                return normalizeResult( result );
             }
         } catch ( Exception e ) {
             logger.error( "Error trying to call function "+getName()+".", e );
         }
         return null;
+    }
+
+    private Object normalizeResult(Object result) {
+        // this is to normalize types returned by external functions
+        return result != null && result instanceof Number && !(result instanceof BigDecimal) ? new BigDecimal( result.toString() ) : result;
     }
 
     protected boolean isCustomFunction() {

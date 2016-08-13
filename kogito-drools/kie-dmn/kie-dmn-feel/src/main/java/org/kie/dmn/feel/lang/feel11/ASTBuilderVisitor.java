@@ -397,4 +397,14 @@ public class ASTBuilderVisitor
         }
         return expr;
     }
+
+    @Override
+    public BaseNode visitExpressionTextual(FEEL_1_1Parser.ExpressionTextualContext ctx) {
+        BaseNode expr = visit( ctx.expr );
+        if( ctx.filter != null ) {
+            BaseNode filter = visit( ctx.filter );
+            return ASTBuilderFactory.newFilterExpressionNode( ctx, expr, filter );
+        }
+        return expr;
+    }
 }

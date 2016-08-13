@@ -22,6 +22,11 @@ import org.kie.dmn.feel.util.EvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class PathExpressionNode
         extends BaseNode {
 
@@ -56,17 +61,35 @@ public class PathExpressionNode
     public Object evaluate(EvaluationContext ctx) {
         try {
             Object o = this.expression.evaluate( ctx );
-            if ( name instanceof NameRefNode ) {
-                o = EvalHelper.getValue( o, name.getText() );
-            } else if ( name instanceof QualifiedNameNode ) {
-                for ( NameRefNode nr : ((QualifiedNameNode) name).getParts() ) {
-                    o = EvalHelper.getValue( o, nr.getText() );
+            if ( o instanceof List ) {
+                List list = (List) o;
+                // list of contexts/elements as defined in the spec, page 114
+                List results = new ArrayList();
+                for( Object element : list ) {
+                    Object r = fetchValue( element );
+                    if( r != null ) {
+                        results.add( r );
+                    }
                 }
+                return results.size() == 1 ? results.get( 0 ) : results;
+            } else {
+                return fetchValue( o );
             }
-            return o;
         } catch ( Exception e ) {
             logger.error( "Error evaluating path expression: " + expression.getText() + "." + name.getText(), e );
         }
         return null;
+    }
+
+    private Object fetchValue(Object o)
+            throws IllegalAccessException, InvocationTargetException {
+        if ( name instanceof NameRefNode ) {
+            o = EvalHelper.getValue( o, name.getText() );
+        } else if ( name instanceof QualifiedNameNode ) {
+            for ( NameRefNode nr : ((QualifiedNameNode) name).getParts() ) {
+                o = EvalHelper.getValue( o, nr.getText() );
+            }
+        }
+        return o;
     }
 }

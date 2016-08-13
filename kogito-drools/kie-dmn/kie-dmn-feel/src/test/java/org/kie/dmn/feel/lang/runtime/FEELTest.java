@@ -28,6 +28,8 @@ import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @RunWith(Parameterized.class)
@@ -272,9 +274,24 @@ public class FEELTest {
                 // function definition and invocation
                 {"{ hello world : function() \"Hello World!\", message : hello world() }.message", EMPTY_INPUT, "Hello World!" },
                 {"{ is minor : function( person's age ) person's age < 18, bob is minor : is minor( 16 ) }.bob is minor", EMPTY_INPUT, Boolean.TRUE },
+                {"{ maximum : function( v1, v2 ) external { java : { class : \"java.lang.Math\", method signature: \"max(long,long)\" } }, the max : maximum( 10, 20 ) }.the max",
+                 EMPTY_INPUT, BigDecimal.valueOf( 20 ) },
 
                 // named parameters: in this case foo is null
                 {"{ is minor : function( foo, person's age ) foo = null and person's age < 18, bob is minor : is minor( person's age : 16 ) }.bob is minor", EMPTY_INPUT, Boolean.TRUE },
+
+                // filters
+                {"[\"a\", \"b\", \"c\"][1]", EMPTY_INPUT, "a" },
+                {"[\"a\", \"b\", \"c\"][-1]", EMPTY_INPUT, "c" },
+                {"[\"a\", \"b\", \"c\"][5]", EMPTY_INPUT, null },
+                {"\"a\"[1]", EMPTY_INPUT, "a" },
+                {"\"a\"[-1]", EMPTY_INPUT, "a" },
+                {"{ a list : [10, 20, 30, 40], second : a list[2] }.second", EMPTY_INPUT, BigDecimal.valueOf( 20 ) },
+                {"[1, 2, 3, 4][item > 2]", EMPTY_INPUT, Arrays.asList( BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ) },
+                {"[ {x:1, y:2}, {x:2, y:3} ][x = 1]", EMPTY_INPUT, new HashMap<String, Object>(  ) {{ put("x", BigDecimal.valueOf( 1 )); put("y", BigDecimal.valueOf( 2 ));}} },
+                {"[ {x:1, y:2}, {x:2, y:3} ].y", EMPTY_INPUT, Arrays.asList( BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ) ) },
+
+
 
 
 
@@ -307,5 +324,6 @@ public class FEELTest {
 //    public void testMathExprPow2() {
 //        assertThat( FEEL.evaluate( "10 ** -5", EMPTY_INPUT ), is( BigDecimal.valueOf( -0.00001 ) ) );
 //    }
+
 
 }
