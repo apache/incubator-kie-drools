@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
+import java.util.List;
+
 public class DecisionTableFunction
         extends BaseFEELFunction {
 
@@ -23,4 +25,8 @@ public class DecisionTableFunction
         super( "decision table" );
     }
 
+    @Override
+    public List<List<String>> getParameterNames() {
+        return null;
+    }
 }

@@ -17,9 +17,12 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.runtime.functions.CustomFEELFunction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FunctionDefNode
         extends BaseNode {
@@ -62,5 +65,15 @@ public class FunctionDefNode
 
     public void setBody(BaseNode body) {
         this.body = body;
+    }
+
+    @Override
+    public Object evaluate(EvaluationContext ctx) {
+        if( external ) {
+            throw new UnsupportedOperationException( " not implemented yet " );
+        } else {
+            List<String> params = formalParameters.stream().map( p -> p.evaluate( ctx ) ).collect( Collectors.toList() );
+            return new CustomFEELFunction( "<anonymous>", params, body );
+        }
     }
 }

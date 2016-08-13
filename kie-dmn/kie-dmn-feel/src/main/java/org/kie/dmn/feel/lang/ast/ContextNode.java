@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.runtime.functions.CustomFEELFunction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +56,10 @@ public class ContextNode
             for( ContextEntryNode cen : entries ) {
                 String name = cen.evaluateName( ctx );
                 Object value = cen.evaluate( ctx );
+                if( value instanceof CustomFEELFunction ) {
+                    // helpful for debugging
+                    ((CustomFEELFunction) value).setName( name );
+                }
 
                 ctx.setValue( name, value );
                 c.put( name, value );
