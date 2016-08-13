@@ -291,11 +291,6 @@ public class FEELTest {
                 {"[ {x:1, y:2}, {x:2, y:3} ][x = 1]", EMPTY_INPUT, new HashMap<String, Object>(  ) {{ put("x", BigDecimal.valueOf( 1 )); put("y", BigDecimal.valueOf( 2 ));}} },
                 {"[ {x:1, y:2}, {x:2, y:3} ].y", EMPTY_INPUT, Arrays.asList( BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ) ) },
 
-
-
-
-
-
         };
         return Arrays.asList( cases );
     }
