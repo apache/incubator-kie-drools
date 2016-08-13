@@ -24,6 +24,9 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class DurationFunction
         extends BaseFEELFunction {
@@ -31,6 +34,14 @@ public class DurationFunction
     public DurationFunction() {
         super( "duration" );
     }
+
+    @Override
+    public List<List<String>> getParameterNames() {
+        return Arrays.asList(
+                Arrays.asList( "from" )
+        );
+    }
+
 
     public TemporalAmount apply(String val) {
         if ( val != null ) {

@@ -16,14 +16,20 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
+import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.runtime.FEELFunction;
+import org.kie.dmn.feel.lang.runtime.NamedParameter;
 import org.kie.dmn.feel.lang.types.FunctionSymbol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class BaseFEELFunction implements FEELFunction {
@@ -43,6 +49,11 @@ public abstract class BaseFEELFunction implements FEELFunction {
         return name;
     }
 
+    public void setName( String name ) {
+        this.name = name;
+        ((FunctionSymbol)this.symbol).setId( name );
+    }
+
     @Override
     public Symbol getSymbol() {
         return symbol;
@@ -50,39 +61,73 @@ public abstract class BaseFEELFunction implements FEELFunction {
 
     // TODO: can this method be improved somehow??
     @Override
-    public Object applyReflectively(Object[] params) {
+    public Object applyReflectively(EvaluationContext ctx, Object[] params) {
         // use reflection to call the appropriate apply method
         try {
-            Class[] classes = Stream.of( params ).map( p -> p != null ? p.getClass() : null ).toArray( Class[]::new );
-            Method apply = null;
-            for( Method m : getClass().getDeclaredMethods() ) {
-                Class<?>[] parameterTypes = m.getParameterTypes();
-                if( !m.getName().equals( "apply" ) || parameterTypes.length != params.length ) {
-                    continue;
-                }
-                boolean found = true;
-                for( int i = 0; i < parameterTypes.length; i++ ) {
-                    if ( classes[i] != null && ! parameterTypes[i].isAssignableFrom( classes[i] ) ) {
-                        found = false;
+            if( params.length > 0 && params[0] instanceof NamedParameter ) {
+                // using named parameters, so need to adjust
+                List<List<String>> names = getParameterNames();
+                names.sort( (o1, o2) -> o1.size() <= o2.size() ? -1 : +1 );
+
+                List<String> available = Stream.of( params ).map( p -> ((NamedParameter)p).getName() ).collect( Collectors.toList() );
+
+                boolean found = false;
+                for( List<String> candidate : names ) {
+                    if( candidate.containsAll( available ) ) {
+                        Object[] newParams = new Object[candidate.size()];
+                        for( Object o : params ) {
+                            NamedParameter np = (NamedParameter) o;
+                            newParams[ candidate.indexOf( np.getName() ) ] = np.getValue();
+                        }
+                        params = newParams;
+                        found = true;
                         break;
                     }
                 }
-                if( found ) {
-                    apply = m;
-                    break;
+                if( !found ) {
+                    logger.error( "Unable to find function "+getName()+"( "+available.stream().collect( Collectors.joining(", ") )+ " )" );
+                    return null;
                 }
             }
-            if( apply != null ) {
-                Object result = apply.invoke( this, params );
-                return result;
+            if ( ! isCustomFunction() ) {
+                Class[] classes = Stream.of( params ).map( p -> p != null ? p.getClass() : null ).toArray( Class[]::new );
+                Method apply = null;
+                for( Method m : getClass().getDeclaredMethods() ) {
+                    Class<?>[] parameterTypes = m.getParameterTypes();
+                    if( !m.getName().equals( "apply" ) || parameterTypes.length != params.length ) {
+                        continue;
+                    }
+                    boolean found = true;
+                    for( int i = 0; i < parameterTypes.length; i++ ) {
+                        if ( classes[i] != null && ! parameterTypes[i].isAssignableFrom( classes[i] ) ) {
+                            found = false;
+                            break;
+                        }
+                    }
+                    if( found ) {
+                        apply = m;
+                        break;
+                    }
+                }
+                if( apply != null ) {
+                    Object result = apply.invoke( this, params );
+                    return result;
+                } else {
+                    String ps = Arrays.toString( classes );
+                    logger.error( "Unable to find function '" + getName() + "( " + ps.substring( 1, ps.length()-1 ) +" )'" );
+                }
             } else {
-                String ps = Arrays.toString( classes );
-                logger.error( "Unable to find function '" + getName() + "( " + ps.substring( 1, ps.length()-1 ) +" )'" );
+                Object result = ((CustomFEELFunction)this).apply( ctx, params );
+                return result;
             }
         } catch ( Exception e ) {
             logger.error( "Error trying to call function "+getName()+".", e );
         }
         return null;
+    }
+
+    protected boolean isCustomFunction() {
+        return false;
     }
 
 }

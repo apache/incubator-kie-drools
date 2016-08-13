@@ -19,12 +19,22 @@ package org.kie.dmn.feel.lang.runtime.functions;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class YearsAndMonthsFunction
         extends BaseFEELFunction {
 
     public YearsAndMonthsFunction() {
         super( "years and months duration" );
+    }
+
+    @Override
+    public List<List<String>> getParameterNames() {
+        return Arrays.asList(
+                Arrays.asList( "from", "to" )
+        );
     }
 
     public TemporalAmount apply(LocalDate from, LocalDate to) {

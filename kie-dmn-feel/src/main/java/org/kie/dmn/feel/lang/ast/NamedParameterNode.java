@@ -17,6 +17,8 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.runtime.NamedParameter;
 
 public class NamedParameterNode
         extends BaseNode {
@@ -44,5 +46,12 @@ public class NamedParameterNode
 
     public void setExpression(BaseNode expression) {
         this.expression = expression;
+    }
+
+    @Override
+    public Object evaluate(EvaluationContext ctx) {
+        String n = name.evaluate( ctx );
+        Object val = expression.evaluate( ctx );
+        return new NamedParameter( n, val );
     }
 }

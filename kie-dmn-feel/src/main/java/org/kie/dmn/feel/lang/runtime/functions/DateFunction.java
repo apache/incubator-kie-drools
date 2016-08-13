@@ -20,12 +20,23 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class DateFunction
         extends BaseFEELFunction {
 
     public DateFunction() {
         super( "date" );
+    }
+
+    @Override
+    public List<List<String>> getParameterNames() {
+        return Arrays.asList(
+                Arrays.asList( "from" ),
+                Arrays.asList( "year", "month", "day" )
+        );
     }
 
     public TemporalAccessor apply(String val) {
@@ -48,5 +59,7 @@ public class DateFunction
         }
         return null;
     }
+
+
 
 }

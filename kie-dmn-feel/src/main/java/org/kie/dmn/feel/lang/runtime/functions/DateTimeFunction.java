@@ -21,6 +21,9 @@ import java.time.OffsetDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class DateTimeFunction
         extends BaseFEELFunction {
@@ -29,11 +32,20 @@ public class DateTimeFunction
         super( "date and time" );
     }
 
+    @Override
+    public List<List<String>> getParameterNames() {
+        return Arrays.asList(
+                Arrays.asList( "from" )
+        );
+    }
+
+
     public TemporalAccessor apply(String val) {
         if ( val != null ) {
             return DateTimeFormatter.ISO_OFFSET_DATE_TIME.parseBest( val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from );
         }
         return null;
     }
+
 
 }
