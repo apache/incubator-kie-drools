@@ -58,7 +58,7 @@ public class FEEL {
     public static Object evaluate(String expression, Map<String, Object> inputVariables) {
         CompilerContext ctx = newCompilerContext();
         if ( inputVariables != null ) {
-            inputVariables.entrySet().stream().forEach( e -> ctx.addInputVariable( e.getKey(), BuiltInType.determineTypeFromInstance( e ) ) );
+            inputVariables.entrySet().stream().forEach( e -> ctx.addInputVariable( e.getKey(), e.getValue() ) );
         }
         CompiledExpression expr = compile( expression, ctx );
         return evaluate( expr, inputVariables );

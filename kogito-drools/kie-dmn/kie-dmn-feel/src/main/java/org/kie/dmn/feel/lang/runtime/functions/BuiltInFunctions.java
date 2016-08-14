@@ -26,7 +26,8 @@ public class BuiltInFunctions {
             new DateTimeFunction(),
             new DurationFunction(),
             new YearsAndMonthsFunction(),
-            new DecisionTableFunction()
+            new DecisionTableFunction(),
+            new SumFunction()
     };
 
     public static FEELFunction[] getFunctions() {
