@@ -26,8 +26,22 @@ public class BuiltInFunctions {
             new DateTimeFunction(),
             new DurationFunction(),
             new YearsAndMonthsFunction(),
+            new StringFunction(),
+            new NumberFunction(),
+            new SubstringFunction(),
+            new SubstringBeforeFunction(),
+            new SubstringAfterFunction(),
+            new StringLengthFunction(),
+            new StringUpperCaseFunction(),
+            new StringLowerCaseFunction(),
+            new ContainsFunction(),
+            new StartsWithFunction(),
+            new EndsWithFunction(),
+            new ListContainsFunction(),
+            new CountFunction(),
+
+            new SumFunction(),
             new DecisionTableFunction(),
-            new SumFunction()
     };
 
     public static FEELFunction[] getFunctions() {
