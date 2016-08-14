@@ -18,12 +18,14 @@ package org.kie.dmn.feel.lang.feel11;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.PredictionMode;
+import org.kie.dmn.feel.lang.Type;
 
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class FEELParser {
 
-    public static FEEL_1_1Parser parse(String source, String... symbols) {
+    public static FEEL_1_1Parser parse(String source, Map<String, Object> inputVariables) {
         ANTLRInputStream input = new ANTLRInputStream(source);
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
@@ -31,8 +33,24 @@ public class FEELParser {
         parser.setErrorHandler( new FEELErrorHandler() );
 
         // pre-loads the parser with symbols
-        Stream.of( symbols ).forEach( s -> parser.getHelper().defineVariable( s ) );
+        defineVariables( inputVariables, parser );
         return parser;
+    }
+
+    private static void defineVariables(Map<String, Object> inputVariables, FEEL_1_1Parser parser) {
+        for( Map.Entry<String, Object> e : inputVariables.entrySet() ) {
+            parser.getHelper().defineVariable( e.getKey() );
+            if( e.getValue() instanceof Map ) {
+                try {
+                    parser.getHelper().pushName( e.getKey() );
+                    parser.getHelper().pushScope();
+                    defineVariables( (Map<String, Object>) e.getValue(), parser );
+                } finally {
+                    parser.getHelper().popScope();
+                    parser.getHelper().popName();
+                }
+            }
+        }
     }
 
     public static class FEELErrorHandler extends DefaultErrorStrategy {
