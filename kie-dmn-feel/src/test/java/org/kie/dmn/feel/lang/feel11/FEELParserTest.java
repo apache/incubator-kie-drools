@@ -23,6 +23,10 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.ast.*;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -946,7 +950,7 @@ public class FEELParserTest {
                                  + "        [ <25      , \"bad\"  , \"Medium\" ] ],"
                                  + "    hit policy: \"Unique\" )";
         // need to call parse passing in the input variables
-        BaseNode functionBase = parse( inputExpression, "Applicant Age", "Medical History" );
+        BaseNode functionBase = parse( inputExpression, new HashMap<String, Object>() {{ put("Applicant Age", 51); put( "Medical History", "good" ); }} );
 
         assertThat( functionBase, is( instanceOf( FunctionInvocationNode.class ) ) );
         assertThat( functionBase.getText(), is( inputExpression ) );
@@ -1056,8 +1060,12 @@ public class FEELParserTest {
         assertThat( number.getEndColumn(), is( inputExpression.length() ) );
     }
 
-    private BaseNode parse(String input, String... symbols) {
-        FEEL_1_1Parser parser = FEELParser.parse( input, symbols );
+    private BaseNode parse(String input) {
+        return parse( input, Collections.emptyMap() );
+    }
+
+    private BaseNode parse(String input, Map<String, Object> inputVariables) {
+        FEEL_1_1Parser parser = FEELParser.parse( input, inputVariables );
 
         ParseTree tree = parser.expression();
 

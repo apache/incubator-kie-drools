@@ -52,6 +52,10 @@ public class ParserHelper {
         currentScope = currentScope.getParentScope();
     }
 
+    public void pushName( String name ) {
+        this.currentName.push( name );
+    }
+
     public void pushName(ParserRuleContext ctx) {
         this.currentName.push( getOriginalText( ctx ) );
     }

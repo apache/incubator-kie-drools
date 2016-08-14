@@ -54,6 +54,14 @@ public class ExamplesTest {
         System.out.println( "Yearly income = " + yearlyIncome );
     }
 
+    @Test
+    public void testLoadExample_10_6_3() {
+        String expression = loadExpression( "example_10_6_1.feel" );
+        Map context = (Map) FEEL.evaluate( expression );
+        String validMaritalStatus = (String) FEEL.evaluate( "if applicant.marital status in (\"M\",\"S\") then \"valid\" else \"not valid\"", context );
+        System.out.println( "Marital status = " + validMaritalStatus );
+    }
+
     private String loadExpression(String fileName) {
         try {
             return new String( Files.readAllBytes( Paths.get( getClass().getResource( fileName ).toURI() ) ) );
