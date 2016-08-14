@@ -35,6 +35,7 @@ public class CompiledExpressionImpl implements CompiledExpression {
 
     public Object evaluate(Map<String, Object> inputVariables) {
         EvaluationContextImpl ctx = new EvaluationContextImpl();
+        inputVariables.entrySet().stream().forEach( e -> ctx.setValue( e.getKey(), e.getValue() ) );
         return expression.evaluate( ctx );
     }
 
