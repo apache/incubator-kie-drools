@@ -20,8 +20,8 @@ import java.util.Map;
 
 public interface CompilerContext {
 
-    CompilerContext addInputVariable( String name, Type type );
+    CompilerContext addInputVariable( String name, Object value );
 
-    Map<String, Type> getInputVariables();
+    Map<String, Object> getInputVariables();
 
 }

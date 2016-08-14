@@ -23,16 +23,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CompilerContextImpl implements CompilerContext {
-    private Map<String, Type> inputVariables = new HashMap<>();
+    private Map<String, Object> inputVariables = new HashMap<>();
 
     @Override
-    public CompilerContext addInputVariable(String name, Type type) {
-        inputVariables.put( name, type );
+    public CompilerContext addInputVariable(String name, Object value) {
+        inputVariables.put( name, value );
         return this;
     }
 
     @Override
-    public Map<String, Type> getInputVariables() {
+    public Map<String, Object> getInputVariables() {
         return this.inputVariables;
     }
 }
