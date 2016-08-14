@@ -1,0 +1,6 @@
+/*
+ *  Example 10.6.7 from DMN Spec page 143
+ *
+ *  Shows the use of quantifiers
+ */
+some ch in credit history satisfies ch.event = "bankruptcy"

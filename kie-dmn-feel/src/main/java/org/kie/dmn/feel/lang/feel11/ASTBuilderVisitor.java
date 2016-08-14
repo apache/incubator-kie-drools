@@ -327,7 +327,11 @@ public class ASTBuilderVisitor
         BaseNode expr = visit( ctx.expr );
         if ( ctx.filter != null ) {
             BaseNode filter = visit( ctx.filter );
-            return ASTBuilderFactory.newFilterExpressionNode( ctx, expr, filter );
+            expr = ASTBuilderFactory.newFilterExpressionNode( ctx, expr, filter );
+            if( ctx.qualifiedName() != null ) {
+                BaseNode path = visit( ctx.qualifiedName() );
+                expr = ASTBuilderFactory.newPathExpressionNode( ctx, expr, path );
+            }
         }
         return expr;
     }
@@ -403,7 +407,11 @@ public class ASTBuilderVisitor
         BaseNode expr = visit( ctx.expr );
         if( ctx.filter != null ) {
             BaseNode filter = visit( ctx.filter );
-            return ASTBuilderFactory.newFilterExpressionNode( ctx, expr, filter );
+            expr = ASTBuilderFactory.newFilterExpressionNode( ctx, expr, filter );
+            if( ctx.qualifiedName() != null ) {
+                BaseNode path = visit( ctx.qualifiedName() );
+                expr = ASTBuilderFactory.newPathExpressionNode( ctx, expr, path );
+            }
         }
         return expr;
     }
