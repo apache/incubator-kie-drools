@@ -4,6 +4,7 @@
  *  Defines a complex context
  */
 {
+    // applicant is a nested context
     applicant : {
         age : 51,
         marital status : "M",
@@ -21,8 +22,14 @@
         term : 36,
         amount : 100000.00
     },
+
+    // a reference to a path on a previous entry
     monthly income : applicant.monthly.income,
+
+    // a list of paths
     monthly outgoings : [ applicant.monthly.repayments, applicant.monthly.expenses ],
+
+    // a relation (list of contexts)
     credit history : [
         {
             record date : date( "2008-03-12" ),
@@ -35,6 +42,8 @@
             weight : 150
         }
     ],
+
+    // a custom function
     PMT : function( rate, term, amount )
-        (amount * rate / 12) / ( 1 - ( 1 + rate / 12 ) ** -term )
+              (amount * rate / 12) / ( 1 - ( 1 + rate / 12 ) ** -term )
 }

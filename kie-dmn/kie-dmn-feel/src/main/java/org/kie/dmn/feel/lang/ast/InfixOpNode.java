@@ -102,11 +102,11 @@ public class InfixOpNode
             case ADD:
                 return add( left, right, ctx );
             case SUB:
-                return math( left, right, ctx, (l, r) -> l.subtract( r ) );
+                return math( left, right, ctx, (l, r) -> l.subtract( r, MathContext.DECIMAL128 ) );
             case MULT:
-                return math( left, right, ctx, (l, r) -> l.multiply( r ) );
+                return math( left, right, ctx, (l, r) -> l.multiply( r, MathContext.DECIMAL128 ) );
             case DIV:
-                return math( left, right, ctx, (l, r) -> l.divide( r ) );
+                return math( left, right, ctx, (l, r) -> l.divide( r, MathContext.DECIMAL128 ) );
             case POW:
                 return math( left, right, ctx, (l, r) -> l.pow( r.intValue(), MathContext.DECIMAL128 ) );
             case AND:
@@ -136,7 +136,7 @@ public class InfixOpNode
         } else if ( left instanceof String && right instanceof String ) {
             return ((String) left) + ((String) right);
         } else {
-            return math( left, right, ctx, (l, r) -> l.add( r ) );
+            return math( left, right, ctx, (l, r) -> l.add( r, MathContext.DECIMAL128 ) );
         }
     }
 

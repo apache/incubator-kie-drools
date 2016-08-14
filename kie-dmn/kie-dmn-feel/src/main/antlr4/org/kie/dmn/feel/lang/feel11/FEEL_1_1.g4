@@ -41,8 +41,8 @@ expression
     ;
 
 expressionTypes
-    : expr=textualExpression ( '[' filter=expression ']' )?  #expressionTextual
-    | expr=boxedExpression ( '[' filter=expression ']' )?    #expressionBoxed
+    : expr=textualExpression ( '[' filter=expression ']' ('.' qualifiedName)? )?  #expressionTextual
+    | expr=boxedExpression ( '[' filter=expression ']' ('.' qualifiedName)? )?    #expressionBoxed
     ;
 
 // #2
