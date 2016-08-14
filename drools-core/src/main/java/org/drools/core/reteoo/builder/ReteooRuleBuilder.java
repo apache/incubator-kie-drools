@@ -204,15 +204,20 @@ public class ReteooRuleBuilder implements RuleBuilder {
         PathEndNode[] pathEndNodes = context.getPathEndNodes().toArray(new PathEndNode[context.getPathEndNodes().size()]);
         for ( int i = 0; i < pathEndNodes.length; i++ ) {
             PathEndNode node = context.getPathEndNodes().get(pathEndNodes.length-1-i);
-            node.setPathEndNodes(pathEndNodes);
             pathEndNodes[i] = node;
+            if (node instanceof RightInputAdapterNode && node.getPathEndNodes() != null) {
+                PathEndNode[] riaPathEndNodes = new PathEndNode[node.getPathEndNodes().length + i];
+                System.arraycopy( pathEndNodes, 0, riaPathEndNodes, 0, i );
+                System.arraycopy( node.getPathEndNodes(), 0, riaPathEndNodes, i, node.getPathEndNodes().length );
+                node.setPathEndNodes( riaPathEndNodes );
+            } else {
+                node.setPathEndNodes( pathEndNodes );
+            }
         }
     }
 
     /**
      * Adds a query pattern to the given subrule
-     * 
-     * @param subrule
      */
     private void addInitialFactPattern( final GroupElement subrule ) {
 

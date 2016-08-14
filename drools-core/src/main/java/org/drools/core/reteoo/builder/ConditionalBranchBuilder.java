@@ -18,7 +18,6 @@ package org.drools.core.reteoo.builder;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
 import org.drools.core.reteoo.ConditionalBranchNode;
-import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.ConditionalBranch;
 import org.drools.core.rule.RuleConditionElement;
@@ -40,7 +39,7 @@ public class ConditionalBranchBuilder implements ReteooComponentBuilder {
                                             .buildConditionalBranchNode( context.getNextId(), context.getTupleSource(),
                                                                          branchEvaluator, context );
 
-        context.setTupleSource((LeftTupleSource) utils.attachNode(context, node));
+        context.setTupleSource( utils.attachNode(context, node) );
 
         context.popRuleComponent();
     }
