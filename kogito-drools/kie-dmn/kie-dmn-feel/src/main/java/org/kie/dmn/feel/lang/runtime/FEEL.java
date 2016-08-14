@@ -28,12 +28,15 @@ import org.kie.dmn.feel.lang.impl.CompilerContextImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.EvalHelper;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
  * Language runtime entry point
  */
 public class FEEL {
+
+    private static final Map<String,Object> EMPTY_INPUT = Collections.emptyMap();
 
     public static CompilerContext newCompilerContext() {
         return new CompilerContextImpl();
@@ -46,6 +49,10 @@ public class FEEL {
         BaseNode expr = v.visit( tree );
         CompiledExpression ce = new CompiledExpressionImpl( expr );
         return ce;
+    }
+
+    public static Object evaluate(String expression) {
+        return evaluate( expression, EMPTY_INPUT );
     }
 
     public static Object evaluate(String expression, Map<String, Object> inputVariables) {

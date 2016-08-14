@@ -21,6 +21,7 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.util.EvalHelper;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 
@@ -107,7 +108,7 @@ public class InfixOpNode
             case DIV:
                 return math( left, right, ctx, (l, r) -> l.divide( r ) );
             case POW:
-                return math( left, right, ctx, (l, r) -> l.pow( r.intValue() ) );
+                return math( left, right, ctx, (l, r) -> l.pow( r.intValue(), MathContext.DECIMAL128 ) );
             case AND:
                 return and( left, right, ctx );
             case OR:
