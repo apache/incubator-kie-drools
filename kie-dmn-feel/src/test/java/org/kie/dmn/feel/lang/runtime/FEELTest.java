@@ -73,6 +73,7 @@ public class FEELTest {
                 { "(10 + 20) / (-5 * 3)", EMPTY_INPUT, BigDecimal.valueOf( -2 ) },
                 { "(10 + 20) / 0", EMPTY_INPUT, null },
                 { "10 ** 5", EMPTY_INPUT, BigDecimal.valueOf( 100000 ) },
+                { "10 ** -5", EMPTY_INPUT, new BigDecimal( "0.00001" ) },
                 { "(5+2) ** 5", EMPTY_INPUT, BigDecimal.valueOf( 16807 ) },
                 { "5+2 ** 5", EMPTY_INPUT, BigDecimal.valueOf( 37 ) },
                 { "5+2 ** 5+3", EMPTY_INPUT, BigDecimal.valueOf( 40 ) },
@@ -314,11 +315,4 @@ public class FEELTest {
             assertThat( "Evaluating: '"+expression+"'", FEEL.evaluate( expression, inputVariables ), is( result ) );
         }
     }
-
-//    @Test @Ignore( "Java BigDecimals do not support negative numbers as power. Need to figure out what to do." )
-//    public void testMathExprPow2() {
-//        assertThat( FEEL.evaluate( "10 ** -5", EMPTY_INPUT ), is( BigDecimal.valueOf( -0.00001 ) ) );
-//    }
-
-
 }

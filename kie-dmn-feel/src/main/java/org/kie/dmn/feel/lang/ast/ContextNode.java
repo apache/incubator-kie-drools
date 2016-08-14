@@ -20,9 +20,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.runtime.functions.CustomFEELFunction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ContextNode
         extends BaseNode {
@@ -52,7 +50,7 @@ public class ContextNode
     public Object evaluate(EvaluationContext ctx) {
         try {
             ctx.enterFrame();
-            HashMap<String, Object> c = new HashMap<>();
+            Map<String, Object> c = new LinkedHashMap<>();
             for( ContextEntryNode cen : entries ) {
                 String name = cen.evaluateName( ctx );
                 Object value = cen.evaluate( ctx );
