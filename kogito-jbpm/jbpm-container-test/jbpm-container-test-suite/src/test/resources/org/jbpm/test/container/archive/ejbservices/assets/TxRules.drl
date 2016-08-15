@@ -1,0 +1,8 @@
+package org.jboss.qa.bpms.archive.ejbservices.assets
+
+rule dummyRule
+  ruleflow-group "dummy"
+  when
+  then
+    System.out.println("rule fired");
+end

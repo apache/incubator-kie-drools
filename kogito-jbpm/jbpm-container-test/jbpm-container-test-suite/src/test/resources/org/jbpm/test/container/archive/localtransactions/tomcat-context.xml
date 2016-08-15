@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <!-- use standard Java delegation (parent-first) model -->
+    <Loader delegate="true" />
+
+    <Listener className="bitronix.tm.integration.tomcat55.BTMLifecycleListener" />
+
+    <Resource name="TransactionSynchronizationRegistry" auth="Container" type="javax.transaction.TransactionSynchronizationRegistry"
+              factory="bitronix.tm.BitronixTransactionSynchronizationRegistryObjectFactory" />
+
+    <Transaction factory="bitronix.tm.BitronixUserTransactionObjectFactory" />
+</Context>

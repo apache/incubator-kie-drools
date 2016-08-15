@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application-bnd xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://websphere.ibm.com/dxml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-bnd_1_2.xsd"
+                 xmlns="http://websphere.ibm.com/xml/ns/javaee" version="1.2">
+  <security-role name="admin">
+    <group name="admin" />
+    <user name="ibek"/>
+  </security-role>
+</application-bnd>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-container-integration-deps</artifactId>
+    <version>7.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>idep-jbpm-ejb-services</artifactId>
+
+  <name>jBPM :: Container Test IDEPS jBPM EJB Services</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-services-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-services-ejb-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-services-ejb-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-kie-services</artifactId>
+    </dependency>
+    <!--Include guice-servlet as a workaround because sisu guice is missing servlet extension-->
+    <dependency>
+      <groupId>org.sonatype.sisu.inject</groupId>
+      <artifactId>guice-servlet</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>

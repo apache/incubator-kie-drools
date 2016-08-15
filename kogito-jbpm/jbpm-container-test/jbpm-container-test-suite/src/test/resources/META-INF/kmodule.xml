@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
+
+    <kbase name="kbaseDRL" packages="org.jboss.qa.brms.bre.spring.kbase.drl" />
+    <kbase name="kbaseDSL" packages="org.jboss.qa.brms.bre.spring.kbase.dsl" />
+    <kbase name="kbaseXLS" packages="org.jboss.qa.brms.bre.spring.kbase.xls" />
+    <kbase name="kbaseCSV" packages="org.jboss.qa.brms.bre.spring.kbase.csv" />
+    <kbase name="kbaseDRF" packages="org.jboss.qa.brms.bre.spring.kbase.drf" />
+    <kbase name="kbaseBPMN" packages="org.jboss.qa.brms.bre.spring.kbase.bpmn" />
+
+    <kbase name="kbaseKieSession" packages="org.jboss.qa.brms.bre.spring.kbase.kiesession" />
+    <kbase name="kbaseFunctions" packages="org.jboss.qa.brms.bre.spring.kbase.functions" />
+    <kbase name="kbaseListeners" packages="org.jboss.qa.brms.bre.spring.kbase.listeners" />
+    
+</kmodule>

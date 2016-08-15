@@ -84,6 +84,7 @@
     <module>jbpm-test-coverage</module>
     <module>jbpm-examples</module>
     <module>jbpm-installer</module>
+    <module>jbpm-container-test</module>
   </modules>
 
   <build>

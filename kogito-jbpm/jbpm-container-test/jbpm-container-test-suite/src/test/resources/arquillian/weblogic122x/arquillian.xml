@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jboss.org/schema/arquillian"
+  xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+  <engine>
+    <property name="deploymentExportPath">target/arquillian</property>
+  </engine>
+  
+  <defaultProtocol type="Servlet 2.5" />
+ 
+  <group qualifier="containers" default="true">
+    <container qualifier="remote-container" default="true">
+      <configuration>
+        <property name="adminUrl">t3://localhost:${container.port}</property>
+        <property name="adminUserName">weblogic</property>
+        <property name="adminPassword">weblogic1</property>
+        <property name="wlHome">${weblogic.home}/wlserver</property>
+        <property name="target">server</property>
+
+        <property name="deployExplodedArchive">true</property>
+      </configuration>
+    </container>
+  </group>
+
+</arquillian>
