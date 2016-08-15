@@ -24,10 +24,12 @@ import org.drools.core.util.StringUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
-public class MemoryFile implements File {
+public class MemoryFile implements File,
+                                   Serializable {
     private String name;
     private Folder folder;
     private MemoryFileSystem mfs;

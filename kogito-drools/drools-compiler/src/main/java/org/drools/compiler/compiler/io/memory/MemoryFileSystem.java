@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -53,6 +54,7 @@ public class MemoryFileSystem
     implements
     FileSystem,
     ResourceReader,
+    Serializable,
     ResourceStore {
 
     private static final Logger log = LoggerFactory.getLogger( MemoryFileSystem.class );

@@ -24,9 +24,15 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceTypeImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Properties;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
@@ -36,8 +42,11 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.RESOURCES_ROOT
 
 public class KieFileSystemImpl
         implements
-        KieFileSystem {
-    
+        KieFileSystem,
+        Serializable {
+
+    private static Logger logger = LoggerFactory.getLogger( KieFileSystemImpl.class );
+
     private final MemoryFileSystem mfs;
 
     public KieFileSystemImpl() {
@@ -89,7 +98,7 @@ public class KieFileSystemImpl
             throw new RuntimeException("Unable to write Resource: " + resource.toString(), e);
         }
     }
-    
+
     public void delete(String... paths) {
         for ( String path : paths ) {
             mfs.remove(path);
@@ -128,5 +137,42 @@ public class KieFileSystemImpl
         write(KieModuleModelImpl.KMODULE_SRC_PATH, content);
         return this;
     }
-    
+
+    public MemoryFileSystem getMfs() {
+        return mfs;
+    }
+
+    public KieFileSystem clone() {
+        try {
+            final ByteArrayOutputStream byteArray = writeToByteArray( this );
+            final KieFileSystem kieFileSystem = readFromByteArray( byteArray );
+
+            return kieFileSystem;
+        } catch ( IOException ioe ) {
+            logger.warn( "Unable to clone KieFileSystemImpl", ioe );
+            return null;
+        } catch ( ClassNotFoundException cnfe ) {
+            logger.warn( "Unable to clone KieFileSystemImpl", cnfe );
+            return null;
+        }
+    }
+
+    private KieFileSystem readFromByteArray( final ByteArrayOutputStream byteArrayOutputStream ) throws IOException, ClassNotFoundException {
+        final byte[] byteArray = byteArrayOutputStream.toByteArray();
+        final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream( byteArray );
+        final ObjectInputStream inputStream = new ObjectInputStream( byteArrayInputStream );
+
+        return (KieFileSystem) inputStream.readObject();
+    }
+
+    private ByteArrayOutputStream writeToByteArray( final KieFileSystemImpl obj ) throws IOException {
+        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        final ObjectOutputStream outputStream = new ObjectOutputStream( byteArrayOutputStream );
+
+        outputStream.writeObject( obj );
+        outputStream.flush();
+        outputStream.close();
+
+        return byteArrayOutputStream;
+    }
 }

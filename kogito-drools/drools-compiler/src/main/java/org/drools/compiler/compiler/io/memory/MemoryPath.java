@@ -15,9 +15,12 @@
 
 package org.drools.compiler.compiler.io.memory;
 
+import java.io.Serializable;
+
 import org.drools.compiler.compiler.io.Path;
 
-public class MemoryPath implements Path {
+public class MemoryPath implements Path,
+                                   Serializable {
     private String path;
 
     public MemoryPath(String path) {
