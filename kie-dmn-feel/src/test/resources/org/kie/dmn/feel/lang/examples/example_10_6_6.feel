@@ -4,4 +4,6 @@
  *  Shows the use of relations, filters and
  *  function invocation simultaneously
  */
-sum( credit history[ record date > date("2011-01-01") ].weight )
+sum(
+     credit history[ record date > date("2011-01-01") ].weight
+   )

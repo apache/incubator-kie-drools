@@ -1,0 +1,15 @@
+/*
+ *  This is an example of java integration
+ *  via external function call
+ */
+{
+    maximum : function( v1, v2 ) external {
+        java : {
+            class : "java.lang.Math",
+            method signature: "max(long,long)"
+        }
+    },
+    the max : maximum( v1 : 10, v2: 20 ),   // invocation using named parameters
+    the max2 : maximum( 10, 20 )            // invocation using positional parameters
+}.the max
+

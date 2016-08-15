@@ -121,6 +121,17 @@ public class ExamplesTest {
         assertThat( bankrupcy, is( Boolean.FALSE ) );
     }
 
+    @Test
+    public void testJavaCall() {
+        String expression = loadExpression( "javacall.feel" );
+
+        Number max = (Number) FEEL.evaluate( expression );
+
+        System.out.println( "Max between 10 and 20: " + max );
+
+        assertThat( max, is( BigDecimal.valueOf( 20 ) ) );
+    }
+
     private static String loadExpression(String fileName) {
         try {
             return new String( Files.readAllBytes( Paths.get( ExamplesTest.class.getResource( fileName ).toURI() ) ) );
