@@ -1,0 +1,34 @@
+/*
+ *  Example from the spec, page 115,
+ *  but this syntax is not valid according
+ *  to the spec FEEL grammar$
+ */
+decision table (
+    outputs: "Applicant Risk Rating",
+    input expression list: [Applicant Age, Medical History],
+    rule list: [
+        ['>60',       '"good"',  '"Medium"' ],
+        ['>60',       '"bad"',   '"High"'   ],
+        ['[25..60]',  '-',       '"Medium"' ],
+        ['<25',       '"good"',  '"Low"'    ],
+        ['<25',       '"bad"',   '"Medium"' ]
+    ],
+    hit policy: "Unique"
+)
+
+/*
+ *  Proposed fix for the example and use case:
+ *  support unary tests as first class citizens
+ */
+decision table (
+    outputs: "Applicant Risk Rating",
+    input expression list: [Applicant Age, Medical History],
+    rule list: [
+        [ >60,       "good",  "Medium" ],
+        [ >60,       "bad",   "High"   ],
+        [ [25..60],  -,       "Medium" ],
+        [ <25,       "good",  "Low"    ],
+        [ <25,       "bad",   "Medium" ]
+    ],
+    hit policy: "Unique"
+)

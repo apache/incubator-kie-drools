@@ -93,9 +93,10 @@ public abstract class BaseFEELFunction implements FEELFunction {
             if ( ! isCustomFunction() ) {
                 Class[] classes = Stream.of( params ).map( p -> p != null ? p.getClass() : null ).toArray( Class[]::new );
                 Method apply = null;
+                // first, look for exact matches
                 for( Method m : getClass().getDeclaredMethods() ) {
                     Class<?>[] parameterTypes = m.getParameterTypes();
-                    if( !m.getName().equals( "apply" ) || parameterTypes.length != params.length ) {
+                    if( !m.getName().equals( "apply" ) || parameterTypes.length != params.length  ) {
                         continue;
                     }
                     boolean found = true;
@@ -108,6 +109,39 @@ public abstract class BaseFEELFunction implements FEELFunction {
                     if( found ) {
                         apply = m;
                         break;
+                    }
+                }
+                if( apply == null ) {
+                    // if not found, look for a method with variable number of parameters that match
+                    for( Method m : getClass().getDeclaredMethods() ) {
+                        Class<?>[] parameterTypes = m.getParameterTypes();
+                        if( !m.getName().equals( "apply" ) || ( parameterTypes.length > 0 && ! parameterTypes[parameterTypes.length-1].isArray() ) ) {
+                            continue;
+                        }
+                        boolean found = true;
+                        for( int i = 0; i < parameterTypes.length; i++ ) {
+                            if ( i == parameterTypes.length-1 && parameterTypes[i].isArray() ) {
+                                // last parameter is an array, so treat the method as variable number of parameters method
+                                found = true;
+                                Object[] newParams = new Object[i+1];
+                                if( i > 0 ) {
+                                    System.arraycopy( params, 0, newParams, 0, i );
+                                }
+                                Object[] remaining = new Object[params.length-i];
+                                newParams[i] = remaining;
+                                System.arraycopy( params, i, remaining, 0, remaining.length );
+                                params = newParams;
+                                break;
+                            }
+                            if ( classes[i] != null && ! parameterTypes[i].isAssignableFrom( classes[i] ) ) {
+                                found = false;
+                                break;
+                            }
+                        }
+                        if( found ) {
+                            apply = m;
+                            break;
+                        }
                     }
                 }
                 if( apply != null ) {

@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.lang.impl;
 
+import org.kie.dmn.feel.util.EvalHelper;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +39,7 @@ public class ExecutionFrame {
     }
 
     public Object getValue(String symbol) {
+        symbol = EvalHelper.normalizeVariableName( symbol );
         if ( variables.containsKey( symbol ) ) {
             return variables.get( symbol );
         }
@@ -51,6 +54,6 @@ public class ExecutionFrame {
     }
 
     public void setValue(String symbol, Object value) {
-        this.variables.put( symbol, value );
+        this.variables.put( EvalHelper.normalizeVariableName( symbol ), value );
     }
 }

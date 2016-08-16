@@ -20,6 +20,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.runtime.FEELFunction;
 import org.kie.dmn.feel.lang.runtime.NamedParameter;
+import org.kie.dmn.feel.lang.runtime.UnaryTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,13 +68,20 @@ public class FunctionInvocationNode
         }
         if ( value instanceof FEELFunction ) {
             function = (FEELFunction) value;
-        }
-        if ( function != null ) {
-            Object[] p = params.getElements().stream().map( e -> e.evaluate( ctx ) ).toArray( Object[]::new );
-            Object result = function.applyReflectively( ctx, p );
-            return result;
-        } else {
-            logger.error( "Function not found: '" + name.getText() + "'" );
+            if ( function != null ) {
+                Object[] p = params.getElements().stream().map( e -> e.evaluate( ctx ) ).toArray( Object[]::new );
+                Object result = function.applyReflectively( ctx, p );
+                return result;
+            } else {
+                logger.error( "Function not found: '" + name.getText() + "'" );
+            }
+        } else if( value instanceof UnaryTest ) {
+            if( params.getElements().size() == 1 ) {
+                Object p = params.getElements().get( 0 ).evaluate( ctx );
+                return ((UnaryTest) value).apply( p );
+            } else {
+                logger.error( "Can't invoke an unary test with "+params.getElements().size()+ " parameters. Unary tests require 1 single parameter." );
+            }
         }
         return null;
     }

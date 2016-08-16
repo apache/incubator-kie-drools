@@ -17,34 +17,44 @@
 package org.kie.dmn.feel.lang.runtime.functions;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Arrays;
 import java.util.List;
 
-public class CountFunction
+public class MeanFunction
         extends BaseFEELFunction {
 
-    public CountFunction() {
-        super( "count" );
+    private SumFunction sum = new SumFunction();
+
+    public MeanFunction() {
+        super( "mean" );
     }
 
     @Override
     public List<List<String>> getParameterNames() {
         return Arrays.asList(
                 Arrays.asList( "list" ),
-                Arrays.asList( "c..." )
+                Arrays.asList( "n..." )
         );
     }
 
+
     public BigDecimal apply(List list) {
-        if ( list == null ) {
-            return null;
+        BigDecimal s = sum.apply( list );
+        return s != null ? s.divide( BigDecimal.valueOf( list.size() ), MathContext.DECIMAL128 ) : null;
+    }
+
+    public BigDecimal apply(Number single) {
+        if( single instanceof BigDecimal ) {
+            return (BigDecimal) single;
+        } else if( single != null ) {
+            return new BigDecimal( ((Number)single).toString() );
         } else {
-            return BigDecimal.valueOf( list.size() );
+            return null;
         }
     }
 
     public BigDecimal apply(Object[] list) {
         return apply( Arrays.asList( list ) );
     }
-
 }

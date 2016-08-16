@@ -19,6 +19,7 @@ package org.kie.dmn.feel.lang.impl;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.runtime.functions.BuiltInFunctions;
 import org.kie.dmn.feel.lang.runtime.FEELFunction;
+import org.kie.dmn.feel.util.EvalHelper;
 
 import java.util.Stack;
 

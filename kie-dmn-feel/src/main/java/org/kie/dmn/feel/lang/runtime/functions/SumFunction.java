@@ -36,12 +36,13 @@ public class SumFunction
     @Override
     public List<List<String>> getParameterNames() {
         return Arrays.asList(
-                Arrays.asList( "list" )
+                Arrays.asList( "list" ),
+                Arrays.asList( "n..." )
         );
     }
 
 
-    public Number apply(List list) {
+    public BigDecimal apply(List list) {
         BigDecimal sum = BigDecimal.ZERO;
         for( Object element : list ) {
             if( element instanceof BigDecimal ) {
@@ -55,13 +56,17 @@ public class SumFunction
         return sum;
     }
 
-    public Number apply(Number single) {
+    public BigDecimal apply(Number single) {
         if( single instanceof BigDecimal ) {
-            return single;
+            return (BigDecimal) single;
         } else if( single != null ) {
-            return new BigDecimal( ((Number)single).toString() );
+            return new BigDecimal( single.toString() );
         } else {
             return null;
         }
+    }
+
+    public BigDecimal apply(Object[] list) {
+        return apply( Arrays.asList( list ) );
     }
 }
