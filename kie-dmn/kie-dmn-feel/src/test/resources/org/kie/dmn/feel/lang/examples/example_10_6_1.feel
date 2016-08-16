@@ -23,10 +23,10 @@
         amount : 100000.00
     },
 
-    // a reference to a path on a previous entry
+    // a reference to a qualified name on a previous entry
     monthly income : applicant.monthly.income,
 
-    // a list of paths
+    // a list of qualified names
     monthly outgoings : [ applicant.monthly.repayments, applicant.monthly.expenses ],
 
     // a relation (list of contexts)

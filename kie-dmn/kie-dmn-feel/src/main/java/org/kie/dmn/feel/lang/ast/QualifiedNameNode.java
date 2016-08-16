@@ -56,7 +56,7 @@ public class QualifiedNameNode
             if ( current != null ) {
                 for ( int i = 1; i < parts.size(); i++ ) {
                     String n = parts.get( i ).getText();
-                    current = EvalHelper.getValue( current, n );
+                    current = EvalHelper.getValue( current, EvalHelper.normalizeVariableName( n ) );
                 }
                 return current;
             }
