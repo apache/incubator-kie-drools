@@ -21,7 +21,6 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.core.util.IoUtils;
 
-import java.beans.IntrospectionException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -44,7 +43,7 @@ public class Jenerator {
         this.classLoader = classLoader;
     }
 
-    public byte[] createJar(Fact[] facts, String packageName) throws SecurityException, IllegalArgumentException, IOException, IntrospectionException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchFieldException {
+    public byte[] createJar(Fact[] facts, String packageName) throws SecurityException, IllegalArgumentException, IOException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchFieldException {
         ByteArrayOutputStream result = new ByteArrayOutputStream();
         JarOutputStream jout = new JarOutputStream(result);
 

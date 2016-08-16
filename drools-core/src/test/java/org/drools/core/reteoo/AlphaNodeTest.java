@@ -37,8 +37,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
 
-import java.beans.IntrospectionException;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -188,7 +186,7 @@ public class AlphaNodeTest extends DroolsTestCase {
     }
 
     @Test
-    public void testUpdateSinkWithoutMemory() throws IntrospectionException {
+    public void testUpdateSinkWithoutMemory() {
         // An AlphaNode should try and repropagate from its source
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         BuildContext buildContext = new BuildContext( kBase,

@@ -38,7 +38,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
 
-import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -70,11 +69,9 @@ public class FieldConstraintTest {
      *
      * This is currently the same as using a ReturnValueConstraint just that it
      * doesn't need any requiredDeclarations
-     *
-     * @throws IntrospectionException
      */
     @Test
-    public void testLiteralConstraint() throws IntrospectionException {
+    public void testLiteralConstraint() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
@@ -112,11 +109,9 @@ public class FieldConstraintTest {
      *
      *
      * </pre>
-     *
-     * @throws IntrospectionException
      */
     @Test
-    public void testPrimitiveLiteralConstraint() throws IntrospectionException {
+    public void testPrimitiveLiteralConstraint() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
@@ -154,11 +149,9 @@ public class FieldConstraintTest {
      *
      *
      * </pre>
-     *
-     * @throws IntrospectionException
      */
     @Test
-    public void testPredicateConstraint() throws IntrospectionException {
+    public void testPredicateConstraint() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 

@@ -19,14 +19,12 @@ package org.drools.core.factmodel;
 import org.kie.api.Service;
 import org.mvel2.asm.Opcodes;
 
-import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 public interface ClassBuilder extends Opcodes, Service {
 
     public byte[] buildClass( ClassDefinition def, ClassLoader classLoader ) throws IOException,
-            IntrospectionException,
             SecurityException,
             IllegalArgumentException,
             ClassNotFoundException,

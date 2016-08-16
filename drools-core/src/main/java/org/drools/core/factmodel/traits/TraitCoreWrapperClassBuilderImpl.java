@@ -30,7 +30,6 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
 
-import java.beans.IntrospectionException;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -53,7 +52,6 @@ public class TraitCoreWrapperClassBuilderImpl implements TraitCoreWrapperClassBu
 
 
     public byte[] buildClass( ClassDefinition core, ClassLoader classLoader ) throws IOException,
-            IntrospectionException,
             SecurityException,
             IllegalArgumentException,
             ClassNotFoundException,

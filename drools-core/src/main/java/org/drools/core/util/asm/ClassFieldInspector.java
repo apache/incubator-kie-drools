@@ -16,6 +16,7 @@
 
 package org.drools.core.util.asm;
 
+import org.drools.core.base.ClassFieldReader;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
@@ -364,7 +365,7 @@ public class ClassFieldInspector {
     private String calcFieldName( String name,
                                   final int offset ) {
         name = name.substring( offset );
-        return Introspector.decapitalize( name );
+        return ClassFieldReader.decapitalizeFieldName( name );
     }
 
     public Collection<KnowledgeBuilderResult> getInspectionResults( String fieldName ) {
