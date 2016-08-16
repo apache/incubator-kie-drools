@@ -125,11 +125,18 @@ public class ExamplesTest {
     public void testJavaCall() {
         String expression = loadExpression( "javacall.feel" );
 
-        Number max = (Number) FEEL.evaluate( expression );
+        Map context = (Map) FEEL.evaluate( expression );
 
-        System.out.println( "Max between 10 and 20: " + max );
+        System.out.println( printContext( context ) );
+    }
 
-        assertThat( max, is( BigDecimal.valueOf( 20 ) ) );
+    @Test
+    public void testAdhocExpression() {
+        String expression = loadExpression( "custom.feel" );
+
+        Object result = FEEL.evaluate( expression );
+
+        System.out.println( "Result: " + result );
     }
 
     private static String loadExpression(String fileName) {

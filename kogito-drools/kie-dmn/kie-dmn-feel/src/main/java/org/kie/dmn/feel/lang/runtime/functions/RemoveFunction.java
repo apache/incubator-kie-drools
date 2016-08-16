@@ -17,34 +17,35 @@
 package org.kie.dmn.feel.lang.runtime.functions;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CountFunction
+public class RemoveFunction
         extends BaseFEELFunction {
 
-    public CountFunction() {
-        super( "count" );
+    public RemoveFunction() {
+        super( "remove" );
     }
 
     @Override
     public List<List<String>> getParameterNames() {
         return Arrays.asList(
-                Arrays.asList( "list" ),
-                Arrays.asList( "c..." )
+                Arrays.asList( "list, position" )
         );
     }
 
-    public BigDecimal apply(List list) {
-        if ( list == null ) {
+    public List apply(List list, BigDecimal position) {
+        if ( list == null || position == null || position.intValue() == 0 || position.abs().intValue() > list.size() ) {
             return null;
-        } else {
-            return BigDecimal.valueOf( list.size() );
         }
+        // spec requires us to return a new list
+        List result = new ArrayList( list );
+        if( position.intValue() > 0 ) {
+            result.remove( position.intValue()-1 );
+        } else {
+            result.remove( list.size()+position.intValue() );
+        }
+        return result;
     }
-
-    public BigDecimal apply(Object[] list) {
-        return apply( Arrays.asList( list ) );
-    }
-
 }

@@ -1,0 +1,8 @@
+{
+    a : 10,            // a is bound to 10
+    b : 10,            // b is bound to 10
+    c : a + b,         // c is bound to 20
+    a + b : 5,         // a + b is bound to 5
+    x : a +  b + c     // how much is x bound to?
+}
+

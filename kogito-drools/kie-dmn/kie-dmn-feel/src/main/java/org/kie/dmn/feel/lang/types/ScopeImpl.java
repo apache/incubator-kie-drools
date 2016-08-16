@@ -21,6 +21,7 @@ import org.antlr.v4.runtime.Token;
 import org.kie.dmn.feel.lang.feel11.FEEL_1_1Lexer;
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Symbol;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.TokenTree;
 
 import java.util.*;
@@ -60,7 +61,7 @@ public class ScopeImpl
             // duplicate symbol definition
             return false;
         }
-        symbols.put( symbol.getId(), symbol );
+        symbols.put( EvalHelper.normalizeVariableName( symbol.getId() ), symbol );
         if( tokenTree != null ) {
             // also load the symbol into the token tree
             tokenTree.addName( tokenize( symbol.getId() ) );
@@ -69,7 +70,7 @@ public class ScopeImpl
     }
 
     public Symbol resolve(String id) {
-        Symbol s = symbols.get( id );
+        Symbol s = symbols.get( EvalHelper.normalizeVariableName( id ) );
         if ( s == null && parentScope != null ) {
             return parentScope.resolve( id );
         }
@@ -77,13 +78,13 @@ public class ScopeImpl
     }
 
     public Symbol resolve(String[] qualifiedName) {
-        Symbol root = symbols.get( qualifiedName[0] );
+        Symbol root = symbols.get( EvalHelper.normalizeVariableName( qualifiedName[0] ) );
         if ( root == null && parentScope != null ) {
             return parentScope.resolve( qualifiedName );
         } else if( root != null ) {
             Symbol currentSymbol = root;
             for( int i = 1; i < qualifiedName.length && currentSymbol != null; i++ ) {
-                currentSymbol = currentSymbol.getScope().resolve( qualifiedName[1] );
+                currentSymbol = currentSymbol.getScope().resolve( EvalHelper.normalizeVariableName( qualifiedName[i] ) );
             }
             return currentSymbol;
         }

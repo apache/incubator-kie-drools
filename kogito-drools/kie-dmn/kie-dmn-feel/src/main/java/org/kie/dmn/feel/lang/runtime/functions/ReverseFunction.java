@@ -16,35 +16,32 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-public class CountFunction
+public class ReverseFunction
         extends BaseFEELFunction {
 
-    public CountFunction() {
-        super( "count" );
+    public ReverseFunction() {
+        super( "reverse" );
     }
 
     @Override
     public List<List<String>> getParameterNames() {
         return Arrays.asList(
-                Arrays.asList( "list" ),
-                Arrays.asList( "c..." )
+                Arrays.asList( "list" )
         );
     }
 
-    public BigDecimal apply(List list) {
+    public List apply(List list) {
         if ( list == null ) {
             return null;
-        } else {
-            return BigDecimal.valueOf( list.size() );
         }
+        // spec requires us to return a new list
+        List result = new ArrayList( list );
+        Collections.reverse(result);
+        return result;
     }
-
-    public BigDecimal apply(Object[] list) {
-        return apply( Arrays.asList( list ) );
-    }
-
 }

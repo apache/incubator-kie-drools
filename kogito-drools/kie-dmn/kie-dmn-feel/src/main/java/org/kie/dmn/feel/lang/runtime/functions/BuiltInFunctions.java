@@ -39,8 +39,20 @@ public class BuiltInFunctions {
             new EndsWithFunction(),
             new ListContainsFunction(),
             new CountFunction(),
-
+            new MinFunction(),
+            new MaxFunction(),
             new SumFunction(),
+            new MeanFunction(),
+            new ListAndFunction(),
+            new ListOrFunction(),
+            new SublistFunction(),
+            new AppendFunction(),
+            new ConcatenateFunction(),
+            new InsertBeforeFunction(),
+            new RemoveFunction(),
+            new ReverseFunction(),
+
+
             new DecisionTableFunction(),
     };
 

@@ -26,6 +26,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class EvalHelper {
 
+    public static String normalizeVariableName(String name) {
+        return name.replaceAll( "\\s+", " " );
+    }
+
     public static BigDecimal getBigDecimalOrNull(Object value) {
         if ( !(value instanceof Number) ) {
             return null;
