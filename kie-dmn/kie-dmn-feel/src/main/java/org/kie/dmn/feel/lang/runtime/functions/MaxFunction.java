@@ -16,15 +16,15 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-public class CountFunction
+public class MaxFunction
         extends BaseFEELFunction {
 
-    public CountFunction() {
-        super( "count" );
+    public MaxFunction() {
+        super( "max" );
     }
 
     @Override
@@ -35,15 +35,15 @@ public class CountFunction
         );
     }
 
-    public BigDecimal apply(List list) {
+    public Object apply(List list) {
         if ( list == null ) {
             return null;
         } else {
-            return BigDecimal.valueOf( list.size() );
+            return Collections.max( list );
         }
     }
 
-    public BigDecimal apply(Object[] list) {
+    public Object apply(Object[] list) {
         return apply( Arrays.asList( list ) );
     }
 

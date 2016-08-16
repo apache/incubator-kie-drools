@@ -16,35 +16,32 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
-public class CountFunction
+public class AppendFunction
         extends BaseFEELFunction {
 
-    public CountFunction() {
-        super( "count" );
+    public AppendFunction() {
+        super( "append" );
     }
 
     @Override
     public List<List<String>> getParameterNames() {
         return Arrays.asList(
-                Arrays.asList( "list" ),
-                Arrays.asList( "c..." )
+                Arrays.asList( "list, item..." )
         );
     }
 
-    public BigDecimal apply(List list) {
-        if ( list == null ) {
+    public List apply(List list, Object[] items) {
+        if ( list == null || items == null ) {
             return null;
-        } else {
-            return BigDecimal.valueOf( list.size() );
         }
+        // spec requires us to return a new list
+        List result = new ArrayList( list );
+        Stream.of( items ).forEach( i -> result.add( i ) );
+        return result;
     }
-
-    public BigDecimal apply(Object[] list) {
-        return apply( Arrays.asList( list ) );
-    }
-
 }

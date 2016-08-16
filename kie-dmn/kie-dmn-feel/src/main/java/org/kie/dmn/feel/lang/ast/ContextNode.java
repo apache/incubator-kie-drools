@@ -19,6 +19,8 @@ package org.kie.dmn.feel.lang.ast;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.runtime.functions.CustomFEELFunction;
+import org.kie.dmn.feel.lang.runtime.functions.JavaFunction;
+import org.kie.dmn.feel.util.EvalHelper;
 
 import java.util.*;
 
@@ -52,11 +54,13 @@ public class ContextNode
             ctx.enterFrame();
             Map<String, Object> c = new LinkedHashMap<>();
             for( ContextEntryNode cen : entries ) {
-                String name = cen.evaluateName( ctx );
+                String name = EvalHelper.normalizeVariableName( cen.evaluateName( ctx ) );
                 Object value = cen.evaluate( ctx );
                 if( value instanceof CustomFEELFunction ) {
                     // helpful for debugging
                     ((CustomFEELFunction) value).setName( name );
+                } else if( value instanceof JavaFunction ) {
+                    ((JavaFunction) value).setName( name );
                 }
 
                 ctx.setValue( name, value );
@@ -67,4 +71,5 @@ public class ContextNode
             ctx.exitFrame();
         }
     }
+
 }

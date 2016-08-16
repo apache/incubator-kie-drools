@@ -290,6 +290,9 @@ public class FEELTest extends BaseFEELTest {
                 {"[ {x:1, y:2}, {x:2, y:3} ][x = 1]", new HashMap<String, Object>(  ) {{ put("x", BigDecimal.valueOf( 1 )); put("y", BigDecimal.valueOf( 2 ));}} },
                 {"[ {x:1, y:2}, {x:2, y:3} ].y", Arrays.asList( BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ) ) },
 
+                // unary test invocation
+                {"{ is minor : < 18, bob is minor : is minor(16) }.bob is minor", Boolean.TRUE },
+
         };
         return Arrays.asList( cases );
     }
