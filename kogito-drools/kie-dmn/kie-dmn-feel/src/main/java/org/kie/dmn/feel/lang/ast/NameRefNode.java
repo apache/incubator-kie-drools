@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.util.EvalHelper;
 
 public class NameRefNode
         extends BaseNode {
@@ -28,6 +29,6 @@ public class NameRefNode
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
-        return ctx.getValue( getText() );
+        return ctx.getValue( EvalHelper.normalizeVariableName( getText() ) );
     }
 }
