@@ -17,12 +17,15 @@
 package org.jbpm.services.ejb.impl.admin;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
 
 import org.jbpm.kie.services.impl.admin.ProcessInstanceMigrationServiceImpl;
 import org.jbpm.services.ejb.api.admin.ProcessInstanceMigrationServiceEJBLocal;
 import org.jbpm.services.ejb.api.admin.ProcessInstanceMigrationServiceEJBRemote;
 
 @Stateless
+@TransactionManagement(TransactionManagementType.BEAN)
 public class ProcessInstanceMigrationServiceEJBImpl extends ProcessInstanceMigrationServiceImpl implements ProcessInstanceMigrationServiceEJBLocal, ProcessInstanceMigrationServiceEJBRemote {
 
 }

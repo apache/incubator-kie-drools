@@ -3,6 +3,7 @@ usersgroups = [
                 new User('john') : [new Group( "engineering" ),  new Group( "admin" ),  new Group( "analyst" )],
                 new User('mary') : [new Group( "engineering" ),  new Group( "admin" ),  new Group( "analyst" )],
                 new User('guest') : [new Group( "guest" ),  new Group( "analyst" )],
+                new User('yoda') : [new Group( "HR" )],
                 new User('Administrator') : [new Group( "Administrators" )],
               ];
 return usersgroups;

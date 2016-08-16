@@ -224,6 +224,32 @@ public class EJBService {
         return deploymentUnit;
     }
 
+    public DeploymentUnit deployMigrationV1KieJar() {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId(KieJar.MIGRATIONV1.groupId, KieJar.MIGRATIONV1.artifactId, KieJar.MIGRATIONV1.version);
+        List<String> assets = new ArrayList<String>();
+        assets.add("evaluation1.bpmn2");
+        deployKieJar(ks, releaseId, assets);
+
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(KieJar.MIGRATIONV1.getGroupId(), KieJar.MIGRATIONV1.getArtifactId(), KieJar.MIGRATIONV1.getVersion());
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        return deploymentUnit;
+    }
+
+    public DeploymentUnit deployMigrationV2KieJar() {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId(KieJar.MIGRATIONV2.groupId, KieJar.MIGRATIONV2.artifactId, KieJar.MIGRATIONV2.version);
+        List<String> assets = new ArrayList<String>();
+        assets.add("evaluation2.bpmn2");
+        deployKieJar(ks, releaseId, assets);
+
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(KieJar.MIGRATIONV2.getGroupId(), KieJar.MIGRATIONV2.getArtifactId(), KieJar.MIGRATIONV2.getVersion());
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        return deploymentUnit;
+    }
+
     public void undeployDeploymentUnit(DeploymentUnit deploymentUnit) {
         deploymentService.undeploy(deploymentUnit);
         units.remove(deploymentUnit);
@@ -335,7 +361,9 @@ public class EJBService {
         VARIABLE("org.jbpm.test.container", "ejb-services-variable", "1.0-SNAPSHOT"),
         SERVICE("org.jbpm.test.container", "ejb-services-service", "1.0-SNAPSHOT"),
         TX("org.jbpm.test.container", "ejb-services-tx", "1.0-SNAPSHOT"),
-        EJBCOMPL("org.jbpm.test.container", "ejb-services-compl", "1.0-SNAPSHOT");
+        EJBCOMPL("org.jbpm.test.container", "ejb-services-compl", "1.0-SNAPSHOT"),
+        MIGRATIONV1("org.jbpm.test.container", "ejb-migration", "1.0-SNAPSHOT"),
+        MIGRATIONV2("org.jbpm.test.container", "ejb-migration", "2.0-SNAPSHOT");
 
         private String groupId;
 

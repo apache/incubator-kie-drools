@@ -109,4 +109,8 @@ public abstract class AbstractEJBServicesTest extends JbpmContainerTest {
     //EJB COMPLIANCE
     public static final String THREAD_INFO_PROCESS_ID = "org.jboss.qa.bpms.ThreadInfo";
 
+    //MIGRATION
+    public static final String EVALUATION_PROCESS_ID_V1 = "definition-project.evaluation";
+    public static final String EVALUATION_PROCESS_ID_V2 = "definition-project.evaluation2";
+
 }
