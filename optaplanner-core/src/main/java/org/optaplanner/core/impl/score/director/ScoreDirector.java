@@ -17,9 +17,12 @@
 package org.optaplanner.core.impl.score.director;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -70,6 +73,15 @@ public interface ScoreDirector<Solution_> {
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      */
     Collection<ConstraintMatchTotal> getConstraintMatchTotals();
+
+    /**
+     * Returns an aggregation of all the inverses of {@link ConstraintMatch#getJustificationList()}.
+     * <p>
+     * TODO Experimental method because it's calculated from scratch, without delta's. It will probably be renamed at some point.
+     * @return never null, each key is an element from {@link ConstraintMatch#getJustificationList()} and the value is its {@link ConstraintMatch}
+     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
+     */
+    Map<Object, List<ConstraintMatch>> extractIndictmentMap();
 
     void beforeEntityAdded(Object entity);
 

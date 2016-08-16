@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -206,6 +207,24 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     protected void setCalculatedScore(Score score) {
         getSolutionDescriptor().setScore(workingSolution, score);
         calculationCount++;
+    }
+
+    @Override
+    public Map<Object, List<ConstraintMatch>> extractIndictmentMap() {
+        Map<Object, List<ConstraintMatch>> indictmentMap = new HashMap<>();
+        for (ConstraintMatchTotal constraintMatchTotal : getConstraintMatchTotals()) {
+            for (ConstraintMatch constraintMatch : constraintMatchTotal.getConstraintMatchSet()) {
+                for (Object justification : constraintMatch.getJustificationList()) {
+                    List<ConstraintMatch> indictment = indictmentMap.get(justification);
+                    if (indictment == null) {
+                        indictment = new ArrayList<>();
+                        indictmentMap.put(justification, indictment);
+                    }
+                    indictment.add(constraintMatch);
+                }
+            }
+        }
+        return indictmentMap;
     }
 
     @Override
