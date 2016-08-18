@@ -19,11 +19,12 @@ package org.drools.core.command;
 import org.drools.core.command.impl.ContextImpl;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.ContextManager;
+import org.kie.internal.fluent.RequestContext;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RequestContextImpl extends ContextImpl implements Context {
+public class RequestContextImpl extends ContextImpl implements Context, RequestContext {
 
     private ContextImpl         appContext;
     private ConversationContext conversationContext;
@@ -40,11 +41,6 @@ public class RequestContextImpl extends ContextImpl implements Context {
     private Map<String, Object> registry;
     private Exception           exception;
 
-
-    public RequestContextImpl(long requestId, long conversationId, ContextManager ctxManager, ConversationManager cvnManager) {
-        this(requestId, ctxManager, cvnManager);
-
-    }
 
     public RequestContextImpl(long requestId, ContextManager ctxManager, ConversationManager cvnManager) {
         super(Long.toString(requestId), ctxManager);
@@ -95,12 +91,18 @@ public class RequestContextImpl extends ContextImpl implements Context {
         return object;
     }
 
+    @Override
     public long getRequestId() {
         return requestId;
     }
 
     public void setRequestId(long requestId) {
         this.requestId = requestId;
+    }
+
+    @Override
+    public long getConversationId() {
+        return conversationContext.getConversationId();
     }
 
     public Object getLastReturned() {
@@ -119,6 +121,7 @@ public class RequestContextImpl extends ContextImpl implements Context {
         this.lastSet = lastSet;
     }
 
+    @Override
     public Map<String, Object> getOut() {
         return out;
     }

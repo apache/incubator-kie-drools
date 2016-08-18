@@ -61,10 +61,8 @@ public class NewKieSessionCommand
                 throw new RuntimeException("ReleaseId was not specfied, nor was an existing KieContainer assigned to the Registry");
             }
         }
-        SessionConfigurationImpl sconf = new SessionConfigurationImpl();
-        sconf.setClockType(ClockType.PSEUDO_CLOCK);
 
-        KieSession ksession  = sessionId != null ? kieContainer.newKieSession(sessionId, sconf) : kieContainer.newKieSession(sconf);
+        KieSession ksession  = sessionId != null ? kieContainer.newKieSession(sessionId) : kieContainer.newKieSession();
 
         ((Map<String, Object>)context.get(ContextImpl.REGISTRY)).put(KieSession.class.getName(), ksession);
 
