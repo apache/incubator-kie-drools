@@ -51,6 +51,7 @@ public class BuiltInFunctions {
             new InsertBeforeFunction(),
             new RemoveFunction(),
             new ReverseFunction(),
+            new IndexOfFunction(),
 
 
             new DecisionTableFunction(),
