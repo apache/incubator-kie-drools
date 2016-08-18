@@ -122,9 +122,23 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "index of( [1, 2, null, null], null )", Arrays.asList( BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ) },
                 { "index of( [1, 2, null, null], 1 )", Arrays.asList( BigDecimal.valueOf( 1 ) ) },
                 { "index of( null, 1 )", null },
-
-
-
+                { "union( [1, 2, 1], [2, 3], 2, 4 )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ) },
+                { "union( [1, 2, null], 4 )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), null, BigDecimal.valueOf( 4 ) ) },
+                { "union( null, 4 )", null },
+                { "distinct values( [1, 2, 3, 2, 4] )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ) },
+                { "distinct values( [1, 2, null, 2, 4] )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), null, BigDecimal.valueOf( 4 ) ) },
+                { "distinct values( 1 )", Arrays.asList( BigDecimal.valueOf( 1 ) ) },
+                { "distinct values( null )", null },
+                { "decimal( 1/3, 2 )", new BigDecimal("0.33") },
+                { "decimal( 1.5, 0 )", new BigDecimal("2") },
+                { "decimal( 2.5, 0 )", new BigDecimal("2") },
+                { "decimal( null, 0 )", null },
+                { "floor( 1.5 )", new BigDecimal("1") },
+                { "floor( -1.5 )", new BigDecimal("-2") },
+                { "floor( null )", null },
+                { "ceiling( 1.5 )", new BigDecimal("2") },
+                { "ceiling( -1.5 )", new BigDecimal("-1") },
+                { "ceiling( null )", null },
                 };
         return Arrays.asList( cases );
     }
