@@ -118,6 +118,10 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "remove( [1, 2, 3], 0 )", null },
                 { "reverse( [1, 2, 3] )", Arrays.asList( BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 1 ) ) },
                 { "reverse( null )", null },
+                { "index of( [1, 2, 3, 2], 2 )", Arrays.asList( BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 4 ) ) },
+                { "index of( [1, 2, null, null], null )", Arrays.asList( BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ) },
+                { "index of( [1, 2, null, null], 1 )", Arrays.asList( BigDecimal.valueOf( 1 ) ) },
+                { "index of( null, 1 )", null },
 
 
 
