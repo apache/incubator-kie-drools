@@ -52,9 +52,13 @@ public class BuiltInFunctions {
             new RemoveFunction(),
             new ReverseFunction(),
             new IndexOfFunction(),
-
-
-            new DecisionTableFunction(),
+            new UnionFunction(),
+            new DistinctValuesFunction(),
+            new FlattenFunction(),
+            new DecimalFunction(),
+            new FloorFunction(),
+            new CeilingFunction(),
+            new DecisionTableFunction()
     };
 
     public static FEELFunction[] getFunctions() {
