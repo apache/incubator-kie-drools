@@ -109,9 +109,6 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
 
     // Intentionally no getters for the hardScores or softScores int arrays to guarantee that this class is immutable
 
-    /**
-     * @return {@code >= 0}
-     */
     @Override
     public int getHardLevelsSize() {
         return hardScores.length;
@@ -125,9 +122,6 @@ public final class BendableBigDecimalScore extends AbstractBendableScore<Bendabl
         return hardScores[index];
     }
 
-    /**
-     * @return {@code >= 0}
-     */
     @Override
     public int getSoftLevelsSize() {
         return softScores.length;

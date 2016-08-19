@@ -121,9 +121,6 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
         return hardScores[index];
     }
 
-    /**
-     * @return {@code >= 0}
-     */
     @Override
     public int getSoftLevelsSize() {
         return softScores.length;

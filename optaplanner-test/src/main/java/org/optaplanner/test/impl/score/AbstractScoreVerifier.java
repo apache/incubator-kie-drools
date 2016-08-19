@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
  */
 public abstract class AbstractScoreVerifier<Solution_> {
 
-    protected final ScoreDirectorFactory<Solution_> scoreDirectorFactory;
+    protected final InnerScoreDirectorFactory<Solution_> scoreDirectorFactory;
 
     /**
      * @param solverFactory never null, the {@link SolverFactory} of which you want to test the constraints.
@@ -50,7 +50,7 @@ public abstract class AbstractScoreVerifier<Solution_> {
         if (solverFactory == null) {
             throw new IllegalStateException("The solverFactory (" + solverFactory + ") cannot be null.");
         }
-        scoreDirectorFactory = solverFactory.buildSolver().getScoreDirectorFactory();
+        scoreDirectorFactory = (InnerScoreDirectorFactory<Solution_>) solverFactory.buildSolver().getScoreDirectorFactory();
         SolutionDescriptor<Solution_> solutionDescriptor = ((InnerScoreDirectorFactory<Solution_>) scoreDirectorFactory).getSolutionDescriptor();
         Class<? extends Score> scoreClass = solutionDescriptor.getScoreDefinition().getScoreClass();
         if (expectedScoreClass != scoreClass) {

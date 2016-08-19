@@ -107,36 +107,32 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
 
     // Intentionally no getters for the hardScores or softScores int arrays to guarantee that this class is immutable
 
-    /**
-     * @return {@code >= 0}
-     */
     @Override
     public int getHardLevelsSize() {
         return hardScores.length;
     }
 
     /**
-     * @param index {@code 0 <= index <} {@link #getHardLevelsSize()}
+     * @param hardLevel {@code 0 <= hardLevel <} {@link #getHardLevelsSize()}.
+     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @return higher is better
      */
-    public int getHardScore(int index) {
-        return hardScores[index];
+    public int getHardScore(int hardLevel) {
+        return hardScores[hardLevel];
     }
 
-    /**
-     * @return {@code >= 0}
-     */
     @Override
     public int getSoftLevelsSize() {
         return softScores.length;
     }
 
     /**
-     * @param index {@code 0 <= index <} {@link #getSoftLevelsSize()}
+     * @param softLevel {@code 0 <= softLevel <} {@link #getSoftLevelsSize()}.
+     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
      * @return higher is better
      */
-    public int getSoftScore(int index) {
-        return softScores[index];
+    public int getSoftScore(int softLevel) {
+        return softScores[softLevel];
     }
 
     // ************************************************************************
@@ -154,14 +150,14 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
     }
 
     /**
-     * @param index {@code 0 <= index <} {@link #getLevelsSize()}
+     * @param level {@code 0 <= level <} {@link #getLevelsSize()}
      * @return higher is better
      */
-    public int getHardOrSoftScore(int index) {
-        if (index < hardScores.length) {
-            return hardScores[index];
+    public int getHardOrSoftScore(int level) {
+        if (level < hardScores.length) {
+            return hardScores[level];
         } else {
-            return softScores[index - hardScores.length];
+            return softScores[level - hardScores.length];
         }
     }
 

@@ -75,17 +75,28 @@ public abstract class AbstractBendableScore<S extends FeasibilityScore<S>> exten
         return scoreTokens;
     }
 
+    /**
+     * @param initScore see {@link Score#getInitScore()}
+     */
+    protected AbstractBendableScore(int initScore) {
+        super(initScore);
+    }
+
+    /**
+     * The sum of this and {@link #getSoftLevelsSize()} equals {@link #getLevelsSize()}.
+     * @return {@code >= 0} and {@code <} {@link #getLevelsSize()}
+     */
     public abstract int getHardLevelsSize();
 
+    /**
+     * The sum of {@link #getHardLevelsSize()} and this equals {@link #getLevelsSize()}.
+     * @return {@code >= 0} and {@code <} {@link #getLevelsSize()}
+     */
     public abstract int getSoftLevelsSize();
 
     /**
      * @return {@link #getHardLevelsSize()} + {@link #getSoftLevelsSize()}
      */
     public abstract int getLevelsSize();
-
-    protected AbstractBendableScore(int initScore) {
-        super(initScore);
-    }
 
 }

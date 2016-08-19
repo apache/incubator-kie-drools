@@ -56,6 +56,12 @@ public class BendableScoreHolder extends AbstractScoreHolder {
     // Worker methods
     // ************************************************************************
 
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardLevel {@code 0 <= hardLevel <} {@link #getHardLevelsSize()}.
+     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
+     * @param weight higher is better
+     */
     public void addHardConstraintMatch(RuleContext kcontext, final int hardLevel, final int weight) {
         hardScores[hardLevel] += weight;
         registerIntConstraintMatch(kcontext, hardLevel, weight, new IntConstraintUndoListener() {
@@ -66,6 +72,12 @@ public class BendableScoreHolder extends AbstractScoreHolder {
         });
     }
 
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param softLevel {@code 0 <= softLevel <} {@link #getSoftLevelsSize()}.
+     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
+     * @param weight higher is better
+     */
     public void addSoftConstraintMatch(RuleContext kcontext, final int softLevel, final int weight) {
         softScores[softLevel] += weight;
         registerIntConstraintMatch(kcontext, getHardLevelsSize() + softLevel, weight, new IntConstraintUndoListener() {

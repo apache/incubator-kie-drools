@@ -156,6 +156,9 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
 
     protected final int initScore;
 
+    /**
+     * @param initScore see {@link Score#getInitScore()}
+     */
     protected AbstractScore(int initScore) {
         this.initScore = initScore;
         // The initScore can be positive during statistical calculations.
