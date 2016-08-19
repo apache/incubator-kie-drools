@@ -24,8 +24,9 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.StatefulRuleSession;
 import org.kie.internal.command.Context;
 
-public class FireUntilHaltCommand implements GenericCommand<Void>, UnpersistableCommand {
 
+public class FireUntilHaltCommand
+        implements GenericCommand<Void>, UnpersistableCommand {
     private static final long serialVersionUID = 510l;
 
     private AgendaFilter agendaFilter = null;
@@ -47,13 +48,12 @@ public class FireUntilHaltCommand implements GenericCommand<Void>, Unpersistable
 
     public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        final StatefulRuleSession session = (StatefulRuleSession) ksession;
-
+        final StatefulRuleSession session = (StatefulRuleSession)ksession;
+        
         new Thread(new Runnable() {
-
             public void run() {
-                if (agendaFilter != null) {
-                    session.fireUntilHalt(agendaFilter);
+                if ( agendaFilter != null ) {
+                    session.fireUntilHalt( agendaFilter );
                 } else {
                     session.fireUntilHalt();
                 }
@@ -64,7 +64,7 @@ public class FireUntilHaltCommand implements GenericCommand<Void>, Unpersistable
     }
 
     public String toString() {
-        if (agendaFilter != null) {
+        if ( agendaFilter != null ) {
             return "session.fireUntilHalt( " + agendaFilter + " );";
         } else {
             return "session.fireUntilHalt();";

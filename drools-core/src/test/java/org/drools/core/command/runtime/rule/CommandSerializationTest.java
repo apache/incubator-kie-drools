@@ -68,11 +68,11 @@ import org.kie.api.runtime.rule.FactHandle;
 
 public class CommandSerializationTest {
 
-    private Class<?>[] annotatedJaxbClasses = {JaxbListWrapper.class};
+    private Class<?>[] annotatedJaxbClasses = { JaxbListWrapper.class };
 
     // HELPER METHODS -------------------------------------------------------------------------------------------------------------
 
-    private void verifyDisconnectedFactHandle(DisconnectedFactHandle orig, DisconnectedFactHandle copy) {
+    private void verifyDisconnectedFactHandle( DisconnectedFactHandle orig, DisconnectedFactHandle copy ) {
         assertNotNull("copy disconnected fact handle is null", copy);
         assertEquals("id", orig.getId(), copy.getId());
         assertEquals("identity hash code", orig.getIdentityHashCode(), copy.getIdentityHashCode());
@@ -82,26 +82,26 @@ public class CommandSerializationTest {
         assertEquals("trait type", orig.getTraitType(), copy.getTraitType());
     }
 
-    private <T> T roundTrip(Object obj) throws Exception {
-        Class[] classes = {obj.getClass()};
+    private <T> T roundTrip( Object obj ) throws Exception {
+        Class[] classes = { obj.getClass() };
         JAXBContext ctx = getJaxbContext(classes);
         String xmlOut = marshall(ctx, obj);
         return unmarshall(ctx, xmlOut);
     }
 
-    private <T> T unmarshall(JAXBContext ctx, String xmlIn) throws Exception {
+    private <T> T unmarshall( JAXBContext ctx, String xmlIn ) throws Exception {
         ByteArrayInputStream xmlStrInputStream = new ByteArrayInputStream(xmlIn.getBytes(Charset.forName("UTF-8")));
         Object out = ctx.createUnmarshaller().unmarshal(xmlStrInputStream);
         return (T) out;
     }
 
-    private String marshall(JAXBContext ctx, Object obj) throws Exception {
+    private String marshall( JAXBContext ctx, Object obj ) throws Exception {
         StringWriter writer = new StringWriter();
         ctx.createMarshaller().marshal(obj, writer);
         return writer.getBuffer().toString();
     }
 
-    private JAXBContext getJaxbContext(Class<?>... classes) throws Exception {
+    private JAXBContext getJaxbContext( Class<?>... classes ) throws Exception {
         List<Class<?>> jaxbClassList = new ArrayList<Class<?>>();
         jaxbClassList.addAll(Arrays.asList(classes));
         jaxbClassList.addAll(Arrays.asList(annotatedJaxbClasses));
@@ -134,11 +134,11 @@ public class CommandSerializationTest {
 
         InsertObjectCommand copyCmd = roundTrip(cmd);
 
-        assertEquals("object", cmd.getObject(), copyCmd.getObject());
-        assertEquals("out id", cmd.getOutIdentifier(), copyCmd.getOutIdentifier());
-        assertEquals("return obj", cmd.isReturnObject(), copyCmd.isReturnObject());
-        assertEquals("entry point", cmd.getEntryPoint(), copyCmd.getEntryPoint());
-        assertEquals("disconnected", cmd.isDisconnected(), copyCmd.isDisconnected());
+        assertEquals( "object", cmd.getObject(), copyCmd.getObject());
+        assertEquals( "out id", cmd.getOutIdentifier(), copyCmd.getOutIdentifier() );
+        assertEquals( "return obj", cmd.isReturnObject(), copyCmd.isReturnObject() );
+        assertEquals( "entry point", cmd.getEntryPoint(), copyCmd.getEntryPoint() );
+        assertEquals( "disconnected", cmd.isDisconnected(), copyCmd.isDisconnected() );
     }
 
     @Test
@@ -151,7 +151,7 @@ public class CommandSerializationTest {
 
         assertNotNull(copyCmd);
         assertThat(copyCmd.getObject(), is(instanceOf(List.class)));
-        assertEquals("object", cmd.getObject(), copyCmd.getObject());
+        assertEquals( "object", cmd.getObject(), copyCmd.getObject());
     }
 
     @Test
@@ -165,7 +165,7 @@ public class CommandSerializationTest {
 
         assertNotNull(copyCmd);
         assertThat(copyCmd.getObject(), is(instanceOf(List.class)));
-        assertEquals("object", cmd.getObject(), copyCmd.getObject());
+        assertEquals( "object", cmd.getObject(), copyCmd.getObject());
 
         // test empty list
         objectList.clear();
@@ -173,7 +173,7 @@ public class CommandSerializationTest {
 
         assertNotNull(copyCmd);
         assertThat(copyCmd.getObject(), is(instanceOf(List.class)));
-        assertEquals("object", cmd.getObject(), copyCmd.getObject());
+        assertEquals( "object", cmd.getObject(), copyCmd.getObject());
 
     }
 
@@ -187,7 +187,8 @@ public class CommandSerializationTest {
     @Ignore
     public void batchExecutionImplSerializationTest() throws Exception {
 
-        DefaultFactHandle factHandle = new DefaultFactHandle(13, "entry-point-id", 42, 84, 400l, "fact");
+        DefaultFactHandle factHandle = new DefaultFactHandle(13, "entry-point-id",
+                                                             42, 84, 400l, "fact");
 
         BatchExecutionCommandImpl batchCmd = new BatchExecutionCommandImpl();
         batchCmd.setLookup("lookup");
@@ -198,7 +199,8 @@ public class CommandSerializationTest {
         }
         {
             String externalForm = factHandle.toExternalForm();
-            assertEquals("FactHandle string", externalForm, DisconnectedFactHandle.newFrom(factHandle).toExternalForm());
+            assertEquals( "FactHandle string", externalForm,
+                          DisconnectedFactHandle.newFrom(factHandle).toExternalForm() );
             DeleteCommand cmd = new DeleteCommand(factHandle);
 
             batchCmd.getCommands().add(cmd);
@@ -291,13 +293,13 @@ public class CommandSerializationTest {
 
         // TODO: implement serialization for agenda filters
         {
-            AgendaFilter[] filters = new AgendaFilter[4];
+            AgendaFilter [] filters = new AgendaFilter[4];
             filters[0] = new RuleNameEndsWithAgendaFilter("suffix", false);
             filters[1] = new RuleNameEqualsAgendaFilter("name", true);
             filters[2] = new RuleNameMatchesAgendaFilter("regexp", false);
             filters[3] = new RuleNameStartsWithAgendaFilter("prefix", false);
 
-            for (AgendaFilter filter : filters) {
+            for( AgendaFilter filter : filters ) {
                 FireAllRulesCommand cmd = new FireAllRulesCommand(randomString(), random.nextInt(1000), filter);
                 batchCmd.getCommands().add(cmd);
             }
@@ -351,36 +353,44 @@ public class CommandSerializationTest {
             batchCmd.getCommands().add(cmd);
         }
 
+
         BatchExecutionCommandImpl batchCmdCopy = roundTrip(batchCmd);
-        assertEquals("Batch cmd lookup", batchCmd.getLookup(), batchCmdCopy.getLookup());
-        assertEquals("Batch cmd num commands", batchCmd.getCommands().size(), batchCmdCopy.getCommands().size());
+        assertEquals( "Batch cmd lookup", batchCmd.getLookup(), batchCmdCopy.getLookup() );
+        assertEquals( "Batch cmd num commands", batchCmd.getCommands().size(), batchCmdCopy.getCommands().size() );
         // How many times have I written this type of code?
         // This code should use the utility in kie-test-util when it finally gets moved there..
-        for (GenericCommand copyCmd : batchCmdCopy.getCommands()) {
-            for (GenericCommand origCmd : batchCmd.getCommands()) {
+        for( GenericCommand copyCmd : batchCmdCopy.getCommands() ) {
+            for( GenericCommand origCmd : batchCmd.getCommands() ) {
                 Class cmdClass = origCmd.getClass();
-                if (copyCmd.getClass().equals(cmdClass)) {
-                    if (cmdClass.equals(DeleteCommand.class)) {
-                        compareFactHandles(((DeleteCommand) origCmd).getFactHandle(), ((DeleteCommand) copyCmd).getFactHandle(), DeleteCommand.class);
-                    } else if (cmdClass.equals(FireAllRulesCommand.class)) {
+                if( copyCmd.getClass().equals(cmdClass) ) {
+                    if( cmdClass.equals(DeleteCommand.class) ) {
+                        compareFactHandles(((DeleteCommand) origCmd).getFactHandle(), ((DeleteCommand) copyCmd).getFactHandle(),
+                                           DeleteCommand.class );
+                    } else if( cmdClass.equals(FireAllRulesCommand.class) ) {
                         AgendaFilter origFilter = ((FireAllRulesCommand) origCmd).getAgendaFilter();
                         AgendaFilter copyFilter = ((FireAllRulesCommand) copyCmd).getAgendaFilter();
-                        if (!origFilter.getClass().equals(copyFilter.getClass())) {
+                        if( ! origFilter.getClass().equals(copyFilter.getClass()) ) {
                             continue;
                         }
                         Class agendaFilterClass = origFilter.getClass();
-                        for (Field agendaFilterField : agendaFilterClass.getDeclaredFields()) {
+                        for( Field agendaFilterField : agendaFilterClass.getDeclaredFields() ) {
                             agendaFilterField.setAccessible(true);
                             Object afFieldOrigVal = agendaFilterField.get(origFilter);
                             Object afFieldCopyVal = agendaFilterField.get(copyFilter);
-                            if (afFieldOrigVal instanceof Pattern) {
+                            if( afFieldOrigVal instanceof Pattern ) {
                                 afFieldOrigVal = ((Pattern) afFieldOrigVal).pattern();
                                 afFieldCopyVal = ((Pattern) afFieldCopyVal).pattern();
                             }
-                            assertEquals(agendaFilterClass.getSimpleName() + "." + agendaFilterField.getName(), afFieldOrigVal, afFieldCopyVal);
+                            assertEquals( agendaFilterClass.getSimpleName() + "." + agendaFilterField.getName(),
+                                          afFieldOrigVal,
+                                          afFieldCopyVal);
                         }
-                        assertEquals(FireAllRulesCommand.class.getSimpleName() + ".max", ((FireAllRulesCommand) origCmd).getMax(), ((FireAllRulesCommand) copyCmd).getMax());
-                        assertEquals(FireAllRulesCommand.class.getSimpleName() + ".outIdentifier", ((FireAllRulesCommand) origCmd).getOutIdentifier(), ((FireAllRulesCommand) copyCmd).getOutIdentifier());
+                        assertEquals( FireAllRulesCommand.class.getSimpleName() + ".max",
+                                      ((FireAllRulesCommand) origCmd).getMax(),
+                                      ((FireAllRulesCommand) copyCmd).getMax() );
+                        assertEquals( FireAllRulesCommand.class.getSimpleName() + ".outIdentifier",
+                                      ((FireAllRulesCommand) origCmd).getOutIdentifier(),
+                                      ((FireAllRulesCommand) copyCmd).getOutIdentifier());
                     } else if (cmdClass.equals(FireUntilHaltCommand.class)) {
                         AgendaFilter origFilter = ((FireUntilHaltCommand) origCmd).getAgendaFilter();
                         AgendaFilter copyFilter = ((FireUntilHaltCommand) copyCmd).getAgendaFilter();
@@ -399,78 +409,90 @@ public class CommandSerializationTest {
                             assertEquals(agendaFilterClass.getSimpleName() + "." + agendaFilterField.getName(), afFieldOrigVal, afFieldCopyVal);
                         }
                     } else {
-                        for (Field cmdField : cmdClass.getDeclaredFields()) {
+                        for( Field cmdField : cmdClass.getDeclaredFields() ) {
                             cmdField.setAccessible(true);
-                            if (Modifier.isTransient(cmdField.getModifiers())) {
+                            if( Modifier.isTransient(cmdField.getModifiers()) ) {
                                 continue;
                             }
                             Object origVal = cmdField.get(origCmd);
-                            assertNotNull(cmdClass.getSimpleName() + "." + cmdField.getName(), origVal);
+                            assertNotNull( cmdClass.getSimpleName() + "." + cmdField.getName(), origVal );
                             Object copyVal = cmdField.get(copyCmd);
-                            assertNotNull("Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(), copyVal);
-                            if (origVal instanceof FactHandle) {
+                            assertNotNull( "Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(), copyVal );
+                            if( origVal instanceof FactHandle ) {
                                 compareFactHandles((FactHandle) origVal, (FactHandle) copyVal, cmdClass);
-                            } else if (origVal instanceof ClassObjectSerializationFilter) {
-                                assertEquals("Original compared to Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(), ((ClassObjectSerializationFilter) origVal).getClass(), ((ClassObjectSerializationFilter) copyVal).getClass());
-                            } else if (origVal instanceof List) {
+                            } else if( origVal instanceof ClassObjectSerializationFilter ) {
+                                assertEquals( "Original compared to Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(),
+                                              ((ClassObjectSerializationFilter) origVal).getClass(),
+                                              ((ClassObjectSerializationFilter) copyVal).getClass());
+                            } else if( origVal instanceof List ) {
                                 List origList = (List) origVal;
-                                if (((List) copyVal).isEmpty()) {
-                                    assertTrue("Original compared to Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(), origList.isEmpty());
+                                if( ((List) copyVal).isEmpty() ) {
+                                    assertTrue( "Original compared to Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(),
+                                                origList.isEmpty() );
                                 } else {
-                                    if (origList.get(0) instanceof Setter) {
-                                        for (Object obj : (List) origVal) {
-                                            assertTrue("Expected a " + Setter.class.getSimpleName() + " instance (not " + obj.getClass().getSimpleName() + " in " + cmdClass.getSimpleName() + "." + cmdField.getName(), obj instanceof Setter);
+                                    if( origList.get(0) instanceof Setter ) {
+                                        for( Object obj : (List) origVal )  {
+                                            assertTrue( "Expected a " + Setter.class.getSimpleName() + " instance (not " + obj.getClass().getSimpleName() + " in " + cmdClass.getSimpleName() + "." + cmdField.getName(),
+                                                        obj instanceof Setter );
                                             Iterator<Object> iter = ((List) copyVal).iterator();
-                                            while (iter.hasNext()) {
+                                            while( iter.hasNext() ) {
                                                 Setter copySetter = (Setter) iter.next();
-                                                if (((Setter) obj).getAccessor().equals(copySetter.getAccessor())) {
-                                                    assertEquals("Original compared to Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(), ((Setter) obj).getValue(), copySetter.getValue());
+                                                if( ((Setter)obj).getAccessor().equals(copySetter.getAccessor()) ) {
+                                                    assertEquals( "Original compared to Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(),
+                                                                  ((Setter) obj).getValue(), copySetter.getValue());
                                                     iter.remove();
                                                 }
                                             }
                                         }
-                                        assertTrue("Original compared to Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(), ((List) copyVal).isEmpty());
-                                    } else if (origList.get(0) instanceof Map) {
+                                        assertTrue( "Original compared to Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(),
+                                                    ((List) copyVal).isEmpty() );
+                                    } else if( origList.get(0) instanceof Map ) {
                                         Map copyMap = (Map) ((List) copyVal).get(0);
-                                        for (Object entry : ((Map) origList.get(0)).entrySet()) {
-                                            assertTrue("Original compared to Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(), (copyMap).containsKey(((Entry) entry).getKey()));
+                                        for( Object entry : ((Map) origList.get(0)).entrySet() ) {
+                                            assertTrue( "Original compared to Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(),
+                                                        (copyMap).containsKey(((Entry) entry).getKey()) );
                                         }
                                     }
                                 }
                             } else {
-                                assertTrue("Original compared to Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(), origVal.equals(copyVal));
+                                assertTrue( "Original compared to Round-tripped " + cmdClass.getSimpleName() + "." + cmdField.getName(),
+                                            origVal.equals(copyVal));
                             }
                         }
                     }
-                }
+               }
             }
         }
+
+
 
         // verify that BatchExecutionCommandImpl.commands has been filled with all
         // of the different types
         Field commandsField = BatchExecutionCommandImpl.class.getDeclaredField("commands");
         XmlElements xmlElemsAnno = commandsField.getAnnotation(XmlElements.class);
         List<Class> cmdTypes = new ArrayList<Class>(xmlElemsAnno.value().length);
-        for (XmlElement xmlElem : xmlElemsAnno.value()) {
+        for( XmlElement xmlElem : xmlElemsAnno.value() ) {
             cmdTypes.add(xmlElem.type());
         }
 
-        cmdTypes.remove(SignalEventCommand.class); // already thoroughly tested..
+        cmdTypes.remove(SignalEventCommand.class);  // already thoroughly tested..
         cmdTypes.remove(StartProcessCommand.class); // already thoroughly tested..
-        for (GenericCommand cmd : batchCmd.getCommands()) {
-            cmdTypes.remove(cmd.getClass());
+        for( GenericCommand cmd : batchCmd.getCommands() ) {
+           cmdTypes.remove(cmd.getClass());
         }
         String cmdInstName = cmdTypes.isEmpty() ? "null" : cmdTypes.get(0).getSimpleName();
-        assertTrue("Please add a " + cmdInstName + " instance to the " + BatchExecutionCommandImpl.class.getSimpleName() + " commands!", cmdTypes.isEmpty());
+        assertTrue( "Please add a " + cmdInstName + " instance to the " + BatchExecutionCommandImpl.class.getSimpleName() + " commands!",
+                    cmdTypes.isEmpty());
 
         // other tests for this as part of the REST integration tests..
     }
 
-    private static void compareFactHandles(FactHandle orig, FactHandle copy, Class cmdClass) {
+    private static void compareFactHandles( FactHandle orig, FactHandle copy, Class cmdClass) {
         String origFHString = orig.toExternalForm();
         origFHString = origFHString.substring(0, origFHString.lastIndexOf(":"));
         String copyFHString = copy.toExternalForm();
         copyFHString = copyFHString.substring(0, copyFHString.lastIndexOf(":"));
-        assertEquals(cmdClass.getSimpleName() + ".facthandle string", origFHString, copyFHString);
+        assertEquals( cmdClass.getSimpleName() + ".facthandle string",
+                      origFHString, copyFHString);
     }
 }

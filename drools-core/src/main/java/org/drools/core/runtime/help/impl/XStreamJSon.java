@@ -66,211 +66,249 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class XStreamJSon {
 
+public class XStreamJSon {
     public static volatile boolean SORT_MAPS = false;
 
     public static XStream newJSonMarshaller() {
         JettisonMappedXmlDriver jet = new JettisonMappedXmlDriver();
-        XStream xstream = new XStream(jet);
+        XStream xstream = new XStream( jet );
 
-        XStreamHelper.setAliases(xstream);
+        XStreamHelper.setAliases( xstream );
 
-        xstream.alias("commands", CommandsObjectContainer.class);
-        xstream.alias("objects", ObjectsObjectContainer.class);
-        xstream.alias("item", RowItemContainer.class);
-        xstream.alias("parameters", ParameterContainer.class);
-        xstream.alias("results", WorkItemResultsContainer.class);
+        xstream.alias( "commands",
+                       CommandsObjectContainer.class );
+        xstream.alias( "objects",
+                       ObjectsObjectContainer.class );
+        xstream.alias( "item",
+                       RowItemContainer.class );
+        xstream.alias( "parameters",
+                       ParameterContainer.class );
+        xstream.alias( "results",
+                       WorkItemResultsContainer.class );
 
-        xstream.setMode(XStream.NO_REFERENCES);
+        xstream.setMode( XStream.NO_REFERENCES );
 
-        xstream.registerConverter(new JSonFactHandleConverter(xstream));
-        xstream.registerConverter(new JSonBatchExecutionResultConverter(xstream));
-        xstream.registerConverter(new JSonInsertConverter(xstream));
-        xstream.registerConverter(new JSonFireAllRulesConverter(xstream));
-        xstream.registerConverter(new JSonBatchExecutionCommandConverter(xstream));
-        xstream.registerConverter(new CommandsContainerConverter(xstream));
-        xstream.registerConverter(new JSonGetObjectConverter(xstream));
-        xstream.registerConverter(new JSonRetractConverter(xstream));
-        xstream.registerConverter(new JSonModifyConverter(xstream));
-        xstream.registerConverter(new JSonSetGlobalConverter(xstream));
-        xstream.registerConverter(new JSonInsertElementsConverter(xstream));
-        xstream.registerConverter(new JSonGetGlobalConverter(xstream));
-        xstream.registerConverter(new JSonGetObjectsConverter(xstream));
-        xstream.registerConverter(new JSonQueryConverter(xstream));
-        xstream.registerConverter(new JSonQueryResultsConverter(xstream));
-        xstream.registerConverter(new RowItemConverter(xstream));
-        xstream.registerConverter(new JSonStartProcessConvert(xstream));
-        xstream.registerConverter(new JSonSignalEventConverter(xstream));
-        xstream.registerConverter(new JSonCompleteWorkItemConverter(xstream));
-        xstream.registerConverter(new JSonAbortWorkItemConverter(xstream));
+        xstream.registerConverter( new JSonFactHandleConverter( xstream ) );
+        xstream.registerConverter( new JSonBatchExecutionResultConverter( xstream ) );
+        xstream.registerConverter( new JSonInsertConverter( xstream ) );
+        xstream.registerConverter( new JSonFireAllRulesConverter( xstream ) );
+        xstream.registerConverter( new JSonBatchExecutionCommandConverter( xstream ) );
+        xstream.registerConverter( new CommandsContainerConverter( xstream ) );
+        xstream.registerConverter( new JSonGetObjectConverter( xstream ) );
+        xstream.registerConverter( new JSonRetractConverter( xstream ) );
+        xstream.registerConverter( new JSonModifyConverter( xstream ) );
+        xstream.registerConverter( new JSonSetGlobalConverter( xstream ) );
+        xstream.registerConverter( new JSonInsertElementsConverter( xstream ) );
+        xstream.registerConverter( new JSonGetGlobalConverter( xstream ) );
+        xstream.registerConverter( new JSonGetObjectsConverter( xstream ) );
+        xstream.registerConverter( new JSonQueryConverter( xstream ) );
+        xstream.registerConverter( new JSonQueryResultsConverter( xstream ) );
+        xstream.registerConverter( new RowItemConverter( xstream ) );
+        xstream.registerConverter( new JSonStartProcessConvert( xstream ) );
+        xstream.registerConverter( new JSonSignalEventConverter( xstream ) );
+        xstream.registerConverter( new JSonCompleteWorkItemConverter( xstream ) );
+        xstream.registerConverter( new JSonAbortWorkItemConverter( xstream ) );
 
         return xstream;
     }
 
     public static class CommandsContainerConverter extends AbstractCollectionConverter {
-
         public CommandsContainerConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
         public boolean canConvert(Class type) {
-            return CommandsObjectContainer.class.isAssignableFrom(type);
+            return CommandsObjectContainer.class.isAssignableFrom( type );
 
         }
 
         @Override
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             CommandsObjectContainer container = (CommandsObjectContainer) object;
 
-            writeItem(container.getContainedObject(), context, writer);
+            writeItem( container.getContainedObject(),
+                       context,
+                       writer );
         }
 
         @Override
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             throw new UnsupportedOperationException();
         }
 
     }
 
     public static class RowItemConverter extends AbstractCollectionConverter {
-
         public RowItemConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
         public boolean canConvert(Class type) {
-            return RowItemContainer.class.isAssignableFrom(type);
+            return RowItemContainer.class.isAssignableFrom( type );
 
         }
 
         @Override
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             RowItemContainer container = (RowItemContainer) object;
 
-            writer.startNode("identifier");
-            writer.setValue(container.getIdentifier());
+            writer.startNode( "identifier" );
+            writer.setValue( container.getIdentifier() );
             writer.endNode();
 
-            writer.startNode("external-form");
-            writer.setValue(container.getFactHandle().toExternalForm());
+            writer.startNode( "external-form" );
+            writer.setValue( container.getFactHandle().toExternalForm() );
             writer.endNode();
 
-            writer.startNode("object");
-            writeItem(container.getObject(), context, writer);
+            writer.startNode( "object" );
+            writeItem( container.getObject(),
+                       context,
+                       writer );
             writer.endNode();
         }
 
         @Override
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             String identifier = null;
             String externalForm = null;
             Object object = null;
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
-                if ("identifier".equals(nodeName)) {
+                if ( "identifier".equals( nodeName ) ) {
                     identifier = reader.getValue();
-                } else if ("external-form".equals(nodeName)) {
+                } else if ( "external-form".equals( nodeName ) ) {
                     externalForm = reader.getValue();
-                } else if ("object".equals(nodeName)) {
+                } else if ( "object".equals( nodeName ) ) {
                     reader.moveDown();
-                    object = readItem(reader, context, null);
+                    object = readItem( reader,
+                                       context,
+                                       null );
                     reader.moveUp();
                 }
                 reader.moveUp();
             }
-            return new RowItemContainer(identifier, DefaultFactHandle.createFromExternalFormat(externalForm), object);
+            return new RowItemContainer( identifier,
+                                         DefaultFactHandle.createFromExternalFormat( externalForm ),
+                                         object );
         }
 
     }
 
-    public static class JSonBatchExecutionCommandConverter extends AbstractCollectionConverter implements Converter {
+    public static class JSonBatchExecutionCommandConverter extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonBatchExecutionCommandConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             BatchExecutionCommandImpl cmds = (BatchExecutionCommandImpl) object;
-            if (cmds.getLookup() != null) {
-                writer.startNode("lookup");
-                writer.setValue(cmds.getLookup());
+            if ( cmds.getLookup() != null ) {
+                writer.startNode( "lookup" );
+                writer.setValue( cmds.getLookup() );
                 writer.endNode();
             }
-            List<GenericCommand<?>> list = cmds.getCommands();
+            List<GenericCommand< ? >> list = cmds.getCommands();
 
-            for (GenericCommand cmd : list) {
-                writeItem(new CommandsObjectContainer(cmd), context, writer);
+            for ( GenericCommand cmd : list ) {
+                writeItem( new CommandsObjectContainer( cmd ),
+                           context,
+                           writer );
             }
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-            List<GenericCommand<?>> list = new ArrayList<GenericCommand<?>>();
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
+            List<GenericCommand< ? >> list = new ArrayList<GenericCommand< ? >>();
             String lookup = null;
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
-                if ("commands".equals(reader.getNodeName())) {
-                    while (reader.hasMoreChildren()) {
+                if ( "commands".equals( reader.getNodeName() ) ) {
+                    while ( reader.hasMoreChildren() ) {
                         reader.moveDown();
-                        GenericCommand cmd = (GenericCommand) readItem(reader, context, null);
-                        list.add(cmd);
+                        GenericCommand cmd = (GenericCommand) readItem( reader,
+                                                                        context,
+                                                                        null );
+                        list.add( cmd );
                         reader.moveUp();
                     }
-                } else if ("lookup".equals(reader.getNodeName())) {
+                } else if ( "lookup".equals( reader.getNodeName() ) ) {
                     lookup = reader.getValue();
                 } else {
-                    throw new IllegalArgumentException("batch-execution does not support the child element name=''" + reader.getNodeName() + "' value=" + reader.getValue() + "'");
+                    throw new IllegalArgumentException( "batch-execution does not support the child element name=''" + reader.getNodeName() + "' value=" + reader.getValue() + "'" );
                 }
                 reader.moveUp();
             }
-            return new BatchExecutionCommandImpl(list, lookup);
+            return new BatchExecutionCommandImpl( list,
+                                              lookup );
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(BatchExecutionCommandImpl.class);
+            return clazz.equals( BatchExecutionCommandImpl.class );
         }
     }
 
-    public static class JSonInsertConverter extends BaseConverter implements Converter {
+    public static class JSonInsertConverter extends BaseConverter
+        implements
+        Converter {
 
         public JSonInsertConverter(XStream xstream) {
-            super(xstream);
+            super( xstream );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             InsertObjectCommand cmd = (InsertObjectCommand) object;
-            if (cmd.getOutIdentifier() != null) {
-                writer.startNode("out-identifier");
-                writer.setValue(cmd.getOutIdentifier());
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.startNode( "out-identifier" );
+                writer.setValue( cmd.getOutIdentifier() );
                 writer.endNode();
 
-                writer.startNode("return-object");
-                writer.setValue(Boolean.toString(cmd.isReturnObject()));
+                writer.startNode( "return-object" );
+                writer.setValue( Boolean.toString( cmd.isReturnObject() ) );
                 writer.endNode();
             }
 
-            if (!StringUtils.isEmpty(cmd.getEntryPoint())) {
-                writer.startNode("entry-point");
-                writer.setValue(cmd.getEntryPoint());
+            if ( !StringUtils.isEmpty( cmd.getEntryPoint() ) ) {
+                writer.startNode( "entry-point" );
+                writer.setValue(  cmd.getEntryPoint() );
                 writer.endNode();
             }
-            writeValue(writer, context, "object", cmd.getObject());
+            writeValue( writer,
+                        context,
+                        "object",
+                        cmd.getObject() );
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             InsertObjectCommand cmd = new InsertObjectCommand();
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
-                if ("out-identifier".equals(nodeName)) {
-                    cmd.setOutIdentifier(reader.getValue());
-                } else if ("return-object".equals(nodeName)) {
-                    cmd.setReturnObject(Boolean.parseBoolean(reader.getValue()));
-                } else if ("object".equals(nodeName)) {
-                    cmd.setObject(readValue(reader, context, cmd.getObject(), "object"));
-                } else if ("entry-point".equals(nodeName)) {
-                    cmd.setEntryPoint(reader.getValue());
+                if ( "out-identifier".equals( nodeName ) ) {
+                    cmd.setOutIdentifier( reader.getValue() );
+                } else if ( "return-object".equals( nodeName ) ) {
+                    cmd.setReturnObject( Boolean.parseBoolean( reader.getValue() ) );
+                } else if ( "object".equals( nodeName ) ) {
+                    cmd.setObject( readValue( reader,
+                                              context,
+                                              cmd.getObject(),
+                                              "object" ) );
+                } else if ( "entry-point".equals( nodeName ) ) {
+                    cmd.setEntryPoint( reader.getValue() );
                 }
                 reader.moveUp();
 
@@ -279,210 +317,241 @@ public class XStreamJSon {
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(InsertObjectCommand.class);
+            return clazz.equals( InsertObjectCommand.class );
         }
 
     }
 
-    public static class JSonFactHandleConverter extends AbstractCollectionConverter implements Converter {
-
+    public static class JSonFactHandleConverter extends AbstractCollectionConverter
+        implements
+        Converter {
         public JSonFactHandleConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
         public boolean canConvert(Class aClass) {
-            return FactHandle.class.isAssignableFrom(aClass);
+            return FactHandle.class.isAssignableFrom( aClass );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext marshallingContext) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext marshallingContext) {
             FactHandle fh = (FactHandle) object;
-            writer.startNode("external-form");
-            writer.setValue(fh.toExternalForm());
+            writer.startNode( "external-form" );
+            writer.setValue( fh.toExternalForm() );
             writer.endNode();
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext unmarshallingContext) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext unmarshallingContext) {
             reader.moveDown();
-            DefaultFactHandle factHandle = DefaultFactHandle.createFromExternalFormat(reader.getValue());
+            DefaultFactHandle factHandle = DefaultFactHandle.createFromExternalFormat( reader.getValue() );
             reader.moveUp();
             return factHandle;
         }
     }
 
-    public static class JSonFireAllRulesConverter extends AbstractCollectionConverter implements Converter {
+    public static class JSonFireAllRulesConverter extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonFireAllRulesConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             FireAllRulesCommand cmd = (FireAllRulesCommand) object;
 
-            if (cmd.getMax() != -1) {
-                writer.startNode("max");
-                writer.setValue(Integer.toString(cmd.getMax()));
+            if ( cmd.getMax() != -1 ) {
+                writer.startNode( "max" );
+                writer.setValue( Integer.toString( cmd.getMax() ) );
                 writer.endNode();
             }
 
-            if (cmd.getOutIdentifier() != null) {
-                writer.startNode("out-identifier");
-                writer.setValue(cmd.getOutIdentifier());
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.startNode( "out-identifier" );
+                writer.setValue( cmd.getOutIdentifier() );
                 writer.endNode();
             }
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             String max = null;
             String outIdentifier = null;
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
-                if ("max".equals(reader.getNodeName())) {
+                if ( "max".equals( reader.getNodeName() ) ) {
                     max = reader.getValue();
-                } else if ("out-identifier".equals(reader.getNodeName())) {
+                } else if ( "out-identifier".equals( reader.getNodeName() ) ) {
                     outIdentifier = reader.getValue();
                 } else {
-                    throw new IllegalArgumentException("fire-all-rules does not support the child element name=''" + reader.getNodeName() + "' value=" + reader.getValue() + "'");
+                    throw new IllegalArgumentException( "fire-all-rules does not support the child element name=''" + reader.getNodeName() + "' value=" + reader.getValue() + "'" );
                 }
                 reader.moveUp();
             }
 
             FireAllRulesCommand cmd;
 
-            if (max != null) {
-                cmd = new FireAllRulesCommand(Integer.parseInt(max));
+            if ( max != null ) {
+                cmd = new FireAllRulesCommand( Integer.parseInt( max ) );
             } else {
                 cmd = new FireAllRulesCommand();
             }
-            if (outIdentifier != null) {
+            if ( outIdentifier != null ) {
                 cmd.setOutIdentifier(outIdentifier);
             }
             return cmd;
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(FireAllRulesCommand.class);
+            return clazz.equals( FireAllRulesCommand.class );
         }
     }
 
-    public static class JSonFireUntilHaltConverter extends AbstractCollectionConverter implements Converter {
-
+    public static class JSonFireUntilHaltConverter extends AbstractCollectionConverter
+            implements Converter {
+        
         public JSonFireUntilHaltConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                HierarchicalStreamWriter writer,
+                MarshallingContext context) {
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-            if (reader.hasMoreChildren()) {
-                throw new IllegalArgumentException("fire-until-halt does not support the child element name=''" + reader.getNodeName() + "' value=" + reader.getValue() + "'");
+        public Object unmarshal(HierarchicalStreamReader reader,
+                UnmarshallingContext context) {
+            if ( reader.hasMoreChildren() ) {
+                throw new IllegalArgumentException( "fire-until-halt does not support the child element name=''"
+                        + reader.getNodeName() + "' value=" + reader.getValue() + "'" );
             }
             return new FireAllRulesCommand();
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(FireUntilHaltCommand.class);
+            return clazz.equals( FireUntilHaltCommand.class );
         }
     }
 
-    public static class JSonGetObjectConverter extends AbstractCollectionConverter implements Converter {
+    public static class JSonGetObjectConverter extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonGetObjectConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             GetObjectCommand cmd = (GetObjectCommand) object;
-            writer.startNode("fact-handle");
-            writer.setValue(cmd.getFactHandle().toExternalForm());
+            writer.startNode( "fact-handle" );
+            writer.setValue( cmd.getFactHandle().toExternalForm() );
             writer.endNode();
 
-            if (cmd.getOutIdentifier() != null) {
-                writer.startNode("out-identifier");
-                writer.setValue(cmd.getOutIdentifier());
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.startNode( "out-identifier" );
+                writer.setValue( cmd.getOutIdentifier() );
                 writer.endNode();
             }
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             FactHandle factHandle = null;
             String outIdentifier = null;
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String name = reader.getNodeName();
-                if ("fact-handle".equals(name)) {
-                    factHandle = DefaultFactHandle.createFromExternalFormat(reader.getValue());
-                } else if ("out-identifier".equals(name)) {
+                if ( "fact-handle".equals( name ) ) {
+                    factHandle = DefaultFactHandle.createFromExternalFormat( reader.getValue() );
+                } else if ( "out-identifier".equals( name ) ) {
                     outIdentifier = reader.getValue();
                 }
                 reader.moveUp();
             }
 
-            GetObjectCommand cmd = new GetObjectCommand(factHandle);
-            if (outIdentifier != null) {
-                cmd.setOutIdentifier(outIdentifier);
+            GetObjectCommand cmd = new GetObjectCommand( factHandle );
+            if ( outIdentifier != null ) {
+                cmd.setOutIdentifier( outIdentifier );
             }
             return cmd;
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(GetObjectCommand.class);
+            return clazz.equals( GetObjectCommand.class );
         }
     }
 
-    public static class JSonRetractConverter extends AbstractCollectionConverter implements Converter {
+    public static class JSonRetractConverter extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonRetractConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             DeleteCommand cmd = (DeleteCommand) object;
-            writer.startNode("fact-handle");
-            writer.setValue(cmd.getFactHandle().toExternalForm());
+            writer.startNode( "fact-handle" );
+            writer.setValue( cmd.getFactHandle().toExternalForm() );
             writer.endNode();
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             reader.moveDown();
-            FactHandle factHandle = DefaultFactHandle.createFromExternalFormat(reader.getValue());
+            FactHandle factHandle = DefaultFactHandle.createFromExternalFormat( reader.getValue() );
             reader.moveUp();
 
             return CommandFactory.newDelete(factHandle);
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(DeleteCommand.class);
+            return clazz.equals( DeleteCommand.class );
         }
     }
 
-    public static class JSonModifyConverter extends AbstractCollectionConverter implements Converter {
+    public static class JSonModifyConverter extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonModifyConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             ModifyCommand cmd = (ModifyCommand) object;
 
-            writer.startNode("fact-handle");
-            writer.setValue(cmd.getFactHandle().toExternalForm());
+            writer.startNode( "fact-handle" );
+            writer.setValue( cmd.getFactHandle().toExternalForm() );
             writer.endNode();
 
             List<Setter> setters = cmd.getSetters();
-            for (Setter setter : setters) {
-                writeItem(setter, context, writer);
+            for ( Setter setter : setters ) {
+                writeItem( setter,
+                           context,
+                           writer );
 
             }
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             reader.moveDown();
-            FactHandle factHandle = DefaultFactHandle.createFromExternalFormat(reader.getValue());
+            FactHandle factHandle = DefaultFactHandle.createFromExternalFormat( reader.getValue() );
             reader.moveUp();
 
             List<Setter> setters = new ArrayList<Setter>();
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
 
                 reader.moveDown();
@@ -493,130 +562,147 @@ public class XStreamJSon {
                 String value = reader.getValue();
                 reader.moveUp();
 
-                Setter setter = CommandFactory.newSetter(accessor, value);
-                setters.add(setter);
+                Setter setter = CommandFactory.newSetter( accessor,
+                                                          value );
+                setters.add( setter );
 
                 reader.moveUp();
             }
 
-            return CommandFactory.newModify(factHandle, setters);
+            return CommandFactory.newModify( factHandle,
+                                             setters );
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(ModifyCommand.class);
+            return clazz.equals( ModifyCommand.class );
         }
 
     }
 
-    public static class JSonInsertElementsConverter extends AbstractCollectionConverter implements Converter {
+    public static class JSonInsertElementsConverter extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonInsertElementsConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             InsertElementsCommand cmd = (InsertElementsCommand) object;
 
-            if (cmd.getOutIdentifier() != null) {
-                writer.startNode("out-identifier");
-                writer.setValue(cmd.getOutIdentifier());
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.startNode( "out-identifier" );
+                writer.setValue( cmd.getOutIdentifier() );
                 writer.endNode();
 
-                writer.startNode("return-objects");
-                writer.setValue(Boolean.toString(cmd.isReturnObject()));
+                writer.startNode( "return-objects" );
+                writer.setValue( Boolean.toString( cmd.isReturnObject() ) );
                 writer.endNode();
 
             }
-            if (!StringUtils.isEmpty(cmd.getEntryPoint())) {
-                writer.startNode("entry-point");
-                writer.setValue(cmd.getEntryPoint());
+            if ( !StringUtils.isEmpty( cmd.getEntryPoint() ) ) {
+                writer.startNode( "entry-point" );
+                writer.setValue(  cmd.getEntryPoint() );
                 writer.endNode();
             }
 
-            for (Object element : cmd.getObjects()) {
-                writeItem(new ObjectsObjectContainer(element), context, writer);
+            for ( Object element : cmd.getObjects() ) {
+                writeItem( new ObjectsObjectContainer( element ),
+                           context,
+                           writer );
             }
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             List<Object> objects = new ArrayList<Object>();
             String outIdentifier = null;
             String returnObjects = null;
             String entryPoint = null;
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
-                if ("objects".equals(nodeName)) {
-                    while (reader.hasMoreChildren()) {
+                if ( "objects".equals( nodeName ) ) {
+                    while ( reader.hasMoreChildren() ) {
                         reader.moveDown();
-                        Object o = readItem(reader, context, null);
-                        objects.add(o);
+                        Object o = readItem( reader,
+                                             context,
+                                             null );
+                        objects.add( o );
                         reader.moveUp();
                     }
-                } else if ("out-identifier".equals(nodeName)) {
+                } else if ( "out-identifier".equals( nodeName ) ) {
                     outIdentifier = reader.getValue();
-                } else if ("return-objects".equals(nodeName)) {
+                } else if ( "return-objects".equals( nodeName ) ) {
                     returnObjects = reader.getValue();
-                } else if ("entry-point".equals(nodeName)) {
+                } else if ( "entry-point".equals( nodeName ) ) {
                     entryPoint = reader.getValue();
                 } else {
-                    throw new IllegalArgumentException("insert-elements does not support the child element name=''" + reader.getNodeName() + "' value=" + reader.getValue() + "'");
+                    throw new IllegalArgumentException( "insert-elements does not support the child element name=''" + reader.getNodeName() + "' value=" + reader.getValue() + "'" );
                 }
                 reader.moveUp();
             }
-            InsertElementsCommand cmd = new InsertElementsCommand(objects);
-            if (outIdentifier != null) {
-                cmd.setOutIdentifier(outIdentifier);
-                if (returnObjects != null) {
-                    cmd.setReturnObject(Boolean.parseBoolean(returnObjects));
+            InsertElementsCommand cmd = new InsertElementsCommand( objects );
+            if ( outIdentifier != null ) {
+                cmd.setOutIdentifier( outIdentifier );
+                if ( returnObjects != null ) {
+                    cmd.setReturnObject( Boolean.parseBoolean( returnObjects ) );
                 }
             }
-            if (entryPoint != null) {
-                cmd.setEntryPoint(entryPoint);
+            if ( entryPoint != null ) {
+                cmd.setEntryPoint( entryPoint );
             }
             return cmd;
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(InsertElementsCommand.class);
+            return clazz.equals( InsertElementsCommand.class );
         }
     }
 
-    public static class JSonBatchExecutionResultConverter extends AbstractCollectionConverter implements Converter {
+    public static class JSonBatchExecutionResultConverter extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonBatchExecutionResultConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             ExecutionResults result = (ExecutionResults) object;
-            writer.startNode("results");
-            if (!result.getIdentifiers().isEmpty()) {
+            writer.startNode( "results" );
+            if ( !result.getIdentifiers().isEmpty() ) {
 
                 Collection<String> identifiers = result.getIdentifiers();
                 // this gets sorted, otherwise unit tests will not pass
-                if (SORT_MAPS) {
-                    String[] array = identifiers.toArray(new String[identifiers.size()]);
+                if ( SORT_MAPS ) {
+                    String[] array = identifiers.toArray( new String[identifiers.size()]);
                     Arrays.sort(array);
                     identifiers = Arrays.asList(array);
                 }
 
-                for (String identifier : identifiers) {
-                    writer.startNode("result");
+                for ( String identifier : identifiers ) {
+                    writer.startNode( "result" );
 
-                    writer.startNode("identifier");
-                    writer.setValue(identifier);
+                    writer.startNode( "identifier" );
+                    writer.setValue( identifier );
                     writer.endNode();
 
-                    writer.startNode("value");
-                    Object value = result.getValue(identifier);
-                    if (value instanceof org.kie.api.runtime.rule.QueryResults) {
+                    writer.startNode( "value" );
+                    Object value = result.getValue( identifier );
+                    if ( value instanceof org.kie.api.runtime.rule.QueryResults ) {
                         String name = mapper().serializedClass(FlatQueryResults.class);
                         ExtendedHierarchicalStreamWriterHelper.startNode(writer, name, FlatQueryResults.class);
                         context.convertAnother(value);
                         writer.endNode();
                     } else {
-                        writeItem(value, context, writer);
+                        writeItem( value,
+                                   context,
+                                   writer );
                     }
                     writer.endNode();
 
@@ -624,38 +710,41 @@ public class XStreamJSon {
                 }
             }
 
+
             Collection<String> handles = ((ExecutionResultImpl) result).getFactHandles().keySet();
             // this gets sorted, otherwise unit tests will not pass
             if (SORT_MAPS) {
-                String[] array = handles.toArray(new String[handles.size()]);
+                String[] array = handles.toArray( new String[handles.size()]);
                 Arrays.sort(array);
                 handles = Arrays.asList(array);
             }
 
-            for (String identifier : handles) {
-                Object handle = result.getFactHandle(identifier);
-                if (handle instanceof FactHandle) {
-                    writer.startNode("fact-handle");
+            for ( String identifier : handles ) {
+                Object handle = result.getFactHandle( identifier );
+                if ( handle instanceof FactHandle ) {
+                    writer.startNode( "fact-handle" );
 
-                    writer.startNode("identifier");
-                    writer.setValue(identifier);
+                    writer.startNode( "identifier" );
+                    writer.setValue( identifier );
                     writer.endNode();
 
-                    writer.startNode("external-form");
-                    writer.setValue(((FactHandle) handle).toExternalForm());
+                    writer.startNode( "external-form" );
+                    writer.setValue( ((FactHandle) handle).toExternalForm() );
                     writer.endNode();
 
                     writer.endNode();
-                } else if (handle instanceof Collection) {
-                    writer.startNode("fact-handles");
+                } else if ( handle instanceof Collection ) {
+                    writer.startNode( "fact-handles" );
 
-                    writer.startNode("identifier");
-                    writer.setValue(identifier);
+                    writer.startNode( "identifier" );
+                    writer.setValue( identifier );
                     writer.endNode();
 
                     //writer.startNode( "xxx" );
-                    for (FactHandle factHandle : (Collection<FactHandle>) handle) {
-                        writeItem(factHandle.toExternalForm(), context, writer);
+                    for ( FactHandle factHandle : (Collection<FactHandle>) handle ) {
+                        writeItem( factHandle.toExternalForm(),
+                                   context,
+                                   writer );
                     }
                     //writer.endNode();
 
@@ -666,28 +755,32 @@ public class XStreamJSon {
             writer.endNode();
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             ExecutionResultImpl result = new ExecutionResultImpl();
             Map<String, Object> results = result.getResults();
             Map<String, Object> facts = result.getFactHandles();
 
             reader.moveDown();
-            if ("results".equals(reader.getNodeName())) {
-                while (reader.hasMoreChildren()) {
+            if ( "results".equals( reader.getNodeName() ) ) {
+                while ( reader.hasMoreChildren() ) {
                     reader.moveDown();
 
-                    if (reader.getNodeName().equals("result")) {
+                    if ( reader.getNodeName().equals( "result" ) ) {
                         reader.moveDown();
                         String identifier = reader.getValue();
                         reader.moveUp();
 
                         reader.moveDown();
                         reader.moveDown();
-                        Object value = readItem(reader, context, null);
-                        results.put(identifier, value);
+                        Object value = readItem( reader,
+                                                 context,
+                                                 null );
+                        results.put( identifier,
+                                     value );
                         reader.moveUp();
                         reader.moveUp();
-                    } else if (reader.getNodeName().equals("fact-handle")) {
+                    } else if ( reader.getNodeName().equals( "fact-handle" ) ) {
                         reader.moveDown();
                         String identifier = reader.getValue();
                         reader.moveUp();
@@ -696,29 +789,33 @@ public class XStreamJSon {
                         String externalForm = reader.getValue();
                         reader.moveUp();
 
-                        facts.put(identifier, DefaultFactHandle.createFromExternalFormat(externalForm));
-                    } else if (reader.getNodeName().equals("fact-handles")) {
+                        facts.put( identifier,
+                                   DefaultFactHandle.createFromExternalFormat( externalForm ) );
+                    } else if ( reader.getNodeName().equals( "fact-handles" ) ) {
                         List<FactHandle> list = new ArrayList<FactHandle>();
                         String identifier = null;
-                        while (reader.hasMoreChildren()) {
+                        while ( reader.hasMoreChildren() ) {
                             reader.moveDown();
                             identifier = reader.getValue();
                             reader.moveUp();
-                            while (reader.hasMoreChildren()) {
+                            while ( reader.hasMoreChildren() ) {
                                 reader.moveDown();
-                                FactHandle factHandle = DefaultFactHandle.createFromExternalFormat((String) readItem(reader, context, null));
-                                list.add(factHandle);
+                                FactHandle factHandle = DefaultFactHandle.createFromExternalFormat( (String) readItem( reader,
+                                                                                                       context,
+                                                                                                       null ) );
+                                list.add( factHandle );
                                 reader.moveUp();
                             }
                         }
-                        facts.put(identifier, list);
+                        facts.put( identifier,
+                                   list );
                     } else {
-                        throw new IllegalArgumentException("Element '" + reader.getNodeName() + "' is not supported here");
+                        throw new IllegalArgumentException( "Element '" + reader.getNodeName() + "' is not supported here" );
                     }
                     reader.moveUp();
                 }
             } else {
-                throw new IllegalArgumentException("Element '" + reader.getNodeName() + "' is not supported here");
+                throw new IllegalArgumentException( "Element '" + reader.getNodeName() + "' is not supported here" );
             }
             reader.moveUp();
 
@@ -726,13 +823,12 @@ public class XStreamJSon {
         }
 
         public boolean canConvert(Class clazz) {
-            return ExecutionResults.class.isAssignableFrom(clazz);
+            return ExecutionResults.class.isAssignableFrom( clazz );
         }
     }
 
     public static abstract class BaseConverter {
-
-        protected Mapper mapper;
+        protected Mapper             mapper;
         protected ReflectionProvider reflectionProvider;
 
         public BaseConverter(XStream xstream) {
@@ -740,19 +836,29 @@ public class XStreamJSon {
             this.reflectionProvider = xstream.getReflectionProvider();
         }
 
-        protected void writeValue(HierarchicalStreamWriter writer, MarshallingContext context, String fieldName, Object object) {
-            writer.startNode(fieldName);
-            String name = this.mapper.serializedClass(object.getClass());
-            ExtendedHierarchicalStreamWriterHelper.startNode(writer, name, Mapper.Null.class);
-            context.convertAnother(object);
+        protected void writeValue(HierarchicalStreamWriter writer,
+                                  MarshallingContext context,
+                                  String fieldName,
+                                  Object object) {
+            writer.startNode( fieldName );
+            String name = this.mapper.serializedClass( object.getClass() );
+            ExtendedHierarchicalStreamWriterHelper.startNode( writer,
+                                                              name,
+                                                              Mapper.Null.class );
+            context.convertAnother( object );
             writer.endNode();
             writer.endNode();
         }
 
-        protected Object readValue(HierarchicalStreamReader reader, UnmarshallingContext context, Object object, Object fieldName) {
+        protected Object readValue(HierarchicalStreamReader reader,
+                                   UnmarshallingContext context,
+                                   Object object,
+                                   Object fieldName) {
             reader.moveDown();
-            Class type = readClassType(reader, this.mapper);
-            Object o = context.convertAnother(null, type);
+            Class type = readClassType( reader,
+                                        this.mapper);
+            Object o = context.convertAnother( null,
+                                               type );
 
             reader.moveUp();
             return o;
@@ -761,489 +867,580 @@ public class XStreamJSon {
         // methods borrowed directly from com.thoughtworks.xstream.core.util.HierarchicalStreams to make sure we don't
         // depend on that package (it is XStream internal package and using it causes issues in OSGi)
         // see https://issues.jboss.org/browse/DROOLS-558 for more details
-        private Class readClassType(HierarchicalStreamReader reader, Mapper mapper) {
-            String classAttribute = readClassAttribute(reader, mapper);
+        private Class readClassType( HierarchicalStreamReader reader, Mapper mapper ) {
+            String classAttribute = readClassAttribute( reader, mapper );
             Class type;
-            if (classAttribute == null) {
-                type = mapper.realClass(reader.getNodeName());
+            if ( classAttribute == null ) {
+                type = mapper.realClass( reader.getNodeName() );
             } else {
-                type = mapper.realClass(classAttribute);
+                type = mapper.realClass( classAttribute );
             }
             return type;
         }
 
-        private String readClassAttribute(HierarchicalStreamReader reader, Mapper mapper) {
-            String attributeName = mapper.aliasForSystemAttribute("resolves-to");
-            String classAttribute = attributeName == null ? null : reader.getAttribute(attributeName);
+
+        private String readClassAttribute( HierarchicalStreamReader reader, Mapper mapper ) {
+            String attributeName = mapper.aliasForSystemAttribute( "resolves-to" );
+            String classAttribute = attributeName == null ? null : reader.getAttribute( attributeName );
             if (classAttribute == null) {
-                attributeName = mapper.aliasForSystemAttribute("class");
+                attributeName = mapper.aliasForSystemAttribute( "class" );
                 if (attributeName != null) {
-                    classAttribute = reader.getAttribute(attributeName);
+                    classAttribute = reader.getAttribute( attributeName );
                 }
             }
             return classAttribute;
         }
     }
 
-    public static class JSonSetGlobalConverter extends BaseConverter implements Converter {
+    public static class JSonSetGlobalConverter extends BaseConverter
+        implements
+        Converter {
 
         public JSonSetGlobalConverter(XStream xstream) {
-            super(xstream);
+            super( xstream );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             SetGlobalCommand cmd = (SetGlobalCommand) object;
 
-            writer.startNode("identifier");
-            writer.setValue(cmd.getIdentifier());
+            writer.startNode( "identifier" );
+            writer.setValue( cmd.getIdentifier() );
             writer.endNode();
 
-            if (cmd.getOutIdentifier() != null) {
-                writer.startNode("out-identifier");
-                writer.setValue(cmd.getOutIdentifier());
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.startNode( "out-identifier" );
+                writer.setValue( cmd.getOutIdentifier() );
                 writer.endNode();
             }
-            writeValue(writer, context, "object", cmd.getObject());
+            writeValue( writer,
+                        context,
+                        "object",
+                        cmd.getObject() );
 
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             String identifier = null;
             boolean out = false;
             String outIdentifier = null;
             SetGlobalCommand cmd = new SetGlobalCommand();
 
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
-                if ("identifier".equals(nodeName)) {
+                if ( "identifier".equals( nodeName ) ) {
                     identifier = reader.getValue();
-                } else if ("out".equals(nodeName)) {
+                } else if ( "out".equals( nodeName ) ) {
                     out = Boolean.valueOf(reader.getValue());
-                } else if ("out-identifier".equals(nodeName)) {
+                } else if ( "out-identifier".equals( nodeName ) ) {
                     outIdentifier = reader.getValue();
-                } else if ("object".equals(nodeName)) {
-                    cmd.setObject(readValue(reader, context, cmd.getObject(), "object"));
+                } else if ( "object".equals( nodeName ) ) {
+                    cmd.setObject( readValue( reader,
+                                              context,
+                                              cmd.getObject(),
+                                              "object" ) );
                 }
                 reader.moveUp();
             }
 
-            cmd.setIdentifier(identifier);
+            cmd.setIdentifier( identifier );
 
-            if (outIdentifier != null) {
-                cmd.setOutIdentifier(outIdentifier);
+            if ( outIdentifier != null ) {
+                cmd.setOutIdentifier( outIdentifier );
             } else if (out) {
-                cmd.setOutIdentifier(identifier);
+                cmd.setOutIdentifier( identifier );
             }
             return cmd;
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(SetGlobalCommand.class);
+            return clazz.equals( SetGlobalCommand.class );
         }
 
     }
 
-    public static class JSonGetGlobalConverter extends BaseConverter implements Converter {
+    public static class JSonGetGlobalConverter extends BaseConverter
+        implements
+        Converter {
 
         public JSonGetGlobalConverter(XStream xstream) {
-            super(xstream);
+            super( xstream );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             GetGlobalCommand cmd = (GetGlobalCommand) object;
 
-            writer.startNode("identifier");
-            writer.setValue(cmd.getIdentifier());
+            writer.startNode( "identifier" );
+            writer.setValue( cmd.getIdentifier() );
             writer.endNode();
 
-            if (cmd.getOutIdentifier() != null) {
-                writer.startNode("out-identifier");
-                writer.setValue(cmd.getOutIdentifier());
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.startNode( "out-identifier" );
+                writer.setValue( cmd.getOutIdentifier() );
                 writer.endNode();
             }
 
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             String identifier = null;
             String outIdentifier = null;
             GetGlobalCommand cmd = new GetGlobalCommand();
 
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
-                if ("identifier".equals(nodeName)) {
+                if ( "identifier".equals( nodeName ) ) {
                     identifier = reader.getValue();
-                } else if ("out-identifier".equals(nodeName)) {
+                } else if ( "out-identifier".equals( nodeName ) ) {
                     outIdentifier = reader.getValue();
                 }
                 reader.moveUp();
             }
 
-            cmd.setIdentifier(identifier);
+            cmd.setIdentifier( identifier );
 
-            if (outIdentifier != null) {
-                cmd.setOutIdentifier(outIdentifier);
+            if ( outIdentifier != null ) {
+                cmd.setOutIdentifier( outIdentifier );
             }
             return cmd;
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(GetGlobalCommand.class);
+            return clazz.equals( GetGlobalCommand.class );
         }
     }
 
-    public static class JSonGetObjectsConverter extends AbstractCollectionConverter implements Converter {
+    public static class JSonGetObjectsConverter extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonGetObjectsConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             GetObjectsCommand cmd = (GetObjectsCommand) object;
 
-            if (cmd.getOutIdentifier() != null) {
-                writer.startNode("out-identifier");
-                writer.setValue(cmd.getOutIdentifier());
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.startNode( "out-identifier" );
+                writer.setValue( cmd.getOutIdentifier() );
                 writer.endNode();
             }
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             String outIdentifier = null;
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
-                if ("out-identifier".equals(reader.getNodeName())) {
+                if ( "out-identifier".equals( reader.getNodeName() ) ) {
                     outIdentifier = reader.getValue();
                 }
                 reader.moveUp();
             }
 
             GetObjectsCommand cmd = new GetObjectsCommand();
-            if (outIdentifier != null) {
-                cmd.setOutIdentifier(outIdentifier);
+            if ( outIdentifier != null ) {
+                cmd.setOutIdentifier( outIdentifier );
             }
             return cmd;
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(GetObjectsCommand.class);
+            return clazz.equals( GetObjectsCommand.class );
         }
     }
 
-    public static class JSonQueryConverter extends AbstractCollectionConverter implements Converter {
+    public static class JSonQueryConverter extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonQueryConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             QueryCommand cmd = (QueryCommand) object;
 
-            writer.startNode("out-identifier");
-            writer.setValue(cmd.getOutIdentifier());
+            writer.startNode( "out-identifier" );
+            writer.setValue( cmd.getOutIdentifier() );
             writer.endNode();
 
-            writer.startNode("name");
-            writer.setValue(cmd.getName());
+            writer.startNode( "name" );
+            writer.setValue( cmd.getName() );
             writer.endNode();
 
-            if (cmd.getArguments() != null && cmd.getArguments().size() > 0) {
-                writer.startNode("args");
-                for (Object arg : cmd.getArguments()) {
-                    writeItem(arg, context, writer);
+            if ( cmd.getArguments() != null && cmd.getArguments().size() > 0 ) {
+                writer.startNode( "args" );
+                for ( Object arg : cmd.getArguments() ) {
+                    writeItem( arg,
+                               context,
+                               writer );
                 }
                 writer.endNode();
             }
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             String outIdentifier = null;
             String name = null;
             List<Object> args = null;
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
-                if ("out-identifier".equals(nodeName)) {
+                if ( "out-identifier".equals( nodeName ) ) {
                     outIdentifier = reader.getValue();
-                } else if ("name".equals(nodeName)) {
+                } else if ( "name".equals( nodeName ) ) {
                     name = reader.getValue();
-                } else if ("args".equals(nodeName)) {
+                } else if ( "args".equals( nodeName ) ) {
                     args = new ArrayList<Object>();
-                    while (reader.hasMoreChildren()) {
+                    while ( reader.hasMoreChildren() ) {
                         reader.moveDown();
-                        Object arg = readItem(reader, context, null);
-                        args.add(arg);
+                        Object arg = readItem( reader,
+                                               context,
+                                               null );
+                        args.add( arg );
                         reader.moveUp();
                     }
                 }
                 reader.moveUp();
             }
 
-            return new QueryCommand(outIdentifier, name, (args != null) ? args.toArray(new Object[args.size()]) : null);
+            return new QueryCommand( outIdentifier,
+                                     name,
+                                     (args != null) ? args.toArray( new Object[args.size()] ) : null );
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(QueryCommand.class);
+            return clazz.equals( QueryCommand.class );
         }
     }
 
-    public static class JSonQueryResultsConverter extends AbstractCollectionConverter implements Converter {
+    public static class JSonQueryResultsConverter extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonQueryResultsConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             QueryResults results = (QueryResults) object;
 
             // write out identifiers
             String[] identifiers = results.getIdentifiers();
 
-            writer.startNode("identifiers");
-            for (String identifier : identifiers) {
-                writeItem(identifier, context, writer);
+            writer.startNode( "identifiers" );
+            for ( String identifier : identifiers ) {
+                writeItem( identifier,
+                           context,
+                           writer );
             }
             writer.endNode();
 
-            for (QueryResultsRow result : results) {
-                writer.startNode("row");
-                for (String identifier : identifiers) {
-                    Object value = result.get(identifier);
-                    FactHandle factHandle = result.getFactHandle(identifier);
-                    writeItem(new RowItemContainer(identifier, factHandle, value), context, writer);
+            for ( QueryResultsRow result : results ) {
+                writer.startNode( "row" );
+                for ( String identifier : identifiers ) {
+                    Object value = result.get( identifier );
+                    FactHandle factHandle = result.getFactHandle( identifier );
+                    writeItem( new RowItemContainer( identifier,
+                                                     factHandle,
+                                                     value),
+                               context,
+                               writer );
                 }
                 writer.endNode();
             }
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             reader.moveDown();
             Set<String> identifiers = new TreeSet<String>();
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
-                identifiers.add((String) readItem(reader, context, null));
+                identifiers.add( (String) readItem( reader,
+                                             context,
+                                             null ) );
                 reader.moveUp();
             }
             reader.moveUp();
 
-            ArrayList<Map<String, Object>> idResults = new ArrayList<Map<String, Object>>();
+            ArrayList<Map<String, Object>> idResults = new ArrayList<Map<String,Object>>();
             ArrayList<Map<String, FactHandle>> idHandles = new ArrayList<Map<String, FactHandle>>();
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 Map<String, Object> idResultMap = new HashMap<String, Object>();
                 Map<String, FactHandle> idFactHandleMap = new HashMap<String, FactHandle>();
-                while (reader.hasMoreChildren()) {
+                while ( reader.hasMoreChildren() ) {
                     reader.moveDown();
-                    RowItemContainer container = (RowItemContainer) readItem(reader, context, null);
+                    RowItemContainer container = (RowItemContainer) readItem( reader,
+                                                                              context,
+                                                                              null );
 
                     String id = container.getIdentifier();
                     idResultMap.put(id, container.getObject());
                     idFactHandleMap.put(id, container.getFactHandle());
                     reader.moveUp();
                 }
-                idResults.add(idResultMap);
-                idHandles.add(idFactHandleMap);
+                idResults.add( idResultMap );
+                idHandles.add( idFactHandleMap );
                 reader.moveUp();
             }
 
-            return new FlatQueryResults(identifiers, idHandles, idResults);
+            return new FlatQueryResults( identifiers,
+                                         idHandles,
+                                         idResults );
         }
 
         public boolean canConvert(Class clazz) {
-            return QueryResults.class.isAssignableFrom(clazz);
+            return QueryResults.class.isAssignableFrom( clazz );
         }
     }
 
-    public static class JSonStartProcessConvert extends AbstractCollectionConverter implements Converter {
+    public static class JSonStartProcessConvert extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonStartProcessConvert(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             StartProcessCommand cmd = (StartProcessCommand) object;
-            writer.startNode("process-id");
-            writer.setValue(cmd.getProcessId());
+            writer.startNode( "process-id" );
+            writer.setValue( cmd.getProcessId() );
             writer.endNode();
 
-            if (cmd.getOutIdentifier() != null) {
-                writer.startNode("out-identifier");
-                writer.setValue(cmd.getOutIdentifier());
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.startNode( "out-identifier" );
+                writer.setValue( cmd.getOutIdentifier() );
                 writer.endNode();
             }
 
-            for (Entry<String, Object> entry : cmd.getParameters().entrySet()) {
-                writeItem(new ParameterContainer(entry.getKey(), entry.getValue()), context, writer);
+            for ( Entry<String, Object> entry : cmd.getParameters().entrySet() ) {
+                writeItem( new ParameterContainer( entry.getKey(),
+                                                   entry.getValue() ),
+                           context,
+                           writer );
             }
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             reader.moveDown();
             String processId = reader.getValue();
             reader.moveUp();
 
             String outIdentifier = null;
             HashMap<String, Object> params = new HashMap<String, Object>();
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
-                if ("parameters".equals(reader.getNodeName())) {
-                    ParameterContainer parameterContainer = (ParameterContainer) readItem(reader, context, null);
-                    params.put(parameterContainer.getIdentifier(), parameterContainer.getObject());
-                } else if ("out-identifier".equals(reader.getNodeName())) {
+                if ( "parameters".equals( reader.getNodeName() ) ) {
+                    ParameterContainer parameterContainer = (ParameterContainer) readItem( reader,
+                                                                                           context,
+                                                                                           null );
+                    params.put( parameterContainer.getIdentifier(),
+                                parameterContainer.getObject() );
+                } else if ( "out-identifier".equals( reader.getNodeName() ) ) {
                     outIdentifier = reader.getValue();
                 } else {
-                    throw new IllegalArgumentException("start-process does not support the child element name=''" + reader.getNodeName() + "' value=" + reader.getValue() + "'");
+                    throw new IllegalArgumentException( "start-process does not support the child element name=''" + reader.getNodeName() + "' value=" + reader.getValue() + "'" );
                 }
                 reader.moveUp();
             }
 
             StartProcessCommand cmd = new StartProcessCommand();
-            cmd.setProcessId(processId);
-            cmd.setParameters(params);
-            if (outIdentifier != null) {
-                cmd.setOutIdentifier(outIdentifier);
+            cmd.setProcessId( processId );
+            cmd.setParameters( params );
+            if ( outIdentifier != null ) {
+                cmd.setOutIdentifier( outIdentifier );
             }
 
             return cmd;
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(StartProcessCommand.class);
+            return clazz.equals( StartProcessCommand.class );
         }
     }
 
-    public static class JSonSignalEventConverter extends AbstractCollectionConverter implements Converter {
+    public static class JSonSignalEventConverter extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonSignalEventConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             SignalEventCommand cmd = (SignalEventCommand) object;
             long processInstanceId = cmd.getProcessInstanceId();
             String eventType = cmd.getEventType();
             Object event = cmd.getEvent();
 
-            if (processInstanceId != -1) {
-                writer.startNode("process-instance-id");
-                writer.setValue(Long.toString(processInstanceId));
+            if ( processInstanceId != -1 ) {
+                writer.startNode( "process-instance-id" );
+                writer.setValue( Long.toString( processInstanceId ) );
                 writer.endNode();
             }
 
-            writer.addAttribute("event-type", eventType);
+            writer.addAttribute( "event-type",
+                                 eventType );
 
-            writer.startNode("event-type");
-            writer.setValue(eventType);
+            writer.startNode( "event-type" );
+            writer.setValue( eventType );
             writer.endNode();
 
-            writer.startNode("object");
-            writeItem(event, context, writer);
+            writer.startNode( "object" );
+            writeItem( event,
+                       context,
+                       writer );
             writer.endNode();
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             String processInstanceId = null;
             String eventType = null;
             Object event = null;
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
-                if ("process-instance-id".equals(nodeName)) {
+                if ( "process-instance-id".equals( nodeName ) ) {
                     processInstanceId = reader.getValue();
-                } else if ("event-type".equals(nodeName)) {
+                } else if ( "event-type".equals( nodeName ) ) {
                     eventType = reader.getValue();
-                } else if ("object".equals(nodeName)) {
+                } else if ( "object".equals( nodeName ) ) {
                     reader.moveDown();
-                    event = readItem(reader, context, null);
+                    event = readItem( reader,
+                                      context,
+                                      null );
                     reader.moveUp();
                 }
                 reader.moveUp();
             }
 
             Command cmd;
-            if (processInstanceId != null) {
-                cmd = CommandFactory.newSignalEvent(Long.parseLong(processInstanceId), eventType, event);
+            if ( processInstanceId != null ) {
+                cmd = CommandFactory.newSignalEvent( Long.parseLong( processInstanceId ),
+                                                     eventType,
+                                                     event );
             } else {
-                cmd = CommandFactory.newSignalEvent(eventType, event);
+                cmd = CommandFactory.newSignalEvent( eventType,
+                                                     event );
             }
 
             return cmd;
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(SignalEventCommand.class);
+            return clazz.equals( SignalEventCommand.class );
         }
 
     }
 
-    public static class JSonCompleteWorkItemConverter extends AbstractCollectionConverter implements Converter {
+    public static class JSonCompleteWorkItemConverter extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonCompleteWorkItemConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             CompleteWorkItemCommand cmd = (CompleteWorkItemCommand) object;
 
-            writer.startNode("id");
-            writer.setValue(Long.toString(cmd.getWorkItemId()));
+            writer.startNode( "id" );
+            writer.setValue( Long.toString( cmd.getWorkItemId() ) );
             writer.endNode();
 
-            for (Entry<String, Object> entry : cmd.getResults().entrySet()) {
-                writeItem(new WorkItemResultsContainer(entry.getKey(), entry.getValue()), context, writer);
+            for ( Entry<String, Object> entry : cmd.getResults().entrySet() ) {
+                writeItem( new WorkItemResultsContainer( entry.getKey(),
+                                                         entry.getValue() ),
+                           context,
+                           writer );
             }
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             String id = null;
             Map<String, Object> results = new HashMap<String, Object>();
-            while (reader.hasMoreChildren()) {
+            while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
-                if ("id".equals(nodeName)) {
+                if ( "id".equals( nodeName ) ) {
                     id = reader.getValue();
-                } else if ("results".equals(nodeName)) {
-                    while (reader.hasMoreChildren()) {
-                        WorkItemResultsContainer res = (WorkItemResultsContainer) readItem(reader, context, null);
-                        results.put(res.getIdentifier(), res.getObject());
+                } else if ( "results".equals( nodeName ) ) {
+                    while ( reader.hasMoreChildren() ) {
+                        WorkItemResultsContainer res = (WorkItemResultsContainer) readItem( reader,
+                                                                                            context,
+                                                                                            null );
+                        results.put( res.getIdentifier(),
+                                     res.getObject() );
                     }
                 }
                 reader.moveUp();
             }
 
-            return new CompleteWorkItemCommand(Long.parseLong(id), results);
+            return new CompleteWorkItemCommand( Long.parseLong( id ),
+                                                results );
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(CompleteWorkItemCommand.class);
+            return clazz.equals( CompleteWorkItemCommand.class );
         }
     }
 
-    public static class JSonAbortWorkItemConverter extends AbstractCollectionConverter implements Converter {
+    public static class JSonAbortWorkItemConverter extends AbstractCollectionConverter
+        implements
+        Converter {
 
         public JSonAbortWorkItemConverter(XStream xstream) {
-            super(xstream.getMapper());
+            super( xstream.getMapper() );
         }
 
-        public void marshal(Object object, HierarchicalStreamWriter writer, MarshallingContext context) {
+        public void marshal(Object object,
+                            HierarchicalStreamWriter writer,
+                            MarshallingContext context) {
             AbortWorkItemCommand cmd = (AbortWorkItemCommand) object;
-            writer.startNode("id");
-            writer.setValue(Long.toString(cmd.getWorkItemId()));
+            writer.startNode( "id" );
+            writer.setValue( Long.toString( cmd.getWorkItemId() ) );
             writer.endNode();
         }
 
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             reader.moveDown();
             String id = reader.getValue();
             reader.moveUp();
 
-            return CommandFactory.newAbortWorkItem(Long.parseLong(id));
+            return CommandFactory.newAbortWorkItem( Long.parseLong( id ) );
         }
 
         public boolean canConvert(Class clazz) {
-            return clazz.equals(AbortWorkItemCommand.class);
+            return clazz.equals( AbortWorkItemCommand.class );
         }
     }
 }
