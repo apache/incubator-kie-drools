@@ -44,7 +44,7 @@ public class FEEL {
 
     public static CompiledExpression compile(String expression, CompilerContext ctx) {
         FEEL_1_1Parser parser = FEELParser.parse( expression, ctx.getInputVariables() );
-        ParseTree tree = parser.expression();
+        ParseTree tree = parser.compilation_unit();
         ASTBuilderVisitor v = new ASTBuilderVisitor();
         BaseNode expr = v.visit( tree );
         CompiledExpression ce = new CompiledExpressionImpl( expr );

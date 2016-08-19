@@ -415,4 +415,19 @@ public class ASTBuilderVisitor
         }
         return expr;
     }
+
+    @Override
+    public BaseNode visitUenpmPrimary(FEEL_1_1Parser.UenpmPrimaryContext ctx) {
+        BaseNode expr = visit( ctx.primary() );
+        if( ctx.qualifiedName() != null ) {
+            BaseNode path = visit( ctx.qualifiedName() );
+            expr = ASTBuilderFactory.newPathExpressionNode( ctx, expr, path );
+        }
+        return expr;
+    }
+
+    @Override
+    public BaseNode visitCompilation_unit(FEEL_1_1Parser.Compilation_unitContext ctx) {
+        return visit( ctx.expression() );
+    }
 }
