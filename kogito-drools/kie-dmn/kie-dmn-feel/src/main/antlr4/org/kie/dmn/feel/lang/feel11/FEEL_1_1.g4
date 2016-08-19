@@ -35,9 +35,13 @@ grammar FEEL_1_1;
 /**************************
  *       EXPRESSIONS
  **************************/
+compilation_unit
+    : expression EOF
+    ;
+
 // #1
 expression
-    : expr=expressionTypes (instance_key of_key type)?       #expressionInstanceOf
+    : expr=expressionTypes (instance_key of_key type)?      #expressionInstanceOf
     ;
 
 expressionTypes
@@ -125,9 +129,7 @@ type
 
 // #55
 boxedExpression
-    : list
-    | functionDefinition
-    | context
+    : functionDefinition
     ;
 
 // #56
@@ -253,6 +255,8 @@ unaryExpressionNotPlusMinus
 
 primary
     : literal                   #primaryLiteral
+    | list                      #primaryList
+    | context                   #primaryContext
     | '(' expression ')'        #primaryParens
     | qualifiedName (parameters)? #primaryName
     ;

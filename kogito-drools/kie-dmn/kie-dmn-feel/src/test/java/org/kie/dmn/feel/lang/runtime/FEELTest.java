@@ -144,6 +144,16 @@ public class FEELTest extends BaseFEELTest {
                 { "false != true", Boolean.TRUE },
                 { "true != false", Boolean.TRUE },
 
+                // other types of equalities
+                { "[ 1, 2, 3] = [1, 2, 3]", Boolean.TRUE },
+                { "[ 1, 2, 3, 4] = [1, 2, 3]", Boolean.FALSE },
+                { "[ 1, 2, 3] = [1, \"foo\", 3]", Boolean.FALSE },
+                { "{ x : \"foo\" } = { x : \"foo\" }", Boolean.TRUE },
+                { "{ x : \"foo\", y : [1, 2] } = { x : \"foo\", y : [1, 2] }", Boolean.TRUE },
+                { "{ x : \"foo\", y : [1, 2] } = { y : [1, 2], x : \"foo\" }", Boolean.TRUE },
+                { "{ x : \"foo\", y : [1, 2] } = { y : [1], x : \"foo\" }", Boolean.FALSE },
+                { "{ x : \"foo\", y : { z : 1, w : 2 } } = { y : { z : 1, w : 2 }, x : \"foo\" }", Boolean.TRUE },
+
                 // null comparisons and comparisons between different types
                 { "10.4 < null", null },
                 { "null <= 30.6", null },
