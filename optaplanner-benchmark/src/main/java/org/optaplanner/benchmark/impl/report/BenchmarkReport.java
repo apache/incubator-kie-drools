@@ -70,6 +70,7 @@ import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.config.SolverConfigContext;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -293,14 +294,23 @@ public class BenchmarkReport {
         String javaVmName = System.getProperty("java.vm.name");
         if (javaVmName != null && javaVmName.contains("Client VM")) {
             warningList.add("The Java VM (" + javaVmName + ") is the Client VM."
-                    + " Consider starting the java process with the argument \"-server\" to get better results.");
+                    + " This decreases performance."
+                    + " Maybe start the java process with the argument \"-server\" to get better results.");
         }
-        if (plannerBenchmarkResult.getParallelBenchmarkCount() != null
-                && plannerBenchmarkResult.getAvailableProcessors() != null
-                && plannerBenchmarkResult.getParallelBenchmarkCount() > plannerBenchmarkResult.getAvailableProcessors()) {
-            warningList.add("The parallelBenchmarkCount (" + plannerBenchmarkResult.getParallelBenchmarkCount()
-                    + ") is higher than the number of availableProcessors ("
-                    + plannerBenchmarkResult.getAvailableProcessors() + ").");
+        Integer parallelBenchmarkCount = plannerBenchmarkResult.getParallelBenchmarkCount();
+        Integer availableProcessors = plannerBenchmarkResult.getAvailableProcessors();
+        if (parallelBenchmarkCount != null && availableProcessors != null
+                && parallelBenchmarkCount > availableProcessors) {
+            warningList.add("The parallelBenchmarkCount (" + parallelBenchmarkCount
+                    + ") is higher than the number of availableProcessors (" + availableProcessors + ")."
+                    + " This decreases performance."
+                    + " Maybe reduce the parallelBenchmarkCount.");
+        }
+        EnvironmentMode environmentMode = plannerBenchmarkResult.getEnvironmentMode();
+        if (environmentMode != null && environmentMode.isAsserted()) {
+            warningList.add("The environmentMode (" + environmentMode + ") is asserting."
+                    + " This decreases performance."
+                    + " Maybe set environmentMode to " + EnvironmentMode.REPRODUCIBLE + ".");
         }
     }
 
