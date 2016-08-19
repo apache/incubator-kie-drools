@@ -154,15 +154,30 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	for (ProcessDefinition def : definitions) {
     		assertTrue(expectedProcessIds.contains(def.getId()));
     	}
+
+        String origVer = deploymentUnit.getVersion();
+        deploymentUnit.setVersion("LATEST");
+        definitions = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContext());
+        assertNotNull(definitions);
+        assertEquals(5, definitions.size());
+
+        deploymentUnit.setVersion(origVer);
     }
 
     @Test
     public void testGetProcessByDeploymentIdAndProcessId() {
-    	ProcessDefinition definition = runtimeDataService
-    			.getProcessesByDeploymentIdProcessId(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        ProcessDefinition definition = runtimeDataService.getProcessesByDeploymentIdProcessId(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
 
-    	assertNotNull(definition);
-    	assertEquals("org.jbpm.writedocument", definition.getId());
+        assertNotNull(definition);
+        assertEquals("org.jbpm.writedocument", definition.getId());
+
+        String origVer = deploymentUnit.getVersion();
+        deploymentUnit.setVersion("LATEST");
+        definition = runtimeDataService.getProcessesByDeploymentIdProcessId(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(definition);
+        assertEquals("org.jbpm.writedocument", definition.getId());
+
+        deploymentUnit.setVersion(origVer);
     }
 
     @Test
@@ -219,6 +234,16 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	assertTrue(definitions.contains("UserTask"));
     	assertTrue(definitions.contains("org.jboss.qa.bpms.HumanTask"));
     	assertTrue(definitions.contains("AdHocSubProcess"));
+
+        String origVer = deploymentUnit.getVersion();
+        deploymentUnit.setVersion("LATEST");
+        definitions = runtimeDataService.getProcessIds(deploymentUnit.getIdentifier(), new QueryContext());
+        assertNotNull(definitions);
+        assertEquals(5, definitions.size());
+        assertTrue(definitions.contains("org.jbpm.writedocument.empty"));
+        assertTrue(definitions.contains("AdHocSubProcess"));
+
+        deploymentUnit.setVersion(origVer);
     }
 
     @Test
@@ -233,7 +258,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	expectedProcessIds.add("HumanTask");
     	expectedProcessIds.add("User Task");
     	expectedProcessIds.add("humanTaskSample");
-    	expectedProcessIds.add("humanTaskSample");    	
+        expectedProcessIds.add("humanTaskSample");
 
     	int index = 0;
     	for (ProcessDefinition def : definitions) {
@@ -254,7 +279,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	expectedProcessIds.add("org.jboss.qa.bpms.HumanTask");
     	expectedProcessIds.add("AdHocSubProcess");
     	expectedProcessIds.add("org.jbpm.writedocument.empty");
-    	expectedProcessIds.add("org.jbpm.writedocument");    	
+        expectedProcessIds.add("org.jbpm.writedocument");
 
     	int index = 0;
     	for (ProcessDefinition def : definitions) {
@@ -357,13 +382,21 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	assertNotNull(instances);
     	assertEquals(0, instances.size());
 
-    	processService.abortProcessInstance(processInstanceId);
+        String origVer = deploymentUnit.getVersion();
+        deploymentUnit.setVersion("LATEST");
+        instances = runtimeDataService.getProcessInstancesByDeploymentId(deploymentUnit.getIdentifier(), states, new QueryContext());
+        assertNotNull(instances);
+        assertEquals(0, instances.size());
+
+        processService.abortProcessInstance(processInstanceId);
     	processInstanceId = null;
 
     	instances = runtimeDataService.getProcessInstancesByDeploymentId(deploymentUnit.getIdentifier(), states, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     	assertEquals(3, (int)instances.iterator().next().getState());
+
+        deploymentUnit.setVersion(origVer);
     }
 
     @Test
@@ -820,13 +853,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
     }
-    
+
     @Test
     public void testGetProcessInstanceHistoryAdHocSubprocess() {
 
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "AdHocSubProcess");
         assertNotNull(processInstanceId);
-        
+
         processService.signalProcessInstance(processInstanceId, "Hello1", null);
 
         // get active nodes as history view
@@ -1324,7 +1357,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Ready);
         statuses.add(Status.Reserved);
-        
+
         String userId = "salaboy";
         String varName = "Comment";
         List<TaskSummary> tasksByVariable = runtimeDataService.taskSummaryQuery(userId)
@@ -1347,7 +1380,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Ready);
         statuses.add(Status.Reserved);
-        
+
         String userId = "salaboy";
         String varName = "Comment";
         String varValue = "Write a Document";
@@ -1368,7 +1401,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         processInstanceId = null;
 
     }
-    
+
 
     @Test
     public void testGetTasksByVariable() {
@@ -1380,7 +1413,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Ready);
         statuses.add(Status.Reserved);
-        
+
         List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwnerByStatus("salaboy", statuses, new QueryFilter());
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
@@ -1390,7 +1423,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         List<TaskSummary> tasksByVariable = runtimeDataService.getTasksByVariable(userId, varName, statuses, new QueryContext());
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
-        
+
 
         varName = "ReviewComment";
         tasksByVariable = runtimeDataService.getTasksByVariable(userId, varName, statuses, new QueryContext());
@@ -1422,7 +1455,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Ready);
         statuses.add(Status.Reserved);
-        
+
         List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwnerByStatus("salaboy", statuses, new QueryFilter());
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
@@ -1451,7 +1484,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         tasksByVariable = runtimeDataService.getTasksByVariableAndValue(userId, varName, varValue, statuses, new QueryContext());
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
-        
+
 
         varValue = "document*";
         tasksByVariable = runtimeDataService.getTasksByVariableAndValue(userId, varName, varValue, statuses, new QueryContext());

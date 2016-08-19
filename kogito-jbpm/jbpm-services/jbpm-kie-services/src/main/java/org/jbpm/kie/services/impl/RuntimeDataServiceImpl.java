@@ -25,12 +25,14 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
+import org.jbpm.kie.services.api.DeploymentIdResolver;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.kie.services.impl.security.DeploymentRolesManager;
 import org.jbpm.services.api.DeploymentEvent;
@@ -63,8 +65,8 @@ import org.kie.internal.task.query.TaskSummaryQueryBuilder;
 
 public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEventListener {
 
+    protected Set<String> deploymentIds = new HashSet<String>();
     protected Set<ProcessDefinition> availableProcesses = new HashSet<ProcessDefinition>();
-
 
     private TransactionalCommandService commandService;
 
@@ -103,6 +105,29 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         this.deploymentRolesManager = deploymentRolesManager;
     }
 
+    private void addProcessDefinition( ProcessAssetDesc asset) {
+       availableProcesses.add(asset);
+       deploymentIds.add(asset.getDeploymentId());
+    }
+
+    private void removeAllProcessDefinitions( Collection<ProcessAssetDesc> assets) {
+        Iterator<ProcessAssetDesc> iter = assets.iterator();
+        while( iter.hasNext() ) {
+            ProcessAssetDesc asset = iter.next();
+            availableProcesses.remove(asset);
+            deploymentIds.remove(asset.getDeploymentId());
+        }
+    }
+
+    private String getLatestDeploymentId(String deploymentId) {
+        String matched = deploymentId;
+        if (deploymentId.toLowerCase().endsWith("latest")) {
+            matched = DeploymentIdResolver.matchAndReturnLatest(deploymentId, deploymentIds);
+        }
+        return matched;
+    }
+
+
 	/*
      * start
      * helper methods to index data upon deployment
@@ -112,7 +137,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         List<String> roles = null;
         for( DeployedAsset asset : assets ) {
             if( asset instanceof ProcessAssetDesc ) {
-                availableProcesses.add((ProcessAssetDesc) asset);
+                addProcessDefinition((ProcessAssetDesc) asset);
                 if (roles == null) {
                 	roles = ((ProcessAssetDesc) asset).getRoles();
                 }
@@ -128,7 +153,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         Collection<ProcessAssetDesc> outputCollection = new HashSet<ProcessAssetDesc>();
         CollectionUtils.select(availableProcesses, new UnsecureByDeploymentIdPredicate(event.getDeploymentId()), outputCollection);
 
-        availableProcesses.removeAll(outputCollection);
+        removeAllProcessDefinitions(outputCollection);
         deploymentRolesManager.removeRolesForDeployment(event.getDeploymentId());
     }
 
@@ -222,6 +247,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     		}
     	}
     }
+
     /*
      * end
      * helper methods to index data upon deployment
@@ -232,6 +258,8 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
      * process definition methods
      */
 	public Collection<ProcessDefinition> getProcessesByDeploymentId(String deploymentId, QueryContext queryContext) {
+	    deploymentId = getLatestDeploymentId(deploymentId);
+
         List<ProcessDefinition> outputCollection = new ArrayList<ProcessDefinition>();
         CollectionUtils.select(availableProcesses, new ByDeploymentIdPredicate(deploymentId, identityProvider.getRoles()), outputCollection);
 
@@ -240,6 +268,8 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     }
 
     public ProcessDefinition getProcessesByDeploymentIdProcessId(String deploymentId, String processId) {
+	    deploymentId = getLatestDeploymentId(deploymentId);
+
     	List<ProcessDefinition> outputCollection = new ArrayList<ProcessDefinition>();
         CollectionUtils.select(availableProcesses, new ByDeploymentIdProcessIdPredicate(deploymentId, processId, identityProvider.getRoles(), true), outputCollection);
 
@@ -287,6 +317,8 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 
     @Override
     public Collection<String> getProcessIds(String deploymentId, QueryContext queryContext) {
+	    deploymentId = getLatestDeploymentId(deploymentId);
+
         List<String> processIds = new ArrayList<String>(availableProcesses.size());
         if( deploymentId == null || deploymentId.isEmpty() ) {
             return processIds;
@@ -340,6 +372,8 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     }
 
     public Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId, List<Integer> states, QueryContext queryContext) {
+	    deploymentId = getLatestDeploymentId(deploymentId);
+
     	Map<String, Object> params = new HashMap<String, Object>();
         params.put("externalId", deploymentId);
         params.put("states", states);
