@@ -46,6 +46,10 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
     // Worker methods
     // ************************************************************************
 
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param weight higher is better, negative for a penalty, positive for a reward
+     */
     public void addHardConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         hardScore = (hardScore == null) ? weight : hardScore.add(weight);
         registerBigDecimalConstraintMatch(kcontext, 0, weight, new BigDecimalConstraintUndoListener() {
@@ -56,6 +60,10 @@ public class HardSoftBigDecimalScoreHolder extends AbstractScoreHolder {
         });
     }
 
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param weight higher is better, negative for a penalty, positive for a reward
+     */
     public void addSoftConstraintMatch(RuleContext kcontext, final BigDecimal weight) {
         softScore = (softScore == null) ? weight : softScore.add(weight);
         registerBigDecimalConstraintMatch(kcontext, 1, weight, new BigDecimalConstraintUndoListener() {

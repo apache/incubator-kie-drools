@@ -44,6 +44,10 @@ public class HardSoftScoreHolder extends AbstractScoreHolder {
     // Worker methods
     // ************************************************************************
 
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param weight higher is better, negative for a penalty, positive for a reward
+     */
     public void addHardConstraintMatch(RuleContext kcontext, final int weight) {
         hardScore += weight;
         registerIntConstraintMatch(kcontext, 0, weight, new IntConstraintUndoListener() {
@@ -54,6 +58,10 @@ public class HardSoftScoreHolder extends AbstractScoreHolder {
         });
     }
 
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param weight higher is better, negative for a penalty, positive for a reward
+     */
     public void addSoftConstraintMatch(RuleContext kcontext, final int weight) {
         softScore += weight;
         registerIntConstraintMatch(kcontext, 1, weight, new IntConstraintUndoListener() {

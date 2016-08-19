@@ -59,6 +59,12 @@ public class BendableBigDecimalScoreHolder extends AbstractScoreHolder {
     // Worker methods
     // ************************************************************************
 
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param hardLevel {@code 0 <= hardLevel <} {@link #getHardLevelsSize()}.
+     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
+     * @param weight higher is better, negative for a penalty, positive for a reward
+     */
     public void addHardConstraintMatch(RuleContext kcontext, final int hardLevel, final BigDecimal weight) {
         hardScores[hardLevel] = hardScores[hardLevel].add(weight);
         registerBigDecimalConstraintMatch(kcontext, hardLevel, weight, new BigDecimalConstraintUndoListener() {
@@ -69,6 +75,12 @@ public class BendableBigDecimalScoreHolder extends AbstractScoreHolder {
         });
     }
 
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param softLevel {@code 0 <= softLevel <} {@link #getSoftLevelsSize()}.
+     * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
+     * @param weight higher is better, negative for a penalty, positive for a reward
+     */
     public void addSoftConstraintMatch(RuleContext kcontext, final int softLevel, final BigDecimal weight) {
         softScores[softLevel] = softScores[softLevel].add(weight);
         registerBigDecimalConstraintMatch(kcontext, getHardLevelsSize() + softLevel, weight, new BigDecimalConstraintUndoListener() {

@@ -41,6 +41,10 @@ public class SimpleDoubleScoreHolder extends AbstractScoreHolder {
     // Worker methods
     // ************************************************************************
 
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param weight higher is better, negative for a penalty, positive for a reward
+     */
     public void addConstraintMatch(RuleContext kcontext, final double weight) {
         score += weight;
         registerDoubleConstraintMatch(kcontext, 0, weight, new DoubleConstraintUndoListener() {

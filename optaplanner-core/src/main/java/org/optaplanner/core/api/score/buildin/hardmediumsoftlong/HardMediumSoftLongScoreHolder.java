@@ -50,6 +50,10 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder {
     // Worker methods
     // ************************************************************************
 
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param weight higher is better, negative for a penalty, positive for a reward
+     */
     public void addHardConstraintMatch(RuleContext kcontext, final long weight) {
         hardScore += weight;
         registerLongConstraintMatch(kcontext, 0, weight, new LongConstraintUndoListener() {
@@ -60,6 +64,10 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder {
         });
     }
 
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param weight higher is better, negative for a penalty, positive for a reward
+     */
     public void addMediumConstraintMatch(RuleContext kcontext, final long weight) {
         mediumScore += weight;
         registerLongConstraintMatch(kcontext, 1, weight, new LongConstraintUndoListener() {
@@ -70,6 +78,10 @@ public class HardMediumSoftLongScoreHolder extends AbstractScoreHolder {
         });
     }
 
+    /**
+     * @param kcontext never null, the magic variable in DRL
+     * @param weight higher is better, negative for a penalty, positive for a reward
+     */
     public void addSoftConstraintMatch(RuleContext kcontext, final long weight) {
         softScore += weight;
         registerLongConstraintMatch(kcontext, 2, weight, new LongConstraintUndoListener() {
