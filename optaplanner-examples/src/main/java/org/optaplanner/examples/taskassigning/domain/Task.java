@@ -57,6 +57,19 @@ public class Task extends TaskOrEmployee implements Labeled {
             sources = {@PlanningVariableReference(variableName = "previousTaskOrEmployee")})
     private Integer startTime; // In minutes
 
+    public Task() {
+    }
+
+    public Task(long id, TaskType taskType, int indexInTaskType, Customer customer, int readyTime, Priority priority) {
+        super(id);
+        this.taskType = taskType;
+        this.indexInTaskType = indexInTaskType;
+        this.customer = customer;
+        this.readyTime = readyTime;
+        this.priority = priority;
+        locked = false;
+    }
+
     public TaskType getTaskType() {
         return taskType;
     }

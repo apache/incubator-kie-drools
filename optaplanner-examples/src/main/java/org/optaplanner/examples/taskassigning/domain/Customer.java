@@ -25,6 +25,14 @@ public class Customer extends AbstractPersistable implements Labeled {
 
     private String name;
 
+    public Customer() {
+    }
+
+    public Customer(long id, String name) {
+        super(id);
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.taskassigning.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -30,6 +31,17 @@ public class TaskType extends AbstractPersistable implements Labeled {
     private int baseDuration;
 
     private List<Skill> requiredSkillList;
+
+    public TaskType() {
+    }
+
+    public TaskType(long id, String code, String title, int baseDuration) {
+        super(id);
+        this.code = code;
+        this.title = title;
+        this.baseDuration = baseDuration;
+        requiredSkillList = new ArrayList<>();
+    }
 
     public String getCode() {
         return code;

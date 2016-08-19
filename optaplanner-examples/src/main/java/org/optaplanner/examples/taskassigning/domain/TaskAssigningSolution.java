@@ -51,6 +51,19 @@ public class TaskAssigningSolution extends AbstractPersistable {
     @PlanningScore(bendableHardLevelsSize = 1, bendableSoftLevelsSize = 4)
     private BendableScore score;
 
+    public TaskAssigningSolution() {
+    }
+
+    public TaskAssigningSolution(long id, List<Skill> skillList, List<TaskType> taskTypeList,
+            List<Customer> customerList, List<Employee> employeeList, List<Task> taskList) {
+        super(id);
+        this.skillList = skillList;
+        this.taskTypeList = taskTypeList;
+        this.customerList = customerList;
+        this.employeeList = employeeList;
+        this.taskList = taskList;
+    }
+
     public List<Skill> getSkillList() {
         return skillList;
     }

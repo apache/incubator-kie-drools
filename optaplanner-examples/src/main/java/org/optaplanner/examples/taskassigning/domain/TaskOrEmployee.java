@@ -27,6 +27,13 @@ public abstract class TaskOrEmployee extends AbstractPersistable {
     @InverseRelationShadowVariable(sourceVariableName = "previousTaskOrEmployee")
     protected Task nextTask;
 
+    public TaskOrEmployee() {
+    }
+
+    public TaskOrEmployee(long id) {
+        super(id);
+    }
+
     public Task getNextTask() {
         return nextTask;
     }

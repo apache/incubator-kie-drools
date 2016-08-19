@@ -25,6 +25,14 @@ public class Skill extends AbstractPersistable implements Labeled {
 
     private String name;
 
+    public Skill() {
+    }
+
+    public Skill(long id, String name) {
+        super(id);
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

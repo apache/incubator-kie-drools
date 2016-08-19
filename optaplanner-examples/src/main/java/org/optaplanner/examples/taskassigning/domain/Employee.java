@@ -16,6 +16,8 @@
 
 package org.optaplanner.examples.taskassigning.domain;
 
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,6 +31,16 @@ public class Employee extends TaskOrEmployee implements Labeled {
 
     private Set<Skill> skillSet;
     private Map<Customer, Affinity> affinityMap;
+
+    public Employee() {
+    }
+
+    public Employee(long id, String fullName) {
+        super(id);
+        this.fullName = fullName;
+        skillSet = new LinkedHashSet<>();
+        affinityMap = new LinkedHashMap<>();
+    }
 
     public String getFullName() {
         return fullName;
