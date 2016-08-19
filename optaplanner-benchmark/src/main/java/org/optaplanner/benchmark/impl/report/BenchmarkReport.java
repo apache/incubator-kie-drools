@@ -310,7 +310,20 @@ public class BenchmarkReport {
         if (environmentMode != null && environmentMode.isAsserted()) {
             warningList.add("The environmentMode (" + environmentMode + ") is asserting."
                     + " This decreases performance."
-                    + " Maybe set environmentMode to " + EnvironmentMode.REPRODUCIBLE + ".");
+                    + " Maybe set the environmentMode to " + EnvironmentMode.REPRODUCIBLE + ".");
+        }
+        String loggingLevelOptaPlannerCore = plannerBenchmarkResult.getLoggingLevelOptaPlannerCore();
+        if (loggingLevelOptaPlannerCore != null && loggingLevelOptaPlannerCore.equals("trace")) {
+            warningList.add("The loggingLevel (" + loggingLevelOptaPlannerCore + ") of org.optaplanner.core is high."
+                    + " This decreases performance."
+                    + " Maybe set the loggingLevel to debug or lower.");
+        }
+        String loggingLevelDroolsCore = plannerBenchmarkResult.getLoggingLevelDroolsCore();
+        if (loggingLevelDroolsCore != null
+                && (loggingLevelDroolsCore.equals("trace") || loggingLevelDroolsCore.equals("debug"))) {
+            warningList.add("The loggingLevel (" + loggingLevelDroolsCore + ") of org.drools.core is high."
+                    + " This decreases performance."
+                    + " Maybe set the loggingLevel to info or lower.");
         }
     }
 

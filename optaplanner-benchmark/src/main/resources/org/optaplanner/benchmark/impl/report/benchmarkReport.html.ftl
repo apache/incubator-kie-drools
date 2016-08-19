@@ -734,8 +734,12 @@
                         <td>${benchmarkReport.plannerBenchmarkResult.environmentMode!"Differs"}</td>
                     </tr>
                     <tr>
-                        <th>Logging level</th>
-                        <td>${benchmarkReport.plannerBenchmarkResult.loggingLevel!"Differs"}</td>
+                        <th>Logging level org.optaplanner.core</th>
+                        <td>${benchmarkReport.plannerBenchmarkResult.loggingLevelOptaPlannerCore!"Differs"}</td>
+                    </tr>
+                    <tr>
+                        <th>Logging level org.drools.core</th>
+                        <td>${benchmarkReport.plannerBenchmarkResult.loggingLevelDroolsCore!"Differs"}</td>
                     </tr>
                     <tr>
                         <th>Solver ranking class</th>

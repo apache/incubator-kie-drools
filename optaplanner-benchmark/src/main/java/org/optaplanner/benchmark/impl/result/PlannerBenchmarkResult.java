@@ -58,7 +58,8 @@ public class PlannerBenchmarkResult {
     // If it is an aggregation, many properties can stay null
 
     private Integer availableProcessors = null;
-    private String loggingLevel = null;
+    private String loggingLevelOptaPlannerCore = null;
+    private String loggingLevelDroolsCore = null;
     private Long maxMemory = null;
     private String optaPlannerVersion = null;
     private String javaVersion = null;
@@ -114,8 +115,12 @@ public class PlannerBenchmarkResult {
         return availableProcessors;
     }
 
-    public String getLoggingLevel() {
-        return loggingLevel;
+    public String getLoggingLevelOptaPlannerCore() {
+        return loggingLevelOptaPlannerCore;
+    }
+
+    public String getLoggingLevelDroolsCore() {
+        return loggingLevelDroolsCore;
     }
 
     public Long getMaxMemory() {
@@ -262,7 +267,8 @@ public class PlannerBenchmarkResult {
 
     public void initSystemProperties() {
         availableProcessors = Runtime.getRuntime().availableProcessors();
-        loggingLevel = resolveLoggingLevel();
+        loggingLevelOptaPlannerCore = resolveLoggingLevel("org.optaplanner.core");
+        loggingLevelDroolsCore = resolveLoggingLevel("org.drools.core");
         maxMemory = Runtime.getRuntime().maxMemory();
         optaPlannerVersion = SolverFactory.class.getPackage().getImplementationVersion();
         if (optaPlannerVersion == null) {
@@ -275,8 +281,8 @@ public class PlannerBenchmarkResult {
                 + " " + System.getProperty("os.version");
     }
 
-    private String resolveLoggingLevel() {
-        Logger logger = LoggerFactory.getLogger("org.optaplanner.core");
+    private String resolveLoggingLevel(String loggerName) {
+        Logger logger = LoggerFactory.getLogger(loggerName);
         if (logger.isTraceEnabled()) {
             return "trace";
         } else if (logger.isDebugEnabled()) {
@@ -288,7 +294,7 @@ public class PlannerBenchmarkResult {
         } else if (logger.isErrorEnabled()) {
             return "error";
         } else {
-            throw new IllegalStateException("Logging level for category (org.optaplanner.core) cannot be determined.");
+            throw new IllegalStateException("Logging level for loggerName (" + loggerName + ") cannot be determined.");
         }
     }
 
@@ -451,7 +457,8 @@ public class PlannerBenchmarkResult {
                     newResult = new PlannerBenchmarkResult();
                     newResult.setAggregation(true);
                     newResult.availableProcessors = oldResult.availableProcessors;
-                    newResult.loggingLevel = oldResult.loggingLevel;
+                    newResult.loggingLevelOptaPlannerCore = oldResult.loggingLevelOptaPlannerCore;
+                    newResult.loggingLevelDroolsCore = oldResult.loggingLevelDroolsCore;
                     newResult.maxMemory = oldResult.maxMemory;
                     newResult.optaPlannerVersion = oldResult.optaPlannerVersion;
                     newResult.javaVersion = oldResult.javaVersion;
@@ -468,8 +475,10 @@ public class PlannerBenchmarkResult {
                 } else {
                     newResult.availableProcessors = ConfigUtils.mergeProperty(
                             newResult.availableProcessors, oldResult.availableProcessors);
-                    newResult.loggingLevel = ConfigUtils.mergeProperty(
-                            newResult.loggingLevel, oldResult.loggingLevel);
+                    newResult.loggingLevelOptaPlannerCore = ConfigUtils.mergeProperty(
+                            newResult.loggingLevelOptaPlannerCore, oldResult.loggingLevelOptaPlannerCore);
+                    newResult.loggingLevelDroolsCore = ConfigUtils.mergeProperty(
+                            newResult.loggingLevelDroolsCore, oldResult.loggingLevelDroolsCore);
                     newResult.maxMemory = ConfigUtils.mergeProperty(
                             newResult.maxMemory, oldResult.maxMemory);
                     newResult.optaPlannerVersion = ConfigUtils.mergeProperty(
