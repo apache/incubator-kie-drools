@@ -22,6 +22,9 @@ import org.kie.dmn.feel.util.EvalHelper;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 
@@ -198,13 +201,53 @@ public class InfixOpNode
         return null;
     }
 
+
     private Object equality(Object left, Object right, EvaluationContext ctx, BiPredicate<Comparable, Comparable> op) {
         if ( left == null && right == null ) {
             return operator == InfixOperator.EQ;
         } else if ( left == null || right == null ) {
             return operator == InfixOperator.NE;
+        } else if( left instanceof Iterable && right instanceof Iterable ) {
+            return operator == InfixOperator.NE ^ isEqual( (Iterable)left, (Iterable) right );
+        } else if( left instanceof Map && right instanceof Map ) {
+            return operator == InfixOperator.NE ^ isEqual( (Map)left, (Map) right );
         }
         return comparison( left, right, ctx, op );
     }
 
+    private Boolean isEqual(Iterable left, Iterable right) {
+        Iterator li = left.iterator();
+        Iterator ri = right.iterator();
+        while( li.hasNext() && ri.hasNext() ) {
+            Object l = li.next();
+            Object r = ri.next();
+            if ( !isEqual( l, r ) ) return false;
+        }
+        return li.hasNext() == ri.hasNext();
+    }
+
+    private Boolean isEqual(Map<?,?> left, Map<?,?> right) {
+        if( left.size() != right.size() ) {
+            return false;
+        }
+        for( Map.Entry le : left.entrySet() ) {
+            Object l = le.getValue();
+            Object r = right.get( le.getKey() );
+            if ( !isEqual( l, r ) ) return false;
+        }
+        return true;
+    }
+
+    private boolean isEqual(Object l, Object r) {
+        if( l instanceof Iterable && r instanceof Iterable && !isEqual( (Iterable) l, (Iterable) r ) ) {
+            return false;
+        } else if( l instanceof Map && r instanceof Map && !isEqual( (Map) l, (Map) r ) ) {
+            return false;
+        } else if( l != null && r != null && !l.equals( r ) ) {
+            return false;
+        } else if( ( l == null || r == null ) && l != r ) {
+            return false;
+        }
+        return true;
+    }
 }
