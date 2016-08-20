@@ -26,7 +26,8 @@ import org.kie.internal.command.Context;
 
 
 public class FireUntilHaltCommand
-        implements GenericCommand<Void>, UnpersistableCommand {
+	implements
+	GenericCommand<Void>, UnpersistableCommand {
     private static final long serialVersionUID = 510l;
 
     private AgendaFilter agendaFilter = null;
