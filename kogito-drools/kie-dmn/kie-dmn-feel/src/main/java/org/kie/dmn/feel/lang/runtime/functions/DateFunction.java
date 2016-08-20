@@ -41,7 +41,7 @@ public class DateFunction
 
     public TemporalAccessor apply(String val) {
         if ( val != null ) {
-            return DateTimeFormatter.ISO_DATE.parseBest( val, LocalDate::from, ZonedDateTime::from  );
+            return LocalDate.from( DateTimeFormatter.ISO_DATE.parse( val ) );
         }
         return null;
     }

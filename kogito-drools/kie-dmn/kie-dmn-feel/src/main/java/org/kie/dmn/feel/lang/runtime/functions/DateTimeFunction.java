@@ -16,12 +16,11 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
-import java.util.ArrayList;
+import java.time.temporal.TemporalField;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,17 +34,30 @@ public class DateTimeFunction
     @Override
     public List<List<String>> getParameterNames() {
         return Arrays.asList(
-                Arrays.asList( "from" )
+                Arrays.asList( "from" ),
+                Arrays.asList( "date", "time" )
         );
     }
 
-
     public TemporalAccessor apply(String val) {
         if ( val != null ) {
-            return DateTimeFormatter.ISO_OFFSET_DATE_TIME.parseBest( val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from );
+            try {
+                return DateTimeFormatter.ISO_DATE_TIME.parseBest( val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from );
+            } catch ( Exception e ) {
+                // no luck, return null
+            }
         }
         return null;
     }
 
-
+    public TemporalAccessor apply(Temporal date, Temporal time) {
+        if ( date != null && time != null ) {
+            if( date instanceof LocalDate && time instanceof LocalTime ) {
+                return LocalDateTime.of( (LocalDate) date, (LocalTime) time );
+            } else if( date instanceof LocalDate && time instanceof OffsetTime ) {
+                return ZonedDateTime.of( (LocalDate) date, LocalTime.from( time ), ZoneOffset.from( time ) );
+            }
+        }
+        return null;
+    }
 }

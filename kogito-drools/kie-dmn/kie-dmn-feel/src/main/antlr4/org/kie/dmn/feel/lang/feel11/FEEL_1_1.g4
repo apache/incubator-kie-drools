@@ -46,7 +46,7 @@ expression
 
 expressionTypes
     : expr=textualExpression ( '[' filter=expression ']' ('.' qualifiedName)? )?  #expressionTextual
-    | expr=boxedExpression ( '[' filter=expression ']' ('.' qualifiedName)? )?    #expressionBoxed
+//    | expr=boxedExpression ( '[' filter=expression ']' ('.' qualifiedName)? )?    #expressionBoxed
     ;
 
 // #2
@@ -55,9 +55,9 @@ textualExpression
     | forExpression
     | ifExpression
     | quantifiedExpression
-    | conditionalOrExpression
-    | pathExpression
     | simpleUnaryTest
+    | conditionalOrExpression
+//    | pathExpression
     ;
 
 // #41
@@ -82,9 +82,9 @@ positionalParameters
     ;
 
 // #45
-pathExpression
-    : expr=boxedExpression '.' {helper.recoverScope();} name=qualifiedName {helper.dismissScope();}
-    ;
+//pathExpression
+//    : expr=boxedExpression '.' {helper.recoverScope();} name=qualifiedName {helper.dismissScope();}
+//    ;
 
 // #46
 forExpression
@@ -128,9 +128,9 @@ type
     ;
 
 // #55
-boxedExpression
-    : functionDefinition
-    ;
+//boxedExpression
+//    : functionDefinition
+//    ;
 
 // #56
 list
@@ -250,7 +250,7 @@ unaryExpression
 
 unaryExpressionNotPlusMinus
 	:	not_key unaryExpression        #logicalNegation
-	|   primary ('.' qualifiedName)?   #uenpmPrimary
+	|   primary ('.' {helper.recoverScope();} qualifiedName {helper.dismissScope();} )?   #uenpmPrimary
 	;
 
 primary

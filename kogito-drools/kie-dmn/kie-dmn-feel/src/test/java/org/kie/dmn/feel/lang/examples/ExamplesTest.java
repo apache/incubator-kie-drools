@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.ZonedDateTime;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -136,7 +137,11 @@ public class ExamplesTest {
 
         Object result = FEEL.evaluate( expression );
 
-        System.out.println( "Result: " + result );
+        if( result instanceof Map ) {
+            System.out.println( printContext( (Map) result ) );
+        } else {
+            System.out.println( "Result: " + result );
+        }
     }
 
     private static String loadExpression(String fileName) {
