@@ -310,31 +310,31 @@ public class ASTBuilderVisitor
         return ASTBuilderFactory.newQuantifiedExpression( ctx, QuantifiedExpressionNode.Quantifier.EVERY, list, expr );
     }
 
-    @Override
-    public BaseNode visitPathExpression(FEEL_1_1Parser.PathExpressionContext ctx) {
-        BaseNode expr = visit( ctx.expr );
-        BaseNode name = visit( ctx.name );
-        return ASTBuilderFactory.newPathExpressionNode( ctx, expr, name );
-    }
+//    @Override
+//    public BaseNode visitPathExpression(FEEL_1_1Parser.PathExpressionContext ctx) {
+//        BaseNode expr = visit( ctx.expr );
+//        BaseNode name = visit( ctx.name );
+//        return ASTBuilderFactory.newPathExpressionNode( ctx, expr, name );
+//    }
 
     @Override
     public BaseNode visitNameRef(FEEL_1_1Parser.NameRefContext ctx) {
         return ASTBuilderFactory.newNameRefNode( ctx );
     }
 
-    @Override
-    public BaseNode visitExpressionBoxed(FEEL_1_1Parser.ExpressionBoxedContext ctx) {
-        BaseNode expr = visit( ctx.expr );
-        if ( ctx.filter != null ) {
-            BaseNode filter = visit( ctx.filter );
-            expr = ASTBuilderFactory.newFilterExpressionNode( ctx, expr, filter );
-            if( ctx.qualifiedName() != null ) {
-                BaseNode path = visit( ctx.qualifiedName() );
-                expr = ASTBuilderFactory.newPathExpressionNode( ctx, expr, path );
-            }
-        }
-        return expr;
-    }
+//    @Override
+//    public BaseNode visitExpressionBoxed(FEEL_1_1Parser.ExpressionBoxedContext ctx) {
+//        BaseNode expr = visit( ctx.expr );
+//        if ( ctx.filter != null ) {
+//            BaseNode filter = visit( ctx.filter );
+//            expr = ASTBuilderFactory.newFilterExpressionNode( ctx, expr, filter );
+//            if( ctx.qualifiedName() != null ) {
+//                BaseNode path = visit( ctx.qualifiedName() );
+//                expr = ASTBuilderFactory.newPathExpressionNode( ctx, expr, path );
+//            }
+//        }
+//        return expr;
+//    }
 
     @Override
     public BaseNode visitPositionalParameters(FEEL_1_1Parser.PositionalParametersContext ctx) {

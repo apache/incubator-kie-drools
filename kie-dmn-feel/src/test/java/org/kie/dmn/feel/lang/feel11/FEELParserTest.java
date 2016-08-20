@@ -923,6 +923,23 @@ public class FEELParserTest {
     }
 
     @Test
+    public void testFunctionInvocationWithExpressionParameters() {
+        String inputExpression = "date and time( date(\"2016-07-29\"), time(\"19:47:53\") )";
+        BaseNode functionBase = parse( inputExpression );
+
+        assertThat( functionBase, is( instanceOf( FunctionInvocationNode.class ) ) );
+        assertThat( functionBase.getText(), is( inputExpression ) );
+
+        FunctionInvocationNode function = (FunctionInvocationNode) functionBase;
+        assertThat( function.getName(), is( instanceOf( NameRefNode.class ) ) );
+        assertThat( function.getName().getText(), is( "date and time" ) );
+        assertThat( function.getParams(), is( instanceOf( ListNode.class ) ) );
+        assertThat( function.getParams().getElements().size(), is( 2 ) );
+        assertThat( function.getParams().getElements().get( 0 ), is( instanceOf( FunctionInvocationNode.class ) ) );
+        assertThat( function.getParams().getElements().get( 1 ), is( instanceOf( FunctionInvocationNode.class ) ) );
+    }
+
+    @Test
     public void testFunctionInvocationEmptyParams() {
         String inputExpression = "my.test.Function()";
         BaseNode functionBase = parse( inputExpression );
