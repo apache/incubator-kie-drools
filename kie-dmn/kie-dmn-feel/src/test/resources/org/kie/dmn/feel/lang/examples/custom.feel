@@ -1,8 +1,21 @@
 {
-    a : 10,            // a is bound to 10
-    b : 10,            // b is bound to 10
-    c : a + b,         // c is bound to 20
-    a + b : 5,         // a + b is bound to 5
-    x : a + b + c      // how much is x bound to?
+    // the following would be input parameters,
+    // shown here for completeness
+    holiday : date("2017-01-01"),
+    shift start : date and time( "2017-01-01T08:00:00-05:00[America/New_York]" ),
+    shift end : date and time( "2017-01-01T09:30:00-05:00[America/New_York]" ),
+
+    // holiday start in new york
+    holiday start new york: date and time( holiday, time("00:00:00-05:00") ),
+    holiday end new york: date and time( holiday, time("23:59:59-05:00") ),
+
+    // rules can then check what is joe's hourly rate
+    rate factor : if shift start > holiday start new york and
+                     shift end < holiday end new york
+                  then
+                     1.5
+                  else
+                     1.0
+
 }
 

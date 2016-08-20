@@ -153,6 +153,14 @@ public class FEELTest extends BaseFEELTest {
                 { "{ x : \"foo\", y : [1, 2] } = { y : [1, 2], x : \"foo\" }", Boolean.TRUE },
                 { "{ x : \"foo\", y : [1, 2] } = { y : [1], x : \"foo\" }", Boolean.FALSE },
                 { "{ x : \"foo\", y : { z : 1, w : 2 } } = { y : { z : 1, w : 2 }, x : \"foo\" }", Boolean.TRUE },
+                { "[ 1, 2, 3] != [1, 2, 3]", Boolean.FALSE },
+                { "[ 1, 2, 3, 4] != [1, 2, 3]", Boolean.TRUE },
+                { "[ 1, 2, 3] != [1, \"foo\", 3]", Boolean.TRUE },
+                { "{ x : \"foo\" } != { x : \"foo\" }", Boolean.FALSE },
+                { "{ x : \"foo\", y : [1, 2] } != { x : \"foo\", y : [1, 2] }", Boolean.FALSE },
+                { "{ x : \"foo\", y : [1, 2] } != { y : [1, 2], x : \"foo\" }", Boolean.FALSE },
+                { "{ x : \"foo\", y : [1, 2] } != { y : [1], x : \"foo\" }", Boolean.TRUE },
+                { "{ x : \"foo\", y : { z : 1, w : 2 } } != { y : { z : 1, w : 2 }, x : \"foo\" }", Boolean.FALSE },
 
                 // null comparisons and comparisons between different types
                 { "10.4 < null", null },
@@ -186,6 +194,7 @@ public class FEELTest extends BaseFEELTest {
                 { "time(\"13:20:00-05:00\")", DateTimeFormatter.ISO_TIME.parse( "13:20:00-05:00", OffsetTime::from ) },
                 { "time(\"05:48:23.765\")", DateTimeFormatter.ISO_TIME.parse( "05:48:23.765", LocalTime::from ) },
                 { "date and time(\"2016-07-29T05:48:23.765-05:00\")", DateTimeFormatter.ISO_DATE_TIME.parse( "2016-07-29T05:48:23.765-05:00", ZonedDateTime::from ) },
+                { "date and time(date(\"2016-07-29\"), time(\"05:48:23.765-05:00\") )", DateTimeFormatter.ISO_DATE_TIME.parse( "2016-07-29T05:48:23.765-05:00", ZonedDateTime::from ) },
                 { "date( 2016, 8, 2 )", LocalDate.of( 2016, 8, 2 ) },
                 { "date( date and time(\"2016-07-29T05:48:23.765-05:00\") )", LocalDate.of( 2016, 7, 29 ) },
                 { "time( 14, 52, 25, null )", LocalTime.of( 14, 52, 25 ) },
