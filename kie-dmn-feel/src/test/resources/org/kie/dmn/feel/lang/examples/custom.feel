@@ -2,20 +2,34 @@
     // the following would be input parameters,
     // shown here for completeness
     holiday : date("2017-01-01"),
-    shift start : date and time( "2017-01-01T08:00:00-05:00[America/New_York]" ),
-    shift end : date and time( "2017-01-01T09:30:00-05:00[America/New_York]" ),
 
-    // holiday start in new york
-    holiday start new york: date and time( holiday, time("00:00:00-05:00") ),
-    holiday end new york: date and time( holiday, time("23:59:59-05:00") ),
+    // Joe is working in Tokyo
+    shift start : date and time( "2017-01-02T08:00:00+09:00[Asia/Tokyo]" ),
+    shift end : date and time( "2017-01-02T09:30:00+09:00[Asia/Tokyo]" ),
 
-    // rules can then check what is joe's hourly rate
-    rate factor : if shift start > holiday start new york and
-                     shift end < holiday end new york
+    // holiday in california
+    holiday start california: date and time( holiday, time("00:00:00-08:00") ),
+    holiday end california: date and time( holiday, time("23:59:59-08:00") ),
+
+    holiday start tokyo: date and time( holiday, time("00:00:00+09:00") ),
+    holiday end tokyo: date and time( holiday, time("23:59:59+09:00") ),
+
+    // rate factor if joe is paid based on california's time
+    rate factor california : if shift start > holiday start california and
+                     shift end < holiday end california
+                  then
+                     1.5
+                  else
+                     1.0,
+
+    // rate factor if joe is paid based on tokyo's time
+    rate factor tokyo : if shift start > holiday start tokyo and
+                     shift end < holiday end tokyo
                   then
                      1.5
                   else
                      1.0
+
 
 }
 
