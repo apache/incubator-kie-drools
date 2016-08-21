@@ -68,11 +68,11 @@ end
 
 rule "evenlyConfrontationCount"
     when
-        $t1 : Team()
-        $t2 : Team()
+        $t1 : Team($leftId : id)
+        $t2 : Team(id > $leftId)
         accumulate(
-            $a : TeamAssignment(team == $t1, $d : day, $leftId : id)
-            and TeamAssignment(team == $t2, day == $d, id > $leftId);
+            $a : TeamAssignment(team == $t1, $d : day)
+            and TeamAssignment(team == $t2, day == $d);
             $total : count($a)
         )
     then
