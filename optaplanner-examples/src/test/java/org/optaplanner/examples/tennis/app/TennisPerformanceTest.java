@@ -43,13 +43,13 @@ public class TennisPerformanceTest extends SolverPerformanceTest {
     @Test(timeout = 600000)
     public void solveModel_munich_7teams() {
         File unsolvedDataFile = new File("data/tennis/unsolved/munich-7teams.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-742medium/-288soft");
+        runSpeedTest(unsolvedDataFile, "0hard/-742medium/-562soft");
     }
 
     @Test(timeout = 600000)
     public void solveModel_munich_7teamsFastAssert() {
         File unsolvedDataFile = new File("data/tennis/unsolved/munich-7teams.xml");
-        runSpeedTest(unsolvedDataFile, "0hard/-742medium/-294soft", EnvironmentMode.FAST_ASSERT);
+        runSpeedTest(unsolvedDataFile, "0hard/-742medium/-562soft", EnvironmentMode.FAST_ASSERT);
     }
 
 }
