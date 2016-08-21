@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package org.optaplanner.test.impl.score.buildin.hardsoft;
+package org.optaplanner.test.impl.score.buildin.hardmediumsoftlong;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.test.impl.score.AbstractScoreVerifier;
 
-import static org.junit.Assert.assertEquals;
-
 /**
  * To assert the constraints (including score rules) of a {@link SolverFactory}
- * that uses a {@link HardSoftScore}.
+ * that uses a {@link HardMediumSoftLongScore}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class HardSoftScoreVerifier<Solution_> extends AbstractScoreVerifier<Solution_> {
+public class HardMediumSoftLongScoreVerifier<Solution_> extends AbstractScoreVerifier<Solution_> {
 
     /**
      * @param solverFactory never null, the {@link SolverFactory} of which you want to test the constraints.
      */
-    public HardSoftScoreVerifier(SolverFactory<Solution_> solverFactory) {
-        super(solverFactory, HardSoftScore.class);
+    public HardMediumSoftLongScoreVerifier(SolverFactory<Solution_> solverFactory) {
+        super(solverFactory, HardMediumSoftLongScore.class);
     }
 
     /**
@@ -44,7 +42,7 @@ public class HardSoftScoreVerifier<Solution_> extends AbstractScoreVerifier<Solu
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
-    public void assertHardWeight(String constraintName, int expectedWeight, Solution_ solution) {
+    public void assertHardWeight(String constraintName, long expectedWeight, Solution_ solution) {
         assertHardWeight(null, constraintName, expectedWeight, solution);
     }
 
@@ -57,8 +55,32 @@ public class HardSoftScoreVerifier<Solution_> extends AbstractScoreVerifier<Solu
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
-    public void assertHardWeight(String constraintPackage, String constraintName, int expectedWeight, Solution_ solution) {
-        assertWeight(constraintPackage, constraintName, 0, Integer.valueOf(expectedWeight), solution);
+    public void assertHardWeight(String constraintPackage, String constraintName, long expectedWeight, Solution_ solution) {
+        assertWeight(constraintPackage, constraintName, 0, Long.valueOf(expectedWeight), solution);
+    }
+
+    /**
+     * Assert that the constraint (which is usually a score rule) of {@link PlanningSolution}
+     * has the expected weight for that score level
+     * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
+     * @param expectedWeight the total weight for all matches of that 1 constraint
+     * @param solution never null, the actual {@link PlanningSolution}
+     */
+    public void assertMediumWeight(String constraintName, long expectedWeight, Solution_ solution) {
+        assertHardWeight(null, constraintName, expectedWeight, solution);
+    }
+
+    /**
+     * Assert that the constraint (which is usually a score rule) of {@link PlanningSolution}
+     * has the expected weight for that score level.
+     * @param constraintPackage sometimes null.
+     * When null, {@code constraintName} for the {@code scoreLevel} must be unique.
+     * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
+     * @param expectedWeight the total weight for all matches of that 1 constraint
+     * @param solution never null, the actual {@link PlanningSolution}
+     */
+    public void assertMediumWeight(String constraintPackage, String constraintName, long expectedWeight, Solution_ solution) {
+        assertWeight(constraintPackage, constraintName, 0, Long.valueOf(expectedWeight), solution);
     }
 
     /**
@@ -68,7 +90,7 @@ public class HardSoftScoreVerifier<Solution_> extends AbstractScoreVerifier<Solu
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
-    public void assertSoftWeight(String constraintName, int expectedWeight, Solution_ solution) {
+    public void assertSoftWeight(String constraintName, long expectedWeight, Solution_ solution) {
         assertSoftWeight(null, constraintName, expectedWeight, solution);
     }
 
@@ -81,8 +103,8 @@ public class HardSoftScoreVerifier<Solution_> extends AbstractScoreVerifier<Solu
      * @param expectedWeight the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
-    public void assertSoftWeight(String constraintPackage, String constraintName, int expectedWeight, Solution_ solution) {
-        assertWeight(constraintPackage, constraintName, 1, Integer.valueOf(expectedWeight), solution);
+    public void assertSoftWeight(String constraintPackage, String constraintName, long expectedWeight, Solution_ solution) {
+        assertWeight(constraintPackage, constraintName, 1, Long.valueOf(expectedWeight), solution);
     }
 
 }

@@ -66,38 +66,43 @@ public abstract class AbstractScoreVerifier<Solution_> {
      * When null, {@code constraintName} for the {@code scoreLevel} must be unique.
      * @param scoreLevel at least 0
      * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
-     * @param expectedWeight sometimes null, the total weight for all matches of that 1 constraint
+     * @param expectedWeight never null, the total weight for all matches of that 1 constraint
      * @param solution never null
      */
-    protected void assertConstraintWeight(
+    protected void assertWeight(
             String constraintPackage, String constraintName, int scoreLevel, Number expectedWeight,
             Solution_ solution) {
         ScoreDirector<Solution_> scoreDirector = scoreDirectorFactory.buildScoreDirector();
         scoreDirector.setWorkingSolution(solution);
         scoreDirector.calculateScore();
         ConstraintMatchTotal matchTotal = findConstraintMatchTotal(constraintPackage, constraintName, scoreLevel, scoreDirector);
+        // A matchTotal is null if the score rule didn't fire now and never fired in a previous incremental calculation
+        // (including those that are undone).
+        // To avoid user pitfalls, the expectedWeight cannot be null and a matchTotal of null is treated as zero.
+        if (expectedWeight == null) {
+            throw new IllegalArgumentException("The expectedWeight (" + expectedWeight + ") cannot be null,"
+                    + " regardless of the matchTotal (" + matchTotal + ").");
+        }
         if (matchTotal == null) {
-            if (expectedWeight != null) {
-                if (expectedWeight instanceof Byte) {
-                    assertEquals(expectedWeight, (byte) 0);
-                } else if (expectedWeight instanceof Short) {
-                    assertEquals(expectedWeight, (short) 0);
-                } else if (expectedWeight instanceof Integer) {
-                    assertEquals(expectedWeight, 0);
-                } else if (expectedWeight instanceof Long) {
-                    assertEquals(expectedWeight, 0L);
-                } else if (expectedWeight instanceof Float) {
-                    assertEquals(expectedWeight, 0F);
-                } else if (expectedWeight instanceof Double) {
-                    assertEquals(expectedWeight, 0D);
-                } else if (expectedWeight instanceof BigInteger) {
-                    assertEquals(expectedWeight, BigInteger.ZERO);
-                } else if (expectedWeight instanceof BigDecimal) {
-                    assertEquals(expectedWeight, BigDecimal.ZERO);
-                } else {
-                    throw new IllegalStateException("Unsupported " + Number.class.getSimpleName()
-                            + " type (" + expectedWeight.getClass() + ") for expectedWeight (" + expectedWeight + ").");
-                }
+            if (expectedWeight instanceof Byte) {
+                assertEquals(expectedWeight, (byte) 0);
+            } else if (expectedWeight instanceof Short) {
+                assertEquals(expectedWeight, (short) 0);
+            } else if (expectedWeight instanceof Integer) {
+                assertEquals(expectedWeight, 0);
+            } else if (expectedWeight instanceof Long) {
+                assertEquals(expectedWeight, 0L);
+            } else if (expectedWeight instanceof Float) {
+                assertEquals(expectedWeight, 0F);
+            } else if (expectedWeight instanceof Double) {
+                assertEquals(expectedWeight, 0D);
+            } else if (expectedWeight instanceof BigInteger) {
+                assertEquals(expectedWeight, BigInteger.ZERO);
+            } else if (expectedWeight instanceof BigDecimal) {
+                assertEquals(expectedWeight, BigDecimal.ZERO);
+            } else {
+                throw new IllegalStateException("Unsupported " + Number.class.getSimpleName()
+                        + " type (" + expectedWeight.getClass() + ") for expectedWeight (" + expectedWeight + ").");
             }
         } else {
             assertEquals(expectedWeight, matchTotal.getWeightTotalAsNumber());

@@ -42,17 +42,17 @@ public class CloudBalancingScoreConstraintTest {
         CloudBalance solution = new CloudBalance(0L,
                 Arrays.asList(c1, c2, c3),
                 Arrays.asList(p1, p2, p3));
-        scoreVerifier.assertHard("requiredCpuPowerTotal", 0, solution);
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", 0, solution);
         p1.setComputer(c1);
         p2.setComputer(c1);
-        scoreVerifier.assertHard("requiredCpuPowerTotal", 0, solution);
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", 0, solution);
         p1.setComputer(c2);
         p2.setComputer(c2);
-        scoreVerifier.assertHard("requiredCpuPowerTotal", -570, solution);
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", -570, solution);
         p3.setComputer(c3);
-        scoreVerifier.assertHard("requiredCpuPowerTotal", -570, solution);
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", -570, solution);
         p2.setComputer(c3);
-        scoreVerifier.assertHard("requiredCpuPowerTotal", -547, solution);
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", -547, solution);
     }
 
     @Test
@@ -66,17 +66,17 @@ public class CloudBalancingScoreConstraintTest {
         CloudBalance solution = new CloudBalance(0L,
                 Arrays.asList(c1, c2, c3),
                 Arrays.asList(p1, p2, p3));
-        scoreVerifier.assertHard("requiredMemoryTotal", 0, solution);
+        scoreVerifier.assertHardWeight("requiredMemoryTotal", 0, solution);
         p1.setComputer(c1);
         p2.setComputer(c1);
-        scoreVerifier.assertHard("requiredMemoryTotal", 0, solution);
+        scoreVerifier.assertHardWeight("requiredMemoryTotal", 0, solution);
         p1.setComputer(c2);
         p2.setComputer(c2);
-        scoreVerifier.assertHard("requiredMemoryTotal", -570, solution);
+        scoreVerifier.assertHardWeight("requiredMemoryTotal", -570, solution);
         p3.setComputer(c3);
-        scoreVerifier.assertHard("requiredMemoryTotal", -570, solution);
+        scoreVerifier.assertHardWeight("requiredMemoryTotal", -570, solution);
         p2.setComputer(c3);
-        scoreVerifier.assertHard("requiredMemoryTotal", -547, solution);
+        scoreVerifier.assertHardWeight("requiredMemoryTotal", -547, solution);
     }
 
     @Test
@@ -90,17 +90,17 @@ public class CloudBalancingScoreConstraintTest {
         CloudBalance solution = new CloudBalance(0L,
                 Arrays.asList(c1, c2, c3),
                 Arrays.asList(p1, p2, p3));
-        scoreVerifier.assertHard("requiredNetworkBandwidthTotal", 0, solution);
+        scoreVerifier.assertHardWeight("requiredNetworkBandwidthTotal", 0, solution);
         p1.setComputer(c1);
         p2.setComputer(c1);
-        scoreVerifier.assertHard("requiredNetworkBandwidthTotal", 0, solution);
+        scoreVerifier.assertHardWeight("requiredNetworkBandwidthTotal", 0, solution);
         p1.setComputer(c2);
         p2.setComputer(c2);
-        scoreVerifier.assertHard("requiredNetworkBandwidthTotal", -570, solution);
+        scoreVerifier.assertHardWeight("requiredNetworkBandwidthTotal", -570, solution);
         p3.setComputer(c3);
-        scoreVerifier.assertHard("requiredNetworkBandwidthTotal", -570, solution);
+        scoreVerifier.assertHardWeight("requiredNetworkBandwidthTotal", -570, solution);
         p2.setComputer(c3);
-        scoreVerifier.assertHard("requiredNetworkBandwidthTotal", -547, solution);
+        scoreVerifier.assertHardWeight("requiredNetworkBandwidthTotal", -547, solution);
     }
 
     @Test
@@ -114,12 +114,12 @@ public class CloudBalancingScoreConstraintTest {
         CloudBalance solution = new CloudBalance(0L,
                 Arrays.asList(c1, c2, c3),
                 Arrays.asList(p1, p2, p3));
-        scoreVerifier.assertSoft("computerCost", 0, solution);
+        scoreVerifier.assertSoftWeight("computerCost", 0, solution);
         p1.setComputer(c1);
         p2.setComputer(c1);
-        scoreVerifier.assertSoft("computerCost", -200, solution);
+        scoreVerifier.assertSoftWeight("computerCost", -200, solution);
         p3.setComputer(c3);
-        scoreVerifier.assertSoft("computerCost", -204, solution);
+        scoreVerifier.assertSoftWeight("computerCost", -204, solution);
     }
 
 }

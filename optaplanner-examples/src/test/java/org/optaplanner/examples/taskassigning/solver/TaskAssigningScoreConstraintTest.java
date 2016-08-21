@@ -55,13 +55,13 @@ public class TaskAssigningScoreConstraintTest {
                 Arrays.asList(c1),
                 Arrays.asList(e1, e2, e3),
                 Arrays.asList(t1, t2, t3));
-        scoreVerifier.assertHard("Skill requirements", 0, 0, solution);
+        scoreVerifier.assertHardWeight("Skill requirements", 0, 0, solution);
         setPreviousAndShadows(t1, e1);
-        scoreVerifier.assertHard("Skill requirements", 0, -1, solution);
+        scoreVerifier.assertHardWeight("Skill requirements", 0, -1, solution);
         setPreviousAndShadows(t2, t1);
-        scoreVerifier.assertHard("Skill requirements", 0, -2, solution);
+        scoreVerifier.assertHardWeight("Skill requirements", 0, -2, solution);
         setPreviousAndShadows(t3, e1);
-        scoreVerifier.assertHard("Skill requirements", 0, -2, solution);
+        scoreVerifier.assertHardWeight("Skill requirements", 0, -2, solution);
     }
 
     private static void setPreviousAndShadows(Task task, TaskOrEmployee previous) {

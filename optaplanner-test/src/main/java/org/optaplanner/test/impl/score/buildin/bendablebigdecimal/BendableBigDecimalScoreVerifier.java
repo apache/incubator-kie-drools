@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 JBoss Inc
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 
-package org.optaplanner.test.impl.score.buildin.bendable;
+package org.optaplanner.test.impl.score.buildin.bendablebigdecimal;
+
+import java.math.BigDecimal;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
 import org.optaplanner.test.impl.score.AbstractScoreVerifier;
 
 /**
  * To assert the constraints (including score rules) of a {@link SolverFactory}
- * that uses a {@link BendableScore}.
+ * that uses a {@link BendableBigDecimalScore}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class BendableScoreVerifier<Solution_> extends AbstractScoreVerifier<Solution_> {
+public class BendableBigDecimalScoreVerifier<Solution_> extends AbstractScoreVerifier<Solution_> {
 
     protected final int hardLevelsSize;
 
     /**
      * @param solverFactory never null, the {@link SolverFactory} of which you want to test the constraints.
      */
-    public BendableScoreVerifier(SolverFactory<Solution_> solverFactory) {
-        super(solverFactory, BendableScore.class);
-        hardLevelsSize = ((BendableScoreDefinition) scoreDirectorFactory.getScoreDefinition()).getHardLevelsSize();
+    public BendableBigDecimalScoreVerifier(SolverFactory<Solution_> solverFactory) {
+        super(solverFactory, BendableBigDecimalScore.class);
+        hardLevelsSize = ((BendableBigDecimalScoreDefinition) scoreDirectorFactory.getScoreDefinition()).getHardLevelsSize();
     }
 
     /**
@@ -45,10 +47,10 @@ public class BendableScoreVerifier<Solution_> extends AbstractScoreVerifier<Solu
      * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
      * @param hardLevel {@code 0 <= hardLevel <} {@code hardLevelSize}.
      * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
-     * @param expectedWeight the total weight for all matches of that 1 constraint
+     * @param expectedWeight never null, the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
-    public void assertHardWeight(String constraintName, int hardLevel, int expectedWeight, Solution_ solution) {
+    public void assertHardWeight(String constraintName, int hardLevel, BigDecimal expectedWeight, Solution_ solution) {
         assertHardWeight(null, constraintName, hardLevel, expectedWeight, solution);
     }
 
@@ -60,14 +62,14 @@ public class BendableScoreVerifier<Solution_> extends AbstractScoreVerifier<Solu
      * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
      * @param hardLevel {@code 0 <= hardLevel <} {@code hardLevelSize}.
      * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
-     * @param expectedWeight the total weight for all matches of that 1 constraint
+     * @param expectedWeight never null, the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
     public void assertHardWeight(String constraintPackage, String constraintName,
-            int hardLevel, int expectedWeight,
+            int hardLevel, BigDecimal expectedWeight,
             Solution_ solution) {
         assertWeight(constraintPackage, constraintName,
-                hardLevel, Integer.valueOf(expectedWeight), solution);
+                hardLevel, expectedWeight, solution);
     }
 
     /**
@@ -76,10 +78,10 @@ public class BendableScoreVerifier<Solution_> extends AbstractScoreVerifier<Solu
      * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
      * @param softLevel {@code 0 <= softLevel <} {@code softLevelSize}.
      * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
-     * @param expectedWeight the total weight for all matches of that 1 constraint
+     * @param expectedWeight never null, the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
-    public void assertSoftWeight(String constraintName, int softLevel, int expectedWeight, Solution_ solution) {
+    public void assertSoftWeight(String constraintName, int softLevel, BigDecimal expectedWeight, Solution_ solution) {
         assertSoftWeight(null, constraintName, softLevel, expectedWeight, solution);
     }
 
@@ -91,13 +93,13 @@ public class BendableScoreVerifier<Solution_> extends AbstractScoreVerifier<Solu
      * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
      * @param softLevel {@code 0 <= softLevel <} {@code softLevelSize}.
      * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.
-     * @param expectedWeight the total weight for all matches of that 1 constraint
+     * @param expectedWeight never null, the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}
      */
-    public void assertSoftWeight(String constraintPackage, String constraintName, int softLevel, int expectedWeight,
+    public void assertSoftWeight(String constraintPackage, String constraintName, int softLevel, BigDecimal expectedWeight,
             Solution_ solution) {
         assertWeight(constraintPackage, constraintName,
-                hardLevelsSize + softLevel, Integer.valueOf(expectedWeight), solution);
+                hardLevelsSize + softLevel, expectedWeight, solution);
     }
 
 }
