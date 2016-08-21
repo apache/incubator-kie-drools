@@ -440,8 +440,12 @@ public class CloudBalance {
 
       <note>
         <para>Don't use a <literal>BendableScore</literal> with 7 levels just because you have 7 constraints. It's
-        extremely rare to use a different score level for each constraint. Usually, multiple constraints share the same
-        level and are weighted against each other.</para>
+        extremely rare to use a different score level for each constraint, because that means one constraint match on
+        soft 0 outweighs even a million constraint matches of soft 1.</para>
+
+        <para>Usually, multiple constraints share the same level and are weighted against each other. Use <link
+        linkend="explainingTheScore">explaining the score</link> to get the weight of individual constraints in the same
+        level.</para>
       </note>
 
       <para>Variants of this <literal>Score</literal> type:</para>
@@ -1119,8 +1123,7 @@ end</programlisting>
       are initialized (while the already initialized variables do not change). Some optimization algorithms (such
       Construction Heuristics and Exhaustive Search) run faster if they have such information.</para>
 
-      <para>For the Score (or each <link linkend="scoreLevel">score level</link> separately), specify a
-      trend:</para>
+      <para>For the Score (or each <link linkend="scoreLevel">score level</link> separately), specify a trend:</para>
 
       <itemizedlist>
         <listitem>
@@ -1518,5 +1521,92 @@ Score score = guiScoreDirector.calculateScore();</programlisting>
       automatically, but <link linkend="incrementalJavaScoreCalculation">incremental Java score calculation</link>
       requires requires implementing an extra interface (see that section).</para>
     </note>
+  </section>
+
+  <section xml:id="testingScoreConstraints">
+    <title>Testing score constraints with JUnit</title>
+
+    <para>It's recommended to write a unit test for each score constraint individually to check that it behaves
+    correctly. </para>
+
+    <para>Add a test scoped dependency to the <literal>optaplanner-test</literal> jar to take advantage of the JUnit
+    integration and use the <literal>ScoreVerifier</literal> classes to test score rules in DRL (or a constraint match
+    aware incremental score calculator). For example, suppose we want to test these score rules:</para>
+
+    <programlisting>global HardSoftScoreHolder scoreHolder;
+
+rule "requiredCpuPowerTotal"
+    when
+        ...
+    then
+        scoreHolder.addHardConstraintMatch(...);
+end
+
+...
+
+rule "computerCost"
+    when
+        ...
+    then
+        scoreHolder.addSoftConstraintMatch(...);
+end</programlisting>
+
+    <para>For each score rule, we have a separate <literal>@Test</literal> that only tests the effect of that score rule
+    on the score:</para>
+
+    <programlisting language="java">public class CloudBalancingScoreConstraintTest {
+
+    private HardSoftScoreVerifier&lt;CloudBalance&gt; scoreVerifier = new HardSoftScoreVerifier&lt;&gt;(
+            SolverFactory.createFromXmlResource(
+                    "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml"));
+
+    @Test
+    public void requiredCpuPowerTotal() {
+        CloudComputer c1 = new CloudComputer(1L, 1000, 1, 1, 1);
+        CloudComputer c2 = new CloudComputer(2L, 200, 1, 1, 1);
+        CloudProcess p1 = new CloudProcess(1L, 700, 0, 0);
+        CloudProcess p2 = new CloudProcess(2L, 70, 0, 0);
+        CloudBalance solution = new CloudBalance(0L,
+                Arrays.asList(c1, c2),
+                Arrays.asList(p1, p2));
+        // Uninitialized
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", 0, solution);
+        p1.setComputer(c1);
+        p2.setComputer(c1);
+        // Usage 700 + 70 is within capacity 1000 of c1
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", 0, solution);
+        p1.setComputer(c2);
+        p2.setComputer(c2);
+        // Usage 700 + 70 is above capacity 200 of c2
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", -570, solution);
+    }
+
+    ...
+
+    @Test
+    public void computerCost() {
+        CloudComputer c1 = new CloudComputer(1L, 1, 1, 1, 200);
+        CloudComputer c2 = new CloudComputer(2L, 1, 1, 1, 30);
+        CloudProcess p1 = new CloudProcess(1L, 0, 0, 0);
+        CloudProcess p2 = new CloudProcess(2L, 0, 0, 0);
+        CloudBalance solution = new CloudBalance(0L,
+                Arrays.asList(c1, c2),
+                Arrays.asList(p1, p2));
+        // Uninitialized
+        scoreVerifier.assertSoftWeight("computerCost", 0, solution);
+        p1.setComputer(c1);
+        p2.setComputer(c1);
+        // Pay 200 for c1
+        scoreVerifier.assertSoftWeight("computerCost", -200, solution);
+        p2.setComputer(c2);
+        // Pay 200 + 30 for c1 and c2
+        scoreVerifier.assertSoftWeight("computerCost", -230, solution);
+    }
+
+}</programlisting>
+
+    <para>There is a <literal>ScoreVerifier</literal> implementation for each <literal>Score</literal> implementation.
+    In the <literal>assertHardWeight()</literal> and <literal>assertSoftWeight()</literal> methods, the weight of the
+    other score rules is ignored (even those of the same score level).</para>
   </section>
 </chapter>
