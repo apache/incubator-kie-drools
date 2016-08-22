@@ -42,6 +42,7 @@ import org.drools.core.command.runtime.rule.ClearAgendaGroupCommand;
 import org.drools.core.command.runtime.rule.ClearRuleFlowGroupCommand;
 import org.drools.core.command.runtime.rule.DeleteCommand;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
+import org.drools.core.command.runtime.rule.FireUntilHaltCommand;
 import org.drools.core.command.runtime.rule.GetObjectCommand;
 import org.drools.core.command.runtime.rule.GetObjectsCommand;
 import org.drools.core.command.runtime.rule.InsertElementsCommand;
@@ -555,6 +556,30 @@ public class XStreamXML {
 
         public boolean canConvert(Class clazz) {
             return clazz.equals( FireAllRulesCommand.class );
+        }
+    }
+
+    public static class FireUntilHaltConverter extends AbstractCollectionConverter
+        implements
+        Converter {
+
+        public FireUntilHaltConverter(XStream xstream) {
+            super( xstream.getMapper() );
+        }
+
+        public void marshal(Object object,
+                HierarchicalStreamWriter writer,
+                MarshallingContext context) {
+
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                UnmarshallingContext context) {
+            return new FireAllRulesCommand();
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( FireUntilHaltCommand.class );
         }
     }
 

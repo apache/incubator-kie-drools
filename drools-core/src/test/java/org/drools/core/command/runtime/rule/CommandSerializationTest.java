@@ -305,6 +305,18 @@ public class CommandSerializationTest {
             }
         }
         {
+            AgendaFilter[] filters = new AgendaFilter[4];
+            filters[0] = new RuleNameEndsWithAgendaFilter("suffix", false);
+            filters[1] = new RuleNameEqualsAgendaFilter("name", true);
+            filters[2] = new RuleNameMatchesAgendaFilter("regexp", false);
+            filters[3] = new RuleNameStartsWithAgendaFilter("prefix", false);
+
+            for (AgendaFilter filter : filters) {
+                FireUntilHaltCommand cmd = new FireUntilHaltCommand(filter);
+                batchCmd.getCommands().add(cmd);
+            }
+        }
+        {
             Map<String, Object> results = new HashMap<String, Object>(1);
             List<String> resultValList = new ArrayList<String>(2);
             resultValList.add("yellow");
@@ -379,6 +391,23 @@ public class CommandSerializationTest {
                         assertEquals( FireAllRulesCommand.class.getSimpleName() + ".outIdentifier",
                                       ((FireAllRulesCommand) origCmd).getOutIdentifier(),
                                       ((FireAllRulesCommand) copyCmd).getOutIdentifier());
+                    } else if (cmdClass.equals(FireUntilHaltCommand.class)) {
+                        AgendaFilter origFilter = ((FireUntilHaltCommand) origCmd).getAgendaFilter();
+                        AgendaFilter copyFilter = ((FireUntilHaltCommand) copyCmd).getAgendaFilter();
+                        if (!origFilter.getClass().equals(copyFilter.getClass())) {
+                            continue;
+                        }
+                        Class agendaFilterClass = origFilter.getClass();
+                        for (Field agendaFilterField : agendaFilterClass.getDeclaredFields()) {
+                            agendaFilterField.setAccessible(true);
+                            Object afFieldOrigVal = agendaFilterField.get(origFilter);
+                            Object afFieldCopyVal = agendaFilterField.get(copyFilter);
+                            if (afFieldOrigVal instanceof Pattern) {
+                                afFieldOrigVal = ((Pattern) afFieldOrigVal).pattern();
+                                afFieldCopyVal = ((Pattern) afFieldCopyVal).pattern();
+                            }
+                            assertEquals(agendaFilterClass.getSimpleName() + "." + agendaFilterField.getName(), afFieldOrigVal, afFieldCopyVal);
+                        }
                     } else {
                         for( Field cmdField : cmdClass.getDeclaredFields() ) {
                             cmdField.setAccessible(true);

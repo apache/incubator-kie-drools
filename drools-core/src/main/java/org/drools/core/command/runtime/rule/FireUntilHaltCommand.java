@@ -24,9 +24,10 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.StatefulRuleSession;
 import org.kie.internal.command.Context;
 
+
 public class FireUntilHaltCommand
-    implements
-    GenericCommand<Void>, UnpersistableCommand {
+	implements
+	GenericCommand<Void>, UnpersistableCommand {
     private static final long serialVersionUID = 510l;
 
     private AgendaFilter agendaFilter = null;
@@ -35,6 +36,14 @@ public class FireUntilHaltCommand
     }
 
     public FireUntilHaltCommand(AgendaFilter agendaFilter) {
+        this.agendaFilter = agendaFilter;
+    }
+
+    public AgendaFilter getAgendaFilter() {
+        return agendaFilter;
+    }
+
+    public void setAgendaFilter(AgendaFilter agendaFilter) {
         this.agendaFilter = agendaFilter;
     }
 
