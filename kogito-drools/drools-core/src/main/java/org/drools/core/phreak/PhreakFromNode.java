@@ -207,7 +207,7 @@ public class PhreakFromNode {
                                              context,
                                              true,
                                              trgLeftTuples,
-                                             null);
+                                             stagedLeftTuples);
 
                 fromNode.addToCreatedHandlesMap(newMatches,
                                                 rightTuple);
