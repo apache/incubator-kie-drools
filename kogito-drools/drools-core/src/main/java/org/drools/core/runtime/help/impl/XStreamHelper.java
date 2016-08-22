@@ -65,6 +65,8 @@ public class XStreamHelper {
                        ExecutionResultImpl.class );
         xstream.alias( "fire-all-rules",
                        FireAllRulesCommand.class );
+        xstream.alias( "fire-until-halt",
+                       FireUntilHaltCommand.class );
         xstream.alias( "query",
                        QueryCommand.class );
         xstream.alias( "query-results",

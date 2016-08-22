@@ -37,6 +37,7 @@ import org.drools.core.command.runtime.process.SignalEventCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.command.runtime.rule.DeleteCommand;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
+import org.drools.core.command.runtime.rule.FireUntilHaltCommand;
 import org.drools.core.command.runtime.rule.GetObjectCommand;
 import org.drools.core.command.runtime.rule.GetObjectsCommand;
 import org.drools.core.command.runtime.rule.InsertElementsCommand;
@@ -64,6 +65,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+
 
 public class XStreamJSon {
     public static volatile boolean SORT_MAPS = false;
@@ -406,6 +408,32 @@ public class XStreamJSon {
 
         public boolean canConvert(Class clazz) {
             return clazz.equals( FireAllRulesCommand.class );
+        }
+    }
+
+    public static class JSonFireUntilHaltConverter extends AbstractCollectionConverter
+            implements Converter {
+        
+        public JSonFireUntilHaltConverter(XStream xstream) {
+            super( xstream.getMapper() );
+        }
+
+        public void marshal(Object object,
+                HierarchicalStreamWriter writer,
+                MarshallingContext context) {
+        }
+
+        public Object unmarshal(HierarchicalStreamReader reader,
+                UnmarshallingContext context) {
+            if ( reader.hasMoreChildren() ) {
+                throw new IllegalArgumentException( "fire-until-halt does not support the child element name=''"
+                        + reader.getNodeName() + "' value=" + reader.getValue() + "'" );
+            }
+            return new FireAllRulesCommand();
+        }
+
+        public boolean canConvert(Class clazz) {
+            return clazz.equals( FireUntilHaltCommand.class );
         }
     }
 
