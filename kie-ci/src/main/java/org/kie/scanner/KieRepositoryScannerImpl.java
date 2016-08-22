@@ -55,6 +55,7 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsfor
 import static org.kie.scanner.ArtifactResolver.getResolverFor;
 
 public class KieRepositoryScannerImpl implements InternalKieScanner {
+    private static final Logger logger = LoggerFactory.getLogger(KieRepositoryScannerImpl.class);
 
     private Timer timer;
 
@@ -87,7 +88,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
                                                    this.kieContainer.getCreationTimestamp());
 
         artifactResolver = getResolverFor(this.kieContainer, true);
-        usedDependencies = indexAtifacts(artifactResolver);
+        usedDependencies = indexArtifacts(artifactResolver);
 
         KieScannersRegistry.register(this);
         status = Status.STOPPED;
@@ -351,7 +352,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         return newArtifacts;
     }
 
-    private Map<ReleaseId, DependencyDescriptor> indexAtifacts(ArtifactResolver artifactResolver) {
+    private Map<ReleaseId, DependencyDescriptor> indexArtifacts(ArtifactResolver artifactResolver) {
         Map<ReleaseId, DependencyDescriptor> depsMap = new HashMap<ReleaseId, DependencyDescriptor>();
         for (DependencyDescriptor dep : artifactResolver.getAllDependecies()) {
             Artifact artifact = artifactResolver.resolveArtifact(dep.getReleaseId());
@@ -364,14 +365,23 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     private boolean isKJar(File jar) {
-        ZipFile zipFile;
+        ZipFile zipFile = null;
         try {
             zipFile = new ZipFile( jar );
+            ZipEntry zipEntry = zipFile.getEntry( KieModuleModelImpl.KMODULE_JAR_PATH );
+            return zipEntry != null;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to open zip file '" + jar.getAbsolutePath() + "'!", e);
+        } finally {
+            if (zipFile != null) {
+                try {
+                    zipFile.close();
+                } catch (IOException ioe) {
+                    logger.warn("Failed to close zip file '" + jar.getAbsolutePath() + "'!", ioe);
+                }
+            }
         }
-        ZipEntry zipEntry = zipFile.getEntry( KieModuleModelImpl.KMODULE_JAR_PATH );
-        return zipEntry != null;
+
     }
     
     public synchronized KieScannerMBean getMBean() {
