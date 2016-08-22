@@ -56,6 +56,33 @@ public class KieContainerTest {
         KieModule kmodule = ((InternalKieContainer) kieContainer).getMainKieModule();
         assertEquals( releaseId, kmodule.getReleaseId() );
     }
+    
+    @Test
+    public void testReleaseIdGetters() {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "test-delete-v", "1.0.1");
+        createAndDeployJar( ks, releaseId, createDRL("ruleA") );
+
+        ReleaseId configuredReleaseId = ks.newReleaseId("org.kie", "test-delete-v", "RELEASE");
+		KieContainer kieContainer = ks.newKieContainer(configuredReleaseId);
+
+        InternalKieContainer iKieContainer = (InternalKieContainer) kieContainer;
+        assertEquals(configuredReleaseId, iKieContainer.getConfiguredReleaseId());
+        assertEquals(releaseId, iKieContainer.getResolvedReleaseId());
+        assertEquals(releaseId, iKieContainer.getReleaseId());
+        // demonstrate internal API behavior, in the future shall this be enforced?
+        assertEquals(configuredReleaseId, iKieContainer.getContainerReleaseId());
+        
+        ReleaseId newReleaseId = ks.newReleaseId("org.kie", "test-delete-v", "1.0.2");
+        createAndDeployJar( ks, newReleaseId, createDRL("ruleA") );
+        iKieContainer.updateToVersion(newReleaseId);
+        
+        assertEquals(configuredReleaseId, iKieContainer.getConfiguredReleaseId());
+        assertEquals(newReleaseId, iKieContainer.getResolvedReleaseId());
+        assertEquals(newReleaseId, iKieContainer.getReleaseId());
+        // demonstrate internal API behavior, in the future shall this be enforced?
+        assertEquals(newReleaseId, iKieContainer.getContainerReleaseId());
+    }
 
     @Test
     public void testSharedTypeDeclarationsUsingClassLoader() throws Exception {
