@@ -217,21 +217,6 @@
     <get src="${jBPM.url}" dest="${install.home}/lib/jbpm-${jBPM.version}-bin.zip"  />
   </target>
 
-  <!-- Download Dashboard -->
-  <target name="download.dashboard.check">
-    <echo message="Checking Dashboard download ..." />
-    <condition property="dashboard.not.available">
-      <not>
-        <available file="${install.home}/lib/dashboard-builder-${dashboard.version}-${jboss.war.type}.war" />
-      </not>
-    </condition>
-  </target>  
-  <target name="download.dashboard" depends="download.dashboard.check" if="dashboard.not.available">
-    <echo message="Getting Dashboard ..." />
-    <mkdir dir="${install.home}/lib"/>
-    <get src="${dashboard.url}" dest="${install.home}/lib/dashboard-builder-${dashboard.version}-${jboss.war.type}.war" />
-  </target>
-
   <!-- Download jBPM and Drools Eclipse plugins -->
   <target name="download.droolsjbpm.eclipse.check">
     <echo message="Checking jBPM and Drools Eclipse download ..." />
@@ -345,22 +330,6 @@
     </copy>
   </target>
 	
-  <!-- Install Dashboard -->
-  <target name="install.dashboard.into.jboss" depends="download.dashboard">
-    <mkdir dir="${install.home}/target"/>
-    <mkdir dir="${install.home}/target/dashboard-builder-war"/>
-    <unzip src="${install.home}/lib/dashboard-builder-${dashboard.version}-${jboss.war.type}.war"
-           dest="${install.home}/target/dashboard-builder-war"/>
-  	<copy tofile="${install.home}/target/dashboard-builder-war/WEB-INF/jboss-web.xml" overwrite="true" 
-  		  file="${install.home}/dashboard-builder-jboss-web.xml" failonerror="false"/>
-    <zip basedir="${install.home}/target/dashboard-builder-war"
-         destfile="${install.home}/target/dashboard-builder-${dashboard.version}.war"/>
-    <copy file="${install.home}/target/dashboard-builder-${dashboard.version}.war"
-          tofile="${jboss.server.deploy.dir}/dashboard-builder.war"
-          overwrite="true" />
-    <delete dir="${install.home}/target"/>
-  </target>
-
   <!-- Install Eclipse -->
   <target name="install.eclipse" depends="download.eclipse,download.eclipse.gef">   
     <antcall target="unzipEclipse" />	
@@ -587,7 +556,8 @@
   <!-- Clean jboss -->
   <target name="clean.jboss">
     <delete dir="${jboss.home}"/>
-  	<antcall target="clean.jboss.repository" />    
+  	<antcall target="clean.jboss.repository" />
+  	<delete file="${install.home}/default-kieserver.xml" failonerror="false"/>
   </target>
 	
   <target name="clean.db" >
