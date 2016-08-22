@@ -57,6 +57,7 @@ import org.drools.core.rule.WindowDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.TripleStore;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.process.Process;
@@ -106,6 +107,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -179,6 +181,10 @@ public class KnowledgeBaseImpl
 
     private transient AtomicInteger sessionDeactivationsCounter = new AtomicInteger();
 
+	private ReleaseId resolvedReleaseId;
+	private String containerId;
+	private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
+
     public KnowledgeBaseImpl() { }
 
     public KnowledgeBaseImpl(final String id,
@@ -211,9 +217,6 @@ public class KnowledgeBaseImpl
         kieComponentFactory.getTripleStore().setId(id);
 
         setupRete();
-        if (config != null && config.isMBeansEnabled()) {
-            DroolsManagementAgent.getInstance().registerKnowledgeBase(this);
-        }
 
         if ( this.config.getSessionCacheOption().isEnabled() ) {
             if ( this.config.isPhreakEnabled() ) {
@@ -223,6 +226,14 @@ public class KnowledgeBaseImpl
             }
         }
     }
+
+    @Override
+	public void initMBeans() {
+		if (config != null && config.isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
+		    // no further synch enforced at this point, even if other threads might not immediately see (yet) the MBean registered on JMX.
+            DroolsManagementAgent.getInstance().registerKnowledgeBase(this);
+        }
+	}
 
     public int nextWorkingMemoryCounter() {
         return this.workingMemoryCounter.getAndIncrement();
@@ -492,6 +503,8 @@ public class KnowledgeBaseImpl
         this.reteooBuilder = (ReteooBuilder) droolsStream.readObject();
         this.reteooBuilder.setRuleBase(this);
         this.rete = (Rete) droolsStream.readObject();
+        
+        this.resolvedReleaseId = (ReleaseId) droolsStream.readObject();
 
         if (!isDrools) {
             droolsStream.close();
@@ -540,6 +553,8 @@ public class KnowledgeBaseImpl
 
         droolsStream.writeObject(this.reteooBuilder);
         droolsStream.writeObject(this.rete);
+        
+        droolsStream.writeObject(this.resolvedReleaseId);
 
         if (!isDrools) {
             droolsStream.flush();
@@ -1902,4 +1917,27 @@ public class KnowledgeBaseImpl
         }
         return modified;
     }
+
+    @Override
+	public ReleaseId getResolvedReleaseId() {
+		return resolvedReleaseId;
+	}
+
+    @Override
+	public void setResolvedReleaseId(ReleaseId currentReleaseId) {
+		this.resolvedReleaseId = currentReleaseId;
+	}
+
+    @Override
+	public String getContainerId() {
+		return containerId;
+	}
+
+    @Override
+	public void setContainerId(String containerId) {
+		this.containerId = containerId;
+	}
+
+
+    
 }

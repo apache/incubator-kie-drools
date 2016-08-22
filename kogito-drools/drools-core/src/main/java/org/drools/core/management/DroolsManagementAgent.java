@@ -41,8 +41,10 @@ public class DroolsManagementAgent
     implements
     KieManagementAgentMBean {
 
-    private static final String           MBEAN_NAME = "org.drools:type=DroolsManagementAgent";
+    private static final String           MBEAN_NAME = "org.kie:type=DroolsManagementAgent";
 
+	private static final String CONTAINER_NAME_PREFIX = "org.kie";
+	
     private static DroolsManagementAgent  INSTANCE;
     private static MBeanServer            mbs;
 
@@ -75,6 +77,24 @@ public class DroolsManagementAgent
         }
         return INSTANCE;
     }
+    
+
+	public static ObjectName createObjectNameFor(InternalKnowledgeBase kbase) {
+		return DroolsManagementAgent.createObjectName(
+					DroolsManagementAgent.createObjectNameByContainerId(kbase.getContainerId())
+					+ ",kbaseId=" + ObjectName.quote(kbase.getId())
+					);
+	}
+	
+	public static ObjectName createObjectNameFor(InternalWorkingMemory ksession) {
+		return DroolsManagementAgent.createObjectName(
+				DroolsManagementAgent.createObjectNameFor(ksession.getKnowledgeBase()) + 
+				",group=Sessions,ksessionId=Session-"+ksession.getIdentifier());
+	}
+	
+	public static ObjectName createObjectNameByContainerId(String containerId) {
+		return DroolsManagementAgent.createObjectName(CONTAINER_NAME_PREFIX + ":kcontainerId="+ObjectName.quote(containerId));
+	}
 
     /* (non-Javadoc)
      * @see org.drools.core.reteoo.monitoring.DroolsManagementAgentMBean#getRulebaseCount()
@@ -136,6 +156,7 @@ public class DroolsManagementAgent
                                 mbl );
                 }
                 mbl.add( name );
+                logger.debug( "Registered {} into the platform MBean Server", name );
             }
         } catch ( Exception e ) {
             logger.error( "Unable to register mbean " + name + " into the platform MBean Server", e );

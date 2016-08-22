@@ -49,6 +49,15 @@ public interface InternalKieContainer extends KieContainer {
      */
     void dispose();
 
+    /**
+     * Internal use: returns the RelaseId configured while creating the Kiecontainer, 
+     * or alternatively if the RelaseId was NOT configured while creating the Kiecontainer,
+     * returns the the ReleaseId of the KieModule wrapped by this KieContainer. 
+     * Additionally, please notice this will always gets updated to the parameter passed as updateToVersion(ReleaseId).
+     * @see org.drools.compiler.kie.builder.impl.KieContainerImpl#KieContainerImpl(String, KieProject, org.kie.api.builder.KieRepository, ReleaseId)
+     * @see org.kie.api.runtime.KieContainer#getReleaseId()
+     * @see org.kie.api.runtime.KieContainer#updateToVersion(ReleaseId)
+     */
     ReleaseId getContainerReleaseId();
 
     long getCreationTimestamp();
@@ -61,5 +70,23 @@ public interface InternalKieContainer extends KieContainer {
      * @return the {@link KieModule} of the {@link #getReleaseId()}
      */
     KieModule getMainKieModule();
+
+    /**
+     * Returns the unique ID assigned to the container.
+     * @return the unique ID assigned to the container.
+     */
+	String getContainerId();
+	
+	/**
+	 * Returns the RelaseId configured while creating the Kiecontainer.
+	 * @return the RelaseId configured while creating the Kiecontainer.
+	 */
+	ReleaseId getConfiguredReleaseId();
+	
+	/**
+	 * Returns the actual resolved ReleaseId. 
+	 * @return the actual resolved ReleaseId. 
+	 */
+	ReleaseId getResolvedReleaseId();
 
 }

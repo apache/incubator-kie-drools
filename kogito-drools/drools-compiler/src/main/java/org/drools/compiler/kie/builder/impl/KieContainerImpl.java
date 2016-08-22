@@ -15,12 +15,32 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
+import static org.drools.compiler.kie.util.CDIHelper.wireListnersAndWIHs;
+import static org.drools.core.util.ClassUtils.convertResourceToClassName;
+import static org.drools.core.util.Drools.isJndiAvailable;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.management.ObjectName;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
+import org.drools.compiler.management.KieContainerMonitor;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ProjectClassLoader;
@@ -28,6 +48,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.management.DroolsManagementAgent;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -40,6 +61,7 @@ import org.kie.api.builder.model.FileLoggerModel;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.MBeansOption;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
@@ -60,22 +82,6 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static org.drools.compiler.kie.builder.impl.AbstractKieModule.buildKnowledgePackages;
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
-import static org.drools.compiler.kie.util.CDIHelper.wireListnersAndWIHs;
-import static org.drools.core.util.ClassUtils.convertResourceToClassName;
-import static org.drools.core.util.Drools.isJndiAvailable;
-
 public class KieContainerImpl
     implements
     InternalKieContainer {
@@ -91,24 +97,82 @@ public class KieContainerImpl
 
     private final KieRepository        kr;
 
+    private ReleaseId configuredReleaseId;
     private ReleaseId containerReleaseId;
+
+	private final String containerId;
 
     public KieModule getMainKieModule() {
         return kr.getKieModule(getReleaseId());
     }
-
+    
+    /**
+     * Please note: the recommended way of getting a KieContainer is relying on {@link org.kie.api.KieServices KieServices} API,
+     * for example: {@link org.kie.api.KieServices#newKieContainer(ReleaseId) KieServices.newKieContainer(...)}.
+     * The direct manual call to KieContainerImpl constructor instead would not guarantee the consistency of the supplied containerId.
+     */
     public KieContainerImpl(KieProject kProject, KieRepository kr) {
+        this("impl"+UUID.randomUUID(), kProject, kr);
+    }
+    
+    /**
+     * Please note: the recommended way of getting a KieContainer is relying on {@link org.kie.api.KieServices KieServices} API,
+     * for example: {@link org.kie.api.KieServices#newKieContainer(ReleaseId) KieServices.newKieContainer(...)}.
+     * The direct manual call to KieContainerImpl constructor instead would not guarantee the consistency of the supplied containerId.
+     */    
+    public KieContainerImpl(KieProject kProject, KieRepository kr, ReleaseId containerReleaseId) {
+        this("impl"+UUID.randomUUID(), kProject, kr, containerReleaseId);
+    }
+
+    /**
+     * Please note: the recommended way of getting a KieContainer is relying on {@link org.kie.api.KieServices KieServices} API,
+     * for example: {@link org.kie.api.KieServices#newKieContainer(ReleaseId) KieServices.newKieContainer(...)}.
+     * The direct manual call to KieContainerImpl constructor instead would not guarantee the consistency of the supplied containerId.
+     */
+    public KieContainerImpl(String containerId, KieProject kProject, KieRepository kr) {
         this.kr = kr;
         this.kProject = kProject;
+        this.containerId = containerId;
         kProject.init();
     }
-
-    public KieContainerImpl(KieProject kProject, KieRepository kr, ReleaseId containerReleaseId) {
-        this(kProject, kr);
+    
+    /**
+     * Please note: the recommended way of getting a KieContainer is relying on {@link org.kie.api.KieServices KieServices} API,
+     * for example: {@link org.kie.api.KieServices#newKieContainer(ReleaseId) KieServices.newKieContainer(...)}.
+     * The direct manual call to KieContainerImpl constructor instead would not guarantee the consistency of the supplied containerId.
+     */
+    public KieContainerImpl(String containerId, KieProject kProject, KieRepository kr, ReleaseId containerReleaseId) {
+        this(containerId, kProject, kr);
+        this.configuredReleaseId = containerReleaseId;
         this.containerReleaseId = containerReleaseId;
+        
+        initMBeans(containerId);
     }
 
-    public ReleaseId getReleaseId() {
+	private void initMBeans(String containerId) {
+		if ( MBeansOption.isEnabled( System.getProperty( MBeansOption.PROPERTY_NAME, MBeansOption.DISABLED.toString() ) ) ) {
+        	KieContainerMonitor monitor = new KieContainerMonitor(this);
+            ObjectName on = DroolsManagementAgent.createObjectNameByContainerId(containerId);
+            DroolsManagementAgent.getInstance().registerMBean( this, monitor, on );
+        }
+	}
+    
+    @Override
+    public String getContainerId() {
+    	return this.containerId;
+    }
+    
+    @Override
+    public ReleaseId getConfiguredReleaseId() {
+		return configuredReleaseId;
+	}
+    
+	@Override
+	public ReleaseId getResolvedReleaseId() {
+		return getReleaseId();
+	}
+
+	public ReleaseId getReleaseId() {
         return kProject.getGAV();
     }
 
@@ -120,6 +184,7 @@ public class KieContainerImpl
         return kProject.getCreationTimestamp();
     }
 
+    @Override
     public ReleaseId getContainerReleaseId() {
         return containerReleaseId != null ? containerReleaseId : getReleaseId();
     }
@@ -242,6 +307,8 @@ public class KieContainerImpl
             }
             rebuildAll(newReleaseId, results, newKM, modifyingUsedClass, kieBaseModel, pkgbuilder, ckbuilder);
         }
+        
+        kBase.setResolvedReleaseId(newReleaseId);
 
         for ( InternalWorkingMemory wm : kBase.getWorkingMemories() ) {
             wm.notifyWaitOnRest();
@@ -512,7 +579,10 @@ public class KieContainerImpl
         } else if (conf instanceof RuleBaseConfiguration) {
             ((RuleBaseConfiguration)conf).setClassLoader(cl);
         }
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( conf );
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase( kBaseModel.getName(), conf );
+        kBase.setResolvedReleaseId(containerReleaseId);
+        kBase.setContainerId(containerId);
+        kBase.initMBeans();
 
         kBase.addKnowledgePackages( pkgs );
         return kBase;
@@ -698,6 +768,7 @@ public class KieContainerImpl
         }
         kSessions.clear();
         statelessKSessions.clear();
+        ((InternalKieServices) KieServices.Factory.get()).clearRefToContainerId(this.containerId, this);
     }
 
     public KieProject getKieProject() {
