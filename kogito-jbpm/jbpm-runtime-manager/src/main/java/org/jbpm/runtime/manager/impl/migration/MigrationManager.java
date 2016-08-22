@@ -361,10 +361,10 @@ public class MigrationManager {
             
             if (upgradedNode != null) {
                 // update log information for new node information
-                Query nodeLogQuery = em.createQuery("update NodeInstanceLog set nodeId = :nodeId, nodeName = :nodeName, nodeType = :nodeType where id in " +
-                        "( select id from NodeInstanceLog nil where nil.nodeId = :oldNodeId and processInstanceId = :processInstanceId "+  
-                        " GROUP BY nil.nodeInstanceId" +
-                        " HAVING sum(nil.type) = 0) and processInstanceId = :processInstanceId ");
+                Query nodeLogQuery = em.createQuery("update NodeInstanceLog set nodeId = :nodeId, nodeName = :nodeName, nodeType = :nodeType where nodeInstanceId in " + 
+                        "( select nodeInstanceId from NodeInstanceLog nil where nil.nodeId = :oldNodeId and processInstanceId = :processInstanceId " + 
+                        " GROUP BY nil.nodeInstanceId" + 
+                        " HAVING sum(nil.type) = 0) and processInstanceId = :processInstanceId");
                 nodeLogQuery
                     .setParameter("nodeId", (String) upgradedNode.getMetaData().get("UniqueId"))
                     .setParameter("nodeName", upgradedNode.getName())
@@ -382,10 +382,7 @@ public class MigrationManager {
                     Long taskId = (Long) em.createQuery("select id from TaskImpl where workItemId = :workItemId")
                                                         .setParameter("workItemId", ((HumanTaskNodeInstance) nodeInstance).getWorkItemId())
                                                         .getSingleResult();
-                    String name = (String)((HumanTaskNode) upgradedNode).getWork().getParameter("TaskName");
-                    if (name == null) {
-                        name = ((HumanTaskNode) upgradedNode).getName();
-                    }
+                    String name = ((HumanTaskNode) upgradedNode).getName();                    
                     String description = (String)((HumanTaskNode) upgradedNode).getWork().getParameter("Description");
                     
                     // update task audit instance log with new deployment and process id
