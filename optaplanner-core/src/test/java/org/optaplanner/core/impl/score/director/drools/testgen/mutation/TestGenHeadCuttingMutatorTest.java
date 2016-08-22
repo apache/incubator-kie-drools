@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 
 public class TestGenHeadCuttingMutatorTest {
 
-    private ArrayList<Integer> list = new ArrayList<Integer>();
+    private ArrayList<Integer> list = new ArrayList<>();
 
     @Before
     public void setUp() {

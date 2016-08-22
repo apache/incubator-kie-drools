@@ -23,7 +23,7 @@ public class TestGenRemoveRandomBlockMutator<T> {
 
     private final List<T> list;
     private final Random random = new Random(0);
-    private final List<Integer> indexBlacklist = new ArrayList<Integer>();
+    private final List<Integer> indexBlacklist = new ArrayList<>();
     private int blockPortion = 10;
     private int removedIndex = -1;
     private List<T> removedBlock;
@@ -59,7 +59,7 @@ public class TestGenRemoveRandomBlockMutator<T> {
             removedIndex = random.nextInt(list.size() / blockSize) * blockSize;
         } while (indexBlacklist.contains(removedIndex));
 
-        removedBlock = new ArrayList<T>(list.subList(removedIndex, removedIndex + blockSize));
+        removedBlock = new ArrayList<>(list.subList(removedIndex, removedIndex + blockSize));
         list.removeAll(removedBlock);
         return list;
     }

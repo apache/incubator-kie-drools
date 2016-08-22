@@ -41,9 +41,9 @@ public class TestGenKieSessionJournal {
     private int operationId = 0;
 
     public TestGenKieSessionJournal() {
-        facts = new ArrayList<TestGenFact>();
-        initialInsertJournal = new ArrayList<TestGenKieSessionInsert>();
-        updateJournal = new ArrayList<TestGenKieSessionOperation>();
+        facts = new ArrayList<>();
+        initialInsertJournal = new ArrayList<>();
+        updateJournal = new ArrayList<>();
     }
 
     public TestGenKieSessionJournal(List<TestGenFact> facts, List<TestGenKieSessionInsert> initialInsertJournal, List<TestGenKieSessionOperation> updateJournal) {

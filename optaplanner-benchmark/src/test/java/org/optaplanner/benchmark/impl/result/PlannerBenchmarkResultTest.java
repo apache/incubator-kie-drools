@@ -64,17 +64,17 @@ public class PlannerBenchmarkResultTest {
         p1ProblemA.setInputSolutionFile(new File("problemA.xml"));
         p1ProblemA.setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
         p1ProblemA.setSingleBenchmarkResultList(Collections.<SingleBenchmarkResult>emptyList());
-        p1ProblemA.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
+        p1ProblemA.setSingleBenchmarkResultList(new ArrayList<>());
         ProblemBenchmarkResult p1ProblemB = new ProblemBenchmarkResult(p1);
         p1ProblemB.setInputSolutionFile(new File("problemB.xml"));
         p1ProblemB.setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
         p1ProblemB.setSingleBenchmarkResultList(Collections.<SingleBenchmarkResult>emptyList());
-        p1ProblemB.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
+        p1ProblemB.setSingleBenchmarkResultList(new ArrayList<>());
         ProblemBenchmarkResult p2ProblemA = new ProblemBenchmarkResult(p2);
         p2ProblemA.setInputSolutionFile(new File("problemA.xml"));
         p2ProblemA.setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
         p2ProblemA.setSingleBenchmarkResultList(Collections.<SingleBenchmarkResult>emptyList());
-        p2ProblemA.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
+        p2ProblemA.setSingleBenchmarkResultList(new ArrayList<>());
 
         SingleBenchmarkResult p1SolverXProblemA = createSingleBenchmarkResult(p1SolverX, p1ProblemA, -1);
         createSubSingleBenchmarkResult(p1SolverXProblemA, 1);

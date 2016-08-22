@@ -119,7 +119,7 @@ final class TestGenerator {
 
     private void pruneFacts() {
         log.info("Pruning {} facts...", journal.getFacts().size());
-        ArrayList<TestGenFact> minimal = new ArrayList<TestGenFact>();
+        ArrayList<TestGenFact> minimal = new ArrayList<>();
         for (TestGenKieSessionInsert insert : journal.getInitialInserts()) {
             addWithDependencies(insert.getFact(), minimal);
         }

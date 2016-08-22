@@ -25,7 +25,7 @@ class TestGenListValueProvider extends TestGenAbstractValueProvider {
     private final String identifier;
     private final Type typeArgument;
     private final Map<Object, TestGenFact> existingInstances;
-    private final List<Class<?>> imports = new ArrayList<Class<?>>();
+    private final List<Class<?>> imports = new ArrayList<>();
 
     public TestGenListValueProvider(Object value, String identifier, Type genericType, Map<Object, TestGenFact> existingInstances) {
         super(value);

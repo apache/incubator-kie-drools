@@ -183,7 +183,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
             }
         }
         problemBenchmarkResult.setProblemStatisticList(problemStatisticList);
-        problemBenchmarkResult.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
+        problemBenchmarkResult.setSingleBenchmarkResultList(new ArrayList<>());
         return problemBenchmarkResult;
     }
 

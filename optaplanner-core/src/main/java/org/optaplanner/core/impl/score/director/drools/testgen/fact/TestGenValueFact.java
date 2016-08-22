@@ -33,8 +33,8 @@ public class TestGenValueFact implements TestGenFact {
     private final Object instance;
     private final String variableName;
     private final HashMap<BeanPropertyMemberAccessor, TestGenValueProvider> attributes = new HashMap<BeanPropertyMemberAccessor, TestGenValueProvider>();
-    private final List<TestGenFact> dependencies = new ArrayList<TestGenFact>();
-    private final List<Class<?>> imports = new ArrayList<Class<?>>();
+    private final List<TestGenFact> dependencies = new ArrayList<>();
+    private final List<Class<?>> imports = new ArrayList<>();
 
     public TestGenValueFact(int id, Object instance) {
         this.instance = instance;

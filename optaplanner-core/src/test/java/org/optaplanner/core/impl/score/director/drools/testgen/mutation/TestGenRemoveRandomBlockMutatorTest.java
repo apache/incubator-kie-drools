@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 public class TestGenRemoveRandomBlockMutatorTest {
 
     private static final int LIST_SIZE = 500;
-    private ArrayList<Integer> list = new ArrayList<Integer>();
+    private ArrayList<Integer> list = new ArrayList<>();
 
     @Before
     public void setUp() {
@@ -38,7 +38,7 @@ public class TestGenRemoveRandomBlockMutatorTest {
     @Test
     public void testRemoveAll() {
         TestGenRemoveRandomBlockMutator<Integer> m = new TestGenRemoveRandomBlockMutator<Integer>(list);
-        ArrayList<Integer> removed = new ArrayList<Integer>();
+        ArrayList<Integer> removed = new ArrayList<>();
         while (m.canMutate()) {
             assertTrue(m.canMutate());
             m.mutate();
@@ -64,7 +64,7 @@ public class TestGenRemoveRandomBlockMutatorTest {
     @Test
     public void testImpossibleMutation() {
         TestGenRemoveRandomBlockMutator<Integer> m = new TestGenRemoveRandomBlockMutator<Integer>(list);
-        ArrayList<Integer> removed = new ArrayList<Integer>();
+        ArrayList<Integer> removed = new ArrayList<>();
         while (m.canMutate()) {
             m.mutate();
             removed.addAll(m.getRemovedBlock());
@@ -75,4 +75,5 @@ public class TestGenRemoveRandomBlockMutatorTest {
             assertTrue(removed.contains(list.get(i)));
         }
     }
+
 }

@@ -26,7 +26,7 @@ class TestGenMapValueProvider extends TestGenAbstractValueProvider {
     private final String identifier;
     private final Type[] typeArguments;
     private final Map<Object, TestGenFact> existingInstances;
-    private final List<Class<?>> imports = new ArrayList<Class<?>>();
+    private final List<Class<?>> imports = new ArrayList<>();
 
     public TestGenMapValueProvider(Object value, String identifier,
             Type[] typeArguments, Map<Object, TestGenFact> existingInstances) {
