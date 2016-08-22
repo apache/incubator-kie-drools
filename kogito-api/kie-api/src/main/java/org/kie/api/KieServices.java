@@ -86,20 +86,42 @@ public interface KieServices {
     KieStoreServices getStoreServices();
 
     /**
-     * Returns KieContainer for the classpath, this a global singleton
+     * Returns KieContainer for the classpath, this a global singleton.
      * @return kie classpath container 
      */
     KieContainer getKieClasspathContainer();
 
     /**
      * Returns KieContainer for the classpath using the given classLoader,
-     * this a global singleton
+     * this a global singleton.
      * @param classLoader classLoader
      * @return kie classpath container
-     *
-     * #throw IllegalStateException if this method get called twice with 2 different ClassLoaders
+     * 
+     * @throws IllegalStateException if this method get called twice with 2 different ClassLoaders
      */
     KieContainer getKieClasspathContainer(ClassLoader classLoader);
+    
+    /**
+     * Returns KieContainer for the classpath enforcing the given containerId,
+     * this a global singleton.
+     * <p> If you do not want to enforce a specific containerId, use the {@link #getKieClasspathContainer()} method instead. </p>
+     * @param containerId the containerId to enforce
+     * @return kie classpath container
+     * 
+     * @throws IllegalStateException if the containerId is already existing for another container and therefore cannot be enforced.
+     */
+    KieContainer getKieClasspathContainer(String containerId);
+
+    /**
+     * Returns KieContainer for the classpath enforcing the given containerId and using the given classLoader,
+     * this a global singleton
+     * @param containerId the containerId to enforce
+     * @param classLoader classLoader
+     * @return kie classpath container
+     * 
+     * @throws IllegalStateException if this method get called twice with 2 different ClassLoaders, or if the containerId is already existing for another container and therefore cannot be enforced.
+     */
+    KieContainer getKieClasspathContainer(String containerId, ClassLoader classLoader);
 
     /**
      * Creates a new KieContainer for the classpath, regardless if there's already an existing one
@@ -114,6 +136,28 @@ public interface KieServices {
      * @return new kie classpath container 
      */
     KieContainer newKieClasspathContainer(ClassLoader classLoader);
+    
+    /**
+     * Creates a new KieContainer for the classpath,
+     * regardless if there's already an existing one,
+     * enforcing the given containerId.
+     * <p> If you do not want to enforce a specific containerId, use the {@link #newKieClasspathContainer()} method instead. </p>
+     * @param containerId a unique containerId
+     * @return new kie classpath container 
+     * @throws IllegalStateException if the containerId is already existing for another container, and therefore cannot be enforced.
+     */
+    KieContainer newKieClasspathContainer(String containerId);
+
+    /**
+     * Creates a new KieContainer for the classpath using the given classLoader,
+     * regardless if there's already an existing one,
+     * enforcing the given containerId.
+     * @param containerId a unique containerId
+     * @param classLoader classLoader
+     * @return new kie classpath container 
+     * @throws IllegalStateException if the containerId is already existing for another container, and therefore cannot be enforced.
+     */
+    KieContainer newKieClasspathContainer(String containerId, ClassLoader classLoader);
 
     /**
      * Creates a new KieContainer wrapping the KieModule with the given ReleaseId
@@ -121,7 +165,18 @@ public interface KieServices {
      * @return new kie container 
      */
     KieContainer newKieContainer(ReleaseId releaseId);
-
+    
+    /**
+     * Creates a new KieContainer wrapping the KieModule with the given ReleaseId
+     * and enforcing the given containerId.
+     * <p> If you do not want to enforce a specific containerId, use the {@link #newKieContainer(ReleaseId)} method instead. </p>
+     * @param containerId a unique containerId
+     * @param releaseId releaseId
+     * @return new kie container 
+     * @throws IllegalStateException if the containerId is already existing for another container, and therefore cannot be enforced.
+     */
+    KieContainer newKieContainer(String containerId, ReleaseId releaseId);
+    
     /**
      * Creates a new KieContainer wrapping the KieModule with the given ReleaseId
      * and using the given class loader
@@ -131,6 +186,18 @@ public interface KieServices {
      */
     KieContainer newKieContainer(ReleaseId releaseId, ClassLoader classLoader);
 
+    /**
+     * Creates a new KieContainer wrapping the KieModule with the given ReleaseId,
+     * using the given class loader
+     * and enforcing the given containerId.
+     * @param containerId a unique containerId
+     * @param releaseId releaseId
+     * @param classLoader classLoader
+     * @return new kie container 
+     * @throws IllegalStateException if the containerId is already existing for another container, and therefore cannot be enforced.
+     */
+    KieContainer newKieContainer(String containerId, ReleaseId releaseId, ClassLoader classLoader);
+    
     /**
      * Creates a KieScanner to automatically discover if there are new releases of the KieModule
      * (and its dependencies) wrapped by the given KieContainer

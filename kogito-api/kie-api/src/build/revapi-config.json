@@ -2,6 +2,36 @@
   "revapi" : {
     "ignore" : [
       {
+        "code": "java.method.addedToInterface",
+        "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::getKieClasspathContainer(java.lang.String)",
+        "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::getKieClasspathContainer(java.lang.String, java.lang.ClassLoader)",
+        "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::newKieClasspathContainer(java.lang.String)",
+        "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::newKieClasspathContainer(java.lang.String, java.lang.ClassLoader)",
+        "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::newKieContainer(java.lang.String, org.kie.api.builder.ReleaseId)",
+        "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::newKieContainer(java.lang.String, org.kie.api.builder.ReleaseId, java.lang.ClassLoader)",
+        "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
+      },
+      {
         "code" : "java.method.addedToInterface",
         "new" : "method org.kie.api.runtime.KieSessionConfiguration org.kie.api.runtime.KieContainer::getKieSessionConfiguration()",
         "justification" : "Enables retrieving the default session configuration directly from KieContainer."
