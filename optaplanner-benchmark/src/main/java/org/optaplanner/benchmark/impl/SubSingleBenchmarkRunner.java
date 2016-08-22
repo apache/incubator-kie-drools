@@ -116,7 +116,7 @@ public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBe
 
         for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
             subSingleStatistic.close(solver);
-            subSingleStatistic.hibernatePointList(solverConfigContext);
+            subSingleStatistic.hibernatePointList();
         }
         problemBenchmarkResult.writeOutputSolution(subSingleBenchmarkResult, outputSolution);
         MDC.remove(NAME_MDC);

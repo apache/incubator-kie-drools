@@ -32,6 +32,7 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.core.config.AbstractConfig;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
@@ -52,6 +53,10 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
 
     @XStreamImplicit(itemFieldName = "singleStatisticType")
     private List<SingleStatisticType> singleStatisticTypeList = null;
+
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
 
     public Class<SolutionFileIO> getSolutionFileIOClass() {
         return solutionFileIOClass;
@@ -105,7 +110,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
     // Builder methods
     // ************************************************************************
 
-    public void buildProblemBenchmarkList(SolverBenchmarkResult solverBenchmarkResult) {
+    public void buildProblemBenchmarkList(SolverConfigContext solverConfigContext,
+            SolverBenchmarkResult solverBenchmarkResult) {
         validate(solverBenchmarkResult);
         PlannerBenchmarkResult plannerBenchmarkResult = solverBenchmarkResult.getPlannerBenchmarkResult();
         SolutionFileIO solutionFileIO = buildSolutionFileIO();
@@ -117,7 +123,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
                 throw new IllegalArgumentException("The inputSolutionFile (" + inputSolutionFile + ") does not exist.");
             }
             // 2 SolverBenchmarks containing equal ProblemBenchmarks should contain the same instance
-            ProblemBenchmarkResult newProblemBenchmarkResult = buildProblemBenchmark(plannerBenchmarkResult,
+            ProblemBenchmarkResult newProblemBenchmarkResult = buildProblemBenchmark(
+                    solverConfigContext, plannerBenchmarkResult,
                     solutionFileIO, inputSolutionFile);
             ProblemBenchmarkResult problemBenchmarkResult;
             int index = unifiedProblemBenchmarkResultList.indexOf(newProblemBenchmarkResult);
@@ -128,7 +135,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
                 problemBenchmarkResult = unifiedProblemBenchmarkResultList.get(index);
             }
             problemBenchmarkResultList.add(problemBenchmarkResult);
-            buildSingleBenchmark(solverBenchmarkResult, problemBenchmarkResult);
+            buildSingleBenchmark(solverConfigContext, solverBenchmarkResult, problemBenchmarkResult);
         }
     }
 
@@ -158,7 +165,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         }
     }
 
-    private ProblemBenchmarkResult buildProblemBenchmark(PlannerBenchmarkResult plannerBenchmarkResult,
+    private ProblemBenchmarkResult buildProblemBenchmark(SolverConfigContext solverConfigContext,
+            PlannerBenchmarkResult plannerBenchmarkResult,
             SolutionFileIO solutionFileIO, File inputSolutionFile) {
         ProblemBenchmarkResult problemBenchmarkResult = new ProblemBenchmarkResult(plannerBenchmarkResult);
         String name = FilenameUtils.getBaseName(inputSolutionFile.getName());
@@ -179,8 +187,8 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         return problemBenchmarkResult;
     }
 
-    private void buildSingleBenchmark(SolverBenchmarkResult solverBenchmarkResult,
-            ProblemBenchmarkResult problemBenchmarkResult) {
+    private void buildSingleBenchmark(SolverConfigContext solverConfigContext,
+            SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
         buildSubSingleBenchmarks(singleBenchmarkResult, solverBenchmarkResult.getSubSingleCount());
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {

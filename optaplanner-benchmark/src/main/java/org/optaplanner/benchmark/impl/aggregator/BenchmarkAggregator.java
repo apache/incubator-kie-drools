@@ -59,12 +59,11 @@ public class BenchmarkAggregator {
     // Aggregate methods
     // ************************************************************************
 
-    public File aggregate(SolverConfigContext configContext, List<SingleBenchmarkResult> singleBenchmarkResultList) {
-        return aggregate(configContext, singleBenchmarkResultList, null);
+    public File aggregate(List<SingleBenchmarkResult> singleBenchmarkResultList) {
+        return aggregate(singleBenchmarkResultList, null);
     }
 
-    public File aggregate(SolverConfigContext configContext,
-            List<SingleBenchmarkResult> singleBenchmarkResultList,
+    public File aggregate(List<SingleBenchmarkResult> singleBenchmarkResultList,
             Map<SolverBenchmarkResult, String> solverBenchmarkResultNameMap) {
         if (benchmarkDirectory == null) {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory + ") must not be null.");
@@ -100,13 +99,13 @@ public class BenchmarkAggregator {
         }
 
         PlannerBenchmarkResult plannerBenchmarkResult = PlannerBenchmarkResult.createMergedResult(
-                configContext, singleBenchmarkResultList);
+                singleBenchmarkResultList);
         plannerBenchmarkResult.setStartingTimestamp(startingTimestamp);
         plannerBenchmarkResult.initBenchmarkReportDirectory(benchmarkDirectory);
 
         BenchmarkReport benchmarkReport = benchmarkReportConfig.buildBenchmarkReport(plannerBenchmarkResult);
         plannerBenchmarkResult.accumulateResults(benchmarkReport);
-        benchmarkReport.writeReport(configContext);
+        benchmarkReport.writeReport();
 
         logger.info("Aggregation ended: statistic html overview ({}).",
                 benchmarkReport.getHtmlOverviewFile().getAbsolutePath());

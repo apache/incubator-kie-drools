@@ -33,6 +33,7 @@ import java.util.Set;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
@@ -43,6 +44,7 @@ import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
@@ -89,6 +91,10 @@ public class ProblemBenchmarkResult<Solution_> {
     private Integer failureCount = null;
     private SingleBenchmarkResult winningSingleBenchmarkResult = null;
     private SingleBenchmarkResult worstSingleBenchmarkResult = null;
+
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
 
     public ProblemBenchmarkResult(PlannerBenchmarkResult plannerBenchmarkResult) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
@@ -195,6 +201,11 @@ public class ProblemBenchmarkResult<Solution_> {
 
     public String getAnchorId() {
         return ReportHelper.escapeHtmlId(name);
+    }
+
+    public String findScoreLevelTag(int scoreLevel) {
+        String[] levelLabels = singleBenchmarkResultList.get(0).getSolverBenchmarkResult().getScoreDefinition().getLevelLabels();
+        return StringUtils.capitalize(levelLabels[scoreLevel]);
     }
 
     public File getBenchmarkReportDirectory() {
@@ -422,7 +433,7 @@ public class ProblemBenchmarkResult<Solution_> {
     }
 
     /**
-     * Used by {@link ProblemBenchmarksConfig#buildProblemBenchmarkList(SolverBenchmarkResult)}.
+     * Used by {@link ProblemBenchmarksConfig#buildProblemBenchmarkList(SolverConfigContext, SolverBenchmarkResult)}.
      * @param o sometimes null
      * @return true if equal
      */

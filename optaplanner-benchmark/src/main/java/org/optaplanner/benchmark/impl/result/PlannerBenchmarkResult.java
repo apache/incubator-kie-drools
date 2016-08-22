@@ -87,6 +87,10 @@ public class PlannerBenchmarkResult {
     private Score averageScore = null;
     private SolverBenchmarkResult favoriteSolverBenchmarkResult = null;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public String getName() {
         return name;
     }
@@ -232,6 +236,11 @@ public class PlannerBenchmarkResult {
             }
         }
         return maximumSubSingleCount;
+    }
+
+    public String findScoreLevelTag(int scoreLevel) {
+        String[] levelLabels = solverBenchmarkResultList.get(0).getScoreDefinition().getLevelLabels();
+        return StringUtils.capitalize(levelLabels[scoreLevel]);
     }
 
     // ************************************************************************
@@ -427,7 +436,7 @@ public class PlannerBenchmarkResult {
     // Merger methods
     // ************************************************************************
 
-    public static PlannerBenchmarkResult createMergedResult(SolverConfigContext configContext,
+    public static PlannerBenchmarkResult createMergedResult(
             List<SingleBenchmarkResult> singleBenchmarkResultList) {
         PlannerBenchmarkResult mergedResult = createMergeSingleton(singleBenchmarkResultList);
         Map<SolverBenchmarkResult, SolverBenchmarkResult> solverMergeMap
@@ -439,7 +448,7 @@ public class PlannerBenchmarkResult {
                     singleBenchmarkResult.getSolverBenchmarkResult());
             ProblemBenchmarkResult problemBenchmarkResult = problemMergeMap.get(
                     singleBenchmarkResult.getProblemBenchmarkResult());
-            SingleBenchmarkResult.createMerge(configContext,
+            SingleBenchmarkResult.createMerge(
                     solverBenchmarkResult, problemBenchmarkResult, singleBenchmarkResult);
         }
         return mergedResult;

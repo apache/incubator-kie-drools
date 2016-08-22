@@ -72,6 +72,10 @@ public class PlannerBenchmarkConfig {
     @XStreamImplicit(itemFieldName = "solverBenchmark")
     private List<SolverBenchmarkConfig> solverBenchmarkConfigList = null;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public String getName() {
         return name;
     }
@@ -195,7 +199,7 @@ public class PlannerBenchmarkConfig {
         plannerBenchmarkResult.setSolverBenchmarkResultList(new ArrayList<>(
                 effectiveSolverBenchmarkConfigList.size()));
         for (SolverBenchmarkConfig solverBenchmarkConfig : effectiveSolverBenchmarkConfigList) {
-            solverBenchmarkConfig.buildSolverBenchmark(plannerBenchmarkResult);
+            solverBenchmarkConfig.buildSolverBenchmark(solverConfigContext, plannerBenchmarkResult);
         }
         return plannerBenchmark;
     }

@@ -132,10 +132,10 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
         }
     }
 
-    private void readCsvStatisticFile(SolverConfigContext configContext) {
+    private void readCsvStatisticFile() {
         File csvFile = getCsvFile();
         ScoreDefinition scoreDefinition = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult()
-                .getSolverConfig().buildSolutionDescriptor(configContext).getScoreDefinition();
+                .getScoreDefinition();
         if (!pointList.isEmpty()) {
             throw new IllegalStateException("The pointList with size (" + pointList.size() + ") should be empty.");
         }
@@ -187,7 +187,7 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
         }
     }
 
-    public void unhibernatePointList(SolverConfigContext configContext) {
+    public void unhibernatePointList() {
         if (!getCsvFile().exists()) {
             throw new IllegalStateException("The csvFile (" + getCsvFile() + ") of the statistic (" + getStatisticType()
                     + ") of the single benchmark (" + subSingleBenchmarkResult + ") doesn't exist.");
@@ -196,10 +196,10 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
                     + ") of the single benchmark (" + subSingleBenchmarkResult + ") should be null when unhibernating.");
         }
         initPointList();
-        readCsvStatisticFile(configContext);
+        readCsvStatisticFile();
     }
 
-    public void hibernatePointList(SolverConfigContext configContext) {
+    public void hibernatePointList() {
         writeCsvStatisticFile();
         pointList = null;
     }

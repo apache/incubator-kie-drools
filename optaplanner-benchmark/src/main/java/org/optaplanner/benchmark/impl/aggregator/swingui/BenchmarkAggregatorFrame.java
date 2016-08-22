@@ -205,23 +205,18 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
     private CheckBoxTree createCheckBoxTree() {
         final CheckBoxTree resultCheckBoxTree = new CheckBoxTree(initBenchmarkHierarchy(true));
-        resultCheckBoxTree.addTreeSelectionListener(new TreeSelectionListener() {
-
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                TreePath treeSelectionPath = e.getNewLeadSelectionPath();
-                if (treeSelectionPath != null) {
-                    DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) treeSelectionPath.getLastPathComponent();
-                    MixedCheckBox checkBox = (MixedCheckBox) treeNode.getUserObject();
-                    detailTextArea.setText(checkBox.getDetail());
-                    detailTextArea.setCaretPosition(0);
-                    renameNodeButton.setEnabled(checkBox.getBenchmarkResult() instanceof PlannerBenchmarkResult
-                            || checkBox.getBenchmarkResult() instanceof SolverBenchmarkResult);
-                }
+        resultCheckBoxTree.addTreeSelectionListener(e -> {
+            TreePath treeSelectionPath = e.getNewLeadSelectionPath();
+            if (treeSelectionPath != null) {
+                DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) treeSelectionPath.getLastPathComponent();
+                MixedCheckBox checkBox = (MixedCheckBox) treeNode.getUserObject();
+                detailTextArea.setText(checkBox.getDetail());
+                detailTextArea.setCaretPosition(0);
+                renameNodeButton.setEnabled(checkBox.getBenchmarkResult() instanceof PlannerBenchmarkResult
+                        || checkBox.getBenchmarkResult() instanceof SolverBenchmarkResult);
             }
         });
         resultCheckBoxTree.addMouseListener(new MouseAdapter() {
-
             @Override
             public void mousePressed(MouseEvent e) {
                 // Enable button if checked singleBenchmarkResults exist
@@ -233,7 +228,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
     }
 
     private void initPlannerBenchmarkResultList() {
-        plannerBenchmarkResultList = benchmarkResultIO.readPlannerBenchmarkResultList(
+        SolverConfigContext configContext = new SolverConfigContext();
+        plannerBenchmarkResultList = benchmarkResultIO.readPlannerBenchmarkResultList(configContext,
                 benchmarkAggregator.getBenchmarkDirectory());
         for (PlannerBenchmarkResult plannerBenchmarkResult : plannerBenchmarkResultList) {
             plannerBenchmarkResult.accumulateResults(
@@ -536,8 +532,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
 
         @Override
         protected File doInBackground() {
-            SolverConfigContext configContext = new SolverConfigContext();
-            return benchmarkAggregator.aggregate(configContext, singleBenchmarkResultList, solverBenchmarkResultNameMapping);
+            return benchmarkAggregator.aggregate(singleBenchmarkResultList, solverBenchmarkResultNameMapping);
         }
 
         @Override

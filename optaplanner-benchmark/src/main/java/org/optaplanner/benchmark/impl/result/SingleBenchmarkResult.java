@@ -86,6 +86,10 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     // Ranking starts from 0
     private Integer ranking = null;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public SingleBenchmarkResult(SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {
         this.solverBenchmarkResult = solverBenchmarkResult;
         this.problemBenchmarkResult = problemBenchmarkResult;
@@ -395,14 +399,14 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     // Merger methods
     // ************************************************************************
 
-    protected static SingleBenchmarkResult createMerge(SolverConfigContext configContext,
+    protected static SingleBenchmarkResult createMerge(
             SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult,
             SingleBenchmarkResult oldResult) {
         SingleBenchmarkResult newResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
         newResult.subSingleBenchmarkResultList = new ArrayList<>(oldResult.getSubSingleBenchmarkResultList().size());
         int subSingleBenchmarkIndex = 0;
         for (SubSingleBenchmarkResult oldSubResult : oldResult.subSingleBenchmarkResultList) {
-            SubSingleBenchmarkResult.createMerge(configContext, newResult, oldSubResult, subSingleBenchmarkIndex);
+            SubSingleBenchmarkResult.createMerge(newResult, oldSubResult, subSingleBenchmarkIndex);
             subSingleBenchmarkIndex++;
         }
         newResult.median = oldResult.median;

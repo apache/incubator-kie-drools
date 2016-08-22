@@ -35,6 +35,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 
 /**
@@ -51,6 +52,8 @@ public class SolverBenchmarkResult {
     private Integer subSingleCount = null;
 
     private SolverConfig solverConfig = null;
+    @XStreamOmitField // Restored through BenchmarkResultIO
+    private ScoreDefinition scoreDefinition = null;
 
     @XStreamImplicit(itemFieldName = "singleBenchmarkResult")
     private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
@@ -76,6 +79,10 @@ public class SolverBenchmarkResult {
 
     // Ranking starts from 0
     private Integer ranking = null;
+
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
 
     public SolverBenchmarkResult(PlannerBenchmarkResult plannerBenchmarkResult) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
@@ -114,6 +121,14 @@ public class SolverBenchmarkResult {
 
     public void setSolverConfig(SolverConfig solverConfig) {
         this.solverConfig = solverConfig;
+    }
+
+    public ScoreDefinition getScoreDefinition() {
+        return scoreDefinition;
+    }
+
+    public void setScoreDefinition(ScoreDefinition scoreDefinition) {
+        this.scoreDefinition = scoreDefinition;
     }
 
     public List<SingleBenchmarkResult> getSingleBenchmarkResultList() {
@@ -335,6 +350,7 @@ public class SolverBenchmarkResult {
                 nameCountMap.put(oldResult.name, nameCount);
                 newResult.subSingleCount = oldResult.subSingleCount;
                 newResult.solverConfig = oldResult.solverConfig;
+                newResult.scoreDefinition = oldResult.scoreDefinition;
                 newResult.singleBenchmarkResultList = new ArrayList<>(
                         oldResult.singleBenchmarkResultList.size());
                 mergeMap.put(oldResult, newResult);

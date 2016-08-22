@@ -219,7 +219,7 @@ public class BenchmarkReport {
     // Write methods
     // ************************************************************************
 
-    public void writeReport(SolverConfigContext configContext) {
+    public void writeReport() {
         logger.info("Generating benchmark report...");
         summaryDirectory = new File(plannerBenchmarkResult.getBenchmarkReportDirectory(), "summary");
         summaryDirectory.mkdir();
@@ -242,7 +242,7 @@ public class BenchmarkReport {
                     }
                     for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
                         try {
-                            subSingleStatistic.unhibernatePointList(configContext);
+                            subSingleStatistic.unhibernatePointList();
                         } catch (IllegalStateException e) {
                             if (!plannerBenchmarkResult.getAggregation()) {
                                 throw new IllegalStateException("Failed to unhibernate point list of SubSingleStatistic ("
@@ -279,7 +279,7 @@ public class BenchmarkReport {
                         if (plannerBenchmarkResult.getAggregation()) {
                             subSingleStatistic.setPointList(null);
                         } else {
-                            subSingleStatistic.hibernatePointList(configContext);
+                            subSingleStatistic.hibernatePointList();
                         }
                     }
                 }

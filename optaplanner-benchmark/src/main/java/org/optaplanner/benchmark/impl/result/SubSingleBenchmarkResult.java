@@ -76,6 +76,10 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     // Ranking starts from 0
     private Integer ranking = null;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public SubSingleBenchmarkResult(SingleBenchmarkResult singleBenchmarkResult, int subSingleBenchmarkIndex) {
         this.singleBenchmarkResult = singleBenchmarkResult;
         this.subSingleBenchmarkIndex = subSingleBenchmarkIndex;
@@ -268,8 +272,9 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     // Merger methods
     // ************************************************************************
 
-    protected static SubSingleBenchmarkResult createMerge(SolverConfigContext configContext,
-            SingleBenchmarkResult singleBenchmarkResult, SubSingleBenchmarkResult oldResult, int subSingleBenchmarkIndex) {
+    protected static SubSingleBenchmarkResult createMerge(
+            SingleBenchmarkResult singleBenchmarkResult, SubSingleBenchmarkResult oldResult,
+            int subSingleBenchmarkIndex) {
         SubSingleBenchmarkResult newResult = new SubSingleBenchmarkResult(singleBenchmarkResult, subSingleBenchmarkIndex);
         newResult.pureSubSingleStatisticList = new ArrayList<>(oldResult.pureSubSingleStatisticList.size());
         for (PureSubSingleStatistic oldSubSingleStatistic : oldResult.pureSubSingleStatisticList) {
@@ -291,9 +296,9 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
                             + ") sub single statistic's (" + oldSubSingleStatistic + ") CSV file.");
                 }
             }
-            oldSubSingleStatistic.unhibernatePointList(configContext);
+            oldSubSingleStatistic.unhibernatePointList();
             newSubSingleStatistic.setPointList(oldSubSingleStatistic.getPointList());
-            oldSubSingleStatistic.hibernatePointList(configContext);
+            oldSubSingleStatistic.hibernatePointList();
         }
         // Skip oldResult.reportDirectory
         // Skip oldResult.usedMemoryAfterInputSolution
