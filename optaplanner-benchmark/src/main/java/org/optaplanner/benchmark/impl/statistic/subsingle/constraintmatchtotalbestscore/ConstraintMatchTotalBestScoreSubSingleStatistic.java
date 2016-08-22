@@ -206,8 +206,10 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
                 seriesCollection.addSeries(series);
             }
             plot.setDataset(seriesCollection);
+            String scoreLevelLabel = subSingleBenchmarkResult.getSingleBenchmarkResult().getProblemBenchmarkResult()
+                    .findScoreLevelLabel(scoreLevelIndex);
             JFreeChart chart = new JFreeChart(subSingleBenchmarkResult.getName()
-                    + " constraint match total best score diff level " + scoreLevelIndex + " statistic",
+                    + " constraint match total best " + scoreLevelLabel + " diff statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             graphFileList.add(writeChartToImageFile(chart,
                     "ConstraintMatchTotalBestScoreStatisticLevel" + scoreLevelIndex));
@@ -218,7 +220,9 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic<Solution_>
         Locale locale = benchmarkReport.getLocale();
         NumberAxis xAxis = new NumberAxis("Time spent");
         xAxis.setNumberFormatOverride(new MillisecondsSpentNumberFormat(locale));
-        NumberAxis yAxis = new NumberAxis("Constraint match total weight level " + scoreLevelIndex);
+        String scoreLevelLabel = subSingleBenchmarkResult.getSingleBenchmarkResult().getProblemBenchmarkResult()
+                .findScoreLevelLabel(scoreLevelIndex);
+        NumberAxis yAxis = new NumberAxis("Constraint match total " + scoreLevelLabel);
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         yAxis.setAutoRangeIncludesZero(false);
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);

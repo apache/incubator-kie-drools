@@ -179,8 +179,10 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
                 seriesCollection.addSeries(series);
             }
             plot.setDataset(seriesCollection);
+            String scoreLevelLabel = subSingleBenchmarkResult.getSingleBenchmarkResult().getProblemBenchmarkResult()
+                    .findScoreLevelLabel(scoreLevelIndex);
             JFreeChart chart = new JFreeChart(subSingleBenchmarkResult.getName()
-                    + " picked move type step score diff level " + scoreLevelIndex + " statistic",
+                    + " picked move type step " + scoreLevelLabel + " diff statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             graphFileList.add(writeChartToImageFile(chart,
                     "PickedMoveTypeStepScoreDiffStatisticLevel" + scoreLevelIndex));
@@ -191,7 +193,9 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
         Locale locale = benchmarkReport.getLocale();
         NumberAxis xAxis = new NumberAxis("Time spent");
         xAxis.setNumberFormatOverride(new MillisecondsSpentNumberFormat(locale));
-        NumberAxis yAxis = new NumberAxis("Step score diff level " + scoreLevelIndex);
+        String scoreLevelLabel = subSingleBenchmarkResult.getSingleBenchmarkResult().getProblemBenchmarkResult()
+                .findScoreLevelLabel(scoreLevelIndex);
+        NumberAxis yAxis = new NumberAxis("Step " + scoreLevelLabel + " diff");
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         yAxis.setAutoRangeIncludesZero(true);
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);

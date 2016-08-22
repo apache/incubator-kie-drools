@@ -56,7 +56,7 @@
         <#assign scoreLevelIndex = 0>
         <#list chartFileList as chartFile>
             <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                <a href="#${idPrefix}_chart_${scoreLevelIndex}" data-toggle="tab">${benchmarkReport.plannerBenchmarkResult.findScoreLevelTag(scoreLevelIndex)}</a>
+                <a href="#${idPrefix}_chart_${scoreLevelIndex}" data-toggle="tab">${reportHelper.capitalize(benchmarkReport.plannerBenchmarkResult.findScoreLevelLabel(scoreLevelIndex))}</a>
             </li>
             <#assign scoreLevelIndex = scoreLevelIndex + 1>
         </#list>
@@ -573,7 +573,7 @@
                                                         <#assign scoreLevelIndex = 0>
                                                         <#list problemStatistic.graphFileList as graphFile>
                                                             <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                                                                <a href="#problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">${problemBenchmarkResult.findScoreLevelTag(scoreLevelIndex)}</a>
+                                                                <a href="#problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">${reportHelper.capitalize(problemBenchmarkResult.findScoreLevelLabel(scoreLevelIndex))}</a>
                                                             </li>
                                                             <#assign scoreLevelIndex = scoreLevelIndex + 1>
                                                         </#list>
@@ -620,7 +620,7 @@
                                                             <#assign scoreLevelIndex = 0>
                                                             <#list pureSubSingleStatistic.graphFileList as graphFile>
                                                                 <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                                                                    <a href="#subSingleStatistic_${pureSubSingleStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">${problemBenchmarkResult.findScoreLevelTag(scoreLevelIndex)}</a>
+                                                                    <a href="#subSingleStatistic_${pureSubSingleStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">${reportHelper.capitalize(problemBenchmarkResult.findScoreLevelLabel(scoreLevelIndex))}</a>
                                                                 </li>
                                                                 <#assign scoreLevelIndex = scoreLevelIndex + 1>
                                                             </#list>

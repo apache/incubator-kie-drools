@@ -203,9 +203,9 @@ public class ProblemBenchmarkResult<Solution_> {
         return ReportHelper.escapeHtmlId(name);
     }
 
-    public String findScoreLevelTag(int scoreLevel) {
+    public String findScoreLevelLabel(int scoreLevel) {
         String[] levelLabels = singleBenchmarkResultList.get(0).getSolverBenchmarkResult().getScoreDefinition().getLevelLabels();
-        return StringUtils.capitalize(levelLabels[scoreLevel]);
+        return levelLabels[scoreLevel];
     }
 
     public File getBenchmarkReportDirectory() {

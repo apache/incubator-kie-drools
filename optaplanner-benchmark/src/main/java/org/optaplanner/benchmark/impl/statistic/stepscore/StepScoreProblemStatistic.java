@@ -112,8 +112,9 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
         }
         graphFileList = new ArrayList<>(plotList.size());
         for (int scoreLevelIndex = 0; scoreLevelIndex < plotList.size(); scoreLevelIndex++) {
+            String scoreLevelLabel = problemBenchmarkResult.findScoreLevelLabel(scoreLevelIndex);
             JFreeChart chart = new JFreeChart(
-                    problemBenchmarkResult.getName() + " step score level " + scoreLevelIndex + " statistic",
+                    problemBenchmarkResult.getName() + " step " + scoreLevelLabel + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, plotList.get(scoreLevelIndex), true);
             graphFileList.add(writeChartToImageFile(chart,
                     problemBenchmarkResult.getName() + "StepScoreStatisticLevel" + scoreLevelIndex));
@@ -124,7 +125,8 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
         Locale locale = benchmarkReport.getLocale();
         NumberAxis xAxis = new NumberAxis("Time spent");
         xAxis.setNumberFormatOverride(new MillisecondsSpentNumberFormat(locale));
-        NumberAxis yAxis = new NumberAxis("Step score level " + scoreLevelIndex);
+        String scoreLevelLabel = problemBenchmarkResult.findScoreLevelLabel(scoreLevelIndex);
+        NumberAxis yAxis = new NumberAxis("Step " + scoreLevelLabel);
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         yAxis.setAutoRangeIncludesZero(false);
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);

@@ -238,9 +238,9 @@ public class PlannerBenchmarkResult {
         return maximumSubSingleCount;
     }
 
-    public String findScoreLevelTag(int scoreLevel) {
+    public String findScoreLevelLabel(int scoreLevel) {
         String[] levelLabels = solverBenchmarkResultList.get(0).getScoreDefinition().getLevelLabels();
-        return StringUtils.capitalize(levelLabels[scoreLevel]);
+        return levelLabels[scoreLevel];
     }
 
     // ************************************************************************

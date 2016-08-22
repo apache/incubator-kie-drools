@@ -38,7 +38,6 @@ import javax.imageio.ImageIO;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import org.apache.commons.io.IOUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.LogarithmicAxis;
@@ -69,7 +68,6 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
-import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
@@ -348,9 +346,10 @@ public class BenchmarkReport {
         bestScoreSummaryChartFileList = new ArrayList<>(datasetList.size());
         int scoreLevelIndex = 0;
         for (DefaultCategoryDataset dataset : datasetList) {
+            String scoreLevelLabel = plannerBenchmarkResult.findScoreLevelLabel(scoreLevelIndex);
             CategoryPlot plot = createBarChartPlot(dataset,
-                    "Score level " + scoreLevelIndex, NumberFormat.getInstance(locale));
-            JFreeChart chart = new JFreeChart("Best score level " + scoreLevelIndex + " summary (higher is better)",
+                    "Best " + scoreLevelLabel, NumberFormat.getInstance(locale));
+            JFreeChart chart = new JFreeChart("Best " + scoreLevelLabel + " summary (higher is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             bestScoreSummaryChartFileList.add(writeChartToImageFile(chart, "bestScoreSummaryLevel" + scoreLevelIndex));
             scoreLevelIndex++;
@@ -386,11 +385,12 @@ public class BenchmarkReport {
         bestScoreScalabilitySummaryChartFileList = new ArrayList<>(seriesListList.size());
         int scoreLevelIndex = 0;
         for (List<XYSeries> seriesList : seriesListList) {
+            String scoreLevelLabel = plannerBenchmarkResult.findScoreLevelLabel(scoreLevelIndex);
             XYPlot plot = createScalabilityPlot(seriesList,
                     "Problem scale", NumberFormat.getInstance(locale),
-                    "Score level " + scoreLevelIndex, NumberFormat.getInstance(locale));
+                    "Best " + scoreLevelLabel, NumberFormat.getInstance(locale));
             JFreeChart chart = new JFreeChart(
-                    "Best score scalability level " + scoreLevelIndex + " summary (higher is better)",
+                    "Best " + scoreLevelLabel + " scalability summary (higher is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             bestScoreScalabilitySummaryChartFileList.add(
                     writeChartToImageFile(chart, "bestScoreScalabilitySummaryLevel" + scoreLevelIndex));
@@ -431,9 +431,10 @@ public class BenchmarkReport {
         bestScoreDistributionSummaryChartFileList = new ArrayList<>(datasetList.size());
         int scoreLevelIndex = 0;
         for (DefaultBoxAndWhiskerCategoryDataset dataset : datasetList) {
+            String scoreLevelLabel = plannerBenchmarkResult.findScoreLevelLabel(scoreLevelIndex);
             CategoryPlot plot = createBoxAndWhiskerChartPlot(dataset,
-                    "Score level " + scoreLevelIndex, NumberFormat.getInstance(locale));
-            JFreeChart chart = new JFreeChart("Best score distribution level " + scoreLevelIndex + " summary (higher is better)",
+                    "Best " + scoreLevelLabel, NumberFormat.getInstance(locale));
+            JFreeChart chart = new JFreeChart("Best " + scoreLevelLabel + " distribution summary (higher is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             bestScoreDistributionSummaryChartFileList.add(writeChartToImageFile(chart, "bestScoreDistributionSummaryLevel" + scoreLevelIndex));
             scoreLevelIndex++;
@@ -461,10 +462,10 @@ public class BenchmarkReport {
         winningScoreDifferenceSummaryChartFileList = new ArrayList<>(datasetList.size());
         int scoreLevelIndex = 0;
         for (DefaultCategoryDataset dataset : datasetList) {
+            String scoreLevelLabel = plannerBenchmarkResult.findScoreLevelLabel(scoreLevelIndex);
             CategoryPlot plot = createBarChartPlot(dataset,
-                    "Winning score difference level " + scoreLevelIndex, NumberFormat.getInstance(locale));
-            JFreeChart chart = new JFreeChart("Winning score difference level " + scoreLevelIndex
-                    + " summary (higher is better)",
+                    "Winning " + scoreLevelLabel + " difference", NumberFormat.getInstance(locale));
+            JFreeChart chart = new JFreeChart("Winning " + scoreLevelLabel + " difference summary (higher is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             winningScoreDifferenceSummaryChartFileList.add(
                     writeChartToImageFile(chart, "winningScoreDifferenceSummaryLevel" + scoreLevelIndex));
@@ -493,10 +494,11 @@ public class BenchmarkReport {
         worstScoreDifferencePercentageSummaryChartFileList = new ArrayList<>(datasetList.size());
         int scoreLevelIndex = 0;
         for (DefaultCategoryDataset dataset : datasetList) {
+            String scoreLevelLabel = plannerBenchmarkResult.findScoreLevelLabel(scoreLevelIndex);
             CategoryPlot plot = createBarChartPlot(dataset,
-                    "Worst score difference percentage level " + scoreLevelIndex,
+                    "Worst " + scoreLevelLabel + " difference percentage",
                     NumberFormat.getPercentInstance(locale));
-            JFreeChart chart = new JFreeChart("Worst score difference percentage level " + scoreLevelIndex
+            JFreeChart chart = new JFreeChart("Worst " + scoreLevelLabel + " difference percentage"
                     + " summary (higher is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             worstScoreDifferencePercentageSummaryChartFileList.add(
@@ -596,11 +598,12 @@ public class BenchmarkReport {
         bestScorePerTimeSpentSummaryChartFileList = new ArrayList<>(seriesListList.size());
         int scoreLevelIndex = 0;
         for (List<XYSeries> seriesList : seriesListList) {
+            String scoreLevelLabel = plannerBenchmarkResult.findScoreLevelLabel(scoreLevelIndex);
             XYPlot plot = createScalabilityPlot(seriesList,
                     "Time spent", new MillisecondsSpentNumberFormat(locale),
-                    "Score level " + scoreLevelIndex, NumberFormat.getInstance(locale));
+                    "Best " + scoreLevelLabel, NumberFormat.getInstance(locale));
             JFreeChart chart = new JFreeChart(
-                    "Best score per time spent level " + scoreLevelIndex + " summary (higher left is better)",
+                    "Best " + scoreLevelLabel + " per time spent summary (higher left is better)",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             bestScorePerTimeSpentSummaryChartFileList.add(
                     writeChartToImageFile(chart, "bestScorePerTimeSpentSummaryLevel" + scoreLevelIndex));
