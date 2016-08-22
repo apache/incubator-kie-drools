@@ -37,8 +37,8 @@ public class BrokenNQueensBenchmarkTest extends PlannerBenchmarkTest {
         PlannerBenchmarkFactory benchmarkFactory = super.buildPlannerBenchmarkFactory(unsolvedDataFile);
         PlannerBenchmarkConfig benchmarkConfig = benchmarkFactory.getPlannerBenchmarkConfig();
         benchmarkConfig.setWarmUpSecondsSpentLimit(0L);
-        benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getEntityClassList()
-                .add(Row.class); // Intentionally crash the solver
+        benchmarkConfig.getInheritedSolverBenchmarkConfig().getSolverConfig().getTerminationConfig()
+                .setStepCountLimit(-100); // Intentionally crash the solver
         return benchmarkFactory;
     }
 

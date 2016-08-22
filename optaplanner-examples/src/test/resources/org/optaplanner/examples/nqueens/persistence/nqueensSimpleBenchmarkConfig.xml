@@ -3,6 +3,8 @@
   <solverBenchmark>
     <name>Entity Tabu Search</name>
     <solver>
+      <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
+      <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
