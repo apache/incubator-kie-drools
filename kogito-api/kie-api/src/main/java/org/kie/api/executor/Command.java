@@ -17,12 +17,12 @@
 package org.kie.api.executor;
 
 /**
- * Executor's Command are dedicated to contain purely business logic that should be executed. 
+ * Executor's Command are dedicated to contain purely business logic that should be executed.
  * It should not have any reference to underlying process engine and should not be concerned
  * with any process runtime related logic such us completing work item, sending signals, etc.
  * <br>
- * Information that are taken from process will be delivered as part of data instance of 
- * <code>CommandContext</code>. Depending on the execution context that data can vary but 
+ * Information that are taken from process will be delivered as part of data instance of
+ * <code>CommandContext</code>. Depending on the execution context that data can vary but
  * in most of the cases following will be given:
  * <ul>
  *  <li></li>
@@ -37,11 +37,11 @@ package org.kie.api.executor;
  * </ul>
  * Important note about implementations is that it shall always be possible to be initialized with default constructor
  * as executor service is an async component so it will initialize the command on demand using reflection.
- * In case there is a heavy logic on initialization it should be placed in another service implementation that 
+ * In case there is a heavy logic on initialization it should be placed in another service implementation that
  * can be looked up from within command.
  */
 public interface Command {
-    
+
     /**
      * Executed this command's logic.
      * @param ctx - contextual data given by the executor service

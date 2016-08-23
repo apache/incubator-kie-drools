@@ -21,13 +21,13 @@ import org.kie.api.io.Resource;
  * A super interface for Knowledge Building result messages.
  */
 public interface KnowledgeBuilderResult {
-    
+
     /**
      * Returns the result severity
      * @return
      */
     ResultSeverity getSeverity();
-    
+
     /**
      * Returns the result message
      */

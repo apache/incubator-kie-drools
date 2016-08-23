@@ -21,7 +21,7 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 
 public interface KnowledgeBuilderFluent<T> {
-    
+
     T add(Resource resource,
           ResourceType type);
 

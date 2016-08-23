@@ -28,18 +28,18 @@ public enum MergeMode {
      */
     KEEP_ALL,
 
-	/**
-	 * The 'slave' descriptor values are all used
-	 */
+    /**
+     * The 'slave' descriptor values are all used
+     */
     OVERRIDE_ALL,
 
-	/**
-	 * The 'slave' non-empty values override corresponding values of the master, including collections
-	 */
+    /**
+     * The 'slave' non-empty values override corresponding values of the master, including collections
+     */
     OVERRIDE_EMPTY,
 
-	/**
-	 * The same as OVERRIDE_EMPTY except that collections are merged instead of being overridden
-	 */
+    /**
+     * The same as OVERRIDE_EMPTY except that collections are merged instead of being overridden
+     */
     MERGE_COLLECTIONS;
 }

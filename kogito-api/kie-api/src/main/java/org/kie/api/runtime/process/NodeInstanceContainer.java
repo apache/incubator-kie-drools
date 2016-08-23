@@ -31,11 +31,11 @@ public interface NodeInstanceContainer {
      * @return the list of node instances currently active
      */
     Collection<NodeInstance> getNodeInstances();
-    
+
     /**
      * Returns the node instance with the given id, or <code>null</code>
      * if the node instance cannot be found.
-     * 
+     *
      * @param nodeInstanceId
      * @return the node instance with the given id
      */

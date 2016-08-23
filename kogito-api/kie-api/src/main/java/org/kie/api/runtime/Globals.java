@@ -23,7 +23,7 @@ public interface Globals {
 
     void set(String identifier,
              Object value);
-    
+
     void setDelegate(Globals delegate);
 
     Collection<String> getGlobalKeys();

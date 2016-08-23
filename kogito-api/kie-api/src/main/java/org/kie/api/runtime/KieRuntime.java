@@ -63,6 +63,6 @@ public interface KieRuntime
     void unregisterChannel(String name);
 
     Map< String, Channel> getChannels();
-    
+
     KieSessionConfiguration getSessionConfiguration();
 }

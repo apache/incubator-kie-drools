@@ -70,7 +70,7 @@ public interface AuditTask {
     long getParentId();
 
     void setParentId(long parentId);
-    
+
     String getActualOwner();
 
     void setActualOwner(String actualOwner);
@@ -78,10 +78,10 @@ public interface AuditTask {
     String getDeploymentId();
 
     void setDeploymentId(String deploymentId);
-        
+
     long getWorkItemId();
-    
+
     void setWorkItemId(long workItemId);
-        
-    
+
+
 }

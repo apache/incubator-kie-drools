@@ -30,12 +30,12 @@ public class CompositeKeyDepthOption implements SingleValueKieBaseOption {
      * The property name for the default DIALECT
      */
     public static final String PROPERTY_NAME = "drools.compositeKeyDepth";
-    
+
     /**
      * dialect name
      */
     private final int depth;
-    
+
     /**
      * Private constructor to enforce the use of the factory method
      * @param depth
@@ -43,30 +43,30 @@ public class CompositeKeyDepthOption implements SingleValueKieBaseOption {
     private CompositeKeyDepthOption( int depth ) {
         this.depth = depth;
     }
-    
+
     /**
      * This is a factory method for this CompositeKeyDepth configuration.
-     * The factory method is a best practice for the case where the 
+     * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
-     * 
+     *
      * @param depth the composite key depth value
-     * 
+     *
      * @return the actual type safe CompositeKeyDepth configuration.
      */
     public static CompositeKeyDepthOption get( int depth ) {
         return new CompositeKeyDepthOption( depth );
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     /**
      * Returns the depth value for composite key indexing
-     * 
+     *
      * @return
      */
     public int getDepth() {
@@ -90,5 +90,5 @@ public class CompositeKeyDepthOption implements SingleValueKieBaseOption {
         if ( depth != other.depth ) return false;
         return true;
     }
-    
+
 }

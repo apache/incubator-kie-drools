@@ -22,7 +22,7 @@ package org.kie.internal.executor.api;
  * @see org.kie.api.executor.ExecutorService
  */
 public interface ExecutorService extends org.kie.api.executor.ExecutorService {
-	
 
-    
+
+
 }

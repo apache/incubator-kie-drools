@@ -27,17 +27,17 @@ public interface ErrorInfo {
      * @return unique identifier of the error instance.
      */
     Long getId();
-    
+
     /**
      * @return error message for the error instance.
      */
     String getMessage();
-    
+
     /**
      * @return complete stack trace of the exception that generated this error instance
      */
     String getStacktrace();
-    
+
     /**
      * @return exact time when the exception happened.
      */

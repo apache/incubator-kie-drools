@@ -21,7 +21,7 @@ import java.io.Serializable;
 
 /**
  * An interface for accumulate external function implementations
- */ 
+ */
 public interface AccumulateFunction extends Externalizable {
 
     /**
@@ -64,10 +64,10 @@ public interface AccumulateFunction extends Externalizable {
      * @return true if the function supports reverse, otherwise false
      */
     boolean supportsReverse();
-    
+
     /**
      * @return the class type of the result of this function
      */
     Class<?> getResultType();
-    
+
 }

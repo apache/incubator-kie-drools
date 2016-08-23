@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -17,13 +17,13 @@ package org.kie.internal.task.api;
 
 public interface TaskPersistenceContextManager {
 
-	TaskPersistenceContext getPersistenceContext();
-	
-	void beginCommandScopedEntityManager();
-	
-	void endCommandScopedEntityManager();
-	
-	/**
+    TaskPersistenceContext getPersistenceContext();
+
+    void beginCommandScopedEntityManager();
+
+    void endCommandScopedEntityManager();
+
+    /**
      * Executes the necessary actions in order to clean up and dispose of the internal fields of this instance.
      */
     void dispose();

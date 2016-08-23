@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -20,7 +20,7 @@ import javax.management.openmbean.CompositeData;
 import org.kie.api.builder.ReleaseId;
 
 /**
- * A simple immutable pojo representing Maven GAV coordinates, with a JMX-compliant method in order to be exposed and used via JMX/Monitoring. 
+ * A simple immutable pojo representing Maven GAV coordinates, with a JMX-compliant method in order to be exposed and used via JMX/Monitoring.
  */
 /*
  * This class have been introduced because ReleaseIdImpl is part of the drools-core package, and at the same time to avoid any modification to the ReleaseId interface.
@@ -51,7 +51,7 @@ public class GAV implements ReleaseId {
     public String getVersion() {
         return version;
     }
-    
+
     public String toString() {
         return groupId + ":" + artifactId + ":" + version;
     }
@@ -63,19 +63,19 @@ public class GAV implements ReleaseId {
     public boolean isSnapshot() {
         return version.endsWith("-SNAPSHOT");
     }
-    
+
     public static GAV from(CompositeData cd) {
         return new GAV((String) cd.get("groupId"),
                                  (String) cd.get("artifactId"),
                                  (String) cd.get("version"));
     }
-    
+
     public static GAV from(ReleaseId rel) {
         return new GAV(rel.getGroupId(),
                                  rel.getArtifactId(),
                                  rel.getVersion());
     }
-    
+
     public boolean sameGAVof(ReleaseId other) {
         return this.groupId.equals(other.getGroupId())
                 && this.artifactId.equals(other.getArtifactId())

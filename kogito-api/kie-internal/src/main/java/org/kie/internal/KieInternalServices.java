@@ -19,7 +19,7 @@ package org.kie.internal;
 import org.kie.internal.process.CorrelationKeyFactory;
 
 public interface KieInternalServices {
-    
+
     CorrelationKeyFactory newCorrelationKeyFactory();
 
     /**
@@ -29,7 +29,7 @@ public interface KieInternalServices {
         private static KieInternalServices INSTANCE;
 
         static {
-            try {                
+            try {
                 INSTANCE = ( KieInternalServices ) Class.forName( "org.kie.internal.builder.impl.KieInternalServicesImpl" ).newInstance();
             } catch (Exception e) {
                 throw new RuntimeException("Unable to instance KieServices", e);

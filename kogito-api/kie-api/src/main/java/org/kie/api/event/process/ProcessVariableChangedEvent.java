@@ -17,24 +17,24 @@
 package org.kie.api.event.process;
 
 /**
- * An event when a variable inside a process instance has been changed. 
+ * An event when a variable inside a process instance has been changed.
  */
 public interface ProcessVariableChangedEvent
     extends
     ProcessEvent {
 
-	/**
-	 * The unique id of the process variable (definition).
-	 * 
-	 * @return the variable id
-	 */
+    /**
+     * The unique id of the process variable (definition).
+     *
+     * @return the variable id
+     */
     String getVariableId();
 
     /**
      * The unique id of the process variable instance (as multiple node instances with the
      * same process variable definition exists).  This is an aggregation of the unique id of
      * the instance that contains the variable scope and the variable id.
-     *  
+     *
      * @return the variable instance id
      */
     String getVariableInstanceId();
@@ -42,7 +42,7 @@ public interface ProcessVariableChangedEvent
     /**
      * The old value of the variable.
      * This may be null.
-     * 
+     *
      * @return the old value
      */
     Object getOldValue();
@@ -50,7 +50,7 @@ public interface ProcessVariableChangedEvent
     /**
      * The new value of the variable.
      * This may be null.
-     * 
+     *
      * @return the new value
      */
     Object getNewValue();

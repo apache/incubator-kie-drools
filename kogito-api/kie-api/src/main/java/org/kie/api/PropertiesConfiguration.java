@@ -23,7 +23,7 @@ public interface PropertiesConfiguration {
 
     /**
      * Sets a property value
-     * 
+     *
      * @param name name
      * @param value value
      */
@@ -32,7 +32,7 @@ public interface PropertiesConfiguration {
 
     /**
      * Gets a property value
-     * 
+     *
      * @param name name
      * @return property
      */

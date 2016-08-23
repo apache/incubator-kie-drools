@@ -22,10 +22,10 @@ import java.util.Set;
  * A base interface for type safe configurations
  */
 public interface KnowledgeBuilderOptionsConfiguration {
-    
+
     /**
      * Sets an option
-     * 
+     *
      * @param option the option to be set. As options are type safe, the option
      *               itself contains the option key, and so a single parameter
      *               is enough.
@@ -34,31 +34,31 @@ public interface KnowledgeBuilderOptionsConfiguration {
 
     /**
      * Gets an option value
-     * 
+     *
      * @param option the option class for the option being requested
-     * 
-     * @return the Option value for the given option. Returns null if option is 
+     *
+     * @return the Option value for the given option. Returns null if option is
      *         not configured.
      */
     public <T extends SingleValueKnowledgeBuilderOption> T getOption( Class<T> option );
-    
-    
+
+
     /**
      * Gets an option value for the given option + key. This method should
      * be used for multi-value options, like accumulate functions configuration
      * where one option has multiple values, distinguished by a sub-key.
-     * 
+     *
      * @param option the option class for the option being requested
      * @param key the key for the option being requested
-     * 
-     * @return the Option value for the given option + key. Returns null if option is 
+     *
+     * @return the Option value for the given option + key. Returns null if option is
      *         not configured.
      */
     public <T extends MultiValueKnowledgeBuilderOption> T getOption( Class<T> option, String key );
-    
+
     /**
      * Retrieves the set of all keys for a MultiValueKnowledgeBuilderOption.
-     * 
+     *
      * @param option the option class for the requested keys
      * @return a Set of Strings
      */

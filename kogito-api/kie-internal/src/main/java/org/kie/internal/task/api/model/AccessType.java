@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.kie.internal.task.api.model;
 

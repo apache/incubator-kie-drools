@@ -44,6 +44,6 @@ public interface TaskAdminService {
     public List<TaskSummary> getArchivedTasks();
 
     public int removeTasks(List<TaskSummary> tasks);
-    
+
     public int removeAllTasks();
 }

@@ -21,13 +21,13 @@ import java.io.PrintStream;
 public class DebugAgendaEventListener
     implements
     AgendaEventListener {
-    
+
     private PrintStream stream;
-    
+
     public DebugAgendaEventListener() {
         this.stream =  System.err;
     }
-    
+
     public DebugAgendaEventListener(PrintStream stream) {
         this.stream = stream;
     }
@@ -57,7 +57,7 @@ public class DebugAgendaEventListener
     }
 
     public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
-        stream.println( event );  
+        stream.println( event );
     }
 
     public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {

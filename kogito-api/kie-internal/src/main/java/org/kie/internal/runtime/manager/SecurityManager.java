@@ -18,5 +18,5 @@ package org.kie.internal.runtime.manager;
 
 public interface SecurityManager {
 
-	void checkPermission() throws SecurityException;
+    void checkPermission() throws SecurityException;
 }

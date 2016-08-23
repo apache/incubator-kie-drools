@@ -24,87 +24,87 @@ import java.util.Date;
  */
 public interface ProcessInstanceLog {
 
-	/**
-	 * Process instance identifier
+    /**
+     * Process instance identifier
      * @return the {@link Long} value
-	 */
-	Long getProcessInstanceId();
+     */
+    Long getProcessInstanceId();
 
-	/**
-	 * Process id of the definition
+    /**
+     * Process id of the definition
      * @return the {@link String} value
-	 */
-	String getProcessId();
+     */
+    String getProcessId();
 
-	/**
-	 * Start date of this process instance
+    /**
+     * Start date of this process instance
      * @return the {@link Date} value
-	 */
-	Date getStart();
+     */
+    Date getStart();
 
-	/**
-	 * End date of this process instance, null if process instance is still active
+    /**
+     * End date of this process instance, null if process instance is still active
      * @return the {@link Date} value
-	 */
-	Date getEnd();
+     */
+    Date getEnd();
 
-	/**
-	 * Status of the process instance and might be one of:
-	 * <ul>
-	 * 	<li>ProcessInstance.STATE_ACTIVE</li>
-	 * 	<li>ProcessInstance.STATE_COMPLETED</li>
-	 * 	<li>ProcessInstance.STATE_ABORTED</li>
-	 * 	<li>ProcessInstance.STATE_SUSPENDED</li>
-	 * </ul>
+    /**
+     * Status of the process instance and might be one of:
+     * <ul>
+     *  <li>ProcessInstance.STATE_ACTIVE</li>
+     *  <li>ProcessInstance.STATE_COMPLETED</li>
+     *  <li>ProcessInstance.STATE_ABORTED</li>
+     *  <li>ProcessInstance.STATE_SUSPENDED</li>
+     * </ul>
      * @return the {@link Integer} value
-	 */
-	Integer getStatus();
+     */
+    Integer getStatus();
 
-	/**
-	 * Parent process instance id, will be null for top level process instance
+    /**
+     * Parent process instance id, will be null for top level process instance
      * @return the {@link Long} value
-	 */
-	Long getParentProcessInstanceId();
+     */
+    Long getParentProcessInstanceId();
 
-	/**
-	 * Outcome of the process instance that is providing error information in case process 
-	 * instance completed with an error
+    /**
+     * Outcome of the process instance that is providing error information in case process
+     * instance completed with an error
      * @return the {@link String} value
-	 */
-	String getOutcome();
+     */
+    String getOutcome();
 
-	/**
-	 * Amount of time (in milliseconds) that process instance took to complete.
-	 * Available only when process instance is completed.
+    /**
+     * Amount of time (in milliseconds) that process instance took to complete.
+     * Available only when process instance is completed.
      * @return the {@link String} value
-	 */
-	Long getDuration();
+     */
+    Long getDuration();
 
-	/**
-	 * Identifier of a entity (user) who initiated this process instance.
+    /**
+     * Identifier of a entity (user) who initiated this process instance.
      * @return the {@link String} value
-	 */
-	String getIdentity();
+     */
+    String getIdentity();
 
-	/**
-	 * External (optional) identifier associated with this process instance
+    /**
+     * External (optional) identifier associated with this process instance
      * @return the {@link String} value
-	 */
-	String getExternalId();
+     */
+    String getExternalId();
 
-	/**
-	 * Version of the process definition
+    /**
+     * Version of the process definition
      * @return the {@link String} value
-	 */
-	String getProcessVersion();
+     */
+    String getProcessVersion();
 
-	/**
-	 * Name of the process definition
+    /**
+     * Name of the process definition
      * @return the {@link String} value
-	 */
-	String getProcessName();
-	
-	/**
+     */
+    String getProcessName();
+
+    /**
      * Description of the process instance
      * @return the {@link String} value
      */

@@ -19,14 +19,14 @@ package org.kie.internal;
 /**
  * SystemEventListenerService is the interface implemented by SystemEventListenerServiceImpl.
  * This class is not considered stable and may change.
- * 
+ *
  * Users are referred to the SystemEventListenerFactory API, which is considered stable.
  */
 public interface SystemEventListenerService {
 
     /**
      * Set the SystemEventListener
-     * 
+     *
      * @param listener
      */
     void setSystemEventListener(SystemEventListener listener);

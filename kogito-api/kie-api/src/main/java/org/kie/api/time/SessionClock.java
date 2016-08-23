@@ -26,7 +26,7 @@ public interface SessionClock {
      * to the long return value, so it will depend on the actual
      * implementation. For instance, for a real time clock it may be
      * milliseconds.
-     * 
+     *
      * @return The current time. The unit of the time, depends on
      * the actual clock implementation.
      */

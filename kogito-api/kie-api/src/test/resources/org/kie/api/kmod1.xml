@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://www.drools.org/xsd/kmodule">
 
     <kbase name="org.kie.example1">
@@ -7,43 +7,43 @@
 
     <kbase name="org.kie.example2" includes="org.kie.example1" >
     </kbase>
-    
-    
+
+
     <kbase name="org.kie.example3" includes="org.kie.example1, org.kie.example1" equalsBehavior="identity" scope="javax.enterprise.context.ApplicationScoped">
         <ksession name="ksession1"/>
-    </kbase>    
+    </kbase>
 
     <kbase name="org.kie.example4" includes="org.kie.example1, org.kie.example1" equalsBehavior="equality" >
         <ksession name="ksession2"/>
         <ksession name="ksession3"/>
-    </kbase>        
-    
+    </kbase>
+
     <kbase name="org.kie.example5" includes="org.kie.example1, org.kie.example1" eventProcessingMode="stream" default="true">
         <ksession name="ksession4" type="stateless"  clockType="pseudo" default="true">
         </ksession>
 
         <ksession name="ksession5" type="stateful"  clockType="realtime" default="true">
-        </ksession>            
-    </kbase>        
+        </ksession>
+    </kbase>
 
     <kbase name="org.kie.example6" includes="org.kie.example1, org.kie.example1" eventProcessingMode="cloud" packages="org.kie.pkg1, org.kie.pkg2">
         <ksession name="ksession6" type="stateless"  clockType="pseudo" scope="javax.enterprise.context.ApplicationScoped">
-            <consoleLogger /> 
+            <consoleLogger />
         </ksession>
 
         <ksession name="ksession7" type="stateful"  clockType="realtime">
             <fileLogger name="logger1" file="...." threaded="true" interval="50" />
-        </ksession>  
-        
+        </ksession>
+
         <ksession name="ksession8" type="stateful"  clockType="realtime">
             <fileLogger name="logger2" file="...." threaded="true" interval="50" />
             <listeners>
                 <ruleRuntimeEventListener type="type1"/>
                 <ruleRuntimeEventListener type="type2"/>
             </listeners>
-        </ksession>   
-    </kbase>  
-    
+        </ksession>
+    </kbase>
+
     <kbase name="org.kie.example7" includes="org.kie.example1, org.kie.example1" eventProcessingMode="cloud">
         <ksession name="ksession9" type="stateful"  clockType="realtime">
             <fileLogger name="logger3" file="...." threaded="true" interval="50" />
@@ -51,7 +51,7 @@
                 <workItemHandler name="name1" type="type1"/>
                 <workItemHandler name="name2" type="type3"/>
                 <workItemHandler name="name3" type="type4"/>
-            </workItemHandlers>            
+            </workItemHandlers>
             <listeners>
                 <ruleRuntimeEventListener type="type1"/>
                 <ruleRuntimeEventListener type="type3"/>
@@ -61,6 +61,6 @@
                 <processEventListener type="type4"/>
                 <processEventListener type="type4"/>
             </listeners>
-        </ksession>   
-    </kbase>          
+        </ksession>
+    </kbase>
 </kmodule>

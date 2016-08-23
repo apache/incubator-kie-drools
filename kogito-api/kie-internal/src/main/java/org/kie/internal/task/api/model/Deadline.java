@@ -26,7 +26,7 @@ public interface Deadline extends Externalizable {
 
     Boolean isEscalated();
 
-    void setEscalated(Boolean escalated);    
+    void setEscalated(Boolean escalated);
 
     long getId();
 

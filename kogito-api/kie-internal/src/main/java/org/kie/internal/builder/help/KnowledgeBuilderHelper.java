@@ -32,8 +32,8 @@ import com.sun.tools.xjc.Options;
 /**
  * Provides helper methods for working with JAXB and a Knowledgebase, it takes care of the Classpath issues when
  * mapping against internal type declarations.
- * 
- * 
+ *
+ *
  * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>
  */
 public class KnowledgeBuilderHelper {
@@ -53,7 +53,7 @@ public class KnowledgeBuilderHelper {
      *                                                           xjcOpts,
      *                                                           "xsd" );
      * </pre>
-     * 
+     *
      * @param resource
      *     The resource to the XSD model
      * @param kbuilder
@@ -79,7 +79,7 @@ public class KnowledgeBuilderHelper {
     /**
      * Creates a new JAXBContext, from which the Marshaller and Unmarshaller can be created, which are used by the Transformer
      * pipeline stage.
-     * 
+     *
      * @param classNames
      *     An array of class names that can be resolved by this JAXBContext
      * @param kbase

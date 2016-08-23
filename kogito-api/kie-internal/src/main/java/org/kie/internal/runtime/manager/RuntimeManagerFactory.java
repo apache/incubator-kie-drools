@@ -27,30 +27,30 @@ import org.slf4j.LoggerFactory;
  * Use <code>org.kie.api.runtime.manager.RuntimeManagerFactory</code>
  */
 public interface RuntimeManagerFactory extends org.kie.api.runtime.manager.RuntimeManagerFactory {
-   	
-    
-	/**
-	 * @deprecated
-	 * Use <code>org.kie.api.runtime.manager.RuntimeManagerFactory</code>
-	 */
+
+
+    /**
+     * @deprecated
+     * Use <code>org.kie.api.runtime.manager.RuntimeManagerFactory</code>
+     */
     public static class Factory {
         private static RuntimeManagerFactory INSTANCE;
         private static Logger logger = LoggerFactory.getLogger(Factory.class);
-        
+
         static {
-            try {                
-            	final Object delegate =  
-                		Class.forName( System.getProperty("org.jbpm.runtime.manager.class", 
-                				"org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl") ).newInstance();
+            try {
+                final Object delegate =
+                        Class.forName( System.getProperty("org.jbpm.runtime.manager.class",
+                                "org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl") ).newInstance();
                 INSTANCE = (RuntimeManagerFactory) Proxy.newProxyInstance(RuntimeManagerFactory.class.getClassLoader(),
-                		new Class[]{RuntimeManagerFactory.class}, new InvocationHandler() {
-					
-					@Override
-					public Object invoke(Object proxy, Method method, Object[] arguments) throws Throwable {
-						
-						return method.invoke(delegate, arguments);
-					}
-				});
+                        new Class[]{RuntimeManagerFactory.class}, new InvocationHandler() {
+
+                    @Override
+                    public Object invoke(Object proxy, Method method, Object[] arguments) throws Throwable {
+
+                        return method.invoke(delegate, arguments);
+                    }
+                });
             } catch (Exception e) {
                 logger.error("Unable to instance RuntimeManagerFactory due to " + e.getMessage());
             }

@@ -56,7 +56,7 @@ public final class OSGiLocator {
     /**
      * Removes the given service provider factory from the set of
      * providers for the service.
-     * 
+     *
      * @param serviceName
      *          The fully qualified name of the service interface.
      * @param factory
@@ -81,7 +81,7 @@ public final class OSGiLocator {
     /**
      * Adds the given service provider factory to the set of
      * providers for the service.
-     * 
+     *
      * @param serviceName
      *          The fully qualified name of the service interface.
      * @param factory
@@ -112,7 +112,7 @@ public final class OSGiLocator {
     /**
      * Finds the preferred provider for the given service. The preferred
      * provider is the last one added to the set of providers.
-     * 
+     *
      * @param serviceName
      *          The fully qualified name of the service interface.
      * @return
@@ -139,7 +139,7 @@ public final class OSGiLocator {
 
     /**
      * Finds all providers for the given service.
-     * 
+     *
      * @param serviceName
      *          The fully qualified name of the service interface.
      * @return

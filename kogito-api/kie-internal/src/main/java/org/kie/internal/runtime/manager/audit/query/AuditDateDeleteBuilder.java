@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -19,7 +19,7 @@ import java.util.Date;
 
 /**
  * This interface defines methods that are used by all of the Audit delete query builder implementations.
- * @param <T> 
+ * @param <T>
  *
  */
 public interface AuditDateDeleteBuilder<T> extends AuditDeleteBuilder<T> {
@@ -30,7 +30,7 @@ public interface AuditDateDeleteBuilder<T> extends AuditDeleteBuilder<T> {
      * @return The current query builder instance
      */
     public T date(Date... date);
-   
+
     /**
      * Specify the begin of a date range to be used as a criteria on the date field.
      * The date range includes the date specified.
@@ -38,10 +38,10 @@ public interface AuditDateDeleteBuilder<T> extends AuditDeleteBuilder<T> {
      * @return The current query builder instance
      */
     public T dateRangeStart(Date rangeStart);
-    
+
     /**
      * Specify the end of a date range to be used as a criteria on the date field.
-     * The date range includes this date. 
+     * The date range includes this date.
      * @param rangeEnd the end (later end) of the date range
      * @return The current query builder instance
      */

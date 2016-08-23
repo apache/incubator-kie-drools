@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -27,7 +27,7 @@ public interface VariableInstanceLogQueryBuilder extends AuditLogQueryBuilder<Va
      * @return The current query builder instance
      */
     public VariableInstanceLogQueryBuilder date(Date... date);
-   
+
     /**
      * Specify the begin of a date range to be used as a criteria on the date field.
      * The date range includes the date specified.
@@ -35,36 +35,36 @@ public interface VariableInstanceLogQueryBuilder extends AuditLogQueryBuilder<Va
      * @return The current query builder instance
      */
     public VariableInstanceLogQueryBuilder dateRangeStart(Date rangeStart);
-    
+
     /**
      * Specify the end of a date range to be used as a criteria on the date field.
-     * The date range includes this date. 
+     * The date range includes this date.
      * @param rangeEnd the end (later end) of the date range
      * @return The current query builder instance
      */
     public VariableInstanceLogQueryBuilder dateRangeEnd(Date rangeEnd);
-    
+
     /**
      * Specify one or more variable instance ids to use as a criteria.
      * @param variableInstanceId one or more string variable instance ids
      * @return The current query builder instance
      */
     public VariableInstanceLogQueryBuilder variableInstanceId(String... variableInstanceId);
-   
+
     /**
      * Specify one or more variable ids to use as a criteria.
      * @param variableId one or more string variable ids
      * @return The current query builder instance
      */
     public VariableInstanceLogQueryBuilder variableId(String... variableId);
-  
+
     /**
      * Specify one or more variable values to use as a criteria.
      * @param value one or more string values
      * @return The current query builder instance
      */
     public VariableInstanceLogQueryBuilder value(String... value);
-   
+
     /**
      * Specify one or more old (previous) variable values to use as a criteria.
      * @param oldVvalue one or more string old values
@@ -87,15 +87,15 @@ public interface VariableInstanceLogQueryBuilder extends AuditLogQueryBuilder<Va
      * @return The current query builder instance
      */
     public VariableInstanceLogQueryBuilder externalId(String... externalId);
-    
+
     /**
      * Only retrieve the most recent ("last") variable instance logs per variable
      * </p>
-     * When using this, please make sure that this criteria intersects other criteria. 
+     * When using this, please make sure that this criteria intersects other criteria.
      * </p>
-     * Otherwise, this criteria will have no effect at all. 
+     * Otherwise, this criteria will have no effect at all.
      * @return The current query builder instance
      */
     public VariableInstanceLogQueryBuilder last();
-    
+
 }

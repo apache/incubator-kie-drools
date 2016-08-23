@@ -20,7 +20,7 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.KieContext;
 
 public interface RuleContext extends KieContext {
-    
+
     /**
      * @return the active Rule for the current context
      */
@@ -30,39 +30,39 @@ public interface RuleContext extends KieContext {
      * @return the current Match for the current context
      */
     Match getMatch();
-    
+
     /**
      * Logically inserts a fact into the KieSession, justified by the current
      * rule context.
-     * 
+     *
      * @param object the fact to insert into the kie session
      */
     FactHandle insertLogical(Object object);
-    
+
     /**
      * Logically inserts a fact into the KieSession, justified by the current
      * rule context.
-     * 
+     *
      * @param object the fact to insert into the kie session
      */
     FactHandle insertLogical(Object object, Object value);
-    
-    /** 
+
+    /**
      * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
      * @param match
      */
     void blockMatch(Match match);
-    
-    /** 
+
+    /**
      * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
      * @param match
-     */    
+     */
     void unblockAllMatches(Match match);
-    
-    /** 
+
+    /**
      * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
      * @param match
-     */    
+     */
     void cancelMatch(Match match);
-    
+
 }

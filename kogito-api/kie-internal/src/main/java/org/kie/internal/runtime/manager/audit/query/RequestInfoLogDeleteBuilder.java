@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -25,12 +25,12 @@ public interface RequestInfoLogDeleteBuilder extends AuditDateDeleteBuilder<Requ
      * @return The current query builder instance
      */
     public RequestInfoLogDeleteBuilder deploymentId(String... deploymentId);
-    
+
     /**
      * Specify one more statuses (in the form of an int) as criteria.
      * @param status one or more int statuses
      * @return The current instance of this query builder
      */
     public RequestInfoLogDeleteBuilder status(STATUS... status);
-    
+
 }

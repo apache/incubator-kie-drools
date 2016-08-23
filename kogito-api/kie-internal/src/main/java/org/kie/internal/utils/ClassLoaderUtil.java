@@ -41,7 +41,7 @@ public class ClassLoaderUtil {
             }
         } );
     }
-    
+
     public static CompositeClassLoader getClassLoader(final ClassLoader[] classLoaders,
                                                       final Class< ? > cls,
                                                       final boolean enableCache) {
@@ -56,19 +56,19 @@ public class ClassLoaderUtil {
             // system classloader
             cl.addClassLoader( systemClassLoader );
         }
-        
+
         if ( currentClassLoader != null ) {
             // the current classloader, typically from a drools-core or drools-compiler class
             cl.addClassLoader( currentClassLoader );
         }
-        
+
 
         if ( contextClassLoader != null ) {
             // context classloader
             cl.addClassLoader( contextClassLoader );
         }
-                
-        
+
+
         if ( classLoaders != null && classLoaders.length > 0) {
             // the user specified classloaders
             for (ClassLoader classLoader : classLoaders ) {
@@ -82,5 +82,5 @@ public class ClassLoaderUtil {
 
         return cl;
     }
-    
+
 }

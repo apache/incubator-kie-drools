@@ -26,41 +26,41 @@ import java.util.ServiceLoader;
  */
 public class ObjectModelResolverProvider {
 
-	private static ServiceLoader<ObjectModelResolver> serviceLoader = ServiceLoader.load(ObjectModelResolver.class);
-	private static List<ObjectModelResolver> resolvers;
+    private static ServiceLoader<ObjectModelResolver> serviceLoader = ServiceLoader.load(ObjectModelResolver.class);
+    private static List<ObjectModelResolver> resolvers;
 
-	/**
-	 * Returns all found resolvers
-	 * @return
-	 */
-	public static List<ObjectModelResolver> getResolvers() {
-		if (resolvers == null) {
-			synchronized (serviceLoader) {
-				resolvers = new ArrayList<ObjectModelResolver>();
-				for (ObjectModelResolver reolver : serviceLoader) {
-					resolvers.add(reolver);
-				}
-			}
-		}
-		
-		return resolvers;
-	}
-	
-	/**
-	 * Returns first resolver that accepts the given resolverId.
-	 * In case none is found null is returned.
-	 * @param resolverId identifier of the resolver
-	 * @return found resolver or null otherwise
-	 */
-	public static ObjectModelResolver get(String resolverId) {
-		List<ObjectModelResolver> resolvers = getResolvers();
-		
-		for (ObjectModelResolver resolver : resolvers) {
-			if (resolver.accept(resolverId)) {
-				return resolver;
-			}
-		}
-		
-		return null;
-	}
+    /**
+     * Returns all found resolvers
+     * @return
+     */
+    public static List<ObjectModelResolver> getResolvers() {
+        if (resolvers == null) {
+            synchronized (serviceLoader) {
+                resolvers = new ArrayList<ObjectModelResolver>();
+                for (ObjectModelResolver reolver : serviceLoader) {
+                    resolvers.add(reolver);
+                }
+            }
+        }
+
+        return resolvers;
+    }
+
+    /**
+     * Returns first resolver that accepts the given resolverId.
+     * In case none is found null is returned.
+     * @param resolverId identifier of the resolver
+     * @return found resolver or null otherwise
+     */
+    public static ObjectModelResolver get(String resolverId) {
+        List<ObjectModelResolver> resolvers = getResolvers();
+
+        for (ObjectModelResolver resolver : resolvers) {
+            if (resolver.accept(resolverId)) {
+                return resolver;
+            }
+        }
+
+        return null;
+    }
 }

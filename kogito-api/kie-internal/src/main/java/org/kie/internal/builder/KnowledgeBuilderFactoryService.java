@@ -25,8 +25,8 @@ import com.sun.tools.xjc.Options;
 
 /**
  * KnowledgeBuilderFactoryService is used by the KnowledgeBuilderFactory to "provide" it's concrete implementation.
- * 
- * This class is not considered stable and may change, the user is protected from this change by using 
+ *
+ * This class is not considered stable and may change, the user is protected from this change by using
  * the Factory api, which is considered stable.
  */
 public interface KnowledgeBuilderFactoryService  extends Service {
@@ -39,7 +39,7 @@ public interface KnowledgeBuilderFactoryService  extends Service {
 
     /**
      * Instantiate and return a new KnowledgeBuilderConfiguration
-     * 
+     *
      * @param properties
      *     Properties file to process, can be null;
      * @param classLoader
@@ -52,7 +52,7 @@ public interface KnowledgeBuilderFactoryService  extends Service {
     /**
      * DecisionTables need to take a configuration of the InputType and XLS based
      * ones can also take a Worksheet name.
-     * 
+     *
      * @return
      *     The DecisionTableConfiguration
      */
@@ -68,7 +68,7 @@ public interface KnowledgeBuilderFactoryService  extends Service {
 
     /**
      * Instantiate and return a new KnowledgeBuilder using the default KnowledgeBuilderConfiguration
-     * 
+     *
      * @return
      *     The KnowledgeBuilder
      */
@@ -76,7 +76,7 @@ public interface KnowledgeBuilderFactoryService  extends Service {
 
     /**
      * Instantiate and return a new KnowledgeBuilder using the given KnowledgeBuilderConfiguration
-     * 
+     *
      * @param conf
      *     The KnowledgeBuilderConfiguration
      * @return

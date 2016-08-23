@@ -26,14 +26,14 @@ import java.util.Properties;
 /**
  * KnowledgeBaseFactoryService is the interface implemented by KnowledgeBaseFactory.
  * This class is not considered stable and may change.
- * 
+ *
  * Users are referred to the KnowledgeBaseFactory API, which is considered stable.
  */
 public interface KnowledgeBaseFactoryService extends Service {
 
     /**
      * Instantiate and return a new KnowledgeBaseConfiguration
-     * 
+     *
      * @return
      *     the KnowledgeBaseConfiguration
      */
@@ -41,7 +41,7 @@ public interface KnowledgeBaseFactoryService extends Service {
 
     /**
      * Instantiate and return a new KnowledgeBaseConfiguration
-     * 
+     *
      * @param properties
      *     Properties file to process, can be null;
      * @param classLoader
@@ -54,7 +54,7 @@ public interface KnowledgeBaseFactoryService extends Service {
 
     /**
      * Instantiate and return a new KnowledgeSessionConfiguration
-     * 
+     *
      * @return
      *     the KnowledgeSessionConfiguration
      */
@@ -62,7 +62,7 @@ public interface KnowledgeBaseFactoryService extends Service {
 
     /**
      * Instantiate and return a new KnowledgeSessionConfiguration
-     * 
+     *
      * @param properties
      *     Properties file to process, can be null;
      * @return
@@ -72,7 +72,7 @@ public interface KnowledgeBaseFactoryService extends Service {
 
     /**
      * Instantiate and return a KnowledgeBase using a default KnowledgeBaseConfiguration
-     * 
+     *
      * @return
      *      The KnowledgeBase
      */
@@ -81,12 +81,12 @@ public interface KnowledgeBaseFactoryService extends Service {
     /**
      * Instantiate and return a KnowledgeBase using a default KnowledgeBaseConfiguration
      * and the given KnowledgeBase ID.
-     * 
-     * @param kbaseId 
+     *
+     * @param kbaseId
      *     A string Identifier for the knowledge base. Specially useful when enabling
      *     JMX monitoring and management, as that ID will be used to compose the
-     *     JMX ObjectName for all related MBeans. The application must ensure all kbase 
-     *     IDs are unique. 
+     *     JMX ObjectName for all related MBeans. The application must ensure all kbase
+     *     IDs are unique.
      * @return
      *      The KnowledgeBase
      */
@@ -94,7 +94,7 @@ public interface KnowledgeBaseFactoryService extends Service {
 
     /**
      * Instantiate and return a KnowledgeBase using the given KnowledgeBaseConfiguration
-     * 
+     *
      * @param conf
      *     The KnowledgeBaseConfiguration to be used
      * @return
@@ -105,12 +105,12 @@ public interface KnowledgeBaseFactoryService extends Service {
     /**
      * Instantiate and return a KnowledgeBase using the given KnowledgeBaseConfiguration and
      * the given KnowledgeBase ID.
-     * 
-     * @param kbaseId 
+     *
+     * @param kbaseId
      *     A string Identifier for the knowledge base. Specially useful when enabling
      *     JMX monitoring and management, as that ID will be used to compose the
-     *     JMX ObjectName for all related MBeans. The application must ensure all kbase 
-     *     IDs are unique. 
+     *     JMX ObjectName for all related MBeans. The application must ensure all kbase
+     *     IDs are unique.
      * @param conf
      *     The KnowledgeBaseConfiguration to be used
      * @return
@@ -120,7 +120,7 @@ public interface KnowledgeBaseFactoryService extends Service {
 
     /**
      * Instantiate and return an Environment
-     * 
+     *
      * @return
      *      The Environment
      */

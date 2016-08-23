@@ -26,11 +26,11 @@ public interface ProcessEvent
     extends
     KieRuntimeEvent {
 
-	/**
-	 * The ProcessInstance this event relates to.
-	 * 
-	 * @return the process instance
-	 */
+    /**
+     * The ProcessInstance this event relates to.
+     *
+     * @return the process instance
+     */
     ProcessInstance getProcessInstance();
 
 }

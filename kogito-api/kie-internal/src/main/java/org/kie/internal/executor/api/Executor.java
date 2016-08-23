@@ -22,5 +22,5 @@ package org.kie.internal.executor.api;
  */
 public interface Executor extends org.kie.api.executor.Executor {
 
-    
+
 }

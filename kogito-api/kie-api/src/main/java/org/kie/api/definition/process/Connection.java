@@ -23,29 +23,29 @@ import java.util.Map;
  */
 public interface Connection {
 
-	/**
-	 * The Node the connection starts from.
-	 */
+    /**
+     * The Node the connection starts from.
+     */
     Node getFrom();
 
-	/**
-	 * The Node the connection goes to.
-	 */
+    /**
+     * The Node the connection goes to.
+     */
     Node getTo();
 
-	/**
-	 * The type of exit point of the from Node.  Defaults to "DROOLS_DEFAULT".
-	 */
+    /**
+     * The type of exit point of the from Node.  Defaults to "DROOLS_DEFAULT".
+     */
     String getFromType();
 
-	/**
-	 * The type of entry point of the to Node.  Defaults to "DROOLS_DEFAULT".
-	 */
+    /**
+     * The type of entry point of the to Node.  Defaults to "DROOLS_DEFAULT".
+     */
     String getToType();
 
-	/**
-	 * Meta data associated with this connection.
-	 */
+    /**
+     * Meta data associated with this connection.
+     */
     Map<String, Object> getMetaData();
 
 }

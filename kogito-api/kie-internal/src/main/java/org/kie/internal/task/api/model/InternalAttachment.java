@@ -23,7 +23,7 @@ import org.kie.api.task.model.Content;
 import org.kie.api.task.model.User;
 
 public interface InternalAttachment extends Attachment {
-    
+
     void setId(long id);
 
     void setName(String name);
@@ -36,12 +36,12 @@ public interface InternalAttachment extends Attachment {
 
     void setAttachedAt(Date attachedAt);
 
-    void setAttachedBy(User attachedBy);   
-    
+    void setAttachedBy(User attachedBy);
+
     void setContent(Content content);
 
     void setSize(int size);
-        
+
     void setAttachmentContentId(long contentId);
 
 }

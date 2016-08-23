@@ -30,39 +30,39 @@ public class ConsequenceExceptionHandlerOption implements SingleValueKieBaseOpti
      * The property name for consequence exception handler configuration
      */
     public static final String PROPERTY_NAME = "drools.consequenceExceptionHandler";
-    
+
     /**
      * the consequence exception handler class instance
      */
     private final Class<? extends ConsequenceExceptionHandler> handler;
-    
+
     /**
      * Private constructor to enforce the use of the factory method
      */
     private ConsequenceExceptionHandlerOption( final Class<? extends ConsequenceExceptionHandler> handler ) {
         this.handler = handler;
     }
-    
+
     /**
      * This is a factory method for this ConsequenceExceptionHandler configuration.
-     * The factory method is a best practice for the case where the 
+     * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
      *
-     * @param handler the actual consequence exception handler class to be used 
-     * 
+     * @param handler the actual consequence exception handler class to be used
+     *
      * @return the actual type safe consequence exception handler configuration.
      */
     public static ConsequenceExceptionHandlerOption get( final Class<? extends ConsequenceExceptionHandler> handler ) {
         return new ConsequenceExceptionHandlerOption( handler );
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     /**
      * Returns the consequence exception handler instance
      * @return
@@ -97,5 +97,5 @@ public class ConsequenceExceptionHandlerOption implements SingleValueKieBaseOpti
         return true;
     }
 
-    
+
 }

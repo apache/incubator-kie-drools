@@ -30,12 +30,12 @@ public class MaxThreadsOption implements SingleValueKieBaseOption {
      * The property name for the max threads
      */
     public static final String PROPERTY_NAME = "drools.maxThreads";
-    
+
     /**
      * max threads
      */
     private final int maxThreads;
-    
+
     /**
      * Private constructor to enforce the use of the factory method
      * @param maxThreads
@@ -43,30 +43,30 @@ public class MaxThreadsOption implements SingleValueKieBaseOption {
     private MaxThreadsOption( int maxThreads ) {
         this.maxThreads = maxThreads;
     }
-    
+
     /**
      * This is a factory method for this Max Threads configuration.
-     * The factory method is a best practice for the case where the 
+     * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
-     * 
+     *
      * @param threshold the maximum number of threads for partition evaluation
-     * 
+     *
      * @return the actual type safe max threads configuration.
      */
     public static MaxThreadsOption get( int threshold ) {
         return new MaxThreadsOption( threshold );
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     /**
      * Returns the maximum number of threads for partition evaluation
-     * 
+     *
      * @return
      */
     public int getMaxThreads() {
@@ -90,5 +90,5 @@ public class MaxThreadsOption implements SingleValueKieBaseOption {
         if ( maxThreads != other.maxThreads ) return false;
         return true;
     }
-    
+
 }

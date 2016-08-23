@@ -24,7 +24,7 @@ import java.util.Properties;
  * </p>
  *
  * <p>
- * This interface, as well as ChangeSet, ResourceChangeNotifier, ResourceChangeMonitor and ResourceChangeScanner are still considered subject to change. 
+ * This interface, as well as ChangeSet, ResourceChangeNotifier, ResourceChangeMonitor and ResourceChangeScanner are still considered subject to change.
  * Use the XML format change-set, as
  * part of the ResourceType api when adding to KnowledgeBuilder, which is considered stable. KnowledgeBuilder currently ignored Added/Modified xml elements,
  * the KnowledgeAgent will use them, when rebuilding the KnowledgeBase.
@@ -52,7 +52,7 @@ public interface ResourceChangeScanner
      */
     public void configure(ResourceChangeScannerConfiguration configuration);
 
-    /** 
+    /**
      * Execute a disk scan of subscribed resources now.
      */
     public void scan();

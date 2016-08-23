@@ -48,7 +48,7 @@ public interface WorkItemManager {
     /**
      * Register the given handler for all work items of the given
      * type of work
-     * 
+     *
      * @param workItemName the type of work this work item handler can execute
      * @param handler the handler for executing work items
      */

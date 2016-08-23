@@ -94,14 +94,14 @@ public interface KieSession
         CommandExecutor,
         KieRuntime {
 
-	/**
-	 * Deprecated. use {@link #getIdentifier()} instead
+    /**
+     * Deprecated. use {@link #getIdentifier()} instead
      *
-	 * @return id of this session
-	 */
-	@Deprecated 	
+     * @return id of this session
+     */
+    @Deprecated
     int getId();
-    
+
     long getIdentifier();
 
     /**
@@ -111,11 +111,11 @@ public interface KieSession
      * If a logger has been registered on this session it will be automatically closed.
      */
     void dispose();
-    
-    
+
+
     /**
      * Destroys session permanently. In case of session state being persisted in data store
-     * it will be removed from it otherwise it falls back to default dispose() method. 
+     * it will be removed from it otherwise it falls back to default dispose() method.
      * NOTE: Name and location of this method will most likely change before 6.0.Final
      *  as it applies only to persistent sessions
      */

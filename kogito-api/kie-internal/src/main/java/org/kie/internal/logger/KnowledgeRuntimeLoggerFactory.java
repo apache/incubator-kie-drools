@@ -24,13 +24,13 @@ import org.kie.api.logger.KieLoggers;
  * The KnowledgeRuntimeLogger uses the comprehensive event system to create an audit log that can be used
  * to log the execution of the session for later inspection, in tools such as the Eclipse audit viewer.
  * </p>
- * 
+ *
  * <pre>
  * KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "logdir/mylogfile");
  * ....
  * logger.close();
  * </pre>
- * 
+ *
  * <p>
  * Don't forget to close the logger when it is no longer needed, so resources can be released.
  * </p>
@@ -74,7 +74,7 @@ public class KnowledgeRuntimeLoggerFactory {
     /**
      * Logs events to command line console. This is not in XML format, so it cannot be parsed
      * by other tools, but is in real time and is more human readable.
-     * 
+     *
      * @param session
      * @return
      */

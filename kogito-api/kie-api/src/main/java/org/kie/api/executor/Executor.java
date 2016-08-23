@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Core logic of executor is encapsulated by this interface. 
+ * Core logic of executor is encapsulated by this interface.
  * It allows to operate on request instances of the execution.
  *
  */
@@ -33,10 +33,10 @@ public interface Executor {
      * @return unique identifier of the request
      */
     Long scheduleRequest(String commandName, CommandContext ctx);
-    
+
     /**
      * Schedules execution of given command on defined time.
-     * @param commandName  - FQCN of the command     
+     * @param commandName  - FQCN of the command
      * @param date - date at which given command shall be executed
      * @param ctx - contextual data given by executor service
      * @return unique identifier of the request
@@ -55,7 +55,7 @@ public interface Executor {
     int getInterval();
 
     /**
-     * Sets interval at which executor threads are running. 
+     * Sets interval at which executor threads are running.
      * Should not be used after <code>init</code> method has been called.
      * @param waitTime
      */
@@ -67,7 +67,7 @@ public interface Executor {
     int getRetries();
 
     /**
-     * Sets default number of retries that shall be attempted in case of an error. 
+     * Sets default number of retries that shall be attempted in case of an error.
      * Should not be used after <code>init</code> method has been called.
      * @param defaultNroOfRetries
      */
@@ -83,23 +83,23 @@ public interface Executor {
      * @param nroOfThreads
      */
     void setThreadPoolSize(int nroOfThreads);
-    
+
     /**
      * @return time unit configured for executor intervals
      */
     TimeUnit getTimeunit();
-    
+
     /**
      * Sets time unit for executor intervals
      * @param timeunit
      */
     void setTimeunit(TimeUnit timeunit);
-    
+
     /**
      * Initialized executor
      */
     void init();
-    
+
     /**
      * Destroys executor
      */

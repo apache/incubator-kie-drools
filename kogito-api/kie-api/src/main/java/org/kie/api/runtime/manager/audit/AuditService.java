@@ -22,19 +22,19 @@ import java.util.List;
  * AuditService provides access to active and already completed process (and its components) data.
  * Delivers data about:
  * <ul>
- * 	<li>Process instances</li>
- * 	<li>Node instances</li>
- * 	<li>Variable instances</li>	
+ *  <li>Process instances</li>
+ *  <li>Node instances</li>
+ *  <li>Variable instances</li>
  * </ul>
  * there might be some limitations in various implementations thus some of the methods might throw
  * <code>UnsupportedOperationException</code>
  */
 public interface AuditService {
 
-	/**
-	 * Returns all known process instances currently available to the audit service
-	 * @return all process instance logs or empty list if none were found
-	 */
+    /**
+     * Returns all known process instances currently available to the audit service
+     * @return all process instance logs or empty list if none were found
+     */
     List<? extends ProcessInstanceLog> findProcessInstances();
 
     /**
@@ -74,8 +74,8 @@ public interface AuditService {
 
     /**
      * @param processInstanceId unique identifier of process instance
-     * @param nodeId node identifier - by default it should be unique id (from process definition) 
-     * 		  but if not available regular node id shall be used 
+     * @param nodeId node identifier - by default it should be unique id (from process definition)
+     *        but if not available regular node id shall be used
      * @return all node instances that were already triggered for given process instance id and node identifier
      */
     List<? extends NodeInstanceLog> findNodeInstances(long processInstanceId, String nodeId);
@@ -102,7 +102,7 @@ public interface AuditService {
      * @return all variable logs for given variable id or empty list if none were found
      */
     List<? extends VariableInstanceLog> findVariableInstancesByName(String variableId, boolean onlyActiveProcesses);
-    
+
     /**
      * Returns all variable logs that are identified by variable id and has given value
      * regardless of what process instance they belong to
@@ -112,12 +112,12 @@ public interface AuditService {
      * @return all variable logs for given variable id and its value matches given value or empty list if none were found
      */
     List<? extends VariableInstanceLog> findVariableInstancesByNameAndValue(String variableId, String value, boolean onlyActiveProcesses);
-    
+
     /**
      * Removes all entries from audit data store
      */
     void clear();
-    
+
     /**
      * Indicates that work with this instance of <code>AuditService</code> is completed and can be disposed (release resources)
      */

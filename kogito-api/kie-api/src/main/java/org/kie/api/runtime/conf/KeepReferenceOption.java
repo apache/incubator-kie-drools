@@ -32,9 +32,9 @@ public enum KeepReferenceOption implements SingleValueKieSessionOption {
      * The property name for the keep reference configuration
      */
     public static final String PROPERTY_NAME = "drools.keepReference";
-    
+
     private final boolean keepReference;
-    
+
     /**
      * Private constructor to enforce the use of the factory method
      * @param keepReference
@@ -42,16 +42,16 @@ public enum KeepReferenceOption implements SingleValueKieSessionOption {
     private KeepReferenceOption( final boolean keepReference ) {
         this.keepReference = keepReference;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     public boolean isKeepReference() {
         return keepReference;
     }
-    
+
 }

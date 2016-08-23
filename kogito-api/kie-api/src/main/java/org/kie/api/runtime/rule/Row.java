@@ -22,8 +22,8 @@ public interface Row {
      * @return object that is bound to the given identifier
      */
     Object get(String identifier);
-      
-    
+
+
     /**
      * @return FactHandle associated with the given identifier
      */

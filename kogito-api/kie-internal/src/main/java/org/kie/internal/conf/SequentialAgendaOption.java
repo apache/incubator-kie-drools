@@ -21,13 +21,13 @@ import org.kie.api.conf.SingleValueKieBaseOption;
 
 /**
  * An Enum for SequentialAgenda option.
- * 
+ *
  * drools.sequential.agenda = &lt;sequential|dynamic&gt;
- * 
+ *
  * DEFAULT = sequential
  */
 public enum SequentialAgendaOption implements SingleValueKieBaseOption {
-    
+
     SEQUENTIAL,
     DYNAMIC;
 
@@ -35,12 +35,12 @@ public enum SequentialAgendaOption implements SingleValueKieBaseOption {
      * The property name for the sequential mode option
      */
     public static final String PROPERTY_NAME = "drools.sequential.agenda";
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
 }

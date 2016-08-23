@@ -28,7 +28,7 @@ import java.util.List;
  * <p>
  * Simple example showing how to build a KnowledgeBase from an XLS resource.
  * <p>
- * 
+ *
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
  * DecisionTableConfiguration dtconf = KnowledgeBuilderFactory.newDecisionTableConfiguration();
@@ -58,7 +58,7 @@ public interface DecisionTableConfiguration
      * Which named xls worksheet should be used.
      * This parameter is optional, and a default worksheet
      * will be used if not specified.
-     * 
+     *
      * @param name
      */
     void setWorksheetName(String name);

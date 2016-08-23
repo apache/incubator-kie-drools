@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -17,22 +17,22 @@ package org.kie.api.executor;
 
 public interface ExecutorStoreService {
 
-	void persistRequest(RequestInfo request);
-	
-	void updateRequest(RequestInfo request);
-	
-	RequestInfo removeRequest(Long requestId);
-	
-	RequestInfo findRequest(Long id);	
-	
-	void persistError(ErrorInfo error);
-	
-	void updateError(ErrorInfo error);
-	
-	ErrorInfo removeError(Long errorId);
-	
-	ErrorInfo findError(Long id);
-	
-	Runnable buildExecutorRunnable();
-	
+    void persistRequest(RequestInfo request);
+
+    void updateRequest(RequestInfo request);
+
+    RequestInfo removeRequest(Long requestId);
+
+    RequestInfo findRequest(Long id);
+
+    void persistError(ErrorInfo error);
+
+    void updateError(ErrorInfo error);
+
+    ErrorInfo removeError(Long errorId);
+
+    ErrorInfo findError(Long id);
+
+    Runnable buildExecutorRunnable();
+
 }

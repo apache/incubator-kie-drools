@@ -23,5 +23,5 @@ package org.kie.internal.executor.api;
  */
 public interface RequestInfo extends org.kie.api.executor.RequestInfo {
 
-   
+
 }

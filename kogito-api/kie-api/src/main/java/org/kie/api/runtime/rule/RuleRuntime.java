@@ -23,7 +23,7 @@ import java.util.Collection;
  * Although, users are encouraged to use {@link org.kie.api.runtime.KieSession} or {@link org.kie.api.runtime.KieRuntime}
  * interface instead of {@link RuleRuntime} interface, specially because of the <code>dispose()</code> method
  * that is only available in the {@link org.kie.api.runtime.KieSession} interface.
- * 
+ *
  * @see org.kie.api.runtime.KieSession
  */
 public interface RuleRuntime
@@ -53,7 +53,7 @@ public interface RuleRuntime
     /**
      * Returns a collection of all available working memory entry points
      * for this session.
-     * 
+     *
      * @return the collection of all available entry points for this session
      */
     Collection< ? extends EntryPoint> getEntryPoints();
@@ -69,7 +69,7 @@ public interface RuleRuntime
      *
      * @return The QueryResults of the specified query.
      *         If no results match the query it is empty.
-     * 
+     *
      * @throws RuntimeException If the query does not exist
      */
     QueryResults getQueryResults(String query,

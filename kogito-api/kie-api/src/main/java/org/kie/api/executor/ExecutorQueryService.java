@@ -28,97 +28,97 @@ public interface ExecutorQueryService {
      * @return list of pending execution requests.
      */
     List<RequestInfo> getPendingRequests(QueryContext queryContext);
-    
+
     /**
      * @param id unique id of the request
      * @return given pending request identified by <code>id</code>
      */
     List<RequestInfo> getPendingRequestById(Long id);
-    
+
     /**
      * @param id unique id of the request
      * @return request identified by <code>id</code> regardless of its status
      */
     RequestInfo getRequestById(Long id);
-    
+
     /**
-     * Returns requests identified by <code>businessKey</code> usually it should be only one with given 
-     * business key but it does not have to as same business key requests can be processed sequentially and 
+     * Returns requests identified by <code>businessKey</code> usually it should be only one with given
+     * business key but it does not have to as same business key requests can be processed sequentially and
      * thus might be in different statuses.
      *
      * @param businessKey business key of the request
      * @return requests identified by the business key
      */
     List<RequestInfo> getRequestByBusinessKey(String businessKey, QueryContext queryContext);
-    
+
     /**
      * @param command command configured in the request
      * @return requests configured with given <code>command</code>
      */
     List<RequestInfo> getRequestByCommand(String command, QueryContext queryContext);
-    
+
     /**
      * @param id unique id of the request
      * @return all errors (if any) for given request
      */
     List<ErrorInfo> getErrorsByRequestId(Long id);
-    
+
     /**
      * @return all queued requests
      */
     List<RequestInfo> getQueuedRequests(QueryContext queryContext);
-    
+
     /**
      * @return all comleted requests.
      */
     List<RequestInfo> getCompletedRequests(QueryContext queryContext);
-    
+
     /**
      * @return all requests that have errors.
      */
     List<RequestInfo> getInErrorRequests(QueryContext queryContext);
-    
+
     /**
      * @return all requests that were cancelled
      */
     List<RequestInfo> getCancelledRequests(QueryContext queryContext);
-    
+
     /**
      * @return all errors.
      */
-    List<ErrorInfo> getAllErrors(QueryContext queryContext); 
-    
+    List<ErrorInfo> getAllErrors(QueryContext queryContext);
+
     /**
      * @return all requests
      */
-    List<RequestInfo> getAllRequests(QueryContext queryContext); 
-    
+    List<RequestInfo> getAllRequests(QueryContext queryContext);
+
     /**
      * @return all currently running requests
      */
     List<RequestInfo> getRunningRequests(QueryContext queryContext);
-    
+
     /**
      * @return requests queued for future execution
      */
     List<RequestInfo> getFutureQueuedRequests(QueryContext queryContext);
-    
+
     /**
      * @param statuses statuses that requests should be in
      * @return requests based on their status
      */
     List<RequestInfo> getRequestsByStatus(List<STATUS> statuses, QueryContext queryContext);
-    
+
     /**
      * Dedicated method for handling special case that is get the request for processing.
-     * To ensure its efficient use it shall perform necessary operation to minimize risk of 
+     * To ensure its efficient use it shall perform necessary operation to minimize risk of
      * race conditions and deadlock.
      */
     RequestInfo getRequestForProcessing();
-    
+
     /**
      * Dedicated method for handling special case that is get the request for processing by id.
-     * To ensure its efficient use it shall perform necessary operation to minimize risk of 
+     * To ensure its efficient use it shall perform necessary operation to minimize risk of
      * race conditions and deadlock.
      */
     RequestInfo getRequestForProcessing(Long requestId);

@@ -23,12 +23,12 @@ import org.kie.api.runtime.KieSession;
  */
 public interface SessionFactory {
 
-	/**
-	 * Produces new instance of <code>KieSession</code>
-	 * @return new instance of <code>KieSession</code>
-	 */
+    /**
+     * Produces new instance of <code>KieSession</code>
+     * @return new instance of <code>KieSession</code>
+     */
     KieSession newKieSession();
-    
+
     /**
      * Loads <code>KieSession</code> form data store (such as db) based on given id.
      * @param sessionId identifier of ksession
@@ -36,7 +36,7 @@ public interface SessionFactory {
      * @throws RuntimeException in case session cannot be loaded
      */
     KieSession findKieSessionById(Long sessionId);
-    
+
     /**
      * Closes the factory and releases all resources
      */

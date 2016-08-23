@@ -28,12 +28,12 @@ public class BeliefSystemTypeOption implements SingleValueKieSessionOption {
      * The property name for the belief system configuration
      */
     public static final String PROPERTY_NAME = "drools.beliefSystem";
-    
+
     /**
      * Belief System Type
      */
     private final String beliefSystemType;
-    
+
     /**
      * Private constructor to enforce the use of the factory method
      * @param beliefSystemType
@@ -41,27 +41,27 @@ public class BeliefSystemTypeOption implements SingleValueKieSessionOption {
     private BeliefSystemTypeOption( String beliefSystemType ) {
         this.beliefSystemType = beliefSystemType;
     }
-    
+
     /**
      * This is a factory method for this belief system configuration.
-     * The factory method is a best practice for the case where the 
+     * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
-     * 
+     *
      * @param beliefSystemType  the identifier for the belie system
-     * 
+     *
      * @return the actual type safe default clock type configuration.
      */
     public static BeliefSystemTypeOption get( String beliefSystemType ) {
         return new BeliefSystemTypeOption( beliefSystemType );
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     /**
      * @return the configured belief system type
      */
@@ -88,7 +88,7 @@ public class BeliefSystemTypeOption implements SingleValueKieSessionOption {
         } else if ( ! beliefSystemType.equals( other.beliefSystemType) ) return false;
         return true;
     }
-    
+
     @Override
     public String toString() {
         return "BeliefSystemTypeOption( "+ beliefSystemType +" )";

@@ -21,22 +21,22 @@ import org.kie.api.conf.SingleValueKieBaseOption;
 
 /**
  * An Enum for ClassLoaderCacheOption option.
- * 
+ *
  * drools.classLoaderCacheEnabled = &lt;true|false&gt;
- * 
+ *
  * DEFAULT = true
- * 
+ *
  * When resolving classes on the classpath, drools calls the parent classloader to
  * resolve them. Usually classloaders do not cache results, making compilation very
  * expensive on IO. By default, Drools will cache results of class resolution on the
  * external parent classloader in order to improve compilation performance. This
  * cache can be disabled by setting this option to false.
- * 
- * This option is new to Drools 5.1. Before 5.1, Drools would never cache class 
+ *
+ * This option is new to Drools 5.1. Before 5.1, Drools would never cache class
  * resolution results.
  */
 public enum ClassLoaderCacheOption implements SingleValueKnowledgeBuilderOption, SingleValueKieBaseOption {
-    
+
     ENABLED(true),
     DISABLED(false);
 
@@ -44,20 +44,20 @@ public enum ClassLoaderCacheOption implements SingleValueKnowledgeBuilderOption,
      * The property name for the process string escapes option
      */
     public static final String PROPERTY_NAME = "drools.classLoaderCacheEnabled";
-    
+
     private boolean value;
-    
+
     ClassLoaderCacheOption( final boolean value ) {
         this.value = value;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     public boolean isClassLoaderCacheEnabled() {
         return this.value;
     }

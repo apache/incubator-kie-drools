@@ -24,22 +24,22 @@ import java.util.Map;
 /**
  * A Process represents one modular piece of business logic that can be executed by
  * a process engine.  Different types of processes may exist.
- * 
+ *
  */
 public interface Process
     extends
     KieDefinition {
 
-	/**
-	 * The unique id of the Process.
-	 * 
-	 * @return the id
-	 */
+    /**
+     * The unique id of the Process.
+     *
+     * @return the id
+     */
     String getId();
 
     /**
      * The name of the Process.
-     * 
+     *
      * @return the name
      */
     String getName();
@@ -47,8 +47,8 @@ public interface Process
     /**
      * The version of the Process.
      * You may use your own versioning format
-     * (as the version is not interpreted by the engine). 
-     * 
+     * (as the version is not interpreted by the engine).
+     *
      * @return the version
      */
     String getVersion();
@@ -64,14 +64,14 @@ public interface Process
      * The type of process.
      * Different types of processes may exist.
      * This defaults to "RuleFlow".
-     * 
+     *
      * @return the type
      */
     String getType();
-    
-	/**
-	 * Meta data associated with this Node.
-	 */
+
+    /**
+     * Meta data associated with this Node.
+     */
     Map<String, Object> getMetaData();
 
     Resource getResource();

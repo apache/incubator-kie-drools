@@ -1,11 +1,11 @@
 /*
  * Copyright 2015 Red Hat, Inc. and/or its affiliates.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,14 +38,14 @@ public class CorrelationKeyXmlAdapter extends XmlAdapter<String, CorrelationKey>
      * This method has been made "static"ally available so that
      * non-JAXB code does not have to (unnecesarily) instantiate
      * an instance fo this class.
-     * 
+     *
      * @param key A {@link CorrelationKey}
      * @return A {@link String} equivalent of the key
      */
     public static CorrelationKey unmarshalCorrelationKey( String key ) {
         CorrelationKeyFactory factory = KieInternalServices.Factory.get().newCorrelationKeyFactory();
         if( key == null || key.isEmpty() ) {
-           return factory.newCorrelationKey(Collections.EMPTY_LIST); 
+           return factory.newCorrelationKey(Collections.EMPTY_LIST);
         }
         List<String> keys = new ArrayList<String>();
         for( String k : key.split(":") ) {
@@ -63,12 +63,12 @@ public class CorrelationKeyXmlAdapter extends XmlAdapter<String, CorrelationKey>
      * This method has been made "static"ally available so that
      * non-JAXB code does not have to (unnecesarily) instantiate
      * an instance fo this class.
-     * 
+     *
      * @param key A {@link CorrelationKey}
      * @return A {@link String} equivalent of the key
      */
     public static String marshalCorrelationKey( CorrelationKey key ) {
-        if( key == null ) { 
+        if( key == null ) {
             return "";
         }
         StringBuffer result = new StringBuffer();

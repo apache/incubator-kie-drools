@@ -35,7 +35,7 @@ public class DefaultProcessEventListener
     public void afterProcessStarted(ProcessStartedEvent event) {
         // intentionally left blank
     }
-    
+
     public void afterVariableChanged(ProcessVariableChangedEvent event) {
         // intentionally left blank
     }

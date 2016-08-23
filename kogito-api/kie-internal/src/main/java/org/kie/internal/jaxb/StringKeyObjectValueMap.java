@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * This implements {@link Map} in order to fool JSON.. 
+ * This implements {@link Map} in order to fool JSON..
  */
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -39,8 +39,8 @@ public class StringKeyObjectValueMap implements Map<String, Object> {
 
     @XmlElement(name="entry")
     public List<StringKeyObjectValueEntry> entries = new ArrayList<StringKeyObjectValueEntry>();
-    
-    public void addEntry(StringKeyObjectValueEntry newEntry) { 
+
+    public void addEntry(StringKeyObjectValueEntry newEntry) {
        this.entries.add(newEntry);
     }
 
@@ -56,26 +56,26 @@ public class StringKeyObjectValueMap implements Map<String, Object> {
 
     @Override
     public boolean containsKey(Object key) {
-        if( key == null ) { 
+        if( key == null ) {
             return false;
         }
-        for( StringKeyObjectValueEntry entry : entries ) { 
-            if( key.equals(entry.getKey())) { 
+        for( StringKeyObjectValueEntry entry : entries ) {
+            if( key.equals(entry.getKey())) {
                 return true;
-            } 
+            }
         }
         return false;
     }
 
     @Override
     public boolean containsValue(Object value) {
-        if( value == null ) { 
+        if( value == null ) {
             return false;
         }
-        for( StringKeyObjectValueEntry entry : entries ) { 
+        for( StringKeyObjectValueEntry entry : entries ) {
             Object entryVal = deserializeObject(entry.getBytes(), entry.getClassName(), entry.getKey());
-            if( value.equals(entryVal) ) { 
-               return true; 
+            if( value.equals(entryVal) ) {
+               return true;
             }
         }
         return false;
@@ -83,13 +83,13 @@ public class StringKeyObjectValueMap implements Map<String, Object> {
 
     @Override
     public Object get(Object key) {
-        if( key == null ) { 
+        if( key == null ) {
             return null;
         }
-        for( StringKeyObjectValueEntry entry : entries ) { 
-            if( key != null && key.equals(entry.getKey())) { 
+        for( StringKeyObjectValueEntry entry : entries ) {
+            if( key != null && key.equals(entry.getKey())) {
                 return deserializeObject(entry.getBytes(), entry.getClassName(), key.toString());
-            } 
+            }
         }
         return null;
     }
@@ -105,10 +105,10 @@ public class StringKeyObjectValueMap implements Map<String, Object> {
     @Override
     public Object remove(Object key) {
         Iterator<StringKeyObjectValueEntry> iter = entries.iterator();
-        while( iter.hasNext() ) { 
+        while( iter.hasNext() ) {
             StringKeyObjectValueEntry entry = iter.next();
             String entryKey = entry.getKey();
-            if( key.equals(entryKey) ) { 
+            if( key.equals(entryKey) ) {
                 iter.remove();
                 return deserializeObject(entry.getBytes(), entry.getClassName(), entry.getKey());
             }
@@ -118,7 +118,7 @@ public class StringKeyObjectValueMap implements Map<String, Object> {
 
     @Override
     public void putAll(Map<? extends String, ? extends Object> m) {
-        for( Entry<?, ?> entry : m.entrySet() ) { 
+        for( Entry<?, ?> entry : m.entrySet() ) {
            StringKeyObjectValueEntry newEntry = createJaxbStringObjectMapEntry(entry.getValue(), entry.getKey().toString());
            entries.add(newEntry);
         }
@@ -132,7 +132,7 @@ public class StringKeyObjectValueMap implements Map<String, Object> {
     @Override
     public Set<String> keySet() {
         Set<String> keySet = new HashSet<String>();
-        for( StringKeyObjectValueEntry entry : entries ) { 
+        for( StringKeyObjectValueEntry entry : entries ) {
             keySet.add(entry.getKey());
         }
         return keySet;
@@ -141,7 +141,7 @@ public class StringKeyObjectValueMap implements Map<String, Object> {
     @Override
     public Collection<Object> values() {
         List<Object> values = new ArrayList<Object>();
-        for( StringKeyObjectValueEntry entry : entries ) { 
+        for( StringKeyObjectValueEntry entry : entries ) {
            Object newVal = deserializeObject(entry.getBytes(), entry.getClassName(), entry.getKey());
            values.add(newVal);
         }
@@ -151,12 +151,12 @@ public class StringKeyObjectValueMap implements Map<String, Object> {
     @Override
     public Set<java.util.Map.Entry<String, Object>> entrySet() {
         Set<java.util.Map.Entry<String, Object>> entrySet = new HashSet<Map.Entry<String,Object>>();
-        for( StringKeyObjectValueEntry entry : entries ) { 
+        for( StringKeyObjectValueEntry entry : entries ) {
            Object newVal = deserializeObject(entry.getBytes(), entry.getClassName(), entry.getKey());
            String key = entry.getKey();
            Entry<String, Object> newEntry = new EntryImpl(key, newVal);
            entrySet.add(newEntry);
-        } 
+        }
         return entrySet;
     }
 
@@ -164,8 +164,8 @@ public class StringKeyObjectValueMap implements Map<String, Object> {
 
         private final String key;
         private Object val;
-        
-        public EntryImpl( String key, Object val) { 
+
+        public EntryImpl( String key, Object val) {
             this.key = key;
             this.val = val;
         }
@@ -184,7 +184,7 @@ public class StringKeyObjectValueMap implements Map<String, Object> {
             Object oldVal = this.val;
             this.val = value;
             return oldVal;
-        } 
-        
+        }
+
     }
 }

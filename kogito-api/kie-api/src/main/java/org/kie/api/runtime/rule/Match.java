@@ -28,7 +28,7 @@ public interface Match {
     Rule getRule();
 
     /**
-     * 
+     *
      * @return matched FactHandles for this Match
      */
     List< ? extends FactHandle> getFactHandles();
@@ -47,7 +47,7 @@ public interface Match {
 
     /**
      * @return the bound declaration value for the given declaration identifier.
-     * 
+     *
      * @param declarationId
      */
     Object getDeclarationValue(String declarationId);

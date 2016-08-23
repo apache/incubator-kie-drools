@@ -22,7 +22,7 @@ package org.kie.api.executor;
  * <br>
  * Important note about implementations is that it shall always be possible to be initialized with default constructor
  * as executor service is an async component so it will initialize the command on demand using reflection.
- * In case there is a heavy logic on initialization it should be placed in another service implementation that 
+ * In case there is a heavy logic on initialization it should be placed in another service implementation that
  * can be looked up from within command.
  */
 public interface CommandCallback {
@@ -33,7 +33,7 @@ public interface CommandCallback {
      * @param results - result produced by command
      */
     void onCommandDone(CommandContext ctx, ExecutionResults results);
-    
+
     /**
      * Executed only when command failed and all possible retries were already invoked. This indicates that executor will not
      * attempt any more execution of given command as part of the request.

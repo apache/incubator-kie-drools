@@ -24,18 +24,18 @@ public interface TaskSummary extends QuickTaskSummary {
     String getDescription();
 
     Status getStatus();
-    
+
     Boolean isSkipable();
 
     User getActualOwner();
 
     User getCreatedBy();
-    
+
     Long getProcessSessionId();
 
     @Deprecated // remove in 7.0 since this field is never filled
     List<String> getPotentialOwners();
-    
+
     Boolean isQuickTaskSummary();
 
 }

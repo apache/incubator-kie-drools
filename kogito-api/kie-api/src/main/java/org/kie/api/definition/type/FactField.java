@@ -38,15 +38,15 @@ public interface FactField
 
     /**
      * @return true if this field is a key field. A key field
-     * is included in hashcode() calculation and on the equals() 
-     * method evaluation. Non-key fields are not checked in this 
+     * is included in hashcode() calculation and on the equals()
+     * method evaluation. Non-key fields are not checked in this
      * method.
      */
     boolean isKey();
 
     /**
      * Sets the value of this field in the given fact.
-     * 
+     *
      * @param bean fact on which to set the field.
      * @param value the value to set on the field.
      */
@@ -55,7 +55,7 @@ public interface FactField
 
     /**
      * @param bean the fact from which the field will be read.
-     * 
+     *
      * @return the value of this field on the given fact.
      */
     Object get(Object bean);

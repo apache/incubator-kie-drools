@@ -20,14 +20,14 @@ package org.kie.internal;
  * <p>
  * This interface is used to provide callback style logging for the system events.
  * </p>
- * 
+ *
  * <p>
  * The SystemEventListenerFactory is used to provide the default SystemEventListener to various Drools components
  * such as the KnowledgeAgent, ResourceChangeNotifier and ResourceChangeListener. Although many of these components
  * allow the used listener to be overriden with a setSystemEventListener(SystemEventListener) method.
  * </p>
- * 
- * Componens 
+ *
+ * Componens
  */
 public interface SystemEventListener {
     /**

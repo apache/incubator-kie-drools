@@ -23,7 +23,7 @@ import java.util.Set;
 
 /**
  * Data holder for any contextual data that shall be given to the command upon execution.
- * Important note that every object that is added to the data container must be serializable 
+ * Important note that every object that is added to the data container must be serializable
  * meaning it must implement <code>java.io.Seriazliable</code>
  *
  */

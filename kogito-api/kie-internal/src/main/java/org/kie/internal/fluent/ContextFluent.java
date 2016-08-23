@@ -25,20 +25,20 @@ public interface ContextFluent<T>{
      * @return this
      */
     T set(String name);
-    
+
     /**
      * Indicates that output from the last command should be returned (default is no).
      * <br>
-     * A call to this method <i>must</i> follow a call to {@link #set(String)} method in order to 
+     * A call to this method <i>must</i> follow a call to {@link #set(String)} method in order to
      * set the name for the result.
      * @return this
      */
     T out();
-    
+
     /**
      * Indicates that the output from the last executed command should be returned and set to the given name in the context
      * @param name
      * @return this
      */
     T out(String name);
-} 
+}

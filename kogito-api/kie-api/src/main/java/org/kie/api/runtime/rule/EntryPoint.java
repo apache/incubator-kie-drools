@@ -23,15 +23,15 @@ import java.util.Collection;
 /**
  * <p>An entry-point is an abstract channel through where facts are inserted into the engine.</p>
  * <p>KIE 6 supports multiple entry-points into a single {@link org.kie.api.KieBase}: the
- * default, anonymous entry-point, as well as as many user declared entry points the application 
+ * default, anonymous entry-point, as well as as many user declared entry points the application
  * requires.</p>
- * 
+ *
  * <p>To get a reference to an entry point, just request the session:</p>
  * <pre>
  * KieSession session = kbase.newStatelessKieSession();
  * ...
  * WorkingMemoryEntryPoint entrypoint = session.getEntryPoint("my entry point");
- * </pre> 
+ * </pre>
  * <p>Once a reference to an entry point is acquired, the application can insert, update and retract facts
  * to/from that entry-point as usual:</p>
  * <pre>
@@ -42,7 +42,7 @@ import java.util.Collection;
  * ...
  * entrypoint.retract( factHandle );
  * ...
- * </pre> 
+ * </pre>
  */
 public interface EntryPoint {
 
@@ -53,17 +53,17 @@ public interface EntryPoint {
 
     /**
      * Inserts a new fact into this entry point
-     * 
-     * @param object 
+     *
+     * @param object
      *        the fact to be inserted
-     *        
+     *
      * @return the fact handle created for the given fact
      */
     FactHandle insert(Object object);
 
     /**
      * Retracts the fact for which the given FactHandle was assigned.
-     * 
+     *
      * @param handle the handle whose fact is to be retracted.
      * @deprecated use {@link #delete(FactHandle)}
      */
@@ -72,7 +72,7 @@ public interface EntryPoint {
     /**
      * Retracts the fact for which the given FactHandle was assigned
      * regardless if it has been explicitly or logically inserted.
-     * 
+     *
      * @param handle the handle whose fact is to be retracted.
      */
     void delete(FactHandle handle);
@@ -90,25 +90,25 @@ public interface EntryPoint {
     /**
      * Updates the fact for which the given FactHandle was assigned with the new
      * fact set as the second parameter in this method.
-     *  
+     *
      * @param handle the FactHandle for the fact to be updated.
-     * 
+     *
      * @param object the new value for the fact being updated.
      */
     void update(FactHandle handle,
                 Object object);
 
     /**
-     * Returns the fact handle associated with the given object. It is important to note that this 
+     * Returns the fact handle associated with the given object. It is important to note that this
      * method behaves in accordance with the configured assert behaviour for this {@link org.kie.api.KieBase}
      * (either IDENTITY or EQUALITY).
-     *  
-     * @param object 
+     *
+     * @param object
      *               the fact for which the fact handle will be returned.
-     * 
+     *
      * @return the fact handle for the given object, or null in case no fact handle was found for the
      *         given object.
-     *         
+     *
      * @see org.kie.api.KieBaseConfiguration
      */
     FactHandle getFactHandle(Object object);
@@ -123,11 +123,11 @@ public interface EntryPoint {
      * implementation!  While this class implements the <tt>Collection</tt> interface, it
      * intentionally violates <tt>Collection</tt> general contract, which mandates the
      * use of the <tt>equals</tt> method when comparing objects.</p>
-     * 
+     *
      * <p>Instead the approach used when comparing objects with the <tt>contains(Object)</tt>
      * method is dependent on the WorkingMemory configuration, where it can be configured for <tt>Identity</tt>
-     * or for <tt>Equality</tt>.</p> 
-     * 
+     * or for <tt>Equality</tt>.</p>
+     *
      * @return all facts from the current session as a Collection.
      */
     Collection<? extends Object> getObjects();
@@ -149,10 +149,10 @@ public interface EntryPoint {
      * the given filter.
      */
     <T extends FactHandle> Collection< T > getFactHandles(ObjectFilter filter);
-    
+
     /**
      * @return the total number of facts currently in this entry point
      */
     long getFactCount();
-    
+
 }

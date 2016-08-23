@@ -21,14 +21,14 @@ import com.thoughtworks.xstream.XStream;
 /**
  * <p>
  * Provides a configured XStream instance to support the marshalling of BatchExecutions, where the resulting
- * xml can be used as a message format. Configured converters only exist for the commands supported via the 
+ * xml can be used as a message format. Configured converters only exist for the commands supported via the
  * CommandFactory. The user may add other converters for their user objects.
  * </p>
- * 
+ *
  * <p>
  * This is very useful for scripting stateless of stateful knowledge sessions, especially when services are involved.
  * </p>
- * 
+ *
  * <p>
  * There is current no xsd for schema validation, however we will try to outline the basic format here and the drools-pipeline module
  * has an illustrative unit test in the XStreamBatchExecutionTest unit test. The root element is &lt;batch-execution&gt; and it can contain zero or more
@@ -39,7 +39,7 @@ import com.thoughtworks.xstream.XStream;
  * ...
  * &lt;/batch-execution&gt;
  * </pre>
- * 
+ *
  * <p>
  * This contains a list of elements that represent commands, the supported commands is limited to those Commands provided by the CommandFactory. The
  * most basic of these is the &lt;insert&gt; element, which inserts objects. The contents of the insert element is the user object, as dictated by XStream.
@@ -52,10 +52,10 @@ import com.thoughtworks.xstream.XStream;
  * &lt;/batch-execution&gt;
  * </pre>
  * <p>
- * The insert element supports an 'out-identifier' attribute, this means the inserted object's FactHandle will be returned 
+ * The insert element supports an 'out-identifier' attribute, this means the inserted object's FactHandle will be returned
  * and optionally the object itself as part of the &lt;batch-execution-results&gt; payload. To return the object use the attribute 'return-object' which takes a boolean
  * 'true'|'false' value, by default this is true.
- * The 
+ * The
  * </p>
  * <pre>
  * &lt;batch-execution &gt;
@@ -64,12 +64,12 @@ import com.thoughtworks.xstream.XStream;
  *     &lt;/insert&gt;
  * &lt;/batch-execution&gt;
  * </pre>
- * 
+ *
  * <p>
  * It's also possible to insert a collection of objects using the &lt;insert-elements&gt; element, here each element is inserted in turn. This command also support's an
  * 'out-identifier' attribute which returns the FactHandle's in a Collection, of the same order that the objects where inserted. 'return-object' is also supported to optionally
  * return the inserted objects, again they will be in a collection of the same order they where inserted.
- * The org.domain.UserClass is just an illustrative user object that xstream would serialise. 
+ * The org.domain.UserClass is just an illustrative user object that xstream would serialise.
  * </p>
  * <pre>
  * &lt;batch-execution&gt;
@@ -86,9 +86,9 @@ import com.thoughtworks.xstream.XStream;
  *     &lt;/insert-elements&gt;
  * &lt;/batch-execution&gt;
  * </pre>
- * 
+ *
  * <p>
- * Next there is the &lt;set-global&gt; element, which sets a global for the session. 
+ * Next there is the &lt;set-global&gt; element, which sets a global for the session.
  * </p>
  * <pre>
  * &lt;batch-execution&gt;
@@ -100,8 +100,8 @@ import com.thoughtworks.xstream.XStream;
  * &lt;/batch-execution&gt;
  * </pre>
  * <p>
- * &lt;set-global&gt; also supports two other optional attributes 'out' and 'out-identifier'. 'out' is a boolean and when set the global will be added to the 
- * &lt;batch-execution-results&gt; payload using the name from the 'identifier' attribute. 'out-identifier' works like 'out' but additionally allows you to 
+ * &lt;set-global&gt; also supports two other optional attributes 'out' and 'out-identifier'. 'out' is a boolean and when set the global will be added to the
+ * &lt;batch-execution-results&gt; payload using the name from the 'identifier' attribute. 'out-identifier' works like 'out' but additionally allows you to
  * override the identifier used in the &lt;batch-execution-results&gt; payload.
  * </p>
  * <pre>
@@ -128,14 +128,14 @@ import com.thoughtworks.xstream.XStream;
  *     &lt;get-global identifier='userVar2' out-identifier='alternativeUserVar2'/&gt;
  * &lt;/batch-execution&gt;
  * </pre>
- * 
+ *
  * <p>Specific objects can be retrieved using the FactHandle:</p>
  * <pre>
  * &lt;batch-execution&gt;
  *     &lt;get-object out-identifier='outStilton' factHandle='" + factHandle.toExternalForm() + "' /&gt;
  * &lt;/batch-execution&gt;
  * </pre>
- * 
+ *
  * <p>
  * While the 'out' attribute is useful in returning specific instances as a result payload, we often wish to run actual querries. Both parameter
  * and parameterless querries are supported. The 'name' attribute is the name of the query to be called, and the 'out-identifier' is the identifier
@@ -150,7 +150,7 @@ import com.thoughtworks.xstream.XStream;
  *     &lt;/query&gt;;
  * &lt;/batch-execution&gt;
  * </pre>
- * 
+ *
  * <p>
  * The &lt;start-process&gt; command is also supported and accepts optional parameters:
  * </p>
@@ -165,14 +165,14 @@ import com.thoughtworks.xstream.XStream;
  *  &lt;/startProcess&gt;
  * &lt;/batch-execution&gt;
  * </pre>
- * 
+ *
  * <p>SignelEvent</p>
  * <pre>
  * &lt;signal-event process-instance-id='1' event-type='MyEvent'&gt;
  *     &lt;string&gt;MyValue&lt;/string&gt;
  * &lt;/signal-event&gt;
  * </pre>
- * 
+ *
  * <p>CompleteWorkItem</p>
  * <pre>
  * &lt;complete-work-item id='" + workItem.getId() + "' &gt;
@@ -181,16 +181,16 @@ import com.thoughtworks.xstream.XStream;
  *     &lt;/result&gt;
  * &lt;/complete-work-item&gt;
  * </pre>
- * 
+ *
  * <p>AbortWorkItem</p>
  * <pre>
  * &lt;abort-work-item id='21' /&gt;
  * </pre>
- * 
+ *
  * <p>
  * Support for more commands will be added over time.
  * </p>
- * 
+ *
  * <p>
  * The following is a simple insert batch-execution command:
  * </p>
@@ -205,7 +205,7 @@ import com.thoughtworks.xstream.XStream;
  *   &lt;/insert&gt;
  * &lt;/batch-execution&gt;
  * </pre>
- * 
+ *
  * <p>
  * The pipeline can be used to handle this end to end, notice the part where the configured XStream instance is passed "BatchExecutionHelper.newXStreamMarshaller()".
  * This will take a given xml, transform it and then execute it as a BatchExecution Command. Notice the Pipeline also handles the marshalling
@@ -213,10 +213,10 @@ import com.thoughtworks.xstream.XStream;
  * </p>
  * <pre>
  * Action executeResultHandler = PipelineFactory.newExecuteResultHandler();
- *        
+ *
  * Action assignResult = PipelineFactory.newAssignObjectAsResult();
  * assignResult.setReceiver( executeResultHandler );
- *       
+ *
  * Transformer outTransformer = PipelineFactory.newXStreamToXmlTransformer( BatchExecutionHelper.newXStreamMarshaller() );
  * outTransformer.setReceiver( assignResult );
  *
@@ -230,7 +230,7 @@ import com.thoughtworks.xstream.XStream;
  * Pipeline pipeline = PipelineFactory.newStatelessKnowledgeSessionPipeline( ksession );
  * pipeline.setReceiver( inTransformer );
  * </pre>
- * 
+ *
  * <p>
  * The results would look like following xml:
  * </p>
@@ -245,7 +245,7 @@ import com.thoughtworks.xstream.XStream;
  *   &lt;/result&gt;
  * &lt;/execution-results&gt;
  * </pre>
- * 
+ *
  * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>
  */
 public class BatchExecutionHelper {
@@ -254,7 +254,7 @@ public class BatchExecutionHelper {
     public static XStream newXStreamMarshaller() {
         return getBatchExecutionHelperProvider().newXStreamMarshaller();
     }
-    
+
     public static XStream newJSonMarshaller() {
         return getBatchExecutionHelperProvider().newJSonMarshaller();
     }

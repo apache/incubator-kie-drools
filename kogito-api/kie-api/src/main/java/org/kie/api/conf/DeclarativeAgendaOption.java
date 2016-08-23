@@ -20,13 +20,13 @@ package org.kie.api.conf;
  * An enum to enable Declarative Agenda option.
  * This is an experimental feature.
  * </p>
- * 
+ *
  * <pre>
  * drools.declarativeAgenda = &lt;true|false&gt;
  * </pre>
- * 
+ *
  * <b>DEFAULT = false.</b>
- * 
+ *
  */
 public enum DeclarativeAgendaOption implements SingleValueKieBaseOption {
 

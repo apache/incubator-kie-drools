@@ -34,6 +34,6 @@ public interface Reassignment extends Externalizable {
 
     List<OrganizationalEntity> getPotentialOwners();
 
-    void setPotentialOwners(List<OrganizationalEntity> potentialOwners);        
+    void setPotentialOwners(List<OrganizationalEntity> potentialOwners);
 
 }

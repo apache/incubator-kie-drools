@@ -18,7 +18,7 @@ package org.kie.api.runtime;
 
 public interface KieContext {
     KieRuntime getKieRuntime();
-    
+
     /**
      * Added for backwards compatibility.
      * Will be removed in the future.

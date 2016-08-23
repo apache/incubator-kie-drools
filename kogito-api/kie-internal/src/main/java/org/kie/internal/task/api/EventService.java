@@ -24,6 +24,6 @@ public interface EventService<T> {
     List<T> getTaskEventListeners();
 
     void clearTaskEventListeners();
-    
+
     void removeTaskEventListener(T listener);
 }

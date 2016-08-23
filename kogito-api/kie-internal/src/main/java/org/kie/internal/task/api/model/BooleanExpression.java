@@ -20,7 +20,7 @@ import java.io.Externalizable;
 
 
 public interface BooleanExpression extends Externalizable {
-    
+
     Long getId();
 
     void setId(long id);
@@ -32,5 +32,5 @@ public interface BooleanExpression extends Externalizable {
     String getExpression();
 
     void setExpression(String expression);
-    
+
 }

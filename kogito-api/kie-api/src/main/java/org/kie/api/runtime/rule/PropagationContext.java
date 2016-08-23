@@ -25,7 +25,7 @@ public interface PropagationContext {
     public static final int RULE_ADDITION = 3;
     public static final int RULE_REMOVAL  = 4;
     public static final int EXPIRATION    = 5;
-    
+
     public static final String[] typeDescr = new String[] {
                                                            "INSERTION",
                                                            "DELETION",
@@ -39,13 +39,13 @@ public interface PropagationContext {
 
     /**
      * The rule that caused the working memory action that created this PropagationContext.
-     * 
+     *
      * If this working memory action was done from java this is null.
      *
      * @return rule that caused the working memory action
      */
     Rule getRule();
-    
+
     /**
      * @return fact handle that was inserted, updated or retracted that created the PropagationContext
      */

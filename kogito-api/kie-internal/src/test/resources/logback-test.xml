@@ -9,9 +9,9 @@
     </encoder>
   </appender>
 
-  <!-- set to debug to see test output --> 
+  <!-- set to debug to see test output -->
   <logger name="org.kie.internal" level="debug"/>
-  
+
   <root level="info">
     <appender-ref ref="consoleAppender" />
   </root>

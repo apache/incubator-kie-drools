@@ -21,7 +21,7 @@ import org.kie.internal.utils.ServiceRegistryImpl;
 /**
  * This factory allows you to set the SystemEventListener that will be used by various components of Drools, such
  * as the KnowledgeAgent, ResourceChangeNotifier and ResourceChangeListener.
- * 
+ *
  * The default SystemEventListener
  */
 public class SystemEventListenerFactory {
@@ -29,7 +29,7 @@ public class SystemEventListenerFactory {
 
     /**
      * Set the SystemEventListener
-     * 
+     *
      * @param listener
      */
     public static void setSystemEventListener(SystemEventListener listener) {

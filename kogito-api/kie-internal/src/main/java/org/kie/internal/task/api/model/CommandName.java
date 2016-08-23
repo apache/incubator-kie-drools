@@ -17,68 +17,68 @@
 package org.kie.internal.task.api.model;
 
 
-public enum CommandName {   
+public enum CommandName {
     OperationRequest,
     OperationResponse,
-    
+
     ClaimRequest,
     ClaimResponse,
-    
+
     ClaimNextAvailableRequest,
-    
+
     StartRequest,
     StartResponse,
-    
+
     StopRequest,
     StopResponse,
-    
+
     ReleaseRequest,
-    ReleaseResponse,  
-    
+    ReleaseResponse,
+
     SuspendRequest,
-    SuspendResponse, 
-    
+    SuspendResponse,
+
     ResumeRequest,
-    ResumeResponse, 
-    
+    ResumeResponse,
+
     SkipRequest,
-    SkipResponse,  
-    
+    SkipResponse,
+
     DelegateRequest,
     DelegateResponse,
-    
+
     ForwardRequest,
     ForwardResponse,
-    
+
     CompleteRequest,
-    CompleteResponse,   
-    
+    CompleteResponse,
+
     FailRequest,
     FailResponse,
-    
+
     GetTaskRequest,
     GetTaskResponse,
-    
+
     AddTaskRequest,
     AddTaskResponse,
-    
+
     AddAttachmentRequest,
-    AddAttachmentResponse,    
+    AddAttachmentResponse,
     DeleteAttachmentRequest,
     DeleteAttachmentResponse,
-        
+
     SetDocumentContentRequest,
     SetDocumentContentResponse,
     GetContentRequest,
     GetContentResponse,
-    
+
     AddCommentRequest,
-    AddCommentResponse,    
-    DeleteCommentRequest,    
-    DeleteCommentResponse,    
-    
-    QueryTasksOwned,    
-    QueryTasksOwnedWithParticularStatus,    
+    AddCommentResponse,
+    DeleteCommentRequest,
+    DeleteCommentResponse,
+
+    QueryTasksOwned,
+    QueryTasksOwnedWithParticularStatus,
     QueryTasksAssignedAsBusinessAdministrator,
     QueryTasksAssignedAsExcludedOwner,
     QueryTasksAssignedAsPotentialOwner,
@@ -90,26 +90,26 @@ public enum CommandName {
     QueryGetSubTasksByParentTaskId,
     QueryTasksAssignedAsRecipient,
     QueryTasksAssignedAsTaskInitiator,
-    QueryTasksAssignedAsTaskStakeholder,    
+    QueryTasksAssignedAsTaskStakeholder,
     QueryTaskSummaryResponse,
-    
+
     QueryTaskByWorkItemId,
     QueryTaskByWorkItemIdResponse,
-    
+
     RegisterForEventRequest,
     UnRegisterForEventRequest,
     EventTriggerResponse,
-    
+
     RegisterClient,
-    
+
     QueryGenericRequest,
     QueryGenericResponse,
-    
+
     NominateTaskRequest,
     SetOutputRequest,
     SetFaultRequest,
     SetPriorityRequest,
     DeleteOutputRequest,
-    DeleteFaultRequest   
-    
+    DeleteFaultRequest
+
 }

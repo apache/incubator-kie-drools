@@ -21,7 +21,7 @@ package org.kie.internal.runtime.conf;
  *
  */
 public enum AuditMode {
-	NONE,
-	JPA,
-	JMS;
+    NONE,
+    JPA,
+    JMS;
 }

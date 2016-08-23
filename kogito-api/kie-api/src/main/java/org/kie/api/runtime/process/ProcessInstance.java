@@ -25,18 +25,18 @@ import org.kie.api.definition.process.Process;
  * that was started.  It contains all runtime information related to
  * that instance.  Multiple process instances of the same process
  * can be executed simultaneously.
- * 
+ *
  * For example, consider a process definition that describes how to
  * process a purchase order.  Whenever a new purchase order comes in,
  * a new process instance will be created for that purchase order.
  * Multiple process instances (one for each purchase order) can coexist.
- * 
+ *
  *  A process instance is uniquely identified by an id.
- *  
+ *
  *  This class can be extended to represent one specific type of process,
  *  e.g. <code>WorkflowProcessInstance</code> when using a <code>WorkflowProcess</code>
  *  where the process logic is expressed as a flow chart.
- *  
+ *
  *  @see org.kie.api.runtime.process.WorkflowProcessInstance
  */
 public interface ProcessInstance
@@ -54,7 +54,7 @@ public interface ProcessInstance
      * @return the id of the process definition that is related to this process instance
      */
     String getProcessId();
-    
+
     Process getProcess();
 
     /**
@@ -74,11 +74,11 @@ public interface ProcessInstance
      * @return the state of the process instance
      */
     int getState();
-    
+
     /**
      * Returns parent process instance id if this process instance has a parent
      * @return the unique id of parent process instance, 0 if this process instance doesn't have a parent
      */
     long getParentProcessInstanceId();
-    
+
 }

@@ -20,8 +20,8 @@ package org.kie.api.runtime.process;
  * A workflow process instance represents one specific instance of a
  * workflow process that is currently executing.  It is an extension
  * of a <code>ProcessInstance</code> and contains all runtime state
- * related to the execution of workflow processes. 
- *   
+ * related to the execution of workflow processes.
+ *
  * @see org.kie.api.runtime.process.ProcessInstance
  */
 public interface WorkflowProcessInstance

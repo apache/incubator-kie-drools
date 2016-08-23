@@ -35,7 +35,7 @@ public interface KieStoreServices {
                               KieBase kbase,
                               KieSessionConfiguration configuration,
                               Environment environment);
-    
+
     KieSession loadKieSession(Long id,
             KieBase kbase,
             KieSessionConfiguration configuration,

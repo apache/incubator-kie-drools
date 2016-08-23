@@ -21,7 +21,7 @@ import java.util.List;
 
 
 public interface Escalation extends Externalizable {
-    
+
     long getId();
 
     void setId(long id);

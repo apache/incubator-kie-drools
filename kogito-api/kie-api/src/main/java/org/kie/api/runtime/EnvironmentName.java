@@ -33,7 +33,7 @@ public class EnvironmentName {
     public static final String GLOBALS                              = "org.kie.Globals";
     public static final String CALENDARS                            = "org.kie.api.time.Calendars";
     public static final String DATE_FORMATS                         = "org.kie.build.DateFormats";
-    
+
     public static final String TASK_USER_GROUP_CALLBACK             = "org.kie.api.task.UserGroupCallback";
     public static final String TASK_USER_INFO                       = "org.kie.api.task.UserInfo";
 }

@@ -31,7 +31,7 @@ import java.util.Properties;
  * <pre>
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * </pre>
- * 
+ *
  * <p>
  * Create sequential KnowledgeBase using the given ClassLoader.
  * </p>
@@ -66,12 +66,12 @@ public class KnowledgeBaseFactory  {
     /**
      * Create a new KnowledgeBase using the default KnowledgeBaseConfiguration and
      * the given KnowledgeBase ID.
-     * 
-     * @param kbaseId 
+     *
+     * @param kbaseId
      *     A string Identifier for the knowledge base. Specially useful when enabling
      *     JMX monitoring and management, as that ID will be used to compose the
-     *     JMX ObjectName for all related MBeans. The application must ensure all kbase 
-     *     IDs are unique. 
+     *     JMX ObjectName for all related MBeans. The application must ensure all kbase
+     *     IDs are unique.
      * @return
      *     The KnowledgeBase
      */
@@ -91,12 +91,12 @@ public class KnowledgeBaseFactory  {
     /**
      * Create a new KnowledgeBase using the given KnowledgeBaseConfiguration and
      * the given KnowledgeBase ID.
-     * 
-     * @param kbaseId 
+     *
+     * @param kbaseId
      *     A string Identifier for the knowledge base. Specially useful when enabling
      *     JMX monitoring and management, as that ID will be used to compose the
-     *     JMX ObjectName for all related MBeans. The application must ensure all kbase 
-     *     IDs are unique. 
+     *     JMX ObjectName for all related MBeans. The application must ensure all kbase
+     *     IDs are unique.
      * @return
      *     The KnowledgeBase
      */

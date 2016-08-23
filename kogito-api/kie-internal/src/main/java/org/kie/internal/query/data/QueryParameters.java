@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -37,53 +37,53 @@ public class QueryParameters {
 
     @XmlTransient
     private boolean union = true;
-    
+
     @XmlTransient
     private boolean like = false;
-    
+
     @XmlTransient
     private boolean range = false;
-   
+
     @XmlElement
     @XmlJavaTypeAdapter(StringKeyObjectValueMapXmlAdapter.class)
     private Map<String, List<? extends Object>> unionParameters = null;
-    
+
     @XmlElement
     @XmlJavaTypeAdapter(StringKeyObjectValueMapXmlAdapter.class)
     private Map<String, List<? extends Object>> intersectParameters = null;
-    
+
     @XmlElement
     @XmlJavaTypeAdapter(StringKeyObjectValueMapXmlAdapter.class)
     private Map<String, List<String>> unionRegexParameters = null;
-    
+
     @XmlElement
     @XmlJavaTypeAdapter(StringKeyObjectValueMapXmlAdapter.class)
     private Map<String, List<String>> intersectRegexParameters = null;
-    
+
     @XmlElement
     @XmlJavaTypeAdapter(StringKeyObjectValueMapXmlAdapter.class)
     private Map<String, List<? extends Object>> unionRangeParameters = null;
-    
+
     @XmlElement
     @XmlJavaTypeAdapter(StringKeyObjectValueMapXmlAdapter.class)
     private Map<String, List<? extends Object>> intersectRangeParameters = null;
 
-    public QueryParameters() { 
+    public QueryParameters() {
         // JAXB constructor
     }
-    
-    // getters 
-    
+
+    // getters
+
     public Map<String, List<? extends Object>> getUnionParameters() {
         if( unionParameters == null ) {
             unionParameters = new HashMap<String, List<? extends Object>>();
         }
         return unionParameters;
     }
-    
+
     public boolean unionParametersAreEmpty() {
         return unionParameters == null ? true : unionParameters.isEmpty();
-                
+
     }
 
     public Map<String, List<? extends Object>> getIntersectParameters() {
@@ -98,7 +98,7 @@ public class QueryParameters {
     }
 
     public Map<String, List<String>> getUnionRegexParameters() {
-        if( unionRegexParameters == null ) { 
+        if( unionRegexParameters == null ) {
            unionRegexParameters = new HashMap<String, List<String>>();
         }
         return unionRegexParameters;
@@ -120,7 +120,7 @@ public class QueryParameters {
     }
 
     public Map<String, List<? extends Object>> getUnionRangeParameters() {
-        if( unionRangeParameters == null ) { 
+        if( unionRangeParameters == null ) {
            unionRangeParameters = new HashMap<String, List<? extends Object>>();
         }
         return unionRangeParameters;
@@ -142,7 +142,7 @@ public class QueryParameters {
     }
 
     // other logic
-    
+
     public <T> void addAppropriateParam( String listId, T... param ) {
         if( param.length == 0 ) {
             return;
@@ -158,12 +158,12 @@ public class QueryParameters {
         listParams.set(index, param);
         this.range = false;
     }
-    
+
     @SuppressWarnings("unchecked")
-    public <T> List<T> getAppropriateParamList(String listId, T param, int size) { 
+    public <T> List<T> getAppropriateParamList(String listId, T param, int size) {
         List<T> listParams = null;
-        if( like ) { 
-            if( ! (param instanceof String) ) { 
+        if( like ) {
+            if( ! (param instanceof String) ) {
                throw new IllegalArgumentException("Only String parameters may be used in regular expressions.");
             }
             List<String> stringListParams = null;
@@ -179,13 +179,13 @@ public class QueryParameters {
                     stringListParams = new ArrayList<String>(size);
                     getIntersectRegexParameters().put(listId, stringListParams);
                 }
-            } 
-            if( listParams == null ) { 
-               return (List<T>) stringListParams; 
-            } else { 
+            }
+            if( listParams == null ) {
+               return (List<T>) stringListParams;
+            } else {
                 return listParams;
             }
-        } else if( range ) { 
+        } else if( range ) {
             if( union ) {
                 listParams = (List<T>) getUnionRangeParameters().get(listId);
                 if( listParams == null ) {
@@ -198,8 +198,8 @@ public class QueryParameters {
                     listParams = Arrays.asList(null, null);
                     getIntersectRangeParameters().put(listId, listParams);
                 }
-            } 
-        } else { 
+            }
+        } else {
             if( union ) {
                 listParams = (List<T>) getUnionParameters().get(listId);
                 if( listParams == null ) {
@@ -216,16 +216,16 @@ public class QueryParameters {
         }
         return listParams;
     }
-    
+
     public void setToUnion() {
         this.union = true;
     }
-    
+
     public void setToIntersection() {
         this.union = false;
     }
 
-    public boolean isUnion() { 
+    public boolean isUnion() {
        return this.union;
     }
 
@@ -248,48 +248,48 @@ public class QueryParameters {
     public void setToPrecise() {
         this.range = false;
     }
-    
+
     public boolean isRange() {
         return this.range;
     }
 
-    public void clear() { 
+    public void clear() {
         union = true;
         like = false;
         range = false;
-       
-        Map [] maps = { 
-                unionParameters, 
+
+        Map [] maps = {
+                unionParameters,
                 intersectParameters,
                 unionRegexParameters,
                 intersectRegexParameters,
                 unionRangeParameters,
-                intersectRangeParameters 
+                intersectRangeParameters
         };
-        for( Map paramMap : maps ) { 
-            if( paramMap != null ) { 
+        for( Map paramMap : maps ) {
+            if( paramMap != null ) {
                 paramMap.clear();
             }
         }
     }
-    
-    public QueryParameters(QueryParameters queryParameters) { 
+
+    public QueryParameters(QueryParameters queryParameters) {
        this.union = queryParameters.union;
        this.like = queryParameters.like;
        this.range = queryParameters.range;
-       this.intersectParameters = queryParameters.intersectParameters == null ? null : 
+       this.intersectParameters = queryParameters.intersectParameters == null ? null :
                new HashMap<String, List<? extends Object>>(queryParameters.intersectParameters);
-       this.unionParameters = queryParameters.unionParameters == null ? null : 
+       this.unionParameters = queryParameters.unionParameters == null ? null :
                new HashMap<String, List<? extends Object>>(queryParameters.unionParameters);
-       this.intersectRangeParameters = queryParameters.intersectRangeParameters == null ? null : 
+       this.intersectRangeParameters = queryParameters.intersectRangeParameters == null ? null :
                new HashMap<String, List<? extends Object>>(queryParameters.intersectRangeParameters);
-       this.unionRangeParameters = queryParameters.unionRangeParameters == null ? null : 
+       this.unionRangeParameters = queryParameters.unionRangeParameters == null ? null :
                new HashMap<String, List<? extends Object>>(queryParameters.unionRangeParameters);
-       this.intersectRegexParameters = queryParameters.intersectRegexParameters == null ? null : 
+       this.intersectRegexParameters = queryParameters.intersectRegexParameters == null ? null :
                new HashMap<String, List<String>>(queryParameters.intersectRegexParameters);
-       this.unionRegexParameters = queryParameters.unionRegexParameters == null ? null : 
+       this.unionRegexParameters = queryParameters.unionRegexParameters == null ? null :
                new HashMap<String, List<String>>(queryParameters.unionRegexParameters);
     }
 
-    
+
 }

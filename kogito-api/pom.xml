@@ -17,6 +17,10 @@
   <name>KIE :: API Parent</name>
   <description>The common API for KIE (Drools, jBPM and OptaPlanner)</description>
 
+  <properties>
+    <checkstyle.failOnValidation>true</checkstyle.failOnValidation>
+  </properties>
+
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
     <repository>
