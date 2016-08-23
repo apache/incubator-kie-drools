@@ -26,15 +26,7 @@ public class ListAndFunction
         super( "list and" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list" ),
-                Arrays.asList( "b..." )
-        );
-    }
-
-    public Boolean apply(List list) {
+    public Boolean apply(@ParameterName( "list" ) List list) {
         boolean result = true;
         for ( Object element : list ) {
             if ( element instanceof Boolean ) {
@@ -49,11 +41,11 @@ public class ListAndFunction
         return result;
     }
 
-    public Boolean apply(Boolean single) {
+    public Boolean apply(@ParameterName( "list" ) Boolean single) {
         return single;
     }
 
-    public Boolean apply(Object[] list) {
+    public Boolean apply(@ParameterName( "b" ) Object[] list) {
         return apply( Arrays.asList( list ) );
     }
 }

@@ -22,6 +22,8 @@ import org.kie.dmn.feel.util.EvalHelper;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.*;
+import java.time.temporal.Temporal;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -105,7 +107,7 @@ public class InfixOpNode
             case ADD:
                 return add( left, right, ctx );
             case SUB:
-                return math( left, right, ctx, (l, r) -> l.subtract( r, MathContext.DECIMAL128 ) );
+                return sub( left, right, ctx);
             case MULT:
                 return math( left, right, ctx, (l, r) -> l.multiply( r, MathContext.DECIMAL128 ) );
             case DIV:
@@ -138,8 +140,82 @@ public class InfixOpNode
             return null;
         } else if ( left instanceof String && right instanceof String ) {
             return ((String) left) + ((String) right);
+        } else if ( left instanceof Period && right instanceof Period ) {
+            return ((Period) left).plus( (Period) right);
+        } else if ( left instanceof Duration && right instanceof Duration ) {
+            return ((Duration) left).plus( (Duration) right);
+        } else if ( left instanceof ZonedDateTime && right instanceof Period ) {
+            return ((ZonedDateTime) left).plus( (Period) right);
+        } else if ( left instanceof OffsetDateTime && right instanceof Period ) {
+            return ((OffsetDateTime) left).plus( (Period) right);
+        } else if ( left instanceof LocalDateTime && right instanceof Period ) {
+            return ((LocalDateTime) left).plus( (Period) right);
+        } else if ( left instanceof ZonedDateTime && right instanceof Duration ) {
+            return ((ZonedDateTime) left).plus( (Duration) right);
+        } else if ( left instanceof OffsetDateTime && right instanceof Duration ) {
+            return ((OffsetDateTime) left).plus( (Duration) right);
+        } else if ( left instanceof LocalDateTime && right instanceof Duration ) {
+            return ((LocalDateTime) left).plus( (Duration) right);
+        } else if ( left instanceof Period && right instanceof ZonedDateTime ) {
+            return ((ZonedDateTime) right).plus( (Period) left);
+        } else if ( left instanceof Period && right instanceof OffsetDateTime ) {
+            return ((OffsetDateTime) right).plus( (Period) left);
+        } else if ( left instanceof Period && right instanceof LocalDateTime ) {
+            return ((LocalDateTime) right).plus( (Period) left);
+        } else if ( left instanceof Duration && right instanceof ZonedDateTime ) {
+            return ((ZonedDateTime) right).plus( (Duration) left);
+        } else if ( left instanceof Duration && right instanceof OffsetDateTime ) {
+            return ((OffsetDateTime) right).plus( (Duration) left);
+        } else if ( left instanceof Duration && right instanceof LocalDateTime ) {
+            return ((LocalDateTime) right).plus( (Duration) left);
+        } else if ( left instanceof LocalTime && right instanceof Duration ) {
+            return ((LocalDateTime) left).plus( (Duration) left);
+        } else if ( left instanceof Duration && right instanceof LocalTime ) {
+            return ((LocalDateTime) right).plus( (Duration) left);
+        } else if ( left instanceof OffsetTime && right instanceof Duration ) {
+            return ((OffsetTime) left).plus( (Duration) left);
+        } else if ( left instanceof Duration && right instanceof OffsetTime ) {
+            return ((OffsetTime) right).plus( (Duration) left);
         } else {
             return math( left, right, ctx, (l, r) -> l.add( r, MathContext.DECIMAL128 ) );
+        }
+    }
+
+    private Object sub(Object left, Object right, EvaluationContext ctx) {
+        if ( left == null || right == null ) {
+            return null;
+        } else if ( left instanceof ZonedDateTime && right instanceof ZonedDateTime ) {
+            return Duration.between( (ZonedDateTime)left, (ZonedDateTime) right);
+        } else if ( left instanceof OffsetDateTime && right instanceof OffsetDateTime ) {
+            return Duration.between( (OffsetDateTime)left, (OffsetDateTime) right);
+        } else if ( left instanceof LocalDateTime && right instanceof LocalDateTime ) {
+            return Duration.between( (LocalDateTime)left, (LocalDateTime) right);
+        } else if ( left instanceof LocalTime && right instanceof LocalTime ) {
+            return Duration.between( (LocalTime)left, (LocalTime) right);
+        } else if ( left instanceof OffsetTime && right instanceof OffsetTime ) {
+            return Duration.between( (OffsetTime)left, (OffsetTime) right);
+        } else if ( left instanceof Period && right instanceof Period ) {
+            return ((Period) left).minus( (Period) right);
+        } else if ( left instanceof Duration && right instanceof Duration ) {
+            return ((Duration) left).minus( (Duration) right);
+        } else if ( left instanceof ZonedDateTime && right instanceof Period ) {
+            return ((ZonedDateTime) left).minus( (Period) right);
+        } else if ( left instanceof OffsetDateTime && right instanceof Period ) {
+            return ((OffsetDateTime) left).minus( (Period) right);
+        } else if ( left instanceof LocalDateTime && right instanceof Period ) {
+            return ((LocalDateTime) left).minus( (Period) right);
+        } else if ( left instanceof ZonedDateTime && right instanceof Duration ) {
+            return ((ZonedDateTime) left).minus( (Duration) right);
+        } else if ( left instanceof OffsetDateTime && right instanceof Duration ) {
+            return ((OffsetDateTime) left).minus( (Duration) right);
+        } else if ( left instanceof LocalDateTime && right instanceof Duration ) {
+            return ((LocalDateTime) left).minus( (Duration) right);
+        } else if ( left instanceof LocalTime && right instanceof Duration ) {
+            return ((LocalDateTime) left).minus( (Duration) left);
+        } else if ( left instanceof OffsetTime && right instanceof Duration ) {
+            return ((OffsetTime) left).minus( (Duration) left);
+        } else {
+            return math( left, right, ctx, (l, r) -> l.subtract( r, MathContext.DECIMAL128 )  );
         }
     }
 

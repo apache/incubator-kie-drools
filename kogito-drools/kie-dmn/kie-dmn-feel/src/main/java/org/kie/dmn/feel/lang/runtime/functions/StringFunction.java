@@ -16,13 +16,6 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.util.Arrays;
-import java.util.List;
-
 public class StringFunction
         extends BaseFEELFunction {
 
@@ -30,14 +23,7 @@ public class StringFunction
         super( "string" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "from" )
-        );
-    }
-
-    public String apply(Object val) {
+    public String apply(@ParameterName("from") Object val) {
         if ( val == null ) {
             return null;
         } else {

@@ -17,8 +17,6 @@
 package org.kie.dmn.feel.lang.runtime.functions;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 
 public class StringLengthFunction
         extends BaseFEELFunction {
@@ -27,14 +25,7 @@ public class StringLengthFunction
         super( "string length" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "string" )
-        );
-    }
-
-    public Number apply(String string) {
+    public Number apply(@ParameterName("string") String string) {
         if ( string == null ) {
             return null;
         } else {

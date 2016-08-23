@@ -17,7 +17,6 @@
 package org.kie.dmn.feel.lang.runtime.functions;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
 public class SublistFunction
@@ -27,34 +26,26 @@ public class SublistFunction
         super( "sublist" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list, start position" ),
-                Arrays.asList( "list, start position, length" )
-        );
-    }
-
-    public List apply(List list, BigDecimal start) {
+    public List apply(@ParameterName("list") List list, @ParameterName("start position") BigDecimal start) {
         return apply( list, start, null );
     }
 
-    public List apply(List list, BigDecimal start, BigDecimal length ) {
-        if( list == null || start == null || start.equals( BigDecimal.ZERO ) || start.abs().intValue() > list.size() ) {
+    public List apply(@ParameterName("list") List list, @ParameterName("start position") BigDecimal start, @ParameterName("length") BigDecimal length) {
+        if ( list == null || start == null || start.equals( BigDecimal.ZERO ) || start.abs().intValue() > list.size() ) {
             return null;
         }
-        if( start.intValue() > 0 ) {
-            int end = length != null ? start.intValue()-1+length.intValue(): list.size();
-            if( end > list.size() ) {
+        if ( start.intValue() > 0 ) {
+            int end = length != null ? start.intValue() - 1 + length.intValue() : list.size();
+            if ( end > list.size() ) {
                 return null;
             }
-            return list.subList( start.intValue()-1, end );
+            return list.subList( start.intValue() - 1, end );
         } else {
-            int end = length != null ? list.size()+start.intValue()+length.intValue() : list.size();
-            if( end > list.size() ) {
+            int end = length != null ? list.size() + start.intValue() + length.intValue() : list.size();
+            if ( end > list.size() ) {
                 return null;
             }
-            return list.subList( list.size()+start.intValue(), end );
+            return list.subList( list.size() + start.intValue(), end );
         }
     }
 }

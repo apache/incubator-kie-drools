@@ -31,29 +31,21 @@ public class DateFunction
         super( "date" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "from" ),
-                Arrays.asList( "year", "month", "day" )
-        );
-    }
-
-    public TemporalAccessor apply(String val) {
+    public TemporalAccessor apply(@ParameterName( "from" ) String val) {
         if ( val != null ) {
             return LocalDate.from( DateTimeFormatter.ISO_DATE.parse( val ) );
         }
         return null;
     }
 
-    public TemporalAccessor apply(Number year, Number month, Number day) {
+    public TemporalAccessor apply(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day" ) Number day) {
         if ( year != null && month != null && day != null ) {
             return LocalDate.of( year.intValue(), month.intValue(), day.intValue() );
         }
         return null;
     }
 
-    public TemporalAccessor apply(TemporalAccessor date) {
+    public TemporalAccessor apply(@ParameterName( "from" ) TemporalAccessor date) {
         if ( date != null ) {
             return LocalDate.from( date );
         }

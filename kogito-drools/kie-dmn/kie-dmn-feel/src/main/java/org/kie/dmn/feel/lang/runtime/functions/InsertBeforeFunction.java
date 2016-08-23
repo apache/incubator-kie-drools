@@ -29,14 +29,7 @@ public class InsertBeforeFunction
         super( "insert before" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list, position, newItem" )
-        );
-    }
-
-    public List apply(List list, BigDecimal position, Object newItem) {
+    public List apply(@ParameterName( "list" ) List list, @ParameterName( "position" ) BigDecimal position, @ParameterName( "newItem" ) Object newItem) {
         if ( list == null || position == null || position.intValue() == 0 || position.abs().intValue() > list.size() ) {
             return null;
         }

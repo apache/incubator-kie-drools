@@ -16,7 +16,6 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class ListContainsFunction
@@ -26,14 +25,7 @@ public class ListContainsFunction
         super( "list contains" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list", "element" )
-        );
-    }
-
-    public Boolean apply(List list, Object element) {
+    public Boolean apply(@ParameterName("list") List list, @ParameterName("element") Object element) {
         if ( list == null ) {
             return null;
         } else {

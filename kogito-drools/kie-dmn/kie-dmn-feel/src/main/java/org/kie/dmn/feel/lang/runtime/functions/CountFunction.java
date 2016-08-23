@@ -27,15 +27,7 @@ public class CountFunction
         super( "count" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list" ),
-                Arrays.asList( "c..." )
-        );
-    }
-
-    public BigDecimal apply(List list) {
+    public BigDecimal apply(@ParameterName( "list" ) List list) {
         if ( list == null ) {
             return null;
         } else {
@@ -43,7 +35,7 @@ public class CountFunction
         }
     }
 
-    public BigDecimal apply(Object[] list) {
+    public BigDecimal apply(@ParameterName( "c" ) Object[] list) {
         return apply( Arrays.asList( list ) );
     }
 

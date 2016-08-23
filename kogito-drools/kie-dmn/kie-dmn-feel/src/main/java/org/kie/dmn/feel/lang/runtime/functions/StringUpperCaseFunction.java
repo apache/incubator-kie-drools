@@ -16,10 +16,6 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
-
 public class StringUpperCaseFunction
         extends BaseFEELFunction {
 
@@ -27,14 +23,7 @@ public class StringUpperCaseFunction
         super( "upper case" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "string" )
-        );
-    }
-
-    public String apply(String string) {
+    public String apply(@ParameterName("string") String string) {
         if ( string == null ) {
             return null;
         } else {

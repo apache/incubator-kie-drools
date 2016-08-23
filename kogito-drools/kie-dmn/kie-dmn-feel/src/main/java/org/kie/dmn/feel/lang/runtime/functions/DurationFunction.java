@@ -35,15 +35,7 @@ public class DurationFunction
         super( "duration" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "from" )
-        );
-    }
-
-
-    public TemporalAmount apply(String val) {
+    public TemporalAmount apply(@ParameterName( "from" ) String val) {
         if ( val != null ) {
             try {
                 // try to parse as days/hours/minute/seconds

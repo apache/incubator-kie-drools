@@ -41,7 +41,6 @@ public class JavaFunction
         this.method = method;
     }
 
-    @Override
     public List<List<String>> getParameterNames() {
         return Arrays.asList( parameters );
     }

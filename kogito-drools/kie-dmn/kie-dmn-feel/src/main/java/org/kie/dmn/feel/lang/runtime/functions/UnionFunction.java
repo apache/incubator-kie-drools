@@ -17,7 +17,6 @@
 package org.kie.dmn.feel.lang.runtime.functions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,25 +27,20 @@ public class UnionFunction
         super( "union" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list..." )
-        );
-    }
-
-    public List apply(Object[] lists) {
+    public List apply(@ParameterName("list") Object[] lists) {
         if ( lists == null ) {
             return null;
         }
         // spec requires us to return a new list
         List result = new ArrayList();
-        for( Object list : lists ) {
-            if( list instanceof Collection ) {
-                ((Collection)list).stream().forEach( i -> { if( !result.contains( i ) ) result.add(i); } );
-            } else if( list != null ) {
+        for ( Object list : lists ) {
+            if ( list instanceof Collection ) {
+                ((Collection) list).stream().forEach( i -> {
+                    if ( !result.contains( i ) ) result.add( i );
+                } );
+            } else if ( list != null ) {
                 // singleton list
-                if( !result.contains( list ) ) result.add( list );
+                if ( !result.contains( list ) ) result.add( list );
             } else {
                 return null;
             }
