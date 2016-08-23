@@ -18,8 +18,8 @@ package org.kie.dmn.feel.lang.types;
 
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
-import org.kie.dmn.feel.lang.runtime.FEELFunction;
-import org.kie.dmn.feel.lang.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.UnaryTest;
 
 import java.time.*;
 import java.util.List;

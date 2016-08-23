@@ -17,8 +17,7 @@
 package org.kie.dmn.feel.lang.types;
 
 import org.kie.dmn.feel.lang.Scope;
-import org.kie.dmn.feel.lang.runtime.functions.BuiltInFunctions;
-import org.kie.dmn.feel.lang.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
 
 import java.util.stream.Stream;
 
