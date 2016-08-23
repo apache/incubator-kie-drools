@@ -19,7 +19,6 @@ package org.optaplanner.core.api.score;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
 /**
