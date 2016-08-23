@@ -37,21 +37,21 @@ public interface ScoreDirector<Solution_> {
     /**
      * The {@link PlanningSolution} that is used to calculate the {@link Score}.
      * <p>
-     * Because a {@link Score} is best calculated incrementally (by delta's),
-     * the {@link ScoreDirector} needs to be notified when it's {@link PlanningSolution working solution} changes.
+     * Because a {@link Score} is best calculated incrementally (by deltas),
+     * the {@link ScoreDirector} needs to be notified when its {@link PlanningSolution working solution} changes.
      * <p>
-     * If the {@link PlanningSolution working solution} has been changed since {@link #calculateScore} has been called,
+     * If the {@link PlanningSolution working solution} has been changed since {@link #calculateScore} was called,
      * its {@link Score} won't be correct.
      * @return never null
      */
     Solution_ getWorkingSolution();
 
     /**
-     * The {@link PlanningSolution working solution} must never be the same instance as the {@link PlanningSolution best solution},
-     * it should be a (un)changed clone.
+     * The {@link PlanningSolution working solution} must never be the same instance as the
+     * {@link PlanningSolution best solution}, it should be a (un)changed clone.
      * <p>
      * Only call this method on a separate {@link ScoreDirector} instance,
-     * build by {@link Solver#getScoreDirectorFactory()},
+     * built by {@link Solver#getScoreDirectorFactory()},
      * not on the one used inside the {@link Solver} itself.
      * @param workingSolution never null
      */
@@ -69,6 +69,7 @@ public interface ScoreDirector<Solution_> {
     boolean isConstraintMatchEnabled();
 
     /**
+     * Explains the {@link Score} of {@link #calculateScore()}.
      * @return never null
      * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} returns false
      */

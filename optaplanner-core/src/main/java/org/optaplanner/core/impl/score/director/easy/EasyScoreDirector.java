@@ -27,6 +27,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * Easy java implementation of {@link ScoreDirector}, which recalculates the {@link Score}
  * of the {@link PlanningSolution working solution} every time. This is non-incremental calculation, which is slow.
+ * This score director implementation does not support {@link ScoreDirector#getConstraintMatchTotals()}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirector
  */
@@ -54,15 +55,23 @@ public class EasyScoreDirector<Solution_>
         return score;
     }
 
+    /**
+     * Always false, {@link ConstraintMatchTotal}s are not supported by this {@link ScoreDirector} implementation.
+     * @return false
+     */
     @Override
     public boolean isConstraintMatchEnabled() {
         return false;
     }
 
+    /**
+     * {@link ConstraintMatchTotal}s are not supported by this {@link ScoreDirector} implementation.
+     * @throws IllegalStateException always
+     * @return
+     */
     @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
-        throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
-                + ") is disabled, this method should not be called.");
+        throw new IllegalStateException("ConstraintMatchTotals are not supported by EasyScoreDirector.");
     }
 
 }

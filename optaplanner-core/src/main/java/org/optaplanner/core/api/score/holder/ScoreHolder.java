@@ -61,7 +61,7 @@ public interface ScoreHolder {
      * <p>
      * Should not be called directly, use {@link ScoreDirector#getConstraintMatchTotals()} instead.
      * @return never null
-     * @throws RuntimeException if {@link #isConstraintMatchEnabled()} is false
+     * @throws IllegalStateException if {@link #isConstraintMatchEnabled()} is false
      */
     Collection<ConstraintMatchTotal> getConstraintMatchTotals();
 
