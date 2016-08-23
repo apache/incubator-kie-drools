@@ -31,15 +31,7 @@ public class DateTimeFunction
         super( "date and time" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "from" ),
-                Arrays.asList( "date", "time" )
-        );
-    }
-
-    public TemporalAccessor apply(String val) {
+    public TemporalAccessor apply(@ParameterName( "from" ) String val) {
         if ( val != null ) {
             try {
                 return DateTimeFormatter.ISO_DATE_TIME.parseBest( val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from );
@@ -50,7 +42,7 @@ public class DateTimeFunction
         return null;
     }
 
-    public TemporalAccessor apply(Temporal date, Temporal time) {
+    public TemporalAccessor apply(@ParameterName( "date" ) Temporal date, @ParameterName( "time" ) Temporal time) {
         if ( date != null && time != null ) {
             if( date instanceof LocalDate && time instanceof LocalTime ) {
                 return LocalDateTime.of( (LocalDate) date, (LocalTime) time );

@@ -17,12 +17,6 @@
 package org.kie.dmn.feel.lang.runtime.functions;
 
 import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.LocalTime;
-import java.time.OffsetTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,22 +27,13 @@ public class SumFunction
         super( "sum" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list" ),
-                Arrays.asList( "n..." )
-        );
-    }
-
-
-    public BigDecimal apply(List list) {
+    public BigDecimal apply(@ParameterName("list") List list) {
         BigDecimal sum = BigDecimal.ZERO;
-        for( Object element : list ) {
-            if( element instanceof BigDecimal ) {
+        for ( Object element : list ) {
+            if ( element instanceof BigDecimal ) {
                 sum = sum.add( (BigDecimal) element );
-            } else if( element instanceof Number ) {
-                sum = sum.add( new BigDecimal( ((Number)element).toString() ) );
+            } else if ( element instanceof Number ) {
+                sum = sum.add( new BigDecimal( ((Number) element).toString() ) );
             } else {
                 return null;
             }
@@ -56,17 +41,17 @@ public class SumFunction
         return sum;
     }
 
-    public BigDecimal apply(Number single) {
-        if( single instanceof BigDecimal ) {
+    public BigDecimal apply(@ParameterName("list") Number single) {
+        if ( single instanceof BigDecimal ) {
             return (BigDecimal) single;
-        } else if( single != null ) {
+        } else if ( single != null ) {
             return new BigDecimal( single.toString() );
         } else {
             return null;
         }
     }
 
-    public BigDecimal apply(Object[] list) {
+    public BigDecimal apply(@ParameterName("n") Object[] list) {
         return apply( Arrays.asList( list ) );
     }
 }

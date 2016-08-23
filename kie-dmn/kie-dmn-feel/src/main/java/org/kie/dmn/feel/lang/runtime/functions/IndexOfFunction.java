@@ -28,14 +28,7 @@ public class IndexOfFunction
         super( "index of" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list, match" )
-        );
-    }
-
-    public List apply(List list, Object match) {
+    public List apply(@ParameterName( "list" ) List list, @ParameterName( "match" ) Object match) {
         if ( list == null ) {
             return null;
         }

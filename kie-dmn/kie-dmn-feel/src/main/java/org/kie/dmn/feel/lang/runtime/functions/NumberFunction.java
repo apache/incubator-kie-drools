@@ -17,10 +17,6 @@
 package org.kie.dmn.feel.lang.runtime.functions;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Arrays;
-import java.util.List;
 
 public class NumberFunction
         extends BaseFEELFunction {
@@ -29,40 +25,23 @@ public class NumberFunction
         super( "number" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "from", "grouping separator", "decimal separator" )
-        );
-    }
-
-    public BigDecimal apply(String from, String group, String decimal) {
-        if( from == null ) {
+    public BigDecimal apply(@ParameterName("from") String from, @ParameterName("grouping separator") String group, @ParameterName("decimal separator") String decimal) {
+        if ( from == null ) {
             return null;
         }
-        if( group != null && !group.equals( " " ) && !group.equals( "." ) && !group.equals( "," ) ) {
+        if ( group != null && !group.equals( " " ) && !group.equals( "." ) && !group.equals( "," ) ) {
             return null;
         }
-        if( decimal != null && (( !decimal.equals( "." ) && !decimal.equals( "," ) ) || ( group != null && decimal.equals( group ) ) ) ) {
+        if ( decimal != null && ((!decimal.equals( "." ) && !decimal.equals( "," )) || (group != null && decimal.equals( group ))) ) {
             return null;
         }
-        if( group != null ) {
-            from = from.replaceAll( "\\"+group, "" );
+        if ( group != null ) {
+            from = from.replaceAll( "\\" + group, "" );
         }
-        if( decimal != null ) {
-            from = from.replaceAll( "\\"+decimal, "." );
+        if ( decimal != null ) {
+            from = from.replaceAll( "\\" + decimal, "." );
         }
         return new BigDecimal( from );
     }
 
-    private DecimalFormat buildParser( String group, String decimal ) {
-        DecimalFormatSymbols otherSymbols = new DecimalFormatSymbols();
-        if( group != null ) {
-            otherSymbols.setDecimalSeparator(group.charAt( 0 ));
-        }
-        if( decimal != null ) {
-            otherSymbols.setGroupingSeparator(decimal.charAt( 0 ));
-        }
-        return new DecimalFormat("#,##0.0", otherSymbols);
-    }
 }

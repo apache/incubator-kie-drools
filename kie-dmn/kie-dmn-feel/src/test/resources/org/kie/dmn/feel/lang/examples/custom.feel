@@ -28,8 +28,15 @@
                   then
                      1.5
                   else
-                     1.0
+                     1.0,
 
+    // date/time comparison with and without timezones:
+    comparison : date and time( holiday, time("00:00:00+00:00")) = date and time( holiday, time("00:00:00")),
+
+    comparison2 : date and time( "2017-01-02T08:00:00+09:00" ) - date and time( "2017-01-01T16:00:00-07:00" ),
+
+    date check : date( date and time( "2017-01-02T08:00:00+09:00" ) ),
+    date check2 : date( date and time( "2017-01-01T16:00:00-07:00" ) )
 
 }
 

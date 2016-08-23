@@ -16,9 +16,6 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class SubstringBeforeFunction
         extends BaseFEELFunction {
 
@@ -26,21 +23,14 @@ public class SubstringBeforeFunction
         super( "substring before" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "string", "match" )
-        );
-    }
-
-    public String apply(String string, String match) {
+    public String apply(@ParameterName("string") String string, @ParameterName("match") String match) {
         if ( string == null || match == null ) {
             return null;
         } else {
             int index = string.indexOf( match );
-            if( index > 0 ) {
+            if ( index > 0 ) {
                 return string.substring( 0, index );
-            } else{
+            } else {
                 return "";
             }
         }

@@ -30,21 +30,12 @@ public class MeanFunction
         super( "mean" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list" ),
-                Arrays.asList( "n..." )
-        );
-    }
-
-
-    public BigDecimal apply(List list) {
+    public BigDecimal apply(@ParameterName( "list" ) List list) {
         BigDecimal s = sum.apply( list );
         return s != null ? s.divide( BigDecimal.valueOf( list.size() ), MathContext.DECIMAL128 ) : null;
     }
 
-    public BigDecimal apply(Number single) {
+    public BigDecimal apply(@ParameterName( "list" ) Number single) {
         if( single instanceof BigDecimal ) {
             return (BigDecimal) single;
         } else if( single != null ) {
@@ -54,7 +45,7 @@ public class MeanFunction
         }
     }
 
-    public BigDecimal apply(Object[] list) {
+    public BigDecimal apply(@ParameterName( "n" ) Object[] list) {
         return apply( Arrays.asList( list ) );
     }
 }

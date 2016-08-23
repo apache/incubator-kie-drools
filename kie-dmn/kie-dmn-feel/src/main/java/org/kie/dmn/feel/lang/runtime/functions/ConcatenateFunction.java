@@ -17,10 +17,8 @@
 package org.kie.dmn.feel.lang.runtime.functions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class ConcatenateFunction
         extends BaseFEELFunction {
@@ -29,23 +27,16 @@ public class ConcatenateFunction
         super( "concatenate" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list..." )
-        );
-    }
-
-    public List apply(Object[] lists) {
+    public List apply(@ParameterName("list") Object[] lists) {
         if ( lists == null ) {
             return null;
         }
         // spec requires us to return a new list
         List result = new ArrayList();
-        for( Object list : lists ) {
-            if( list instanceof Collection ) {
+        for ( Object list : lists ) {
+            if ( list instanceof Collection ) {
                 result.addAll( (Collection) list );
-            } else if( list != null ) {
+            } else if ( list != null ) {
                 result.add( list );
             } else {
                 return null;

@@ -16,25 +16,13 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Stream;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class AppendFunction
-        extends BaseFEELFunction {
-
-    public AppendFunction() {
-        super( "append" );
-    }
-
-    public List apply( @ParameterName( "list" ) List list, @ParameterName( "item" ) Object[] items ) {
-        if ( list == null || items == null ) {
-            return null;
-        }
-        // spec requires us to return a new list
-        List result = new ArrayList( list );
-        Stream.of( items ).forEach( i -> result.add( i ) );
-        return result;
-    }
+@Retention(RetentionPolicy.RUNTIME )
+@Target( {ElementType.PARAMETER} )
+public @interface ParameterName {
+    String value();
 }

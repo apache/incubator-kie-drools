@@ -27,14 +27,7 @@ public class FloorFunction
         super( "floor" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "n" )
-        );
-    }
-
-    public BigDecimal apply(BigDecimal n) {
+    public BigDecimal apply(@ParameterName( "n" ) BigDecimal n) {
         if ( n == null ) {
             return null;
         }
