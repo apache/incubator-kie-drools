@@ -33,8 +33,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.junit.Test;
 
-import java.beans.IntrospectionException;
-
 import static org.drools.compiler.phreak.B.b;
 import static org.drools.compiler.phreak.Pair.t;
 import static org.junit.Assert.assertTrue;
@@ -94,7 +92,7 @@ public class ScenarioTest {
     B b4 = b( 4 );
 
     @Test
-    public void testEmptyResultInsert() throws IntrospectionException {
+    public void testEmptyResultInsert() {
         setupJoinNode();
 
         try {
@@ -112,7 +110,7 @@ public class ScenarioTest {
     }
     
     @Test
-    public void testMissingResultInsert() throws IntrospectionException {
+    public void testMissingResultInsert() {
         setupJoinNode();
 
         try {
@@ -129,7 +127,7 @@ public class ScenarioTest {
     }  
     
     @Test
-    public void testIncorrectResultInsert() throws IntrospectionException {
+    public void testIncorrectResultInsert() {
         setupJoinNode();
 
         try {
@@ -146,7 +144,7 @@ public class ScenarioTest {
     }        
     
     @Test
-    public void testEmptyResultDelete() throws IntrospectionException {
+    public void testEmptyResultDelete() {
         setupJoinNode();
 
         // @formatter:off
@@ -162,7 +160,7 @@ public class ScenarioTest {
     }
     
     @Test
-    public void testMissingResultDelete() throws IntrospectionException {
+    public void testMissingResultDelete() {
         setupJoinNode();     
         
         // @formatter:off
@@ -178,7 +176,7 @@ public class ScenarioTest {
     }
     
     @Test
-    public void testIncorrecResultDelete() throws IntrospectionException {
+    public void testIncorrecResultDelete() {
         setupJoinNode();     
              
         try {
@@ -199,7 +197,7 @@ public class ScenarioTest {
     }     
     
     @Test
-    public void testEmptyResultUpdate() throws IntrospectionException {
+    public void testEmptyResultUpdate() {
         setupJoinNode();
 
         try {
@@ -220,7 +218,7 @@ public class ScenarioTest {
     }   
     
     @Test
-    public void testMissingResultUpdate() throws IntrospectionException {
+    public void testMissingResultUpdate() {
         setupJoinNode();
 
         try {
@@ -241,7 +239,7 @@ public class ScenarioTest {
     }    
     
     @Test
-    public void testIncorrectResultUpdate() throws IntrospectionException {
+    public void testIncorrectResultUpdate() {
         setupJoinNode();         
         
         try {
@@ -262,7 +260,7 @@ public class ScenarioTest {
     }        
 
     @Test
-    public void testEmptyLeftMemory() throws IntrospectionException {
+    public void testEmptyLeftMemory() {
         setupJoinNode();
 
         try {
@@ -278,7 +276,7 @@ public class ScenarioTest {
     }    
     
     @Test    
-    public void testMissingLeftMemory() throws IntrospectionException {
+    public void testMissingLeftMemory() {
         setupJoinNode();
 
         try {
@@ -294,7 +292,7 @@ public class ScenarioTest {
     }    
     
     @Test    
-    public void testIncorrectLeftMemory() throws IntrospectionException {
+    public void testIncorrectLeftMemory() {
         setupJoinNode();
 
         try {
@@ -312,7 +310,7 @@ public class ScenarioTest {
     }    
     
     @Test    
-    public void testTooMuchLeftMemory() throws IntrospectionException {
+    public void testTooMuchLeftMemory() {
         setupJoinNode();
 
         try {
@@ -331,7 +329,7 @@ public class ScenarioTest {
     
     
     @Test
-    public void testEmptyRightMemory() throws IntrospectionException {
+    public void testEmptyRightMemory() {
         setupJoinNode();
 
         try {
@@ -347,7 +345,7 @@ public class ScenarioTest {
     }    
     
     @Test
-    public void testMissingRightMemory() throws IntrospectionException {
+    public void testMissingRightMemory() {
         setupJoinNode();
 
         try {
@@ -363,7 +361,7 @@ public class ScenarioTest {
     }    
     
     @Test
-    public void testIncorrectRightMemory() throws IntrospectionException {
+    public void testIncorrectRightMemory() {
         setupJoinNode();
 
         try {
@@ -381,7 +379,7 @@ public class ScenarioTest {
     }   
     
     @Test
-    public void testTooMuchRightMemory() throws IntrospectionException {
+    public void testTooMuchRightMemory() {
         setupJoinNode();
         try {
             // @formatter:off            
@@ -398,7 +396,7 @@ public class ScenarioTest {
     }      
     
     @Test
-    public void testEmptyPreStagedInsert() throws IntrospectionException {
+    public void testEmptyPreStagedInsert() {
         setupJoinNode();
 
         try {
@@ -418,7 +416,7 @@ public class ScenarioTest {
     } 
     
     @Test
-    public void testMissingPreStagedInsert() throws IntrospectionException {
+    public void testMissingPreStagedInsert() {
         setupJoinNode();
 
         try {
@@ -439,7 +437,7 @@ public class ScenarioTest {
     }    
     
     @Test
-    public void testIncorrectPreStagedInsert() throws IntrospectionException {
+    public void testIncorrectPreStagedInsert() {
         setupJoinNode();
 
         try {
@@ -461,7 +459,7 @@ public class ScenarioTest {
     } 
     
     @Test
-    public void testTooMuchPreStagedInsert() throws IntrospectionException {
+    public void testTooMuchPreStagedInsert() {
         setupJoinNode();
 
         try {
@@ -486,7 +484,7 @@ public class ScenarioTest {
     }     
     
     @Test
-    public void testEmptyPreStagedDelete() throws IntrospectionException {
+    public void testEmptyPreStagedDelete() {
         setupJoinNode();
 
         // @formatter:off
@@ -504,7 +502,7 @@ public class ScenarioTest {
     }
     
     @Test
-    public void testMissingPreStagedDelete() throws IntrospectionException {
+    public void testMissingPreStagedDelete() {
         setupJoinNode();
 
         // @formatter:off
@@ -522,7 +520,7 @@ public class ScenarioTest {
     }
     
     @Test
-    public void testIncorrectPreStagedDelete() throws IntrospectionException {
+    public void testIncorrectPreStagedDelete() {
         setupJoinNode();
 
         try {
@@ -545,7 +543,7 @@ public class ScenarioTest {
     }     
     
     @Test
-    public void testEmptyPreStagedUpdate() throws IntrospectionException {
+    public void testEmptyPreStagedUpdate() {
         setupJoinNode();        
         
         try {
@@ -568,7 +566,7 @@ public class ScenarioTest {
     }      
     
     @Test
-    public void testMissingPreStagedUpdate() throws IntrospectionException {
+    public void testMissingPreStagedUpdate() {
         setupJoinNode();             
         
         try {
@@ -591,7 +589,7 @@ public class ScenarioTest {
     }
     
     @Test
-    public void testIncorrectPreStagedUpdate() throws IntrospectionException {
+    public void testIncorrectPreStagedUpdate() {
         setupJoinNode();             
                 
         try {
@@ -614,7 +612,7 @@ public class ScenarioTest {
     }
 
     @Test
-    public void testEmptyPostStagedInsert() throws IntrospectionException {
+    public void testEmptyPostStagedInsert() {
         setupJoinNode();
 
         try {
@@ -631,7 +629,7 @@ public class ScenarioTest {
     }  
     
     @Test
-    public void testMissingPostStagedDelete() throws IntrospectionException {
+    public void testMissingPostStagedDelete() {
         setupJoinNode();
               
         // @formatter:off
@@ -646,7 +644,7 @@ public class ScenarioTest {
     }
     
     @Test
-    public void testIncorrectPostStagedDelete() throws IntrospectionException {
+    public void testIncorrectPostStagedDelete() {
         setupJoinNode();
               
         try {
@@ -666,7 +664,7 @@ public class ScenarioTest {
     }    
     
     @Test
-    public void testEmptyPostStagedUpdate() throws IntrospectionException {
+    public void testEmptyPostStagedUpdate() {
         setupJoinNode();
 
         try {
@@ -686,7 +684,7 @@ public class ScenarioTest {
     }
     
     @Test
-    public void testMissingPostStagedUpdate() throws IntrospectionException {
+    public void testMissingPostStagedUpdate() {
         setupJoinNode();
               
         try {
@@ -706,7 +704,7 @@ public class ScenarioTest {
     }    
     
     @Test
-    public void testIncorrectPostStagedUpdate() throws IntrospectionException {
+    public void testIncorrectPostStagedUpdate() {
         setupJoinNode();
               
         try {

@@ -32,7 +32,6 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
 
-import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -69,7 +68,6 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
      * @return the Class instance for the given class definition
      *
      * @throws IOException
-     * @throws IntrospectionException
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      * @throws NoSuchMethodException
@@ -80,7 +78,6 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
      * @throws InstantiationException
      */
     public byte[] buildClass( ClassDefinition classDef, ClassLoader classLoader ) throws IOException,
-            IntrospectionException,
             SecurityException,
             IllegalArgumentException,
             ClassNotFoundException,

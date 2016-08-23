@@ -42,7 +42,7 @@ public class DeclarationTest {
     }
 
     @Test
-    public void testDeclaration() throws IntrospectionException {
+    public void testDeclaration() {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type" );
 
@@ -70,7 +70,7 @@ public class DeclarationTest {
     }
 
     @Test
-    public void testGetFieldValue() throws IntrospectionException {
+    public void testGetFieldValue() {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
                                                                 "type" );
 
