@@ -1,3 +1,5 @@
+[![Build Status](http://ci.jbpm.org/buildStatus/icon?job=jbpm)](http://ci.jbpm.org/job/jbpm)
+
 Developing Drools and jBPM
 ==========================
 
