@@ -22,7 +22,6 @@ import org.mvel2.asm.FieldVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
 
-import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -45,7 +44,6 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
      * @return the Class instance for the given class definition
      *
      * @throws java.io.IOException
-     * @throws java.beans.IntrospectionException
      * @throws java.lang.reflect.InvocationTargetException
      * @throws IllegalAccessException
      * @throws NoSuchMethodException
@@ -56,7 +54,6 @@ public class DefaultEnumClassBuilder implements Opcodes, EnumClassBuilder, Seria
      * @throws InstantiationException
      */
     public byte[] buildClass( ClassDefinition classDef, ClassLoader classLoader ) throws IOException,
-            IntrospectionException,
             SecurityException,
             IllegalArgumentException,
             ClassNotFoundException,

@@ -34,8 +34,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.junit.Test;
 
-import java.beans.IntrospectionException;
-
 import static org.drools.compiler.phreak.Pair.t;
 
 public class PhreakJoinNodeTest {
@@ -92,7 +90,7 @@ public class PhreakJoinNodeTest {
     B b4 = B.b(4);
 
     @Test
-    public void testInsertDelete() throws IntrospectionException {
+    public void testInsertDelete() {
         setupJoinNode();
 
         // @formatter:off
@@ -130,7 +128,7 @@ public class PhreakJoinNodeTest {
     }
 
     @Test
-    public void testStagedInsertDelete() throws IntrospectionException {
+    public void testStagedInsertDelete() {
         setupJoinNode();
 
         // @formatter:off
@@ -171,7 +169,7 @@ public class PhreakJoinNodeTest {
     }
 
     @Test
-    public void testStagedUpdate() throws IntrospectionException {
+    public void testStagedUpdate() {
         setupJoinNode();
 
         // @formatter:off

@@ -36,7 +36,6 @@ import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 
-import java.beans.IntrospectionException;
 import java.util.HashSet;
 import java.util.List;
 
@@ -75,7 +74,7 @@ public class ReteTesterHelper {
     public BetaNodeFieldConstraint getBoundVariableConstraint(final Class clazz,
                                                               final String fieldName,
                                                               final Declaration declaration,
-                                                              final String evaluatorString) throws IntrospectionException {
+                                                              final String evaluatorString) {
 
         final InternalReadAccessor extractor = store.getReader( clazz,
                                                                 fieldName );
@@ -86,7 +85,7 @@ public class ReteTesterHelper {
     public AlphaNodeFieldConstraint getLiteralConstraint(final Pattern pattern,
                                                          final String fieldName,
                                                          final String evaluatorString,
-                                                         final String value ) throws IntrospectionException {
+                                                         final String value ) {
         final Class< ? > clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,

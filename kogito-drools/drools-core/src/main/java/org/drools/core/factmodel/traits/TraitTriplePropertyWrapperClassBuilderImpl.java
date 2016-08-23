@@ -18,9 +18,7 @@ package org.drools.core.factmodel.traits;
 
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.DefaultBeanClassBuilder;
 import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
@@ -31,7 +29,6 @@ import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
 
-import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -62,7 +59,6 @@ public class TraitTriplePropertyWrapperClassBuilderImpl implements TraitProperty
 
 
     public byte[] buildClass( ClassDefinition core, ClassLoader classLoader ) throws IOException,
-            IntrospectionException,
             SecurityException,
             IllegalArgumentException,
             ClassNotFoundException,

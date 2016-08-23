@@ -146,11 +146,9 @@ public abstract class BaseMannersTest {
      *
      *
      * @return
-     * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private RuleImpl getAssignFirstSeatRule() throws IntrospectionException,
-                                         InvalidRuleException {
+    private RuleImpl getAssignFirstSeatRule() throws InvalidRuleException {
         final RuleImpl rule = new RuleImpl( "assignFirstSeat" );
 
         // -----------
@@ -293,11 +291,9 @@ public abstract class BaseMannersTest {
      * </pre>
      *
      * @return
-     * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private RuleImpl getFindSeating() throws IntrospectionException,
-                                 InvalidRuleException {
+    private RuleImpl getFindSeating() throws InvalidRuleException {
         final RuleImpl rule = new RuleImpl( "findSeating" );
 
         // ---------------
@@ -571,11 +567,9 @@ public abstract class BaseMannersTest {
      * </pre>
      *
      * @return
-     * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private RuleImpl getMakePath() throws IntrospectionException,
-                              InvalidRuleException {
+    private RuleImpl getMakePath() throws InvalidRuleException {
         final RuleImpl rule = new RuleImpl( "makePath" );
 
         // -----------
@@ -722,11 +716,9 @@ public abstract class BaseMannersTest {
      * </pre>
      *
      * @return
-     * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private RuleImpl getPathDone() throws IntrospectionException,
-                              InvalidRuleException {
+    private RuleImpl getPathDone() throws InvalidRuleException {
         final RuleImpl rule = new RuleImpl( "pathDone" );
 
         // -----------
@@ -824,11 +816,9 @@ public abstract class BaseMannersTest {
      * </pre>
      *
      * @return
-     * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private RuleImpl getAreWeDone() throws IntrospectionException,
-                               InvalidRuleException {
+    private RuleImpl getAreWeDone() throws InvalidRuleException {
         final RuleImpl rule = new RuleImpl( "areWeDone" );
 
         // -----------
@@ -925,11 +915,9 @@ public abstract class BaseMannersTest {
      * }
      * </pre>
      * @return
-     * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private RuleImpl getContinueProcessing() throws IntrospectionException,
-                                        InvalidRuleException {
+    private RuleImpl getContinueProcessing() throws InvalidRuleException {
         final RuleImpl rule = new RuleImpl( "continueProcessng" );
 
         // -----------
@@ -1001,11 +989,9 @@ public abstract class BaseMannersTest {
      * </pre>
      *
      * @return
-     * @throws IntrospectionException
      * @throws InvalidRuleException
      */
-    private RuleImpl getAllDone() throws IntrospectionException,
-                             InvalidRuleException {
+    private RuleImpl getAllDone() throws InvalidRuleException {
         final RuleImpl rule = new RuleImpl( "alldone" );
 
         // -----------
@@ -1176,7 +1162,7 @@ public abstract class BaseMannersTest {
 
     private AlphaNodeFieldConstraint getLiteralConstraint(final Pattern pattern,
                                                           final String fieldName,
-                                                          final int fieldValue) throws IntrospectionException {
+                                                          final int fieldValue) {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,
@@ -1191,7 +1177,7 @@ public abstract class BaseMannersTest {
 
     private AlphaNodeFieldConstraint getLiteralConstraint(final Pattern pattern,
                                                           final String fieldName,
-                                                          final boolean fieldValue) throws IntrospectionException {
+                                                          final boolean fieldValue) {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,
@@ -1206,7 +1192,7 @@ public abstract class BaseMannersTest {
 
     private void setFieldDeclaration(final Pattern pattern,
                                      final String fieldName,
-                                     final String identifier) throws IntrospectionException {
+                                     final String identifier) {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,
@@ -1218,7 +1204,7 @@ public abstract class BaseMannersTest {
     private BetaNodeFieldConstraint getBoundVariableConstraint(final Pattern pattern,
                                                                final String fieldName,
                                                                final Declaration declaration,
-                                                               final String operator) throws IntrospectionException {
+                                                               final String operator) {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,

@@ -16,7 +16,6 @@
 
 package org.drools.core.reteoo.test.dsl;
 
-import java.beans.IntrospectionException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -96,15 +95,11 @@ public class JoinNodeStep
                 Declaration declr = (Declaration) context.get( var );
 
                 BetaNodeFieldConstraint betaConstraint;
-                try {
                     betaConstraint = this.reteTesterHelper.getBoundVariableConstraint( cls,
                                                                                          fieldName,
                                                                                          declr,
                                                                                          operator );
                     list.add( betaConstraint );
-                } catch ( IntrospectionException e ) {
-                    throw new IllegalArgumentException();
-                }
             }
             
             BetaConstraints constraints;

@@ -34,8 +34,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.junit.Test;
 
-import java.beans.IntrospectionException;
-
 import static org.drools.compiler.phreak.A.a;
 import static org.drools.compiler.phreak.B.b;
 
@@ -90,7 +88,7 @@ public class PhreakNotNodeTest {
     B b4 = b( 4 );
 
     @Test
-    public void test1() throws IntrospectionException {
+    public void test1() {
         setupNotNode("!=");
 
         // @formatter:off
@@ -113,7 +111,7 @@ public class PhreakNotNodeTest {
     }
 
     @Test
-    public void test2() throws IntrospectionException {
+    public void test2() {
         setupNotNode("<");
 
         // @formatter:off

@@ -20,7 +20,6 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.traits.AbstractTraitFactory;
 import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
@@ -28,19 +27,12 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.Trait;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.factmodel.traits.VirtualPropertyMode;
-import org.drools.core.metadata.Metadatable;
-import org.drools.core.metadata.Modify;
 import org.drools.core.reteoo.KieComponentFactory;
-import org.drools.core.rule.TypeDeclaration;
 
-import java.beans.IntrospectionException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

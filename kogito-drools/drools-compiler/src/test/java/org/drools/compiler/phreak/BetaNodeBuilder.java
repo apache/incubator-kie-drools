@@ -36,8 +36,6 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.InternalReadAccessor;
 
-import java.beans.IntrospectionException;
-
 public class BetaNodeBuilder {
     BuildContext buildContext;
     int          nodeType;
@@ -118,14 +116,10 @@ public class BetaNodeBuilder {
             Declaration declr = new Declaration(leftVariableName,
                                                 extractor,
                                                 pattern);
-            try {
                 betaConstraints = new SingleBetaConstraints(reteTesterHelper.getBoundVariableConstraint(rightType,
                                                                                                         constraintFieldName,
                                                                                                         declr,
                                                                                                         constraintOperator), buildContext.getKnowledgeBase().getConfiguration());
-            } catch (IntrospectionException e) {
-                throw new RuntimeException(e);
-            }
         } else {
             betaConstraints = new EmptyBetaConstraints();
         }
