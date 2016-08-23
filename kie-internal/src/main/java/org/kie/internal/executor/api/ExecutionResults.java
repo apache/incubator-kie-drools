@@ -24,5 +24,5 @@ package org.kie.internal.executor.api;
 public class ExecutionResults extends org.kie.api.executor.ExecutionResults {
 
     private static final long serialVersionUID = -1738336024526084091L;
-    
+
 }

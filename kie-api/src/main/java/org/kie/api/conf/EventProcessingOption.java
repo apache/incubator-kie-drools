@@ -18,16 +18,16 @@ package org.kie.api.conf;
 
 /**
  * An Enum for Event Processing option.
- * 
+ *
  * drools.eventProcessingMode = &lt;identity|equality&gt;
- * 
+ *
  * When the rulebase is compiled in the CLOUD (default) event processing mode,
  * it behaves just like a regular rulebase.
- * 
+ *
  * When the rulebase is compiled in the STREAM event processing mode, additional
  * assumptions are made. These assumptions allow the engine to perform a few optimisations
  * like:
- * 
+ *
  * <ul>
  * <li> reasoning over absence of events (NOT CE), automatically adds an appropriate duration attribute
  * to the rule in order to avoid early rule firing. </li>
@@ -38,7 +38,7 @@ package org.kie.api.conf;
 public enum EventProcessingOption
         implements SingleValueKieBaseOption {
 
-    CLOUD("cloud"), 
+    CLOUD("cloud"),
     STREAM("stream");
 
     /**

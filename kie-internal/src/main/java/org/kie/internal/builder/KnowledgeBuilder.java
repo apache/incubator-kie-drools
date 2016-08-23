@@ -29,27 +29,27 @@ import org.kie.api.io.ResourceType;
  * The KnowledgeBuilder is responsible for taking source files, such as a .drl file, a .bpmn2 file or an .xls file,
  * and turning them into a KnowledgePackage of rule and process definitions which a KnowledgeBase
  * can consume. It uses the ResourceType enum to tell it the type of the resource it is being asked to build.
- * 
+ *
  * </p>
- * 
+ *
  * <p>
  * The ResourceFactory provides capabilities to load Resources from a number of sources; such as
  * Reader, ClassPath, URL, File, ByteArray. Binaries, such as XLS decision tables,
  * should not use a Reader based Resource handler, which is only suitable for text based resources.
  * </p>
- * 
+ *
  * <p>
- * It is best practice to always check the hasErrors() method after an addition, you should not add 
- * more resources or get the KnowledgePackages if there are errors. getKnowledgePackages() will return 
+ * It is best practice to always check the hasErrors() method after an addition, you should not add
+ * more resources or get the KnowledgePackages if there are errors. getKnowledgePackages() will return
  * an empty list if there are errors.
  * </p>
- * 
+ *
  * <p>
  * You can create a new KnowledgeBase for all the resources that were added using this builder using
  * the newKnowledgeBase() method.  This will throw an exception if there are errors for any of the
  * resources.
  * </p>
- * 
+ *
  * <p>
  * Simple example showing how to build a KnowledgeBase from an DRL rule resource.
  * </p>
@@ -60,7 +60,7 @@ import org.kie.api.io.ResourceType;
  * assertFalse( kbuilder.hasErrors() );
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * </pre>
- * 
+ *
  * <p>
  * Simple example showing how to build a KnowledgeBase from an XLS decision table resource.
  * </p>
@@ -75,7 +75,7 @@ import org.kie.api.io.ResourceType;
  * assertFalse( kbuilder.hasErrors() );
  * KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
  * </pre>
- * 
+ *
  * <p>
  * Simple example showing how to build a KnowledgeBase from an BPMN2 process resource.
  * <p>
@@ -92,8 +92,8 @@ import org.kie.api.io.ResourceType;
  * if ( kbuilder.hasErrors() ) {
  *     log.exception( kbuilder.getErrors().toString() )
  * }
- * </pre>     
- * 
+ * </pre>
+ *
  * <p>
  * The KnowledgeBuilder can also be built from a configuration using the XML change-set format and
  * the ResourceType.CHANGE_SET value. While change-set supports add, remove, and modify as elements.
@@ -115,7 +115,7 @@ import org.kie.api.io.ResourceType;
  *   &lt;/add&gt;
  * &lt;/change-set&gt;
  * </pre>
- * 
+ *
  * <pre>
  * KnowledgeAgent kagent = KnowledgeAgentFactory.newKnowledgeAgent( "test agent", // the name of the agent
  *                                                                  kaconf );
@@ -129,14 +129,14 @@ public interface KnowledgeBuilder
 
     /**
      * Add a resource of the given ResourceType, using the default resource configuration.
-     * 
+     *
      * @param resource the Resource to add
      * @param type the resource type
      */
     void add(Resource resource,
              ResourceType type);
 
-   
+
     /**
      * Add a resource of the given ResourceType, using the provided ResourceConfiguration.
      * Resources can be created by calling any of the "newX" factory methods of
@@ -153,16 +153,16 @@ public interface KnowledgeBuilder
 
     /**
      * Returns the built packages.
-     * 
+     *
      * If the KnowledgeBuilder has errors the Collection will be empty. The hasErrors()
      * method should always be checked first, to make sure you are getting the packages
      * that you wanted built.
-     * 
+     *
      * @return
      *     The Collection of KnowledgePackages
      */
     Collection<KnowledgePackage> getKnowledgePackages();
-    
+
     /**
      * Creates a new KnowledgeBase from the knowledge packages that have been added to
      * this builder.  An exception is thrown if there are any errors.
@@ -180,16 +180,16 @@ public interface KnowledgeBuilder
      * @return
      */
     KnowledgeBuilderErrors getErrors();
-    
+
     /**
      * Return the knowledge builder results for the listed severities.
-     * 
+     *
      * @param severities
      * @return
      */
     KnowledgeBuilderResults getResults(ResultSeverity...severities );
-    
-        
+
+
     /**
      * Checks if the builder generated any results of the listed severities
      * @param severities

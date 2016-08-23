@@ -20,7 +20,7 @@ import java.io.Externalizable;
 import java.util.Date;
 
 public interface Attachment extends Externalizable {
-    
+
     Long getId();
 
     String getName();

@@ -21,7 +21,7 @@ import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Content;
 
 /**
- * The Task Attachment Service will deal with all the 
+ * The Task Attachment Service will deal with all the
  *  functionality related with Task Attachments. Different
  *  implementations can be provided to handle the Task Attachments.
  */

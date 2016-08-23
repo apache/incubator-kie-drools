@@ -24,7 +24,7 @@ public class ClassObjectFilter
     ObjectFilter {
     private Class<?> clazz;
 
-    /** 
+    /**
      * The Allowed Class type
      * @param clazz
      */

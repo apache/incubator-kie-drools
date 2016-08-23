@@ -28,12 +28,12 @@ public class DefaultPackageNameOption implements SingleValueKnowledgeBuilderOpti
      * The property name for the default package name
      */
     public static final String PROPERTY_NAME = "drools.defaultPackageName";
-    
+
     /**
      * package name
      */
     private final String packageName;
-    
+
     /**
      * Private constructor to enforce the use of the factory method
      * @param packageName
@@ -41,30 +41,30 @@ public class DefaultPackageNameOption implements SingleValueKnowledgeBuilderOpti
     private DefaultPackageNameOption( String packageName ) {
         this.packageName = packageName;
     }
-    
+
     /**
      * This is a factory method for this DefaultPackageName configuration.
-     * The factory method is a best practice for the case where the 
+     * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
-     * 
+     *
      * @param packageName the name of the package to be configured as default
-     * 
+     *
      * @return the actual type safe default package name configuration.
      */
     public static DefaultPackageNameOption get( String packageName ) {
         return new DefaultPackageNameOption( packageName );
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     /**
      * Returns the name of the package configured as default
-     * 
+     *
      * @return
      */
     public String getPackageName() {
@@ -90,7 +90,7 @@ public class DefaultPackageNameOption implements SingleValueKnowledgeBuilderOpti
         } else if ( !packageName.equals( other.packageName ) ) return false;
         return true;
     }
-    
+
     @Override
     public String toString() {
         return "DefaultPackageNameOption( name="+packageName+" )";

@@ -24,7 +24,7 @@ import java.util.Date;
  * @author salaboy
  */
 public interface QuickTaskSummary extends Externalizable {
-    
+
     Long getId();
 
     String getName();
@@ -44,11 +44,11 @@ public interface QuickTaskSummary extends Externalizable {
     Date getExpirationTime();
 
     String getProcessId();
-    
+
     Long getProcessInstanceId();
-    
+
     String getDeploymentId();
-    
+
     Long getParentId();
 
 }

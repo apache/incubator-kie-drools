@@ -22,7 +22,7 @@ public interface Environment {
 
     void set(String identifier,
              Object object);
-    
+
     void setDelegate(Environment delegate);
 
 }

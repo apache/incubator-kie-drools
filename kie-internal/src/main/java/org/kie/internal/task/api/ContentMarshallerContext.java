@@ -22,16 +22,16 @@ public class ContentMarshallerContext {
 
     private Environment environment;
     private ClassLoader classloader;
-    
+
     public ContentMarshallerContext() {
-        
+
     }
-    
+
     public ContentMarshallerContext(Environment environment, ClassLoader classloader) {
         this.environment = environment;
         this.classloader = classloader;
     }
-    
+
     public Environment getEnvironment() {
         return environment;
     }
@@ -44,6 +44,6 @@ public class ContentMarshallerContext {
     public void setClassloader(ClassLoader classloader) {
         this.classloader = classloader;
     }
-    
-    
+
+
 }

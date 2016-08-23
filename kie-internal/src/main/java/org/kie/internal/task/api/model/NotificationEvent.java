@@ -58,7 +58,7 @@ public class NotificationEvent implements Serializable{
     public void setContent(Map<String, Object> variables) {
         this.variables = variables;
     }
-    
-    
-    
+
+
+
 }

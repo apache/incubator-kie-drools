@@ -33,6 +33,6 @@ public interface JaxbConfiguration
 
 
     public List<String> getClasses();
-    
+
 }
-    
+

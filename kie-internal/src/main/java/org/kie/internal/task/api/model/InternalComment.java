@@ -22,8 +22,8 @@ import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.User;
 
 
-public interface InternalComment extends Comment {  
-    
+public interface InternalComment extends Comment {
+
     void setId(long id);
 
     void setText(String text);
@@ -31,5 +31,5 @@ public interface InternalComment extends Comment {
     void setAddedAt(Date addedDate);
 
     void setAddedBy(User addedBy);
-    
+
 }

@@ -20,8 +20,8 @@ import java.io.Externalizable;
 import java.util.Date;
 
 
-public interface Comment extends Externalizable  {  
-    
+public interface Comment extends Externalizable  {
+
     Long getId();
 
     String getText();

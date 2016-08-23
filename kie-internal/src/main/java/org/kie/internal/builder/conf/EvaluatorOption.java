@@ -19,8 +19,8 @@ package org.kie.internal.builder.conf;
 import org.kie.api.runtime.rule.EvaluatorDefinition;
 
 /**
- * A class for the evaluators configuration. 
- * 
+ * A class for the evaluators configuration.
+ *
  * Drools supports custom evaluators. After implementing an evaluator
  * use this option class to register it to the knowledge builder.
  */
@@ -32,17 +32,17 @@ public class EvaluatorOption implements MultiValueKnowledgeBuilderOption {
      * The prefix for the property name for evaluators
      */
     public static final String PROPERTY_NAME = "drools.evaluator.";
-    
+
     /**
      * evaluator key
      */
     private final String key;
-    
+
     /**
      * the evaluator instance
      */
     private final EvaluatorDefinition evaluator;
-    
+
     /**
      * Private constructor to enforce the use of the factory method
      * @param key
@@ -51,31 +51,31 @@ public class EvaluatorOption implements MultiValueKnowledgeBuilderOption {
         this.key = key;
         this.evaluator = evaluator;
     }
-    
+
     /**
      * This is a factory method for this EvaluatorOption configuration.
-     * The factory method is a best practice for the case where the 
+     * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
-     * 
+     *
      * @param key the key of the evaluator to be configured
      * @param evaluator the evaluator definition
-     * 
+     *
      * @return the actual type safe default dialect configuration.
      */
     public static EvaluatorOption get( final String key, final EvaluatorDefinition evaluator ) {
         return new EvaluatorOption( key, evaluator );
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME+key;
     }
-    
+
     /**
      * Returns the name of the dialect configured as default
-     * 
+     *
      * @return
      */
     public String getName() {
@@ -89,7 +89,7 @@ public class EvaluatorOption implements MultiValueKnowledgeBuilderOption {
     public EvaluatorDefinition getEvaluatorDefinition() {
         return evaluator;
     }
-    
+
     @Override
     public String toString() {
         return "EvaluatorOption( name="+key+" evaluator="+evaluator+" )";

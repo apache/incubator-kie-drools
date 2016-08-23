@@ -43,7 +43,7 @@ public class CompositeClassLoader extends ClassLoader {
         super( null );
         loader.set( new DefaultLoader() );
     }
-    
+
     public Collection<ClassLoader> getClassLoaders() {
         return Collections.unmodifiableCollection( this.classLoaders );
     }
@@ -70,7 +70,7 @@ public class CompositeClassLoader extends ClassLoader {
         this.classLoaders.add( 0, classLoader );
         this.loader.get().reset();
     }
-    
+
     public synchronized void addClassLoaderToEnd(final ClassLoader classLoader) {
         /* NB: we need synchronized here even though we use a COW list:
          *     two threads may try to add the same new class loader, so we need
@@ -84,10 +84,10 @@ public class CompositeClassLoader extends ClassLoader {
         }
         this.classLoaders.add( classLoader );
         this.loader.get().reset();
-    }    
+    }
 
     public synchronized void removeClassLoader(final ClassLoader classLoader) {
-        /* synchronized to protect against concurrent runs of 
+        /* synchronized to protect against concurrent runs of
          * addClassLoader(x) and removeClassLoader(x).
          */
         classLoaders.remove( classLoader );
@@ -106,10 +106,10 @@ public class CompositeClassLoader extends ClassLoader {
         if ( cls == null ) {
             throw new ClassNotFoundException( "Unable to load class: " + name );
         }
-        
+
         return cls;
     }
-    
+
    /**
     * This ClassLoader never has classes of it's own, so only search the child ClassLoaders
     * and the parent ClassLoader if one is provided
@@ -124,10 +124,10 @@ public class CompositeClassLoader extends ClassLoader {
        if ( cls == null ) {
            throw new ClassNotFoundException( "Unable to load class" + name );
        }
-       
+
        return cls;
    }
-    
+
     /**
      * This ClassLoader never has classes of it's own, so only search the child ClassLoaders
      * and the parent ClassLoader if one is provided
@@ -165,7 +165,7 @@ public class CompositeClassLoader extends ClassLoader {
                 enumerations.addEnumeration( e );
             }
         }
-        
+
         return enumerations;
     }
 
@@ -231,7 +231,7 @@ public class CompositeClassLoader extends ClassLoader {
 
             return cls;
         }
-        
+
         public void reset() {
             // nothing to do
         }
@@ -285,7 +285,7 @@ public class CompositeClassLoader extends ClassLoader {
             if ( cls != null ) {
                 classLoaderResultMap.put( name,
                                           cls );
-                
+
                 this.successfulCalls++;
             } else {
                 this.failedCalls++;
@@ -293,7 +293,7 @@ public class CompositeClassLoader extends ClassLoader {
 
             return cls;
         }
-        
+
         public void reset() {
             this.classLoaderResultMap.clear();
             this.successfulCalls = this.failedCalls = this.cacheHits = 0;
@@ -360,7 +360,7 @@ public class CompositeClassLoader extends ClassLoader {
             return it.next();
         }
     }
-    
+
     public CompositeClassLoader clone() {
         CompositeClassLoader classLoader = new CompositeClassLoader();
         classLoader.classLoaders.addAll( this.classLoaders );

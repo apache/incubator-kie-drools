@@ -29,13 +29,13 @@ import org.kie.api.io.Resource;
  * <p>
  * Convenience Factory to provide Resource implementations for the desired IO resource.
  * </p>
- * 
+ *
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
  * kbuilder.add( ResourceFactory.newUrlResource( "htp://www.domain.org/myProcess.bpmn2" ),
  *               ResourceType.BPMN2 );
  * </pre>
- * 
+ *
  * <pre>
  * KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
  * kbuilder.add( ResourceFactory.newClassPathResource( "htp://www.domain.org/myrules.drl", getClass() ),
@@ -47,7 +47,7 @@ public class ResourceFactory {
 
     /**
      * A Service that can be started, to provide notifications of changed Resources.
-     * 
+     *
      * @return
      */
     public static ResourceChangeNotifier getResourceChangeNotifierService() {
@@ -56,7 +56,7 @@ public class ResourceFactory {
 
     /**
      * As service, that scans the disk for changes, this acts as a Monitor for the Notifer service.
-     * 
+     *
      * @return
      */
      public static ResourceChangeScanner getResourceChangeScannerService() {
@@ -140,11 +140,11 @@ public class ResourceFactory {
                                                          encoding,
                                                          classLoader );
     }
-    
+
     public static Resource newDescrResource( KnowledgeDescr descr ) {
         return getFactoryService().newDescrResource( descr );
     }
-    
+
     private static synchronized void setFactoryService(ResourceFactoryService factoryService) {
         ResourceFactory.factoryService = factoryService;
     }

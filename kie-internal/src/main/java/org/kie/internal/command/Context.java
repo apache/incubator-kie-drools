@@ -17,11 +17,11 @@
 package org.kie.internal.command;
 
 public interface Context {
-    
+
     World getContextManager();
-    
+
     String getName();
-    
+
     Object get(String identifier);
 
     void set(String identifier,

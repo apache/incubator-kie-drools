@@ -39,16 +39,16 @@ import org.kie.internal.task.api.model.TaskEvent;
 import org.kie.internal.task.query.TaskSummaryQueryBuilder;
 
 /**
- * The Task Service Entry Point serves as 
+ * The Task Service Entry Point serves as
  *  facade of all the other services, providing a single entry point
  *  to access to all the services
  */
 public interface InternalTaskService extends TaskService {
-    
+
     List<TaskSummary> getTasksOwned(String userId, List<Status> status, QueryFilter filter);
-    
+
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, List<Status> status, QueryFilter filter);
-    
+
     void addGroup(Group group);
 
     void addUser(User user);
@@ -64,7 +64,7 @@ public interface InternalTaskService extends TaskService {
     void deleteOutput(long taskId, String userId);
 
     void deployTaskDef(TaskDef def);
-    
+
     List<TaskSummary> getActiveTasks();
 
     List<TaskSummary> getActiveTasks(Date since);
@@ -86,19 +86,19 @@ public interface InternalTaskService extends TaskService {
     List<TaskSummary> getSubTasksAssignedAsPotentialOwner(long parentId, String userId);
 
     List<TaskSummary> getSubTasksByParent(long parentId);
-    
+
     int getPendingSubTasksByParent(long parentId);
 
     TaskDef getTaskDefById(String id);
 
     List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(String userId, List<Status> statuses, Date expirationDate);
-    
+
     List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(String userId, List<Status> statuses, Date expirationDate);
-    
+
     List<TaskSummary> getTasksOwnedByExpirationDate(String userId, List<Status> statuses, Date expirationDate);
-    
+
     List<TaskSummary> getTasksOwnedByExpirationDateOptional(String userId, List<Status> statuses, Date expirationDate);
-    
+
     List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId);
 
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds);
@@ -110,13 +110,13 @@ public interface InternalTaskService extends TaskService {
     List<TaskSummary> getTasksAssignedAsTaskInitiator(String userId);
 
     List<TaskSummary> getTasksAssignedAsTaskStakeholder(String userId);
-    
+
     List<TaskSummary> getTasksOwnedByExpirationDateBeforeSpecifiedDate(String userId, List<Status> status, Date date);
-    
+
     List<TaskSummary> getTasksByStatusByProcessInstanceIdByTaskName(long processInstanceId, List<Status> status, String taskName);
-    
+
     Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds);
-    
+
     User getUserById(String userId);
 
     List<User> getUsers();
@@ -136,7 +136,7 @@ public interface InternalTaskService extends TaskService {
     void setOutput(long taskId, String userId, Object outputContentData);
 
     void setPriority(long taskId, int priority);
-    
+
     void setTaskNames(long taskId, List<I18NText> taskNames);
 
     void undeployTaskDef(String id);
@@ -152,15 +152,15 @@ public interface InternalTaskService extends TaskService {
     int removeAllTasks();
 
     long addContent(long taskId, Content content);
-    
+
     long setDocumentContentFromUser(long taskId, String userId, byte [] byteContent);
-    
+
     long addContent(long taskId, Map<String, Object> params);
-    
+
     long addOutputContentFromUser(long taskId, String userId, Map<String, Object> params);
 
     Content getContentByIdForUser(long contentId, String userId );
-    
+
     Map<String, Object> getOutputContentMapForUser(long taskId, String userId);
 
     void deleteContent(long taskId, long contentId);
@@ -190,29 +190,29 @@ public interface InternalTaskService extends TaskService {
     List<I18NText> getDescriptions(long taskId);
 
     boolean isSkipable(long taskId);
-    
+
     SubTasksStrategy getSubTaskStrategy(long taskId);
 
     Task getTaskInstanceById(long taskId);
-    
+
     int getCompletedTaskByUserId(String userId);
 
     int getPendingTaskByUserId(String userId);
-    
-    List<TaskSummary> getTasksAssignedByGroup(String groupId); 
-    
-    List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds);       
-    
+
+    List<TaskSummary> getTasksAssignedByGroup(String groupId);
+
+    List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds);
+
     void addMarshallerContext(String ownerId, ContentMarshallerContext context);
-    
+
     void removeMarshallerContext(String ownerId);
-    
+
     ContentMarshallerContext getMarshallerContext(Task task);
-    
+
     TaskSummaryQueryBuilder taskSummaryQuery(String userId);
-    
+
     List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, String language ,List<Status> statuses);
-    
+
     void executeReminderForTask(long taskId,String fromUser);
 
 }

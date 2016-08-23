@@ -23,9 +23,9 @@ package org.kie.internal.task.exception;
  */
 public abstract class TaskException extends RuntimeException {
 
-	private static final long serialVersionUID = 2370182914623204842L;
-	private boolean recoverable = true;
-	
+    private static final long serialVersionUID = 2370182914623204842L;
+    private boolean recoverable = true;
+
     public TaskException(String message) {
         super(message);
     }
@@ -34,11 +34,11 @@ public abstract class TaskException extends RuntimeException {
         super(message, cause);
     }
 
-	public boolean isRecoverable() {
-		return recoverable;
-	}
+    public boolean isRecoverable() {
+        return recoverable;
+    }
 
-	public void setRecoverable(boolean recoverable) {
-		this.recoverable = recoverable;
-	}
+    public void setRecoverable(boolean recoverable) {
+        this.recoverable = recoverable;
+    }
 }

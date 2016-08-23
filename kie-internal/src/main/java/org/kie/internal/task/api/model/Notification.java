@@ -23,11 +23,11 @@ import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 
 public interface Notification extends Externalizable  {
-    
+
     Long getId();
 
     void setId(long id);
-    
+
     NotificationType getNotificationType();
 
     List<I18NText> getDocumentation();
@@ -53,9 +53,9 @@ public interface Notification extends Externalizable  {
     List<I18NText> getSubjects();
 
     void setSubjects(List<I18NText> subjects);
-    
+
     List<I18NText> getDescriptions();
 
-    void setDescriptions(List<I18NText> descriptions); 
-                
+    void setDescriptions(List<I18NText> descriptions);
+
 }

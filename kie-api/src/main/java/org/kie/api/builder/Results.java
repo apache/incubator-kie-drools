@@ -38,5 +38,5 @@ public interface Results {
     /**
      * Returns all the Messages in these Results
      */
-    List<Message>  getMessages();  
+    List<Message>  getMessages();
 }

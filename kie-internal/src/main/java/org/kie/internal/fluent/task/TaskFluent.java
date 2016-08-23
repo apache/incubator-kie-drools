@@ -25,10 +25,10 @@ import org.kie.api.task.model.Task;
 
 /**
  * See {@link TaskService}
- * 
+ *
  */
 public interface TaskFluent<T> {
-    
+
     T activate(long taskId, String userId);
 
     T claim(long taskId, String userId);
@@ -62,7 +62,7 @@ public interface TaskFluent<T> {
     T getTasksByStatusByProcessInstanceId(long processInstanceId, List<Status> status, String language);
 
     T getTasksByProcessInstanceId(long processInstanceId);
-    
+
     T addTask(Task task, Map<String, Object> params);
 
     T release(long taskId, String userId);
@@ -82,5 +82,5 @@ public interface TaskFluent<T> {
     T getContentById(long contentId);
 
     T getAttachmentById(long attachId);
-    
+
 }

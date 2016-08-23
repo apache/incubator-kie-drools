@@ -23,7 +23,7 @@ import org.kie.api.definition.rule.Rule;
 
 public class ConsequenceException extends RuntimeException {
     private RuleRuntime workingMemory;
-    private Match    match;    
+    private Match    match;
 
     public ConsequenceException( final Throwable rootCause,
                                  final RuleRuntime workingMemory,
@@ -37,7 +37,7 @@ public class ConsequenceException extends RuntimeException {
     public String getMessage() {
         StringBuilder sb = new StringBuilder( "Exception executing consequence for " );
         Rule rule = null;
-        
+
         if( match != null && ( rule = match.getRule() ) != null ){
             String packageName = rule.getPackageName();
             String ruleName = rule.getName();
@@ -48,7 +48,7 @@ public class ConsequenceException extends RuntimeException {
         sb.append( ": " ).append( super.getMessage() );
         return sb.toString();
     }
-    
+
     public Match getMatch() {
         return this.match;
     }
@@ -56,7 +56,7 @@ public class ConsequenceException extends RuntimeException {
     public Rule getRule() {
         return this.match.getRule();
     }
-    
+
     public void printFacts(){
         printFacts( System.err );
     }
@@ -70,9 +70,9 @@ public class ConsequenceException extends RuntimeException {
                                  ": " + object.toString() );
             }
         }
-    }    
+    }
 
     public String toString() {
         return getMessage();
-    }    
+    }
 }

@@ -28,7 +28,7 @@ import org.kie.api.executor.STATUS;
  *
  */
 public interface ExecutorQueryService extends org.kie.api.executor.ExecutorQueryService {
-    
+
     /**
      * Returns all queued requests
      * @return
@@ -36,7 +36,7 @@ public interface ExecutorQueryService extends org.kie.api.executor.ExecutorQuery
      */
     @Deprecated
     List<RequestInfo> getQueuedRequests();
-    
+
     /**
      * Returns all comleted requests.
      * @return
@@ -44,7 +44,7 @@ public interface ExecutorQueryService extends org.kie.api.executor.ExecutorQuery
      */
     @Deprecated
     List<RequestInfo> getCompletedRequests();
-    
+
     /**
      * Returns all requests that have errors.
      * @return
@@ -52,7 +52,7 @@ public interface ExecutorQueryService extends org.kie.api.executor.ExecutorQuery
      */
     @Deprecated
     List<RequestInfo> getInErrorRequests();
-    
+
     /**
      * Returns all requests that were cancelled
      * @return
@@ -60,23 +60,23 @@ public interface ExecutorQueryService extends org.kie.api.executor.ExecutorQuery
      */
     @Deprecated
     List<RequestInfo> getCancelledRequests();
-    
+
     /**
      * Returns all errors.
      * @return
      * @deprecated use equivalent method with paging arguments
      */
     @Deprecated
-    List<ErrorInfo> getAllErrors(); 
-    
+    List<ErrorInfo> getAllErrors();
+
     /**
      * Returns all requests
      * @return
      * @deprecated use equivalent method with paging arguments
      */
     @Deprecated
-    List<RequestInfo> getAllRequests(); 
-    
+    List<RequestInfo> getAllRequests();
+
     /**
      * Returns all currently running requests
      * @return
@@ -84,7 +84,7 @@ public interface ExecutorQueryService extends org.kie.api.executor.ExecutorQuery
      */
     @Deprecated
     List<RequestInfo> getRunningRequests();
-    
+
     /**
      * Returns requests queued for future execution
      * @return
@@ -92,7 +92,7 @@ public interface ExecutorQueryService extends org.kie.api.executor.ExecutorQuery
      */
     @Deprecated
     List<RequestInfo> getFutureQueuedRequests();
-    
+
     /**
      * Returns requests based on their status
      * @param statuses - statuses that requests should be in
@@ -101,7 +101,7 @@ public interface ExecutorQueryService extends org.kie.api.executor.ExecutorQuery
      */
     @Deprecated
     List<RequestInfo> getRequestsByStatus(List<STATUS> statuses);
-    
+
     /**
      * Returns list of pending execution requests.
      * @return

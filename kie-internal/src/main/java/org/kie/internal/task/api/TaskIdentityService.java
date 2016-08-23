@@ -22,10 +22,10 @@ import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
 
 /**
- * The Task Identity Service provides all the 
+ * The Task Identity Service provides all the
  *  functionality related with the Organizational Entities
  *  that will be handled internally by jBPM. This methods
- *  will allow us to create the Mappings against external 
+ *  will allow us to create the Mappings against external
  *  identity directories to the internal inforamtion required
  *  by jBPM.
  */
@@ -46,8 +46,8 @@ public interface TaskIdentityService {
     public User getUserById(String userId);
 
     public Group getGroupById(String groupId);
-    
+
     public OrganizationalEntity getOrganizationalEntityById(String entityId);
 
-    
+
 }

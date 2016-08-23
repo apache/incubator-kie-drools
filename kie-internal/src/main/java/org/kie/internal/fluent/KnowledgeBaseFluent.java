@@ -17,7 +17,7 @@
 package org.kie.internal.fluent;
 
 public interface KnowledgeBaseFluent<T> {
-    
+
     T addKnowledgePackages();
-    
+
 }

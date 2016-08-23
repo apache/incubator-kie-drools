@@ -21,5 +21,5 @@ package org.kie.internal.builder;
  */
 public interface KnowledgeBuilderError extends KnowledgeBuilderResult {
 
-    
+
 }

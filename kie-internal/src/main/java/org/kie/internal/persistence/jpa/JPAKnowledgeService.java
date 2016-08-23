@@ -141,11 +141,11 @@ public class JPAKnowledgeService {
             KieBase kbase,
             KieSessionConfiguration configuration,
             Environment environment) {
-		return (StatefulKnowledgeSession)getJPAKnowledgeServiceProvider().loadKieSession(id,
-		kbase,
-		configuration,
-		environment);
-	}
+        return (StatefulKnowledgeSession)getJPAKnowledgeServiceProvider().loadKieSession(id,
+        kbase,
+        configuration,
+        environment);
+    }
 
     private static synchronized void setJPAKnowledgeServiceProvider(KieStoreServices provider) {
         JPAKnowledgeService.provider = provider;

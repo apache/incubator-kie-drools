@@ -25,11 +25,11 @@ public interface ProcessNodeEvent
     extends
     ProcessEvent {
 
-	/**
-	 * The node instance this event is related to.
-	 * 
-	 * @return the node instance
-	 */
+    /**
+     * The node instance this event is related to.
+     *
+     * @return the node instance
+     */
     NodeInstance getNodeInstance();
 
 }

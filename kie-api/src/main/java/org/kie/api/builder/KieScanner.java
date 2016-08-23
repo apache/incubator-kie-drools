@@ -31,11 +31,11 @@ public interface KieScanner {
     void start(long pollingInterval);
 
     /**
-     * Stops this KieScanner, but does not release the resources. A call to {@link #start(long)} will 
+     * Stops this KieScanner, but does not release the resources. A call to {@link #start(long)} will
      * resume the scanner's work after a call to {@link #stop()}
      */
     void stop();
-    
+
     /**
      * Shuts down the scanner and releases any resources held. After a shutdown call,
      * any call to start() will fail with an exception.

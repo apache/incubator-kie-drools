@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class QueryContext extends org.kie.api.runtime.query.QueryContext {
 
-	private static final long serialVersionUID = -3174717972613778773L;
+    private static final long serialVersionUID = -3174717972613778773L;
 
     public QueryContext() {
         super();

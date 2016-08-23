@@ -30,12 +30,12 @@ public class AlphaThresholdOption implements SingleValueKieBaseOption {
      * The property name for the default DIALECT
      */
     public static final String PROPERTY_NAME = "drools.alphaNodeHashingThreshold";
-    
+
     /**
      * alpha threshold
      */
     private final int threshold;
-    
+
     /**
      * Private constructor to enforce the use of the factory method
      * @param threshold
@@ -43,30 +43,30 @@ public class AlphaThresholdOption implements SingleValueKieBaseOption {
     private AlphaThresholdOption( int threshold ) {
         this.threshold = threshold;
     }
-    
+
     /**
      * This is a factory method for this Alpha Threshold configuration.
-     * The factory method is a best practice for the case where the 
+     * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
-     * 
+     *
      * @param threshold the threshold value for the alpha hashing option
-     * 
+     *
      * @return the actual type safe alpha threshold configuration.
      */
     public static AlphaThresholdOption get( int threshold ) {
         return new AlphaThresholdOption( threshold );
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     /**
      * Returns the threshold value for alpha hashing
-     * 
+     *
      * @return
      */
     public int getThreshold() {
@@ -90,5 +90,5 @@ public class AlphaThresholdOption implements SingleValueKieBaseOption {
         if ( threshold != other.threshold ) return false;
         return true;
     }
-    
+
 }

@@ -124,11 +124,11 @@ public interface StatelessKieSession
      */
     void setGlobal(String identifier,
                    Object value);
-    
+
 
     /**
      * Registers a channel with the given name
-     * 
+     *
      * @param name the name of the channel
      * @param channel the channel instance. It has to be thread safe.
      */
@@ -137,7 +137,7 @@ public interface StatelessKieSession
 
     /**
      * Unregisters the channel with the given name
-     * 
+     *
      * @param name
      */
     void unregisterChannel(String name);

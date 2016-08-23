@@ -15,14 +15,14 @@
  */
 
 /**
- * 
+ *
  */
 package org.kie.internal.task.api.model;
 
 import java.io.Externalizable;
 
 public interface EmailNotificationHeader extends Externalizable {
-    
+
     long getId();
 
     void setId(long id);
@@ -46,5 +46,5 @@ public interface EmailNotificationHeader extends Externalizable {
     String getFrom();
 
     void setFrom(String from);
-          
+
 }

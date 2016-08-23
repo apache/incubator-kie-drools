@@ -20,12 +20,12 @@ package org.kie.api.executor;
  * Simple administration api for executor service.
  */
 public interface ExecutorAdminService {
-    
+
     /**
      * Removes all requests
      */
     int clearAllRequests();
-    
+
     /**
      * Removes all errors
      */

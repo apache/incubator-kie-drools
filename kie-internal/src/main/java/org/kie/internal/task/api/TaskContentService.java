@@ -36,20 +36,20 @@ import org.kie.api.task.model.Task;
 public interface TaskContentService {
 
     long setDocumentContent(long taskId, Content content);
-    
+
     long addOutputContent(long taskId, Map<String, Object> params);
-    
+
     void deleteDocumentContent(long taskId, long contentId);
 
     List<Content> getAllContentByTaskId(long taskId);
 
     Content getContentById(long contentId);
-    
+
     void addMarshallerContext(String ownerId, ContentMarshallerContext context);
-    
+
     void removeMarshallerContext(String ownerId);
-    
+
     ContentMarshallerContext getMarshallerContext(Task task);
-    
+
     Task loadTaskVariables(Task task);
 }

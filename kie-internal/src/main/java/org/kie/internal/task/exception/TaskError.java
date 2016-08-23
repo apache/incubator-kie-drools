@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.kie.internal.task.exception;
 
@@ -30,9 +30,9 @@ public class TaskError
     String msg;
 
     public TaskError() {
-        
+
     }
-    
+
     public TaskError(String msg) {
         this.msg = msg;
     }

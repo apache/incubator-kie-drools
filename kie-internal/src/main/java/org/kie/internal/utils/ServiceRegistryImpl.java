@@ -95,11 +95,11 @@ public class ServiceRegistryImpl
         this.registry.put( service.getClass().getInterfaces()[0].getName(),
                            new ReturnInstance<Service>( service ) );
 
-        //        
+        //
         //        BundleContext bc = this.context.getBundleContext();
         //        ServiceReference confAdminRef = bc.getServiceReference( ConfigurationAdmin.class.getName() );
         //        ConfigurationAdmin admin = ( ConfigurationAdmin ) bc.getService( confAdminRef );
-        //        
+        //
         //        try {
         //            Configuration conf = admin.getConfiguration( (String) confAdminRef.getProperty( "service.id" ) );
         //            Dictionary properties = conf.getProperties();
@@ -127,7 +127,7 @@ public class ServiceRegistryImpl
     //        this.confAdmin = confAdmin;
     //        logger.info( "ConfAdmin : " + this.confAdmin );
     //    }
-    //    
+    //
     //    synchronized void unsetConfigurationAdmin(ConfigurationAdmin confAdmin) {
     //        this.confAdmin = null;
     //    }
@@ -136,11 +136,11 @@ public class ServiceRegistryImpl
     //    void activate(ComponentContext context) {
     //        logger.info( "reg comp" + context.getProperties() );
     //        this.context = context;
-    //        
-    //       
-    //        
+    //
+    //
+    //
     //      BundleContext bc = this.context.getBundleContext();
-    //      
+    //
     //      ServiceReference confAdminRef = bc.getServiceReference( ConfigurationAdmin.class.getName() );
     //      ConfigurationAdmin admin = ( ConfigurationAdmin ) bc.getService( confAdminRef );
     //      logger.info( "conf admin : " + admin );
@@ -148,7 +148,7 @@ public class ServiceRegistryImpl
     //    //    log = (LogService) context.locateService("LOG");
     //        }
     //    void deactivate(ComponentContext context ){
-    //        
+    //
     //    }
 
     public synchronized <T> T get(Class<T> cls) {
@@ -184,7 +184,7 @@ public class ServiceRegistryImpl
 
         addDefault( "org.kie.internal.io.ResourceFactoryService",
                     "org.drools.core.io.impl.ResourceFactoryServiceImpl" );
-        
+
         addDefault(  "org.kie.internal.SystemEventListenerService",
                      "org.drools.core.impl.SystemEventListenerServiceImpl" );
         addDefault(  KieMarshallers.class,

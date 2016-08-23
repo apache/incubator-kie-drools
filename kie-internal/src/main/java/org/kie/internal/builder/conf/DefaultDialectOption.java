@@ -28,12 +28,12 @@ public class DefaultDialectOption implements SingleValueKnowledgeBuilderOption {
      * The property name for the default DIALECT
      */
     public static final String PROPERTY_NAME = "drools.dialect.default";
-    
+
     /**
      * dialect name
      */
     private final String name;
-    
+
     /**
      * Private constructor to enforce the use of the factory method
      * @param name
@@ -41,30 +41,30 @@ public class DefaultDialectOption implements SingleValueKnowledgeBuilderOption {
     private DefaultDialectOption( String name ) {
         this.name = name;
     }
-    
+
     /**
      * This is a factory method for this DefaultDialect configuration.
-     * The factory method is a best practice for the case where the 
+     * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
-     * 
+     *
      * @param name the name of the dialect to be configured as default
-     * 
+     *
      * @return the actual type safe default dialect configuration.
      */
     public static DefaultDialectOption get( String name ) {
         return new DefaultDialectOption( name );
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     /**
      * Returns the name of the dialect configured as default
-     * 
+     *
      * @return
      */
     public String getName() {
@@ -95,5 +95,5 @@ public class DefaultDialectOption implements SingleValueKnowledgeBuilderOption {
         } else if ( !name.equals( other.name ) ) return false;
         return true;
     }
-    
+
 }

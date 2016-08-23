@@ -40,13 +40,13 @@ import org.slf4j.LoggerFactory;
  * @see ExecutorAdminService
  */
 public interface ExecutorService {
-	
-	/**
-	 * Allow to use custom identifiers for the executor instance where default is to rely on local id of clustering of kie
-	 * if present, otherwise use simple 'default-executor'. Alternatively an jbpm-executor.id file can be dropped on root 
-	 * of the classpath to provide application scoped id instead of JVM scoped (system property)
-	 */
-	public static final String EXECUTOR_ID = IdProvider.get();
+
+    /**
+     * Allow to use custom identifiers for the executor instance where default is to rely on local id of clustering of kie
+     * if present, otherwise use simple 'default-executor'. Alternatively an jbpm-executor.id file can be dropped on root
+     * of the classpath to provide application scoped id instead of JVM scoped (system property)
+     */
+    public static final String EXECUTOR_ID = IdProvider.get();
 
     List<RequestInfo> getQueuedRequests(QueryContext queryContext);
 
@@ -59,11 +59,11 @@ public interface ExecutorService {
     List<ErrorInfo> getAllErrors(QueryContext queryContext);
 
     List<RequestInfo> getAllRequests(QueryContext queryContext);
-    
+
     List<RequestInfo> getRequestsByStatus(List<STATUS> statuses, QueryContext queryContext);
-    
+
     List<RequestInfo> getRequestsByBusinessKey(String businessKey, QueryContext queryContext);
-    
+
     List<RequestInfo> getRequestsByCommand(String command, QueryContext queryContext);
 
     int clearAllRequests();
@@ -77,7 +77,7 @@ public interface ExecutorService {
     void init();
 
     void destroy();
-    
+
     boolean isActive();
 
     int getInterval();
@@ -91,11 +91,11 @@ public interface ExecutorService {
     int getThreadPoolSize();
 
     void setThreadPoolSize(int nroOfThreads);
-    
+
     TimeUnit getTimeunit();
-   
+
     void setTimeunit(TimeUnit timeunit);
-    
+
     List<RequestInfo> getPendingRequests(QueryContext queryContext);
 
     List<RequestInfo> getPendingRequestById(Long id);
@@ -103,15 +103,15 @@ public interface ExecutorService {
     Long scheduleRequest(String commandId, Date date, CommandContext ctx);
 
     List<RequestInfo> getRunningRequests(QueryContext queryContext);
-    
+
     List<RequestInfo> getFutureQueuedRequests(QueryContext queryContext);
 
     RequestInfo getRequestById(Long requestId);
 
     List<ErrorInfo> getErrorsByRequestId(Long requestId);
-    
+
     class IdProvider {
-        private static boolean initialized = false;   
+        private static boolean initialized = false;
         private static String EXECUTOR_ID;
         private static Logger logger = LoggerFactory.getLogger(Factory.class);
 
@@ -126,14 +126,14 @@ public interface ExecutorService {
 
         private static synchronized String create() {
             initialized = true;
-            String idSystemProperty = System.getProperty("org.kie.executor.id", 
+            String idSystemProperty = System.getProperty("org.kie.executor.id",
                     System.getProperty("org.uberfire.cluster.local.id", "default-executor"));
             try {
                 InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("/jbpm-executor.properties");
                 if (is != null) {
                     Properties executorProps = new Properties();
                     executorProps.load(is);
-                    
+
                     return idSystemProperty+ "-" + executorProps.getProperty("executor.id");
                 }
             } catch (Exception e) {
@@ -142,5 +142,5 @@ public interface ExecutorService {
             return idSystemProperty;
         }
     }
-    
+
 }

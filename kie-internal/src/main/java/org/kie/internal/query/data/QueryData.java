@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -24,20 +24,20 @@ import org.kie.internal.query.QueryContext;
 
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
-public class QueryData extends QueryParameters { 
+public class QueryData extends QueryParameters {
 
     @XmlElement
     private QueryContext queryContext = new QueryContext();
-    
-    public QueryData() { 
+
+    public QueryData() {
         // JAXB constructor
     }
-    
-    public QueryData(QueryData queryData) { 
-       super((QueryParameters) queryData); 
+
+    public QueryData(QueryData queryData) {
+       super((QueryParameters) queryData);
        this.queryContext = new QueryContext(queryData.getQueryContext());
     }
-    
+
     public QueryContext getQueryContext() {
         return queryContext;
     }
@@ -46,7 +46,7 @@ public class QueryData extends QueryParameters {
         this.queryContext = queryContext;
     }
 
-    public void clear() { 
+    public void clear() {
         super.clear();
         this.queryContext.clear();
     }

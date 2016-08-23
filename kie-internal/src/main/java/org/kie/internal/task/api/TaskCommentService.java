@@ -20,8 +20,8 @@ import java.util.List;
 import org.kie.api.task.model.Comment;
 
 /**
- * The Task Comment Service will handle all the 
- *  operations related with the Comments associated with 
+ * The Task Comment Service will handle all the
+ *  operations related with the Comments associated with
  *  a Task
  */
 public interface TaskCommentService {

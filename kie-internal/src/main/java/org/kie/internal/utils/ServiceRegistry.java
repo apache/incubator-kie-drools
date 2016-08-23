@@ -30,9 +30,9 @@ public interface ServiceRegistry extends Service {
                                 Callable cal);
 
     public void unregisterLocator(Class cls);
-    
+
     public <T> T get(Class<T> cls);
-    
+
     public void addDefault(Class cls,
                            String impl);
 

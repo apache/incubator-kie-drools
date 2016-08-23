@@ -21,13 +21,13 @@ import org.kie.api.conf.SingleValueKieBaseOption;
 
 /**
  * An Enum for ShareBetaNodes option.
- * 
+ *
  * drools.shareBetaNodes = &lt;true|false&gt;
- * 
+ *
  * DEFAULT = true
  */
 public enum ShareBetaNodesOption implements SingleValueKieBaseOption {
-    
+
     YES(true),
     NO(false);
 
@@ -35,20 +35,20 @@ public enum ShareBetaNodesOption implements SingleValueKieBaseOption {
      * The property name for the share beta nodes option
      */
     public static final String PROPERTY_NAME = "drools.shareBetaNodes";
-    
+
     private boolean value;
-    
+
     ShareBetaNodesOption( final boolean value ) {
         this.value = value;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     public boolean isShareBetaNodes() {
         return this.value;
     }

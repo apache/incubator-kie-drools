@@ -24,12 +24,12 @@ import org.kie.api.task.model.OrganizationalEntity;
 
 public interface Delegation  extends Externalizable {
 
-    AllowedToDelegate getAllowed();   
-    
+    AllowedToDelegate getAllowed();
+
     void setAllowed(AllowedToDelegate allowedToDelegate);
 
     List<OrganizationalEntity> getDelegates();
-    
-    void setDelegates(List<OrganizationalEntity> delegates);    
-    
+
+    void setDelegates(List<OrganizationalEntity> delegates);
+
 }

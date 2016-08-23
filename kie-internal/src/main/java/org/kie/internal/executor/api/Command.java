@@ -20,5 +20,5 @@ package org.kie.internal.executor.api;
  * @see org.kie.api.executor.Command
  */
 public interface Command extends org.kie.api.executor.Command {
-    
+
 }

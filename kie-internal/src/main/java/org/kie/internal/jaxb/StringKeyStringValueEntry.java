@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class StringKeyStringValueEntry {
 
-	@XmlElement(name="key")
+    @XmlElement(name="key")
     private String key;
 
     @XmlElement(name="value")
@@ -35,7 +35,7 @@ public class StringKeyStringValueEntry {
         // default
     }
 
-    public StringKeyStringValueEntry(String key, String value) { 
+    public StringKeyStringValueEntry(String key, String value) {
         this.key = key;
         this.value = value;
     }

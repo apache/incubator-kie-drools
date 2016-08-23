@@ -18,7 +18,7 @@ package org.kie.api.runtime.conf;
 
 /**
  * An enum to configure the session query listener configuration.
- * 
+ *
  * Query results are collected by a listener class. The "STANDARD"
  * query listener class copies and disconnects fact handles and objects
  * for query results, making them somewhat resilient to some working
@@ -29,7 +29,7 @@ package org.kie.api.runtime.conf;
  */
 public enum QueryListenerOption implements SingleValueKieSessionOption {
 
-    STANDARD("standard"), 
+    STANDARD("standard"),
     LIGHTWEIGHT("lightweight");
 
     /**

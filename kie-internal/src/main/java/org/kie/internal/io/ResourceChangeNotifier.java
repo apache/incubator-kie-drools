@@ -29,7 +29,7 @@ import org.kie.api.io.Resource;
  * itself is not monitoring resources for changes, instead it delegates to added ResourceChangeMonitor implementations. When a ResourceChangeListener
  * subscribes to a Resource that subscription is delegated to the added monitors.
  * </p>
- * 
+ *
  * <p>
  * This interface, as well as ChangeSet, ResourceChangeMonitor, esourceChangeListener and ResourceChangeScanner are still considered subject to change.
  * Use the XML format change-set, as
@@ -46,7 +46,7 @@ public interface ResourceChangeNotifier {
 
     /**
      * When a ResourceChangeMonitor is asked to monitor a directory, it needs a way to tell the ResourceChangeNotifier of any newly added Resources.
-     * 
+     *
      * @param directory
      *     The parent directory the discovered child is in.
      * @param child
@@ -55,16 +55,16 @@ public interface ResourceChangeNotifier {
     void subscribeChildResource(Resource directory,
                                 Resource child);
 
-    /** 
+    /**
      * Add a ResourceChangeMonitor, which will receive all Resource subscriptions.
-     * 
+     *
      * @param monitor
      */
     void addResourceChangeMonitor(ResourceChangeMonitor monitor);
 
     /**
      * Remove a ResourceChangeMonitor.
-     * 
+     *
      * @param monitor
      */
     void removeResourceChangeMonitor(ResourceChangeMonitor monitor);
@@ -78,7 +78,7 @@ public interface ResourceChangeNotifier {
     /**
      * Called by the added ResourceChangeMonitors to inform this ResourceChangeNotifier of resource changes.
      * The ResourceChangeMontior must have a reference to the ResourceChangeNotifiers they are added to,
-     * 
+     *
      * @param changeSet
      */
     void publishChangeSet(ChangeSet changeSet);

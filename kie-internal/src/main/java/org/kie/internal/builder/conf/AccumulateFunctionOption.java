@@ -29,17 +29,17 @@ public class AccumulateFunctionOption implements MultiValueKnowledgeBuilderOptio
      * The prefix for the property name for accumulate functions
      */
     public static final String PROPERTY_NAME = "drools.accumulate.function.";
-    
+
     /**
      * accumulate function name
      */
     private final String name;
-    
+
     /**
      * the accumulate function instance
      */
     private final AccumulateFunction function;
-    
+
     /**
      * Private constructor to enforce the use of the factory method
      * @param name
@@ -48,30 +48,30 @@ public class AccumulateFunctionOption implements MultiValueKnowledgeBuilderOptio
         this.name = name;
         this.function = function;
     }
-    
+
     /**
      * This is a factory method for this AccumulateFunction configuration.
-     * The factory method is a best practice for the case where the 
+     * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
-     * 
+     *
      * @param name the name of the function to be configured
-     * 
+     *
      * @return the actual type safe accumulate function configuration.
      */
     public static AccumulateFunctionOption get( final String name, final AccumulateFunction function ) {
         return new AccumulateFunctionOption( name, function );
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME+name;
     }
-    
+
     /**
      * Returns the name of the function configured
-     * 
+     *
      * @return
      */
     public String getName() {
@@ -85,7 +85,7 @@ public class AccumulateFunctionOption implements MultiValueKnowledgeBuilderOptio
     public AccumulateFunction getFunction() {
         return function;
     }
-    
+
     @Override
     public String toString() {
         return "AccumulateFunction( name="+name+" function="+function+" )";

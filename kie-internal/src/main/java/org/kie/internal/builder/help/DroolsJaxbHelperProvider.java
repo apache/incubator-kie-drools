@@ -30,21 +30,21 @@ import com.sun.tools.xjc.Options;
 
 /**
  * DroolsJaxbHelperProvider is used by the DroolsJaxbHelperFactory to "provide" it's concrete implementation.
- * 
- * This class is not considered stable and may change, the user is protected from this change by using 
+ *
+ * This class is not considered stable and may change, the user is protected from this change by using
  * the Factory api, which is considered stable.
  *
- * 
+ *
  * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>
  */
 public interface DroolsJaxbHelperProvider {
     /**
      * Generates pojos for a given XSD using XJC and adds them to the specified KnowlegeBase.
-     * 
+     *
      * @deprecated
      *     This is now deprecated, as we now support XSD as a standard ResourceType. Although
-     *     you'll still need the newJAXBContext method to create a JAXBContext from the KnowledgeBase. 
-     * 
+     *     you'll still need the newJAXBContext method to create a JAXBContext from the KnowledgeBase.
+     *
      * @param resource
      *     The resource to the XSD model
      * @param kbuilder
@@ -65,7 +65,7 @@ public interface DroolsJaxbHelperProvider {
     /**
      * Creates a new JAXBContext, from which the Marshaller and Unmarshaller can be created, which are used by the Transformer
      * pipeline stage.
-     * 
+     *
      * @param classNames
      *     An array of class names that can be resolved by this JAXBContext
      * @param properties

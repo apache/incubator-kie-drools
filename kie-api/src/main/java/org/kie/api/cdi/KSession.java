@@ -28,5 +28,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface KSession {
     String value() default "";
-    String name() default "";    
+    String name() default "";
 }

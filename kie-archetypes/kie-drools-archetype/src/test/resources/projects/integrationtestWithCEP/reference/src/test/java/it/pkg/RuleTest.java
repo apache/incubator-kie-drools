@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -39,63 +39,63 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RuleTest {
-	static final Logger LOG = LoggerFactory.getLogger(RuleTest.class);
-	
-	@Test
-	public void test() {
-		KieServices kieServices = KieServices.Factory.get();
-        
-		KieContainer kContainer = kieServices.getKieClasspathContainer();
+    static final Logger LOG = LoggerFactory.getLogger(RuleTest.class);
+
+    @Test
+    public void test() {
+        KieServices kieServices = KieServices.Factory.get();
+
+        KieContainer kContainer = kieServices.getKieClasspathContainer();
         Results verifyResults = kContainer.verify();
         for (Message m : verifyResults.getMessages()) {
-        	LOG.info("{}", m);
+            LOG.info("{}", m);
         }
-        
+
         LOG.info("Creating kieBase with STREAM option");
         KieBaseConfiguration kieBaseConf = kieServices.newKieBaseConfiguration();
-		kieBaseConf.setOption( EventProcessingOption.STREAM );
+        kieBaseConf.setOption( EventProcessingOption.STREAM );
         KieBase kieBase = kContainer.newKieBase(kieBaseConf);
-        
+
         LOG.info("There should be rules: ");
         for ( KiePackage kp : kieBase.getKiePackages() ) {
-        	for (Rule rule : kp.getRules()) {
-        		LOG.info("kp " + kp + " rule " + rule.getName());
-        	}
+            for (Rule rule : kp.getRules()) {
+                LOG.info("kp " + kp + " rule " + rule.getName());
+            }
         }
 
         LOG.info("Creating kieSession");
         KieSessionConfiguration config = kieServices.newKieSessionConfiguration();
-		config.setOption( ClockTypeOption.get("pseudo") );
+        config.setOption( ClockTypeOption.get("pseudo") );
         KieSession session = kieBase.newKieSession(config, null);
         SessionPseudoClock clock = session.getSessionClock();
-        
+
         LOG.info("Populating globals");
         Set<String> check = new HashSet<String>();
         session.setGlobal("controlSet", check);
-        
+
         LOG.info("Now running data");
-        
-		clock.advanceTime(1, TimeUnit.MINUTES);
+
+        clock.advanceTime(1, TimeUnit.MINUTES);
         Measurement mRed= new Measurement("color", "red");
         session.insert(mRed);
         session.fireAllRules();
-        
-		clock.advanceTime(1, TimeUnit.MINUTES);
+
+        clock.advanceTime(1, TimeUnit.MINUTES);
         Measurement mGreen= new Measurement("color", "green");
         session.insert(mGreen);
         session.fireAllRules();
-        
-		clock.advanceTime(1, TimeUnit.MINUTES);
+
+        clock.advanceTime(1, TimeUnit.MINUTES);
         Measurement mBlue= new Measurement("color", "blue");
         session.insert(mBlue);
         session.fireAllRules();
-        
+
         LOG.info("Final checks");
 
         assertEquals("Size of object in Working Memory is 2 for the last 2", 2, session.getObjects().size());
         assertFalse("contains red", check.contains("red"));
         assertTrue("contains green", check.contains("green"));
         assertTrue("contains blue", check.contains("blue"));
-        
-	}
+
+    }
 }

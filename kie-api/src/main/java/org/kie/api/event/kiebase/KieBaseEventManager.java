@@ -21,7 +21,7 @@ import java.util.Collection;
 public interface KieBaseEventManager {
     /**
      * Add an event listener.
-     * 
+     *
      * @param listener
      *            The listener to add.
      */
@@ -29,7 +29,7 @@ public interface KieBaseEventManager {
 
     /**
      * Remove an event listener.
-     * 
+     *
      * @param listener
      *            The listener to remove.
      */
@@ -37,7 +37,7 @@ public interface KieBaseEventManager {
 
     /**
      * Returns all event listeners.
-     * 
+     *
      * @return listeners The listeners.
      */
     public Collection<KieBaseEventListener> getKieBaseEventListeners();

@@ -27,10 +27,10 @@ import org.kie.api.definition.process.Node;
  * Multiple node instances for the same node can coexist in the same
  * process instance (if that node is to be executed multiple times
  * in that process instance).
- * 
+ *
  * A node instance is uniquely identified (within its node instance
  * container!) by an id.
- * 
+ *
  * Node instances can be nested, meaning that a node instance can
  * be created as part of another node instance.
  */
@@ -48,16 +48,16 @@ public interface NodeInstance {
      * The id of the node this node instance refers to.  The node
      * represents the definition that this node instance was based
      * on.
-     * 
+     *
      * @return the id of the node this node instance refers to
      */
     long getNodeId();
-    
+
     /**
      * Return the node this node instance refers to.  The node
      * represents the definition that this node instance was based
      * on.
-     * 
+     *
      * @return the node this node instance refers to
      */
     Node getNode();
@@ -78,14 +78,14 @@ public interface NodeInstance {
      * The node instance container that this node instance is part of.
      * If the node was defined in the top-level process scope, this is
      * the same as the process instance.  If not, it is the node instance
-     * container this node instance is executing in. 
-     * 
+     * container this node instance is executing in.
+     *
      * @return the process instance that this node instance is executing in
      */
     NodeInstanceContainer getNodeInstanceContainer();
-    
+
     Object getVariable(String variableName);
-    
+
     void setVariable(String variableName, Object value);
 
 }

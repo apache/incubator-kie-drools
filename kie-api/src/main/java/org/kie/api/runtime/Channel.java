@@ -18,9 +18,9 @@ package org.kie.api.runtime;
 
 /**
  * <p>
- * A channel provides a mechanism to send objects from the working memory to some external process 
- * or function.  For instance, a channel can be used to inform some piece of code that an object 
- * matches a rule.  
+ * A channel provides a mechanism to send objects from the working memory to some external process
+ * or function.  For instance, a channel can be used to inform some piece of code that an object
+ * matches a rule.
  * </p>
  *
  * <p>
@@ -30,7 +30,7 @@ package org.kie.api.runtime;
  * ...
  * ksession.registerChannel("my-channel", new MyChannelImpl());
  * </pre>
- * 
+ *
  * <p>
  * Channels are invoked from the consequence side of a rule:
  * </p>
@@ -45,7 +45,7 @@ public interface Channel {
 
     /**
      * Sends the given object to this channel.
-     * 
+     *
      * @param object
      */
     void send(Object object);

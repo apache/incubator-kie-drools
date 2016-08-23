@@ -26,15 +26,15 @@ import org.kie.api.runtime.rule.StatefulRuleSession;
 public interface RuleFluent<T> {
 
     T fireAllRules();
-    
+
     T setGlobal( String identifier, Object object );
-    
+
     T getGlobal(String identifier);
-    
-    T insert(Object object);  
-    
-    T update( FactHandle handle, Object object );  
-    
+
+    T insert(Object object);
+
+    T update( FactHandle handle, Object object );
+
     T delete(FactHandle handle);
 
 }

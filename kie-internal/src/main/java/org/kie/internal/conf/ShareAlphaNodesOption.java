@@ -21,13 +21,13 @@ import org.kie.api.conf.SingleValueKieBaseOption;
 
 /**
  * An Enum for ShareAlphaNodes option.
- * 
+ *
  * drools.shareAlphaNodes = &lt;true|false&gt;
- * 
+ *
  * DEFAULT = true
  */
 public enum ShareAlphaNodesOption implements SingleValueKieBaseOption {
-    
+
     YES(true),
     NO(false);
 
@@ -35,20 +35,20 @@ public enum ShareAlphaNodesOption implements SingleValueKieBaseOption {
      * The property name for the sequential mode option
      */
     public static final String PROPERTY_NAME = "drools.shareAlphaNodes";
-    
+
     private boolean value;
-    
+
     ShareAlphaNodesOption( final boolean value ) {
         this.value = value;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     public boolean isShareAlphaNodes() {
         return this.value;
     }

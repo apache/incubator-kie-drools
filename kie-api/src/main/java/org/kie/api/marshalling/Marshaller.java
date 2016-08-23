@@ -34,12 +34,12 @@ public interface Marshaller {
      */
     void marshall(OutputStream stream,
                   KieSession ksession) throws IOException;
-    
+
     /**
      * Creates KieSession using default KieSessionConfiguration and
      * Environment. It will then unmarshall the stream into the session. Either KieSessionConfiguration or
      * Environment may be null and it will use the default.
-     * 
+     *
      * @param stream
      * @return unmarshlled KieSession
      * @throws IOException
@@ -51,7 +51,7 @@ public interface Marshaller {
      * Creates KieSession using the given KieSessionConfiguration and
      * Environment. It will then unmarshall the stream into the session. Either KieSessionConfiguration or
      * Environment may be null and it will use the default.
-     * 
+     *
      * @param stream
      * @param config
      * @param environment
@@ -65,7 +65,7 @@ public interface Marshaller {
 
     /**
      * Unmarshall the stream into the KieSession. All existing state in the session will be lost.
-     *  
+     *
      * @param stream
      * @param ksession
      * @throws IOException

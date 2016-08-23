@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * This implements {@link Map} in order to fool JSON.. 
+ * This implements {@link Map} in order to fool JSON..
  */
 @XmlType
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -37,8 +37,8 @@ public class StringKeyStringValueMap implements Map<String, String> {
 
     @XmlElement(name="entry")
     public List<StringKeyStringValueEntry> entries = new ArrayList<StringKeyStringValueEntry>();
-    
-    public void addEntry(StringKeyStringValueEntry newEntry) { 
+
+    public void addEntry(StringKeyStringValueEntry newEntry) {
        this.entries.add(newEntry);
     }
 
@@ -54,26 +54,26 @@ public class StringKeyStringValueMap implements Map<String, String> {
 
     @Override
     public boolean containsKey(Object key) {
-        if( key == null ) { 
+        if( key == null ) {
             return false;
         }
-        for( StringKeyStringValueEntry entry : entries ) { 
-            if( key.equals(entry.getKey())) { 
+        for( StringKeyStringValueEntry entry : entries ) {
+            if( key.equals(entry.getKey())) {
                 return true;
-            } 
+            }
         }
         return false;
     }
 
     @Override
     public boolean containsValue(Object value) {
-        if( value == null ) { 
+        if( value == null ) {
             return false;
         }
-        for( StringKeyStringValueEntry entry : entries ) { 
+        for( StringKeyStringValueEntry entry : entries ) {
             Object entryVal = entry.getValue();
-            if( value.equals(entryVal) ) { 
-               return true; 
+            if( value.equals(entryVal) ) {
+               return true;
             }
         }
         return false;
@@ -81,13 +81,13 @@ public class StringKeyStringValueMap implements Map<String, String> {
 
     @Override
     public String get(Object key) {
-        if( key == null ) { 
+        if( key == null ) {
             return null;
         }
-        for( StringKeyStringValueEntry entry : entries ) { 
-            if( key != null && key.equals(entry.getKey())) { 
+        for( StringKeyStringValueEntry entry : entries ) {
+            if( key != null && key.equals(entry.getKey())) {
                 return entry.getValue();
-            } 
+            }
         }
         return null;
     }
@@ -103,10 +103,10 @@ public class StringKeyStringValueMap implements Map<String, String> {
     @Override
     public String remove(Object key) {
         Iterator<StringKeyStringValueEntry> iter = entries.iterator();
-        while( iter.hasNext() ) { 
-        	StringKeyStringValueEntry entry = iter.next();
+        while( iter.hasNext() ) {
+            StringKeyStringValueEntry entry = iter.next();
             String entryKey = entry.getKey();
-            if( key.equals(entryKey) ) { 
+            if( key.equals(entryKey) ) {
                 iter.remove();
                 return entry.getValue();
             }
@@ -116,8 +116,8 @@ public class StringKeyStringValueMap implements Map<String, String> {
 
     @Override
     public void putAll(Map<? extends String, ? extends String> m) {
-        for( Entry<?, ?> entry : m.entrySet() ) { 
-        	StringKeyStringValueEntry newEntry = new StringKeyStringValueEntry((String)entry.getKey(), (String)entry.getValue());
+        for( Entry<?, ?> entry : m.entrySet() ) {
+            StringKeyStringValueEntry newEntry = new StringKeyStringValueEntry((String)entry.getKey(), (String)entry.getValue());
            entries.add(newEntry);
         }
     }
@@ -130,7 +130,7 @@ public class StringKeyStringValueMap implements Map<String, String> {
     @Override
     public Set<String> keySet() {
         Set<String> keySet = new HashSet<String>();
-        for( StringKeyStringValueEntry entry : entries ) { 
+        for( StringKeyStringValueEntry entry : entries ) {
             keySet.add(entry.getKey());
         }
         return keySet;
@@ -139,7 +139,7 @@ public class StringKeyStringValueMap implements Map<String, String> {
     @Override
     public Collection<String> values() {
         List<String> values = new ArrayList<String>();
-        for( StringKeyStringValueEntry entry : entries ) { 
+        for( StringKeyStringValueEntry entry : entries ) {
            values.add(entry.getValue());
         }
         return values;
@@ -148,12 +148,12 @@ public class StringKeyStringValueMap implements Map<String, String> {
     @Override
     public Set<java.util.Map.Entry<String, String>> entrySet() {
         Set<java.util.Map.Entry<String, String>> entrySet = new HashSet<Map.Entry<String,String>>();
-        for( StringKeyStringValueEntry entry : entries ) { 
+        for( StringKeyStringValueEntry entry : entries ) {
            String newVal = entry.getValue();
            String key = entry.getKey();
            Entry<String, String> newEntry = new EntryImpl(key, newVal);
            entrySet.add(newEntry);
-        } 
+        }
         return entrySet;
     }
 
@@ -161,8 +161,8 @@ public class StringKeyStringValueMap implements Map<String, String> {
 
         private final String key;
         private String val;
-        
-        public EntryImpl( String key, String val) { 
+
+        public EntryImpl( String key, String val) {
             this.key = key;
             this.val = val;
         }
@@ -181,7 +181,7 @@ public class StringKeyStringValueMap implements Map<String, String> {
             String oldVal = this.val;
             this.val = value;
             return oldVal;
-        } 
-        
+        }
+
     }
 }

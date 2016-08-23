@@ -76,20 +76,20 @@ public class DefaultKieBaseEventListener
         // intentionally left blank
     }
 
-	public void beforeProcessAdded(BeforeProcessAddedEvent event) {
+    public void beforeProcessAdded(BeforeProcessAddedEvent event) {
         // intentionally left blank
-	}
+    }
 
-	public void afterProcessAdded(AfterProcessAddedEvent event) {
+    public void afterProcessAdded(AfterProcessAddedEvent event) {
         // intentionally left blank
-	}
+    }
 
-	public void beforeProcessRemoved(BeforeProcessRemovedEvent event) {
+    public void beforeProcessRemoved(BeforeProcessRemovedEvent event) {
         // intentionally left blank
-	}
+    }
 
-	public void afterProcessRemoved(AfterProcessRemovedEvent event) {
+    public void afterProcessRemoved(AfterProcessRemovedEvent event) {
         // intentionally left blank
-	}
+    }
 
 }

@@ -23,5 +23,5 @@ package org.kie.internal.executor.api;
 public enum STATUS {
    QUEUED, DONE, CANCELLED, ERROR, RETRYING, RUNNING;
 
-   
+
 }

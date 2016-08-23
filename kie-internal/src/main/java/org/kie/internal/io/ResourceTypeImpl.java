@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 public class ResourceTypeImpl {
     public static final String                    KIE_RESOURCE_CONF_CLASS = "kie.resource.conf.class";
-    
+
     private static final Logger                    logger                  = LoggerFactory.getLogger( ResourceTypeImpl.class );
 
     public static Properties toProperties(ResourceConfiguration conf) {
@@ -49,6 +49,6 @@ public class ResourceTypeImpl {
         return null;
     }
 
-    
+
 
 }

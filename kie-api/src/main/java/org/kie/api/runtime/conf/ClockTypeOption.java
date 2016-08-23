@@ -28,12 +28,12 @@ public class ClockTypeOption implements SingleValueKieSessionOption {
      * The property name for the clock type configuration
      */
     public static final String PROPERTY_NAME = "drools.clockType";
-    
+
     /**
      * clock type
      */
     private final String clockType;
-    
+
     /**
      * Private constructor to enforce the use of the factory method
      * @param clockType
@@ -41,27 +41,27 @@ public class ClockTypeOption implements SingleValueKieSessionOption {
     private ClockTypeOption( String clockType ) {
         this.clockType = clockType;
     }
-    
+
     /**
      * This is a factory method for this Clock Type configuration.
-     * The factory method is a best practice for the case where the 
+     * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
-     * 
+     *
      * @param clockType the identifier for the clock type
-     * 
+     *
      * @return the actual type safe default clock type configuration.
      */
     public static ClockTypeOption get( String clockType ) {
         return new ClockTypeOption( clockType );
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     /**
      * @return the configured clock type
      */
@@ -88,7 +88,7 @@ public class ClockTypeOption implements SingleValueKieSessionOption {
         } else if ( ! clockType.equals( other.clockType ) ) return false;
         return true;
     }
-    
+
     @Override
     public String toString() {
         return "ClockTypeOption( "+ clockType +" )";

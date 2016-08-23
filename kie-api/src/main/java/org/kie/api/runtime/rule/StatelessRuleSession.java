@@ -30,7 +30,7 @@ public interface StatelessRuleSession {
     /**
      * Execute a StatelessKieSession inserting just a single object. If a collection (or any other Iterable) or an array is used here, it will be inserted as-is,
      * It will not be iterated and its internal elements inserted.
-     * 
+     *
      * @param object
      */
     void execute(Object object);

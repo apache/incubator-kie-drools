@@ -30,57 +30,57 @@ public interface RequestInfo {
      * @param status
      */
     void setStatus(STATUS status);
-    
+
     /**
      * @return status of the request
      */
     STATUS getStatus();
-    
+
     /**
      * @return unique id of the request
      */
     Long getId();
-    
+
     /**
      * @return list of errors for this request if any
      */
     List<? extends ErrorInfo> getErrorInfo();
-    
+
     /**
      * @return number of retries available for this request
      */
     int getRetries();
-    
+
     /**
      * @return number of already executed attempts
      */
     int getExecutions();
-    
+
     /**
      * @return command name for this request
      */
     String getCommandName();
-    
+
     /**
      * @return business key assigned to this request
      */
     String getKey();
-    
+
     /**
      * @return descriptive message assigned to this request
      */
     String getMessage();
-    
+
     /**
      * @return time that this request shall be executed (for the first attempt)
      */
     Date getTime();
-    
+
     /**
      * @return serialized bytes of the contextual request data
      */
     byte[] getRequestData();
-    
+
     /**
      * @return serialized bytes of the response data
      */

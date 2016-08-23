@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Allows do define custom producers for know EventListeners. Intention of this is that there might be several 
- * implementations that might provide different listener instance based on the context they are executed in. 
+ * Allows do define custom producers for know EventListeners. Intention of this is that there might be several
+ * implementations that might provide different listener instance based on the context they are executed in.
  * <br>
- * It will be invoked by RegisterableItemsFactory implementation (especially InjectableRegisterableItemsFactory 
- * in CDI world) for every KieSession. Recommendation is to always produce new instances to avoid unexpected 
+ * It will be invoked by RegisterableItemsFactory implementation (especially InjectableRegisterableItemsFactory
+ * in CDI world) for every KieSession. Recommendation is to always produce new instances to avoid unexpected
  * results.
  *
  * @param <T> type of the event listener - ProcessEventListener, AgendaEventListener, WorkingMemoryEventListener

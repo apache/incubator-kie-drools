@@ -21,17 +21,17 @@ import org.kie.api.conf.SingleValueKieBaseOption;
 
 /**
  * An Enum for multithread evaluation option.
- * 
+ *
  * IMPORTANT: this option is currently not supported. It might be enabled again in the future.
- * 
+ *
  * drools.multithreadEvaluation = &lt;true|false&gt;
- * 
+ *
  * DEFAULT = false
- * 
+ *
  * @deprecated
  */
 public enum MultithreadEvaluationOption implements SingleValueKieBaseOption {
-    
+
     YES(true),
     NO(false);
 
@@ -39,20 +39,20 @@ public enum MultithreadEvaluationOption implements SingleValueKieBaseOption {
      * The property name for the multithread evaluation option
      */
     public static final String PROPERTY_NAME = "drools.multithreadEvaluation";
-    
+
     private boolean value;
-    
+
     MultithreadEvaluationOption( final boolean value ) {
         this.value = value;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     public boolean isMultithreadEvaluation() {
         return this.value;
     }

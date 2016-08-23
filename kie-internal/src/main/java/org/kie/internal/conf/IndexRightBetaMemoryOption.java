@@ -21,13 +21,13 @@ import org.kie.api.conf.SingleValueKieBaseOption;
 
 /**
  * An Enum for indexRightBetaMemory option.
- * 
+ *
  * drools.indexRightBetaMemory = &lt;true|false&gt;
- * 
+ *
  * DEFAULT = true
  */
 public enum IndexRightBetaMemoryOption implements SingleValueKieBaseOption {
-    
+
     YES(true),
     NO(false);
 
@@ -35,20 +35,20 @@ public enum IndexRightBetaMemoryOption implements SingleValueKieBaseOption {
      * The property name for the share beta nodes option
      */
     public static final String PROPERTY_NAME = "drools.indexRightBetaMemory";
-    
+
     private boolean value;
-    
+
     IndexRightBetaMemoryOption( final boolean value ) {
         this.value = value;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     public boolean isIndexRightBetaMemory() {
         return this.value;
     }

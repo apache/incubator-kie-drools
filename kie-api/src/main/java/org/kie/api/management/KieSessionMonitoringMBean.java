@@ -83,9 +83,9 @@ public interface KieSessionMonitoringMBean {
     /**
      * Returns a formatted String with statistics for a single rule in this session,
      * like number of matches created, cancelled and fired as well as firing time.
-     *  
+     *
      * @param ruleName the name of the rule for which statistics are requested.
-     * 
+     *
      * @return formatted String with statistics
      */
     String getStatsForRule(String ruleName);
@@ -94,18 +94,18 @@ public interface KieSessionMonitoringMBean {
      * @return the timestamp of the last stats reset
      */
     Date getLastReset();
-    
+
     Map<String,String> getStatsByRule();
 
     long getTotalProcessInstancesStarted();
-    
+
     long getTotalProcessInstancesCompleted();
-    
+
     String getStatsForProcess(String processId);
-    
+
     Map<String,String> getStatsByProcess();
-    
+
     String getStatsForProcessInstance(long processInstanceId);
-    
+
     Map<Long,String> getStatsByProcessInstance();
 }

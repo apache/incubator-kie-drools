@@ -11,5 +11,5 @@ public interface PermissionConstants {
     public static final String REST_TASK_RO_ROLE    = "rest-task-read-only";
     public static final String REST_QUERY_ROLE      = "rest-query";
     public static final String REST_CLIENT_ROLE          = "rest-client";
-    
+
 }

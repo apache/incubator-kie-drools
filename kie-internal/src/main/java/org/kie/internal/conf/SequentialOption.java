@@ -21,13 +21,13 @@ import org.kie.api.conf.SingleValueKieBaseOption;
 
 /**
  * An Enum for Sequential option.
- * 
+ *
  * drools.sequential = &lt;true|false&gt;
- * 
+ *
  * DEFAULT = false
  */
 public enum SequentialOption implements SingleValueKieBaseOption {
-    
+
     YES(true),
     NO(false);
 
@@ -35,20 +35,20 @@ public enum SequentialOption implements SingleValueKieBaseOption {
      * The property name for the sequential mode option
      */
     public static final String PROPERTY_NAME = "drools.sequential";
-    
+
     private boolean value;
-    
+
     SequentialOption( final boolean value ) {
         this.value = value;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     public boolean isSequential() {
         return this.value;
     }

@@ -20,7 +20,7 @@ import java.io.Externalizable;
 import java.util.List;
 
 public interface Task extends Externalizable {
-   
+
     Long getId();
 
     int getPriority();
@@ -30,11 +30,11 @@ public interface Task extends Externalizable {
     List<I18NText> getSubjects();
 
     List<I18NText> getDescriptions();
-    
+
     String getName();
-    
+
     String getSubject();
-    
+
     String getDescription();
 
     PeopleAssignments getPeopleAssignments();

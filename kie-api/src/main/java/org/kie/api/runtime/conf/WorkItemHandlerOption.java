@@ -29,17 +29,17 @@ public class WorkItemHandlerOption implements MultiValueKieSessionOption {
      * The prefix for the property name for work item handlers
      */
     public static final String PROPERTY_NAME = "drools.workItemHandlers";
-    
+
     /**
      * work item handler name
      */
     private final String name;
-    
+
     /**
      * the accumulate function instance
      */
     private final WorkItemHandler handler;
-    
+
     /**
      * Private constructor to enforce the use of the factory method
      * @param name
@@ -48,27 +48,27 @@ public class WorkItemHandlerOption implements MultiValueKieSessionOption {
         this.name = name;
         this.handler = handler;
     }
-    
+
     /**
      * This is a factory method for this WorkItemHandler configuration.
-     * The factory method is a best practice for the case where the 
+     * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
-     * 
+     *
      * @param name the name of the work item handler to be configured
-     * 
+     *
      * @return the actual type safe work item handler configuration.
      */
     public static WorkItemHandlerOption get( final String name, final WorkItemHandler handler ) {
         return new WorkItemHandlerOption( name, handler );
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME+name;
     }
-    
+
     /**
      * @return the name of the configured work item handler
      */
@@ -82,7 +82,7 @@ public class WorkItemHandlerOption implements MultiValueKieSessionOption {
     public WorkItemHandler getHandler() {
         return handler;
     }
-    
+
     @Override
     public String toString() {
         return "WorkItemHandler( name="+name+" handler="+handler+" )";

@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -42,17 +42,17 @@ public class StringKeyObjectValueEntry {
     public StringKeyObjectValueEntry() {
         // default
     }
-    
-    public StringKeyObjectValueEntry(Entry<String, Object> entry) { 
+
+    public StringKeyObjectValueEntry(Entry<String, Object> entry) {
        this.key = entry.getKey();
        Object object = entry.getValue();
-       if( object != null ) { 
+       if( object != null ) {
            this.value = StringKeyObjectValueMapXmlAdapter.serializeObject(object, key);
            this.className = object.getClass().getName();
        }
     }
 
-    public StringKeyObjectValueEntry(String key, String className, byte [] bytes) { 
+    public StringKeyObjectValueEntry(String key, String className, byte [] bytes) {
         this.key = key;
         this.className = className;
         this.value = bytes;

@@ -36,9 +36,9 @@ import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
  * marshaller.marshall( baos, ksession );
  * baos.close();
  * </pre>
- * 
+ *
  * <p>
- * However with marshalling you need more flexibility when dealing with referenced user data. To achieve this we have the 
+ * However with marshalling you need more flexibility when dealing with referenced user data. To achieve this we have the
  * ObjectMarshallingStrategy interface. Two implementations are provided, but the user can implement their own. The two
  * supplied are IdentityMarshallingStrategy and SerializeMarshallingStrategy. SerializeMarshallingStrategy is the default, as used
  * in the example above and it just calls the Serializable or Externalizable methods on a user instance. IdentityMarshallingStrategy
@@ -55,12 +55,12 @@ import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
  * </pre>
 
  * <p>
- * For added flexability we can't assume that a single strategy is suitable for this we have added the ObjectMarshallingStrategyAcceptor interface that each 
+ * For added flexability we can't assume that a single strategy is suitable for this we have added the ObjectMarshallingStrategyAcceptor interface that each
  * ObjectMarshallingStrategy has. The Marshaller has a chain of strategies and when it attempts to read or write a user object it iterates the strategies asking
  * if they accept responsability for marshalling the user object. One one implementation is provided the ClassFilterAcceptor. This allows strings and wild cards
  * to be used to match class names. The default is "*.*", so in the above the IdentityMarshallingStrategy is used which has a default "*.*" acceptor.
  * </p>
- * 
+ *
  * <p>
  * But lets say we want to serialise all classes except for one given package, where we will use identity lookup, we could do the following:
  * </p>
@@ -72,7 +72,7 @@ import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
  * marshaller.marshall( baos, ksession );
  * baos.close();
  * </pre>
- * 
+ *
  * <p>
  * Note that the acceptance checking order is in the natural order of the supplied array.
  * </p>

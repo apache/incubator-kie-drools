@@ -35,40 +35,40 @@ import javax.inject.Singleton;
  * <code>@PostConstruct</code> method on CDI container initialization.
  * This extension will only take effect on beans marked as:
  * <ul>
- * 	<li><code>@javax.enterprise.context.ApplicationScoped</code></li>
- * 	<li><code>@javax.inject.Singleton</code></li>
+ *  <li><code>@javax.enterprise.context.ApplicationScoped</code></li>
+ *  <li><code>@javax.inject.Singleton</code></li>
  * </ul>
  */
 public class BootOnLoadExtension implements Extension {
 
-	private final List<Bean<?>> startupBootstrapBeans = new LinkedList<Bean<?>>();
+    private final List<Bean<?>> startupBootstrapBeans = new LinkedList<Bean<?>>();
 
-	public <X> void processBean(@Observes final ProcessBean<X> event) {
-		if (event.getAnnotated().isAnnotationPresent(BootOnLoad.class)
-				&& (event.getAnnotated().isAnnotationPresent(ApplicationScoped.class) 
-						|| event.getAnnotated().isAnnotationPresent(Singleton.class))) {
-			startupBootstrapBeans.add(event.getBean());
+    public <X> void processBean(@Observes final ProcessBean<X> event) {
+        if (event.getAnnotated().isAnnotationPresent(BootOnLoad.class)
+                && (event.getAnnotated().isAnnotationPresent(ApplicationScoped.class)
+                        || event.getAnnotated().isAnnotationPresent(Singleton.class))) {
+            startupBootstrapBeans.add(event.getBean());
 
-		}
-	}
+        }
+    }
 
-	public void afterDeploymentValidation(
-			final @Observes AfterDeploymentValidation event,
-			final BeanManager manager) {
-		// Force execution of Bootstrap bean's @PostConstruct methods first
-		runPostConstruct(manager, startupBootstrapBeans);
+    public void afterDeploymentValidation(
+            final @Observes AfterDeploymentValidation event,
+            final BeanManager manager) {
+        // Force execution of Bootstrap bean's @PostConstruct methods first
+        runPostConstruct(manager, startupBootstrapBeans);
 
-	}
+    }
 
-	private void runPostConstruct(final BeanManager manager,
-			final List<Bean<?>> orderedBeans) {
+    private void runPostConstruct(final BeanManager manager,
+            final List<Bean<?>> orderedBeans) {
 
-		for (Bean<?> bean : orderedBeans) {
-			// the call to toString() is a cheat to force the bean to be initialized			
-			manager.getReference(bean, bean.getBeanClass(),
-					manager.createCreationalContext(bean)).toString();
-		}
-	}
+        for (Bean<?> bean : orderedBeans) {
+            // the call to toString() is a cheat to force the bean to be initialized
+            manager.getReference(bean, bean.getBeanClass(),
+                    manager.createCreationalContext(bean)).toString();
+        }
+    }
 
 
 }

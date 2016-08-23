@@ -29,21 +29,21 @@ import org.kie.internal.jaxb.StringKeyObjectValueMapXmlAdapter;
 
 public class QueryFilter extends QueryContext {
 
-	private static final long serialVersionUID = 4492868179938949915L;
+    private static final long serialVersionUID = 4492868179938949915L;
 
-	@XmlElement 
+    @XmlElement
     @XmlSchemaType(name="boolean")
     private Boolean singleResult = false;
-    
-    @XmlElement 
+
+    @XmlElement
     @XmlSchemaType(name="string")
     private String language ="";
-    
-    @XmlElement 
+
+    @XmlElement
     @XmlSchemaType(name="string")
     private String filterParams = "";
-    
-    @XmlElement 
+
+    @XmlElement
     @XmlJavaTypeAdapter(StringKeyObjectValueMapXmlAdapter.class)
     private Map<String, Object> params = new HashMap<String, Object>();
 
@@ -56,11 +56,11 @@ public class QueryFilter extends QueryContext {
         this.singleResult = orig.singleResult;
         this.language = orig.language;
         this.filterParams = orig.filterParams;
-        for( Entry<String, Object> entry : params.entrySet() ) { 
+        for( Entry<String, Object> entry : params.entrySet() ) {
            params.put(entry.getKey(), entry.getValue());
         }
     }
-    
+
     public QueryFilter(int offset, int count) {
         super(offset, count);
     }
@@ -81,14 +81,14 @@ public class QueryFilter extends QueryContext {
         this.language = language;
         this.orderBy = orderBy;
     }
-    
+
     public QueryFilter( String filterParams, Map<String, Object> params, String orderBy, boolean isAscending) {
         this.filterParams = filterParams;
         this.params = params;
         this.orderBy = orderBy;
         this.ascending = isAscending;
     }
-    
+
     public QueryFilter( String filterParams, Map<String, Object> params, String orderBy, int offset, int count ) {
         super(offset, count);
         this.filterParams = filterParams;

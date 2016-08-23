@@ -31,12 +31,12 @@ public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
      * The property name for the drools dump directory configuration
      */
     public static final String PROPERTY_NAME = "drools.dump.dir";
-    
+
     /**
      * directory reference
      */
     private final File dir;
-    
+
     /**
      * Private constructor to enforce the use of the factory method
      * @param dir directory to set
@@ -44,30 +44,30 @@ public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
     private DumpDirOption( File dir ) {
         this.dir = dir;
     }
-    
+
     /**
      * This is a factory method for this DumpDirectoryOption configuration.
-     * The factory method is a best practice for the case where the 
+     * The factory method is a best practice for the case where the
      * actual object construction is changed in the future.
-     * 
+     *
      * @param dir the directory to which drools will dump files
-     * 
+     *
      * @return the actual type safe dump directory configuration.
      */
     public static DumpDirOption get( File dir ) {
         return new DumpDirOption( dir );
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public String getPropertyName() {
         return PROPERTY_NAME;
     }
-    
+
     /**
      * Returns the directory to which drools should dump generated files
-     * 
+     *
      * @return
      */
     public File getDirectory() {
@@ -78,7 +78,7 @@ public class DumpDirOption implements SingleValueKnowledgeBuilderOption {
     public String toString() {
         return "DumpDirOption( directory="+((dir == null) ? "" : dir.toString())+" )";
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

@@ -30,7 +30,7 @@ public class DebugRuleRuntimeEventListener
 
     public DebugRuleRuntimeEventListener(PrintStream stream) {
         this.stream = stream;
-    }       
+    }
 
     public void objectInserted(ObjectInsertedEvent event) {
         stream.println( event );

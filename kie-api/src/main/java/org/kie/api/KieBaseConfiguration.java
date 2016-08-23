@@ -30,17 +30,17 @@ import org.kie.api.conf.KieBaseOptionsConfiguration;
  * System properties, home directory, working directory, META-INF/ of optionally provided classLoader
  * META-INF/ of Thread.currentThread().getContextClassLoader() and META-INF/ of  ClassLoader.getSystemClassLoader()
  * </p>
- * 
+ *
  * <p>
  * So if you want to set a default configuration value for all your new KieBase, you can simply set the property as
  * a System property.
  * </p>
- * 
+ *
  * <p>
  * After the KieBase is created, it makes the configuration immutable and there is no way to make it
  * mutable again. This is to avoid inconsistent behaviour inside KieBase.
  * </p>
- * 
+ *
  * <p>
  * The following properties are supported:
  * </p>
@@ -60,7 +60,7 @@ import org.kie.api.conf.KieBaseOptionsConfiguration;
  * <li>drools.consequenceExceptionHandler = &lt;qualified class name&gt;</li>
  * <li>drools.mbeans = &lt;enabled|disabled&gt;</li>
  * </ul>
- * 
+ *
  * <p>
  * The follow properties have not yet been migrated from the Drools 4.0 api:
  * </p>
