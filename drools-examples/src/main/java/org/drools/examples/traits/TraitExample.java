@@ -18,6 +18,7 @@ package org.drools.examples.traits;
 
 
 import org.drools.core.io.impl.ClassPathResource;
+import org.kie.api.definition.type.PropertyReactive;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -26,7 +27,6 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.Collection;
-
 
 public class TraitExample {
 
@@ -68,15 +68,15 @@ public class TraitExample {
 
     public static void main( String[] args ) {
 
-        run( "noTraits.drl" );
+        //run( "noTraits.drl" );
 
         run( "traitsDon.drl" );
 
-        run( "multipleTraits.drl" );
+        //run( "multipleTraits.drl" );
 
-        run( "traitsMixins.drl" );
+        //run( "traitsMixins.drl" );
 
-        run( "traitsShed.drl" );
+        //run( "traitsShed.drl" );
 
 
     }
