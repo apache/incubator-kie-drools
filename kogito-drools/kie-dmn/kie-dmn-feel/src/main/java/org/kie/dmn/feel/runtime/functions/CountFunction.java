@@ -14,22 +14,29 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.ast;
+package org.kie.dmn.feel.runtime.functions;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.runtime.UnaryTest;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
-public class DashNode
-        extends BaseNode {
+public class CountFunction
+        extends BaseFEELFunction {
 
-    public DashNode(ParserRuleContext ctx) {
-        super( ctx );
+    public CountFunction() {
+        super( "count" );
     }
 
-    @Override
-    public UnaryTest evaluate(EvaluationContext ctx) {
-        // a dash is a unary test that always evaluates to true
-        return o -> Boolean.TRUE;
+    public BigDecimal apply(@ParameterName( "list" ) List list) {
+        if ( list == null ) {
+            return null;
+        } else {
+            return BigDecimal.valueOf( list.size() );
+        }
     }
+
+    public BigDecimal apply(@ParameterName( "c" ) Object[] list) {
+        return apply( Arrays.asList( list ) );
+    }
+
 }

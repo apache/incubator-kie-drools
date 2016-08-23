@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.ast;
+package org.kie.dmn.feel.runtime.functions;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.runtime.UnaryTest;
+public class StringFunction
+        extends BaseFEELFunction {
 
-public class DashNode
-        extends BaseNode {
-
-    public DashNode(ParserRuleContext ctx) {
-        super( ctx );
+    public StringFunction() {
+        super( "string" );
     }
 
-    @Override
-    public UnaryTest evaluate(EvaluationContext ctx) {
-        // a dash is a unary test that always evaluates to true
-        return o -> Boolean.TRUE;
+    public String apply(@ParameterName("from") Object val) {
+        if ( val == null ) {
+            return null;
+        } else {
+            return val.toString();
+        }
     }
 }

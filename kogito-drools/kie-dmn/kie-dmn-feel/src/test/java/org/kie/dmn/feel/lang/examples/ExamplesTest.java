@@ -19,14 +19,13 @@ package org.kie.dmn.feel.lang.examples;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.dmn.feel.lang.runtime.FEEL;
+import org.kie.dmn.feel.FEEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.ZonedDateTime;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;

@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.ast;
+package org.kie.dmn.feel.runtime.functions;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.runtime.UnaryTest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class DashNode
-        extends BaseNode {
+public class ReverseFunction
+        extends BaseFEELFunction {
 
-    public DashNode(ParserRuleContext ctx) {
-        super( ctx );
+    public ReverseFunction() {
+        super( "reverse" );
     }
 
-    @Override
-    public UnaryTest evaluate(EvaluationContext ctx) {
-        // a dash is a unary test that always evaluates to true
-        return o -> Boolean.TRUE;
+    public List apply(@ParameterName("list") List list) {
+        if ( list == null ) {
+            return null;
+        }
+        // spec requires us to return a new list
+        List result = new ArrayList( list );
+        Collections.reverse( result );
+        return result;
     }
 }

@@ -18,8 +18,8 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.lang.runtime.functions.CustomFEELFunction;
-import org.kie.dmn.feel.lang.runtime.functions.JavaFunction;
+import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
+import org.kie.dmn.feel.runtime.functions.JavaFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

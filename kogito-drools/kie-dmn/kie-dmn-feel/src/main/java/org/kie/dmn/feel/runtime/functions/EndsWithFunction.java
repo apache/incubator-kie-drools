@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.ast;
+package org.kie.dmn.feel.runtime.functions;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.runtime.UnaryTest;
+public class EndsWithFunction
+        extends BaseFEELFunction {
 
-public class DashNode
-        extends BaseNode {
-
-    public DashNode(ParserRuleContext ctx) {
-        super( ctx );
+    public EndsWithFunction() {
+        super( "ends with" );
     }
 
-    @Override
-    public UnaryTest evaluate(EvaluationContext ctx) {
-        // a dash is a unary test that always evaluates to true
-        return o -> Boolean.TRUE;
+    public Boolean apply(@ParameterName( "string" ) String string, @ParameterName( "match" ) String match) {
+        if ( string == null || match == null ) {
+            return null;
+        } else {
+            return string.endsWith( match );
+        }
     }
+
 }
