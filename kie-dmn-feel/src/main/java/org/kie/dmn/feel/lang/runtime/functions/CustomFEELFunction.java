@@ -40,7 +40,6 @@ public class CustomFEELFunction
         this.body = body;
     }
 
-    @Override
     public List<List<String>> getParameterNames() {
         return Arrays.asList( parameters );
     }

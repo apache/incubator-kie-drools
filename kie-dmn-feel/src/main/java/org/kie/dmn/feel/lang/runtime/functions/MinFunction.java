@@ -16,7 +16,6 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,15 +27,7 @@ public class MinFunction
         super( "min" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list" ),
-                Arrays.asList( "c..." )
-        );
-    }
-
-    public Object apply(List list) {
+    public Object apply(@ParameterName("list") List list) {
         if ( list == null ) {
             return null;
         } else {
@@ -44,7 +35,7 @@ public class MinFunction
         }
     }
 
-    public Object apply(Object[] list) {
+    public Object apply(@ParameterName("c") Object[] list) {
         return apply( Arrays.asList( list ) );
     }
 

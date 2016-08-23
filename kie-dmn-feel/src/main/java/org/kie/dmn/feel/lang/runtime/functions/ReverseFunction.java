@@ -17,7 +17,6 @@
 package org.kie.dmn.feel.lang.runtime.functions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,20 +27,13 @@ public class ReverseFunction
         super( "reverse" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list" )
-        );
-    }
-
-    public List apply(List list) {
+    public List apply(@ParameterName("list") List list) {
         if ( list == null ) {
             return null;
         }
         // spec requires us to return a new list
         List result = new ArrayList( list );
-        Collections.reverse(result);
+        Collections.reverse( result );
         return result;
     }
 }

@@ -28,14 +28,7 @@ public class DistinctValuesFunction
         super( "distinct values" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list" )
-        );
-    }
-
-    public List apply(Object list) {
+    public List apply(@ParameterName( "list" ) Object list) {
         if ( list == null ) {
             return null;
         }

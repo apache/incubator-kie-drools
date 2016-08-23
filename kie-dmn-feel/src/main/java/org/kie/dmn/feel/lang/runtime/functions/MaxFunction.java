@@ -27,15 +27,7 @@ public class MaxFunction
         super( "max" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list" ),
-                Arrays.asList( "c..." )
-        );
-    }
-
-    public Object apply(List list) {
+    public Object apply(@ParameterName("list") List list) {
         if ( list == null ) {
             return null;
         } else {
@@ -43,7 +35,7 @@ public class MaxFunction
         }
     }
 
-    public Object apply(Object[] list) {
+    public Object apply(@ParameterName("c") Object[] list) {
         return apply( Arrays.asList( list ) );
     }
 

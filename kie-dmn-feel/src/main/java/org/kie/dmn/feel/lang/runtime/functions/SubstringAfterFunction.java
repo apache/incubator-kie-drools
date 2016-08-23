@@ -26,14 +26,7 @@ public class SubstringAfterFunction
         super( "substring after" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "string", "match" )
-        );
-    }
-
-    public String apply(String string, String match) {
+    public String apply(@ParameterName( "string" ) String string, @ParameterName( "match" ) String match) {
         if ( string == null || match == null ) {
             return null;
         } else {

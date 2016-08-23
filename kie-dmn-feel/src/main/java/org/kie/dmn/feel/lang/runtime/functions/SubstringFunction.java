@@ -16,9 +16,6 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class SubstringFunction
         extends BaseFEELFunction {
 
@@ -26,36 +23,28 @@ public class SubstringFunction
         super( "substring" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "string", "start position" ),
-                Arrays.asList( "string", "start position", "length" )
-        );
-    }
-
-    public String apply(String string, Number start) {
+    public String apply(@ParameterName("string") String string, @ParameterName("start position") Number start) {
         if ( string == null || start == null || Math.abs( start.intValue() ) > string.length() ) {
             return null;
         } else {
-            if( start.intValue() > 0 ) {
-                return string.substring( start.intValue()-1 );
-            } else if( start.intValue() < 0 ) {
-                return string.substring( string.length()+start.intValue() );
+            if ( start.intValue() > 0 ) {
+                return string.substring( start.intValue() - 1 );
+            } else if ( start.intValue() < 0 ) {
+                return string.substring( string.length() + start.intValue() );
             } else {
                 return null;
             }
         }
     }
 
-    public String apply(String string, Number start, Number length) {
+    public String apply(@ParameterName("string") String string, @ParameterName("start position") Number start, @ParameterName("length") Number length) {
         if ( string == null || start == null || Math.abs( start.intValue() ) > string.length() ) {
             return null;
         } else {
-            if( start.intValue() > 0 ) {
-                return string.substring( start.intValue()-1, Math.min( string.length(), start.intValue()+length.intValue()-1 ) );
-            } else if( start.intValue() < 0 ) {
-                return string.substring( string.length()+start.intValue(), Math.min( string.length(), string.length()+start.intValue()+length.intValue() ) );
+            if ( start.intValue() > 0 ) {
+                return string.substring( start.intValue() - 1, Math.min( string.length(), start.intValue() + length.intValue() - 1 ) );
+            } else if ( start.intValue() < 0 ) {
+                return string.substring( string.length() + start.intValue(), Math.min( string.length(), string.length() + start.intValue() + length.intValue() ) );
             } else {
                 return null;
             }

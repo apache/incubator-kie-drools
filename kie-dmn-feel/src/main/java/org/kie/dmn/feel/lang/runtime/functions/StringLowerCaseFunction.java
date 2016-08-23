@@ -16,9 +16,6 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class StringLowerCaseFunction
         extends BaseFEELFunction {
 
@@ -26,14 +23,7 @@ public class StringLowerCaseFunction
         super( "lower case" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "string" )
-        );
-    }
-
-    public String apply(String string) {
+    public String apply(@ParameterName("string") String string) {
         if ( string == null ) {
             return null;
         } else {

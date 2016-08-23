@@ -28,14 +28,7 @@ public class RemoveFunction
         super( "remove" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "list, position" )
-        );
-    }
-
-    public List apply(List list, BigDecimal position) {
+    public List apply(@ParameterName( "list" ) List list, @ParameterName( "position" ) BigDecimal position) {
         if ( list == null || position == null || position.intValue() == 0 || position.abs().intValue() > list.size() ) {
             return null;
         }

@@ -139,6 +139,7 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "ceiling( 1.5 )", new BigDecimal("2") },
                 { "ceiling( -1.5 )", new BigDecimal("-1") },
                 { "ceiling( null )", null },
+                { "ceiling( n : 1.5 )", new BigDecimal("2") },
                 };
         return Arrays.asList( cases );
     }

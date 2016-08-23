@@ -16,14 +16,12 @@
 
 package org.kie.dmn.feel.lang.runtime.functions;
 
-import java.time.*;
+import java.time.Duration;
+import java.time.LocalTime;
+import java.time.OffsetTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class TimeFunction
         extends BaseFEELFunction {
@@ -32,25 +30,18 @@ public class TimeFunction
         super( "time" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "from" ),
-                Arrays.asList( "hour", "minute", "second", "offset" )
-        );
-    }
-
-
-    public TemporalAccessor apply(String val) {
+    public TemporalAccessor apply(@ParameterName("from") String val) {
         if ( val != null ) {
-            return DateTimeFormatter.ISO_TIME.parseBest( val , OffsetTime::from, LocalTime::from );
+            return DateTimeFormatter.ISO_TIME.parseBest( val, OffsetTime::from, LocalTime::from );
         }
         return null;
     }
 
-    public TemporalAccessor apply(Number hour, Number minute, Number seconds, Duration offset ) {
+    public TemporalAccessor apply(
+            @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
+            @ParameterName("second") Number seconds, @ParameterName("offset") Duration offset) {
         if ( hour != null && minute != null && seconds != null ) {
-            if( offset == null ) {
+            if ( offset == null ) {
                 return LocalTime.of( hour.intValue(), minute.intValue(), seconds.intValue() );
             } else {
                 return OffsetTime.of( hour.intValue(), minute.intValue(), seconds.intValue(), 0, ZoneOffset.ofTotalSeconds( (int) offset.getSeconds() ) );
@@ -59,7 +50,7 @@ public class TimeFunction
         return null;
     }
 
-    public TemporalAccessor apply(TemporalAccessor date) {
+    public TemporalAccessor apply(@ParameterName("from") TemporalAccessor date) {
         if ( date != null ) {
             return OffsetTime.from( date );
         }

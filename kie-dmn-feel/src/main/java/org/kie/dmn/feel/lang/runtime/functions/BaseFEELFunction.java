@@ -24,12 +24,12 @@ import org.kie.dmn.feel.lang.types.FunctionSymbol;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -60,92 +60,23 @@ public abstract class BaseFEELFunction implements FEELFunction {
         return symbol;
     }
 
-    // TODO: can this method be improved somehow??
     @Override
     public Object applyReflectively(EvaluationContext ctx, Object[] params) {
         // use reflection to call the appropriate apply method
         try {
-            if( params.length > 0 && params[0] instanceof NamedParameter ) {
-                // using named parameters, so need to adjust
-                List<List<String>> names = getParameterNames();
-                names.sort( (o1, o2) -> o1.size() <= o2.size() ? -1 : +1 );
-
-                List<String> available = Stream.of( params ).map( p -> ((NamedParameter)p).getName() ).collect( Collectors.toList() );
-
-                boolean found = false;
-                for( List<String> candidate : names ) {
-                    if( candidate.containsAll( available ) ) {
-                        Object[] newParams = new Object[candidate.size()];
-                        for( Object o : params ) {
-                            NamedParameter np = (NamedParameter) o;
-                            newParams[ candidate.indexOf( np.getName() ) ] = np.getValue();
-                        }
-                        params = newParams;
-                        found = true;
-                        break;
-                    }
-                }
-                if( !found ) {
-                    logger.error( "Unable to find function "+getName()+"( "+available.stream().collect( Collectors.joining(", ") )+ " )" );
-                    return null;
-                }
-            }
+            boolean isNamedParams = params.length > 0 && params[0] instanceof NamedParameter;
             if ( ! isCustomFunction() ) {
+                List<String> available = null;
+                if( isNamedParams ) {
+                    available = Stream.of( params ).map( p -> ((NamedParameter)p).getName() ).collect( Collectors.toList() );
+                }
+
                 Class[] classes = Stream.of( params ).map( p -> p != null ? p.getClass() : null ).toArray( Class[]::new );
-                Method apply = null;
-                // first, look for exact matches
-                for( Method m : getClass().getDeclaredMethods() ) {
-                    Class<?>[] parameterTypes = m.getParameterTypes();
-                    if( !m.getName().equals( "apply" ) || parameterTypes.length != params.length  ) {
-                        continue;
-                    }
-                    boolean found = true;
-                    for( int i = 0; i < parameterTypes.length; i++ ) {
-                        if ( classes[i] != null && ! parameterTypes[i].isAssignableFrom( classes[i] ) ) {
-                            found = false;
-                            break;
-                        }
-                    }
-                    if( found ) {
-                        apply = m;
-                        break;
-                    }
-                }
-                if( apply == null ) {
-                    // if not found, look for a method with variable number of parameters that match
-                    for( Method m : getClass().getDeclaredMethods() ) {
-                        Class<?>[] parameterTypes = m.getParameterTypes();
-                        if( !m.getName().equals( "apply" ) || ( parameterTypes.length > 0 && ! parameterTypes[parameterTypes.length-1].isArray() ) ) {
-                            continue;
-                        }
-                        boolean found = true;
-                        for( int i = 0; i < parameterTypes.length; i++ ) {
-                            if ( i == parameterTypes.length-1 && parameterTypes[i].isArray() ) {
-                                // last parameter is an array, so treat the method as variable number of parameters method
-                                found = true;
-                                Object[] newParams = new Object[i+1];
-                                if( i > 0 ) {
-                                    System.arraycopy( params, 0, newParams, 0, i );
-                                }
-                                Object[] remaining = new Object[params.length-i];
-                                newParams[i] = remaining;
-                                System.arraycopy( params, i, remaining, 0, remaining.length );
-                                params = newParams;
-                                break;
-                            }
-                            if ( classes[i] != null && ! parameterTypes[i].isAssignableFrom( classes[i] ) ) {
-                                found = false;
-                                break;
-                            }
-                        }
-                        if( found ) {
-                            apply = m;
-                            break;
-                        }
-                    }
-                }
-                if( apply != null ) {
-                    Object result = apply.invoke( this, params );
+
+                CandidateMethod cm = getCandidateMethod( params, isNamedParams, available, classes );
+
+                if( cm != null ) {
+                    Object result = cm.apply.invoke( this, cm.actualParams );
                     return result;
                 } else {
                     String ps = Arrays.toString( classes );
@@ -154,8 +85,14 @@ public abstract class BaseFEELFunction implements FEELFunction {
             } else {
                 Object result = null;
                 if( this instanceof CustomFEELFunction ) {
+                    if( isNamedParams ) {
+                        params = rearrangeParameters( params, ((CustomFEELFunction) this).getParameterNames().get( 0 ) );
+                    }
                     result = ((CustomFEELFunction)this).apply( ctx, params );
                 } else if( this instanceof JavaFunction ) {
+                    if( isNamedParams ) {
+                        params = rearrangeParameters( params, ((JavaFunction) this).getParameterNames().get( 0 ) );
+                    }
                     result = ((JavaFunction)this).apply( ctx, params );
                 } else {
                     logger.error( "Unable to find function '" + toString() +"'" );
@@ -168,6 +105,97 @@ public abstract class BaseFEELFunction implements FEELFunction {
         return null;
     }
 
+    private Object[] rearrangeParameters(Object[] params, List<String> pnames) {
+        if( pnames.size() > 0 ) {
+            Object[] actualParams = new Object[pnames.size()];
+            for( int i = 0; i < actualParams.length; i++ ) {
+                for( int j = 0; j < params.length; j++ ) {
+                    if( ((NamedParameter)params[j]).getName().equals( pnames.get( i ) ) ) {
+                        actualParams[i] = ((NamedParameter)params[j]).getValue();
+                        break;
+                    }
+                }
+            }
+            params = actualParams;
+        }
+        return params;
+    }
+
+    private CandidateMethod getCandidateMethod(Object[] params, boolean isNamedParams, List<String> available, Class[] classes) {
+        CandidateMethod candidate = null;
+        // first, look for exact matches
+        for( Method m : getClass().getDeclaredMethods() ) {
+            if( !m.getName().equals( "apply" ) ) {
+                continue;
+            }
+            CandidateMethod cm = new CandidateMethod( isNamedParams ? calculateActualParams( m, params, available ) : params );
+
+            Class<?>[] parameterTypes = m.getParameterTypes();
+            adjustForVariableParameters( cm, parameterTypes );
+
+            if( parameterTypes.length != cm.getActualParams().length  ) {
+                continue;
+            }
+
+            boolean found = true;
+            for( int i = 0; i < parameterTypes.length; i++ ) {
+                if ( cm.getActualClasses()[i] != null && ! parameterTypes[i].isAssignableFrom( cm.getActualClasses()[i] ) ) {
+                    found = false;
+                    break;
+                }
+            }
+            if( found ) {
+                cm.setApply( m );
+                if( candidate == null || cm.getScore() > candidate.getScore() ) {
+                    candidate = cm;
+                }
+            }
+        }
+        return candidate;
+    }
+
+    private void adjustForVariableParameters(CandidateMethod cm, Class<?>[] parameterTypes) {
+        if( parameterTypes.length > 0 && parameterTypes[parameterTypes.length-1].isArray() ) {
+            // then it is a variable parameters function call
+            Object[] newParams = new Object[parameterTypes.length];
+            if( newParams.length > 1 ) {
+                System.arraycopy( cm.getActualParams(), 0, newParams, 0, newParams.length-1 );
+            }
+            Object[] remaining = new Object[cm.getActualParams().length-parameterTypes.length+1];
+            newParams[newParams.length-1] = remaining;
+            System.arraycopy( cm.getActualParams(), parameterTypes.length-1, remaining, 0, remaining.length );
+            cm.setActualParams( newParams );
+        }
+    }
+
+    private Object[] calculateActualParams( Method m, Object[] params, List<String> available ) {
+        Annotation[][] pas = m.getParameterAnnotations();
+        List<String> names = new ArrayList<>( m.getParameterCount() );
+        for( int i = 0; i < m.getParameterCount(); i++ ) {
+            for( int p = 0; p < pas[i].length; i++ ) {
+                if( pas[i][p] instanceof ParameterName ) {
+                    names.add( ((ParameterName)pas[i][p]).value() );
+                    break;
+                }
+            }
+            if( names.get( i ) == null ) {
+                // no name found
+                return null;
+            }
+        }
+        if( names.containsAll( available ) ) {
+            Object[] actualParams = new Object[names.size()];
+            for( Object o : params ) {
+                NamedParameter np = (NamedParameter) o;
+                actualParams[ names.indexOf( np.getName() ) ] = np.getValue();
+            }
+            return actualParams;
+        } else {
+            // method is not compatible
+            return null;
+        }
+    }
+
     private Object normalizeResult(Object result) {
         // this is to normalize types returned by external functions
         return result != null && result instanceof Number && !(result instanceof BigDecimal) ? new BigDecimal( result.toString() ) : result;
@@ -175,6 +203,58 @@ public abstract class BaseFEELFunction implements FEELFunction {
 
     protected boolean isCustomFunction() {
         return false;
+    }
+
+
+    private static class CandidateMethod {
+        private Method apply = null;
+        private Object[] actualParams = null;
+        private Class[] actualClasses = null;
+        private int score;
+
+        public CandidateMethod(Object[] actualParams) {
+            this.actualParams = actualParams;
+            populateActualClasses();
+        }
+
+        private void calculateScore() {
+            if( actualClasses.length > 0 && actualClasses[ actualClasses.length-1 ] != null && actualClasses[ actualClasses.length-1 ].isArray() ) {
+                score = 1;
+            } else {
+                score = 10;
+            }
+        }
+
+        public Method getApply() {
+            return apply;
+        }
+
+        public void setApply(Method apply) {
+            this.apply = apply;
+            calculateScore();
+        }
+
+        public Object[] getActualParams() {
+            return actualParams;
+        }
+
+        public void setActualParams(Object[] actualParams) {
+            this.actualParams = actualParams;
+            populateActualClasses();
+        }
+
+        private void populateActualClasses() {
+            this.actualClasses = Stream.of( this.actualParams ).map( p -> p != null ? p.getClass() : null ).toArray( Class[]::new );
+        }
+
+        public Class[] getActualClasses() {
+            return actualClasses;
+        }
+
+        public int getScore() {
+            return score;
+        }
+
     }
 
 }

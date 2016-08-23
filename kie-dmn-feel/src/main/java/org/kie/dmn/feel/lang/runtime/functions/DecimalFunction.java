@@ -27,14 +27,7 @@ public class DecimalFunction
         super( "decimal" );
     }
 
-    @Override
-    public List<List<String>> getParameterNames() {
-        return Arrays.asList(
-                Arrays.asList( "n", "scale" )
-        );
-    }
-
-    public BigDecimal apply(BigDecimal n, BigDecimal scale) {
+    public BigDecimal apply(@ParameterName( "n" ) BigDecimal n, @ParameterName( "scale" ) BigDecimal scale) {
         if ( n == null || scale == null ) {
             return null;
         }

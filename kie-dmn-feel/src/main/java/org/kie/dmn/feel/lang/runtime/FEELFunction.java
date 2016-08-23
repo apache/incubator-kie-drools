@@ -25,8 +25,6 @@ public interface FEELFunction {
 
     String getName();
 
-    List<List<String>> getParameterNames();
-
     Symbol getSymbol();
 
     Object applyReflectively(EvaluationContext ctx, Object[] params);
