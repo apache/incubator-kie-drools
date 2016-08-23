@@ -24,12 +24,20 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.StatefulRuleSession;
 import org.kie.internal.command.Context;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class FireUntilHaltCommand
 	implements
 	GenericCommand<Void>, UnpersistableCommand {
     private static final long serialVersionUID = 510l;
 
+    @XmlTransient
+    // TODO: make sure that all drools AgendaFilter implementations are serializable
     private AgendaFilter agendaFilter = null;
 
     public FireUntilHaltCommand() {
