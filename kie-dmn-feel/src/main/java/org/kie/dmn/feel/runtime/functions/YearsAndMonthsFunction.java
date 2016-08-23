@@ -14,22 +14,24 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.ast;
+package org.kie.dmn.feel.runtime.functions;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.runtime.UnaryTest;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.temporal.TemporalAmount;
 
-public class DashNode
-        extends BaseNode {
+public class YearsAndMonthsFunction
+        extends BaseFEELFunction {
 
-    public DashNode(ParserRuleContext ctx) {
-        super( ctx );
+    public YearsAndMonthsFunction() {
+        super( "years and months duration" );
     }
 
-    @Override
-    public UnaryTest evaluate(EvaluationContext ctx) {
-        // a dash is a unary test that always evaluates to true
-        return o -> Boolean.TRUE;
+    public TemporalAmount apply(@ParameterName("from") LocalDate from, @ParameterName("to") LocalDate to) {
+        if ( from != null && to != null ) {
+            return Period.between( from, to ).withDays( 0 );
+        }
+        return null;
     }
+
 }

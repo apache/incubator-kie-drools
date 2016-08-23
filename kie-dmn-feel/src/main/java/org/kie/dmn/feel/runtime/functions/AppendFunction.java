@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.ast;
+package org.kie.dmn.feel.runtime.functions;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.runtime.UnaryTest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
-public class DashNode
-        extends BaseNode {
+public class AppendFunction
+        extends BaseFEELFunction {
 
-    public DashNode(ParserRuleContext ctx) {
-        super( ctx );
+    public AppendFunction() {
+        super( "append" );
     }
 
-    @Override
-    public UnaryTest evaluate(EvaluationContext ctx) {
-        // a dash is a unary test that always evaluates to true
-        return o -> Boolean.TRUE;
+    public List apply( @ParameterName( "list" ) List list, @ParameterName( "item" ) Object[] items ) {
+        if ( list == null || items == null ) {
+            return null;
+        }
+        // spec requires us to return a new list
+        List result = new ArrayList( list );
+        Stream.of( items ).forEach( i -> result.add( i ) );
+        return result;
     }
 }

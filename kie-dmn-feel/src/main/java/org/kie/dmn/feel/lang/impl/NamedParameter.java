@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.ast;
+package org.kie.dmn.feel.lang.impl;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.runtime.UnaryTest;
+public class NamedParameter {
+    private final String name;
+    private final Object value;
 
-public class DashNode
-        extends BaseNode {
+    public NamedParameter(String name, Object value) {
+        this.name = name;
+        this.value = value;
+    }
 
-    public DashNode(ParserRuleContext ctx) {
-        super( ctx );
+    public String getName() {
+        return name;
+    }
+
+    public Object getValue() {
+        return value;
     }
 
     @Override
-    public UnaryTest evaluate(EvaluationContext ctx) {
-        // a dash is a unary test that always evaluates to true
-        return o -> Boolean.TRUE;
+    public String toString() {
+        return name + " : " + value;
     }
 }
