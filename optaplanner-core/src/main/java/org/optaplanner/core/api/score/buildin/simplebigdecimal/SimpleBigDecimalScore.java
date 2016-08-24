@@ -180,4 +180,9 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
         return getInitPrefix() + score;
     }
 
+    @Override
+    public boolean isCompatibleArithmeticArgument(Score otherScore) {
+        return otherScore instanceof SimpleBigDecimalScore;
+    }
+
 }

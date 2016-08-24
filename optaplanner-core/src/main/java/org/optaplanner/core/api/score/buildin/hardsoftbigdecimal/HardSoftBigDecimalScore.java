@@ -219,4 +219,9 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
         return getInitPrefix() + hardScore + HARD_LABEL + "/" + softScore + SOFT_LABEL;
     }
 
+    @Override
+    public boolean isCompatibleArithmeticArgument(Score otherScore) {
+        return otherScore instanceof HardSoftBigDecimalScore;
+    }
+
 }

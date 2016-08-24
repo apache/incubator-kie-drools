@@ -50,6 +50,14 @@ public class BendableLongScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void getHardOrSoftScore() {
+        BendableLongScore initializedScore = scoreDefinitionHSS.createScoreInitialized(-5L, -10L, -200L);
+        assertEquals(-5L, initializedScore.getHardOrSoftScore(0));
+        assertEquals(-10L, initializedScore.getHardOrSoftScore(1));
+        assertEquals(-200L, initializedScore.getHardOrSoftScore(2));
+    }
+
+    @Test
     public void toInitializedScoreHSS() {
         assertEquals(scoreDefinitionHSS.createScoreInitialized(-5432109876L, -9876543210L, -3456789012L),
                 scoreDefinitionHSS.createScoreInitialized(-5432109876L, -9876543210L, -3456789012L).toInitializedScore());

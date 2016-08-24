@@ -163,4 +163,9 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
         return getInitPrefix() + score;
     }
 
+    @Override
+    public boolean isCompatibleArithmeticArgument(Score otherScore) {
+        return otherScore instanceof SimpleScore;
+    }
+
 }

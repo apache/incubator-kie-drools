@@ -91,6 +91,14 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
     }
 
     @Test
+    public void getHardOrSoftScore() {
+        BendableBigDecimalScore initializedScore = scoreDefinitionHSS.createScoreInitialized(BigDecimal.valueOf(-5), BigDecimal.valueOf(-10), BigDecimal.valueOf(-200));
+        assertEquals(BigDecimal.valueOf(-5), initializedScore.getHardOrSoftScore(0));
+        assertEquals(BigDecimal.valueOf(-10), initializedScore.getHardOrSoftScore(1));
+        assertEquals(BigDecimal.valueOf(-200), initializedScore.getHardOrSoftScore(2));
+    }
+
+    @Test
     public void toInitializedScoreHSS() {
         assertEquals(scoreDefinitionHSS.createScoreInitialized(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)),
                 scoreDefinitionHSS.createScoreInitialized(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), BigDecimal.valueOf(-369)).toInitializedScore());

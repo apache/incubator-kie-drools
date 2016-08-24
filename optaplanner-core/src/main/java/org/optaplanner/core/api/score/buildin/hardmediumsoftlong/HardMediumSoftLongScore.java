@@ -233,4 +233,9 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
         return getInitPrefix() + hardScore + HARD_LABEL + "/" + mediumScore + MEDIUM_LABEL + "/" + softScore + SOFT_LABEL;
     }
 
+    @Override
+    public boolean isCompatibleArithmeticArgument(Score otherScore) {
+        return otherScore instanceof HardMediumSoftLongScore;
+    }
+
 }

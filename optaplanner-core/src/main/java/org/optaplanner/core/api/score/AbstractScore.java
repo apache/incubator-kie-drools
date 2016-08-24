@@ -177,11 +177,6 @@ public abstract class AbstractScore<S extends Score> implements Score<S>, Serial
         return initScore >= 0;
     }
 
-    @Override
-    public boolean isCompatibleArithmeticArgument(Score otherScore) {
-        return getClass().isInstance(otherScore);
-    }
-
     protected String getInitPrefix() {
         if (initScore == 0) {
             return "";
