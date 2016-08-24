@@ -18,6 +18,7 @@ package org.optaplanner.core.config.util;
 
 import org.junit.Test;
 
+import static java.lang.Math.floorDiv;
 import static org.junit.Assert.*;
 import static org.optaplanner.core.config.util.ConfigUtils.*;
 
@@ -72,21 +73,21 @@ public class ConfigUtilsTest {
 
     @Test
     public void testFloorDivide() {
-        assertEquals(9, floorDivide(19, 2));
-        assertEquals(10, floorDivide(20, 2));
-        assertEquals(10, floorDivide(21, 2));
+        assertEquals(9, floorDiv(19, 2));
+        assertEquals(10, floorDiv(20, 2));
+        assertEquals(10, floorDiv(21, 2));
 
-        assertEquals(-10, floorDivide(19, -2));
-        assertEquals(-10, floorDivide(20, -2));
-        assertEquals(-11, floorDivide(21, -2));
+        assertEquals(-10, floorDiv(19, -2));
+        assertEquals(-10, floorDiv(20, -2));
+        assertEquals(-11, floorDiv(21, -2));
 
-        assertEquals(-10, floorDivide(-19, 2));
-        assertEquals(-10, floorDivide(-20, 2));
-        assertEquals(-11, floorDivide(-21, 2));
+        assertEquals(-10, floorDiv(-19, 2));
+        assertEquals(-10, floorDiv(-20, 2));
+        assertEquals(-11, floorDiv(-21, 2));
 
-        assertEquals(9, floorDivide(-19, -2));
-        assertEquals(10, floorDivide(-20, -2));
-        assertEquals(10, floorDivide(-21, -2));
+        assertEquals(9, floorDiv(-19, -2));
+        assertEquals(10, floorDiv(-20, -2));
+        assertEquals(10, floorDiv(-21, -2));
     }
 
     @Test(expected = ArithmeticException.class)
@@ -96,6 +97,6 @@ public class ConfigUtilsTest {
 
     @Test(expected = ArithmeticException.class)
     public void testFloorDivideByZero() {
-        floorDivide(20, -0);
+        floorDiv(20, -0);
     }
 }

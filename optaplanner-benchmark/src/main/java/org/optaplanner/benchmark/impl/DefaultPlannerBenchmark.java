@@ -154,7 +154,7 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         int parallelBenchmarkCount = plannerBenchmarkResult.getParallelBenchmarkCount();
         int solverBenchmarkResultCount = plannerBenchmarkResult.getSolverBenchmarkResultList().size();
         int cyclesCount = ConfigUtils.ceilDivide(solverBenchmarkResultCount, parallelBenchmarkCount);
-        long timeLeftPerCycle = ConfigUtils.floorDivide(timeLeftTotal, cyclesCount);
+        long timeLeftPerCycle = Math.floorDiv(timeLeftTotal, cyclesCount);
         Map<ProblemBenchmarkResult, List<ProblemStatistic>> originalProblemStatisticMap
                 = new HashMap<>(plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList().size());
         ConcurrentMap<SolverBenchmarkResult, Integer> singleBenchmarkResultIndexMap

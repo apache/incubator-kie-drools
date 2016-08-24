@@ -155,7 +155,7 @@ public class ConfigUtils {
 
     /**
      * Divides and ceils the result without using floating point arithmetic. For floor division,
-     * see {@link #floorDivide(long, long)}.
+     * see {@link Math#floorDiv(long, long)}.
      *
      * @throws ArithmeticException if {@code divisor == 0}
      * @param dividend the dividend
@@ -173,30 +173,6 @@ public class ConfigUtils {
             correction = 0;
         } else {
             correction = 1;
-        }
-        return (dividend / divisor) + correction;
-    }
-
-    /**
-     * Divides and floors the result without using floating point arithmetic. For ceil division,
-     * see {@link #ceilDivide(int, int)}.
-     *
-     * @throws ArithmeticException if {@code divisor == 0}
-     * @param dividend the dividend
-     * @param divisor the divisor
-     * @return dividend / divisor, floored
-     */
-    public static long floorDivide(long dividend, long divisor) { // TODO: Java8: replace with Math#floorDiv(long, long)
-        if (divisor == 0) {
-            throw new ArithmeticException("Cannot divide by zero: " + dividend + "/" + divisor);
-        }
-        int correction;
-        if (dividend % divisor == 0) {
-            correction = 0;
-        } else if (Long.signum(dividend) * Long.signum(divisor) < 0) {
-            correction = -1;
-        } else {
-            correction = 0;
         }
         return (dividend / divisor) + correction;
     }
