@@ -21,6 +21,7 @@
 
     This module builds the documentation.
   </description>
+  <url>http://www.optaplanner.org</url>
 
   <build>
     <pluginManagement>

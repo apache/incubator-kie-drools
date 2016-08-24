@@ -20,6 +20,7 @@
     This module contains the JUnit and other test support.
     This module is intended to be used a test scoped dependency.
   </description>
+  <url>http://www.optaplanner.org</url>
 
   <dependencies>
     <!-- Internal dependencies -->

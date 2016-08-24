@@ -20,6 +20,7 @@
 
     This module contains the planning engine itself.
   </description>
+  <url>http://www.optaplanner.org</url>
 
   <properties>
     <osgi.Bundle-SymbolicName>org.optaplanner.core</osgi.Bundle-SymbolicName>

@@ -20,6 +20,7 @@
 
     This module builds the download zip.
   </description>
+  <url>http://www.optaplanner.org</url>
 
   <build>
     <plugins>
