@@ -31,6 +31,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -175,6 +179,31 @@ public class ConfigUtils {
             correction = 1;
         }
         return (dividend / divisor) + correction;
+    }
+
+    /**
+     * Name of the variable that represents {@link Runtime#availableProcessors()).
+     */
+    public static final String AVAILABLE_PROCESSOR_COUNT = "availableProcessorCount";
+
+    public static int resolveThreadPoolSizeScript(String propertyName, String script, String magicValue) {
+        final String scriptLanguage = "JavaScript";
+        ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName(scriptLanguage);
+        scriptEngine.put(AVAILABLE_PROCESSOR_COUNT, Runtime.getRuntime().availableProcessors());
+        Object scriptResult;
+        try {
+            scriptResult = scriptEngine.eval(script);
+        } catch (ScriptException e) {
+            throw new IllegalArgumentException("The " + propertyName + " (" + script
+                    + ") is not " + magicValue + " and cannot be parsed in " + scriptLanguage
+                    + " with the variables ([" + AVAILABLE_PROCESSOR_COUNT + "]).", e);
+        }
+        if (!(scriptResult instanceof Number)) {
+            throw new IllegalArgumentException("The " + propertyName + " (" + script
+                    + ") is resolved to scriptResult (" + scriptResult + ") in " + scriptLanguage
+                    + " but is not a " + Number.class.getSimpleName() + ".");
+        }
+        return ((Number) scriptResult).intValue();
     }
 
     // ************************************************************************

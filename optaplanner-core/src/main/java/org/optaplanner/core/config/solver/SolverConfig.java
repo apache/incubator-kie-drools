@@ -75,6 +75,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     @XStreamImplicit()
     protected List<PhaseConfig> phaseConfigList = null;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public SolverConfig() {
     }
 

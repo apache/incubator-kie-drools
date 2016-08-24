@@ -63,6 +63,10 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
     @XStreamAlias("forager")
     private LocalSearchForagerConfig foragerConfig = null;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public LocalSearchType getLocalSearchType() {
         return localSearchType;
     }

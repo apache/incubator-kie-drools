@@ -23,6 +23,7 @@ import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPh
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
+import org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -36,7 +37,8 @@ import org.optaplanner.core.impl.solver.termination.Termination;
         CustomPhaseConfig.class,
         ExhaustiveSearchPhaseConfig.class,
         ConstructionHeuristicPhaseConfig.class,
-        LocalSearchPhaseConfig.class
+        LocalSearchPhaseConfig.class,
+        PartitionedSearchPhaseConfig.class
 })
 public abstract class PhaseConfig<C extends PhaseConfig> extends AbstractConfig<C> {
 
@@ -45,6 +47,10 @@ public abstract class PhaseConfig<C extends PhaseConfig> extends AbstractConfig<
 
     @XStreamAlias("termination")
     private TerminationConfig terminationConfig = null;
+
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
 
     public TerminationConfig getTerminationConfig() {
         return terminationConfig;

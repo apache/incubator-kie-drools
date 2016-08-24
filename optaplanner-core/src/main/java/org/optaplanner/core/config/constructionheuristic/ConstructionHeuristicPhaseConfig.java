@@ -59,6 +59,10 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     @XStreamAlias("forager")
     protected ConstructionHeuristicForagerConfig foragerConfig = null;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public ConstructionHeuristicType getConstructionHeuristicType() {
         return constructionHeuristicType;
     }

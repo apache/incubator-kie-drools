@@ -48,6 +48,10 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
     protected Map<String, String> customProperties = null;
     protected Boolean forceUpdateBestSolution = null;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
     public List<Class<? extends CustomPhaseCommand>> getCustomPhaseCommandClassList() {
         return customPhaseCommandClassList;
     }

@@ -23,10 +23,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
@@ -44,10 +40,6 @@ import org.slf4j.LoggerFactory;
 public class PlannerBenchmarkConfig {
 
     public static final String PARALLEL_BENCHMARK_COUNT_AUTO = "AUTO";
-    /**
-     * @see Runtime#availableProcessors()
-     */
-    public static final String AVAILABLE_PROCESSOR_COUNT = "availableProcessorCount";
     public static final Pattern VALID_NAME_PATTERN = Pattern.compile("(?U)^[\\w\\d _\\-\\.\\(\\)]+$");
 
     private static final Logger logger = LoggerFactory.getLogger(PlannerBenchmarkConfig.class);
@@ -97,7 +89,7 @@ public class PlannerBenchmarkConfig {
      * <p>
      * If there aren't enough processors available, it will be decreased.
      * @return null, {@value #PARALLEL_BENCHMARK_COUNT_AUTO}
-     * or a JavaScript calculation using {@value #AVAILABLE_PROCESSOR_COUNT}.
+     * or a JavaScript calculation using {@value ConfigUtils#AVAILABLE_PROCESSOR_COUNT}.
      */
     public String getParallelBenchmarkCount() {
         return parallelBenchmarkCount;
@@ -279,7 +271,7 @@ public class PlannerBenchmarkConfig {
         if (parallelBenchmarkCount == null) {
             resolvedParallelBenchmarkCount = 1;
         } else if (parallelBenchmarkCount.equals(PARALLEL_BENCHMARK_COUNT_AUTO)) {
-            // TODO Tweak it based on experience
+            // Tweaked based on experience
             if (availableProcessorCount <= 2) {
                 resolvedParallelBenchmarkCount = 1;
             } else if (availableProcessorCount <= 4) {
@@ -288,23 +280,8 @@ public class PlannerBenchmarkConfig {
                 resolvedParallelBenchmarkCount = (availableProcessorCount / 2) + 1;
             }
         } else {
-            String scriptLanguage = "JavaScript";
-            ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName(scriptLanguage);
-            scriptEngine.put(AVAILABLE_PROCESSOR_COUNT, availableProcessorCount);
-            Object scriptResult;
-            try {
-                scriptResult = scriptEngine.eval(parallelBenchmarkCount);
-            } catch (ScriptException e) {
-                throw new IllegalArgumentException("The parallelBenchmarkCount (" + parallelBenchmarkCount
-                        + ") is not " + PARALLEL_BENCHMARK_COUNT_AUTO + " and cannot be parsed in " + scriptLanguage
-                        + " with the variables ([" + AVAILABLE_PROCESSOR_COUNT + "]).", e);
-            }
-            if (!(scriptResult instanceof Number)) {
-                throw new IllegalArgumentException("The parallelBenchmarkCount (" + parallelBenchmarkCount
-                        + ") is resolved to scriptResult (" + scriptResult + ") in " + scriptLanguage
-                        + " and is not a Number.");
-            }
-            resolvedParallelBenchmarkCount = ((Number) scriptResult).intValue();
+            resolvedParallelBenchmarkCount = ConfigUtils.resolveThreadPoolSizeScript(
+                    "parallelBenchmarkCount", parallelBenchmarkCount, PARALLEL_BENCHMARK_COUNT_AUTO);
         }
         if (resolvedParallelBenchmarkCount < 1) {
             throw new IllegalArgumentException("The parallelBenchmarkCount (" + parallelBenchmarkCount
