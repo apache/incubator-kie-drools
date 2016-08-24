@@ -19,7 +19,7 @@ import org.drools.compiler.Alarm;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Sensor;
 import org.drools.core.event.DefaultAgendaEventListener;
-import org.junit.Ignore;
+import org.drools.core.reteoo.ReteDumper;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.definition.rule.Rule;
@@ -328,7 +328,7 @@ public class ActivateAndDeleteOnListenerTest extends CommonTestMethodBase {
                 "rule xxx \n" +
                 "when \n" +
                 "  $s : String()\n" +
-                "  exists( Boolean() and exists(Integer() or Double()) )\n" +
+                "  exists( Boolean() and not(not(Integer()) and not(Double())) )\n" +
                 "then \n" +
                 "end  \n";
 
@@ -342,6 +342,8 @@ public class ActivateAndDeleteOnListenerTest extends CommonTestMethodBase {
                 .build()
                 .newKieSession(conf, null);
 
+        ReteDumper.dumpRete( ksession );
+
         final List list = new ArrayList();
 
         AgendaEventListener agendaEventListener = new org.kie.api.event.rule.DefaultAgendaEventListener() {
@@ -351,10 +353,10 @@ public class ActivateAndDeleteOnListenerTest extends CommonTestMethodBase {
         };
         ksession.addEventListener(agendaEventListener);
 
-        ksession.insert("test");
+        ksession.insert(Boolean.TRUE);
         assertEquals(0, list.size());
 
-        ksession.insert(Boolean.TRUE);
+        ksession.insert("test");
         assertEquals(0, list.size());
 
         ksession.insert(1);
@@ -459,7 +461,7 @@ public class ActivateAndDeleteOnListenerTest extends CommonTestMethodBase {
         assertTrue( list.containsAll( asList("1", "2") ) );
     }
 
-    @Test(timeout = 10000L) @Ignore
+    @Test(timeout = 10000L)
     public void testSegMemInitializationWithForceEagerActivationAndExistsWithNots() throws InterruptedException {
         // DROOLS-1247
         String drl = "global java.util.List list\n" +

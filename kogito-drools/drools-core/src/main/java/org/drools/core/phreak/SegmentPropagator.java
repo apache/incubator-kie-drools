@@ -81,7 +81,7 @@ public class SegmentPropagator {
                         smem.getStagedLeftTuples().addInsert( peer );
 
                         PathMemory dataDrivenPmem = smem.getFirstDataDrivenPathMemory();
-                        if (dataDrivenPmem != null) {
+                        if (dataDrivenPmem != null && dataDrivenPmem.isRuleLinked()) {
                             forceFlushLeftTuple(dataDrivenPmem, smem, wm, smem.getStagedLeftTuples());
                         }
                     }
