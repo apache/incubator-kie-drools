@@ -72,7 +72,7 @@ public class AsyncTaskCallbackTest extends JbpmAsyncJobTestCase {
         }
     }
 
-    @Test(timeout=10000)
+    @Test(timeout=30000)
     public void testTaskCallback() throws Exception {
         CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Continue", 1);
         addProcessEventListener(countDownListener);
