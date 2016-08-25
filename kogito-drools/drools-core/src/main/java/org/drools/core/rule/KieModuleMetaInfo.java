@@ -18,12 +18,15 @@ package org.drools.core.rule;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class KieModuleMetaInfo {
     private static final XStream xStream = new XStream(new DomDriver());
+
+    static {
+        xStream.setClassLoader( KieModuleMetaInfo.class.getClassLoader() );
+    }
 
     private Map<String, TypeMetaInfo> typeMetaInfos;
     private Map<String, Set<String>> rulesByPackage;
