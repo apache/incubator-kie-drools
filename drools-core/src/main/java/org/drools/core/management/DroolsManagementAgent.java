@@ -21,6 +21,8 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.management.KieManagementAgentMBean;
 import org.kie.api.management.KieSessionMonitoringMBean;
+import org.kie.api.management.StatelessKieSessionMonitoringMBean;
+import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +34,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * The main management agent for Drools. The purpose of this 
@@ -54,7 +54,7 @@ public class DroolsManagementAgent
     private long                          kbases;
     private long                          ksessions;
     private Map<Object, List<ObjectName>> mbeans;
-    private ConcurrentMap<Object, Object> mbeansRefs = new ConcurrentHashMap<Object, Object>();
+    private Map<Object, Object> mbeansRefs = new HashMap<Object, Object>();
 
     private DroolsManagementAgent() {
         kbases = 0;
@@ -121,36 +121,60 @@ public class DroolsManagementAgent
     }
     
     public void registerKnowledgeSessionUnderName(CBSKey cbsKey, KieRuntimeEventManager ksession) {
-        KieSessionMonitoringImpl bean = getKnowledgeSessionBean(cbsKey);
-        bean.attach(ksession);
+        GenericKieSessionMonitoringImpl bean = getKnowledgeSessionBean(cbsKey, ksession);
+        if (bean != null) { bean.attach(ksession); }
     }
     public void unregisterKnowledgeSessionUnderName(CBSKey cbsKey, KieRuntimeEventManager ksession) {
-        KieSessionMonitoringImpl bean = getKnowledgeSessionBean(cbsKey);
-        bean.detach(ksession);
+        GenericKieSessionMonitoringImpl bean = getKnowledgeSessionBean(cbsKey, ksession);
+        if (bean != null) { bean.detach(ksession); }
     }
     
     public void unregisterKnowledgeSessionBean(CBSKey cbsKey) {
         unregisterMBeansFromOwner(cbsKey);
     }
 
-    public KieSessionMonitoringImpl getKnowledgeSessionBean(CBSKey cbsKey) {
+    /**
+     * Get currently registered session monitor, eventually creating it if necessary.
+     * @return the currently registered or newly created session monitor, or null if unable to create and register it on the JMX server.
+     */
+    private GenericKieSessionMonitoringImpl getKnowledgeSessionBean(CBSKey cbsKey, KieRuntimeEventManager ksession) {
         if (mbeansRefs.get(cbsKey) != null) {
-            return (KieSessionMonitoringImpl) mbeansRefs.get(cbsKey);
+            return (GenericKieSessionMonitoringImpl) mbeansRefs.get(cbsKey);
         } else {
-            KieSessionMonitoringImpl mbean = new KieSessionMonitoringImpl( cbsKey.kcontainerId, cbsKey.kbaseId, cbsKey.ksessionName );
-            KieSessionMonitoringImpl result = (KieSessionMonitoringImpl) mbeansRefs.putIfAbsent(cbsKey, mbean);
-            if (result == null) {
-                try {
-                    final StandardMBean adapter = new StandardMBean( mbean, KieSessionMonitoringMBean.class );
-                    registerMBean( cbsKey,
-                                   adapter,
-                                   mbean.getName() );
-                } catch ( Exception e ) {
-                    logger.error("Unable to instantiate and register KieSessionMonitoringMBean");
+            if (ksession instanceof StatelessKnowledgeSession) {
+                synchronized (mbeansRefs) {
+                    if (mbeansRefs.get(cbsKey) != null) {
+                        return (GenericKieSessionMonitoringImpl) mbeansRefs.get(cbsKey);
+                    } else {
+                        try {
+                            StatelessKieSessionMonitoringImpl mbean = new StatelessKieSessionMonitoringImpl( cbsKey.kcontainerId, cbsKey.kbaseId, cbsKey.ksessionName );
+                            final StandardMBean adapter = new StandardMBean( mbean, StatelessKieSessionMonitoringMBean.class );
+                            registerMBean( cbsKey, adapter, mbean.getName() );
+                            mbeansRefs.put(cbsKey, mbean);
+                            return mbean;
+                        } catch ( Exception e ) {
+                            logger.error("Unable to instantiate and register StatelessKieSessionMonitoringMBean");
+                        }
+                        return null;
+                    }
                 }
-                return mbean;
             } else {
-                return result;
+                synchronized (mbeansRefs) {
+                    if (mbeansRefs.get(cbsKey) != null) {
+                        return (GenericKieSessionMonitoringImpl) mbeansRefs.get(cbsKey);
+                    } else {
+                        try {
+                            KieSessionMonitoringImpl mbean = new KieSessionMonitoringImpl( cbsKey.kcontainerId, cbsKey.kbaseId, cbsKey.ksessionName );
+                            final StandardMBean adapter = new StandardMBean( mbean, KieSessionMonitoringMBean.class );
+                            registerMBean( cbsKey, adapter, mbean.getName() );
+                            mbeansRefs.put(cbsKey, mbean);
+                            return mbean;
+                        } catch ( Exception e ) {
+                            logger.error("Unable to instantiate and register (stateful) KieSessionMonitoringMBean");
+                        }
+                        return null;
+                    }
+                }
             }
         }
     }

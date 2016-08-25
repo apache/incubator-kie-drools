@@ -34,13 +34,17 @@ import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.management.KieContainerMonitorMXBean;
+import org.kie.api.management.GenericKieSessionMonitoringMBean;
 import org.kie.api.management.KieSessionMonitoringMBean;
+import org.kie.api.management.StatelessKieSessionMonitoringMBean;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.management.ManagementFactory;
 import java.util.Scanner;
@@ -53,6 +57,8 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 public class MBeansMonitoringTest extends CommonTestMethodBase {
+    public static final Logger LOG = LoggerFactory.getLogger(MBeansMonitoringTest.class);
+    
     public static final String KSESSION1 = "KSession1";
 	public static final String KBASE1 = "KBase1";
     private static final String KBASE2 = "KBase2";
@@ -147,7 +153,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     	
     	String kc1ID = ((InternalKieContainer) kc).getContainerId();
     	MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
-    	System.out.println( mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(kc1ID)+",*"), null) );
+    	LOG.debug("{}", mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(kc1ID)+",*"), null) );
     	
     	ReleaseId verRelease = ks.newReleaseId("org.kie.test", "mbeans", "RELEASE" );
         KieContainer kc2 = ks.newKieContainer( "Matteo", verRelease );
@@ -243,10 +249,9 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         
         long tft = 0; 
         
-        ksession.fireAllRules();
         print(aggrMonitor);
         checkAgendaTotals(aggrMonitor, 0, 0, 0);
-        checkRuleRuntimeTotals(aggrMonitor, 0, 0);
+        checkTotalFactCount(aggrMonitor, 0);
         tft = checkTotalFiringTimeGEQ(aggrMonitor, tft);
         checkTotalSessions(aggrMonitor, 1);
 
@@ -254,18 +259,18 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         print(aggrMonitor);
         checkAgendaTotals(aggrMonitor, 2, 1, 1);
-        checkRuleRuntimeTotals(aggrMonitor, 2, 1);
+        checkTotalFactCount(aggrMonitor, 1);
         tft = checkTotalFiringTimeGEQ(aggrMonitor, tft + 1);
         checkTotalSessions(aggrMonitor, 1);
 
         ksession.fireAllRules();
         print(aggrMonitor);
         checkAgendaTotals(aggrMonitor, 2, 1, 1);
-        checkRuleRuntimeTotals(aggrMonitor, 2, 1);
+        checkTotalFactCount(aggrMonitor, 1);
         tft = checkTotalFiringTimeGEQ(aggrMonitor, tft);
         checkTotalSessions(aggrMonitor, 1);
         
-        System.out.println("---");
+        LOG.debug("---");
         
         KieSession ksession2 = kc.newKieSession(KSESSION1, sessionConf);
         ksession2.insert("Ciao");
@@ -273,25 +278,27 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         
         print(aggrMonitor);
         checkAgendaTotals(aggrMonitor, 4, 2, 2);
-        checkRuleRuntimeTotals(aggrMonitor, 4, 2);
+        checkTotalFactCount(aggrMonitor, 2);
         tft = checkTotalFiringTimeGEQ(aggrMonitor, tft + 1);
         checkTotalSessions(aggrMonitor, 2);
         
         ksession2.dispose();
         checkTotalSessions(aggrMonitor, 1);
+        checkTotalFactCount(aggrMonitor, 1);
         ksession.dispose();
         checkTotalSessions(aggrMonitor, 0);
+        checkTotalFactCount(aggrMonitor, 0);
         
-        System.out.println("--- NOW for the STATELESS ---");
+        LOG.debug("--- NOW for the STATELESS ---");
         
         tft = 0;
         
         StatelessKieSession stateless = kc.newStatelessKieSession(KSESSION2, sessionConf);
         
-        KieSessionMonitoringMBean aggrMonitor2 = JMX.newMXBeanProxy(
+        StatelessKieSessionMonitoringMBean aggrMonitor2 = JMX.newMXBeanProxy(
                 mbserver,
                 DroolsManagementAgent.createObjectNameBy(containerId, KBASE2, KSESSION2),
-                KieSessionMonitoringMBean.class);
+                StatelessKieSessionMonitoringMBean.class);
         
         print(aggrMonitor2);
         checkAgendaTotals(aggrMonitor2, 0, 0, 0);
@@ -314,7 +321,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         checkTotalSessions(aggrMonitor2, 2);
         
         StatelessKieSession stateless2 = kc.newStatelessKieSession(KSESSION2, sessionConf);
-        System.out.println(stateless + " " + stateless2);
+        LOG.debug(stateless + " " + stateless2);
         checkTotalSessions(aggrMonitor2, 2);
         
         stateless2.execute("Ciao");
@@ -331,29 +338,39 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         assertEquals(1, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote("kc2")+",*"), null).size());
     }
     
-    private void print(KieSessionMonitoringMBean mb) {
-        System.out.println("total match created  : "+mb.getTotalMatchesCreated());
-        System.out.println("total match cancelled: "+mb.getTotalMatchesCancelled());
-        System.out.println("total match fired    : "+mb.getTotalMatchesFired());
-        System.out.println("inserted and deleted : +"+mb.getTotalObjectsInserted()+" -"+mb.getTotalObjectsDeleted());
-        System.out.println(mb.getTotalFiringTime() + "ms .");
+    private void print(GenericKieSessionMonitoringMBean mb) {
+        LOG.debug("total match created  : {}",mb.getTotalMatchesCreated());
+        LOG.debug("total match cancelled: {}",mb.getTotalMatchesCancelled());
+        LOG.debug("total match fired    : {}",mb.getTotalMatchesFired());
+        if (mb instanceof StatelessKieSessionMonitoringMBean) {
+            StatelessKieSessionMonitoringMBean c = (StatelessKieSessionMonitoringMBean) mb;
+            LOG.debug("inserted and deleted : +{} -{}",c.getTotalObjectsInserted(),c.getTotalObjectsDeleted());
+        } else if (mb instanceof KieSessionMonitoringMBean) {
+            KieSessionMonitoringMBean c = (KieSessionMonitoringMBean) mb;
+            LOG.debug("total tact count     : {}",c.getTotalFactCount());
+        }
+        LOG.debug("{} ms .", mb.getTotalFiringTime());
     }
     
-    private long checkTotalFiringTimeGEQ(KieSessionMonitoringMBean mb, long amount) {
+    private long checkTotalFiringTimeGEQ(GenericKieSessionMonitoringMBean mb, long amount) {
         assertTrue(mb.getTotalFiringTime() >= amount);
         return mb.getTotalFiringTime();
     }
     
-    private void checkTotalSessions(KieSessionMonitoringMBean mb, int totalSessions) {
+    private void checkTotalSessions(GenericKieSessionMonitoringMBean mb, int totalSessions) {
         assertEquals(totalSessions, mb.getTotalSessions()         );
     }
     
-    private void checkRuleRuntimeTotals(KieSessionMonitoringMBean mb, int inserted, int deleted) {
+    private void checkTotalFactCount(KieSessionMonitoringMBean mb, int factCount) {
+        assertEquals(factCount     , mb.getTotalFactCount()       );
+    }
+    
+    private void checkRuleRuntimeTotals(StatelessKieSessionMonitoringMBean mb, int inserted, int deleted) {
         assertEquals(inserted     , mb.getTotalObjectsInserted()  );
         assertEquals(deleted      , mb.getTotalObjectsDeleted()   );
     }
     
-    private void checkAgendaTotals(KieSessionMonitoringMBean mb, long mCreated, long mCancelled, long mFired) {
+    private void checkAgendaTotals(GenericKieSessionMonitoringMBean mb, long mCreated, long mCancelled, long mFired) {
         assertEquals(mCreated     , mb.getTotalMatchesCreated()   );
         assertEquals(mCancelled   , mb.getTotalMatchesCancelled() );
         assertEquals(mFired       , mb.getTotalMatchesFired()     );

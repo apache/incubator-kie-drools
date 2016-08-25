@@ -460,7 +460,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         InternalProcessRuntime processRuntime = ProcessRuntimeFactory.newProcessRuntime(this);
         if (processRuntime == null) {
             processRuntime = DUMMY_PROCESS_RUNTIME;
-            throw new RuntimeException( "There is no ProcessRuntime available: are jBPM libraries missing on classpath?" );
         }
         return processRuntime;
     }
@@ -2185,12 +2184,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         @Override
         public void addEventListener( ProcessEventListener listener ) {
-            throw new UnsupportedOperationException( );
+            // do nothing.
         }
 
         @Override
         public void removeEventListener( ProcessEventListener listener ) {
-            throw new UnsupportedOperationException( );
+            // do nothing.
         }
 
         @Override
