@@ -111,6 +111,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         try {
             if ( getTrait().getDefinedClass() != null ) {
                 Trait annTrait = getAnnotation( getTrait().getDefinedClass(), Trait.class );
+                // TODO FIXME Navigate the interface hierarchy to look for 'impl' mixins
+                // TODO FIXME Resolve conflicts in case of multiple behavior inheritance
                 if ( hasImpl( annTrait ) ) {
                     mixinClass = annTrait.impl();
                     mixin = mixinClass.getSimpleName().substring(0,1).toLowerCase() + mixinClass.getSimpleName().substring(1);
