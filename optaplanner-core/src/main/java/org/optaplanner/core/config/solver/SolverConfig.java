@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.solver;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -295,9 +296,9 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                                          Termination termination) {
         List<PhaseConfig> phaseConfigList_ = phaseConfigList;
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
-            phaseConfigList_ = new ArrayList<>(2);
-            phaseConfigList_.add(new ConstructionHeuristicPhaseConfig());
-            phaseConfigList_.add(new LocalSearchPhaseConfig());
+            phaseConfigList_ = Arrays.asList(
+                    new ConstructionHeuristicPhaseConfig(),
+                    new LocalSearchPhaseConfig());
         }
         List<Phase> phaseList = new ArrayList<>(phaseConfigList_.size());
         int phaseIndex = 0;
