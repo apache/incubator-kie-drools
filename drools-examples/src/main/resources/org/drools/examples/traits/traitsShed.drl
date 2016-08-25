@@ -22,6 +22,7 @@ import org.drools.core.factmodel.traits.Thing;
 
 declare Person
     @Traitable
+    @PropertyReactive
 
     name    : String       = "john"     @key
 
@@ -33,6 +34,7 @@ end
 
 
 declare trait IPerson
+    @PropertyReactive
 
     name    : String
 
@@ -44,12 +46,14 @@ end
 
 
 declare trait Student extends IPerson
+    @PropertyReactive
 
     school  : String
 end
 
 
 declare trait Worker extends IPerson
+    @PropertyReactive
 
     wage    : int
 end
@@ -76,23 +80,25 @@ when
     $s : Student( this isA Worker, $age : age < 25 )
 then
     System.out.println( " The toll of toil ");
-    $s.setAge( 75 );
-    update( $s );
+    modify( $s ) {
+        setAge( 75 );
+    }
 end
 
 rule "Too old for school and all"
 when
-    $w : Worker( this not isA Student, $age : age )
+    $w : Worker( this isA Student, $age : age > 65 )
 then
     System.out.println( " Student (no more) at " + $age );
-    shed( $w, Worker.class );
+    shed( $w, Student.class );
 end
 
 rule "Retire"
 when
-    Thing( this not isA Worker )
+    $w : Thing( this not isA Student, this isA Worker )
 then
     System.out.println( " Time to Retire" );
+    shed( $w, Worker.class );
 end
 
 

@@ -30,7 +30,6 @@ declare Person
 
 end
 
-
 declare trait Student extends Scholar
 
     name    : String
