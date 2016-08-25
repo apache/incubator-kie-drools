@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.feel11;
+package org.kie.dmn.feel.parser.feel11;
 
-import org.antlr.v4.runtime.DiagnosticErrorListener;
-import org.antlr.v4.runtime.atn.PredictionMode;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.ast.*;
 

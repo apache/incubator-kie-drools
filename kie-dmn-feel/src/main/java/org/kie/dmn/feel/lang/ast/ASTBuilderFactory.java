@@ -17,7 +17,6 @@
 package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
-import org.kie.dmn.feel.lang.feel11.FEEL_1_1Parser;
 
 import java.util.ArrayList;
 import java.util.List;

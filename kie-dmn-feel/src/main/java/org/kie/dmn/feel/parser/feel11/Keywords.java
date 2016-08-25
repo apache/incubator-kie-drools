@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.feel11;
+package org.kie.dmn.feel.parser.feel11;
 
 public enum Keywords {
 
