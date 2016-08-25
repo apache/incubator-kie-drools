@@ -284,6 +284,10 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return dataDrivenPathMemories == null ? null : dataDrivenPathMemories.get(0);
     }
 
+    public boolean hasDataDrivenPathMemories() {
+        return dataDrivenPathMemories != null;
+    }
+
     public List<PathMemory> getDataDrivenPathMemories() {
         return dataDrivenPathMemories;
     }

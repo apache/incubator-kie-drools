@@ -19,7 +19,6 @@ import org.drools.compiler.Alarm;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Sensor;
 import org.drools.core.event.DefaultAgendaEventListener;
-import org.drools.core.reteoo.ReteDumper;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.definition.rule.Rule;
@@ -341,8 +340,6 @@ public class ActivateAndDeleteOnListenerTest extends CommonTestMethodBase {
                 .addContent(str, ResourceType.DRL)
                 .build()
                 .newKieSession(conf, null);
-
-        ReteDumper.dumpRete( ksession );
 
         final List list = new ArrayList();
 

@@ -80,9 +80,13 @@ public class SegmentPropagator {
                         peer = ((LeftTupleSink)smem.getRootNode()).createPeer( peer );
                         smem.getStagedLeftTuples().addInsert( peer );
 
-                        PathMemory dataDrivenPmem = smem.getFirstDataDrivenPathMemory();
-                        if (dataDrivenPmem != null && dataDrivenPmem.isRuleLinked()) {
-                            forceFlushLeftTuple(dataDrivenPmem, smem, wm, smem.getStagedLeftTuples());
+                        if (smem.hasDataDrivenPathMemories()) {
+                            for (PathMemory dataDrivenPmem : smem.getDataDrivenPathMemories()) {
+                                if (dataDrivenPmem.isRuleLinked()) {
+                                    forceFlushLeftTuple(dataDrivenPmem, smem, wm, smem.getStagedLeftTuples());
+                                    break;
+                                }
+                            }
                         }
                     }
                 }
