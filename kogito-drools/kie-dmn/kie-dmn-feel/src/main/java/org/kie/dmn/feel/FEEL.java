@@ -20,9 +20,9 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.ast.BaseNode;
-import org.kie.dmn.feel.lang.feel11.ASTBuilderVisitor;
-import org.kie.dmn.feel.lang.feel11.FEELParser;
-import org.kie.dmn.feel.lang.feel11.FEEL_1_1Parser;
+import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
+import org.kie.dmn.feel.parser.feel11.FEELParser;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
 import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
 import org.kie.dmn.feel.lang.impl.CompilerContextImpl;
 

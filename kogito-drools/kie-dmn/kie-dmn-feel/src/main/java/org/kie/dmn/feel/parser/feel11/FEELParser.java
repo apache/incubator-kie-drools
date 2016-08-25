@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.feel.lang.feel11;
+package org.kie.dmn.feel.parser.feel11;
 
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.PredictionMode;
-import org.kie.dmn.feel.lang.Type;
 
 import java.util.Map;
-import java.util.stream.Stream;
 
 public class FEELParser {
 

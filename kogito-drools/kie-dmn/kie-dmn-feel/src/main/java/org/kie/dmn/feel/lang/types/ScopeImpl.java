@@ -18,7 +18,7 @@ package org.kie.dmn.feel.lang.types;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.Token;
-import org.kie.dmn.feel.lang.feel11.FEEL_1_1Lexer;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Lexer;
 import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.util.EvalHelper;
