@@ -18,9 +18,7 @@ package org.drools.core.factmodel.traits;
 
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.DefaultBeanClassBuilder;
 import org.drools.core.factmodel.FieldDefinition;
-import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.util.ExternalizableLinkedHashMap;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.FactField;
@@ -46,9 +44,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Arrays.asList;
 import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
 public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Serializable {
@@ -71,8 +71,97 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
     }
 
 
-    private boolean hasImpl( Trait annTrait ) {
+    private static boolean hasImpl( Trait annTrait ) {
         return annTrait != null && ! annTrait.impl().equals( Trait.NullMixin.class );
+    }
+
+    private static Map<Class<?>, List<Method>> findMixinMethodImpls(Class<?> traitClass) {
+        Map<Class<?>, List<Method>> map = new HashMap<Class<?>, List<Method>>();
+        findMixinMethodImpls(traitClass, map);
+        return map;
+    }
+
+    private static void findMixinMethodImpls(Class<?> traitClass, Map<Class<?>, List<Method>> map) {
+        Trait annTrait = getAnnotation( traitClass, Trait.class );
+        if ( hasImpl( annTrait ) ) {
+            Class<?> mixinClass = annTrait.impl();
+            map.put( mixinClass, asList( mixinClass.getMethods() ) );
+        }
+        if (traitClass.getSuperclass() != null) {
+            findMixinMethodImpls(traitClass.getSuperclass(), map);
+        }
+        for (Class<?> intf : traitClass.getInterfaces()) {
+            findMixinMethodImpls(intf, map);
+        }
+    }
+
+    static MixinInfo findMixinInfo(Class<?> traitClass) {
+        if ( traitClass == null ) {
+            return null;
+        }
+        Map<Class<?>, List<Method>> mixinMethodMap = findMixinMethodImpls(traitClass);
+        if ( mixinMethodMap.isEmpty() ) {
+            return null;
+        }
+
+        MixinInfo mixinInfo = new MixinInfo();
+        try {
+            mixinInfo.mixinClasses = mixinMethodMap.keySet();
+            mixinInfo.mixinMethods = new HashMap<Class<?>, Set<Method>>();
+            mixinInfo.mixinGetSet = new HashMap<Class<?>, Map<String, Method>>();
+
+            for (Map.Entry<Class<?>, List<Method>> entry : mixinMethodMap.entrySet()) {
+                Class<?> mixinClass = entry.getKey();
+                ClassFieldInspector cfi = new ClassFieldInspector( mixinClass );
+
+                for ( Method m : entry.getValue() ) {
+                    try {
+                        traitClass.getMethod( m.getName(), m.getParameterTypes() );
+                        if ( cfi.getGetterMethods().containsValue( m ) || cfi.getSetterMethods().containsValue( m )) {
+                            Map<String, Method> map = mixinInfo.mixinGetSet.get(mixinClass);
+                            if (map == null) {
+                                map = new HashMap<String, Method>();
+                                mixinInfo.mixinGetSet.put( mixinClass, map );
+                            }
+                            map.put( m.getName(), m );
+                        } else {
+                            Set<Method> set = mixinInfo.mixinMethods.get(mixinClass);
+                            if (set == null) {
+                                set = new HashSet<Method>();
+                                mixinInfo.mixinMethods.put( mixinClass, set );
+                            }
+                            set.add( m );
+                        }
+                    } catch (NoSuchMethodException e) {
+
+                    }
+                }
+
+            }
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+        return mixinInfo;
+    }
+
+    static class MixinInfo {
+        Set<Class<?>> mixinClasses = null;
+        Map<Class<?>, Set<Method>> mixinMethods = null;
+        Map<Class<?>, Map<String, Method>> mixinGetSet = null;
+
+        boolean isMixinGetter( FieldDefinition field ) {
+            String getter = BuildUtils.getterName( field.getName(), field.getTypeName() );
+            for (Map<String, Method> map : mixinGetSet.values()) {
+                if ( map.containsKey( getter ) ) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    static String getMixinName(Class<?> mixinClass) {
+        return mixinClass.getSimpleName().substring(0,1).toLowerCase() + mixinClass.getSimpleName().substring(1);
     }
 
     public byte[] buildClass( ClassDefinition core, ClassLoader classLoader ) throws IOException,
@@ -94,51 +183,16 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
         String name = TraitFactory.getPropertyWrapperName( getTrait(), core );
         String masterName = TraitFactory.getProxyName( getTrait(), core );
-
+        Class<?> traitClass = getTrait().getDefinedClass();
 
         String internalWrapper  = BuildUtils.getInternalType( name );
         String internalProxy    = BuildUtils.getInternalType( masterName );
 
         String descrCore        = Type.getDescriptor( core.getDefinedClass() );
         String internalCore     = Type.getInternalName( core.getDefinedClass() );
-        String internalTrait    = Type.getInternalName( getTrait().getDefinedClass() );
+        String internalTrait    = Type.getInternalName( traitClass );
 
-
-        Class mixinClass = null;
-        String mixin = null;
-        Set<Method> mixinMethods = new HashSet<Method>();
-        Map<String,Method> mixinGetSet = new HashMap<String,Method>();
-        try {
-            if ( getTrait().getDefinedClass() != null ) {
-                Trait annTrait = getAnnotation( getTrait().getDefinedClass(), Trait.class );
-                // TODO FIXME Navigate the interface hierarchy to look for 'impl' mixins
-                // TODO FIXME Resolve conflicts in case of multiple behavior inheritance
-                if ( hasImpl( annTrait ) ) {
-                    mixinClass = annTrait.impl();
-                    mixin = mixinClass.getSimpleName().substring(0,1).toLowerCase() + mixinClass.getSimpleName().substring(1);
-                    ClassFieldInspector cfi = new ClassFieldInspector( mixinClass );
-
-                    for ( Method m : mixinClass.getMethods() ) {
-                        try {
-                            getTrait().getDefinedClass().getMethod(m.getName(), m.getParameterTypes() );
-                            if ( cfi.getGetterMethods().containsValue( m )
-                                    || cfi.getSetterMethods().containsValue( m )) {
-                                mixinGetSet.put( m.getName(), m );
-                            } else {
-                                mixinMethods.add( m );
-                            }
-                        } catch (NoSuchMethodException e) {
-
-                        }
-                    }
-
-                }
-            }
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-
-
+        MixinInfo mixinInfo = findMixinInfo(traitClass);
 
         ClassWriter cw = createClassWriter( classLoader,
                                             ACC_PUBLIC + ACC_SUPER,
@@ -163,13 +217,15 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             fv.visitEnd();
         }
 
-        if ( mixinClass != null ) {
-            {
-                fv = cw.visitField( ACC_PRIVATE,
-                        mixin,
-                        BuildUtils.getTypeDescriptor( mixinClass.getName() ),
-                        null, null );
-                fv.visitEnd();
+        if ( mixinInfo != null ) {
+            for ( Class<?> mixinClass : mixinInfo.mixinClasses ) {
+                {
+                    fv = cw.visitField( ACC_PRIVATE,
+                                        getMixinName(mixinClass),
+                                        BuildUtils.getTypeDescriptor( mixinClass.getName() ),
+                                        null, null );
+                    fv.visitEnd();
+                }
             }
         }
 
@@ -219,34 +275,37 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitLabel( l0 );
 
 
-            if ( mixinClass != null ) {
-                try {
-                    Class actualArg = getPossibleConstructor( mixinClass, trait.getDefinedClass() );
+            if ( mixinInfo != null ) {
+                for ( Class<?> mixinClass : mixinInfo.mixinClasses ) {
+                    String mixin = getMixinName( mixinClass );
+                    try {
+                        Class actualArg = getPossibleConstructor( mixinClass, trait.getDefinedClass() );
 
-                    mv.visitVarInsn( ALOAD, 0 );
-                    mv.visitTypeInsn( NEW, Type.getInternalName( mixinClass ) );
-                    mv.visitInsn( DUP );
-                    mv.visitVarInsn( ALOAD, 0 );
-                    mv.visitMethodInsn( INVOKESPECIAL,
-                            Type.getInternalName( mixinClass ),
-                            "<init>",
-                            "("+ Type.getDescriptor( actualArg ) + ")V");
-                    mv.visitFieldInsn( PUTFIELD,
-                            internalProxy,
-                            mixin,
-                            Type.getDescriptor( mixinClass ) );
-                } catch ( NoSuchMethodException nsme ) {
-                    mv.visitVarInsn( ALOAD, 0 );
-                    mv.visitTypeInsn( NEW, Type.getInternalName( mixinClass ) );
-                    mv.visitInsn( DUP );
-                    mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( mixinClass ), "<init>", "()V" );
-                    mv.visitFieldInsn( PUTFIELD,
-                            internalProxy,
-                            mixin,
-                            Type.getDescriptor( mixinClass ) );
+                        mv.visitVarInsn( ALOAD, 0 );
+                        mv.visitTypeInsn( NEW, Type.getInternalName( mixinClass ) );
+                        mv.visitInsn( DUP );
+                        mv.visitVarInsn( ALOAD, 0 );
+                        mv.visitMethodInsn( INVOKESPECIAL,
+                                            Type.getInternalName( mixinClass ),
+                                            "<init>",
+                                            "(" + Type.getDescriptor( actualArg ) + ")V" );
+                        mv.visitFieldInsn( PUTFIELD,
+                                           internalProxy,
+                                           mixin,
+                                           Type.getDescriptor( mixinClass ) );
+                    } catch (NoSuchMethodException nsme) {
+                        mv.visitVarInsn( ALOAD, 0 );
+                        mv.visitTypeInsn( NEW, Type.getInternalName( mixinClass ) );
+                        mv.visitInsn( DUP );
+                        mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( mixinClass ), "<init>", "()V" );
+                        mv.visitFieldInsn( PUTFIELD,
+                                           internalProxy,
+                                           mixin,
+                                           Type.getDescriptor( mixinClass ) );
+                    }
                 }
-
             }
+
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitVarInsn( ALOAD, 1 );
             mv.visitFieldInsn( PUTFIELD, internalProxy, "object", descrCore );
@@ -437,10 +496,40 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             mv.visitEnd();
         }
 
+        buildFields( core, mask, masterName, mixinInfo, cw );
 
+        buildKeys( core, masterName, cw );
 
+        buildMixinMethods( masterName, mixinInfo, cw );
 
+        buildCommonMethods( cw, masterName, core.getClassName() );
 
+        buildExtendedMethods( cw, trait, core, mask );
+
+        buildShadowMethods( cw, trait, core, mask );
+
+        cw.visitEnd();
+
+        return cw.toByteArray();
+
+    }
+
+    private void buildKeys( ClassDefinition core, String masterName, ClassWriter cw ) {
+        boolean hasKeys = false;
+        for ( FactField ff : trait.getFields() ) {
+            if ( ff.isKey() ) {
+                hasKeys = true;
+                break;
+            }
+        }
+        if ( ! hasKeys ) {
+            buildEqualityMethods( cw, masterName, core.getClassName() );
+        } else {
+            buildKeyedEqualityMethods( cw, trait, masterName, core.getClassName() );
+        }
+    }
+
+    private void buildFields( ClassDefinition core, BitSet mask, String masterName, MixinInfo mixinInfo, ClassWriter cw ) {
         int j = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
 
@@ -455,48 +544,16 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
                 }
             } else {
                 if ( ! hardField ) {
-                    if ( ! mixinGetSet.containsKey( BuildUtils.getterName( field.getName(), field.getTypeName() ) ) ) {
+                    if (mixinInfo == null || !mixinInfo.isMixinGetter( field )) {
                         buildSoftGetter( cw, field, masterName, trait, core );
                         buildSoftSetter( cw, field, masterName, trait, core );
-                    } else {
-                        //
                     }
-
                 } else {
                     buildHardGetter( cw, field, masterName, trait, core );
                     buildHardSetter( cw, field, masterName, trait, core );
                 }
             }
         }
-
-        boolean hasKeys = false;
-        for ( FactField ff : trait.getFields() ) {
-            if ( ff.isKey() ) {
-                hasKeys = true;
-                break;
-            }
-        }
-        if ( ! hasKeys ) {
-            buildEqualityMethods( cw, masterName, core.getClassName() );
-        } else {
-            buildKeyedEqualityMethods( cw, trait, masterName, core.getClassName() );
-        }
-
-        if ( mixinClass != null ) {
-            buildMixinMethods( cw, masterName, mixin, mixinClass, mixinMethods );
-            buildMixinMethods( cw, masterName, mixin, mixinClass, mixinGetSet.values() );
-        }
-
-        buildCommonMethods( cw, masterName, core.getClassName() );
-
-        buildExtendedMethods( cw, trait, core, mask );
-
-        buildShadowMethods( cw, trait, core, mask );
-
-        cw.visitEnd();
-
-        return cw.toByteArray();
-
     }
 
     protected void buildShadowMethods( ClassWriter cw, ClassDefinition trait, ClassDefinition core, BitSet mask ) {
@@ -543,7 +600,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
     }
 
-    private <K extends Annotation> K getAnnotation( Class klass, Class<K> annotationClass ) {
+    private static <K extends Annotation> K getAnnotation( Class klass, Class<K> annotationClass ) {
         if ( klass.equals( Thing.class ) ) {
             return null;
         }
@@ -581,7 +638,26 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
     }
 
 
-    private void buildMixinMethods( ClassWriter cw, String wrapperName, String mixin, Class mixinClass, Collection<Method> mixinMethods ) {
+    static void buildMixinMethods( String masterName, MixinInfo mixinInfo, ClassWriter cw ) {
+        if ( mixinInfo == null ) {
+            return;
+        }
+        for ( Class<?> mixinClass : mixinInfo.mixinClasses ) {
+            String mixin = getMixinName( mixinClass );
+
+            Set<Method> methods = mixinInfo.mixinMethods.get( mixinClass );
+            if (methods != null) {
+                buildMixinMethods( cw, masterName, mixin, mixinClass, methods );
+            }
+
+            Map<String, Method> map = mixinInfo.mixinGetSet.get( mixinClass );
+            if (map != null) {
+                buildMixinMethods( cw, masterName, mixin, mixinClass, map.values() );
+            }
+        }
+    }
+
+    private static void buildMixinMethods( ClassWriter cw, String wrapperName, String mixin, Class mixinClass, Collection<Method> mixinMethods ) {
         for ( Method method : mixinMethods ) {
             String signature = TraitFactory.buildSignature( method );
             {
