@@ -6007,4 +6007,92 @@ public class TraitTest extends CommonTestMethodBase {
             System.out.println( "I " + core.getFields().get( "name" ) + ", now know everything about " + subject );
         }
     }
+
+    @Trait( impl = YImpl.class )
+    public interface Y {
+        String getShared();
+        String getYValue();
+    }
+
+    public static class YImpl implements Y {
+
+        @Override
+        public String getShared() {
+            return "Y";
+        }
+
+        @Override
+        public String getYValue() {
+            return "Y";
+        }
+    }
+
+    @Trait( impl = ZImpl.class )
+    public interface Z {
+        String getShared();
+        String getZValue();
+    }
+
+    public static class ZImpl implements Z {
+
+        @Override
+        public String getShared() {
+            return "Z";
+        }
+
+        @Override
+        public String getZValue() {
+            return "Z";
+        }
+    }
+
+    @Test(timeout=10000)
+    public void testMixinWithConflicts() {
+        checkMixinResolutionUsesOrder("Y,Z", "Y");
+        checkMixinResolutionUsesOrder("Z,Y", "Z");
+    }
+
+    private void checkMixinResolutionUsesOrder(String interfaces, String first) {
+        String drl =
+                "package org.drools.test.traits\n" +
+                "import " + Y.class.getCanonicalName() + ";\n" +
+                "import " + Z.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "global java.util.List list;" +
+                "\n" +
+                "declare Bean\n" +
+                "    @Traitable\n" +
+                "    name    : String       = \"xxx\"     @key\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "declare trait X extends " + interfaces + " end\n" +
+                "\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "    insert( new Bean() );\n" +
+                "end\n" +
+                "\n" +
+                "rule Exec no-loop when\n" +
+                "    $b : Bean()\n" +
+                "then\n" +
+                "    X x = don( $b, X.class );\n" +
+                "    list.add( x.getYValue() );\n" +
+                "    list.add( x.getZValue() );\n" +
+                "    list.add( x.getShared() );\n" +
+                "end\n";
+
+        KieSession ks = getSessionFromString( drl );
+        TraitFactory.setMode( mode, ks.getKieBase() );
+
+        List<String> list = new ArrayList<String>();
+        ks.setGlobal( "list", list );
+
+        ks.fireAllRules();
+
+        System.out.println(list);
+        assertEquals( "Y", list.get(0) );
+        assertEquals( "Z", list.get(1) );
+        assertEquals( first, list.get(2) );
+    }
 }

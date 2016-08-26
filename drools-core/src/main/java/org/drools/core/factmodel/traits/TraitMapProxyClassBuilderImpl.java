@@ -39,11 +39,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -76,7 +78,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
     }
 
     private static Map<Class<?>, List<Method>> findMixinMethodImpls(Class<?> traitClass) {
-        Map<Class<?>, List<Method>> map = new HashMap<Class<?>, List<Method>>();
+        // Use a LinkedHashMap to preserve the order of the names in the extends clause of declaration
+        Map<Class<?>, List<Method>> map = new LinkedHashMap<Class<?>, List<Method>>();
         findMixinMethodImpls(traitClass, map);
         return map;
     }
@@ -106,7 +109,8 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
         MixinInfo mixinInfo = new MixinInfo();
         try {
-            mixinInfo.mixinClasses = mixinMethodMap.keySet();
+            mixinInfo.mixinClasses = new ArrayList<Class<?>>();
+            mixinInfo.mixinClasses.addAll( mixinMethodMap.keySet() );
             mixinInfo.mixinMethods = new HashMap<Class<?>, Set<Method>>();
             mixinInfo.mixinGetSet = new HashMap<Class<?>, Map<String, Method>>();
 
@@ -145,7 +149,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
     }
 
     static class MixinInfo {
-        Set<Class<?>> mixinClasses = null;
+        List<Class<?>> mixinClasses = null;
         Map<Class<?>, Set<Method>> mixinMethods = null;
         Map<Class<?>, Map<String, Method>> mixinGetSet = null;
 
@@ -642,24 +646,33 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         if ( mixinInfo == null ) {
             return;
         }
+        Set<String> createdSignatures = new HashSet<String>();
         for ( Class<?> mixinClass : mixinInfo.mixinClasses ) {
             String mixin = getMixinName( mixinClass );
 
             Set<Method> methods = mixinInfo.mixinMethods.get( mixinClass );
             if (methods != null) {
-                buildMixinMethods( cw, masterName, mixin, mixinClass, methods );
+                buildMixinMethods( cw, masterName, mixin, mixinClass, methods, createdSignatures );
             }
 
             Map<String, Method> map = mixinInfo.mixinGetSet.get( mixinClass );
             if (map != null) {
-                buildMixinMethods( cw, masterName, mixin, mixinClass, map.values() );
+                buildMixinMethods( cw, masterName, mixin, mixinClass, map.values(), createdSignatures );
             }
         }
     }
 
-    private static void buildMixinMethods( ClassWriter cw, String wrapperName, String mixin, Class mixinClass, Collection<Method> mixinMethods ) {
+    private static void buildMixinMethods( ClassWriter cw, String wrapperName, String mixin, Class mixinClass,
+                                           Collection<Method> mixinMethods, Set<String> createdSignatures ) {
         for ( Method method : mixinMethods ) {
             String signature = TraitFactory.buildSignature( method );
+            String methodSignature = method.getName() + signature;
+            if (createdSignatures.contains( methodSignature )) {
+                // TODO plug conflict resolution strategy here
+                continue;
+            }
+            createdSignatures.add(methodSignature);
+
             {
                 MethodVisitor mv = cw.visitMethod( ACC_PUBLIC,
                         method.getName(),
@@ -685,9 +698,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
                 mv.visitEnd();
             }
         }
-
     }
-
 
     private void buildHardGetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition proxy, ClassDefinition core ) {
         buildHardGetter( cw, field, masterName, proxy, core, BuildUtils.getterName( field.getName(), field.getTypeName() ), false );
