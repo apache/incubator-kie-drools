@@ -19,10 +19,10 @@ package org.drools.core.factmodel.traits;
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
+import org.drools.core.factmodel.traits.TraitBuilderUtil.*;
 import org.drools.core.util.Triple;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
-import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.FactField;
 import org.mvel2.MVEL;
 import org.mvel2.asm.ClassVisitor;
@@ -43,13 +43,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.BitSet;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import static org.drools.core.factmodel.traits.TraitBuilderUtil.*;
 import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
 public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder, Serializable {
@@ -92,7 +90,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
         String name = TraitFactory.getPropertyWrapperName( getTrait(), core );
         String masterName = TraitFactory.getProxyName( getTrait(), core );
-
+        Class<?> traitClass = getTrait().getDefinedClass();
 
         String internalWrapper  = BuildUtils.getInternalType(name);
         String internalProxy    = BuildUtils.getInternalType(masterName);
@@ -101,39 +99,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         String descrCore        = Type.getDescriptor(core.getDefinedClass());
         String internalTrait    = Type.getInternalName(getTrait().getDefinedClass());
 
-
-        Class mixinClass = null;
-        String mixin = null;
-        Set<Method> mixinMethods = new HashSet<Method>();
-        Map<String,Method> mixinGetSet = new HashMap<String,Method>();
-        try {
-            if ( getTrait().getDefinedClass() != null ) {
-                Trait annTrait = getAnnotation( getTrait().getDefinedClass(), Trait.class );
-                if ( hasImpl( annTrait ) ) {
-                    mixinClass = annTrait.impl();
-                    mixin = mixinClass.getSimpleName().substring(0,1).toLowerCase() + mixinClass.getSimpleName().substring(1);
-                    ClassFieldInspector cfi = new ClassFieldInspector( mixinClass );
-
-                    for ( Method m : mixinClass.getMethods() ) {
-                        try {
-                            getTrait().getDefinedClass().getMethod(m.getName(), m.getParameterTypes() );
-                            if ( cfi.getGetterMethods().containsValue( m )
-                                    || cfi.getSetterMethods().containsValue( m )) {
-                                mixinGetSet.put( m.getName(), m );
-                            } else {
-                                mixinMethods.add( m );
-                            }
-                        } catch ( NoSuchMethodException e ) {
-
-                        }
-                    }
-
-                }
-            }
-        } catch ( Exception e ) {
-            e.printStackTrace();
-        }
-
+        MixinInfo mixinInfo = findMixinInfo( traitClass );
 
         ClassWriter cw = createClassWriter( classLoader,
                                             ACC_PUBLIC + ACC_SUPER,
@@ -160,13 +126,16 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
             fv = cw.visitField( ACC_PRIVATE, "storeId", Type.getDescriptor( String.class ), null, null);
             fv.visitEnd();
         }
-        if ( mixinClass != null ) {
-            {
-                fv = cw.visitField( ACC_PRIVATE,
-                        mixin,
-                        Type.getDescriptor( mixinClass ),
-                        null, null);
-                fv.visitEnd();
+
+        if ( mixinInfo != null ) {
+            for ( Class<?> mixinClass : mixinInfo.mixinClasses ) {
+                {
+                    fv = cw.visitField( ACC_PRIVATE,
+                                        getMixinName(mixinClass),
+                                        Type.getDescriptor( mixinClass ),
+                                        null, null );
+                    fv.visitEnd();
+                }
             }
         }
 
@@ -207,7 +176,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
             mv.visitMethodInsn( INVOKEVIRTUAL, Type.getInternalName( TripleStore.class ), "getId", "()" + Type.getDescriptor( String.class ) );
             mv.visitFieldInsn( PUTFIELD, internalProxy, "storeId", Type.getDescriptor( String.class ) );
 
-            int size = buildConstructorCore( cw, mv, internalProxy, internalWrapper, internalCore, descrCore, mixin, mixinClass );
+            int size = buildConstructorCore( cw, mv, internalProxy, internalWrapper, internalCore, descrCore, mixinInfo );
 
             initFields( mv, internalProxy );
 
@@ -366,7 +335,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         }
 
 
-        buildProxyAccessors( mask, cw, masterName, core, mixinGetSet );
+        buildProxyAccessors( mask, cw, masterName, core, mixinInfo );
 
         boolean hasKeys = false;
         for ( FactField ff : getTrait().getFields() ) {
@@ -381,11 +350,7 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
             buildKeyedEqualityMethods( cw, getTrait(), masterName, core.getClassName() );
         }
 
-        if ( mixinClass != null ) {
-            buildMixinMethods( cw, masterName, mixin, mixinClass, mixinMethods );
-            buildMixinMethods( cw, masterName, mixin, mixinClass, mixinGetSet.values() );
-        }
-
+        buildMixinMethods( masterName, mixinInfo, cw );
 
         buildCommonMethods( cw, masterName );
 
@@ -464,39 +429,38 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
     }
 
 
-    protected int buildConstructorCore( ClassWriter cw, MethodVisitor mv, String internalProxy, String internalWrapper, String internalCore, String descrCore, String mixin, Class mixinClass ) {
-
-
+    protected int buildConstructorCore( ClassWriter cw, MethodVisitor mv, String internalProxy, String internalWrapper, String internalCore, String descrCore, MixinInfo mixinInfo ) {
         mv.visitVarInsn( ALOAD, 0 );
         mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( proxyBaseClass ), "<init>", "()V" );
-        if ( mixinClass != null ) {
-            try {
-//                    Constructor con = mixinClass.getConstructor( trait.getDefinedClass() );
-                Class actualArg = getPossibleConstructor( mixinClass, trait.getDefinedClass() );
+        if (mixinInfo != null) {
+            for ( Class<?> mixinClass : mixinInfo.mixinClasses ) {
+                try {
+                    //                    Constructor con = mixinClass.getConstructor( trait.getDefinedClass() );
+                    Class actualArg = getPossibleConstructor( mixinClass, trait.getDefinedClass() );
 
-                mv.visitVarInsn( ALOAD, 0 );
-                mv.visitTypeInsn( NEW, Type.getInternalName(mixinClass) );
-                mv.visitInsn( DUP );
-                mv.visitVarInsn( ALOAD, 0 );
-                mv.visitMethodInsn( INVOKESPECIAL,
-                        Type.getInternalName( mixinClass ),
-                        "<init>",
-                        "("+ Type.getDescriptor( actualArg ) + ")V" );
-                mv.visitFieldInsn( PUTFIELD,
-                        internalProxy,
-                        mixin,
-                        Type.getDescriptor( mixinClass ) );
-            } catch ( NoSuchMethodException nsme ) {
-                mv.visitVarInsn( ALOAD, 0 );
-                mv.visitTypeInsn( NEW, Type.getInternalName( mixinClass ) );
-                mv.visitInsn( DUP );
-                mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( mixinClass ), "<init>", "()V" );
-                mv.visitFieldInsn( PUTFIELD,
-                        internalProxy,
-                        mixin,
-                        Type.getDescriptor( mixinClass ) );
+                    mv.visitVarInsn( ALOAD, 0 );
+                    mv.visitTypeInsn( NEW, Type.getInternalName( mixinClass ) );
+                    mv.visitInsn( DUP );
+                    mv.visitVarInsn( ALOAD, 0 );
+                    mv.visitMethodInsn( INVOKESPECIAL,
+                                        Type.getInternalName( mixinClass ),
+                                        "<init>",
+                                        "(" + Type.getDescriptor( actualArg ) + ")V" );
+                    mv.visitFieldInsn( PUTFIELD,
+                                       internalProxy,
+                                       getMixinName( mixinClass ),
+                                       Type.getDescriptor( mixinClass ) );
+                } catch (NoSuchMethodException nsme) {
+                    mv.visitVarInsn( ALOAD, 0 );
+                    mv.visitTypeInsn( NEW, Type.getInternalName( mixinClass ) );
+                    mv.visitInsn( DUP );
+                    mv.visitMethodInsn( INVOKESPECIAL, Type.getInternalName( mixinClass ), "<init>", "()V" );
+                    mv.visitFieldInsn( PUTFIELD,
+                                       internalProxy,
+                                       getMixinName( mixinClass ),
+                                       Type.getDescriptor( mixinClass ) );
+                }
             }
-
         }
 
         mv.visitVarInsn( ALOAD, 0 );
@@ -602,18 +566,18 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
 
 
 
-    protected void buildProxyAccessors( BitSet mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet) {
+    protected void buildProxyAccessors( BitSet mask, ClassWriter cw, String masterName, ClassDefinition core, MixinInfo mixinInfo) {
         int j = 0;
 
         for ( FieldDefinition field : getTrait().getFieldsDefinitions() ) {
             boolean isSoftField = TraitRegistry.isSoftField( field, j++, mask );
-            buildProxyAccessor( mask, cw, masterName, core, mixinGetSet, field, isSoftField );
+            buildProxyAccessor( mask, cw, masterName, core, mixinInfo, field, isSoftField );
         }
 
     }
 
 
-    protected void buildProxyAccessor( BitSet mask, ClassWriter cw, String masterName, ClassDefinition core, Map<String,Method> mixinGetSet, FieldDefinition field, boolean isSoftField ) {
+    protected void buildProxyAccessor( BitSet mask, ClassWriter cw, String masterName, ClassDefinition core, MixinInfo mixinInfo, FieldDefinition field, boolean isSoftField ) {
         FieldVisitor fv;
 
         if ( core.isFullTraiting() ) {
@@ -625,54 +589,16 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
             }
         } else {
             if ( isSoftField ) {
-                if ( ! mixinGetSet.containsKey( BuildUtils.getterName( field.getName(), field.getTypeName() ) ) ) {
+                if (mixinInfo == null || !mixinInfo.isMixinGetter( field )) {
                     buildSoftGetter( cw, field, masterName, trait, core );
                     buildSoftSetter( cw, field, masterName, trait, core );
-                } else {
-                    //
                 }
-
             } else {
                 buildHardGetter( cw, field, masterName, trait, core );
                 buildHardSetter( cw, field, masterName, trait, core );
             }
         }
     }
-
-
-
-    private void buildMixinMethods( ClassWriter cw, String wrapperName, String mixin, Class mixinClass, Collection<Method> mixinMethods ) {
-        for ( Method method : mixinMethods ) {
-            String signature = TraitFactory.buildSignature( method );
-            {
-                MethodVisitor mv = cw.visitMethod( ACC_PUBLIC,
-                        method.getName(),
-                        signature,
-                        null,
-                        null );
-                mv.visitCode();
-                mv.visitVarInsn( ALOAD, 0 );
-                mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( wrapperName ), mixin, Type.getDescriptor(mixinClass) );
-                int j = 1;
-                for ( Class arg : method.getParameterTypes() ) {
-                    mv.visitVarInsn( BuildUtils.varType( arg.getName() ), j++ );
-                }
-                mv.visitMethodInsn( INVOKEVIRTUAL,
-                        Type.getInternalName(mixinClass),
-                        method.getName(),
-                        signature );
-
-                mv.visitInsn( BuildUtils.returnType( method.getReturnType().getName() ) );
-                int stack = TraitFactory.getStackSize( method ) ;
-//                mv.visitMaxs( stack, stack );
-                mv.visitMaxs( 0, 0 );
-                mv.visitEnd();
-            }
-        }
-
-    }
-
-
 
     private void logicalSetter( MethodVisitor mv, FieldDefinition field, String masterName, ClassDefinition trait, ClassDefinition core, boolean hardField ) {
         String fieldType = field.getTypeName();

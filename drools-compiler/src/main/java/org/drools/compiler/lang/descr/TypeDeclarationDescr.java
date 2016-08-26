@@ -16,12 +16,14 @@
 
 package org.drools.compiler.lang.descr;
 
+import org.drools.core.factmodel.traits.Trait;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
 
 public class TypeDeclarationDescr
     extends AbstractClassTypeDeclarationDescr
@@ -120,5 +122,11 @@ public class TypeDeclarationDescr
 
     public void setTrait(boolean trait) {
         this.trait = trait;
+    }
+
+    @Override
+    public void indexByFQN(boolean isStrict) {
+        super.indexByFQN( isStrict );
+        trait |= hasAnnotation( Trait.class );
     }
 }

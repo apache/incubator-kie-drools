@@ -28,10 +28,15 @@ public @interface Trait {
 
     Class impl() default NullMixin.class;
 
-    public static class NullMixin {
+    class NullMixin {
         private NullMixin() {}
     }
 
     boolean logical() default false;
 
+    MixinConflictResolutionStrategy mixinSolveConflicts() default MixinConflictResolutionStrategy.DECLARATION_ORDER;
+
+    enum MixinConflictResolutionStrategy {
+        DECLARATION_ORDER, ERROR_ON_CONFLICT
+    }
 }
