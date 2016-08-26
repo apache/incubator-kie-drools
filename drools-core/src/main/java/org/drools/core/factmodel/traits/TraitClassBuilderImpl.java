@@ -28,6 +28,7 @@ import org.mvel2.asm.Type;
 
 import java.io.Serializable;
 
+import static org.drools.core.factmodel.DefaultBeanClassBuilder.addAnnotationAttribute;
 import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
 public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
@@ -72,12 +73,7 @@ public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
                     AnnotationVisitor av0 = cw.visitAnnotation( Type.getDescriptor( Trait.class ), true);
                     for ( AnnotationDefinition adef : classDef.getAnnotations() ) {
                         if ( Trait.class.getName().equals( adef.getName() ) ) {
-                            if ( adef.getPropertyValue( "logical" ) != null ) {
-                                av0.visit( "logical", adef.getPropertyValue( "logical" ) );
-                            }
-                            if ( adef.getPropertyValue( "impl" ) != null ) {
-                                av0.visit( "impl", Type.getType( (Class) adef.getPropertyValue( "impl" ) ) );
-                            }
+                            addAnnotationAttribute( adef, av0 );
                             break;
                         }
                     }

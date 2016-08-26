@@ -1810,121 +1810,72 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
     protected void buildClassAnnotations(ClassDefinition classDef, ClassVisitor cw) {
         for (AnnotationDefinition ad : classDef.getAnnotations()) {
             AnnotationVisitor av = cw.visitAnnotation("L"+BuildUtils.getInternalType(ad.getName())+";", true);
-            for (String key : ad.getValues().keySet()) {
-                AnnotationDefinition.AnnotationPropertyVal apv = ad.getValues().get(key);
-
-                switch (apv.getValType()) {
-                    case STRINGARRAY:
-                        AnnotationVisitor subAv = av.visitArray(apv.getProperty());
-                        Object[] array = (Object[]) apv.getValue();
-                        for (Object o : array) {
-                            subAv.visit(null,o);
-                        }
-                        subAv.visitEnd();
-                        break;
-                    case PRIMARRAY:
-                        av.visit(apv.getProperty(),apv.getValue());
-                        break;
-                    case ENUMARRAY:
-                        AnnotationVisitor subEnav = av.visitArray(apv.getProperty());
-                        Enum[] enArray = (Enum[]) apv.getValue();
-                        String aenumType = "L" + BuildUtils.getInternalType(enArray[0].getClass().getName()) + ";";
-                        for (Enum enumer : enArray) {
-                            subEnav.visitEnum(null,aenumType,enumer.name());
-                        }
-                        subEnav.visitEnd();
-                        break;
-                    case CLASSARRAY:
-                        AnnotationVisitor subKlav = av.visitArray(apv.getProperty());
-                        Class[] klarray = (Class[]) apv.getValue();
-                        for (Class klass : klarray) {
-                            subKlav.visit(null,Type.getType("L"+BuildUtils.getInternalType(klass.getName())+";"));
-                        }
-                        subKlav.visitEnd();
-                        break;
-                    case ENUMERATION:
-                        String enumType = "L" + BuildUtils.getInternalType(apv.getType().getName()) + ";";
-                        av.visitEnum(apv.getProperty(),enumType,((Enum) apv.getValue()).name());
-                        break;
-                    case KLASS:
-                        String klassName = BuildUtils.getInternalType(((Class) apv.getValue()).getName());
-                        av.visit(apv.getProperty(),Type.getType("L"+klassName+";"));
-                        break;
-                    case PRIMITIVE:
-                        av.visit(apv.getProperty(),apv.getValue());
-                        break;
-                    case STRING:
-                        av.visit(apv.getProperty(),apv.getValue());
-                        break;
-                }
-
-            }
+            addAnnotationAttribute( ad, av );
             av.visitEnd();
         }
     }
-
-
-
 
     protected void buildFieldAnnotations(FieldDefinition fieldDef, FieldVisitor fv) {
         if (fieldDef.getAnnotations() != null) {
             for (AnnotationDefinition ad : fieldDef.getAnnotations()) {
                 AnnotationVisitor av = fv.visitAnnotation("L"+BuildUtils.getInternalType(ad.getName())+";", true);
-                for (String key : ad.getValues().keySet()) {
-                    AnnotationDefinition.AnnotationPropertyVal apv = ad.getValues().get(key);
-
-                    switch (apv.getValType()) {
-                        case STRINGARRAY:
-                            AnnotationVisitor subAv = av.visitArray(apv.getProperty());
-                            Object[] array = (Object[]) apv.getValue();
-                            for (Object o : array) {
-                                subAv.visit(null,o);
-                            }
-                            subAv.visitEnd();
-                            break;
-                        case PRIMARRAY:
-                            av.visit(apv.getProperty(),apv.getValue());
-                            break;
-                        case ENUMARRAY:
-                            AnnotationVisitor subEnav = av.visitArray(apv.getProperty());
-                            Enum[] enArray = (Enum[]) apv.getValue();
-                            String aenumType = "L" + BuildUtils.getInternalType(enArray[0].getClass().getName()) + ";";
-                            for (Enum enumer : enArray) {
-                                subEnav.visitEnum(null,aenumType,enumer.name());
-                            }
-                            subEnav.visitEnd();
-                            break;
-                        case CLASSARRAY:
-                            AnnotationVisitor subKlav = av.visitArray(apv.getProperty());
-                            Class[] klarray = (Class[]) apv.getValue();
-                            for (Class klass : klarray) {
-                                subKlav.visit(null,Type.getType("L"+BuildUtils.getInternalType(klass.getName())+";"));
-                            }
-                            subKlav.visitEnd();
-                            break;
-                        case ENUMERATION:
-                            String enumType = "L" + BuildUtils.getInternalType(apv.getType().getName()) + ";";
-                            av.visitEnum(apv.getProperty(),enumType,((Enum) apv.getValue()).name());
-                            break;
-                        case KLASS:
-                            String klassName = BuildUtils.getInternalType(((Class) apv.getValue()).getName());
-                            av.visit(apv.getProperty(),Type.getType("L"+klassName+";"));
-                            break;
-                        case PRIMITIVE:
-                            av.visit(apv.getProperty(),apv.getValue());
-                            break;
-                        case STRING:
-                            av.visit(apv.getProperty(),apv.getValue());
-                            break;
-                    }
-                }
+                addAnnotationAttribute( ad, av );
                 av.visitEnd();
             }
         }
     }
 
+    public static void addAnnotationAttribute( AnnotationDefinition ad, AnnotationVisitor av ) {
+        for (String key : ad.getValues().keySet()) {
+            AnnotationDefinition.AnnotationPropertyVal apv = ad.getValues().get(key);
 
+            switch (apv.getValType()) {
+                case STRINGARRAY:
+                    AnnotationVisitor subAv = av.visitArray(apv.getProperty());
+                    Object[] array = (Object[]) apv.getValue();
+                    for (Object o : array) {
+                        subAv.visit(null,o);
+                    }
+                    subAv.visitEnd();
+                    break;
+                case PRIMARRAY:
+                    av.visit(apv.getProperty(),apv.getValue());
+                    break;
+                case ENUMARRAY:
+                    AnnotationVisitor subEnav = av.visitArray(apv.getProperty());
+                    Enum[] enArray = (Enum[]) apv.getValue();
+                    String aenumType = "L" + BuildUtils.getInternalType( enArray[0].getClass().getName() ) + ";";
+                    for (Enum enumer : enArray) {
+                        subEnav.visitEnum(null,aenumType,enumer.name());
+                    }
+                    subEnav.visitEnd();
+                    break;
+                case CLASSARRAY:
+                    AnnotationVisitor subKlav = av.visitArray(apv.getProperty());
+                    Class[] klarray = (Class[]) apv.getValue();
+                    for (Class klass : klarray) {
+                        subKlav.visit( null, Type.getType( "L" + BuildUtils.getInternalType( klass.getName() ) + ";" ) );
+                    }
+                    subKlav.visitEnd();
+                    break;
+                case ENUMERATION:
+                    String enumType = "L" + BuildUtils.getInternalType(apv.getType().getName()) + ";";
+                    av.visitEnum(apv.getProperty(),enumType,((Enum) apv.getValue()).name());
+                    break;
+                case KLASS:
+                    String klassName = BuildUtils.getInternalType(((Class) apv.getValue()).getName());
+                    av.visit(apv.getProperty(),Type.getType("L"+klassName+";"));
+                    break;
+                case PRIMITIVE:
+                    av.visit(apv.getProperty(),apv.getValue());
+                    break;
+                case STRING:
+                    av.visit(apv.getProperty(),apv.getValue());
+                    break;
+            }
 
+        }
+    }
 
 
     protected void visitFieldOrGetter(MethodVisitor mv, ClassDefinition classDef, FieldDefinition field) {
