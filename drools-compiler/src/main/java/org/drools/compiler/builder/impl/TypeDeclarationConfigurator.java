@@ -43,7 +43,6 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 
-import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
@@ -123,7 +122,6 @@ public class TypeDeclarationConfigurator {
             InstantiationException,
             IllegalAccessException,
             IOException,
-            IntrospectionException,
             ClassNotFoundException,
             NoSuchMethodException,
             InvocationTargetException,

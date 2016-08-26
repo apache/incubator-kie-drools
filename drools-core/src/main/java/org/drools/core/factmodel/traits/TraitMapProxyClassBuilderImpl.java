@@ -33,7 +33,6 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
 
-import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -42,7 +41,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.TypeVariable;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
@@ -78,7 +76,6 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
     }
 
     public byte[] buildClass( ClassDefinition core, ClassLoader classLoader ) throws IOException,
-            IntrospectionException,
             SecurityException,
             IllegalArgumentException,
             ClassNotFoundException,
