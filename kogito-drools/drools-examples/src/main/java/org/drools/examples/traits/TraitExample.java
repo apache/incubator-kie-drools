@@ -48,14 +48,14 @@ public class TraitExample {
 
     public static void main( String[] args ) {
 
-//        run( "noTraits.drl" );
-//
-//        run( "traitsDon.drl" );
-//
-//        run( "multipleTraits.drl" );
+        run( "noTraits.drl" );
+
+        run( "traitsDon.drl" );
+
+        run( "multipleTraits.drl" );
 
         run( "traitsMixins.drl" );
 
-//        run( "traitsShed.drl" );
+        run( "traitsShed.drl" );
     }
 }
