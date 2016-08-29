@@ -256,7 +256,11 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                 jitEvaluator(handle, workingMemory, tuple);
             }
         }
-        return conditionEvaluator.evaluate(handle, workingMemory, tuple);
+        try {
+            return conditionEvaluator.evaluate( handle, workingMemory, tuple );
+        } catch (Exception e) {
+            throw new RuntimeException( "Error evaluating constraint '" + expression + "' in " + evaluationContext, e );
+        }
     }
 
     protected void createMvelConditionEvaluator(InternalWorkingMemory workingMemory) {
