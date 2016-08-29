@@ -128,12 +128,10 @@ public class SynchronizedPropagationList implements PropagationList {
 
     public synchronized void waitOnRest() {
         try {
-            log.debug("Engine wait");
             wait();
         } catch (InterruptedException e) {
             // do nothing
         }
-        log.debug("Engine resumed");
     }
 
 
