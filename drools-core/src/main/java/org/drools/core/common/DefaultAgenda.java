@@ -1290,7 +1290,6 @@ public class DefaultAgenda
             // and isFiring returns false allowing it to exit before all rules are fired.
             //
             while ( isFiring()  )  {
-                log.debug("Fire Loop");
                 if ( head != null ) {
                     // it is possible that there are no action propagations, but there are rules to fire.
                     this.workingMemory.flushPropagations(head);
@@ -1467,8 +1466,8 @@ public class DefaultAgenda
         if (currentState == ExecutionState.DISPOSED) {
             return;
         }
-        if ( log.isDebugEnabled() ) {
-            log.debug("State was {} is now {}", currentState, state);
+        if ( log.isTraceEnabled() ) {
+            log.trace("State was {} is now {}", currentState, state);
         }
         currentState = state;
     }
