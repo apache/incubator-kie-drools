@@ -107,7 +107,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
             return null;
         }
 
-        MixinInfo mixinInfo = new MixinInfo();
+        MixinInfo mixinInfo = new MixinInfo( traitClass );
         try {
             mixinInfo.mixinClasses = new ArrayList<Class<?>>();
             mixinInfo.mixinClasses.addAll( mixinMethodMap.keySet() );
@@ -149,9 +149,15 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
     }
 
     static class MixinInfo {
+        final Class<?> traitClass;
+
         List<Class<?>> mixinClasses = null;
         Map<Class<?>, Set<Method>> mixinMethods = null;
         Map<Class<?>, Map<String, Method>> mixinGetSet = null;
+
+        MixinInfo( Class<?> traitClass ) {
+            this.traitClass = traitClass;
+        }
 
         boolean isMixinGetter( FieldDefinition field ) {
             String getter = BuildUtils.getterName( field.getName(), field.getTypeName() );
@@ -161,6 +167,10 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
                 }
             }
             return false;
+        }
+
+        public boolean throwsErrorOnConflict() {
+            return traitClass.getAnnotation( Trait.class ).mixinSolveConflicts() == Trait.MixinConflictResolutionStrategy.COMPILE_ERROR;
         }
     }
 
@@ -652,23 +662,25 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
 
             Set<Method> methods = mixinInfo.mixinMethods.get( mixinClass );
             if (methods != null) {
-                buildMixinMethods( cw, masterName, mixin, mixinClass, methods, createdSignatures );
+                buildMixinMethods( cw, masterName, mixin, mixinClass, mixinInfo, methods, createdSignatures );
             }
 
             Map<String, Method> map = mixinInfo.mixinGetSet.get( mixinClass );
             if (map != null) {
-                buildMixinMethods( cw, masterName, mixin, mixinClass, map.values(), createdSignatures );
+                buildMixinMethods( cw, masterName, mixin, mixinClass, mixinInfo, map.values(), createdSignatures );
             }
         }
     }
 
     private static void buildMixinMethods( ClassWriter cw, String wrapperName, String mixin, Class mixinClass,
-                                           Collection<Method> mixinMethods, Set<String> createdSignatures ) {
+                                           MixinInfo mixinInfo, Collection<Method> mixinMethods, Set<String> createdSignatures ) {
         for ( Method method : mixinMethods ) {
             String signature = TraitFactory.buildSignature( method );
             String methodSignature = method.getName() + signature;
             if (createdSignatures.contains( methodSignature )) {
-                // TODO plug conflict resolution strategy here
+                if (mixinInfo.throwsErrorOnConflict()) {
+                    throw new RuntimeException( "Conflict on method: " + method.getName() );
+                }
                 continue;
             }
             createdSignatures.add(methodSignature);

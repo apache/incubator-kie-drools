@@ -6047,7 +6047,7 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
     @Test(timeout=10000)
-    public void testMixinWithConflicts() {
+    public void testMixinWithConflictsUsingDeclarationOrder() {
         checkMixinResolutionUsesOrder("Y,Z", "Y");
         checkMixinResolutionUsesOrder("Z,Y", "Z");
     }
@@ -6066,7 +6066,7 @@ public class TraitTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n" +
                 "\n" +
-                "declare trait X extends " + interfaces + " end\n" +
+                "declare X extends " + interfaces + " @Trait( mixinSolveConflicts = Trait.MixinConflictResolutionStrategy.DECLARATION_ORDER ) end\n" +
                 "\n" +
                 "rule Init when\n" +
                 "then\n" +
@@ -6094,5 +6094,48 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( "Y", list.get(0) );
         assertEquals( "Z", list.get(1) );
         assertEquals( first, list.get(2) );
+    }
+
+    @Test(timeout=10000)
+    public void testMixinWithConflictsThrowingError() {
+        String drl =
+                "package org.drools.test.traits\n" +
+                "import " + Y.class.getCanonicalName() + ";\n" +
+                "import " + Z.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "global java.util.List list;" +
+                "\n" +
+                "declare Bean\n" +
+                "    @Traitable\n" +
+                "    name    : String       = \"xxx\"     @key\n" +
+                "end\n" +
+                "\n" +
+                "\n" +
+                "declare X extends Y,Z @Trait( mixinSolveConflicts = Trait.MixinConflictResolutionStrategy.COMPILE_ERROR ) end\n" +
+                "\n" +
+                "rule Init when\n" +
+                "then\n" +
+                "    insert( new Bean() );\n" +
+                "end\n" +
+                "\n" +
+                "rule Exec no-loop when\n" +
+                "    $b : Bean()\n" +
+                "then\n" +
+                "    X x = don( $b, X.class );\n" +
+                "    list.add( x.getYValue() );\n" +
+                "    list.add( x.getZValue() );\n" +
+                "    list.add( x.getShared() );\n" +
+                "end\n";
+
+        KieSession ks = getSessionFromString( drl );
+        TraitFactory.setMode( mode, ks.getKieBase() );
+
+        List<String> list = new ArrayList<String>();
+        ks.setGlobal( "list", list );
+
+        try {
+            ks.fireAllRules();
+            fail("don should fail due to the conflict in getShared() method");
+        } catch (Exception e) { }
     }
 }
