@@ -8807,4 +8807,29 @@ public class Misc2Test extends CommonTestMethodBase {
             return "Shift " + employee + " from " + start + " to " + end;
         }
     }
+
+    @Test
+    public void testReportFailingConstraintOnError() {
+        // DROOLS-1071
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    Person( name.startsWith(\"A\") )\n" +
+                "then\n" +
+                "end";
+
+        KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        for (int i = 0; i < 100; i++) {
+            kieSession.insert( new Person( "A"+i ) );
+        }
+        kieSession.fireAllRules();
+
+        kieSession.insert( new Person( null ) );
+        try {
+            kieSession.fireAllRules();
+            fail("Evaluation with null must throw a NPE");
+        } catch (Exception e) {
+            assertTrue( e.getMessage().contains( "name.startsWith(\"A\")" ) );
+        }
+    }
 }
