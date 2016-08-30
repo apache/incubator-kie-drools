@@ -8690,59 +8690,27 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    public void testQueryWithEnum() {
-        // DROOLS-1181
+    public void testReportFailingConstraintOnError() {
+        // DROOLS-1071
         String drl =
-                "import " + AnswerGiver.class.getCanonicalName() + "\n" +
-                "import " + Answer.class.getCanonicalName() + "\n" +
-                "\n" +
-                "declare TestThing end\n" +
-                "\n" +
-                "query TestQuery(Answer enumVal)\n" +
-                "  AnswerGiver( answer == enumVal )\n" +
-                "end\n" +
-                "\n" +
-                "query MyQuery()\n" +
-                "  TestQuery(Answer.NO;)\n" +
-                "end\n" +
-                "\n" +
-                "rule R when MyQuery() then end\n";
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    Person( name.startsWith(\"A\") )\n" +
+                "then\n" +
+                "end";
 
+        KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        for (int i = 0; i < 100; i++) {
+            kieSession.insert( new Person( "A"+i ) );
+        }
+        kieSession.fireAllRules();
 
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                               .build().newKieSession();
-
-        kieSession.insert( new AnswerGiver() );
-        assertEquals( 0, kieSession.fireAllRules() );
-    }
-
-    @Test
-    public void testOrQueryWithEnum() {
-        // DROOLS-1181
-        String drl =
-                "import " + AnswerGiver.class.getCanonicalName() + "\n" +
-                "import " + Answer.class.getCanonicalName() + "\n" +
-                "\n" +
-                "declare TestThing end\n" +
-                "\n" +
-                "query TestQuery(Answer enumVal)\n" +
-                "  AnswerGiver( answer == enumVal )\n" +
-                "end\n" +
-                "\n" +
-                "query ORQuery()\n" +
-                "  (\n" +
-                "    TestQuery(Answer.YES;)\n" +
-                "  ) or (\n" +
-                "    TestQuery(Answer.YES;)\n" +
-                "  )\n" +
-                "end\n" +
-                "\n" +
-                "rule R when ORQuery() then end\n";
-
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                               .build().newKieSession();
-
-        kieSession.insert( new AnswerGiver() );
-        assertEquals( 2, kieSession.fireAllRules() );
+        kieSession.insert( new Person( null ) );
+        try {
+            kieSession.fireAllRules();
+            fail("Evaluation with null must throw a NPE");
+        } catch (Exception e) {
+            assertTrue( e.getMessage().contains( "name.startsWith(\"A\")" ) );
+        }
     }
 }
