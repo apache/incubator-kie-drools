@@ -71,6 +71,8 @@ public class Pattern
     private int offset;
 
     private boolean           passive;
+    
+    private boolean                  hasXPath = false; 
 
     public Pattern() {
         this(0,
@@ -151,6 +153,7 @@ public class Pattern
         annotations = (Map<String,AnnotationDefinition>) in.readObject();
         passive = in.readBoolean();
         hasNegativeConstraint = in.readBoolean();
+        hasXPath = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -166,6 +169,7 @@ public class Pattern
         out.writeObject( annotations );
         out.writeBoolean( passive );
         out.writeBoolean(hasNegativeConstraint);
+        out.writeBoolean(hasXPath);
     }
     
     public static InternalReadAccessor getReadAcessor(ObjectType objectType) {
@@ -283,6 +287,8 @@ public class Pattern
         }
         if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
             this.setConstraintType( (MutableTypeConstraint) constraint );
+        } else if ( constraint.getType().equals( Constraint.ConstraintType.XPATH ) ) {
+            this.hasXPath = true;
         }
         this.constraints.add(index, constraint);
     }
@@ -294,6 +300,8 @@ public class Pattern
         for (Constraint constraint : constraints) {
             if ( constraint.getType().equals( Constraint.ConstraintType.UNKNOWN ) ) {
                 this.setConstraintType( (MutableTypeConstraint) constraint );
+            } else if ( constraint.getType().equals( Constraint.ConstraintType.XPATH ) ) {
+                this.hasXPath = true;
             }
             this.constraints.add(constraint);
         }
@@ -330,6 +338,10 @@ public class Pattern
             }
         }
         return combinableConstraints;
+    }
+    
+    public boolean hasXPath() {
+        return this.hasXPath;
     }
 
     public Declaration addDeclaration(final String identifier) {
