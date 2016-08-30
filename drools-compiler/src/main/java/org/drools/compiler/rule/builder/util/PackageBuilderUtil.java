@@ -21,6 +21,7 @@ import org.drools.compiler.lang.descr.EntryPointDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.RuleConditionElement;
 
@@ -50,7 +51,8 @@ public class PackageBuilderUtil {
             return true;
         }
 
-        return ( inputPattern.getSource() != null &&
+        return (  (source instanceof Pattern && ((Pattern) source).hasXPath() ) ||
+                  inputPattern.getSource() != null &&
                   !( inputPattern.getSource() instanceof WindowReferenceDescr ) &&
                   !( inputPattern.getSource() instanceof EntryPointDescr ) ) ||
                   source instanceof QueryElement ||
