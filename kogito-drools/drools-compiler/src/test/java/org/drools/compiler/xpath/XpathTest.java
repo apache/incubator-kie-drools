@@ -958,4 +958,31 @@ public class XpathTest {
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         assertTrue( results.hasMessages( Message.Level.ERROR ) );
     }
+    
+    @Test
+    public void testAccumulate() {
+        // DROOLS-1265
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.lang.Number avg\n" +
+                "\n" +
+                "rule R when\n" +
+                "  accumulate ( Adult( $child: /children ) ; $avg: average ($child.getAge()) )\n" +
+                "then\n" +
+                "  kcontext.getKieRuntime().setGlobal(\"avg\", $avg);\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        Man bob = new Man( "Bob", 40 );
+        bob.addChild( new Child( "Charles", 12 ) );
+        bob.addChild( new Child( "Debbie", 8 ) );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        assertEquals(10, ((Number)ksession.getGlobal("avg")).doubleValue(), 0);
+    }
 }
