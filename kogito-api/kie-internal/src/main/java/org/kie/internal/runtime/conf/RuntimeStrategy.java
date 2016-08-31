@@ -21,5 +21,6 @@ import javax.xml.bind.annotation.XmlType;
 public enum RuntimeStrategy {
     SINGLETON,
     PER_REQUEST,
-    PER_PROCESS_INSTANCE;
+    PER_PROCESS_INSTANCE,
+    PER_CASE;
 }
