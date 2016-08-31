@@ -1493,7 +1493,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                        null );
     }
 
-    public void submit(AtomicAction action) {
+    public void submit(final AtomicAction action) {
         propagationList.addEntry( new AbstractPropagationEntry() {
             @Override
             public void execute( InternalWorkingMemory wm ) {
