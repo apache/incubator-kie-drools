@@ -424,6 +424,10 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         return commandService.execute( new InsertObjectCommand( object ) );
     }
 
+    public void submit( AtomicAction action ) {
+        throw new UnsupportedOperationException( "It is not necessary to use submit with a command based session, commands are already atomic" );
+    }
+
     public void retract(FactHandle handle) {
         commandService.execute( new DeleteCommand( handle ) );
     }
