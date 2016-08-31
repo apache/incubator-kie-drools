@@ -36,4 +36,8 @@ public class EnvironmentName {
 
     public static final String TASK_USER_GROUP_CALLBACK             = "org.kie.api.task.UserGroupCallback";
     public static final String TASK_USER_INFO                       = "org.kie.api.task.UserInfo";
+    
+    public static final String RUNTIME_MANAGER                      = "RuntimeManager";
+    public static final String DEPLOYMENT_ID                        = "deploymentId";
+    public static final String CASE_ID                              = "CaseId";
 }

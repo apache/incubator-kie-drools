@@ -87,6 +87,24 @@ public interface RuntimeManagerFactory {
     RuntimeManager newPerProcessInstanceRuntimeManager(RuntimeEnvironment environment, String identifier);
 
     /**
+     * Produces new instance of per case <code>RuntimeManager</code> with default identifier.
+     * Since it relies on default identifier it can only be invoked once unless previously produced
+     * manager is closed. Otherwise error will be thrown indicating that managers must be identifier uniquely.
+     * @param environment environment instance for the new runtime manager
+     * @return new instance of <code>RuntimeManager</code>
+     */
+    public RuntimeManager newPerCaseRuntimeManager(RuntimeEnvironment environment);
+    
+    /**
+     * Produces new instance of per case <code>RuntimeManager</code> with custom identifier.
+     * In case the given identifier is already in use error will be thrown indicating that managers must be identifier uniquely.
+     * @param environment environment instance for the new runtime manager
+     * @param identifier custom identifier for the manager
+     * @return new instance of <code>RuntimeManager</code>
+     */
+    public RuntimeManager newPerCaseRuntimeManager(RuntimeEnvironment environment, String identifier);
+    
+    /**
      * A Factory for this RuntimeManagerFactory
      */
     public static class Factory {

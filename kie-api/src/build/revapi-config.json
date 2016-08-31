@@ -103,6 +103,16 @@
         "code": "java.method.addedToInterface",
         "new": "method java.util.Map<java.lang.String, java.lang.Object> org.kie.api.task.model.TaskData::getTaskOutputVariables()",
         "justification": "Provides access to task output variables directly from a task"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method org.kie.api.runtime.manager.RuntimeManager org.kie.api.runtime.manager.RuntimeManagerFactory::newPerCaseRuntimeManager(org.kie.api.runtime.manager.RuntimeEnvironment)",
+        "justification": "Case management implementation requires new type (strategy) of RuntimeManager"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method org.kie.api.runtime.manager.RuntimeManager org.kie.api.runtime.manager.RuntimeManagerFactory::newPerCaseRuntimeManager(org.kie.api.runtime.manager.RuntimeEnvironment, java.lang.String)",
+        "justification": "Case management implementation requires new type (strategy) of RuntimeManager"
       }
     ]
   }
