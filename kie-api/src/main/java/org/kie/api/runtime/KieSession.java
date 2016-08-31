@@ -120,4 +120,18 @@ public interface KieSession
      *  as it applies only to persistent sessions
      */
     void destroy();
+
+    /**
+     * Submit an action that will be executed atomically on this session.
+     * This is useful when using fireUntilHalt to avoid evaluations against
+     * partially modified objects.
+     */
+    void submit(AtomicAction action);
+
+    /**
+     * An action that will be executed atomically on this session.
+     */
+    interface AtomicAction {
+        void execute(KieSession kieSession);
+    }
 }

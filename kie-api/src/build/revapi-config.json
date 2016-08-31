@@ -113,6 +113,11 @@
         "code": "java.method.addedToInterface",
         "new": "method org.kie.api.runtime.manager.RuntimeManager org.kie.api.runtime.manager.RuntimeManagerFactory::newPerCaseRuntimeManager(org.kie.api.runtime.manager.RuntimeEnvironment, java.lang.String)",
         "justification": "Case management implementation requires new type (strategy) of RuntimeManager"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method void org.kie.api.runtime.KieSession::submit(org.kie.api.runtime.KieSession.AtomicAction)",
+        "justification": "allow to submit atomic actions during fireUntilHalt"
       }
     ]
   }
