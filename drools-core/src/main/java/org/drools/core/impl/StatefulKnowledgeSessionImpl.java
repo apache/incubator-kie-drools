@@ -1490,6 +1490,15 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                        null );
     }
 
+    public void submit(AtomicAction action) {
+        propagationList.addEntry( new AbstractPropagationEntry() {
+            @Override
+            public void execute( InternalWorkingMemory wm ) {
+                action.execute( (KieSession)wm );
+            }
+        } );
+    }
+
     @Override
     public void updateTraits( InternalFactHandle h, BitMask mask, Class<?> modifiedClass, Activation activation ) {
         this.defaultEntryPoint.getTraitHelper().updateTraits(h, mask, modifiedClass, activation );

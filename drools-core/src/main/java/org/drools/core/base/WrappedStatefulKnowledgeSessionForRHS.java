@@ -305,6 +305,10 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		return delegate.insert(object);
 	}
 
+	public void submit( AtomicAction action ) {
+		delegate.submit( action );
+	}
+
 	public void removeEventListener(KieBaseEventListener listener) {
 		delegate.removeEventListener(listener);
 	}
