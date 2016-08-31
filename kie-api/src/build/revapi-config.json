@@ -2,6 +2,128 @@
   "revapi" : {
     "ignore" : [
       {
+          "code": "java.method.removed",
+          "old": "method double org.kie.api.management.KieSessionMonitoringMBean::getAverageFiringTime()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getKieBaseId()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method java.util.Date org.kie.api.management.KieSessionMonitoringMBean::getLastReset()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method javax.management.ObjectName org.kie.api.management.KieSessionMonitoringMBean::getName()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method java.util.Map<java.lang.String, java.lang.String> org.kie.api.management.KieSessionMonitoringMBean::getStatsByProcess()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method java.util.Map<java.lang.Long, java.lang.String> org.kie.api.management.KieSessionMonitoringMBean::getStatsByProcessInstance()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method java.util.Map<java.lang.String, java.lang.String> org.kie.api.management.KieSessionMonitoringMBean::getStatsByRule()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getStatsForProcess(java.lang.String)",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getStatsForProcessInstance(long)",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getStatsForRule(java.lang.String)",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalFiringTime()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalMatchesCancelled()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalMatchesCreated()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalMatchesFired()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalProcessInstancesCompleted()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalProcessInstancesStarted()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.removed",
+          "old": "method void org.kie.api.management.KieSessionMonitoringMBean::reset()",
+          "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"
+      }
+      ,
+      {
+          "code": "java.method.addedToInterface",
+          "new": "method java.lang.String org.kie.api.management.KieSessionMonitoringMBean::getKieSessionName()",
+          "justification": "KieSession bean is now only aggregated per session name"
+      },
+      {
+          "code": "java.method.addedToInterface",
+          "new": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalSessions()",
+          "justification": "KieSession bean is now only aggregated per session name"
+      },
+      {
+          "code": "java.method.removed",
+          "old": "method int org.kie.api.management.KieSessionMonitoringMBean::getKieSessionId()",
+          "justification": "KieSession bean is now only aggregated per session name"
+      },
+      {
+          "code": "java.method.removed",
+          "old": "method long org.kie.api.management.KieSessionMonitoringMBean::getTotalFactCount()",
+          "justification": "KieSession bean is now only aggregated per session name"
+      },
+      {
         "code": "java.method.addedToInterface",
         "new": "method org.kie.api.runtime.KieContainer org.kie.api.KieServices::getKieClasspathContainer(java.lang.String)",
         "justification": "Provide containerId as an optional parameter for user defined container ID (unique ID)"
