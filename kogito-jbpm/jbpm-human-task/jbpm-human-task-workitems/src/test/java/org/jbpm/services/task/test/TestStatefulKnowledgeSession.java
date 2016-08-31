@@ -15,11 +15,6 @@
 
 package org.jbpm.services.task.test;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.impl.AbstractRuntime;
 import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
@@ -45,6 +40,11 @@ import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class TestStatefulKnowledgeSession extends AbstractRuntime implements StatefulKnowledgeSession {
 
@@ -275,6 +275,9 @@ public class TestStatefulKnowledgeSession extends AbstractRuntime implements Sta
     }
 
     public void update(FactHandle arg0, Object arg1) {
+    }
+
+    public void submit(AtomicAction action) {
     }
 
     public void dispose() {
