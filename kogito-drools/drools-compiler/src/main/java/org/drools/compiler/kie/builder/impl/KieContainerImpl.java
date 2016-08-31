@@ -25,10 +25,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -48,7 +50,9 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.impl.StatelessKnowledgeSessionImpl;
 import org.drools.core.management.DroolsManagementAgent;
+import org.drools.core.management.DroolsManagementAgent.CBSKey;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
@@ -150,10 +154,10 @@ public class KieContainerImpl
     }
 
 	private void initMBeans(String containerId) {
-		if ( MBeansOption.isEnabled( System.getProperty( MBeansOption.PROPERTY_NAME, MBeansOption.DISABLED.toString() ) ) ) {
-        	KieContainerMonitor monitor = new KieContainerMonitor(this);
-            ObjectName on = DroolsManagementAgent.createObjectNameByContainerId(containerId);
-            DroolsManagementAgent.getInstance().registerMBean( this, monitor, on );
+		if ( isMBeanOptionEnabled() ) {
+	        KieContainerMonitor monitor = new KieContainerMonitor(this);
+	        ObjectName on = DroolsManagementAgent.createObjectNameBy(containerId);
+	        DroolsManagementAgent.getInstance().registerMBean( this, monitor, on );
         }
 	}
     
@@ -689,6 +693,9 @@ public class KieContainerImpl
             wireListnersAndWIHs( kSessionModel, kSession );
         }
         registerLoggers(kSessionModel, kSession);
+
+        ((StatefulKnowledgeSessionImpl) kSession).initMBeans(containerId, ((InternalKnowledgeBase) kBase).getId(), kSessionName);
+        
         kSessions.put(kSessionName, kSession);
         return kSession;
     }
@@ -732,6 +739,9 @@ public class KieContainerImpl
             wireListnersAndWIHs( kSessionModel, statelessKieSession );
         }
         registerLoggers(kSessionModel, statelessKieSession);
+        
+        ((StatelessKnowledgeSessionImpl) statelessKieSession).initMBeans(containerId, ((InternalKnowledgeBase) kBase).getId(), kSessionName);
+        
         statelessKSessions.put(kSessionName, statelessKieSession);
         return statelessKieSession;
     }
@@ -763,12 +773,37 @@ public class KieContainerImpl
     }
 
     public void dispose() {
+        Set<DroolsManagementAgent.CBSKey> cbskeys = new HashSet<DroolsManagementAgent.CBSKey>();
+        if ( isMBeanOptionEnabled() ) {
+            for (Entry<String, KieSession> kv : kSessions.entrySet()) {
+                cbskeys.add(new DroolsManagementAgent.CBSKey(containerId, ((InternalKnowledgeBase) kv.getValue().getKieBase()).getId(), kv.getKey()));
+            }
+            for (Entry<String, StatelessKieSession> kv : statelessKSessions.entrySet()) {
+                cbskeys.add(new DroolsManagementAgent.CBSKey(containerId, ((InternalKnowledgeBase) kv.getValue().getKieBase()).getId(), kv.getKey()));
+            }
+        }
+        
         for (KieSession kieSession : kSessions.values()) {
             kieSession.dispose();
         }
         kSessions.clear();
         statelessKSessions.clear();
+        
+        if ( isMBeanOptionEnabled() ) {
+            for (CBSKey c : cbskeys) {
+                DroolsManagementAgent.getInstance().unregisterKnowledgeSessionBean(c);
+            }
+            for (KieBase kb : kBases.values()) {
+                DroolsManagementAgent.getInstance().unregisterKnowledgeBase((InternalKnowledgeBase) kb);
+            }
+            DroolsManagementAgent.getInstance().unregisterMBeansFromOwner(this);
+        }
+        
         ((InternalKieServices) KieServices.Factory.get()).clearRefToContainerId(this.containerId, this);
+    }
+
+    private boolean isMBeanOptionEnabled() {
+        return MBeansOption.isEnabled( System.getProperty( MBeansOption.PROPERTY_NAME, MBeansOption.DISABLED.toString() ) );
     }
 
     public KieProject getKieProject() {
