@@ -17,6 +17,7 @@ package org.jbpm.runtime.manager.impl.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -68,7 +69,8 @@ public class JPAMapper extends InternalMapper {
     	EntityManagerInfo info = getEntityManager(context);
     	EntityManager em = info.getEntityManager();
         try {
-		    ContextMappingInfo contextMapping = findContextByContextId(resolveContext(context, em), ownerId, em);
+            ContextMappingInfo contextMapping = findContextByContextId(resolveContext(context, em), ownerId, em);
+     
 		    if (contextMapping != null) {
 		        return contextMapping.getKsessionId();
 		    }
@@ -79,6 +81,7 @@ public class JPAMapper extends InternalMapper {
         	}
         }
     }
+    
 
     @Override
     public void removeMapping(Context context, String ownerId) {
@@ -117,6 +120,7 @@ public class JPAMapper extends InternalMapper {
         }
     }
     
+    
     public Context getProcessInstanceByCorrelationKey(CorrelationKey correlationKey, EntityManager em) {
         Query processInstancesForEvent = em.createNamedQuery( "GetProcessInstanceIdByCorrelation" );
         
@@ -144,9 +148,15 @@ public class JPAMapper extends InternalMapper {
             Query findQuery = em.createNamedQuery("FindContextMapingByKSessionId")
             		.setParameter("ksessionId", ksessionId)
             		.setParameter("ownerId", ownerId);
-            ContextMappingInfo contextMapping = (ContextMappingInfo) findQuery.getSingleResult();
-            
-            return contextMapping.getContextId();
+            @SuppressWarnings("unchecked")
+            List<ContextMappingInfo> contextMapping = findQuery.getResultList();
+            if (contextMapping.isEmpty()) {
+                return null;
+            } else if (contextMapping.size() == 1) {
+                return contextMapping.get(0).getContextId();
+            } else {
+                return contextMapping.stream().map(cmi -> cmi.getContextId()).collect(Collectors.toList());
+            }
         } catch (NoResultException e) {
             return null;
         } catch (NonUniqueResultException e) {

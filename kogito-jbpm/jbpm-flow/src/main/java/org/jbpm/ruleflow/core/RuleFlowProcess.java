@@ -18,7 +18,10 @@ package org.jbpm.ruleflow.core;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.exception.ExceptionScope;
@@ -140,6 +143,18 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
         }
 
         return timerStartNodes;
+    }
+    
+    public List<Node> getAutoStartNodes() {
+        if (!isDynamic()) {
+            return Collections.emptyList();
+        }
+        
+        List<Node> nodes = Arrays.stream(getNodes())
+                .filter(n -> n.getIncomingConnections().isEmpty() && "true".equalsIgnoreCase((String)n.getMetaData().get("customAutoStart")))
+                .collect(Collectors.toList());
+                
+        return nodes;
     }
 
     private class WorkflowProcessNodeContainer extends NodeContainerImpl {

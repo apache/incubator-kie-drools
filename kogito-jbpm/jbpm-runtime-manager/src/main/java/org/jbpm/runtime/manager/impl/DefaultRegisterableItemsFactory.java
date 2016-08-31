@@ -40,6 +40,8 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.task.TaskLifeCycleEventListener;
+import org.kie.internal.runtime.Cacheable;
+import org.kie.internal.runtime.Closeable;
 import org.kie.internal.runtime.conf.AuditMode;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.NamedObjectModel;
@@ -277,6 +279,11 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
         		Object listenerInstance = getInstanceFromModel(model, getRuntimeManager().getEnvironment().getClassLoader(), params);
         		if (listenerInstance != null && type.isAssignableFrom(listenerInstance.getClass())) {
         			listeners.add((T) listenerInstance);
+        		} else {
+        		    // close/cleanup instance as it is not going to be used at the moment, except these that are cacheable
+        		    if (listenerInstance instanceof Closeable && !(listenerInstance instanceof Cacheable)) {
+        		        ((Closeable) listenerInstance).close();
+        		    }
         		}
         	}
         }

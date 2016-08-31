@@ -15,7 +15,6 @@
 
 package org.jbpm.kie.services.impl.xml;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,6 +34,7 @@ import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
@@ -130,7 +130,7 @@ public class ServicesProcessDataEventListener implements ProcessDataEventListene
     public void onProcessAdded(Process process) {
         logger.debug("Added process with id {} and name {}", process.getId(), process.getName());
         ProcessAssetDesc processDesc = new ProcessAssetDesc(process.getId(), process.getName(), process.getVersion()
-                , process.getPackageName(), process.getType(), process.getKnowledgeType().name(), process.getNamespace(), "");
+                , process.getPackageName(), process.getType(), process.getKnowledgeType().name(), process.getNamespace(), "", ((WorkflowProcess)process).isDynamic());
 
         processDescriptor.setProcess(processDesc);
 

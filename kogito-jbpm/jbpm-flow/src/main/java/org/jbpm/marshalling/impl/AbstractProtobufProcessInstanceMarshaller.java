@@ -98,6 +98,9 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
             _instance.setDeploymentId(workFlow.getDeploymentId());
         }
         _instance.addAllCompletedNodeIds(workFlow.getCompletedNodeIds());
+        if (workFlow.getCorrelationKey() != null) {
+            _instance.setCorrelationKey(workFlow.getCorrelationKey());
+        }
 
         SwimlaneContextInstance swimlaneContextInstance = (SwimlaneContextInstance) workFlow.getContextInstance( SwimlaneContext.SWIMLANE_SCOPE );
         if ( swimlaneContextInstance != null ) {
@@ -504,6 +507,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.setParentProcessInstanceId(_instance.getParentProcessInstanceId());
         processInstance.setSignalCompletion(_instance.getSignalCompletion());
         processInstance.setDeploymentId(_instance.getDeploymentId());
+        processInstance.setCorrelationKey(_instance.getCorrelationKey());
         long nodeInstanceCounter = _instance.getNodeInstanceCounter();
         processInstance.setKnowledgeRuntime( wm.getKnowledgeRuntime() );
         processInstance.internalSetNodeInstanceCounter( nodeInstanceCounter );

@@ -98,6 +98,22 @@ public class RuntimeManagerFactoryImpl implements RuntimeManagerFactory {
         return manager;
     }
     
+    @Override
+    public RuntimeManager newPerCaseRuntimeManager(RuntimeEnvironment environment) {
+
+        return newPerCaseRuntimeManager(environment, "default-per-case");
+    }
+    
+    public RuntimeManager newPerCaseRuntimeManager(RuntimeEnvironment environment, String identifier) {
+        SessionFactory factory = getSessionFactory(environment);
+        TaskServiceFactory taskServiceFactory = getTaskServiceFactory(environment);
+
+        RuntimeManager manager = new PerCaseRuntimeManager(environment, factory, taskServiceFactory, identifier);
+        initTimerService(environment, manager);
+        ((AbstractRuntimeManager) manager).init();
+        return manager;
+    }
+    
     protected SessionFactory getSessionFactory(RuntimeEnvironment environment) {
         SessionFactory factory = null;
         if (environment.usePersistence()) {

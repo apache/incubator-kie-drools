@@ -31,6 +31,16 @@ public class ServiceTaskHandler implements WorkItemHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(ServiceTaskHandler.class);
     
+    private String resultVarName;
+    
+    public ServiceTaskHandler() {
+        this("Result");
+    }
+    
+    public ServiceTaskHandler(String resultVarName) {
+        this.resultVarName = resultVarName;
+    }
+
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
         String service = (String) workItem.getParameter("Interface");
         String interfaceImplementationRef = (String) workItem.getParameter("interfaceImplementationRef"); 
@@ -67,7 +77,7 @@ public class ServiceTaskHandler implements WorkItemHandler {
             Method method = c.getMethod(operation, classes);
             Object result = method.invoke(instance, params);
             Map<String, Object> results = new HashMap<String, Object>();
-            results.put("Result", result);
+            results.put(resultVarName, result);
             manager.completeWorkItem(workItem.getId(), results);
         } catch (ClassNotFoundException cnfe) {
             handleException(cnfe, service, interfaceImplementationRef, operation, parameterType, parameter);

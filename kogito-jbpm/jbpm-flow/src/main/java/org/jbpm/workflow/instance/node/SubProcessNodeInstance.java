@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.process.instance.WorkItem;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
@@ -41,23 +40,27 @@ import org.jbpm.process.instance.impl.ContextInstanceFactory;
 import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.process.instance.impl.util.VariableUtil;
-import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.DataAssociation;
-import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.Transformation;
-import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.VariableScopeResolverFactory;
+import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.KieBase;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.internal.KieInternalServices;
+import org.kie.internal.process.CorrelationAwareProcessRuntime;
+import org.kie.internal.process.CorrelationKey;
+import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +73,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(SubProcessNodeInstance.class);
-
+    
     // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
     private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
@@ -181,9 +184,16 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         	throw new RuntimeException("Could not find process " + processId);
         } else {
             KnowledgeRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
-            RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
+            RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
             if (manager != null) {
-                RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+                org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get();
+                
+                String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
+                if (caseId != null) {
+                    context = CaseContext.get(caseId);
+                }
+                
+                RuntimeEngine runtime = manager.getRuntimeEngine(context);
                 kruntime = (KnowledgeRuntime) runtime.getKieSession();
             }
             if (getSubProcessNode().getMetaData("MICollectionInput") != null) {
@@ -191,7 +201,20 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                 parameters.remove(getSubProcessNode().getMetaData("MICollectionInput"));
             }
 
-	    	ProcessInstance processInstance = ( ProcessInstance ) kruntime.createProcessInstance(processId, parameters);
+            ProcessInstance processInstance = null;
+            if (((WorkflowProcessInstanceImpl)getProcessInstance()).getCorrelationKey() != null) {
+                // in case there is correlation key on parent instance pass it along to child so it can be easily correlated 
+                // since correlation key must be unique for active instances it appends processId and timestamp
+                List<String> businessKeys = new ArrayList<String>();
+                businessKeys.add(((WorkflowProcessInstanceImpl)getProcessInstance()).getCorrelationKey());
+                businessKeys.add(processId);
+                businessKeys.add(String.valueOf(System.currentTimeMillis()));
+                CorrelationKeyFactory correlationKeyFactory = KieInternalServices.Factory.get().newCorrelationKeyFactory();
+                CorrelationKey subProcessCorrelationKey = correlationKeyFactory.newCorrelationKey(businessKeys);
+                processInstance = (ProcessInstance) ((CorrelationAwareProcessRuntime)kruntime).createProcessInstance(processId, subProcessCorrelationKey, parameters);
+            } else {
+                processInstance = ( ProcessInstance ) kruntime.createProcessInstance(processId, parameters);
+            }
 	    	this.processInstanceId = processInstance.getId();
 	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentProcessInstanceId", getProcessInstance().getId());
 	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentNodeInstanceId", getUniqueId());
@@ -216,9 +239,16 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         if (getSubProcessNode() == null || !getSubProcessNode().isIndependent()) {
         	ProcessInstance processInstance = null;
         	InternalKnowledgeRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
-        	RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
+        	RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
         	if (manager != null) {
-        		RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+        	    org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get(processInstanceId);
+                
+                String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
+                if (caseId != null) {
+                    context = CaseContext.get(caseId);
+                }
+                
+                RuntimeEngine runtime = manager.getRuntimeEngine(context);
                 KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
         		processInstance = (ProcessInstance) managedkruntime.getProcessInstance(processInstanceId);
         	} else {

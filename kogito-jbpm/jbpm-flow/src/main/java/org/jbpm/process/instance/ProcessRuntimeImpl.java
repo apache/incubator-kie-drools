@@ -15,6 +15,12 @@
 
 package org.jbpm.process.instance;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -57,6 +63,7 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
@@ -66,14 +73,9 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.internal.command.Context;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.utils.CompositeClassLoader;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	
@@ -415,9 +417,16 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	            }
 	        	}
 	        }
-	        RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
+	        RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
             if (manager != null) {
-                RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+                org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get();
+                
+                String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
+                if (caseId != null) {
+                    context = CaseContext.get(caseId);
+                }
+                
+                RuntimeEngine runtime = manager.getRuntimeEngine(context);
                 KieSession ksession = runtime.getKieSession();
                 
                 ksession.execute(new StartProcessWithTypeCommand(processId, params, type));
@@ -445,7 +454,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                                                                index );
                         signalManager.signalEvent( eventType,
                                                    event );
-                    } else if (ruleName.startsWith( "RuleFlowStateEventSubProcess-" ) || ruleName.startsWith( "RuleFlowStateEvent-" )) {
+                    } else if (ruleName.startsWith( "RuleFlowStateEventSubProcess-" ) || ruleName.startsWith( "RuleFlowStateEvent-" ) || ruleName.startsWith( "RuleFlow-Milestone-" ) || ruleName.startsWith( "RuleFlow-AdHocComplete-" )) {
                         signalManager.signalEvent( ruleName,  event );
                     }
                 }

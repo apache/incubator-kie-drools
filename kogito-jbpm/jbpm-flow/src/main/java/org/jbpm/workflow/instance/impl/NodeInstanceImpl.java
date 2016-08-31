@@ -67,6 +67,8 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     private org.jbpm.workflow.instance.NodeInstanceContainer nodeInstanceContainer;
     private Map<String, Object> metaData = new HashMap<String, Object>();
     private int level;
+    
+    protected transient Map<String, Object> dynamicParameters;
 
     public void setId(final long id) {
         this.id = id;
@@ -509,4 +511,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     	}
     }
     
+    public void setDynamicParameters(Map<String, Object> dynamicParameters) {
+        this.dynamicParameters = dynamicParameters;
+    }
 }

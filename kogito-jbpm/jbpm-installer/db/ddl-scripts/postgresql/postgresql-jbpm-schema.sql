@@ -246,6 +246,7 @@
         processInstanceDescription varchar(255),
         processInstanceId int8 not null,
         processName varchar(255),
+        processType int4,
         processVersion varchar(255),
         start_date timestamp,
         status int4,

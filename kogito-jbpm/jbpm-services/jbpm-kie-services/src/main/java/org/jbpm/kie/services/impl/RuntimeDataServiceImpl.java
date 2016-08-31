@@ -482,6 +482,21 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 
         return processInstances;
     }
+	
+    @Override
+    public Collection<ProcessInstanceDesc> getProcessInstancesByCorrelationKeyAndStatus(CorrelationKey correlationKey, List<Integer> states, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("correlationKey", correlationKey.toExternalForm() + "%");
+        params.put("states", states);
+        applyQueryContext(params, queryContext);
+        applyDeploymentFilter(params);
+
+        List<ProcessInstanceDesc> processInstances = commandService.execute(
+                new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByCorrelationKeyAndStatus",
+                params));
+
+        return processInstances;
+    }
 
 
     @Override
@@ -651,6 +666,35 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         }
         return null;
 	}
+	
+
+    @Override
+    public Collection<NodeInstanceDesc> getNodeInstancesByNodeType(long processInstanceId, List<String> nodeTypes, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("processInstanceId", processInstanceId);
+        params.put("nodeTypes", nodeTypes);
+        applyQueryContext(params, queryContext);
+        List<NodeInstanceDesc> nodeInstances = commandService.execute(
+                new QueryNameCommand<List<NodeInstanceDesc>>("getNodeInstancesByNodeType",
+                params));
+
+        return nodeInstances;
+    }
+    
+    @Override
+    public Collection<NodeInstanceDesc> getNodeInstancesByCorrelationKeyNodeType(CorrelationKey correlationKey,  List<Integer> states, List<String> nodeTypes, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("correlationKey", correlationKey.toExternalForm() + "%");
+        params.put("states", states);
+        params.put("nodeTypes", nodeTypes);
+        applyQueryContext(params, queryContext);
+        List<NodeInstanceDesc> nodeInstances = commandService.execute(
+                new QueryNameCommand<List<NodeInstanceDesc>>("getNodeInstancesByCorrelationKeyAndNodeType",
+                params));
+
+        return nodeInstances;
+    }
+
 
     /*
      * end

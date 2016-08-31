@@ -16,11 +16,13 @@
 package org.jbpm.services.task.wih;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.ClassObjectFilter;
 import org.drools.core.process.instance.impl.WorkItemImpl;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
@@ -38,6 +40,7 @@ import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.User;
+import org.kie.internal.process.CaseData;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.InternalI18NText;
@@ -72,6 +75,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
     protected Task createTaskBasedOnWorkItemParams(KieSession session, WorkItem workItem) {
         InternalTask task = (InternalTask) TaskModelProvider.getFactory().newTask();
         String taskName = (String) workItem.getParameter("NodeName");
+        CaseData caseFile = null;
         
         String locale = (String) workItem.getParameter("Locale");
         if (locale == null) {
@@ -133,19 +137,23 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         }
         task.setPriority(priority);
         
-        
-        
-        
         InternalTaskData taskData = (InternalTaskData) TaskModelProvider.getFactory().newTaskData();        
         taskData.setWorkItemId(workItem.getId());
         taskData.setProcessInstanceId(workItem.getProcessInstanceId());
-        if (session != null && session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
-            taskData.setProcessId(session.getProcessInstance(workItem.getProcessInstanceId()).getProcess().getId());
-            String deploymentId = ((WorkItemImpl) workItem).getDeploymentId();
-            taskData.setDeploymentId(deploymentId);            
-        }
-        if (session != null && (session instanceof KieSession)) {
-            taskData.setProcessSessionId(((KieSession) session).getIdentifier());
+        if (session != null) {
+            if (session.getProcessInstance(workItem.getProcessInstanceId()) != null) {
+                taskData.setProcessId(session.getProcessInstance(workItem.getProcessInstanceId()).getProcess().getId());
+                String deploymentId = ((WorkItemImpl) workItem).getDeploymentId();
+                taskData.setDeploymentId(deploymentId);            
+            }
+            if (session instanceof KieSession) {
+                taskData.setProcessSessionId(((KieSession) session).getIdentifier());
+            }
+            @SuppressWarnings("unchecked")
+            Collection<CaseData> caseFiles = (Collection<CaseData>) session.getObjects(new ClassObjectFilter(CaseData.class));
+            if (caseFiles != null && caseFiles.size() == 1) {
+                caseFile = caseFiles.iterator().next();
+            }
         }
         taskData.setSkipable(!"false".equals(workItem.getParameter("Skippable")));
         //Sub Task Data
@@ -174,7 +182,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
             taskData.setExpirationTime(date);
         }
         
-        PeopleAssignmentHelper peopleAssignmentHelper = new PeopleAssignmentHelper();
+        PeopleAssignmentHelper peopleAssignmentHelper = new PeopleAssignmentHelper(caseFile);
         peopleAssignmentHelper.handlePeopleAssignments(workItem, task, taskData);
         
         PeopleAssignments peopleAssignments = task.getPeopleAssignments();

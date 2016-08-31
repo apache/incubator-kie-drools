@@ -16,16 +16,32 @@
 
 package org.jbpm.workflow.instance.node;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.spi.Activation;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.definition.process.Node;
+import org.kie.api.event.rule.AfterMatchFiredEvent;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.AgendaGroupPoppedEvent;
+import org.kie.api.event.rule.AgendaGroupPushedEvent;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
+import org.kie.api.event.rule.MatchCancelledEvent;
+import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
+import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.process.NodeInstance;
 
-public class DynamicNodeInstance extends CompositeContextNodeInstance {
+public class DynamicNodeInstance extends CompositeContextNodeInstance implements AgendaEventListener {
 
 	private static final long serialVersionUID = 510l;
 
@@ -50,6 +66,42 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
 //    	if (getDynamicNode().isAutoComplete() && getNodeInstances(false).isEmpty()) {
 //    		triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
 //    	}
+
+        
+        String rule = "RuleFlow-AdHocComplete-" + getProcessInstance().getProcessId() + "-" + getDynamicNode().getUniqueId();
+        boolean isActive = ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+            .isRuleActiveInRuleFlowGroup("DROOLS_SYSTEM", rule, getProcessInstance().getId());
+        if (isActive) {
+            triggerCompleted();
+        } else {
+            addActivationListener();
+        }
+    	
+    	// activate ad hoc fragments if they are marked as such
+        List<Node> autoStartNodes = getDynamicNode().getAutoStartNodes();
+        autoStartNodes
+            .forEach(austoStartNode -> signalEvent(austoStartNode.getName(), null));
+
+    }
+    public void addEventListeners() {
+        super.addEventListeners();
+        addActivationListener();
+    }
+    
+    public void removeEventListeners() {
+        super.removeEventListeners();
+        getProcessInstance().getKnowledgeRuntime().removeEventListener(this);
+        getProcessInstance().removeEventListener(getActivationEventType(), this, true);
+    }
+    
+    private void addActivationListener() {
+        getProcessInstance().getKnowledgeRuntime().addEventListener(this);
+        getProcessInstance().addEventListener(getActivationEventType(), this, true);
+    }
+    
+    private String getActivationEventType() {
+        return "RuleFlow-AdHocComplete-" + getProcessInstance().getProcessId()
+            + "-" + getDynamicNode().getUniqueId();
     }
 
 	public void nodeInstanceCompleted(org.jbpm.workflow.instance.NodeInstance nodeInstance, String outType) {
@@ -68,7 +120,7 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
 		    triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
 		} else if (getDynamicNode().isAutoComplete() && getNodeInstances(false).isEmpty()) {
     		triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
-    	} else if (completionCondition != null) {
+    	} else if (completionCondition != null && "mvel".equals(getDynamicNode().getLanguage())) {
     		Object value = MVELSafeHelper.getEvaluator().eval(completionCondition, new NodeInstanceResolverFactory(this));
     		if ( !(value instanceof Boolean) ) {
                 throw new RuntimeException( "Completion condition expression must return boolean values: " + value
@@ -86,16 +138,31 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
     	super.triggerCompleted(outType);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
 	public void signalEvent(String type, Object event) {
-		super.signalEvent(type, event);
-		for (Node node: getCompositeNode().getNodes()) {
-			if (type.equals(node.getName()) && node.getIncomingConnections().isEmpty()) {
-    			NodeInstance nodeInstance = getNodeInstance(node);
-                ((org.jbpm.workflow.instance.NodeInstance) nodeInstance)
-                	.trigger(null, NodeImpl.CONNECTION_DEFAULT_TYPE);
+        if (getActivationEventType().equals(type)) {
+            if (event instanceof MatchCreatedEvent) {
+                matchCreated((MatchCreatedEvent) event);
+            }
+        } else {
+    		super.signalEvent(type, event);
+    		for (Node node: getCompositeNode().getNodes()) {
+    			if (type.equals(node.getName()) && node.getIncomingConnections().isEmpty()) {
+        			NodeInstance nodeInstance = getNodeInstance(node);
+        			if (event != null) {                             
+                        Map<String, Object> dynamicParams = new HashMap<>();
+                        if (event instanceof Map) {
+                            dynamicParams.putAll((Map<String, Object>) event);                                  
+                        } else {
+                            dynamicParams.put("Data", event);
+                        }
+                        ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).setDynamicParameters(dynamicParams);
+                    }
+                    ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).trigger(null, NodeImpl.CONNECTION_DEFAULT_TYPE);
+        		}
     		}
-		}
+        }
 	}
 
     protected boolean isTerminated(NodeInstance from) {
@@ -105,5 +172,55 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance {
         }
         
         return false;
+    }
+    
+    public void matchCreated(MatchCreatedEvent event) {
+        // check whether this activation is from the DROOLS_SYSTEM agenda group
+        String ruleFlowGroup = ((RuleImpl) event.getMatch().getRule()).getRuleFlowGroup();
+        if ("DROOLS_SYSTEM".equals(ruleFlowGroup)) {
+            // new activations of the rule associate with a milestone node
+            // trigger node instances of that milestone node
+            String ruleName = event.getMatch().getRule().getName();
+            String milestoneName = "RuleFlow-AdHocComplete-" + getProcessInstance().getProcessId() + "-" + getNodeId();
+            if (milestoneName.equals(ruleName) && checkProcessInstance((Activation) event.getMatch())) {
+                ((InternalKnowledgeRuntime) getProcessInstance().getKnowledgeRuntime()).executeQueuedActions();
+                synchronized(getProcessInstance()) {
+                    removeEventListeners();
+                    triggerCompleted();
+                }
+            }
+        }
+    }
+
+    public void matchCancelled(MatchCancelledEvent event) {
+        // Do nothing
+    }
+
+    public void afterMatchFired(AfterMatchFiredEvent event) {
+        // Do nothing
+    }
+
+    public void agendaGroupPopped(AgendaGroupPoppedEvent event) {
+        // Do nothing
+    }
+
+    public void agendaGroupPushed(AgendaGroupPushedEvent event) {
+        // Do nothing
+    }
+
+    public void beforeMatchFired(BeforeMatchFiredEvent event) {
+        // Do nothing
+    }
+
+    public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+    }
+
+    public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
+    }
+
+    public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) {
+    }
+
+    public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) {
     }
 }

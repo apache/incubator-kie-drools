@@ -73,7 +73,10 @@ public class ProcessInstanceLog implements Serializable, AuditEvent, org.kie.api
     private String processName;
     
     private String correlationKey;
-   
+    
+    @Column(nullable=true)
+    private Integer processType;
+      
     /**
      * Dependening on the {@link AuditEventBuilder} implementation, 
      * this can be<ul>
@@ -323,5 +326,13 @@ public class ProcessInstanceLog implements Serializable, AuditEvent, org.kie.api
 	public void setCorrelationKey(String correlationKey) {
 		this.correlationKey = correlationKey;
 	}
+
+    public Integer getProcessType() {
+        return processType;
+    }
+    
+    public void setProcessType(Integer processType) {
+        this.processType = processType;
+    }
 
 }

@@ -102,7 +102,7 @@ public class JPAProcessInstanceManager
     }
 
     public ProcessInstance getProcessInstance(long id, boolean readOnly) {
-        InternalRuntimeManager manager = (InternalRuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
+        InternalRuntimeManager manager = (InternalRuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
         if (manager != null) {
             manager.validate((KieSession) kruntime, ProcessInstanceIdContext.get(id));
         }

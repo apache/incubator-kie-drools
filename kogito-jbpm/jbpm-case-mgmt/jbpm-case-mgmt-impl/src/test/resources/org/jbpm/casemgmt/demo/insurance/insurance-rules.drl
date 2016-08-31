@@ -1,0 +1,13 @@
+package org.jbpm.casemgmt.demo.insurance;
+
+import org.kie.internal.process.CaseData;
+import org.jbpm.casemgmt.demo.insurance.ClaimReport;
+
+rule "classify-claim" ruleflow-group "claims"
+
+when 
+    $caseData : CaseData()
+    $claim : ClaimReport( ) from $caseData.getData("claimReport")      
+then 
+    System.out.println("Classified claim " + $claim);
+end

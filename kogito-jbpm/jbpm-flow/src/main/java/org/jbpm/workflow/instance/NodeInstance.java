@@ -17,6 +17,9 @@
 package org.jbpm.workflow.instance;
 
 import org.kie.api.definition.process.Node;
+
+import java.util.Map;
+
 import org.jbpm.process.instance.ContextInstance;
 
 /**
@@ -37,5 +40,7 @@ public interface NodeInstance extends org.kie.api.runtime.process.NodeInstance {
     ContextInstance resolveContextInstance(String contextId, Object param);
     
     int getLevel();
+    
+    void setDynamicParameters(Map<String, Object> dynamicParameters);
     
 }

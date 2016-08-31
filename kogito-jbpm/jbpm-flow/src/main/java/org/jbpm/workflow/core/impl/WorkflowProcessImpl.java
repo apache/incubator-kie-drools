@@ -87,4 +87,12 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
 		this.dynamic = dynamic;
 	}
 
+    @Override
+    public Integer getProcessType() {
+        if (dynamic) {
+            return CASE_TYPE;
+        }
+        return PROCESS_TYPE;
+    }
+
 }

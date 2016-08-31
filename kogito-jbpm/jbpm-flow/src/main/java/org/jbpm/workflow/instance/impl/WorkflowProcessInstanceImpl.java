@@ -54,13 +54,16 @@ import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowProcess;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstanceContainer;
+import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
+import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,8 +94,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	private Object faultData;
 
 	private boolean signalCompletion = true;
-	
+
 	private String deploymentId;
+	private String correlationKey;
 
     public NodeContainer getNodeContainer() {
 		return getWorkflowProcess();
@@ -354,10 +358,17 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
             processRuntime.getProcessEventSupport().fireAfterProcessCompleted(this, kruntime);
 
             if (isSignalCompletion()) {
-                RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
+                RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
                 if (getParentProcessInstanceId() > 0 && manager != null) {
                 	try {
-    	                RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(getParentProcessInstanceId()));
+                	    org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get(getParentProcessInstanceId());
+                        
+                        String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
+                        if (caseId != null) {
+                            context = CaseContext.get(caseId);
+                        }
+                        
+    	                RuntimeEngine runtime = manager.getRuntimeEngine(context);
     	                KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
     	                managedkruntime.signalEvent("processInstanceCompleted:" + getId(), this);
                 	} catch (SessionNotFoundException e) {
@@ -458,7 +469,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 	}
 
-	public void signalEvent(String type, Object event) {
+	@SuppressWarnings("unchecked")
+    public void signalEvent(String type, Object event) {
 	    synchronized (this) {
 			if (getState() != ProcessInstance.STATE_ACTIVE) {
 				return;
@@ -511,9 +523,18 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 				if (((org.jbpm.workflow.core.WorkflowProcess) getWorkflowProcess()).isDynamic()) {
 					for (Node node : getWorkflowProcess().getNodes()) {
 						if (type.equals(node.getName()) && node.getIncomingConnections().isEmpty()) {
-			    			NodeInstance nodeInstance = getNodeInstance(node);
-			                ((org.jbpm.workflow.instance.NodeInstance) nodeInstance)
-			                	.trigger(null, NodeImpl.CONNECTION_DEFAULT_TYPE);
+						    NodeInstance nodeInstance = getNodeInstance(node);
+			    			if (event != null) {			    			    
+			    			    Map<String, Object> dynamicParams = new HashMap<>();
+			    			    if (event instanceof Map) {
+			    			        dynamicParams.putAll((Map<String, Object>) event);			    			        
+			    			    } else {
+			    			        dynamicParams.put("Data", event);
+			    			    }
+			    			    ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).setDynamicParameters(dynamicParams);
+			    			}
+			    			
+			                ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).trigger(null, NodeImpl.CONNECTION_DEFAULT_TYPE);
 			    		}
 					}
 				}
@@ -671,5 +692,16 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
+    }
+    
+    public String getCorrelationKey() {
+        if (correlationKey == null && getMetaData().get("CorrelationKey") != null) {
+            this.correlationKey = ((CorrelationKey) getMetaData().get("CorrelationKey")).toExternalForm(); 
+        }
+        return correlationKey;
+    }
+    
+    public void setCorrelationKey(String correlationKey) {
+        this.correlationKey = correlationKey;
     }
 }

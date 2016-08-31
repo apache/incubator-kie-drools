@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
+  version="2.0">
+
+  <!-- case instance queries -->
+  <named-query name="getCaseInstances">
+
+    <query>
+      select
+      new org.jbpm.casemgmt.impl.model.instance.CaseInstanceImpl(
+        log.correlationKey, <!-- case id -->
+        log.processInstanceDescription, <!-- case description -->            
+        log.processId, <!--case definition  -->
+        log.status, <!-- case status -->
+        log.externalId, <!-- deployment id -->      
+        log.identity, <!-- case owner -->
+        log.start, <!-- case start date  -->
+        log.end, <!-- case end date  -->
+        log.processInstanceId, <!-- case top level process instance id -->
+        log.outcome       
+      )
+      from
+        ProcessInstanceLog log
+      where 
+        log.processType = 2
+        and log.status in (:statuses)
+      ORDER BY
+        log.correlationKey, log.start
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+  <named-query name="getCaseInstancesByDeployment">
+
+    <query>
+      select
+      new org.jbpm.casemgmt.impl.model.instance.CaseInstanceImpl(
+        log.correlationKey, <!-- case id -->
+        log.processInstanceDescription, <!-- case description -->            
+        log.processId, <!--case definition  -->
+        log.status, <!-- case status -->
+        log.externalId, <!-- deployment id -->      
+        log.identity, <!-- case owner -->
+        log.start, <!-- case start date  -->
+        log.end, <!-- case end date  -->
+        log.processInstanceId, <!-- case top level process instance id -->
+        log.outcome      
+      )
+      from
+        ProcessInstanceLog log
+      where 
+        log.processType = 2
+        and log.externalId =:deploymentId
+        and log.status in (:statuses)
+      ORDER BY
+        log.correlationKey, log.start
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+  <named-query name="getCaseInstancesByDefinition">
+
+    <query>
+      select
+      new org.jbpm.casemgmt.impl.model.instance.CaseInstanceImpl(
+        log.correlationKey, <!-- case id -->
+        log.processInstanceDescription, <!-- case description -->            
+        log.processId, <!--case definition  -->
+        log.status, <!-- case status -->
+        log.externalId, <!-- deployment id -->      
+        log.identity, <!-- case owner -->
+        log.start, <!-- case start date  -->
+        log.end, <!-- case end date  -->
+        log.processInstanceId, <!-- case top level process instance id -->
+        log.outcome     
+      )
+      from
+        ProcessInstanceLog log
+      where 
+        log.processType = 2
+        and log.processId =:definitionId
+        and log.status in (:statuses)
+      ORDER BY
+        log.correlationKey, log.start
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>    
+
+  <named-query name="getCaseInstancesOwnedBy">
+
+    <query>
+      select
+      new org.jbpm.casemgmt.impl.model.instance.CaseInstanceImpl(
+        log.correlationKey, <!-- case id -->
+        log.processInstanceDescription, <!-- case description -->            
+        log.processId, <!--case definition  -->
+        log.status, <!-- case status -->
+        log.externalId, <!-- deployment id -->      
+        log.identity, <!-- case owner -->
+        log.start, <!-- case start date  -->
+        log.end, <!-- case end date  -->
+        log.processInstanceId, <!-- case top level process instance id -->
+        log.outcome    
+      )
+      from
+        ProcessInstanceLog log
+      where 
+        log.processType = 2
+        and log.identity =:owner
+        and log.status in (:statuses)
+      ORDER BY
+        log.correlationKey, log.start
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+  <named-query name="getActiveNodesForCase">
+
+    <query>
+      select
+      new org.jbpm.kie.services.impl.model.NodeInstanceDesc(
+        log.nodeInstanceId,
+        log.nodeId,
+        log.nodeName,
+        log.nodeType,
+        log.externalId,
+        log.processInstanceId,
+        log.date,
+        log.connection,
+        log.type,
+        log.workItemId
+      )
+      from
+        ProcessInstanceLog plog,
+        NodeInstanceLog log        
+      where 
+        plog.correlationKey =:caseId
+        and plog.processType = 2
+        and plog.status = 1
+        and plog.processInstanceId = log.processInstanceId
+        and log.nodeInstanceId in ( select nil.nodeInstanceId from NodeInstanceLog nil where nil.processInstanceId=plog.processInstanceId  
+                    GROUP BY nil.nodeInstanceId
+                    HAVING sum(nil.type) = 0)
+        and log.type = 0  
+      ORDER BY
+        log.processInstanceId, log.nodeInstanceId
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+  <!-- case id info queries -->
+  <named-query name="findCaseIdInfoByPrefix">
+
+    <query>
+      select
+        caseIdInfo
+      from
+        CaseIdInfo caseIdInfo
+      where 
+        caseIdInfo.caseIdPrefix = :prefix
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+
+</entity-mappings>

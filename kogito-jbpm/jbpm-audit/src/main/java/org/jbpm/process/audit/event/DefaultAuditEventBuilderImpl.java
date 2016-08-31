@@ -21,6 +21,7 @@ import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
+import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.definition.process.Node;
@@ -44,6 +45,7 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
         log.setProcessVersion(pi.getProcess().getVersion());
         log.setStatus(ProcessInstance.STATE_ACTIVE);
         log.setProcessInstanceDescription( pi.getDescription() );
+        log.setProcessType(((WorkflowProcess)pi.getProcess()).getProcessType());
         // store correlation key in its external form
         CorrelationKey correlationKey = (CorrelationKey) pi.getMetaData().get("CorrelationKey");
         if (correlationKey != null) {
@@ -89,6 +91,7 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
             nodeType = node.getClass().getSimpleName();
         } else {
             nodeId = Long.toString(nodeInstance.getNodeId());
+            nodeType = (String)nodeInstance.getMetaData("NodeType");
         }
         NodeInstanceLog log = new NodeInstanceLog(
                 NodeInstanceLog.TYPE_ENTER, pi.getId(), pi.getProcessId(), Long.toString(nodeInstance.getId()), 
@@ -134,6 +137,7 @@ public class DefaultAuditEventBuilderImpl implements AuditEventBuilder {
             nodeType = node.getClass().getSimpleName();
         } else {
             nodeId = Long.toString(nodeInstance.getNodeId());
+            nodeType = (String)nodeInstance.getMetaData("NodeType");
         }
         NodeInstanceLog logEvent =null;
         if (log != null) {

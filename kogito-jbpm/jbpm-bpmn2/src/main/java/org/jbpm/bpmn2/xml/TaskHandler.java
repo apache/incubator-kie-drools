@@ -33,6 +33,7 @@ import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.Assignment;
 import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.ForEachNode;
+import org.jbpm.workflow.core.node.MilestoneNode;
 import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.runtime.process.DataTransformer;
@@ -288,6 +289,25 @@ public class TaskHandler extends AbstractNodeHandler {
 			}
 			xmlNode = xmlNode.getNextSibling();
 		}
+		// replace node in case it's milestone
+		if (node instanceof WorkItemNode && ((WorkItemNode)node).getWork().getName().equals("Milestone")) {
+		    WorkItemNode workItemNode = (WorkItemNode) node;
+		    
+		    String milestoneCondition = (String)((WorkItemNode)node).getWork().getParameter("Condition");
+		    if (milestoneCondition == null) {
+		        milestoneCondition = "";// if not given that means once activated it's achieved
+		    }
+		    
+		    MilestoneNode milestoneNode = new MilestoneNode();
+		    milestoneNode.setId(workItemNode.getId());
+		    milestoneNode.setConstraint(milestoneCondition);
+		    milestoneNode.setMetaData(workItemNode.getMetaData());
+		    milestoneNode.setName(workItemNode.getName());
+		    milestoneNode.setNodeContainer(workItemNode.getNodeContainer());
+		    
+		    node = milestoneNode;
+		}
+		
 		NodeContainer nodeContainer = (NodeContainer) parser.getParent();
 		nodeContainer.addNode(node);
 		((ProcessBuildData) parser.getData()).addNode(node);

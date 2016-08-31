@@ -18,12 +18,15 @@ package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
+import org.drools.core.ClassObjectFilter;
 import org.drools.core.WorkItemHandlerNotFoundException;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.DataType;
@@ -54,9 +57,12 @@ import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkItemResolverFactory;
 import org.kie.api.definition.process.Node;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.internal.process.CaseAssignment;
+import org.kie.internal.process.CaseData;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,7 +131,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         if (workItemNode.isWaitForCompletion()) {
             addWorkItemListener();
         }
-        String deploymentId = (String) getProcessInstance().getKnowledgeRuntime().getEnvironment().get("deploymentId");
+        String deploymentId = (String) getProcessInstance().getKnowledgeRuntime().getEnvironment().get(EnvironmentName.DEPLOYMENT_ID);
         ((WorkItem) workItem).setDeploymentId(deploymentId);
         ((WorkItem) workItem).setNodeInstanceId(this.getId());
         ((WorkItem) workItem).setNodeId(getNodeId());
@@ -164,6 +170,11 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         ((WorkItem) workItem).setName(work.getName());
         ((WorkItem) workItem).setProcessInstanceId(getProcessInstance().getId());
         ((WorkItem) workItem).setParameters(new HashMap<String, Object>(work.getParameters()));
+        // if there are any dynamic parameters add them
+        if (dynamicParameters != null) {
+            ((WorkItem) workItem).getParameters().putAll(dynamicParameters);
+        }
+        
         for (Iterator<DataAssociation> iterator = workItemNode.getInAssociations().iterator(); iterator.hasNext(); ) {
             DataAssociation association = iterator.next();
             if (association.getTransformation() != null) {
@@ -227,10 +238,12 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         }
                     }
                 }
+               
                 for (Map.Entry<String, String> replacement: replacements.entrySet()) {
                     s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
                 }
-                ((WorkItem) workItem).setParameter(entry.getKey(), s);
+                ((WorkItem) workItem).setParameter(entry.getKey(), s);           
+                
             }
         }
         return workItem;
@@ -311,6 +324,24 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                         }
                     } catch (Exception e) {
                         throw new RuntimeException(e);
+                    }
+                }
+            }
+        } 
+        // handle dynamic nodes
+        if (getNode() == null) {
+            setMetaData("NodeType", workItem.getName());
+            
+            Map<String, Object> results = workItem.getResults();
+            if (results != null && !results.isEmpty()) {
+                VariableScope variableScope = (VariableScope) ((ContextContainer) getProcessInstance().getProcess()).getDefaultContext( VariableScope.VARIABLE_SCOPE );
+                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)(VariableScopeInstance)getProcessInstance().getContextInstance(VariableScope.VARIABLE_SCOPE);;
+                for (Entry<String, Object> result : results.entrySet()) {
+                    
+                    if (variableScope.findVariable(result.getKey()) != null) {
+    
+                        variableScopeInstance.getVariableScope().validateVariable(getProcessInstance().getProcessName(), result.getKey(), result.getValue());    
+                        variableScopeInstance.setVariable(result.getKey(), result.getValue());
                     }
                 }
             }

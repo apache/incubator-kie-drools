@@ -51,14 +51,18 @@ public class ProcessAssetDesc implements ProcessDefinition {
     private Map<String, String> serviceTasks;
     private Map<String, String> processVariables;
     private Collection<String> reusableSubProcesses;
-
+    private boolean dynamic = true;
+    
     private boolean active = true;
 
 	public ProcessAssetDesc() {
     }
 
+	public ProcessAssetDesc(String id, String name, String version, String packageName, String type, String knowledgeType, String namespace, String deploymentId) {
+	    this(id, name, version, packageName, type, knowledgeType, namespace, deploymentId, false);
+	}
 
-    public ProcessAssetDesc(String id, String name, String version, String packageName, String type, String knowledgeType, String namespace, String deploymentId) {
+    public ProcessAssetDesc(String id, String name, String version, String packageName, String type, String knowledgeType, String namespace, String deploymentId, boolean dynamic) {
         this.id = safeValue(id);
         this.name = safeValue(name);
         this.version = safeValue(version);
@@ -67,6 +71,7 @@ public class ProcessAssetDesc implements ProcessDefinition {
         this.knowledgeType = safeValue(knowledgeType);
         this.namespace = safeValue(namespace);
         this.deploymentId = safeValue(deploymentId);
+        this.dynamic = dynamic;
     }
 
     private String safeValue(String value) {
@@ -263,6 +268,11 @@ public class ProcessAssetDesc implements ProcessDefinition {
 		this.active = active;
 	}
 
+    @Override
+    public boolean isDynamic() {
+        return dynamic;
+    }
+
 
     @Override
     public String toString() {
@@ -292,6 +302,7 @@ public class ProcessAssetDesc implements ProcessDefinition {
         result = prime * result + ((signals == null) ? 0 : signals.hashCode());
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         result = prime * result + ((version == null) ? 0 : version.hashCode());
+        result = prime * result + (dynamic ? 1 : 0);
         return result;
     }
 
@@ -391,7 +402,11 @@ public class ProcessAssetDesc implements ProcessDefinition {
                 return false;
         } else if (!version.equals(other.version))
             return false;
+        if (dynamic != other.dynamic) {
+            return false;
+        }
         return true;
     }
+
 
 }

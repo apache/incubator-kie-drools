@@ -733,7 +733,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         List<Object> firstRow = instances.get(0);
         assertNotNull(firstRow);
         
-        assertEquals(15, firstRow.size());
+        assertEquals(16, firstRow.size());
         
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;        
@@ -782,12 +782,12 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         List<Object> firstRow = instances.get(0);
         assertNotNull(firstRow);
         
-        assertEquals(15, firstRow.size());
+        assertEquals(16, firstRow.size());
         
         List<Object> secondRow = instances.get(1);
         assertNotNull(secondRow);
         
-        assertEquals(15, secondRow.size());
+        assertEquals(16, secondRow.size());
         
         Assert.assertNotEquals(firstRow, secondRow);
         

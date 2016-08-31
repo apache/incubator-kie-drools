@@ -273,6 +273,7 @@
         processInstanceDescription varchar(255) null,
         processInstanceId numeric(19,0) not null,
         processName varchar(255) null,
+        processType int null,
         processVersion varchar(255) null,
         start_date datetime null,
         status int null,

@@ -33,7 +33,9 @@ public interface ProcessDefinition extends Serializable, DeployedAsset {
     String getType();
 
     String getDeploymentId();
-
+    
+    boolean isDynamic();
+    
     Map<String, Collection<String>> getAssociatedEntities();
 
     Map<String, String> getServiceTasks();

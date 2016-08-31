@@ -53,6 +53,7 @@ import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.ConstraintTrigger;
+import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.MilestoneNode;
@@ -404,6 +405,10 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                 }
             } else if ( nodes[i] instanceof NodeContainer ) {
                 generateRules( ((NodeContainer) nodes[i]).getNodes(), process, builder);
+                if ( nodes[i] instanceof DynamicNode && "rule".equals(((DynamicNode) nodes[i]).getLanguage())) {
+                    DynamicNode dynamicNode = (DynamicNode) nodes[i];
+                    builder.append( createAdHocCompletionRule( process, dynamicNode ) );
+                }
             } else if ( nodes[i] instanceof EventNode ) {
                 EventNode state = (EventNode) nodes[i];
                 builder.append( createEventStateRule(process, state) );
@@ -519,6 +524,16 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
             result += "        ((org.jbpm.process.instance.ProcessRuntimeImpl)((org.drools.core.common.InternalWorkingMemory)kcontext.getKnowledgeRuntime()).getProcessRuntime()).startProcess(\"" + process.getId() + "\", null, \"conditional\");\n" + "end\n\n";
         }
         return result;
+    }
+    
+    private String createAdHocCompletionRule(Process process, DynamicNode dynamicNode) {
+        return
+        "rule \"RuleFlow-AdHocComplete-" + process.getId() + "-" + dynamicNode.getUniqueId() + "\" @Propagation(EAGER) \n" +
+        "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
+        "    when \n" +
+        "      " + dynamicNode.getCompletionExpression() + "\n" +
+        "    then \n" +
+        "end \n\n";
     }
 
 }

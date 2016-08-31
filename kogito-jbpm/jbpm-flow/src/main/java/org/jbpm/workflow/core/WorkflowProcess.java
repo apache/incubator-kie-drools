@@ -28,6 +28,9 @@ import org.jbpm.process.core.Process;
  */
 public interface WorkflowProcess extends org.kie.api.definition.process.WorkflowProcess, Process, NodeContainer {
 
+    public static final int PROCESS_TYPE = 1;
+    public static final int CASE_TYPE = 2;
+    
     /**
      * Returns the imports of this RuleFlow process.
      * They are defined as a List of fully qualified class names.
@@ -89,5 +92,7 @@ public interface WorkflowProcess extends org.kie.api.definition.process.Workflow
     boolean isAutoComplete();
     
     boolean isDynamic();
+
+    Integer getProcessType();
     
 }

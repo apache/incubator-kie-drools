@@ -19,6 +19,7 @@ package org.jbpm.process.core.context.variable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.context.AbstractContext;
 
@@ -30,6 +31,7 @@ public class VariableScope extends AbstractContext {
 	private static boolean variableStrictEnabled = Boolean.parseBoolean(System.getProperty("org.jbpm.variable.strict", "false"));
 
     public static final String VARIABLE_SCOPE = "VariableScope";
+    public static final String CASE_FILE_PREFIX = "caseFile_";
     
     private static final long serialVersionUID = 510l;
     
@@ -70,6 +72,13 @@ public class VariableScope extends AbstractContext {
                 return variable;
             }
         }
+        if (variableName.startsWith(CASE_FILE_PREFIX)) {
+            Variable caseVariable = new Variable();
+            caseVariable.setName(CASE_FILE_PREFIX+variableName);
+            caseVariable.setType(new ObjectDataType());
+            return caseVariable;
+        }
+        
         return null;
     }
 

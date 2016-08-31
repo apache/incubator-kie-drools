@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.command.runtime.process.SetProcessInstanceVariablesCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.process.instance.WorkItemManager;
@@ -40,6 +42,7 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
 import org.kie.api.command.Command;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -51,6 +54,7 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
+import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.CorrelationKeyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
@@ -90,7 +94,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
 		
 		params = process(params, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
-        RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        RuntimeEngine engine = manager.getRuntimeEngine(getContext(params));
         KieSession ksession = engine.getKieSession();
         ProcessInstance pi = null;
         try {
@@ -119,7 +123,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
 		
 		params = process(params, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
-        RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        RuntimeEngine engine = manager.getRuntimeEngine(getContext(params));
         KieSession ksession = engine.getKieSession();
         ProcessInstance pi = null;
         try {
@@ -128,6 +132,18 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
+	}
+	
+	protected Context<?> getContext(Map<String, Object> params) {
+	    if (params == null) {
+	        return ProcessInstanceIdContext.get();
+	    }
+	    String caseId = (String) params.get(EnvironmentName.CASE_ID);
+	    if (caseId != null && !caseId.isEmpty()) {
+	        return CaseContext.get(caseId);
+	    }
+	    
+	    return ProcessInstanceIdContext.get();
 	}
 
 	@Override
@@ -294,12 +310,22 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         KieSession ksession = engine.getKieSession();
         try {
-        	WorkflowProcessInstance pi = (WorkflowProcessInstance) ksession.getProcessInstance(processInstanceId);
-        	if (pi == null) {
-    			throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
-    		}
-        	Object variable = pi.getVariable(variableName);
-        	return variable;
+            Object variable = ksession.execute(new GenericCommand<Object>() {
+
+                private static final long serialVersionUID = -2693525229757876896L;
+
+                @Override
+                public Object execute(org.kie.internal.command.Context context) {
+                    KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                    WorkflowProcessInstance pi = (WorkflowProcessInstance) ksession.getProcessInstance(processInstanceId, true);
+                    if (pi == null) {
+                        throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found");
+                    }
+                    Object variable = pi.getVariable(variableName);
+                    return variable;
+                }
+            });
+            return variable;
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -319,7 +345,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         KieSession ksession = engine.getKieSession();
         try {
-        	WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) ksession.getProcessInstance(processInstanceId);
+        	WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) ksession.getProcessInstance(processInstanceId, true);
         	
         	return pi.getVariables();
         } finally {

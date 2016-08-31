@@ -200,6 +200,31 @@
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
+  
+  <named-query name="getProcessInstancesByCorrelationKeyAndStatus">
+    <query>
+     select
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.externalId,
+      log.start,
+      log.identity,
+      log.processInstanceDescription,
+      log.correlationKey,
+      log.parentProcessInstanceId
+        )
+      from
+        ProcessInstanceLog log
+      where
+        log.correlationKey like :correlationKey and log.status in (:states)
+        order by log.id
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
 
 
   <named-query name="getProcessInstancesByProcessIdAndStatus">
@@ -250,7 +275,7 @@
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
 
-<named-query name="getProcessInstancesByProcessNameAndStatus">
+  <named-query name="getProcessInstancesByProcessNameAndStatus">
     <query>
      select
       new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
@@ -380,7 +405,7 @@
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
   
-    <named-query name="getProcessInstanceFullHistoryByType">
+  <named-query name="getProcessInstanceFullHistoryByType">
     <query>
       select
       new org.jbpm.kie.services.impl.model.NodeInstanceDesc(
@@ -465,7 +490,7 @@
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
   
-    <named-query name="getNodeInstanceForWorkItem">
+  <named-query name="getNodeInstanceForWorkItem">
     <query>
       select
       new org.jbpm.kie.services.impl.model.NodeInstanceDesc(
@@ -491,6 +516,60 @@
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
 
+  <named-query name="getNodeInstancesByNodeType">
+    <query>
+      select
+      new org.jbpm.kie.services.impl.model.NodeInstanceDesc(
+      log.nodeInstanceId,
+      log.nodeId,
+      log.nodeName,
+      log.nodeType,
+      log.externalId,
+      log.processInstanceId,
+      log.date,
+      log.connection,
+      log.type,
+      log.workItemId
+      )
+      from
+        NodeInstanceLog log
+      where
+        log.processInstanceId=:processInstanceId
+        and log.nodeType in (:nodeTypes)
+      ORDER BY 
+        log.nodeInstanceId
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+  <named-query name="getNodeInstancesByCorrelationKeyAndNodeType">
+    <query>
+      select
+      new org.jbpm.kie.services.impl.model.NodeInstanceDesc(
+      log.nodeInstanceId,
+      log.nodeId,
+      log.nodeName,
+      log.nodeType,
+      log.externalId,
+      log.processInstanceId,
+      log.date,
+      log.connection,
+      log.type,
+      log.workItemId
+      )
+      from
+        ProcessInstanceLog plog,
+        NodeInstanceLog log
+      where
+        plog.correlationKey like :correlationKey
+        and plog.status in (:states) 
+        and plog.processInstanceId=log.processInstanceId
+        and log.nodeType in (:nodeTypes)
+      ORDER BY 
+        log.nodeInstanceId
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>  
 
   <!-- variable instance queries -->
   <named-query name="getVariablesCurrentState">

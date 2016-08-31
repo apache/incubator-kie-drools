@@ -72,11 +72,29 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
     
     private void addActivationListener() {
     	getProcessInstance().getKnowledgeRuntime().addEventListener(this);
+    	getProcessInstance().addEventListener(getActivationEventType(), this, true);
     }
 
     public void removeEventListeners() {
         super.removeEventListeners();
         getProcessInstance().getKnowledgeRuntime().removeEventListener(this);
+        getProcessInstance().removeEventListener(getActivationEventType(), this, true);
+    }
+    
+    private String getActivationEventType() {
+        return "RuleFlow-Milestone-" + getProcessInstance().getProcessId()
+            + "-" + getMilestoneNode().getUniqueId();
+    }
+
+    @Override
+    public void signalEvent(String type, Object event) {
+        if (getActivationEventType().equals(type)) {
+            if (event instanceof MatchCreatedEvent) {
+                matchCreated((MatchCreatedEvent) event);
+            }
+        } else {
+            super.signalEvent(type, event);
+        }
     }
 
     public void matchCreated(MatchCreatedEvent event) {

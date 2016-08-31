@@ -140,6 +140,9 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
                     case PER_PROCESS_INSTANCE:
                         manager = managerFactory.newPerProcessInstanceRuntimeManager(environemnt, unit.getIdentifier());
                         break;
+                    case PER_CASE:
+                        manager = managerFactory.newPerCaseRuntimeManager(environemnt, unit.getIdentifier());
+                        break;
                     default:
                         throw new IllegalArgumentException("Invalid strategy " + unit.getStrategy());
                 }   
