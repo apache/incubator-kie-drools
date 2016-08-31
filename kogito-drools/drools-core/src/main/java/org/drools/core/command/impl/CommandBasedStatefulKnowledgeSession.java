@@ -16,10 +16,6 @@
 
 package org.drools.core.command.impl;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.core.command.CommandService;
 import org.drools.core.command.GetSessionClockCommand;
 import org.drools.core.command.Interceptor;
@@ -105,6 +101,10 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     implements
@@ -429,6 +429,10 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
 
     public FactHandle insert(Object object) {
         return commandService.execute( new InsertObjectCommand( object ) );
+    }
+
+    public void submit( AtomicAction action ) {
+        throw new UnsupportedOperationException( "It is not necessary to use submit with a command based session, commands are already atomic" );
     }
 
     public void retract(FactHandle handle) {

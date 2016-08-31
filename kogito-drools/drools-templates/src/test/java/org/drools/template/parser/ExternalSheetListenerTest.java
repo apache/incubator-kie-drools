@@ -147,6 +147,9 @@ public class ExternalSheetListenerTest {
                 }
 
                 @Override
+                public void submit( AtomicAction action ) { }
+
+                @Override
                 public <T> T execute(Command<T> command) {
                     return null;
                 }
