@@ -26,6 +26,7 @@ import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.WorkingMemoryFactory;
+import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
@@ -51,6 +52,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         implements
@@ -67,6 +70,10 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
     private Environment             environment;
 
     private WorkingMemoryFactory wmFactory;
+    
+    private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
+    private DroolsManagementAgent.CBSKey mbeanRegisteredCBSKey;
+    private AtomicLong wmCreated = new AtomicLong(0);
 
     public StatelessKnowledgeSessionImpl() {
     }
@@ -100,11 +107,23 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
             for( Map.Entry<String, Channel> entry : this.channels.entrySet() ) {
                 ksession.registerChannel( entry.getKey(), entry.getValue() );
             }
-
+            
+            wmCreated.incrementAndGet();
             return ksession;
         } finally {
             this.kBase.readUnlock();
         }
+    }
+    
+    public void initMBeans(String containerId, String kbaseId, String ksessionName) {
+        if (kBase.getConfiguration() != null && kBase.getConfiguration().isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
+            this.mbeanRegisteredCBSKey = new DroolsManagementAgent.CBSKey(containerId, kbaseId, ksessionName);
+            DroolsManagementAgent.getInstance().registerKnowledgeSessionUnderName(mbeanRegisteredCBSKey, this);
+        }
+    }
+    
+    public long getWorkingMemoryCreatec() {
+        return wmCreated.get();
     }
 
     private void registerListeners( StatefulKnowledgeSessionImpl wm ) {
@@ -323,4 +342,5 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
             return result;
         }
     }
+
 }
