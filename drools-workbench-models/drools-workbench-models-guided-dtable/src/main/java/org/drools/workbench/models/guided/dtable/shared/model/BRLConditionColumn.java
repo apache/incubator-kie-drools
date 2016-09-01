@@ -15,12 +15,12 @@
  */
 package org.drools.workbench.models.guided.dtable.shared.model;
 
-import static java.lang.Math.min;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.workbench.models.datamodel.rule.IPattern;
+
+import static java.lang.Math.*;
 
 /**
  * A Condition column defined with a BRL fragment
@@ -71,7 +71,7 @@ public class BRLConditionColumn extends ConditionCol52
     private List<BaseColumnFieldDiff> getColumnDiffs( List<BRLConditionVariableColumn> otherChildColumns ) {
         int commonLength = min( this.childColumns.size(), otherChildColumns.size() );
         List<BaseColumnFieldDiff> result = new ArrayList<>();
-        for ( int i = 0; i < commonLength; i ++ ) {
+        for ( int i = 0; i < commonLength; i++ ) {
             result.addAll( this.childColumns.get( i ).diff( otherChildColumns.get( i ) ) );
         }
         result.addAll( getDiffsForUnpairedColumns( this.childColumns, commonLength, false ) );
@@ -84,10 +84,11 @@ public class BRLConditionColumn extends ConditionCol52
                                                                   boolean added ) {
         List<BaseColumnFieldDiff> result = new ArrayList<>();
         if ( addedChildColumns.size() > commonLength ) {
-            for ( BRLConditionVariableColumn column : addedChildColumns.subList( commonLength, addedChildColumns.size() ) )
+            for ( BRLConditionVariableColumn column : addedChildColumns.subList( commonLength, addedChildColumns.size() ) ) {
                 result.add( new BaseColumnFieldDiffImpl( FIELD_CHILD_COLUMNS,
-                                                         (added) ? null : column,
-                                                         (added) ? column : null ) );
+                                                         ( added ) ? null : column,
+                                                         ( added ) ? column : null ) );
+            }
         }
         return result;
     }
@@ -106,14 +107,6 @@ public class BRLConditionColumn extends ConditionCol52
 
     public void setChildColumns( List<BRLConditionVariableColumn> childColumns ) {
         this.childColumns = childColumns;
-    }
-
-    @Override
-    public void setHeader( String header ) {
-        super.setHeader( header );
-        for ( BRLConditionVariableColumn variable : this.childColumns ) {
-            variable.setHeader( header );
-        }
     }
 
     @Override
