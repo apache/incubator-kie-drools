@@ -85,14 +85,6 @@ public class BRLActionColumn extends ActionCol52
     }
 
     @Override
-    public void setHeader( String header ) {
-        super.setHeader( header );
-        for ( BRLActionVariableColumn variable : this.childColumns ) {
-            variable.setHeader( header );
-        }
-    }
-
-    @Override
     public void setHideColumn( boolean hideColumn ) {
         super.setHideColumn( hideColumn );
         for ( BRLActionVariableColumn variable : this.childColumns ) {

@@ -85,14 +85,6 @@ public class BRLConditionColumn extends ConditionCol52
     }
 
     @Override
-    public void setHeader( String header ) {
-        super.setHeader( header );
-        for ( BRLConditionVariableColumn variable : this.childColumns ) {
-            variable.setHeader( header );
-        }
-    }
-
-    @Override
     public void setHideColumn( boolean hideColumn ) {
         super.setHideColumn( hideColumn );
         for ( BRLConditionVariableColumn variable : this.childColumns ) {
