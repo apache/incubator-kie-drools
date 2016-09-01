@@ -75,6 +75,7 @@ import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.StateBasedNode;
 import org.jbpm.workflow.core.node.StateNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.Trigger;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
@@ -677,7 +678,8 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 || attachedToNode instanceof WorkItemNode 
                 || attachedToNode instanceof ActionNode
                 || attachedToNode instanceof HumanTaskNode
-                || attachedToNode instanceof CompositeNode) ) { 
+                || attachedToNode instanceof CompositeNode
+                || attachedToNode instanceof SubProcessNode) ) { 
             throw new IllegalArgumentException("Compensation Boundary Event [" + ((String) eventNode.getMetaData("UniqueId")) 
                     + "] must be attached to a task or sub-process.");
         }
@@ -685,7 +687,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         // - associated node is a task or subProcess
         compensationCheckPassed = false;
         if( target instanceof WorkItemNode || target instanceof HumanTaskNode 
-                || target instanceof CompositeContextNode ) { 
+                || target instanceof CompositeContextNode || target instanceof SubProcessNode ) { 
             compensationCheckPassed = true;
         } else if( target instanceof ActionNode ) { 
             Object nodeTypeObj = ((ActionNode) target).getMetaData("NodeType");

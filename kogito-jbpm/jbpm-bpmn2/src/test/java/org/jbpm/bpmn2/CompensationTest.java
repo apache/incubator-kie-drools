@@ -258,4 +258,18 @@ public class CompensationTest extends JbpmBpmn2TestCase {
         assertProcessVarValue(processInstance, "compensation", "compensation");
     }
     
+	/**
+	 * Test to demonstrate that Compensation Events work with Reusable
+	 * Subprocesses
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void compensationWithReusableSubprocess() throws Exception {
+		KieSession ksession = createKnowledgeSession("compensation/BPMN2-Booking.bpmn2",
+				"compensation/BPMN2-BookResource.bpmn2", "compensation/BPMN2-CancelResource.bpmn2");
+		ProcessInstance processInstance = ksession.startProcess("Booking");
+		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+	}
+    
 }
