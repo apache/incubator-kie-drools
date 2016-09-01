@@ -71,6 +71,18 @@ public class RuleModelVisitor {
         this.model.addRhsItem( action );
     }
 
+    public RuleModelVisitor( IPattern[] lhs,
+                             Map<InterpolationVariable, Integer> vars ) {
+        this.vars = vars;
+        this.model.lhs = lhs;
+    }
+
+    public RuleModelVisitor( IAction[] rhs,
+                             Map<InterpolationVariable, Integer> vars ) {
+        this.vars = vars;
+        this.model.rhs = rhs;
+    }
+
     private void parseStringPattern( String text ) {
         if ( text == null || text.length() == 0 ) {
             return;
@@ -129,7 +141,7 @@ public class RuleModelVisitor {
         }
     }
 
-    //ActionInsertFact, ActionSetField, ActionpdateField
+    //ActionInsertFact, ActionSetField, ActionUpdateField
     private void visitActionFieldList( ActionInsertFact afl ) {
         String factType = afl.getFactType();
         for ( ActionFieldValue afv : afl.getFieldValues() ) {
