@@ -20,9 +20,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
 import java.math.BigDecimal;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
