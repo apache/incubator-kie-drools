@@ -49,6 +49,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
+import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 
 public class XpathConstraint extends MutableTypeConstraint {
 
@@ -316,7 +317,7 @@ public class XpathConstraint extends MutableTypeConstraint {
             }
             try {
                 Method accessor = classObjectType.getClassType().getMethod( field );
-                return iterate ? getItemClass(accessor) : accessor.getReturnType();
+                return convertFromPrimitiveType( iterate ? getItemClass(accessor) : accessor.getReturnType() );
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException( e );
             }

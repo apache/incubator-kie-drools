@@ -985,4 +985,34 @@ public class XpathTest {
 
         assertEquals(10, ((Number)ksession.getGlobal("avg")).doubleValue(), 0);
     }
+
+    @Test
+    public void testPrimitives() {
+        // DROOLS-1266
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  Adult( $x: /children.age )\n" +
+                "then\n" +
+                "  list.add( $x );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        Man bob = new Man( "Bob", 40 );
+        bob.addChild( new Child( "Charles", 12 ) );
+        bob.addChild( new Child( "Debbie", 8 ) );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+    }
 }
