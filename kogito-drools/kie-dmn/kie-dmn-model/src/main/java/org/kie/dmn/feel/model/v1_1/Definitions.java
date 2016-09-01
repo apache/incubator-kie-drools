@@ -126,4 +126,20 @@ public class Definitions extends NamedElement {
         this.exporterVersion = value;
     }
 
+    @Override
+    public String toString() {
+        return "Definitions{" +
+               "_import=" + _import +
+               ", itemDefinition=" + itemDefinition +
+               ", drgElement=" + drgElement +
+               ", artifact=" + artifact +
+               ", elementCollection=" + elementCollection +
+               ", businessContextElement=" + businessContextElement +
+               ", expressionLanguage='" + expressionLanguage + '\'' +
+               ", typeLanguage='" + typeLanguage + '\'' +
+               ", namespace='" + namespace + '\'' +
+               ", exporter='" + exporter + '\'' +
+               ", exporterVersion='" + exporterVersion + '\'' +
+               '}';
+    }
 }

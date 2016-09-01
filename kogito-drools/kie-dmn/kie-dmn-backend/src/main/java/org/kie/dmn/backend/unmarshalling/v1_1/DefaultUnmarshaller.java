@@ -15,21 +15,25 @@
  */
 package org.kie.dmn.backend.unmarshalling.v1_1;
 
-import java.io.InputStreamReader;
-
 import org.kie.dmn.feel.model.v1_1.Definitions;
 import org.kie.dmn.unmarshalling.v1_1.Unmarshaller;
 
-public class DefaultUnmarshaller implements Unmarshaller {
+import java.io.Reader;
+import java.io.StringReader;
+
+public class DefaultUnmarshaller
+        implements Unmarshaller {
+
+    private final XStreamUnmarshaller delegate = new XStreamUnmarshaller();
 
     @Override
-    public Definitions unmarshal( final InputStreamReader isr ) {
-        return null;
+    public Definitions unmarshal(final String xml) {
+        return unmarshal( new StringReader( xml ) );
     }
 
     @Override
-    public Definitions unmarshal( final String xml ) {
-        return null;
+    public Definitions unmarshal(final Reader isr) {
+        return delegate.unmarshal( isr );
     }
 
 }

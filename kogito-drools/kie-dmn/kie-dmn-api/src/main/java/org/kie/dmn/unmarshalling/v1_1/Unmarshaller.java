@@ -16,12 +16,13 @@
 package org.kie.dmn.unmarshalling.v1_1;
 
 import java.io.InputStreamReader;
+import java.io.Reader;
 
 import org.kie.dmn.feel.model.v1_1.Definitions;
 
 public interface Unmarshaller {
 
-    Definitions unmarshal( final InputStreamReader isr );
+    Definitions unmarshal( final Reader isr );
 
     Definitions unmarshal( final String xml );
 

@@ -44,6 +44,7 @@
     <module>kie-dmn-model</module>
     <module>kie-dmn-feel</module>
     <module>kie-dmn-backend</module>
+    <module>kie-dmn-core</module>
   </modules>
 
   <dependencyManagement>
