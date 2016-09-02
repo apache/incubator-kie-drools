@@ -19,13 +19,16 @@ import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.Path;
 import org.drools.compiler.compiler.io.Resource;
+import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.core.util.StringUtils;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 public class MemoryFolder
         implements
-        Folder {
+        Folder,
+        Serializable {
     private MemoryFileSystem mfs;
 
     private String           path;
