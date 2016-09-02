@@ -51,8 +51,7 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
     private static final long NANO_TO_MILLISEC = 1000000;
     
     protected List<KieRuntimeEventManager> ksessions = new CopyOnWriteArrayList<KieRuntimeEventManager>();
-    
-    private ObjectName name;
+
     public AgendaStats agendaStats;
     public ProcessStats processStats;
 
@@ -64,7 +63,6 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
         this.containerId = containerId;
         this.kbaseId = kbaseId;
         this.ksessionName = ksessionName;
-        this.name = DroolsManagementAgent.createObjectNameBy(containerId, kbaseId, ksessionName);
         this.agendaStats = new AgendaStats();
         this.processStats = new ProcessStats();
     }
@@ -92,13 +90,6 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
     public void reset() {
         this.agendaStats.reset();
         this.processStats.reset();
-    }
-
-    /* (non-Javadoc)
-     * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getName()
-     */
-    public ObjectName getName() {
-        return name;
     }
     
     /* (non-Javadoc)

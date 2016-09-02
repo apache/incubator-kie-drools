@@ -4,7 +4,10 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.management.ObjectName;
+
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
+import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
@@ -13,14 +16,21 @@ import org.kie.api.management.StatelessKieSessionMonitoringMBean;
 
 public class StatelessKieSessionMonitoringImpl extends GenericKieSessionMonitoringImpl implements StatelessKieSessionMonitoringMBean {
 
+    private ObjectName name;
     public RuleRuntimeStats ruleRuntimeStats;
 
     public StatelessKieSessionMonitoringImpl(String containerId, String kbaseId, String ksessionName) {
         super(containerId, kbaseId, ksessionName);
-
+        
+        this.name = DroolsManagementAgent.createObjectNameBy(containerId, kbaseId, KieSessionType.STATELESS, ksessionName);
         this.ruleRuntimeStats = new RuleRuntimeStats();
     }
     
+    @Override
+    public ObjectName getName() {
+        return this.name;
+    }
+
     public void attach(KieRuntimeEventManager ksession) {
         ksession.addEventListener( ruleRuntimeStats );
         super.attach(ksession);
