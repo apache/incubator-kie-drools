@@ -395,6 +395,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             CaseDefinition caseDef = caseRuntimeDataService.getCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID);
             assertNotNull(caseDef);
             assertEquals(1, caseDef.getCaseStages().size());
+            assertEquals(deploymentUnit.getIdentifier(), caseDef.getDeploymentId());
             
             CaseStage stage = caseDef.getCaseStages().iterator().next();
             
@@ -587,6 +588,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             CaseDefinition caseDef = caseRuntimeDataService.getCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID);
             assertNotNull(caseDef);
             assertEquals(1, caseDef.getCaseStages().size());
+            assertEquals(deploymentUnit.getIdentifier(), caseDef.getDeploymentId());
             
             CaseStage stage = caseDef.getCaseStages().iterator().next();
             
@@ -637,6 +639,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         
         CaseDefinition caseDef = caseRuntimeDataService.getCase(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID);
         assertNotNull(caseDef);
+        assertEquals(deploymentUnit.getIdentifier(), caseDef.getDeploymentId());
         assertEquals(3, caseDef.getAdHocFragments().size());
         Map<String, AdHocFragment> mappedFragments = mapAdHocFragments(caseDef.getAdHocFragments());
         assertTrue(mappedFragments.containsKey("Hello2"));
@@ -750,6 +753,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         
         CaseDefinition caseDef = caseRuntimeDataService.getCase(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID);
         assertNotNull(caseDef);
+        assertEquals(deploymentUnit.getIdentifier(), caseDef.getDeploymentId());
         assertEquals(3, caseDef.getAdHocFragments().size());
         Map<String, AdHocFragment> mappedFragments = mapAdHocFragments(caseDef.getAdHocFragments());
         assertTrue(mappedFragments.containsKey("Hello2"));

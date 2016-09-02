@@ -127,6 +127,7 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         assertTrue(caseDef.getCaseStages().isEmpty());
         assertNotNull(caseDef.getCaseRoles());
         assertTrue(caseDef.getCaseRoles().isEmpty());
+        assertEquals(deploymentUnit.getIdentifier(), caseDef.getDeploymentId());
         
         // UserTaskCase asserts
         caseDef = mappedCases.get("UserTaskCase");
@@ -177,7 +178,8 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         assertEquals("1.0", caseDef.getVersion());
         assertEquals(CaseDefinition.DEFAULT_PREFIX, caseDef.getIdentifierPrefix());
         assertNotNull(caseDef.getCaseMilestones());
-        assertEquals(0, caseDef.getCaseMilestones().size());        
+        assertEquals(0, caseDef.getCaseMilestones().size());
+        assertEquals(deploymentUnit.getIdentifier(), caseDef.getDeploymentId());
         
         assertNotNull(caseDef.getCaseStages());
         assertEquals(1, caseDef.getCaseStages().size());
@@ -275,7 +277,8 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         assertEquals("1.0", caseDef.getVersion());
         assertEquals(CaseDefinition.DEFAULT_PREFIX, caseDef.getIdentifierPrefix());
         assertNotNull(caseDef.getCaseMilestones());
-        assertEquals(0, caseDef.getCaseMilestones().size());        
+        assertEquals(0, caseDef.getCaseMilestones().size());
+        assertEquals(deploymentUnit.getIdentifier(), caseDef.getDeploymentId());
         
         assertNotNull(caseDef.getCaseStages());
         assertEquals(1, caseDef.getCaseStages().size());
@@ -293,7 +296,6 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         assertEquals("HumanTaskNode", mappedFragments.get("Missing data").getType());
         assertTrue(mappedFragments.containsKey("Verification of data"));
         assertEquals("SubProcessNode", mappedFragments.get("Verification of data").getType());
-        
         
         assertNotNull(caseDef.getCaseRoles());
         assertEquals(3, caseDef.getCaseRoles().size());

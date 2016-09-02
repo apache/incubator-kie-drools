@@ -16,9 +16,7 @@
 
 package org.jbpm.casemgmt.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.File;
@@ -588,15 +586,6 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
         userTaskService.completeAutoProgress(taskId, "krisv", params);
     }
 
-    /*
-     * Setup helper methods
-     */
-    
-    private void assertTrue(boolean containsKey) {
-        // TODO Auto-generated method stub
-        
-    }
-
     @Override
     protected List<ObjectModel> getProcessListeners() {
         List<ObjectModel> listeners = super.getProcessListeners();
@@ -605,8 +594,5 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
         
         return listeners;
     }
-    
-    
-    
     
 }

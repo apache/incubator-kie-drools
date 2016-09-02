@@ -49,6 +49,11 @@ public interface CaseDefinition {
      * @return
      */
     String getIdentifierPrefix();
+
+    /**
+     * Returns deployment id
+     */
+    String getDeploymentId();
     
     /**
      * Returns available case stages in this case.

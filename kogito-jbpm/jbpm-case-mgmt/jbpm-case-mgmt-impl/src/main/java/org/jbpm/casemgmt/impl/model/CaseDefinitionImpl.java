@@ -74,6 +74,7 @@ public class CaseDefinitionImpl implements CaseDefinition, Serializable {
         return caseRoles;
     }
 
+    @Override
     public String getDeploymentId() {
         return processDef.getDeploymentId();
     }
