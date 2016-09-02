@@ -74,13 +74,13 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
     
     @Parameters
     public static Collection<Object[]> persistence() {
-        Object[][] data = new Object[][] { 
-                { false, false }, 
+        Object[][] data = new Object[][] {
+                { false, false },
                 { true, false }, 
                 { true, true } 
                 };
         return Arrays.asList(data);
-    };
+    }
     
     public StandaloneBPMNProcessTest(boolean persistence, boolean locking) {
         super(persistence, locking);

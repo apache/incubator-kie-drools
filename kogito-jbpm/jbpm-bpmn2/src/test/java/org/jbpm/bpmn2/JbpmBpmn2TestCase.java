@@ -79,6 +79,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
+import org.junit.rules.Timeout;
 import org.junit.runner.Description;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -141,6 +142,10 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
 
     private RequireLocking testReqLocking;
     private RequirePersistence testReqPersistence;
+
+    @Rule
+    public Timeout globalTimeout = Timeout.seconds(30);
+
     @Rule
     public TestRule watcher = new TestWatcher() {
         protected void starting(Description description) {
