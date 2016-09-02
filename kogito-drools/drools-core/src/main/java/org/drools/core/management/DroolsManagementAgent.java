@@ -18,6 +18,7 @@ package org.drools.core.management;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.management.KieManagementAgentMBean;
 import org.kie.api.management.KieSessionMonitoringMBean;
@@ -87,10 +88,21 @@ public class DroolsManagementAgent
 		return DroolsManagementAgent.createObjectName(CONTAINER_NAME_PREFIX + ":kcontainerId="+ObjectName.quote(containerId));
 	}
 	
-    public static ObjectName createObjectNameBy(String containerId, String kbaseId, String ksessionName) {
+    public static ObjectName createObjectNameBy(String containerId, String kbaseId, KieSessionModel.KieSessionType ksessionType, String ksessionName) {
         return DroolsManagementAgent.createObjectName(CONTAINER_NAME_PREFIX + ":kcontainerId="+ObjectName.quote(containerId) 
                     + ",kbaseId=" + ObjectName.quote(kbaseId) 
+                    + ",ksessionType=" + ksessionType(ksessionType)
                     + ",ksessionName=" + ObjectName.quote(ksessionName) );
+    }
+    
+    private static String ksessionType(KieSessionModel.KieSessionType ksessionType) {
+        switch(ksessionType) {
+            case STATELESS:
+                return "Stateless";
+            case STATEFUL:
+            default:
+                return "Stateful";
+        }
     }
 
     public synchronized long getKieBaseCount() {

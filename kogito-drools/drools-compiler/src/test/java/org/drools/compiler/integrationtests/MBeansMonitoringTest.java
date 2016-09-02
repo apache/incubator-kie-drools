@@ -244,7 +244,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         
         KieSessionMonitoringMBean aggrMonitor = JMX.newMXBeanProxy(
                 mbserver,
-                DroolsManagementAgent.createObjectNameBy(containerId, KBASE1, KSESSION1),
+                DroolsManagementAgent.createObjectNameBy(containerId, KBASE1, KieSessionType.STATEFUL, KSESSION1),
                 KieSessionMonitoringMBean.class);
         
         long tft = 0; 
@@ -297,7 +297,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         
         StatelessKieSessionMonitoringMBean aggrMonitor2 = JMX.newMXBeanProxy(
                 mbserver,
-                DroolsManagementAgent.createObjectNameBy(containerId, KBASE2, KSESSION2),
+                DroolsManagementAgent.createObjectNameBy(containerId, KBASE2, KieSessionType.STATELESS, KSESSION2),
                 StatelessKieSessionMonitoringMBean.class);
         
         print(aggrMonitor2);
