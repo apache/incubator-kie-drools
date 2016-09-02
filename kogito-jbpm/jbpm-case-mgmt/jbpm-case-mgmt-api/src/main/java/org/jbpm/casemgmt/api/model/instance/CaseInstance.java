@@ -69,6 +69,11 @@ public interface CaseInstance {
      * Returns case definition id
      */
     String getCaseDefinitionId();
+
+    /**
+     * Returns deployment id
+     */
+    String getDeploymentId();
     
     /**
      * Returns start date of this case

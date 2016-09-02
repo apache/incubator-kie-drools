@@ -347,6 +347,7 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             assertEquals("my first case", instance.getCaseDescription());
             assertEquals("testUser", instance.getOwner());
             assertEquals(ProcessInstance.STATE_ACTIVE, instance.getStatus().intValue());
+            assertEquals(deploymentUnit.getIdentifier(), instance.getDeploymentId());
             assertNotNull(instance.getStartedAt());
             
             // add dynamic user task to empty case instance - first by case id

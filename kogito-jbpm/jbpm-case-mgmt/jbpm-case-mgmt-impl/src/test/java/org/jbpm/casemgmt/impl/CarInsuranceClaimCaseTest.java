@@ -122,7 +122,7 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
         String caseId = startAndAssertCaseInstance(deploymentId, "john", "mary");
         try {
             // let's verify case is created
-            assertCaseInstance(CAR_INS_CASE_ID);            
+            assertCaseInstance(deploymentId, CAR_INS_CASE_ID);
             // let's look at what stages are active
             assertBuildClaimReportStage();            
             // since the first task assigned to insured is with auto start it should be already active            
@@ -166,7 +166,7 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
         String caseId = startAndAssertCaseInstance(deploymentId, "john", "mary");
         try {
             // let's verify case is created
-            assertCaseInstance(CAR_INS_CASE_ID);            
+            assertCaseInstance(deploymentId, CAR_INS_CASE_ID);
             // let's look at what stages are active
             assertBuildClaimReportStage();            
             // since the first task assigned to insured is with auto start it should be already active            
@@ -212,7 +212,7 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
         String caseId = startAndAssertCaseInstance(deploymentId, "john", "mary");
         try {
             // let's verify case is created
-            assertCaseInstance(CAR_INS_CASE_ID);            
+            assertCaseInstance(deploymentId, CAR_INS_CASE_ID);
             // let's look at what stages are active
             assertBuildClaimReportStage();            
             // since the first task assigned to insured is with auto start it should be already active            
@@ -267,7 +267,7 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
         String caseId = startAndAssertCaseInstance(deploymentId, "john", "mary");
         try {
             // let's verify case is created
-            assertCaseInstance(CAR_INS_CASE_ID);            
+            assertCaseInstance(deploymentId, CAR_INS_CASE_ID);
             // let's look at what stages are active
             assertBuildClaimReportStage();            
             // since the first task assigned to insured is with auto start it should be already active            
@@ -311,7 +311,7 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
         String caseId = startAndAssertCaseInstance(deploymentId, "john", "mary");
         try {
             // let's verify case is created
-            assertCaseInstance(CAR_INS_CASE_ID);            
+            assertCaseInstance(deploymentId, CAR_INS_CASE_ID);
             // let's look at what stages are active
             assertBuildClaimReportStage();            
             // let's now add assessor to the case as we will need his/her opinion
@@ -392,10 +392,11 @@ public class CarInsuranceClaimCaseTest extends AbstractCaseServicesBaseTest {
         return caseId;
     }
     
-    protected void assertCaseInstance(String caseId) {
+    protected void assertCaseInstance(String deploymentId, String caseId) {
         CaseInstance cInstance = caseService.getCaseInstance(caseId);
         assertNotNull(cInstance);
         assertEquals(caseId, cInstance.getCaseId());
+        assertEquals(deploymentId, cInstance.getDeploymentId());
     }
     
     protected void assertBuildClaimReportStage() {

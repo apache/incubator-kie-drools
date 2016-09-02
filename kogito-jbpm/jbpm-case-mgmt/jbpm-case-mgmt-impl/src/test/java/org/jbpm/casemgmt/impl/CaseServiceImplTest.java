@@ -132,6 +132,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         try {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             caseService.cancelCase(caseId);            
             try {
@@ -165,6 +166,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         try {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             caseService.destroyCase(caseId);            
             try {
@@ -204,6 +206,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
             assertNotNull(cInstance.getCaseFile());
             assertEquals("my first case", cInstance.getCaseFile().getData("name"));
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             caseService.cancelCase(caseId);            
             try {
@@ -248,6 +251,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
             assertNotNull(cInstance.getCaseFile());
             assertEquals("my first case", cInstance.getCaseFile().getData("name"));
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             Object doc = cInstance.getCaseFile().getData("document");
             assertNotNull(doc);
@@ -294,6 +298,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             // add dynamic user task to empty case instance - first by case id
             Map<String, Object> parameters = new HashMap<>();            
@@ -385,6 +390,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             CaseDefinition caseDef = caseRuntimeDataService.getCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID);
             assertNotNull(caseDef);
@@ -449,6 +455,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             Collection<ProcessInstanceDesc> caseProcessInstances = caseRuntimeDataService.getProcessInstancesForCase(caseId, new QueryContext());
             assertNotNull(caseProcessInstances);
@@ -526,6 +533,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             // add dynamic user task to empty case instance - first by case id
             Map<String, Object> parameters = new HashMap<>();            
@@ -574,6 +582,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             CaseDefinition caseDef = caseRuntimeDataService.getCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID);
             assertNotNull(caseDef);
@@ -641,6 +650,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals(HR_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
             assertNotNull(tasks);
@@ -756,6 +766,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals(HR_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             caseService.assignToCaseRole(HR_CASE_ID, "contact", new UserImpl("mary"));            
             
@@ -807,6 +818,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
         
             List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
             assertNotNull(tasks);
@@ -841,6 +853,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             CaseInstance cInstance = caseService.getCaseInstance(caseId);
             assertNotNull(cInstance);
             assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             Collection<CommentInstance> caseComments = caseService.getCaseComments(FIRST_CASE_ID, new QueryContext());
             assertNotNull(caseComments);
