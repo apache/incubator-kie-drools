@@ -12,9 +12,9 @@ import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.ObjectInsertedEvent;
 import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.api.management.StatelessKieSessionMonitoringMBean;
+import org.kie.api.management.StatelessKieSessionMonitoringMXBean;
 
-public class StatelessKieSessionMonitoringImpl extends GenericKieSessionMonitoringImpl implements StatelessKieSessionMonitoringMBean {
+public class StatelessKieSessionMonitoringImpl extends GenericKieSessionMonitoringImpl implements StatelessKieSessionMonitoringMXBean {
 
     private ObjectName name;
     public RuleRuntimeStats ruleRuntimeStats;
