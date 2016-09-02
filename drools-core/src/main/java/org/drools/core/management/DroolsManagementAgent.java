@@ -21,8 +21,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.management.KieManagementAgentMBean;
-import org.kie.api.management.KieSessionMonitoringMBean;
-import org.kie.api.management.StatelessKieSessionMonitoringMBean;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,8 +158,7 @@ public class DroolsManagementAgent
                     } else {
                         try {
                             StatelessKieSessionMonitoringImpl mbean = new StatelessKieSessionMonitoringImpl( cbsKey.kcontainerId, cbsKey.kbaseId, cbsKey.ksessionName );
-                            final StandardMBean adapter = new StandardMBean( mbean, StatelessKieSessionMonitoringMBean.class );
-                            registerMBean( cbsKey, adapter, mbean.getName() );
+                            registerMBean( cbsKey, mbean, mbean.getName() );
                             mbeansRefs.put(cbsKey, mbean);
                             return mbean;
                         } catch ( Exception e ) {
@@ -177,8 +174,7 @@ public class DroolsManagementAgent
                     } else {
                         try {
                             KieSessionMonitoringImpl mbean = new KieSessionMonitoringImpl( cbsKey.kcontainerId, cbsKey.kbaseId, cbsKey.ksessionName );
-                            final StandardMBean adapter = new StandardMBean( mbean, KieSessionMonitoringMBean.class );
-                            registerMBean( cbsKey, adapter, mbean.getName() );
+                            registerMBean( cbsKey, mbean, mbean.getName() );
                             mbeansRefs.put(cbsKey, mbean);
                             return mbean;
                         } catch ( Exception e ) {
