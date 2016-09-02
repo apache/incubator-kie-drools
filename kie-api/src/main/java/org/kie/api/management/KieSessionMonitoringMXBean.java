@@ -16,11 +16,17 @@
 
 package org.kie.api.management;
 
-/**
- * An MBean interface for {@link org.kie.api.runtime.StatelessKieSession} monitoring
- */
-public interface StatelessKieSessionMonitoringMBean extends GenericKieSessionMonitoringMBean {
+import java.util.Date;
+import java.util.Map;
 
-    long getTotalObjectsInserted();
-    long getTotalObjectsDeleted();
+import javax.management.ObjectName;
+
+/**
+ * An MBean interface for {@link org.kie.api.runtime.KieSession} monitoring
+ */
+public interface KieSessionMonitoringMXBean extends GenericKieSessionMonitoringMXBean {
+    /**        
+     * @return the total fact count current loaded into the session      
+     */       
+    long getTotalFactCount();
 }
