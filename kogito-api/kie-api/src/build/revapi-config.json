@@ -2,6 +2,12 @@
   "revapi" : {
     "ignore" : [
       {
+          "code": "java.class.removed",
+          "old": "class org.kie.api.management.KieSessionMonitoringMBean",
+          "justification": "Interface moved from MBean type to MXBean type, so interface is now KieSessionMonitoringMXBean"
+      }
+      ,
+      {
           "code": "java.method.removed",
           "old": "method double org.kie.api.management.KieSessionMonitoringMBean::getAverageFiringTime()",
           "justification": "Method was NOT removed, but moved to superinterface, ref github.com/revapi/revapi/issues/41"

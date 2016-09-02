@@ -24,7 +24,7 @@ import javax.management.ObjectName;
 /**
  * An MBean interface for {@link org.kie.api.runtime.KieSession} monitoring
  */
-public interface GenericKieSessionMonitoringMBean {
+public interface GenericKieSessionMonitoringMXBean {
 
     /**
      * Resets all stats
@@ -71,33 +71,55 @@ public interface GenericKieSessionMonitoringMBean {
     double getAverageFiringTime();
 
     /**
-     * Returns a formatted String with statistics for a single rule in this session,
-     * like number of matches created, cancelled and fired as well as firing time.
-     *  
-     * @param ruleName the name of the rule for which statistics are requested.
-     * 
-     * @return formatted String with statistics
-     */
-    String getStatsForRule(String ruleName);
-
-    /**
      * @return the timestamp of the last stats reset
      */
     Date getLastReset();
     
-    Map<String,String> getStatsByRule();
+    
+    public static interface IAgendaStatsData {
+        long getMatchesFired();
+        long getMatchesCreated();
+        long getMatchesCancelled();
+        long getFiringTime();
+        Date getLastReset();
+    }
+    /**
+     * Returns the statistics for a single rule in this session,
+     * like number of matches created, cancelled and fired as well as firing time.
+     *  
+     * @param ruleName the name of the rule for which statistics are requested.
+     * 
+     * @return the statistics for a single rule in this session
+     */
+    IAgendaStatsData getStatsForRule(String ruleName);
+    Map<String, IAgendaStatsData> getStatsByRule();
 
+    
     long getTotalProcessInstancesStarted();
     
     long getTotalProcessInstancesCompleted();
     
-    String getStatsForProcess(String processId);
     
-    Map<String,String> getStatsByProcess();
+    public static interface IGlobalProcessStatsData {
+        long getProcessInstancesStarted();
+        long getProcessInstancesCompleted();
+        Date getLastReset();
+    }
+    public static interface IProcessStatsData extends IGlobalProcessStatsData {
+        long getProcessNodesTriggered();
+    }
+    IProcessStatsData getStatsForProcess(String processId);
+    Map<String,IProcessStatsData> getStatsByProcess();
     
-    String getStatsForProcessInstance(long processInstanceId);
     
-    Map<Long,String> getStatsByProcessInstance();
+    public static interface IProcessInstanceStatsData {
+        Date getProcessStarted();
+        Date getProcessCompleted();
+        long getProcessNodesTriggered();
+    }
+    IProcessInstanceStatsData getStatsForProcessInstance(long processInstanceId);
+    Map<Long,IProcessInstanceStatsData> getStatsByProcessInstance();
+    
 
     String getKieSessionName();
     
