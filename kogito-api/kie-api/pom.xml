@@ -86,7 +86,10 @@
             </group>
           </groups>
           <!-- Important: this doclet requires Graphviz (the 'dot' command) to be installed.
-               It logs warning if it can not find the command. -->
+               It logs warning if it can not find the command, but the build continues and the generated javadoc simply
+               does not contain the graphs. This is not ideal, but it's better that just failing directly as the 'dot'
+               command is not installed by default on most systems and this would put additional burden for contributors
+               to build the project. We need to make sure that our build machines do have the Graphviz installed. -->
           <doclet>org.jboss.apiviz.APIviz</doclet>
           <docletArtifact>
             <groupId>com.grahamedgecombe.apiviz</groupId>
@@ -96,6 +99,16 @@
           <useStandardDocletOptions>true</useStandardDocletOptions>
           <additionalparam>-sourceclasspath ${project.build.outputDirectory}</additionalparam>
         </configuration>
+        <executions>
+          <execution>
+            <!-- Run the javadoc plugin also as part of the standard build (for other modules, it is executed only when -Dfull is specified).
+                 Some downstream repositories (e.g. Drools) depend on this -javadoc artifact and need it even for non-full builds. -->
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.revapi</groupId>
