@@ -16,6 +16,10 @@
 
 package org.drools.workbench.models.testscenarios.backend;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.junit.internal.AssumptionViolatedException;
 import org.junit.internal.runners.model.EachTestNotifier;
@@ -25,10 +29,6 @@ import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class ScenarioRunner4JUnit extends Runner {
 
@@ -105,7 +105,7 @@ public class ScenarioRunner4JUnit extends Runner {
                     if (ksessionName == null) {
                         eachNotifier.addFailure(new NullPointerException("Test scenario runner could not find the default knowledge session."));
                     } else {
-                        eachNotifier.addFailure(new NullPointerException("Test scenario runner could not find a stateful knowledge session with the name \'" + ksessionName + "\'."));
+                        eachNotifier.addFailure( new NullPointerException( "Test Scenarios require Stateful KieSession to run." ) );
                     }
                 } else {
                     final ScenarioRunner runner = new ScenarioRunner(ksession,
