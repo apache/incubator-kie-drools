@@ -5,9 +5,9 @@ import javax.management.ObjectName;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.api.event.KieRuntimeEventManager;
-import org.kie.api.management.KieSessionMonitoringMBean;
+import org.kie.api.management.KieSessionMonitoringMXBean;
 
-public class KieSessionMonitoringImpl extends GenericKieSessionMonitoringImpl implements KieSessionMonitoringMBean {
+public class KieSessionMonitoringImpl extends GenericKieSessionMonitoringImpl implements KieSessionMonitoringMXBean {
     
     private ObjectName name;
 

@@ -34,9 +34,9 @@ import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.MBeansOption;
 import org.kie.api.management.KieContainerMonitorMXBean;
-import org.kie.api.management.GenericKieSessionMonitoringMBean;
-import org.kie.api.management.KieSessionMonitoringMBean;
-import org.kie.api.management.StatelessKieSessionMonitoringMBean;
+import org.kie.api.management.GenericKieSessionMonitoringMXBean;
+import org.kie.api.management.KieSessionMonitoringMXBean;
+import org.kie.api.management.StatelessKieSessionMonitoringMXBean;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -242,10 +242,10 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         
         MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
         
-        KieSessionMonitoringMBean aggrMonitor = JMX.newMXBeanProxy(
+        KieSessionMonitoringMXBean aggrMonitor = JMX.newMXBeanProxy(
                 mbserver,
                 DroolsManagementAgent.createObjectNameBy(containerId, KBASE1, KieSessionType.STATEFUL, KSESSION1),
-                KieSessionMonitoringMBean.class);
+                KieSessionMonitoringMXBean.class);
         
         long tft = 0; 
         
@@ -254,7 +254,11 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         checkTotalFactCount(aggrMonitor, 0);
         tft = checkTotalFiringTimeGEQ(aggrMonitor, tft);
         checkTotalSessions(aggrMonitor, 1);
-
+        assertNull( aggrMonitor.getStatsForRule("ND" ) );
+        assertNull( aggrMonitor.getStatsForRule("ND2") );
+        assertFalse( aggrMonitor.getStatsByRule().containsKey("ND" ) );
+        assertFalse( aggrMonitor.getStatsByRule().containsKey("ND2") );
+        
         ksession.insert("Ciao");
         ksession.fireAllRules();
         print(aggrMonitor);
@@ -262,13 +266,21 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         checkTotalFactCount(aggrMonitor, 1);
         tft = checkTotalFiringTimeGEQ(aggrMonitor, tft + 1);
         checkTotalSessions(aggrMonitor, 1);
-
+        checkStatsForRule(aggrMonitor,"ND" ,1,1,0);
+        checkStatsForRule(aggrMonitor,"ND2",1,0,1);
+        checkStatsByRule(aggrMonitor,"ND" ,1,1,0);
+        checkStatsByRule(aggrMonitor,"ND2",1,0,1);
+        
         ksession.fireAllRules();
         print(aggrMonitor);
         checkAgendaTotals(aggrMonitor, 2, 1, 1);
         checkTotalFactCount(aggrMonitor, 1);
         tft = checkTotalFiringTimeGEQ(aggrMonitor, tft);
         checkTotalSessions(aggrMonitor, 1);
+        checkStatsForRule(aggrMonitor,"ND" ,1,1,0);
+        checkStatsForRule(aggrMonitor,"ND2",1,0,1);
+        checkStatsByRule(aggrMonitor,"ND" ,1,1,0);
+        checkStatsByRule(aggrMonitor,"ND2",1,0,1);
         
         LOG.debug("---");
         
@@ -281,6 +293,10 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         checkTotalFactCount(aggrMonitor, 2);
         tft = checkTotalFiringTimeGEQ(aggrMonitor, tft + 1);
         checkTotalSessions(aggrMonitor, 2);
+        checkStatsForRule(aggrMonitor,"ND" ,2,2,0);
+        checkStatsForRule(aggrMonitor,"ND2",2,0,2);
+        checkStatsByRule(aggrMonitor,"ND" ,2,2,0);
+        checkStatsByRule(aggrMonitor,"ND2",2,0,2);
         
         ksession2.dispose();
         checkTotalSessions(aggrMonitor, 1);
@@ -295,16 +311,20 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         
         StatelessKieSession stateless = kc.newStatelessKieSession(KSESSION2, sessionConf);
         
-        StatelessKieSessionMonitoringMBean aggrMonitor2 = JMX.newMXBeanProxy(
+        StatelessKieSessionMonitoringMXBean aggrMonitor2 = JMX.newMXBeanProxy(
                 mbserver,
                 DroolsManagementAgent.createObjectNameBy(containerId, KBASE2, KieSessionType.STATELESS, KSESSION2),
-                StatelessKieSessionMonitoringMBean.class);
+                StatelessKieSessionMonitoringMXBean.class);
         
         print(aggrMonitor2);
         checkAgendaTotals(aggrMonitor2, 0, 0, 0);
         checkRuleRuntimeTotals(aggrMonitor2, 0, 0);
         tft = checkTotalFiringTimeGEQ(aggrMonitor2, tft);
         checkTotalSessions(aggrMonitor2, 0);
+        assertNull( aggrMonitor2.getStatsForRule("ND" ) );
+        assertNull( aggrMonitor2.getStatsForRule("ND2") );
+        assertFalse( aggrMonitor2.getStatsByRule().containsKey("ND" ) );
+        assertFalse( aggrMonitor2.getStatsByRule().containsKey("ND2") );
 
         stateless.execute("Ciao");
         print(aggrMonitor2);
@@ -312,6 +332,10 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         checkRuleRuntimeTotals(aggrMonitor2, 2, 1);
         tft = checkTotalFiringTimeGEQ(aggrMonitor2, tft + 1);
         checkTotalSessions(aggrMonitor2, 1);
+        checkStatsForRule(aggrMonitor2,"ND" ,1,1,0);
+        checkStatsForRule(aggrMonitor2,"ND2",1,0,1);
+        checkStatsByRule(aggrMonitor2,"ND" ,1,1,0);
+        checkStatsByRule(aggrMonitor2,"ND2",1,0,1);
         
         stateless.execute("Ciao");
         print(aggrMonitor2);
@@ -319,6 +343,10 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         checkRuleRuntimeTotals(aggrMonitor2, 4, 2);
         tft = checkTotalFiringTimeGEQ(aggrMonitor2, tft + 1);
         checkTotalSessions(aggrMonitor2, 2);
+        checkStatsForRule(aggrMonitor2,"ND" ,2,2,0);
+        checkStatsForRule(aggrMonitor2,"ND2",2,0,2);
+        checkStatsByRule(aggrMonitor2,"ND" ,2,2,0);
+        checkStatsByRule(aggrMonitor2,"ND2",2,0,2);
         
         StatelessKieSession stateless2 = kc.newStatelessKieSession(KSESSION2, sessionConf);
         LOG.debug(stateless + " " + stateless2);
@@ -330,6 +358,10 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         checkRuleRuntimeTotals(aggrMonitor2, 6, 3);
         tft = checkTotalFiringTimeGEQ(aggrMonitor2, tft + 1);
         checkTotalSessions(aggrMonitor2, 3);
+        checkStatsForRule(aggrMonitor2,"ND" ,3,3,0);
+        checkStatsForRule(aggrMonitor2,"ND2",3,0,3);
+        checkStatsByRule(aggrMonitor2,"ND" ,3,3,0);
+        checkStatsByRule(aggrMonitor2,"ND2",3,0,3);
         
         KieContainer kc2 = ks.newKieContainer( "kc2", releaseId1 );
         assertEquals(5, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(containerId)+",*"), null).size());
@@ -338,39 +370,51 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         assertEquals(1, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote("kc2")+",*"), null).size());
     }
     
-    private void print(GenericKieSessionMonitoringMBean mb) {
+    private void checkStatsByRule(GenericKieSessionMonitoringMXBean mb, String ruleName, long mCreated, long mCancelled, long mFired) {
+        assertEquals(mCreated     , mb.getStatsByRule().get(ruleName).getMatchesCreated()   );
+        assertEquals(mCancelled   , mb.getStatsByRule().get(ruleName).getMatchesCancelled() );
+        assertEquals(mFired       , mb.getStatsByRule().get(ruleName).getMatchesFired()     );
+    }
+
+    private void checkStatsForRule(GenericKieSessionMonitoringMXBean mb, String ruleName, long mCreated, long mCancelled, long mFired) {
+        assertEquals(mCreated     , mb.getStatsForRule(ruleName).getMatchesCreated()   );
+        assertEquals(mCancelled   , mb.getStatsForRule(ruleName).getMatchesCancelled() );
+        assertEquals(mFired       , mb.getStatsForRule(ruleName).getMatchesFired()     );
+    }
+
+    private void print(GenericKieSessionMonitoringMXBean mb) {
         LOG.debug("total match created  : {}",mb.getTotalMatchesCreated());
         LOG.debug("total match cancelled: {}",mb.getTotalMatchesCancelled());
         LOG.debug("total match fired    : {}",mb.getTotalMatchesFired());
-        if (mb instanceof StatelessKieSessionMonitoringMBean) {
-            StatelessKieSessionMonitoringMBean c = (StatelessKieSessionMonitoringMBean) mb;
+        if (mb instanceof StatelessKieSessionMonitoringMXBean) {
+            StatelessKieSessionMonitoringMXBean c = (StatelessKieSessionMonitoringMXBean) mb;
             LOG.debug("inserted and deleted : +{} -{}",c.getTotalObjectsInserted(),c.getTotalObjectsDeleted());
-        } else if (mb instanceof KieSessionMonitoringMBean) {
-            KieSessionMonitoringMBean c = (KieSessionMonitoringMBean) mb;
+        } else if (mb instanceof KieSessionMonitoringMXBean) {
+            KieSessionMonitoringMXBean c = (KieSessionMonitoringMXBean) mb;
             LOG.debug("total tact count     : {}",c.getTotalFactCount());
         }
         LOG.debug("{} ms .", mb.getTotalFiringTime());
     }
     
-    private long checkTotalFiringTimeGEQ(GenericKieSessionMonitoringMBean mb, long amount) {
+    private long checkTotalFiringTimeGEQ(GenericKieSessionMonitoringMXBean mb, long amount) {
         assertTrue(mb.getTotalFiringTime() >= amount);
         return mb.getTotalFiringTime();
     }
     
-    private void checkTotalSessions(GenericKieSessionMonitoringMBean mb, int totalSessions) {
+    private void checkTotalSessions(GenericKieSessionMonitoringMXBean mb, int totalSessions) {
         assertEquals(totalSessions, mb.getTotalSessions()         );
     }
     
-    private void checkTotalFactCount(KieSessionMonitoringMBean mb, int factCount) {
+    private void checkTotalFactCount(KieSessionMonitoringMXBean mb, int factCount) {
         assertEquals(factCount     , mb.getTotalFactCount()       );
     }
     
-    private void checkRuleRuntimeTotals(StatelessKieSessionMonitoringMBean mb, int inserted, int deleted) {
+    private void checkRuleRuntimeTotals(StatelessKieSessionMonitoringMXBean mb, int inserted, int deleted) {
         assertEquals(inserted     , mb.getTotalObjectsInserted()  );
         assertEquals(deleted      , mb.getTotalObjectsDeleted()   );
     }
     
-    private void checkAgendaTotals(GenericKieSessionMonitoringMBean mb, long mCreated, long mCancelled, long mFired) {
+    private void checkAgendaTotals(GenericKieSessionMonitoringMXBean mb, long mCreated, long mCancelled, long mFired) {
         assertEquals(mCreated     , mb.getTotalMatchesCreated()   );
         assertEquals(mCancelled   , mb.getTotalMatchesCancelled() );
         assertEquals(mFired       , mb.getTotalMatchesFired()     );

@@ -31,9 +31,11 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
-import org.kie.api.management.GenericKieSessionMonitoringMBean;
+import org.kie.api.management.GenericKieSessionMonitoringMXBean;
 
 import javax.management.ObjectName;
+
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +48,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * An MBean to monitor a given knowledge session
  */
-public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessionMonitoringMBean {
+public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessionMonitoringMXBean {
 
     private static final long NANO_TO_MILLISEC = 1000000;
     
@@ -150,18 +152,13 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
     /* (non-Javadoc)
      * @see org.drools.core.management.KnowledgeSessionMonitoringMBean#getStatsForRule(java.lang.String)
      */
-    public String getStatsForRule( String ruleName ) {
+    public IAgendaStatsData getStatsForRule( String ruleName ) {
         AgendaStatsData data = this.agendaStats.getRuleStats( ruleName );
-        String result = data == null ? "matchesCreated=0 matchesCancelled=0 matchesFired=0 firingTime=0ms" : data.toString();
-        return result;
+        return ( data == null ) ? null : data;
     }
     
-    public Map<String,String> getStatsByRule() {
-        Map<String, String> result = new HashMap<String, String>();
-        for( Map.Entry<String, AgendaStatsData> entry : this.agendaStats.getRulesStats().entrySet() ) {
-            result.put( entry.getKey(), entry.getValue().toString() );
-        }
-        return result;
+    public Map<String,IAgendaStatsData> getStatsByRule() {
+        return Collections.unmodifiableMap(this.agendaStats.getRulesStats());
     }
     
     public static class AgendaStats implements org.kie.api.event.rule.AgendaEventListener {
@@ -236,7 +233,7 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
             return data;
         }
 
-        public static class AgendaStatsData {
+        public static class AgendaStatsData implements IAgendaStatsData {
             public AtomicLong matchesFired;
             public AtomicLong matchesCreated;
             public AtomicLong matchesCancelled;
@@ -255,6 +252,27 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
                 this.lastReset = new AtomicReference<Date>(new Date());
             }
             
+            @Override
+            public long getMatchesFired() {
+                return matchesFired.get();
+            }
+            @Override
+            public long getMatchesCreated() {
+                return matchesCreated.get();
+            }
+            @Override
+            public long getMatchesCancelled() {
+                return matchesCancelled.get();
+            }
+            @Override
+            public long getFiringTime() {
+                return firingTime.get();
+            }
+            @Override
+            public Date getLastReset() {
+                return lastReset.get();
+            }
+
             public void startFireClock() {
                 this.start = System.nanoTime();
             }
@@ -286,32 +304,22 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
         return this.processStats.getConsolidatedStats().processInstancesCompleted.get();
     }
     
-    public String getStatsForProcess( String processId ) {
+    public IProcessStatsData getStatsForProcess( String processId ) {
         ProcessStatsData data = this.processStats.getProcessStats( processId );
-        String result = data == null ? "processInstancesStarted=0 processInstancesCompleted=0 processNodesTriggered=0" : data.toString();
-        return result;
+        return ( data == null ) ? null : data;
     }
     
-    public Map<String,String> getStatsByProcess() {
-        Map<String, String> result = new HashMap<String, String>();
-        for( Map.Entry<String, ProcessStatsData> entry : this.processStats.getProcessStats().entrySet() ) {
-            result.put( entry.getKey(), entry.getValue().toString() );
-        }
-        return result;
+    public Map<String,IProcessStatsData> getStatsByProcess() {
+        return Collections.unmodifiableMap(this.processStats.getProcessStats());
     }
     
-    public String getStatsForProcessInstance( long processInstanceId ) {
+    public IProcessInstanceStatsData getStatsForProcessInstance( long processInstanceId ) {
         ProcessInstanceStatsData data = this.processStats.getProcessInstanceStats( processInstanceId );
-        String result = data == null ? "Process instance not found" : data.toString();
-        return result;
+        return ( data == null ) ? null : data;
     }
     
-    public Map<Long,String> getStatsByProcessInstance() {
-        Map<Long, String> result = new HashMap<Long, String>();
-        for( Map.Entry<Long, ProcessInstanceStatsData> entry : this.processStats.getProcessInstanceStats().entrySet() ) {
-            result.put( entry.getKey(), entry.getValue().toString() );
-        }
-        return result;
+    public Map<Long,IProcessInstanceStatsData> getStatsByProcessInstance() {
+        return Collections.unmodifiableMap(this.processStats.getProcessInstanceStats());
     }
     
     public static class ProcessStats implements org.kie.api.event.process.ProcessEventListener {
@@ -422,7 +430,7 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
 
         }
 
-        public static class GlobalProcessStatsData {
+        public static class GlobalProcessStatsData implements IGlobalProcessStatsData {
 
             public AtomicLong processInstancesStarted;
             public AtomicLong processInstancesCompleted;
@@ -434,6 +442,19 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
                 this.lastReset = new AtomicReference<Date>(new Date());
             }
             
+            @Override
+            public long getProcessInstancesStarted() {
+                return processInstancesStarted.get();
+            }
+            @Override
+            public long getProcessInstancesCompleted() {
+                return processInstancesCompleted.get();
+            }
+            @Override
+            public Date getLastReset() {
+                return lastReset.get();
+            }
+
             public void reset() {
                 this.processInstancesStarted.set( 0 );
                 this.processInstancesCompleted.set( 0 );
@@ -446,7 +467,7 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
             }
         }
 
-        public static class ProcessStatsData extends GlobalProcessStatsData {
+        public static class ProcessStatsData extends GlobalProcessStatsData implements IProcessStatsData {
 
             public AtomicLong processNodesTriggered;
             
@@ -454,6 +475,11 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
                 this.processNodesTriggered = new AtomicLong(0);
             }
             
+            @Override
+            public long getProcessNodesTriggered() {
+                return processNodesTriggered.get();
+            }
+
             public void reset() {
                 super.reset();
                 this.processNodesTriggered.set( 0 );
@@ -464,7 +490,7 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
             }
         }
 
-        public static class ProcessInstanceStatsData {
+        public static class ProcessInstanceStatsData implements IProcessInstanceStatsData {
 
             // no need for synch, because one process instance cannot be executed concurrently
             public Date processStarted;
@@ -475,6 +501,19 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
                 this.processNodesTriggered = 0;
             }
             
+            @Override
+            public Date getProcessStarted() {
+                return processStarted;
+            }
+            @Override
+            public Date getProcessCompleted() {
+                return processCompleted;
+            }
+            @Override
+            public long getProcessNodesTriggered() {
+                return processNodesTriggered;
+            }
+
             public void reset() {
                  this.processNodesTriggered = 0;
             }
