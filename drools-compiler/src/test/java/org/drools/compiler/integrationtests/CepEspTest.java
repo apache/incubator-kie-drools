@@ -5586,13 +5586,6 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testBla() throws InterruptedException {
-        for (int i = 0; i < 10000; i++) {
-            testEventWithShortExpiration();
-        }
-    }
-
-    @Test
     public void testEventWithShortExpiration() throws InterruptedException {
         // DROOLS-921
         String drl = "declare String\n" +
