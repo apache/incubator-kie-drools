@@ -515,7 +515,8 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
             SelectionCacheType resolvedCacheType, SelectionOrder resolvedSelectionOrder,
             EntitySelector entitySelector) {
         if (selectedCountLimit != null) {
-            entitySelector = new SelectedCountLimitEntitySelector(entitySelector, selectedCountLimit);
+            entitySelector = new SelectedCountLimitEntitySelector(entitySelector,
+                    resolvedSelectionOrder.toRandomSelectionBoolean(), selectedCountLimit);
         }
         return entitySelector;
     }

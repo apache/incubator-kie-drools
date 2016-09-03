@@ -281,7 +281,9 @@ public class PlannerAssert extends Assert {
     public static <O> void assertCodesOfIterator(Iterator<O> iterator, String... codes) {
         assertNotNull(iterator);
         for (String code : codes) {
-            assertTrue(iterator.hasNext());
+            if (!iterator.hasNext()) {
+                fail("The asserted iterator ends too soon, instead it should return selection (" + code + ").");
+            }
             assertCode(code, iterator.next());
         }
     }

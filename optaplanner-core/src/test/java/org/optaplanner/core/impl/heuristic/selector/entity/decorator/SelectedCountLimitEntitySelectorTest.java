@@ -33,7 +33,7 @@ public class SelectedCountLimitEntitySelectorTest {
     public void selectSizeLimitLowerThanSelectorSize() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"), new TestdataEntity("e5"));
-        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, 3L);
+        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 3L);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         entitySelector.solvingStarted(solverScope);
@@ -92,7 +92,7 @@ public class SelectedCountLimitEntitySelectorTest {
     public void selectSizeLimitHigherThanSelectorSize() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
                 new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"));
-        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, 5L);
+        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 5L);
 
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         entitySelector.solvingStarted(solverScope);
@@ -149,14 +149,14 @@ public class SelectedCountLimitEntitySelectorTest {
     @Test
     public void isCountable() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
-        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, 5L);
+        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 5L);
         assertEquals(true, entitySelector.isCountable());
     }
 
     @Test
     public void isNeverEnding() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
-        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, 5L);
+        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 5L);
         assertEquals(false, entitySelector.isNeverEnding());
     }
 
@@ -164,12 +164,28 @@ public class SelectedCountLimitEntitySelectorTest {
     public void getSize() {
         EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class);
         when(childEntitySelector.getSize()).thenReturn(1L);
-        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, 5L);
+        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 5L);
         assertEquals(1, entitySelector.getSize());
         when(childEntitySelector.getSize()).thenReturn(5L);
         assertEquals(5, entitySelector.getSize());
         when(childEntitySelector.getSize()).thenReturn(10L);
         assertEquals(5, entitySelector.getSize());
+    }
+
+    @Test
+    public void endingIteratorOriginalOrder() {
+        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
+                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
+        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, false, 2L);
+        assertAllCodesOfIterator(entitySelector.endingIterator(), "e1", "e2");
+    }
+
+    @Test
+    public void endingIteratorRandomOrder() {
+        EntitySelector childEntitySelector = SelectorTestUtils.mockEntitySelector(TestdataEntity.class,
+                new TestdataEntity("e1"), new TestdataEntity("e2"), new TestdataEntity("e3"), new TestdataEntity("e4"));
+        EntitySelector entitySelector = new SelectedCountLimitEntitySelector(childEntitySelector, true, 2L);
+        assertAllCodesOfIterator(entitySelector.endingIterator(), "e1", "e2", "e3", "e4");
     }
 
 }

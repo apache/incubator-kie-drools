@@ -28,10 +28,13 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 public class SelectedCountLimitEntitySelector extends AbstractEntitySelector {
 
     protected final EntitySelector childEntitySelector;
+    protected final boolean randomSelection;
     protected final long selectedCountLimit;
 
-    public SelectedCountLimitEntitySelector(EntitySelector childEntitySelector, long selectedCountLimit) {
+    public SelectedCountLimitEntitySelector(EntitySelector childEntitySelector, boolean randomSelection,
+            long selectedCountLimit) {
         this.childEntitySelector = childEntitySelector;
+        this.randomSelection = randomSelection;
         this.selectedCountLimit = selectedCountLimit;
         if (selectedCountLimit < 0L) {
             throw new IllegalArgumentException("The selector (" + this
@@ -84,7 +87,13 @@ public class SelectedCountLimitEntitySelector extends AbstractEntitySelector {
 
     @Override
     public Iterator<Object> endingIterator() {
-        return new SelectedCountLimitEntityIterator(childEntitySelector.endingIterator());
+        if (randomSelection) {
+            // With random selection, the first n elements can differ between iterator calls,
+            // so it's illegal to only return the first n elements in original order (that breaks NearbySelection)
+            return childEntitySelector.endingIterator();
+        } else {
+            return new SelectedCountLimitEntityIterator(childEntitySelector.endingIterator());
+        }
     }
 
     private class SelectedCountLimitEntityIterator extends SelectionIterator<Object> {
