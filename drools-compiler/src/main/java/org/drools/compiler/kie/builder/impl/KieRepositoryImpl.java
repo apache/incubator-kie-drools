@@ -88,7 +88,7 @@ public class KieRepositoryImpl
                     KieScannerFactoryService scannerFactoryService = ServiceRegistryImpl.getInstance().get( KieScannerFactoryService.class );
                     return (InternalKieScanner) scannerFactoryService.newKieScanner();
                 } catch (Exception e) {
-                    log.debug( "Cannot load a KieRepositoryScanner, using the DummyKieScanner", e );
+                    log.debug( "Cannot load a KieRepositoryScanner, using the DummyKieScanner" );
                     // kie-ci is not on the classpath
                     return new DummyKieScanner();
                 }
