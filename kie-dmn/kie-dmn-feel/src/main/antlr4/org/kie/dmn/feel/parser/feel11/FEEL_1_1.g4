@@ -41,12 +41,7 @@ compilation_unit
 
 // #1
 expression
-    : expr=expressionTypes (instance_key of_key type)?      #expressionInstanceOf
-    ;
-
-expressionTypes
     : expr=textualExpression ( '[' filter=expression ']' ('.' qualifiedName)? )?  #expressionTextual
-//    | expr=boxedExpression ( '[' filter=expression ']' ('.' qualifiedName)? )?    #expressionBoxed
     ;
 
 // #2
@@ -55,9 +50,7 @@ textualExpression
     | forExpression
     | ifExpression
     | quantifiedExpression
-    | simpleUnaryTest
     | conditionalOrExpression
-//    | pathExpression
     ;
 
 // #41
@@ -80,11 +73,6 @@ namedParameter
 positionalParameters
     : expression ( ',' expression )*
     ;
-
-// #45
-//pathExpression
-//    : expr=boxedExpression '.' {helper.recoverScope();} name=qualifiedName {helper.dismissScope();}
-//    ;
 
 // #46
 forExpression
@@ -126,11 +114,6 @@ quantifiedExpression
 type
     : ( function_key | qualifiedName )
     ;
-
-// #55
-//boxedExpression
-//    : functionDefinition
-//    ;
 
 // #56
 list
@@ -215,11 +198,12 @@ comparisonExpression
 	;
 
 relationalExpression
-	:	additiveExpression                                                                         #relExpressionAdd
+	:	additiveExpression                                                                           #relExpressionAdd
 	|	val=relationalExpression between_key start=additiveExpression and_key end=additiveExpression   #relExpressionBetween
 	|   val=relationalExpression in_key '(' expressionList ')'                                       #relExpressionValueList
 	|   val=relationalExpression in_key '(' simpleUnaryTests ')'                                     #relExpressionTestList
 	|   val=relationalExpression in_key simpleUnaryTest                                              #relExpressionTest
+    |   val=relationalExpression instance_key of_key type                                            #relExpressionInstanceOf
 	;
 
 expressionList
@@ -254,10 +238,11 @@ unaryExpressionNotPlusMinus
 	;
 
 primary
-    : literal                   #primaryLiteral
-    | list                      #primaryList
-    | context                   #primaryContext
-    | '(' expression ')'        #primaryParens
+    : literal                     #primaryLiteral
+    | list                        #primaryList
+    | context                     #primaryContext
+    | '(' expression ')'          #primaryParens
+    | simpleUnaryTest             #primaryUnaryTest
     | qualifiedName (parameters)? #primaryName
     ;
 
@@ -321,105 +306,85 @@ nameRefOtherToken
     ;
 
 /********************************
- *      SOFT KEYWORDS
+ *      KEYWORDS
  ********************************/
 for_key
-//    : {isKeyword(Keywords.FOR)}? Identifier
     : 'for'
     ;
 
 return_key
-//    : {isKeyword(Keywords.RETURN)}? Identifier
     : 'return'
     ;
 
 in_key
-//    : {isKeyword(Keywords.IN)}? Identifier
     : 'in'
     ;
 
 if_key
-//    : {isKeyword(Keywords.IF)}? Identifier
     : 'if'
     ;
 
 then_key
-//    : {isKeyword(Keywords.THEN)}? Identifier
     : 'then'
     ;
 
 else_key
-//    : {isKeyword(Keywords.ELSE)}? Identifier
     : 'else'
     ;
 
 some_key
-//    : {isKeyword(Keywords.SOME)}? Identifier
     : 'some'
     ;
 
 every_key
-//    : {isKeyword(Keywords.EVERY)}? Identifier
     : 'every'
     ;
 
 satisfies_key
-//    : {isKeyword(Keywords.SATISFIES)}? Identifier
     : 'satisfies'
     ;
 
 instance_key
-//    : {isKeyword(Keywords.INSTANCE)}? Identifier
     : 'instance'
     ;
 
 of_key
-//    : {isKeyword(Keywords.OF)}? Identifier
     : 'of'
     ;
 
 function_key
-//    : {isKeyword(Keywords.FUNCTION)}? Identifier
     : 'function'
     ;
 
 external_key
-//    : {isKeyword(Keywords.EXTERNAL)}? Identifier
     : 'external'
     ;
 
 or_key
-//    : {isKeyword(Keywords.OR)}? Identifier
     : 'or'
     ;
 
 and_key
-//    : {isKeyword(Keywords.AND)}? Identifier
     : 'and'
     ;
 
 between_key
-//    : {isKeyword(Keywords.BETWEEN)}? Identifier
     : 'between'
     ;
 
 not_key
-//    : {isKeyword(Keywords.NOT)}? Identifier
     : 'not'
     ;
 
 null_key
-//    : {isKeyword(Keywords.NULL)}? Identifier
     : 'null'
     ;
 
 true_key
-//    : {isKeyword(Keywords.TRUE)}? Identifier
     : 'true'
     ;
 
 false_key
-//    : {isKeyword(Keywords.FALSE)}? Identifier
     : 'false'
     ;
 
