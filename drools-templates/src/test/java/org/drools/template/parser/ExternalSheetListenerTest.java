@@ -276,6 +276,11 @@ public class ExternalSheetListenerTest {
                 }
 
                 @Override
+                public void update(org.kie.api.runtime.rule.FactHandle handle, Object object, String... modifiedProperties) {
+
+                }
+
+                @Override
                 public org.kie.api.runtime.rule.FactHandle getFactHandle(Object object) {
                     return null;
                 }
