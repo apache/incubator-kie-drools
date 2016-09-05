@@ -277,6 +277,9 @@ public class TestStatefulKnowledgeSession extends AbstractRuntime implements Sta
     public void update(FactHandle arg0, Object arg1) {
     }
 
+    public void update(FactHandle arg0, Object arg1, String... arg2) {
+    }
+
     public void submit(AtomicAction action) {
     }
 
