@@ -393,13 +393,10 @@ public class ASTBuilderVisitor
     }
 
     @Override
-    public BaseNode visitExpressionInstanceOf(FEEL_1_1Parser.ExpressionInstanceOfContext ctx) {
-        BaseNode expr = visit( ctx.expr );
-        if( ctx.instance_key() != null ) {
-            TypeNode type = (TypeNode) visit( ctx.type() );
-            return ASTBuilderFactory.newInstanceOfNode( ctx, expr, type );
-        }
-        return expr;
+    public BaseNode visitRelExpressionInstanceOf(FEEL_1_1Parser.RelExpressionInstanceOfContext ctx) {
+        BaseNode expr = visit( ctx.val );
+        TypeNode type = (TypeNode) visit( ctx.type() );
+        return ASTBuilderFactory.newInstanceOfNode( ctx, expr, type );
     }
 
     @Override

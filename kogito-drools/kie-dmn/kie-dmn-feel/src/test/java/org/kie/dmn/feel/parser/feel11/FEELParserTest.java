@@ -19,6 +19,7 @@ package org.kie.dmn.feel.parser.feel11;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.ast.*;
+import org.mockito.internal.matchers.InstanceOf;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -810,6 +811,34 @@ public class FEELParserTest {
         assertThat( ioExpr.getExpression().getText(), is( "\"foo\"" ) );
         assertThat( ioExpr.getType(), is( instanceOf( TypeNode.class ) ) );
         assertThat( ioExpr.getType().getText(), is( "string" ) );
+    }
+
+    @Test
+    public void testInstanceOfExpressionAnd() {
+        String inputExpression = "\"foo\" instance of string and 10 instance of number";
+        BaseNode andExpr = parse( inputExpression );
+
+        assertThat( andExpr, is( instanceOf( InfixOpNode.class ) ) );
+        assertThat( andExpr.getText(), is( inputExpression ) );
+
+        InfixOpNode and = (InfixOpNode) andExpr;
+        assertThat( and.getOperator(), is( InfixOpNode.InfixOperator.AND ) );
+        assertThat( and.getLeft(), is( instanceOf( InstanceOfNode.class ) ) );
+        assertThat( and.getRight(), is( instanceOf( InstanceOfNode.class ) ) );
+        assertThat( and.getLeft().getText(), is( "\"foo\" instance of string" ) );
+        assertThat( and.getRight().getText(), is( "10 instance of number" ) );
+
+        InstanceOfNode ioExpr = (InstanceOfNode) and.getLeft();
+        assertThat( ioExpr.getExpression(), is( instanceOf( StringNode.class ) ) );
+        assertThat( ioExpr.getExpression().getText(), is( "\"foo\"" ) );
+        assertThat( ioExpr.getType(), is( instanceOf( TypeNode.class ) ) );
+        assertThat( ioExpr.getType().getText(), is( "string" ) );
+
+        ioExpr = (InstanceOfNode) and.getRight();
+        assertThat( ioExpr.getExpression(), is( instanceOf( NumberNode.class ) ) );
+        assertThat( ioExpr.getExpression().getText(), is( "10" ) );
+        assertThat( ioExpr.getType(), is( instanceOf( TypeNode.class ) ) );
+        assertThat( ioExpr.getType().getText(), is( "number" ) );
     }
 
     @Test
