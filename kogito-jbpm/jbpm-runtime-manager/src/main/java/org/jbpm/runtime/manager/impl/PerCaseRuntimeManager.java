@@ -77,6 +77,8 @@ import org.slf4j.LoggerFactory;
 public class PerCaseRuntimeManager extends AbstractRuntimeManager {
 
     private static final Logger logger = LoggerFactory.getLogger(PerCaseRuntimeManager.class);
+    
+    private boolean useLocking = Boolean.parseBoolean(System.getProperty("org.jbpm.runtime.manager.pc.lock", "true"));
 
     private SessionFactory factory;
     private TaskServiceFactory taskServiceFactory;
@@ -95,6 +97,7 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         this.registry.register(this);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public RuntimeEngine getRuntimeEngine(Context<?> context) {
         if (isClosed()) {
@@ -144,16 +147,15 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
             } else {
                 Object contexts = mapper.findContextId(ksession.getIdentifier(), this.identifier);
                 if (contexts instanceof Collection) {
-                    @SuppressWarnings("unchecked")
-                    String caseId = (String) ((Collection<Object>) contexts).stream().filter(o -> {
+                    RuntimeEngine finalRuntimeEngnie = runtime;
+                    ((Collection<Object>) contexts).forEach(o -> {
                         try {
-                            Long.parseLong(o.toString());
-                            return false;
+                            
+                            saveLocalRuntime(null, Long.parseLong(o.toString()), finalRuntimeEngnie);
                         } catch (NumberFormatException e) {
-                            return true;
+                            saveLocalRuntime(o.toString(), null, finalRuntimeEngnie);
                         }
-                    }).findFirst().orElse(null);
-                    saveLocalRuntime(caseId, null, runtime);
+                    });                    
                 }
             }
         } else {
@@ -174,7 +176,8 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         } else if (context instanceof ProcessInstanceIdContext) {
             processInstanceId = (Long) contextId;
         }
-
+        Long ksessionId = mapper.findMapping(context, this.identifier);
+        createLockOnGetEngine(ksessionId, runtime);
         saveLocalRuntime(caseId, processInstanceId, runtime);
 
         return runtime;
@@ -233,6 +236,7 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         }
         if (canDispose(runtime)) {
             removeLocalRuntime(runtime);
+            releaseAndCleanLock(((RuntimeEngineImpl)runtime).getKieSessionId(), runtime);
             if (runtime instanceof Disposable) {
                 // special handling for in memory to not allow to dispose if there is any context in the mapper
                 if (mapper instanceof InMemoryMapper && ((InMemoryMapper) mapper).hasContext(runtime.getKieSession().getIdentifier())) {
@@ -290,14 +294,14 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         @Override
         public void afterProcessCompleted(ProcessCompletedEvent event) {
             mapper.removeMapping(new EnvironmentAwareProcessInstanceContext(event.getKieRuntime().getEnvironment(), event.getProcessInstance().getId()), managerId);
-            removeLocalRuntime(runtime, event.getProcessInstance().getId());
+            removeLocalRuntime(runtime, event.getProcessInstance().getId());                       
         }
 
         @Override
         public void beforeProcessStarted(ProcessStartedEvent event) {
             mapper.saveMapping(new EnvironmentAwareProcessInstanceContext(event.getKieRuntime().getEnvironment(), event.getProcessInstance().getId()), ksessionId, managerId);
             saveLocalRuntime(caseId, event.getProcessInstance().getId(), runtime);
-            ((RuntimeEngineImpl) runtime).setContext(ProcessInstanceIdContext.get(event.getProcessInstance().getId()));
+            ((RuntimeEngineImpl) runtime).setContext(ProcessInstanceIdContext.get(event.getProcessInstance().getId()));            
         }
 
     }
@@ -578,7 +582,7 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
     }
 
     private class PerCaseInitializer implements RuntimeEngineInitlializer {
-
+        @SuppressWarnings("unchecked")
         @Override
         public KieSession initKieSession(Context<?> context, InternalRuntimeManager manager, RuntimeEngine engine) {
 
@@ -615,16 +619,15 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
             } else {
                 Object contexts = mapper.findContextId(ksession.getIdentifier(), manager.getIdentifier());
                 if (contexts instanceof Collection) {
-                    @SuppressWarnings("unchecked")
-                    String caseId = (String) ((Collection<Object>) contexts).stream().filter(o -> {
+                    
+                    ((Collection<Object>) contexts).forEach(o -> {
                         try {
-                            Long.parseLong(o.toString());
-                            return false;
+                            
+                            saveLocalRuntime(null, Long.parseLong(o.toString()), engine);
                         } catch (NumberFormatException e) {
-                            return true;
+                            saveLocalRuntime(o.toString(), null, engine);
                         }
-                    }).findFirst().orElse(null);
-                    saveLocalRuntime(caseId, null, engine);
+                    });                    
                 }
             }
 
@@ -638,6 +641,11 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
             return internalTaskService;
         }
 
+    }
+
+    @Override
+    protected boolean isUseLocking() {
+        return useLocking;
     }
 
 }

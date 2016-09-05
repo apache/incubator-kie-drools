@@ -283,10 +283,10 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
         KieSession ksession = runtime.getKieSession();
 
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
-
-        countDownListener.waitTillCompleted();
-
         manager.disposeRuntimeEngine(runtime);
+        
+        countDownListener.waitTillCompleted();
+        
         manager.close();
 
         countDownListener.reset(1);
@@ -299,11 +299,12 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
                 .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
                 .get();
         manager = getManager(environment, true);
-
+        manager.disposeRuntimeEngine(runtime);
+        
         countDownListener.waitTillCompleted(3000);
         assertEquals(2, timerExporations.size());
 
-        manager.disposeRuntimeEngine(runtime);
+        
         manager.close();
     }
     

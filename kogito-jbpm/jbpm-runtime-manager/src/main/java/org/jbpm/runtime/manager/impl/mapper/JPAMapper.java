@@ -107,6 +107,9 @@ public class JPAMapper extends InternalMapper {
     
     protected ContextMappingInfo findContextByContextId(Context context, String ownerId, EntityManager em) {
         try {
+            if (context.getContextId() == null) {
+                return null;
+            }
             Query findQuery = em.createNamedQuery("FindContextMapingByContextId")
             		.setParameter("contextId", context.getContextId().toString())
         			.setParameter("ownerId", ownerId);

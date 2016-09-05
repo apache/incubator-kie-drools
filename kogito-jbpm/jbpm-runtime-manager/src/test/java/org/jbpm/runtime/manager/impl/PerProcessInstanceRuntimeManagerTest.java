@@ -712,7 +712,6 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
 					@Override
 					public List<ProcessEventListener> getProcessEventListeners(
 							RuntimeEngine runtime) {
-						// TODO Auto-generated method stub
 						List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
 						listeners.add(new DefaultProcessEventListener(){
 				             @Override
@@ -739,10 +738,11 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         ProcessInstance pi1 = ksession.startProcess("IntermediateCatchEvent");
         // both processes started 
         assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
-
+        manager.disposeRuntimeEngine(runtime);
+        
         // wait a bit for some timers to fire
         countDownListener.waitTillCompleted();
-        manager.disposeRuntimeEngine(runtime);
+        
         ((AbstractRuntimeManager)manager).close(true);
         
         int currentNumberOfTriggers = timerExpirations.size();

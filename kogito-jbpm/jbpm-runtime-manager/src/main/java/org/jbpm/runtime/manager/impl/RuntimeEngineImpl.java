@@ -41,6 +41,7 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
 	private Context<?> context;
 
     private KieSession ksession;
+    private Long kieSessionId;
     private TaskService taskService;
     private AuditService auditService;
     
@@ -53,6 +54,7 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
     
     public RuntimeEngineImpl(KieSession ksession, TaskService taskService) {
         this.ksession = ksession;
+        this.kieSessionId = ksession.getIdentifier();
         this.taskService = taskService;
     }
     
@@ -68,6 +70,7 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
         }
         if (ksession == null && initializer != null) {
         	ksession = initializer.initKieSession(context, (InternalRuntimeManager) manager, this);
+        	this.kieSessionId = ksession.getIdentifier();
         }
         return this.ksession;
     }
@@ -150,6 +153,7 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
 
 	public void internalSetKieSession(KieSession ksession) {
 		this.ksession = ksession;
+		this.kieSessionId = ksession.getIdentifier();
 	}
 
 	public boolean isAfterCompletion() {
@@ -166,5 +170,9 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
     
     public void setContext(Context<?> context) {
         this.context = context;
+    }
+    
+    public Long getKieSessionId() {
+        return kieSessionId;
     }
 }

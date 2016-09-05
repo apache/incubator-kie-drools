@@ -78,6 +78,8 @@ import org.slf4j.LoggerFactory;
 public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 	
 	private static final Logger logger = LoggerFactory.getLogger(PerProcessInstanceRuntimeManager.class);
+	
+	private boolean useLocking = Boolean.parseBoolean(System.getProperty("org.jbpm.runtime.manager.ppi.lock", "true"));
     
     private SessionFactory factory;
     private TaskServiceFactory taskServiceFactory;
@@ -142,8 +144,9 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 	    	
 	    	runtime = new RuntimeEngineImpl(context, new PerProcessInstanceInitializer());
 	        ((RuntimeEngineImpl) runtime).setManager(this);
+            	        
     	}
-
+    	createLockOnGetEngine(context, runtime);
         saveLocalRuntime(contextId, runtime);
         
         return runtime;
@@ -222,13 +225,17 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             	}
                 ((Disposable) runtime).dispose();
             }
+            
+        	releaseAndCleanLock(runtime);
     	}
     }
-    
+
+
     @Override
     public void softDispose(RuntimeEngine runtimeEngine) {        
         super.softDispose(runtimeEngine);
         removeLocalRuntime(runtimeEngine);
+
     }
 
     @Override
@@ -285,6 +292,8 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             		event.getProcessInstance().getId()), ksessionId, managerId);  
             saveLocalRuntime(event.getProcessInstance().getId(), runtime);
             ((RuntimeEngineImpl)runtime).setContext(ProcessInstanceIdContext.get(event.getProcessInstance().getId()));
+            
+            createLockOnNewProcessInstance(event.getProcessInstance().getId(), runtime);
         }
         
     }
@@ -527,4 +536,8 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 
     }
 
+    @Override
+    protected boolean isUseLocking() {
+        return useLocking;
+    }
 }

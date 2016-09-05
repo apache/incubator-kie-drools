@@ -561,8 +561,11 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         List<TaskSummary> maryTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("mary", "en-UK");
         assertEquals(0, maryTasks.size());
         
+        manager.disposeRuntimeEngine(runtime);        
+        
         // now wait for 2 seconds for first reassignment
         Thread.sleep(3000);
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
         
         krisTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("krisv", "en-UK");
         assertEquals(0, krisTasks.size());
@@ -572,19 +575,25 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         assertEquals(0, maryTasks.size());
         
         runtime.getTaskService().start(johnTasks.get(0).getId(), "john");
+        manager.disposeRuntimeEngine(runtime);
+        
         
         // now wait for 2 more seconds for second reassignment
         Thread.sleep(2000);
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+        
         krisTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("krisv", "en-UK");
         assertEquals(0, krisTasks.size());
         johnTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("john", "en-UK");
         assertEquals(1, johnTasks.size());
         maryTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("mary", "en-UK");
         assertEquals(0, maryTasks.size());
+        manager.disposeRuntimeEngine(runtime);
         
         // now wait for 1 seconds to make sure that reassignment did not happen any more since task was already started
         Thread.sleep(3000);
         
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
         krisTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("krisv", "en-UK");
         assertEquals(0, krisTasks.size());
         johnTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("john", "en-UK");
@@ -593,12 +602,20 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         assertEquals(1, maryTasks.size());
         runtime.getTaskService().start(maryTasks.get(0).getId(), "mary");
         runtime.getTaskService().complete(maryTasks.get(0).getId(), "mary", null);
+        manager.disposeRuntimeEngine(runtime);
         
         // now wait for 2 seconds to make sure that reassignment did not happen any more since task was completed
         Thread.sleep(2000);
         
-        processInstance = ksession.getProcessInstance(processInstance.getId());        
-        assertNull(processInstance);
+        try {
+            runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
+            ksession = runtime.getKieSession();
+            
+            processInstance = ksession.getProcessInstance(processInstance.getId());        
+            assertNull(processInstance);
+        } catch (SessionNotFoundException e) {
+            // this can be thrown for per process instance strategy as instance has already been completed
+        }
 
         manager.disposeRuntimeEngine(runtime);
         
@@ -622,6 +639,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         
         
         ProcessInstance processInstance = ksession.startProcess("htdeadlinetest");
+        manager.disposeRuntimeEngine(runtime);
         
         RuntimeEngine runtime2 = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
         KieSession ksession2 = runtime2.getKieSession();
@@ -633,16 +651,19 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
         List<TaskSummary> krisTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("krisv", "en-UK");
         assertEquals(1, krisTasks.size());
         List<TaskSummary> johnTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("john", "en-UK");
         assertEquals(0, johnTasks.size());
         List<TaskSummary> maryTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("mary", "en-UK");
         assertEquals(0, maryTasks.size());
+        manager.disposeRuntimeEngine(runtime);
         
         // now wait for 2 seconds for first reassignment
         Thread.sleep(3000);
         
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
         krisTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("krisv", "en-UK");
         assertEquals(0, krisTasks.size());
         johnTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("john", "en-UK");
@@ -651,19 +672,24 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         assertEquals(0, maryTasks.size());
         
         runtime.getTaskService().start(johnTasks.get(0).getId(), "john");
+        manager.disposeRuntimeEngine(runtime);
         
         // now wait for 2 more seconds for second reassignment
         Thread.sleep(2000);
+        
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
         krisTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("krisv", "en-UK");
         assertEquals(0, krisTasks.size());
         johnTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("john", "en-UK");
         assertEquals(1, johnTasks.size());
         maryTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("mary", "en-UK");
         assertEquals(0, maryTasks.size());
+        manager.disposeRuntimeEngine(runtime);
         
         // now wait for 1 seconds to make sure that reassignment did not happen any more since task was already started
         Thread.sleep(3000);
         
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
         krisTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("krisv", "en-UK");
         assertEquals(0, krisTasks.size());
         johnTasks = runtime.getTaskService().getTasksAssignedAsPotentialOwner("john", "en-UK");
@@ -672,6 +698,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         assertEquals(1, maryTasks.size());
         runtime.getTaskService().start(maryTasks.get(0).getId(), "mary");
         runtime.getTaskService().complete(maryTasks.get(0).getId(), "mary", null);
+        manager.disposeRuntimeEngine(runtime);
         
         // now wait for 2 seconds to make sure that reassignment did not happen any more since task was completed
         Thread.sleep(2000);

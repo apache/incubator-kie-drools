@@ -18,6 +18,9 @@ package org.jbpm.runtime.manager.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.drools.core.time.TimerService;
 import org.drools.persistence.OrderedTransactionSynchronization;
@@ -38,6 +41,7 @@ import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
@@ -52,8 +56,11 @@ import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.SecurityManager;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.InternalTaskService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Common implementation that all <code>RuntimeManager</code> implementations should inherit from.
@@ -69,6 +76,8 @@ import org.kie.internal.task.api.InternalTaskService;
  * Additionally, this provides a abstract <code>init</code> method that will be called on RuntimeManager instantiation. 
  */
 public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
+    
+    private static final Logger logger = LoggerFactory.getLogger(AbstractRuntimeManager.class);
 
     protected RuntimeManagerRegistry registry = RuntimeManagerRegistry.get();
     protected RuntimeEnvironment environment;
@@ -84,6 +93,8 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     protected boolean closed = false;
     
     protected SecurityManager securityManager = null;
+    
+    protected ConcurrentMap<Long, ReentrantLock> engineLocks = new ConcurrentHashMap<Long, ReentrantLock>(); 
     
     public AbstractRuntimeManager(RuntimeEnvironment environment, String identifier) {
         this.environment = environment;
@@ -351,5 +362,94 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
 	public void setKieContainer(KieContainer kieContainer) {
 		this.kieContainer = kieContainer;
 	}    
+
+
+    /*
+     * locking support for same context - runtime engine that deals with exact same process instance context
+     */
+    protected boolean isUseLocking() {
+        return false;
+    }
+	
+    protected void createLockOnGetEngine(Context<?> context, RuntimeEngine runtime) {
+        if (!isUseLocking()) {
+            logger.debug("Locking on runtime manager disabled");
+            return;
+        }
+        
+        if (context instanceof ProcessInstanceIdContext) {
+            Long piId = ((ProcessInstanceIdContext) context).getContextId();
+            createLockOnGetEngine(piId, runtime);
+        }
+    }
     
+    protected void createLockOnGetEngine(Long id, RuntimeEngine runtime) {
+        if (!isUseLocking()) {
+            logger.debug("Locking on runtime manager disabled");
+            return;
+        }
+        
+        if (id != null) {
+            ReentrantLock newLock = new ReentrantLock();
+            ReentrantLock lock = engineLocks.putIfAbsent(id, newLock);
+            if (lock == null) {
+                lock = newLock;
+                logger.debug("New lock created as it did not exist before");
+            } else {
+                logger.debug("Lock exists with {} waiting threads", lock.getQueueLength());
+            }
+            logger.debug("Trying to get a lock {} for {} by {}", lock, id, runtime);
+            lock.lock();
+            logger.debug("Lock {} taken for {} by {} for waiting threads by {}", lock, id, runtime, lock.hasQueuedThreads());
+            
+        }
+        
+    }
+    
+    protected void createLockOnNewProcessInstance(Long id, RuntimeEngine runtime) {
+        if (!isUseLocking()) {
+            logger.debug("Locking on runtime manager disabled");
+            return;
+        }
+        ReentrantLock newLock = new ReentrantLock();
+        ReentrantLock lock = engineLocks.putIfAbsent(id, newLock);
+        if (lock == null) {
+            lock = newLock;
+        }
+        lock.lock();
+        logger.debug("[on new process instance] Lock {} created and stored in list by {}", lock, runtime);
+    }
+    
+    
+    protected void releaseAndCleanLock(RuntimeEngine runtime) {
+        if (!isUseLocking()) {
+            logger.debug("Locking on runtime manager disabled");
+            return;
+        }
+        
+        if (((RuntimeEngineImpl)runtime).getContext() instanceof ProcessInstanceIdContext) {
+            Long piId = ((ProcessInstanceIdContext) ((RuntimeEngineImpl)runtime).getContext()).getContextId();
+            if (piId != null) {
+                releaseAndCleanLock(piId, runtime);
+            }
+        }
+    }
+    
+    protected void releaseAndCleanLock(Long id, RuntimeEngine runtime) {
+
+        if (id != null) {
+            ReentrantLock lock = engineLocks.get(id);
+            if (lock != null) {
+                if (!lock.hasQueuedThreads()) {
+                    logger.debug("Removing lock {} from list as non is waiting for it by {}", lock, runtime);
+                    engineLocks.remove(id);
+                }
+                if (lock.isHeldByCurrentThread()) {
+                    lock.unlock();
+                    logger.debug("{} unlocked by {}", lock, runtime);
+                }
+            }
+        }
+        
+    }
 }
