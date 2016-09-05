@@ -16,54 +16,89 @@
 
 package org.kie.dmn.feel;
 
-import org.antlr.v4.runtime.tree.ParseTree;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
-import org.kie.dmn.feel.lang.ast.BaseNode;
-import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
-import org.kie.dmn.feel.parser.feel11.FEELParser;
-import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
-import org.kie.dmn.feel.lang.impl.CompiledExpressionImpl;
-import org.kie.dmn.feel.lang.impl.CompilerContextImpl;
+import org.kie.dmn.feel.lang.impl.FEELImpl;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
- * Language runtime entry point
+ * FEEL expression language engine interface
+ *
+ * This class is the entry point for the engine use
  */
-public class FEEL {
+public interface FEEL {
 
-    private static final Map<String,Object> EMPTY_INPUT = Collections.emptyMap();
-
-    public static CompilerContext newCompilerContext() {
-        return new CompilerContextImpl();
+    /**
+     * Factory method to create a new FEEL engine instance
+     *
+     * @return a newly instantiated FEEL engine instance
+     */
+    static FEEL newInstance() {
+        return new FEELImpl();
     }
 
-    public static CompiledExpression compile(String expression, CompilerContext ctx) {
-        FEEL_1_1Parser parser = FEELParser.parse( expression, ctx.getInputVariables() );
-        ParseTree tree = parser.compilation_unit();
-        ASTBuilderVisitor v = new ASTBuilderVisitor();
-        BaseNode expr = v.visit( tree );
-        CompiledExpression ce = new CompiledExpressionImpl( expr );
-        return ce;
-    }
+    /**
+     * Factory method to create a new compiler context
+     *
+     * @return compiler context with default options set
+     */
+    CompilerContext newCompilerContext();
 
-    public static Object evaluate(String expression) {
-        return evaluate( expression, EMPTY_INPUT );
-    }
+    /**
+     * Compiles the string expression using the given
+     * compiler context.
+     *
+     * @param expression a FEEL expression
+     * @param ctx a compiler context
+     * @return the compiled expression
+     */
+    CompiledExpression compile(String expression, CompilerContext ctx);
 
-    public static Object evaluate(String expression, Map<String, Object> inputVariables) {
-        CompilerContext ctx = newCompilerContext();
-        if ( inputVariables != null ) {
-            inputVariables.entrySet().stream().forEach( e -> ctx.addInputVariable( e.getKey(), e.getValue() ) );
-        }
-        CompiledExpression expr = compile( expression, ctx );
-        return evaluate( expr, inputVariables );
-    }
+    /**
+     * Evaluates the given FEEL expression and returns
+     * the result
+     *
+     * @param expression a FEEL expression
+     * @return the result of the evaluation of the expression
+     */
+    Object evaluate(String expression);
 
-    public static Object evaluate(CompiledExpression expr, Map<String, Object> inputVariables) {
-        return ((CompiledExpressionImpl) expr).evaluate( inputVariables );
-    }
+    /**
+     * Evaluates the given FEEL expression using the
+     * given input variables, and returns the result
+     *
+     * @param expression a FEEL expression
+     * @param inputVariables a map of input Variables. The keys
+     *                       on the map are the variable names,
+     *                       that need to follow the naming rules
+     *                       for the FEEL language. The values on
+     *                       the map are the corresponding values
+     *                       for the variables. It is completely
+     *                       fine to use a previously returned FEEL
+     *                       context as inputVariables.
+     *
+     * @return the result of the evaluation of the expression.
+     */
+    Object evaluate(String expression, Map<String, Object> inputVariables);
+
+    /**
+     * Evaluates the given compiled FEEL expression using the
+     * given input variables, and returns the result
+     *
+     * @param expression a FEEL expression
+     * @param inputVariables a map of input Variables. The keys
+     *                       on the map are the variable names,
+     *                       that need to follow the naming rules
+     *                       for the FEEL language. The values on
+     *                       the map are the corresponding values
+     *                       for the variables. It is completely
+     *                       fine to use a previously returned FEEL
+     *                       context as inputVariables.
+     *
+     * @return the result of the evaluation of the expression.
+     */
+    Object evaluate(CompiledExpression expression, Map<String, Object> inputVariables);
+
 
 }
