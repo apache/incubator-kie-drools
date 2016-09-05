@@ -48,7 +48,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static java.util.Arrays.asList;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
 
 public class NamedEntryPoint
     implements
@@ -294,12 +297,22 @@ public class NamedEntryPoint
 
     public void update(final FactHandle factHandle,
                        final Object object) {
-        InternalFactHandle handle = (InternalFactHandle) factHandle;
-        update( handle,
+        update( (InternalFactHandle) factHandle,
                 object,
                 allSetButTraitBitMask(),
                 Object.class,
                 null );
+    }
+
+    public void update(FactHandle handle,
+                       Object object,
+                       String... modifiedProperties) {
+        Class modifiedClass = object.getClass();
+        update( (InternalFactHandle) handle,
+                object,
+                calculatePositiveMask(asList(modifiedProperties), getSettableProperties(kBase, modifiedClass)),
+                modifiedClass,
+                null);
     }
 
     public void update(final FactHandle factHandle,
@@ -307,8 +320,7 @@ public class NamedEntryPoint
                        final BitMask mask,
                        final Class<?> modifiedClass,
                        final Activation activation) {
-        InternalFactHandle handle = (InternalFactHandle) factHandle;
-        update( handle,
+        update( (InternalFactHandle) factHandle,
                 object,
                 mask,
                 modifiedClass,
@@ -341,7 +353,7 @@ public class NamedEntryPoint
                                                                                 object );
 
 
-            if ( handle.getId() == -1 || object == null || (handle.isEvent() && ((EventFactHandle) handle).isExpired()) ) {
+            if ( handle.getId() == -1 || object == null || handle.isExpired() ) {
                 // the handle is invalid, most likely already retracted, so return and we cannot assert a null object
                 return handle;
             }

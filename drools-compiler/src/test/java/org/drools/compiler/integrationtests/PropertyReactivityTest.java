@@ -19,6 +19,7 @@ import org.drools.compiler.Address;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.factmodel.traits.Traitable;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -26,6 +27,7 @@ import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
@@ -1497,5 +1499,38 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
         ksession.insert(new DummyBean("2"));
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testPropReactiveUpdate() {
+        // DROOLS-1275
+        String str1 =
+                "import " + Klass.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  Klass( b == 2 )\n" +
+                "then\n" +
+                "  list.add(\"fired\");\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        Klass bean = new Klass( 1, 2, 3, 4, 5, 6 );
+        FactHandle fh = ksession.insert( bean );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+
+        ( (StatefulKnowledgeSessionImpl) ksession ).update( fh, bean, "a", "d" );
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+
+        ( (StatefulKnowledgeSessionImpl) ksession ).update( fh, bean, "c", "b" );
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
     }
 }

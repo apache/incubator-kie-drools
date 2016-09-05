@@ -398,6 +398,10 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		delegate.update(handle, object);
 	}
 
+	public void update(FactHandle handle, Object object, String... modifiedProperties) {
+		delegate.update(handle, object, modifiedProperties);
+	}
+
 	public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport) {
 		delegate.setAgendaEventSupport(agendaEventSupport);
 	}
