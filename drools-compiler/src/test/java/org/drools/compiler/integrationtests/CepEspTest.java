@@ -15,6 +15,31 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.OrderEvent;
 import org.drools.compiler.Sensor;
@@ -82,30 +107,6 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
 public class CepEspTest extends CommonTestMethodBase {
     
@@ -5603,9 +5604,14 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ksession.insert( "test" );
         assertEquals( 1, ksession.fireAllRules() );
-
-        Thread.sleep(2L);
-        ksession.fireAllRules();
+        waitBusy(2L);
+        assertEquals( 0, ksession.fireAllRules() );
+        waitBusy(30L);
+        // Expire action is put into propagation queue by timer job, so there
+        // can be a race condition where it puts it there right after previous fireAllRules
+        // flushes the queue. So there needs to be another flush -> another fireAllRules
+        // to flush the queue.
+        assertEquals( 0, ksession.fireAllRules() );
         assertEquals( 0, ksession.getObjects().size() );
     }
 
