@@ -282,13 +282,20 @@ public class CommonTestMethodBase extends Assert {
         return kbase;
     }
 
-	protected KnowledgeBase loadKnowledgeBase(String... classPathResources) {
-		return loadKnowledgeBase(null, null, classPathResources);
-	}
+    protected KnowledgeBase loadKnowledgeBase(String... classPathResources) {
+        return loadKnowledgeBase(null, null, classPathResources);
+    }
 
-	protected InternalAgenda getInternalAgenda(StatefulKnowledgeSession session) {
-		return (InternalAgenda) session.getAgenda();
-	}
+    protected InternalAgenda getInternalAgenda(StatefulKnowledgeSession session) {
+        return (InternalAgenda) session.getAgenda();
+    }
+
+    protected void waitBusy(final long waitDuration) {
+        final long waitEndTime = System.currentTimeMillis() + waitDuration;
+        while (System.currentTimeMillis() < waitEndTime) {
+            // do nothing, only spin.
+        }
+    }
 
 	public static byte[] createJar(KieServices ks,
 			                       ReleaseId releaseId,
