@@ -92,6 +92,11 @@ public class ReteWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint, Int
     }
 
     @Override
+    public void update(FactHandle handle, Object object, String... modifiedProperties) {
+        delegate.update(handle, object, modifiedProperties);
+    }
+
+    @Override
     public FactHandle getFactHandle(Object object) {
         return delegate.getFactHandle(object);
     }

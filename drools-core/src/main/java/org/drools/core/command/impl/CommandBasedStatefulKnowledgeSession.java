@@ -446,6 +446,14 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                                                    object ) );
     }
 
+    public void update(FactHandle handle,
+                       Object object,
+                       String... modifiedProperties) {
+        commandService.execute( new UpdateCommand( handle,
+                                                   object,
+                                                   modifiedProperties ) );
+    }
+
     public void addEventListener(RuleRuntimeEventListener listener) {
         commandService.execute(new AddEventListenerCommand(listener));
     }
