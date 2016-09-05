@@ -21,6 +21,9 @@ import org.drools.core.time.impl.TimerJobInstance;
 import java.util.Map;
 
 public class SelfRemovalJobContext implements JobContext {
+
+    private static final long serialVersionUID = 614425985040796356L;
+
     protected final JobContext jobContext;
     protected final Map<Long, TimerJobInstance> timerInstances;
 
