@@ -41,7 +41,10 @@ public class XStreamHelper {
                        ModifyCommand.class );
         xstream.alias( "setters",
                        SetterImpl.class );
+        // TODO retract is deprecated and should be removed
         xstream.alias( "retract",
+                       DeleteCommand.class );
+        xstream.alias( "delete",
                        DeleteCommand.class );
         xstream.alias( "insert-elements",
                        InsertElementsCommand.class );
@@ -61,6 +64,8 @@ public class XStreamHelper {
                        GetObjectCommand.class );
         xstream.alias( "get-objects",
                        GetObjectsCommand.class );
+        xstream.alias( "get-fact-handles",
+                       GetFactHandlesCommand.class );
         xstream.alias( "execution-results",
                        ExecutionResultImpl.class );
         xstream.alias( "fire-all-rules",
