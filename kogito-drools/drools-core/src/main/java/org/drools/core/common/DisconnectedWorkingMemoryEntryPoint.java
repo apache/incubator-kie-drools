@@ -89,6 +89,12 @@ public class DisconnectedWorkingMemoryEntryPoint implements InternalWorkingMemor
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
 
+    public void update(FactHandle handle,
+                       Object object,
+                       String... modifiedProperties) {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
     @Override
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );

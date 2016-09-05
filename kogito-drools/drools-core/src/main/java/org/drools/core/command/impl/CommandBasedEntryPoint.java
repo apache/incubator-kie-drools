@@ -71,6 +71,11 @@ public class CommandBasedEntryPoint implements EntryPoint {
     }
 
     @Override
+    public void update(FactHandle handle, Object object, String... modifiedProperties) {
+        commandService.execute( new UpdateInEntryPointCommand( handle, object, entryPoint, modifiedProperties ) );
+    }
+
+    @Override
     public FactHandle getFactHandle(Object object) {
         return commandService.execute( new GetFactHandleInEntryPointCommand(object, entryPoint) );
     }

@@ -1596,6 +1596,15 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                null);
     }
 
+    public void update(FactHandle handle,
+                       Object object,
+                       String... modifiedProperties) {
+        checkAlive();
+        this.defaultEntryPoint.update(handle,
+                                      object,
+                                      modifiedProperties);
+    }
+
     /**
      * modify is implemented as half way retract / assert due to the truth
      * maintenance issues.

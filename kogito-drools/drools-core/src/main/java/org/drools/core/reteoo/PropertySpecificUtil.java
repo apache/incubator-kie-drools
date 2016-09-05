@@ -75,8 +75,8 @@ public class PropertySpecificUtil {
         }
 
         BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());
-        if (listenedProperties != null && listenedProperties.contains( TraitableBean.TRAITSET_FIELD_NAME )) {
-            if (isPositive && listenedProperties != null && listenedProperties.contains( TraitableBean.TRAITSET_FIELD_NAME ) ) {
+        if (listenedProperties.contains( TraitableBean.TRAITSET_FIELD_NAME )) {
+            if (isPositive && listenedProperties.contains( TraitableBean.TRAITSET_FIELD_NAME ) ) {
                 mask = mask.set(TRAITABLE_BIT);
             }
         }
@@ -132,7 +132,7 @@ public class PropertySpecificUtil {
         return typeDeclaration.getSettableProperties();
     }
 
-    public static Class<?> getNodeClass(ObjectTypeNode objectTypeNode) {
+    private static Class<?> getNodeClass( ObjectTypeNode objectTypeNode ) {
         if (objectTypeNode == null) {
             return null;
         }

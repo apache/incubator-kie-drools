@@ -25,15 +25,6 @@ import org.kie.api.runtime.rule.FactHandle;
  * facts
  */
 public interface WorkingMemoryEntryPoint extends EntryPoint {
-    /**
-     * Assert a fact.
-     * 
-     * @param object
-     *            The fact object.
-     * 
-     * @return The new fact-handle associated with the object.
-     */
-    FactHandle insert(Object object);
 
     /**
      * Insert a fact registering JavaBean <code>PropertyChangeListeners</code>
@@ -51,27 +42,7 @@ public interface WorkingMemoryEntryPoint extends EntryPoint {
     FactHandle insert(Object object,
                       boolean dynamic);
 
-    /**
-     * Retract a fact.
-     * 
-     * @param handle
-     *            The fact-handle associated with the fact to retract.
-     */
-    void retract(FactHandle handle);
-
-    /**
-     * Inform the WorkingMemory that a Fact has been modified and that it
-     * should now update the network.
-     * 
-     * @param handle
-     *            The fact-handle associated with the fact to modify.
-     * @param object
-     *            The new value of the fact.
-     */
-    void update(FactHandle handle,
-                Object object);
-
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);
+    WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name);
     
     /**
      * Internal method called by the engine when the session is being disposed, so that the entry point
