@@ -92,11 +92,23 @@ public interface EntryPoint {
      * fact set as the second parameter in this method.
      *
      * @param handle the FactHandle for the fact to be updated.
-     *
      * @param object the new value for the fact being updated.
      */
     void update(FactHandle handle,
                 Object object);
+
+    /**
+     * Updates the fact for which the given FactHandle was assigned with the new
+     * fact set as the second parameter in this method, also specifying the set of
+     * properties that have been modified.
+     *
+     * @param handle the FactHandle for the fact to be updated.
+     * @param object the new value for the fact being updated.
+     * @param modifiedProperties the list of the names of the object's properties modified by this update.
+     */
+    void update(FactHandle handle,
+                Object object,
+                String... modifiedProperties);
 
     /**
      * Returns the fact handle associated with the given object. It is important to note that this
