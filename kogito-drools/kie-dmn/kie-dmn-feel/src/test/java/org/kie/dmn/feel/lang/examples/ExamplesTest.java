@@ -20,6 +20,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,18 +37,20 @@ public class ExamplesTest {
     private static final Logger logger = LoggerFactory.getLogger( ExamplesTest.class );
     public static final String DEFAULT_IDENT = "    ";
 
-    private static Map context;
+    private static Map  context;
+    private static FEEL feel;
 
     @BeforeClass
     public static void setupTest() {
         String expression = loadExpression( "example_10_6_1.feel" );
-        context = (Map) FEEL.evaluate( expression );
+        feel = FEEL.newInstance();
+        context = (Map) feel.evaluate( expression );
     }
 
     @Test
     public void testLoadApplicantContext() {
         String expression = loadExpression( "applicant.feel" );
-        Map applicant = (Map) FEEL.evaluate( expression );
+        Map applicant = (Map) feel.evaluate( expression );
         System.out.println( printContext( applicant ) );
 
         assertThat( applicant.size(), is( 5 ) );
@@ -61,7 +64,7 @@ public class ExamplesTest {
 
     @Test
     public void testLoadExample_10_6_2() {
-        Number yearlyIncome = (Number) FEEL.evaluate( "monthly income * 12", context );
+        Number yearlyIncome = (Number) feel.evaluate( "monthly income * 12", context );
 
         System.out.println( "Yearly income = " + yearlyIncome );
 
@@ -72,7 +75,7 @@ public class ExamplesTest {
     public void testLoadExample_10_6_3() {
         String expression = loadExpression( "example_10_6_3.feel" );
 
-        String maritalStatus = (String) FEEL.evaluate( expression, context );
+        String maritalStatus = (String) feel.evaluate( expression, context );
 
         System.out.println( "Marital status = " + maritalStatus );
 
@@ -81,7 +84,7 @@ public class ExamplesTest {
 
     @Test
     public void testLoadExample_10_6_4() {
-        Number totalExpenses = (Number) FEEL.evaluate( "sum( monthly outgoings )", context );
+        Number totalExpenses = (Number) feel.evaluate( "sum( monthly outgoings )", context );
 
         System.out.println( "Monthly total expenses = " + totalExpenses );
 
@@ -92,7 +95,7 @@ public class ExamplesTest {
     public void testLoadExample_10_6_5() {
         String expression = loadExpression( "example_10_6_5.feel" );
 
-        Number pmt = (Number) FEEL.evaluate( expression, context );
+        Number pmt = (Number) feel.evaluate( expression, context );
 
         System.out.println( "PMT = " + pmt );
 
@@ -103,7 +106,7 @@ public class ExamplesTest {
     public void testLoadExample_10_6_6() {
         String expression = loadExpression( "example_10_6_6.feel" );
 
-        Number total = (Number) FEEL.evaluate( expression, context );
+        Number total = (Number) feel.evaluate( expression, context );
 
         System.out.println( "Weight = " + total );
 
@@ -114,7 +117,7 @@ public class ExamplesTest {
     public void testLoadExample_10_6_7() {
         String expression = loadExpression( "example_10_6_7.feel" );
 
-        Boolean bankrupcy = (Boolean) FEEL.evaluate( expression, context );
+        Boolean bankrupcy = (Boolean) feel.evaluate( expression, context );
 
         System.out.println( "Is there bankrupcy event? " + bankrupcy );
 
@@ -125,7 +128,7 @@ public class ExamplesTest {
     public void testJavaCall() {
         String expression = loadExpression( "javacall.feel" );
 
-        Map context = (Map) FEEL.evaluate( expression );
+        Map context = (Map) feel.evaluate( expression );
 
         System.out.println( printContext( context ) );
     }
@@ -134,7 +137,7 @@ public class ExamplesTest {
     public void testAdhocExpression() {
         String expression = loadExpression( "custom.feel" );
 
-        Object result = FEEL.evaluate( expression );
+        Object result = feel.evaluate( expression );
 
         if( result instanceof Map ) {
             System.out.println( printContext( (Map) result ) );

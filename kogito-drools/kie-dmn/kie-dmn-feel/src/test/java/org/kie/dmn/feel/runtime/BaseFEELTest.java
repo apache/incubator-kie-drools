@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime;
 
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.impl.FEELImpl;
 
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -25,13 +26,15 @@ import static org.junit.Assert.assertThat;
 
 public abstract class BaseFEELTest {
 
+    private final FEEL feel = FEEL.newInstance();
+
     protected void assertResult( String expression, Object result ) {
         if( result == null ) {
-            assertThat( "Evaluating: '" + expression + "'", FEEL.evaluate( expression ), is( nullValue() ) );
+            assertThat( "Evaluating: '" + expression + "'", feel.evaluate( expression ), is( nullValue() ) );
         } else if( result instanceof Class<?> ) {
-            assertThat( "Evaluating: '" + expression + "'", FEEL.evaluate( expression ), is( instanceOf( (Class<?>) result ) ) );
+            assertThat( "Evaluating: '" + expression + "'", feel.evaluate( expression ), is( instanceOf( (Class<?>) result ) ) );
         } else {
-            assertThat( "Evaluating: '"+expression+"'", FEEL.evaluate( expression ), is( result ) );
+            assertThat( "Evaluating: '"+expression+"'", feel.evaluate( expression ), is( result ) );
         }
     }
 
