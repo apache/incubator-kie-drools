@@ -25,6 +25,7 @@ import java.util.Collections;
 import com.google.common.io.Resources;
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -132,7 +133,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         assertNewKieSessionSucceeds(solver);
     }
 
-    @Test
+    @Test @Ignore("Remove me when DROOLS-1276 is fixed") // TODO https://issues.jboss.org/browse/DROOLS-1276
     public void buildSolverWithDefaultKsessionKmodule() throws IOException {
         ReleaseId releaseId = deployTestdataKjar(
                 "buildSolverWithDefaultKsessionKmodule",
@@ -145,7 +146,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         assertNewKieSessionSucceeds(solver);
     }
 
-    @Test
+    @Test @Ignore("Remove me when DROOLS-1276 is fixed") // TODO https://issues.jboss.org/browse/DROOLS-1276
     public void buildSolverWithEmptyKmodule() throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
         ReleaseId releaseId = deployTestdataKjar(
                 "buildSolverWithEmptyKmodule",
