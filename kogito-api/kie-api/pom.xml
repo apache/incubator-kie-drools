@@ -115,7 +115,7 @@
         <artifactId>revapi-maven-plugin</artifactId>
         <configuration>
           <oldArtifacts>
-            <artifact>${project.groupId}:${project.artifactId}:6.4.0.Final</artifact>
+            <artifact>${project.groupId}:${project.artifactId}:${version.org.kie.latestFinal.release}</artifact>
           </oldArtifacts>
           <newArtifacts>
             <!-- The special 'BUILD' GAV is used to specify artifacts that were produced during the build of the current project. -->
