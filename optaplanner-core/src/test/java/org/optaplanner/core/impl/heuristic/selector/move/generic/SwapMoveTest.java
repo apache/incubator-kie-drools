@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.multivar.TestdataOtherValue;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class SwapMoveTest {
 
@@ -174,6 +175,23 @@ public class SwapMoveTest {
         bcMove.doMove(scoreDirector);
         assertEquals(v2, b.getValue());
         assertEquals(v3, c.getValue());
+    }
+
+    @Test
+    public void getters() {
+        GenuineVariableDescriptor primaryDescriptor = TestdataMultiVarEntity.buildVariableDescriptorForPrimaryValue();
+        GenuineVariableDescriptor secondaryDescriptor = TestdataMultiVarEntity.buildVariableDescriptorForSecondaryValue();
+        SwapMove move = new SwapMove(Arrays.asList(primaryDescriptor),
+                new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b"));
+        assertCollectionContainsExactly(move.getVariableNameList(), "primaryValue");
+        assertCode("a", move.getLeftEntity());
+        assertCode("b", move.getRightEntity());
+
+        move = new SwapMove(Arrays.asList(primaryDescriptor, secondaryDescriptor),
+                new TestdataMultiVarEntity("c"), new TestdataMultiVarEntity("d"));
+        assertCollectionContainsExactly(move.getVariableNameList(), "primaryValue", "secondaryValue");
+        assertCode("c", move.getLeftEntity());
+        assertCode("d", move.getRightEntity());
     }
 
     @Test

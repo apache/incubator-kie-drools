@@ -31,10 +31,10 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class SubChainChangeMove extends AbstractMove {
 
-    private final SubChain subChain;
-    private final GenuineVariableDescriptor variableDescriptor;
+    protected final SubChain subChain;
+    protected final GenuineVariableDescriptor variableDescriptor;
     protected final SingletonInverseVariableSupply inverseVariableSupply;
-    private final Object toPlanningValue;
+    protected final Object toPlanningValue;
 
     public SubChainChangeMove(SubChain subChain, GenuineVariableDescriptor variableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply, Object toPlanningValue) {
@@ -42,6 +42,18 @@ public class SubChainChangeMove extends AbstractMove {
         this.variableDescriptor = variableDescriptor;
         this.inverseVariableSupply = inverseVariableSupply;
         this.toPlanningValue = toPlanningValue;
+    }
+
+    public String getVariableName() {
+        return variableDescriptor.getVariableName();
+    }
+
+    public SubChain getSubChain() {
+        return subChain;
+    }
+
+    public Object getToPlanningValue() {
+        return toPlanningValue;
     }
 
     // ************************************************************************

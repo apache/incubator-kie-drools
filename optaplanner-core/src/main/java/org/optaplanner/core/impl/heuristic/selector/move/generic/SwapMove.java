@@ -48,6 +48,14 @@ public class SwapMove<Solution_> extends AbstractMove {
         this.rightEntity = rightEntity;
     }
 
+    public List<String> getVariableNameList() {
+        List<String> variableNameList = new ArrayList<>(variableDescriptorList.size());
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
+            variableNameList.add(variableDescriptor.getVariableName());
+        }
+        return variableNameList;
+    }
+
     public Object getLeftEntity() {
         return leftEntity;
     }

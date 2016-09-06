@@ -44,6 +44,10 @@ public class ChangeMove extends AbstractMove {
         return entity;
     }
 
+    public String getVariableName() {
+        return variableDescriptor.getVariableName();
+    }
+
     public Object getToPlanningValue() {
         return toPlanningValue;
     }

@@ -24,9 +24,11 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.entityproviding.TestdataEntityProvidingEntity;
+import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class PillarChangeMoveTest {
 
@@ -109,6 +111,23 @@ public class PillarChangeMoveTest {
         assertEquals(v2, a.getValue());
         assertEquals(v2, b.getValue());
         assertEquals(v2, c.getValue());
+    }
+
+    @Test
+    public void getters() {
+        PillarChangeMove move = new PillarChangeMove(
+                Arrays.<Object>asList(new TestdataMultiVarEntity("a"), new TestdataMultiVarEntity("b")),
+                TestdataMultiVarEntity.buildVariableDescriptorForPrimaryValue(), null);
+        assertAllCodesOfCollection(move.getPillar(), "a", "b");
+        assertEquals("primaryValue", move.getVariableName());
+        assertCode(null, move.getToPlanningValue());
+
+        move = new PillarChangeMove(
+                Arrays.<Object>asList(new TestdataMultiVarEntity("c"), new TestdataMultiVarEntity("d")),
+                TestdataMultiVarEntity.buildVariableDescriptorForSecondaryValue(), new TestdataValue("1"));
+        assertAllCodesOfCollection(move.getPillar(), "c", "d");
+        assertEquals("secondaryValue", move.getVariableName());
+        assertCode("1", move.getToPlanningValue());
     }
 
     @Test

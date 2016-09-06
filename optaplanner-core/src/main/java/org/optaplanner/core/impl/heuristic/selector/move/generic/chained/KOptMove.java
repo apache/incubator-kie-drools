@@ -49,6 +49,10 @@ public class KOptMove extends AbstractMove {
         this.values = values;
     }
 
+    public String getVariableName() {
+        return variableDescriptor.getVariableName();
+    }
+
     public Object getEntity() {
         return entity;
     }

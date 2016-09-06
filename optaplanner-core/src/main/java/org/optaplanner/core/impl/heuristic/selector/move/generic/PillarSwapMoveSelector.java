@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,14 +29,14 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
 
     protected final PillarSelector leftPillarSelector;
     protected final PillarSelector rightPillarSelector;
-    protected final Collection<GenuineVariableDescriptor> variableDescriptors;
+    protected final List<GenuineVariableDescriptor> variableDescriptorList;
     protected final boolean randomSelection;
 
     public PillarSwapMoveSelector(PillarSelector leftPillarSelector, PillarSelector rightPillarSelector,
-            Collection<GenuineVariableDescriptor> variableDescriptors, boolean randomSelection) {
+            List<GenuineVariableDescriptor> variableDescriptorList, boolean randomSelection) {
         this.leftPillarSelector = leftPillarSelector;
         this.rightPillarSelector = rightPillarSelector;
-        this.variableDescriptors = variableDescriptors;
+        this.variableDescriptorList = variableDescriptorList;
         this.randomSelection = randomSelection;
         Class<?> leftEntityClass = leftPillarSelector.getEntityDescriptor().getEntityClass();
         if (!leftEntityClass.equals(rightPillarSelector.getEntityDescriptor().getEntityClass())) {
@@ -46,11 +45,11 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
                     + ") which is not equal to the rightPillarSelector's entityClass ("
                     + rightPillarSelector.getEntityDescriptor().getEntityClass() + ").");
         }
-        if (variableDescriptors.isEmpty()) {
+        if (variableDescriptorList.isEmpty()) {
             throw new IllegalStateException("The selector (" + this
-                    + ")'s variableDescriptors (" + variableDescriptors + ") is empty.");
+                    + ")'s variableDescriptors (" + variableDescriptorList + ") is empty.");
         }
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
             if (!leftEntityClass.equals(
                     variableDescriptor.getEntityDescriptor().getEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
@@ -95,14 +94,14 @@ public class PillarSwapMoveSelector extends GenericMoveSelector {
             return new AbstractOriginalSwapIterator<Move, List<Object>>(leftPillarSelector, rightPillarSelector) {
                 @Override
                 protected Move newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
-                    return new PillarSwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
+                    return new PillarSwapMove(variableDescriptorList, leftSubSelection, rightSubSelection);
                 }
             };
         } else {
             return new AbstractRandomSwapIterator<Move, List<Object>>(leftPillarSelector, rightPillarSelector) {
                 @Override
                 protected Move newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
-                    return new PillarSwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
+                    return new PillarSwapMove(variableDescriptorList, leftSubSelection, rightSubSelection);
                 }
             };
         }

@@ -55,6 +55,10 @@ public class TailChainSwapMove<Solution_> extends AbstractMove {
         this.rightValue = rightValue;
     }
 
+    public String getVariableName() {
+        return variableDescriptor.getVariableName();
+    }
+
     public Object getLeftEntity() {
         return leftEntity;
     }

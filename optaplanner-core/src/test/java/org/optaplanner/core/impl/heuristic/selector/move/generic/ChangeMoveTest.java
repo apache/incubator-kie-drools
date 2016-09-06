@@ -30,6 +30,7 @@ import org.optaplanner.core.impl.testdata.domain.multivar.TestdataOtherValue;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
 
 public class ChangeMoveTest {
 
@@ -78,6 +79,21 @@ public class ChangeMoveTest {
         a.setValue(v3);
         aMove.doMove(scoreDirector);
         assertEquals(v2, a.getValue());
+    }
+
+    @Test
+    public void getters() {
+        ChangeMove move = new ChangeMove(new TestdataMultiVarEntity("a"),
+                TestdataMultiVarEntity.buildVariableDescriptorForPrimaryValue(), null);
+        assertCode("a", move.getEntity());
+        assertEquals("primaryValue", move.getVariableName());
+        assertCode(null, move.getToPlanningValue());
+
+        move = new ChangeMove(new TestdataMultiVarEntity("b"),
+                TestdataMultiVarEntity.buildVariableDescriptorForSecondaryValue(), new TestdataValue("1"));
+        assertCode("b", move.getEntity());
+        assertEquals("secondaryValue", move.getVariableName());
+        assertCode("1", move.getToPlanningValue());
     }
 
     @Test

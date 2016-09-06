@@ -53,6 +53,10 @@ public class PillarChangeMove<Solution_> extends AbstractMove {
         return pillar;
     }
 
+    public String getVariableName() {
+        return variableDescriptor.getVariableName();
+    }
+
     public Object getToPlanningValue() {
         return toPlanningValue;
     }

@@ -84,9 +84,9 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig<PillarSwapM
         PillarSelectorConfig rightPillarSelectorConfig = defaultIfNull(secondaryPillarSelectorConfig, pillarSelectorConfig_);
         PillarSelector rightPillarSelector = rightPillarSelectorConfig.buildPillarSelector(configPolicy,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection), variableNameIncludeList);
-        Collection<GenuineVariableDescriptor> variableDescriptors = deduceVariableDescriptorList(
+        List<GenuineVariableDescriptor> variableDescriptorList = deduceVariableDescriptorList(
                 leftPillarSelector.getEntityDescriptor(), variableNameIncludeList);
-        return new PillarSwapMoveSelector(leftPillarSelector, rightPillarSelector, variableDescriptors,
+        return new PillarSwapMoveSelector(leftPillarSelector, rightPillarSelector, variableDescriptorList,
                 randomSelection);
     }
 

@@ -293,6 +293,10 @@ public class PlannerAssert extends Assert {
         assertFalse(iterator.hasNext());
     }
 
+    public static <O> void assertAllCodesOfCollection(Collection<O> collection, String... codes) {
+        assertAllCodesOfIterator(collection.iterator(), codes);
+    }
+
     public static void assertAllCodesOfMoveSelector(MoveSelector moveSelector, String... codes) {
         assertAllCodesOfMoveSelector(moveSelector, (long) codes.length, codes);
     }

@@ -20,6 +20,7 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -29,6 +30,24 @@ public class TestdataMultiVarEntity extends TestdataObject {
     public static EntityDescriptor buildEntityDescriptor() {
         SolutionDescriptor solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
         return solutionDescriptor.findEntityDescriptorOrFail(TestdataMultiVarEntity.class);
+    }
+
+    public static GenuineVariableDescriptor buildVariableDescriptorForPrimaryValue() {
+        SolutionDescriptor solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
+        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataMultiVarEntity.class);
+        return entityDescriptor.getGenuineVariableDescriptor("primaryValue");
+    }
+
+    public static GenuineVariableDescriptor buildVariableDescriptorForSecondaryValue() {
+        SolutionDescriptor solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
+        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataMultiVarEntity.class);
+        return entityDescriptor.getGenuineVariableDescriptor("secondaryValue");
+    }
+
+    public static GenuineVariableDescriptor buildVariableDescriptorForTertiaryNullableValue() {
+        SolutionDescriptor solutionDescriptor = TestdataMultiVarSolution.buildSolutionDescriptor();
+        EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(TestdataMultiVarEntity.class);
+        return entityDescriptor.getGenuineVariableDescriptor("tertiaryNullableValue");
     }
 
     private TestdataValue primaryValue;
