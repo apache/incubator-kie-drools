@@ -13,28 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.dmn.backend.unmarshalling.v1_1;
 
-import org.kie.dmn.backend.unmarshalling.v1_1.xstream.XStreamUnmarshaller;
-import org.kie.dmn.feel.model.v1_1.Definitions;
-import org.kie.dmn.unmarshalling.v1_1.Unmarshaller;
+package org.kie.dmn.backend.unmarshalling.v1_1.xstream;
 
-import java.io.Reader;
-import java.io.StringReader;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 
-public class DefaultUnmarshaller
-        implements Unmarshaller {
+public abstract class DMNModelInstrumentedBaseConverter
+        extends DMNBaseConverter {
 
-    private final XStreamUnmarshaller delegate = new XStreamUnmarshaller();
-
-    @Override
-    public Definitions unmarshal(final String xml) {
-        return unmarshal( new StringReader( xml ) );
+    public DMNModelInstrumentedBaseConverter(XStream xstream) {
+        super( xstream.getMapper() );
     }
 
     @Override
-    public Definitions unmarshal(final Reader isr) {
-        return delegate.unmarshal( isr );
+    protected void assignChildElement(Object parent, String nodeName, Object child) {
     }
 
+    @Override
+    protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
+    }
 }

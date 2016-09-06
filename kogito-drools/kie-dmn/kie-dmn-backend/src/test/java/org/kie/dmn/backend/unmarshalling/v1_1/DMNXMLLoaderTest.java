@@ -69,9 +69,6 @@ public class DMNXMLLoaderTest {
         assertThat( idata.getVariable().getTypeRef().getPrefix(), is( "feel" ) );
         assertThat( idata.getVariable().getTypeRef().getLocalPart(), is( "string" ) );
         assertThat( idata.getVariable().getTypeRef().getNamespaceURI(), is( nullValue() ) );
-
-
-        System.out.println(def);
     }
 
     @Test
