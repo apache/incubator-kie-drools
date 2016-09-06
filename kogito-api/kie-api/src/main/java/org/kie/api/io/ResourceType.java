@@ -218,6 +218,18 @@ public class ResourceType
                                                                         "src/main/resources",
                                                                         "solver");
 
+    /** Decision Model and Notation (DMN) model  */
+    public static final ResourceType DMN = addResourceTypeToRegistry("DMN",
+                                                                       "Decision Model and Notation",
+                                                                       "src/main/resources",
+                                                                       "dmn");
+
+    /** DMN FEEL expression language */
+    public static final ResourceType FEEL = addResourceTypeToRegistry("FEEL",
+                                                                     "Friendly Enough Expression Language",
+                                                                     "src/main/resources",
+                                                                     "feel");
+
     public static ResourceType getResourceType(final String resourceType) {
         ResourceType resource = CACHE.get(resourceType);
         if (resource == null) {
