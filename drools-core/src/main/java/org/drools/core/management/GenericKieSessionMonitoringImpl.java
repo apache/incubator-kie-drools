@@ -158,7 +158,11 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
     }
     
     public Map<String,IAgendaStatsData> getStatsByRule() {
-        return Collections.unmodifiableMap(this.agendaStats.getRulesStats());
+        Map<String, IAgendaStatsData> result = new HashMap<String, IAgendaStatsData>();
+        for( Map.Entry<String, AgendaStatsData> entry : this.agendaStats.getRulesStats().entrySet() ) {
+            result.put( entry.getKey(), entry.getValue() );
+        }
+        return result;
     }
     
     public static class AgendaStats implements org.kie.api.event.rule.AgendaEventListener {
@@ -310,7 +314,11 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
     }
     
     public Map<String,IProcessStatsData> getStatsByProcess() {
-        return Collections.unmodifiableMap(this.processStats.getProcessStats());
+        Map<String, IProcessStatsData> result = new HashMap<String, IProcessStatsData>();
+        for( Map.Entry<String, ProcessStatsData> entry : this.processStats.getProcessStats().entrySet() ) {
+            result.put( entry.getKey(), entry.getValue() );
+        }
+        return result;
     }
     
     public IProcessInstanceStatsData getStatsForProcessInstance( long processInstanceId ) {
@@ -319,7 +327,11 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
     }
     
     public Map<Long,IProcessInstanceStatsData> getStatsByProcessInstance() {
-        return Collections.unmodifiableMap(this.processStats.getProcessInstanceStats());
+        Map<Long, IProcessInstanceStatsData> result = new HashMap<Long, IProcessInstanceStatsData>();
+        for( Map.Entry<Long, ProcessInstanceStatsData> entry : this.processStats.getProcessInstanceStats().entrySet() ) {
+            result.put( entry.getKey(), entry.getValue() );
+        }
+        return result;
     }
     
     public static class ProcessStats implements org.kie.api.event.process.ProcessEventListener {
