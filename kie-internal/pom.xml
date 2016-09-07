@@ -95,6 +95,20 @@
           </instructions>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+          <executions>
+            <execution>
+              <!-- Run the javadoc plugin also as part of the standard build (for other modules, it is executed only when -Dfull is specified).
+                   Some downstream repositories (e.g. Drools) depend on this -javadoc artifact and need it even for non-full builds. -->
+              <phase>package</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+      </plugin>
     </plugins>
   </build>
 
