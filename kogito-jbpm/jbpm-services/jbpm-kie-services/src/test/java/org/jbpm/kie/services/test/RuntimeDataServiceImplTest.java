@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -139,7 +140,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     }
 
     @Test
-    public void testGetProcessByDeploymentId() {
+    public void testGetProcessesByDeploymentId() {
     	Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContext());
     	assertNotNull(definitions);
 
@@ -165,6 +166,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     }
 
     @Test
+    public void testGetProcessesByDeploymentIdNull() {
+        Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByDeploymentId(null, new QueryContext());
+        assertNotNull(definitions);
+        assertTrue(definitions.isEmpty());
+    }
+
+    @Test
     public void testGetProcessByDeploymentIdAndProcessId() {
         ProcessDefinition definition = runtimeDataService.getProcessesByDeploymentIdProcessId(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
 
@@ -178,6 +186,12 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         assertEquals("org.jbpm.writedocument", definition.getId());
 
         deploymentUnit.setVersion(origVer);
+    }
+
+    @Test
+    public void testGetProcessByDeploymentIdAndProcessIdNull() {
+        ProcessDefinition definition = runtimeDataService.getProcessesByDeploymentIdProcessId(null, null);
+        assertNull(definition);
     }
 
     @Test
@@ -244,6 +258,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         assertTrue(definitions.contains("AdHocSubProcess"));
 
         deploymentUnit.setVersion(origVer);
+    }
+
+    @Test
+    public void testGetProcessIdsNull() {
+        Collection<String> definitions = runtimeDataService.getProcessIds(null, new QueryContext());
+        assertNotNull(definitions);
+        assertTrue(definitions.isEmpty());
     }
 
     @Test
@@ -397,6 +418,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	assertEquals(3, (int)instances.iterator().next().getState());
 
         deploymentUnit.setVersion(origVer);
+    }
+
+    @Test
+    public void testGetProcessInstancesByDeploymentIdNull() {
+        Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstancesByDeploymentId(null, Collections.<Integer>emptyList(), new QueryContext());
+        assertNotNull(instances);
+        assertTrue(instances.isEmpty());
     }
 
     @Test

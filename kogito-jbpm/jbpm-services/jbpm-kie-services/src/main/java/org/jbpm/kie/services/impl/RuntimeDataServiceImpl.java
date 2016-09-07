@@ -121,7 +121,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 
     private String getLatestDeploymentId(String deploymentId) {
         String matched = deploymentId;
-        if (deploymentId.toLowerCase().endsWith("latest")) {
+        if (deploymentId != null && deploymentId.toLowerCase().endsWith("latest")) {
             matched = DeploymentIdResolver.matchAndReturnLatest(deploymentId, deploymentIds);
         }
         return matched;
