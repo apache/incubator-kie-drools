@@ -16,23 +16,29 @@
 
 package org.drools.core.command.runtime.rule;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.InternalFactHandle;
-import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.Context;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import java.util.ArrayList;
+import java.util.Collection;
+
+@XmlAccessorType(XmlAccessType.NONE)
 public class GetFactHandlesCommand
     implements
     GenericCommand<Collection<FactHandle>> {
 
-    private ObjectFilter filter = null;
-    private boolean      disconnected = false;
+    private transient ObjectFilter filter = null;
+
+    @XmlAttribute
+    private boolean disconnected = false;
 
     public GetFactHandlesCommand() {
     }
@@ -48,7 +54,15 @@ public class GetFactHandlesCommand
         this.disconnected = disconnected;
     }
 
-    public Collection<FactHandle> execute(Context context) {
+    public boolean isDisconnected() {
+        return disconnected;
+    }
+
+    public void setDisconnected( boolean disconnected ) {
+        this.disconnected = disconnected;
+    }
+
+    public Collection<FactHandle> execute( Context context ) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         Collection<FactHandle> disconnectedFactHandles = new ArrayList<FactHandle>();
         if ( filter != null ) {

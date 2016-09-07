@@ -623,4 +623,39 @@ public class JpaPersistentStatefulSessionTest {
         KieSession ksession = ks.getStoreServices().newKieSession( kcontainer.getKieBase("kbase1"), conf, env );
         assertTrue(ksession.getSessionClock() instanceof SessionPseudoClock);
     }
+
+    @Test
+    public void testGetFactHandles() {
+        // DROOLS-1270
+        String str =
+                "package org.kie.test\n" +
+                "rule rule1 when\n" +
+                "  String(this == \"A\")\n" +
+                "then\n" +
+                "  insertLogical( \"B\" );\n" +
+                "end\n" +
+                "\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
+        KieSession ksession = ks.getStoreServices().newKieSession( kbase, null, env );
+
+        ksession.insert( "A" );
+        ksession.fireAllRules();
+        assertEquals(2, ksession.getFactCount());
+
+        for (FactHandle fh : ksession.getFactHandles()) {
+            System.out.println(fh);
+            if (fh.toString().contains( "String:A" )) {
+                ksession.delete( fh );
+            }
+        }
+
+        ksession.fireAllRules();
+        assertEquals(0, ksession.getFactCount());
+    }
 }
