@@ -107,7 +107,12 @@ public class FormProviderServiceImpl implements FormProviderService {
             return "";
         }
         String name = task.getName();
-        ProcessDefinition processDesc = dataService.getProcessesByDeploymentIdProcessId(task.getTaskData().getDeploymentId(), task.getTaskData().getProcessId());
+        final String deploymentId = task.getTaskData().getDeploymentId();
+        final String processId = task.getTaskData().getProcessId();
+        ProcessDefinition processDesc = null;
+        if(deploymentId != null && processId != null) {
+            processDesc = dataService.getProcessesByDeploymentIdProcessId(deploymentId, processId);
+        }
         Map<String, Object> renderContext = new HashMap<String, Object>();
 
         ContentMarshallerContext marshallerContext = getMarshallerContext(task);
@@ -133,12 +138,11 @@ public class FormProviderServiceImpl implements FormProviderService {
         }
 
         // prepare task variables for rendering
-        String processId = task.getTaskData().getProcessId();
         Map<String, Object> finalOutput = new HashMap<String, Object>();
 
         if (processId != null && !processId.equals("")) {
             // If task has an associated process let's merge the outputs
-            Map<String, String> taskOutputMappings = bpmn2Service.getTaskOutputMappings(task.getTaskData().getDeploymentId(), processId, task.getName());
+            Map<String, String> taskOutputMappings = bpmn2Service.getTaskOutputMappings(deploymentId, processId, task.getName());
             if (taskOutputMappings == null) {
                 taskOutputMappings = new HashMap<String, String>();
             }
@@ -186,7 +190,7 @@ public class FormProviderServiceImpl implements FormProviderService {
             }
         }
 
-        logger.warn("Unable to find form to render for task '{}' on process '{}'", name, processDesc.getName());
+        logger.warn("Unable to find form to render for task '{}' on process '{}'", name, processDesc == null ? "" : processDesc.getName());
         return "";
     }
 
