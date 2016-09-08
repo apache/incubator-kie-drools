@@ -43,6 +43,7 @@ import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.command.runtime.rule.FromExternalFactHandleCommand;
 import org.drools.core.command.runtime.rule.GetFactHandleCommand;
 import org.drools.core.command.runtime.rule.GetFactHandleInEntryPointCommand;
+import org.drools.core.command.runtime.rule.GetFactHandlesCommand;
 import org.drools.core.command.runtime.rule.GetObjectCommand;
 import org.drools.core.command.runtime.rule.GetObjectsCommand;
 import org.drools.core.command.runtime.rule.InsertElementsCommand;
@@ -285,6 +286,30 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
 
     public Command newAgendaGroupSetFocus(String name) {
         return new AgendaGroupSetFocusCommand(name);
+    }
+
+    @Override
+    public Command newGetFactHandles() {
+        return new GetFactHandlesCommand();
+    }
+
+    @Override
+    public Command newGetFactHandles(String outIdentifier) {
+        GetFactHandlesCommand factHandlesCommand = new GetFactHandlesCommand();
+        factHandlesCommand.setOutIdentifier(outIdentifier);
+        return factHandlesCommand;
+    }
+
+    @Override
+    public Command newGetFactHandles(ObjectFilter filter) {
+        return new GetFactHandlesCommand(filter);
+    }
+
+    @Override
+    public Command newGetFactHandles(ObjectFilter filter, String outIdentifier) {
+        GetFactHandlesCommand factHandlesCommand = new GetFactHandlesCommand(filter);
+        factHandlesCommand.setOutIdentifier(outIdentifier);
+        return factHandlesCommand;
     }
 
     public Command newClearActivationGroup(String name) {
