@@ -45,7 +45,8 @@ public class ModifyCommand implements GenericCommand<Object> {
     @XmlAttribute(name="allow-modify-expr")
     public boolean ALLOW_MODIFY_EXPRESSIONS = true;
 
-    private DisconnectedFactHandle handle;
+    @XmlElement(name="fact-handle", required=true)
+    private DisconnectedFactHandle factHandle;
 
     // see getSetters()
     private List<Setter> setters;
@@ -56,25 +57,25 @@ public class ModifyCommand implements GenericCommand<Object> {
 
     public ModifyCommand(FactHandle handle,
                          List<Setter> setters) {
-        this.handle = DisconnectedFactHandle.newFrom( handle );
+        this.factHandle = DisconnectedFactHandle.newFrom( handle );
         setSetters(setters);
     }
 
     public FactHandle getFactHandle() {
-        return this.handle;
+        return this.factHandle;
     }
 
     public void setFactHandle(DisconnectedFactHandle factHandle) {
-        this.handle = factHandle;
+        this.factHandle = factHandle;
     }
 
-    @XmlElement(name="fact-handle", required=true)
+
     public void setFactHandleFromString(String factHandleId) {
-        handle = new DisconnectedFactHandle(factHandleId);
+        factHandle = new DisconnectedFactHandle(factHandleId);
     }
 
     public String getFactHandleFromString() {
-        return handle.toExternalForm();
+        return factHandle.toExternalForm();
     }
 
     @XmlElement(type=SetterImpl.class)
@@ -122,12 +123,12 @@ public class ModifyCommand implements GenericCommand<Object> {
 
     public Object execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        EntryPoint wmep = ksession.getEntryPoint( handle.getEntryPointId() );
+        EntryPoint wmep = ksession.getEntryPoint( factHandle.getEntryPointId() );
 
-        Object object = wmep.getObject( this.handle );
+        Object object = wmep.getObject( this.factHandle );
         MVELSafeHelper.getEvaluator().eval( getMvelExpr(), object );
 
-        wmep.update( handle,
+        wmep.update( factHandle,
                         object );
         return object;
     }

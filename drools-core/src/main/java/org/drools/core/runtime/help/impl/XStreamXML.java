@@ -192,7 +192,9 @@ public class XStreamXML {
 
         public Object unmarshal(HierarchicalStreamReader hierarchicalStreamReader,
                                 UnmarshallingContext unmarshallingContext) {
-            throw new UnsupportedOperationException( "Unable to unmarshal fact handles." );
+            FactHandle factHandle = DefaultFactHandle.createFromExternalFormat( hierarchicalStreamReader.getAttribute( "external-form" ) );
+
+            return factHandle;
         }
     }
 
@@ -525,13 +527,22 @@ public class XStreamXML {
 
             writer.addAttribute( "disconnected",
                                  "" + cmd.isDisconnected() );
+            if ( cmd.getOutIdentifier() != null ) {
+                writer.addAttribute( "out-identifier",
+                        cmd.getOutIdentifier() );
+            }
         }
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
-            String disconnected = reader.getAttribute( "disconnected" );
+
+            String identifierOut = reader.getAttribute( "out-identifier" );
 
             GetFactHandlesCommand cmd = new GetFactHandlesCommand();
+            if ( identifierOut != null ) {
+                cmd.setOutIdentifier( identifierOut );
+            }
+            String disconnected = reader.getAttribute( "disconnected" );
             if ( disconnected != null ) {
                 cmd.setDisconnected( Boolean.valueOf( disconnected ) );
             }
