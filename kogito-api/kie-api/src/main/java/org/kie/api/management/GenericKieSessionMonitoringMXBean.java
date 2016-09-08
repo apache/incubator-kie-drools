@@ -112,15 +112,6 @@ public interface GenericKieSessionMonitoringMXBean {
     Map<String,IProcessStatsData> getStatsByProcess();
     
     
-    public static interface IProcessInstanceStatsData {
-        Date getProcessStarted();
-        Date getProcessCompleted();
-        long getProcessNodesTriggered();
-    }
-    IProcessInstanceStatsData getStatsForProcessInstance(long processInstanceId);
-    Map<Long,IProcessInstanceStatsData> getStatsByProcessInstance();
-    
-
     String getKieSessionName();
     
     /**
