@@ -165,11 +165,9 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         deploymentUnit.setVersion(origVer);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testGetProcessesByDeploymentIdNull() {
-        Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByDeploymentId(null, new QueryContext());
-        assertNotNull(definitions);
-        assertTrue(definitions.isEmpty());
+        runtimeDataService.getProcessesByDeploymentId(null, new QueryContext());
     }
 
     @Test
@@ -188,10 +186,9 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         deploymentUnit.setVersion(origVer);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testGetProcessByDeploymentIdAndProcessIdNull() {
-        ProcessDefinition definition = runtimeDataService.getProcessesByDeploymentIdProcessId(null, null);
-        assertNull(definition);
+        runtimeDataService.getProcessesByDeploymentIdProcessId(null, null);
     }
 
     @Test
@@ -260,11 +257,9 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         deploymentUnit.setVersion(origVer);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testGetProcessIdsNull() {
-        Collection<String> definitions = runtimeDataService.getProcessIds(null, new QueryContext());
-        assertNotNull(definitions);
-        assertTrue(definitions.isEmpty());
+        runtimeDataService.getProcessIds(null, new QueryContext());
     }
 
     @Test
@@ -420,11 +415,9 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         deploymentUnit.setVersion(origVer);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testGetProcessInstancesByDeploymentIdNull() {
-        Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstancesByDeploymentId(null, Collections.<Integer>emptyList(), new QueryContext());
-        assertNotNull(instances);
-        assertTrue(instances.isEmpty());
+        runtimeDataService.getProcessInstancesByDeploymentId(null, Collections.<Integer>emptyList(), new QueryContext());
     }
 
     @Test

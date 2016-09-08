@@ -16,6 +16,7 @@
 
 package org.jbpm.kie.services.impl;
 
+import static java.util.Objects.requireNonNull;
 import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
 
 import java.util.ArrayList;
@@ -64,6 +65,8 @@ import org.kie.internal.task.query.TaskSummaryQueryBuilder;
 
 
 public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEventListener {
+
+    private static final String DEPLOYMENT_ID_MUST_NOT_BE_NULL = "DeploymentId must not be null";
 
     protected Set<String> deploymentIds = new HashSet<String>();
     protected Set<ProcessDefinition> availableProcesses = new HashSet<ProcessDefinition>();
@@ -258,7 +261,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
      * process definition methods
      */
 	public Collection<ProcessDefinition> getProcessesByDeploymentId(String deploymentId, QueryContext queryContext) {
-	    deploymentId = getLatestDeploymentId(deploymentId);
+	    deploymentId = getLatestDeploymentId(requireNonNull(deploymentId, DEPLOYMENT_ID_MUST_NOT_BE_NULL));
 
         List<ProcessDefinition> outputCollection = new ArrayList<ProcessDefinition>();
         CollectionUtils.select(availableProcesses, new ByDeploymentIdPredicate(deploymentId, identityProvider.getRoles()), outputCollection);
@@ -268,7 +271,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     }
 
     public ProcessDefinition getProcessesByDeploymentIdProcessId(String deploymentId, String processId) {
-	    deploymentId = getLatestDeploymentId(deploymentId);
+	    deploymentId = getLatestDeploymentId(requireNonNull(deploymentId, DEPLOYMENT_ID_MUST_NOT_BE_NULL));
 
     	List<ProcessDefinition> outputCollection = new ArrayList<ProcessDefinition>();
         CollectionUtils.select(availableProcesses, new ByDeploymentIdProcessIdPredicate(deploymentId, processId, identityProvider.getRoles(), true), outputCollection);
@@ -317,7 +320,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 
     @Override
     public Collection<String> getProcessIds(String deploymentId, QueryContext queryContext) {
-	    deploymentId = getLatestDeploymentId(deploymentId);
+	    deploymentId = getLatestDeploymentId(requireNonNull(deploymentId, DEPLOYMENT_ID_MUST_NOT_BE_NULL));
 
         List<String> processIds = new ArrayList<String>(availableProcesses.size());
         if( deploymentId == null || deploymentId.isEmpty() ) {
@@ -372,7 +375,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     }
 
     public Collection<ProcessInstanceDesc> getProcessInstancesByDeploymentId(String deploymentId, List<Integer> states, QueryContext queryContext) {
-	    deploymentId = getLatestDeploymentId(deploymentId);
+	    deploymentId = getLatestDeploymentId(requireNonNull(deploymentId, DEPLOYMENT_ID_MUST_NOT_BE_NULL));
 
     	Map<String, Object> params = new HashMap<String, Object>();
         params.put("externalId", deploymentId);
