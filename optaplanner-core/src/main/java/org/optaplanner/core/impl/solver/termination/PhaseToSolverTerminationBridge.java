@@ -98,10 +98,14 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
     // ************************************************************************
 
     @Override
-    public PhaseToSolverTerminationBridge createChildThreadTermination(
+    public Termination createChildThreadTermination(
             DefaultSolverScope solverScope, ChildThreadType childThreadType) {
-        return new PhaseToSolverTerminationBridge(
-                solverTermination.createChildThreadTermination(solverScope, childThreadType));
+        if (childThreadType == ChildThreadType.PART_THREAD) {
+            // Remove of the bridge (which is nested if there's a phase termination), PhaseConfig will add it again
+            return solverTermination.createChildThreadTermination(solverScope, childThreadType);
+        } else {
+            throw new IllegalStateException("The childThreadType (" + childThreadType + ") is not implemented.");
+        }
     }
 
     @Override
