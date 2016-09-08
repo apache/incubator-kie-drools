@@ -251,6 +251,26 @@
         "code": "java.method.addedToInterface",
         "new": "method void org.kie.api.runtime.rule.EntryPoint::update(org.kie.api.runtime.rule.FactHandle, java.lang.Object, java.lang.String[])",
         "justification": "allow to specify the set of properties that have been modified by this update"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newGetFactHandles()",
+        "justification": "allow to build new GetFactHandlesCommand"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newGetFactHandles(java.lang.String)",
+        "justification": "allow to build new GetFactHandlesCommand with given out identifier"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newGetFactHandles(org.kie.api.runtime.ObjectFilter)",
+        "justification": "allow to build new GetFactHandlesCommand with given ObjectFilter"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method org.kie.api.command.Command org.kie.api.command.KieCommands::newGetFactHandles(org.kie.api.runtime.ObjectFilter, java.lang.String)",
+        "justification": "allow to build new GetFactHandlesCommand with given ObjectFilter and out identifier"
       }
     ]
   }

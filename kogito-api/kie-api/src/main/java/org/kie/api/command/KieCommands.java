@@ -126,5 +126,13 @@ public interface KieCommands {
     Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm, boolean disconnected);
 
     Command newAgendaGroupSetFocus(String name);
+    
+    Command newGetFactHandles();
+
+    Command newGetFactHandles(String outIdentifier);
+
+    Command newGetFactHandles(ObjectFilter filter);
+
+    Command newGetFactHandles(ObjectFilter filter, String outIdentifier);
 
 }
