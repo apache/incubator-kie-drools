@@ -291,6 +291,17 @@ public class ProjectClassLoader extends ClassLoader {
         return resources;
     }
 
+    public boolean isPackage(String name) {
+        String parentName = name + ".";
+        Package[] packages = Package.getPackages();
+        for (Package p : packages) {
+            if (p.getName().equals(name) || p.getName().equals(parentName))
+                return true;
+        }
+        return false;
+    }
+
+
     private static class ResourcesEnum implements Enumeration<URL> {
 
         private URL providedResource;

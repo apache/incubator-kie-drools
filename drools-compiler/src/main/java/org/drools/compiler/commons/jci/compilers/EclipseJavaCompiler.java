@@ -19,6 +19,7 @@ package org.drools.compiler.commons.jci.compilers;
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.commons.jci.stores.ResourceStore;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.IoUtils;
 import org.eclipse.jdt.core.compiler.IProblem;
@@ -321,6 +322,9 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             }
 
             private boolean isPackage( final String pClazzName ) {
+                if (pClassLoader instanceof ProjectClassLoader) {
+                    return ((ProjectClassLoader)pClassLoader).isPackage(pClazzName);
+                }
                 InputStream is = null;
                 try {
                     is = pClassLoader.getResourceAsStream(ClassUtils.convertClassToResourcePath(pClazzName));
@@ -332,7 +336,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                             try {
                                 Class cls = pClassLoader.loadClass(pClazzName);
                                 if (cls != null) {
-                                    return true;
+                                    return false;
                                 }
                             } catch (ClassNotFoundException e) {
                                 return true;
@@ -352,6 +356,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                         }
                     }
                 }
+
             }
 
             public boolean isPackage( char[][] parentPackageName, char[] pPackageName ) {
