@@ -16,8 +16,7 @@
 
 package org.jbpm.kie.services.impl.query.preprocessor;
 
-import static org.dashbuilder.dataset.filter.FilterFactory.OR;
-import static org.dashbuilder.dataset.filter.FilterFactory.equalsTo;
+import static org.dashbuilder.dataset.filter.FilterFactory.*;
 import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_ACTUALOWNER;
 import static org.jbpm.services.api.query.QueryResultMapper.COLUMN_ORGANIZATIONAL_ENTITY;
 
@@ -46,15 +45,18 @@ public class PotOwnerTasksPreprocessor implements DataSetPreprocessor {
         if (identityProvider == null) {
             return;
         }
-        
+
         List<Comparable> orgEntities = new ArrayList<Comparable>(identityProvider.getRoles());
-        orgEntities.add(identityProvider.getName());
 
         List<ColumnFilter> condList = new ArrayList<ColumnFilter>();
-        
-        condList.add(equalsTo(COLUMN_ACTUALOWNER, identityProvider.getName()));
-        condList.add(equalsTo(COLUMN_ORGANIZATIONAL_ENTITY, orgEntities));
-        
+
+        ColumnFilter myGroupFilter;
+        myGroupFilter = AND(
+                equalsTo(COLUMN_ORGANIZATIONAL_ENTITY, orgEntities),
+                OR(equalsTo(COLUMN_ACTUALOWNER, ""), isNull(COLUMN_ACTUALOWNER)));
+
+        condList.add( OR(myGroupFilter, equalsTo(COLUMN_ACTUALOWNER, identityProvider.getName())));
+
         if (lookup.getFirstFilterOp() != null) {
             lookup.getFirstFilterOp().addFilterColumn(OR(condList));
         } else {
