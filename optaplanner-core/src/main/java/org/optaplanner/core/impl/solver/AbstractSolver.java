@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.util.List;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
@@ -25,7 +27,9 @@ import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
+import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -37,10 +41,46 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
     protected final SolverEventSupport<Solution_> solverEventSupport = new SolverEventSupport<>(this);
     protected final PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
 
+    // Note that the DefaultSolver.basicPlumbingTermination is a component of this termination
+    protected final Termination termination;
+    protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
+    protected final List<Phase<Solution_>> phaseList;
+
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
 
+    public AbstractSolver(Termination termination, BestSolutionRecaller<Solution_> bestSolutionRecaller,
+            List<Phase<Solution_>> phaseList) {
+        this.termination = termination;
+        this.bestSolutionRecaller = bestSolutionRecaller;
+        bestSolutionRecaller.setSolverEventSupport(solverEventSupport);
+        this.phaseList = phaseList;
+        for (Phase<Solution_> phase : phaseList) {
+            phase.setSolverPhaseLifecycleSupport(phaseLifecycleSupport);
+        }
+    }
+
+    // ************************************************************************
+    // Lifecycle methods
+    // ************************************************************************
+
+    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
+        solverScope.setWorkingSolutionFromBestSolution();
+        bestSolutionRecaller.solvingStarted(solverScope);
+        phaseLifecycleSupport.fireSolvingStarted(solverScope);
+        for (Phase<Solution_> phase : phaseList) {
+            phase.solvingStarted(solverScope);
+        }
+    }
+
+    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
+        for (Phase<Solution_> phase : phaseList) {
+            phase.solvingEnded(solverScope);
+        }
+        phaseLifecycleSupport.fireSolvingEnded(solverScope);
+        bestSolutionRecaller.solvingEnded(solverScope);
+    }
 
     // ************************************************************************
     // Event listeners

@@ -53,10 +53,6 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     protected RandomFactory randomFactory;
 
     protected BasicPlumbingTermination basicPlumbingTermination;
-    // Note that the basicPlumbingTermination is a component of this termination
-    protected final Termination termination;
-    protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
-    protected final List<Phase<Solution_>> phaseList;
 
     protected final AtomicBoolean solving = new AtomicBoolean(false);
 
@@ -70,16 +66,10 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
             BasicPlumbingTermination basicPlumbingTermination, Termination termination,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, List<Phase<Solution_>> phaseList,
             DefaultSolverScope<Solution_> solverScope) {
+        super(termination, bestSolutionRecaller, phaseList);
         this.environmentMode = environmentMode;
         this.randomFactory = randomFactory;
         this.basicPlumbingTermination = basicPlumbingTermination;
-        this.termination = termination;
-        this.bestSolutionRecaller = bestSolutionRecaller;
-        bestSolutionRecaller.setSolverEventSupport(solverEventSupport);
-        this.phaseList = phaseList;
-        for (Phase<Solution_> phase : phaseList) {
-            phase.setSolverPhaseLifecycleSupport(phaseLifecycleSupport);
-        }
         this.solverScope = solverScope;
     }
 
@@ -189,12 +179,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         solverScope.startingNow();
         solverScope.getScoreDirector().resetCalculationCount();
-        solverScope.setWorkingSolutionFromBestSolution();
-        bestSolutionRecaller.solvingStarted(solverScope);
-        phaseLifecycleSupport.fireSolvingStarted(solverScope);
-        for (Phase<Solution_> phase : phaseList) {
-            phase.solvingStarted(solverScope);
-        }
+        super.solvingStarted(solverScope);
         int startingSolverCount = solverScope.getStartingSolverCount() + 1;
         solverScope.setStartingSolverCount(startingSolverCount);
         logger.info("Solving {}: time spent ({}), best score ({}), environment mode ({}), random ({}).",
@@ -218,11 +203,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     }
 
     public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
-        for (Phase<Solution_> phase : phaseList) {
-            phase.solvingEnded(solverScope);
-        }
-        phaseLifecycleSupport.fireSolvingEnded(solverScope);
-        bestSolutionRecaller.solvingEnded(solverScope);
+        super.solvingEnded(solverScope);
         solverScope.endingNow();
     }
 
