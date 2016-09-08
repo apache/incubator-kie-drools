@@ -80,7 +80,8 @@ public class BatchExecutionCommandImpl implements BatchExecutionCommand, Generic
                          @XmlElement(name = "clear-activation-group", type = ClearActivationGroupCommand.class),
                          @XmlElement(name = "clear-agenda", type = ClearAgendaCommand.class),
                          @XmlElement(name = "clear-agenda-group", type = ClearAgendaGroupCommand.class),
-                         @XmlElement(name = "clear-ruleflow-group", type = ClearRuleFlowGroupCommand.class)
+                         @XmlElement(name = "clear-ruleflow-group", type = ClearRuleFlowGroupCommand.class),
+                         @XmlElement(name = "get-fact-handles", type = GetFactHandlesCommand.class)
                  })
     protected List<GenericCommand<?>> commands;
 

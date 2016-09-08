@@ -39,7 +39,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
 @XmlRootElement(name="disconnected-fact-handle")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.NONE)
 @XmlSeeAlso({ArrayElements.class})
 public class DisconnectedFactHandle
         implements
