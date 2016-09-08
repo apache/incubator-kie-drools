@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
@@ -30,6 +31,12 @@ import org.optaplanner.core.impl.solver.ChildThreadType;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> {
+
+    /**
+     * @param constraintMatchEnabledPreference false if a {@link ScoreDirector} implementation
+     * should not do {@link ConstraintMatch} tracking even if it supports it.
+     */
+    void overwriteConstraintMatchEnabledPreference(boolean constraintMatchEnabledPreference);
 
     /**
      * @return used to check {@link #isWorkingEntityListDirty(long)} later on

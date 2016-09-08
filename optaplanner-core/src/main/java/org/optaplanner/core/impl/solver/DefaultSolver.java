@@ -45,87 +45,63 @@ import org.slf4j.LoggerFactory;
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Solver
  */
-public class DefaultSolver<Solution_> implements Solver<Solution_> {
+public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected SolverEventSupport<Solution_> solverEventSupport = new SolverEventSupport<>(this);
-    protected PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
-
     protected EnvironmentMode environmentMode;
     protected RandomFactory randomFactory;
-    protected boolean constraintMatchEnabledPreference = false;
-    protected InnerScoreDirectorFactory<Solution_> scoreDirectorFactory;
 
     protected BasicPlumbingTermination basicPlumbingTermination;
     // Note that the basicPlumbingTermination is a component of this termination
-    protected Termination termination;
-    protected BestSolutionRecaller<Solution_> bestSolutionRecaller;
-    protected List<Phase> phaseList;
+    protected final Termination termination;
+    protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
+    protected final List<Phase<Solution_>> phaseList;
 
-    protected AtomicBoolean solving = new AtomicBoolean(false);
+    protected final AtomicBoolean solving = new AtomicBoolean(false);
 
-    protected DefaultSolverScope<Solution_> solverScope = new DefaultSolverScope<>();
+    protected final DefaultSolverScope<Solution_> solverScope;
+
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
+
+    public DefaultSolver(EnvironmentMode environmentMode, RandomFactory randomFactory,
+            BasicPlumbingTermination basicPlumbingTermination, Termination termination,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, List<Phase<Solution_>> phaseList,
+            DefaultSolverScope<Solution_> solverScope) {
+        this.environmentMode = environmentMode;
+        this.randomFactory = randomFactory;
+        this.basicPlumbingTermination = basicPlumbingTermination;
+        this.termination = termination;
+        this.bestSolutionRecaller = bestSolutionRecaller;
+        bestSolutionRecaller.setSolverEventSupport(solverEventSupport);
+        this.phaseList = phaseList;
+        for (Phase<Solution_> phase : phaseList) {
+            phase.setSolverPhaseLifecycleSupport(phaseLifecycleSupport);
+        }
+        this.solverScope = solverScope;
+    }
 
     public EnvironmentMode getEnvironmentMode() {
         return environmentMode;
-    }
-
-    public void setEnvironmentMode(EnvironmentMode environmentMode) {
-        this.environmentMode = environmentMode;
     }
 
     public RandomFactory getRandomFactory() {
         return randomFactory;
     }
 
-    public void setRandomFactory(RandomFactory randomFactory) {
-        this.randomFactory = randomFactory;
-    }
-
-    public boolean isConstraintMatchEnabledPreference() {
-        return constraintMatchEnabledPreference;
-    }
-
-    public void setConstraintMatchEnabledPreference(boolean constraintMatchEnabledPreference) {
-        this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
-    }
-
     @Override
     public InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory() {
-        return scoreDirectorFactory;
-    }
-
-    public void setScoreDirectorFactory(InnerScoreDirectorFactory<Solution_> scoreDirectorFactory) {
-        this.scoreDirectorFactory = scoreDirectorFactory;
-    }
-
-    public void setBasicPlumbingTermination(BasicPlumbingTermination basicPlumbingTermination) {
-        this.basicPlumbingTermination = basicPlumbingTermination;
-    }
-
-    public void setTermination(Termination termination) {
-        this.termination = termination;
+        return solverScope.getScoreDirector().getScoreDirectorFactory();
     }
 
     public BestSolutionRecaller<Solution_> getBestSolutionRecaller() {
         return bestSolutionRecaller;
     }
 
-    public void setBestSolutionRecaller(BestSolutionRecaller<Solution_> bestSolutionRecaller) {
-        this.bestSolutionRecaller = bestSolutionRecaller;
-        this.bestSolutionRecaller.setSolverEventSupport(solverEventSupport);
-    }
-
-    public List<Phase> getPhaseList() {
+    public List<Phase<Solution_>> getPhaseList() {
         return phaseList;
-    }
-
-    public void setPhaseList(List<Phase> phaseList) {
-        this.phaseList = phaseList;
-        for (Phase<Solution_> phase : phaseList) {
-            phase.setSolverPhaseLifecycleSupport(phaseLifecycleSupport);
-        }
     }
 
     public DefaultSolverScope<Solution_> getSolverScope() {
@@ -208,7 +184,6 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         basicPlumbingTermination.resetTerminateEarly();
         solverScope.setStartingSolverCount(0);
         solverScope.setWorkingRandom(randomFactory.createRandom());
-        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(constraintMatchEnabledPreference));
     }
 
     public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
@@ -231,7 +206,7 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
     }
 
     protected void runPhases() {
-        Iterator<Phase> it = phaseList.iterator();
+        Iterator<Phase<Solution_>> it = phaseList.iterator();
         while (!termination.isSolverTerminated(solverScope) && it.hasNext()) {
             Phase<Solution_> phase = it.next();
             phase.solve(solverScope);
@@ -294,37 +269,6 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         Score score = solverScope.calculateScore();
         logger.debug("    Step index ({}), new score ({}) for real-time problem fact change.", stepIndex, score);
         return score;
-    }
-
-    @Override
-    public void addEventListener(SolverEventListener<Solution_> eventListener) {
-        solverEventSupport.addEventListener(eventListener);
-    }
-
-    @Override
-    public void removeEventListener(SolverEventListener<Solution_> eventListener) {
-        solverEventSupport.removeEventListener(eventListener);
-    }
-
-    /**
-     * Add a {@link PhaseLifecycleListener} that is notified
-     * of {@link PhaseLifecycleListener#solvingStarted(DefaultSolverScope)} solving} events
-     * and also of the {@link PhaseLifecycleListener#phaseStarted(AbstractPhaseScope) phase}
-     * and the {@link PhaseLifecycleListener#stepStarted(AbstractStepScope)} step} starting/ending events of all phases.
-     * <p>
-     * To get notified for only 1 phase, use {@link Phase#addPhaseLifecycleListener(PhaseLifecycleListener)} instead.
-     * @param phaseLifecycleListener never null
-     */
-    public void addPhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener) {
-        phaseLifecycleSupport.addEventListener(phaseLifecycleListener);
-    }
-
-    /**
-     * @param phaseLifecycleListener never null
-     * @see #addPhaseLifecycleListener(PhaseLifecycleListener)
-     */
-    public void removePhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener) {
-        phaseLifecycleSupport.removeEventListener(phaseLifecycleListener);
     }
 
 }

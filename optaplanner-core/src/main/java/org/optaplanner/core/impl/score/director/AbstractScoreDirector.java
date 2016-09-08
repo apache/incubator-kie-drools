@@ -60,7 +60,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final Factory_ scoreDirectorFactory;
-    protected final boolean constraintMatchEnabledPreference;
+    protected boolean constraintMatchEnabledPreference;
     protected final VariableListenerSupport<Solution_> variableListenerSupport;
 
     protected Solution_ workingSolution;
@@ -91,6 +91,15 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     @Override
     public ScoreDefinition getScoreDefinition() {
         return scoreDirectorFactory.getScoreDefinition();
+    }
+
+    public boolean isConstraintMatchEnabledPreference() {
+        return constraintMatchEnabledPreference;
+    }
+
+    @Override
+    public void overwriteConstraintMatchEnabledPreference(boolean constraintMatchEnabledPreference) {
+        this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
     }
 
     @Override

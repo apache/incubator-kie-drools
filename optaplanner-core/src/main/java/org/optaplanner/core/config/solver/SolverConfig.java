@@ -44,6 +44,7 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.random.DefaultRandomFactory;
 import org.optaplanner.core.impl.solver.random.RandomFactory;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 import static org.apache.commons.lang3.ObjectUtils.*;
@@ -208,32 +209,30 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      */
     public <Solution_> Solver<Solution_> buildSolver(SolverConfigContext configContext) {
         configContext.validate();
-        DefaultSolver<Solution_> solver = new DefaultSolver<>();
         EnvironmentMode environmentMode_ = determineEnvironmentMode();
-        solver.setEnvironmentMode(environmentMode_);
         boolean daemon_ = defaultIfNull(daemon, false);
-        BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(daemon_);
-        solver.setBasicPlumbingTermination(basicPlumbingTermination);
 
-        solver.setRandomFactory(buildRandomFactory(environmentMode_));
+        RandomFactory randomFactory = buildRandomFactory(environmentMode_);
         SolutionDescriptor<Solution_> solutionDescriptor = buildSolutionDescriptor(configContext);
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig_
                 = scoreDirectorFactoryConfig == null ? new ScoreDirectorFactoryConfig()
                 : scoreDirectorFactoryConfig;
         InnerScoreDirectorFactory<Solution_> scoreDirectorFactory = scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
                 configContext, environmentMode_, solutionDescriptor);
-        solver.setConstraintMatchEnabledPreference(environmentMode_.isAsserted());
-        solver.setScoreDirectorFactory(scoreDirectorFactory);
+        boolean constraintMatchEnabledPreference = environmentMode_.isAsserted();
+        DefaultSolverScope<Solution_> solverScope = new DefaultSolverScope<>();
+        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(constraintMatchEnabledPreference));
 
         HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(environmentMode_, scoreDirectorFactory);
         TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()
                 : terminationConfig;
+        BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(daemon_);
         Termination termination = terminationConfig_.buildTermination(configPolicy, basicPlumbingTermination);
-        solver.setTermination(termination);
         BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
                 .buildBestSolutionRecaller(environmentMode_);
-        solver.setBestSolutionRecaller(bestSolutionRecaller);
-        solver.setPhaseList(buildPhaseList(configPolicy, bestSolutionRecaller, termination));
+        List<Phase<Solution_>> phaseList = buildPhaseList(configPolicy, bestSolutionRecaller, termination);
+        DefaultSolver<Solution_> solver = new DefaultSolver<>(environmentMode_, randomFactory,
+                basicPlumbingTermination, termination, bestSolutionRecaller, phaseList, solverScope);
         return solver;
     }
 
@@ -283,7 +282,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         }
     }
 
-    protected List<Phase> buildPhaseList(HeuristicConfigPolicy configPolicy,
+    protected <Solution_> List<Phase<Solution_>> buildPhaseList(HeuristicConfigPolicy configPolicy,
                                          BestSolutionRecaller bestSolutionRecaller,
                                          Termination termination) {
         List<PhaseConfig> phaseConfigList_ = phaseConfigList;
@@ -292,10 +291,10 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                     new ConstructionHeuristicPhaseConfig(),
                     new LocalSearchPhaseConfig());
         }
-        List<Phase> phaseList = new ArrayList<>(phaseConfigList_.size());
+        List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList_.size());
         int phaseIndex = 0;
         for (PhaseConfig phaseConfig : phaseConfigList_) {
-            Phase phase = phaseConfig.buildPhase(phaseIndex, configPolicy,
+            Phase<Solution_> phase = phaseConfig.buildPhase(phaseIndex, configPolicy,
                     bestSolutionRecaller, termination);
             phaseList.add(phase);
             phaseIndex++;

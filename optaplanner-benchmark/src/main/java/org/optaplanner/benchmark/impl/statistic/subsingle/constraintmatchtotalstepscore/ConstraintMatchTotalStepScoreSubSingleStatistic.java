@@ -79,7 +79,7 @@ public class ConstraintMatchTotalStepScoreSubSingleStatistic<Solution_>
     @Override
     public void open(Solver<Solution_> solver) {
         DefaultSolver<Solution_> defaultSolver = (DefaultSolver<Solution_>) solver;
-        defaultSolver.setConstraintMatchEnabledPreference(true);
+        defaultSolver.getSolverScope().getScoreDirector().overwriteConstraintMatchEnabledPreference(true);
         defaultSolver.addPhaseLifecycleListener(listener);
     }
 

@@ -34,7 +34,7 @@ public class SolverEventSupport<Solution_> extends AbstractEventSupport<SolverEv
 
     private Solver<Solution_> solver;
 
-    public SolverEventSupport(DefaultSolver<Solution_> solver) {
+    public SolverEventSupport(Solver<Solution_> solver) {
         this.solver = solver;
     }
 

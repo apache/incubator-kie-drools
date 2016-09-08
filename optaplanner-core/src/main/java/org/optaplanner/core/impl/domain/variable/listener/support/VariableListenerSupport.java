@@ -65,11 +65,9 @@ public class VariableListenerSupport<Solution_> implements SupplyManager {
         notificationQueuesAreEmpty = true;
         for (EntityDescriptor<Solution_> entityDescriptor : scoreDirector.getSolutionDescriptor().getEntityDescriptors()) {
             for (VariableDescriptor variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
-                List<VariableListenerNotifiable> variableNotifiableList = new ArrayList<>();
-                sourceVariableToNotifiableMap.put(variableDescriptor, variableNotifiableList);
+                sourceVariableToNotifiableMap.put(variableDescriptor, new ArrayList<>());
             }
-            List<VariableListenerNotifiable> entityNotifiableList = new ArrayList<>();
-            sourceEntityToNotifiableMap.put(entityDescriptor, entityNotifiableList);
+            sourceEntityToNotifiableMap.put(entityDescriptor, new ArrayList<>());
         }
         for (EntityDescriptor<Solution_> entityDescriptor : scoreDirector.getSolutionDescriptor().getEntityDescriptors()) {
             for (ShadowVariableDescriptor<Solution_> shadowVariableDescriptor : entityDescriptor.getDeclaredShadowVariableDescriptors()) {

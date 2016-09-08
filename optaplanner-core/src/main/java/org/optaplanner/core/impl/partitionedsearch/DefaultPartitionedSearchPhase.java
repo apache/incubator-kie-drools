@@ -29,7 +29,6 @@ import org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.Phase;
-import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
 import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -77,8 +76,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         List<Solution_> partList = solutionPartitioner.splitWorkingSolution(solverScope.getScoreDirector());
         List<Future> futureList = new ArrayList<>(partList.size());
         for (Solution_ part : partList) {
-            PartPhaseRunner partPhaseRunner = new PartPhaseRunner(part, solverScope);
-            Future<?> future = executorService.submit(partPhaseRunner);
+            PartSolver<Solution_> partSolver = buildPartSolver(solverScope);
+            Future<?> future = executorService.submit(() -> partSolver.solve(part));
             futureList.add(future);
         }
         for (Future future : futureList) {
@@ -123,58 +122,21 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
 //        phaseEnded(phaseScope);
     }
 
-    protected class PartPhaseRunner implements Runnable {
-
-        protected final Solution_ part;
-        protected final PhaseLifecycleSupport<Solution_> partPhaseLifecycleSupport = new PhaseLifecycleSupport<>();
-        protected final BestSolutionRecaller<Solution_> partBestSolutionRecaller;
-        protected final Termination partTermination;
-        protected final List<Phase<Solution_>> phaseList;
-
-        protected final DefaultSolverScope<Solution_> partSolverScope;
-
-        public PartPhaseRunner(Solution_ part, DefaultSolverScope<Solution_> solverScope) {
-            this.part = part;
-            phaseList = new ArrayList<>(phaseConfigList.size());
-            partBestSolutionRecaller = new BestSolutionRecallerConfig()
-                    .buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
-//            partBestSolutionRecaller.setSolverEventSupport(this); // TODO
-            partTermination = termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD);
-            int phaseIndex = 0;
-            for (PhaseConfig phaseConfig : phaseConfigList) {
-                Phase phase = phaseConfig.buildPhase(phaseIndex, configPolicy, partBestSolutionRecaller, partTermination);
-                phase.setSolverPhaseLifecycleSupport(partPhaseLifecycleSupport);
-                phaseList.add(phase);
-                phaseIndex++;
-            }
-            partSolverScope = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
+    public PartSolver<Solution_> buildPartSolver(DefaultSolverScope<Solution_> solverScope) {
+        Termination partTermination = termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD);
+        BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
+                .buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
+        List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());
+        int partPhaseIndex = 0;
+        for (PhaseConfig phaseConfig : phaseConfigList) {
+            phaseList.add(phaseConfig.buildPhase(partPhaseIndex, configPolicy, bestSolutionRecaller, partTermination));
+            partPhaseIndex++;
         }
-
-        @Override
-        public void run() {
-            partSolverScope.setBestSolution(part);
-            partSolverScope.setWorkingSolutionFromBestSolution();
-            partBestSolutionRecaller.solvingStarted(partSolverScope);
-            phaseLifecycleSupport.fireSolvingStarted(partSolverScope);
-            for (Phase<Solution_> phase : phaseList) {
-                phase.solvingStarted(partSolverScope);
-            }
-            for (Phase<Solution_> phase : phaseList) {
-                phase.solve(partSolverScope);
-            }
-            for (Phase<Solution_> phase : phaseList) {
-                phase.solvingEnded(partSolverScope);
-            }
-            phaseLifecycleSupport.fireSolvingEnded(partSolverScope);
-            partBestSolutionRecaller.solvingEnded(partSolverScope);
-            partSolverScope.endingNow();
-            partSolverScope.getScoreDirector().dispose();
-            // TODO log?
-        }
-
+        DefaultSolverScope<Solution_> partSolverScope = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
+        return new PartSolver<>(partTermination, bestSolutionRecaller, phaseList, partSolverScope);
     }
 
-//    private void doStep(PartitionedSearchStepScope<Solution_> stepScope) {
+    //    private void doStep(PartitionedSearchStepScope<Solution_> stepScope) {
 //        Move nextStep = stepScope.getStep();
 //        nextStep.doMove(stepScope.getScoreDirector());
 //        predictWorkingStepScore(stepScope, nextStep);
