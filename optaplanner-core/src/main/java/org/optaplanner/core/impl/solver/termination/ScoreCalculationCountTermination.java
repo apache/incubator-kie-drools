@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.solver.termination;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class ScoreCalculationCountTermination extends AbstractTermination {
@@ -69,6 +70,21 @@ public class ScoreCalculationCountTermination extends AbstractTermination {
         long scoreCalculationCount = scoreDirector.getCalculationCount();
         double timeGradient = ((double) scoreCalculationCount) / ((double) scoreCalculationCountLimit);
         return Math.min(timeGradient, 1.0);
+    }
+
+    // ************************************************************************
+    // Other methods
+    // ************************************************************************
+
+    @Override
+    public ScoreCalculationCountTermination createChildThreadTermination(
+            DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+        if (childThreadType == ChildThreadType.PART_THREAD) {
+            // The ScoreDirector.calculationCount of partitions is maxed, not summed.
+            return new ScoreCalculationCountTermination(scoreCalculationCountLimit);
+        } else {
+            throw new IllegalStateException("The childThreadType (" + childThreadType + ") is not implemented.");
+        }
     }
 
 }

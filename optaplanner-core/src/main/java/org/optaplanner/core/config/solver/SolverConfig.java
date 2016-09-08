@@ -32,6 +32,7 @@ import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
+import org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -229,7 +230,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 : terminationConfig;
         Termination termination = terminationConfig_.buildTermination(configPolicy, basicPlumbingTermination);
         solver.setTermination(termination);
-        BestSolutionRecaller<Solution_> bestSolutionRecaller = buildBestSolutionRecaller(environmentMode_);
+        BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
+                .buildBestSolutionRecaller(environmentMode_);
         solver.setBestSolutionRecaller(bestSolutionRecaller);
         solver.setPhaseList(buildPhaseList(configPolicy, bestSolutionRecaller, termination));
         return solver;
@@ -279,16 +281,6 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
             }
             return SolutionDescriptor.buildSolutionDescriptor((Class<Solution_>) solutionClass, entityClassList, deprecatedScoreDefinition);
         }
-    }
-
-    protected <Solution_> BestSolutionRecaller<Solution_> buildBestSolutionRecaller(EnvironmentMode environmentMode) {
-        BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecaller<>();
-        if (environmentMode.isNonIntrusiveFullAsserted()) {
-            bestSolutionRecaller.setAssertInitialScoreFromScratch(true);
-            bestSolutionRecaller.setAssertShadowVariablesAreNotStale(true);
-            bestSolutionRecaller.setAssertBestScoreIsUnmodified(true);
-        }
-        return bestSolutionRecaller;
     }
 
     protected List<Phase> buildPhaseList(HeuristicConfigPolicy configPolicy,

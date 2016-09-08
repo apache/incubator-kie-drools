@@ -20,9 +20,11 @@ import java.util.Iterator;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.solver.DefaultSolver;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * Internal API.
@@ -30,16 +32,16 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
  */
 public class SolverEventSupport<Solution_> extends AbstractEventSupport<SolverEventListener<Solution_>> {
 
-    private DefaultSolver<Solution_> solver;
+    private Solver<Solution_> solver;
 
     public SolverEventSupport(DefaultSolver<Solution_> solver) {
         this.solver = solver;
     }
 
-    public void fireBestSolutionChanged(Solution_ newBestSolution) {
+    public void fireBestSolutionChanged(DefaultSolverScope<Solution_> solverScope, Solution_ newBestSolution) {
         final Iterator<SolverEventListener<Solution_>> it = eventListenerSet.iterator();
-        long timeMillisSpent = solver.getSolverScope().calculateTimeMillisSpentUpToNow();
-        Score newBestScore = solver.getSolverScope().getSolutionDescriptor().getScore(newBestSolution);
+        long timeMillisSpent = solverScope.calculateTimeMillisSpentUpToNow();
+        Score newBestScore = solverScope.getSolutionDescriptor().getScore(newBestSolution);
         if (it.hasNext()) {
             final BestSolutionChangedEvent<Solution_> event = new BestSolutionChangedEvent<>(solver,
                     timeMillisSpent, newBestSolution, newBestScore);

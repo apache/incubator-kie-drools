@@ -22,6 +22,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class BestScoreTermination extends AbstractTermination {
@@ -93,6 +94,17 @@ public class BestScoreTermination extends AbstractTermination {
         }
         return ScoreUtils.calculateTimeGradient(totalDiffNumbers, scoreDiffNumbers, timeGradientWeightNumbers,
                 levelsSize);
+    }
+
+    // ************************************************************************
+    // Other methods
+    // ************************************************************************
+
+    @Override
+    public Termination createChildThreadTermination(DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+        // TODO FIXME through some sort of solverlistener and async behaviour...
+        throw new UnsupportedOperationException("This terminationClass (" + getClass()
+                + ") does not yet support being used in child threads of type (" + childThreadType + ").");
     }
 
 }

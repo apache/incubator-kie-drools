@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.config.phase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.config.AbstractConfig;
@@ -73,8 +76,12 @@ public abstract class PhaseConfig<C extends PhaseConfig> extends AbstractConfig<
         phase.setBestSolutionRecaller(bestSolutionRecaller);
         TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()
                 : terminationConfig;
+        // TODO fix the name of solverTermination
+        // In childThread cases, the solverTermination is actually the parent phase's phaseTermination and an instanceof that bridge ...
+        Termination phaseTermination = (solverTermination instanceof PhaseToSolverTerminationBridge)
+                ? solverTermination : new PhaseToSolverTerminationBridge(solverTermination);
         phase.setTermination(terminationConfig_.buildTermination(configPolicy,
-                new PhaseToSolverTerminationBridge(solverTermination)));
+                phaseTermination));
     }
 
     @Override

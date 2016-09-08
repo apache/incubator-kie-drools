@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.solver.termination;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class PhaseToSolverTerminationBridge extends AbstractTermination {
@@ -90,6 +91,17 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
     @Override
     public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
         return solverTermination.calculateSolverTimeGradient(phaseScope.getSolverScope());
+    }
+
+    // ************************************************************************
+    // Other methods
+    // ************************************************************************
+
+    @Override
+    public PhaseToSolverTerminationBridge createChildThreadTermination(
+            DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+        return new PhaseToSolverTerminationBridge(
+                solverTermination.createChildThreadTermination(solverScope, childThreadType));
     }
 
 }

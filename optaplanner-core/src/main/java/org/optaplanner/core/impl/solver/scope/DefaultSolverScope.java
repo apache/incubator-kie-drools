@@ -25,6 +25,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,9 @@ public class DefaultSolverScope<Solution_> {
     protected volatile Score bestScore; // TODO remove me by folding me into bestSolution.getScore()?
     protected Long bestSolutionTimeMillis;
 
+    // ************************************************************************
+    // Constructors and simple getters/setters
+    // ************************************************************************
 
     public int getStartingSolverCount() {
         return startingSolverCount;
@@ -204,6 +208,22 @@ public class DefaultSolverScope<Solution_> {
     public void setWorkingSolutionFromBestSolution() {
         // The workingSolution must never be the same instance as the bestSolution.
         scoreDirector.setWorkingSolution(scoreDirector.cloneSolution(bestSolution));
+    }
+
+    public DefaultSolverScope<Solution_> createChildThreadSolverScope(ChildThreadType childThreadType) {
+        DefaultSolverScope<Solution_> childThreadSolverScope = new DefaultSolverScope<>();
+        childThreadSolverScope.startingSolverCount = startingSolverCount;
+        // TODO FIXME use RandomFactory
+        // Experiments show that this trick to attain reproducibility doesn't break uniform distribution
+        childThreadSolverScope.workingRandom = new Random(workingRandom.nextLong());
+        childThreadSolverScope.scoreDirector = scoreDirector.createChildThreadScoreDirector(childThreadType);
+        childThreadSolverScope.startingSystemTimeMillis = startingSystemTimeMillis;
+        childThreadSolverScope.endingSystemTimeMillis = endingSystemTimeMillis;
+        childThreadSolverScope.startingInitializedScore = null;
+        childThreadSolverScope.bestSolution = null;
+        childThreadSolverScope.bestScore = null;
+        childThreadSolverScope.bestSolutionTimeMillis = null;
+        return childThreadSolverScope;
     }
 
 }

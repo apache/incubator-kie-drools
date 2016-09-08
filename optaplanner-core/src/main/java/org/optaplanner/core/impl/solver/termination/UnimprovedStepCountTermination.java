@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.solver.termination;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class UnimprovedStepCountTermination extends AbstractTermination {
@@ -29,6 +30,10 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
             throw new IllegalArgumentException("The unimprovedStepCountLimit (" + unimprovedStepCountLimit
                     + ") cannot be negative.");
         }
+    }
+
+    public int getUnimprovedStepCountLimit() {
+        return unimprovedStepCountLimit;
     }
 
     // ************************************************************************
@@ -68,6 +73,16 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
         int unimprovedStepCount = calculateUnimprovedStepCount(phaseScope);
         double timeGradient = ((double) unimprovedStepCount) / ((double) unimprovedStepCountLimit);
         return Math.min(timeGradient, 1.0);
+    }
+
+    // ************************************************************************
+    // Other methods
+    // ************************************************************************
+
+    @Override
+    public UnimprovedStepCountTermination createChildThreadTermination(
+            DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+        return new UnimprovedStepCountTermination(unimprovedStepCountLimit);
     }
 
 }

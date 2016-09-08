@@ -23,6 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.AbstractTermination;
+import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Concurrency notes:
@@ -144,6 +145,15 @@ public class BasicPlumbingTermination extends AbstractTermination {
         throw new IllegalStateException(
                 "BasicPlumbingTermination configured only as solver termination."
                 + " It is always bridged to phase termination.");
+    }
+
+    // ************************************************************************
+    // Other methods
+    // ************************************************************************
+
+    @Override
+    public Termination createChildThreadTermination(DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+        return this;
     }
 
 }

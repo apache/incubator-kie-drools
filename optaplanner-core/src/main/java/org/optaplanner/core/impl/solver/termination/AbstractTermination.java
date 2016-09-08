@@ -17,6 +17,8 @@
 package org.optaplanner.core.impl.solver.termination;
 
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
+import org.optaplanner.core.impl.solver.ChildThreadType;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +30,13 @@ public abstract class AbstractTermination extends PhaseLifecycleListenerAdapter 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     // ************************************************************************
-    // Worker methods
+    // Other methods
     // ************************************************************************
+
+    @Override
+    public Termination createChildThreadTermination(DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+        throw new UnsupportedOperationException("This terminationClass (" + getClass()
+                + ") does not yet support being used in child threads of type (" + childThreadType + ").");
+    }
 
 }

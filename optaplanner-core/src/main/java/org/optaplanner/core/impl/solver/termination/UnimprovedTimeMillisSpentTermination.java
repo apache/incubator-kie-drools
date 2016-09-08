@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.solver.termination;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
@@ -78,6 +79,16 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
         long unimprovedTimeMillisSpent = now - bestSolutionTimeMillis;
         double timeGradient = ((double) unimprovedTimeMillisSpent) / ((double) unimprovedTimeMillisSpentLimit);
         return Math.min(timeGradient, 1.0);
+    }
+
+    // ************************************************************************
+    // Other methods
+    // ************************************************************************
+
+    @Override
+    public UnimprovedTimeMillisSpentTermination createChildThreadTermination(
+            DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+        return new UnimprovedTimeMillisSpentTermination(unimprovedTimeMillisSpentLimit);
     }
 
 }

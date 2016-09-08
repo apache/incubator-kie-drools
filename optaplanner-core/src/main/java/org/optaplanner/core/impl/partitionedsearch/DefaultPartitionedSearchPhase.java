@@ -16,10 +16,24 @@
 
 package org.optaplanner.core.impl.partitionedsearch;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
+import org.optaplanner.core.config.phase.PhaseConfig;
+import org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig;
+import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.phase.Phase;
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
+import org.optaplanner.core.impl.solver.ChildThreadType;
+import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Default implementation of {@link PartitionedSearchPhase}.
@@ -27,6 +41,27 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
  */
 public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solution_>
         implements PartitionedSearchPhase<Solution_> {
+
+    protected ExecutorService executorService;
+    protected SolutionPartitioner<Solution_> solutionPartitioner;
+    protected List<PhaseConfig> phaseConfigList;
+    protected HeuristicConfigPolicy configPolicy;
+
+    public void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
+    }
+
+    public void setSolutionPartitioner(SolutionPartitioner<Solution_> solutionPartitioner) {
+        this.solutionPartitioner = solutionPartitioner;
+    }
+
+    public void setPhaseConfigList(List<PhaseConfig> phaseConfigList) {
+        this.phaseConfigList = phaseConfigList;
+    }
+
+    public void setConfigPolicy(HeuristicConfigPolicy configPolicy) {
+        this.configPolicy = configPolicy;
+    }
 
     @Override
     public String getPhaseTypeString() {
@@ -39,6 +74,21 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
 
     @Override
     public void solve(DefaultSolverScope<Solution_> solverScope) {
+        List<Solution_> partList = solutionPartitioner.splitWorkingSolution(solverScope.getScoreDirector());
+        List<Future> futureList = new ArrayList<>(partList.size());
+        for (Solution_ part : partList) {
+            PartPhaseRunner partPhaseRunner = new PartPhaseRunner(part, solverScope);
+            Future<?> future = executorService.submit(partPhaseRunner);
+            futureList.add(future);
+        }
+        for (Future future : futureList) {
+            try {
+                future.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace(); // TODO remove
+            }
+        }
+
 //        PartitionedSearchPhaseScope<Solution_> phaseScope = new PartitionedSearchPhaseScope<>(solverScope);
 //        phaseStarted(phaseScope);
 //
@@ -71,6 +121,57 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
 //            phaseScope.setLastCompletedStepScope(stepScope);
 //        }
 //        phaseEnded(phaseScope);
+    }
+
+    protected class PartPhaseRunner implements Runnable {
+
+        protected final Solution_ part;
+        protected final PhaseLifecycleSupport<Solution_> partPhaseLifecycleSupport = new PhaseLifecycleSupport<>();
+        protected final BestSolutionRecaller<Solution_> partBestSolutionRecaller;
+        protected final Termination partTermination;
+        protected final List<Phase<Solution_>> phaseList;
+
+        protected final DefaultSolverScope<Solution_> partSolverScope;
+
+        public PartPhaseRunner(Solution_ part, DefaultSolverScope<Solution_> solverScope) {
+            this.part = part;
+            phaseList = new ArrayList<>(phaseConfigList.size());
+            partBestSolutionRecaller = new BestSolutionRecallerConfig()
+                    .buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
+//            partBestSolutionRecaller.setSolverEventSupport(this); // TODO
+            partTermination = termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD);
+            int phaseIndex = 0;
+            for (PhaseConfig phaseConfig : phaseConfigList) {
+                Phase phase = phaseConfig.buildPhase(phaseIndex, configPolicy, partBestSolutionRecaller, partTermination);
+                phase.setSolverPhaseLifecycleSupport(partPhaseLifecycleSupport);
+                phaseList.add(phase);
+                phaseIndex++;
+            }
+            partSolverScope = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
+        }
+
+        @Override
+        public void run() {
+            partSolverScope.setBestSolution(part);
+            partSolverScope.setWorkingSolutionFromBestSolution();
+            partBestSolutionRecaller.solvingStarted(partSolverScope);
+            phaseLifecycleSupport.fireSolvingStarted(partSolverScope);
+            for (Phase<Solution_> phase : phaseList) {
+                phase.solvingStarted(partSolverScope);
+            }
+            for (Phase<Solution_> phase : phaseList) {
+                phase.solve(partSolverScope);
+            }
+            for (Phase<Solution_> phase : phaseList) {
+                phase.solvingEnded(partSolverScope);
+            }
+            phaseLifecycleSupport.fireSolvingEnded(partSolverScope);
+            partBestSolutionRecaller.solvingEnded(partSolverScope);
+            partSolverScope.endingNow();
+            partSolverScope.getScoreDirector().dispose();
+            // TODO log?
+        }
+
     }
 
 //    private void doStep(PartitionedSearchStepScope<Solution_> stepScope) {

@@ -40,6 +40,7 @@ import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.support.VariableListenerSupport;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -235,6 +236,20 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
                 scoreDirectorFactory.buildScoreDirector(constraintMatchEnabledPreference);
         clone.setWorkingSolution(cloneWorkingSolution());
         return clone;
+    }
+
+    @Override
+    public InnerScoreDirector<Solution_> createChildThreadScoreDirector(ChildThreadType childThreadType) {
+        AbstractScoreDirector<Solution_, Factory_> childThreadScoreDirector = (AbstractScoreDirector<Solution_, Factory_>)
+                scoreDirectorFactory.buildScoreDirector(constraintMatchEnabledPreference);
+        if (childThreadType == ChildThreadType.PART_THREAD) {
+            // ScoreCalculationCountTermination takes into account previous phases
+            // but the calculationCount of partitions is maxed, not summed.
+            childThreadScoreDirector.calculationCount = calculationCount;
+        } else {
+            throw new IllegalStateException("The childThreadType (" + childThreadType + ") is not implemented.");
+        }
+        return childThreadScoreDirector;
     }
 
     @Override

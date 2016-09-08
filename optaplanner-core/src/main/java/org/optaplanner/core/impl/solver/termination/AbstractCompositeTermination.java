@@ -16,11 +16,13 @@
 
 package org.optaplanner.core.impl.solver.termination;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
@@ -84,6 +86,18 @@ public abstract class AbstractCompositeTermination extends AbstractTermination i
         for (Termination termination : terminationList) {
             termination.solvingEnded(solverScope);
         }
+    }
+
+    // ************************************************************************
+    // Other methods
+    // ************************************************************************
+
+    protected List<Termination> createChildThreadTerminationList(DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+        List<Termination> childThreadTerminationList = new ArrayList<>(terminationList.size());
+        for (Termination termination : terminationList) {
+            childThreadTerminationList.add(termination.createChildThreadTermination(solverScope, childThreadType));
+        }
+        return childThreadTerminationList;
     }
 
 }

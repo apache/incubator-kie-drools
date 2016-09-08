@@ -24,6 +24,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -103,6 +104,8 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * @return never null
      */
     ScoreDirector<Solution_> clone();
+
+    InnerScoreDirector<Solution_> createChildThreadScoreDirector(ChildThreadType childThreadType);
 
     /**
      * Do not waste performance by propagating changes to step (or higher) mechanisms.

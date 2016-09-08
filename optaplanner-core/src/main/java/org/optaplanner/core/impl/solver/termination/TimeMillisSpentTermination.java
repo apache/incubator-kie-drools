@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.solver.termination;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class TimeMillisSpentTermination extends AbstractTermination {
@@ -74,6 +75,16 @@ public class TimeMillisSpentTermination extends AbstractTermination {
     protected double calculateTimeGradient(long timeMillisSpent) {
         double timeGradient = ((double) timeMillisSpent) / ((double) timeMillisSpentLimit);
         return Math.min(timeGradient, 1.0);
+    }
+
+    // ************************************************************************
+    // Other methods
+    // ************************************************************************
+
+    @Override
+    public TimeMillisSpentTermination createChildThreadTermination(
+            DefaultSolverScope solverScope, ChildThreadType childThreadType) {
+        return new TimeMillisSpentTermination(timeMillisSpentLimit);
     }
 
 }

@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  */
 public class BestSolutionChangedEvent<Solution_> extends EventObject {
 
-    private final DefaultSolver<Solution_> solver;
+    private final Solver<Solution_> solver;
     private final long timeMillisSpent;
     private final Solution_ newBestSolution;
     private final Score newBestScore;
@@ -42,7 +42,7 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
      * @param timeMillisSpent {@code >= 0L}
      * @param newBestSolution never null
      */
-    public BestSolutionChangedEvent(DefaultSolver<Solution_> solver, long timeMillisSpent,
+    public BestSolutionChangedEvent(Solver<Solution_> solver, long timeMillisSpent,
             Solution_ newBestSolution, Score newBestScore) {
         super(solver);
         this.solver = solver;

@@ -21,6 +21,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealing
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
@@ -69,5 +70,14 @@ public interface Termination extends PhaseLifecycleListener {
      *         At the start of a phase t is 0.0 and at the end t would be 1.0.
      */
     double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope);
+
+    /**
+     * Create a {@link Termination} for a child {@link Thread} of the {@link Solver}.
+     * @param solverScope never null
+     * @param childThreadType never null
+     * @return not null
+     * @throws UnsupportedOperationException if not supported by this termination
+     */
+    Termination createChildThreadTermination(DefaultSolverScope solverScope, ChildThreadType childThreadType);
 
 }

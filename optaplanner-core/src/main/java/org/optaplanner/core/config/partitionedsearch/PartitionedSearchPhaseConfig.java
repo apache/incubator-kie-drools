@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.partitionedsearch;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,17 +25,22 @@ import java.util.concurrent.Executors;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
+import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
+import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.partitionedsearch.DefaultPartitionedSearchPhase;
 import org.optaplanner.core.impl.partitionedsearch.PartitionedSearchPhase;
+import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
+import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@XStreamAlias("paritionedSearch")
+@XStreamAlias("partitionedSearch")
 public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchPhaseConfig> {
 
     public static final String THREAD_POOL_SIZE_AUTO = "AUTO";
@@ -45,6 +52,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
 
     protected String threadPoolSize = null;
 
+    private Class<SolutionPartitioner> solutionPartitionerClass = null;
 
     @XStreamImplicit()
     protected List<PhaseConfig> phaseConfigList = null;
@@ -67,6 +75,14 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         this.threadPoolSize = threadPoolSize;
     }
 
+    public Class<SolutionPartitioner> getSolutionPartitionerClass() {
+        return solutionPartitionerClass;
+    }
+
+    public void setSolutionPartitionerClass(Class<SolutionPartitioner> solutionPartitionerClass) {
+        this.solutionPartitionerClass = solutionPartitionerClass;
+    }
+
     public List<PhaseConfig> getPhaseConfigList() {
         return phaseConfigList;
     }
@@ -82,10 +98,22 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     @Override
     public PartitionedSearchPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
+        HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         DefaultPartitionedSearchPhase phase = new DefaultPartitionedSearchPhase();
-//        configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
-//        phase.setDecider(buildDecider(phaseConfigPolicy,
-//                phase.getTermination()));
+        configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
+        phase.setExecutorService(buildExecutorService());
+        phase.setSolutionPartitioner(buildSolutionPartitioner());
+        List<PhaseConfig> phaseConfigList_ = phaseConfigList;
+        if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
+            phaseConfigList_ = Arrays.asList(
+                    new ConstructionHeuristicPhaseConfig(),
+                    new LocalSearchPhaseConfig());
+        }
+        phase.setPhaseConfigList(phaseConfigList_);
+        phase.setConfigPolicy(phaseConfigPolicy);
+
+
+        // TODO check if any asserts should happen in EnvironmentMode
 //        EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
 //        if (environmentMode.isNonIntrusiveFullAsserted()) {
 //            phase.setAssertStepScoreFromScratch(true);
@@ -94,9 +122,6 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
 //            phase.setAssertExpectedStepScore(true);
 //            phase.setAssertShadowVariablesAreNotStaleAfterStep(true);
 //        }
-
-
-
         return phase;
     }
 
@@ -123,9 +148,22 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         return Executors.newFixedThreadPool(resolvedThreadPoolSize);
     }
 
+    private SolutionPartitioner buildSolutionPartitioner() {
+        if (solutionPartitionerClass != null) {
+            return ConfigUtils.newInstance(this, "solutionPartitionerClass", solutionPartitionerClass);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
+    }
+
     @Override
     public void inherit(PartitionedSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
+        threadPoolSize = ConfigUtils.inheritOverwritableProperty(threadPoolSize,
+                inheritedConfig.getThreadPoolSize());
+        solutionPartitionerClass = ConfigUtils.inheritOverwritableProperty(solutionPartitionerClass,
+                inheritedConfig.getSolutionPartitionerClass());
         phaseConfigList = ConfigUtils.inheritMergeableListConfig(
                 phaseConfigList, inheritedConfig.getPhaseConfigList());
     }
