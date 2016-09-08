@@ -19,6 +19,7 @@ package org.drools.core.command.runtime.rule;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.FactHandle;
@@ -39,6 +40,9 @@ public class GetFactHandlesCommand
 
     @XmlAttribute
     private boolean disconnected = false;
+
+    @XmlAttribute(name="out-identifier")
+    private String  outIdentifier;
 
     public GetFactHandlesCommand() {
     }
@@ -73,10 +77,18 @@ public class GetFactHandlesCommand
                     handle.disconnect();
                     disconnectedFactHandles.add(handle);
                 }
+                if (outIdentifier != null) {
+                    ((InternalWorkingMemory) ksession).getExecutionResult().getResults().put(this.outIdentifier, disconnectedFactHandles);
+                }
                 return disconnectedFactHandles;
             }
-            else { 
-                return ksession.getFactHandles( this.filter );
+            else {
+
+                Collection<FactHandle> ksessionFactHandles = ksession.getFactHandles( this.filter );
+                if (outIdentifier != null) {
+                    ((InternalWorkingMemory) ksession).getExecutionResult().getResults().put(this.outIdentifier, new ArrayList<FactHandle>(ksessionFactHandles));
+                }
+                return ksessionFactHandles;
             }
         } else {
             Collection<InternalFactHandle> factHandles = ksession.getFactHandles( );
@@ -86,12 +98,27 @@ public class GetFactHandlesCommand
                     handle.disconnect();
                     disconnectedFactHandles.add(handle);
                 }
+                if (outIdentifier != null) {
+                    ((InternalWorkingMemory) ksession).getExecutionResult().getResults().put(this.outIdentifier, disconnectedFactHandles);
+                }
                 return disconnectedFactHandles;
             }
-            else { 
-                return ksession.getFactHandles();
+            else {
+                Collection<FactHandle> ksessionFactHandles =  ksession.getFactHandles();
+                if (outIdentifier != null) {
+                    ((InternalWorkingMemory) ksession).getExecutionResult().getResults().put(this.outIdentifier, new ArrayList<FactHandle>(ksessionFactHandles));
+                }
+                return ksessionFactHandles;
             }
         }
+    }
+
+    public String getOutIdentifier() {
+        return outIdentifier;
+    }
+
+    public void setOutIdentifier(String outIdentifier) {
+        this.outIdentifier = outIdentifier;
     }
 
     public String toString() {

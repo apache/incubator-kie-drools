@@ -33,7 +33,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class DeleteCommand
         implements GenericCommand<Void> {
 
+    @XmlElement(name="handle")
     private DisconnectedFactHandle handle;
+
+    private String factHandle;
 
     @XmlElement
     private FactHandle.State fhState = FactHandle.State.ALL;
