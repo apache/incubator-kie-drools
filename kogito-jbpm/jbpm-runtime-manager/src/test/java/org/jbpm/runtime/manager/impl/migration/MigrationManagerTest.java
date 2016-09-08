@@ -94,6 +94,9 @@ public class MigrationManagerTest extends AbstractBaseTest {
     private static final String REPLACEACTIVETASK_ID_V1 = "process-migration-testv1.ReplaceActiveTask";
     private static final String REPLACEACTIVETASK_ID_V2 = "process-migration-testv2.ReplaceActiveTask";
     
+    private static final String REMOVENONACTIVEBEFORETASK_ID_V1 = "process-migration-testv1.RemoveNonActiveBeforeTask";
+    private static final String REMOVENONACTIVEBEFORETASK_ID_V2 = "process-migration-testv2.RemoveNonActiveBeforeTask";
+    
     private JPAAuditLogService auditService;
     
     @Before
@@ -185,7 +188,7 @@ public class MigrationManagerTest extends AbstractBaseTest {
         
         assertEquals(PROCESS_ID_V2, task.getProcessId());
         assertEquals(DEPLOYMENT_ID_V2, task.getDeploymentId());
-        assertEquals(TASK_NAME_V1, task.getName()); // same name as the node mapping was not given
+        assertEquals(TASK_NAME_V2, task.getName()); // same name as the node mapping was not given
         
         managerV2.disposeRuntimeEngine(runtime);
     }
@@ -454,6 +457,42 @@ public class MigrationManagerTest extends AbstractBaseTest {
         managerV2.disposeRuntimeEngine(runtime);
     }
     
+    @Test
+    public void testRemoveNonActiveBeforeActiveTask() {
+        
+        createRuntimeManagers("migration/v1/RemoveNonActiveBeforeTask-v1.bpmn2", "migration/v2/RemoveNonActiveBeforeTask-v2.bpmn2");
+        assertNotNull(managerV1);
+        assertNotNull(managerV2);
+        
+        RuntimeEngine runtime = managerV1.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession); 
+        
+        ProcessInstance pi1 = ksession.startProcess(REMOVENONACTIVEBEFORETASK_ID_V1);
+        assertNotNull(pi1);
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());   
+        
+        assertTaskAndComplete(runtime.getTaskService(), REMOVENONACTIVEBEFORETASK_ID_V1, pi1.getId(), "Active Task"); 
+        
+        managerV1.disposeRuntimeEngine(runtime);
+        
+        MigrationSpec migrationSpec = new MigrationSpec(DEPLOYMENT_ID_V1, pi1.getId(), DEPLOYMENT_ID_V2, REMOVENONACTIVEBEFORETASK_ID_V2);        
+        MigrationManager migrationManager = new MigrationManager(migrationSpec);
+        MigrationReport report = migrationManager.migrate();        
+        assertNotNull(report);
+        assertTrue(report.isSuccessful());
+        
+        assertMigratedProcessInstance(REMOVENONACTIVEBEFORETASK_ID_V2, pi1.getId(), ProcessInstance.STATE_ACTIVE);
+                
+        runtime = managerV2.getRuntimeEngine(EmptyContext.get());
+        TaskService taskService = runtime.getTaskService();        
+
+        assertMigratedTaskAndComplete(taskService, REMOVENONACTIVEBEFORETASK_ID_V2, pi1.getId(), "Non-active Task");                
+        assertMigratedProcessInstance(REMOVENONACTIVEBEFORETASK_ID_V2, pi1.getId(), ProcessInstance.STATE_COMPLETED);
+        
+        managerV2.disposeRuntimeEngine(runtime);
+    }
+    
     /*
      * Helper methods
      */
@@ -467,6 +506,21 @@ public class MigrationManagerTest extends AbstractBaseTest {
         assertNotNull(task);
         
         return task;
+    }
+    
+    protected void assertTaskAndComplete(TaskService taskService, String processId, Long processInstanceId, String taskName) {
+        List<TaskSummary> tasks = taskService.getTasksByStatusByProcessInstanceId(processInstanceId, Arrays.asList(Status.Reserved), "en-UK");
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());
+        
+        TaskSummary task = tasks.get(0);
+        assertNotNull(task);
+        assertEquals(processId, task.getProcessId());
+        assertEquals(DEPLOYMENT_ID_V1, task.getDeploymentId());
+        assertEquals(taskName, task.getName());
+        
+        taskService.start(task.getId(), USER_JOHN);
+        taskService.complete(task.getId(), USER_JOHN, null);
     }
     
     protected void assertMigratedTaskAndComplete(TaskService taskService, String processId, Long processInstanceId, String taskName) {
