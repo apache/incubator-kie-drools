@@ -87,4 +87,9 @@ public class ScoreCalculationCountTermination extends AbstractTermination {
         }
     }
 
+    @Override
+    public String toString() {
+        return "ScoreCalculationCount(" + scoreCalculationCountLimit + ")";
+    }
+
 }

@@ -96,4 +96,9 @@ public class BestScoreFeasibleTermination extends AbstractTermination {
                 + ") does not yet support being used in child threads of type (" + childThreadType + ").");
     }
 
+    @Override
+    public String toString() {
+        return "BestScoreFeasible()";
+    }
+
 }

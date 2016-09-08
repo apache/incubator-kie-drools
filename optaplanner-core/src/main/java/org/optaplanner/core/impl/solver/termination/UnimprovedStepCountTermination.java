@@ -85,4 +85,9 @@ public class UnimprovedStepCountTermination extends AbstractTermination {
         return new UnimprovedStepCountTermination(unimprovedStepCountLimit);
     }
 
+    @Override
+    public String toString() {
+        return "UnimprovedStepCount(" + unimprovedStepCountLimit + ")";
+    }
+
 }

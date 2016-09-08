@@ -87,4 +87,9 @@ public class TimeMillisSpentTermination extends AbstractTermination {
         return new TimeMillisSpentTermination(timeMillisSpentLimit);
     }
 
+    @Override
+    public String toString() {
+        return "TimeMillisSpent(" + timeMillisSpentLimit + ")";
+    }
+
 }

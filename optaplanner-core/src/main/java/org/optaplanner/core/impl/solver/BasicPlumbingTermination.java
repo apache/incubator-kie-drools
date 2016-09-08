@@ -156,4 +156,9 @@ public class BasicPlumbingTermination extends AbstractTermination {
         return this;
     }
 
+    @Override
+    public String toString() {
+        return "BasicPlumbing()";
+    }
+
 }

@@ -114,4 +114,9 @@ public class OrCompositeTermination extends AbstractCompositeTermination {
         return new OrCompositeTermination(createChildThreadTerminationList(solverScope, childThreadType));
     }
 
+    @Override
+    public String toString() {
+        return "Or(" + terminationList + ")";
+    }
+
 }

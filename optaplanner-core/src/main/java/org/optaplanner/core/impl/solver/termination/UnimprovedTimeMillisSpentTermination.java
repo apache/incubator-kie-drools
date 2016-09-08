@@ -91,4 +91,9 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
         return new UnimprovedTimeMillisSpentTermination(unimprovedTimeMillisSpentLimit);
     }
 
+    @Override
+    public String toString() {
+        return "UnimprovedTimeMillisSpent(" + unimprovedTimeMillisSpentLimit + ")";
+    }
+
 }

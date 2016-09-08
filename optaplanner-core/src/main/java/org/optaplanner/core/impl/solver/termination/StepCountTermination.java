@@ -79,4 +79,9 @@ public class StepCountTermination extends AbstractTermination {
         return new StepCountTermination(stepCountLimit);
     }
 
+    @Override
+    public String toString() {
+        return "StepCount(" + stepCountLimit + ")";
+    }
+
 }

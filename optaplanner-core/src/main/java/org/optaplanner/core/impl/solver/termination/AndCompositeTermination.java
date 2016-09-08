@@ -115,4 +115,9 @@ public class AndCompositeTermination extends AbstractCompositeTermination {
         return new AndCompositeTermination(createChildThreadTerminationList(solverScope, childThreadType));
     }
 
+    @Override
+    public String toString() {
+        return "And(" + terminationList + ")";
+    }
+
 }

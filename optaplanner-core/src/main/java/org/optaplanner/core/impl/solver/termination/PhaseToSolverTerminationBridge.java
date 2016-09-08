@@ -104,4 +104,9 @@ public class PhaseToSolverTerminationBridge extends AbstractTermination {
                 solverTermination.createChildThreadTermination(solverScope, childThreadType));
     }
 
+    @Override
+    public String toString() {
+        return "Bridge(" + solverTermination + ")";
+    }
+
 }
