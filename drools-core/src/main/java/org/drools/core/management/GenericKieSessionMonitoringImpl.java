@@ -18,7 +18,6 @@ package org.drools.core.management;
 
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.management.GenericKieSessionMonitoringImpl.AgendaStats.AgendaStatsData;
-import org.drools.core.management.GenericKieSessionMonitoringImpl.ProcessStats.ProcessInstanceStatsData;
 import org.drools.core.management.GenericKieSessionMonitoringImpl.ProcessStats.ProcessStatsData;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.process.ProcessCompletedEvent;
@@ -313,20 +312,10 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
         return Collections.unmodifiableMap(this.processStats.getProcessStats());
     }
     
-    public IProcessInstanceStatsData getStatsForProcessInstance( long processInstanceId ) {
-        ProcessInstanceStatsData data = this.processStats.getProcessInstanceStats( processInstanceId );
-        return ( data == null ) ? null : data;
-    }
-    
-    public Map<Long,IProcessInstanceStatsData> getStatsByProcessInstance() {
-        return Collections.unmodifiableMap(this.processStats.getProcessInstanceStats());
-    }
-    
     public static class ProcessStats implements org.kie.api.event.process.ProcessEventListener {
         
         private GlobalProcessStatsData consolidated = new GlobalProcessStatsData();
         private ConcurrentHashMap<String, ProcessStatsData> processStats = new ConcurrentHashMap<String, ProcessStatsData>();
-        private ConcurrentHashMap<Long, ProcessInstanceStatsData> processInstanceStats = new ConcurrentHashMap<Long, ProcessInstanceStatsData>();
 
         public GlobalProcessStatsData getConsolidatedStats() {
             return this.consolidated;
@@ -340,18 +329,9 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
             return this.processStats.get(processId);
         }
         
-        public Map<Long, ProcessInstanceStatsData> getProcessInstanceStats() {
-            return this.processInstanceStats;
-        }
-        
-        public ProcessInstanceStatsData getProcessInstanceStats(Long processInstanceId) {
-            return this.processInstanceStats.get(processInstanceId);
-        }
-        
         public void reset() {
             this.consolidated.reset();
             this.processStats.clear();
-            this.processInstanceStats.clear();
         }
         
         private ProcessStatsData getProcessStatsInstance(String processId) {
@@ -363,36 +343,21 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
             return data;
         }
 
-        private ProcessInstanceStatsData getProcessInstanceStatsInstance(Long processInstanceId) {
-            ProcessInstanceStatsData data = this.processInstanceStats.get(processInstanceId);
-            if (data == null) {
-                data = new ProcessInstanceStatsData();
-                this.processInstanceStats.put(processInstanceId, data);
-            }
-            return data;
-        }
-
         public void afterProcessStarted(ProcessStartedEvent event) {
             this.consolidated.processInstancesStarted.incrementAndGet();
             ProcessStatsData data = getProcessStatsInstance(event.getProcessInstance().getProcessId());
             data.processInstancesStarted.incrementAndGet();
-            ProcessInstanceStatsData dataI = getProcessInstanceStatsInstance(event.getProcessInstance().getId());
-            dataI.processStarted = new Date();
         }
 
         public void afterProcessCompleted(ProcessCompletedEvent event) {
             this.consolidated.processInstancesCompleted.incrementAndGet();
             ProcessStatsData data = getProcessStatsInstance(event.getProcessInstance().getProcessId());
             data.processInstancesCompleted.incrementAndGet();
-            ProcessInstanceStatsData dataI = getProcessInstanceStatsInstance(event.getProcessInstance().getId());
-            dataI.processCompleted = new Date();
         }
 
         public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
             ProcessStatsData data = getProcessStatsInstance(event.getProcessInstance().getProcessId());
             data.processNodesTriggered.incrementAndGet();
-            ProcessInstanceStatsData dataI = getProcessInstanceStatsInstance(event.getProcessInstance().getId());
-            dataI.processNodesTriggered++;
         }
 
         public void afterNodeLeft(ProcessNodeLeftEvent event) {
@@ -487,42 +452,6 @@ public abstract class GenericKieSessionMonitoringImpl implements GenericKieSessi
             
             public String toString() {
                 return super.toString() + " processNodesTriggered=" + processNodesTriggered.get();
-            }
-        }
-
-        public static class ProcessInstanceStatsData implements IProcessInstanceStatsData {
-
-            // no need for synch, because one process instance cannot be executed concurrently
-            public Date processStarted;
-            public Date processCompleted;
-            public long processNodesTriggered;
-            
-            public ProcessInstanceStatsData() {
-                this.processNodesTriggered = 0;
-            }
-            
-            @Override
-            public Date getProcessStarted() {
-                return processStarted;
-            }
-            @Override
-            public Date getProcessCompleted() {
-                return processCompleted;
-            }
-            @Override
-            public long getProcessNodesTriggered() {
-                return processNodesTriggered;
-            }
-
-            public void reset() {
-                 this.processNodesTriggered = 0;
-            }
-            
-            public String toString() {
-                return
-                    (processStarted != null ? "processStarted=" + processStarted + " ": "") +
-                    (processCompleted != null ? "processCompleted=" + processCompleted + " ": "") +
-                    "processNodesTriggered=" + processNodesTriggered;
             }
         }
 
