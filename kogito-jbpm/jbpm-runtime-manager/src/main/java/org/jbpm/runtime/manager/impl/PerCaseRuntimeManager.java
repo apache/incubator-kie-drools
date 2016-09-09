@@ -401,19 +401,34 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
     public void init() {
 
         TaskContentRegistry.get().addMarshallerContext(getIdentifier(), new ContentMarshallerContext(environment.getEnvironment(), environment.getClassLoader()));
-
-        // need to init one session to bootstrap all case - such as start timers
-        KieSession initialKsession = factory.newKieSession();
-        initialKsession.execute(new DestroyKSessionCommand(initialKsession, this));
-
-        if (!"false".equalsIgnoreCase(System.getProperty("org.jbpm.rm.init.timer"))) {
-            if (mapper instanceof JPAMapper) {
-                List<Long> ksessionsToInit = ((JPAMapper) mapper).findKSessionToInit(this.identifier);
-                for (Long id : ksessionsToInit) {
-                    initialKsession = factory.findKieSessionById(id);
-                    initialKsession.execute(new DisposeKSessionCommand(initialKsession, this));
+        boolean owner = false;
+        TransactionManager tm = null; 
+        if (environment.usePersistence()){
+            tm = getTransactionManager(environment.getEnvironment());
+            owner = tm.begin();
+        }
+        try {
+            // need to init one session to bootstrap all case - such as start timers
+            KieSession initialKsession = factory.newKieSession();
+            initialKsession.execute(new DestroyKSessionCommand(initialKsession, this));
+    
+            if (!"false".equalsIgnoreCase(System.getProperty("org.jbpm.rm.init.timer"))) {
+                if (mapper instanceof JPAMapper) {
+                    List<Long> ksessionsToInit = ((JPAMapper) mapper).findKSessionToInit(this.identifier);
+                    for (Long id : ksessionsToInit) {
+                        initialKsession = factory.findKieSessionById(id);
+                        initialKsession.execute(new DisposeKSessionCommand(initialKsession, this));
+                    }
                 }
             }
+            if (tm != null) {
+                tm.commit(owner);
+            }
+        } catch (Exception e) {
+            if (tm != null) {
+                tm.rollback(owner);
+            }
+            throw new RuntimeException("Exception while initializing runtime manager " + this.identifier, e);
         }
     }
 
