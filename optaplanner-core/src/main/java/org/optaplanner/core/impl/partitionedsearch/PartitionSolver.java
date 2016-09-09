@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class PartSolver<Solution_> extends AbstractSolver<Solution_> {
+public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
 
     protected final DefaultSolverScope<Solution_> solverScope;
 
@@ -40,7 +40,7 @@ public class PartSolver<Solution_> extends AbstractSolver<Solution_> {
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public PartSolver(Termination termination, BestSolutionRecaller<Solution_> bestSolutionRecaller,
+    public PartitionSolver(Termination termination, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             List<Phase<Solution_>> phaseList, DefaultSolverScope<Solution_> solverScope) {
         super(termination, bestSolutionRecaller, phaseList);
         this.solverScope = solverScope;

@@ -73,11 +73,13 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
 
     @Override
     public void solve(DefaultSolverScope<Solution_> solverScope) {
+//        PartitionedSearchPhaseScope<Solution_> phaseScope = new PartitionedSearchPhaseScope<>(solverScope);
+//        phaseStarted(phaseScope);
         List<Solution_> partList = solutionPartitioner.splitWorkingSolution(solverScope.getScoreDirector());
         List<Future> futureList = new ArrayList<>(partList.size());
         for (Solution_ part : partList) {
-            PartSolver<Solution_> partSolver = buildPartSolver(solverScope);
-            Future<?> future = executorService.submit(() -> partSolver.solve(part));
+            PartitionSolver<Solution_> partitionSolver = buildPartitionSolver(solverScope);
+            Future<?> future = executorService.submit(() -> partitionSolver.solve(part));
             futureList.add(future);
         }
         for (Future future : futureList) {
@@ -87,9 +89,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 e.printStackTrace(); // TODO remove
             }
         }
+//        phaseEnded(phaseScope);
 
-//        PartitionedSearchPhaseScope<Solution_> phaseScope = new PartitionedSearchPhaseScope<>(solverScope);
-//        phaseStarted(phaseScope);
 //
 //        while (!termination.isPhaseTerminated(phaseScope)) {
 //            PartitionedSearchStepScope<Solution_> stepScope = new PartitionedSearchStepScope<>(phaseScope);
@@ -119,10 +120,9 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
 //            stepEnded(stepScope);
 //            phaseScope.setLastCompletedStepScope(stepScope);
 //        }
-//        phaseEnded(phaseScope);
     }
 
-    public PartSolver<Solution_> buildPartSolver(DefaultSolverScope<Solution_> solverScope) {
+    public PartitionSolver<Solution_> buildPartitionSolver(DefaultSolverScope<Solution_> solverScope) {
         Termination partTermination = termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD);
         BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
                 .buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
@@ -132,8 +132,9 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
             phaseList.add(phaseConfig.buildPhase(partPhaseIndex, configPolicy, bestSolutionRecaller, partTermination));
             partPhaseIndex++;
         }
+        // TODO create PartitionSolverScope alternative to deal with 3 layer terminations
         DefaultSolverScope<Solution_> partSolverScope = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
-        return new PartSolver<>(partTermination, bestSolutionRecaller, phaseList, partSolverScope);
+        return new PartitionSolver<>(partTermination, bestSolutionRecaller, phaseList, partSolverScope);
     }
 
     //    private void doStep(PartitionedSearchStepScope<Solution_> stepScope) {
