@@ -8,17 +8,3 @@
 /*.ipr
 /*.iws
 /*.iml
-
-# Directories
-eclipse/
-jboss-*/
-wildfly-*/
-repositories/ 
-runtime/
-workspace/
-data/
-
-# Files
-repository.xml
-derby.log
-transaction.log

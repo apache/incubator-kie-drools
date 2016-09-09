@@ -13,6 +13,8 @@ import org.junit.Test;
  */
 public class DDLScriptsTest {
 
+    private static final String DB_DDL_SCRIPTS_RESOURCE_PATH = "/db/ddl-scripts";
+
     /**
      * Tests that DB schema is created properly using DDL scripts.
      * @throws IOException
@@ -25,7 +27,7 @@ public class DDLScriptsTest {
         final TestPersistenceContext scriptRunnerContext = new TestPersistenceContext();
         scriptRunnerContext.init(PersistenceUnit.SCRIPT_RUNNER);
         try {
-            scriptRunnerContext.executeScripts(new File(getClass().getResource("/ddl-scripts").getFile()));
+            scriptRunnerContext.executeScripts(new File(getClass().getResource(DB_DDL_SCRIPTS_RESOURCE_PATH).getFile()));
         } finally {
             scriptRunnerContext.clean();
         }
