@@ -37,9 +37,6 @@ public class PhreakJoinNode {
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
-        if ( !bm.getStagedRightTuples().isEmpty() ) {
-            bm.setNodeDirtyWithoutNotify();
-        }
         TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
         if (srcRightTuples.getDeleteFirst() != null) {

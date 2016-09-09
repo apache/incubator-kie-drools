@@ -50,10 +50,8 @@ public class PhreakAccumulateNode {
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
+
         BetaMemory bm = am.getBetaMemory();
-        if ( !bm.getStagedRightTuples().isEmpty() ) {
-            bm.setNodeDirtyWithoutNotify();
-        }
         TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
         // order of left and right operations is to minimise wasted of innefficient joins.

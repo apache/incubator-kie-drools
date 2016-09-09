@@ -38,9 +38,7 @@ public class PhreakNotNode {
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
-        if ( !bm.getStagedRightTuples().isEmpty() ) {
-            bm.setNodeDirtyWithoutNotify();
-        }
+
         TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
         if (srcLeftTuples.getDeleteFirst() != null) {
