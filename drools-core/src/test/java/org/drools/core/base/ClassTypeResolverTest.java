@@ -18,6 +18,7 @@ package org.drools.core.base;
 
 import org.drools.core.test.model.Cheese;
 import org.drools.core.test.model.FirstClass;
+import org.drools.core.test.model.Gender;
 import org.drools.core.test.model.SecondClass;
 import org.junit.Test;
 
@@ -226,6 +227,26 @@ public class ClassTypeResolverTest {
                       resolver.resolveType( "Cheese[][]" ) );
         assertEquals( Cheese[][].class,
                       resolver.resolveType( "org.drools.core.test.model.Cheese[][]" ) );
+    }
+
+    @Test
+    public void testResolveTypeWithDependentEnums() throws Exception {
+        final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "org.drools.core.test.model.Person" );
+
+        resolver.resolveType( "Person" );
+
+        assertEquals( Gender.class, resolver.resolveType( "Gender" ) );
+    }
+
+    @Test
+    public void testResolveTypeWithDependentEnumsFromParentClass() throws Exception {
+        final ClassTypeResolver resolver = new ClassTypeResolver( new HashSet(), Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "org.drools.core.test.model.Employee" );
+
+        resolver.resolveType( "Employee" );
+
+        assertEquals( Gender.class, resolver.resolveType( "Gender" ) );
     }
     
     @Test
