@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>net.tarilabs</groupId>
+  <artifactId>experiment.retediagram</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>experiment.retediagram</name>
+  <url>http://drools.org</url>
+  
+  <repositories>
+    <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+      <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
+    <pluginRepository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>daily</updatePolicy>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  	<drools-version>7.0.0-SNAPSHOT</drools-version>
+  	<slf4j-version>1.7.7</slf4j-version>
+  	<junit-version>4.12</junit-version>
+  </properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.drools</groupId>
+				<artifactId>drools-bom</artifactId>
+				<type>pom</type>
+				<version>${drools-version}</version>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+		
+		<dependency>
+	      <groupId>org.drools</groupId>
+	      <artifactId>drools-compiler</artifactId>
+	      <scope>test</scope>
+	    </dependency>
+        <dependency>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-core</artifactId>
+          <classifier>tests</classifier>
+          <version>${drools-version}</version>
+          <scope>test</scope>
+        </dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit-version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j-version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+</project>

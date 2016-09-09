@@ -1,0 +1,27 @@
+package net.tarilabs.model;
+
+global java.util.Set controlSet;
+
+rule "For color"
+no-loop
+when
+	Measurement( id == "color", $colorVal : val )
+then
+	controlSet.add($colorVal);
+end
+
+rule "Likes cheddar"
+when
+    Cheese( $cheddar : name == "cheddar" )
+    $person : Person( favouriteCheese == $cheddar )
+then
+    System.out.println( $person.getName() + " likes cheddar" );
+end
+
+rule "Don't like cheddar"
+when
+    Cheese( $cheddar : name == "cheddar" )
+    $person : Person( favouriteCheese != $cheddar )
+then
+    System.out.println( $person.getName() + " does not like cheddar" );
+end
