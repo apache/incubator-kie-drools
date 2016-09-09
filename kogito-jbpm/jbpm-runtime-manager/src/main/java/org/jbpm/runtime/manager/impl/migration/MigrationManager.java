@@ -18,6 +18,7 @@ package org.jbpm.runtime.manager.impl.migration;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
@@ -334,6 +335,7 @@ public class MigrationManager {
 		}
     }
     
+    @SuppressWarnings("unchecked")
     private void updateNodeInstances(NodeInstanceContainer nodeInstanceContainer, Map<String, String> nodeMapping, NodeContainer nodeContainer, EntityManager em) {
     	
         for (NodeInstance nodeInstance: nodeInstanceContainer.getNodeInstances()) {
@@ -358,15 +360,24 @@ public class MigrationManager {
             
             if (upgradedNode != null) {
                 // update log information for new node information
-                Query nodeLogQuery = em.createQuery("update NodeInstanceLog set nodeId = :nodeId, nodeName = :nodeName, nodeType = :nodeType where nodeInstanceId in " + 
-                        "( select nodeInstanceId from NodeInstanceLog nil where nil.nodeId = :oldNodeId and processInstanceId = :processInstanceId " + 
+                Query nodeInstanceIdQuery = em.createQuery("select nodeInstanceId from NodeInstanceLog nil" + 
+                        " where nil.nodeId = :oldNodeId and processInstanceId = :processInstanceId " + 
                         " GROUP BY nil.nodeInstanceId" + 
-                        " HAVING sum(nil.type) = 0) and processInstanceId = :processInstanceId");
+                        " HAVING sum(nil.type) = 0");
+                nodeInstanceIdQuery
+                    .setParameter("oldNodeId", oldNodeId)
+                    .setParameter("processInstanceId", nodeInstance.getProcessInstance().getId());
+                
+                List<Long> nodeInstanceIds = nodeInstanceIdQuery.getResultList();
+                report.addEntry(Type.INFO, "Mapping: Node instance logs to be updated  = " + nodeInstanceIds);
+                
+                Query nodeLogQuery = em.createQuery("update NodeInstanceLog set nodeId = :nodeId, nodeName = :nodeName, nodeType = :nodeType "
+                        + "where nodeInstanceId in (:ids) and processInstanceId = :processInstanceId");
                 nodeLogQuery
                     .setParameter("nodeId", (String) upgradedNode.getMetaData().get("UniqueId"))
                     .setParameter("nodeName", upgradedNode.getName())
                     .setParameter("nodeType", upgradedNode.getClass().getSimpleName())
-                    .setParameter("oldNodeId", oldNodeId)
+                    .setParameter("ids", nodeInstanceIds)
                     .setParameter("processInstanceId", nodeInstance.getProcessInstance().getId());
                 
                 int nodesUpdated = nodeLogQuery.executeUpdate();
