@@ -22,6 +22,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
@@ -61,7 +62,13 @@ public class ReteDiagram {
                         " node [fontname = \"Overpass\" fontsize=11];\n" + 
                         " edge [fontname = \"Overpass\" fontsize=11];");
                 HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap = new HashMap<>();
-                dumpNode( entryPointNode, "", new HashSet<BaseNode>(), levelMap, out);
+                HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap = new HashMap<>();
+                List<Vertex<BaseNode,BaseNode>> vertexes = new ArrayList<>();
+                dumpNode( entryPointNode, "", new HashSet<BaseNode>(), nodeMap, vertexes, levelMap, out);
+                out.println("");
+                printNodeMap(nodeMap, out);
+                out.println("");
+                printVertexes(vertexes, out);
                 out.println("");
                 printLevelMap(levelMap, out);
                 out.println("}");
@@ -84,12 +91,54 @@ public class ReteDiagram {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            
+            try {
+                ProcessBuilder pbuilder = new ProcessBuilder( "dot", "-Tpng", "-o", "test.png", "test.gv" );
+                pbuilder.redirectErrorStream( true );
+                pbuilder.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
+    private static void printVertexes(List<Vertex<BaseNode, BaseNode>> vertexes, PrintStream out ) {
+        for ( Vertex<BaseNode, BaseNode> v : vertexes ) {
+            out.println(printNodeId(v.from) + " -> " + printNodeId(v.to) + " ;");
+        }
+    }
+
+    private static void printNodeMap(HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap, PrintStream out) {
+        printNodeMapNodes(nodeMap.get(EntryPointNode.class), out);
+        printNodeMapNodes(nodeMap.get(ObjectTypeNode.class), out);
+        printNodeMapNodes(nodeMap.get(AlphaNode.class), out);
+        printNodeMapNodes(nodeMap.get(LeftInputAdapterNode.class), out);
+        printNodeMapNodes(nodeMap.get(JoinNode.class), out);
+        printNodeMapNodes(nodeMap.get(RuleTerminalNode.class), out);
+    }
+
+    public static void printNodeMapNodes(List<BaseNode> nodes, PrintStream out) {
+        for (BaseNode node : nodes) {
+            out.println(printNodeId(node) + " " + printNodeAttributes(node) + " ;");
+        }
+    }
+    
+    public static class Vertex<F,T> {
+        public final F from;
+        public final T to;
+        public Vertex(F from, T to) {
+            this.from = from;
+            this.to = to;
+        }
+        public static <F, T> Vertex<F, T> of(F from, T to) {
+            return new Vertex<F, T>(from, to);
         }
     }
 
     private static void printLevelMap(HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out) {
         // FIXME:
         levelMap.computeIfAbsent(BetaNode.class, k -> new HashSet<>());
+        
         for (Entry<Class<? extends BaseNode>, Set<BaseNode>> kv : levelMap.entrySet()) {
             if (kv.getKey().isAssignableFrom(  ObjectTypeNode.class) ) {
                printLevelMapLevel(1, kv.getValue(), out);
@@ -118,21 +167,25 @@ public class ReteDiagram {
         out.println(level);
     }
 
-    private static void dumpNode(BaseNode node, String ident, Set<BaseNode> visitedNodes, Map<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out) {
+    private static void dumpNode(BaseNode node, String ident, Set<BaseNode> visitedNodes, HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap, List<Vertex<BaseNode, BaseNode>> vertexes, Map<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out) {
         if (!visitedNodes.add( node )) {
             return;
         }
-        out.println(ident + printNodeId(node) + " " + printNodeAttributes(node) + " ;");
+        addToNodeMap(node, nodeMap);
         addToLevel(node, levelMap);
         Sink[] sinks = getSinks( node );
         if (sinks != null) {
             for (Sink sink : sinks) {
-                out.println(ident + printNodeId(node) + " -> " + printNodeId((BaseNode)sink) + " ;");
+                vertexes.add(Vertex.of(node, (BaseNode)sink));
                 if (sink instanceof BaseNode) {
-                    dumpNode((BaseNode)sink, ident + " ", visitedNodes, levelMap, out);
+                    dumpNode((BaseNode)sink, ident + " ", visitedNodes, nodeMap, vertexes, levelMap, out);
                 }
             }
         }
+    }
+
+    private static void addToNodeMap(BaseNode node, HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap) {
+        nodeMap.computeIfAbsent(node.getClass(), k -> new ArrayList<>()).add(node);
     }
 
     private static void addToLevel(BaseNode node, Map<Class<? extends BaseNode>, Set<BaseNode>> levelMap) {
@@ -159,7 +212,7 @@ public class ReteDiagram {
     private static String printNodeAttributes(BaseNode node) {
         if (node instanceof EntryPointNode ) {
             EntryPointNode n = (EntryPointNode) node;
-            return String.format("[shape=point xlabel=\"%1$s\"]",
+            return String.format("[shape=circle width=0.15 fillcolor=black style=filled label=\"\" xlabel=\"%1$s\"]",
                     n.getEntryPoint().getEntryPointId());
         } else if (node instanceof ObjectTypeNode ) {
             ObjectTypeNode n = (ObjectTypeNode) node;
@@ -175,11 +228,11 @@ public class ReteDiagram {
             BetaNode n = (BetaNode) node;
             BetaNodeFieldConstraint[] constraints = n.getConstraints();
             String label = Arrays.stream(constraints).map(Object::toString).collect(Collectors.joining(", "));
-            return String.format("[shape=box label=\"%1$s\"]",
+            return String.format("[shape=box label=\"%1$s\" href=\"http://drools.org\"]",
                     escapeDot(label));
         } else if (node instanceof RuleTerminalNode ) {
             RuleTerminalNode n = (RuleTerminalNode) node;
-            return String.format("[shape=doublecircle width=0.2 fillcolor=black style=filled label=\"\" xlabel=\"%1$s\"]",
+            return String.format("[shape=doublecircle width=0.2 fillcolor=black style=filled label=\"\" xlabel=\"%1$s\" href=\"http://drools.org\"]",
                     n.getRule().getName());
         }
         return "???"+node;

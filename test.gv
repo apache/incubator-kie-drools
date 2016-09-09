@@ -1,61 +1,44 @@
 digraph g {
- graph [fontname = "Overpass" fontsize=11];
+graph [fontname = "Overpass" fontsize=11];
  node [fontname = "Overpass" fontsize=11];
  edge [fontname = "Overpass" fontsize=11];
 
-
-
-EP1 [shape=point xlabel="DEFAULT"] ;
-
-OTN2 [shape=rect style=rounded label="o.d.c.r.InitialFactImpl"] ;
-OTN3 [shape=rect style=rounded label="n.t.m.Measurement"] ;
+EP1 [shape=circle width=0.15 fillcolor=black style=filled label="" xlabel="DEFAULT"] ;
 OTN7 [shape=rect style=rounded label="n.t.m.Cheese"] ;
+OTN2 [shape=rect style=rounded label="o.d.c.r.InitialFactImpl"] ;
 OTN10 [shape=rect style=rounded label="n.t.m.Person"] ;
-
-AN4 [label="id == \"color\""] ;
+OTN3 [shape=rect style=rounded label="n.t.m.Measurement"] ;
 AN8 [label="name == \"cheddar\""] ;
-
-LIA5 [shape=house orientation=-90] ;
+AN4 [label="id == \"color\""] ;
 LIA9 [shape=house orientation=-90] ;
-
-BN11 [shape=box label="favouriteCheese == $cheddar"] ;
-BN13 [shape=box label="favouriteCheese != $cheddar"] ;
-
-
-RTN6 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="For color"] ;
-RTN12 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Likes cheddar"] ;
-RTN14 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Don't like cheddar"] ;
+LIA5 [shape=house orientation=-90] ;
+BN11 [shape=box label="favouriteCheese == $cheddar" href="http://drools.org"] ;
+BN13 [shape=box label="favouriteCheese != $cheddar" href="http://drools.org"] ;
+RTN12 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Likes cheddar" href="http://drools.org"] ;
+RTN14 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Don't like cheddar" href="http://drools.org"] ;
+RTN6 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="For color" href="http://drools.org"] ;
 
 EP1 -> OTN7 ;
- OTN7 -> AN8 ;
-  
-  AN8 -> LIA9 ;
-   
-   LIA9 -> BN11 ;
-    
-    BN11 -> RTN12 ;
-     
-   LIA9 -> BN13 ;
-    
-    BN13 -> RTN14 ;
-     
+OTN7 -> AN8 ;
+AN8 -> LIA9 ;
+LIA9 -> BN11 ;
+BN11 -> RTN12 ;
+LIA9 -> BN13 ;
+BN13 -> RTN14 ;
 EP1 -> OTN2 ;
 EP1 -> OTN10 ;
- OTN10 -> BN11 ;
- OTN10 -> BN13 ;
+OTN10 -> BN11 ;
+OTN10 -> BN13 ;
 EP1 -> OTN3 ;
- OTN3 -> AN4 ;
-  
-  AN4 -> LIA5 ;
-   
-   LIA5 -> RTN6 ;
-    
+OTN3 -> AN4 ;
+AN4 -> LIA5 ;
+LIA5 -> RTN6 ;
 
- {rank=same; l3[style=invis, shape=point]; LIA9; LIA5; }
  {rank=same; l2[style=invis, shape=point]; AN4; AN8; }
- {rank=same; l5[style=invis, shape=point]; RTN14; RTN12; RTN6; }
- {rank=same; l4[style=invis, shape=point]; }
+ {rank=same; l3[style=invis, shape=point]; LIA9; LIA5; }
  {rank=same; l1[style=invis, shape=point]; OTN2; OTN10; OTN3; OTN7; }
+ {rank=same; l4[style=invis, shape=point]; }
+ {rank=same; l5[style=invis, shape=point]; RTN14; RTN12; RTN6; }
  edge[style=invis];
  l1->l2->l3->l4->l5;
 }
