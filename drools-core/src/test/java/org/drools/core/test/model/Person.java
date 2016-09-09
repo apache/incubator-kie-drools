@@ -33,6 +33,7 @@ public class Person {
     private String city;
     private String state;
     private String country;
+    private Gender gender;
     
     private Map<String, Address> addresses;
     
@@ -142,7 +143,15 @@ public class Person {
     public void setAddressArray(Address[] addressArray) {
         this.addressArray = addressArray;
     }
-    
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender( final Gender gender ) {
+        this.gender = gender;
+    }
+
     public static class Nested1 {
         public static class Nested2 {
             public static class Nested3 {
