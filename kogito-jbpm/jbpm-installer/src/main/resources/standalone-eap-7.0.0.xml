@@ -43,10 +43,10 @@
             <security-realm name="ApplicationRealm">
                 <authentication>
                     <local default-user="$local" allowed-users="*" skip-group-loading="true"/>
-                    <properties path="application-users.properties" relative-to="jboss.server.config.dir"/>
+                    <properties path="users.properties" relative-to="jboss.server.config.dir"/>
                 </authentication>
                 <authorization>
-                    <properties path="application-roles.properties" relative-to="jboss.server.config.dir"/>
+                    <properties path="roles.properties" relative-to="jboss.server.config.dir"/>
                 </authorization>
             </security-realm>
         </security-realms>
@@ -317,9 +317,11 @@
             <security-domains>
                 <security-domain name="other" cache-type="default">
                     <authentication>
-                        <login-module code="UsersRoles" flag="required">
-                            <module-option name="usersProperties" value="${jboss.server.config.dir}/users.properties"/>
-                            <module-option name="rolesProperties" value="${jboss.server.config.dir}/roles.properties"/>
+                        <login-module code="Remoting" flag="optional">
+                            <module-option name="password-stacking" value="useFirstPass"/>
+                        </login-module>
+                        <login-module code="RealmDirect" flag="required">
+                            <module-option name="password-stacking" value="useFirstPass"/>
                         </login-module>
                         <login-module code="org.kie.security.jaas.KieLoginModule" flag="optional" module="deployment.jbpm-console.war"/>
                     </authentication>
