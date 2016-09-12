@@ -199,16 +199,16 @@ public class ServiceTaskHandler extends AbstractLogOrThrowWorkItemHandler implem
                     try {
                         client = dcf.createClient(importObj.getLocation(), new QName(importObj.getNamespace(), interfaceRef), getInternalClassLoader(), null);
                         clients.put(interfaceRef, client);
-                        
+                        logger.info("WS Client is created for {" + importObj.getNamespace() + "}" + interfaceRef);
                         return client;
                     } catch (Exception e) {
-                	    logger.error("Error when creating WS Client", e);
+                        logger.info("Error when creating WS Client. You can ignore this error as long as a client is eventually created", e);
                         continue;
                     }
                 }
             }
         }
-        
+
         return null;
 
     }
