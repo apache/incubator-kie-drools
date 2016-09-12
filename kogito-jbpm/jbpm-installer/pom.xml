@@ -12,6 +12,10 @@
   <artifactId>jbpm-installer</artifactId>
   <name>jBPM :: Installer</name>
 
+  <properties>
+    <findbugs.skip>true</findbugs.skip>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>ch.qos.logback</groupId>
