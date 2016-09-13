@@ -171,7 +171,7 @@ public class RuleTemplateModelDRLPersistenceImpl
                     if ( parentVarsInScope.size() > 0 ) {
                         buf.append( "@if{!(" );
                         for ( String var : parentVarsInScope ) {
-                            buf.append( var + " == empty || " );
+                            buf.append( var + " == empty && " );
                         }
                         buf.delete( buf.length() - 4, buf.length() );
                         buf.append( ")}" );
