@@ -214,9 +214,9 @@ public class KieContainerImpl
     }
 
     private void updateKBase( InternalKnowledgeBase kBase, InternalKieModule currentKM, ReleaseId newReleaseId,
-                              InternalKieModule newKM, KieJarChangeSet cs, List<String> modifiedClasses, List<String> unchangedResources,
-                              ResultsImpl results, KieBaseModel kieBaseModel ) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kBase );
+                              InternalKieModule newKM, KieJarChangeSet cs, List<String> modifiedClasses,
+                              List<String> unchangedResources, ResultsImpl results, KieBaseModel kieBaseModel ) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kBase, newKM.getBuilderConfiguration( kieBaseModel ) );
         KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
