@@ -60,7 +60,7 @@ public abstract class AbstractMemoryTest {
                                     + getMemoryMeasurementsString(averageMemoryFootprints),
                             memoryRaiseCount > acceptedNumberOfMemoryRaises);
                 }
-                logger.info("Average memory: " + averageMemory);
+                logger.debug("Average memory: " + averageMemory);
                 averageMemoryFootprints.add(averageMemory);
                 averageMemory = 0;
             }

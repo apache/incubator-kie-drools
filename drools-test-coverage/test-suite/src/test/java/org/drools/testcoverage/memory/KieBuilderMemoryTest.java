@@ -32,7 +32,7 @@ import org.kie.internal.utils.KieHelper;
 
 public class KieBuilderMemoryTest extends AbstractMemoryTest {
 
-    private static final long TEST_DURATION_MS = 10_000L;
+    private static final long TEST_DURATION_MS = 20_000L;
 
     private ExecutorService executor;
 
@@ -50,14 +50,34 @@ public class KieBuilderMemoryTest extends AbstractMemoryTest {
     }
 
     @Test
-    public void testKieBuilderMemoryFootprint() {
+    public void testMemoryFootprintNoResources() {
+        testKieBuilderMemoryFootprint();
+    }
+
+    @Test
+    public void testMemoryFootprintSimpleDrl() {
+        final String drl = "package " + this.getClass().getPackage().getName() + ";" +
+            " rule R1 \n" +
+            " when \n" +
+            "     String() \n" +
+            " then \n" +
+            " end ";
+
+        final KieResources kieResources = KieServices.Factory.get().getResources();
+        final Resource drlResource = kieResources.newByteArrayResource(drl.getBytes(), "UTF-8");
+        drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
+
+        testKieBuilderMemoryFootprint(drlResource);
+    }
+
+    private void testKieBuilderMemoryFootprint(final Resource... resources) {
         final long endTime = System.currentTimeMillis() + TEST_DURATION_MS;
         executor.submit(() -> {
             while (System.currentTimeMillis() < endTime) {
                 try {
-                    createKieBase();
+                    createKieBase(resources);
                 } catch (Exception ex) {
-                    logger.info(ex.getMessage());
+                    logger.debug(ex.getMessage());
                     ex.printStackTrace();
                     break;
                 }
@@ -67,20 +87,11 @@ public class KieBuilderMemoryTest extends AbstractMemoryTest {
         measureMemoryFootprintInTime(TEST_DURATION_MS / waitEachIterationMillis, 100, 6, waitEachIterationMillis);
     }
 
-    private void createKieBase() {
-        final String drl = "package " + this.getClass().getPackage().getName() + ";" +
-                " rule R1 \n" +
-                " when \n" +
-                "     String() \n" +
-                " then \n" +
-                " end ";
-
-        final KieResources kieResources = KieServices.Factory.get().getResources();
-        final Resource drlResource = kieResources.newByteArrayResource(drl.getBytes(), "UTF-8");
-        drlResource.setTargetPath(TestConstants.DRL_TEST_TARGET_PATH);
-
+    private void createKieBase(final Resource... resources) {
         final KieHelper kieHelper = new KieHelper();
-        kieHelper.addResource(drlResource);
+        for (Resource resource : resources) {
+            kieHelper.addResource(resource);
+        }
         kieHelper.build();
     }
 
