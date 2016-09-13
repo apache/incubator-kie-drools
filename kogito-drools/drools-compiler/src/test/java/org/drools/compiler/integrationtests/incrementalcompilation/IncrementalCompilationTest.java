@@ -60,6 +60,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
+import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.command.CommandFactory;
 
 import java.io.StringReader;
@@ -3006,5 +3007,37 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         assertEquals( 1, list.size() );
         assertEquals( "YOUR_CODE", list.get(0) );
+    }
+
+    @Test
+    public void testKeepBuilderConfAfterIncrementalUpdate() throws Exception {
+        // DROOLS-1282
+        String drl1 = "import " + DummyEvent.class.getCanonicalName() + "\n" +
+                      "rule R1 when\n" +
+                      "  DummyEvent() @watch(id)\n" +
+                      "then end\n";
+
+        String drl2 = "import " + DummyEvent.class.getCanonicalName() + "\n" +
+                      "rule R1 when\n" +
+                      "  DummyEvent() @watch(*)\n" +
+                      "then end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel()
+                                 .setConfigurationProperty( PropertySpecificOption.PROPERTY_NAME,
+                                                            PropertySpecificOption.ALWAYS.toString() );
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-property-reactive-upgrade", "1" );
+
+        KieModule km = deployJar( ks, createKJar( ks, kproj, releaseId1, null, drl1 ) );
+        KieContainer container = ks.newKieContainer(releaseId1);
+        container.newKieSession();
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-property-reactive-upgrade", "2" );
+        km = deployJar( ks, createKJar( ks, kproj, releaseId2, null, drl2 ) );
+
+        Results results = container.updateToVersion(releaseId2);
+        assertEquals( 0, results.getMessages().size() );
     }
 }

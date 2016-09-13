@@ -27,6 +27,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.definition.KnowledgePackage;
 
@@ -85,4 +86,6 @@ public interface InternalKieModule extends KieModule {
     InputStream getPomAsStream();
 
     PomModel getPomModel();
+
+    KnowledgeBuilderConfiguration getBuilderConfiguration( KieBaseModel kBaseModel );
 }
