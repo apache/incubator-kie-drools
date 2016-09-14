@@ -45,11 +45,6 @@ public interface InternalKieContainer extends KieContainer {
     StatelessKieSession getStatelessKieSession(String kSessionName);
 
     /**
-     * Disposes all the KieSessions created in this KieContainer
-     */
-    void dispose();
-
-    /**
      * Internal use: returns the RelaseId configured while creating the Kiecontainer, 
      * or alternatively if the RelaseId was NOT configured while creating the Kiecontainer,
      * returns the the ReleaseId of the KieModule wrapped by this KieContainer. 
@@ -72,8 +67,8 @@ public interface InternalKieContainer extends KieContainer {
     KieModule getMainKieModule();
 
     /**
-     * Returns the unique ID assigned to the container.
-     * @return the unique ID assigned to the container.
+     * Returns the ID assigned to the container.
+     * @return the ID assigned to the container.
      */
 	String getContainerId();
 	
