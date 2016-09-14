@@ -39,14 +39,20 @@ import static org.kie.scanner.embedder.MavenSettings.CUSTOM_SETTINGS_PROPERTY;
 
 public class MavenEmbedderTest {
 
+    private final String EMPTY_SETTINGS = "<settings xmlns=\"http://maven.apache.org/SETTINGS/1.0.0\"\n" +
+                                          "      xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                                          "      xsi:schemaLocation=\"http://maven.apache.org/SETTINGS/1.0.0\n" +
+                                          "                          http://maven.apache.org/xsd/settings-1.0.0.xsd\"/>\n";
+
     @Test
     public void testExternalRepositories() {
         String oldSettingsXmlPath = System.getProperty( CUSTOM_SETTINGS_PROPERTY );
         try {
             if (oldSettingsXmlPath != null) {
                 System.clearProperty( CUSTOM_SETTINGS_PROPERTY );
-                MavenSettings.reinitSettings();
             }
+            MavenSettings.reinitSettingsFromString(EMPTY_SETTINGS);
+
             final MavenRequest mavenRequest = createMavenRequest(null);
             final MavenEmbedder embedder = new MavenEmbedderMock( mavenRequest );
             final MavenExecutionRequest request = embedder.buildMavenExecutionRequest( mavenRequest );
@@ -69,8 +75,8 @@ public class MavenEmbedderTest {
         } finally {
             if (oldSettingsXmlPath != null) {
                 System.setProperty( CUSTOM_SETTINGS_PROPERTY, oldSettingsXmlPath );
-                MavenSettings.reinitSettings();
             }
+            MavenSettings.reinitSettings();
         }
     }
 
