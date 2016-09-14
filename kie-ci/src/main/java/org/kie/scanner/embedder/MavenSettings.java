@@ -22,6 +22,7 @@ import org.apache.maven.settings.building.FileSettingsSource;
 import org.apache.maven.settings.building.SettingsBuilder;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsSource;
+import org.apache.maven.settings.building.StringSettingsSource;
 import org.apache.maven.settings.building.UrlSettingsSource;
 import org.kie.scanner.Aether;
 import org.kie.scanner.MavenRepository;
@@ -46,8 +47,17 @@ public class MavenSettings {
 
         private static void reinitSettings() {
             userSettingsSource = initUserSettingsSource();
+            internalInit();
+        }
+
+        private static void reinitSettingsFromString(String settings) {
+            userSettingsSource = new StringSettingsSource( settings );
+            internalInit();
+        }
+
+        private static void internalInit() {
             settings = initSettings(userSettingsSource);
-            mavenConf = new MavenRepositoryConfiguration(settings);
+            mavenConf = new MavenRepositoryConfiguration( settings);
             Aether.instance = null;
             MavenProjectLoader.mavenProject = null;
             MavenRepository.defaultMavenRepository = null;
@@ -57,6 +67,11 @@ public class MavenSettings {
     // USE ONLY FOR TESTING PURPOSES
     public static void reinitSettings() {
         SettingsHolder.reinitSettings();
+    }
+
+    // USE ONLY FOR TESTING PURPOSES
+    public static void reinitSettingsFromString(String settings) {
+        SettingsHolder.reinitSettingsFromString(settings);
     }
 
     public static SettingsSource getUserSettingsSource() {
