@@ -104,8 +104,10 @@ public interface KieServices {
     /**
      * Returns KieContainer for the classpath enforcing the given containerId,
      * this a global singleton.
+     * <p>If enforcing the containerId is successful, the KieContainer and its containerId are registered within the KieServices.
+     * Deregistration can be performed by calling {@link KieContainer#dispose()} on the resulting KieContainer.</p>
      * <p> If you do not want to enforce a specific containerId, use the {@link #getKieClasspathContainer()} method instead. </p>
-     * @param containerId the containerId to enforce
+     * @param containerId the containerId to enforce (non-null).
      * @return kie classpath container
      *
      * @throws IllegalStateException if the containerId is already existing for another container and therefore cannot be enforced.
@@ -114,8 +116,10 @@ public interface KieServices {
 
     /**
      * Returns KieContainer for the classpath enforcing the given containerId and using the given classLoader,
-     * this a global singleton
-     * @param containerId the containerId to enforce
+     * this a global singleton.
+     * <p>If enforcing the containerId is successful, the KieContainer and its containerId are registered within the KieServices.
+     * Deregistration can be performed by calling {@link KieContainer#dispose()} on the resulting KieContainer.</p>
+     * @param containerId the containerId to enforce (non-null).
      * @param classLoader classLoader
      * @return kie classpath container
      *
@@ -141,8 +145,10 @@ public interface KieServices {
      * Creates a new KieContainer for the classpath,
      * regardless if there's already an existing one,
      * enforcing the given containerId.
+     * <p>If enforcing the containerId is successful, the KieContainer and its containerId are registered within the KieServices.
+     * Deregistration can be performed by calling {@link KieContainer#dispose()} on the resulting KieContainer.</p>
      * <p> If you do not want to enforce a specific containerId, use the {@link #newKieClasspathContainer()} method instead. </p>
-     * @param containerId a unique containerId
+     * @param containerId a unique containerId (non-null).
      * @return new kie classpath container
      * @throws IllegalStateException if the containerId is already existing for another container, and therefore cannot be enforced.
      */
@@ -152,7 +158,9 @@ public interface KieServices {
      * Creates a new KieContainer for the classpath using the given classLoader,
      * regardless if there's already an existing one,
      * enforcing the given containerId.
-     * @param containerId a unique containerId
+     * <p>If enforcing the containerId is successful, the KieContainer and its containerId are registered within the KieServices.
+     * Deregistration can be performed by calling {@link KieContainer#dispose()} on the resulting KieContainer.</p>
+     * @param containerId a unique containerId (non-null).
      * @param classLoader classLoader
      * @return new kie classpath container
      * @throws IllegalStateException if the containerId is already existing for another container, and therefore cannot be enforced.
@@ -169,8 +177,10 @@ public interface KieServices {
     /**
      * Creates a new KieContainer wrapping the KieModule with the given ReleaseId
      * and enforcing the given containerId.
+     * <p>If enforcing the containerId is successful, the KieContainer and its containerId are registered within the KieServices.
+     * Deregistration can be performed by calling {@link KieContainer#dispose()} on the resulting KieContainer.</p>
      * <p> If you do not want to enforce a specific containerId, use the {@link #newKieContainer(ReleaseId)} method instead. </p>
-     * @param containerId a unique containerId
+     * @param containerId a unique containerId (non-null).
      * @param releaseId releaseId
      * @return new kie container
      * @throws IllegalStateException if the containerId is already existing for another container, and therefore cannot be enforced.
@@ -190,7 +200,9 @@ public interface KieServices {
      * Creates a new KieContainer wrapping the KieModule with the given ReleaseId,
      * using the given class loader
      * and enforcing the given containerId.
-     * @param containerId a unique containerId
+     * <p>If enforcing the containerId is successful, the KieContainer and its containerId are registered within the KieServices.
+     * Deregistration can be performed by calling {@link KieContainer#dispose()} on the resulting KieContainer.</p>
+     * @param containerId a unique containerId (non-null).
      * @param releaseId releaseId
      * @param classLoader classLoader
      * @return new kie container
