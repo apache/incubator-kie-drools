@@ -186,7 +186,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         
         // MBean are supported only via KieContainer public API.
         assertEquals(3, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(kc1ID)+",*"), null).size());
-        ((InternalKieContainer) kc).dispose();
+        kc.dispose();
         assertEquals(0, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(kc1ID)+",*"), null).size());
         assertEquals(3, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote("Matteo")+",*"), null).size());
     }
@@ -365,7 +365,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         
         KieContainer kc2 = ks.newKieContainer( "kc2", releaseId1 );
         assertEquals(5, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(containerId)+",*"), null).size());
-        ((InternalKieContainer) kc).dispose();
+        kc.dispose();
         assertEquals(0, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(containerId)+",*"), null).size());
         assertEquals(1, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote("kc2")+",*"), null).size());
     }

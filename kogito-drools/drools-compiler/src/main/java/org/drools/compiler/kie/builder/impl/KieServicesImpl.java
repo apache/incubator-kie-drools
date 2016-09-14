@@ -127,21 +127,21 @@ public class KieServicesImpl implements InternalKieServices {
     }
 
     public KieContainer newKieClasspathContainer(String containerId, ClassLoader classLoader) {
-    	String createContainerWithId = containerId;
-    	if (createContainerWithId == null) {
-    		createContainerWithId = UUID.randomUUID().toString();
+    	if (containerId == null) {
+    	    KieContainerImpl newContainer = new KieContainerImpl(UUID.randomUUID().toString(), new ClasspathKieProject(classLoader, listener), null);
+    	    return newContainer;
     	}
-    	if ( kContainers.get(createContainerWithId) == null ) {
-            KieContainerImpl newContainer = new KieContainerImpl(createContainerWithId, new ClasspathKieProject(classLoader, listener), null);
-            KieContainer check = kContainers.putIfAbsent(createContainerWithId, newContainer);
+    	if ( kContainers.get(containerId) == null ) {
+            KieContainerImpl newContainer = new KieContainerImpl(containerId, new ClasspathKieProject(classLoader, listener), null);
+            KieContainer check = kContainers.putIfAbsent(containerId, newContainer);
             if (check == null) {
 				return newContainer;
             } else {
             	newContainer.dispose();
-            	throw new IllegalStateException("There's already another KieContainer created with the id "+createContainerWithId);
+            	throw new IllegalStateException("There's already another KieContainer created with the id "+containerId);
             }
         } else {
-            throw new IllegalStateException("There's already another KieContainer created with the id "+createContainerWithId);
+            throw new IllegalStateException("There's already another KieContainer created with the id "+containerId);
         }
     }
 
@@ -187,21 +187,21 @@ public class KieServicesImpl implements InternalKieServices {
         }
         KieProject kProject = new KieModuleKieProject( kieModule, classLoader );
 
-        String createContainerWithId = containerId;
-    	if (createContainerWithId == null) {
-    		createContainerWithId = UUID.randomUUID().toString();
+    	if (containerId == null) {
+    	    KieContainerImpl newContainer = new KieContainerImpl( UUID.randomUUID().toString(), kProject, getRepository(), releaseId );
+    		return newContainer;
     	}
-    	if ( kContainers.get(createContainerWithId) == null ) {
-            KieContainerImpl newContainer = new KieContainerImpl( createContainerWithId, kProject, getRepository(), releaseId );
-            KieContainer check = kContainers.putIfAbsent(createContainerWithId, newContainer);
+    	if ( kContainers.get(containerId) == null ) {
+            KieContainerImpl newContainer = new KieContainerImpl( containerId, kProject, getRepository(), releaseId );
+            KieContainer check = kContainers.putIfAbsent(containerId, newContainer);
             if (check == null) {
             	return newContainer;
             } else {
             	newContainer.dispose();
-            	throw new IllegalStateException("There's already another KieContainer created with the id "+createContainerWithId);
+            	throw new IllegalStateException("There's already another KieContainer created with the id "+containerId);
             }
         } else {
-            throw new IllegalStateException("There's already another KieContainer created with the id "+createContainerWithId);
+            throw new IllegalStateException("There's already another KieContainer created with the id "+containerId);
         }
     }
     
