@@ -476,7 +476,8 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
 
     @Test
     public void testDueDateUpdateSame() {
-        testDueDateUpdate(getToday(), getToday(), false);
+        final Timestamp today = getToday();
+        testDueDateUpdate(today, today, false);
     }
 
     @Test
