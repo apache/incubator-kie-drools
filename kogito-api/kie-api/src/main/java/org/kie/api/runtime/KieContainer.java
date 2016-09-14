@@ -29,6 +29,12 @@ import java.util.Collection;
  * A container for all the KieBases of a given KieModule
  */
 public interface KieContainer {
+    /**
+     * Disposes all the KieSessions created in this KieContainer.
+     * If this KieContainer's containerId was registered with the KieServices, it will free the ID and unregister it from KieServices.
+     * If existing, dispose all JMX resources associated with this KieContainer.
+     */
+    void dispose();
 
     /**
      * Returns the ReleaseId of the KieModule wrapped by this KieContainer

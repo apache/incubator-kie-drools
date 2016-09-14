@@ -2,6 +2,12 @@
   "revapi" : {
     "ignore" : [
       {
+          "code": "java.method.addedToInterface",
+          "new": "method void org.kie.api.runtime.KieContainer::dispose()",
+          "justification": "KieContainer dispose to free up resources, JMX resources, containerId if was registered with the KieServices" 
+      }
+      ,
+      {
           "code": "java.class.removed",
           "old": "class org.kie.api.management.KieSessionMonitoringMBean",
           "justification": "Interface moved from MBean type to MXBean type, so interface is now KieSessionMonitoringMXBean"
