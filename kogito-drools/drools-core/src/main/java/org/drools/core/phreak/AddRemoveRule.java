@@ -614,26 +614,11 @@ public class AddRemoveRule {
 
     public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode) {
         PathMemory pmem = streamMode ?
-                          sm.getPathMemories().get(0) :
-                          sm.getFirstDataDrivenPathMemory();
+                          getPathMemoryToFlushInStreamMode( sm, leftTuple ) :
+                          getPathMemoryToFlushForEagerEvaluation( sm, leftTuple );
 
         if ( pmem == null ) {
             return false;
-        }
-
-        if ( !streamMode && leftTuple == null && !pmem.isRuleLinked() ) {
-            pmem = null;
-            List<PathMemory> dataDrivenPmems = sm.getDataDrivenPathMemories();
-            // skip the first, we already know it isn't linked
-            for (int i = 1; i < dataDrivenPmems.size(); i++) {
-                if (dataDrivenPmems.get(i).isRuleLinked()) {
-                    pmem = dataDrivenPmems.get(i);
-                    break;
-                }
-            }
-            if ( pmem == null ) {
-                return false;
-            }
         }
 
         TupleSets<LeftTuple> leftTupleSets = new TupleSetsImpl<LeftTuple>();
@@ -658,6 +643,30 @@ public class AddRemoveRule {
         }
 
         return true;
+    }
+
+    private static PathMemory getPathMemoryToFlushForEagerEvaluation( SegmentMemory sm, LeftTuple leftTuple ) {
+        PathMemory pmem = sm.getFirstDataDrivenPathMemory();
+        if ( leftTuple == null && pmem != null && !pmem.isRuleLinked() ) {
+            // skip the first, we already know it isn't linked
+            pmem = getFirstLinkedPathMemory( sm, sm.getDataDrivenPathMemories(), 1 );
+        }
+        return pmem;
+    }
+
+    private static PathMemory getPathMemoryToFlushInStreamMode( SegmentMemory sm, LeftTuple leftTuple ) {
+        return leftTuple != null && leftTuple.getPropagationContext().isMarshalling() ?
+               sm.getPathMemories().get(0) : // marshalling requires flushing even if the pmem is unlinked
+               getFirstLinkedPathMemory( sm, sm.getPathMemories(), 0 );
+    }
+
+    private static PathMemory getFirstLinkedPathMemory( SegmentMemory sm, List<PathMemory> pmems, int start ) {
+        for (int i = start; i < pmems.size(); i++) {
+            if (pmems.get(i).isRuleLinked()) {
+                return pmems.get(i);
+            }
+        }
+        return null;
     }
 
     public static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, TupleSets<LeftTuple> leftTupleSets) {

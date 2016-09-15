@@ -77,9 +77,11 @@ public class RetePropagationContext
 
     private ObjectType                      objectType;
 
-    // this field is only set for propagations happening during 
+    // this field is only set for propagations happening during
     // the deserialization of a session
     private transient MarshallerReaderContext readerContext;
+
+    private transient boolean marshalling;
 
     public RetePropagationContext() {
 
@@ -429,6 +431,13 @@ public class RetePropagationContext
         return this.readerContext;
     }
 
+    public boolean isMarshalling() {
+        return marshalling;
+    }
+
+    public void setMarshalling( boolean marshalling ) {
+        this.marshalling = marshalling;
+    }
 
     public static String intEnumToString(PropagationContext pctx) {
         String pctxType = null;

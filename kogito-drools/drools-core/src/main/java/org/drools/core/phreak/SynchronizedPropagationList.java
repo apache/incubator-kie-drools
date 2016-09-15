@@ -108,7 +108,7 @@ public class SynchronizedPropagationList implements PropagationList {
                 }
                 newTail = entry;
             } else {
-                entry.execute(workingMemory);
+                entry.executeForMarshalling(workingMemory);
             }
         }
         head = newHead;

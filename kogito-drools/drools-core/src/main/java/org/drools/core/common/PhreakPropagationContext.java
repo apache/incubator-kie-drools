@@ -74,6 +74,8 @@ public class PhreakPropagationContext
     // the deserialization of a session
     private transient MarshallerReaderContext readerContext;
 
+    private transient boolean marshalling;
+
     public PhreakPropagationContext() {
 
     }
@@ -373,8 +375,15 @@ public class PhreakPropagationContext
         return this.readerContext;
     }
 
+    public boolean isMarshalling() {
+        return marshalling;
+    }
 
-    public static String intEnumToString(PropagationContext pctx) {
+    public void setMarshalling( boolean marshalling ) {
+        this.marshalling = marshalling;
+    }
+
+    public static String intEnumToString( PropagationContext pctx ) {
         String pctxType = null;
         switch( pctx.getType() ) {
             case PropagationContext.INSERTION:
