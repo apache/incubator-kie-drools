@@ -13,11 +13,13 @@ import org.junit.runner.RunWith;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.concurrent.BrokenBarrierException;
@@ -101,7 +103,7 @@ public class KieModuleRepoTest {
         KieModuleKieProject mockKieProject = spy(kieProject);
         doNothing().when(mockKieProject).init();
         doReturn(projectReleaseId).when(mockKieProject).getGAV();
-        doNothing().when(mockKieProject).updateToModule(any(InternalKieModule.class));
+        doReturn( new HashMap<String, KieBaseModel>() ).when( mockKieProject ).updateToModule( any( InternalKieModule.class ) );
 
         // kie repository
         KieRepository kieRepository = new KieRepositoryImpl();
