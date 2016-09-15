@@ -35,6 +35,7 @@ import java.util.concurrent.CountDownLatch;
 public interface PropagationEntry {
 
     void execute(InternalWorkingMemory wm);
+    void executeForMarshalling(InternalWorkingMemory wm);
     void execute(InternalKnowledgeRuntime kruntime);
 
     PropagationEntry getNext();
@@ -75,6 +76,11 @@ public interface PropagationEntry {
         @Override
         public void execute(InternalKnowledgeRuntime kruntime) {
             execute( ((InternalWorkingMemoryEntryPoint) kruntime).getInternalWorkingMemory() );
+        }
+
+        @Override
+        public void executeForMarshalling(InternalWorkingMemory wm) {
+            execute( wm );
         }
     }
 
@@ -122,7 +128,13 @@ public interface PropagationEntry {
             this.insertionTime = isEvent ? workingMemory.getTimerService().getCurrentTime() : 0L;
         }
 
-        public void execute(InternalWorkingMemory wm) {
+        @Override
+        public void executeForMarshalling( InternalWorkingMemory wm ) {
+            context.setMarshalling( true );
+            execute(wm);
+        }
+
+        public void execute( InternalWorkingMemory wm ) {
             for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
                 otn.propagateAssert( handle, context, wm );
                 if (isEvent) {

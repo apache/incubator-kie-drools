@@ -84,4 +84,7 @@ public interface PropagationContext
     void cleanReaderContext();
 
     void setEntryPoint(EntryPointId entryPoint);
+
+    boolean isMarshalling();
+    void setMarshalling( boolean marshalling );
 }
