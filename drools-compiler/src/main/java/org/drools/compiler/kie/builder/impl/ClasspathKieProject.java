@@ -158,7 +158,7 @@ public class ClasspathKieProject extends AbstractKieProject {
         }
     }
 
-    private static void fetchKModuleFromSpring(URL kModuleUrl, String fixedURL) {
+    private static void fetchKModuleFromSpring(URL kModuleUrl) {
         try{
             Class clazz = Class.forName("org.kie.spring.KModuleSpringMarshaller");
             Method method = clazz.getDeclaredMethod("fromXML", java.net.URL.class);
@@ -173,7 +173,7 @@ public class ClasspathKieProject extends AbstractKieProject {
         if ( url.getPath().endsWith("-spring.xml")) {
             // the entire kmodule creation is happening in the kie-spring module,
             // hence we force a null return
-            fetchKModuleFromSpring(url, fixedURL);
+            fetchKModuleFromSpring(url);
             return null;
         }
         KieModuleModel kieProject = KieModuleModelImpl.fromXML( url );
@@ -194,10 +194,10 @@ public class ClasspathKieProject extends AbstractKieProject {
             rootPath = IoUtils.asSystemSpecificPath( rootPath, rootPath.lastIndexOf( ':') );
         }
 
-        return createInternalKieModule(url, fixedURL, kieProject, releaseId, rootPath);
+        return createInternalKieModule(kieProject, releaseId, rootPath);
     }
 
-    public static InternalKieModule createInternalKieModule(URL url, String fixedURL, KieModuleModel kieProject, ReleaseId releaseId, String rootPath) {
+    public static InternalKieModule createInternalKieModule(KieModuleModel kieProject, ReleaseId releaseId, String rootPath) {
         File file = new File( rootPath );
         return file.isDirectory() ?
                new FileKieModule( releaseId, kieProject, file ) :
@@ -205,7 +205,7 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     public static String getPomProperties(String urlPathToAdd) {
-        String pomProperties = null;
+        String pomProperties;
         String rootPath = urlPathToAdd;
         if ( rootPath.lastIndexOf( ':' ) > 0 ) {
             rootPath = IoUtils.asSystemSpecificPath( rootPath, rootPath.lastIndexOf( ':' ) );
@@ -271,7 +271,9 @@ public class ClasspathKieProject extends AbstractKieProject {
             log.error( "Unable to load pom.properties from " + rootPath + "\n" + e.getMessage() );
         } finally {
             try {
-                zipFile.close();
+                if (zipFile != null) {
+                    zipFile.close();
+                }
             } catch ( IOException e ) {
                 log.error( "Error when closing InputStream to " + rootPath + "\n" + e.getMessage() );
             }
@@ -341,7 +343,7 @@ public class ClasspathKieProject extends AbstractKieProject {
                 }
             }
         } else {
-            log.warn( "As folder project tried to fall back to pom.xml, but could not find one for " + file );
+            log.warn( "As folder project tried to fall back to pom.xml, but could not find one" );
         }
         return null;
     }
