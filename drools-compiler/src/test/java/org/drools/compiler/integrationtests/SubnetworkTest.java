@@ -17,8 +17,11 @@
 package org.drools.compiler.integrationtests;
 
 import org.junit.Test;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.type.Role;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -61,4 +64,41 @@ public class SubnetworkTest {
 
         kieSession.fireAllRules();
     }
+
+    @Test
+    public void testNPEOnFlushingOfUnlinkedPmem() {
+        // DROOLS-1285
+        String drl =
+                "import " + A.class.getCanonicalName() + "\n" +
+                "import " + B.class.getCanonicalName() + "\n" +
+                "import " + C.class.getCanonicalName() + "\n" +
+                "rule R1 when\n" +
+                "    A()\n" +
+                "    B()\n" +
+                "    not( B() and C() )\n" +
+                "then end\n";
+
+        KieSession kSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build( EventProcessingOption.STREAM )
+                                             .newKieSession();
+
+        FactHandle fhA = kSession.insert( new A() );
+        kSession.insert(new C());
+        kSession.fireAllRules();
+
+        kSession.delete( fhA );
+
+        kSession.insert(new A());
+        kSession.insert(new B());
+        kSession.fireAllRules();
+    }
+
+    @Role(Role.Type.EVENT)
+    public static class A { }
+
+    @Role(Role.Type.EVENT)
+    public static class B { }
+
+    @Role(Role.Type.EVENT)
+    public static class C { }
 }
