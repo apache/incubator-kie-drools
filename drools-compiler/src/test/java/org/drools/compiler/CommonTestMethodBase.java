@@ -399,20 +399,24 @@ public class CommonTestMethodBase extends Assert {
                 kfs.write("src/main/resources/r" + i + ".drl", drls[i]);
             }
         }
-        KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
-        if( kb.getResults().hasMessages( org.kie.api.builder.Message.Level.ERROR ) ) {
-            for( org.kie.api.builder.Message result : kb.getResults().getMessages() ) {
+		return buildKJar( ks, kfs, releaseId );
+    }
+
+	public static byte[] buildKJar( KieServices ks, KieFileSystem kfs, ReleaseId releaseId ) {
+		KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+		if( kb.getResults().hasMessages( Message.Level.ERROR ) ) {
+            for( Message result : kb.getResults().getMessages() ) {
                 System.out.println(result.getText());
             }
             return null;
         }
-        InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
-                .getKieModule(releaseId);
-        byte[] jar = kieModule.getBytes();
-        return jar;
-    }
+		InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
+															.getKieModule(releaseId);
+		byte[] jar = kieModule.getBytes();
+		return jar;
+	}
 
-    public static KieModule deployJar(KieServices ks, byte[] jar) {
+	public static KieModule deployJar(KieServices ks, byte[] jar) {
         // Deploy jar into the repository
         Resource jarRes = ks.getResources().newByteArrayResource(jar);
         KieModule km = ks.getRepository().addKieModule(jarRes);

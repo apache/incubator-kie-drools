@@ -235,16 +235,17 @@ public class KieContainerImpl
         reinitModifiedClasses( newKM, modifiedClasses, getClassLoader() );
         final List<String> unchangedResources = getUnchangedResources( newKM, cs );
 
-        ((KieModuleKieProject) kProject).updateToModule( newKM );
+        Map<String, KieBaseModel> currentKieBaseModels = ((KieModuleKieProject) kProject).updateToModule( newKM );
 
         final ResultsImpl results = new ResultsImpl();
 
         List<String> kbasesToRemove = new ArrayList<String>();
         for ( Entry<String, KieBase> kBaseEntry : kBases.entrySet() ) {
             String kbaseName = kBaseEntry.getKey();
-            final KieBaseModel kieBaseModel = kProject.getKieBaseModel( kbaseName );
+            final KieBaseModel newKieBaseModel = kProject.getKieBaseModel( kbaseName );
+            final KieBaseModel currentKieBaseModel = currentKieBaseModels.get( kbaseName );
             // if a kbase no longer exists, just remove it from the cache
-            if ( kieBaseModel == null ) {
+            if ( newKieBaseModel == null ) {
                 // have to save for later removal to avoid iteration errors
                 kbasesToRemove.add( kbaseName );
             } else {
@@ -253,7 +254,7 @@ public class KieContainerImpl
                     @Override
                     public void run() {
                         updateKBase( kBase, currentKM, newReleaseId, newKM, cs, modifiedClasses, modifyingUsedClass,
-                                     unchangedResources, results, kieBaseModel);
+                                     unchangedResources, results, newKieBaseModel, currentKieBaseModel);
                     }
                 } );
             }
@@ -284,18 +285,18 @@ public class KieContainerImpl
 
     private void updateKBase( InternalKnowledgeBase kBase, InternalKieModule currentKM, ReleaseId newReleaseId,
                               InternalKieModule newKM, KieJarChangeSet cs, List<String> modifiedClasses, boolean modifyingUsedClass,
-                              List<String> unchangedResources, ResultsImpl results, KieBaseModel kieBaseModel ) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kBase, newKM.getBuilderConfiguration( kieBaseModel ) );
+                              List<String> unchangedResources, ResultsImpl results, KieBaseModel newKieBaseModel, KieBaseModel currentKieBaseModel ) {
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kBase, newKM.getBuilderConfiguration( newKieBaseModel ) );
         KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
         boolean shouldRebuild = applyResourceChanges(currentKM, newKM, cs, modifiedClasses,
-                                                     kBase, kieBaseModel, pkgbuilder, ckbuilder, modifyingUsedClass);
+                                                     kBase, newKieBaseModel, pkgbuilder, ckbuilder, modifyingUsedClass);
         // remove resources first
         for ( ResourceChangeSet rcs : cs.getChanges().values() ) {
             if ( rcs.getChangeType() == ChangeType.REMOVED ) {
                 String resourceName = rcs.getResourceName();
-                if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(newKM, kieBaseModel, resourceName) ) {
+                if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(currentKM, currentKieBaseModel, resourceName) ) {
                     pkgbuilder.removeObjectsGeneratedFromResource( currentKM.getResource( resourceName ) );
                 }
             }
@@ -304,11 +305,11 @@ public class KieContainerImpl
         if ( shouldRebuild ) {
             // readd unchanged dsl files to the kbuilder
             for (String dslFile : unchangedResources) {
-                if (isFileInKBase(newKM, kieBaseModel, dslFile)) {
-                    newKM.addResourceToCompiler(ckbuilder, kieBaseModel, dslFile);
+                if (isFileInKBase(newKM, newKieBaseModel, dslFile)) {
+                    newKM.addResourceToCompiler(ckbuilder, newKieBaseModel, dslFile);
                 }
             }
-            rebuildAll(newReleaseId, results, newKM, modifyingUsedClass, kieBaseModel, pkgbuilder, ckbuilder);
+            rebuildAll(newReleaseId, results, newKM, modifyingUsedClass, newKieBaseModel, pkgbuilder, ckbuilder);
         }
         
         kBase.setResolvedReleaseId(newReleaseId);
