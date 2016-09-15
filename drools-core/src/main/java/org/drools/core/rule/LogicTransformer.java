@@ -186,7 +186,6 @@ public class LogicTransformer {
             }
             Accumulate accumulate = (Accumulate)element;
             replaceDeclarations( resolver, accumulate );
-            accumulate.resetInnerDeclarationCache();
 
         } else if ( element instanceof From ) {
             DataProvider provider = ((From) element).getDataProvider();
