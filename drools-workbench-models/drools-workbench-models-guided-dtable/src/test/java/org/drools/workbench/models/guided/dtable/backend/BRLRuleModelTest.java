@@ -36,6 +36,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.drools.workbench.models.guided.dtable.shared.model.Pattern52;
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ActionInsertFactCol52ActionInsertFactAdaptor;
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ActionInsertFactCol52ActionInsertLogicalFactAdaptor;
+import org.drools.workbench.models.guided.dtable.shared.model.adaptors.ConditionCol52FieldConstraintAdaptor;
 import org.drools.workbench.models.guided.dtable.shared.model.adaptors.Pattern52FactPatternAdaptor;
 import org.junit.Test;
 
@@ -239,6 +240,37 @@ public class BRLRuleModelTest {
         assertNotNull( fcr1 );
         assertTrue( fcr1 instanceof SingleFieldConstraint );
         SingleFieldConstraint fcr1sfc = (SingleFieldConstraint) fcr1;
+        assertEquals( "name",
+                      fcr1sfc.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      fcr1sfc.getFieldType() );
+    }
+
+    @Test
+    public void testDecisionTableColumnsWithLHSBoundFieldsInConditionCol52() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 p1 = new Pattern52();
+        p1.setFactType( "Driver" );
+        p1.setBoundName( "$p1" );
+
+        ConditionCol52 c1 = new ConditionCol52();
+        c1.setFactField( "name" );
+        c1.setFieldType( DataType.TYPE_STRING );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        c1.setBinding( "$c1" );
+
+        p1.getChildColumns().add( c1 );
+        dt.getConditions().add( p1 );
+
+        BRLRuleModel model = new BRLRuleModel( dt );
+
+        FieldConstraint fcr1 = model.getLHSBoundField( "$c1" );
+        assertNotNull( fcr1 );
+        assertTrue( fcr1 instanceof ConditionCol52FieldConstraintAdaptor );
+        ConditionCol52FieldConstraintAdaptor fcr1sfc = (ConditionCol52FieldConstraintAdaptor) fcr1;
+        assertEquals( "Driver",
+                      fcr1sfc.getFactType() );
         assertEquals( "name",
                       fcr1sfc.getFieldName() );
         assertEquals( DataType.TYPE_STRING,
