@@ -70,9 +70,12 @@ public class ReteDiagram {
                 HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap = new HashMap<>();
                 HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap = new HashMap<>();
                 List<Vertex<BaseNode,BaseNode>> vertexes = new ArrayList<>();
-                dumpNode( entryPointNode, "", new HashSet<BaseNode>(), nodeMap, vertexes, levelMap, out);
+                dumpNode( entryPointNode, "", new HashSet<>(), nodeMap, vertexes, levelMap, out);
                 out.println("");
                 printNodeMap(nodeMap, out);
+                
+                System.out.println(nodeMap.get(RuleTerminalNode.class));
+                
                 out.println("");
                 printVertexes(vertexes, out);
                 out.println("");
@@ -119,7 +122,7 @@ public class ReteDiagram {
         printNodeMapNodes(nodeMap.get(ObjectTypeNode.class), out);
         printNodeMapNodes(nodeMap.getOrDefault(AlphaNode.class, Collections.emptyList()), out);
         printNodeMapNodes(nodeMap.get(LeftInputAdapterNode.class), out);
-        printNodeMapNodes(nodeMap.get(RightInputAdapterNode.class), out);
+        printNodeMapNodes(nodeMap.getOrDefault(RightInputAdapterNode.class, Collections.emptyList()), out);
         // Level 4: BN
         List<BaseNode> l4 = nodeMap.entrySet().stream()
                                 .filter(kv->BetaNode.class.isAssignableFrom( kv.getKey() ))
@@ -237,8 +240,8 @@ public class ReteDiagram {
         out.println(level);
     }
 
-    private static void dumpNode(BaseNode node, String ident, Set<BaseNode> visitedNodes, HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap, List<Vertex<BaseNode, BaseNode>> vertexes, Map<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out) {
-        if (!visitedNodes.add( node )) {
+    private static void dumpNode(BaseNode node, String ident, Set<Integer> visitedNodesIDs, HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap, List<Vertex<BaseNode, BaseNode>> vertexes, Map<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out) {
+        if (!visitedNodesIDs.add( node.getId() )) {
             return;
         }
         addToNodeMap(node, nodeMap);
@@ -248,7 +251,7 @@ public class ReteDiagram {
             for (Sink sink : sinks) {
                 vertexes.add(Vertex.of(node, (BaseNode)sink));
                 if (sink instanceof BaseNode) {
-                    dumpNode((BaseNode)sink, ident + " ", visitedNodes, nodeMap, vertexes, levelMap, out);
+                    dumpNode((BaseNode)sink, ident + " ", visitedNodesIDs, nodeMap, vertexes, levelMap, out);
                 }
             }
         }
