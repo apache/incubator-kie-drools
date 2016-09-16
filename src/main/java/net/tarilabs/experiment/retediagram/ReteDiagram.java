@@ -205,7 +205,7 @@ public class ReteDiagram {
         } else if (node instanceof RuleTerminalNode ) {
             return "RTN"+node.getId();
         }
-        return "???"+node;
+        return "UNK"+node;
     }
 
     private static String printNodeAttributes(BaseNode node) {
@@ -234,7 +234,7 @@ public class ReteDiagram {
             return String.format("[shape=doublecircle width=0.2 fillcolor=black style=filled label=\"\" xlabel=\"%1$s\" href=\"http://drools.org\"]",
                     n.getRule().getName());
         }
-        return "???"+node;
+        return String.format("[label=\"%1$s\"]", node.toString());
     }
 
     private static String printClassObjectType(ObjectTypeNode n) {
