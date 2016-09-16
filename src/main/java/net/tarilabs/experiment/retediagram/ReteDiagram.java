@@ -135,19 +135,20 @@ public class ReteDiagram {
     }
 
     private static void printLevelMap(HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out) {
+        levelMap.keySet().forEach(System.out::println);
         // FIXME:
         levelMap.computeIfAbsent(BetaNode.class, k -> new HashSet<>());
         
         for (Entry<Class<? extends BaseNode>, Set<BaseNode>> kv : levelMap.entrySet()) {
-            if (kv.getKey().isAssignableFrom(  ObjectTypeNode.class) ) {
+            if (ObjectTypeNode.class.isAssignableFrom( kv.getKey() ) ) {
                printLevelMapLevel(1, kv.getValue(), out);
-            } else if (kv.getKey().isAssignableFrom(  AlphaNode.class) ) {
+            } else if (AlphaNode.class.isAssignableFrom( kv.getKey() ) ) {
                 printLevelMapLevel(2, kv.getValue(), out);
-            } else if (kv.getKey().isAssignableFrom(  LeftInputAdapterNode.class) ) {
+            } else if (LeftInputAdapterNode.class.isAssignableFrom( kv.getKey() ) ) {
                 printLevelMapLevel(3, kv.getValue(), out);
-            } else if (kv.getKey().isAssignableFrom(  BetaNode.class) ) {
+            } else if (BetaNode.class.isAssignableFrom( kv.getKey()) ) {
                 printLevelMapLevel(4, kv.getValue(), out);
-            } else if (kv.getKey().isAssignableFrom(  RuleTerminalNode.class) ) {
+            } else if (RuleTerminalNode.class.isAssignableFrom( kv.getKey() ) ) {
                 printLevelMapLevel(5, kv.getValue(), out);
             }
         }
@@ -234,7 +235,7 @@ public class ReteDiagram {
             return String.format("[shape=doublecircle width=0.2 fillcolor=black style=filled label=\"\" xlabel=\"%1$s\" href=\"http://drools.org\"]",
                     n.getRule().getName());
         }
-        return String.format("[label=\"%1$s\"]", node.toString());
+        return String.format("[style=dotted label=\"%1$s\"]", node.toString());
     }
 
     private static String printClassObjectType(ObjectTypeNode n) {
