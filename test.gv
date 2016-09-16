@@ -19,8 +19,8 @@ BN11 [shape=box label="favouriteCheese == $cheddar" href="http://drools.org"] ;
 BN13 [shape=box label="favouriteCheese != $cheddar" href="http://drools.org"] ;
 BN18 [shape=box label="⋈" href="http://drools.org"] ;
 BN20 [shape=box label="⋈" href="http://drools.org"] ;
-BN16 [shape=box label="[ AccumulateNode(16) ]"] ;
-BN22 [shape=box label="not( ??null )"] ;
+BN16 [shape=box label=<[ AccumulateNode(16) ]<BR/>[org.drools.core.base.accumulators.JavaAccumulatorFunctionExecutor@49c90a9c]<BR/>[]>] ;
+BN22 [shape=box label="not( ⋈ )"] ;
 RTN12 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Likes cheddar" href="http://drools.org"] ;
 RTN14 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Don't like cheddar" href="http://drools.org"] ;
 RTN17 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Color count" href="http://drools.org"] ;
@@ -59,10 +59,10 @@ AN4 -> BN18 ;
  {rank=same; l1[style=invis, shape=point]; OTN19; OTN2; OTN10; OTN3; OTN7; }
  {rank=same; l2[style=invis, shape=point]; AN4; AN8; }
  {rank=same; l3[style=invis, shape=point]; LIA15; LIA9; LIA5; }
- {rank=same; lria[style=dashed, shape=point]; RIA21; }
- {rank=same; lriabeta[style=dotted, shape=point]; BN20; BN22; }
- {rank=same; l4[style=invis, shape=point]; BN11; BN18;  BN13;  BN16; }
+ {rank=same; lria[style=invis, shape=point]; RIA21; }
+ {rank=same; lriaSources[style=invis, shape=point]; BN18; BN20; }
+ {rank=same; lsubbeta[style=invis, shape=point]; BN22; }
+ {rank=same; l4[style=invis, shape=point]; BN11; BN13; BN16; }
  {rank=same; l5[style=invis, shape=point]; RTN14; RTN17; RTN23; RTN12; RTN6; }
- edge[style=invis];
- l1->l2->l3->lriabeta->lria->l4->l5;
+ l1->l2->l3->lriaSources->lria->lsubbeta->l4->l5;
 }

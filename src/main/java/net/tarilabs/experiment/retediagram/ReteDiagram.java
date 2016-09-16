@@ -75,7 +75,7 @@ public class ReteDiagram {
                 out.println("");
                 printVertexes(vertexes, out);
                 out.println("");
-                printLevelMap(levelMap, out);
+                printLevelMap(levelMap, out, vertexes);
                 out.println("}");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -145,7 +145,7 @@ public class ReteDiagram {
         }
     }
 
-    private static void printLevelMap(HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out) {
+    private static void printLevelMap(HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out, List<Vertex<BaseNode, BaseNode>> vertexes) {
         levelMap.keySet().forEach(System.out::println);
         // FIXME:
         levelMap.computeIfAbsent(BetaNode.class, k -> new HashSet<>());
@@ -154,49 +154,87 @@ public class ReteDiagram {
         Set<BaseNode> l1 = levelMap.entrySet().stream()
                                 .filter(kv->ObjectTypeNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel(1, l1, out);
+        printLevelMapLevel("l1", l1, out);
         
         // Level 2: AN
         Set<BaseNode> l2 = levelMap.entrySet().stream()
                                 .filter(kv->AlphaNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel(2, l2, out);
+        printLevelMapLevel("l2", l2, out);
         
         // Level 3: LIA
         Set<BaseNode> l3 = levelMap.entrySet().stream()
                                 .filter(kv->LeftInputAdapterNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel(3, l3, out);
+        printLevelMapLevel("l3", l3, out);
         
         // RIA
         Set<BaseNode> lria = levelMap.entrySet().stream()
                                 .filter(kv->RightInputAdapterNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel(99, lria, out);
+        printLevelMapLevel("lria", lria, out);
+        
+        // RIA beta sources
+        Set<BaseNode> lriaSources = new HashSet<>();
+        Set<Vertex<BaseNode, BaseNode>> onlyBetas = vertexes.stream().filter(v->v.from instanceof BetaNode).collect(toSet());
+        for (BaseNode ria : lria) {
+            Set<BaseNode> t = onlyBetas.stream()
+                    .filter(v->v.to.equals(ria))
+                    .map(v->v.from)
+                    .collect(toSet());
+            lriaSources.addAll(t);
+        }
+        for (BaseNode lriaSource : lriaSources) {
+            lriaSources.addAll( recurseIncomingVertex(lriaSource, onlyBetas) );
+        }
+        printLevelMapLevel("lriaSources", lriaSources, out);
+        
+        // subnetwork Betas
+        Set<BaseNode> lsubbeta = levelMap.entrySet().stream()
+                                .filter(kv->BetaNode.class.isAssignableFrom( kv.getKey() ))
+                                .flatMap(kv->kv.getValue().stream())
+                                .filter(b-> ((BetaNode) b).getObjectType() == null )
+                                .collect(toSet());
+        printLevelMapLevel("lsubbeta", lsubbeta, out);
 
         // Level 4: BN
         Set<BaseNode> l4 = levelMap.entrySet().stream()
                                 .filter(kv->BetaNode.class.isAssignableFrom( kv.getKey() ))
-                                .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel(4, l4, out);
+                                .flatMap(kv->kv.getValue().stream())
+                                .filter(b-> !lriaSources.contains(b) )
+                                .filter(b-> !lsubbeta.contains(b) )
+                                .collect(toSet());
+        printLevelMapLevel("l4", l4, out);
 
         // Level 5: RTN
         Set<BaseNode> l5 = levelMap.entrySet().stream()
                                 .filter(kv->RuleTerminalNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel(5, l5, out);
+        printLevelMapLevel("l5", l5, out);
         
-        out.println(" edge[style=invis];\n" + 
-                " l1->l2->l3->l99->l4->l5;");
+        out.println(
+//                " edge[style=invis];\n" + 
+                " l1->l2->l3->lriaSources->lria->lsubbeta->l4->l5;");
     }
 
-    private static void printLevelMapLevel(int i, Set<BaseNode> value, PrintStream out) {
+    private static Set<BaseNode> recurseIncomingVertex(BaseNode to, Set<Vertex<BaseNode, BaseNode>> vertexes) {
+        Set<BaseNode> acc = new HashSet<>();
+        for (Vertex<BaseNode, BaseNode> v : vertexes) {
+            if (v.to.equals(to)) {
+                acc.add( v.from );
+                acc.addAll( recurseIncomingVertex(v.from, vertexes) );
+            }
+        }
+        return acc;
+    }
+
+    private static void printLevelMapLevel(String levelId, Set<BaseNode> value, PrintStream out) {
         StringBuilder nodeIds = new StringBuilder();
         for (BaseNode n : value) {
             nodeIds.append(printNodeId(n)+"; ");
         }
-        String level = String.format(" {rank=same; l%1$d[style=invis, shape=point]; %2$s}",
-                i,
+        String level = String.format(" {rank=same; %1$s[style=invis, shape=point]; %2$s}",
+                levelId,
                 nodeIds.toString());
         out.println(level);
     }
@@ -273,12 +311,15 @@ public class ReteDiagram {
                     escapeDot(label));
         } else if (node instanceof NotNode ) {
             NotNode n = (NotNode) node;
-            return String.format("[shape=box label=\"not( %1$s )\"]", 
-                    strObjectType(n.getObjectType()) );
+            String label = "\u22C8";
+            if (n.getObjectType() != null) {
+                label = strObjectType(n.getObjectType());
+            }
+            return String.format("[shape=box label=\"not( %1$s )\"]", label );
         } else if (node instanceof AccumulateNode ) {
             AccumulateNode n = (AccumulateNode) node;
-            return String.format("[shape=box label=\"%1$s\"]", 
-                    n );
+            return String.format("[shape=box label=<%1$s<BR/>%2$s<BR/>%3$s>]", 
+                    n, Arrays.asList(n.getAccumulate().getAccumulators()), Arrays.asList(n.getConstraints()) );
         } else if (node instanceof RuleTerminalNode ) {
             RuleTerminalNode n = (RuleTerminalNode) node;
             return String.format("[shape=doublecircle width=0.2 fillcolor=black style=filled label=\"\" xlabel=\"%1$s\" href=\"http://drools.org\"]",
