@@ -58,23 +58,12 @@ public class RuleTest extends CommonTestMethodBase {
 	
 	@Test
 	public void test() {
+	    System.out.println("x");
 		KieServices kieServices = KieServices.Factory.get();
         
-		KieContainer kContainer = kieServices.getKieClasspathContainer();
-        Results verifyResults = kContainer.verify();
-        for (Message m : verifyResults.getMessages()) {
-        	LOG.info("{}", m);
-        }
-        
-	    LOG.info("Creating kieBase");
-	    KieBase kieBase = kContainer.getKieBase();
-        
-        LOG.info("There should be rules: ");
-        for ( KiePackage kp : kieBase.getKiePackages() ) {
-        	for (Rule rule : kp.getRules()) {
-        		LOG.info("kp " + kp + " rule " + rule.getName());
-        	}
-        }
+		KieBase kieBase = new KieHelper()
+		        .addFromClassPath("/rules.drl")
+		        .build();
 
 	    LOG.info("Creating kieSession");
 	    KieSession session = kieBase.newKieSession();

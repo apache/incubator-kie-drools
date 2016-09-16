@@ -231,7 +231,7 @@ public class ReteDiagram {
         for (BaseNode n : value) {
             nodeIds.append(printNodeId(n)+"; ");
         }
-        String level = String.format(" {rank=same; %1$s[style=invis, shape=point]; %2$s}",
+        String level = String.format(" {rank=same; %1$s[shape=point, xlabel=\"%1$s\"]; %2$s}",
                 levelId,
                 nodeIds.toString());
         out.println(level);
@@ -303,7 +303,8 @@ public class ReteDiagram {
             BetaNodeFieldConstraint[] constraints = n.getConstraints();
             String label = "\u22C8";
             if (constraints.length > 0) {
-                label = Arrays.stream(constraints).map(Object::toString).collect(Collectors.joining(", "));
+                label = strObjectType(n.getObjectType(), false);
+                label = label + "( "+ Arrays.stream(constraints).map(Object::toString).collect(joining(", ")) + " )";
             }
             return String.format("[shape=box label=\"%1$s\" href=\"http://drools.org\"]",
                     escapeDot(label));
@@ -311,7 +312,8 @@ public class ReteDiagram {
             NotNode n = (NotNode) node;
             String label = "\u22C8";
             if (n.getObjectType() != null) {
-                label = strObjectType(n.getObjectType());
+                label = strObjectType(n.getObjectType(), false);
+                label = label + "( "+ Arrays.stream(n.getConstraints()).map(Object::toString).collect(joining(", ")) + " )";
             }
             return String.format("[shape=box label=\"not( %1$s )\"]", label );
         } else if (node instanceof AccumulateNode ) {
@@ -327,18 +329,24 @@ public class ReteDiagram {
     }
     
     private static String strObjectType(ObjectType ot) {
+        return strObjectType(ot, true);
+    }
+    
+    private static String strObjectType(ObjectType ot, boolean prependAbbrPackage) {
         if (ot instanceof ClassObjectType) {
-            return abbrvClassForObjectType((ClassObjectType) ot);
+            return abbrvClassForObjectType((ClassObjectType) ot, prependAbbrPackage);
         }
         return "??"+ ((ot==null)?"null":ot.toString());
     }
 
-    private static String abbrvClassForObjectType(ClassObjectType cot) {
+    private static String abbrvClassForObjectType(ClassObjectType cot, boolean prependAbbrPackage) {
         Class<?> classType = cot.getClassType();
-        String[] packageToken = classType.getPackage().getName().split("\\.");
         StringBuilder result = new StringBuilder();
-        for (String pt : packageToken) {
-            result.append(pt.charAt(0) + ".");
+        if (prependAbbrPackage) {
+            String[] packageToken = classType.getPackage().getName().split("\\.");
+            for (String pt : packageToken) {
+                result.append(pt.charAt(0) + ".");
+            }
         }
         result.append(classType.getSimpleName());
         return result.toString();
