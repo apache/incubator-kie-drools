@@ -15,7 +15,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.impl.InternalKnowledgeBase;
