@@ -861,6 +861,110 @@ public class GuidedDTDRLPersistenceTest {
     }
 
     @Test
+    public void multipleLHSNotPatternInclusion() {
+        GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+        Object[] row = new Object[]{ "1", "desc", "mike", true, true };
+        Object[][] data = new Object[ 1 ][];
+        data[ 0 ] = row;
+
+        List<BaseColumn> allColumns = new ArrayList<>();
+        List<CompositeColumn<? extends BaseColumn>> allPatterns = new ArrayList<>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Person" );
+        allPatterns.add( p1 );
+
+        ConditionCol52 p1col = new ConditionCol52();
+        p1col.setFactField( "name" );
+        p1col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p1col.setOperator( "==" );
+        p1.getChildColumns().add( p1col );
+        allColumns.add( p1col );
+
+        Pattern52 p2 = new Pattern52();
+        p2.setBoundName( "" );
+        p2.setNegated( true );
+        p2.setFactType( "Cheese" );
+        allPatterns.add( p2 );
+
+        ConditionCol52 p2col = new ConditionCol52();
+        p2col.setFactField( "this" );
+        p2col.setOperator( "" );
+        p2col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p2.getChildColumns().add( p2col );
+        allColumns.add( p2col );
+
+        Pattern52 p3 = new Pattern52();
+        p3.setBoundName( "" );
+        p3.setNegated( true );
+        p3.setFactType( "Smurf" );
+        allPatterns.add( p3 );
+
+        ConditionCol52 p3col = new ConditionCol52();
+        p3col.setFactField( "this" );
+        p3col.setOperator( "!= null" );
+        p3col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        p3.getChildColumns().add( p3col );
+        allColumns.add( p3col );
+
+        List<DTCellValue52> rowData = DataUtilities.makeDataRowList( row );
+        TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
+                                                                                 rowData );
+
+        RuleModel rm = new RuleModel();
+        rm.name = "r0";
+
+        p.doConditions( allColumns,
+                        allPatterns,
+                        rowDataProvider,
+                        rowData,
+                        DataUtilities.makeDataLists( data ),
+                        rm );
+
+        final String actualRuleModelDrl = RuleModelDRLPersistenceImpl.getInstance().marshal( rm );
+
+        final String expectedRuleModelDrl = "rule \"r0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Person( name == \"mike\" )\n" +
+                "    not Cheese()\n" +
+                "    not Smurf( this != null )\n" +
+                "  then\n" +
+                "end\n";
+
+        assertEqualsIgnoreWhitespace( expectedRuleModelDrl,
+                                      actualRuleModelDrl );
+
+        final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableName( "dt" );
+
+        dt.getConditions().add( p1 );
+        dt.getConditions().add( p2 );
+        dt.getConditions().add( p3 );
+
+        dt.getData().addAll( DataUtilities.makeDataLists( data ) );
+
+        final String actualDecisionTableDrl = GuidedDTDRLPersistence.getInstance().marshal( dt );
+
+        final String expectedDecisionTableDrl = "//from row number: 1\n" +
+                "//desc\n" +
+                "rule \"Row1dt\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Person( name == \"mike\" )\n" +
+                "    not Cheese()\n" +
+                "    not Smurf( this != null )\n" +
+                "  then\n" +
+                "end\n";
+
+        assertEqualsIgnoreWhitespace( expectedDecisionTableDrl,
+                                      actualDecisionTableDrl );
+    }
+
+    @Test
     public void testLHSOtherwisePatternBoolean() {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[][] row = new String[ 2 ][];
