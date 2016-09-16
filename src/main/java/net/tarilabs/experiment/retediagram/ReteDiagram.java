@@ -1,5 +1,7 @@
 package net.tarilabs.experiment.retediagram;
 
+import static java.util.stream.Collectors.*;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -139,19 +141,36 @@ public class ReteDiagram {
         // FIXME:
         levelMap.computeIfAbsent(BetaNode.class, k -> new HashSet<>());
         
-        for (Entry<Class<? extends BaseNode>, Set<BaseNode>> kv : levelMap.entrySet()) {
-            if (ObjectTypeNode.class.isAssignableFrom( kv.getKey() ) ) {
-               printLevelMapLevel(1, kv.getValue(), out);
-            } else if (AlphaNode.class.isAssignableFrom( kv.getKey() ) ) {
-                printLevelMapLevel(2, kv.getValue(), out);
-            } else if (LeftInputAdapterNode.class.isAssignableFrom( kv.getKey() ) ) {
-                printLevelMapLevel(3, kv.getValue(), out);
-            } else if (BetaNode.class.isAssignableFrom( kv.getKey()) ) {
-                printLevelMapLevel(4, kv.getValue(), out);
-            } else if (RuleTerminalNode.class.isAssignableFrom( kv.getKey() ) ) {
-                printLevelMapLevel(5, kv.getValue(), out);
-            }
-        }
+        // Level 1: OTN
+        Set<BaseNode> l1 = levelMap.entrySet().stream()
+                                .filter(kv->ObjectTypeNode.class.isAssignableFrom( kv.getKey() ))
+                                .flatMap(kv->kv.getValue().stream()).collect(toSet());
+        printLevelMapLevel(1, l1, out);
+        
+        // Level 2: AN
+        Set<BaseNode> l2 = levelMap.entrySet().stream()
+                                .filter(kv->AlphaNode.class.isAssignableFrom( kv.getKey() ))
+                                .flatMap(kv->kv.getValue().stream()).collect(toSet());
+        printLevelMapLevel(2, l2, out);
+        
+        // Level 3: LIA
+        Set<BaseNode> l3 = levelMap.entrySet().stream()
+                                .filter(kv->LeftInputAdapterNode.class.isAssignableFrom( kv.getKey() ))
+                                .flatMap(kv->kv.getValue().stream()).collect(toSet());
+        printLevelMapLevel(3, l3, out);
+
+        // Level 4: BN
+        Set<BaseNode> l4 = levelMap.entrySet().stream()
+                                .filter(kv->BetaNode.class.isAssignableFrom( kv.getKey() ))
+                                .flatMap(kv->kv.getValue().stream()).collect(toSet());
+        printLevelMapLevel(4, l4, out);
+
+        // Level 5: RTN
+        Set<BaseNode> l5 = levelMap.entrySet().stream()
+                                .filter(kv->RuleTerminalNode.class.isAssignableFrom( kv.getKey() ))
+                                .flatMap(kv->kv.getValue().stream()).collect(toSet());
+        printLevelMapLevel(5, l5, out);
+        
         out.println(" edge[style=invis];\n" + 
                 " l1->l2->l3->l4->l5;");
     }
