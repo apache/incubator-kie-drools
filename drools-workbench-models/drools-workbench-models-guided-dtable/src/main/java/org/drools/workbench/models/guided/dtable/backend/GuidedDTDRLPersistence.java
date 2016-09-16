@@ -783,7 +783,7 @@ public class GuidedDTDRLPersistence {
 
     private IPattern findByFactPattern( List<IPattern> patterns,
                                         String boundName ) {
-        if ( boundName == null ) {
+        if ( boundName == null || boundName.isEmpty() ) {
             return null;
         }
 
