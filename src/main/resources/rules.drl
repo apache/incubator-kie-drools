@@ -25,3 +25,17 @@ when
 then
     System.out.println( $person.getName() + " does not like cheddar" );
 end
+
+rule "Color count"
+when
+    accumulate( $m: Measurement( id == "color" ); $c: count($m) )
+then
+    System.out.println( $c );
+end
+
+rule "Not a Color"
+when
+    not ( Measurement( id == "color" ) and String() )
+then
+    System.out.println( "no color yet." );
+end

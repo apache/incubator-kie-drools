@@ -20,18 +20,22 @@ import java.util.stream.StreamSupport;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.ObjectType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.KnowledgeRuntime;
@@ -114,7 +118,12 @@ public class ReteDiagram {
         printNodeMapNodes(nodeMap.get(ObjectTypeNode.class), out);
         printNodeMapNodes(nodeMap.get(AlphaNode.class), out);
         printNodeMapNodes(nodeMap.get(LeftInputAdapterNode.class), out);
-        printNodeMapNodes(nodeMap.get(JoinNode.class), out);
+        printNodeMapNodes(nodeMap.get(RightInputAdapterNode.class), out);
+        // Level 4: BN
+        List<BaseNode> l4 = nodeMap.entrySet().stream()
+                                .filter(kv->BetaNode.class.isAssignableFrom( kv.getKey() ))
+                                .flatMap(kv->kv.getValue().stream()).collect(toList());
+        printNodeMapNodes(l4, out);
         printNodeMapNodes(nodeMap.get(RuleTerminalNode.class), out);
     }
 
@@ -158,6 +167,12 @@ public class ReteDiagram {
                                 .filter(kv->LeftInputAdapterNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
         printLevelMapLevel(3, l3, out);
+        
+        // RIA
+        Set<BaseNode> lria = levelMap.entrySet().stream()
+                                .filter(kv->RightInputAdapterNode.class.isAssignableFrom( kv.getKey() ))
+                                .flatMap(kv->kv.getValue().stream()).collect(toSet());
+        printLevelMapLevel(99, lria, out);
 
         // Level 4: BN
         Set<BaseNode> l4 = levelMap.entrySet().stream()
@@ -172,7 +187,7 @@ public class ReteDiagram {
         printLevelMapLevel(5, l5, out);
         
         out.println(" edge[style=invis];\n" + 
-                " l1->l2->l3->l4->l5;");
+                " l1->l2->l3->l99->l4->l5;");
     }
 
     private static void printLevelMapLevel(int i, Set<BaseNode> value, PrintStream out) {
@@ -220,12 +235,14 @@ public class ReteDiagram {
             return "AN"+node.getId();
         } else if (node instanceof LeftInputAdapterNode ) {
             return "LIA"+node.getId();
+        } else if (node instanceof RightInputAdapterNode ) {
+            return "RIA"+node.getId();
         } else if (node instanceof BetaNode ) {
             return "BN"+node.getId();
         } else if (node instanceof RuleTerminalNode ) {
             return "RTN"+node.getId();
         }
-        return "UNK"+node;
+        return "UNK"+node.getId();
     }
 
     private static String printNodeAttributes(BaseNode node) {
@@ -236,29 +253,49 @@ public class ReteDiagram {
         } else if (node instanceof ObjectTypeNode ) {
             ObjectTypeNode n = (ObjectTypeNode) node;
             return String.format("[shape=rect style=rounded label=\"%1$s\"]",
-                    printClassObjectType(n));
+                    strObjectType(n.getObjectType()) );
         } else if (node instanceof AlphaNode ) {
             AlphaNode n = (AlphaNode) node;
             return String.format("[label=\"%1$s\"]",
                     escapeDot(n.getConstraint().toString()));
         } else if (node instanceof LeftInputAdapterNode ) {
             return "[shape=house orientation=-90]";
-        } else if (node instanceof BetaNode ) {
+        } else if (node instanceof RightInputAdapterNode ) {
+            return "[shape=house orientation=90]";
+        } else if (node instanceof JoinNode ) {
             BetaNode n = (BetaNode) node;
             BetaNodeFieldConstraint[] constraints = n.getConstraints();
-            String label = Arrays.stream(constraints).map(Object::toString).collect(Collectors.joining(", "));
+            String label = "\u22C8";
+            if (constraints.length > 0) {
+                label = Arrays.stream(constraints).map(Object::toString).collect(Collectors.joining(", "));
+            }
             return String.format("[shape=box label=\"%1$s\" href=\"http://drools.org\"]",
                     escapeDot(label));
+        } else if (node instanceof NotNode ) {
+            NotNode n = (NotNode) node;
+            return String.format("[shape=box label=\"not( %1$s )\"]", 
+                    strObjectType(n.getObjectType()) );
+        } else if (node instanceof AccumulateNode ) {
+            AccumulateNode n = (AccumulateNode) node;
+            return String.format("[shape=box label=\"%1$s\"]", 
+                    n );
         } else if (node instanceof RuleTerminalNode ) {
             RuleTerminalNode n = (RuleTerminalNode) node;
             return String.format("[shape=doublecircle width=0.2 fillcolor=black style=filled label=\"\" xlabel=\"%1$s\" href=\"http://drools.org\"]",
                     n.getRule().getName());
         }
-        return String.format("[style=dotted label=\"%1$s\"]", node.toString());
+        return String.format("[shape=box style=dotted label=\"%1$s\"]", node.toString());
+    }
+    
+    private static String strObjectType(ObjectType ot) {
+        if (ot instanceof ClassObjectType) {
+            return abbrvClassForObjectType((ClassObjectType) ot);
+        }
+        return "??"+ ((ot==null)?"null":ot.toString());
     }
 
-    private static String printClassObjectType(ObjectTypeNode n) {
-        Class<?> classType = ((ClassObjectType)n.getObjectType()).getClassType();
+    private static String abbrvClassForObjectType(ClassObjectType cot) {
+        Class<?> classType = cot.getClassType();
         String[] packageToken = classType.getPackage().getName().split("\\.");
         StringBuilder result = new StringBuilder();
         for (String pt : packageToken) {

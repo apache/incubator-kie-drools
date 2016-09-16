@@ -6,16 +6,25 @@ graph [fontname = "Overpass" fontsize=11];
 EP1 [shape=circle width=0.15 fillcolor=black style=filled label="" xlabel="DEFAULT"] ;
 OTN7 [shape=rect style=rounded label="n.t.m.Cheese"] ;
 OTN2 [shape=rect style=rounded label="o.d.c.r.InitialFactImpl"] ;
+OTN19 [shape=rect style=rounded label="j.l.String"] ;
 OTN10 [shape=rect style=rounded label="n.t.m.Person"] ;
 OTN3 [shape=rect style=rounded label="n.t.m.Measurement"] ;
 AN8 [label="name == \"cheddar\""] ;
 AN4 [label="id == \"color\""] ;
 LIA9 [shape=house orientation=-90] ;
+LIA15 [shape=house orientation=-90] ;
 LIA5 [shape=house orientation=-90] ;
+RIA21 [shape=house orientation=90] ;
 BN11 [shape=box label="favouriteCheese == $cheddar" href="http://drools.org"] ;
 BN13 [shape=box label="favouriteCheese != $cheddar" href="http://drools.org"] ;
+BN18 [shape=box label="⋈" href="http://drools.org"] ;
+BN20 [shape=box label="⋈" href="http://drools.org"] ;
+BN16 [shape=box label="[ AccumulateNode(16) ]"] ;
+BN22 [shape=box label="not( ??null )"] ;
 RTN12 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Likes cheddar" href="http://drools.org"] ;
 RTN14 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Don't like cheddar" href="http://drools.org"] ;
+RTN17 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Color count" href="http://drools.org"] ;
+RTN23 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Not a Color" href="http://drools.org"] ;
 RTN6 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="For color" href="http://drools.org"] ;
 
 EP1 -> OTN7 ;
@@ -26,6 +35,17 @@ BN11 -> RTN12 ;
 LIA9 -> BN13 ;
 BN13 -> RTN14 ;
 EP1 -> OTN2 ;
+OTN2 -> LIA15 ;
+LIA15 -> BN16 ;
+BN16 -> RTN17 ;
+LIA15 -> BN18 ;
+BN18 -> BN20 ;
+BN20 -> RIA21 ;
+RIA21 -> BN22 ;
+BN22 -> RTN23 ;
+LIA15 -> BN22 ;
+EP1 -> OTN19 ;
+OTN19 -> BN20 ;
 EP1 -> OTN10 ;
 OTN10 -> BN11 ;
 OTN10 -> BN13 ;
@@ -33,12 +53,16 @@ EP1 -> OTN3 ;
 OTN3 -> AN4 ;
 AN4 -> LIA5 ;
 LIA5 -> RTN6 ;
+AN4 -> BN16 ;
+AN4 -> BN18 ;
 
+ {rank=same; l1[style=invis, shape=point]; OTN19; OTN2; OTN10; OTN3; OTN7; }
  {rank=same; l2[style=invis, shape=point]; AN4; AN8; }
- {rank=same; l3[style=invis, shape=point]; LIA9; LIA5; }
- {rank=same; l1[style=invis, shape=point]; OTN2; OTN10; OTN3; OTN7; }
- {rank=same; l4[style=invis, shape=point]; }
- {rank=same; l5[style=invis, shape=point]; RTN14; RTN12; RTN6; }
+ {rank=same; l3[style=invis, shape=point]; LIA15; LIA9; LIA5; }
+ {rank=same; lria[style=dashed, shape=point]; RIA21; }
+ {rank=same; lriabeta[style=dotted, shape=point]; BN20; BN22; }
+ {rank=same; l4[style=invis, shape=point]; BN11; BN18;  BN13;  BN16; }
+ {rank=same; l5[style=invis, shape=point]; RTN14; RTN17; RTN23; RTN12; RTN6; }
  edge[style=invis];
- l1->l2->l3->l4->l5;
+ l1->l2->l3->lriabeta->lria->l4->l5;
 }
