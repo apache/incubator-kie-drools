@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -116,7 +117,7 @@ public class ReteDiagram {
     private static void printNodeMap(HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap, PrintStream out) {
         printNodeMapNodes(nodeMap.get(EntryPointNode.class), out);
         printNodeMapNodes(nodeMap.get(ObjectTypeNode.class), out);
-        printNodeMapNodes(nodeMap.get(AlphaNode.class), out);
+        printNodeMapNodes(nodeMap.getOrDefault(AlphaNode.class, Collections.emptyList()), out);
         printNodeMapNodes(nodeMap.get(LeftInputAdapterNode.class), out);
         printNodeMapNodes(nodeMap.get(RightInputAdapterNode.class), out);
         // Level 4: BN
@@ -146,10 +147,7 @@ public class ReteDiagram {
     }
 
     private static void printLevelMap(HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out, List<Vertex<BaseNode, BaseNode>> vertexes) {
-        levelMap.keySet().forEach(System.out::println);
-        // FIXME:
-        levelMap.computeIfAbsent(BetaNode.class, k -> new HashSet<>());
-        
+
         // Level 1: OTN
         Set<BaseNode> l1 = levelMap.entrySet().stream()
                                 .filter(kv->ObjectTypeNode.class.isAssignableFrom( kv.getKey() ))

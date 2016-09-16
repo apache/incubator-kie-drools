@@ -73,7 +73,7 @@
 	    </dependency>
         <dependency>
           <groupId>org.drools</groupId>
-          <artifactId>drools-core</artifactId>
+          <artifactId>drools-compiler</artifactId>
           <classifier>tests</classifier>
           <version>${drools-version}</version>
           <scope>test</scope>
