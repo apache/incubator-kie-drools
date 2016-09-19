@@ -105,13 +105,17 @@ public final class BendableScore extends AbstractBendableScore<BendableScore>
         this.softScores = softScores;
     }
 
+    /**
+     * @return not null, array copy because this class is immutable
+     */
     public int[] getHardScores() {
-        // return copy of the array to guarantee that this class is immutable
         return Arrays.copyOf(hardScores, hardScores.length);
     }
 
+    /**
+     * @return not null, array copy because this class is immutable
+     */
     public int[] getSoftScores() {
-        // return copy of the array to guarantee that this class is immutable
         return Arrays.copyOf(softScores, softScores.length);
     }
 
