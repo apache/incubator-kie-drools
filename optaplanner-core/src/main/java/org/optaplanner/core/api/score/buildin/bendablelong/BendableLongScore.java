@@ -105,7 +105,15 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
         this.softScores = softScores;
     }
 
-    // Intentionally no getters for the hardScores or softScores int arrays to guarantee that this class is immutable
+    public long[] getHardScores() {
+        // return copy of the array to guarantee that this class is immutable
+        return Arrays.copyOf(hardScores, hardScores.length);
+    }
+
+    public long[] getSoftScores() {
+        // return copy of the array to guarantee that this class is immutable
+        return Arrays.copyOf(softScores, softScores.length);
+    }
 
     @Override
     public int getHardLevelsSize() {
