@@ -316,7 +316,11 @@ public class ReteDiagram {
             String label = "\u22C8";
             if (n.getObjectType() != null) {
                 label = strObjectType(n.getObjectType(), false);
-                label = label + "( "+ Arrays.stream(n.getConstraints()).map(Object::toString).collect(joining(", ")) + " )";
+                label = label + "(";
+                if ( n.getConstraints().length>0 ) {
+                    label = label + " "+ Arrays.stream(n.getConstraints()).map(Object::toString).collect(joining(", ")) + " ";
+                }
+                label = label + ")";
             }
             return String.format("[shape=box label=\"not( %1$s )\"]", label );
         } else if (node instanceof AccumulateNode ) {
