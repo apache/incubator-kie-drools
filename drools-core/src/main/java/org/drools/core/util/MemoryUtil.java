@@ -26,7 +26,7 @@ public class MemoryUtil {
     private MemoryUtil() { }
 
     static {
-        if (!hasPermGen() || ClassUtils.isAndroid()) {
+        if (!hasPermGen() || ClassUtils.isAndroid() || isGAE()) {
             permGenStats = new DummyMemoryStats();
         } else {
             MemoryPoolMXBean permGenBean = null;
@@ -64,7 +64,7 @@ public class MemoryUtil {
             return memoryUsage != null && memoryUsage.getUsed() * 100 / memoryUsage.getMax() >= threshold;
         }
 
-        public MemoryUsage getMemoryUsage() {
+        private MemoryUsage getMemoryUsage() {
             return memoryBean != null ? memoryBean.getUsage() : ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
         }
     }
@@ -72,5 +72,10 @@ public class MemoryUtil {
     public static boolean hasPermGen() {
         String javaVersion = System.getProperty("java.version");
         return javaVersion.startsWith( "1.7" ) || javaVersion.startsWith( "1.6" ) || javaVersion.startsWith( "1.5" );
+    }
+
+    private static boolean isGAE() {
+        String p = System.getProperty("com.google.appengine.runtime.environment");
+        return p != null && !p.equals("");
     }
 }
