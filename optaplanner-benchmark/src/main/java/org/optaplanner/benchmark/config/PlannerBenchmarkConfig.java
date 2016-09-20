@@ -271,14 +271,7 @@ public class PlannerBenchmarkConfig {
         if (parallelBenchmarkCount == null) {
             resolvedParallelBenchmarkCount = 1;
         } else if (parallelBenchmarkCount.equals(PARALLEL_BENCHMARK_COUNT_AUTO)) {
-            // Tweaked based on experience
-            if (availableProcessorCount <= 2) {
-                resolvedParallelBenchmarkCount = 1;
-            } else if (availableProcessorCount <= 4) {
-                resolvedParallelBenchmarkCount = 2;
-            } else {
-                resolvedParallelBenchmarkCount = (availableProcessorCount / 2) + 1;
-            }
+            resolvedParallelBenchmarkCount = resolveParallelBenchmarkCountAutomatically(availableProcessorCount);
         } else {
             resolvedParallelBenchmarkCount = ConfigUtils.resolveThreadPoolSizeScript(
                     "parallelBenchmarkCount", parallelBenchmarkCount, PARALLEL_BENCHMARK_COUNT_AUTO);
@@ -295,6 +288,17 @@ public class PlannerBenchmarkConfig {
             resolvedParallelBenchmarkCount = availableProcessorCount;
         }
         return resolvedParallelBenchmarkCount;
+    }
+
+    protected int resolveParallelBenchmarkCountAutomatically(int availableProcessorCount) {
+        // Tweaked based on experience
+        if (availableProcessorCount <= 2) {
+            return 1;
+        } else if (availableProcessorCount <= 4) {
+            return 2;
+        } else {
+            return (availableProcessorCount / 2) + 1;
+        }
     }
 
     protected long calculateWarmUpTimeMillisSpentLimit() {

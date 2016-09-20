@@ -16,10 +16,16 @@
 
 package org.optaplanner.benchmark.config;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.TreeSet;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.optaplanner.core.config.util.ConfigUtils;
+
+import static org.junit.Assert.*;
 
 public class PlannerBenchmarkConfigTest {
 
@@ -63,4 +69,100 @@ public class PlannerBenchmarkConfigTest {
         config.validate();
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void noSolverConfigs() {
+        PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
+        config.setSolverBenchmarkConfigList(null);
+        config.setSolverBenchmarkBluePrintConfigList(null);
+        config.validate();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void nonUniqueSolverConfigName() {
+        PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
+        final String sbcName = "x";
+        SolverBenchmarkConfig sbc1 = new SolverBenchmarkConfig();
+        sbc1.setName(sbcName);
+        SolverBenchmarkConfig sbc2 = new SolverBenchmarkConfig();
+        sbc2.setName(sbcName);
+        config.setSolverBenchmarkConfigList(Arrays.asList(sbc1, sbc2));
+        config.generateSolverBenchmarkConfigNames();
+    }
+
+    @Test
+    public void uniqueNamesGenerated() {
+        PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
+        SolverBenchmarkConfig sbc1 = new SolverBenchmarkConfig();
+        SolverBenchmarkConfig sbc2 = new SolverBenchmarkConfig();
+        SolverBenchmarkConfig sbc3 = new SolverBenchmarkConfig();
+        sbc3.setName("Config_1");
+        List<SolverBenchmarkConfig> configs = Arrays.asList(sbc1, sbc2, sbc3);
+        config.setSolverBenchmarkConfigList(configs);
+        config.generateSolverBenchmarkConfigNames();
+        assertEquals("Config_1", sbc3.getName());
+        TreeSet<String> names = new TreeSet<String>();
+        for (SolverBenchmarkConfig sc : configs) {
+            names.add(sc.getName());
+        }
+        for (int i = 0; i < configs.size(); i++) {
+            assertTrue(names.contains("Config_" + i));
+        }
+    }
+
+    @Test
+    public void resolveParallelBenchmarkCountAutomatically() {
+        PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
+        assertEquals(1, config.resolveParallelBenchmarkCountAutomatically(-1));
+        assertEquals(1, config.resolveParallelBenchmarkCountAutomatically(0));
+        assertEquals(1, config.resolveParallelBenchmarkCountAutomatically(1));
+        assertEquals(1, config.resolveParallelBenchmarkCountAutomatically(2));
+        assertEquals(2, config.resolveParallelBenchmarkCountAutomatically(3));
+        assertEquals(2, config.resolveParallelBenchmarkCountAutomatically(4));
+        assertEquals(3, config.resolveParallelBenchmarkCountAutomatically(5));
+        assertEquals(4, config.resolveParallelBenchmarkCountAutomatically(6));
+        assertEquals(9, config.resolveParallelBenchmarkCountAutomatically(17));
+    }
+
+    @Test
+    public void resolveParallelBenchmarkCountFromFormula() {
+        PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
+        config.setParallelBenchmarkCount(ConfigUtils.AVAILABLE_PROCESSOR_COUNT + "+1");
+        // resolved benchmark count cannot be higher than available processors
+        assertEquals(Runtime.getRuntime().availableProcessors(), config.resolveParallelBenchmarkCount());
+    }
+
+    @Test
+    public void parallelBenchmarkDisabledByDefault() {
+        PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
+        assertEquals(1, config.resolveParallelBenchmarkCount());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void resolvedParallelBenchmarkCountNegative() {
+        PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
+        config.setParallelBenchmarkCount("-1");
+        config.resolveParallelBenchmarkCount();
+    }
+
+    @Test
+    public void calculateWarmUpTimeMillisSpentLimit() {
+        PlannerBenchmarkConfig config = new PlannerBenchmarkConfig();
+        long h = 3;
+        long m = 17;
+        long s = 51;
+        long ms = 753;
+        config.setWarmUpHoursSpentLimit(h);
+        config.setWarmUpMinutesSpentLimit(m);
+        config.setWarmUpSecondsSpentLimit(s);
+        config.setWarmUpMillisecondsSpentLimit(ms);
+        long totalMillis = 0;
+        totalMillis += h;
+        totalMillis *= 60;
+        totalMillis += m;
+        totalMillis *= 60;
+        totalMillis += s;
+        totalMillis *= 1000;
+        totalMillis += ms;
+        assertEquals(totalMillis, config.calculateWarmUpTimeMillisSpentLimit());
+    }
 }
