@@ -23,6 +23,7 @@ import org.optaplanner.core.impl.testdata.domain.collection.TestdataArrayBasedSo
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolution;
+import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolutionOverridenScoreAccessors;
 import org.optaplanner.core.impl.testdata.domain.extended.legacysolution.TestdataLegacySolution;
 import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataNoProblemFactPropertySolution;
@@ -153,6 +154,12 @@ public class SolutionDescriptorTest {
         assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap());
         assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
                 "entityList");
+    }
+
+    @Test
+    public void extendedAbstractSolutionOverridenScoreAccessors() {
+        SolutionDescriptor<TestdataExtendedAbstractSolutionOverridenScoreAccessors> solutionDescriptor
+                = TestdataExtendedAbstractSolutionOverridenScoreAccessors.buildSolutionDescriptor();
     }
 
     @Test @Deprecated

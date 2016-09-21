@@ -39,8 +39,7 @@ public class TestdataExtendedAbstractSolution extends AbstractSolution<HardSoftS
 
     private List<TestdataEntity> entityList;
 
-    public TestdataExtendedAbstractSolution(String code) {
-        super();
+    public TestdataExtendedAbstractSolution() {
     }
 
     @ValueRangeProvider(id = "valueRange")

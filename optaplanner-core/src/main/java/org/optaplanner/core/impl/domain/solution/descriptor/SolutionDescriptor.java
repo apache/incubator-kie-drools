@@ -399,7 +399,8 @@ public class SolutionDescriptor<Solution_> {
                         + " or scoreDefinitionClass element.\n"
                         + "  Maybe remove the <scoreDefinitionType>, <bendableHardLevelsSize>, <bendableSoftLevelsSize> and <scoreDefinitionClass> elements from the solver configuration.");
             }
-            if (scoreMemberAccessor != null) {
+            // scoreMemberAccessor can be set if accessor method is overriden in AbstractSolution subclass
+            if (scoreMemberAccessor != null && !AbstractSolution.class.isAssignableFrom(solutionClass)) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
                         + ") has a " + PlanningScore.class.getSimpleName()
                         + " annotated member (" + memberAccessor
@@ -410,9 +411,12 @@ public class SolutionDescriptor<Solution_> {
                         + ") has a " + PlanningScore.class.getSimpleName()
                         + " annotated member (" + memberAccessor + ") that does not return a subtype of Score.");
             }
-            scoreMemberAccessor = memberAccessor;
+            // Prefer Score accessor methods at the bottom of the object hierarchy
+            if (scoreMemberAccessor == null) {
+                scoreMemberAccessor = memberAccessor;
+            }
             Class<? extends Score> scoreType = (Class<? extends Score>) scoreMemberAccessor.getType();
-            PlanningScore annotation = memberAccessor.getAnnotation(PlanningScore.class);
+            PlanningScore annotation = scoreMemberAccessor.getAnnotation(PlanningScore.class);
             scoreDefinition = buildScoreDefinition(scoreType, annotation);
         }
     }

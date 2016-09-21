@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,35 +14,34 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.extended.legacysolution;
+package org.optaplanner.core.impl.testdata.domain.extended.abstractsolution;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-@Deprecated
-public class TestdataLegacySolution implements Solution<SimpleScore> {
+public class TestdataExtendedAbstractSolutionOverridenScoreAccessors extends AbstractSolution<BendableScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return SolutionDescriptor.buildSolutionDescriptor(TestdataLegacySolution.class, TestdataEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedAbstractSolutionOverridenScoreAccessors.class, TestdataEntity.class);
     }
 
     private List<TestdataValue> valueList;
+    private Object extraObject;
 
     private List<TestdataEntity> entityList;
 
-    private SimpleScore score;
-
-    public TestdataLegacySolution() {}
+    public TestdataExtendedAbstractSolutionOverridenScoreAccessors() {
+    }
 
     @ValueRangeProvider(id = "valueRange")
     public List<TestdataValue> getValueList() {
@@ -51,6 +50,14 @@ public class TestdataLegacySolution implements Solution<SimpleScore> {
 
     public void setValueList(List<TestdataValue> valueList) {
         this.valueList = valueList;
+    }
+
+    public Object getExtraObject() {
+        return extraObject;
+    }
+
+    public void setExtraObject(Object extraObject) {
+        this.extraObject = extraObject;
     }
 
     @PlanningEntityCollectionProperty
@@ -63,22 +70,18 @@ public class TestdataLegacySolution implements Solution<SimpleScore> {
     }
 
     @Override
-    public SimpleScore getScore() {
+    @PlanningScore(bendableHardLevelsSize = 5, bendableSoftLevelsSize = 5)
+    public BendableScore getScore() {
         return score;
     }
 
     @Override
-    public void setScore(SimpleScore score) {
+    public void setScore(BendableScore score) {
         this.score = score;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @Override
-    public Collection<?> getProblemFacts() {
-        return valueList;
-    }
 
 }

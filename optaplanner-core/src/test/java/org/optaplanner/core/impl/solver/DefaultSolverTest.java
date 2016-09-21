@@ -61,7 +61,7 @@ public class DefaultSolverTest {
                 .setScoreDefinitionType(ScoreDefinitionType.SIMPLE);
         Solver<TestdataLegacySolution> solver = solverFactory.buildSolver();
 
-        TestdataLegacySolution solution = new TestdataLegacySolution("s1");
+        TestdataLegacySolution solution = new TestdataLegacySolution();
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
 
