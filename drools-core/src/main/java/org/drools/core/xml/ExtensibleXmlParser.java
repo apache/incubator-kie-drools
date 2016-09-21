@@ -755,7 +755,7 @@ public class ExtensibleXmlParser extends DefaultHandler {
     }
 
     /**
-     * Intializes EntityResolver that is configured via system property ENTITY_RESOLVER_PROPERTY_NAME.
+     * Initializes EntityResolver that is configured via system property ENTITY_RESOLVER_PROPERTY_NAME.
      */
     private void initEntityResolver() {
         final String entityResolveClazzName = System.getProperty( ExtensibleXmlParser.ENTITY_RESOLVER_PROPERTY_NAME );
