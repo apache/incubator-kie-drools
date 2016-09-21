@@ -281,13 +281,14 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         KieModuleModel kproj = ks.newKieModuleModel();
 
         KieBaseModel kieBaseModel1 = kproj.newKieBaseModel()
-                .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
-                .setEventProcessingMode( EventProcessingOption.STREAM )
-                .addPackage(pkg);
+                                          .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
+                                          .setEventProcessingMode( EventProcessingOption.STREAM )
+                                          .addPackage(pkg);
 
         KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1")
-                .setType( KieSessionType.STATEFUL )
-                .setClockType(ClockTypeOption.get("realtime"));
+                                                 .setType( KieSessionType.STATEFUL )
+                                                 .setClockType(ClockTypeOption.get("realtime"))
+                                                 .setDefault( true );
 
         return kproj;
     }
@@ -329,6 +330,20 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         ksession = ks.newKieContainer(releaseId2).newKieSession("KSession1");
         ksession.insert(new Message("Hi Universe"));
         assertEquals( 0, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testGetDefaultKieSessionWithNullName() throws Exception {
+        // DROOLS-1276
+        KieServices ks = KieServices.Factory.get();
+
+        buildVersion(ks, "Hello World", "1.0");
+
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "hello-world", "1.0");
+
+        KieSession ksession = ks.newKieContainer(releaseId1).newKieSession((String)null);
+        ksession.insert(new Message("Hello World"));
+        assertEquals( 1, ksession.fireAllRules() );
     }
 
     private void buildVersion(KieServices ks, String message, String version) {
