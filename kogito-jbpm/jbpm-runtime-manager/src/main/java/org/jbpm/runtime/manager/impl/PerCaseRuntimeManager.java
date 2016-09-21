@@ -29,6 +29,7 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.event.AbstractEventSupport;
 import org.drools.persistence.OrderedTransactionSynchronization;
 import org.drools.persistence.TransactionManager;
@@ -404,12 +405,23 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         boolean owner = false;
         TransactionManager tm = null; 
         if (environment.usePersistence()){
-            tm = getTransactionManager(environment.getEnvironment());
+            tm = getTransactionManagerInternal(environment.getEnvironment());
             owner = tm.begin();
         }
         try {
             // need to init one session to bootstrap all case - such as start timers
             KieSession initialKsession = factory.newKieSession();
+            // there is a need to call getProcessRuntime otherwise the start listeners are not registered
+            initialKsession.execute(new GenericCommand<Void>() {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public Void execute(org.kie.internal.command.Context context) {
+                    KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                    ((InternalKnowledgeRuntime) ksession).getProcessRuntime();
+                    return null;
+                }
+            });
             initialKsession.execute(new DestroyKSessionCommand(initialKsession, this));
     
             if (!"false".equalsIgnoreCase(System.getProperty("org.jbpm.rm.init.timer"))) {

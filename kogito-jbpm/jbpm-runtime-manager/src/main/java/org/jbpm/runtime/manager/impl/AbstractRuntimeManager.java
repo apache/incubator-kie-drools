@@ -314,7 +314,49 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     		return (TransactionManager) txm;
     	}
     	
-    	return TransactionManagerFactory.get().newTransactionManager();
+    	return TransactionManagerFactory.get().newTransactionManager(env);
+    }
+    
+    protected TransactionManager getTransactionManagerInternal(Environment env) {
+        
+        try {
+            return getTransactionManager(env);
+        } catch (Exception e) {
+            // return no op transaction manager as none were found so let the ksession manage the tx instead
+            return new TransactionManager() {                       
+                @Override
+                public void rollback(boolean transactionOwner) {                
+                }
+                
+                @Override
+                public void registerTransactionSynchronization(TransactionSynchronization ts) {                
+                }
+                
+                @Override
+                public void putResource(Object key, Object resource) {                
+                }
+                
+                @Override
+                public int getStatus() {
+                    return STATUS_NO_TRANSACTION;
+                }
+                
+                @Override
+                public Object getResource(Object key) {
+                    return null;
+                }
+                
+                @Override
+                public void commit(boolean transactionOwner) {
+                    
+                }
+                
+                @Override
+                public boolean begin() {
+                    return false;
+                }
+            };
+        }    
     }
     
     @Override

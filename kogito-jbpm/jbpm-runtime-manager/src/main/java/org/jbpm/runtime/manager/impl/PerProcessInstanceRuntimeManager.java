@@ -24,6 +24,7 @@ import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.persistence.OrderedTransactionSynchronization;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerHelper;
@@ -375,22 +376,47 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     
     @Override
     public void init() {
-    	
-    	TaskContentRegistry.get().addMarshallerContext(getIdentifier(), 
-    			new ContentMarshallerContext(environment.getEnvironment(), environment.getClassLoader()));
-    	
-        // need to init one session to bootstrap all case - such as start timers
-        KieSession initialKsession = factory.newKieSession();
-        initialKsession.execute(new DestroyKSessionCommand(initialKsession, this));
-        
-        if (!"false".equalsIgnoreCase(System.getProperty("org.jbpm.rm.init.timer"))) {
-        	if (mapper instanceof JPAMapper) {
-        		List<Long> ksessionsToInit = ((JPAMapper) mapper).findKSessionToInit(this.identifier);
-        		for (Long id : ksessionsToInit) {
-        			initialKsession = factory.findKieSessionById(id);
-        			initialKsession.execute(new DisposeKSessionCommand(initialKsession, this));
-        		}
-        	}
+
+        TaskContentRegistry.get().addMarshallerContext(getIdentifier(), new ContentMarshallerContext(environment.getEnvironment(), environment.getClassLoader()));
+        boolean owner = false;
+        TransactionManager tm = null;
+        if (environment.usePersistence()) {
+            tm = getTransactionManagerInternal(environment.getEnvironment());
+            owner = tm.begin();
+        }
+        try {
+            // need to init one session to bootstrap all case - such as start timers
+            KieSession initialKsession = factory.newKieSession();
+            // there is a need to call getProcessRuntime otherwise the start listeners are not registered
+            initialKsession.execute(new GenericCommand<Void>() {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public Void execute(org.kie.internal.command.Context context) {
+                    KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                    ((InternalKnowledgeRuntime) ksession).getProcessRuntime();
+                    return null;
+                }
+            });
+            initialKsession.execute(new DestroyKSessionCommand(initialKsession, this));
+
+            if (!"false".equalsIgnoreCase(System.getProperty("org.jbpm.rm.init.timer"))) {
+                if (mapper instanceof JPAMapper) {
+                    List<Long> ksessionsToInit = ((JPAMapper) mapper).findKSessionToInit(this.identifier);
+                    for (Long id : ksessionsToInit) {
+                        initialKsession = factory.findKieSessionById(id);
+                        initialKsession.execute(new DisposeKSessionCommand(initialKsession, this));
+                    }
+                }
+            }
+            if (tm != null) {
+                tm.commit(owner);
+            }
+        } catch (Exception e) {
+            if (tm != null) {
+                tm.rollback(owner);
+            }
+            throw new RuntimeException("Exception while initializing runtime manager " + this.identifier, e);
         }
     }
 
