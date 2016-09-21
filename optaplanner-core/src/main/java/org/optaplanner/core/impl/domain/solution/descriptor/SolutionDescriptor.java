@@ -399,22 +399,24 @@ public class SolutionDescriptor<Solution_> {
                         + " or scoreDefinitionClass element.\n"
                         + "  Maybe remove the <scoreDefinitionType>, <bendableHardLevelsSize>, <bendableSoftLevelsSize> and <scoreDefinitionClass> elements from the solver configuration.");
             }
-            // scoreMemberAccessor can be set if accessor method is overriden in AbstractSolution subclass
-            if (scoreMemberAccessor != null && !AbstractSolution.class.isAssignableFrom(solutionClass)) {
-                throw new IllegalStateException("The solutionClass (" + solutionClass
-                        + ") has a " + PlanningScore.class.getSimpleName()
-                        + " annotated member (" + memberAccessor
-                        + ") that is duplicated by another member (" + scoreMemberAccessor + ").\n"
-                        + "  Verify that the annotation is not defined on both the field and its getter.");
-            } else if (!Score.class.isAssignableFrom(memberAccessor.getType())) {
+            if (!Score.class.isAssignableFrom(memberAccessor.getType())) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
                         + ") has a " + PlanningScore.class.getSimpleName()
                         + " annotated member (" + memberAccessor + ") that does not return a subtype of Score.");
             }
-            // Prefer Score accessor methods at the bottom of the object hierarchy
-            if (scoreMemberAccessor == null) {
-                scoreMemberAccessor = memberAccessor;
+            if (scoreMemberAccessor != null) {
+                if (!scoreMemberAccessor.getName().equals(memberAccessor.getName())
+                        || !scoreMemberAccessor.getClass().equals(memberAccessor.getClass())) {
+                    throw new IllegalStateException("The solutionClass (" + solutionClass
+                            + ") has a " + PlanningScore.class.getSimpleName()
+                            + " annotated member (" + memberAccessor
+                            + ") that is duplicated by another member (" + scoreMemberAccessor + ").\n"
+                            + "  Verify that the annotation is not defined on both the field and its getter.");
+                }
+                // Bottom class wins. Bottom classes are parsed first due to ConfigUtil.getAllAnnotatedLineageClasses()
+                return;
             }
+            scoreMemberAccessor = memberAccessor;
             Class<? extends Score> scoreType = (Class<? extends Score>) scoreMemberAccessor.getType();
             PlanningScore annotation = scoreMemberAccessor.getAnnotation(PlanningScore.class);
             scoreDefinition = buildScoreDefinition(scoreType, annotation);

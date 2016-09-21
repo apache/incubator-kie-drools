@@ -15,21 +15,25 @@
  */
 package org.optaplanner.core.impl.domain.solution.descriptor;
 
+import java.util.Arrays;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataArrayBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.collection.TestdataSetBasedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
 import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolution;
-import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolutionOverridenScoreAccessors;
+import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolutionOverridesGetScore;
 import org.optaplanner.core.impl.testdata.domain.extended.legacysolution.TestdataLegacySolution;
 import org.optaplanner.core.impl.testdata.domain.reflect.generic.TestdataGenericSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataNoProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataProblemFactPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.TestdataReadMethodProblemFactCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicatePlanningEntityCollectionPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicatePlanningScorePropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicateProblemFactCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactCollectionPropertyWithArgumentSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactIsPlanningEntityCollectionPropertySolution;
@@ -75,6 +79,11 @@ public class SolutionDescriptorTest {
     @Test(expected = IllegalStateException.class)
     public void duplicatePlanningEntityCollectionProperty() {
         TestdataDuplicatePlanningEntityCollectionPropertySolution.buildSolutionDescriptor();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void duplicatePlanningScorePropertyProperty() {
+        TestdataDuplicatePlanningScorePropertySolution.buildSolutionDescriptor();
     }
 
     @Test(expected = IllegalStateException.class)
@@ -154,12 +163,32 @@ public class SolutionDescriptorTest {
         assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap());
         assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
                 "entityList");
+
+        TestdataExtendedAbstractSolution solution = new TestdataExtendedAbstractSolution();
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setExtraObject(new TestdataValue("extra"));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
+
+        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "e1", "e2", "v1", "v2", "extra");
     }
 
     @Test
-    public void extendedAbstractSolutionOverridenScoreAccessors() {
-        SolutionDescriptor<TestdataExtendedAbstractSolutionOverridenScoreAccessors> solutionDescriptor
-                = TestdataExtendedAbstractSolutionOverridenScoreAccessors.buildSolutionDescriptor();
+    public void extendedAbstractSolutionOverridesGetScore() {
+        SolutionDescriptor<TestdataExtendedAbstractSolutionOverridesGetScore> solutionDescriptor
+                = TestdataExtendedAbstractSolutionOverridesGetScore.buildSolutionDescriptor();
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactMemberAccessorMap());
+        assertMapContainsKeysExactly(solutionDescriptor.getProblemFactCollectionMemberAccessorMap(),
+                "problemFactList");
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityMemberAccessorMap());
+        assertMapContainsKeysExactly(solutionDescriptor.getEntityCollectionMemberAccessorMap(),
+                "entityList");
+
+        TestdataExtendedAbstractSolutionOverridesGetScore solution = new TestdataExtendedAbstractSolutionOverridesGetScore();
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setExtraObject(new TestdataValue("extra"));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
+
+        assertAllCodesOfCollection(solutionDescriptor.getAllFacts(solution), "e1", "e2", "v1", "v2", "extra");
     }
 
     @Test @Deprecated
