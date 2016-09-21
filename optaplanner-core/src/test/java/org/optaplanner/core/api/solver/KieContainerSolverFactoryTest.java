@@ -133,7 +133,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         assertNewKieSessionSucceeds(solver);
     }
 
-    @Test @Ignore("Remove me when DROOLS-1276 is fixed") // TODO https://issues.jboss.org/browse/DROOLS-1276
+    @Test
     public void buildSolverWithDefaultKsessionKmodule() throws IOException {
         ReleaseId releaseId = deployTestdataKjar(
                 "buildSolverWithDefaultKsessionKmodule",
@@ -146,7 +146,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         assertNewKieSessionSucceeds(solver);
     }
 
-    @Test @Ignore("Remove me when DROOLS-1276 is fixed") // TODO https://issues.jboss.org/browse/DROOLS-1276
+    @Test
     public void buildSolverWithEmptyKmodule() throws IOException, ClassNotFoundException, IllegalAccessException, InstantiationException {
         ReleaseId releaseId = deployTestdataKjar(
                 "buildSolverWithEmptyKmodule",
