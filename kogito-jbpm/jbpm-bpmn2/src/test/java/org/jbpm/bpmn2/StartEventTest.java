@@ -293,8 +293,12 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         assertEquals(1, getNumberOfProcessInstances("Minimal"));
         // now remove the process from kbase to make sure runtime based listeners are removed from signal manager
         kbase.removeProcess("Minimal");
-        ksession.signalEvent("MySignal", "NewValue");
-
+        
+        try {
+            ksession.signalEvent("MySignal", "NewValue");
+        } catch (IllegalArgumentException e) {
+            assertEquals("Unknown process ID: Minimal", e.getMessage());
+        }
         // must be still one as the process was removed
         assertEquals(1, getNumberOfProcessInstances("Minimal"));
 
