@@ -32,12 +32,16 @@ import java.util.List;
 import static org.drools.core.phreak.PhreakFromNode.*;
 
 public class ReactiveObjectUtil {
-
-    public static void notifyModification(ReactiveObject reactiveObject) {
-        notifyModification( reactiveObject, reactiveObject.getLeftTuples() );
+    
+    public enum ModificationType {
+        MODIFY, ADD, REMOVE
     }
 
-    public static void notifyModification(Object object, List<Tuple> leftTuples) {
+    public static void notifyModification(ReactiveObject reactiveObject) {
+        notifyModification( reactiveObject, reactiveObject.getLeftTuples(), ModificationType.MODIFY);
+    }
+
+    public static void notifyModification(Object object, List<Tuple> leftTuples, ModificationType type) {
         if (leftTuples == null) {
             return;
         }
@@ -48,7 +52,7 @@ public class ReactiveObjectUtil {
             LeftTupleSinkNode sink = node.getSinkPropagator().getFirstLeftTupleSink();
             InternalWorkingMemory wm = getInternalWorkingMemory(propagationContext);
 
-            wm.addPropagation(new ReactivePropagation(object, leftTuple, propagationContext, node, sink));
+            wm.addPropagation(new ReactivePropagation(object, leftTuple, propagationContext, node, sink, type));
         }
     }
 
@@ -64,13 +68,15 @@ public class ReactiveObjectUtil {
         private final PropagationContext propagationContext;
         private final ReactiveFromNode node;
         private final LeftTupleSinkNode sink;
+        private final ModificationType type;
 
-        ReactivePropagation( Object object, Tuple leftTuple, PropagationContext propagationContext, ReactiveFromNode node, LeftTupleSinkNode sink ) {
+        ReactivePropagation( Object object, Tuple leftTuple, PropagationContext propagationContext, ReactiveFromNode node, LeftTupleSinkNode sink, ModificationType type ) {
             this.object = object;
             this.leftTuple = leftTuple;
             this.propagationContext = propagationContext;
             this.node = node;
             this.sink = sink;
+            this.type = type;
         }
 
         @Override
@@ -78,7 +84,7 @@ public class ReactiveObjectUtil {
             ReactiveFromNode.ReactiveFromMemory mem = wm.getNodeMemory(node);
             InternalFactHandle factHandle = node.createFactHandle( leftTuple, propagationContext, wm, object );
 
-            if ( isAllowed( factHandle, node.getAlphaConstraints(), wm, mem ) ) {
+            if ( type != ModificationType.REMOVE && isAllowed( factHandle, node.getAlphaConstraints(), wm, mem ) ) {
                 ContextEntry[] context = mem.getBetaMemory().getContext();
                 BetaConstraints betaConstraints = node.getBetaConstraints();
                 betaConstraints.updateFromTuple( context,

@@ -19,6 +19,7 @@ package org.drools.core.phreak;
 import org.drools.core.spi.Tuple;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class AbstractReactiveObject implements ReactiveObject {
@@ -32,7 +33,7 @@ public class AbstractReactiveObject implements ReactiveObject {
     }
 
     public List<Tuple> getLeftTuples() {
-        return lts;
+        return lts != null ? lts : Collections.emptyList();
     }
 
     protected void notifyModification() {
