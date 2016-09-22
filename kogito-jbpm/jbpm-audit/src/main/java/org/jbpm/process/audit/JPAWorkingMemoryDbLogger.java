@@ -333,6 +333,7 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
 
         if (!sharedEM) {
             try {  
+                em.flush();
                 em.close(); 
             } catch( Exception e ) { 
                 logger.error("Unable to close created EntityManager: {}", e.getMessage(), e);
