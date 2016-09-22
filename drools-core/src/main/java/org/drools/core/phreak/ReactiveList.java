@@ -81,7 +81,14 @@ public class ReactiveList<T> extends AbstractReactiveObject implements List<T> {
     @Override
     public boolean remove(Object o) {
         boolean result = list.remove(o);
-        ReactiveObjectUtil.notifyModification(o, getLeftTuples(), ModificationType.REMOVE);
+        if (result) {
+            if (o instanceof ReactiveObject) {
+                for (Tuple lts : getLeftTuples()) {
+                    ((ReactiveObject) o).removeLeftTuple(lts);
+                }
+            }
+            ReactiveObjectUtil.notifyModification(o, getLeftTuples(), ModificationType.REMOVE);
+        }
         return result;
     }
 

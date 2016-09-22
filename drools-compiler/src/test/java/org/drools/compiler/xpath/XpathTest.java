@@ -509,6 +509,61 @@ public class XpathTest {
         assertTrue(ksession.getObjects().contains(charlie));
         assertFalse(ksession.getObjects().contains(debbie));
     }
+    
+    @Test
+    public void testRemoveFromReactiveListExtended() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "  Group( $id: name, $p: /members{age >= 20} )\n" +
+                "then\n" +
+                "  System.out.println( $id + \".\" + $p.getName() );\n" +
+                "  insertLogical(      $id + \".\" + $p.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+        
+        Adult ada = new Adult("Ada", 19);
+        Adult bea = new Adult("Bea", 19);
+        Group x = new Group("X");
+        Group y = new Group("Y");
+        x.addPerson(ada);
+        x.addPerson(bea);
+        y.addPerson(ada);
+        y.addPerson(bea);
+        ksession.insert( x );
+        ksession.insert( y );
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertFalse (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+
+        ada.setAge( 20 );        
+        ksession.fireAllRules();
+        ksession.getObjects().forEach(System.out::println);
+        assertTrue  (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        
+        y.removePerson(bea);
+        bea.setAge( 20 );        
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.Ada"));
+        assertTrue  (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+    }
+
+    private List<?> factsCollection(KieSession ksession) {
+        List<Object> res = new ArrayList<>();
+        res.addAll(ksession.getObjects());
+        return res;
+    }
 
     @Test
     public void testReactiveOnBeta() {

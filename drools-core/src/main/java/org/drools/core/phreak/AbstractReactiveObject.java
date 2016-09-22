@@ -39,4 +39,9 @@ public class AbstractReactiveObject implements ReactiveObject {
     protected void notifyModification() {
         ReactiveObjectUtil.notifyModification(this);
     }
+
+    @Override
+    public void removeLeftTuple(Tuple leftTuple) {
+        lts.remove(leftTuple);
+    }
 }
