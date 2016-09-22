@@ -142,15 +142,15 @@ public class NotNode extends BetaNode {
 
         rightTuple.setPropagationContext(pctx);
 
-        // strangely we link here, this is actually just to force a network evaluation
-        // The assert is then processed and the rule unlinks then.
-        // This is because we need the first RightTuple to link with it's blocked
-        if ( memory.getStagedRightTuples().isEmpty() ) {
-            memory.setNodeDirtyWithoutNotify();
-        }
         boolean stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
 
         if (  memory.getAndIncCounter() == 0 && isEmptyBetaConstraints()  ) {
+            // strangely we link here, this is actually just to force a network evaluation
+            // The assert is then processed and the rule unlinks then.
+            // This is because we need the first RightTuple to link with it's blocked
+            if ( stagedInsertWasEmpty ) {
+                memory.setNodeDirtyWithoutNotify();
+            }
             // NotNodes can only be unlinked, if they have no variable constraints
             memory.linkNode( wm );
         } else if ( stagedInsertWasEmpty ) {
@@ -175,12 +175,12 @@ public class NotNode extends BetaNode {
                                    final InternalWorkingMemory wm,
                                    final BetaMemory memory) {
         TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
-        if ( stagedRightTuples.isEmpty() ) {
-            memory.setNodeDirtyWithoutNotify();
-        }
         boolean stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
 
         if (  memory.getAndDecCounter() == 1 && isEmptyBetaConstraints()  ) {
+            if ( stagedDeleteWasEmpty ) {
+                memory.setNodeDirtyWithoutNotify();
+            }
             // NotNodes can only be unlinked, if they have no variable constraints
             memory.linkNode( wm );
         }  else if ( stagedDeleteWasEmpty ) {

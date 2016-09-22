@@ -283,9 +283,6 @@ public abstract class BetaNode extends LeftTupleSource
 
         RightTuple rightTuple = createRightTuple( factHandle, this, pctx );
 
-        if ( memory.getStagedRightTuples().isEmpty() ) {
-            memory.setNodeDirtyWithoutNotify();
-        }
         boolean stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert(rightTuple);
         if ( isLogTraceEnabled ) {
             log.trace("BetaNode stagedInsertWasEmpty={}", stagedInsertWasEmpty );
@@ -293,6 +290,9 @@ public abstract class BetaNode extends LeftTupleSource
 
         boolean shouldFlush = isStreamMode();
         if ( memory.getAndIncCounter() == 0 ) {
+            if ( stagedInsertWasEmpty ) {
+                memory.setNodeDirtyWithoutNotify();
+            }
             shouldFlush = memory.linkNode(wm, !rightInputIsPassive) | shouldFlush;
         } else if ( stagedInsertWasEmpty ) {
             shouldFlush = memory.setNodeDirty( wm, !rightInputIsPassive ) | shouldFlush;
@@ -345,12 +345,12 @@ public abstract class BetaNode extends LeftTupleSource
                                    final BetaMemory memory) {
         TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
 
-        if ( stagedRightTuples.isEmpty() ) {
-            memory.setNodeDirtyWithoutNotify();
-        }
         boolean stagedDeleteWasEmpty = stagedRightTuples.addDelete(rightTuple);
 
         if ( memory.getAndDecCounter() == 1 ) {
+            if ( stagedDeleteWasEmpty ) {
+                memory.setNodeDirtyWithoutNotify();
+            }
             memory.unlinkNode(wm);
         } else if ( stagedDeleteWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
@@ -363,9 +363,6 @@ public abstract class BetaNode extends LeftTupleSource
                                     final BetaMemory memory) {
         TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
 
-        if ( stagedRightTuples.isEmpty() ) {
-            memory.setNodeDirtyWithoutNotify();
-        }
         boolean stagedUpdateWasEmpty = stagedRightTuples.addUpdate( rightTuple );
 
         if ( stagedUpdateWasEmpty  ) {
