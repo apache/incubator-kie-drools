@@ -21,5 +21,6 @@ import java.util.List;
 
 public interface ReactiveObject {
     void addLeftTuple(Tuple leftTuple);
+    void removeLeftTuple(Tuple leftTuple);
     List<Tuple> getLeftTuples();
 }

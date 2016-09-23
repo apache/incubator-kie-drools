@@ -16,6 +16,7 @@
 package org.drools.compiler.xpath;
 
 import org.drools.core.phreak.AbstractReactiveObject;
+import org.drools.core.phreak.ReactiveList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class School extends AbstractReactiveObject {
 
     private final String name;
 
-    private final List<Child> children = new ArrayList<Child>();
+    private final List<Child> children = new ReactiveList<Child>();
 
     public School(String name) {
         this.name = name;
