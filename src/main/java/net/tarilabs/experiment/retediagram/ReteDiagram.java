@@ -20,6 +20,7 @@ import java.util.stream.StreamSupport;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
@@ -80,6 +81,8 @@ public class ReteDiagram {
                 printVertexes(vertexes, out);
                 out.println("");
                 printLevelMap(levelMap, out, vertexes);
+                out.println("");
+                printPartitionMap(nodeMap, out, vertexes);
                 out.println("}");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -146,6 +149,16 @@ public class ReteDiagram {
         }
         public static <F, T> Vertex<F, T> of(F from, T to) {
             return new Vertex<F, T>(from, to);
+        }
+    }
+    
+    private static void printPartitionMap(HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap, PrintStream out, List<Vertex<BaseNode, BaseNode>> vertexes) {
+        Map<String, List<BaseNode>> byPartition = nodeMap.entrySet().stream()
+            .flatMap(kv->kv.getValue().stream())
+            .collect(groupingBy(n->n.getPartitionId() == null ? "null" : n.getPartitionId().getId()));
+        
+        for (Entry<String, List<BaseNode>> kv : byPartition.entrySet()) {
+            printClusterMapCluster(kv.getKey().replaceAll("-", "_"), new HashSet<>(kv.getValue()), out);
         }
     }
 
@@ -228,13 +241,24 @@ public class ReteDiagram {
         }
         return acc;
     }
+    
+    private static void printClusterMapCluster(String levelId, Set<BaseNode> value, PrintStream out) {
+        StringBuilder nodeIds = new StringBuilder();
+        for (BaseNode n : value) {
+            nodeIds.append(printNodeId(n)+"; ");
+        }
+        String level = String.format(" subgraph cluster_%1$s{style=dotted; labelloc=b; label=\"%1$s\"; %2$s}",
+                levelId,
+                nodeIds.toString());
+        out.println(level);
+    }
 
     private static void printLevelMapLevel(String levelId, Set<BaseNode> value, PrintStream out) {
         StringBuilder nodeIds = new StringBuilder();
         for (BaseNode n : value) {
             nodeIds.append(printNodeId(n)+"; ");
         }
-        String level = String.format(" {rank=same; %1$s[shape=point, xlabel=\"%1$s\"]; %2$s}",
+        String level = String.format(" subgraph %1$s{%1$s[shape=point, xlabel=\"%1$s\"]; %2$s}",
                 levelId,
                 nodeIds.toString());
         out.println(level);
