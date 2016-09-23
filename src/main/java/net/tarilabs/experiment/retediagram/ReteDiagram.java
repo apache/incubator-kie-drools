@@ -43,6 +43,10 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.KnowledgeRuntime;
 
 public class ReteDiagram {
+    public enum Pref {
+        PARTITION, VLEVEL
+    }
+    
     private ReteDiagram() { }
 
     public static void dumpRete(KnowledgeBase kbase) {
@@ -58,10 +62,10 @@ public class ReteDiagram {
     }
 
     public static void dumpRete(InternalKnowledgeBase kBase) {
-        dumpRete(kBase.getRete());
+        dumpRete(kBase.getRete(), Pref.PARTITION);
     }
 
-    public static void dumpRete(Rete rete) {
+    public static void dumpRete(Rete rete, Pref pref) {
         for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
             try (PrintStream out = new PrintStream(new FileOutputStream("test.gv"));) {
                 out.println("digraph g {\n" +
@@ -80,9 +84,12 @@ public class ReteDiagram {
                 out.println("");
                 printVertexes(vertexes, out);
                 out.println("");
-                printLevelMap(levelMap, out, vertexes);
+                printLevelMap(levelMap, out, vertexes, pref);
                 out.println("");
-                printPartitionMap(nodeMap, out, vertexes);
+                if (pref == Pref.PARTITION) {
+                    printPartitionMap(nodeMap, out, vertexes);
+                }
+                
                 out.println("}");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -162,31 +169,31 @@ public class ReteDiagram {
         }
     }
 
-    private static void printLevelMap(HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out, List<Vertex<BaseNode, BaseNode>> vertexes) {
+    private static void printLevelMap(HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out, List<Vertex<BaseNode, BaseNode>> vertexes, Pref pref) {
 
         // Level 1: OTN
         Set<BaseNode> l1 = levelMap.entrySet().stream()
                                 .filter(kv->ObjectTypeNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel("l1", l1, out);
+        printLevelMapLevel("l1", l1, out, pref);
         
         // Level 2: AN
         Set<BaseNode> l2 = levelMap.entrySet().stream()
                                 .filter(kv->AlphaNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel("l2", l2, out);
+        printLevelMapLevel("l2", l2, out, pref);
         
         // Level 3: LIA
         Set<BaseNode> l3 = levelMap.entrySet().stream()
                                 .filter(kv->LeftInputAdapterNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel("l3", l3, out);
+        printLevelMapLevel("l3", l3, out, pref);
         
         // RIA
         Set<BaseNode> lria = levelMap.entrySet().stream()
                                 .filter(kv->RightInputAdapterNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel("lria", lria, out);
+        printLevelMapLevel("lria", lria, out, pref);
         
         // RIA beta sources
         Set<BaseNode> lriaSources = new HashSet<>();
@@ -201,7 +208,7 @@ public class ReteDiagram {
         for (BaseNode lriaSource : lriaSources) {
             lriaSources.addAll( recurseIncomingVertex(lriaSource, onlyBetas) );
         }
-        printLevelMapLevel("lriaSources", lriaSources, out);
+        printLevelMapLevel("lriaSources", lriaSources, out, pref);
         
         // subnetwork Betas
         Set<BaseNode> lsubbeta = levelMap.entrySet().stream()
@@ -209,7 +216,7 @@ public class ReteDiagram {
                                 .flatMap(kv->kv.getValue().stream())
                                 .filter(b-> ((BetaNode) b).getObjectType() == null )
                                 .collect(toSet());
-        printLevelMapLevel("lsubbeta", lsubbeta, out);
+        printLevelMapLevel("lsubbeta", lsubbeta, out, pref);
 
         // Level 4: BN
         Set<BaseNode> l4 = levelMap.entrySet().stream()
@@ -218,13 +225,13 @@ public class ReteDiagram {
                                 .filter(b-> !lriaSources.contains(b) )
                                 .filter(b-> !lsubbeta.contains(b) )
                                 .collect(toSet());
-        printLevelMapLevel("l4", l4, out);
+        printLevelMapLevel("l4", l4, out, pref);
 
         // Level 5: RTN
         Set<BaseNode> l5 = levelMap.entrySet().stream()
                                 .filter(kv->RuleTerminalNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel("l5", l5, out);
+        printLevelMapLevel("l5", l5, out, pref);
         
         out.println(
 //                " edge[style=invis];\n" + 
@@ -253,15 +260,22 @@ public class ReteDiagram {
         out.println(level);
     }
 
-    private static void printLevelMapLevel(String levelId, Set<BaseNode> value, PrintStream out) {
+    private static void printLevelMapLevel(String levelId, Set<BaseNode> value, PrintStream out, Pref pref) {
         StringBuilder nodeIds = new StringBuilder();
         for (BaseNode n : value) {
             nodeIds.append(printNodeId(n)+"; ");
         }
-        String level = String.format(" subgraph %1$s{%1$s[shape=point, xlabel=\"%1$s\"]; %2$s}",
-                levelId,
-                nodeIds.toString());
-        out.println(level);
+        if (pref == Pref.PARTITION) { 
+            String level = String.format(" subgraph %1$s{%1$s[shape=point, xlabel=\"%1$s\"]; %2$s}",
+                    levelId,
+                    nodeIds.toString());
+            out.println(level);
+        } else {
+            String level = String.format(" {rank=same; %1$s[shape=point, xlabel=\"%1$s\"]; %2$s}",
+                    levelId,
+                    nodeIds.toString());
+            out.println(level);
+        }
     }
 
     private static void dumpNode(BaseNode node, String ident, Set<Integer> visitedNodesIDs, HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap, List<Vertex<BaseNode, BaseNode>> vertexes, Map<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out) {

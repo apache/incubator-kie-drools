@@ -47,10 +47,12 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.tarilabs.experiment.retediagram.ReteDiagram.Pref;
 import net.tarilabs.model.Measurement;
 
 public class RuleTest extends CommonTestMethodBase {
@@ -95,8 +97,7 @@ public class RuleTest extends CommonTestMethodBase {
 	    
 	    ReteDumper.dumpRete(session);
 	    System.out.println("---");
-	    ReteDiagram.dumpRete(session);
-        
+	    ReteDiagram.dumpRete(((InternalKnowledgeBase)session.getKieBase()).getRete(), Pref.VLEVEL);
 	}
 	
 	@Test
