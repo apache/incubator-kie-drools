@@ -34,16 +34,20 @@ import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class XpathTest {
-
+    public static final Logger LOG = LoggerFactory.getLogger(XpathTest.class);
+    
     @Test
     public void testClassSimplestXpath() {
         String drl =
@@ -457,6 +461,108 @@ public class XpathTest {
             Object obj = next.getFactHandle().getObject();
             assertTrue( obj == charlie );
         }
+    }
+    
+    @Test
+    public void testRemoveFromReactiveListBasic() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "  School( $child: /children{age >= 13 && age < 20} )\n" +
+                "then\n" +
+                "  System.out.println( $child );\n" +
+                "  insertLogical( $child );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+        
+        Child charlie = new Child( "Charles", 15 );
+        Child debbie = new Child( "Debbie", 19 );
+        School school = new School( "Da Vinci" );
+        school.addChild( charlie );
+        
+        ksession.insert( school );
+        ksession.fireAllRules();
+        assertTrue(ksession.getObjects().contains(charlie));
+        assertFalse(ksession.getObjects().contains(debbie));
+        
+        school.addChild( debbie );
+        ksession.fireAllRules();
+        assertTrue(ksession.getObjects().contains(charlie));
+        assertTrue(ksession.getObjects().contains(debbie));
+        
+        school.getChildren().remove( debbie );
+        ksession.fireAllRules();
+        assertTrue(ksession.getObjects().contains(charlie));
+        assertFalse(ksession.getObjects().contains(debbie));
+        
+        school.addChild( debbie );
+        ksession.fireAllRules();
+        assertTrue(ksession.getObjects().contains(charlie));
+        assertTrue(ksession.getObjects().contains(debbie));
+
+        debbie.setAge( 20 );        
+        ksession.fireAllRules();
+        assertTrue(ksession.getObjects().contains(charlie));
+        assertFalse(ksession.getObjects().contains(debbie));
+    }
+    
+    @Test
+    public void testRemoveFromReactiveListExtended() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "  Group( $id: name, $p: /members{age >= 20} )\n" +
+                "then\n" +
+                "  System.out.println( $id + \".\" + $p.getName() );\n" +
+                "  insertLogical(      $id + \".\" + $p.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+        
+        Adult ada = new Adult("Ada", 19);
+        Adult bea = new Adult("Bea", 19);
+        Group x = new Group("X");
+        Group y = new Group("Y");
+        x.addPerson(ada);
+        x.addPerson(bea);
+        y.addPerson(ada);
+        y.addPerson(bea);
+        ksession.insert( x );
+        ksession.insert( y );
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertFalse (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+
+        ada.setAge( 20 );        
+        ksession.fireAllRules();
+        ksession.getObjects().forEach(System.out::println);
+        assertTrue  (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        
+        y.removePerson(bea);
+        bea.setAge( 20 );        
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.Ada"));
+        assertTrue  (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+    }
+
+    private List<?> factsCollection(KieSession ksession) {
+        List<Object> res = new ArrayList<>();
+        res.addAll(ksession.getObjects());
+        return res;
     }
 
     @Test

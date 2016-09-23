@@ -21,6 +21,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
+import org.drools.core.spi.Tuple;
+
 public class ReactiveList<T> extends AbstractReactiveObject implements List<T> {
 
     private final List<T> list;
@@ -36,7 +39,12 @@ public class ReactiveList<T> extends AbstractReactiveObject implements List<T> {
     @Override
     public boolean add(T t) {
         boolean result = list.add(t);
-        ReactiveObjectUtil.notifyModification(t, getLeftTuples());
+        ReactiveObjectUtil.notifyModification(t, getLeftTuples(), ModificationType.ADD);
+        if (t instanceof ReactiveObject) {
+            for (Tuple lts : getLeftTuples()) {
+                ((ReactiveObject) t).addLeftTuple(lts);
+            }
+        }
         return result;
     }
 
@@ -72,7 +80,16 @@ public class ReactiveList<T> extends AbstractReactiveObject implements List<T> {
 
     @Override
     public boolean remove(Object o) {
-        return list.remove(o);
+        boolean result = list.remove(o);
+        if (result) {
+            if (o instanceof ReactiveObject) {
+                for (Tuple lts : getLeftTuples()) {
+                    ((ReactiveObject) o).removeLeftTuple(lts);
+                }
+            }
+            ReactiveObjectUtil.notifyModification(o, getLeftTuples(), ModificationType.REMOVE);
+        }
+        return result;
     }
 
     @Override
