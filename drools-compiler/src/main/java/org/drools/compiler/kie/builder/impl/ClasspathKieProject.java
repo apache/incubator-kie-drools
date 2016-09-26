@@ -59,7 +59,7 @@ public class ClasspathKieProject extends AbstractKieProject {
 
     private static final Logger             log               = LoggerFactory.getLogger( ClasspathKieProject.class );
 
-    public static final String OSGI_KIE_MODULE_CLASS_NAME     = "org.drools.osgi.compiler.OsgiKieModule";
+    public static final String OSGI_KIE_MODULE_CLASS_NAME     = "org.kie.osgi.compiler.OsgiKieModule";
 
     private Map<ReleaseId, InternalKieModule>     kieModules  = new HashMap<ReleaseId, InternalKieModule>();
 
@@ -147,7 +147,7 @@ public class ClasspathKieProject extends AbstractKieProject {
             Class<?> c = Class.forName(OSGI_KIE_MODULE_CLASS_NAME);
             m = c.getMethod("create", URL.class);
         } catch (Exception e) {
-            log.error("It is necessary to have the drools-osgi-integration module on the path in order to create a KieProject from an ogsi bundle", e);
+            log.error("It is necessary to have the kie-osgi-integration module on the path in order to create a KieProject from an OSGi bundle", e);
             throw new RuntimeException(e);
         }
         try {
