@@ -39,10 +39,15 @@ public class FEELTest extends BaseFEELTest {
                 // dash is an unary test that always matches, so for now, returning true.
                 // have to double check to know if this is not the case
                 { "-", UnaryTest.class },
+                { ".872", new BigDecimal( "0.872" ) },
+                { "-.872", new BigDecimal( "-0.872" ) },
+                { "+.872", new BigDecimal( "0.872" ) },
                 { "50", new BigDecimal( "50" ) },
                 { "-50", new BigDecimal( "-50" ) },
+                { "+50", new BigDecimal( "50" ) },
                 { "50.872", new BigDecimal( "50.872" ) },
                 { "-50.567", new BigDecimal( "-50.567" ) },
+                { "+50.567", new BigDecimal( "50.567" ) },
                 // quotes are a syntactical markup character for strings, so they disappear when the expression is evaluated
                 { "\"foo bar\"", "foo bar" },
                 { "\"\"", "" },
@@ -139,6 +144,7 @@ public class FEELTest extends BaseFEELTest {
                 { "true != false", Boolean.TRUE },
 
                 // other types of equalities
+                { "[ 1..3 ] = [ 1..3 ]", Boolean.TRUE },
                 { "[ 1, 2, 3] = [1, 2, 3]", Boolean.TRUE },
                 { "[ 1, 2, 3, 4] = [1, 2, 3]", Boolean.FALSE },
                 { "[ 1, 2, 3] = [1, \"foo\", 3]", Boolean.FALSE },
