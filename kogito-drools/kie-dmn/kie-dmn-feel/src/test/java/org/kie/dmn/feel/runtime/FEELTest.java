@@ -50,6 +50,9 @@ public class FEELTest extends BaseFEELTest {
                 { "+50.567", new BigDecimal( "50.567" ) },
                 // quotes are a syntactical markup character for strings, so they disappear when the expression is evaluated
                 { "\"foo bar\"", "foo bar" },
+                { "\"šomeÚnicodeŠtriňg\"", "šomeÚnicodeŠtriňg" },
+                { "\"横綱\"", "横綱" },
+                { "\"thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong\"", "thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong" },
                 { "\"\"", "" },
 
                 // math operations
@@ -85,6 +88,7 @@ public class FEELTest extends BaseFEELTest {
                 { "null / 10", null },
                 { "10 + 20 / -5 - 3", BigDecimal.valueOf( 3 ) },
                 { "10 + 20 / ( -5 - 3 )", BigDecimal.valueOf( 7.5 ) },
+                { "1.2*10**3", BigDecimal.valueOf( 1200.0 ) },
                 // string concatenation
                 { "\"foo\"+\"bar\"", "foobar" },
 
