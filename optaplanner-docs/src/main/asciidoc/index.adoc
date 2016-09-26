@@ -1,0 +1,35 @@
+= OptaPlanner User Guide
+The OptaPlanner Team <http://www.optaplanner.org/community/team.html>
+:revnumber: {project-version}
+:doctype: book
+:sectnums:
+:sectanchors:
+:sectlinks:
+:sectnumlevels: 5
+:icons: font
+:docinfo:
+:experimental:
+:toc: left
+:toclevels: 3
+:title-logo-image: image:Chapter-Planner_introduction/optaPlannerLogo.png[align="center"]
+
+
+include::Chapter-Planner_introduction/Chapter-Planner_introduction.adoc[leveloffset=+1]
+include::Chapter-Quick_start/Chapter-Quick_start.adoc[leveloffset=+1]
+include::Chapter-Use_cases_and_examples/Chapter-Use_cases_and_examples.adoc[leveloffset=+1]
+include::Chapter-Planner_configuration/Chapter-Planner_configuration.adoc[leveloffset=+1]
+include::Chapter-Score_calculation/Chapter-Score_calculation.adoc[leveloffset=+1]
+include::Chapter-Optimization_algorithms/Chapter-Optimization_algorithms.adoc[leveloffset=+1]
+include::Chapter-Move_and_neighborhood_selection/Chapter-Move_and_neighborhood_selection.adoc[leveloffset=+1]
+include::Chapter-Exhaustive_search/Chapter-Exhaustive_search.adoc[leveloffset=+1]
+include::Chapter-Construction_heuristics/Chapter-Construction_heuristics.adoc[leveloffset=+1]
+include::Chapter-Local_search/Chapter-Local_search.adoc[leveloffset=+1]
+include::Chapter-Evolutionary_algorithms/Chapter-Evolutionary_algorithms.adoc[leveloffset=+1]
+include::Chapter-Hyperheuristics/Chapter-Hyperheuristics.adoc[leveloffset=+1]
+include::Chapter-Partitioned_search/Chapter-Partitioned_search.adoc[leveloffset=+1]
+include::Chapter-Benchmarking_and_tweaking/Chapter-Benchmarking_and_tweaking.adoc[leveloffset=+1]
+include::Chapter-Repeated_planning/Chapter-Repeated_planning.adoc[leveloffset=+1]
+include::Chapter-Integration/Chapter-Integration.adoc[leveloffset=+1]
+include::Chapter-Design_patterns/Chapter-Design_patterns.adoc[leveloffset=+1]
+include::Chapter-Development/Chapter-Development.adoc[leveloffset=+1]
+

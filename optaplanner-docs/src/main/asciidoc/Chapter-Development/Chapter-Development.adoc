@@ -1,0 +1,71 @@
+[[development]]
+= Development
+:doctype: book
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+:sourcedir: .
+
+[[methodologyOverview]]
+== Methodology Overview
+
+
+The diagram below explains the overall structure of the OptaPlanner source code:
+
+
+image::Chapter-Development/methodologyOverview.png[align="center"]
+
+
+In the diagram above, it's important to understand the clear separation between the configuration and runtime classes.
+
+The development philosophy includes:
+
+* **Reuse**: The examples are reused as integration tests, stress tests and demo's. The documentation images are reused as slides.
+* **Consistent terminology**: Each example has a class `App` (executable class), `Dao` (Data Access Object) and `Panel` (swing UI).
+* **Consistent structure**: Each example has the same packages: ``domain``, ``persistence``, ``app``, `solver` and ``swingui``.
+* **Real world usefulness**: Every feature is used in an example. Most examples are real world use cases with real world constraints, often with real world data.
+* **Automated testing**: There are unit tests, integration tests, performance regressions tests and stress tests. The test coverage is high.
+* **Fail fast with an understandable error message**: Invalid states are checked as early as possible.
+
+
+[[developmentGuidelines]]
+== Development guidelines
+
+. Fail fast. There are several levels of fail fast, from better to worse:
+.. **Fail Fast at compile time**. For example: Don't accept an `Object` as parameter if it needs to be a `String` or an ``Integer``.
+.. **Fail Fast at startup time**. For example: if the configuration parameter needs to be a positive `int` and it's negative, fail fast
+.. **Fail Fast at runtime**. For example: if the request needs to contain a double between `0.0` and `1.0` and it's bigger than ``1.0``, fail fast.
+.. *Fail Fast at runtime in assertion mode* if the detection performance cost is high. For example: If, after every low level iteration, the variable A needs to be equal to the square root of B, check it if and only if an assert flag is set to true (usually controlled by the <<environmentMode,EnvironmentMode>>).
+
+. `Exception` messages
+.. The `Exception` message must include the name and state of each relevant variable. For example:
++
+[source,java,options="nowrap"]
+----
+if (fooSize < 0) {
+    throw new IllegalArgumentException("The fooSize (" + fooSize + ") of bar (" + this + ") must be positive.");
+}
+----
+Notice that the output clearly explains what's wrong:
++
+[source,java,options="nowrap"]
+----
+Exception in thread "main" java.lang.IllegalArgumentException: The fooSize (-5) of bar (myBar) must be positive.
+    at ...
+----
+
+.. Whenever possible, the `Exception` message must include context.
+
+.. Whenever the fix is not obvious, the `Exception` message should include advice. Advice normally starts with the word _maybe_ on a new line:
++
+[source,java,options="nowrap"]
+----
+Exception in thread "main" java.lang.IllegalStateException: The valueRangeDescriptor (fooRange) is nullable, but not countable (false).
+Maybe the member (getFooRange) should return CountableValueRange.
+    at ...
+----
++
+The word _maybe_ is to indicate that the advice is not guaranteed to be right in all cases.
+
+. Generics. The `Solution` class is often passed as a generic type parameter to subsystems. The `PlanningEntity` class(es) are rarely passed as a generic type parameter.

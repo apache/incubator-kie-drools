@@ -1,0 +1,1685 @@
+[[moveAndNeighborhoodSelection]]
+= `Move` and Neighborhood Selection
+:doctype: book
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+:sourcedir: .
+
+[[moveAndNeighborhoodSelectionIntroduction]]
+== `Move` and Neighborhood Introduction
+
+[[whatIsAMove]]
+=== What is a ``Move``?
+
+
+A `Move` is a change (or set of changes) from a solution A to a solution B.
+For example, the move below changes queen `C` from row `0` to row ``2``:
+
+
+image::Chapter-Move_and_neighborhood_selection/singleMoveNQueens04.png[align="center"]
+
+
+The new solution is called a _neighbor_ of the original solution, because it can be reached in a single ``Move``.
+Although a single move can change multiple queens, the neighbors of a solution should always be a very small subset of all possible solutions.
+For example, on that original solution, these are all possible ``changeMove``'s:
+
+
+image::Chapter-Move_and_neighborhood_selection/possibleMovesNQueens04.png[align="center"]
+
+
+If we ignore the 4 ``changeMove``'s that have not impact and are therefore not doable, we can see that number of moves is ``n * (n - 1) = 12``.
+This is far less than the number of possible solutions, which is ``n ^ n = 256``.
+As the problem scales out, the number of possible moves increases far less than the number of possible solutions.
+
+Yet, in 4 ``changeMove``'s or less we can reach any solution.
+For example we can reach a very different solution in 3 ``changeMove``'s:
+
+
+image::Chapter-Move_and_neighborhood_selection/sequentialMovesNQueens04.png[align="center"]
+
+
+[NOTE]
+====
+There are many other types of moves besides ``changeMove``'s.
+Many move types are included out-of-the-box, but you can also implement custom moves.
+
+A `Move` can affect multiple entities or even create/delete entities.
+But it must not change the problem facts.
+====
+
+
+All optimization algorithms use ``Move``'s to transition from one solution to a neighbor solution.
+Therefore, all the optimization algorithms are confronted with `Move` selection: the craft of creating and iterating moves efficiently and the art of finding the most promising subset of random moves to evaluate first.
+
+[[whatIsAMoveSelector]]
+=== What is a ``MoveSelector``?
+
+
+A ``MoveSelector``'s main function is to create `Iterator<Move>` when needed.
+An optimization algorithm will iterate through a subset of those moves.
+
+Here's an example how to configure a `changeMoveSelector` for the optimization algorithm Local Search:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <changeMoveSelector/>
+    ...
+  </localSearch>
+----
+
+
+Out of the box, this works and all properties of the `changeMoveSelector` are defaulted sensibly (unless that fails fast due to ambiguity). On the other hand, the configuration can be customized significantly for specific use cases.
+For example: you might want to configure a <<filteredSelection,filter>> to discard pointless moves.
+
+[[subselectingOfEntitiesValuesAndOtherMoves]]
+=== Subselecting of Entities, Values and Other Moves
+
+
+To create a ``Move``, a `MoveSelector` needs to select 1 or more planning entities and/or planning values to move.
+Just like ``MoveSelector``s, ``EntitySelector``s and ``ValueSelector``s need to support a similar feature set (such as scalable just-in-time selection). Therefore, they all implement a common interface `Selector` and they are configured similarly.
+
+A MoveSelector is often composed out of ``EntitySelector``s, ``ValueSelector``s or even other ``MoveSelector``s, which can be configured individually if desired:
+
+[source,xml,options="nowrap"]
+----
+    <unionMoveSelector>
+      <changeMoveSelector>
+        <entitySelector>
+          ...
+        </entitySelector>
+        <valueSelector>
+          ...
+        </valueSelector>
+        ...
+      </changeMoveSelector>
+      <swapMoveSelector>
+        ...
+      </swapMoveSelector>
+    </unionMoveSelector>
+----
+
+
+Together, this structure forms a `Selector` tree:
+
+
+image::Chapter-Move_and_neighborhood_selection/selectorTree.png[align="center"]
+
+
+The root of this tree is a `MoveSelector` which is injected into the optimization algorithm implementation to be (partially) iterated in every step.
+
+[[genericMoveSelectors]]
+== Generic MoveSelectors
+
+[[changeMoveSelector]]
+=== changeMoveSelector
+
+
+For 1 planning variable, the `ChangeMove` selects 1 planning entity and 1 planning value and assigns the entity's variable to that value.
+
+
+image::Chapter-Move_and_neighborhood_selection/changeMove.png[align="center"]
+
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+    <changeMoveSelector/>
+----
+
+
+If there are multiple entity classes or multiple planning variables for 1 entity class, a simple configuration will automatically unfold into a <<unionMoveSelector,union>> of `ChangeMove` selectors for every planning variable.
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+    <changeMoveSelector>
+      ... <!-- Normal selector properties -->
+      <entitySelector>
+        <entityClass>...Lecture</entityClass>
+        ...
+      </entitySelector>
+      <valueSelector>
+        <variableName>room</variableName>
+        ...
+        <nearbySelection>...</nearbySelection>
+      </valueSelector>
+    </changeMoveSelector>
+----
+
+
+A `ChangeMove` is the finest grained move.
+
+[IMPORTANT]
+====
+Almost every `moveSelector` configuration injected into a metaheuristic algorithm should include a changeMoveSelector or a custom implementation.
+This guarantees that every possible `Solution` can be reached through applying a number of moves in sequence (not taking <<scoreTrap,score traps>> into account). Of course, normally it is unioned with other, more coarse grained move selectors.
+====
+
+[[swapMoveSelector]]
+=== swapMoveSelector
+
+
+The `SwapMove` selects 2 different planning entities and swaps the planning values of all their planning variables.
+
+
+image::Chapter-Move_and_neighborhood_selection/swapMove.png[align="center"]
+
+
+Although a `SwapMove` on a single variable is essentially just 2 ``ChangeMove``s, it's often the winning step where the first of the 2 ``ChangeMove``s would not be the winning step because it leaves the solution in a state with broken hard constraints.
+For example: swapping the room of 2 lectures doesn't bring the solution in a intermediate state where both lectures are in the same room which breaks a hard constraint.
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+    <swapMoveSelector/>
+----
+
+
+If there are multiple entity classes, a simple configuration will automatically unfold into a <<unionMoveSelector,union>> of `SwapMove` selectors for every entity class.
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+    <swapMoveSelector>
+      ... <!-- Normal selector properties -->
+      <entitySelector>
+        <entityClass>...Lecture</entityClass>
+        ...
+      </entitySelector>
+      <secondaryEntitySelector>
+        <entityClass>...Lecture</entityClass>
+        ...
+        <nearbySelection>...</nearbySelection>
+      </secondaryEntitySelector>
+      <variableNameInclude>room</variableNameInclude>
+      <variableNameInclude>...</variableNameInclude>
+    </swapMoveSelector>
+----
+
+
+The `secondaryEntitySelector` is rarely needed: if it is not specified, entities from the same `entitySelector` are swapped.
+
+If one or more `variableNameInclude` properties are specified, not all planning variables will be swapped, but only those specified.
+For example for course scheduling, specifying only `variableNameInclude` room will make it only swap room, not period.
+
+[[pillarChangeMoveSelector]]
+=== pillarChangeMoveSelector
+
+
+A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarChangeMove` selects 1 entity pillar (or subset of those) and changes the value of 1 variable (which is the same for all entities) to another value.
+
+
+image::Chapter-Move_and_neighborhood_selection/pillarChangeMove.png[align="center"]
+
+
+In the example above, queen A and C have the same value (row 0) and are moved to row 2.
+Also the yellow and blue process have the same value (computer Y) and are moved to computer X.
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+    <pillarChangeMoveSelector/>
+----
+
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+    <pillarSwapMoveSelector>
+      ... <!-- Normal selector properties -->
+      <pillarSelector>
+        <entitySelector>
+          <entityClass>...Lecture</entityClass>
+          ...
+        </entitySelector>
+        <subPillarEnabled>true</subPillarEnabled>
+        <minimumSubPillarSize>1</minimumSubPillarSize>
+        <maximumSubPillarSize>1000</maximumSubPillarSize>
+      </pillarSelector>
+      <valueSelector>
+        <variableName>room</variableName>
+        ...
+      </valueSelector>
+    </pillarSwapMoveSelector>
+----
+
+
+A sub pillar is a subset of entities that share the same value(s) for their variable(s). For example if queen A, B, C and D are all located on row 0, they are a pillar and `[A, D]` is one of the many sub pillars.
+If `subPillarEnabled` (defaults to ``true``) is false, no sub pillars are selected.
+If sub pillars are enabled, the pillar itself is also included and the properties `minimumSubPillarSize` (defaults to ``1``) and `maximumSubPillarSize` (defaults to ``infinity``) limit the size of the selected (sub) pillar.
+
+[NOTE]
+====
+The number of sub pillars of a pillar is exponential to the size of the pillar.
+For example a pillar of size 32 has `(2^32 - 1)` subpillars.
+Therefore a `pillarSelector` only supports <<justInTimeRandomSelection,JIT random selection>> (which is the default).
+====
+
+
+The other properties are explained in <<changeMoveSelector,changeMoveSelector>>.
+
+[[pillarSwapMoveSelector]]
+=== pillarSwapMoveSelector
+
+
+A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarSwapMove` selects 2 different entity pillars and swaps the values of all their variables for all their entities.
+
+
+image::Chapter-Move_and_neighborhood_selection/pillarSwapMove.png[align="center"]
+
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+    <pillarSwapMoveSelector/>
+----
+
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+    <pillarSwapMoveSelector>
+      ... <!-- Normal selector properties -->
+      <pillarSelector>
+        <entitySelector>
+          <entityClass>...Lecture</entityClass>
+          ...
+        </entitySelector>
+        <subPillarEnabled>true</subPillarEnabled>
+        <minimumSubPillarSize>1</minimumSubPillarSize>
+        <maximumSubPillarSize>1000</maximumSubPillarSize>
+      </pillarSelector>
+      <secondaryPillarSelector>
+        <entitySelector>
+          ...
+        </entitySelector>
+        ...
+      </secondaryPillarSelector>
+      <variableNameInclude>room</variableNameInclude>
+      <variableNameInclude>...</variableNameInclude>
+    </pillarSwapMoveSelector>
+----
+
+
+The `secondaryPillarSelector` is rarely needed: if it is not specified, entities from the same `pillarSelector` are swapped.
+
+The other properties are explained in <<swapMoveSelector,swapMoveSelector>> and <<pillarChangeMoveSelector,pillarChangeMoveSelector>>.
+
+[[tailChainSwapMoveSelector]]
+=== tailChainSwapMoveSelector or 2-opt (chained variables only)
+
+
+A _tailChain_ is a set of planning entities with a chained planning variable which form a last part of a chain.
+The `tailChainSwapMove` selects a tail chain and swaps it with the tail chain of another planning value (in a different or the same anchor chain). If the targeted planning value, doesn't have a tail chain, it swaps with nothing (resulting in a change like move). If it occurs within the same anchor chain, a partial chain reverse occurs.
+In academic papers, this is often called a 2-opt move.
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+    <tailChainSwapMoveSelector/>
+----
+
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+    <subChainChangeMoveSelector>
+      ... <!-- Normal selector properties -->
+      <entitySelector>
+        <entityClass>...Customer</entityClass>
+        ...
+      </entitySelector>
+      <valueSelector>
+        <variableName>previousStandstill</variableName>
+        ...
+        <nearbySelection>...</nearbySelection>
+      </valueSelector>
+    </subChainChangeMoveSelector>
+----
+
+
+The `entitySelector` selects the start of the tail chain that is being moved.
+The valueSelector selects to where that tail chain is moved.
+If it has a tail chain itself, that is moved to the location of the original tail chain.
+It uses a `valueSelector` instead of a `secondaryEntitySelector` to be able to include all possible 2opt moves (such as moving to the end of a tail) and to work correctly with <<nearbySelection,nearby selection>> (because of asymmetric distances and also swapped entity distance gives an incorrect selection probability).
+
+[NOTE]
+====
+Although `subChainChangeMoveSelector` and `subChainSwapMoveSelector` include almost every possible ``tailChainSwapMove``, experiments have shown that focusing on ``tailChainSwapMove``s increases efficiency.
+====
+
+[[subChainChangeMoveSelector]]
+=== subChainChangeMoveSelector (chained variables only)
+
+
+A _subChain_ is a set of planning entities with a chained planning variable which form part of a chain.
+The `subChainChangeMoveSelector` selects a subChain and moves it to another place (in a different or the same anchor chain).
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+    <subChainChangeMoveSelector/>
+----
+
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+    <subChainChangeMoveSelector>
+      ... <!-- Normal selector properties -->
+      <entityClass>...Customer</entityClass>
+      <subChainSelector>
+        <valueSelector>
+          <variableName>previousStandstill</variableName>
+          ...
+        </valueSelector>
+        <minimumSubChainSize>2</minimumSubChainSize>
+        <maximumSubChainSize>40</maximumSubChainSize>
+      </subChainSelector>
+      <valueSelector>
+        <variableName>previousStandstill</variableName>
+        ...
+      </valueSelector>
+      <selectReversingMoveToo>true</selectReversingMoveToo>
+    </subChainChangeMoveSelector>
+----
+
+
+The `subChainSelector` selects a number of entities, no less than `minimumSubChainSize` (defaults to ``1``) and no more than `maximumSubChainSize` (defaults to ``infinity``).
+
+[NOTE]
+====
+If `minimumSubChainSize` is `1` (which is the default), this selector might select the same move as a ``ChangeMoveSelector``, at a far lower selection probability (because each move _type_ has the same selection chance by default (not every move instance) and there are far more `SubChainChangeMove` instances than `ChangeMove` instances). However, don't just remove the ``ChangeMoveSelector``, because experiments show that it's good to focus on ``ChangeMove``s.
+
+Furthermore, in a ``SubChainSwapMoveSelector``, setting `minimumSubChainSize` prevents swapping a subchain of size `1` with a subchain of at least size ``2``.
+====
+
+
+The `selectReversingMoveToo` property (defaults to true) enables selecting the reverse of every subchain too.
+
+[[subChainSwapMoveSelector]]
+=== subChainSwapMoveSelector (chained variables only)
+
+
+The `subChainSwapMoveSelector` selects 2 different subChains and moves them to another place in a different or the same anchor chain.
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+    <subChainSwapMoveSelector/>
+----
+
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+    <subChainSwapMoveSelector>
+      ... <!-- Normal selector properties -->
+      <entityClass>...Customer</entityClass>
+      <subChainSelector>
+        <valueSelector>
+          <variableName>previousStandstill</variableName>
+          ...
+        </valueSelector>
+        <minimumSubChainSize>2</minimumSubChainSize>
+        <maximumSubChainSize>40</maximumSubChainSize>
+      </subChainSelector>
+      <secondarySubChainSelector>
+        <valueSelector>
+          <variableName>previousStandstill</variableName>
+          ...
+        </valueSelector>
+        <minimumSubChainSize>2</minimumSubChainSize>
+        <maximumSubChainSize>40</maximumSubChainSize>
+      </secondarySubChainSelector>
+      <selectReversingMoveToo>true</selectReversingMoveToo>
+    </subChainSwapMoveSelector>
+----
+
+
+The `secondarySubChainSelector` is rarely needed: if it is not specified, entities from the same `subChainSelector` are swapped.
+
+The other properties are explained in <<subChainChangeMoveSelector,subChainChangeMoveSelector>>.
+
+[[combiningMultipleMoveSelectors]]
+== Combining Multiple ``MoveSelector``s
+
+[[unionMoveSelector]]
+=== unionMoveSelector
+
+
+A `unionMoveSelector` selects a `Move` by selecting 1 of its `MoveSelector` children to supply the next ``Move``.
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+    <unionMoveSelector>
+      <...MoveSelector/>
+      <...MoveSelector/>
+      <...MoveSelector/>
+      ...
+    </unionMoveSelector>
+----
+
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+    <unionMoveSelector>
+      ... <!-- Normal selector properties -->
+      <selectorProbabilityWeightFactoryClass>...ProbabilityWeightFactory</selectorProbabilityWeightFactoryClass>
+      <changeMoveSelector>
+        <fixedProbabilityWeight>...</fixedProbabilityWeight>
+        ...
+      </changeMoveSelector>
+      <swapMoveSelector>
+        <fixedProbabilityWeight>...</fixedProbabilityWeight>
+        ...
+      </swapMoveSelector>
+      <...MoveSelector>
+        <fixedProbabilityWeight>...</fixedProbabilityWeight>
+        ...
+      </...MoveSelector>
+      ...
+    </unionMoveSelector>
+----
+
+
+The `selectorProbabilityWeightFactory` determines in `selectionOrder```RANDOM`` how often a `MoveSelector` child is selected to supply the next Move.
+By default, each `MoveSelector` child has the same chance of being selected.
+
+
+image::Chapter-Move_and_neighborhood_selection/selectorProbabilityInUnion.png[align="center"]
+
+
+Change the `fixedProbabilityWeight` of such a child to select it more often.
+For example, the `unionMoveSelector` can return a `SwapMove` twice as often as a ``ChangeMove``:
+
+[source,xml,options="nowrap"]
+----
+    <unionMoveSelector>
+      <changeMoveSelector>
+        <fixedProbabilityWeight>1.0</fixedProbabilityWeight>
+        ...
+      </changeMoveSelector>
+      <swapMoveSelector>
+        <fixedProbabilityWeight>2.0</fixedProbabilityWeight>
+        ...
+      </swapMoveSelector>
+    </unionMoveSelector>
+----
+
+
+The number of possible ``ChangeMove``s is very different from the number of possible ``SwapMove``s and furthermore it's problem dependent.
+To give each individual `Move` the same selection chance (as opposed to each ``MoveSelector``), use the ``FairSelectorProbabilityWeightFactory``:
+
+[source,xml,options="nowrap"]
+----
+    <unionMoveSelector>
+      <selectorProbabilityWeightFactoryClass>org.optaplanner.core.impl.heuristic.selector.common.decorator.FairSelectorProbabilityWeightFactory</selectorProbabilityWeightFactoryClass>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+    </unionMoveSelector>
+----
+
+[[cartesianProductMoveSelector]]
+=== cartesianProductMoveSelector
+
+
+A `cartesianProductMoveSelector` selects a new ``CompositeMove``.
+It builds that `CompositeMove` by selecting 1 `Move` per `MoveSelector` child and adding it to the ``CompositeMove``.
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+    <cartesianProductMoveSelector>
+      <...MoveSelector/>
+      <...MoveSelector/>
+      <...MoveSelector/>
+      ...
+    </cartesianProductMoveSelector>
+----
+
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+    <cartesianProductMoveSelector>
+      ... <!-- Normal selector properties -->
+      <ignoreEmptyChildIterators>true</ignoreEmptyChildIterators>
+      <changeMoveSelector>
+        ...
+      </changeMoveSelector>
+      <swapMoveSelector>
+        ...
+      </swapMoveSelector>
+      <...MoveSelector>
+        ...
+      </...MoveSelector>
+      ...
+    </cartesianProductMoveSelector>
+----
+
+
+The `ignoreEmptyChildIterators` property (true by default) will ignore every empty `childMoveSelector` to avoid returning no moves.
+For example: a cartesian product of `changeMoveSelector` A and B, for which B is empty (because all it's entities are immovable) returns no move if `ignoreEmptyChildIterators` is `false` and the moves of A if `ignoreEmptyChildIterators` is ``true``.
+
+To enforce that 2 child selectors use the same entity or value efficiently, use <<mimicSelection,mimic selection>>, not move filtering.
+
+[[entitySelector]]
+== EntitySelector
+
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+      <entitySelector/>
+----
+
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+      <entitySelector>
+        ... <!-- Normal selector properties -->
+        <entityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</entityClass>
+      </entitySelector>
+----
+
+
+The `entityClass` property is only required if it cannot be deduced automatically because there are multiple entity classes.
+
+[[valueSelector]]
+== ValueSelector
+
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+      <valueSelector/>
+----
+
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+      <valueSelector>
+        ... <!-- Normal selector properties -->
+        <variableName>room</variableName>
+      </valueSelector>
+----
+
+
+The `variableName` property is only required if it cannot be deduced automatically because there are multiple variables (for the related entity class).
+
+In exotic Construction Heuristic configurations, the `entityClass` from the `EntitySelector` sometimes needs to be downcasted, which can be done with the property ``downcastEntityClass``:
+
+[source,xml,options="nowrap"]
+----
+      <valueSelector>
+        <downcastEntityClass>...LeadingExam</downcastEntityClass>
+        <variableName>period</variableName>
+      </valueSelector>
+----
+
+
+If a selected entity cannot be downcasted, the `ValueSelector` is empty for that entity.
+
+[[generalSelectorFeatures]]
+== General `Selector` Features
+
+[[cacheType]]
+=== ``CacheType``: Create Moves Ahead of Time or Just In Time
+
+
+A ``Selector``'s `cacheType` determines when a selection (such as a ``Move``, an entity, a value, ...) is created and how long it lives.
+
+Almost every `Selector` supports setting a ``cacheType``:
+
+[source,xml,options="nowrap"]
+----
+    <changeMoveSelector>
+      <cacheType>PHASE</cacheType>
+      ...
+    </changeMoveSelector>
+----
+
+
+The following ``cacheType``s are supported:
+
+* `JUST_IN_TIME` (default): Not cached. Construct each selection (``Move``, ...) just before it's used. This scales up well in memory footprint.
+* ``STEP``: Cached. Create each selection (``Move``, ...) at the beginning of a step and cache them in a list for the remainder of the step. This scales up badly in memory footprint.
+* ``PHASE``: Cached. Create each selection (``Move``, ...) at the beginning of a solver phase and cache them in a list for the remainder of the phase. Some selections cannot be phase cached because the list changes every step. This scales up badly in memory footprint, but has a slight performance gain.
+* ``SOLVER``: Cached. Create each selection (``Move``, ...) at the beginning of a `Solver` and cache them in a list for the remainder of the ``Solver``. Some selections cannot be solver cached because the list changes every step. This scales up badly in memory footprint, but has a slight performance gain.
+
+
+A `cacheType` can be set on composite selectors too:
+
+[source,xml,options="nowrap"]
+----
+    <unionMoveSelector>
+      <cacheType>PHASE</cacheType>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+      ...
+    </unionMoveSelector>
+----
+
+
+Nested selectors of a cached selector cannot be configured to be cached themselves, unless it's a higher ``cacheType``.
+For example: a `STEP` cached `unionMoveSelector` can hold a `PHASE` cached ``changeMoveSelector``, but not a `STEP` cached ``changeMoveSelector``.
+
+[[selectionOrder]]
+=== SelectionOrder: Original, Sorted, Random, Shuffled or Probabilistic
+
+
+A ``Selector``'s `selectionOrder` determines the order in which the selections (such as ``Move``s, entities, values, ...) are iterated.
+An optimization algorithm will usually only iterate through a subset of its ``MoveSelector``'s selections, starting from the start, so the `selectionOrder` is critical to decide which ``Move``s are actually evaluated.
+
+Almost every `Selector` supports setting a ``selectionOrder``:
+
+[source,xml,options="nowrap"]
+----
+    <changeMoveSelector>
+      ...
+      <selectionOrder>RANDOM</selectionOrder>
+      ...
+    </changeMoveSelector>
+----
+
+
+The following ``selectionOrder``s are supported:
+
+* ``ORIGINAL``: Select the selections (``Move``s, entities, values, ...) in default order. Each selection will be selected only once.
+** For example: A0, A1, A2, A3, ..., B0, B1, B2, B3, ..., C0, C1, C2, C3, ...
+* SORTED: Select the selections (``Move``s, entities, values, ...) in sorted order. Each selection will be selected only once. Requires ``cacheType >= STEP``. Mostly used on an `entitySelector` or `valueSelector` for construction heuristics. See <<sortedSelection,sorted selection>>.
+** For example: A0, B0, C0, ..., A2, B2, C2, ..., A1, B1, C1, ...
+* RANDOM (default): Select the selections (``Move``s, entities, values, ...) in non-shuffled random order. A selection might be selected multiple times. This scales up well in performance because it does not require caching.
+** For example: C2, A3, B1, C2, A0, C0, ...
+* SHUFFLED: Select the selections (``Move``s, entities, values, ...) in shuffled random order. Each selection will be selected only once. Requires ``cacheType >= STEP``. This scales up badly in performance, not just because it requires caching, but also because a random number is generated for each element, even if it's not selected (which is the grand majority when scaling up).
+** For example: C2, A3, B1, A0, C0, ...
+* PROBABILISTIC: Select the selections (``Move``s, entities, values, ...) in random order, based on the selection probability of each element. A selection with a higher probability has a higher chance to be selected than elements with a lower probability. A selection might be selected multiple times. Requires ``cacheType >= STEP``. Mostly used on an `entitySelector` or ``valueSelector``. See <<probabilisticSelection,probabilistic selection>>.
+** For example: B1, B1, A1, B2, B1, C2, B1, B1, ...
+
+
+A `selectionOrder` can be set on composite selectors too.
+
+[NOTE]
+====
+When a `Selector` is cached, all of its nested ``Selector``s will naturally default to `selectionOrder```ORIGINAL``.
+Avoid overwriting the `selectionOrder` of those nested ``Selector``s.
+====
+
+[[recommendedCombinationsOfCacheTypeAndSelectionOrder]]
+=== Recommended Combinations of `CacheType` and `SelectionOrder`
+
+[[justInTimeRandomSelection]]
+==== Just in Time Random Selection (default)
+
+
+This combination is great for big use cases (10 000 entities or more), as it scales up well in memory footprint and performance.
+Other combinations are often not even viable on such sizes.
+It works for smaller use cases too, so it's a good way to start out.
+It's the default, so this explicit configuration of `cacheType` and `selectionOrder` is actually obsolete:
+
+[source,xml,options="nowrap"]
+----
+    <unionMoveSelector>
+      <cacheType>JUST_IN_TIME</cacheType>
+      <selectionOrder>RANDOM</selectionOrder>
+
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+    </unionMoveSelector>
+----
+
+
+Here's how it works.
+When `Iterator<Move>.next()` is called, a child `MoveSelector` is randomly selected (1), which creates a random `Move` (2, 3, 4) and is then returned (5):
+
+
+image::Chapter-Move_and_neighborhood_selection/jitRandomSelection.png[align="center"]
+
+
+Notice that *it never creates a list of ``**Move**``s* and it generates random numbers only for ``Move``s that are actually selected.
+
+[[cachedShuffledSelection]]
+==== Cached Shuffled Selection
+
+
+This combination often wins for small and medium use cases (5000 entities or less). Beyond that size, it scales up badly in memory footprint and performance.
+
+[source,xml,options="nowrap"]
+----
+    <unionMoveSelector>
+      <cacheType>PHASE</cacheType>
+      <selectionOrder>SHUFFLED</selectionOrder>
+
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+    </unionMoveSelector>
+----
+
+
+Here's how it works: At the start of the phase (or step depending on the ``cacheType``), all moves are created (1) and cached (2). When `MoveSelector.iterator()` is called, the moves are shuffled (3). When `Iterator<Move>.next()` is called, the next element in the shuffled list is returned (4):
+
+
+image::Chapter-Move_and_neighborhood_selection/cachedShuffledSelection.png[align="center"]
+
+
+Notice that **each ``**Move**`` will only be selected once**, even though they are selected in random order.
+
+Use cacheType PHASE if none of the (possibly nested) Selectors require ``STEP``.
+Otherwise, do something like this:
+
+[source,xml,options="nowrap"]
+----
+    <unionMoveSelector>
+      <cacheType>STEP</cacheType>
+      <selectionOrder>SHUFFLED</selectionOrder>
+
+      <changeMoveSelector>
+        <cacheType>PHASE</cacheType>
+      </changeMoveSelector>
+      <swapMoveSelector/>
+        <cacheType>PHASE</cacheType>
+      </swapMoveSelector>
+      <pillarSwapMoveSelector/><!-- Does not support cacheType PHASE -->
+    </unionMoveSelector>
+----
+
+[[cachedRandomSelection]]
+==== Cached Random Selection
+
+
+This combination is often a worthy competitor for medium use cases, especially with fast stepping optimization algorithms (such as Simulated Annealing). Unlike cached shuffled selection, it doesn't waste time shuffling the moves list at the beginning of every step.
+
+[source,xml,options="nowrap"]
+----
+    <unionMoveSelector>
+      <cacheType>PHASE</cacheType>
+      <selectionOrder>RANDOM</selectionOrder>
+
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+    </unionMoveSelector>
+----
+
+[[filteredSelection]]
+=== Filtered Selection
+
+
+There can be certain moves that you don't want to select, because:
+
+* The move is pointless and would only waste CPU time. For example, swapping 2 lectures of the same course will result in the same score and the same schedule because all lectures of 1 course are interchangeable (same teacher, same students, same topic).
+* Doing the move would break <<buildInHardConstraint,a built-in hard constraint>>, so the solution would be infeasible but the score function doesn't check built-in hard constraints (for performance gain). For example, don't change a gym lecture to a room which is not a gym room.
++
+
+[NOTE]
+====
+Any built-in hard constraint must probably be filtered on every move type of every solver phase.
+For example if it's filters the change move of Local Search, it must also filter the swap move that swaps the room of a gym lecture with another lecture for which the other lecture's original room isn't a gym room.
+Furthermore, it must also filter the change moves of the Construction Heuristics (which requires an advanced configuration).
+====
+
+
+If a move is unaccepted by the filter, it's not executed and the score isn't calculated.
+
+
+image::Chapter-Move_and_neighborhood_selection/filteredSelection.png[align="center"]
+
+
+Filtering uses the interface ``SelectionFilter``:
+
+[source,java,options="nowrap"]
+----
+public interface SelectionFilter<Solution_, T> {
+
+    boolean accept(ScoreDirector<Solution_> scoreDirector, T selection);
+
+}
+----
+
+
+Implement the `accept` method to return `false` on a discarded `selection` (see below). Filtered selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
+It works with any `cacheType` and ``selectionOrder``.
+
+[NOTE]
+====
+Apply the filter on the lowest level possible.
+In most cases, you'll need to know both the entity and the value involved so you'll have to apply it on the move selector.
+====
+
+[[filteredMoveSelection]]
+==== Filtered Move Selection
+
+
+Unaccepted moves will not be selected and will therefore never have their `doMove()` method called:
+
+[source,java,options="nowrap"]
+----
+public class DifferentCourseSwapMoveFilter implements SelectionFilter<SwapMove> {
+
+    public boolean accept(ScoreDirector scoreDirector, SwapMove move) {
+        Lecture leftLecture = (Lecture) move.getLeftEntity();
+        Lecture rightLecture = (Lecture) move.getRightEntity();
+        return !leftLecture.getCourse().equals(rightLecture.getCourse());
+    }
+
+}
+----
+
+
+Configure the `filterClass` on every targeted `moveSelector` (potentially both in the Local Search and the Construction Heuristics if it filters ``ChangeMove``s):
+
+[source,xml,options="nowrap"]
+----
+    <swapMoveSelector>
+      <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
+    </swapMoveSelector>
+----
+
+
+You can configure multiple `filterClass` elements on a single move selector.
+
+[[filteredEntitySelection]]
+==== Filtered Entity Selection
+
+
+Unaccepted entities will not be selected and will therefore never be used to create a move.
+
+[source,java,options="nowrap"]
+----
+public class LongLectureSelectionFilter implements SelectionFilter<Lecture> {
+
+    public boolean accept(ScoreDirector<CourseSchedule> scoreDirector, Lecture lecture) {
+        return lecture.isLong();
+    }
+
+}
+----
+
+
+Configure the `filterClass` on every targeted `entitySelector` (potentially both in the Local Search and the Construction Heuristics):
+
+[source,xml,options="nowrap"]
+----
+    <changeMoveSelector>
+      <entitySelector>
+        <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.LongLectureSelectionFilter</filterClass>
+      </entitySelector>
+    </changeMoveSelector>
+----
+
+
+If that filter should apply on all entities, configure it as a <<immovablePlanningEntities,global movableEntitySelectionFilter>> instead.
+
+You can configure multiple `filterClass` elements on a single entity selector.
+
+[[filteredValueSelection]]
+==== Filtered Value Selection
+
+
+Unaccepted values will not be selected and will therefore never be used to create a move.
+
+[source,java,options="nowrap"]
+----
+public class LongPeriodSelectionFilter implements SelectionFilter<Period> {
+
+    public boolean accept(ScoreDirector<CourseSchedule> scoreDirector, Period period) {
+        return period();
+    }
+
+}
+----
+
+
+Configure the `filterClass` on every targeted `valueSelector` (potentially both in the Local Search and the Construction Heuristics):
+
+[source,xml,options="nowrap"]
+----
+    <changeMoveSelector>
+      <valueSelector>
+        <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.LongPeriodSelectionFilter</filterClass>
+      </valueSelector>
+    </changeMoveSelector>
+----
+
+
+You can configure multiple `filterClass` elements on a single value selector.
+
+[[sortedSelection]]
+=== Sorted Selection
+
+
+Sorted selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
+It does not work with `cacheType```JUST_IN_TIME`` and it only works with ``selectionOrder SORTED``.
+
+It's mostly used in construction heuristics.
+
+[NOTE]
+====
+If the chosen construction heuristic implies sorting, for example `FIRST_FIT_DECREASING` implies that the `EntitySelector` is sorted, there is no need to explicitly configure a `Selector` with sorting.
+If you do explicitly configure the ``Selector``, it overwrites the default settings of that construction heuristic.
+====
+
+[[sortedSelectionBySorterManner]]
+==== Sorted Selection by `SorterManner`
+
+
+Some `Selector` types implement a `SorterManner` out of the box:
+
+* `EntitySelector` supports:
+** ``DECREASING_DIFFICULTY``: Sorts the planning entities according to decreasing <<planningEntityDifficulty,planning entity difficulty>>. Requires that planning entity difficulty is annotated on the domain model.
++
+
+[source,xml,options="nowrap"]
+----
+    <entitySelector>
+      <cacheType>PHASE</cacheType>
+      <selectionOrder>SORTED</selectionOrder>
+      <sorterManner>DECREASING_DIFFICULTY</sorterManner>
+    </entitySelector>
+----
+* `ValueSelector` supports:
+** ``INCREASING_STRENGTH``: Sorts the planning values according to increasing <<planningValueStrength,planning value strength>>. Requires that planning value strength is annotated on the domain model.
++
+
+[source,xml,options="nowrap"]
+----
+    <valueSelector>
+      <cacheType>PHASE</cacheType>
+      <selectionOrder>SORTED</selectionOrder>
+      <sorterManner>INCREASING_STRENGTH</sorterManner>
+    </valueSelector>
+----
+
+
+[[sortedSelectionByComparator]]
+==== Sorted Selection by `Comparator`
+
+
+An easy way to sort a `Selector` is with a plain old ``Comparator``:
+
+[source,java,options="nowrap"]
+----
+public class CloudProcessDifficultyComparator implements Comparator<CloudProcess> {
+
+    public int compare(CloudProcess a, CloudProcess b) {
+        return new CompareToBuilder()
+                .append(a.getRequiredMultiplicand(), b.getRequiredMultiplicand())
+                .append(a.getId(), b.getId())
+                .toComparison();
+    }
+
+}
+----
+
+
+You 'll also need to configure it (unless it's annotated on the domain model and automatically applied by the optimization algorithm):
+
+[source,xml,options="nowrap"]
+----
+    <entitySelector>
+      <cacheType>PHASE</cacheType>
+      <selectionOrder>SORTED</selectionOrder>
+      <sorterComparatorClass>...CloudProcessDifficultyComparator</sorterComparatorClass>
+      <sorterOrder>DESCENDING</sorterOrder>
+    </entitySelector>
+----
+
+[[sortedSelectionBySelectionSorterWeightFactory]]
+==== Sorted Selection by `SelectionSorterWeightFactory`
+
+
+If you need the entire `Solution` to sort a ``Selector``, use a `SelectionSorterWeightFactory` instead:
+
+[source,java,options="nowrap"]
+----
+public interface SelectionSorterWeightFactory<Solution_, T> {
+
+    Comparable createSorterWeight(Solution_ solution, T selection);
+
+}
+----
+
+[source,java,options="nowrap"]
+----
+public class QueenDifficultyWeightFactory implements SelectionSorterWeightFactory<NQueens, Queen> {
+
+    public Comparable createSorterWeight(NQueens nQueens, Queen queen) {
+        int distanceFromMiddle = calculateDistanceFromMiddle(nQueens.getN(), queen.getColumnIndex());
+        return new QueenDifficultyWeight(queen, distanceFromMiddle);
+    }
+
+    ...
+
+    public static class QueenDifficultyWeight implements Comparable<QueenDifficultyWeight> {
+
+        private final Queen queen;
+        private final int distanceFromMiddle;
+
+        public QueenDifficultyWeight(Queen queen, int distanceFromMiddle) {
+            this.queen = queen;
+            this.distanceFromMiddle = distanceFromMiddle;
+        }
+
+        public int compareTo(QueenDifficultyWeight other) {
+            return new CompareToBuilder()
+                    // The more difficult queens have a lower distance to the middle
+                    .append(other.distanceFromMiddle, distanceFromMiddle) // Decreasing
+                    // Tie breaker
+                    .append(queen.getColumnIndex(), other.queen.getColumnIndex())
+                    .toComparison();
+        }
+
+    }
+
+}
+----
+
+
+You 'll also need to configure it (unless it's annotated on the domain model and automatically applied by the optimization algorithm):
+
+[source,xml,options="nowrap"]
+----
+    <entitySelector>
+      <cacheType>PHASE</cacheType>
+      <selectionOrder>SORTED</selectionOrder>
+      <sorterWeightFactoryClass>...QueenDifficultyWeightFactory</sorterWeightFactoryClass>
+      <sorterOrder>DESCENDING</sorterOrder>
+    </entitySelector>
+----
+
+[[sortedSelectionBySelectionSorter]]
+==== Sorted Selection by `SelectionSorter`
+
+
+Alternatively, you can also use the interface `SelectionSorter` directly:
+
+[source,java,options="nowrap"]
+----
+public interface SelectionSorter<Solution_, T> {
+
+    void sort(ScoreDirector<Solution_> scoreDirector, List<T> selectionList);
+
+}
+----
+
+[source,xml,options="nowrap"]
+----
+    <entitySelector>
+      <cacheType>PHASE</cacheType>
+      <selectionOrder>SORTED</selectionOrder>
+      <sorterClass>...MyEntitySorter</sorterClass>
+    </entitySelector>
+----
+
+[[probabilisticSelection]]
+=== Probabilistic Selection
+
+
+Probabilistic selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
+It does not work with `cacheType```JUST_IN_TIME`` and it only works with ``selectionOrder PROBABILISTIC``.
+
+
+image::Chapter-Move_and_neighborhood_selection/probabilisticSelection.png[align="center"]
+
+
+Each selection has a ``probabilityWeight``, which determines the chance that selection will be selected:
+
+[source,java,options="nowrap"]
+----
+public interface SelectionProbabilityWeightFactory<Solution_, T> {
+
+    double createProbabilityWeight(ScoreDirector<Solution_> scoreDirector, T selection);
+
+}
+----
+
+[source,xml,options="nowrap"]
+----
+    <entitySelector>
+      <cacheType>PHASE</cacheType>
+      <selectionOrder>PROBABILISTIC</selectionOrder>
+      <probabilityWeightFactoryClass>...MyEntityProbabilityWeightFactoryClass</probabilityWeightFactoryClass>
+    </entitySelector>
+----
+
+
+For example, if there are 3 entities: process A (probabilityWeight 2.0), process B (probabilityWeight 0.5) and process C (probabilityWeight 0.5), then process A will be selected 4 times more than B and C.
+
+[[limitedSelection]]
+=== Limited Selection
+
+
+Selecting all possible moves sometimes does not scale well enough, especially for construction heuristics (which don't support <<acceptedCountLimit,acceptedCountLimit>>).
+
+To limit the number of selected selection per step, apply a `selectedCountLimit` on the selector:
+
+[source,xml,options="nowrap"]
+----
+    <changeMoveSelector>
+      <selectedCountLimit>100</selectedCountLimit>
+    </changeMoveSelector>
+----
+
+[NOTE]
+====
+To scale Local Search, setting <<acceptedCountLimit,acceptedCountLimit>> is usually better than using ``selectedCountLimit``.
+====
+
+[[mimicSelection]]
+=== Mimic Selection (Record/Replay)
+
+
+During mimic selection, 1 normal selector records its selection and 1 or multiple other special selectors replay that selection.
+The recording selector acts as a normal selector and supports all other configuration properties.
+A replaying selector mimics the recording selection and support no other configuration properties.
+
+The recording selector needs an ``id``.
+A replaying selector must reference a recorder's id with a ``mimicSelectorRef``:
+
+[source,xml,options="nowrap"]
+----
+      <cartesianProductMoveSelector>
+        <changeMoveSelector>
+          <entitySelector id="entitySelector"/>
+          <valueSelector>
+            <variableName>period</variableName>
+          </valueSelector>
+        </changeMoveSelector>
+        <changeMoveSelector>
+          <entitySelector mimicSelectorRef="entitySelector"/>
+          <valueSelector>
+            <variableName>room</variableName>
+          </valueSelector>
+        </changeMoveSelector>
+      </cartesianProductMoveSelector>
+----
+
+
+Mimic selection is useful to create <<cartesianProductMoveSelector,a composite move>> from 2 moves that affect the same entity.
+
+[[nearbySelection]]
+=== Nearby Selection
+
+
+In some use cases (such as TSP and VRP, but also in non-chained variable cases), changing entities to nearby values or swapping nearby entities can *heavily increase scalability* and improve solution quality.
+
+
+image::Chapter-Move_and_neighborhood_selection/nearbySelectionMotivation.png[align="center"]
+
+
+Nearby selection increases the probability of selecting an entity or value which is nearby to the first entity being moved in that move.
+
+
+image::Chapter-Move_and_neighborhood_selection/nearbySelectionRandomDistribution.png[align="center"]
+
+
+The distance between 2 entities or values is domain specific.
+Therefore, implement the `NearbyDistanceMeter` interface:
+
+[source,java,options="nowrap"]
+----
+public interface NearbyDistanceMeter<O, D> {
+
+    double getNearbyDistance(O origin, D destination);
+
+}
+----
+
+
+It returns a `double` which represents the distance:
+
+[source,java,options="nowrap"]
+----
+public class CustomerNearbyDistanceMeter implements NearbyDistanceMeter<Customer, Standstill> {
+
+    public double getNearbyDistance(Customer origin, Standstill destination) {
+        return origin.getDistanceTo(destination);
+    }
+
+}
+----
+
+
+To configure nearby selection, add a `nearbySelection` element in the `entitySelector` or `valueSelector` and use <<mimicSelection,mimic
+      selection>> to specify which entity should be near by the selection.
+
+[source,xml,options="nowrap"]
+----
+    <unionMoveSelector>
+      <changeMoveSelector>
+        <entitySelector id="entitySelector1"/>
+        <valueSelector>
+          <nearbySelection>
+            <originEntitySelector mimicSelectorRef="entitySelector1"/>
+            <nearbyDistanceMeterClass>...CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </valueSelector>
+      </changeMoveSelector>
+      <swapMoveSelector>
+        <entitySelector id="entitySelector2"/>
+        <secondaryEntitySelector>
+          <nearbySelection>
+            <originEntitySelector mimicSelectorRef="entitySelector2"/>
+            <nearbyDistanceMeterClass>...CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </secondaryEntitySelector>
+      </swapMoveSelector>
+      <tailChainSwapMoveSelector>
+        <entitySelector id="entitySelector3"/>
+        <valueSelector>
+          <nearbySelection>
+            <originEntitySelector mimicSelectorRef="entitySelector3"/>
+            <nearbyDistanceMeterClass>...CustomerNearbyDistanceMeter</nearbyDistanceMeterClass>
+            <parabolicDistributionSizeMaximum>40</parabolicDistributionSizeMaximum>
+          </nearbySelection>
+        </valueSelector>
+      </tailChainSwapMoveSelector>
+    </unionMoveSelector>
+----
+
+
+A `distributionSizeMaximum` parameter should not be 1 because if the nearest is already the planning value of the current entity, then the only move that is selectable is not doable.
+
+To allow every element to be selected, regardless of the number of entities, only set the distribution type (so without a `distributionSizeMaximum` parameter):
+
+[source,xml,options="nowrap"]
+----
+  <nearbySelection>
+    <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
+  </nearbySelection>
+----
+
+
+The following ``NearbySelectionDistributionType``s are supported:
+
+* ``BLOCK_DISTRIBUTION``: Only the n nearest are selected, with an equal probability. For example, select the 20 nearest:
++
+
+[source,xml,options="nowrap"]
+----
+  <nearbySelection>
+    <blockDistributionSizeMaximum>20</blockDistributionSizeMaximum>
+  </nearbySelection>
+----
+* ``LINEAR_DISTRIBUTION``: Nearest elements are selected with a higher probability. The probability decreases linearly.
++
+
+[source,xml,options="nowrap"]
+----
+  <nearbySelection>
+    <linearDistributionSizeMaximum>40</linearDistributionSizeMaximum>
+  </nearbySelection>
+----
+* `PARABOLIC_DISTRIBUTION` (recommended): Nearest elements are selected with a higher probability.
++
+
+[source,xml,options="nowrap"]
+----
+  <nearbySelection>
+    <parabolicDistributionSizeMaximum>80</parabolicDistributionSizeMaximum>
+  </nearbySelection>
+----
+* ``BETA_DISTRIBUTION``: Selection according to a beta distribution. Slows down the solver significantly.
++
+
+[source,xml,options="nowrap"]
+----
+  <nearbySelection>
+    <betaDistributionAlpha>1</betaDistributionAlpha>
+    <betaDistributionBeta>5</betaDistributionBeta>
+  </nearbySelection>
+----
+
+
+As always, use the <<benchmarker,Benchmarker>> to tweak values if desired.
+
+[[customMoves]]
+== Custom Moves
+
+[[whichMoveTypesMightBeMissing]]
+=== Which Move Types Might be Missing in my Implementation?
+
+
+To determine which move types might be missing in your implementation, run a <<benchmarker,Benchmarker>>__for a short amount of time__ and <<writeTheOutputSolutionOfBenchmarkRuns,configure it to write the best solutions to disk>>.
+Take a look at such a best solution: it will likely be a local optima.
+Try to figure out if there's a move that could get out of that local optima faster.
+
+If you find one, implement that coarse-grained move, mix it with the existing moves and benchmark it against the previous configurations to see if you want to keep it.
+
+[[_custommovesintroduction]]
+=== Custom Moves Introduction
+
+
+Instead of reusing the generic ``Move``s (such as ``ChangeMove``) you can also implement your own ``Move``s.
+Generic and custom ``MoveSelector``s can be combined as desired.
+
+A custom `Move` can be tailored to work to the advantage of your constraints.
+For example, in examination scheduling, changing the period of an exam A also changes the period of all the exams that need to coincide with exam A.
+
+A custom `Move` is also slightly faster than a generic ``Move``.
+However, it's far more work to implement and much harder to avoid bugs.
+After implementing a custom ``Move``, make sure to turn on `environmentMode```FULL_ASSERT`` to check for score corruptions.
+
+[[theInterfaceMove]]
+=== The Interface `Move`
+
+
+Your custom moves must implement the `Move` interface:
+
+[source,java,options="nowrap"]
+----
+public interface Move {
+
+    boolean isMoveDoable(ScoreDirector scoreDirector);
+
+    Move createUndoMove(ScoreDirector scoreDirector);
+    void doMove(ScoreDirector scoreDirector);
+
+    Collection<? extends Object> getPlanningEntities();
+    Collection<? extends Object> getPlanningValues();
+
+}
+----
+
+
+Let's take a look at the `Move` implementation for 4 queens which moves a queen to a different row:
+
+[source,java,options="nowrap"]
+----
+public class RowChangeMove extends AbstractMove {
+
+    private Queen queen;
+    private Row toRow;
+
+    public RowChangeMove(Queen queen, Row toRow) {
+        this.queen = queen;
+        this.toRow = toRow;
+    }
+
+    // ... see below
+
+}
+----
+
+
+An instance of `RowChangeMove` moves a queen from its current row to a different row.
+
+Planner calls the `doMove(ScoreDirector)` method to do a move, which calls ``doMoveOnGenuineVariables(ScoreDirector)``.
+The `Move` implementation must notify the `ScoreDirector` of any changes it makes to planning entity's variables:
+
+[source,java,options="nowrap"]
+----
+    public void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+        scoreDirector.beforeVariableChanged(queen, "row"); // before changes are made to the queen.row
+        queen.setRow(toRow);
+        scoreDirector.afterVariableChanged(queen, "row"); // after changes are made to the queen.row
+    }
+----
+
+
+You need to call the `scoreDirector.beforeVariableChanged(Object, String)` and `scoreDirector.afterVariableChanged(Object, String)` methods directly before and after modifying the entity.
+
+[NOTE]
+====
+You can alter multiple entities in a single move and effectively create a big move (also known as a coarse-grained move).
+====
+
+[WARNING]
+====
+A `Move` can only change/add/remove planning entities, it must not change any of the problem facts.
+====
+
+
+Planner automatically filters out _non doable moves_ by calling the `isMoveDoable(ScoreDirector)` method on a move.
+A _non doable move_ is:
+
+* A move that changes nothing on the current solution. For example, moving queen B0 to row 0 is not doable, because it is already there.
+* A move that is impossible to do on the current solution. For example, moving queen B0 to row 10 is not doable because it would move it outside the board limits.
+
+
+In the n queens example, a move which moves the queen from its current row to the same row isn't doable:
+
+[source,java,options="nowrap"]
+----
+    public boolean isMoveDoable(ScoreDirector scoreDirector) {
+        return !Objects.equals(queen.getRow(), toRow);
+    }
+----
+
+
+Because we won't generate a move which can move a queen outside the board limits, we don't need to check it.
+A move that is currently not doable could become doable on the working `Solution` of a later step.
+
+Each move has an __undo move__: a move (normally of the same type) which does the exact opposite.
+In the example above the undo move of _C0 to C2_ would be the move __C2 to
+      C0__.
+An undo move is created from a ``Move``, before the `Move` has been done on the current solution.
+
+[source,java,options="nowrap"]
+----
+    public Move createUndoMove(ScoreDirector scoreDirector) {
+        return new RowChangeMove(queen, queen.getRow());
+    }
+----
+
+
+Notice that if C0 would have already been moved to C2, the undo move would create the move __C2 to
+      C2__, instead of the move __C2 to C0__.
+
+A solver phase might do and undo the same `Move` more than once.
+In fact, many solver phases will iteratively do and undo a number of moves to evaluate them, before selecting one of those and doing that move again (without undoing it this time).
+
+A `Move` must implement the `getPlanningEntities()` and `getPlanningValues()` methods.
+They are used by entity tabu and value tabu respectively.
+When they are called, the `Move` has already been done.
+
+[source,java,options="nowrap"]
+----
+    public List<? extends Object> getPlanningEntities() {
+        return Collections.singletonList(queen);
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        return Collections.singletonList(toRow);
+    }
+----
+
+
+If your `Move` changes multiple planning entities, return all of them in `getPlanningEntities()` and return all their values (to which they are changing) in ``getPlanningValues()``.
+
+[source,java,options="nowrap"]
+----
+    public Collection<? extends Object> getPlanningEntities() {
+        return Arrays.asList(leftCloudProcess, rightCloudProcess);
+    }
+
+    public Collection<? extends Object> getPlanningValues() {
+        return Arrays.asList(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
+    }
+----
+
+
+A `Move` must implement the `equals()` and `hashCode()` methods.
+2 moves which make the same change on a solution, should be equal.
+
+[source,java,options="nowrap"]
+----
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o instanceof RowChangeMove) {
+            RowChangeMove other = (RowChangeMove) o;
+            return new EqualsBuilder()
+                    .append(queen, other.queen)
+                    .append(toRow, other.toRow)
+                    .isEquals();
+        } else {
+            return false;
+        }
+    }
+
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(queen)
+                .append(toRow)
+                .toHashCode();
+    }
+----
+
+
+Notice that it checks if the other move is an instance of the same move type.
+This `instanceof` check is important because a move will be compared to a move with another move type if you're using more than 1 move type.
+
+Implement the `toString()` method to keep Planner's logs readable:
+
+[source,java,options="nowrap"]
+----
+    public String toString() {
+        return queen + " {" + queen.getRow() + " -> " + toRow + "}";
+    }
+----
+
+
+Now that we can implement a single custom ``Move``, let's take a look at generating such custom moves.
+
+[[moveListFactory]]
+=== ``MoveListFactory``: the Easy Way to Generate Custom Moves
+
+
+The easiest way to generate custom moves is by implementing the interface ``MoveListFactory``:
+
+[source,java,options="nowrap"]
+----
+public interface MoveListFactory<Solution_> {
+
+    List<Move> createMoveList(Solution_ solution);
+
+}
+----
+
+
+For example:
+
+[source,java,options="nowrap"]
+----
+public class RowChangeMoveFactory implements MoveListFactory<NQueens> {
+
+    public List<Move> createMoveList(NQueens nQueens) {
+        List<Move> moveList = new ArrayList<Move>();
+        for (Queen queen : nQueens.getQueenList()) {
+            for (Row toRow : nQueens.getRowList()) {
+                moveList.add(new RowChangeMove(queen, toRow));
+            }
+        }
+        return moveList;
+    }
+
+}
+----
+
+
+Simple configuration (which can be nested in a `unionMoveSelector` just like any other ``MoveSelector``):
+
+[source,xml,options="nowrap"]
+----
+    <moveListFactory>
+      <moveListFactoryClass>org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>
+    </moveListFactory>
+----
+
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+    <moveListFactory>
+      ... <!-- Normal moveSelector properties -->
+      <moveListFactoryClass>org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>
+    </moveListFactory>
+----
+
+
+Because the `MoveListFactory` generates all moves at once in a ``List<Move>``, it does not support `cacheType```JUST_IN_TIME``.
+Therefore, `moveListFactory` uses `cacheType```STEP`` by default and it scales badly in memory footprint.
+
+[[moveIteratorFactory]]
+=== ``MoveIteratorFactory``: Generate Custom Moves Just in Time
+
+
+Use this advanced form to generate custom moves by implementing the `MoveIteratorFactory` interface:
+
+[source,java,options="nowrap"]
+----
+public interface MoveIteratorFactory<Solution_> {
+
+    long getSize(ScoreDirector<Solution_> scoreDirector);
+
+    Iterator<Move> createOriginalMoveIterator(ScoreDirector<Solution_> scoreDirector);
+
+    Iterator<Move> createRandomMoveIterator(ScoreDirector<Solution_> scoreDirector, Random workingRandom);
+
+}
+----
+
+
+The `getSize()` method must give an estimation of the size.
+It doesn't need to be correct.
+The `createOriginalMoveIterator` method is called if the `selectionOrder` is `ORIGINAL` or if it is cached.
+The `createRandomMoveIterator` method is called for `selectionOrder```RANDOM`` combined with cacheType ``JUST_IN_TIME``.
+
+[IMPORTANT]
+====
+Don't create a collection (list, array, map, set) of ``Move``s when creating the ``Iterator<Move>``: the whole purpose of `MoveIteratorFactory` over `MoveListFactory` is giving you the ability to create a `Move` just in time in the ``Iterator``'s method ``next()``.
+====
+
+
+Simple configuration (which can be nested in a `unionMoveSelector` just like any other ``MoveSelector``):
+
+[source,xml,options="nowrap"]
+----
+    <moveIteratorFactory>
+      <moveIteratorFactoryClass>...</moveIteratorFactoryClass>
+    </moveIteratorFactory>
+----
+
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+    <moveIteratorFactory>
+      ... <!-- Normal moveSelector properties -->
+      <moveIteratorFactoryClass>...</moveIteratorFactoryClass>
+    </moveIteratorFactory>
+----

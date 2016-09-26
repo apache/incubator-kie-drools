@@ -86,6 +86,7 @@
       <excludes>
         <exclude>org.optaplanner:optaplanner-examples</exclude>
         <exclude>org.optaplanner:optaplanner-webexamples</exclude>
+        <!--<exclude>org.optaplanner:optaplanner-asciidocs</exclude>-->
         <exclude>*:sources</exclude>
       </excludes>
       <useProjectArtifact>false</useProjectArtifact>
@@ -133,21 +134,16 @@
     <!-- Reference manual -->
     <dependencySet>
       <includes>
-        <include>org.optaplanner:optaplanner-docs:jdocbook</include>
+        <include>org.optaplanner:optaplanner-docs:zip</include>
       </includes>
       <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>reference_manual</outputDirectory>
       <!-- Workaround for https://jira.codehaus.org/browse/MASSEMBLY-557 -->
-      <fileMode>755</fileMode>
+      <fileMode>644</fileMode>
       <directoryMode>755</directoryMode>
       <unpack>true</unpack>
-      <unpackOptions>
-        <excludes>
-          <exclude>META-INF/**</exclude>
-        </excludes>
-      </unpackOptions>
       <useStrictFiltering>true</useStrictFiltering>
-      <useTransitiveFiltering>true</useTransitiveFiltering>
+      <useTransitiveFiltering>false</useTransitiveFiltering><!-- Only include zip -->
     </dependencySet>
   </dependencySets>
 

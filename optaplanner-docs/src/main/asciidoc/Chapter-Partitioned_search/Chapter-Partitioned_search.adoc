@@ -1,0 +1,30 @@
+[[partitionedSearch]]
+= Partitioned Search
+:doctype: book
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+:sourcedir: .
+
+[[partitionedSearchOverview]]
+== Overview
+
+
+For very big datasets, it is sometimes worthwhile to partition the datasets into smaller pieces.
+
+However, **partitioning leads to suboptimal results**, even if the pieces are solved optimally:
+
+
+image::Chapter-Partitioned_search/mapReduceIsTerribleForTsp.png[align="center"]
+
+
+A future version of Planner will have native support for several forms of partitioning.
+Meanwhile, you can implement it yourself as shown in the image above.
+Use an `Solver` to solve each piece.
+
+[NOTE]
+====
+Not all use cases can be partitioned.
+It only works on use cases for which the planning entities and value ranges can be divided into n pieces, such that none of the constraints cross piece boundaries.
+====

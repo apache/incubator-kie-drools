@@ -1,0 +1,608 @@
+[[integration]]
+= Integration
+:doctype: book
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+:sourcedir: .
+
+[[integrationOverview]]
+== Overview
+
+
+Planner's input and output data (the planning problem and the best solution) are plain old JavaBeans (POJO's), so integration with other Java technologies is straightforward.
+For example:
+
+* To read a planning problem from the database (and store the best solution in it), annotate the domain POJO's with JPA annotations.
+* To read a planning problem from an XML file (and store the best solution in it), annotate the domain POJO's with XStream or JAXB annotations.
+* To expose the Solver as a REST Service that reads the planning problem and responds with the best solution, annotate the domain POJO's with XStream, JAXB or Jackson annotations and hook the `Solver` in Camel or RESTEasy.
+
+
+
+image::Chapter-Integration/integrationOverview.png[align="center"]
+
+
+[[integrationWithPersistentStorage]]
+== Persistent Storage
+
+[[integrationWithJpaAndHibernate]]
+=== Database: JPA and Hibernate
+
+
+Enrich the domain POJO's (solution, entities and problem facts) with JPA annotations to store them in a database.
+
+[NOTE]
+====
+Do not confuse JPA's `@Entity` annotation with Planner's `@PlanningEntity` annotation.
+They can appear both on the same class:
+
+[source,java,options="nowrap"]
+----
+@PlanningEntity // OptaPlanner annotation
+@Entity // JPA annotation
+public class Talk {...}
+----
+====
+
+
+Add a dependency to the `optaplanner-persistence-jpa` jar to take advantage of these extra integration features:
+
+[[jpaAndHibernatePersistingAScore]]
+==== JPA and Hibernate: Persisting a `Score`
+
+
+When a `Score` is persisted into a relational database, JPA and Hibernate will default to Java serializing it to a `BLOB` column.
+This has several disadvantages:
+
+* The Java serialization format of `Score` classes is currently not backwards compatible. Upgrading to a newer Planner version can break reading an existing database.
+* The score is not easily readable for a query executed in the database console. This is annoying during development.
+* The score cannot be used in a SQL or JPA-QL query to efficiently filter the results: for example to query all infeasible schedules.
+
+
+To avoid these issues, configure it to instead use INTEGER (or other) columns, by using the appropriate `*ScoreHibernateType` for your `Score` type, for example for a ``HardSoftScore``:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+@Entity
+@TypeDef(defaultForType = HardSoftScore.class, typeClass = HardSoftScoreHibernateType.class)
+public class CloudBalance {
+
+    @PlanningScore
+    @Columns(columns = {@Column(name = "initScore"), @Column(name = "hardScore"), @Column(name = "softScore")})
+    protected HardSoftScore score;
+
+    ...
+}
+----
+
+[NOTE]
+====
+Configure the same number of `@Column` annotations as the number of score levels in the score plus one (for the ``initScore``), otherwise Hibernate will fail fast because a property mapping has the wrong number of columns.
+====
+
+
+In this case, the DDL will look like this:
+
+[source,sql]
+----
+CREATE TABLE CloudBalance(
+    ...
+    initScore INTEGER,
+    hardScore INTEGER,
+    softScore INTEGER
+);
+----
+
+
+When using a `BigDecimal` based ``Score``, specify the precision and scale of the columns to avoid silent rounding:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+@Entity
+@TypeDef(defaultForType = HardSoftBigDecimalScore.class, typeClass = HardSoftBigDecimalScoreHibernateType.class)
+public class CloudBalance{
+
+    @PlanningScore
+    @Columns(columns = {
+            @Column(name = "initScore")
+            @Column(name = "hardScore", precision = 10, scale = 5),
+            @Column(name = "softScore", precision = 10, scale = 5)})
+    protected HardSoftBigDecimalScore score;
+
+    ...
+}
+----
+
+
+In this case, the DDL will look like this:
+
+[source,sql]
+----
+CREATE TABLE CloudBalance(
+    ...
+    initScore INTEGER,
+    hardScore DECIMAL(10, 5),
+    softScore DECIMAL(10, 5)
+);
+----
+
+
+When using any type of bendable ``Score``, specify the hard and soft level sizes as parameters:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+@Entity
+@TypeDef(defaultForType = BendableScore.class, typeClass = BendableScoreHibernateType.class, parameters = {
+        @Parameter(name = "hardLevelsSize", value = "3"),
+        @Parameter(name = "softLevelsSize", value = "2")})
+public class Schedule {
+
+    @PlanningScore
+    @Columns(columns = {
+            @Column(name = "initScore")
+            @Column(name = "hard0Score"),
+            @Column(name = "hard1Score"),
+            @Column(name = "hard2Score"),
+            @Column(name = "soft0Score"),
+            @Column(name = "soft1Score")})
+    protected BendableScore score;
+
+    ...
+}
+----
+
+
+All this support is Hibernate specific because currently JPA 2.1's converters do not support converting to multiple columns.
+
+[[jpaAndHibernatePlanningCloning]]
+==== JPA and Hibernate: Planning Cloning
+
+
+In JPA and Hibernate, there is usually a `@ManyToOne` relationship from most problem fact classes to the planning solution class.
+Therefore, the problem fact classes reference the planning solution class, which implies that when the solution is <<cloningASolution,planning cloned>>, they need to be cloned too.
+Use an `@DeepPlanningClone` on each such problem fact class to enforce that:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution // OptaPlanner annotation
+@Entity // JPA annotation
+public class Conference {
+
+    @OneToMany(mappedBy="conference")
+    private List<Room> roomList;
+
+    ...
+}
+----
+
+[source,java,options="nowrap"]
+----
+@DeepPlanningClone // OptaPlanner annotation: Force the default planning cloner to planning clone this class too
+@Entity // JPA annotation
+public class Room {
+
+    @ManyToOne
+    private Conference conference; // Because of this reference, this problem fact needs to be planning cloned too
+
+}
+----
+
+
+Neglecting to do this can lead to persisting duplicate solutions, JPA exceptions or other side effects.
+
+[[integrationWithXStream]]
+=== XML or JSON: XStream
+
+
+Enrich the domain POJO's (solution, entities and problem facts) with XStream annotations to serialize them to/from XML or JSON.
+
+Add a dependency to the `optaplanner-persistence-xstream` jar to take advantage of these extra integration features:
+
+[[xStreamMarshallingAScore]]
+==== XStream: Marshalling a `Score`
+
+
+When a `Score` is marshalled to XML or JSON by the default XStream configuration, it's verbose and ugly.
+To fix that, configure the appropriate ``ScoreXStreamConverter``:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+@XStreamAlias("CloudBalance")
+public class CloudBalance {
+
+    @PlanningScore
+    @XStreamConverter(HardSoftScoreXStreamConverter.class)
+    private HardSoftScore score;
+
+    ...
+}
+----
+
+
+For example, this will generate pretty XML:
+
+[source,xml,options="nowrap"]
+----
+<CloudBalance>
+   ...
+   <score>0hard/-200soft</score>
+</CloudBalance>
+----
+
+
+The same applies for a bendable score:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+@XStreamAlias("Schedule")
+public class Schedule {
+
+    @PlanningScore
+    @XStreamConverter(BendableScoreXStreamConverter.class)
+    private BendableScore score;
+
+    ...
+}
+----
+
+
+For example, this will generate:
+
+[source,xml,options="nowrap"]
+----
+<Schedule>
+   ...
+   <score>[0/0]hard/[-100/-20/-3]soft</score>
+</Schedule>
+----
+
+
+The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score from an XML element, must always be in sync with those in the solver.
+
+[[integrationWithJaxb]]
+=== XML or JSON: JAXB
+
+
+Enrich the domain POJO's (solution, entities and problem facts) with JAXB annotations to serialize them to/from XML or JSON.
+
+Add a dependency to the `optaplanner-persistence-jaxb` jar to take advantage of these extra integration features:
+
+[[jaxbMarshallingAScore]]
+==== JAXB: Marshalling a `Score`
+
+
+When a `Score` is marshalled to XML or JSON by the default JAXB configuration, it's corrupted.
+To fix that, configure the appropriate ``ScoreJaxbXmlAdapter``:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+@XmlRootElement @XmlAccessorType(XmlAccessType.FIELD)
+public class CloudBalance {
+
+    @PlanningScore
+    @XmlJavaTypeAdapter(HardSoftScoreJaxbXmlAdapter.class)
+    private HardSoftScore score;
+
+    ...
+}
+----
+
+
+For example, this will generate pretty XML:
+
+[source,xml,options="nowrap"]
+----
+<cloudBalance>
+   ...
+   <score>0hard/-200soft</score>
+</cloudBalance>
+----
+
+
+The same applies for a bendable score:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+@XmlRootElement @XmlAccessorType(XmlAccessType.FIELD)
+public class Schedule {
+
+    @PlanningScore
+    @XmlJavaTypeAdapter(BendableScoreJaxbXmlAdapter.class)
+    private BendableScore score;
+
+    ...
+}
+----
+
+
+For example, with a `hardLevelsSize` of `2` and a `softLevelsSize` of ``3``, that will generate:
+
+[source,xml,options="nowrap"]
+----
+<schedule>
+   ...
+   <score>[0/0]hard/[-100/-20/-3]soft</score>
+</schedule>
+----
+
+
+The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score from an XML element, must always be in sync with those in the solver.
+
+[[integrationWithJackson]]
+=== JSON: Jackson
+
+
+Enrich the domain POJO's (solution, entities and problem facts) with Jackson annotations to serialize them to/from JSON.
+
+Add a dependency to the `optaplanner-persistence-jackson` jar to take advantage of these extra integration features:
+
+[[jacksonMarshallingAScore]]
+==== JAXB: Marshalling a `Score`
+
+
+When a `Score` is marshalled to JSON by the default Jackson configuration, it fails.
+To fix that, configure a `ScoreJacksonJsonSerializer` and the appropriate ``ScoreJacksonJsonDeserializer``:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+public class CloudBalance {
+
+    @PlanningScore
+    @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+    @JsonDeserialize(using = HardSoftScoreJacksonJsonDeserializer.class)
+    private HardSoftScore score;
+
+    ...
+}
+----
+
+
+For example, this will generate pretty JSON:
+
+[source,json]
+----
+{
+   ...
+   "score":"0hard/-200soft"
+}
+----
+
+
+The same applies for a bendable score:
+
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+public class Schedule {
+
+    @PlanningScore
+    @JsonSerialize(using = ScoreJacksonJsonSerializer.class)
+    @JsonDeserialize(using = BendableScoreJacksonXmlAdapter.class)
+    private BendableScore score;
+
+    ...
+}
+----
+
+
+For example, with a `hardLevelsSize` of `2` and a `softLevelsSize` of ``3``, that will generate:
+
+[source,json]
+----
+{
+   ...
+   "score":"[0/0]hard/[-100/-20/-3]soft"
+}
+----
+
+
+The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score from a JSON element, must always be in sync with those in the solver.
+
+[[integrationWithSoaAndEsb]]
+== SOA and ESB
+
+[[integrationWithCamel]]
+=== Camel and Karaf
+
+http://camel.apache.org/[Camel] is an enterprise integration framework which includes support for Planner (starting from Camel 2.13). It can expose a use case as a REST service, a SOAP service, a JMS service, ...
+
+http://camel.apache.org/optaplanner.html[Read the documentation for the camel-optaplanner component.]
+That component works in Karaf too.
+
+[[integrationWithOtherEnvironments]]
+== Other Environments
+
+[[integrationWithJBossModules]]
+=== JBoss Modules, WildFly and JBoss EAP
+
+
+To deploy an Planner web application on WildFly, simply include the optaplanner dependency jars in the `war` file's `WEB-INF/lib` directory (just like any other dependency) as shown in the ``optaplanner-webexamples-*.war``.
+However, in this approach the war file can easily grow to several MB in size, which is fine for a one-time deployment, but too heavyweight for frequent redeployments (especially over a slow network connection).
+
+The remedy is to use deliver the optaplanner jars in a JBoss module to WildFly and create a skinny war.
+Let's create an module called __org.optaplanner__:
+
+. Navigate to the directory ``${WILDFLY_HOME}/modules/system/layers/base/``. This directory contains the JBoss modules of WildFly. Create directory structure `org/optaplanner/main` for our new module.
+.. Copy `optaplanner-core-${version}.jar` and all its direct and transitive dependency jars into that new directory. Use "mvn dependency:tree" on each optaplanner artifact to discover all dependencies.
+.. Create the file `module.xml` in that new directory. Give it this content:
++
+
+[source,xml,options="nowrap"]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.3" name="org.optaplanner">
+  <resources>
+    ...
+    <resource-root path="kie-api-${version}.jar"/>
+    ...
+    <resource-root path="optaplanner-core-${version}.jar"/>
+    ...
+    <resource-root path="."/> 
+  </resources>
+  <dependencies>
+    <module name="javaee.api"/>
+  </dependencies>
+</module>
+----
+
+. Navigate to the deployed `war` file.
+.. Remove `optaplanner-core-${version}.jar` and all its direct and transitive dependency jars from the `WEB-INF/lib` directory in the `war` file.
+.. Create the file `jboss-deployment-structure.xml` in the `WEB-INF/lib` directory. Give it this content:
++
+
+[source,xml,options="nowrap"]
+----
+<?xml version="1.0" encoding="UTF-8" ?>
+<jboss-deployment-structure>
+   <deployment>
+      <dependencies>
+         <module name="org.optaplanner" export="true"/>
+      </dependencies>
+   </deployment>
+</jboss-deployment-structure>
+----
+
+
+Because of JBoss Modules' `ClassLoader` magic, you'll likely need to provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory
+      creation>>, so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
+
+[[integrationWithOSGi]]
+=== OSGi
+
+
+The `optaplanner-core` jar includes OSGi metadata in its `MANIFEST.MF` file to function properly in an OSGi environment too.
+Furthermore, the maven artifact `kie-karaf-features` contains a `features.xml` file that supports the OSGi-feature ``optaplanner-engine``.
+
+Because of the OSGi's `ClassLoader` magic, you'll likely need to provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory
+      creation>>, so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
+
+[NOTE]
+====
+Planner does _not_ require OSGi.
+It works perfectly fine in a normal Java environment too.
+====
+
+[[integrationWithAndroid]]
+=== Android
+
+
+Android is not a complete JVM (because some JDK libraries are missing), but Planner works on Android with <<easyJavaScoreCalculation,easy Java>> or <<incrementalJavaScoreCalculation,incremental Java>> score calculation.
+The Drools rule engine does not work on Android yet, so Drools score calculation doesn't work on Android and its dependencies need to be excluded.
+
+*Workaround to use Planner on Android:*
+
+. Add a dependency to the `build.gradle` file in your Android project to exclude `org.drools` and `xmlpull` dependencies:
++
+
+[source,gradle]
+----
+dependencies {
+    ...
+    compile('org.optaplanner:optaplanner-core:...') {
+        exclude group: 'xmlpull'
+        exclude group: 'org.drools'
+    }
+    ...
+}
+----
+
+
+[[integrationWithHumanPlanners]]
+== Integration with Human Planners (Politics)
+
+
+A good Planner implementation beats any good human planner for non-trivial datasets.
+Many human planners fail to accept this, often because they feel threatened by an automated system.
+
+But despite that, both can benefit if the human planner becomes the supervisor of Planner:
+
+* *The human planner defines and validates the score function.*
+** Some examples expose a `\*Parametrization` object, which defines the weight for each score constraint. The human planner can then tweak those weights at runtime.
+** When the business changes, the score function often needs to change too. The human planner can notify the developers to add, change or remove score constraints.
+* *The human planner is always in control of Planner.*
+** As shown in the course scheduling example, the human planner can lock 1 or more planning variables to a specific planning value and make those immovable. Because they are <<immovablePlanningEntities,immovable>>, Planner does not change them: it optimizes the planning around the enforcements made by the human. If the human planner locks all planning variables, he/she sidelines Planner completely.
+** In a prototype implementation, the human planner might use this occasionally. But as the implementation matures, it must become obsolete. But do keep the feature alive: as a reassurance for the humans. Or in case that one day the business changes dramatically before the score constraints can be adjusted.
+
+
+Therefore, it's often a good idea to involve the human planner in your project.
+
+
+image::Chapter-Integration/parameterizeTheScoreWeights.png[align="center"]
+
+
+
+image::Chapter-Integration/keepTheUserInControl.png[align="center"]
+
+
+[[sizingHardwareAndSoftware]]
+== Sizing Hardware and Software
+
+
+Before sizing a Planner service, first understand the typical behaviour of a `Solver.solve()` call:
+
+
+image::Chapter-Integration/sizingHardware.png[align="center"]
+
+
+Understand these guidelines to decide the hardware for a Planner service:
+
+* **RAM memory**: Provision plenty, but no need to provide more.
+** The problem dataset, loaded before Planner is called, often consumes the most memory. It depends on the problem scale.
+*** For example, in the Machine Reassignment example some datasets use over 1GB in memory. But in most examples, they use just a few MB.
+*** If this is a problem, review the domain class structure: remove classes or fields that Planner doesn't need during solving.
+*** Planner usually has up to 3 solution instances: the internal working solution, the best solution and the old best solution (when it's being replaced). However, these are all a <<cloningASolution,planning clone>> of each other, so many problem fact instances are shared between those solution instances.
+** During solving, the memory is very volatile, because solving creates many short-lived objects. The Garbage Collector deletes these in bulk and therefore needs some heap space as a buffer.
+** The maximum size of the JVM heap space can be in 3 states:
+*** **Insufficient**: An `OutOfMemoryException` is thrown (often because the Garbage Collector is using more than 98% of the CPU time).
+*** **Narrow**: The heap buffer for those short-lived instances is too small, therefore the Garbage Collector needs to run more than it would like to, which causes a performance loss.
+**** Profiling shows that in the heap chart, the used heap space frequently touches the max heap space during solving. It also shows that the Garbage Collector has a significant CPU usage impact.
+**** Adding more heap space increases the <<scoreCalculationSpeed,score calculation speed>>.
+*** **Plenty**: There is enough heap space. The Garbage Collector is active, but its CPU usage is low.
+**** Adding more heap space does _not_ increase performance.
+**** Usually, this is around 300 to 500MB above the dataset size, _regardless of the problem scale_ (except with <<nearbySelection,nearby selection>> and caching move selector, neither are used by default).
+* **CPU power**: More is better.
+** Improving CPU speed directly increases the <<scoreCalculationSpeed,score calculation speed>>.
+*** If the CPU power is twice as fast, it takes half the time to find the same result. However, this does not guarantee that it finds a better result in the same time, nor that it finds a similar result for a problem twice as a big in the same time.
+*** Increasing CPU power usually does not resolve scaling issues, because planning problems scale exponentially. Power tweaking the solver configuration has far better results for scaling issues than throwing hardware at it.
+** During the `solve()` method, the CPU power will max out until it returns (except in <<daemon,daemon mode>> or if your <<SolverEventListener,SolverEventListener>> writes the best solution to disk or the network).
+* **Number of CPU cores**: 1 CPU core per active Solver, plus at least one 1 for the operating system.
+** So in a multitenant application, which has 1 Solver per tenant, this means 1 CPU core per tenant, unless the number of solver threads is limited, as that limits the number of tenants being solved in parallel.
+** With Partitioned Search, presume 1 CPU core per partition (per active tenant), unless the number of partition threads is limited.
+*** To reduce the number of used cores, it can be better to reduce the partition threads (so solve some partitions sequentially) than to reduce the number of partitions.
+** In use cases with many tenants (such as scheduling Software as a Service) or many partitions, it might not be affordable to provision that many CPU's.
+*** Reduce the number of active Solvers at a time. For example: give each tenant only 1 minute of machine time and use a `ExecutorService` with a fixed thread pool to queue requests.
+*** Distribute the Solver runs across the day (or night). This is especially an opportunity in SaaS that's used across the globe, due to timezones: UK and India can use the same CPU core when scheduling at night.
+** The SolverManager will take care of the orchestration, especially in those underfunded environments in which solvers (and partitions) are forced to share CPU cores or wait in line.
+* **I/O (network, disk, ...)**: Not used during solving.
+** Planner is not a web server: a solver thread does not block (unlike a servlet thread), each one fully drains a CPU.
+*** A web server can handle 24 active servlets threads with 8 cores without performance loss, because most servlets threads are blocking on I/O.
+*** However, 24 active solver threads with 8 cores will cause each solver's <<scoreCalculationSpeed,score calculation speed>> to be 3 times slower, causing a big performance loss.
+** Note that calling any I/O during solving, for example a remote service in your score calculation, causes a huge performance loss because it's called thousands of times per second, so it should complete in microseconds. So no good implementation does that.
+
+
+Keep these guidelines in mind when selecting and configuring the software.
+See http://www.optaplanner.org/blog/archive.html[our blog archive] for the details of our experiments, which use our diverse set of examples.
+Your mileage may vary.
+
+* Operating System
+** No experimentally proven advice yet (but prefer Linux anyway).
+* JDK
+** Version: Java 7 can be between 10% and 25% faster than Java 6. But Java 8 however is usually not significantly faster than Java 7.
+** Garbage Collector: ParallelGC (the default in Java 8) can be potentially between 5% and 35% faster than G1GC (the default in Java 9). Unlike web servers, Planner needs a GC focused on throughput, not latency. Use `-XX:+UseParallelGC` to turn on ParallelGC.
+* Logging can have a severe impact on performance.
+** Debug logging `org.drools` can reduce performance by a factor of 7.
+** Debug logging `org.optaplanner` can be between 0% and 15% slower than info logging. Trace logging can be between 5% and 70% slower than info logging.
+** Synchronous logging to a file has an additional significant impact for debug and trace logging (but not for info logging).
+* Avoid a cloud environment in which you share your CPU core(s) with other virtual machines or containers. Performance (and therefore solution quality) can be unreliable when the available CPU power varies greatly.
+
+
+Keep in mind that the perfect hardware/software environment will probably _not_ solve scaling issues (even Moore's law is too slow). There is no need to follow these guidelines to the letter.

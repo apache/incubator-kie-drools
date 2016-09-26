@@ -1,0 +1,383 @@
+[[repeatedPlanning]]
+= Repeated Planning
+:doctype: book
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+:sourcedir: .
+
+[[introductionToRepeatedPlanning]]
+== Introduction to Repeated Planning
+
+
+The world constantly changes.
+The problem facts used to create a solution, might change before or during the execution of that solution.
+There are different situations (which can be combined):
+
+* __Unforeseen fact changes__: For example: an employee assigned to a shift calls in sick, an airplane scheduled to take off has a technical delay, one of the machines or vehicles break down, ... Use **backup planning**.
+* __Impossible to assign all entities now__: Leave some unassigned. For example: there are 10 shifts at the same time to assign but only 9 employees to handle shifts. Use **overconstrained planning**.
+* __Unknown long term future facts__: For example: The hospital admissions for the next 2 weeks are reliable, but those for week 3 and 4 are less reliable and for week 5 and beyond are not worth planning yet. Use **continuous planning**.
+* __Constantly changing problem facts__: Use **real-time planning**.
+
+
+Waiting to start planning - to lower the risk of problem facts changing - usually isn't a good way to deal with that.
+More CPU time means a better planning solution.
+An incomplete plan is better than no plan.
+
+Luckily, the optimization algorithms support planning a solution that's already (partially) planned, known as repeated planning.
+
+[[backupPlanning]]
+== Backup Planning
+
+
+Backup planning is the technique of adding extra score constraints to create space in the planning for when things go wrong.
+That creates a backup plan in the plan.
+For example: try to assign an employee as the spare employee (1 for every 10 shifts at the same time), keep 1 hospital bed open in each department, ...
+
+Then, when things go wrong (one of the employees calls in sick), change the problem facts on the original solution (delete the sick employee leave his/her shifts unassigned) and just restart the planning, starting from that solution, which has a different score now.
+The construction heuristics will fill in the newly created gaps (probably with the spare employee) and the metaheuristics will even improve it further.
+
+[[overconstrainedPlanning]]
+== Overconstrained Planning
+
+
+When there is no feasible solution to assign all planning entities, it's often desired to assign as many entities as possible without breaking hard constraints.
+This is called overconstrained planning.
+
+By default, Planner will assign all planning entities, overload the planning values and therefore break hard constraints.
+There are 2 ways to avoid that:
+
+* Use <<nullablePlanningVariable,nullable>> planning variables, so some entities are unassigned.
+* Add virtual values to catch the unassigned entities.
+
+
+[[overconstrainedPlanningWithNullableVariables]]
+=== Overconstrained Planning with Nullable Variables
+
+
+If we handle overconstrained planning with nullable variables, the overload entities will be left unassigned:
+
+
+image::Chapter-Repeated_planning/overconstrainedPlanning.png[align="center"]
+
+
+To implement this:
+
+. Add a additional score level (usually a medium level between the hard and soft level) by switching <<scoreType,`Score` type>>.
+. Make the planning variable <<nullablePlanningVariable,nullable>>.
+. Add a score constraint on the new level (so usually a medium constraint) to penalize the number of unassigned entities (or a weighted sum of them).
+
+
+[[overconstrainedPlanningWithVirutalValues]]
+=== Overconstrained Planning with Virtual Values
+
+
+In overconstrained planning it's often useful to know which resources are lacking.
+In overconstrained planning with virtual values, the solution indicates which resources to buy.
+
+To implement this:
+
+. Add a additional score level (usually a medium level between the hard and soft level) by switching <<scoreType,`Score` type>>.
+. Add a number of virtual values. It can be difficult to determine a good formula to calculate that number:
+** Don't add too many, as that will decrease solver efficiency.
+** Definitely don't add too few as that will lead to an infeasible solution.
+. Add a score constraint on the new level (so usually a medium constraint) to penalize the number of virtual assigned entities (or a weighted sum of them).
+. Optionally change all soft constraints to ignore virtual assigned entities.
+
+
+[[continuousPlanning]]
+== Continuous Planning (Windowed Planning)
+
+
+Continuous planning is the technique of planning one or more upcoming planning periods at the same time and repeating that process monthly, weekly, daily, hourly or even more frequently.
+Time is infinite, so planning all future time periods is impossible.
+Instead, plan a planning window of a fixed number of upcoming planning time periods, and consider anything beyond that out of scope.
+
+The planning window can be split up in several parts:
+
+* **History**: Past time periods that immutable. It contains only immovable entities.
+** Historic entities can affect score constraints that apply to movable entities too. For example in nurse rostering, a nurse that has worked the last 5 historic days in a row, should not be assigned on the first tentative day of the planning window because then she's work too many days in a row.
+** Do not load all historic entities in memory: even though immovable entities don't affect solving performance, they can cause out of memory problems when the data grows to years. Only load those that might still affect the current constraints with a good safety margin, for example load the past year.
+* **Tentative**: The first few time periods that are being planned freely for the last time. After this planning, their planning entities become <<immovablePlanningEntities,immovable>> or <<nonvolatileReplanning,semi-immovable>>.
+** The result of the tentative planning is usually shared with the business. For example in nurse rostering, the nurses will use this schedule to plan their personal lives. Changing that schedule later becomes disruptive (but if exceptions force us to do so, <<nonvolatileReplanning,we minimize disruption>>).
+* **Draft**: The latter time periods that are being planned freely, but not for the last time. They are likely to change again in the next planning effort.
+** The draft part is needed to assure that the tentatively planned entities will allow room of a good, feasible planning afterwards. It prevents you from painting yourself in a corner.
+** That draft part is usually not shared with the business yet, because it is too volatile. However, it is stored in the database and used a starting point for the next plan.
+* *Future* (out of scope): Planning entities that aren't in the current planning window.
+** If <<assigningTimeToPlanningEntities,time is a planning variable>>, there is no future part. Instead, if the planning window is too small to plan all entities, you're dealing with <<overconstrainedPlanning,overconstrained planning>>.
+
+
+
+image::Chapter-Repeated_planning/continuousPlanningEmployeeRostering.png[align="center"]
+
+
+In the employee rostering example above, we replan every 4 days.
+Each time, we actually plan a window of 12 days, but we only share the tentative roster of the next 4 days with the employees.
+
+[NOTE]
+====
+The start of the planning window (so the first tentative time period) does _not_ need to be now.
+That too can be a week in advance.
+====
+
+
+image::Chapter-Repeated_planning/continuousPlanningPatientAdmissionSchedule.png[align="center"]
+
+
+In the hospital bed planning example above, notice the difference between the original planning of November 1th and the new planning of November 5th: some problem facts (F, H, I, J, K) changed meanwhile, which results in unrelated planning entities (G) changing too.
+
+[[immovablePlanningEntities]]
+=== Immovable Planning Entities
+
+
+To make some planning entities immovable, simply add an entity `SelectionFilter` that returns `true` if an entity is movable and `false` if it is immovable.
+
+[source,java,options="nowrap"]
+----
+public class MovableShiftAssignmentSelectionFilter implements SelectionFilter<NurseRoster, ShiftAssignment> {
+
+    public boolean accept(ScoreDirector<NurseRoster> scoreDirector, ShiftAssignment shiftAssignment) {
+        NurseRoster nurseRoster = scoreDirector.getWorkingSolution();
+        ShiftDate shiftDate = shiftAssignment.getShift().getShiftDate();
+        return nurseRoster.getNurseRosterInfo().isInPlanningWindow(shiftDate);
+    }
+
+}
+----
+
+
+And configure it like this:
+
+[source,java,options="nowrap"]
+----
+@PlanningEntity(movableEntitySelectionFilter = MovableShiftAssignmentSelectionFilter.class)
+public class ShiftAssignment {
+    ...
+}
+----
+
+[WARNING]
+====
+Custom `MoveListFactory` and `MoveIteratorFactory` implementations must make sure that they don't move immovable entities.
+====
+
+[[nonvolatileReplanning]]
+=== Nonvolatile Replanning to minimize disruption (Semi-movable Planning Entities)
+
+
+Replanning an existing plan can be very disruptive on the plan.
+If the plan affects humans (such as employees, drivers, ...), very disruptive changes are often undesirable.
+In such cases, nonvolatile replanning helps by restricting planning freedom: the gain of changing a plan must be higher than the disruption it causes.
+This is usually implemented by taxing all planning entities that change.
+
+
+image::Chapter-Repeated_planning/nonvolatileReplanning.png[align="center"]
+
+
+For example, in the Machine Reassignment example, the entity has both the planning variable `machine` and its original value ``originalMachine``:
+
+[source,java,options="nowrap"]
+----
+@PlanningEntity(...)
+public class ProcessAssignment {
+
+    private MrProcess process;
+    private Machine originalMachine;
+    private Machine machine;
+
+    public Machine getOriginalMachine() {...}
+
+    @PlanningVariable(...)
+    public Machine getMachine() {...}
+
+    public boolean isMoved() {
+        return originalMachine != null && originalMachine != machine;
+    }
+
+    ...
+}
+----
+
+
+During planning, the planning variable `machine` changes.
+By comparing it with the originalMachine, a change in plan can be penalized:
+
+[source,options="nowrap"]
+----
+rule "processMoved"
+    when
+        ProcessAssignment(moved == true)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, -1000);
+end
+----
+
+
+The soft penalty of `-1000` means that a better solution is only accepted if it improves the soft score for at least `1000` points per variable changed (or if it improves the hard score).
+
+[[realTimePlanning]]
+== Real-time Planning
+
+
+To do real-time planning, first combine <<backupPlanning,backup planning>> and <<continuousPlanning,continuous planning>> with short planning windows to lower the burden of real-time planning.
+As time passes, the problem itself changes:
+
+
+image::Chapter-Repeated_planning/realTimePlanningVehicleRouting.png[align="center"]
+
+
+In the example above, 3 customers are added at different times (``07:56``, `08:02` and ``08:45``), after the original customer set finished solving at `07:55` and in some cases after the vehicles already left.
+Planner can handle such scenario's with `ProblemFactChange` (in combination with <<immovablePlanningEntities,immovable
+    planning entities>>).
+
+[[problemFactChange]]
+=== `ProblemFactChange`
+
+
+While the `Solver` is solving, an outside event might want to change one of the problem facts, for example an airplane is delayed and needs the runway at a later time.
+Do not change the problem fact instances used by the `Solver` while it is solving (from another thread or even in the same thread), as that will corrupt it.
+Instead, add a `ProblemFactChange` to the `Solver` which it will execute in the solver thread as soon as possible.
+
+[source,java,options="nowrap"]
+----
+public interface Solver<Solution_> {
+
+    ...
+
+    boolean addProblemFactChange(ProblemFactChange<Solution_> problemFactChange);
+
+    boolean isEveryProblemFactChangeProcessed();
+
+    ...
+
+}
+----
+
+[source,java,options="nowrap"]
+----
+public interface ProblemFactChange<Solution_> {
+
+    void doChange(ScoreDirector<Solution_> scoreDirector);
+
+}
+----
+
+
+Here's an example:
+
+[source,java,options="nowrap"]
+----
+    public void deleteComputer(final CloudComputer computer) {
+        solver.addProblemFactChange(scoreDirector -> {
+            CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
+            // First remove the problem fact from all planning entities that use it
+            for (CloudProcess process : cloudBalance.getProcessList()) {
+                if (Objects.equals(process.getComputer(), computer)) {
+                    scoreDirector.beforeVariableChanged(process, "computer");
+                    process.setComputer(null);
+                    scoreDirector.afterVariableChanged(process, "computer");
+                }
+            }
+            scoreDirector.triggerVariableListeners();
+            // A SolutionCloner does not clone problem fact lists (such as computerList)
+            // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
+            cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
+            // Remove the problem fact itself
+            for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
+                CloudComputer workingComputer = it.next();
+                if (Objects.equals(workingComputer, computer)) {
+                    scoreDirector.beforeProblemFactRemoved(workingComputer);
+                    it.remove(); // remove from list
+                    scoreDirector.afterProblemFactRemoved(workingComputer);
+                    break;
+                }
+            }
+        });
+    }
+----
+
+[WARNING]
+====
+Any change on the problem facts or planning entities in a `ProblemFactChange` must be told to the ``ScoreDirector``.
+====
+
+
+image::Chapter-Repeated_planning/realTimePlanningConcurrencySequenceDiagram.png[align="center"]
+
+
+[IMPORTANT]
+====
+To write a `ProblemFactChange` correctly, it's important to understand the behaviour of <<cloningASolution,a planning clone>>:
+
+* Any change in a `ProblemFactChange` must be done on the `Solution` instance of ``scoreDirector.getWorkingSolution()``. The `workingSolution` is <<cloningASolution,a planning clone>> of the ``BestSolutionChangedEvent``'s ``bestSolution``. So the `workingSolution` in the `Solver` is never the same instance as the `Solution` in the rest of your application.
+* A planning clone also clones the planning entities and planning entity collections. So any change on the planning entities must happen on the instances hold by ``scoreDirector.getWorkingSolution()``.
+* A planning clone does not clone the problem facts, nor the problem fact collections. _Therefore the ``__workingSolution__`` and the ``__bestSolution__`` share the same problem fact instances and the same problem fact list instances._
++ 
+Any problem fact or problem fact list changed by a `ProblemFactChange` must be problem cloned first (which can imply rerouting references in other problem facts and planning entities). Otherwise, if the `workingSolution` and `bestSolution` are used in different threads (for example a solver thread and a GUI event thread), a race condition can occur.
+
+====
+
+[NOTE]
+====
+Many types of changes can leave a planning entity uninitialized, resulting in a partially initialized solution.
+That's fine, as long as the first solver phase can handle it.
+All construction heuristics solver phases can handle that, so it's recommended to configure such a solver phase as the first phase.
+====
+
+
+In essence, the `Solver` stops, runs the `ProblemFactChange` and **restarts**.
+This is a _warm start_ because its initial solution is the adjusted best solution of the previous run.
+Each solver phase runs again.
+This implies the construction heuristic runs again, but because little or no planning variables are uninitialized (unless you have a <<nullablePlanningVariable,nullable planning variable>>), it finishes much quicker than in a cold start.
+
+Each configured `Termination` resets (both in solver and phase configuration), but a previous call to `terminateEarly()` is not undone.
+Normally however, you won't configure any `Termination` (except in daemon mode), just call `Solver.terminateEarly()` when the results are needed.
+Alternatively, do configure a `Termination` and use the daemon mode in combination with `<<SolverEventListener,BestSolutionChangedEvent>>` as described below.
+
+[[daemon]]
+=== Daemon: `solve()` Does Not Return
+
+
+In real-time planning, it's often useful to have a solver thread wait when it runs out of work, and immediately resume solving a problem once new problem fact changes are added.
+Putting the `Solver` in daemon mode has these effects:
+
+* If the ``Solver``'s `Termination` terminates, it does not return from `solve()` but blocks its thread instead (which frees up CPU power).
+** Except for ``terminateEarly()``, which does make it return from ``solve()``, freeing up system resources and allowing an application to shutdown gracefully.
+** If a `Solver` starts with an empty planning entity collection, it waits in the blocked state immediately.
+* If a `ProblemFactChange` is added, it goes into the running state, applies the `ProblemFactChange` and runs the `Solver` again.
+
+
+To configure the daemon mode:
+
+[source,xml,options="nowrap"]
+----
+<solver>
+  <daemon>true</daemon>
+  ...
+</solver>
+----
+
+[WARNING]
+====
+Don't forget to call `Solver.terminateEarly()` when your application needs to shutdown to avoid killing the solver thread unnaturally.
+====
+
+
+Subscribe to the `<<SolverEventListener,BestSolutionChangedEvent>>` to process new best solutions found by the solver thread.
+A `BestSolutionChangedEvent` doesn't guarantee that every `ProblemFactChange` has been processed already, nor that the solution is initialized and feasible.
+To ignore ``BestSolutionChangedEvent``s with such invalid solutions, do this:
+
+[source,java,options="nowrap"]
+----
+    public void bestSolutionChanged(BestSolutionChangedEvent<CloudBalance> event) {
+        if (event.isEveryProblemFactChangeProcessed()
+                // Ignore infeasible (including uninitialized) solutions
+                && event.getNewBestSolution().getScore().isFeasible()) {
+            ...
+        }
+    }
+----
+
+
+Use `Score.isSolutionInitialized()` instead of `Score.isFeasible()` to only ignore uninitialized solutions, but do accept infeasible solutions too.

@@ -1,0 +1,17 @@
+[[hyperheuristics]]
+= Hyperheuristics
+:doctype: book
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+:sourcedir: .
+
+[[hyperheuristicsOverview]]
+== Overview
+
+
+A hyperheuristic automates the decision which heuristic(s) to use on a specific data set.
+
+A future version of Planner will have native support for hyperheuristics.
+Meanwhile, it's pretty easy to implement it yourself: Based on the size or difficulty of a data set (which is a criterion), use a different `Solver` configuration (or adjust the default configuration using the Solver configuration API). The <<benchmarker,Benchmarker>> can help to identify such criteria.
