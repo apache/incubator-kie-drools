@@ -16,8 +16,11 @@
 
 package org.drools.workbench.models.testscenarios.backend;
 
+import java.util.HashMap;
+
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,103 +30,90 @@ import org.junit.runner.notification.RunListener;
 import org.junit.runner.notification.RunNotifier;
 import org.kie.api.runtime.KieSession;
 
-import java.util.HashMap;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class ScenarioRunner4JUnitTest {
 
-    private KieSession ksession;
+    private StatefulKnowledgeSessionImpl ksession;
 
     @Before
     public void setUp() throws Exception {
-        ksession = mock(KieSession.class);
-        KnowledgeBaseImpl knowledgeBase = mock(KnowledgeBaseImpl.class);
-        when(
-                ksession.getKieBase()
-        ).thenReturn(
-                knowledgeBase
-        );
+        ksession = mock( StatefulKnowledgeSessionImpl.class );
+        KnowledgeBaseImpl knowledgeBase = mock( KnowledgeBaseImpl.class );
+        when( ksession.getKieBase() ).thenReturn( knowledgeBase );
 
         ProjectClassLoader classLoader = ProjectClassLoader.createProjectClassLoader();
-        when(
-                knowledgeBase.getRootClassLoader()
-        ).thenReturn(
-                classLoader
-        );
+        when( knowledgeBase.getRootClassLoader() ).thenReturn( classLoader );
     }
 
     @Test
     public void testBasic() throws Exception {
 
         HashMap<String, KieSession> ksessions = new HashMap<String, KieSession>();
-        ksessions.put("someId", ksession);
+        ksessions.put( "someId", ksession );
         Scenario scenario = new Scenario();
-        scenario.getKSessions().add("someId");
-        ScenarioRunner4JUnit runner4JUnit = new ScenarioRunner4JUnit(scenario, ksessions);
+        scenario.getKSessions().add( "someId" );
+        ScenarioRunner4JUnit runner4JUnit = new ScenarioRunner4JUnit( scenario, ksessions );
 
         RunNotifier notifier = new RunNotifier();
-        RunListener runListener = spy(new RunListener());
-        notifier.addListener(runListener);
+        RunListener runListener = spy( new RunListener() );
+        notifier.addListener( runListener );
 
-        runner4JUnit.run(notifier);
+        runner4JUnit.run( notifier );
 
-        verify(runListener, never()).testFailure(any(Failure.class));
-
-        verify(runListener).testFinished(any(Description.class));
+        verify( runListener, never() ).testFailure( any( Failure.class ) );
+        verify( runListener ).testFinished( any( Description.class ) );
+        verify( ksession ).reset();
     }
 
     @Test
     public void testIDNotSet() throws Exception {
 
         HashMap<String, KieSession> ksessions = new HashMap<String, KieSession>();
-        ksessions.put(null, ksession);
-        ScenarioRunner4JUnit runner4JUnit = new ScenarioRunner4JUnit(new Scenario(), ksessions);
+        ksessions.put( null, ksession );
+        ScenarioRunner4JUnit runner4JUnit = new ScenarioRunner4JUnit( new Scenario(), ksessions );
 
         RunNotifier notifier = new RunNotifier();
-        RunListener runListener = spy(new RunListener());
-        notifier.addListener(runListener);
+        RunListener runListener = spy( new RunListener() );
+        notifier.addListener( runListener );
 
-        runner4JUnit.run(notifier);
+        runner4JUnit.run( notifier );
 
-        verify(runListener, never()).testFailure(any(Failure.class));
-
-        verify(runListener).testFinished(any(Description.class));
-
+        verify( runListener, never() ).testFailure( any( Failure.class ) );
+        verify( runListener ).testFinished( any( Description.class ) );
+        verify( ksession ).reset();
     }
 
     @Test
     public void testNoKieSession() throws Exception {
 
-        ScenarioRunner4JUnit runner4JUnit = new ScenarioRunner4JUnit(new Scenario(), new HashMap<String, KieSession>());
+        ScenarioRunner4JUnit runner4JUnit = new ScenarioRunner4JUnit( new Scenario(), new HashMap<String, KieSession>() );
 
         RunNotifier notifier = new RunNotifier();
-        RunListener runListener = spy(new RunListener());
-        notifier.addListener(runListener);
+        RunListener runListener = spy( new RunListener() );
+        notifier.addListener( runListener );
 
-        runner4JUnit.run(notifier);
+        runner4JUnit.run( notifier );
 
-        verify(runListener).testFailure(any(Failure.class));
-
+        verify( runListener ).testFailure( any( Failure.class ) );
     }
 
     @Test
     public void testNoKieWithGivenIDSession() throws Exception {
 
         HashMap<String, KieSession> ksessions = new HashMap<String, KieSession>();
-        ksessions.put("someID", ksession);
+        ksessions.put( "someID", ksession );
         Scenario scenario = new Scenario();
-        scenario.getKSessions().add("someOtherID");
-        ScenarioRunner4JUnit runner4JUnit = new ScenarioRunner4JUnit(scenario, ksessions);
+        scenario.getKSessions().add( "someOtherID" );
+        ScenarioRunner4JUnit runner4JUnit = new ScenarioRunner4JUnit( scenario, ksessions );
 
         RunNotifier notifier = new RunNotifier();
-        RunListener runListener = spy(new RunListener());
-        notifier.addListener(runListener);
+        RunListener runListener = spy( new RunListener() );
+        notifier.addListener( runListener );
 
-        runner4JUnit.run(notifier);
+        runner4JUnit.run( notifier );
 
-        verify(runListener).testFailure(any(Failure.class));
-
+        verify( runListener ).testFailure( any( Failure.class ) );
     }
 }
