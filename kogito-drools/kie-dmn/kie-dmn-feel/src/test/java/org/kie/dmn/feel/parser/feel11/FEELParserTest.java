@@ -19,7 +19,6 @@ package org.kie.dmn.feel.parser.feel11;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.junit.Test;
 import org.kie.dmn.feel.lang.ast.*;
-import org.mockito.internal.matchers.InstanceOf;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -447,27 +446,27 @@ public class FEELParserTest {
         assertThat( list.getElements().get( 2 ), is( instanceOf( NullNode.class ) ) );
         assertThat( list.getElements().get( 2 ).getText(), is( "null" ) );
 
-        assertThat( list.getElements().get( 3 ), is( instanceOf( IntervalNode.class ) ) );
-        IntervalNode interval = (IntervalNode) list.getElements().get( 3 );
+        assertThat( list.getElements().get( 3 ), is( instanceOf( RangeNode.class ) ) );
+        RangeNode interval = (RangeNode) list.getElements().get( 3 );
         assertThat( interval.getText(), is( "(2000..z[") );
-        assertThat( interval.getLowerBound(), is( IntervalNode.IntervalBoundary.OPEN ) );
-        assertThat( interval.getUpperBound(), is( IntervalNode.IntervalBoundary.OPEN ) );
+        assertThat( interval.getLowerBound(), is( RangeNode.IntervalBoundary.OPEN ) );
+        assertThat( interval.getUpperBound(), is( RangeNode.IntervalBoundary.OPEN ) );
         assertThat( interval.getStart(), is( instanceOf( NumberNode.class ) ) );
         assertThat( interval.getEnd(), is( instanceOf( NameRefNode.class ) ) );
 
-        assertThat( list.getElements().get( 4 ), is( instanceOf( IntervalNode.class ) ) );
-        interval = (IntervalNode) list.getElements().get( 4 );
+        assertThat( list.getElements().get( 4 ), is( instanceOf( RangeNode.class ) ) );
+        interval = (RangeNode) list.getElements().get( 4 );
         assertThat( interval.getText(), is( "]z..2000]") );
-        assertThat( interval.getLowerBound(), is( IntervalNode.IntervalBoundary.OPEN ) );
-        assertThat( interval.getUpperBound(), is( IntervalNode.IntervalBoundary.CLOSED ) );
+        assertThat( interval.getLowerBound(), is( RangeNode.IntervalBoundary.OPEN ) );
+        assertThat( interval.getUpperBound(), is( RangeNode.IntervalBoundary.CLOSED ) );
         assertThat( interval.getStart(), is( instanceOf( NameRefNode.class ) ) );
         assertThat( interval.getEnd(), is( instanceOf( NumberNode.class ) ) );
 
-        assertThat( list.getElements().get( 5 ), is( instanceOf( IntervalNode.class ) ) );
-        interval = (IntervalNode) list.getElements().get( 5 );
+        assertThat( list.getElements().get( 5 ), is( instanceOf( RangeNode.class ) ) );
+        interval = (RangeNode) list.getElements().get( 5 );
         assertThat( interval.getText(), is( "[(10+5)..(a*b))") );
-        assertThat( interval.getLowerBound(), is( IntervalNode.IntervalBoundary.CLOSED ) );
-        assertThat( interval.getUpperBound(), is( IntervalNode.IntervalBoundary.OPEN ) );
+        assertThat( interval.getLowerBound(), is( RangeNode.IntervalBoundary.CLOSED ) );
+        assertThat( interval.getUpperBound(), is( RangeNode.IntervalBoundary.OPEN ) );
         assertThat( interval.getStart(), is( instanceOf( InfixOpNode.class ) ) );
         assertThat( interval.getEnd(), is( instanceOf( InfixOpNode.class ) ) );
 
@@ -485,7 +484,7 @@ public class FEELParserTest {
         assertThat( in.getValue(), is( instanceOf( InfixOpNode.class ) ) );
         assertThat( in.getValue().getText(), is( "x - y" ) );
 
-        assertThat( in.getExprs(), is( instanceOf( IntervalNode.class ) ) );
+        assertThat( in.getExprs(), is( instanceOf( RangeNode.class ) ) );
         assertThat( in.getExprs().getText(), is( "[(10+5)..(a*b))" ) );
     }
 
@@ -607,7 +606,7 @@ public class FEELParserTest {
         assertThat( name.getParts(), is( notNullValue() ) );
         assertThat( name.getParts().size(), is( 9 ) );
         assertThat( entry.getName().getText(), is("a key.with + /' odd chars") );
-        assertThat( entry.getValue(), is( instanceOf( IntervalNode.class ) ) );
+        assertThat( entry.getValue(), is( instanceOf( RangeNode.class ) ) );
         assertThat( entry.getValue().getText(), is( "[10..50]" ) );
     }
 

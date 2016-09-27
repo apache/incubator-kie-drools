@@ -116,8 +116,8 @@ public class ASTBuilderVisitor
     public BaseNode visitInterval(FEEL_1_1Parser.IntervalContext ctx) {
         BaseNode start = visit( ctx.start );
         BaseNode end = visit( ctx.end );
-        IntervalNode.IntervalBoundary low = ctx.low.getText().equals( "[" ) ? IntervalNode.IntervalBoundary.CLOSED : IntervalNode.IntervalBoundary.OPEN;
-        IntervalNode.IntervalBoundary up = ctx.up.getText().equals( "]" ) ? IntervalNode.IntervalBoundary.CLOSED : IntervalNode.IntervalBoundary.OPEN;
+        RangeNode.IntervalBoundary low = ctx.low.getText().equals( "[" ) ? RangeNode.IntervalBoundary.CLOSED : RangeNode.IntervalBoundary.OPEN;
+        RangeNode.IntervalBoundary up = ctx.up.getText().equals( "]" ) ? RangeNode.IntervalBoundary.CLOSED : RangeNode.IntervalBoundary.OPEN;
         return ASTBuilderFactory.newIntervalNode( ctx, low, start, end, up );
     }
 

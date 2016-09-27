@@ -19,6 +19,7 @@ package org.kie.dmn.feel.lang.types;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 import java.time.*;
@@ -35,6 +36,7 @@ public enum BuiltInType implements Type {
     DATE_TIME("date and time"),
     DURATION("duration"),
     BOOLEAN("boolean"),
+    RANGE("range"),
     FUNCTION("function"),
     LIST("list"),
     CONTEXT("context"),
@@ -89,6 +91,8 @@ public enum BuiltInType implements Type {
             return BOOLEAN;
         } else if( o instanceof UnaryTest ) {
             return UNARY_TEST;
+        } else if( o instanceof Range ) {
+            return RANGE;
         } else if( o instanceof FEELFunction ) {
             return FUNCTION;
         } else if( o instanceof List ) {

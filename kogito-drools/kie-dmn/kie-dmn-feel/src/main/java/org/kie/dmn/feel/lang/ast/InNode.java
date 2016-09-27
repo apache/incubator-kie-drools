@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 public class InNode
@@ -76,6 +77,11 @@ public class InNode
             return value == expr;
         } else if ( expr instanceof UnaryTest ) {
             return ((UnaryTest) expr).apply( value );
+        } else if ( expr instanceof Range ) {
+            if( !( value instanceof Comparable ) ) {
+                return null;
+            }
+            return ((Range) expr).includes( (Comparable) value );
         } else if ( value != null ) {
             return value.equals( expr );
         } else {

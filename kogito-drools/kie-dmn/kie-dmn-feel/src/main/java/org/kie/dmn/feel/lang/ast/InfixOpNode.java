@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.util.EvalHelper;
 
 import java.math.BigDecimal;
@@ -283,12 +284,18 @@ public class InfixOpNode
             return operator == InfixOperator.EQ;
         } else if ( left == null || right == null ) {
             return operator == InfixOperator.NE;
+        } else if( left instanceof Range && right instanceof Range ) {
+            return operator == InfixOperator.NE ^ isEqual( (Range)left, (Range) right );
         } else if( left instanceof Iterable && right instanceof Iterable ) {
             return operator == InfixOperator.NE ^ isEqual( (Iterable)left, (Iterable) right );
         } else if( left instanceof Map && right instanceof Map ) {
             return operator == InfixOperator.NE ^ isEqual( (Map)left, (Map) right );
         }
         return comparison( left, right, ctx, op );
+    }
+
+    private Boolean isEqual(Range left, Range right) {
+        return left.equals( right );
     }
 
     private Boolean isEqual(Iterable left, Iterable right) {
