@@ -16,6 +16,21 @@
 
   <name>KIE :: Decision Model Notation :: Core</name>
 
+  <dependencyManagement>
+    <!-- Important: Do not add any additional dependency versions here!
+         The dependency management should only import drools-bom and kie-third-party-bom to get the proper versions
+         it needs. Any additional 3rd party dependency versions need to go directly into kie-third-party-bom. -->
+    <dependencies>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>drools-bom</artifactId>
+        <version>${version.org.kie}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.kie</groupId>
@@ -32,6 +47,18 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-dmn-feel</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
     </dependency>
 
     <dependency>
