@@ -18,11 +18,15 @@ package org.drools.compiler.integrationtests;
 import org.drools.compiler.integrationtests.DeleteTest.Person;
 import java.util.List;
 
+query countPerson
+   $personCount : Long() from accumulate ($person: Person(), count( $person ))
+end
+
 query someQuery
    $names : List() from accumulate (Person($name : name), collectList( $name ))
 end
 
-query informationsAboutPersons
+query informationAboutPersons
     accumulate (
         Person( $age : age, $name : name );
         $minimalAge : min( $age ),

@@ -15,11 +15,10 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.Serializable;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -31,14 +30,20 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
+import static org.junit.Assert.*;
+
 public class DeleteTest {
 
-    @Test
-    public void deleteFactTest() {
+    private static final String DELETE_TEST_DRL = "delete_test.drl";
+
+    private KieSession ksession;
+
+    @Before
+    public void setUp() {
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
 
         kfs.write(KieServices.Factory.get().getResources()
-                .newClassPathResource("delete_test.drl", DeleteTest.class));
+                .newClassPathResource(DELETE_TEST_DRL, DeleteTest.class));
 
         KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
 
@@ -52,22 +57,62 @@ public class DeleteTest {
                 .newKieContainer(kbuilder.getKieModule().getReleaseId())
                 .getKieBase();
 
-        KieSession ksession = kbase.newKieSession();
+        ksession = kbase.newKieSession();
+    }
 
+    @Test
+    public void deleteFactTest() {
         ksession.insert(new Person("Petr", 25));
 
         FactHandle george = ksession.insert(new Person("George", 19));
-
-        QueryResults results = ksession
-                .getQueryResults("informationsAboutPersons");
-
-        assertEquals(2L, results.iterator().next().get("$countOfPerson"));
+        QueryResults results = ksession.getQueryResults("countPerson");
+        assertEquals(2L, results.iterator().next().get("$personCount"));
 
         ksession.delete(george);
+        results = ksession.getQueryResults("countPerson");
+        assertEquals(1L, results.iterator().next().get("$personCount"));
 
-        results = ksession.getQueryResults("informationsAboutPersons");
+        ksession.dispose();
+    }
 
-        assertEquals(1L, results.iterator().next().get("$countOfPerson"));
+    @Test
+    public void deleteFactTwiceTest() {
+        FactHandle george = ksession.insert(new Person("George", 19));
+        QueryResults results = ksession.getQueryResults("countPerson");
+        assertEquals(1L, results.iterator().next().get("$personCount"));
+
+        ksession.delete(george);
+        results = ksession.getQueryResults("countPerson");
+        assertEquals(0L, results.iterator().next().get("$personCount"));
+
+        ksession.delete(george);
+        assertEquals(0L, results.iterator().next().get("$personCount"));
+
+        ksession.dispose();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void deleteNullFactTest() {
+        try {
+            ksession.delete(null);
+            fail("Delete null fact should have failed.");
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void deleteUpdatedFactTest() {
+        FactHandle george = ksession.insert(new Person("George", 18));
+
+        ksession.update(george, new Person("John", 21));
+
+        QueryResults results = ksession.getQueryResults("countPerson");
+        assertEquals(1L, results.iterator().next().get("$personCount"));
+
+        ksession.delete(george);
+        results = ksession.getQueryResults("countPerson");
+        assertEquals(0L, results.iterator().next().get("$personCount"));
 
         ksession.dispose();
     }
