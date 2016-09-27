@@ -31,8 +31,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class DeleteTest {
 
@@ -73,45 +73,44 @@ public class DeleteTest {
 
         FactHandle george = ksession.insert(new Person("George", 19));
         QueryResults results = ksession.getQueryResults("informationAboutPersons");
-        assertEquals(2L, results.iterator().next().get("$countOfPerson"));
+        assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(2L);
 
         ksession.delete(george);
         results = ksession.getQueryResults("informationAboutPersons");
-        assertEquals(1L, results.iterator().next().get("$countOfPerson"));
+        assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(1L);
     }
 
     @Test
     public void deleteFactTwiceTest() {
         FactHandle george = ksession.insert(new Person("George", 19));
         QueryResults results = ksession.getQueryResults("countPerson");
-        assertEquals(1L, results.iterator().next().get("$personCount"));
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
 
         ksession.delete(george);
         results = ksession.getQueryResults("countPerson");
-        assertEquals(0L, results.iterator().next().get("$personCount"));
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
 
         ksession.delete(george);
-        assertEquals(0L, results.iterator().next().get("$personCount"));
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void deleteNullFactTest() {
         ksession.delete(null);
-        fail("Delete null fact should have failed.");
     }
 
     @Test
     public void deleteUpdatedFactTest() {
-        FactHandle george = ksession.insert(new Person("George", 18));
+        FactHandle person = ksession.insert(new Person("George", 18));
 
-        ksession.update(george, new Person("John", 21));
+        ksession.update(person, new Person("John", 21));
 
         QueryResults results = ksession.getQueryResults("countPerson");
-        assertEquals(1L, results.iterator().next().get("$personCount"));
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
 
-        ksession.delete(george);
+        ksession.delete(person);
         results = ksession.getQueryResults("countPerson");
-        assertEquals(0L, results.iterator().next().get("$personCount"));
+        assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
     }
 
     public class Person implements Serializable {
