@@ -18,6 +18,7 @@ package org.drools.compiler.integrationtests;
 import java.io.Serializable;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -61,19 +62,22 @@ public class DeleteTest {
         ksession = kbase.newKieSession();
     }
 
+    @After
+    public void tearDown() {
+        ksession.dispose();
+    }
+
     @Test
     public void deleteFactTest() {
         ksession.insert(new Person("Petr", 25));
 
         FactHandle george = ksession.insert(new Person("George", 19));
-        QueryResults results = ksession.getQueryResults("countPerson");
-        assertEquals(2L, results.iterator().next().get("$personCount"));
+        QueryResults results = ksession.getQueryResults("informationAboutPersons");
+        assertEquals(2L, results.iterator().next().get("$countOfPerson"));
 
         ksession.delete(george);
-        results = ksession.getQueryResults("countPerson");
-        assertEquals(1L, results.iterator().next().get("$personCount"));
-
-        ksession.dispose();
+        results = ksession.getQueryResults("informationAboutPersons");
+        assertEquals(1L, results.iterator().next().get("$countOfPerson"));
     }
 
     @Test
@@ -88,18 +92,12 @@ public class DeleteTest {
 
         ksession.delete(george);
         assertEquals(0L, results.iterator().next().get("$personCount"));
-
-        ksession.dispose();
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void deleteNullFactTest() {
-        try {
-            ksession.delete(null);
-            fail("Delete null fact should have failed.");
-        } finally {
-            ksession.dispose();
-        }
+        ksession.delete(null);
+        fail("Delete null fact should have failed.");
     }
 
     @Test
@@ -114,8 +112,6 @@ public class DeleteTest {
         ksession.delete(george);
         results = ksession.getQueryResults("countPerson");
         assertEquals(0L, results.iterator().next().get("$personCount"));
-
-        ksession.dispose();
     }
 
     public class Person implements Serializable {
