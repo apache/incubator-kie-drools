@@ -63,8 +63,8 @@ public class ASTBuilderFactory {
         return new InNode( ctx, value, list );
     }
 
-    public static IntervalNode newIntervalNode(ParserRuleContext ctx, IntervalNode.IntervalBoundary low, BaseNode start, BaseNode end, IntervalNode.IntervalBoundary up) {
-        return new IntervalNode( ctx, low, start, end, up );
+    public static RangeNode newIntervalNode(ParserRuleContext ctx, RangeNode.IntervalBoundary low, BaseNode start, BaseNode end, RangeNode.IntervalBoundary up) {
+        return new RangeNode( ctx, low, start, end, up );
     }
 
     public static UnaryTestNode newUnaryTestNode(ParserRuleContext ctx, String op, BaseNode value) {
