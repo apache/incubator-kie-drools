@@ -18,9 +18,11 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
-public class IntervalNode
+public class RangeNode
         extends BaseNode {
 
     public static enum IntervalBoundary {
@@ -32,7 +34,7 @@ public class IntervalNode
     private BaseNode         start;
     private BaseNode         end;
 
-    public IntervalNode(ParserRuleContext ctx, IntervalBoundary lowerBound, BaseNode start, BaseNode end, IntervalBoundary upperBound) {
+    public RangeNode(ParserRuleContext ctx, IntervalBoundary lowerBound, BaseNode start, BaseNode end, IntervalBoundary upperBound) {
         super( ctx );
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
@@ -73,19 +75,13 @@ public class IntervalNode
     }
 
     @Override
-    public UnaryTest evaluate(EvaluationContext ctx) {
+    public Range evaluate(EvaluationContext ctx) {
         Comparable s = (Comparable) start.evaluate( ctx );
         Comparable e = (Comparable) end.evaluate( ctx );
 
-        if ( lowerBound == IntervalBoundary.OPEN && upperBound == IntervalBoundary.OPEN ) {
-            return o -> o == null || s == null || e == null ? null : ((Comparable) o).compareTo( s ) > 0 && ((Comparable) o).compareTo( e ) < 0;
-        } else if ( lowerBound == IntervalBoundary.OPEN && upperBound == IntervalBoundary.CLOSED ) {
-            return o -> o == null || s == null || e == null ? null : ((Comparable) o).compareTo( s ) > 0 && ((Comparable) o).compareTo( e ) <= 0;
-        } else if ( lowerBound == IntervalBoundary.CLOSED && upperBound == IntervalBoundary.OPEN ) {
-            return o -> o == null || s == null || e == null ? null : ((Comparable) o).compareTo( s ) >= 0 && ((Comparable) o).compareTo( e ) < 0;
-        } else if ( lowerBound == IntervalBoundary.CLOSED && upperBound == IntervalBoundary.CLOSED ) {
-            return o -> o == null || s == null || e == null ? null : ((Comparable) o).compareTo( s ) >= 0 && ((Comparable) o).compareTo( e ) <= 0;
-        }
-        return null;
+        return new RangeImpl( lowerBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
+                              s,
+                              e,
+                              upperBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED );
     }
 }
