@@ -57,9 +57,10 @@
          referencing the zip from local filesystem). -->
     <eap7.download.url>valid-url-for-eap-7-needs-to-be-specified-here-or-via-cmd-line</eap7.download.url>
 
-
-    <cargo.dir>${project.build.directory}/cargo</cargo.dir>
-    <container.log.file>${cargo.dir}/profile-log.txt</container.log.file>
+    <!-- Cargo internal references. -->
+    <configurations.dir>${project.build.directory}/configurations</configurations.dir>
+    <container.profile.dir>${configurations.dir}/cargo-profile</container.profile.dir>
+    <container.log.file>${container.profile.dir}/profile-log.txt</container.log.file>
   </properties>
 
   <dependencies>
@@ -329,6 +330,7 @@
             </container>
             <deployables combine.children="append"/>
             <configuration>
+              <home>${container.profile.dir}</home>
               <properties>
                 <cargo.servlet.port>${container.port}</cargo.servlet.port>
               </properties>

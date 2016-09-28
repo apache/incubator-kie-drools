@@ -22,10 +22,10 @@
 
         <!-- security settings -->
         <property name="password">websphere</property>
-        <property name="sslTrustStore">${project.build.directory}/cargo/configurations/${container.id}/etc/DummyClientTrustFile.jks</property>
+        <property name="sslTrustStore">${container.profile.dir}/etc/DummyClientTrustFile.jks</property>
         <property name="sslTrustStorePassword">WebAS</property>
         <!-- SSL configuration -->
-        <property name="sslKeyStore">${project.build.directory}/cargo/configurations/${container.id}/etc/DummyClientKeyFile.jks</property>
+        <property name="sslKeyStore">${container.profile.dir}/etc/DummyClientKeyFile.jks</property>
         <property name="sslKeyStorePassword">WebAS</property>
       </configuration>
     </container>
