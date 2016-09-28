@@ -2,6 +2,9 @@
 The OptaPlanner Team <http://www.optaplanner.org/community/team.html>
 :revnumber: {project-version}
 :doctype: book
+:title-logo-image: image:Chapter-Planner_introduction/optaPlannerLogo.png[align="center"]
+:toc: left
+:toclevels: 3
 :sectnums:
 :sectanchors:
 :sectlinks:
@@ -9,10 +12,12 @@ The OptaPlanner Team <http://www.optaplanner.org/community/team.html>
 :icons: font
 :docinfo:
 :experimental:
-:toc: left
-:toclevels: 3
-:title-logo-image: image:Chapter-Planner_introduction/optaPlannerLogo.png[align="center"]
 
+
+// PDF uses :title-logo-image: on first page, no need to repeat image later on
+ifndef::backend-pdf[]
+image::Chapter-Planner_introduction/optaPlannerLogo.png[align="center"]
+endif::[]
 
 include::Chapter-Planner_introduction/Chapter-Planner_introduction.adoc[leveloffset=+1]
 include::Chapter-Quick_start/Chapter-Quick_start.adoc[leveloffset=+1]
