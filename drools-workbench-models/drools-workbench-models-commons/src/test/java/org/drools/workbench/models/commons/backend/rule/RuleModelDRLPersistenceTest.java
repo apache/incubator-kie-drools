@@ -16,16 +16,6 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.drools.workbench.models.datamodel.imports.Import;
 import org.drools.workbench.models.datamodel.oracle.DataType;
 import org.drools.workbench.models.datamodel.oracle.PackageDataModelOracle;
@@ -75,6 +65,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class RuleModelDRLPersistenceTest {
 
@@ -3147,6 +3144,36 @@ public class RuleModelDRLPersistenceTest {
 
         checkMarshalling( expected,
                           m );
+    }
+
+    @Test
+    public void testCompositeFactPatternWithFrom() {
+        final RuleModel m = new RuleModel();
+        m.name = "model";
+
+        final FactPattern fp1 = new FactPattern( "Data" );
+        fp1.setBoundName( "$d" );
+        m.addLhsItem( fp1 );
+
+        final FactPattern fp2 = new FactPattern( "Person" );
+        final FromCompositeFactPattern ffp1 = new FromCompositeFactPattern();
+        ffp1.setExpression( new ExpressionFormLine( new ExpressionVariable( fp1.getBoundName(),
+                                                                            fp1.getFactType() ) ) );
+        ffp1.setFactPattern( fp2 );
+        m.addLhsItem( ffp1 );
+
+        final String actual = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+        final String expected = "rule \"model\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "$d : Data( )\n" +
+                "(Person( ) from $d)\n" +
+                "\n" +
+                "then\n" +
+                "end\n";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
     }
 
     @Test
