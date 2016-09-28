@@ -16,17 +16,6 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -123,7 +112,18 @@ import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.core.util.StringUtils.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.drools.core.util.StringUtils.splitArgumentsList;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.*;
 
 /**
@@ -657,11 +657,18 @@ public class RuleModelDRLPersistenceImpl
             if ( pattern.getFactPattern() != null ) {
                 final LHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext( rootContext,
                                                                                                    pattern.getFactPattern() );
+                // DROOLS-1308 - wraps from pattern in parenthesis
+                if ( !isSubPattern ) {
+                    buf.append( "(" );
+                }
                 generateFactPattern( pattern.getFactPattern(),
                                      gctx );
 
                 buf.append( " from " );
                 renderExpression( pattern.getExpression() );
+                if ( !isSubPattern ) {
+                    buf.append( ")" );
+                }
                 buf.append( "\n" );
             }
         }
