@@ -48,10 +48,10 @@
           <version>1.5.3</version>
           <configuration>
             <attributes>
+              <revnumber>${project.version}</revnumber>
               <!-- Custom attributes -->
               <codeDir>${project.build.directory}/code</codeDir>
               <COMMUNITY-ONLY/>
-              <project-version>${project.version}</project-version>
               <shared-dir>${project.basedir}/../shared/</shared-dir>
               <html-googleAnalyticsId>UA-39485370-1</html-googleAnalyticsId>
               <html-googleTagManagerId>GTM-NJWS5L</html-googleTagManagerId>
