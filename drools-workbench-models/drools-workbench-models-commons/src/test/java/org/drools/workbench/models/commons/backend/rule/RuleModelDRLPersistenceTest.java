@@ -3143,6 +3143,36 @@ public class RuleModelDRLPersistenceTest {
     }
 
     @Test
+    public void testCompositeFactPatternWithFrom() {
+        final RuleModel m = new RuleModel();
+        m.name = "model";
+
+        final FactPattern fp1 = new FactPattern( "Data" );
+        fp1.setBoundName( "$d" );
+        m.addLhsItem( fp1 );
+
+        final FactPattern fp2 = new FactPattern( "Person" );
+        final FromCompositeFactPattern ffp1 = new FromCompositeFactPattern();
+        ffp1.setExpression( new ExpressionFormLine( new ExpressionVariable( fp1.getBoundName(),
+                                                                            fp1.getFactType() ) ) );
+        ffp1.setFactPattern( fp2 );
+        m.addLhsItem( ffp1 );
+
+        final String actual = RuleModelDRLPersistenceImpl.getInstance().marshal( m );
+        final String expected = "rule \"model\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "$d : Data( )\n" +
+                "(Person( ) from $d)\n" +
+                "\n" +
+                "then\n" +
+                "end\n";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
+    }
+
+    @Test
     public void testCompositeFactPatternWithFromWithDSL() {
         final RuleModel m = new RuleModel();
         m.name = "model";

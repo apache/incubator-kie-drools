@@ -16,17 +16,6 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
@@ -77,8 +66,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RuleModelDRLPersistenceUnmarshallingTest {
 
@@ -7180,8 +7181,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "dialect \"java\"\n" +
                 "when\n" +
                 "  $father: Father()\n" +
-                "  $kid: Kid() from $father.kids\n" +
-                "  $toy: Toy(name == null) from $kid.toys\n" +
+                "  ($kid: Kid() from $father.kids)\n" +
+                "  ($toy: Toy(name == null) from $kid.toys)\n" +
                 "then\n" +
                 "  System.out.println(\"blabla\");\n" +
                 "end";
@@ -7650,7 +7651,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         String drl = "rule \"test\"\n" +
                 "    dialect \"mvel\"\n" +
                 "    when\n" +
-                "    obj : MyClass( ) from my.package\n" +
+                "    (obj : MyClass( ) from my.package)\n" +
                 "    then\n" +
                 "    System.out.println(\"Test\")\n" +
                 "    end";
@@ -7703,7 +7704,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 "when\n" +
                 "  var : NotImported( )\n" +
                 "  OtherType( field != var.field )\n" +
-                "  MyType( ) from var.collectionField\n" +
+                "  (MyType( ) from var.collectionField)\n" +
                 "then\n" +
                 "end";
 
