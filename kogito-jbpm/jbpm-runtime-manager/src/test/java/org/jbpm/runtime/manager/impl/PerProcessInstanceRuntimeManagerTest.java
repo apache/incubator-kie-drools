@@ -1287,4 +1287,38 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         manager.close();
     }
+    
+    @Test
+    public void testErrorThrowOfChildProcessOnParent() {
+       
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("reusable-subprocess/ParentError.bpmn2"), ResourceType.BPMN2)
+                .addAsset(ResourceFactory.newClassPathResource("reusable-subprocess/ChildError.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);  
+        
+        ksession.startProcess("ParentError");
+        
+        List<? extends ProcessInstanceLog> processInstanceLogs = runtime.getAuditService().findProcessInstances();
+        assertEquals(2, processInstanceLogs.size());
+        
+        for (ProcessInstanceLog log : processInstanceLogs) {
+            if (log.getProcessId().equals("ParentError")) {
+                assertEquals(ProcessInstance.STATE_COMPLETED, log.getStatus().intValue());
+            } else if(log.getProcessId().equals("ChildError")) { 
+                assertEquals(ProcessInstance.STATE_ABORTED, log.getStatus().intValue());
+            }
+        }
+        
+        manager.disposeRuntimeEngine(runtime);     
+        manager.close();
+    }
 }

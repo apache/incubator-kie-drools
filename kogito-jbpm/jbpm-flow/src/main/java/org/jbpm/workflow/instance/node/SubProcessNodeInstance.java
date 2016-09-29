@@ -61,6 +61,7 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.manager.context.CaseContext;
+import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -241,16 +242,21 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         	InternalKnowledgeRuntime kruntime = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime();
         	RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
         	if (manager != null) {
-        	    org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get(processInstanceId);
-                
-                String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
-                if (caseId != null) {
-                    context = CaseContext.get(caseId);
-                }
-                
-                RuntimeEngine runtime = manager.getRuntimeEngine(context);
-                KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
-        		processInstance = (ProcessInstance) managedkruntime.getProcessInstance(processInstanceId);
+        	    try {
+            	    org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get(processInstanceId);
+                    
+                    String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
+                    if (caseId != null) {
+                        context = CaseContext.get(caseId);
+                    }
+                    
+                    RuntimeEngine runtime = manager.getRuntimeEngine(context);
+    
+                    KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
+            		processInstance = (ProcessInstance) managedkruntime.getProcessInstance(processInstanceId);
+        	    } catch (SessionNotFoundException e) {
+        	        // in case no session is found for parent process let's skip signal for process instance completion
+        	    }
         	} else {
         		processInstance = (ProcessInstance) kruntime.getProcessInstance(processInstanceId);
         	}
