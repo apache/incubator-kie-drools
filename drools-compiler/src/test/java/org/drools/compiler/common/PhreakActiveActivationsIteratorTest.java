@@ -15,21 +15,21 @@
 
 package org.drools.compiler.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.core.common.ActiveActivationIterator;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.PhreakActiveActivationIterator;
 import org.drools.core.util.Iterator;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
+public class PhreakActiveActivationsIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testActiveActivationsIteratorTest() {
@@ -85,7 +85,7 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
         ((InternalWorkingMemory) ksession).flushPropagations();
         ((InternalAgenda) ksession.getAgenda()).evaluateEagerList();
 
-        Iterator it = ActiveActivationIterator.iterator(ksession);
+        Iterator it = PhreakActiveActivationIterator.iterator(ksession);
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
@@ -95,7 +95,7 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        it = ActiveActivationIterator.iterator( ksession );
+        it = PhreakActiveActivationIterator.iterator( ksession );
 
         list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {

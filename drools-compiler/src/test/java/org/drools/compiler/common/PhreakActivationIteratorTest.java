@@ -15,11 +15,14 @@
 
 package org.drools.compiler.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.compiler.CommonTestMethodBase;
-import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.PhreakActivationIterator;
 import org.drools.core.util.Iterator;
 import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
@@ -34,10 +37,7 @@ import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.KieHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ActivationIteratorTest extends CommonTestMethodBase {
+public class PhreakActivationIteratorTest extends CommonTestMethodBase {
 
     @Test
     public void testSingleLian() {
@@ -63,7 +63,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         evaluateEagerList(ksession);
 
-        Iterator it = ActivationIterator.iterator( ksession );
+        Iterator it = PhreakActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
@@ -73,7 +73,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        it = ActivationIterator.iterator( ksession );
+        it = PhreakActivationIterator.iterator( ksession );
         list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
@@ -112,7 +112,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         evaluateEagerList(ksession);
 
-        Iterator it = ActivationIterator.iterator( ksession );
+        Iterator it = PhreakActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
@@ -122,7 +122,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        it = ActivationIterator.iterator( ksession );
+        it = PhreakActivationIterator.iterator( ksession );
         list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
@@ -186,7 +186,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         evaluateEagerList(ksession);
 
-        Iterator it = ActivationIterator.iterator( ksession );
+        Iterator it = PhreakActivationIterator.iterator( ksession );
 
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
@@ -200,7 +200,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        it = ActivationIterator.iterator( ksession );
+        it = PhreakActivationIterator.iterator( ksession );
         list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s" ) + ":" + act.isQueued() );
@@ -262,7 +262,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         }
         ksession.fireAllRules();
 
-        Iterator it = ActivationIterator.iterator( ksession );
+        Iterator it = PhreakActivationIterator.iterator( ksession );
 
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
@@ -294,7 +294,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         }
         evaluateEagerList(ksession);
 
-        Iterator it = ActivationIterator.iterator( ksession );
+        Iterator it = PhreakActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isQueued() );
@@ -304,7 +304,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
 
         ksession.fireAllRules();
-        it = ActivationIterator.iterator( ksession );
+        it = PhreakActivationIterator.iterator( ksession );
         list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isQueued() );
@@ -334,7 +334,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         }
         evaluateEagerList(ksession);
 
-        Iterator it = ActivationIterator.iterator( ksession );
+        Iterator it = PhreakActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isQueued() );
@@ -344,7 +344,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        it = ActivationIterator.iterator( ksession );
+        it = PhreakActivationIterator.iterator( ksession );
         list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.getDeclarationValue( "$s2" ) + ":" + act.isQueued() );
@@ -385,7 +385,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         }
         evaluateEagerList(ksession);
 
-        Iterator it = ActivationIterator.iterator( ksession );
+        Iterator it = PhreakActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
@@ -404,7 +404,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        it = ActivationIterator.iterator( ksession );
+        it = PhreakActivationIterator.iterator( ksession );
         list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
@@ -455,7 +455,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        Iterator it = ActivationIterator.iterator( ksession );
+        Iterator it = PhreakActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
@@ -506,7 +506,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        Iterator it = ActivationIterator.iterator( ksession );
+        Iterator it = PhreakActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
@@ -556,7 +556,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        Iterator it = ActivationIterator.iterator( ksession );
+        Iterator it = PhreakActivationIterator.iterator( ksession );
         List list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             if ( act.getRule().getName().equals( "rule3" ) ) {
@@ -609,7 +609,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        Iterator it = ActivationIterator.iterator( ksession );
+        Iterator it = PhreakActivationIterator.iterator( ksession );
         list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
             list.add( act.getRule().getName() + ":" + act.getDeclarationValue( "$s1" ) + ":" + act.isQueued() );
@@ -651,7 +651,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        Iterator it = ActivationIterator.iterator( ksession );
+        Iterator it = PhreakActivationIterator.iterator( ksession );
         List list = new ArrayList();
         list = new ArrayList();
         for ( AgendaItem act = (AgendaItem) it.next(); act != null; act = (AgendaItem) it.next() ) {
