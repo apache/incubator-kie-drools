@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
@@ -275,22 +274,6 @@ public class PhreakPropagationContext
 
     public void setOriginOffset(int originOffset) {
         this.originOffset = originOffset;
-    }
-
-    public void addInsertAction(WorkingMemoryAction action) {
-        throw new UnsupportedOperationException("rete only method");
-    }
-
-    public void removeInsertAction(WorkingMemoryAction action) {
-        throw new UnsupportedOperationException("rete only method");
-    }
-    
-    public LinkedList<WorkingMemoryAction> getQueue1() {
-        throw new UnsupportedOperationException("rete only method");
-    }
-
-    public LinkedList<WorkingMemoryAction> getQueue2() {
-        throw new UnsupportedOperationException("rete only method");
     }
 
     public BitMask getModificationMask() {

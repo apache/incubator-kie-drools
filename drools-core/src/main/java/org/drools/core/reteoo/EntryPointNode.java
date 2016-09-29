@@ -143,24 +143,6 @@ public class EntryPointNode extends ObjectSource
         this.entryPoint = entryPoint;
     }
 
-    public void assertQuery(final InternalFactHandle factHandle,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("rete only");
-    }
-
-    public void retractQuery(final InternalFactHandle factHandle,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("rete only");
-    }
-
-    public void modifyQuery(final InternalFactHandle factHandle,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("rete only");
-     }
-
     public ObjectTypeNode getQueryNode() {
         if ( queryNode == null ) {
             this.queryNode = objectTypeNodes.get( ClassObjectType.DroolsQuery_ObjectType );

@@ -114,18 +114,15 @@ public class QueryRiaFixerNode extends LeftTupleSource
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        context.getQueue2().addLast( new QueryRiaFixerNodeFixer(context, leftTuple, false, betaNode)  );
     }
 
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-        context.getQueue2().addLast( new QueryRiaFixerNodeFixer(context, leftTuple, true, betaNode)  );
     }
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {        
-        context.getQueue2().addLast( new QueryRiaFixerNodeFixer(context, leftTuple, false, betaNode)  );
     }
 
     /**
