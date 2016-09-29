@@ -16,6 +16,8 @@
 
 package org.drools.core.common;
 
+import java.util.List;
+
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -30,8 +32,6 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
-
-import java.util.List;
 
 public class ScheduledAgendaItem<T extends ModedAssertion<T>>
             implements
@@ -258,7 +258,6 @@ public class ScheduledAgendaItem<T extends ModedAssertion<T>>
     }
 
     public void remove() {
-        this.agenda.removeScheduleItem(this);
     }
 
     public JobHandle getJobHandle() {
