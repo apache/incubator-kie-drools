@@ -16,6 +16,17 @@
 
 package org.drools.core.common;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -51,17 +62,6 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.ERRORMSG;
 import static org.drools.core.reteoo.ObjectTypeNode.retractLeftTuples;
@@ -1069,7 +1069,6 @@ public class DefaultAgenda
                     // update the Activation in the WM
                     InternalFactHandle factHandle = activation.getActivationFactHandle();
                     workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
-                    activation.getPropagationContext().evaluateActionQueue( workingMemory );
                 }
                 // if the tuple contains expired events
                 for ( Tuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
@@ -1135,7 +1134,6 @@ public class DefaultAgenda
                     // update the Activation in the WM
                     InternalFactHandle factHandle = activation.getActivationFactHandle();
                     workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
-                    activation.getPropagationContext().evaluateActionQueue( workingMemory );
                 }
             }
         } finally {

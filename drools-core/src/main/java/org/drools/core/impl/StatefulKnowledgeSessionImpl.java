@@ -1772,7 +1772,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                                           this.factHandle.getObject(),
                                                           context,
                                                           workingMemory);
-            context.evaluateActionQueue( workingMemory );
         }
     }
 

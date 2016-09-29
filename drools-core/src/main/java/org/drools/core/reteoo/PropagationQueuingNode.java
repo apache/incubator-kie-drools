@@ -16,6 +16,14 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -30,14 +38,6 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * A node that will add the propagation to the working memory actions queue,
@@ -404,7 +404,6 @@ public class PropagationQueuingNode extends ObjectSource
             sink.propagateAssertObject( this.handle,
                                         this.context,
                                         workingMemory );
-            context.evaluateActionQueue( workingMemory );
         }
     }
 
@@ -426,7 +425,6 @@ public class PropagationQueuingNode extends ObjectSource
             nodeSink.assertObject( this.handle,
                                    this.context,
                                    workingMemory );
-            context.evaluateActionQueue( workingMemory );
         }
 
         @Override
@@ -464,7 +462,6 @@ public class PropagationQueuingNode extends ObjectSource
                 leftTuple.retractTuple(  context, workingMemory );
             }
             this.handle.clearLeftTuples();
-            context.evaluateActionQueue( workingMemory );
         }
     }
 
@@ -487,7 +484,6 @@ public class PropagationQueuingNode extends ObjectSource
             nodeSink.modifyRightTuple( rightTuple,
                                        context,
                                        workingMemory );
-            context.evaluateActionQueue( workingMemory );
         }
         
         @Override

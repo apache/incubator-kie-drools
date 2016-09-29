@@ -70,8 +70,6 @@ public interface PropagationContext
 
     LinkedList<WorkingMemoryAction> getQueue2();
 
-    void evaluateActionQueue(InternalWorkingMemory workingMemory);
-
     BitMask getModificationMask();
     PropagationContext adaptModificationMaskForObjectType(ObjectType type, InternalWorkingMemory workingMemory);
     void setModificationMask(BitMask mask);
