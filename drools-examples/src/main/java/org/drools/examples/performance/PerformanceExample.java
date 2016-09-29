@@ -1,5 +1,7 @@
 package org.drools.examples.performance;
 
+import java.util.ArrayList;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.kie.api.KieBaseConfiguration;
@@ -16,13 +18,9 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 
-import java.util.ArrayList;
-
 public class PerformanceExample {
-    public static RuleEngineOption phreak = RuleEngineOption.PHREAK;
 
     public static void main(final String[] args) throws Exception {
         final long numberOfRulesToBuild = 10;
@@ -106,7 +104,6 @@ public class PerformanceExample {
 
         startTime = System.currentTimeMillis();
         KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kBaseConfig.setOption(phreak);
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         endTime = System.currentTimeMillis();

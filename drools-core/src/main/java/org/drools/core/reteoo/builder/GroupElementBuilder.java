@@ -16,6 +16,11 @@
 
 package org.drools.core.reteoo.builder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
 import org.drools.core.reteoo.ExistsNode;
@@ -29,11 +34,6 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.GroupElement.Type;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.BetaNodeFieldConstraint;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class GroupElementBuilder
         implements
@@ -243,13 +243,6 @@ public class GroupElementBuilder
 
             }
 
-            NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
-
-            if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
-                // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
-                context.setTupleSource( utils.attachNode( context, nfactory.buildQueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );
-            }
-
             final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,
                                                                                     context.getBetaconstraints(),
                                                                                     false );
@@ -333,13 +326,6 @@ public class GroupElementBuilder
                 context.setBetaconstraints( predicates );
                 existSubNetwort = true;
 
-            }
-
-            NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
-
-            if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && !context.isTupleMemoryEnabled() && existSubNetwort ) {
-                // If there is a RIANode, so need to handle. This only happens with queries, so need to worry about sharing
-                context.setTupleSource( utils.attachNode( context, nfactory.buildQueryRiaFixerNode( context.getNextId(), context.getTupleSource(), context ) ) );
             }
 
             final BetaConstraints betaConstraints = utils.createBetaNodeConstraint( context,

@@ -16,7 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
@@ -39,7 +38,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * A test case for AccumulateNode
@@ -314,82 +315,6 @@ public class AccumulateNodeTest extends DroolsTestCase {
         final BetaMemory memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( accumulateNode )).getBetaMemory();
 
         assertNotNull( memory );
-    }
-
-    @Test
-    public void testAssertTupleSequentialMode() throws Exception {
-        RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        conf.setPhreakEnabled(false);
-        conf.setSequential( true );
-
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
-        BuildContext buildContext = new BuildContext( kBase,
-                                                      kBase.getReteooBuilder().getIdGenerator() );
-        buildContext.setTupleMemoryEnabled( false );
-        // overide the original node, so we an set the BuildContext
-        this.node = new AccumulateNode( 15,
-                                        this.tupleSource,
-                                        this.objectSource,
-                                        new AlphaNodeFieldConstraint[0],
-                                        EmptyBetaConstraints.getInstance(),
-                                        EmptyBetaConstraints.getInstance(),
-                                        this.accumulate,
-                                        false,
-                                        buildContext );
-
-        this.node.addTupleSink( this.sink );
-
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)KnowledgeBaseFactory.newKnowledgeBase(conf).newStatefulKnowledgeSession();
-
-        this.memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).getBetaMemory();
-
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                                  null,
-                                                                                                                  null,
-                                                                                                                  null );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
-                                                                                                                  null,
-                                                                                                                  null,
-                                                                                                                  null );
-
-        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
-                                                null,
-                                                true );
-
-        this.node.assertObject( f0,
-                                this.context,
-                                this.workingMemory );
-        this.node.assertObject( f1,
-                                this.context,
-                                this.workingMemory );
-
-        // assert tuple, should not add to left memory, since we are in sequential mode
-        this.node.assertLeftTuple( tuple0,
-                                   pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, f0),
-                                   this.workingMemory );
-        // check memories 
-        assertNull( this.memory.getLeftTupleMemory() );
-        assertEquals( 2,
-                      this.memory.getRightTupleMemory().size() );
-        assertEquals( "Wrong number of elements in matching objects list ",
-                             2,
-                             this.accumulator.getMatchingObjects().size() );
-
-        // assert tuple, should not add left memory 
-        final LeftTupleImpl tuple1 = new LeftTupleImpl( f1,
-                                                null,
-                                                true );
-        this.node.assertLeftTuple( tuple1,
-                                   pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, f1),
-                                   this.workingMemory );
-        assertNull( this.memory.getLeftTupleMemory() );
-        assertEquals( "Wrong number of elements in matching objects list ",
-                             2,
-                             this.accumulator.getMatchingObjects().size() );
-
-        assertEquals( "Two tuples should have been propagated",
-                             2,
-                             this.sink.getAsserted().size() );
     }
 
 }

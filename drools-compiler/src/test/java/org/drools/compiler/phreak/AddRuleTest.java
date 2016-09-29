@@ -15,6 +15,10 @@
 
 package org.drools.compiler.phreak;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -35,26 +39,22 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertSame;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class AddRuleTest {
 
     @Test
     public void testPopulatedSingleRuleNoSharing() throws Exception {
         KieBaseConfiguration kconf = ( KieBaseConfiguration ) KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
@@ -89,8 +89,6 @@ public class AddRuleTest {
     @Test
     public void testPopulatedSingleRuleNoSharingWithSubnetworkAtStart() throws Exception {
         KieBaseConfiguration kconf = ( KieBaseConfiguration ) KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
@@ -582,34 +580,9 @@ public class AddRuleTest {
     }
 
     private KnowledgeBase buildKnowledgeBase(String ruleName, String rule) {
-        String str = "";
-        str += "package org.kie \n";
-        str += "import " + A.class.getCanonicalName() + "\n" ;
-        str += "import " + B.class.getCanonicalName() + "\n" ;
-        str += "import " + C.class.getCanonicalName() + "\n" ;
-        str += "import " + D.class.getCanonicalName() + "\n" ;
-        str += "import " + E.class.getCanonicalName() + "\n" ;
-        str += "global java.util.List list \n";
-
-        int i = 0;
-        str += "rule " + ruleName + "  when \n";
-        str +=  rule;
-        str += "then \n";
-        str += " list.add( kcontext.getMatch() );\n";
-        str += "end \n";
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.addKnowledgePackages( buildKnowledgePackage( ruleName, rule) );
         return kbase;
     }
 

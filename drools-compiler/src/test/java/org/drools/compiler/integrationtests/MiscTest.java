@@ -126,7 +126,6 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
@@ -1880,8 +1879,7 @@ import static org.mockito.Mockito.*;
          session.insert( p1 );
          session.insert( p2 );
 
-         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session,
-                                                                              true );
+         session = SerializationHelper.getSerialisedStatefulKnowledgeSession( session, true );
          session.fireAllRules();
          assertEquals( 2,
                        ((List) session.getGlobal( "messages" )).size() );
@@ -1890,10 +1888,6 @@ import static org.mockito.Mockito.*;
 
      @Test
      public void testBasicFrom() throws Exception {
-         if( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
-             return;  //Disbaled due to phreak, as tests is order specific
-         }
-
          KnowledgeBase kbase = loadKnowledgeBase("test_From.drl"  );
          kbase = SerializationHelper.serializeObject( kbase );
 
@@ -1952,10 +1946,6 @@ import static org.mockito.Mockito.*;
 
      @Test
      public void testFromWithParams() throws Exception {
-         if( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
-             return;  //Disbaled due to phreak, as tests is order specific
-         }
-
          KnowledgeBase kbase = loadKnowledgeBase( "test_FromWithParams.drl" );
          StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
@@ -4287,7 +4277,7 @@ import static org.mockito.Mockito.*;
          str += "  Cheese() \n";
          str += "then \n";
          str += "end  \n";
-         KnowledgeBase kbase = loadKnowledgeBaseFromString( RuleEngineOption.PHREAK, str );
+         KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
          StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
          DefaultFactHandle handle = (DefaultFactHandle) ksession.insert( "hello" );
          ksession.fireAllRules();
@@ -4683,7 +4673,6 @@ import static org.mockito.Mockito.*;
      @Test
      public void testNotInStatelessSession() throws Exception {
          KieBaseConfiguration kbc = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-         kbc.setOption( RuleEngineOption.RETEOO );
          kbc.setOption( SequentialOption.YES );
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( kbc, "test_NotInStatelessSession.drl" ) );
          StatelessKnowledgeSession session = createStatelessKnowledgeSession( kbase );
@@ -5025,9 +5014,6 @@ import static org.mockito.Mockito.*;
 
      @Test
      public void testFromArrayIteration() throws Exception {
-         if( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
-             return;  //Disbaled due to phreak, as tests is order specific
-         }
          KnowledgeBase kbase = SerializationHelper.serializeObject( loadKnowledgeBase( "test_FromArrayIteration.drl" ) );
          StatefulKnowledgeSession session = createKnowledgeSession( kbase );
 

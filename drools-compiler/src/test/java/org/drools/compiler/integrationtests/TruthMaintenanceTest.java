@@ -15,6 +15,12 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CheeseEqual;
 import org.drools.compiler.CommonTestMethodBase;
@@ -48,19 +54,12 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLogger;
 import org.kie.internal.logger.KnowledgeRuntimeLoggerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 import static org.mockito.Mockito.mock;
@@ -1034,11 +1033,6 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testTMSWithLateUpdate() {
-        //  JBRULES-3416
-        if( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
-            return;  // Feature can never work in Rete mode.
-        }
-
         String str =""+
                 "package org.drools.compiler.test;\n" +
                 "\n" +

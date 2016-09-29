@@ -16,6 +16,30 @@
 
 package org.drools.core.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
@@ -86,30 +110,6 @@ import org.kie.internal.weaver.KieWeaverService;
 import org.kie.internal.weaver.KieWeavers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 import static org.drools.core.util.BitMaskUtil.isSet;
@@ -191,13 +191,6 @@ public class KnowledgeBaseImpl
                              final RuleBaseConfiguration config) {
         this.config = (config != null) ? config : new RuleBaseConfiguration();
         this.config.makeImmutable();
-
-        if ( this.config.isPhreakEnabled() ) {
-            logger.debug("Starting Engine in PHREAK mode");
-        } else {
-            logger.debug("Starting Engine in RETEOO mode");
-        }
-
         createRulebaseId(id);
 
         this.rootClassLoader = this.config.getClassLoader();
@@ -219,11 +212,7 @@ public class KnowledgeBaseImpl
         setupRete();
 
         if ( this.config.getSessionCacheOption().isEnabled() ) {
-            if ( this.config.isPhreakEnabled() ) {
-                sessionsCache = new SessionsCache(this.config.getSessionCacheOption().isAsync());
-            } else {
-                logger.warn("Session cache can be enabled only in PHREAK mode");
-            }
+            sessionsCache = new SessionsCache(this.config.getSessionCacheOption().isAsync());
         }
     }
 

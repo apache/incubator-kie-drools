@@ -24,6 +24,7 @@ import org.drools.core.util.Iterator;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
+// FIXME PHREAK do we need this?
 public class ActivationIterator
     implements
     Iterator {
@@ -58,13 +59,7 @@ public class ActivationIterator
     }
 
     public static Iterator iterator(InternalWorkingMemory wm) {
-        if (wm.getKnowledgeBase().getConfiguration().isPhreakEnabled()) {
-            return PhreakActivationIterator.iterator(wm);
-        } else {
-            return new ActivationIterator( wm,
-                                           wm.getKnowledgeBase() );
-        }
-
+        return PhreakActivationIterator.iterator(wm);
     }
 
     public static Iterator iterator(KieSession ksession) {
@@ -73,12 +68,7 @@ public class ActivationIterator
 
     public static Iterator iterator(InternalWorkingMemoryEntryPoint ksession) {
         InternalWorkingMemory wm = ksession.getInternalWorkingMemory();
-        if (wm.getKnowledgeBase().getConfiguration().isPhreakEnabled()) {
-            return PhreakActivationIterator.iterator(wm);
-        } else {
-            return new ActivationIterator( ksession.getInternalWorkingMemory(),
-                                           ((KieSession)ksession).getKieBase() );
-        }
+        return PhreakActivationIterator.iterator(wm);
     }
 
     public Object next() {

@@ -14,6 +14,21 @@
 */
 package org.drools.compiler.integrationtests;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import javax.xml.bind.JAXBContext;
+
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -53,23 +68,7 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.utils.KieHelper;
-
-import javax.xml.bind.JAXBContext;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class QueryTest extends CommonTestMethodBase {
 
@@ -703,9 +702,6 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testOpenQuery() throws Exception {
-        if( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
-            return;  //Disbaled due to phreak, as tests is order specific
-        }
         String str = "";
         str += "package org.drools.compiler.test  \n";
         str += "import org.drools.compiler.Cheese \n";

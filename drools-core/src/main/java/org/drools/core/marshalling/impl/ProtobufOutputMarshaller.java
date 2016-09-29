@@ -16,6 +16,17 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import com.google.protobuf.ByteString;
 import org.drools.core.InitialFact;
 import org.drools.core.WorkingMemoryEntryPoint;
@@ -85,17 +96,6 @@ import org.drools.core.util.ObjectHashMap;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.rule.EntryPoint;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * An output marshaller that uses ProtoBuf as the marshalling framework
@@ -280,13 +280,11 @@ public class ProtobufOutputMarshaller {
                 }
             }
             dirty = false;
-            if ( wm.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
-                // network evaluation with phreak and TMS may make previous processed rules dirty again, so need to reprocess until all is flushed.
-                for ( Activation activation : wm.getAgenda().getActivations() ) {
-                    if ( activation.isRuleAgendaItem() && ((RuleAgendaItem)activation).getRuleExecutor().isDirty() ) {
-                        dirty = true;
-                        break;
-                    }
+            // network evaluation with phreak and TMS may make previous processed rules dirty again, so need to reprocess until all is flushed.
+            for ( Activation activation : wm.getAgenda().getActivations() ) {
+                if ( activation.isRuleAgendaItem() && ((RuleAgendaItem)activation).getRuleExecutor().isDirty() ) {
+                    dirty = true;
+                    break;
                 }
             }
             wm.flushNonMarshallablePropagations();

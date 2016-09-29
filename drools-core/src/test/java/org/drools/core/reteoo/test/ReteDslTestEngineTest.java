@@ -16,6 +16,12 @@
 
 package org.drools.core.reteoo.test;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
@@ -29,7 +35,6 @@ import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.test.dsl.DslStep;
 import org.drools.core.reteoo.test.dsl.NodeTestCase;
 import org.drools.core.reteoo.test.dsl.NodeTestCaseResult;
@@ -46,13 +51,10 @@ import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBaseFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 @Ignore("phreak")
 public class ReteDslTestEngineTest {
@@ -789,27 +791,6 @@ public class ReteDslTestEngineTest {
         Map<String, Object> map = result.context;
     }
     
-    public void testConfigOptions() throws IOException {
-        String str = "TestCase 'testOTN'\nTest 'dummy'\n";
-        str += "Config:\n";
-        str += "    drools.phreakEnabled, true;\n";
-        str += "ObjectTypeNode:\n";
-        str += "    otn1, java.lang.Integer;\n";
-        
-        NodeTestResult result = executeTest( str );
-        Map<String, Object> map = result.context;
-
-        BuildContext buildCtx = (BuildContext) map.get( ReteDslTestEngine.BUILD_CONTEXT );
-        assertTrue(buildCtx.getKnowledgeBase().getConfiguration().isPhreakEnabled());
-    }
-
-
-    private void print(DslStep[] steps) {
-        for ( DslStep command : steps ) {
-            System.out.println( command );
-        }
-    }
-
     private NodeTestResult executeTest(String str) throws IOException {
         NodeTestCase testCase = ReteDslTestEngine.compile( str );
         if( testCase.hasErrors() ) {

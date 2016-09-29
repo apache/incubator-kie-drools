@@ -16,14 +16,20 @@
 
 package org.drools.core;
 
-import org.drools.core.common.AgendaFactory;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.drools.core.common.AgendaGroupFactory;
 import org.drools.core.common.ProjectClassLoader;
-import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.conflict.DepthConflictResolver;
 import org.drools.core.reteoo.KieComponentFactory;
-import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.spi.ConflictResolver;
 import org.drools.core.util.ConfFileUtils;
@@ -40,7 +46,6 @@ import org.kie.api.conf.RemoveIdentitiesOption;
 import org.kie.api.conf.SingleValueKieBaseOption;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
 import org.kie.internal.builder.conf.ClassLoaderCacheOption;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.builder.conf.SessionCacheOption;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.internal.conf.CompositeKeyDepthOption;
@@ -59,16 +64,6 @@ import org.kie.internal.conf.ShareBetaNodesOption;
 import org.kie.internal.utils.ChainedProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 import static org.drools.core.util.Drools.isJmxAvailable;
 import static org.drools.core.util.MemoryUtil.hasPermGen;
@@ -109,8 +104,7 @@ import static org.drools.core.util.MemoryUtil.hasPermGen;
  * drools.sessionClock = &lt;qualified class name&gt;
  * drools.mbeans = &lt;enabled|disabled&gt;
  * drools.classLoaderCacheEnabled = &lt;true|false&gt;
- * drools.phreakEnabled = &lt;true|false&gt;
- * drools.declarativeAgendaEnabled =  &lt;true|false&gt; 
+ * drools.declarativeAgendaEnabled =  &lt;true|false&gt;
  * drools.permgenThreshold = &lt;1...n&gt;
  * drools.jittingThreshold = &lt;1...n&gt;
  * </pre>
@@ -121,7 +115,6 @@ public class RuleBaseConfiguration
     Externalizable {
     private static final long serialVersionUID = 510l;
 
-    public static final boolean DEFAULT_PHREAK = true;
     public static final boolean DEFAULT_SESSION_CACHE = true;
 
     public static final String DEFAULT_SIGN_ON_SERIALIZATION = "false";
@@ -150,7 +143,6 @@ public class RuleBaseConfiguration
     private String          consequenceExceptionHandler;
     private String          ruleBaseUpdateHandler;
     private boolean         classLoaderCacheEnabled;
-    private boolean         phreakEnabled;
 
     private boolean declarativeAgenda;
 
@@ -214,7 +206,6 @@ public class RuleBaseConfiguration
         out.writeInt(maxThreads);
         out.writeObject(eventProcessingMode);
         out.writeBoolean(classLoaderCacheEnabled);
-        out.writeBoolean(phreakEnabled);
         out.writeBoolean(declarativeAgenda);
         out.writeObject(componentFactory);
         out.writeObject(sessionCacheOption);
@@ -247,7 +238,6 @@ public class RuleBaseConfiguration
         maxThreads = in.readInt();
         eventProcessingMode = (EventProcessingOption) in.readObject();
         classLoaderCacheEnabled = in.readBoolean();
-        phreakEnabled = in.readBoolean();
         declarativeAgenda = in.readBoolean();
         componentFactory = (KieComponentFactory) in.readObject();
         sessionCacheOption = (SessionCacheOption) in.readObject();
@@ -342,8 +332,6 @@ public class RuleBaseConfiguration
             setMBeansEnabled( MBeansOption.isEnabled(value));
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             setClassLoaderCacheEnabled( StringUtils.isEmpty( value ) ? true : Boolean.valueOf(value));
-        } else if ( name.equals( RuleEngineOption.PROPERTY_NAME ) ) {
-            setPhreakEnabled( StringUtils.isEmpty( value ) ? DEFAULT_PHREAK : value.equalsIgnoreCase( RuleEngineOption.PHREAK.toString()));
         } else if ( name.equals( SessionCacheOption.PROPERTY_NAME ) ) {
             setSessionCacheOption(SessionCacheOption.determineOption(StringUtils.isEmpty(value) ? "none" : value));
         }
@@ -401,8 +389,6 @@ public class RuleBaseConfiguration
             return isMBeansEnabled() ? "enabled" : "disabled";
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isClassLoaderCacheEnabled() );
-        } else if ( name.equals( RuleEngineOption.PROPERTY_NAME ) ) {
-            return Boolean.toString( isPhreakEnabled() );
         }
 
         return null;
@@ -495,10 +481,6 @@ public class RuleBaseConfiguration
         setClassLoaderCacheEnabled( Boolean.valueOf( this.chainedProperties.getProperty( ClassLoaderCacheOption.PROPERTY_NAME,
                                                                                          "true" ) ) );
         
-        setPhreakEnabled(Boolean.valueOf(this.chainedProperties.getProperty(RuleEngineOption.PROPERTY_NAME,
-                                                                            DEFAULT_PHREAK ? RuleEngineOption.PHREAK.toString() : RuleEngineOption.RETEOO.toString())
-                                                               .equalsIgnoreCase(RuleEngineOption.PHREAK.toString())));
-
         setSessionCacheOption(SessionCacheOption.determineOption(this.chainedProperties.getProperty(SessionCacheOption.PROPERTY_NAME, "none")));
 
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
@@ -712,11 +694,12 @@ public class RuleBaseConfiguration
 
     /**
      * Defines if the RuleBase should be executed using a pool of
-     * threads for evaluating the rules ("true"), or if the rulebase 
+     * threads for evaluating the rules ("true"), or if the rulebase
      * should work in classic single thread mode ("false").
-     * 
-     * @param enableMultithread true for multi-thread or 
-     *                     false for single-thread. Default is false.
+     *
+     * FIXME shouldn't we remove this in 7?
+     *
+     * @param enableMultithread true for multi-thread or false for single-thread. Default is false.
      */
     public void setMultithreadEvaluation(boolean enableMultithread) {
         checkCanChange();
@@ -724,15 +707,12 @@ public class RuleBaseConfiguration
             throw new IllegalArgumentException( "Multithread mode is currently not supported. Please disable it." );
         }
         this.multithread = enableMultithread;
-        if (multithread && isPhreakEnabled()) {
-            throw new IllegalArgumentException( "Multithread evaluation cannot be used when Left & Right Unlinking is enabled." );
-        }
     }
 
     /**
      * Returns true if the partitioning of the rulebase is enabled
      * and false otherwise. Default is false.
-     * 
+     *
      * @return
      */
     public boolean isMultithreadEvaluation() {
@@ -772,26 +752,6 @@ public class RuleBaseConfiguration
         this.classLoaderCacheEnabled = classLoaderCacheEnabled;
     }
     
-    /**
-     * @return whether or not Unlinking is enabled.
-     */
-    public boolean isPhreakEnabled() {
-        return this.phreakEnabled;
-    }
-    
-    /**
-     * Enable Unlinking. It will also disable sequential mode 
-     * and multithread evaluation as these are incompatible with L&R unlinking.
-     * @param enabled
-     */
-    public void setPhreakEnabled(boolean enabled) {
-        checkCanChange(); // throws an exception if a change isn't possible;
-        this.phreakEnabled = enabled;
-        if (!isPhreakEnabled())  {
-            configureReteComponentFactory();
-        }
-    }
-
     public SessionCacheOption getSessionCacheOption() {
         return this.sessionCacheOption;
     }
@@ -947,37 +907,6 @@ public class RuleBaseConfiguration
 
     public KieComponentFactory getComponentFactory() {
         return componentFactory;
-    }
-
-    private void configureReteComponentFactory() {
-        if (!(componentFactory.getWorkingMemoryFactory().getClass().getName().endsWith("ReteWorkingMemory"))) {
-            try {
-                componentFactory.setWorkingMemoryFactory( (WorkingMemoryFactory) getStaticInstance( "org.drools.reteoo.common.ReteWorkingMemoryFactory" ) );
-            } catch (ClassNotFoundException e) {
-                logger.warn("Cannot find drools-reteoo.jar on the classpath, switching to phreak");
-                phreakEnabled = true;
-                return;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        try {
-            if (!(componentFactory.getNodeFactoryService().getClass().getName().endsWith("ReteNodeFactory"))) {
-                componentFactory.setNodeFactoryProvider( (NodeFactory) getStaticInstance( "org.drools.reteoo.builder.ReteNodeFactory" ) );
-            }
-            if (!(componentFactory.getPropagationContextFactory().getClass().getName().endsWith("RetePropagationContextFactory"))) {
-                componentFactory.setPropagationContextFactory( (PropagationContextFactory) getStaticInstance( "org.drools.reteoo.common.RetePropagationContextFactory" ) );
-            }
-            if (!(componentFactory.getAgendaFactory().getClass().getName().endsWith("ReteAgendaFactory"))) {
-                componentFactory.setAgendaFactory( (AgendaFactory) getStaticInstance("org.drools.reteoo.common.ReteAgendaFactory") );
-            }
-            if (!(componentFactory.getAgendaGroupFactory().getClass().getName().endsWith( "RetePriorityQueueAgendaGroupFactory"))) {
-                componentFactory.setAgendaGroupFactory((AgendaGroupFactory) getStaticInstance( "org.drools.reteoo.common.RetePriorityQueueAgendaGroupFactory" ));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private Object getStaticInstance(String className) throws Exception {
@@ -1245,8 +1174,6 @@ public class RuleBaseConfiguration
             return (T) (this.isMBeansEnabled() ? MBeansOption.ENABLED : MBeansOption.DISABLED);
         } else if (ClassLoaderCacheOption.class.equals(option)) {
             return (T) (this.isClassLoaderCacheEnabled() ? ClassLoaderCacheOption.ENABLED : ClassLoaderCacheOption.DISABLED);
-        } else if (RuleEngineOption.class.equals(option)) {
-            return (T) (this.isPhreakEnabled() ? RuleEngineOption.PHREAK : RuleEngineOption.RETEOO);
         } else if (DeclarativeAgendaOption.class.equals(option)) {
             return (T) (this.isDeclarativeAgenda() ? DeclarativeAgendaOption.ENABLED : DeclarativeAgendaOption.DISABLED);
         }
@@ -1293,8 +1220,6 @@ public class RuleBaseConfiguration
             setMBeansEnabled( ( (MBeansOption) option ).isEnabled());
         } else if (option instanceof ClassLoaderCacheOption) {
             setClassLoaderCacheEnabled( ( (ClassLoaderCacheOption) option ).isClassLoaderCacheEnabled());
-        } else if (option instanceof RuleEngineOption) {
-            setPhreakEnabled( ( (RuleEngineOption) option ).isLRUnlinkingEnabled());
         } else if (option instanceof SessionCacheOption) {
             setSessionCacheOption( (SessionCacheOption) option);
         } else if (option instanceof DeclarativeAgendaOption) {
