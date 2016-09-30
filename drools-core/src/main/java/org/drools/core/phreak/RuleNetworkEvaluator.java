@@ -722,18 +722,19 @@ public class RuleNetworkEvaluator {
     }
 
     public static void deleteChildLeftTuple( LeftTuple childLeftTuple, TupleSets<LeftTuple> trgLeftTuples, TupleSets<LeftTuple> stagedLeftTuples ) {
-        switch (childLeftTuple.getStagedType()) {
-            // handle clash with already staged entries
-            case LeftTuple.INSERT:
-                stagedLeftTuples.removeInsert(childLeftTuple);
-                trgLeftTuples.addNormalizedDelete(childLeftTuple);
-                return;
-            case LeftTuple.UPDATE:
-                stagedLeftTuples.removeUpdate(childLeftTuple);
-                break;
+        if (!childLeftTuple.isStagedOnRight()) {
+            switch ( childLeftTuple.getStagedType() ) {
+                // handle clash with already staged entries
+                case LeftTuple.INSERT:
+                    stagedLeftTuples.removeInsert( childLeftTuple );
+                    trgLeftTuples.addNormalizedDelete( childLeftTuple );
+                    return;
+                case LeftTuple.UPDATE:
+                    stagedLeftTuples.removeUpdate( childLeftTuple );
+                    break;
+            }
+            trgLeftTuples.addDelete(childLeftTuple);
         }
-
-        trgLeftTuples.addDelete(childLeftTuple);
     }
 
     public static void doUpdatesReorderLeftMemory(BetaMemory bm,
