@@ -97,7 +97,7 @@ public class RuleTest extends CommonTestMethodBase {
 	    
 	    ReteDumper.dumpRete(session);
 	    System.out.println("---");
-	    ReteDiagram.dumpRete(((InternalKnowledgeBase)session.getKieBase()).getRete(), Pref.VLEVEL);
+	    ReteDiagram.diagramRete(((InternalKnowledgeBase)session.getKieBase()).getRete(), Pref.VLEVEL);
 	}
 	
 	@Test
@@ -159,7 +159,7 @@ public class RuleTest extends CommonTestMethodBase {
         int num = ksession.fireAllRules();
         // only one rule should fire, but the partial propagation of the asserted facts should not cause a runtime NPE
         assertEquals( 1, num );
-        ReteDiagram.dumpRete((KieSession)ksession);
+        ReteDiagram.diagramRete((KieSession)ksession);
     }
 
 
@@ -219,7 +219,7 @@ public class RuleTest extends CommonTestMethodBase {
         assertEquals( 2, list.get( 0 ).intValue() );
         assertEquals( 2, list.get( 1 ).intValue() );
         
-        ReteDiagram.dumpRete((KieSession)ksession);
+        ReteDiagram.diagramRete((KieSession)ksession);
     }
     
     @Test
@@ -249,6 +249,6 @@ public class RuleTest extends CommonTestMethodBase {
         KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                                                .build().newKieSession();
  
-        ReteDiagram.dumpRete(((InternalKnowledgeBase)kieSession.getKieBase()).getRete(), Pref.VLEVEL);
+        ReteDiagram.diagramRete(((InternalKnowledgeBase)kieSession.getKieBase()).getRete(), Pref.VLEVEL);
     }
 }

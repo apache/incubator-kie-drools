@@ -49,23 +49,23 @@ public class ReteDiagram {
     
     private ReteDiagram() { }
 
-    public static void dumpRete(KnowledgeBase kbase) {
-        dumpRete((InternalKnowledgeBase) kbase);
+    public static void diagramRete(KnowledgeBase kbase) {
+        diagramRete((InternalKnowledgeBase) kbase);
     }
 
-    public static void dumpRete(KnowledgeRuntime session) {
-        dumpRete((InternalKnowledgeBase)session.getKieBase());
+    public static void diagramRete(KnowledgeRuntime session) {
+        diagramRete((InternalKnowledgeBase)session.getKieBase());
     }
 
-    public static void dumpRete(KieSession session) {
-        dumpRete((InternalKnowledgeBase)session.getKieBase());
+    public static void diagramRete(KieSession session) {
+        diagramRete((InternalKnowledgeBase)session.getKieBase());
     }
 
-    public static void dumpRete(InternalKnowledgeBase kBase) {
-        dumpRete(kBase.getRete(), Pref.PARTITION);
+    public static void diagramRete(InternalKnowledgeBase kBase) {
+        diagramRete(kBase.getRete(), Pref.PARTITION);
     }
 
-    public static void dumpRete(Rete rete, Pref pref) {
+    public static void diagramRete(Rete rete, Pref pref) {
         try (PrintStream out = new PrintStream(new FileOutputStream("test.gv"));) {
             out.println("digraph g {\n" +
                     "graph [fontname = \"Overpass\" fontsize=11];\n" + 
