@@ -53,114 +53,6 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
     public  LeftTupleSinkNodeList getRawSinks() {
         return sinks;
     }
-    
-    public void createChildLeftTuplesforQuery(final LeftTuple leftTuple,
-                                              final RightTuple rightTuple,
-                                              boolean leftTupleMemoryEnabled,
-                                              boolean linkRightTuple) {
-        // this must be in reverse order to ensure that there is correct child tuple iteration
-        // for QueryElementNode. This is important for Accumulate now where it must propate to the right before the left input
-        for ( LeftTupleSinkNode sink = this.sinks.getLast(); sink != null; sink = sink.getPreviousLeftTupleSinkNode() ) {
-            LeftTuple child = sink.createLeftTuple( leftTuple,
-                                                    rightTuple,
-                                                    sink );
-        }
-    }
-    
-    public void propagateAssertLeftTuple(final LeftTuple leftTuple,
-                                         final RightTuple rightTuple,
-                                         final LeftTuple currentLeftChild,
-                                         final LeftTuple currentRightChild,
-                                         final PropagationContext context,
-                                         final InternalWorkingMemory workingMemory,
-                                         final boolean leftTupleMemoryEnabled) {
-
-        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-            LeftTuple newLeftTuple = sink.createLeftTuple( leftTuple,
-                                                           rightTuple,
-                                                           currentLeftChild,
-                                                           currentRightChild,
-                                                           sink,
-                                                           leftTupleMemoryEnabled );
-            doPropagateAssertLeftTuple( context,
-                                        workingMemory,
-                                        sink,
-                                        newLeftTuple );
-        }
-    }
-
-    public void propagateAssertLeftTuple(final LeftTuple tuple,
-                                         final PropagationContext context,
-                                         final InternalWorkingMemory workingMemory,
-                                         final boolean leftTupleMemoryEnabled) {
-        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-            doPropagateAssertLeftTuple( context,
-                                        workingMemory,
-                                        sink,
-                                        sink.createLeftTuple( tuple,
-                                                              sink,
-                                                              context, leftTupleMemoryEnabled) );
-        }
-    }
-
-    public void createAndPropagateAssertLeftTuple(final InternalFactHandle factHandle,
-                                                  final PropagationContext context,                                                
-                                                  final InternalWorkingMemory workingMemory,
-                                                  final boolean leftTupleMemoryEnabled,
-                                                  LeftInputAdapterNode liaNode) {
-        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-            LeftTuple lt = sink.createLeftTuple( factHandle,
-                                                 sink,
-                                                 leftTupleMemoryEnabled );
-            lt.setPropagationContext( context );            
-            
-            doPropagateAssertLeftTuple( context,
-                                        workingMemory,
-                                        sink,
-                                        lt );
-        }
-    }
-
-    public void propagateRetractLeftTuple(final LeftTuple leftTuple,
-                                          final PropagationContext context,
-                                          final InternalWorkingMemory workingMemory) {
-        LeftTuple child = leftTuple.getFirstChild();
-        while ( child != null ) {
-            LeftTuple temp = child.getHandleNext();
-            child.retractTuple( context, workingMemory );
-            child.unlinkFromRightParent();
-            child.unlinkFromLeftParent();
-            child = temp;
-        }
-    }
-
-    public void propagateRetractLeftTupleDestroyRightTuple(final LeftTuple leftTuple,
-                                                           final PropagationContext context,
-                                                           final InternalWorkingMemory workingMemory) {
-        LeftTuple child = leftTuple.getFirstChild();
-        InternalFactHandle rightParent = child.getRightParent().getFactHandle();
-        while ( child != null ) {
-            LeftTuple temp = child.getHandleNext();
-            child.retractTuple( context, workingMemory );
-            child.unlinkFromRightParent();
-            child.unlinkFromLeftParent();
-            child = temp;
-        }
-        //workingMemory.getFactHandleFactory().destroyFactHandle( rightParent );
-    }
-
-    public void propagateRetractRightTuple(final RightTuple rightTuple,
-                                           final PropagationContext context,
-                                           final InternalWorkingMemory workingMemory) {
-        LeftTuple child = rightTuple.getFirstChild();
-        while ( child != null ) {
-            LeftTuple temp = child.getRightParentNext();
-            child.retractTuple( context, workingMemory );
-            child.unlinkFromLeftParent();
-            child.unlinkFromRightParent();
-            child = temp;
-        }
-    }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
         for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
@@ -209,36 +101,12 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
         super.writeExternal( out );
         out.writeObject( this.sinks );
     }
-    
-    public void doPropagateAssertLeftTuple(PropagationContext context,
-                                           InternalWorkingMemory workingMemory,
-                                           LeftTuple leftTuple,
-                                           LeftTupleSink sink) {
-        // FIXME PHREAK do we need this?
- }
-
-    /**
-     * This is a hook method that may be overriden by subclasses. Please keep it
-     * protected.
-     *
-     * @param context
-     * @param workingMemory
-     * @param sink
-     * @param leftTuple
-     */
-    protected void doPropagateAssertLeftTuple(PropagationContext context,
-                                              InternalWorkingMemory workingMemory,
-                                              LeftTupleSinkNode sink,
-                                              LeftTuple leftTuple) {
-        // FIXME PHREAK do we need this?
-    }
 
     public void doPropagateModifyObject(InternalFactHandle factHandle,
                                         ModifyPreviousTuples modifyPreviousTuples,
                                         PropagationContext context,
                                         InternalWorkingMemory workingMemory,
                                         LeftTupleSink sink) {
-        // FIXME PHREAK do we need this?
     }
 
     // related to true modify
@@ -258,92 +126,10 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
         }
     }
 
-    public LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,
-                                                   RightTuple parentRightTuple,
-                                                   PropagationContext context,
-                                                   InternalWorkingMemory workingMemory,
-                                                   boolean tupleMemoryEnabled) {
-        // iterate to find all child tuples for the shared node
-        while ( childLeftTuple != null && childLeftTuple.getRightParent() == parentRightTuple ) {
-            // this will iterate for each child node when the
-            // the current node is shared
-
-            // preserve the current LeftTuple, as we need to iterate to the next before re-adding
-            LeftTuple temp = childLeftTuple;
-            childLeftTuple.modifyTuple( context, workingMemory );
-            childLeftTuple = childLeftTuple.getHandleNext();
-            temp.reAddRight();
-        }
-        return childLeftTuple;
-    }
-
-    public LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,
-                                                   LeftTuple parentLeftTuple,
-                                                   PropagationContext context,
-                                                   InternalWorkingMemory workingMemory,
-                                                   boolean tupleMemoryEnabled) {
-        // iterate to find all child tuples for the shared node
-        while ( childLeftTuple != null && childLeftTuple.getLeftParent() == parentLeftTuple ) {
-            // this will iterate for each child node when the
-            // the current node is shared      
-
-            // preserve the current LeftTuple, as we need to iterate to the next before re-adding
-            LeftTuple temp = childLeftTuple;
-            childLeftTuple.modifyTuple( context, workingMemory );
-            childLeftTuple = childLeftTuple.getRightParentNext();
-            temp.reAddLeft();
-        }
-        return childLeftTuple;
-    }
-
-    public void propagateModifyChildLeftTuple(LeftTuple leftTuple,
-                                              PropagationContext context,
-                                              InternalWorkingMemory workingMemory,
-                                              boolean tupleMemoryEnabled) {
-        for ( LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; childLeftTuple = childLeftTuple.getHandleNext() ) {
-            childLeftTuple.modifyTuple( context, workingMemory );
-        }
-    }
-
-    public LeftTuple propagateRetractChildLeftTuple(LeftTuple childLeftTuple,
-                                                    RightTuple parentRightTuple,
-                                                    PropagationContext context,
-                                                    InternalWorkingMemory workingMemory) {
-        // iterate to find all child tuples for the shared node
-        while ( childLeftTuple != null && childLeftTuple.getRightParent() == parentRightTuple ) {
-            // this will iterate for each child node when the
-            // the current node is shared     
-            LeftTuple temp = childLeftTuple.getHandleNext();
-            childLeftTuple.retractTuple( context, workingMemory );
-            childLeftTuple.unlinkFromRightParent();
-            childLeftTuple.unlinkFromLeftParent();
-            childLeftTuple = temp;
-        }
-        return childLeftTuple;
-    }
-
-    public LeftTuple propagateRetractChildLeftTuple(LeftTuple childLeftTuple,
-                                                    LeftTuple parentLeftTuple,
-                                                    PropagationContext context,
-                                                    InternalWorkingMemory workingMemory) {
-        // iterate to find all child tuples for the shared node
-        while ( childLeftTuple != null && childLeftTuple.getLeftParent() == parentLeftTuple ) {
-            // this will iterate for each child node when the
-            // the current node is shared     
-            LeftTuple temp = childLeftTuple.getRightParentNext();
-            childLeftTuple.retractTuple( context, workingMemory );
-            childLeftTuple.unlinkFromRightParent();
-            childLeftTuple.unlinkFromLeftParent();
-            childLeftTuple = temp;
-        }
-        return childLeftTuple;
-    }
-
     public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
                                         final ModifyPreviousTuples modifyPreviousTuples,
                                         final PropagationContext context,
                                         final InternalWorkingMemory workingMemory) {
-        // FIXME PHREAK do we need this?
     }
 
 }

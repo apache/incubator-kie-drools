@@ -65,12 +65,6 @@ public class EmptyObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
     }
 
-    public void propagateRetractObject(final InternalFactHandle handle,
-                                       final PropagationContext context,
-                                       final InternalWorkingMemory workingMemory,
-                                       final boolean useHash) {
-    }
-    
     public void propagateModifyObject(InternalFactHandle factHandle,
                                       ModifyPreviousTuples modifyPreviousTuples,
                                       PropagationContext context,

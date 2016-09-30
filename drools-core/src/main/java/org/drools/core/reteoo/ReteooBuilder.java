@@ -182,7 +182,6 @@ public class ReteooBuilder
 
     public void removeTerminalNode(RuleRemovalContext context, TerminalNode tn, InternalWorkingMemory[] workingMemories)  {
         AddRemoveRule.removeRule( tn, workingMemories, kBase );
-        RuleRemovalContext.CleanupAdapter adapter = null;
         BaseNode node = (BaseNode) tn;
         removeNodeAssociation(node, context.getRule());
 

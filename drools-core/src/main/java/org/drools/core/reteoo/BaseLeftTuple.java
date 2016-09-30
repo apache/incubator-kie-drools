@@ -643,13 +643,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     }
 
     @Override
-    public void modifyTuple( PropagationContext context, InternalWorkingMemory workingMemory) {
-        // FIXME PHREAK do we need this?
-    }
-
-    @Override
     public void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory ) {
-        // FIXME PHREAK do we need this?
     }
 
     public short getStagedTypeForQueries() {

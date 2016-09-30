@@ -16,20 +16,16 @@
 
 package org.drools.core.common;
 
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.core.conflict.PhreakConflictResolver;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.BinaryHeapQueue;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <code>AgendaGroup</code> implementation that uses a <code>PriorityQueue</code> to prioritise the evaluation of added
@@ -263,45 +259,6 @@ public class AgendaGroupQueueImpl
 
     public void setClearedForRecency(long recency) {
         this.clearedForRecency = recency;
-    }
-
-    public static class DeactivateCallback
-            extends PropagationEntry.AbstractPropagationEntry
-            implements WorkingMemoryAction {
-
-        private static final long     serialVersionUID = 510l;
-
-        private InternalRuleFlowGroup ruleFlowGroup;
-
-        public DeactivateCallback(InternalRuleFlowGroup ruleFlowGroup) {
-            this.ruleFlowGroup = ruleFlowGroup;
-        }
-
-        public DeactivateCallback(MarshallerReaderContext context) throws IOException {
-            this.ruleFlowGroup = (InternalRuleFlowGroup) context.wm.getAgenda().getRuleFlowGroup( context.readUTF() );
-        }
-
-        public DeactivateCallback(MarshallerReaderContext context,
-                                  ProtobufMessages.ActionQueue.Action _action) {
-            this.ruleFlowGroup = (InternalRuleFlowGroup) context.wm.getAgenda().getRuleFlowGroup( _action.getDeactivateCallback().getRuleflowGroup() );
-        }
-
-        public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) {
-            return ProtobufMessages.ActionQueue.Action.newBuilder()
-                                               .setType( ProtobufMessages.ActionQueue.ActionType.DEACTIVATE_CALLBACK )
-                                               .setDeactivateCallback( ProtobufMessages.ActionQueue.DeactivateCallback.newBuilder()
-                                                                                                   .setRuleflowGroup( ruleFlowGroup.getName() )
-                                                                                                   .build() )
-                                               .build();
-        }
-
-        public void execute(InternalWorkingMemory workingMemory) {
-            // check whether ruleflow group is still empty first
-            if ( this.ruleFlowGroup.isEmpty() ) {
-                // deactivate ruleflow group
-                this.ruleFlowGroup.setActive( false );
-            }
-        }
     }
 
     public boolean isSequential() {

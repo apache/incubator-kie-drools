@@ -16,6 +16,8 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Serializable;
+
 import org.drools.core.base.DefaultKnowledgeHelperFactory;
 import org.drools.core.base.FieldDataFactory;
 import org.drools.core.base.FieldFactory;
@@ -43,8 +45,6 @@ import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleFactoryImpl;
 import org.drools.core.util.TripleStore;
 
-import java.io.Serializable;
-
 public class KieComponentFactory implements Serializable {
 
     public static final KieComponentFactory DEFAULT = new KieComponentFactory();
@@ -64,13 +64,6 @@ public class KieComponentFactory implements Serializable {
         handleFactory = provider;
     }
 
-    public void setDefaultHandleFactoryProvider() {
-        handleFactory = new ReteooFactHandleFactory();
-    }
-
-    public static FactHandleFactory getDefaultHandleFactoryProvider() {
-        return new ReteooFactHandleFactory();
-    }
 
     private WorkingMemoryFactory wmFactory = PhreakWorkingMemoryFactory.getInstance();
 
@@ -78,9 +71,6 @@ public class KieComponentFactory implements Serializable {
         return wmFactory;
     }
 
-    public void setWorkingMemoryFactory(WorkingMemoryFactory wmFactory) {
-        this.wmFactory = wmFactory;
-    }
 
     private NodeFactory nodeFactory = PhreakNodeFactory.getInstance();
 
@@ -92,19 +82,8 @@ public class KieComponentFactory implements Serializable {
         nodeFactory = provider;
     }
 
-    public void setDefaultNodeFactoryProvider() {
-        nodeFactory = PhreakNodeFactory.getInstance();
-    }
-
-    public static NodeFactory getDefaultNodeFactoryProvider() {
-        return PhreakNodeFactory.getInstance();
-    }
 
     private PropagationContextFactory propagationFactory = PhreakPropagationContextFactory.getInstance();
-
-    public void setPropagationContextFactory(PropagationContextFactory factory) {
-        propagationFactory = factory;
-    }
 
     public PropagationContextFactory getPropagationContextFactory() {
         return propagationFactory;
@@ -113,31 +92,14 @@ public class KieComponentFactory implements Serializable {
 
     private BeliefSystemFactory bsFactory = new PhreakBeliefSystemFactory();
 
-    public void setPropagationContextFactory(BeliefSystemFactory factory) {
-        bsFactory = factory;
-    }
-
     public BeliefSystemFactory getBeliefSystemFactory() {
         return bsFactory;
     }
-
 
     private RuleBuilderFactory ruleBuilderFactory = new ReteooRuleBuilderFactory();
 
     public RuleBuilderFactory getRuleBuilderFactory() {
         return ruleBuilderFactory;
-    }
-
-    public void setRuleBuilderProvider(RuleBuilderFactory provider) {
-        ruleBuilderFactory = provider;
-    }
-
-    public void setDefaultRuleBuilderProvider() {
-        ruleBuilderFactory = new ReteooRuleBuilderFactory();
-    }
-
-    public static RuleBuilderFactory getDefaultRuleBuilderFactory() {
-        return new ReteooRuleBuilderFactory();
     }
 
 
@@ -147,35 +109,11 @@ public class KieComponentFactory implements Serializable {
         return agendaFactory;
     }
 
-    public void setAgendaFactory(AgendaFactory provider) {
-        agendaFactory = provider;
-    }
-
-    public void setDefaultAgendaFactory() {
-        agendaFactory = DefaultAgendaFactory.getInstance();
-    }
-
-    public static AgendaFactory getDefaultAgendaFactory() {
-        return DefaultAgendaFactory.getInstance();
-    }
-
 
     private AgendaGroupFactory agendaGroupFactory = PriorityQueueAgendaGroupFactory.getInstance();
 
     public AgendaGroupFactory getAgendaGroupFactory() {
         return agendaGroupFactory;
-    }
-
-    public void setAgendaGroupFactory(AgendaGroupFactory provider) {
-        agendaGroupFactory = provider;
-    }
-
-    public void setDefaultAgendaGroupFactory() {
-        agendaFactory = DefaultAgendaFactory.getInstance();
-    }
-
-    public static AgendaGroupFactory getDefaultAgendaGroupFactory() {
-        return PriorityQueueAgendaGroupFactory.getInstance();
     }
 
 
@@ -185,35 +123,11 @@ public class KieComponentFactory implements Serializable {
         return fieldFactory;
     }
 
-    public void setFieldDataFactory(FieldDataFactory provider) {
-        fieldFactory = provider;
-    }
-
-    public void setDefaultFieldFactory() {
-        fieldFactory = FieldFactory.getInstance();
-    }
-
-    public static FieldDataFactory getDefaultFieldFactory() {
-        return FieldFactory.getInstance();
-    }
-
 
     private TripleFactory tripleFactory = new TripleFactoryImpl();
 
     public TripleFactory getTripleFactory() {
         return tripleFactory;
-    }
-
-    public void setTripleFactory(TripleFactory provider) {
-        tripleFactory = provider;
-    }
-
-    public void setDefaultTripleFactory() {
-        tripleFactory = new TripleFactoryImpl();
-    }
-
-    public static TripleFactory getDefaultTripleFactory() {
-        return new TripleFactoryImpl();
     }
 
 
@@ -223,18 +137,6 @@ public class KieComponentFactory implements Serializable {
         return knowledgeHelperFactory;
     }
 
-    public void setKnowledgeHelperFactory(KnowledgeHelperFactory provider) {
-        knowledgeHelperFactory = provider;
-    }
-
-    public void setDefaultKnowledgeHelperFactory() {
-        knowledgeHelperFactory = new DefaultKnowledgeHelperFactory();
-    }
-
-    public static KnowledgeHelperFactory getDefaultKnowledgeHelperFactory() {
-        return new DefaultKnowledgeHelperFactory();
-    }
-
 
     private LogicTransformerFactory logicTransformerFactory = new DefaultLogicTransformerFactory();
 
@@ -242,17 +144,6 @@ public class KieComponentFactory implements Serializable {
         return logicTransformerFactory;
     }
 
-    public void setLogicTransformerFactory(LogicTransformerFactory provider) {
-        logicTransformerFactory = provider;
-    }
-
-    public void setDefaultLogicTransformerFactory() {
-        logicTransformerFactory = new DefaultLogicTransformerFactory();
-    }
-
-    public static LogicTransformerFactory getDefaultLogicTransformerFactory() {
-        return new DefaultLogicTransformerFactory();
-    }
 
     private TraitFactory traitFactory = new TraitFactory();
 
@@ -260,17 +151,6 @@ public class KieComponentFactory implements Serializable {
         return traitFactory;
     }
 
-    public void setTraitFactory( TraitFactory tf ) {
-        traitFactory = tf;
-    }
-
-    public void setDefaultTraitFactory() {
-        traitFactory = new TraitFactory();
-    }
-
-    public static TraitFactory getDefaultTraitFactory() {
-        return new TraitFactory();
-    }
 
     private TraitRegistry traitRegistry;
 
@@ -281,35 +161,11 @@ public class KieComponentFactory implements Serializable {
         return traitRegistry;
     }
 
-    public void setTraitFactory( TraitRegistry tr ) {
-        traitRegistry = tr;
-    }
-
-    public void setDefaultTraitRegistry() {
-        traitRegistry = new TraitRegistry();
-    }
-
-    public static TraitRegistry getDefaultTraitRegistry() {
-        return new TraitRegistry();
-    }
-
 
     private TripleStore tripleStore = new TripleStore();
 
     public TripleStore getTripleStore() {
         return tripleStore;
-    }
-
-    public void setTraitFactory( TripleStore tr ) {
-        tripleStore = tr;
-    }
-
-    public void setDefaultTripleStore() {
-        tripleStore = new TripleStore();
-    }
-
-    public static TripleStore getDefaultTripleStore() {
-        return new TripleStore();
     }
 
 
@@ -319,18 +175,6 @@ public class KieComponentFactory implements Serializable {
         return classBuilderFactory;
     }
 
-    public void setClassBuilderFactory( ClassBuilderFactory tf ) {
-        classBuilderFactory = tf;
-    }
-
-    public void setDefaultClassBuilderFactory() {
-        classBuilderFactory = new ClassBuilderFactory();
-    }
-
-    public static ClassBuilderFactory getDefaultClassBuilderFactory() {
-        return new ClassBuilderFactory();
-    }
-
 
     private Class<?> baseTraitProxyClass = TraitProxy.class;
 
@@ -338,7 +182,4 @@ public class KieComponentFactory implements Serializable {
         return baseTraitProxyClass;
     }
 
-    public void setBaseTraitProxyClass(Class<?> baseTraitProxyClass) {
-        this.baseTraitProxyClass = baseTraitProxyClass;
-    }
 }

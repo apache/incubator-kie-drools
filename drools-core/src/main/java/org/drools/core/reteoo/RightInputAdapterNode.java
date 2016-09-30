@@ -150,37 +150,6 @@ public class RightInputAdapterNode extends ObjectSource
         return peer;
     }     
 
-    @SuppressWarnings("unchecked")
-    public InternalFactHandle createFactHandle(final LeftTuple leftTuple,
-                                                final PropagationContext context,
-                                                final InternalWorkingMemory workingMemory) {
-        InternalFactHandle handle;
-        ProtobufMessages.FactHandle _handle = null;
-        if( context.getReaderContext() != null ) {
-            Map<ProtobufInputMarshaller.TupleKey, ProtobufMessages.FactHandle> map = (Map<ProtobufInputMarshaller.TupleKey, ProtobufMessages.FactHandle>) context.getReaderContext().nodeMemories.get( getId() );
-            if( map != null ) {
-                _handle = map.get( PersisterHelper.createTupleKey( leftTuple ) );
-            }
-        }
-        if( _handle != null ) {
-            // create a handle with the given id
-            handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
-                                                                         leftTuple,
-                                                                         _handle.getRecency(),
-                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
-                                                                                                                                               leftTuple ),
-                                                                         workingMemory,
-                                                                         null ); // so far, result is not an event
-        } else {
-            handle = workingMemory.getFactHandleFactory().newFactHandle( leftTuple,
-                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
-                                                                                                                                               leftTuple ),
-                                                                         workingMemory,
-                                                                         null ); // so far, result is not an event
-        }
-        return handle;
-    }
-
     public void attach( BuildContext context ) {
         this.tupleSource.addTupleSink( this, context );
     }
