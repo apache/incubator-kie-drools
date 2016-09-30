@@ -16,10 +16,18 @@
 
 package org.drools.core.reteoo.test.dsl;
 
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.ObjectSinkNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleSink;
@@ -36,18 +44,11 @@ import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.PropertyAccessException;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.same;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 /**
  * A helper class to process mock related commands in the DSL
@@ -109,25 +110,7 @@ public class MockitoHelper {
         }
         try {
             ArgumentCaptor< ? > captor = null;
-            if ( "assertLeft".equals( cmd[1] ) ) {
-                captor = ArgumentCaptor.forClass( LeftTuple.class );
-                verify( (LeftTupleSink) node,
-                        counter ).assertLeftTuple( ((ArgumentCaptor<LeftTuple>) captor).capture(),
-                                                   any( PropagationContext.class ),
-                                                   same( wm ) );
-            } else if ( "retractLeft".equals( cmd[1] ) ) {
-                captor = ArgumentCaptor.forClass( LeftTuple.class );
-                verify( (LeftTupleSink) node,
-                        counter ).retractLeftTuple( ((ArgumentCaptor<LeftTuple>) captor).capture(),
-                                                    any( PropagationContext.class ),
-                                                    same( wm ) );
-            } else if ( "modifyLeft".equals( cmd[1] ) ) {
-                captor = ArgumentCaptor.forClass( LeftTuple.class );
-                verify( (LeftTupleSink) node,
-                        counter ).modifyLeftTuple( ((ArgumentCaptor<LeftTuple>) captor).capture(),
-                                                   any( PropagationContext.class ),
-                                                   same( wm ) );
-            } else if ( "assertRight".equals( cmd[1] ) ) {
+            if ( "assertRight".equals( cmd[1] ) ) {
                 captor = ArgumentCaptor.forClass( InternalFactHandle.class );
                 verify( (ObjectSinkNode) node,
                         counter ).assertObject( ((ArgumentCaptor<InternalFactHandle>) captor).capture(),

@@ -691,25 +691,6 @@ public class CompositeObjectSinkAdapterTest {
                    null );
         }
 
-        public void updateSink(final LeftTupleSink sink,
-                               final PropagationContext context,
-                               final InternalWorkingMemory workingMemory) {
-        }
-
-        public void assertLeftTuple(final LeftTuple tuple,
-                                    final PropagationContext context,
-                                    final InternalWorkingMemory workingMemory) {
-        }
-
-        public void retractLeftTuple(final LeftTuple tuple,
-                                     final PropagationContext context,
-                                     final InternalWorkingMemory workingMemory) {
-        }
-
-        @Override
-        public void modifyLeftTuple(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
-        }
-
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext pctx,
                                  final InternalWorkingMemory workingMemory) {
@@ -726,11 +707,6 @@ public class CompositeObjectSinkAdapterTest {
 
         public short getType() {
             return 0;
-        }
-
-        public void modifyLeftTuple(LeftTuple leftTuple,
-                                    PropagationContext context,
-                                    InternalWorkingMemory workingMemory) {
         }
 
         public void modifyRightTuple(RightTuple rightTuple,

@@ -16,15 +16,15 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.spi.PropagationContext;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     private LeftTupleSinkNodeList sinks;
@@ -214,7 +214,7 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
                                            InternalWorkingMemory workingMemory,
                                            LeftTuple leftTuple,
                                            LeftTupleSink sink) {
-     sink.assertLeftTuple( leftTuple, context, workingMemory );
+        // FIXME PHREAK do we need this?
  }
 
     /**
@@ -230,9 +230,7 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
                                               InternalWorkingMemory workingMemory,
                                               LeftTupleSinkNode sink,
                                               LeftTuple leftTuple) {
-        sink.assertLeftTuple( leftTuple,
-                              context,
-                              workingMemory );
+        // FIXME PHREAK do we need this?
     }
 
     public void doPropagateModifyObject(InternalFactHandle factHandle,
@@ -240,10 +238,7 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
                                         PropagationContext context,
                                         InternalWorkingMemory workingMemory,
                                         LeftTupleSink sink) {
-        sink.modifyLeftTuple( factHandle,
-                              modifyPreviousTuples,
-                              context,
-                              workingMemory );
+        // FIXME PHREAK do we need this?
     }
 
     // related to true modify
@@ -348,10 +343,7 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
                                         final ModifyPreviousTuples modifyPreviousTuples,
                                         final PropagationContext context,
                                         final InternalWorkingMemory workingMemory) {
-        // only called from lianode 
-        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-            sink.modifyLeftTuple( factHandle, modifyPreviousTuples, context, workingMemory );
-        }
+        // FIXME PHREAK do we need this?
     }
 
 }

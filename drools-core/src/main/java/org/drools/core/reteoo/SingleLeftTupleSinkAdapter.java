@@ -16,15 +16,15 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.spi.PropagationContext;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 
 public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     protected LeftTupleSink sink;
@@ -174,7 +174,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                               InternalWorkingMemory workingMemory,
                                               LeftTuple leftTuple,
                                               LeftTupleSink sink) {
-        sink.assertLeftTuple( leftTuple, context, workingMemory );
+        // FIXME PHREAD do we need this?
     }
 
     /**
@@ -184,19 +184,14 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     protected void doPropagateAssertLeftTuple(PropagationContext context,
                                               InternalWorkingMemory workingMemory,
                                               LeftTuple newLeftTuple) {
-        this.sink.assertLeftTuple( newLeftTuple,
-                                   context,
-                                   workingMemory );
+        // FIXME PHREAD do we need this?
     }
     
     protected void doPropagateModifyLeftTuple(InternalFactHandle factHandle,
                                               ModifyPreviousTuples modifyPreviousTuples,
                                               PropagationContext context,
                                               InternalWorkingMemory workingMemory) {
-        this.sink.modifyLeftTuple( factHandle,
-                                   modifyPreviousTuples,
-                                   context,
-                                   workingMemory );
+        // FIXME PHREAK do we need this?
     }
 
     public void propagateModifyObject(InternalFactHandle factHandle,
@@ -265,7 +260,6 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                         final ModifyPreviousTuples modifyPreviousTuples,
                                         final PropagationContext context,
                                         final InternalWorkingMemory workingMemory) {
-        // only called from lianode
-        sink.modifyLeftTuple( factHandle, modifyPreviousTuples, context, workingMemory );
+        // FIXME PHREAK do we need this?
     }
 }

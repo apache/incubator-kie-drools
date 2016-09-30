@@ -17,7 +17,6 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -40,7 +39,6 @@ import org.kie.internal.KnowledgeBaseFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * A test case for AccumulateNode
@@ -111,194 +109,10 @@ public class AccumulateNodeTest extends DroolsTestCase {
     }
 
     @Test
-    public void testUpdateSink() {
-        this.node.updateSink( this.sink,
-                              this.context,
-                              this.workingMemory );
-        assertEquals( "No tuple should be propagated",
-                             0,
-                             this.sink.getAsserted().size() );
-
-        this.node.assertLeftTuple( new LeftTupleImpl( this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                           null,
-                                                                                                           null,
-                                                                                                           workingMemory ),
-                                                  null,
-                                                  true ),
-                                   this.context,
-                                   this.workingMemory );
-        this.node.assertLeftTuple( new LeftTupleImpl( this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
-                                                                                                           null,
-                                                                                                           null,
-                                                                                                           workingMemory ),
-                                                  null,
-                                                  true ),
-                                   this.context,
-                                   this.workingMemory );
-
-        assertEquals( "Two tuples should have been propagated",
-                             2,
-                             this.sink.getAsserted().size() );
-
-        final MockLeftTupleSink otherSink = new MockLeftTupleSink();
-
-        this.node.addTupleSink( otherSink );
-        this.node.updateSink( otherSink,
-                              this.context,
-                              this.workingMemory );
-
-        assertEquals( "Two tuples should have been propagated",
-                             2,
-                             otherSink.getAsserted().size() );
-    }
-
-    @Test
-    public void testAssertTuple() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                                  null,
-                                                                                                                  null,
-                                                                                                                  workingMemory );
-        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
-                                                null,
-                                                true );
-
-        // assert tuple, should add one to left memory
-        this.node.assertLeftTuple( tuple0,
-                                   this.context,
-                                   this.workingMemory );
-        // check memories 
-        assertEquals( 1,
-                      this.memory.getLeftTupleMemory().size() );
-        assertEquals( 0,
-                      this.memory.getRightTupleMemory().size() );
-        assertTrue( "An empty matching objects list should be propagated",
-                    this.accumulator.getMatchingObjects().isEmpty() );
-
-        // assert tuple, should add left memory 
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
-                                                                                                                  null,
-                                                                                                                  null,
-                                                                                                                  workingMemory );
-
-        final LeftTupleImpl tuple1 = new LeftTupleImpl( f1,
-                                                null,
-                                                true );
-        this.node.assertLeftTuple( tuple1,
-                                   this.context,
-                                   this.workingMemory );
-        assertEquals( 2,
-                      this.memory.getLeftTupleMemory().size() );
-        assertTrue( "An empty matching objects list should be propagated",
-                           this.accumulator.getMatchingObjects().isEmpty() );
-
-        final TupleMemory memory = this.memory.getLeftTupleMemory();
-        assertTrue( memory.contains( tuple0 ) );
-        assertTrue( memory.contains( tuple1 ) );
-
-        assertEquals( "Two tuples should have been propagated",
-                             2,
-                             this.sink.getAsserted().size() );
-    }
-
-    @Test
-    public void testAssertTupleWithObjects() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                                  null,
-                                                                                                                  null,
-                                                                                                                  workingMemory );
-        final DefaultFactHandle f1 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "other cheese",
-                                                                                                                  null,
-                                                                                                                  null,
-                                                                                                                  workingMemory);
-
-        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
-                                                null,
-                                                true );
-
-        this.node.assertObject( f0,
-                                this.context,
-                                this.workingMemory );
-        this.node.assertObject( f1,
-                                this.context,
-                                this.workingMemory );
-
-        // assert tuple, should add one to left memory
-        this.node.assertLeftTuple( tuple0,
-                                   this.context,
-                                   this.workingMemory );
-        // check memories 
-        assertEquals( 1,
-                      this.memory.getLeftTupleMemory().size() );
-        assertEquals( 2,
-                      this.memory.getRightTupleMemory().size() );
-        assertEquals( "Wrong number of elements in matching objects list ",
-                             2,
-                             this.accumulator.getMatchingObjects().size() );
-
-        // assert tuple, should add left memory 
-        final LeftTupleImpl tuple1 = new LeftTupleImpl( f1,
-                                                null,
-                                                true );
-        this.node.assertLeftTuple( tuple1,
-                                   this.context,
-                                   this.workingMemory );
-        assertEquals( 2,
-                      this.memory.getLeftTupleMemory().size() );
-        assertEquals( "Wrong number of elements in matching objects list ",
-                             2,
-                             this.accumulator.getMatchingObjects().size() );
-
-        final TupleMemory memory = this.memory.getLeftTupleMemory();
-        assertTrue( memory.contains( tuple0 ) );
-        assertTrue( memory.contains( tuple1 ) );
-
-        assertEquals( "Two tuples should have been propagated",
-                             2,
-                             this.sink.getAsserted().size() );
-    }
-
-    @Test
-    public void testRetractTuple() {
-        final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
-                                                                                                                  null,
-                                                                                                                  null,
-                                                                                                                  null );
-
-        final LeftTupleImpl tuple0 = new LeftTupleImpl( f0,
-                                                null,
-                                                true );
-
-        // assert tuple, should add one to left memory
-        this.node.assertLeftTuple( tuple0,
-                                   this.context,
-                                   this.workingMemory );
-        // check memories 
-        assertEquals( 1,
-                      this.memory.getLeftTupleMemory().size() );
-        assertEquals( 0,
-                      this.memory.getRightTupleMemory().size() );
-        assertTrue( "An empty matching objects list should be propagated",
-                           this.accumulator.getMatchingObjects().isEmpty() );
-
-        this.node.retractLeftTuple( tuple0,
-                                    this.context,
-                                    this.workingMemory );
-        assertEquals( 0,
-                      this.memory.getLeftTupleMemory().size() );
-        assertEquals( 1,
-                      this.sink.getRetracted().size() );
-        assertEquals( 1,
-                      this.sink.getAsserted().size() );
-    }
-
-    @Test
     public void testMemory() {
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         BuildContext buildContext = new BuildContext( kBase,
                                                       kBase.getReteooBuilder().getIdGenerator() );
-
-        StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
-
         final MockObjectSource objectSource = new MockObjectSource( 1 );
         final MockTupleSource tupleSource = new MockTupleSource( 1 );
 

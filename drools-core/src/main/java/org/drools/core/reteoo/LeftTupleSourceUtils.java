@@ -45,23 +45,6 @@ public class LeftTupleSourceUtils {
              leftTuple.getInputOtnId().equals( leftInputOtnId ) ) {
             modifyPreviousTuples.removeLeftTuple();
             leftTuple.reAdd();
-            if ( context.getModificationMask().intersects( leftInferredMask ) ) {
-                // LeftTuple previously existed, so continue as modify, unless it's currently staged
-                sink.modifyLeftTuple( leftTuple,
-                                      context,
-                                      workingMemory );
-            }
-        } else {
-            if ( context.getModificationMask().intersects( leftInferredMask ) ) {
-                // LeftTuple does not exist, so create and continue as assert
-                LeftTuple newLeftTuple = sink.createLeftTuple( factHandle,
-                                                               sink,
-                                                               true );
-
-                sink.assertLeftTuple( newLeftTuple,
-                                      context,
-                                      workingMemory );
-            }
         }
     }
 }
