@@ -221,4 +221,34 @@ public class RuleTest extends CommonTestMethodBase {
         
         ReteDiagram.dumpRete((KieSession)ksession);
     }
+    
+    @Test
+    public void testMArio() {
+        String drl =
+                "rule R1y ruleflow-group \"Y\" when\n" +
+                "    Integer() \n" +
+                "    Number() from accumulate ( Integer( ) and $s : String( ) ; count($s) )\n" +
+                "then\n" +
+                "    System.out.println(\"R1\");" +
+                "end\n" +
+                "\n" +
+                "rule R1x ruleflow-group \"X\" when\n" +
+                "    Integer() \n" +
+                "    Number() from accumulate ( Integer( ) and $s : String( ) ; count($s) )\n" +
+                "then\n" +
+                "    System.out.println(\"R1\");" +
+                "end\n" +
+                "" +
+                "rule R2 ruleflow-group \"X\" when\n" +
+                "    $i : Integer()\n" +
+                "then\n" +
+                "    System.out.println(\"R2\");" +
+                "    update($i);" +
+                "end\n";
+ 
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+ 
+        ReteDiagram.dumpRete(((InternalKnowledgeBase)kieSession.getKieBase()).getRete(), Pref.VLEVEL);
+    }
 }
