@@ -24,6 +24,8 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class SubnetworkTest {
 
     @Test
@@ -62,4 +64,41 @@ public class SubnetworkTest {
 
     @Role(Role.Type.EVENT)
     public static class C { }
+
+    @Test
+    public void testRightStagingOnSharedSubnetwork() {
+        // RHBRMS-2624
+        String drl =
+                "import " + AtomicInteger.class.getCanonicalName() + ";\n" +
+                "rule R1y when\n" +
+                "    AtomicInteger() \n" +
+                "    Number() from accumulate ( AtomicInteger( ) and $s : String( ) ; count($s) )" +
+                "    Long()\n" +
+                "then\n" +
+                "    System.out.println(\"R1\");" +
+                "end\n" +
+                "\n" +
+                "rule R1x when\n" +
+                "    AtomicInteger() \n" +
+                "    Number() from accumulate ( AtomicInteger( ) and $s : String( ) ; count($s) )\n" +
+                "then\n" +
+                "    System.out.println(\"R1\");" +
+                "end\n" +
+                "" +
+                "rule R2 when\n" +
+                "    $i : AtomicInteger( get() < 3 )\n" +
+                "then\n" +
+                "    System.out.println(\"R2\");" +
+                "    $i.incrementAndGet();" +
+                "    update($i);" +
+                "end\n";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        kieSession.insert( new AtomicInteger( 0 ) );
+        kieSession.insert( "test" );
+
+        kieSession.fireAllRules();
+    }
 }

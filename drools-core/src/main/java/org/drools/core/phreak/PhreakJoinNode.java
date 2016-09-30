@@ -454,18 +454,20 @@ public class PhreakJoinNode {
     public static void updateChildLeftTuple(LeftTuple childLeftTuple,
                                             TupleSets<LeftTuple> stagedLeftTuples,
                                             TupleSets<LeftTuple> trgLeftTuples) {
-        switch (childLeftTuple.getStagedType()) {
-            // handle clash with already staged entries
-            case LeftTuple.INSERT:
-                stagedLeftTuples.removeInsert(childLeftTuple);
-                trgLeftTuples.addInsert(childLeftTuple);
-                break;
-            case LeftTuple.UPDATE:
-                stagedLeftTuples.removeUpdate(childLeftTuple);
-                trgLeftTuples.addUpdate(childLeftTuple);
-                break;
-            default:
-                trgLeftTuples.addUpdate(childLeftTuple);
+        if (!childLeftTuple.isStagedOnRight()) {
+            switch ( childLeftTuple.getStagedType() ) {
+                // handle clash with already staged entries
+                case LeftTuple.INSERT:
+                    stagedLeftTuples.removeInsert( childLeftTuple );
+                    trgLeftTuples.addInsert( childLeftTuple );
+                    break;
+                case LeftTuple.UPDATE:
+                    stagedLeftTuples.removeUpdate( childLeftTuple );
+                    trgLeftTuples.addUpdate( childLeftTuple );
+                    break;
+                default:
+                    trgLeftTuples.addUpdate( childLeftTuple );
+            }
         }
     }
 
