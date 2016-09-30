@@ -17,6 +17,9 @@
 package org.drools.core.reteoo.builder;
 
 
+import java.io.Serializable;
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.BetaConstraints;
@@ -37,9 +40,7 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.PropagationQueuingNode;
 import org.drools.core.reteoo.QueryElementNode;
-import org.drools.core.reteoo.QueryRiaFixerNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
@@ -61,9 +62,6 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.Timer;
-
-import java.io.Serializable;
-import java.util.List;
 
 public class PhreakNodeFactory implements NodeFactory, Serializable {
 
@@ -107,16 +105,6 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
                                            final EvalCondition eval,
                                            final BuildContext context) {
         return new EvalConditionNode( id, tupleSource, eval, context );
-    }
-
-    public QueryRiaFixerNode buildQueryRiaFixerNode(int id, LeftTupleSource tupleSource, BuildContext context) {
-        throw new UnsupportedOperationException();
-    }
-
-    public PropagationQueuingNode buildPropagationQueuingNode(final int id,
-                                                              final ObjectSource objectSource,
-                                                              final BuildContext context) {
-        throw new UnsupportedOperationException();
     }
 
     public RightInputAdapterNode buildRightInputNode( int id, LeftTupleSource leftInput, LeftTupleSource startTupleSource, BuildContext context ) {

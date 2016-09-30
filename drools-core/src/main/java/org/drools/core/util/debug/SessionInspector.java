@@ -16,6 +16,11 @@
 
 package org.drools.core.util.debug;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -31,11 +36,6 @@ import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
 
 public class SessionInspector {
 
@@ -65,8 +65,6 @@ public class SessionInspector {
                            AlphaNodeVisitor.INSTANCE );
         this.visitors.put( NodeTypeEnums.RightInputAdaterNode,
                            RightInputAdapterNodeVisitor.INSTANCE );
-        this.visitors.put( NodeTypeEnums.PropagationQueueingNode,
-                           PropagationQueueingNodeVisitor.INSTANCE );
 
         // left tuple source nodes
         this.visitors.put( NodeTypeEnums.JoinNode,
