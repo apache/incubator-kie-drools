@@ -147,9 +147,9 @@ public class RightInputAdapterNode extends ObjectSource
         SubnetworkTuple peer = new SubnetworkTuple();
         peer.initPeer( (BaseLeftTuple) original, this );
         original.setPeer( peer );
+        peer.setStagedOnRight( peer.isStagedOnRight() );
         return peer;
     }     
-
 
     @SuppressWarnings("unchecked")
     public InternalFactHandle createFactHandle(final LeftTuple leftTuple,
