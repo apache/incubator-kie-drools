@@ -59,6 +59,8 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
+
 public class PhreakTimerNode {
     private static final Logger log = LoggerFactory.getLogger( PhreakTimerNode.class );
 
@@ -350,15 +352,7 @@ public class PhreakTimerNode {
             // This childLeftTuple has been created in this doNode loop, just skip it
             childLeftTuple.setContextObject( null );
         } else {
-            switch ( childLeftTuple.getStagedType() ) {
-                // handle clash with already staged entries
-                case LeftTuple.INSERT :
-                    stagedLeftTuples.removeInsert( childLeftTuple );
-                    break;
-                case LeftTuple.UPDATE :
-                    stagedLeftTuples.removeUpdate( childLeftTuple );
-                    break;
-            }
+            normalizeStagedTuples( stagedLeftTuples, childLeftTuple );
             trgLeftTuples.addUpdate( childLeftTuple );
             if ( log.isTraceEnabled() ) {
                 log.trace( "Timer Update {}", childLeftTuple );

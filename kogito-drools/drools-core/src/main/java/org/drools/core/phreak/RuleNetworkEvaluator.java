@@ -619,6 +619,7 @@ public class RuleNetworkEvaluator {
             }
             leftTuple.clearStaged();
             rightTuples.addInsert( (RightTuple) leftTuple );
+            ( (SubnetworkTuple) leftTuple ).setStagedOnRight( true );
 
             if (bns != null) {
                 for (int i = 0; i < length; i++) {
@@ -641,6 +642,7 @@ public class RuleNetworkEvaluator {
             }
             leftTuple.clearStaged();
             rightTuples.addDelete((RightTuple)leftTuple);
+            ( (SubnetworkTuple) leftTuple ).setStagedOnRight( true );
 
             if (bns != null) {
                 for (int i = 0; i < length; i++) {
@@ -664,6 +666,7 @@ public class RuleNetworkEvaluator {
             }
             leftTuple.clearStaged();
             rightTuples.addUpdate((RightTuple)leftTuple);
+            ( (SubnetworkTuple) leftTuple ).setStagedOnRight( true );
 
             if (bns != null) {
                 for (int i = 0; i < length; i++) {
@@ -888,4 +891,17 @@ public class RuleNetworkEvaluator {
         return useLeftMemory;
     }
 
+    public static void normalizeStagedTuples( TupleSets<LeftTuple> stagedLeftTuples, LeftTuple childLeftTuple ) {
+        if (!childLeftTuple.isStagedOnRight()) {
+            switch ( childLeftTuple.getStagedType() ) {
+                // handle clash with already staged entries
+                case LeftTuple.INSERT:
+                    stagedLeftTuples.removeInsert( childLeftTuple );
+                    break;
+                case LeftTuple.UPDATE:
+                    stagedLeftTuples.removeUpdate( childLeftTuple );
+                    break;
+            }
+        }
+    }
 }

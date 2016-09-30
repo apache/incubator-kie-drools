@@ -23,6 +23,8 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.rule.EvalCondition;
 
+import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
+
 /**
 * Created with IntelliJ IDEA.
 * User: mdproctor
@@ -107,16 +109,7 @@ public class PhreakEvalNode {
                     // update
                     LeftTuple childLeftTuple = leftTuple.getFirstChild();
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());
-                    switch (childLeftTuple.getStagedType()) {
-                        // handle clash with already staged entries
-                        case LeftTuple.INSERT:
-                            stagedLeftTuples.removeInsert(childLeftTuple);
-                            break;
-                        case LeftTuple.UPDATE:
-                            stagedLeftTuples.removeUpdate(childLeftTuple);
-                            break;
-                    }
-
+                    normalizeStagedTuples( stagedLeftTuples, childLeftTuple );
                     trgLeftTuples.addUpdate(childLeftTuple);
                 } else {
                     // assert

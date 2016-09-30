@@ -668,4 +668,8 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     public void setExpired( boolean expired ) {
         this.expired = expired;
     }
+
+    public boolean isStagedOnRight() {
+        return false;
+    }
 }

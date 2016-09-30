@@ -34,6 +34,8 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
     private static final AtomicInteger idGenerator = new AtomicInteger( 0 );
     private InternalFactHandle factHandleForEvaluation = new DefaultFactHandle(idGenerator.decrementAndGet(), this);
 
+    private boolean stagedOnRight;
+
     public SubnetworkTuple() {
         // constructor needed for serialisation
     }
@@ -154,5 +156,19 @@ public class SubnetworkTuple extends BaseLeftTuple implements RightTuple {
 
     public void setTempRightTupleMemory(TupleMemory tempRightTupleMemory) {
         this.tempRightTupleMemory = tempRightTupleMemory;
+    }
+
+    public boolean isStagedOnRight() {
+        return stagedOnRight;
+    }
+
+    public void setStagedOnRight( boolean stagedOnRight ) {
+        this.stagedOnRight = stagedOnRight;
+    }
+
+    @Override
+    public void clearStaged() {
+        super.clearStaged();
+        stagedOnRight = false;
     }
 }

@@ -26,6 +26,8 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.spi.Salience;
 
+import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
+
 
 public class PhreakBranchNode {
     public void doNode(ConditionalBranchNode branchNode,
@@ -172,15 +174,7 @@ public class PhreakBranchNode {
 
             // Handle main branch
             if (branchTuples.mainLeftTuple != null) {
-                switch (branchTuples.mainLeftTuple.getStagedType()) {
-                    // handle clash with already staged entries
-                    case LeftTuple.INSERT:
-                        stagedLeftTuples.removeInsert(branchTuples.mainLeftTuple);
-                        break;
-                    case LeftTuple.UPDATE:
-                        stagedLeftTuples.removeUpdate(branchTuples.mainLeftTuple);
-                        break;
-                }
+                normalizeStagedTuples( stagedLeftTuples, branchTuples.mainLeftTuple );
 
                 if (!breaking) {
                     // child exist, new one does, so update

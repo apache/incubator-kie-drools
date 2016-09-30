@@ -35,6 +35,8 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.FastIterator;
 
+import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
+
 /**
 * Created with IntelliJ IDEA.
 * User: mdproctor
@@ -597,15 +599,7 @@ public class PhreakAccumulateNode {
                                                   false);
 
                 if (accctx.propagated) {
-                    switch (accctx.resultLeftTuple.getStagedType()) {
-                        // handle clash with already staged entries
-                        case LeftTuple.INSERT:
-                            stagedLeftTuples.removeInsert(accctx.resultLeftTuple);
-                            break;
-                        case LeftTuple.UPDATE:
-                            stagedLeftTuples.removeUpdate(accctx.resultLeftTuple);
-                            break;
-                    }
+                    normalizeStagedTuples( stagedLeftTuples, accctx.resultLeftTuple );
 
                     trgLeftTuples.addDelete(accctx.resultLeftTuple);
                 }
@@ -718,15 +712,7 @@ public class PhreakAccumulateNode {
         }
 
         if (accctx.propagated) {
-            switch (childLeftTuple.getStagedType()) {
-                // handle clash with already staged entries
-                case LeftTuple.INSERT:
-                    stagedLeftTuples.removeInsert(childLeftTuple);
-                    break;
-                case LeftTuple.UPDATE:
-                    stagedLeftTuples.removeUpdate(childLeftTuple);
-                    break;
-            }
+            normalizeStagedTuples( stagedLeftTuples, childLeftTuple );
 
             if (isAllowed) {
                 // modify
