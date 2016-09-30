@@ -63,7 +63,8 @@ public class ReteDiagram {
         }
     }
     public enum DefaultBrowser {
-        GOOGLE_CHROME("google-chrome");
+        GOOGLE_CHROME("google-chrome"),
+        FIREFOX("firefox");
         private String command;
         DefaultBrowser(String command) {
             this.command = command;
