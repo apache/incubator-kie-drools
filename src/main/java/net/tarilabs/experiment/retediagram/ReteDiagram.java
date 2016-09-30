@@ -2,25 +2,23 @@ package net.tarilabs.experiment.retediagram;
 
 import static java.util.stream.Collectors.*;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
@@ -43,30 +41,127 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.KnowledgeRuntime;
 
 public class ReteDiagram {
-    public enum Pref {
+    
+    public enum PredefinedOutputPath {
+        CWD("./");
+        private String path;
+        PredefinedOutputPath(String path) {
+            this.path = path;
+        }
+        public String getPath() {
+            return path;
+        }
+    }
+    public enum DefaultGraphvizPath {
+        USE_SYSTEM_PATH("");
+        private String path;
+        DefaultGraphvizPath(String path) {
+            this.path = path;
+        }
+        public String getPath() {
+            return path;
+        }
+    }
+    public enum DefaultBrowser {
+        GOOGLE_CHROME("google-chrome");
+        private String command;
+        DefaultBrowser(String command) {
+            this.command = command;
+        }
+        public String getCommand() {
+            return command;
+        }
+    }
+
+    public enum Layout {
         PARTITION, VLEVEL
     }
-    
-    private ReteDiagram() { }
 
-    public static void diagramRete(KnowledgeBase kbase) {
+    private Layout layout;
+    private String outputPath;
+    private boolean prefixTimestamp;
+    private String graphvizPath;
+    private boolean outputSVG;
+    private boolean outputPNG;
+    private String browserCommand;
+    private boolean openSVG;
+    private boolean openPNG;
+    
+
+    private ReteDiagram() { }
+   
+    /**
+     * With default settings.
+     */
+    public static ReteDiagram newInstance() {
+        return new ReteDiagram()
+                .configLayout(Layout.VLEVEL)
+                .configFilenameScheme(PredefinedOutputPath.CWD, true)
+                .configGraphviz(DefaultGraphvizPath.USE_SYSTEM_PATH, true, true)
+                .configOpenFileWithBrowser(DefaultBrowser.GOOGLE_CHROME, true, false)
+                ;
+    }
+    
+    /**
+     * Changes diagram Layout
+     */
+    public ReteDiagram configLayout(Layout layout) {
+        this.layout = layout;
+        return this;
+    }
+    
+    public ReteDiagram configFilenameScheme(String outputPath, boolean prefixTimestamp) {
+        this.outputPath = outputPath;
+        this.prefixTimestamp = prefixTimestamp;
+        return this;
+    }
+    public ReteDiagram configFilenameScheme(PredefinedOutputPath predefinedPath, boolean prefixTimestamp) {
+        return configFilenameScheme(predefinedPath.getPath(), prefixTimestamp);
+    }
+    
+    public ReteDiagram configGraphviz(String graphvizPath, boolean outputSVG, boolean outputPNG) {
+        this.graphvizPath = graphvizPath;
+        this.outputSVG = outputSVG;
+        this.outputPNG = outputPNG;
+        return this;
+    }
+    public ReteDiagram configGraphviz(DefaultGraphvizPath graphvizPath, boolean outputSVG, boolean outputPNG) {
+        return configGraphviz(graphvizPath.getPath(), outputSVG, outputPNG);
+    }
+    
+    public ReteDiagram configOpenFileWithBrowser(String browserCommand, boolean openSVG, boolean openPNG) {
+        this.browserCommand = browserCommand;
+        this.openSVG = openSVG;
+        this.openPNG = openPNG;
+        return this;
+    }
+    public ReteDiagram configOpenFileWithBrowser(DefaultBrowser browserCommand, boolean openSVG, boolean openPNG) {
+        return configOpenFileWithBrowser(browserCommand.getCommand(), openSVG, openPNG);
+    }
+    
+    public void diagramRete(KnowledgeBase kbase) {
         diagramRete((InternalKnowledgeBase) kbase);
     }
 
-    public static void diagramRete(KnowledgeRuntime session) {
+    public void diagramRete(KnowledgeRuntime session) {
         diagramRete((InternalKnowledgeBase)session.getKieBase());
     }
 
-    public static void diagramRete(KieSession session) {
+    public void diagramRete(KieSession session) {
         diagramRete((InternalKnowledgeBase)session.getKieBase());
     }
 
-    public static void diagramRete(InternalKnowledgeBase kBase) {
-        diagramRete(kBase.getRete(), Pref.PARTITION);
+    public void diagramRete(InternalKnowledgeBase kBase) {
+        diagramRete(kBase.getRete());
     }
 
-    public static void diagramRete(Rete rete, Pref pref) {
-        try (PrintStream out = new PrintStream(new FileOutputStream("test.gv"));) {
+    public void diagramRete(Rete rete) {
+        String timestampPrefix = (new SimpleDateFormat("yyyyMMddHHmmss")).format(new Date());
+        String fileNameNoExtension = outputPath + (prefixTimestamp?timestampPrefix+".":"") + rete.getKnowledgeBase().getId();
+        String gvFileName = fileNameNoExtension + ".gv";
+        String svgFileName = fileNameNoExtension + ".svg";
+        String pngFileName = fileNameNoExtension + ".png";
+        try (PrintStream out = new PrintStream(new FileOutputStream(gvFileName));) {
             out.println("digraph g {\n" +
                     "graph [fontname = \"Overpass\" fontsize=11];\n" + 
                     " node [fontname = \"Overpass\" fontsize=11];\n" + 
@@ -77,17 +172,18 @@ public class ReteDiagram {
             for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
                 visitNodes( entryPointNode, "", new HashSet<>(), nodeMap, vertexes, levelMap, out);
             }
+            
             out.println("");
             printNodeMap(nodeMap, out);
             
-            System.out.println(nodeMap.get(RuleTerminalNode.class));
-            
             out.println("");
             printVertexes(vertexes, out);
+            
             out.println("");
-            printLevelMap(levelMap, out, vertexes, pref);
+            printLevelMap(levelMap, out, vertexes);
+            
             out.println("");
-            if (pref == Pref.PARTITION) {
+            if (layout == Layout.PARTITION) {
                 printPartitionMap(nodeMap, out, vertexes);
             }
             
@@ -96,28 +192,42 @@ public class ReteDiagram {
             e.printStackTrace();
         }
 
+        if (outputSVG) {
         try {
-            ProcessBuilder pbuilder = new ProcessBuilder( "dot", "-Tsvg", "-o", "test.svg", "test.gv" );
+            ProcessBuilder pbuilder = new ProcessBuilder( graphvizPath + "dot", "-Tsvg", "-o", svgFileName, gvFileName );
             pbuilder.redirectErrorStream( true );
             pbuilder.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+        }
+        if (outputPNG) {
         try {
-            ProcessBuilder pbuilder = new ProcessBuilder( "google-chrome", "test.svg" );
+            ProcessBuilder pbuilder = new ProcessBuilder( graphvizPath + "dot", "-Tpng", "-o", pngFileName, gvFileName );
             pbuilder.redirectErrorStream( true );
             pbuilder.start();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        }
         
+        if (outputSVG && openSVG) {
         try {
-            ProcessBuilder pbuilder = new ProcessBuilder( "dot", "-Tpng", "-o", "test.png", "test.gv" );
+            ProcessBuilder pbuilder = new ProcessBuilder( browserCommand, svgFileName );
             pbuilder.redirectErrorStream( true );
             pbuilder.start();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        }
+        if (outputPNG && openPNG) {
+        try {
+            ProcessBuilder pbuilder = new ProcessBuilder( browserCommand, pngFileName );
+            pbuilder.redirectErrorStream( true );
+            pbuilder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         }
     }
     
@@ -169,31 +279,31 @@ public class ReteDiagram {
         }
     }
 
-    private static void printLevelMap(HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out, List<Vertex<BaseNode, BaseNode>> vertexes, Pref pref) {
+    private void printLevelMap(HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out, List<Vertex<BaseNode, BaseNode>> vertexes) {
 
         // Level 1: OTN
         Set<BaseNode> l1 = levelMap.entrySet().stream()
                                 .filter(kv->ObjectTypeNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel("l1", l1, out, pref);
+        printLevelMapLevel("l1", l1, out);
         
         // Level 2: AN
         Set<BaseNode> l2 = levelMap.entrySet().stream()
                                 .filter(kv->AlphaNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel("l2", l2, out, pref);
+        printLevelMapLevel("l2", l2, out);
         
         // Level 3: LIA
         Set<BaseNode> l3 = levelMap.entrySet().stream()
                                 .filter(kv->LeftInputAdapterNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel("l3", l3, out, pref);
+        printLevelMapLevel("l3", l3, out);
         
         // RIA
         Set<BaseNode> lria = levelMap.entrySet().stream()
                                 .filter(kv->RightInputAdapterNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel("lria", lria, out, pref);
+        printLevelMapLevel("lria", lria, out);
         
         // RIA beta sources
         Set<BaseNode> lriaSources = new HashSet<>();
@@ -208,7 +318,7 @@ public class ReteDiagram {
         for (BaseNode lriaSource : lriaSources) {
             lriaSources.addAll( recurseIncomingVertex(lriaSource, onlyBetas) );
         }
-        printLevelMapLevel("lriaSources", lriaSources, out, pref);
+        printLevelMapLevel("lriaSources", lriaSources, out);
         
         // subnetwork Betas
         Set<BaseNode> lsubbeta = levelMap.entrySet().stream()
@@ -216,7 +326,7 @@ public class ReteDiagram {
                                 .flatMap(kv->kv.getValue().stream())
                                 .filter(b-> ((BetaNode) b).getObjectType() == null )
                                 .collect(toSet());
-        printLevelMapLevel("lsubbeta", lsubbeta, out, pref);
+        printLevelMapLevel("lsubbeta", lsubbeta, out);
 
         // Level 4: BN
         Set<BaseNode> l4 = levelMap.entrySet().stream()
@@ -225,13 +335,13 @@ public class ReteDiagram {
                                 .filter(b-> !lriaSources.contains(b) )
                                 .filter(b-> !lsubbeta.contains(b) )
                                 .collect(toSet());
-        printLevelMapLevel("l4", l4, out, pref);
+        printLevelMapLevel("l4", l4, out);
 
         // Level 5: RTN
         Set<BaseNode> l5 = levelMap.entrySet().stream()
                                 .filter(kv->RuleTerminalNode.class.isAssignableFrom( kv.getKey() ))
                                 .flatMap(kv->kv.getValue().stream()).collect(toSet());
-        printLevelMapLevel("l5", l5, out, pref);
+        printLevelMapLevel("l5", l5, out);
         
         out.println(
 //                " edge[style=invis];\n" + 
@@ -260,12 +370,12 @@ public class ReteDiagram {
         out.println(level);
     }
 
-    private static void printLevelMapLevel(String levelId, Set<BaseNode> value, PrintStream out, Pref pref) {
+    private void printLevelMapLevel(String levelId, Set<BaseNode> value, PrintStream out) {
         StringBuilder nodeIds = new StringBuilder();
         for (BaseNode n : value) {
             nodeIds.append(printNodeId(n)+"; ");
         }
-        if (pref == Pref.PARTITION) { 
+        if (layout == Layout.PARTITION) { 
             String level = String.format(" subgraph %1$s{%1$s[shape=point, xlabel=\"%1$s\"]; %2$s}",
                     levelId,
                     nodeIds.toString());

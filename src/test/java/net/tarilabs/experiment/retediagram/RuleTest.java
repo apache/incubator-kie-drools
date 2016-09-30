@@ -52,7 +52,7 @@ import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.tarilabs.experiment.retediagram.ReteDiagram.Pref;
+import net.tarilabs.experiment.retediagram.ReteDiagram.Layout;
 import net.tarilabs.model.Measurement;
 
 public class RuleTest extends CommonTestMethodBase {
@@ -97,7 +97,7 @@ public class RuleTest extends CommonTestMethodBase {
 	    
 	    ReteDumper.dumpRete(session);
 	    System.out.println("---");
-	    ReteDiagram.diagramRete(((InternalKnowledgeBase)session.getKieBase()).getRete(), Pref.VLEVEL);
+	    ReteDiagram.newInstance().configLayout(Layout.PARTITION).diagramRete(((InternalKnowledgeBase)session.getKieBase()));
 	}
 	
 	@Test
@@ -159,7 +159,7 @@ public class RuleTest extends CommonTestMethodBase {
         int num = ksession.fireAllRules();
         // only one rule should fire, but the partial propagation of the asserted facts should not cause a runtime NPE
         assertEquals( 1, num );
-        ReteDiagram.diagramRete((KieSession)ksession);
+        ReteDiagram.newInstance().configLayout(Layout.PARTITION).diagramRete((KieSession)ksession);
     }
 
 
@@ -219,7 +219,7 @@ public class RuleTest extends CommonTestMethodBase {
         assertEquals( 2, list.get( 0 ).intValue() );
         assertEquals( 2, list.get( 1 ).intValue() );
         
-        ReteDiagram.diagramRete((KieSession)ksession);
+        ReteDiagram.newInstance().configLayout(Layout.PARTITION).diagramRete((KieSession)ksession);
     }
     
     @Test
@@ -249,6 +249,6 @@ public class RuleTest extends CommonTestMethodBase {
         KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
                                                .build().newKieSession();
  
-        ReteDiagram.diagramRete(((InternalKnowledgeBase)kieSession.getKieBase()).getRete(), Pref.VLEVEL);
+        ReteDiagram.newInstance().diagramRete(kieSession);
     }
 }
