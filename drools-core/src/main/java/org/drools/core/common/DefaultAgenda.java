@@ -1519,7 +1519,12 @@ public class DefaultAgenda
             return false;
         }
         for (PropagationContext ectx : expirationContexts) {
-            retractLeftTuples( ( (InternalFactHandle) ectx.getFactHandle() ), ectx, workingMemory );
+            InternalFactHandle factHandle = (InternalFactHandle) ectx.getFactHandle();
+            retractLeftTuples( factHandle, ectx, workingMemory );
+            if ( factHandle.isPendingRemoveFromStore() ) {
+                String epId = factHandle.getEntryPoint().getEntryPointId();
+                ( (InternalWorkingMemoryEntryPoint) workingMemory.getEntryPoint( epId ) ).removeFromObjectStore( factHandle );
+            }
         }
         expirationContexts.clear();
         return true;

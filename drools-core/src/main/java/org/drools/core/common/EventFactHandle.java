@@ -29,6 +29,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
     private long              startTimestamp;
     private long              duration;
     private boolean           expired;
+    private boolean           pendingRemoveFromStore;
     private long              activationsCount;
     private int               otnCount;
 
@@ -145,6 +146,22 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
             linkedFactHandle.setExpired(expired);
         }  else {
             this.expired = expired;
+        }
+    }
+
+    public boolean isPendingRemoveFromStore() {
+        if ( linkedFactHandle != null ) {
+            return linkedFactHandle.isPendingRemoveFromStore();
+        }  else {
+            return pendingRemoveFromStore;
+        }
+    }
+
+    public void setPendingRemoveFromStore(boolean pendingRemove) {
+        if ( linkedFactHandle != null ) {
+            linkedFactHandle.setPendingRemoveFromStore(pendingRemove);
+        }  else {
+            this.pendingRemoveFromStore = pendingRemove;
         }
     }
 
