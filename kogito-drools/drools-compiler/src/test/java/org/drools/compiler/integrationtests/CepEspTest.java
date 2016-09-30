@@ -15,31 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.OrderEvent;
 import org.drools.compiler.Sensor;
@@ -107,6 +82,30 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class CepEspTest extends CommonTestMethodBase {
     
@@ -6276,5 +6275,120 @@ public class CepEspTest extends CommonTestMethodBase {
         sessionClock.advanceTime(20, TimeUnit.MILLISECONDS);
         ksession.fireAllRules();
         assertEquals( 0L, ksession.getFactCount() );
+    }
+
+    @Test
+    public void testExpiredEventWithPendingActivations() throws Exception {
+        String drl = "package org.drools.drools_usage_pZB7GRxZp64;\n" +
+                     "\n" +
+                     "declare time_Var\n" +
+                     "    @role( event )\n" +
+                     "    @expires( 1s )\n" +
+                     "    value : Long\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare ExpiringEvent_Var\n" +
+                     "    @role( event )\n" +
+                     "    @expires( 10s )\n" +
+                     "    value : Double\n" +
+                     "end\n" +
+                     "\n" +
+                     "declare window ExpiringEvent_Window1 ExpiringEvent_Var() over window:length(1) end\n" +
+                     "\n" +
+                     "rule \"Expring variable - Init\"\n" +
+                     "activation-group \"ExpiringEvent\"\n" +
+                     "    when\n" +
+                     "        $t : time_Var($now : Value != null) over window:length(1)\n" +
+                     "\n" +
+                     "        not ExpiringEvent_Var()\n" +
+                     "\n" +
+                     "    then\n" +
+                     "        System.out.println($now + \" : Init\");\n" +
+                     "        insert(new ExpiringEvent_Var(0.0));\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Expiring variable - Rule 1\"\n" +
+                     "activation-group \"ExpiringEvent\"\n" +
+                     "    when\n" +
+                     "        $t : time_Var($now : Value != null) over window:length(1)\n" +
+                     "\n" +
+                     "        ExpiringEvent_Var(this before $t, $previousValue : Value < 1.0) from window ExpiringEvent_Window1\n" +
+                     "\n" +
+                     "    then\n" +
+                     "        System.out.println($now + \" : Rule 1\");\n" +
+                     "        insert(new ExpiringEvent_Var(1.0));\n" +
+                     "\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Expiring variable - Rule 2\"\n" +
+                     "activation-group \"ExpiringEvent\"\n" +
+                     "    when\n" +
+                     "        $t : time_Var($now : Value != null) over window:length(1)\n" +
+                     "\n" +
+                     "        ExpiringEvent_Var(this before $t, $previousValue : Value) from window ExpiringEvent_Window1\n" +
+                     "\n" +
+                     "    then\n" +
+                     "        System.out.println($now + \" : Rule 2\");\n" +
+                     "        insert(new ExpiringEvent_Var($previousValue));\n" +
+                     "\n" +
+                     "end";
+
+        KieServices kieServices = KieServices.Factory.get();
+
+        KieBaseConfiguration kieBaseConf = KieServices.Factory.get().newKieBaseConfiguration();
+        kieBaseConf.setOption( EventProcessingOption.STREAM );
+
+        KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build(kieBaseConf);
+
+        KieSessionConfiguration config = kieServices.newKieSessionConfiguration();
+        config.setOption( ClockTypeOption.get("pseudo") );
+        KieSession session = kieBase.newKieSession(config, null);
+        SessionPseudoClock clock = session.getSessionClock();
+
+        FactType time_VarType = kieBase.getFactType( "org.drools.drools_usage_pZB7GRxZp64", "time_Var" );
+
+        clock.advanceTime(1472057509000L, TimeUnit.MILLISECONDS);
+
+        Object time_Var = time_VarType.newInstance();
+        time_VarType.set( time_Var, "value",  1472057509000L );
+
+        session.insert(time_Var);
+        session.fireAllRules();
+
+        for (int i=0; i<10; i++) {
+            clock.advanceTime(1, TimeUnit.SECONDS);
+
+            Object time_VarP1 = time_VarType.newInstance();
+            time_VarType.set( time_VarP1, "value",  clock.getCurrentTime() );
+
+            session.insert(time_VarP1);
+            session.fireAllRules();
+        }
+
+        clock.advanceTime(1, TimeUnit.SECONDS);
+        session.fireAllRules();
+
+        clock.advanceTime(1, TimeUnit.HOURS);
+        Object time_VarP1 = time_VarType.newInstance();
+        time_VarType.set( time_VarP1, "value",  clock.getCurrentTime() );
+        session.insert(time_VarP1);
+        session.fireAllRules();
+
+        clock.advanceTime(1, TimeUnit.HOURS);
+        Object time_VarP2 = time_VarType.newInstance();
+        time_VarType.set( time_VarP2, "value",  clock.getCurrentTime() );
+        session.insert(time_VarP2);
+        session.fireAllRules();
+
+        clock.advanceTime(1, TimeUnit.HOURS);
+        session.fireAllRules();
+
+        // actually should be empty..
+        for ( Object o : session.getFactHandles() ) {
+            if (o instanceof EventFactHandle) {
+                EventFactHandle eventFactHandle = (EventFactHandle)o;
+                assertFalse(eventFactHandle.isExpired());
+            }
+        }
     }
 }

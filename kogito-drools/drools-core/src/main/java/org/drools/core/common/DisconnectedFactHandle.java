@@ -169,6 +169,11 @@ public class DisconnectedFactHandle
         return false;
     }
 
+    @Override
+    public boolean isPendingRemoveFromStore() {
+        return false;
+    }
+
     public int getId() {
         return this.id;
     }

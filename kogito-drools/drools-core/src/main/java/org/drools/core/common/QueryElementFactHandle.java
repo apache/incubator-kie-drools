@@ -253,4 +253,8 @@ public class QueryElementFactHandle
         return false;
     }
 
+    @Override
+    public boolean isPendingRemoveFromStore() {
+        return false;
+    }
 }
