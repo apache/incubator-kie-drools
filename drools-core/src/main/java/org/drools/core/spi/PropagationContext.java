@@ -16,6 +16,9 @@
 
 package org.drools.core.spi;
 
+import java.io.Externalizable;
+import java.util.LinkedList;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -24,9 +27,6 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
-
-import java.io.Externalizable;
-import java.util.LinkedList;
 
 public interface PropagationContext
     extends
@@ -61,16 +61,6 @@ public interface PropagationContext
     void releaseResources();
 
     EntryPointId getEntryPoint();
-    
-    void addInsertAction(WorkingMemoryAction action);
-    void removeInsertAction(WorkingMemoryAction action);
-
-    LinkedList<WorkingMemoryAction> getQueue1();
-
-
-    LinkedList<WorkingMemoryAction> getQueue2();
-
-    void evaluateActionQueue(InternalWorkingMemory workingMemory);
 
     BitMask getModificationMask();
     PropagationContext adaptModificationMaskForObjectType(ObjectType type, InternalWorkingMemory workingMemory);

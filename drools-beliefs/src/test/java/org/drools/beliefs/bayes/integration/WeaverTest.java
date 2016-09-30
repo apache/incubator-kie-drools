@@ -15,20 +15,19 @@
 
 package org.drools.beliefs.bayes.integration;
 
+import java.util.Map;
+
 import org.drools.beliefs.bayes.JunctionTree;
 import org.drools.beliefs.bayes.assembler.BayesPackage;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
-import org.kie.internal.io.ResourceTypePackage;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
-
-import java.util.Map;
+import org.kie.internal.io.ResourceTypePackage;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -52,12 +51,10 @@ public class WeaverTest {
 
     protected KnowledgeBase getKnowledgeBase() {
         KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kBaseConfig.setOption(RuleEngineOption.PHREAK);
         return getKnowledgeBase(kBaseConfig);
     }
 
     protected KnowledgeBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
-        kBaseConfig.setOption(RuleEngineOption.PHREAK);
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
         return kbase;
     }

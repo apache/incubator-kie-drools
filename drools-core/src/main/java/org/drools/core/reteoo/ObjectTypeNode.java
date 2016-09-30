@@ -16,6 +16,14 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.core.InitialFact;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
@@ -38,7 +46,6 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.core.marshalling.impl.TimersInputMarshaller;
 import org.drools.core.marshalling.impl.TimersOutputMarshaller;
-import org.drools.core.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.rule.EntryPointId;
@@ -52,14 +59,6 @@ import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.time.impl.PointInTimeTrigger;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * <code>ObjectTypeNodes<code> are responsible for filtering and propagating the matching
@@ -449,24 +448,10 @@ public class ObjectTypeNode extends ObjectSource
      * OTN needs to override remove to avoid releasing the node ID, since OTN are
      * never removed from the rulebase in the current implementation
      */
+    @Override
     protected boolean doRemove(final RuleRemovalContext context,
                                final ReteooBuilder builder,
                                final InternalWorkingMemory[] workingMemories) {
-        if (!context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && context.getCleanupAdapter() != null) {
-            for (InternalWorkingMemory workingMemory : workingMemories) {
-                CleanupAdapter adapter = context.getCleanupAdapter();
-                final ObjectTypeNodeMemory memory = workingMemory.getNodeMemory(this);
-                Iterator<InternalFactHandle> it = memory.iterator();
-                while (it.hasNext()) {
-                    InternalFactHandle handle = it.next();
-                    for (LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext()) {
-                        adapter.cleanUp(leftTuple,
-                                        workingMemory);
-                    }
-                }
-            }
-            context.setCleanupAdapter(null);
-        }
         return false;
     }
 

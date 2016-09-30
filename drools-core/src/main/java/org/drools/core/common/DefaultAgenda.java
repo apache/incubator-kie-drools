@@ -16,8 +16,18 @@
 
 package org.drools.core.common;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
@@ -51,17 +61,6 @@ import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.ERRORMSG;
 import static org.drools.core.reteoo.ObjectTypeNode.retractLeftTuples;
@@ -316,11 +315,6 @@ public class DefaultAgenda
         }
     }
 
-    public void scheduleItem(final ScheduledAgendaItem item,
-                             final InternalWorkingMemory wm) {
-        throw new UnsupportedOperationException("rete only");
-    }
-
     /**
      * If the item belongs to an activation group, add it
      *
@@ -344,10 +338,6 @@ public class DefaultAgenda
         }
     }
 
-    public InternalActivationGroup getStageActivationsGroup() {
-        throw new UnsupportedOperationException("rete only");
-    }
-
     @Override
     public void insertAndStageActivation(final AgendaItem activation) {
         if ( activationObjectTypeConf == null ) {
@@ -361,16 +351,8 @@ public class DefaultAgenda
         activation.setActivationFactHandle( factHandle );
     }
 
-    public boolean addActivation(final AgendaItem activation) {
-        throw new UnsupportedOperationException("Defensive, rete only");
-    }
-
     public boolean isDeclarativeAgenda() {
         return declarativeAgenda;
-    }
-
-    public void removeActivation(final AgendaItem activation) {
-        throw new UnsupportedOperationException("Defensive, rete only");
     }
 
     public void modifyActivation(final AgendaItem activation,
@@ -383,41 +365,14 @@ public class DefaultAgenda
         }
     }
 
-    public void clearAndCancelStagedActivations() {
-        throw new UnsupportedOperationException("rete only");
-    }
-
     public int unstageActivations() {
         // Not used by phreak, but still called by some generic code.
         return 0;
     }
 
-    @Override
-    public void addAgendaItemToGroup(AgendaItem item) {
-        throw new UnsupportedOperationException("Defensive");
-    }
-
-    public void removeScheduleItem(final ScheduledAgendaItem item) {
-        throw new UnsupportedOperationException("rete only");
-    }
-
     public void addAgendaGroup(final AgendaGroup agendaGroup) {
         this.agendaGroups.put( agendaGroup.getName(),
                                (InternalAgendaGroup) agendaGroup );
-    }
-
-    public boolean createActivation(final Tuple tuple,
-                                    final PropagationContext context,
-                                    final InternalWorkingMemory workingMemory,
-                                    final TerminalNode rtn) {
-        throw new UnsupportedOperationException("defensive programming, making sure this isn't called, before removing");
-    }
-
-    public boolean createPostponedActivation(final LeftTuple tuple,
-                                             final PropagationContext context,
-                                             final InternalWorkingMemory workingMemory,
-                                             final TerminalNode rtn) {
-        throw new UnsupportedOperationException("rete only");
     }
 
     public boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId) {
@@ -744,19 +699,6 @@ public class DefaultAgenda
         return list.toArray( new Activation[list.size()] );
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.common.AgendaI#getScheduledActivations()
-     */
-    public Activation[] getScheduledActivations() {
-        throw new UnsupportedOperationException("rete only");
-    }
-
-    public <M extends ModedAssertion<M>> org.drools.core.util.LinkedList<ScheduledAgendaItem<M>> getScheduledActivationsLinkedList() {
-        throw new UnsupportedOperationException("rete only");
-    }
-
     public void clear() {
         // reset focus stack
         clearFocusStack();
@@ -795,21 +737,6 @@ public class DefaultAgenda
         eager.clear();
         activationCounter = 0;
         currentState = ExecutionState.INACTIVE;
-    }
-
-    public void clearAndCancel() {
-        // Cancel all items and fire a Cancelled event for each Activation
-        for ( InternalAgendaGroup internalAgendaGroup : this.agendaGroups.values() ) {
-            clearAndCancelAgendaGroup( internalAgendaGroup );
-        }
-
-        // cancel all staged activations
-        clearAndCancelStagedActivations();
-
-        // cancel all activation groups.
-        for ( InternalActivationGroup group : this.activationGroups.values() ) {
-            clearAndCancelActivationGroup( group );
-        }
     }
 
     /*
@@ -1069,7 +996,6 @@ public class DefaultAgenda
                     // update the Activation in the WM
                     InternalFactHandle factHandle = activation.getActivationFactHandle();
                     workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
-                    activation.getPropagationContext().evaluateActionQueue( workingMemory );
                 }
                 // if the tuple contains expired events
                 for ( Tuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
@@ -1135,16 +1061,11 @@ public class DefaultAgenda
                     // update the Activation in the WM
                     InternalFactHandle factHandle = activation.getActivationFactHandle();
                     workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
-                    activation.getPropagationContext().evaluateActionQueue( workingMemory );
                 }
             }
         } finally {
             this.workingMemory.endOperation();
         }
-    }
-
-    public boolean fireTimedActivation(final Activation activation) throws ConsequenceException {
-        throw new UnsupportedOperationException("rete only");
     }
 
     /**

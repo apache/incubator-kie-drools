@@ -16,12 +16,22 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import com.google.protobuf.ByteString;
 import org.drools.core.InitialFact;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaGroupQueueImpl;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.BaseNode;
@@ -39,6 +49,7 @@ import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.NodeMemories;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.PhreakActivationIterator;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.common.WorkingMemoryAction;
@@ -85,17 +96,6 @@ import org.drools.core.util.ObjectHashMap;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.rule.EntryPoint;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * An output marshaller that uses ProtoBuf as the marshalling framework
@@ -280,13 +280,11 @@ public class ProtobufOutputMarshaller {
                 }
             }
             dirty = false;
-            if ( wm.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
-                // network evaluation with phreak and TMS may make previous processed rules dirty again, so need to reprocess until all is flushed.
-                for ( Activation activation : wm.getAgenda().getActivations() ) {
-                    if ( activation.isRuleAgendaItem() && ((RuleAgendaItem)activation).getRuleExecutor().isDirty() ) {
-                        dirty = true;
-                        break;
-                    }
+            // network evaluation with phreak and TMS may make previous processed rules dirty again, so need to reprocess until all is flushed.
+            for ( Activation activation : wm.getAgenda().getActivations() ) {
+                if ( activation.isRuleAgendaItem() && ((RuleAgendaItem)activation).getRuleExecutor().isDirty() ) {
+                    dirty = true;
+                    break;
                 }
             }
             wm.flushNonMarshallablePropagations();
@@ -333,7 +331,7 @@ public class ProtobufOutputMarshaller {
         _ab.setFocusStack( _fsb.build() );
 
         // serialize all dormant activations
-        org.drools.core.util.Iterator it = ActivationIterator.iterator( wm );
+        org.drools.core.util.Iterator it = PhreakActivationIterator.iterator( wm );
         List<org.drools.core.spi.Activation> dormant = new ArrayList<org.drools.core.spi.Activation>();
         for ( org.drools.core.spi.Activation item = (org.drools.core.spi.Activation) it.next(); item != null; item = (org.drools.core.spi.Activation) it.next() ) {
             if ( !item.isQueued() ) {

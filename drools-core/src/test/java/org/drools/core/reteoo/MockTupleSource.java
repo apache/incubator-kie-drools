@@ -19,7 +19,6 @@ package org.drools.core.reteoo;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.spi.PropagationContext;
 
 public class MockTupleSource extends LeftTupleSource {
 
@@ -43,12 +42,6 @@ public class MockTupleSource extends LeftTupleSource {
 
     public int getUdated() {
         return this.updated;
-    }
-
-    public void updateSink(final LeftTupleSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
-        this.updated++;
     }
 
     protected boolean doRemove(final RuleRemovalContext context,

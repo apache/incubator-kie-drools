@@ -16,26 +16,27 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Pattern;
-import org.drools.core.spi.ClassWireable;
-import org.drools.core.spi.ObjectType;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.bitmask.AllSetBitMask;
-import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.bitmask.EmptyBitMask;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.*;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.rule.Pattern;
+import org.drools.core.spi.ClassWireable;
+import org.drools.core.spi.ObjectType;
+import org.drools.core.util.bitmask.AllSetBitMask;
+import org.drools.core.util.bitmask.BitMask;
+import org.drools.core.util.bitmask.EmptyBitMask;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * A source of <code>ReteTuple</code> s for a <code>TupleSink</code>.
@@ -190,10 +191,6 @@ public abstract class LeftTupleSource extends BaseNode
     public LeftTupleSinkPropagator getSinkPropagator() {
         return this.sink;
     }
-
-    public abstract void updateSink(LeftTupleSink sink,
-                                    PropagationContext context,
-                                    InternalWorkingMemory workingMemory);
 
     public boolean isInUse() {
         return this.sink.size() > 0;

@@ -15,6 +15,10 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
@@ -26,14 +30,9 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 
@@ -575,13 +574,7 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
 //        Cheese brie = new Cheese( "brie", 5 );
 
         List<String> results = executeTestWithDRL(str);
-
-        if ( CommonTestMethodBase.phreak == RuleEngineOption.PHREAK) {
-            assertEquals( 2, results.size() );
-        } else {
-            assertEquals( 1, results.size() );
-        }
-
+        assertEquals( 2, results.size() );
         assertTrue( results.contains( "STILTON" ) );
     }
 

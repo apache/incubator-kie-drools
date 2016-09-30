@@ -16,16 +16,16 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.spi.PropagationContext;
-import org.kie.api.definition.rule.Rule;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.spi.PropagationContext;
+import org.kie.api.definition.rule.Rule;
 
 public class MockRightTupleSink
     implements
@@ -58,21 +58,10 @@ public class MockRightTupleSink
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
     }
 
-    @Override
-    public void assertRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-    }
-
     public short getType() {
         return NodeTypeEnums.JoinNode;
     }
 
-
-    public void modifyRightTuple(RightTuple rightTuple,
-                                 PropagationContext context,
-                                 InternalWorkingMemory workingMemory) {
-        // TODO Auto-generated method stub
-        
-    }
 
     public int getAssociationsSize() {
         return 0;

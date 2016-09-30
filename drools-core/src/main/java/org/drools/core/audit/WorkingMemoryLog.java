@@ -15,21 +15,19 @@
 
 package org.drools.core.audit;
 
-import org.drools.core.audit.event.LogEvent;
-
 import java.util.List;
+
+import org.drools.core.audit.event.LogEvent;
 
 public class WorkingMemoryLog {
 
-    private String version = "6.1";
+    private String version = "7.0";
     private List<LogEvent> events;
-    private String engine;
 
     public WorkingMemoryLog() { }
 
-    public WorkingMemoryLog(List<LogEvent> events, String engine) {
+    public WorkingMemoryLog(List<LogEvent> events) {
         this.events = events;
-        this.engine = engine;
     }
 
     public String getVersion() {
@@ -40,7 +38,4 @@ public class WorkingMemoryLog {
         return events;
     }
 
-    public String getEngine() {
-        return engine;
-    }
 }

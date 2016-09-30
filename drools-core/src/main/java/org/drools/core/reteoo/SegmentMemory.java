@@ -15,6 +15,9 @@
 
 package org.drools.core.reteoo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
@@ -27,9 +30,6 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.drools.core.phreak.SegmentUtilities.getQuerySegmentMemory;
 
@@ -557,17 +557,4 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         }
     }
 
-    public static class FromMemoryPrototype extends MemoryPrototype {
-
-        private final BetaMemoryPrototype betaProto;
-
-        private FromMemoryPrototype(FromNode.FromMemory fromMemory) {
-            betaProto = new BetaMemoryPrototype(fromMemory.getBetaMemory());
-        }
-
-        @Override
-        public void populateMemory(InternalWorkingMemory wm, Memory fromMemory) {
-            betaProto.populateMemory(wm, ((FromNode.FromMemory) fromMemory).getBetaMemory());
-        }
-    }
 }

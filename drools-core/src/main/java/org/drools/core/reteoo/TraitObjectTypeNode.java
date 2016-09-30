@@ -16,6 +16,12 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.BitSet;
+import java.util.Collection;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -29,12 +35,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.HierarchyEncoderImpl;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.BitSet;
-import java.util.Collection;
 
 public class TraitObjectTypeNode extends ObjectTypeNode {
 
@@ -195,7 +195,4 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
         return returnMask;
     }
 
-    public BitSet getLocalTypeCode() {
-        return typeMask;
-    }
 }

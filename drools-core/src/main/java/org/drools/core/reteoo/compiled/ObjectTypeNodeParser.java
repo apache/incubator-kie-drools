@@ -86,20 +86,6 @@ public class ObjectTypeNodeParser {
         }
     }
 
-    private void traversePropagator(LeftTupleSinkPropagator propagator, NetworkHandler handler) {
-        if (propagator instanceof SingleLeftTupleSinkAdapter) {
-            // we know there is only a single child sink for this propagator
-            LeftTupleSink sink = propagator.getSinks()[0];
-
-            traverseSink(sink, handler);
-        } else if (propagator instanceof CompositeLeftTupleSinkAdapter) {
-            CompositeLeftTupleSinkAdapter composite = (CompositeLeftTupleSinkAdapter) propagator;
-
-            LeftTupleSink[] sinks = composite.getSinks();
-            traverseSinkLisk(sinks, handler);
-        }
-    }
-
     private void traverseSinkLisk(ObjectSinkNodeList sinks, NetworkHandler handler) {
         if (sinks != null) {
             for (ObjectSinkNode sink = sinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {

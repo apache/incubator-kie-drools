@@ -15,6 +15,11 @@
 
 package org.drools.compiler.integrationtests.sequential;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
@@ -48,16 +53,10 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class SequentialTest extends CommonTestMethodBase {
 
@@ -66,7 +65,6 @@ public class SequentialTest extends CommonTestMethodBase {
     @Before
     public void setup() {
         kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( phreak );
         kconf.setOption( SequentialOption.YES );
     }
 
@@ -465,7 +463,6 @@ public class SequentialTest extends CommonTestMethodBase {
                                                  String file) throws DroolsParserException, IOException, Exception {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         if ( sequentialMode ) {
-            kconf.setOption( RuleEngineOption.RETEOO );
             kconf.setOption( SequentialOption.YES );
         }   else {
             kconf.setOption( SequentialOption.NO );

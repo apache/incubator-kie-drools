@@ -16,35 +16,27 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.base.SalienceInteger;
-import org.drools.core.base.mvel.MVELEnabledExpression;
-import org.drools.core.base.mvel.MVELSalienceExpression;
-import org.drools.core.common.AgendaItem;
-import org.drools.core.common.EventSupport;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryActions;
-import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.ScheduledAgendaItem;
-import org.drools.core.common.TruthMaintenanceSystemHelper;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.phreak.PhreakRuleTerminalNode;
-import org.drools.core.reteoo.RuleRemovalContext.CleanupAdapter;
-import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
-import org.drools.core.time.impl.BaseTimer;
-import org.kie.api.event.rule.MatchCancelledCause;
-
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
+
+import org.drools.core.base.SalienceInteger;
+import org.drools.core.base.mvel.MVELEnabledExpression;
+import org.drools.core.base.mvel.MVELSalienceExpression;
+import org.drools.core.common.AgendaItem;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemoryActions;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.phreak.PhreakRuleTerminalNode;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.core.rule.Declaration;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
+import org.drools.core.time.impl.BaseTimer;
 
 /**
  * Leaf Rete-OO node responsible for enacting <code>Action</code> s on a
@@ -354,47 +346,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         return NodeTypeEnums.RuleTerminalNode;
     }
 
-    public static class RTNCleanupAdapter
-            implements
-            CleanupAdapter {
-        private final RuleTerminalNode node;
-
-        public RTNCleanupAdapter(RuleTerminalNode node) {
-            this.node = node;
-        }
-
-        public void cleanUp(final LeftTuple leftTuple,
-                            final InternalWorkingMemory workingMemory) {
-            if ( leftTuple.getTupleSink() != node ) {
-                return;
-            }
-
-            final Activation activation = (Activation) leftTuple.getContextObject();
-
-            // this is to catch a race condition as activations are activated and unactivated on timers
-            if ( activation instanceof ScheduledAgendaItem ) {
-                ScheduledAgendaItem scheduled = (ScheduledAgendaItem) activation;
-                workingMemory.getTimerService().removeJob( scheduled.getJobHandle() );
-                scheduled.getJobHandle().setCancel( true );
-            }
-
-            if ( activation.isQueued() ) {
-                activation.remove();
-                ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
-                                                                                                workingMemory,
-                                                                                                MatchCancelledCause.CLEAR );
-            }
-
-            PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_REMOVAL, null, null, null);
-            TruthMaintenanceSystemHelper.removeLogicalDependencies( activation,
-                                                                    propagationContext,
-                                                                    node.getRule() );
-            leftTuple.unlinkFromLeftParent();
-            leftTuple.unlinkFromRightParent();
-        }
-    }
-
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
                                      final Sink sink) {
@@ -448,18 +399,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     protected ObjectTypeNode getObjectTypeNode() {
         return getLeftTupleSource().getObjectTypeNode();
-    }
-
-    public void assertLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("Rete Only");
-    }
-
-    public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("Rete Only");
-    }
-
-    public void modifyLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("Rete Only");
     }
 
 }

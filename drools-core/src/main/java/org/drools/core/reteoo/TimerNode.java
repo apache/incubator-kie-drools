@@ -16,6 +16,11 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Arrays;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -28,11 +33,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.impl.Timer;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.index.TupleList;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Arrays;
 
 public class TimerNode extends LeftTupleSource
         implements
@@ -91,11 +91,6 @@ public class TimerNode extends LeftTupleSource
 
     public void attach(BuildContext context) {
         this.leftInput.addTupleSink(this, context);
-        if (context == null || context.getKnowledgeBase().getConfiguration().isPhreakEnabled()) {
-            return;
-        }
-
-        throw new UnsupportedOperationException("Phreak Only Node");
     }
 
     public void networkUpdated(UpdateContext updateContext) {
@@ -328,39 +323,6 @@ public class TimerNode extends LeftTupleSource
             insertOrUpdateLeftTuples.clear();
             deleteLeftTuples.clear();
         }
-    }
-
-    @Override
-    public void updateSink(final LeftTupleSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void assertLeftTuple(final LeftTuple leftTuple,
-                                final PropagationContext context,
-                                final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void retractLeftTuple(final LeftTuple leftTuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void modifyLeftTuple(LeftTuple leftTuple,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void modifyLeftTuple(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
     }
 
 }

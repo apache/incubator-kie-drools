@@ -18,6 +18,8 @@
 package org.drools.core.reteoo.builder;
 
 
+import java.util.List;
+
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -54,8 +56,6 @@ import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.time.impl.Timer;
 
-import java.util.List;
-
 public interface NodeFactory {
 
     EntryPointNode buildEntryPointNode(final int id,
@@ -90,14 +90,6 @@ public interface NodeFactory {
                                     final LeftTupleSource tupleSource,
                                     final EvalCondition eval,
                                     final BuildContext context);
-
-    LeftTupleSource buildQueryRiaFixerNode( final int id,
-                                            final LeftTupleSource tupleSource,
-                                            final BuildContext context);
-
-    ObjectSource buildPropagationQueuingNode( final int id,
-                                              final ObjectSource objectSource,
-                                              final BuildContext context);
 
     RightInputAdapterNode buildRightInputNode( int id,
                                                LeftTupleSource leftInput,

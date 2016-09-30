@@ -16,6 +16,9 @@
 
 package org.drools.core.reteoo.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.ActivationListenerFactory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
@@ -23,7 +26,12 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.AddRemoveRule;
-import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.PathEndNode;
+import org.drools.core.reteoo.ReteooBuilder;
+import org.drools.core.reteoo.RightInputAdapterNode;
+import org.drools.core.reteoo.RuleBuilder;
+import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Collect;
 import org.drools.core.rule.ConditionalBranch;
 import org.drools.core.rule.EntryPointId;
@@ -43,9 +51,6 @@ import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.drools.core.time.impl.Timer;
 import org.kie.api.conf.EventProcessingOption;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ReteooRuleBuilder implements RuleBuilder {
 
@@ -167,7 +172,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
             return ((TerminalNode) context.getLastNode());
         }
 
-        if  ( context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && rule.getTimer() != null ) {
+        if  ( rule.getTimer() != null ) {
             builder = this.utils.getBuilderFor( Timer.class );
             builder.build( context, this.utils, rule.getTimer() );
         }
@@ -185,10 +190,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
         baseTerminalNode.attach(context);
 
         setPathEndNodes(context);
-
-        if ( context.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
-            AddRemoveRule.addRule( terminal, context.getWorkingMemories(), context.getKnowledgeBase() );
-        }
+        AddRemoveRule.addRule( terminal, context.getWorkingMemories(), context.getKnowledgeBase() );
 
         // adds the terminal node to the list of nodes created/added by this sub-rule
         context.getNodes().add( baseTerminalNode );

@@ -16,6 +16,9 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.drools.core.common.BaseNode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -23,14 +26,9 @@ import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.PropagationQueuingNode;
-import org.drools.core.reteoo.QueryRiaFixerNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.WindowNode;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class RuleBaseNodes {
     public static Map<Integer, BaseNode> getNodeMap(InternalKnowledgeBase kBase) {
@@ -54,9 +52,6 @@ public class RuleBaseNodes {
                                      ObjectSink sink,
                                      Map<Integer, BaseNode> nodes) {
         // we don't need to store alpha nodes, as they have no state to serialise
-        if ( sink instanceof PropagationQueuingNode ) {
-            nodes.put( sink.getId(), ((BaseNode)sink) );
-        }
         if ( sink instanceof LeftTupleSource ) {
             LeftTupleSource node = (LeftTupleSource) sink;
             for ( LeftTupleSink leftTupleSink : node.getSinkPropagator().getSinks() ) {
@@ -83,13 +78,7 @@ public class RuleBaseNodes {
     private static void addLeftTupleSink(InternalKnowledgeBase kBase,
                                         LeftTupleSink sink,
                                         Map<Integer, BaseNode> nodes) {
-        if ( sink instanceof QueryRiaFixerNode ) {
-            nodes.put( sink.getId(),
-                       (LeftTupleSource) sink );
-            addLeftTupleSink( kBase,
-                              ((QueryRiaFixerNode)sink).getBetaNode(),
-                              nodes );
-        } else if ( sink instanceof LeftTupleSource ) {
+        if ( sink instanceof LeftTupleSource ) {
             nodes.put( sink.getId(),
                        (LeftTupleSource) sink );
             for ( LeftTupleSink leftTupleSink : ((LeftTupleSource) sink).getSinkPropagator().getSinks() ) {

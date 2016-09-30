@@ -16,6 +16,16 @@
 
 package org.drools.core.common;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.TraitHelper;
@@ -37,16 +47,6 @@ import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
 
 import static java.util.Arrays.asList;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -280,8 +280,6 @@ public class NamedEntryPoint
                                           typeConf,
                                           this.wm );
 
-        propagationContext.evaluateActionQueue( this.wm );
-
         this.wm.getRuleRuntimeEventSupport().fireObjectInserted(propagationContext,
                                                                 handle,
                                                                 object,
@@ -423,8 +421,6 @@ public class NamedEntryPoint
                                           propagationContext,
                                           typeConf,
                                           this.wm );
-
-        propagationContext.evaluateActionQueue( this.wm );
 
         this.wm.getRuleRuntimeEventSupport().fireObjectUpdated(propagationContext,
                                                                handle,
@@ -573,8 +569,6 @@ public class NamedEntryPoint
 
         this.objectStore.removeHandle( handle );
 
-
-        propagationContext.evaluateActionQueue( this.wm );
 
         this.wm.getRuleRuntimeEventSupport().fireObjectRetracted(propagationContext,
                                                                  handle,

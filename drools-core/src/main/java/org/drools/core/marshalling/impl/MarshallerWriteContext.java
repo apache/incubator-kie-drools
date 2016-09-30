@@ -26,8 +26,6 @@ import java.util.Map;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.Scheduler.ActivationTimerJobContext;
-import org.drools.core.common.Scheduler.ActivationTimerOutputMarshaller;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.PhreakTimerNode.TimerNodeJobContext;
 import org.drools.core.phreak.PhreakTimerNode.TimerNodeTimerOutputMarshaller;
@@ -98,8 +96,6 @@ public class MarshallerWriteContext extends ObjectOutputStream {
         this.writersByClass = new HashMap<Class< ? >, TimersOutputMarshaller>();
 
         this.writersByClass.put( SlidingTimeWindow.BehaviorJobContext.class, new BehaviorJobContextTimerOutputMarshaller() );
-
-        this.writersByClass.put( ActivationTimerJobContext.class, new ActivationTimerOutputMarshaller() );
 
         this.writersByClass.put( ExpireJobContext.class, new ExpireJobContextTimerOutputMarshaller() );
         

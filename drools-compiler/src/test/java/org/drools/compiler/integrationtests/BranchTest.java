@@ -15,6 +15,9 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.junit.Test;
@@ -22,12 +25,8 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class BranchTest extends CommonTestMethodBase {
 
@@ -634,13 +633,7 @@ public class BranchTest extends CommonTestMethodBase {
                 "end\n";
 
         List<String> results = executeTestWithDRL(str);
-
-        if ( CommonTestMethodBase.phreak == RuleEngineOption.PHREAK) {
-            assertEquals( 2, results.size() );
-        } else {
-            assertEquals( 1, results.size() );
-        }
-
+        assertEquals( 2, results.size() );
         assertTrue( results.contains( "STILTON" ) );
     }
 

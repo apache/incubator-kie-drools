@@ -16,6 +16,20 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.TimeUnit;
+
 import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.ActivationsFilter;
@@ -63,20 +77,6 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.Match;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * An input marshaller that uses protobuf. 
@@ -240,12 +240,9 @@ public class ProtobufInputMarshaller {
         readNodeMemories( context,
                           _session.getRuleData() );
 
-        List<PropagationContext> pctxs = new ArrayList<PropagationContext>();
-
-        if ( context.kBase.getConfiguration().isPhreakEnabled() || _session.getRuleData().hasInitialFact() ) {
-            ((StatefulKnowledgeSessionImpl)context.wm).initInitialFact(context.kBase, context);
-            context.handles.put( session.getInitialFactHandle().getId(), session.getInitialFactHandle() );
-        }
+        List<PropagationContext> pctxs = new ArrayList<>();
+        ((StatefulKnowledgeSessionImpl)context.wm).initInitialFact(context.kBase, context);
+        context.handles.put( session.getInitialFactHandle().getId(), session.getInitialFactHandle() );
 
         for ( ProtobufMessages.EntryPoint _ep : _session.getRuleData().getEntryPointList() ) {
             EntryPoint wmep = ((StatefulKnowledgeSessionImpl)context.wm).getEntryPointMap().get(_ep.getEntryPointId());
@@ -504,7 +501,6 @@ public class ProtobufInputMarshaller {
                                              typeConf,
                                              wm );
 
-        propagationContext.evaluateActionQueue( wm );
         wm.flushPropagations();
     }
 

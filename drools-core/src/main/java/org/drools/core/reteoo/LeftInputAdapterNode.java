@@ -16,6 +16,10 @@
 
 package org.drools.core.reteoo;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
@@ -40,12 +44,10 @@ import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
-import static org.drools.core.reteoo.PropertySpecificUtil.*;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getSettableProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * All asserting Facts must propagated into the right <code>ObjectSink</code> side of a BetaNode, if this is the first Pattern
@@ -430,11 +432,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return null;
     }
 
-    @Override
-    public void updateSink(LeftTupleSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
     /**
      * Returns the next node
      * @return
@@ -605,17 +602,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         public void assertObject(final InternalFactHandle factHandle,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-            if ( liaNode != null ) {
-                // phreak
-                liaNode.assertObject(factHandle, context, workingMemory);
-            } else {
-                final LeftTuple tuple = this.sink.createLeftTuple( factHandle,
-                                                                   this.sink,
-                                                                   this.leftTupleMemoryEnabled );
-                this.sink.assertLeftTuple( tuple,
-                                           context,
-                                           workingMemory );
-            }
+            liaNode.assertObject(factHandle, context, workingMemory);
         }
 
         public void modifyObject(InternalFactHandle factHandle,

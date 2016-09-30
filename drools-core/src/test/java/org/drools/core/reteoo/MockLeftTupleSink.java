@@ -47,20 +47,6 @@ public class MockLeftTupleSink extends LeftTupleSource
         super(id, null);
     }
 
-    public void assertLeftTuple(final LeftTuple tuple,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        this.asserted.add( new Object[]{tuple, context, workingMemory} );
-
-    }
-
-    public void retractLeftTuple(final LeftTuple tuple,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory) {
-        this.retracted.add( new Object[]{tuple, context, workingMemory} );
-
-    }
-
     public List getAsserted() {
         return this.asserted;
     }
@@ -78,11 +64,6 @@ public class MockLeftTupleSink extends LeftTupleSource
 
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new PathMemory(null, null);
-    }
-
-    public void updateSink(final LeftTupleSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
     }
 
     protected boolean doRemove(final RuleRemovalContext context,
@@ -144,17 +125,6 @@ public class MockLeftTupleSink extends LeftTupleSource
         return NodeTypeEnums.RuleTerminalNode;
     }
 
-    public void modifyLeftTuple(InternalFactHandle factHandle,
-                                ModifyPreviousTuples modifyPreviousTuples,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-    }
-
-    public void modifyLeftTuple(LeftTuple leftTuple,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-    }
-    
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {

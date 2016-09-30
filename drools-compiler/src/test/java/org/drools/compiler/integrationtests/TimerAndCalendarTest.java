@@ -15,6 +15,18 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.drools.compiler.Alarm;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -43,21 +55,8 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Arrays.asList;
 
@@ -1424,10 +1423,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     
     @Test(timeout=10000) @Ignore
     public void testHaltAfterSomeTimeThenRestart() throws Exception {
-        if ( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
-            return; // fails randomly for Rete
-        }
-
         String drl = "package org.kie.test;" +
                 "global java.util.List list; \n" +
                 "\n" +
@@ -1494,10 +1489,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test (timeout=10000)
     public void testHaltAfterSomeTimeThenRestartButNoLongerHolding() throws Exception {
-        if ( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
-            return; // fails randomly for Rete
-        }
-
         String drl = "package org.kie.test;" +
                 "global java.util.List list; \n" +
                 "\n" +

@@ -16,12 +16,11 @@
 
 package org.drools.core.reteoo;
 
+import java.io.Externalizable;
+
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.BitMask;
-
-import java.io.Externalizable;
 
 /**
  * Receiver of propagated <code>ReteTuple</code>s from a
@@ -35,36 +34,9 @@ public interface LeftTupleSink
     Externalizable,
     Sink {
 
-    /**
-     * Assert a new <code>ReteTuple</code>.
-     *
-     * @param leftTuple
-     *            The <code>ReteTuple</code> to propagate.
-     * @param context
-     *             The <code>PropagationContext</code> of the <code>WorkingMemory<code> action
-     * @param workingMemory
-     *            the <code>WorkingMemory</code> session.
-     */
-    void assertLeftTuple(LeftTuple leftTuple,
-                         PropagationContext context,
-                         InternalWorkingMemory workingMemory);
-
-    void retractLeftTuple(LeftTuple leftTuple,
-                          PropagationContext context,
-                          InternalWorkingMemory workingMemory);
-
     boolean isLeftTupleMemoryEnabled();
 
     void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled);
-    
-    void modifyLeftTuple(InternalFactHandle factHandle,
-                         ModifyPreviousTuples modifyPreviousTuples,
-                         PropagationContext context,
-                         InternalWorkingMemory workingMemory);
-    
-    void modifyLeftTuple(LeftTuple leftTuple,
-                         PropagationContext context,
-                         InternalWorkingMemory workingMemory);
 
     LeftTuple createPeer(LeftTuple original);
     

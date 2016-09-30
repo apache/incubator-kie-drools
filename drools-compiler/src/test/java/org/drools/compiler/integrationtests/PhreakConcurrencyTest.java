@@ -15,30 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.StockTick;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.NamedEntryPoint;
-import org.drools.core.reteoo.AlphaNode;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaNode;
-import org.drools.core.reteoo.ObjectSink;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.reteoo.SegmentMemory;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -52,25 +28,33 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.StockTick;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.NamedEntryPoint;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
+import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.SegmentMemory;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+
 import static java.util.Arrays.asList;
 
 @Ignore
 public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
     private Executor executor;
-
-    private static RuleEngineOption wasRunningPhreak;
-
-    @BeforeClass
-    public static void setPhreak() {
-        wasRunningPhreak = phreak;
-        phreak = RuleEngineOption.PHREAK;
-    }
-
-    @AfterClass
-    public static void unsetPhreak() {
-        phreak = wasRunningPhreak;
-    }
 
     @Before
     public void setUp() {

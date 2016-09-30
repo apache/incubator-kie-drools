@@ -27,9 +27,6 @@ import org.drools.core.common.EventFactHandle;
 public class WindowTupleList {
     protected EventFactHandle    handle;
 
-    private WindowTupleList      listPrevious;
-    private WindowTupleList      listNext;
-
     public WindowTuple           firstWindowTuple;
     public WindowTuple           lastWindowTuple;
 
@@ -50,45 +47,8 @@ public class WindowTupleList {
         return this.node;
     }
     
-    public void unlinkFromHandle() {
-        //this.handle.removeWindowTuple( this );
-        this.handle = null;
-        this.listPrevious = null;
-        this.listNext = null;
-    }
-
     public EventFactHandle getHandle() {
         return this.handle;
-    }
-
-    public WindowTupleList getListPrevious() {
-        return listPrevious;
-    }
-
-    public void setListPrevious(WindowTupleList listPrevious) {
-        this.listPrevious = listPrevious;
-    }
-
-    public WindowTupleList getListNext() {
-        return listNext;
-    }
-
-    public void setListNext(WindowTupleList listNext) {
-        this.listNext = listNext;
-    }
-
-    public void addFirstWindowTuple( WindowTuple windowTuple ) {
-        WindowTuple previousFirst = firstWindowTuple;
-        firstWindowTuple = windowTuple;
-        if ( previousFirst == null ) {
-            windowTuple.setWindowPrevious( null );
-            windowTuple.setWindowNext( null );
-            lastWindowTuple = windowTuple;
-        } else {
-            windowTuple.setWindowPrevious( null );
-            windowTuple.setWindowNext( previousFirst );
-            previousFirst.setWindowPrevious( windowTuple );
-        }
     }
 
     public void addLastWindowTuple( WindowTuple windowTuple ) {
@@ -130,14 +90,6 @@ public class WindowTupleList {
         windowTuple.setWindowNext( null );
     }
     
-    public WindowTuple getFirstWindowTuple() {
-        return firstWindowTuple;
-    }
-    
-    public WindowTuple getLastWindowTuple() {
-        return lastWindowTuple;
-    }
-
     public int hashCode() {
         return this.handle.hashCode();
     }

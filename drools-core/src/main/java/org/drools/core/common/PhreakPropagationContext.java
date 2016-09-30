@@ -16,6 +16,12 @@
 
 package org.drools.core.common;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -31,14 +37,11 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.*;
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.isAllSetPropertyReactiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertySetOnMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
 
 public class PhreakPropagationContext
         implements
@@ -271,26 +274,6 @@ public class PhreakPropagationContext
 
     public void setOriginOffset(int originOffset) {
         this.originOffset = originOffset;
-    }
-
-    public void addInsertAction(WorkingMemoryAction action) {
-        throw new UnsupportedOperationException("rete only method");
-    }
-
-    public void removeInsertAction(WorkingMemoryAction action) {
-        throw new UnsupportedOperationException("rete only method");
-    }
-    
-    public LinkedList<WorkingMemoryAction> getQueue1() {
-        throw new UnsupportedOperationException("rete only method");
-    }
-
-    public LinkedList<WorkingMemoryAction> getQueue2() {
-        throw new UnsupportedOperationException("rete only method");
-    }
-
-    public void evaluateActionQueue(InternalWorkingMemory workingMemory) {
-        // return, do nothing, this is for rete only
     }
 
     public BitMask getModificationMask() {

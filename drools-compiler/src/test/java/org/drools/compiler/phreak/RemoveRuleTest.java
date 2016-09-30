@@ -15,6 +15,10 @@
 
 package org.drools.compiler.phreak;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -37,26 +41,21 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertNotSame;
 import static junit.framework.TestCase.assertSame;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class RemoveRuleTest {
 
     @Test
     public void testPopulatedSingleRuleNoSharing() throws Exception {
         KieBaseConfiguration kconf = ( KieBaseConfiguration ) KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
@@ -107,8 +106,6 @@ public class RemoveRuleTest {
     @Test
     public void testPopulatedSingleRuleNoSharingWithSubnetworkAtStart() throws Exception {
         KieBaseConfiguration kconf = ( KieBaseConfiguration ) KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
@@ -697,8 +694,6 @@ public class RemoveRuleTest {
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return kbase;

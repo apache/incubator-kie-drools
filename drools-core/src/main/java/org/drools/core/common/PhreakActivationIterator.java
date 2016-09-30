@@ -15,6 +15,13 @@
 
 package org.drools.core.common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -36,14 +43,8 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class PhreakActivationIterator
     implements
@@ -64,16 +65,24 @@ public class PhreakActivationIterator
     }
 
 
-    public static PhreakActivationIterator iterator(InternalWorkingMemory wm) {
+    public static Iterator iterator(InternalWorkingMemory wm) {
         return new PhreakActivationIterator( wm,
                                              wm.getKnowledgeBase() );
     }
 
-    public static PhreakActivationIterator iterator(StatefulKnowledgeSession ksession) {
+    public static Iterator iterator(StatefulKnowledgeSession ksession) {
         return new PhreakActivationIterator( ((InternalWorkingMemoryEntryPoint) ksession).getInternalWorkingMemory(),
                                              ksession.getKieBase() );
     }
 
+    public static Iterator iterator(KieSession ksession) {
+        return iterator((InternalWorkingMemoryEntryPoint) ksession);
+    }
+
+    public static Iterator iterator(InternalWorkingMemoryEntryPoint ksession) {
+        InternalWorkingMemory wm = ksession.getInternalWorkingMemory();
+        return PhreakActivationIterator.iterator(wm);
+    }
 
     public Object next() {
         if ( agendaItemIter.hasNext() ) {

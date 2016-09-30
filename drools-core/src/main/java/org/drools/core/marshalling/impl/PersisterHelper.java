@@ -16,6 +16,18 @@
 
 package org.drools.core.marshalling.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map.Entry;
+
 import com.google.protobuf.ByteString;
 import com.google.protobuf.ByteString.Output;
 import com.google.protobuf.ExtensionRegistry;
@@ -30,7 +42,6 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteAssert
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex.Builder;
-import org.drools.core.reteoo.PropagationQueuingNode.PropagateAction;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorExpireWMAction;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.Drools;
@@ -38,45 +49,7 @@ import org.drools.core.util.KeyStoreHelper;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategy.Context;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.InvalidKeyException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map.Entry;
-
 public class PersisterHelper {
-    public static WorkingMemoryAction readWorkingMemoryAction(MarshallerReaderContext context) throws IOException,
-                                                                                              ClassNotFoundException {
-        int type = context.readShort();
-        switch ( type ) {
-            case WorkingMemoryAction.WorkingMemoryReteAssertAction : {
-                return new WorkingMemoryReteAssertAction( context );
-            }
-//            case WorkingMemoryAction.DeactivateCallback : {
-//                return new DeactivateCallback( context );
-//            }
-            case WorkingMemoryAction.PropagateAction : {
-                return new PropagateAction( context );
-            }
-            case WorkingMemoryAction.LogicalRetractCallback : {
-                return new BeliefSystemLogicalCallback( context );
-            }
-            case WorkingMemoryAction.WorkingMemoryReteExpireAction : {
-                return new WorkingMemoryReteExpireAction( context );
-            }
-            case WorkingMemoryAction.WorkingMemoryBehahviourRetract : {
-                return new BehaviorExpireWMAction( context );
-
-            }
-        }
-        return null;
-    }
 
     public static WorkingMemoryAction deserializeWorkingMemoryAction(MarshallerReaderContext context,
                                                                      ProtobufMessages.ActionQueue.Action _action) throws IOException,
@@ -85,14 +58,6 @@ public class PersisterHelper {
             case ASSERT : {
                 return new WorkingMemoryReteAssertAction( context, 
                                                           _action );
-            }
-//            case DEACTIVATE_CALLBACK : {
-//                return new DeactivateCallback(context,
-//                                              _action );
-//            }
-            case PROPAGATE : {
-                return new PropagateAction(context,
-                                           _action );
             }
             case LOGICAL_RETRACT : {
                 return new BeliefSystemLogicalCallback(context,

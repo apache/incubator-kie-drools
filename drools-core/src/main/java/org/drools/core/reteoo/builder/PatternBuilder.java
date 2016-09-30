@@ -16,6 +16,10 @@
 
 package org.drools.core.reteoo.builder;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.mvel.ActivationPropertyHandler;
@@ -47,10 +51,6 @@ import org.drools.core.time.impl.Timer;
 import org.kie.api.conf.EventProcessingOption;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
 
 import static org.drools.core.reteoo.builder.GroupElementBuilder.AndBuilder.buildJoinNode;
 import static org.drools.core.reteoo.builder.GroupElementBuilder.AndBuilder.buildTupleSource;
@@ -311,15 +311,7 @@ public class PatternBuilder
 
         buildAlphaNodeChain( context, utils, pattern, alphaConstraints );
 
-        NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
-        
         if ( context.getCurrentEntryPoint() != EntryPointId.DEFAULT && context.isAttachPQN() ) {
-            if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
-                context.setObjectSource( utils.attachNode( context,
-                                                           nfactory.buildPropagationQueuingNode( context.getNextId(),
-                                                                                                                context.getObjectSource(),
-                                                                                                                context ) ) );
-            }
             // the entry-point specific network nodes are attached, so, set context to default entry-point
             context.setCurrentEntryPoint( EntryPointId.DEFAULT );
         }

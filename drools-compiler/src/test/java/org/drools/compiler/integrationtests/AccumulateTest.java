@@ -15,6 +15,24 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Cheesery;
 import org.drools.compiler.CommonTestMethodBase;
@@ -60,24 +78,6 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.mock;
@@ -2983,12 +2983,8 @@ public class AccumulateTest extends CommonTestMethodBase {
         return kbase.newKieSession();
     }
 
-    private KieBase loadKieBaseFromString( String... drlContentStrings ) {
-        return loadKnowledgeBaseFromString( null, null, phreak, drlContentStrings );
-    }
-
     private KieSession getKieSessionFromContentStrings( String... drlContentStrings ) {
-        KieBase kbase = loadKnowledgeBaseFromString( null, null, phreak, drlContentStrings );
+        KieBase kbase = loadKnowledgeBaseFromString( null, null, drlContentStrings );
         return kbase.newKieSession();
     }
 

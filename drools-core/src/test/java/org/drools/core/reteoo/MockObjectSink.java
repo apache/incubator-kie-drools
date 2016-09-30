@@ -121,10 +121,6 @@ public class MockObjectSink
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
     }
 
-    @Override
-    public void assertRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-    }
-
     public short getType() {
         return NodeTypeEnums.JoinNode;
     }
@@ -139,13 +135,6 @@ public class MockObjectSink
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
         this.updated.add( new Object[]{factHandle, context, workingMemory} );
-        
-    }
-
-    public void modifyRightTuple(RightTuple rightTuple,
-                                 PropagationContext context,
-                                 InternalWorkingMemory workingMemory) {
-        this.updated.add( new Object[]{rightTuple, context, workingMemory} );
         
     }
 
