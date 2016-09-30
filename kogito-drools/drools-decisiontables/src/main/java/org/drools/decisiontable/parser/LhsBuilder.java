@@ -48,7 +48,7 @@ public class LhsBuilder implements SourceBuilder {
     private Map<Integer, String> constraints;
     private List<String> values;
     private boolean hasValues;
-    private FieldType fieldType;
+    private Map<Integer, FieldType> fieldTypes;
 
     private static Set<String> operators;
 
@@ -75,7 +75,8 @@ public class LhsBuilder implements SourceBuilder {
     private static final Pattern patEval = Pattern.compile( "\\beval\\s*(?:\\(\\s*\\)\\s*)?$" );
 
     /**
-     * @param colDefinition The initial column definition that is shared via merged cells.
+     * @param colDefinition
+     *         The initial column definition that is shared via merged cells.
      */
     public LhsBuilder( int row,
                        int column,
@@ -83,6 +84,7 @@ public class LhsBuilder implements SourceBuilder {
         this.headerRow = row;
         this.headerCol = column;
         this.constraints = new HashMap<Integer, String>();
+        this.fieldTypes = new HashMap<>();
         this.values = new ArrayList<String>();
         this.forAll = false;
 
@@ -141,31 +143,35 @@ public class LhsBuilder implements SourceBuilder {
     public void addTemplate( int row,
                              int column,
                              String content ) {
-        Integer key = new Integer( column );
         content = content.trim();
-        if ( constraints.containsKey( key ) ) {
+        if ( constraints.containsKey( column ) ) {
             throw new IllegalArgumentException( "Internal error: Can't have a constraint added twice to one spreadsheet col." );
+        }
+        if ( fieldTypes.containsKey( column ) ) {
+            throw new IllegalArgumentException( "Internal error: Can't have a FieldType added twice to one spreadsheet col." );
         }
 
         //we can wrap all values in quotes, it all works
-        fieldType = calcFieldType( content );
+        final FieldType fieldType = calcFieldType( content );
         if ( !isMultipleConstraints() ) {
-            constraints.put( key,
+            constraints.put( column,
                              content );
         } else if ( fieldType == FieldType.FORALL_FIELD ) {
             forAll = true;
-            constraints.put( key,
+            constraints.put( column,
                              content );
         } else if ( fieldType == FieldType.NORMAL_FIELD ) {
-            constraints.put( key,
+            constraints.put( column,
                              content );
         } else if ( fieldType == FieldType.SINGLE_FIELD ) {
-            constraints.put( key,
+            constraints.put( column,
                              content + " == \"" + SnippetBuilder.PARAM_STRING + "\"" );
         } else if ( fieldType == FieldType.OPERATOR_FIELD ) {
-            constraints.put( key,
+            constraints.put( column,
                              content + " \"" + SnippetBuilder.PARAM_STRING + "\"" );
         }
+        this.fieldTypes.put( column,
+                             fieldType );
     }
 
     public void clearValues() {
@@ -184,7 +190,8 @@ public class LhsBuilder implements SourceBuilder {
                                                            RuleSheetParserUtil.rc2name( this.headerRow + 2, this.headerCol ) );
         }
         SnippetBuilder snip = new SnippetBuilder( content );
-        String result = snip.build( fixValue( value ) );
+        String result = snip.build( fixValue( column,
+                                              value ) );
         this.values.add( result );
     }
 
@@ -196,8 +203,10 @@ public class LhsBuilder implements SourceBuilder {
      * @param value
      * @return
      */
-    private String fixValue( final String value ) {
+    private String fixValue( final int column,
+                             final String value ) {
         String _value = value;
+        final FieldType fieldType = this.fieldTypes.get( column );
         if ( fieldType == FieldType.NORMAL_FIELD || !isMultipleConstraints() || isForAll() ) {
             return value;
         }
