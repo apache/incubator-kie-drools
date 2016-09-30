@@ -103,10 +103,6 @@ public class JoinNode extends BetaNode {
                             memory );
     }
 
-    public void assertLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     public boolean doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
         if ( !isInUse() ) {

@@ -766,11 +766,6 @@ public class QueryElementNode extends LeftTupleSource
         return "[" + this.getClass().getSimpleName() + "(" + this.id + ", " + queryElement.getQueryName() + ")]";
     }
 
-    public void assertLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
-
     public void attach( BuildContext context ) {
         this.leftInput.addTupleSink( this, context );
     }
