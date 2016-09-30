@@ -66,58 +66,58 @@ public class ReteDiagram {
     }
 
     public static void dumpRete(Rete rete, Pref pref) {
-        for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
-            try (PrintStream out = new PrintStream(new FileOutputStream("test.gv"));) {
-                out.println("digraph g {\n" +
-                        "graph [fontname = \"Overpass\" fontsize=11];\n" + 
-                        " node [fontname = \"Overpass\" fontsize=11];\n" + 
-                        " edge [fontname = \"Overpass\" fontsize=11];");
-                HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap = new HashMap<>();
-                HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap = new HashMap<>();
-                List<Vertex<BaseNode,BaseNode>> vertexes = new ArrayList<>();
-                dumpNode( entryPointNode, "", new HashSet<>(), nodeMap, vertexes, levelMap, out);
-                out.println("");
-                printNodeMap(nodeMap, out);
-                
-                System.out.println(nodeMap.get(RuleTerminalNode.class));
-                
-                out.println("");
-                printVertexes(vertexes, out);
-                out.println("");
-                printLevelMap(levelMap, out, vertexes, pref);
-                out.println("");
-                if (pref == Pref.PARTITION) {
-                    printPartitionMap(nodeMap, out, vertexes);
-                }
-                
-                out.println("}");
-            } catch (Exception e) {
-                e.printStackTrace();
+        try (PrintStream out = new PrintStream(new FileOutputStream("test.gv"));) {
+            out.println("digraph g {\n" +
+                    "graph [fontname = \"Overpass\" fontsize=11];\n" + 
+                    " node [fontname = \"Overpass\" fontsize=11];\n" + 
+                    " edge [fontname = \"Overpass\" fontsize=11];");
+            HashMap<Class<? extends BaseNode>, Set<BaseNode>> levelMap = new HashMap<>();
+            HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap = new HashMap<>();
+            List<Vertex<BaseNode,BaseNode>> vertexes = new ArrayList<>();
+            for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
+                visitNodes( entryPointNode, "", new HashSet<>(), nodeMap, vertexes, levelMap, out);
             }
+            out.println("");
+            printNodeMap(nodeMap, out);
+            
+            System.out.println(nodeMap.get(RuleTerminalNode.class));
+            
+            out.println("");
+            printVertexes(vertexes, out);
+            out.println("");
+            printLevelMap(levelMap, out, vertexes, pref);
+            out.println("");
+            if (pref == Pref.PARTITION) {
+                printPartitionMap(nodeMap, out, vertexes);
+            }
+            
+            out.println("}");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            try {
-                ProcessBuilder pbuilder = new ProcessBuilder( "dot", "-Tsvg", "-o", "test.svg", "test.gv" );
-                pbuilder.redirectErrorStream( true );
-                pbuilder.start();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            
-            try {
-                ProcessBuilder pbuilder = new ProcessBuilder( "google-chrome", "test.svg" );
-                pbuilder.redirectErrorStream( true );
-                pbuilder.start();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            
-            try {
-                ProcessBuilder pbuilder = new ProcessBuilder( "dot", "-Tpng", "-o", "test.png", "test.gv" );
-                pbuilder.redirectErrorStream( true );
-                pbuilder.start();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            ProcessBuilder pbuilder = new ProcessBuilder( "dot", "-Tsvg", "-o", "test.svg", "test.gv" );
+            pbuilder.redirectErrorStream( true );
+            pbuilder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        try {
+            ProcessBuilder pbuilder = new ProcessBuilder( "google-chrome", "test.svg" );
+            pbuilder.redirectErrorStream( true );
+            pbuilder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        try {
+            ProcessBuilder pbuilder = new ProcessBuilder( "dot", "-Tpng", "-o", "test.png", "test.gv" );
+            pbuilder.redirectErrorStream( true );
+            pbuilder.start();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     
@@ -278,7 +278,7 @@ public class ReteDiagram {
         }
     }
 
-    private static void dumpNode(BaseNode node, String ident, Set<Integer> visitedNodesIDs, HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap, List<Vertex<BaseNode, BaseNode>> vertexes, Map<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out) {
+    private static void visitNodes(BaseNode node, String ident, Set<Integer> visitedNodesIDs, HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap, List<Vertex<BaseNode, BaseNode>> vertexes, Map<Class<? extends BaseNode>, Set<BaseNode>> levelMap, PrintStream out) {
         if (!visitedNodesIDs.add( node.getId() )) {
             return;
         }
@@ -289,7 +289,7 @@ public class ReteDiagram {
             for (Sink sink : sinks) {
                 vertexes.add(Vertex.of(node, (BaseNode)sink));
                 if (sink instanceof BaseNode) {
-                    dumpNode((BaseNode)sink, ident + " ", visitedNodesIDs, nodeMap, vertexes, levelMap, out);
+                    visitNodes((BaseNode)sink, ident + " ", visitedNodesIDs, nodeMap, vertexes, levelMap, out);
                 }
             }
         }
