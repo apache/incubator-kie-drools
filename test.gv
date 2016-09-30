@@ -4,66 +4,44 @@ graph [fontname = "Overpass" fontsize=11];
  edge [fontname = "Overpass" fontsize=11];
 
 EP1 [shape=circle width=0.15 fillcolor=black style=filled label="" xlabel="DEFAULT"] ;
-OTN7 [shape=rect style=rounded label="n.t.m.Cheese"] ;
 OTN2 [shape=rect style=rounded label="o.d.c.r.InitialFactImpl"] ;
-OTN19 [shape=rect style=rounded label="j.l.String"] ;
-OTN10 [shape=rect style=rounded label="n.t.m.Person"] ;
-OTN3 [shape=rect style=rounded label="n.t.m.Measurement"] ;
-AN8 [label="name == \"cheddar\""] ;
-AN4 [label="id == \"color\""] ;
-LIA9 [shape=house orientation=-90] ;
-LIA15 [shape=house orientation=-90] ;
-LIA5 [shape=house orientation=-90] ;
-RIA21 [shape=house orientation=90] ;
-BN16 [shape=box label=<[ AccumulateNode(16) ]<BR/>[org.drools.core.base.accumulators.JavaAccumulatorFunctionExecutor@456d6c1e]<BR/>[]>] ;
-BN22 [shape=box label="not( ⋈ )"] ;
-BN11 [shape=box label="Person( favouriteCheese == $cheddar )" href="http://drools.org"] ;
-BN13 [shape=box label="Person( favouriteCheese != $cheddar )" href="http://drools.org"] ;
-BN18 [shape=box label="⋈" href="http://drools.org"] ;
-BN20 [shape=box label="⋈" href="http://drools.org"] ;
-RTN12 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Likes cheddar" href="http://drools.org"] ;
-RTN14 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Don't like cheddar" href="http://drools.org"] ;
-RTN17 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Color count" href="http://drools.org"] ;
-RTN23 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="Not a Color" href="http://drools.org"] ;
-RTN6 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="For color" href="http://drools.org"] ;
+OTN6 [shape=rect style=rounded label="j.l.String"] ;
+OTN3 [shape=rect style=rounded label="j.l.Integer"] ;
+LIA4 [shape=house orientation=-90] ;
+RIA8 [shape=house orientation=90] ;
+BN9 [shape=box label=<[ AccumulateNode(9) ]<BR/>[org.drools.core.base.accumulators.JavaAccumulatorFunctionExecutor@21aa6d6c]<BR/>[[ TupleStartEqualsConstraint ]]>] ;
+BN11 [shape=box label=<[ AccumulateNode(11) ]<BR/>[org.drools.core.base.accumulators.JavaAccumulatorFunctionExecutor@56276db8]<BR/>[[ TupleStartEqualsConstraint ]]>] ;
+BN7 [shape=box label="⋈" href="http://drools.org"] ;
+BN5 [shape=box label="⋈" href="http://drools.org"] ;
+RTN10 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="R1y" href="http://drools.org"] ;
+RTN12 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="R1x" href="http://drools.org"] ;
+RTN13 [shape=doublecircle width=0.2 fillcolor=black style=filled label="" xlabel="R2" href="http://drools.org"] ;
 
-EP1 -> OTN7 ;
-OTN7 -> AN8 ;
-AN8 -> LIA9 ;
-LIA9 -> BN11 ;
-BN11 -> RTN12 ;
-LIA9 -> BN13 ;
-BN13 -> RTN14 ;
 EP1 -> OTN2 ;
-OTN2 -> LIA15 ;
-LIA15 -> BN16 ;
-BN16 -> RTN17 ;
-LIA15 -> BN18 ;
-BN18 -> BN20 ;
-BN20 -> RIA21 ;
-RIA21 -> BN22 ;
-BN22 -> RTN23 ;
-LIA15 -> BN22 ;
-EP1 -> OTN19 ;
-OTN19 -> BN20 ;
-EP1 -> OTN10 ;
-OTN10 -> BN11 ;
-OTN10 -> BN13 ;
+EP1 -> OTN6 ;
+OTN6 -> BN7 ;
+BN7 -> RIA8 ;
+RIA8 -> BN9 ;
+BN9 -> RTN10 ;
+RIA8 -> BN11 ;
+BN11 -> RTN12 ;
 EP1 -> OTN3 ;
-OTN3 -> AN4 ;
-AN4 -> LIA5 ;
-LIA5 -> RTN6 ;
-AN4 -> BN16 ;
-AN4 -> BN18 ;
+OTN3 -> LIA4 ;
+LIA4 -> BN5 ;
+BN5 -> BN7 ;
+LIA4 -> BN9 ;
+LIA4 -> BN11 ;
+LIA4 -> RTN13 ;
+OTN3 -> BN5 ;
 
- {rank=same; l1[shape=point, xlabel="l1"]; OTN19; OTN2; OTN10; OTN3; OTN7; }
- {rank=same; l2[shape=point, xlabel="l2"]; AN4; AN8; }
- {rank=same; l3[shape=point, xlabel="l3"]; LIA15; LIA9; LIA5; }
- {rank=same; lria[shape=point, xlabel="lria"]; RIA21; }
- {rank=same; lriaSources[shape=point, xlabel="lriaSources"]; BN18; BN20; }
- {rank=same; lsubbeta[shape=point, xlabel="lsubbeta"]; BN22; }
- {rank=same; l4[shape=point, xlabel="l4"]; BN11; BN16; BN13; }
- {rank=same; l5[shape=point, xlabel="l5"]; RTN14; RTN17; RTN23; RTN12; RTN6; }
+ {rank=same; l1[shape=point, xlabel="l1"]; OTN3; OTN6; OTN2; }
+ {rank=same; l2[shape=point, xlabel="l2"]; }
+ {rank=same; l3[shape=point, xlabel="l3"]; LIA4; }
+ {rank=same; lria[shape=point, xlabel="lria"]; RIA8; }
+ {rank=same; lriaSources[shape=point, xlabel="lriaSources"]; BN5; BN7; }
+ {rank=same; lsubbeta[shape=point, xlabel="lsubbeta"]; BN9; BN11; }
+ {rank=same; l4[shape=point, xlabel="l4"]; }
+ {rank=same; l5[shape=point, xlabel="l5"]; RTN12; RTN10; RTN13; }
  l1->l2->l3->lriaSources->lria->lsubbeta->l4->l5;
 
 }
