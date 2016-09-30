@@ -389,15 +389,6 @@ public class AccumulateNode extends BetaNode {
         return peer;
     }
 
-    public enum ActivitySource {
-        LEFT, RIGHT
-    }
-
-    @Override
-    public void assertRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
     /**
      *  @inheritDoc
      *
@@ -412,11 +403,6 @@ public class AccumulateNode extends BetaNode {
         BetaMemory bm = memory.getBetaMemory();
         rightTuple.setPropagationContext( pctx );
         doDeleteRightTuple( rightTuple, workingMemory, bm );
-    }
-
-    @Override
-    public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
     }
 
 

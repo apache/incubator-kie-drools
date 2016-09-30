@@ -122,11 +122,6 @@ public class WindowNode extends ObjectSource
         return NodeTypeEnums.WindowNode;
     }
 
-    @Override
-    public void assertRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
     /**
      * Returns the <code>FieldConstraints</code>
      *
@@ -185,8 +180,7 @@ public class WindowNode extends ObjectSource
         ObjectTypeNode.doRetractObject(clonedFh, pctx, wm);
     }
 
-    @Override
-    public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
+    private void modifyRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
         EventFactHandle originalFactHandle = ( EventFactHandle ) rightTuple.getFactHandle();
         EventFactHandle cloneFactHandle  = ( EventFactHandle ) rightTuple.getContextObject();
         originalFactHandle.quickCloneUpdate( cloneFactHandle ); // make sure all fields are updated

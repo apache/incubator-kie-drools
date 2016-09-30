@@ -116,12 +116,6 @@ public class MockitoHelper {
                         counter ).assertObject( ((ArgumentCaptor<InternalFactHandle>) captor).capture(),
                                                 any( PropagationContext.class ),
                                                 same( wm ) );
-            } else if ( "modifyRight".equals( cmd[1] ) ) {
-                captor = ArgumentCaptor.forClass( RightTuple.class );
-                verify( (RightTupleSink) node,
-                        counter ).modifyRightTuple( ((ArgumentCaptor<RightTuple>) captor).capture(),
-                                                    any( PropagationContext.class ),
-                                                    same( wm ) );
             } else if ( "retractRight".equals( cmd[1] ) ) {
                 captor = ArgumentCaptor.forClass( RightTuple.class );
                 verify( (RightTupleSink) node,

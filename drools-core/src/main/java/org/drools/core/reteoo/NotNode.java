@@ -126,11 +126,6 @@ public class NotNode extends BetaNode {
         return "[NotNode(" + this.getId() + ") - " + ((source != null) ? source.getObjectType() : "<source from a subnetwork>") + "]";
     }
 
-    @Override
-    public void assertRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
     public void assertObject( final InternalFactHandle factHandle,
                               final PropagationContext pctx,
                               final InternalWorkingMemory wm ) {
@@ -187,11 +182,6 @@ public class NotNode extends BetaNode {
             // nothing staged before, notify rule, so it can evaluate network
             memory.setNodeDirty( wm );
         }
-    }
-
-    @Override
-    public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
     }
 
     public void assertLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {

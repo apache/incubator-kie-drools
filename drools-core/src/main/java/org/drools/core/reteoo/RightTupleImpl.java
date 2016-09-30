@@ -267,7 +267,7 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
 
     @Override
     public void modifyTuple( PropagationContext context, InternalWorkingMemory workingMemory) {
-        getTupleSink().modifyRightTuple( this, context, workingMemory );
+        // FIXME PHREAK
     }
 
     @Override

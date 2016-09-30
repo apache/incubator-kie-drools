@@ -21,17 +21,9 @@ import org.drools.core.spi.PropagationContext;
 
 public interface RightTupleSink extends Sink {
 
-    void assertRightTuple( final RightTuple rightTuple,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory );
-
     void retractRightTuple(final RightTuple rightTuple,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory);
-    
-    void modifyRightTuple(final RightTuple rightTuple,
-                          final PropagationContext context,
-                          final InternalWorkingMemory workingMemory);
 
     ObjectTypeNode.Id getRightInputOtnId();
 }

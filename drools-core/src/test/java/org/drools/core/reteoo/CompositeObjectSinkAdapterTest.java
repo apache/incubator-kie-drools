@@ -709,11 +709,6 @@ public class CompositeObjectSinkAdapterTest {
             return 0;
         }
 
-        public void modifyRightTuple(RightTuple rightTuple,
-                                     PropagationContext context,
-                                     InternalWorkingMemory workingMemory) {
-        }
-
         public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                          Sink sink,
                                          boolean leftTupleMemoryEnabled) {
@@ -748,12 +743,6 @@ public class CompositeObjectSinkAdapterTest {
         }
         public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
             return super.createMemory( config, wm);
-        }
-
-        @Override
-        public void assertRightTuple(RightTuple rightTuple,
-                                     PropagationContext context,
-                                     InternalWorkingMemory workingMemory) {
         }
 
         @Override
