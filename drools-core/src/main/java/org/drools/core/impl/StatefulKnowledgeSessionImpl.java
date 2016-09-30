@@ -1850,6 +1850,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 if (factHandle.getActivationsCount() == 0) {
                     String epId = factHandle.getEntryPoint().getEntryPointId();
                     ( (InternalWorkingMemoryEntryPoint) workingMemory.getEntryPoint( epId ) ).removeFromObjectStore( factHandle );
+                } else {
+                    factHandle.setPendingRemoveFromStore( true );
                 }
             }
         }
