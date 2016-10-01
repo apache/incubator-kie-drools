@@ -43,33 +43,6 @@ public class DMNAssemblerService implements KieAssemblerService {
             return;
         }
 
-//        try {
-//            builder = new JunctionTreeBuilder(network);
-//        }  catch ( Exception e ) {
-//            kbuilder.getErrors().add(new BayesNetworkAssemblerError(resource, "Unable to build Junction Tree:\n" + e.toString()));
-//            return;
-//        }
-
-        KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
-        PackageRegistry pkgReg = kbuilderImpl.getPackageRegistry( network.getPackageName() );
-        if ( pkgReg == null ) {
-            pkgReg = kbuilderImpl.newPackage( new PackageDescr( network.getPackageName() ) );
-        }
-
-        InternalKnowledgePackage kpkgs = pkgReg.getPackage();
-
-
-
-
-        Map<ResourceType, ResourceTypePackage> rpkg = kpkgs.getResourceTypePackages();
-        BayesPackage bpkg = (BayesPackage) rpkg.get(ResourceType.BAYES);
-        if ( bpkg == null ) {
-            bpkg = new BayesPackage();
-            rpkg.put(ResourceType.BAYES, bpkg);
-        }
-        bpkg.addJunctionTree(network.getName(), builder.build());
-
-
     }
 
     @Override
