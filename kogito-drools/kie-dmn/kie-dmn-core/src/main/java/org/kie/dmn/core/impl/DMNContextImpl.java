@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.weaver;
+package org.kie.dmn.core.impl;
 
-import org.kie.api.KieBase;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.io.ResourceType;
-import org.kie.dmn.core.runtime.DMNPackage;
-import org.kie.internal.weaver.KieWeaverService;
+import org.kie.dmn.core.runtime.DMNContext;
 
-public class DMNWeaverService implements KieWeaverService<DMNPackage> {
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class DMNContextImpl
+        implements DMNContext {
+    private Map<String, Object> entries = new LinkedHashMap<String, Object>();
 
     @Override
-    public ResourceType getResourceType() {
-        return ResourceType.DMN;
+    public Object set(String name, Object value) {
+        return entries.put( name, value );
     }
 
     @Override
-    public void merge(KieBase kieBase, KiePackage kiePkg, DMNPackage rtPkg) {
+    public Object get(String name) {
+        return entries.get( name );
     }
 
     @Override
-    public void weave(KieBase kieBase, KiePackage kiePkg, DMNPackage rtPkg) {
+    public Map<String, Object> getAll() {
+        return entries;
     }
 
-    @Override
-    public Class getServiceInterface() {
-        return KieWeaverService.class;
-    }
 }

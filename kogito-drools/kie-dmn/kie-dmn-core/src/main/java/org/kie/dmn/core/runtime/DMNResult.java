@@ -16,19 +16,8 @@
 
 package org.kie.dmn.core.runtime;
 
-import org.kie.dmn.core.impl.DMNRuntimeImpl;
-import org.kie.internal.runtime.KieRuntimeService;
-import org.kie.internal.runtime.KnowledgeRuntime;
+public interface DMNResult {
 
-public class DMNRuntimeService implements KieRuntimeService<DMNRuntime> {
+    DMNContext getContext();
 
-    @Override
-    public DMNRuntime newKieRuntime(KnowledgeRuntime session) {
-        return new DMNRuntimeImpl();
-    }
-
-    @Override
-    public Class getServiceInterface() {
-        return DMNRuntime.class;
-    }
 }

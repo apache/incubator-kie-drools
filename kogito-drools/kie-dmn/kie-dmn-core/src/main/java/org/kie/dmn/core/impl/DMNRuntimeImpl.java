@@ -14,21 +14,15 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.runtime;
+package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.impl.DMNRuntimeImpl;
-import org.kie.internal.runtime.KieRuntimeService;
-import org.kie.internal.runtime.KnowledgeRuntime;
+import org.kie.dmn.core.runtime.DMNRuntime;
+import org.kie.dmn.core.runtime.DMNModel;
 
-public class DMNRuntimeService implements KieRuntimeService<DMNRuntime> {
-
-    @Override
-    public DMNRuntime newKieRuntime(KnowledgeRuntime session) {
-        return new DMNRuntimeImpl();
-    }
+public class DMNRuntimeImpl implements DMNRuntime {
 
     @Override
-    public Class getServiceInterface() {
-        return DMNRuntime.class;
+    public DMNModel getModelByName(String modelName) {
+        return null;
     }
 }
