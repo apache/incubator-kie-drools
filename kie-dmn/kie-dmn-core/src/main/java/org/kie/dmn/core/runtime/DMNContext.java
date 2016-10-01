@@ -16,19 +16,14 @@
 
 package org.kie.dmn.core.runtime;
 
-import org.kie.dmn.core.impl.DMNRuntimeImpl;
-import org.kie.internal.runtime.KieRuntimeService;
-import org.kie.internal.runtime.KnowledgeRuntime;
+import java.util.Map;
 
-public class DMNRuntimeService implements KieRuntimeService<DMNRuntime> {
+public interface DMNContext {
 
-    @Override
-    public DMNRuntime newKieRuntime(KnowledgeRuntime session) {
-        return new DMNRuntimeImpl();
-    }
+    Object set(String name, Object value);
 
-    @Override
-    public Class getServiceInterface() {
-        return DMNRuntime.class;
-    }
+    Object get(String name);
+
+    Map<String, Object> getAll();
+
 }
