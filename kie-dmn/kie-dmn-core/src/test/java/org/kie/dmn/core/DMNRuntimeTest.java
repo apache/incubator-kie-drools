@@ -17,18 +17,10 @@
 package org.kie.dmn.core;
 
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
-import org.kie.dmn.backend.unmarshalling.v1_1.DefaultUnmarshaller;
-import org.kie.dmn.core.runtime.*;
-import org.kie.dmn.feel.model.v1_1.Definitions;
-import org.kie.dmn.unmarshalling.v1_1.Unmarshaller;
-
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import org.kie.dmn.core.api.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -54,7 +46,7 @@ public class DMNRuntimeTest {
         DMNContext context = DMNFactory.newContext();
         context.set( "Full Name", "John Doe" );
 
-        DMNResult dmnResult = dmnModel.evaluateAll( context );
+        DMNResult dmnResult = dmnRuntime.evaluateAll( dmnModel, context );
 
         DMNContext result = dmnResult.getContext();
 

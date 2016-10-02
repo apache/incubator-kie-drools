@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.runtime;
+package org.kie.dmn.core.api;
 
-import java.util.Map;
+public interface DMNRuntime {
 
-public interface DMNContext
-        extends Cloneable {
+    DMNModel getModel( String namepasce, String modelName );
 
-    Object set(String name, Object value);
+    DMNResult evaluateAll( DMNModel model, DMNContext context );
 
-    Object get(String name);
-
-    Map<String, Object> getAll();
-
-    boolean isDefined(String name);
-
-    DMNContext clone();
+    DMNResult evaluateDecision( DMNModel model, String decisionName, DMNContext context );
 
 }

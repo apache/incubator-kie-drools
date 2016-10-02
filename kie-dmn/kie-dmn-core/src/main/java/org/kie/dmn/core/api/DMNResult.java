@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.runtime;
+package org.kie.dmn.core.api;
 
-public interface DMNModel {
+public interface DMNResult {
 
-    DMNResult evaluateAll( DMNContext context );
-
-    DMNResult evaluateDecision( String decisionName, DMNContext context );
+    DMNContext getContext();
 
 }
