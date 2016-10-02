@@ -38,16 +38,7 @@ import static org.junit.Assert.assertThat;
 public class DMNRuntimeTest {
 
     @Test
-    public void testLoadingDefinitions() {
-        final Unmarshaller unmarshaller = new DefaultUnmarshaller();
-
-        final InputStream is = this.getClass().getResourceAsStream( "0001-input-data-string.dmn" );
-        final InputStreamReader isr = new InputStreamReader( is );
-        final Definitions def = unmarshaller.unmarshal( isr );
-    }
-
-    @Test @Ignore("still in development")
-    public void testGetRuntime() {
+    public void testRuntime() {
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = KieHelper.getKieContainer(
                 ks.newReleaseId( "org.kie", "dmn-test", "1.0" ),
@@ -69,6 +60,5 @@ public class DMNRuntimeTest {
 
         assertThat( result.get( "Greeting Message" ), is( "Hello John Doe" ) );
     }
-
 
 }
