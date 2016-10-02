@@ -16,11 +16,17 @@
 
 package org.kie.dmn.core.weaver;
 
+import org.drools.core.definitions.InternalKnowledgePackage;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
+import org.kie.dmn.core.impl.DMNPackageImpl;
+import org.kie.dmn.core.runtime.DMNModel;
 import org.kie.dmn.core.runtime.DMNPackage;
+import org.kie.internal.io.ResourceTypePackage;
 import org.kie.internal.weaver.KieWeaverService;
+
+import java.util.Map;
 
 public class DMNWeaverService implements KieWeaverService<DMNPackage> {
 
@@ -30,11 +36,22 @@ public class DMNWeaverService implements KieWeaverService<DMNPackage> {
     }
 
     @Override
-    public void merge(KieBase kieBase, KiePackage kiePkg, DMNPackage rtPkg) {
+    public void merge(KieBase kieBase, KiePackage kiePkg, DMNPackage dmnpkg) {
+        Map<ResourceType, ResourceTypePackage> map = ((InternalKnowledgePackage)kiePkg).getResourceTypePackages();
+        DMNPackageImpl existing  = (DMNPackageImpl) map.get( ResourceType.DMN );
+        if ( existing == null ) {
+            existing = new DMNPackageImpl( dmnpkg.getNamespace() );
+            map.put(ResourceType.DMN, existing);
+        }
+
+        for ( Map.Entry<String, DMNModel> entry : dmnpkg.getAllModels().entrySet() ) {
+            existing.addModel( entry.getKey(), entry.getValue() );
+        }
     }
 
     @Override
     public void weave(KieBase kieBase, KiePackage kiePkg, DMNPackage rtPkg) {
+        // nothing to do for now
     }
 
     @Override

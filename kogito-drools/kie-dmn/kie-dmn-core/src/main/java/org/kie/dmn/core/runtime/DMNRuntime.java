@@ -18,6 +18,6 @@ package org.kie.dmn.core.runtime;
 
 public interface DMNRuntime {
 
-    DMNModel getModelByName(String modelName );
+    DMNModel getModel( String namepasce, String modelName );
 
 }

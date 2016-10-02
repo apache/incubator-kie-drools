@@ -18,6 +18,7 @@ package org.kie.dmn.core;
 
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
@@ -30,6 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
@@ -44,18 +46,19 @@ public class DMNRuntimeTest {
         final Definitions def = unmarshaller.unmarshal( isr );
     }
 
-    @Test
+    @Test @Ignore("still in development")
     public void testGetRuntime() {
         KieServices ks = KieServices.Factory.get();
         KieContainer kieContainer = KieHelper.getKieContainer(
                 ks.newReleaseId( "org.kie", "dmn-test", "1.0" ),
                 ks.getResources().newClassPathResource( "0001-input-data-string.dmn", DMNRuntimeTest.class ) );
 
-        // the method getKieRuntime() to be moved to the public API
+        // the method getKieRuntime() needs to be moved to the public API
         DMNRuntime dmnRuntime = ((StatefulKnowledgeSessionImpl) kieContainer.newKieSession()).getKieRuntime( DMNRuntime.class );
         assertNotNull( dmnRuntime );
 
-        DMNModel dmnModel = dmnRuntime.getModelByName( "0001-input-data-string" );
+        DMNModel dmnModel = dmnRuntime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0001-input-data-string" );
+        assertThat( dmnModel, notNullValue() );
 
         DMNContext context = DMNFactory.newContext();
         context.set( "Full Name", "John Doe" );
@@ -66,8 +69,6 @@ public class DMNRuntimeTest {
 
         assertThat( result.get( "Greeting Message" ), is( "Hello John Doe" ) );
     }
-
-
 
 
 }
