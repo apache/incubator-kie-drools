@@ -25,6 +25,13 @@ public class DMNContextImpl
         implements DMNContext {
     private Map<String, Object> entries = new LinkedHashMap<String, Object>();
 
+    public DMNContextImpl() {
+    }
+
+    protected DMNContextImpl(Map<String, Object> entries) {
+        this.entries = entries;
+    }
+
     @Override
     public Object set(String name, Object value) {
         return entries.put( name, value );
@@ -40,4 +47,20 @@ public class DMNContextImpl
         return entries;
     }
 
+    @Override
+    public boolean isDefined(String name) {
+        return entries.containsKey( name );
+    }
+
+    @Override
+    public DMNContext clone() {
+        return new DMNContextImpl( new LinkedHashMap<>( entries ) );
+    }
+
+    @Override
+    public String toString() {
+        return "DMNContext{" +
+               "entries=" + entries +
+               '}';
+    }
 }

@@ -14,21 +14,27 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.runtime;
+package org.kie.dmn.core.impl;
 
-import java.util.Map;
+import org.kie.dmn.core.runtime.DMNContext;
+import org.kie.dmn.core.runtime.DMNResult;
 
-public interface DMNContext
-        extends Cloneable {
+public class DMNResultImpl implements DMNResult {
+    private DMNContext context;
 
-    Object set(String name, Object value);
+    public void setContext(DMNContext context) {
+        this.context = context;
+    }
 
-    Object get(String name);
+    @Override
+    public DMNContext getContext() {
+        return context;
+    }
 
-    Map<String, Object> getAll();
-
-    boolean isDefined(String name);
-
-    DMNContext clone();
-
+    @Override
+    public String toString() {
+        return "DMNResultImpl{" +
+               "context=" + context +
+               '}';
+    }
 }
