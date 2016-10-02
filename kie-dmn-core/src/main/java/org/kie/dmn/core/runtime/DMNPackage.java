@@ -18,6 +18,13 @@ package org.kie.dmn.core.runtime;
 
 import org.kie.internal.io.ResourceTypePackage;
 
+import java.util.Map;
+
 public interface DMNPackage
         extends ResourceTypePackage {
+    String getNamespace();
+
+    DMNModel getModel(String name);
+
+    Map<String, DMNModel> getAllModels();
 }

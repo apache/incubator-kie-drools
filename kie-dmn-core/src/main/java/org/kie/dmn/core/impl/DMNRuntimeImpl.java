@@ -16,13 +16,30 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.runtime.DMNRuntime;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.dmn.core.runtime.DMNModel;
+import org.kie.dmn.core.runtime.DMNPackage;
+import org.kie.dmn.core.runtime.DMNRuntime;
+import org.kie.internal.io.ResourceTypePackage;
 
-public class DMNRuntimeImpl implements DMNRuntime {
+import java.util.Map;
+
+public class DMNRuntimeImpl
+        implements DMNRuntime {
+
+    private KieRuntime runtime;
+
+    public DMNRuntimeImpl(KieRuntime runtime) {
+        this.runtime = runtime;
+    }
 
     @Override
-    public DMNModel getModelByName(String modelName) {
-        return null;
+    public DMNModel getModel(String namespace, String modelName) {
+        InternalKnowledgePackage kpkg = (InternalKnowledgePackage) runtime.getKieBase().getKiePackage( namespace );
+        Map<ResourceType, ResourceTypePackage> map = kpkg.getResourceTypePackages();
+        DMNPackage dmnpkg = (DMNPackage) map.get( ResourceType.DMN );
+        return dmnpkg != null ? dmnpkg.getModel( modelName ) : null;
     }
 }
