@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.runtime;
-
-import org.kie.internal.io.ResourceTypePackage;
+package org.kie.dmn.core.api;
 
 import java.util.Map;
 
-public interface DMNPackage
-        extends ResourceTypePackage {
-    String getNamespace();
+public interface DMNContext
+        extends Cloneable {
 
-    DMNModel getModel(String name);
+    Object set(String name, Object value);
 
-    Map<String, DMNModel> getAllModels();
+    Object get(String name);
+
+    Map<String, Object> getAll();
+
+    boolean isDefined(String name);
+
+    DMNContext clone();
+
 }

@@ -16,7 +16,7 @@
 
 package org.kie.dmn.core.impl;
 
-import org.kie.dmn.core.runtime.DMNContext;
+import org.kie.dmn.core.api.DMNContext;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

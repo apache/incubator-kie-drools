@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.runtime;
+package org.kie.dmn.core.api;
 
-public interface DMNRuntime {
+import org.kie.api.io.Resource;
 
-    DMNModel getModel( String namepasce, String modelName );
+import java.io.Reader;
+
+public interface DMNCompiler {
+
+    DMNModel compile( Resource resource );
+
+    DMNModel compile( Reader source );
 
 }

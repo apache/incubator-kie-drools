@@ -17,8 +17,8 @@
 package org.kie.dmn.core.impl;
 
 import org.kie.api.io.ResourceType;
-import org.kie.dmn.core.runtime.DMNModel;
-import org.kie.dmn.core.runtime.DMNPackage;
+import org.kie.dmn.core.api.DMNModel;
+import org.kie.dmn.core.api.DMNPackage;
 
 import java.util.Collections;
 import java.util.HashMap;

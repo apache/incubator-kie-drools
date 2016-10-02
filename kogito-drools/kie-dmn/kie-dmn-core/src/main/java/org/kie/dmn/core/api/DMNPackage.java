@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.impl;
+package org.kie.dmn.core.api;
 
-import org.kie.dmn.core.api.DMNContext;
-import org.kie.dmn.core.api.DMNResult;
+import org.kie.internal.io.ResourceTypePackage;
 
-public class DMNResultImpl implements DMNResult {
-    private DMNContext context;
+import java.util.Map;
 
-    public void setContext(DMNContext context) {
-        this.context = context;
-    }
+public interface DMNPackage
+        extends ResourceTypePackage {
+    String getNamespace();
 
-    @Override
-    public DMNContext getContext() {
-        return context;
-    }
+    DMNModel getModel(String name);
 
-    @Override
-    public String toString() {
-        return "DMNResultImpl{" +
-               "context=" + context +
-               '}';
-    }
+    Map<String, DMNModel> getAllModels();
 }
