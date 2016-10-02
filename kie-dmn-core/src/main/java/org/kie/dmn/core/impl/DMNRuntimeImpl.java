@@ -19,11 +19,13 @@ package org.kie.dmn.core.impl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntime;
-import org.kie.dmn.core.runtime.DMNModel;
-import org.kie.dmn.core.runtime.DMNPackage;
-import org.kie.dmn.core.runtime.DMNRuntime;
+import org.kie.dmn.core.api.*;
+import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.model.v1_1.*;
 import org.kie.internal.io.ResourceTypePackage;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class DMNRuntimeImpl
@@ -42,4 +44,49 @@ public class DMNRuntimeImpl
         DMNPackage dmnpkg = (DMNPackage) map.get( ResourceType.DMN );
         return dmnpkg != null ? dmnpkg.getModel( modelName ) : null;
     }
+
+    @Override
+    public DMNResult evaluateAll(DMNModel model, DMNContext context) {
+        List<DRGElement> drgElements = ((DMNModelImpl)model).getDefinitions().getDrgElement();
+        DMNResultImpl result = new DMNResultImpl();
+        result.setContext( context.clone() );
+        for( DRGElement e : drgElements ) {
+            if( e instanceof Decision ) {
+                Decision decision = (Decision) e;
+                List<InformationRequirement> missingInput = new ArrayList<>(  );
+                for( InformationRequirement ir : decision.getInformationRequirement() ) {
+                    if( ir.getRequiredInput() != null ) {
+                        InputData input = findElementById( model, ir.getRequiredInput().getHref() );
+                        String name = input.getName();
+                        if( ! context.isDefined( name ) ) {
+                            missingInput.add( ir );
+                        }
+                    }
+                }
+                if( ! missingInput.isEmpty() ) {
+                    System.out.println("Missing inputs: "+missingInput );
+                    return null;
+                }
+                Object val = FEEL.newInstance().evaluate( ((LiteralExpression) decision.getExpression()).getText(), result.getContext().getAll() );
+                result.getContext().set( decision.getVariable().getName(), val );
+            }
+        }
+        return result;
+    }
+
+    private InputData findElementById(DMNModel model, String href) {
+        String id = href.contains( "#" ) ? href.substring( href.indexOf( '#' ) + 1 ) : href;
+        for( DRGElement e : ((DMNModelImpl)model).getDefinitions().getDrgElement() ) {
+            if( e instanceof InputData && id.equals( e.getId() ) ) {
+                return (InputData) e;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public DMNResult evaluateDecision(DMNModel model, String decisionName, DMNContext context) {
+        return null;
+    }
+
 }

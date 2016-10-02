@@ -14,27 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.impl;
+package org.kie.dmn.core.ast;
 
-import org.kie.dmn.core.api.DMNContext;
-import org.kie.dmn.core.api.DMNResult;
-
-public class DMNResultImpl implements DMNResult {
-    private DMNContext context;
-
-    public void setContext(DMNContext context) {
-        this.context = context;
-    }
-
-    @Override
-    public DMNContext getContext() {
-        return context;
-    }
-
-    @Override
-    public String toString() {
-        return "DMNResultImpl{" +
-               "context=" + context +
-               '}';
-    }
+public class DMNBaseNode {
 }

@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.runtime;
+package org.kie.dmn.core.api;
 
-public interface DMNResult {
+public interface DMNModel {
 
-    DMNContext getContext();
+    String getNamespace();
+
+    String getName();
 
 }

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.runtime;
+package org.kie.dmn.core.api;
 
+import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.impl.DMNContextImpl;
 
 public class DMNFactory {
@@ -23,5 +24,7 @@ public class DMNFactory {
     public static DMNContext newContext() {
         return new DMNContextImpl();
     }
+
+    public static DMNCompiler newCompiler() { return new DMNCompilerImpl(); }
 
 }

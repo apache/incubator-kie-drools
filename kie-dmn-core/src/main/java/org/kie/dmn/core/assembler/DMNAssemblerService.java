@@ -24,9 +24,11 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.dmn.backend.unmarshalling.v1_1.DefaultUnmarshaller;
+import org.kie.dmn.core.api.DMNCompiler;
+import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.api.DMNModel;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNPackageImpl;
-import org.kie.dmn.core.runtime.DMNPackage;
 import org.kie.dmn.feel.model.v1_1.Definitions;
 import org.kie.internal.assembler.KieAssemblerService;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -45,15 +47,14 @@ public class DMNAssemblerService implements KieAssemblerService {
     public void addResource(KnowledgeBuilder kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration)
             throws Exception {
 
-        Definitions dmndefs = new DefaultUnmarshaller().unmarshal( resource.getReader() );
-        if (dmndefs == null) {
-            return;
-        }
+        DMNCompiler dmnCompiler = DMNFactory.newCompiler();
+        DMNModel model = dmnCompiler.compile( resource );
+        String namespace = model.getNamespace();
 
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
-        PackageRegistry pkgReg = kbuilderImpl.getPackageRegistry( dmndefs.getNamespace() );
+        PackageRegistry pkgReg = kbuilderImpl.getPackageRegistry( namespace );
         if ( pkgReg == null ) {
-            pkgReg = kbuilderImpl.newPackage( new PackageDescr( dmndefs.getNamespace() ) );
+            pkgReg = kbuilderImpl.newPackage( new PackageDescr( namespace ) );
         }
         InternalKnowledgePackage kpkgs = pkgReg.getPackage();
 
@@ -61,10 +62,10 @@ public class DMNAssemblerService implements KieAssemblerService {
 
         DMNPackageImpl dmnpkg = (DMNPackageImpl) rpkg.get( ResourceType.DMN );
         if ( dmnpkg == null ) {
-            dmnpkg = new DMNPackageImpl( dmndefs.getNamespace() );
+            dmnpkg = new DMNPackageImpl( namespace );
             rpkg.put(ResourceType.DMN, dmnpkg);
         }
-        dmnpkg.addModel( dmndefs.getName(), new DMNModelImpl( dmndefs ) );
+        dmnpkg.addModel( model.getName(), model );
     }
 
     @Override
