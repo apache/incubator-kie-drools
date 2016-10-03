@@ -9,13 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ConversationManager {
+public class ConversationContextManager {
 
     private Map<Long, Context> conversationContexts;
 
     private long counter;
 
-    public ConversationManager() {
+    public ConversationContextManager() {
         conversationContexts = new HashMap<Long, Context>();
     }
 

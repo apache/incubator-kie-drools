@@ -34,8 +34,8 @@ rule GameLoop when
 then
     setFocus( "Draw" );
     setFocus( "Bullet" );
-    setFocus( "Keys" );
     setFocus( "Move" );
+    setFocus( "Keys" );
 end
 
 

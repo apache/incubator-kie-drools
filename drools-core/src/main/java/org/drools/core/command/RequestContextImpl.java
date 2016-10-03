@@ -29,7 +29,7 @@ public class RequestContextImpl extends ContextImpl implements Context, RequestC
     private ContextImpl         appContext;
     private ConversationContext conversationContext;
 
-    private ConversationManager cvnManager;
+    private ConversationContextManager cvnManager;
 
     private long                requestId;
 
@@ -42,7 +42,7 @@ public class RequestContextImpl extends ContextImpl implements Context, RequestC
     private Exception           exception;
 
 
-    public RequestContextImpl(long requestId, ContextManager ctxManager, ConversationManager cvnManager) {
+    public RequestContextImpl(long requestId, ContextManager ctxManager, ConversationContextManager cvnManager) {
         super(Long.toString(requestId), ctxManager);
         this.requestId = requestId;
         out = new HashMap<String, Object>();
@@ -67,7 +67,7 @@ public class RequestContextImpl extends ContextImpl implements Context, RequestC
         this.conversationContext = conversationContext;
     }
 
-    public ConversationManager getConversationManager() {
+    public ConversationContextManager getConversationManager() {
         return cvnManager;
     }
 

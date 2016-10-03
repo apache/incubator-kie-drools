@@ -16,8 +16,8 @@ public class EndConversationCommand<Void> implements GenericCommand<Void> {
 
     @Override
     public Void execute(Context context) {
-        RequestContextImpl reqContext = (RequestContextImpl)context;
-        ConversationManager cvnManager = reqContext.getConversationManager();
+        RequestContextImpl         reqContext = (RequestContextImpl)context;
+        ConversationContextManager cvnManager = reqContext.getConversationManager();
         cvnManager.endConversation(reqContext, conversationId);
 
         return (Void) null;

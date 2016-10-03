@@ -10,8 +10,8 @@ public class StartConversationCommand<Void> implements GenericCommand<Void> {
 
     @Override
     public Void execute(Context context) {
-        RequestContextImpl reqContext = (RequestContextImpl)context;
-        ConversationManager cvnManager = reqContext.getConversationManager();
+        RequestContextImpl         reqContext = (RequestContextImpl)context;
+        ConversationContextManager cvnManager = reqContext.getConversationManager();
         cvnManager.startConversation(reqContext);
 
         return (Void) null;
