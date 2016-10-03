@@ -5,7 +5,7 @@ import org.kie.api.management.KieContainerMonitorMXBean;
 import org.kie.api.management.GAV;
 
 public class KieContainerMonitor implements KieContainerMonitorMXBean {
-	private InternalKieContainer kieContainer;
+    private InternalKieContainer kieContainer;
 
 	public KieContainerMonitor(InternalKieContainer kieContainer) {
 		this.kieContainer = kieContainer;
@@ -18,21 +18,29 @@ public class KieContainerMonitor implements KieContainerMonitorMXBean {
 
 	@Override
 	public String getConfiguredReleaseIdStr() {
-		return kieContainer.getConfiguredReleaseId().toString();
+		return ( kieContainer.getConfiguredReleaseId() != null )
+		        ? kieContainer.getConfiguredReleaseId().toString()
+		        : KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID.toString() ;
 	}
 
 	@Override
 	public String getResolvedReleaseIdStr() {
-		return kieContainer.getResolvedReleaseId().toString();
+		return ( kieContainer.getResolvedReleaseId() != null )
+		        ? kieContainer.getResolvedReleaseId().toString()
+		        : KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID.toString() ;
 	}
 
     @Override
     public GAV getConfiguredReleaseId() {
-        return GAV.from(kieContainer.getConfiguredReleaseId());
+        return ( kieContainer.getConfiguredReleaseId() != null )
+                ? GAV.from(kieContainer.getConfiguredReleaseId())
+                : KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID ;
     }
 
     @Override
     public GAV getResolvedReleaseId() {
-        return GAV.from(kieContainer.getResolvedReleaseId());
+        return ( kieContainer.getResolvedReleaseId() != null )
+                ? GAV.from(kieContainer.getResolvedReleaseId())
+                : KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID ;
     }
 }
