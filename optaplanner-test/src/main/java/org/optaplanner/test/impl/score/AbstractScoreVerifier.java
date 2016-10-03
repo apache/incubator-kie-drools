@@ -23,6 +23,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -32,6 +33,11 @@ import org.optaplanner.test.impl.score.buildin.hardsoft.HardSoftScoreVerifier;
 import static org.junit.Assert.assertEquals;
 
 /**
+ * Used in unit tests to assert that 1 particular solution has a specific weight for a specific score rule.
+ * This works well to verify that the implementation is in sync with the business constraints.
+ * This does not work well to detect score corruption,
+ * use {@link ScoreDirectorFactoryConfig#setAssertionScoreDirectorFactory(ScoreDirectorFactoryConfig)} for that instead.
+ * <p>
  * Do not use this class directly, instead use the specific subclass for your {@link Score} type,
  * such as {@link HardSoftScoreVerifier}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
