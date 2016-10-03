@@ -32,7 +32,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class DeleteTest {
 
@@ -43,17 +42,14 @@ public class DeleteTest {
     @Before
     public void setUp() {
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
-
         kfs.write(KieServices.Factory.get().getResources()
                 .newClassPathResource(DELETE_TEST_DRL, DeleteTest.class));
 
         KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
-
         kbuilder.buildAll();
 
         List<Message> res = kbuilder.getResults().getMessages(Level.ERROR);
-
-        assertEquals(res.toString(), 0, res.size());
+        assertThat(res).isEmpty();
 
         KieBase kbase = KieServices.Factory.get()
                 .newKieContainer(kbuilder.getKieModule().getReleaseId())
@@ -73,10 +69,12 @@ public class DeleteTest {
 
         FactHandle george = ksession.insert(new Person("George", 19));
         QueryResults results = ksession.getQueryResults("informationAboutPersons");
+        assertThat(results).isNotEmpty();
         assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(2L);
 
         ksession.delete(george);
         results = ksession.getQueryResults("informationAboutPersons");
+        assertThat(results).isNotEmpty();
         assertThat(results.iterator().next().get("$countOfPerson")).isEqualTo(1L);
     }
 
@@ -84,13 +82,16 @@ public class DeleteTest {
     public void deleteFactTwiceTest() {
         FactHandle george = ksession.insert(new Person("George", 19));
         QueryResults results = ksession.getQueryResults("countPerson");
+        assertThat(results).isNotEmpty();
         assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
 
         ksession.delete(george);
         results = ksession.getQueryResults("countPerson");
+        assertThat(results).isNotEmpty();
         assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
 
         ksession.delete(george);
+        assertThat(results).isNotEmpty();
         assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
     }
 
@@ -106,10 +107,12 @@ public class DeleteTest {
         ksession.update(person, new Person("John", 21));
 
         QueryResults results = ksession.getQueryResults("countPerson");
+        assertThat(results).isNotEmpty();
         assertThat(results.iterator().next().get("$personCount")).isEqualTo(1L);
 
         ksession.delete(person);
         results = ksession.getQueryResults("countPerson");
+        assertThat(results).isNotEmpty();
         assertThat(results.iterator().next().get("$personCount")).isEqualTo(0L);
     }
 
