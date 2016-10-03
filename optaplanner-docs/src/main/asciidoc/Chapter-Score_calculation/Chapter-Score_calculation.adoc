@@ -679,6 +679,11 @@ Configure it in your solver configuration:
   </scoreDirectorFactory>
 ----
 
+[NOTE]
+====
+A piece of incremental score calculator code can be difficult to write and to review.
+Assert its correctness by using <<invalidScoreDetection,an ``EasyScoreCalculator`` to do the assertions triggered by the ``environmentMode``>>.
+====
 
 Optionally, to explain a score with `ScoreDirector.getConstraintMatchTotals()` or to get better output when the `IncrementalScoreCalculator` is corrupted in `FAST_ASSERT` or ``FULL_ASSERT environmentMode``, implement also the `ConstraintMatchAwareIncrementalScoreCalculator` interface:
 
@@ -985,14 +990,11 @@ Alternatively, you can also specify the trend for each score level separately:
 [[invalidScoreDetection]]
 === Invalid Score Detection
 
-
-Put the `environmentMode` in `FULL_ASSERT` (or ``FAST_ASSERT``) to detect corruption in the <<incrementalScoreCalculation,incremental score calculation>>.
-For more information, <<environmentMode,see the section about `environmentMode`>>.
-However, that will not verify that your score calculator implements your score constraints as your business actually desires.
-
-A piece of incremental score calculator code can be difficult to write and to review.
-Assert its correctness by using a different implementation (for example a ``EasyScoreCalculator``) to do the assertions triggered by the ``environmentMode``.
-Just configure the different implementation as a ``assertionScoreDirectorFactory``:
+When you put <<environmentMode,the `environmentMode`>>in `FULL_ASSERT` (or ``FAST_ASSERT``),
+it will detect score corruption in the <<incrementalScoreCalculation,incremental score calculation>>.
+However, that will not verify that your score calculator actually implements your score constraints as your business desires.
+For example, one score rule might consistently match the wrong pattern.
+To verify the score rules against an independent implementation, configure a ``assertionScoreDirectorFactory``:
 
 [source,xml,options="nowrap"]
 ----
@@ -1006,8 +1008,14 @@ Just configure the different implementation as a ``assertionScoreDirectorFactory
   </scoreDirectorFactory>
 ----
 
-
 This way, the `scoreDrl` will be validated by the ``EasyScoreCalculator``.
+
+[NOTE]
+====
+This works well to isolate score corruption,
+but to verify that the score rules implement the real business needs,
+<<testingScoreConstraints, a unit test with a ScoreVerifier>> is usually better.
+====
 
 [[scoreCalculationPerformanceTricks]]
 == Score Calculation Performance Tricks
@@ -1322,3 +1330,9 @@ public class CloudBalancingScoreConstraintTest {
 
 There is a `ScoreVerifier` implementation for each `Score` implementation.
 In the `assertHardWeight()` and `assertSoftWeight()` methods, the weight of the other score rules is ignored (even those of the same score level).
+
+[NOTE]
+====
+A ScoreVerifier does not work well to isolate score corruption,
+use <<invalidScoreDetection, an `assertionScoreDirectorFactory`>> instead.
+====
