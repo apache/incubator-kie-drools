@@ -137,6 +137,7 @@ public class KieContainerImpl
         this.kProject = kProject;
         this.containerId = containerId;
         kProject.init();
+        initMBeans(containerId);
     }
     
     /**
@@ -148,8 +149,6 @@ public class KieContainerImpl
         this(containerId, kProject, kr);
         this.configuredReleaseId = containerReleaseId;
         this.containerReleaseId = containerReleaseId;
-        
-        initMBeans(containerId);
     }
 
 	private void initMBeans(String containerId) {

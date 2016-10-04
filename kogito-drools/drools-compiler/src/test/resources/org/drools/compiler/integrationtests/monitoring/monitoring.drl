@@ -1,0 +1,8 @@
+package org.drools.compiler.integrationtests.monitoring;
+
+rule "just a rule"
+when
+    $s : String()
+then
+    System.out.println($s);
+end

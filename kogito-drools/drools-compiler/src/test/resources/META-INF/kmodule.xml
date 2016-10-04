@@ -16,4 +16,9 @@
     </kbase>
 
     <kbase name="xsdKieBase" packages="org.drools.compiler.integrationtests.xsd" />
+    
+    <kbase name="org.kie.monitoring.kbase1" equalsBehavior="equality" packages="org.drools.compiler.integrationtests.monitoring" eventProcessingMode="stream">
+        <ksession name="org.kie.monitoring.kbase1.ksession1" type="stateful" clockType="pseudo"/>
+        <ksession name="org.kie.monitoring.kbase1.ksession2" type="stateless" clockType="realtime"/>
+    </kbase>
 </kmodule>

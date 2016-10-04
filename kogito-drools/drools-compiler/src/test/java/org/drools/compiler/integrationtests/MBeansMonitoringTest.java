@@ -79,6 +79,68 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     		System.setProperty( MBeansOption.PROPERTY_NAME, MBeansOption.DISABLED.toString() );
     	}
     }
+    
+    @Test
+    public void testKieClasspathMBeans() throws Exception {
+        MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
+        KieServices ks = KieServices.Factory.get();
+
+        KieContainer kc = ks.getKieClasspathContainer("myID");
+        
+        KieContainerMonitorMXBean c1Monitor = JMX.newMXBeanProxy(
+                mbserver,
+                DroolsManagementAgent.createObjectNameBy("myID"),
+                KieContainerMonitorMXBean.class);
+        KieBase kb = kc.getKieBase("org.kie.monitoring.kbase1");
+        KieSession statefulKieSession = kc.newKieSession("org.kie.monitoring.kbase1.ksession1");
+        StatelessKieSession statelessKieSession = kc.newStatelessKieSession("org.kie.monitoring.kbase1.ksession2");
+        
+        KieSessionMonitoringMXBean statefulKieSessionMonitor = JMX.newMXBeanProxy(
+                mbserver,
+                DroolsManagementAgent.createObjectNameBy("myID", "org.kie.monitoring.kbase1", KieSessionType.STATEFUL, "org.kie.monitoring.kbase1.ksession1"),
+                KieSessionMonitoringMXBean.class);
+        StatelessKieSessionMonitoringMXBean statelessKieSessionMonitor = JMX.newMXBeanProxy(
+                mbserver,
+                DroolsManagementAgent.createObjectNameBy("myID", "org.kie.monitoring.kbase1", KieSessionType.STATEFUL, "org.kie.monitoring.kbase1.ksession1"),
+                StatelessKieSessionMonitoringMXBean.class);
+        
+        assertEquals("myID", c1Monitor.getContainerId() );
+        assertTrue(c1Monitor.getConfiguredReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID));
+        assertTrue(c1Monitor.getResolvedReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID));
+        assertEquals("org.kie.monitoring.kbase1.ksession1", statefulKieSessionMonitor.getKieSessionName());
+        assertEquals("org.kie.monitoring.kbase1",           statefulKieSessionMonitor.getKieBaseId());
+        assertEquals("org.kie.monitoring.kbase1.ksession1", statelessKieSessionMonitor.getKieSessionName());
+        assertEquals("org.kie.monitoring.kbase1",           statelessKieSessionMonitor.getKieBaseId());
+        
+        
+        KieContainer kc2 = ks.newKieClasspathContainer("myID2");
+        KieContainerMonitorMXBean c2Monitor = JMX.newMXBeanProxy(
+                mbserver,
+                DroolsManagementAgent.createObjectNameBy("myID2"),
+                KieContainerMonitorMXBean.class);
+        KieBase kb2 = kc2.getKieBase("org.kie.monitoring.kbase1");
+        KieSession statefulKieSession2 = kc2.newKieSession("org.kie.monitoring.kbase1.ksession1");
+        StatelessKieSession statelessKieSession2 = kc2.newStatelessKieSession("org.kie.monitoring.kbase1.ksession2");
+        KieSessionMonitoringMXBean statefulKieSessionMonitor2 = JMX.newMXBeanProxy(
+                mbserver,
+                DroolsManagementAgent.createObjectNameBy("myID2", "org.kie.monitoring.kbase1", KieSessionType.STATEFUL, "org.kie.monitoring.kbase1.ksession1"),
+                KieSessionMonitoringMXBean.class);
+        StatelessKieSessionMonitoringMXBean statelessKieSessionMonitor2 = JMX.newMXBeanProxy(
+                mbserver,
+                DroolsManagementAgent.createObjectNameBy("myID2", "org.kie.monitoring.kbase1", KieSessionType.STATEFUL, "org.kie.monitoring.kbase1.ksession1"),
+                StatelessKieSessionMonitoringMXBean.class);
+        
+        assertEquals("myID2", c2Monitor.getContainerId() );
+        assertTrue(c2Monitor.getConfiguredReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID));
+        assertTrue(c2Monitor.getResolvedReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID));
+        assertEquals("org.kie.monitoring.kbase1.ksession1", statefulKieSessionMonitor2.getKieSessionName());
+        assertEquals("org.kie.monitoring.kbase1",           statefulKieSessionMonitor2.getKieBaseId());
+        assertEquals("org.kie.monitoring.kbase1.ksession1", statelessKieSessionMonitor2.getKieSessionName());
+        assertEquals("org.kie.monitoring.kbase1",           statelessKieSessionMonitor2.getKieBaseId());
+        
+        kc.dispose();
+        kc2.dispose();
+    }
 
     @Test
     public void testEventOffset() throws Exception {
