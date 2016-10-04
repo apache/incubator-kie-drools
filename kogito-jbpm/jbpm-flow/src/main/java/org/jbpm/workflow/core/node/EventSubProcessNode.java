@@ -74,7 +74,7 @@ public class EventSubProcessNode extends CompositeContextNode {
                 return true;
             }
         }
-        return false;
+        return super.acceptsEvent(type, event);
     }
     
 }

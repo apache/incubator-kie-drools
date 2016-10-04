@@ -484,7 +484,7 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
             return "";
         } else {
             return
-                "rule \"RuleFlowStateEventSubProcess-" + process.getId() + "-" + compositeNode.getUniqueId() + "\" @Propagation(EAGER) \n" +
+                "rule \"RuleFlowStateEventSubProcess-Event-" + process.getId() + "-" + compositeNode.getUniqueId() + "\" @Propagation(EAGER) \n" +
                 "      ruleflow-group \"DROOLS_SYSTEM\" \n" +
                 "    when \n" +
                 "      " + condition + "\n" +

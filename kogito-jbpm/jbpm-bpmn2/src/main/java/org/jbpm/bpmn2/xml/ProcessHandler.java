@@ -69,6 +69,7 @@ import org.jbpm.workflow.core.node.EndNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.EventTrigger;
+import org.jbpm.workflow.core.node.FaultNode;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.Split;
@@ -749,6 +750,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
     }
 
     private void postProcessNodes(RuleFlowProcess process, NodeContainer container) {
+        List<String> eventSubProcessHandlers = new ArrayList<String>();
         for (Node node: container.getNodes()) {
             
             if (node instanceof StateNode) {
@@ -806,7 +808,9 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                             exceptionHandler.setAction(action);
                                             exceptionHandler.setFaultVariable(faultVariable);
                                             if (faultCode != null) {
-                                            	exceptionScope.setExceptionHandler(type.replaceFirst(replaceRegExp, ""), exceptionHandler);
+                                                String trimmedType = type.replaceFirst(replaceRegExp, "");
+                                                exceptionScope.setExceptionHandler(trimmedType, exceptionHandler);
+                                                eventSubProcessHandlers.add(trimmedType);
                                             } else {
                                             	exceptionScope.setExceptionHandler(faultCode, exceptionHandler);
                                             }
@@ -840,7 +844,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 
                                 if (constraintTrigger.getConstraint() != null) {
                                     String processId = ((RuleFlowProcess) container).getId();
-                                    String type = "RuleFlowStateEventSubProcess-" + processId + "-" + eventSubProcessNode.getUniqueId();
+                                    String type = "RuleFlowStateEventSubProcess-Event-" + processId + "-" + eventSubProcessNode.getUniqueId();
                                     EventTypeFilter eventTypeFilter = new EventTypeFilter();
                                     eventTypeFilter.setType(type);
                                     eventSubProcessNode.addEvent(eventTypeFilter);
@@ -860,6 +864,16 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 	throw new IllegalArgumentException("Event node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection");
                 }
             }  
+        }
+        
+     // process fault node to disable termnate parent if there is event subprocess handler
+        for (Node node: container.getNodes()) {
+            if (node instanceof FaultNode) {
+                FaultNode faultNode = (FaultNode) node;
+                if (eventSubProcessHandlers.contains(faultNode.getFaultName())) {
+                    faultNode.setTerminateParent(false);
+                }
+            }
         }
     }
 
