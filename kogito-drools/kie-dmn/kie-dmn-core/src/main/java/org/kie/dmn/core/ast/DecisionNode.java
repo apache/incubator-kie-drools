@@ -21,15 +21,16 @@ import org.kie.dmn.feel.model.v1_1.Decision;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DecisionNode extends DMNBaseNode {
+public class DecisionNode extends DMNBaseNode implements DMNNode {
 
     private Decision decision;
-    private Map<String, DMNBaseNode> dependencies = new HashMap<>(  );
+    private Map<String, DMNNode> dependencies = new HashMap<>(  );
 
     public DecisionNode() {
     }
 
     public DecisionNode(Decision decision) {
+        super( decision );
         this.decision = decision;
     }
 
@@ -41,15 +42,16 @@ public class DecisionNode extends DMNBaseNode {
         this.decision = decision;
     }
 
-    public Map<String, DMNBaseNode> getDependencies() {
+    public Map<String, DMNNode> getDependencies() {
         return dependencies;
     }
 
-    public void setDependencies(Map<String, DMNBaseNode> dependencies) {
+    public void setDependencies(Map<String, DMNNode> dependencies) {
         this.dependencies = dependencies;
     }
 
-    public void addDependency( String name, DMNBaseNode dependency ) {
+    public void addDependency( String name, DMNNode dependency ) {
         this.dependencies.put( name, dependency );
     }
+
 }

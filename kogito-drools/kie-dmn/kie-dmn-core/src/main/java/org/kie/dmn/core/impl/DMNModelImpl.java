@@ -17,12 +17,20 @@
 package org.kie.dmn.core.impl;
 
 import org.kie.dmn.core.api.DMNModel;
+import org.kie.dmn.core.ast.DecisionNode;
+import org.kie.dmn.core.ast.InputDataNode;
 import org.kie.dmn.feel.model.v1_1.Definitions;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DMNModelImpl
         implements DMNModel {
 
-    private Definitions definitions;
+    private Definitions                definitions;
+    private Map<String, InputDataNode> inputs = new HashMap<>(  );
+    private Map<String, DecisionNode> decisions = new HashMap<>(  );
 
     public DMNModelImpl() {
     }
@@ -47,5 +55,31 @@ public class DMNModelImpl
     public void setDefinitions(Definitions definitions) {
         this.definitions = definitions;
     }
+
+    public void addInput(InputDataNode idn) {
+        inputs.put( idn.getId(), idn );
+    }
+
+    public InputDataNode getInput( String id ) {
+        return this.inputs.get( id );
+    }
+
+    public Collection<InputDataNode> getInputs() {
+        return this.inputs.values();
+    }
+
+    public void addDecision(DecisionNode dn) {
+        decisions.put( dn.getId(), dn );
+
+    }
+
+    public DecisionNode getDecision( String id ) {
+        return this.decisions.get( id );
+    }
+
+    public Collection<DecisionNode> getDecisions() {
+        return this.decisions.values();
+    }
+
 
 }

@@ -14,14 +14,29 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.api;
+package org.kie.dmn.core.ast;
 
-import org.kie.dmn.core.ast.InputDataNode;
+import org.kie.dmn.feel.model.v1_1.InputData;
 
-public interface DMNModel {
+public class InputDataNode extends DMNBaseNode
+        implements DMNNode {
 
-    String getNamespace();
+    private InputData inputData;
 
-    String getName();
+    public InputDataNode() {
+    }
+
+    public InputDataNode(InputData inputData) {
+        super( inputData );
+        this.inputData = inputData;
+    }
+
+    public InputData getInputData() {
+        return inputData;
+    }
+
+    public void setInputData(InputData inputData) {
+        this.inputData = inputData;
+    }
 
 }

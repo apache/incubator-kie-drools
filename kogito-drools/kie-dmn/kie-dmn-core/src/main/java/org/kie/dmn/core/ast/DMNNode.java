@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.api;
+package org.kie.dmn.core.ast;
 
-import org.kie.dmn.core.ast.InputDataNode;
+public interface DMNNode {
 
-public interface DMNModel {
-
-    String getNamespace();
+    String getId();
 
     String getName();
 
