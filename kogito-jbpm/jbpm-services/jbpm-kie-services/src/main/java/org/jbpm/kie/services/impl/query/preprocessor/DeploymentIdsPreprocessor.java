@@ -21,11 +21,16 @@ import java.util.List;
 
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.def.DataSetPreprocessor;
+import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.jbpm.kie.services.impl.security.DeploymentRolesManager;
 import org.kie.internal.identity.IdentityProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DeploymentIdsPreprocessor implements DataSetPreprocessor {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeploymentIdsPreprocessor.class);
 
     private DeploymentRolesManager deploymentRolesManager;
     private IdentityProvider identityProvider;
@@ -42,14 +47,16 @@ public class DeploymentIdsPreprocessor implements DataSetPreprocessor {
         if (identityProvider == null) {
             return;
         }
-        List<String> deploymentIds = deploymentRolesManager.getDeploymentsForUser(identityProvider);
-                
-        
+
+        final List<String> deploymentIds = deploymentRolesManager.getDeploymentsForUser(identityProvider);
+        final ColumnFilter columnFilter = in(columnId, deploymentIds);
+        LOGGER.debug("Adding column filter: {}", columnFilter);
+
         if (lookup.getFirstFilterOp() != null) {
-            lookup.getFirstFilterOp().addFilterColumn(in(columnId, deploymentIds));
+            lookup.getFirstFilterOp().addFilterColumn(columnFilter);
         } else {
             DataSetFilter filter = new DataSetFilter();
-            filter.addFilterColumn(in(columnId, deploymentIds));
+            filter.addFilterColumn(columnFilter);
             lookup.addOperation(filter);
         }
     }

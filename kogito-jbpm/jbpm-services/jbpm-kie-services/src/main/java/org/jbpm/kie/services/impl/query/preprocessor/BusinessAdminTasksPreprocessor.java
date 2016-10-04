@@ -24,14 +24,18 @@ import java.util.List;
 
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.def.DataSetPreprocessor;
+import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.kie.internal.identity.IdentityProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BusinessAdminTasksPreprocessor implements DataSetPreprocessor {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BusinessAdminTasksPreprocessor.class);
+
     private IdentityProvider identityProvider;
-    
-    
+
     public BusinessAdminTasksPreprocessor(IdentityProvider identityProvider) {
         this.identityProvider = identityProvider;
     }
@@ -43,15 +47,17 @@ public class BusinessAdminTasksPreprocessor implements DataSetPreprocessor {
         if (identityProvider == null) {
             return;
         }
-        
-        List<Comparable> orgEntities = new ArrayList<Comparable>(identityProvider.getRoles());
+
+        final List<Comparable> orgEntities = new ArrayList<Comparable>(identityProvider.getRoles());
         orgEntities.add(identityProvider.getName());
-               
+        final ColumnFilter columnFilter = equalsTo(COLUMN_ORGANIZATIONAL_ENTITY, orgEntities);
+        LOGGER.debug("Adding column filter: {}", columnFilter);
+
         if (lookup.getFirstFilterOp() != null) {
-            lookup.getFirstFilterOp().addFilterColumn(equalsTo(COLUMN_ORGANIZATIONAL_ENTITY, orgEntities));
+            lookup.getFirstFilterOp().addFilterColumn(columnFilter);
         } else {
             DataSetFilter filter = new DataSetFilter();
-            filter.addFilterColumn(equalsTo(COLUMN_ORGANIZATIONAL_ENTITY, orgEntities));
+            filter.addFilterColumn(columnFilter);
             lookup.addOperation(filter);
         }
 

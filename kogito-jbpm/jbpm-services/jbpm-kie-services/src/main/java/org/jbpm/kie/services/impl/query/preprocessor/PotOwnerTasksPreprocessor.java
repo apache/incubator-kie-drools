@@ -28,16 +28,18 @@ import org.dashbuilder.dataset.def.DataSetPreprocessor;
 import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.dataset.filter.DataSetFilter;
 import org.kie.internal.identity.IdentityProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PotOwnerTasksPreprocessor implements DataSetPreprocessor {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PotOwnerTasksPreprocessor.class);
+
     private IdentityProvider identityProvider;
-    
-    
+
     public PotOwnerTasksPreprocessor(IdentityProvider identityProvider) {
         this.identityProvider = identityProvider;
     }
-
 
     @SuppressWarnings("rawtypes")
     @Override
@@ -46,22 +48,21 @@ public class PotOwnerTasksPreprocessor implements DataSetPreprocessor {
             return;
         }
 
-        List<Comparable> orgEntities = new ArrayList<Comparable>(identityProvider.getRoles());
+        final List<Comparable> orgEntities = new ArrayList<Comparable>(identityProvider.getRoles());
+        orgEntities.add(identityProvider.getName());
 
-        List<ColumnFilter> condList = new ArrayList<ColumnFilter>();
-
-        ColumnFilter myGroupFilter;
-        myGroupFilter = AND(
+        final ColumnFilter myGroupFilter = AND(
                 equalsTo(COLUMN_ORGANIZATIONAL_ENTITY, orgEntities),
                 OR(equalsTo(COLUMN_ACTUALOWNER, ""), isNull(COLUMN_ACTUALOWNER)));
 
-        condList.add( OR(myGroupFilter, equalsTo(COLUMN_ACTUALOWNER, identityProvider.getName())));
+        final ColumnFilter columnFilter = OR(myGroupFilter, equalsTo(COLUMN_ACTUALOWNER, identityProvider.getName()));
+        LOGGER.debug("Adding column filter: {}", columnFilter);
 
         if (lookup.getFirstFilterOp() != null) {
-            lookup.getFirstFilterOp().addFilterColumn(OR(condList));
+            lookup.getFirstFilterOp().addFilterColumn(columnFilter);
         } else {
             DataSetFilter filter = new DataSetFilter();
-            filter.addFilterColumn(OR(condList));
+            filter.addFilterColumn(columnFilter);
             lookup.addOperation(filter);
         }
 
