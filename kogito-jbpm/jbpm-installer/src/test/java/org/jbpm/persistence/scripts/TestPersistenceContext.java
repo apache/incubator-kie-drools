@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.persistence.map.impl.ProcessCreatorForHelp;
@@ -42,8 +43,6 @@ import org.kie.internal.task.api.model.InternalI18NText;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTaskData;
-
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,14 +71,24 @@ public final class TestPersistenceContext {
      * @param persistenceUnit Persistence unit which is used to initialize this persistence context.
      */
     public void init(final PersistenceUnit persistenceUnit) {
-        context = PersistenceUtil.setupWithPoolingDataSource(persistenceUnit.getName(), persistenceUnit
-                .getDataSourceName());
-        entityManagerFactory = (EntityManagerFactory) context.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
-        environment = PersistenceUtil.createEnvironment(context);
-        Object tm = this.environment.get(EnvironmentName.TRANSACTION_MANAGER);
-        transactionManager = new JtaTransactionManager(environment.get(EnvironmentName.TRANSACTION),
-                environment.get(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY),
-                tm);
+        try {
+            context = PersistenceUtil.setupWithPoolingDataSource(persistenceUnit.getName(), persistenceUnit
+                    .getDataSourceName());
+            entityManagerFactory = (EntityManagerFactory) context.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
+            environment = PersistenceUtil.createEnvironment(context);
+            Object tm = this.environment.get(EnvironmentName.TRANSACTION_MANAGER);
+            transactionManager = new JtaTransactionManager(environment.get(EnvironmentName.TRANSACTION),
+                    environment.get(EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY),
+                    tm);
+        } catch (RuntimeException ex) {
+            // log the whole exception stacktrace as for some reason junit is not able to do so and only prints
+            // the highest level exception, which makes debugging very hard
+            logger.error("Failed to initialize persistence unit {}", persistenceUnit, ex);
+            if (entityManagerFactory != null) {
+                entityManagerFactory.close();
+            }
+            throw ex;
+        }
     }
 
     /**
@@ -133,7 +142,7 @@ public final class TestPersistenceContext {
     }
 
     /**
-     * Starts and persists a basic simple process using current database entites.
+     * Starts and persists a basic simple process using current database entities.
      * @param processId Process identifier. This identifier is also used to generate KieBase
      * (process with this identifier is part of generated KieBase).
      */

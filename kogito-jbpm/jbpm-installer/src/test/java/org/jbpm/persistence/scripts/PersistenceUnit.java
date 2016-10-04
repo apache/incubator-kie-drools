@@ -10,14 +10,19 @@ public enum PersistenceUnit {
     SCRIPT_RUNNER("scriptRunner", "jdbc/testDS1"),
 
     /**
-     * Persistence unit used for test cases validation.
+     * Persistence unit used for test cases validation. Uses Hibernate's 'validate'.
      */
-    DB_TESTING("dbTesting", "jdbc/testDS2"),
+    DB_TESTING_VALIDATE("dbTesting", "jdbc/testDS2"),
+
+    /**
+     * Persistence unit used for test cases validation. Uses 'Hibernate's update' instead of 'validate'
+     */
+    DB_TESTING_UPDATE("dbTestingUpdate", "jdbc/testDS3"),
 
     /**
      * Persistence unit used for clearing the database schema.
      */
-    CLEAR_SCHEMA("clearSchema", "jdbc/testDS3");
+    CLEAR_SCHEMA("clearSchema", "jdbc/testDS4");
 
     /**
      * Name of persistence unit. Must correspond to persistence unit names in persistence.xml.

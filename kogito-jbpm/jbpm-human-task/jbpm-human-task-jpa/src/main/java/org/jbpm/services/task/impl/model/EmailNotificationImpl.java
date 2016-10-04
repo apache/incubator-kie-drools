@@ -32,8 +32,8 @@ import org.kie.internal.task.api.model.EmailNotificationHeader;
 import org.kie.internal.task.api.model.Language;
 import org.kie.internal.task.api.model.NotificationType;
 
-
-@Entity
+@Entity(name = "Notification") // need to use `name = "Notification"` to make the DDL scripts work with both Hibernate 4 and Hibernate 5
+// see https://issues.jboss.org/browse/RHBPMS-4244 for more info
 @DiscriminatorValue("EmailNotification")
 public class EmailNotificationImpl extends NotificationImpl implements org.kie.internal.task.api.model.EmailNotification{
 

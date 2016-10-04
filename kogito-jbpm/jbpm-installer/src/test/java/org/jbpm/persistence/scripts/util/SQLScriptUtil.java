@@ -37,7 +37,7 @@ public final class SQLScriptUtil {
         final StringBuilder command = new StringBuilder();
         for (String line : scriptLines) {
             // Ignore comments.
-            if (line.startsWith("--") || line.startsWith("#")) {
+            if (line.trim().startsWith("--") || line.trim().startsWith("#")) {
                 continue;
             }
             // If the whole line is a delimiter -> add buffered command to found commands.
