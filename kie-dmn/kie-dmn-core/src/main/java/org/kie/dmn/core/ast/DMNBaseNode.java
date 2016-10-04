@@ -16,5 +16,25 @@
 
 package org.kie.dmn.core.ast;
 
-public class DMNBaseNode {
+import org.kie.dmn.feel.model.v1_1.DRGElement;
+
+public abstract class DMNBaseNode {
+
+    private DRGElement source;
+
+    public DMNBaseNode() {
+    }
+
+    public DMNBaseNode(DRGElement source) {
+        this.source = source;
+    }
+
+    public String getId() {
+        return source != null ? source.getId() : null;
+    }
+
+    public String getName() {
+        return source != null ? source.getName() : null;
+    }
+
 }
