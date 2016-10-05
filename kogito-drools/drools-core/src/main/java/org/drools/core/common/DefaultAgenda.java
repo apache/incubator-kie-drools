@@ -675,7 +675,7 @@ public class DefaultAgenda
             group.addNodeInstance( processInstanceId, nodeInstanceId );
             group.setActive( true );
         }
-        setFocus( group );
+        group.setFocus();
         ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupActivated( group,
                                                                                                      this.workingMemory );
         this.workingMemory.notifyWaitOnRest();
