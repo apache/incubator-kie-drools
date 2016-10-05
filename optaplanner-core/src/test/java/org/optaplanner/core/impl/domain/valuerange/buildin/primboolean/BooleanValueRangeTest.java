@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.domain.valuerange.buildin.primboolean;
 
 import java.util.Random;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
