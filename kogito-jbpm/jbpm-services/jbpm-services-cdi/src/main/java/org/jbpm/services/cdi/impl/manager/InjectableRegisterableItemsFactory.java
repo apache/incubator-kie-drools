@@ -39,7 +39,6 @@ import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.JPAWorkingMemoryDbLogger;
 import org.jbpm.process.audit.event.AuditEventBuilder;
-import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.runtime.manager.api.qualifiers.Agenda;
 import org.jbpm.runtime.manager.api.qualifiers.Process;
 import org.jbpm.runtime.manager.api.qualifiers.Task;
@@ -51,13 +50,13 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.executor.ExecutorService;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.task.TaskLifeCycleEventListener;
-import org.kie.api.executor.ExecutorService;
 import org.kie.internal.runtime.conf.AuditMode;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.manager.EventListenerProducer;
@@ -222,7 +221,6 @@ public class InjectableRegisterableItemsFactory extends DefaultRegisterableItems
     @Override
     public List<AgendaEventListener> getAgendaEventListeners(RuntimeEngine runtime) {
         List<AgendaEventListener> defaultListeners = new ArrayList<AgendaEventListener>();
-        defaultListeners.add(new TriggerRulesEventListener(runtime.getKieSession()));
         try {
             for (EventListenerProducer<AgendaEventListener> producer : agendaListenerProducer) {
                 defaultListeners.addAll(producer.getEventListeners(((RuntimeEngineImpl)runtime).getManager().getIdentifier(), getParametersMap(runtime)));

@@ -96,8 +96,8 @@ public class RuleTaskTest extends JbpmTestCase {
         List<String> executedRules = new ArrayList<String>();
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(CommandFactory.newSetGlobal("executed", executedRules));
-        commands.add(CommandFactory.newStartProcess(RULE_TASK_ID));
         commands.add(CommandFactory.newInsert(6));
+        commands.add(CommandFactory.newStartProcess(RULE_TASK_ID));
         commands.add(CommandFactory.newFireAllRules());
 
         IterableProcessEventListener listener = new IterableProcessEventListener();
@@ -125,6 +125,7 @@ public class RuleTaskTest extends JbpmTestCase {
         res.put(RULE_TASK_2, ResourceType.BPMN2);
         res.put(RULE_TASK_2_DRL, ResourceType.DRL);
         KieSession ksession = createKSession(res);
+        ksession.getEnvironment().set("org.jbpm.rule.task.waitstate", true);
 
         ProcessInstance pi = ksession.startProcess(RULE_TASK_2_ID, null);
         assertNotNull(pi);

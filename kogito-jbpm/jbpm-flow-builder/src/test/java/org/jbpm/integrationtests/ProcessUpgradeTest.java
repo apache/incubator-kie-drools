@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ReaderResource;
+import org.jbpm.integrationtests.handler.TestWorkItemHandler;
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -65,7 +66,10 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
             "  </header>\n" +
             "  <nodes>\n" +
             "    <start id=\"1\" name=\"Start\" />\n" +
-            "    <ruleSet id=\"2\" name=\"Hello\" ruleFlowGroup=\"hello\" />\n" +
+            "    <workItem id=\"2\" name=\"Hello\" >\n" +
+            "      <work name=\"Human Task\" >\n" +
+            "      </work>\n" +
+            "    </workItem>\n" +
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +
             "  <connections>\n" +
@@ -81,6 +85,9 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( builder.getKnowledgePackages() );
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
         List<String> list = new ArrayList<String>();
         session.setGlobal( "list", list );
@@ -104,7 +111,10 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
             "  </header>\n" +
             "  <nodes>\n" +
             "    <start id=\"1\" name=\"Start\" />\n" +
-            "    <ruleSet id=\"2\" name=\"Hello\" ruleFlowGroup=\"hello\" />\n" +
+            "    <workItem id=\"2\" name=\"Hello\" >\n" +
+            "      <work name=\"Human Task\" >\n" +
+            "      </work>\n" +
+            "    </workItem>\n" +
             "    <actionNode id=\"4\" name=\"Action\" >" +
             "      <action type=\"expression\" dialect=\"java\">System.out.println();\n" +
             "list.add(\"Executed\");</action>\n" +
@@ -125,10 +135,10 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
             session, processInstance.getId(), "org.test.ruleflow2", new HashMap<String, Long>());
         assertEquals("org.test.ruleflow2", processInstance.getProcessId());
         
-        session.fireAllRules();
-        
-        assertEquals(2, list.size());
+        session.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+
+        assertEquals(1, list.size());
     }
 
     @Test
@@ -157,7 +167,10 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
             "  </header>\n" +
             "  <nodes>\n" +
             "    <start id=\"1\" name=\"Start\" />\n" +
-            "    <ruleSet id=\"2\" name=\"Hello\" ruleFlowGroup=\"hello\" />\n" +
+            "    <workItem id=\"2\" name=\"Hello\" >\n" +
+            "      <work name=\"Human Task\" >\n" +
+            "      </work>\n" +
+            "    </workItem>\n" +
             "    <end id=\"3\" name=\"End\" />\n" +
             "  </nodes>\n" +
             "  <connections>\n" +
@@ -173,6 +186,8 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( builder.getKnowledgePackages() );
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
         List<String> list = new ArrayList<String>();
         session.setGlobal( "list", list );
@@ -196,7 +211,10 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
             "  </header>\n" +
             "  <nodes>\n" +
             "    <start id=\"1\" name=\"Start\" />\n" +
-            "    <ruleSet id=\"102\" name=\"Hello\" ruleFlowGroup=\"hello\" />\n" +
+            "    <workItem id=\"102\" name=\"Hello\" >\n" +
+            "      <work name=\"Human Task\" >\n" +
+            "      </work>\n" +
+            "    </workItem>\n" +
             "    <actionNode id=\"4\" name=\"Action\" >" +
             "      <action type=\"expression\" dialect=\"java\">System.out.println();\n" +
             "list.add(\"Executed\");</action>\n" +
@@ -220,9 +238,9 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
             session, processInstance.getId(), "org.test.ruleflow2", mapping);
         assertEquals("org.test.ruleflow2", processInstance.getProcessId());
         
-        session.fireAllRules();
+        session.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
         
-        assertEquals(2, list.size());
+        assertEquals(1, list.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
@@ -254,7 +272,10 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
             "    <start id=\"1\" name=\"Start\" />\n" +
             "    <composite id=\"2\" name=\"Composite\" >\n" +
             "      <nodes>\n" +
-            "        <ruleSet id=\"1\" name=\"Hello\" ruleFlowGroup=\"hello\" />\n" +
+            "        <workItem id=\"1\" name=\"Hello\" >\n" +
+            "          <work name=\"Human Task\" >\n" +
+            "          </work>\n" +
+            "        </workItem>\n" +
             "      </nodes>\n" +
             "      <connections>\n" +
             "      </connections>\n" +
@@ -280,6 +301,8 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( builder.getKnowledgePackages() );
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession();
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        session.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
 
         List<String> list = new ArrayList<String>();
         session.setGlobal( "list", list );
@@ -305,7 +328,10 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
             "    <start id=\"1\" name=\"Start\" />\n" +
             "    <composite id=\"2\" name=\"Composite\" >\n" +
             "      <nodes>\n" +
-            "        <ruleSet id=\"101\" name=\"Hello\" ruleFlowGroup=\"hello\" />\n" +
+            "        <workItem id=\"101\" name=\"Hello\" >\n" +
+            "          <work name=\"Human Task\" >\n" +
+            "          </work>\n" +
+            "        </workItem>\n" +
             "        <actionNode id=\"2\" name=\"Action\" >" +
             "          <action type=\"expression\" dialect=\"java\">System.out.println();\n" +
             "list.add(\"Executed\");</action>\n" +
@@ -339,9 +365,9 @@ public class ProcessUpgradeTest extends AbstractBaseTest {
             session, processInstance.getId(), "org.test.ruleflow2", mapping);
         assertEquals("org.test.ruleflow2", processInstance.getProcessId());
         
-        session.fireAllRules();
+        session.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
         
-        assertEquals(2, list.size());
+        assertEquals(1, list.size());
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     

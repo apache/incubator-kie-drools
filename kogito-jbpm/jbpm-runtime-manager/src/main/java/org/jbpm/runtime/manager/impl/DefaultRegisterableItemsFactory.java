@@ -27,7 +27,6 @@ import org.drools.core.impl.EnvironmentFactory;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.event.AuditEventBuilder;
-import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
@@ -135,7 +134,6 @@ public class DefaultRegisterableItemsFactory extends SimpleRegisterableItemsFact
     @Override
     public List<AgendaEventListener> getAgendaEventListeners(RuntimeEngine runtime) {
         List<AgendaEventListener> defaultListeners = new ArrayList<AgendaEventListener>();
-        defaultListeners.add(new TriggerRulesEventListener(runtime.getKieSession()));
         // add any custom listeners
         defaultListeners.addAll(super.getAgendaEventListeners(runtime));
         // add listeners from descriptor

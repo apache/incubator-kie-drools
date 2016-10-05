@@ -26,7 +26,7 @@
 
     <!-- Datasource properties -->
     <org.jbpm.persistence.dialect>org.hibernate.dialect.H2Dialect</org.jbpm.persistence.dialect>
-    <org.jbpm.datasource.connection.url>jdbc:h2:mem:test-db</org.jbpm.datasource.connection.url>
+    <org.jbpm.datasource.connection.url>jdbc:h2:mem:test-db;MVCC=TRUE</org.jbpm.datasource.connection.url>
     <org.jbpm.datasource.username>sa</org.jbpm.datasource.username>
     <org.jbpm.datasource.password></org.jbpm.datasource.password>
     <org.jbpm.datasource.driver.class>org.h2.Driver</org.jbpm.datasource.driver.class>

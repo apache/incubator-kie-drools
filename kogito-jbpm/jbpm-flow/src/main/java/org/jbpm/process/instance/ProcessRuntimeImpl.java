@@ -16,6 +16,8 @@
 package org.jbpm.process.instance;
 
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +47,8 @@ import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
+import org.jbpm.process.instance.event.DefaultSignalManager.SignalAction;
+import org.jbpm.process.instance.event.DefaultSignalManager;
 import org.jbpm.process.instance.event.SignalManager;
 import org.jbpm.process.instance.event.SignalManagerFactory;
 import org.jbpm.process.instance.timer.TimerInstance;
@@ -108,7 +112,6 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
             List<StartNode> startNodes = p.getTimerStart();
             if (startNodes != null && !startNodes.isEmpty()) {
                 kruntime.queueWorkingMemoryAction(new RegisterStartTimerAction(p.getId(), startNodes, this.timerManager));
-                kruntime.executeQueuedActions();
             }
         }
     }
@@ -200,7 +203,6 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
     	try {
             kruntime.startOperation();
 
-            kruntime.executeQueuedActions();
             ProcessInstance processInstance = getProcessInstance(processInstanceId);
 	        getProcessEventSupport().fireBeforeProcessStarted( processInstance, kruntime );
 	        ((org.jbpm.process.instance.ProcessInstance) processInstance).start(trigger);
@@ -230,7 +232,6 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
             CorrelationKey correlationKey, Map<String, Object> parameters) {
         try {
             kruntime.startOperation();
-            kruntime.executeQueuedActions();
 
             final Process process = kruntime.getKieBase().getProcess( processId );
             if ( process == null ) {
@@ -429,10 +430,10 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
                                                   index + 1 );
                         String eventType = ruleName.substring( 0,
                                                                index );
-                        signalManager.signalEvent( eventType,
-                                                   event );
+
+                        kruntime.queueWorkingMemoryAction(new SignalManagerSignalAction(eventType, event));
                     } else if (ruleName.startsWith( "RuleFlowStateEventSubProcess-" ) || ruleName.startsWith( "RuleFlowStateEvent-" ) || ruleName.startsWith( "RuleFlow-Milestone-" ) || ruleName.startsWith( "RuleFlow-AdHocComplete-" )) {
-                        signalManager.signalEvent( ruleName,  event );
+                        kruntime.queueWorkingMemoryAction(new SignalManagerSignalAction(ruleName, event));
                     }
                 }
 			}
@@ -634,4 +635,35 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         }
     }
 
+    public class SignalManagerSignalAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {
+
+        private String type;
+        private Object event;
+        
+        public SignalManagerSignalAction(String type, Object event) {
+            this.type = type;
+            this.event = event;
+        }
+        
+        public SignalManagerSignalAction(MarshallerReaderContext context) throws IOException, ClassNotFoundException {
+            type = context.readUTF();
+            if (context.readBoolean()) {
+                event = context.readObject();
+            }
+        }
+        
+        public void execute(InternalWorkingMemory workingMemory) {
+            
+            signalEvent(type, event);
+        }
+
+        public void execute(InternalKnowledgeRuntime kruntime) {
+            signalEvent(type, event);
+        }
+     
+        public Action serialize(MarshallerWriteContext context) throws IOException {
+            return null;
+        }
+        
+    }
 }

@@ -148,9 +148,8 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
                       list.size() );
 
         final ProcessInstance processInstance = workingMemory.startProcess( "0" );
-        assertEquals( ProcessInstance.STATE_ACTIVE,
-                      processInstance.getState() );
-        workingMemory.fireAllRules();
+        assertEquals( ProcessInstance.STATE_COMPLETED,
+                processInstance.getState() );
         assertEquals( 4,
                       list.size() );
         assertEquals( "Rule1",
@@ -159,8 +158,6 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         list.subList(1,2).contains( "Rule3" );
         assertEquals( "Rule4",
                       list.get( 3 ) );
-        assertEquals( ProcessInstance.STATE_COMPLETED,
-                      processInstance.getState() );
     }
 
     @Test
@@ -183,9 +180,8 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
                       list.size() );
 
         final ProcessInstance processInstance = workingMemory.startProcess( "0" );
-        assertEquals( ProcessInstance.STATE_ACTIVE,
-                      processInstance.getState() );
-        workingMemory.fireAllRules();
+        assertEquals( ProcessInstance.STATE_COMPLETED,
+                processInstance.getState() );
         assertEquals( 4,
                       list.size() );
         assertEquals( "Rule1",
@@ -194,8 +190,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         list.subList(1,2).contains( "Rule3" );
         assertEquals( "Rule4",
                       list.get( 3 ) );
-        assertEquals( ProcessInstance.STATE_COMPLETED,
-                      processInstance.getState() );
+        
         // Reset the system property so that automatic conversion should not happen
         System.setProperty( "drools.ruleflow.port",
                             "false" );
@@ -268,9 +263,8 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
                       list.size() );
 
         final ProcessInstance processInstance = workingMemory.startProcess( "0" );
-        assertEquals( ProcessInstance.STATE_ACTIVE,
-                      processInstance.getState() );
-        workingMemory.fireAllRules();
+        assertEquals( ProcessInstance.STATE_COMPLETED,
+                processInstance.getState() );
         assertEquals( 4,
                       list.size() );
         assertEquals( "Rule1",
@@ -279,8 +273,6 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         list.subList(1,2).contains( "Rule3" );
         assertEquals( "Rule4",
                       list.get( 3 ) );
-        assertEquals( ProcessInstance.STATE_COMPLETED,
-                      processInstance.getState() );
 
     }
 

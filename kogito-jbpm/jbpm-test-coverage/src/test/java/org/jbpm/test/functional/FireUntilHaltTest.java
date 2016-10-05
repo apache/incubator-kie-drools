@@ -49,6 +49,7 @@ public class FireUntilHaltTest extends JbpmTestCase {
         res.put(PROCESS, ResourceType.BPMN2);
         res.put(PROCESS_DRL, ResourceType.DRL);
         final KieSession ksession = createKSession(res);
+        ksession.getEnvironment().set("org.jbpm.rule.task.waitstate", true);
 
         TrackingAgendaEventListener listener = new TrackingAgendaEventListener();
         ksession.addEventListener(listener);

@@ -17,7 +17,6 @@
 package org.jbpm.workflow.instance.node;
 
 import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Activation;
 import org.jbpm.workflow.core.node.MilestoneNode;
@@ -106,7 +105,6 @@ public class MilestoneNodeInstance extends StateBasedNodeInstance implements Age
             String ruleName = event.getMatch().getRule().getName();
             String milestoneName = "RuleFlow-Milestone-" + getProcessInstance().getProcessId() + "-" + getNodeId();
             if (milestoneName.equals(ruleName) && checkProcessInstance((Activation) event.getMatch())) {
-                ((InternalKnowledgeRuntime) getProcessInstance().getKnowledgeRuntime()).executeQueuedActions();
             	synchronized(getProcessInstance()) {
 	                removeEventListeners();
 	                triggerCompleted();

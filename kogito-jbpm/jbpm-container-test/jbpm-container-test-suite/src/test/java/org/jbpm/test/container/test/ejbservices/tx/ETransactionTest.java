@@ -36,8 +36,10 @@ import org.jbpm.test.container.groups.WAS;
 import org.jbpm.test.container.groups.WLS;
 import org.jbpm.test.container.listeners.TrackingAgendaEventListener;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.runners.MethodSorters;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -48,6 +50,7 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Category({EAP.class, WLS.class, WAS.class})
 public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
 
@@ -276,7 +279,7 @@ public class ETransactionTest extends AbstractRuntimeEJBServicesTest {
     }
 
     @Test
-    public void testUserTask() throws Exception {
+    public void testHumanTask() throws Exception {
         Long processInstanceId = startProcessInstance(PROCESS_ID);
 
         UserTransaction ut = InitialContext.doLookup(USER_TRANSACTION_NAME);

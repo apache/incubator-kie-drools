@@ -15,21 +15,23 @@
 
 package org.jbpm.test.util;
 
-import static org.junit.Assert.fail;
-
-import java.util.Arrays;
-import java.util.Collection;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.jbpm.integrationtests.JbpmSerializationHelper;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.conf.ForceEagerActivationOption;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.junit.Assert.fail;
 
 public abstract class AbstractBaseTest {
  
@@ -57,7 +59,9 @@ public abstract class AbstractBaseTest {
             kbase = JbpmSerializationHelper.serializeObject( kbase );
         }
 
-        return kbase.newStatefulKnowledgeSession();
+        KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        conf.setOption( ForceEagerActivationOption.YES );
+        return kbase.newStatefulKnowledgeSession(conf, null);
     }
     
     @BeforeClass

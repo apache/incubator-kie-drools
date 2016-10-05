@@ -47,8 +47,9 @@ public class ExecutionFlowControlTest  extends AbstractBaseTest {
         ksession.fireAllRules();
         assertEquals(0, list.size());
         final ProcessInstance processInstance = ksession.startProcess("0");
-        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
-        ksession.fireAllRules();
+        assertEquals( ProcessInstance.STATE_COMPLETED,
+                processInstance.getState() );
+        
         assertEquals( 4,
                       list.size() );
         assertEquals( "Rule1",

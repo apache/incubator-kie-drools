@@ -17,7 +17,6 @@
 package org.jbpm.workflow.instance.node;
 
 import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.spi.Activation;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
@@ -150,7 +149,6 @@ public class StateNodeInstance extends CompositeContextNodeInstance implements E
             }
         }
         if (selected != null) {
-			((InternalKnowledgeRuntime) getProcessInstance().getKnowledgeRuntime()).executeQueuedActions();
         	removeEventListeners();
         	((NodeInstanceContainer) getNodeInstanceContainer()).removeNodeInstance(this);
             triggerConnection(selected);

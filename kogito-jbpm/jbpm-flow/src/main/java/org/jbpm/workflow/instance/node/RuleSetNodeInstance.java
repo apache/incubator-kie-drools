@@ -25,7 +25,6 @@ import java.util.regex.Matcher;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.process.core.datatype.DataType;
-import org.drools.core.process.instance.WorkItem;
 import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -35,6 +34,7 @@ import org.jbpm.workflow.core.node.DataAssociation;
 import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.Transformation;
 import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
@@ -53,6 +53,8 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(RuleSetNodeInstance.class);
+    
+    private static final String ACT_AS_WAIT_STATE_PROPERTY = "org.jbpm.rule.task.waitstate";
     
     private Map<String, FactHandle> factHandles = new HashMap<String, FactHandle>();
     private String ruleFlowGroup;
@@ -82,47 +84,60 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
     	    factHandles.put(inputKey, kruntime.insert(entry.getValue()));
     	}
     	
-        addRuleSetListener();
-        ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
-        	.activateRuleFlowGroup( getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
+    	if (actAsWaitState()) {
+        	addRuleSetListener();
+            ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+            	.activateRuleFlowGroup( getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
+            
+    	} else {
+    	    ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
+            .activateRuleFlowGroup( getRuleFlowGroup(), getProcessInstance().getId(), getUniqueId() );
+        
+    	    ((KieSession)getProcessInstance().getKnowledgeRuntime()).fireAllRules();
+            
+            removeEventListeners();
+            retractFacts();
+            triggerCompleted();
+    	}
     }
-
+    
     public void addEventListeners() {
         super.addEventListeners();
         addRuleSetListener();
     }
-    
+
     private String getRuleSetEventType() {
-    	InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
-    	if (kruntime instanceof StatefulKnowledgeSession) {
-    		return "RuleFlowGroup_" + getRuleFlowGroup() + "_" + ((StatefulKnowledgeSession) kruntime).getIdentifier();
-    	} else {
-    		return "RuleFlowGroup_" + getRuleFlowGroup();
-    	}
+        InternalKnowledgeRuntime kruntime = getProcessInstance().getKnowledgeRuntime();
+        if (kruntime instanceof StatefulKnowledgeSession) {
+            return "RuleFlowGroup_" + getRuleFlowGroup() + "_" + ((StatefulKnowledgeSession) kruntime).getIdentifier();
+        } else {
+            return "RuleFlowGroup_" + getRuleFlowGroup();
+        }
     }
-    
+
     private void addRuleSetListener() {
-    	getProcessInstance().addEventListener(getRuleSetEventType(), this, true);
+        getProcessInstance().addEventListener(getRuleSetEventType(), this, true);
     }
 
     public void removeEventListeners() {
         super.removeEventListeners();
-    	getProcessInstance().removeEventListener(getRuleSetEventType(), this, true);
+        getProcessInstance().removeEventListener(getRuleSetEventType(), this, true);
+
     }
 
     public void cancel() {
         super.cancel();
-        ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda())
-        	.deactivateRuleFlowGroup( getRuleFlowGroup() );
+        ((InternalAgenda) getProcessInstance().getKnowledgeRuntime().getAgenda()).deactivateRuleFlowGroup(getRuleFlowGroup());
     }
 
-	public void signalEvent(String type, Object event) {
-		if (getRuleSetEventType().equals(type)) {
+    public void signalEvent(String type, Object event) {
+        if (getRuleSetEventType().equals(type)) {
             removeEventListeners();
             retractFacts();
             triggerCompleted();
-		}
+        }
     }
+
 	
 	public void retractFacts() {
 	    Map<String, Object> objects = new HashMap<String, Object>();
@@ -318,4 +333,12 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
         this.ruleFlowGroup = ruleFlowGroup;
     }
 
+    protected boolean actAsWaitState() {
+        Object asWaitState = getProcessInstance().getKnowledgeRuntime().getEnvironment().get(ACT_AS_WAIT_STATE_PROPERTY);
+        if (asWaitState != null) {
+            return Boolean.parseBoolean(asWaitState.toString());
+        }
+        
+        return false;
+    }
 }

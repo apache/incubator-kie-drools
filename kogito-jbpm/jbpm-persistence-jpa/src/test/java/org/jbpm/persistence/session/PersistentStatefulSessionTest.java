@@ -390,33 +390,6 @@ public class PersistentStatefulSessionTest extends AbstractBaseTest {
         assertNull( processInstance );
     }
     
-    @Test
-    public void testPersistenceRuleSet() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( new ClassPathResource( "RuleSetProcess.rf" ),
-                      ResourceType.DRF );
-        kbuilder.add( new ClassPathResource( "RuleSetRules.drl" ),
-                      ResourceType.DRL );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        long id = ksession.getIdentifier();
-        
-        ksession.insert(new ArrayList<Object>());
-
-        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
-        ProcessInstance processInstance = ksession.startProcess( "org.drools.test.TestProcess" );
-
-        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
-        processInstance = ksession.getProcessInstance( processInstance.getId() );
-        assertNotNull( processInstance );
-
-        ksession = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase, null, env );
-        ksession.fireAllRules();
-        processInstance = ksession.getProcessInstance( processInstance.getId() );
-        assertNull( processInstance );
-    }
     
     @Test
     public void testPersistenceEvents() {

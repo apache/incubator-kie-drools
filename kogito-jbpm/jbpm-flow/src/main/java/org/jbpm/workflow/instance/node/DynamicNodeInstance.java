@@ -16,12 +16,7 @@
 
 package org.jbpm.workflow.instance.node;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.common.InternalAgenda;
-import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.MVELSafeHelper;
@@ -40,6 +35,10 @@ import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.runtime.process.NodeInstance;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DynamicNodeInstance extends CompositeContextNodeInstance implements AgendaEventListener {
 
@@ -183,7 +182,6 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
             String ruleName = event.getMatch().getRule().getName();
             String milestoneName = "RuleFlow-AdHocComplete-" + getProcessInstance().getProcessId() + "-" + getNodeId();
             if (milestoneName.equals(ruleName) && checkProcessInstance((Activation) event.getMatch())) {
-                ((InternalKnowledgeRuntime) getProcessInstance().getKnowledgeRuntime()).executeQueuedActions();
                 synchronized(getProcessInstance()) {
                     removeEventListeners();
                     triggerCompleted();

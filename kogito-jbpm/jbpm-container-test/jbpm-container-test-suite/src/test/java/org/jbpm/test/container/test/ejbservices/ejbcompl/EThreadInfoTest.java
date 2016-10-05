@@ -28,8 +28,10 @@ import org.jbpm.services.api.model.VariableDesc;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.junit.runners.MethodSorters;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
@@ -40,6 +42,7 @@ import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Category({EAP.class})
 public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
 
@@ -229,7 +232,7 @@ public class EThreadInfoTest extends AbstractRuntimeEJBServicesTest {
     }
 
     @Test
-    public void testUserTaskThreadInfo() throws Exception {
+    public void testHumanTaskThreadInfo() throws Exception {
         Long pid = startProcessInstance(THREAD_INFO_PROCESS_ID);
 
         processService.signalProcessInstance(pid, "start", "usertask");

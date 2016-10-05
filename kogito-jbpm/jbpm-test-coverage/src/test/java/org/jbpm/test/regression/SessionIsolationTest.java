@@ -82,13 +82,15 @@ public class SessionIsolationTest extends JbpmTestCase {
         RuntimeEngine runtime2 = getRuntimeEngine(ProcessInstanceIdContext.get());
 
         KieSession ksession1 = runtime1.getKieSession();
+        ksession1.getEnvironment().set("org.jbpm.rule.task.waitstate", true);
         KieSession ksession2 = runtime2.getKieSession();
+        ksession2.getEnvironment().set("org.jbpm.rule.task.waitstate", true);
 
         Assertions.assertThat(ksession1).isNotEqualTo(ksession2);
 
         ProcessInstance pi1 = ksession1.startProcess(RULE_TASK_ID);
         ProcessInstance pi2 = ksession2.startProcess(RULE_TASK_ID);
-
+        
         assertProcessInstanceActive(pi1.getId(), ksession1);
         assertProcessInstanceActive(pi2.getId(), ksession2);
 

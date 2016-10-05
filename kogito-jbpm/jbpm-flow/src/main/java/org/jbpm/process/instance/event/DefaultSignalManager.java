@@ -24,6 +24,7 @@ import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.phreak.PropagationEntry;
 import org.jbpm.process.instance.InternalProcessRuntime;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessInstance;
 
@@ -70,8 +71,7 @@ public class DefaultSignalManager implements SignalManager {
 	}
 	
 	public void signalEvent(String type, Object event) {
-		kruntime.queueWorkingMemoryAction(new SignalAction(type, event));
-		kruntime.executeQueuedActions();
+	    ((DefaultSignalManager) ((InternalProcessRuntime) kruntime.getProcessRuntime()).getSignalManager()).internalSignalEvent(type, event);
 	}
 	
 	public void internalSignalEvent(String type, Object event) {
@@ -87,8 +87,7 @@ public class DefaultSignalManager implements SignalManager {
 	public void signalEvent(long processInstanceId, String type, Object event) {
 		ProcessInstance processInstance = kruntime.getProcessInstance(processInstanceId);
 		if (processInstance != null) {
-			kruntime.queueWorkingMemoryAction(new SignalProcessInstanceAction(processInstanceId, type, event));
-			kruntime.executeQueuedActions();
+		    processInstance.signalEvent(type, event);
 		}
 	}
 	
@@ -213,6 +212,5 @@ public class DefaultSignalManager implements SignalManager {
             return null;
         }
 		
-	}
-	
+	}	
 }

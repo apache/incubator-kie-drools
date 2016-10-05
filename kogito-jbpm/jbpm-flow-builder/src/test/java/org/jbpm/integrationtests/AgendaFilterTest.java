@@ -130,10 +130,8 @@ public class AgendaFilterTest extends AbstractBaseTest {
         message.setStatus(Message.HELLO);
         ksession.insert(message);
         ksession.startProcess("process-test");
-        SalienceFilter filter = new SalienceFilter();
-
-        int fired = ksession.fireAllRules(filter);
-        assertEquals(2, fired);
+        
+        assertEquals("Goodbye cruel world", message.getMessage());
     }
 
     public static class Message {

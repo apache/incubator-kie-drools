@@ -70,6 +70,7 @@ public class ProcessRuleFlowGroupTest extends AbstractBaseTest {
         builder.addPackageFromDrl(source2);
 
         StatefulKnowledgeSession workingMemory = createKieSession(builder.getPackage());
+        workingMemory.getEnvironment().set("org.jbpm.rule.task.waitstate", "true");
         
         Person person = new Person();
         person.setAge(30);

@@ -91,6 +91,7 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
         kbuilder.add( ResourceFactory.newReaderResource( new StringReader( process ) ), ResourceType.DRF );
 
         StatefulKnowledgeSession ksession = createKieSession(kbuilder.getKnowledgePackages().toArray(new KnowledgePackage[0]));
+        ksession.getEnvironment().set("org.jbpm.rule.task.waitstate", true);
 
         List<Object> list = new ArrayList<Object>();
         ksession.setGlobal( "list", list );
@@ -100,12 +101,12 @@ public class ProcessMarshallingTest extends AbstractBaseTest {
         ksession.startProcess("org.test.ruleflow");
         
         assertEquals(1, ksession.getProcessInstances().size());
-        
+                
         ksession = JbpmSerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true );
         assertEquals(1, ksession.getProcessInstances().size());
         
         ksession.fireAllRules();
-
+        
         assertEquals( 1, ((List<Object>) ksession.getGlobal("list")).size());
         assertEquals( p, ((List<Object>) ksession.getGlobal("list")).get(0));
         assertEquals(0, ksession.getProcessInstances().size());

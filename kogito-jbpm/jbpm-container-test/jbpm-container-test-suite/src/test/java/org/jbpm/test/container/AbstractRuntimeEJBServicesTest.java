@@ -26,6 +26,7 @@ import org.assertj.core.api.Assertions;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
+import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.ejb.api.ProcessServiceEJBLocal;
 import org.jbpm.services.ejb.api.UserTaskServiceEJBLocal;
 import org.junit.After;
@@ -69,22 +70,20 @@ public abstract class AbstractRuntimeEJBServicesTest extends AbstractEJBServices
     @After
     @Override
     public void cleanup() {
-        try {
-            List<Long> pids = archive.getPids();
-            List<Long> all = (List<Long>) ((ArrayList<Long>) pids).clone();
-            for (Long pid : all) {
-                ProcessInstance pi = processService.getProcessInstance(pid);
-                if (pi == null) {
-                    pids.remove(pid);
-                }
+        
+        List<Long> pids = archive.getPids();
+        List<Long> all = (List<Long>) ((ArrayList<Long>) pids).clone();
+        for (Long pid : all) {
+            ProcessInstanceDesc pi = runtimeDataService.getProcessInstanceById(pid);
+            if (pi == null || pi.getState() != ProcessInstance.STATE_ACTIVE) {
+                pids.remove(pid);
             }
-            if (!pids.isEmpty()) {
-                processService.abortProcessInstances(pids);
-            }
-            pids.clear();
-        } catch (Exception ex) {
-            // ignore
         }
+        if (!pids.isEmpty()) {
+            processService.abortProcessInstances(pids);
+        }
+        pids.clear();
+
 
         cleanupSingletonSessionId();
         List<DeploymentUnit> units = archive.getUnits();
