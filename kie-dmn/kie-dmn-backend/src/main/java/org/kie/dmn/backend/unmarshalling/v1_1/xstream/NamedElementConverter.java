@@ -17,7 +17,10 @@
 package org.kie.dmn.backend.unmarshalling.v1_1.xstream;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+
 import org.kie.dmn.feel.model.v1_1.NamedElement;
 
 public abstract class NamedElementConverter
@@ -36,5 +39,19 @@ public abstract class NamedElementConverter
         super.assignAttributes( reader, parent );
         String name = reader.getAttribute( NAME );
         ((NamedElement) parent).setName( name );
+    }
+    
+    @Override
+    protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
+        super.writeChildren(writer, context, parent);
+        
+        // no children.
+    }
+    @Override
+    protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
+        super.writeAttributes(writer, parent);
+        NamedElement ne = (NamedElement) parent;
+        
+        writer.addAttribute( NAME , ne.getName() );
     }
 }

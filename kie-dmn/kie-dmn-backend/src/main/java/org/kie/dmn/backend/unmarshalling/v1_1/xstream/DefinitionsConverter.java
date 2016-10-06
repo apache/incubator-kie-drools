@@ -17,7 +17,12 @@
 package org.kie.dmn.backend.unmarshalling.v1_1.xstream;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+
+import java.util.List;
+
 import org.kie.dmn.feel.model.v1_1.*;
 
 public class DefinitionsConverter
@@ -27,6 +32,13 @@ public class DefinitionsConverter
     private static final String NAMESPACE           = "namespace";
     private static final String EXPORTER            = "exporter";
     private static final String EXPORTER_VERSION    = "exporterVersion";
+    
+    public static final String IMPORT = "import";
+    public static final String ITEM_DEFINITION = "itemDefinition";
+    public static final String DRG_ELEMENT = "drgElement";
+    public static final String ARTIFACT = "artifact";
+    public static final String ELEMENT_COLLECTION = "elementCollection";
+    public static final String BUSINESS_CONTEXT_ELEMENT = "businessContextElement";
 
     public DefinitionsConverter(XStream xstream) {
         super( xstream );
@@ -39,9 +51,18 @@ public class DefinitionsConverter
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
         Definitions def = (Definitions) parent;
-        if ( child instanceof InputData || child instanceof BusinessKnowledgeModel ||
-             child instanceof Decision || child instanceof KnowledgeSource ) {
+        if ( IMPORT.equals(nodeName) ) {
+            def.getImport().add((Import) child);
+        } else if (ITEM_DEFINITION.equals(nodeName)) {
+            def.getItemDefinition().add((ItemDefinition) child);
+        } else if (child instanceof DRGElement) {
             def.getDrgElement().add( (DRGElement) child );
+        } else if (child instanceof Artifact) {
+            def.getArtifact().add((Artifact) child);
+        } else if (ELEMENT_COLLECTION.equals(nodeName)) {
+            def.getElementCollection().add((ElementCollection) child);
+        } else if (child instanceof BusinessContextElement ) {
+            def.getBusinessContextElement().add((BusinessContextElement) child);
         } else {
             super.assignChildElement( def, nodeName, child );
         }
@@ -53,7 +74,7 @@ public class DefinitionsConverter
         Definitions def = (Definitions) parent;
 
         String exprLang = reader.getAttribute( EXPRESSION_LANGUAGE );
-        String typeLang = reader.getAttribute( TYPE_LANGUAGE );
+        String typeLang = reader.getAttribute( TYPE_LANGUAGE ); 
         String namespace = reader.getAttribute( NAMESPACE );
         String exporter = reader.getAttribute( EXPORTER );
         String exporterVersion = reader.getAttribute( EXPORTER_VERSION );
@@ -70,4 +91,62 @@ public class DefinitionsConverter
         return new Definitions();
     }
 
+    @Override
+    protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
+        super.writeChildren(writer, context, parent);
+        Definitions def = (Definitions) parent;
+        
+        for ( Import i : def.getImport() ) {
+            writeChildrenNode(writer, context, i, IMPORT);
+        }
+        for ( ItemDefinition id : def.getItemDefinition() ) {
+            writeChildrenNode(writer, context, id, ITEM_DEFINITION);
+        }
+        for ( DRGElement e : def.getDrgElement() ) {
+            String nodeName = DRG_ELEMENT;
+            if (e instanceof BusinessKnowledgeModel) {
+                nodeName = "businessKnowledgeModel";
+            } else if (e instanceof Decision) {
+                nodeName = "decision";
+            } else if (e instanceof InputData) {
+                nodeName = "inputData";
+            } else if (e instanceof KnowledgeSource) {
+                nodeName = "knowledgeSource";
+            }
+            writeChildrenNode(writer, context, e, nodeName);
+        }
+        for ( Artifact a : def.getArtifact() ) {
+            String nodeName = ARTIFACT;
+            if (a instanceof Association) {
+                nodeName = "association";
+            } else if (a instanceof TextAnnotation) {
+                nodeName = "textAnnotation";
+            }
+            writeChildrenNode(writer, context, a, nodeName);
+        }
+        for ( ElementCollection ec : def.getElementCollection() ) {
+            writeChildrenNode(writer, context, ec, ELEMENT_COLLECTION);
+        }
+        for ( BusinessContextElement bce : def.getBusinessContextElement() ) {
+            String nodeName = BUSINESS_CONTEXT_ELEMENT;
+            if (bce instanceof OrganizationUnit) {
+                nodeName = "organizationUnit";
+            } else if (bce instanceof PerformanceIndicator) {
+                nodeName = "performanceIndicator";
+            }
+            writeChildrenNode(writer, context, bce, nodeName);
+        }
+    }
+
+    @Override
+    protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
+        super.writeAttributes(writer, parent);
+        Definitions def = (Definitions) parent;
+        
+        if (def.getExpressionLanguage() != null) writer.addAttribute( EXPRESSION_LANGUAGE , def.getExpressionLanguage() );
+        if (def.getTypeLanguage() != null) writer.addAttribute( TYPE_LANGUAGE, def.getTypeLanguage() );
+        if (def.getNamespace() != null) writer.addAttribute( NAMESPACE, def.getNamespace());
+        if (def.getExporter() != null) writer.addAttribute( EXPORTER, def.getExporter() );
+        if (def.getExporterVersion() != null) writer.addAttribute( EXPORTER_VERSION, def.getExporterVersion());
+    }
 }
