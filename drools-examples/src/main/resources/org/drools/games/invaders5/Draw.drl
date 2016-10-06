@@ -51,3 +51,9 @@ then
    g.fillRect( i.x - i.dx - i.dy, i.y, conf.shipWidth, conf.shipHeight ); // restore the previous blackground
    g.drawImage( ImageIO.read( GameUI.class.getResource( "invaders/invader1.gif" ) ), i.x, i.y, i.width, i.height, ui.getCanvas() );
 end
+
+rule Repaint agenda-group "Draw"  salience -100 when
+    Run()
+then
+   ui.repaint();
+end
