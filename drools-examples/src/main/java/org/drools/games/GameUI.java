@@ -41,7 +41,7 @@ public class GameUI extends Canvas{
      * Initialize the contents of the frame.
      */
     public void init() {
-        frame =  new JFrame("Space Invaders 101");
+        frame =  new JFrame("Drools Example");
         frame.setDefaultCloseOperation(conf.isExitOnClose() ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
         frame.setResizable( false );
         frame.setBackground(Color.BLACK);
@@ -85,6 +85,11 @@ public class GameUI extends Canvas{
             graphics.dispose();
         }
         graphics = null;
+    }
+    
+    public void repaint() {
+        disposeGraphics();
+        getBufferStrategy().show();
     }
 
     public static class GameKeyListener extends KeyAdapter {

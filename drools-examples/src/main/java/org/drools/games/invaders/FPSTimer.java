@@ -2,54 +2,27 @@ package org.drools.games.invaders;
 
 
 public class FPSTimer {
-    private long time;
     private long lastTime;
-    private int  frames;
-    private int  lastFrames;
-    private double correctionRatio;
-    private int desiredFPS = 60;
+    private long frameDiff;
+    private long statsTime;
+    private long frames = 0;
 
-    public FPSTimer() {
-        time = System.currentTimeMillis();
-        lastTime = time;
+    public FPSTimer(long frameDiff) {
+        this.frameDiff = frameDiff;
+        lastTime = System.currentTimeMillis();
+        statsTime = System.currentTimeMillis();
     }
 
     public void incFrame() {
-        long currentTime = System.currentTimeMillis();
-
-        if ( currentTime - time >= 1000 ) {
-            // more than 1s
-            correctionRatio = (double) frames / (double) desiredFPS;
-            System.out.println( "fps :" + frames + "/s (" +  (currentTime - time) + ")" +  correctionRatio );
+        if (System.currentTimeMillis()-statsTime > 1000) {
+            System.out.println( "fps :" + frames + "/s (" +  (System.currentTimeMillis() - statsTime) + ")" );
             frames = 0;
-            time = currentTime;
-            lastTime = currentTime;
-            lastFrames = frames;
-        } else {
-
-            int interval = 50;
-
-            int actualFrames = frames - lastFrames;
-            int expectedFrames =  desiredFPS / (1000/interval);
-
-            long timeDiff = currentTime - lastTime;
-            if (timeDiff < interval ) {
-                if (actualFrames >= expectedFrames) {
-                    // done enough frames for this interval, so pause
-                    try {
-                        Thread.sleep((long) ((interval - timeDiff)*correctionRatio));
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException("Kaboom");
-                    }
-                    lastTime = currentTime;
-                    lastFrames = frames;
-                }
-            } else {
-                lastTime = currentTime;
-                lastFrames = frames;
-            }
-
+            statsTime = System.currentTimeMillis();
+        }
+        while (System.currentTimeMillis()-lastTime<frameDiff) {
+            // do nothing.
         }
         frames++;
+        lastTime = System.currentTimeMillis();
     }
-}
+}   
