@@ -37,7 +37,7 @@ public class HumanTaskVariablesAccessTest extends JbpmTestCase {
     private static final Logger logger = LoggerFactory.getLogger(HumanTaskVariablesAccessTest.class);
 
     public HumanTaskVariablesAccessTest() {
-        super(true, false);
+        super(true, true);
     }
 
     @Test
