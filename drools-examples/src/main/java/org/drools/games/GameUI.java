@@ -68,8 +68,10 @@ public class GameUI {
     }
 
     public void repaint() {
+        long s = System.currentTimeMillis();
         panel.disposeGraphics2D();
         frame.waitForPaint();
+        while (System.currentTimeMillis() - s < 5) { /* busy wait. */ }
     }
 
     public static class GameKeyListener implements KeyListener {
