@@ -17,7 +17,10 @@
 package org.kie.dmn.backend.unmarshalling.v1_1.xstream;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+
 import org.kie.dmn.feel.model.v1_1.InformationItem;
 
 public class InformationItemConverter
@@ -49,6 +52,19 @@ public class InformationItemConverter
     @Override
     protected Object createModelObject() {
         return new InformationItem();
+    }
+
+    @Override
+    protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
+        super.writeChildren(writer, context, parent);
+    }
+
+    @Override
+    protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
+        super.writeAttributes(writer, parent);
+        InformationItem ii = (InformationItem) parent;
+        
+        if ( ii.getTypeRef() != null ) writer.addAttribute(TYPE_REF, MarshallingUtils.formatQName( ii.getTypeRef() ) );
     }
 
 }
