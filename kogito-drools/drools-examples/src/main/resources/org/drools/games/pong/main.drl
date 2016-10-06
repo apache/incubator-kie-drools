@@ -16,6 +16,9 @@
 package org.drools.games.pong;
 
 import org.drools.games.Run;
+import org.drools.games.invaders.FPSTimer;
+
+global FPSTimer fpsTimer;
 
 dialect  "mvel"
 
@@ -45,4 +48,5 @@ rule Redraw when
 then
    gui.drawGame(ball, bat1, bat2, p1, p2);
    modify( $r ) {}
+   fpsTimer.incFrame();
 end

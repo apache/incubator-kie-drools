@@ -18,8 +18,11 @@ package org.drools.games.invaders6;
 import org.drools.games.KeyPressed
 import org.drools.games.Run
 import org.drools.games.GameUI
+import org.drools.games.invaders.FPSTimer
 
 global GameUI ui
+
+global FPSTimer fpsTimer;
 
 dialect "mvel"
 
@@ -34,8 +37,8 @@ rule GameLoop when
 then
     setFocus( "Draw" );
     setFocus( "Bullet" );
-    setFocus( "Keys" );
     setFocus( "Move" );
+    setFocus( "Keys" );
 end
 
 
@@ -43,4 +46,5 @@ rule Draw when
     r : Run()
 then
     modify( r ) {} // force loop
+    fpsTimer.incFrame();
 end

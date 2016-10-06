@@ -33,13 +33,22 @@ import java.awt.Graphics
 
 dialect "mvel"
 
+
+rule ClearCanvas agenda-group "Draw"  salience 100 when
+    Run()
+then
+   g = ui.getGraphics();
+   g.setColor( Color.BLACK ); // background
+   g.fillRect(0,0, conf.getWindowWidth(), conf.getWindowHeight() );
+end
+
 rule DrawShip agenda-group "Draw" when
   s : Ship()
       Run()
 then
    g = ui.getGraphics();
    g.setColor( Color.BLACK ); // background
-   g.fillRect( s.x - s.dx - s.dy, s.y, s.width, s.height ); // restore the previous blackground
+   g.fillRect( s.x - s.dx, s.y, s.width, s.height ); // restore the previous blackground
    g.drawImage( ImageIO.read( GameUI.class.getResource( "invaders/ship.gif" ) ), s.x, s.y, s.width, s.height, ui.getCanvas() );
 end
 
@@ -49,7 +58,6 @@ rule DrawLiveInvader agenda-group "Draw" when
 then
    g = ui.getGraphics();
    g.setColor( Color.BLACK ); // background
-   g.fillRect( i.x - i.dx, i.y - i.dy, i.width, i.height ); // restore the previous blackground
    g.drawImage( ImageIO.read( GameUI.class.getResource( "invaders/invader1.gif" ) ), i.x, i.y, i.width, i.height, ui.getCanvas() );
 end
 
@@ -87,5 +95,6 @@ end
 rule Repaint agenda-group "Draw"  salience -100 when
     Run()
 then
-   ui.repaint();
+   ui.disposeGraphics();
+   ui.getBufferStrategy().show();
 end
