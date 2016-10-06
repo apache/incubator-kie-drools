@@ -44,6 +44,7 @@ public class Invaders6Main {
 
         ksession.setGlobal( "conf", conf );
         ksession.setGlobal( "ui", ui );
+        ksession.setGlobal( "fpsTimer", new FPSTimer(10) );
 
         runKSession(ksession);
     }

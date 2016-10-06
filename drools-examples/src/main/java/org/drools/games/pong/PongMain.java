@@ -15,6 +15,7 @@
 
 package org.drools.games.pong;
 
+import org.drools.games.invaders.FPSTimer;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -40,7 +41,7 @@ public class PongMain {
         PongConfiguration pconf = new PongConfiguration();
         pconf.setExitOnClose(exitOnClose);
         ksession.setGlobal("pconf", pconf);
-
+        ksession.setGlobal( "fpsTimer", new FPSTimer(3) );
         //ksession.getAgenda().getAgendaGroup("Init").setFocus( );
 
         runKSession(ksession);
