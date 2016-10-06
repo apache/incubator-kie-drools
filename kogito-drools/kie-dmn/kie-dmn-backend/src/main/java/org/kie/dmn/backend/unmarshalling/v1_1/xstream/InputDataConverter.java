@@ -17,7 +17,10 @@
 package org.kie.dmn.backend.unmarshalling.v1_1.xstream;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+
 import org.kie.dmn.feel.model.v1_1.InformationItem;
 import org.kie.dmn.feel.model.v1_1.InputData;
 
@@ -36,7 +39,9 @@ public class InputDataConverter
 
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
+        super.assignChildElement(parent, nodeName, child);
         InputData id = (InputData) parent;
+        
         if ( VARIABLE.equals( nodeName ) ) {
             id.setVariable( (InformationItem) child );
         } else {
@@ -54,4 +59,22 @@ public class InputDataConverter
         return new InputData();
     }
 
+    @Override
+    protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
+        super.writeChildren(writer, context, parent);
+        InputData id = (InputData) parent;
+        
+        if ( id.getVariable() != null ) {
+            writeChildrenNode(writer, context, id.getVariable(), VARIABLE);
+        }
+    }
+
+    @Override
+    protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
+        super.writeAttributes(writer, parent);
+
+        // no attributes.
+    }
+
+    
 }

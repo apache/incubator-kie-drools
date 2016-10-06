@@ -82,6 +82,22 @@
         <artifactId>kie-dmn-core</artifactId>
         <version>${version.org.kie}</version>
       </dependency>
+    <dependency>
+      <groupId>org.xmlunit</groupId>
+      <artifactId>xmlunit-core</artifactId>
+      <version>2.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.java.dev.stax-utils</groupId>
+      <artifactId>stax-utils</artifactId>
+      <version>20070216</version>
+      <exclusions>
+        <exclusion>
+        <groupId>com.bea.xml</groupId>
+        <artifactId>jsr173-ri</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
     </dependencies>
   </dependencyManagement>
 

@@ -17,14 +17,17 @@
 package org.kie.dmn.backend.unmarshalling.v1_1.xstream;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+
 import org.kie.dmn.feel.model.v1_1.DMNElement;
 
 public abstract class DMNElementConverter
         extends DMNBaseConverter {
-    private static final String ID          = "id";
-    private static final String LABEL       = "label";
-    private static final String DESCRIPTION = "description";
+    public static final String ID          = "id";
+    public static final String LABEL       = "label";
+    public static final String DESCRIPTION = "description";
 
     public DMNElementConverter(XStream xstream) {
         super( xstream.getMapper() );
@@ -46,5 +49,22 @@ public abstract class DMNElementConverter
 
         dmne.setId( id );
         dmne.setLabel( label );
+    }
+    
+    @Override
+    protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
+        // there is no call to super as super is an abstract method.
+        DMNElement e = (DMNElement) parent;
+
+        if (e.getDescription() !=null) writeChildrenNodeAsValue(writer, context, e.getDescription(), DESCRIPTION);
+        // TODO what about DMNElement.ExtensionElements extensionElements;
+    }
+    @Override
+    protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
+        // there is no call to super as super is an abstract method.
+        DMNElement e = (DMNElement) parent;
+        
+        if (e.getId() != null) writer.addAttribute( ID , e.getId() );
+        if (e.getLabel() != null) writer.addAttribute( LABEL , e.getLabel() );
     }
 }

@@ -16,8 +16,12 @@
 
 package org.kie.dmn.backend.unmarshalling.v1_1.xstream;
 
+import org.kie.dmn.feel.model.v1_1.DMNElement;
+
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public abstract class DMNModelInstrumentedBaseConverter
         extends DMNBaseConverter {
@@ -32,5 +36,14 @@ public abstract class DMNModelInstrumentedBaseConverter
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
+    }
+    
+    @Override
+    protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
+        // no call to super as super is abstract method.
+    }
+    @Override
+    protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
+        // no call to super as super is abstract method.
     }
 }

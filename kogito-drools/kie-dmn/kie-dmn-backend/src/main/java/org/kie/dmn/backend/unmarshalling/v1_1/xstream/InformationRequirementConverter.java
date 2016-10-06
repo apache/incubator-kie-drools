@@ -17,7 +17,10 @@
 package org.kie.dmn.backend.unmarshalling.v1_1.xstream;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+
 import org.kie.dmn.feel.model.v1_1.DMNElementReference;
 import org.kie.dmn.feel.model.v1_1.InformationRequirement;
 
@@ -38,6 +41,7 @@ public class InformationRequirementConverter
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
         InformationRequirement ir = (InformationRequirement) parent;
+        
         if ( REQUIRED_INPUT.equals( nodeName ) ) {
             ir.setRequiredInput( (DMNElementReference) child );
         } else if ( REQUIRED_DECISION.equals( nodeName ) ) {
@@ -56,5 +60,28 @@ public class InformationRequirementConverter
     protected Object createModelObject() {
         return new InformationRequirement();
     }
+
+    @Override
+    protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
+        super.writeChildren(writer, context, parent);
+        InformationRequirement ir = (InformationRequirement) parent;
+        
+        if ( ir.getRequiredDecision() != null ) {
+            writeChildrenNode(writer, context, ir.getRequiredDecision(), REQUIRED_DECISION);
+        }
+        // TODO or if else ?
+        if ( ir.getRequiredInput() != null ) {
+            writeChildrenNode(writer, context, ir.getRequiredInput(), REQUIRED_INPUT);
+        }
+    }
+
+    @Override
+    protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
+        super.writeAttributes(writer, parent);
+        
+        // no attributes.
+    }
+
+    
 
 }

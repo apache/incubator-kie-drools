@@ -36,4 +36,18 @@ public class MarshallingUtils {
             return null;
         }
     }
+    
+    public static String formatQName(QName qname) {
+        StringBuilder sb = new StringBuilder();
+        if ( qname.getPrefix() != null ) {
+            sb.append(qname.getPrefix());
+            sb.append(":");
+        }
+        if ( qname.getNamespaceURI() != null ) {
+            sb.append(qname.getNamespaceURI());
+            sb.append(":");
+        }
+        sb.append(qname.getLocalPart());
+        return sb.toString();
+    }
 }

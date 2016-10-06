@@ -17,7 +17,10 @@
 package org.kie.dmn.backend.unmarshalling.v1_1.xstream;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+
 import org.kie.dmn.feel.model.v1_1.Expression;
 
 public abstract class ExpressionConverter
@@ -41,4 +44,16 @@ public abstract class ExpressionConverter
         ((Expression) parent).setTypeRef( MarshallingUtils.parseQNameString( typeRef ) );
     }
 
+    @Override
+    protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
+        super.writeChildren(writer, context, parent);
+    }
+
+    @Override
+    protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
+        super.writeAttributes(writer, parent);
+        Expression e = (Expression) parent;
+        
+        if ( e.getTypeRef() != null ) writer.addAttribute(TYPE_REF, MarshallingUtils.formatQName( e.getTypeRef() ) );
+    }
 }
