@@ -40,3 +40,9 @@ then
    g.setColor( Color.BLACK ); // background
    g.drawImage( ImageIO.read( GameUI.class.getResource( "invaders/ship.gif" ) ), s.x, s.y, s.width, s.height, ui.getCanvas() );
 end
+
+rule Repaint agenda-group "Draw"  salience -100 when
+    Run()
+then
+   ui.repaint();
+end
