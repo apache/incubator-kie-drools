@@ -29,20 +29,33 @@ import java.util.Comparator;
 public class CaseDefinitionComparator implements Comparator<CaseDefinitionImpl> {
     
     private String orderBy;
+    private boolean ascending;
     
-    public CaseDefinitionComparator(String orderBy) {   
+    public CaseDefinitionComparator(String orderBy, Boolean ascending) {
         this.orderBy = orderBy;
+        this.ascending = ascending == null ? Boolean.TRUE : ascending;
     }
 
     @Override
     public int compare(CaseDefinitionImpl o1, CaseDefinitionImpl o2) {
+        int result = 0;
+
         if ("CaseName".equals(orderBy)) {
-            return o1.getName().compareTo(o2.getName());
+            result = o1.getName().compareTo(o2.getName());
         } else if ("CaseId".equals(orderBy)) {
-            return o1.getId().compareTo(o2.getId());
+            result = o1.getId().compareTo(o2.getId());
         } else if ("Project".equals(orderBy)) {
-            return o1.getDeploymentId().compareTo(o2.getDeploymentId());
+            result = o1.getDeploymentId().compareTo(o2.getDeploymentId());
         }
-        return 0;
+
+        if (!ascending) {
+            result = reverseCompareResult(result);
+        }
+
+        return result;
+    }
+
+    private int reverseCompareResult(int compareResult) {
+        return -compareResult;
     }
 }

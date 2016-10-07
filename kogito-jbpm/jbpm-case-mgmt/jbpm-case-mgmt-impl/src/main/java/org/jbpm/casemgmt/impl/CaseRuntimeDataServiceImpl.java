@@ -210,10 +210,10 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
     @Override
     public Collection<CaseDefinition> getCases(QueryContext queryContext) {
         Collection<CaseDefinition> cases = availableCases.stream()
-                .skip(queryContext.getOffset())
                 .filter(caseDef -> caseDef.isActive())
+                .sorted(new CaseDefinitionComparator(queryContext.getOrderBy(), queryContext.isAscending()))
+                .skip(queryContext.getOffset())
                 .limit(queryContext.getCount())
-                .sorted(new CaseDefinitionComparator(queryContext.getOrderBy()))
                 .collect(toList());
         return cases;
     }
@@ -223,11 +223,11 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         String pattern = "(?i)^.*"+filter+".*$";
         
         Collection<CaseDefinition> cases = availableCases.stream()
-                .skip(queryContext.getOffset())
                 .filter(caseDef -> caseDef.isActive() 
                         && (caseDef.getId().matches(pattern) || caseDef.getName().matches(pattern)))
+                .sorted(new CaseDefinitionComparator(queryContext.getOrderBy(), queryContext.isAscending()))
+                .skip(queryContext.getOffset())
                 .limit(queryContext.getCount())
-                .sorted(new CaseDefinitionComparator(queryContext.getOrderBy()))
                 .collect(toList());
         return cases;
     }
@@ -235,10 +235,10 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
     @Override
     public Collection<CaseDefinition> getCasesByDeployment(String deploymentId, QueryContext queryContext) {
         Collection<CaseDefinition> cases = availableCases.stream()
-                .skip(queryContext.getOffset())
                 .filter(caseDef -> caseDef.isActive() && caseDef.getDeploymentId().equals(deploymentId))
+                .sorted(new CaseDefinitionComparator(queryContext.getOrderBy(), queryContext.isAscending()))
+                .skip(queryContext.getOffset())
                 .limit(queryContext.getCount())
-                .sorted(new CaseDefinitionComparator(queryContext.getOrderBy()))
                 .collect(toList());
         return cases;
     }
