@@ -90,4 +90,15 @@ public interface InternalRuntimeManager extends RuntimeManager {
      * @param kieContainer
      */
     void setKieContainer(KieContainer kieContainer);
+    
+    /**
+     * Activates this runtime manager by making sure it will be available for execution. 
+     * This is default when creating new instance unless it was already marked as deactivated. 
+     */
+    void activate();
+    
+    /**
+     * Deactivates this runtime manager by making it only available for already running instances.
+     */
+    void deactivate();
 }
