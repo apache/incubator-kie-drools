@@ -154,7 +154,7 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         milestone = mappedMilestones.get("Milestone2");
         assertEquals("_5", milestone.getId());
         assertEquals("Milestone2", milestone.getName());
-        assertEquals("org.kie.internal.process.CaseData(data.get(\"dataComplete\") == true)", milestone.getAchievementCondition());
+        assertEquals("org.kie.api.runtime.process.CaseData(data.get(\"dataComplete\") == true)", milestone.getAchievementCondition());
         assertEquals(false, milestone.isMandatory());
 
         assertNotNull(caseDef.getCaseStages());

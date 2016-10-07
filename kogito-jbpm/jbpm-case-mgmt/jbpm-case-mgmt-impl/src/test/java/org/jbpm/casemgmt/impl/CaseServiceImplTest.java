@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.jbpm.casemgmt.api.CaseActiveException;
 import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.model.AdHocFragment;
 import org.jbpm.casemgmt.api.model.CaseDefinition;
@@ -44,6 +45,7 @@ import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseMilestoneInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentSortBy;
+import org.jbpm.casemgmt.impl.model.instance.CaseInstanceImpl;
 import org.jbpm.casemgmt.impl.objects.EchoService;
 import org.jbpm.casemgmt.impl.util.AbstractCaseServicesBaseTest;
 import org.jbpm.document.Document;
@@ -88,6 +90,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         processes.add("cases/UserTaskWithStageCase.bpmn2");
         processes.add("cases/UserTaskWithStageCaseAutoStart.bpmn2");
         processes.add("cases/UserStageAdhocCase.bpmn2");
+        processes.add("cases/ScriptRoleAssignmentCase.bpmn2");
         // add processes that can be used by cases but are not cases themselves
         processes.add("processes/DataVerificationProcess.bpmn2");
         
@@ -969,6 +972,180 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         }
     }
     
+    @Test
+    public void testStartThenReopenEmptyCase() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", "my first case");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
+        
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals("my first case", cInstance.getCaseDescription());
+            
+            long firstCaseProcessInstanceId = ((CaseInstanceImpl)cInstance).getProcessInstanceId();
+            
+            caseService.cancelCase(caseId);            
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case was aborted so it should not be found any more");
+            } catch (CaseNotFoundException e) {
+                // expected as it was aborted
+            }
+            
+            caseService.reopenCase(caseId, deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID);
+            cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals("my first case", cInstance.getCaseDescription());
+            
+            long secondCaseProcessInstanceId = ((CaseInstanceImpl)cInstance).getProcessInstanceId();
+            
+            assertTrue(secondCaseProcessInstanceId > firstCaseProcessInstanceId);
+            
+            caseService.destroyCase(caseId);
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testStartThenReopenEmptyCaseUpdateDescription() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);        
+
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals("#{name}", cInstance.getCaseDescription());
+            
+            long firstCaseProcessInstanceId = ((CaseInstanceImpl)cInstance).getProcessInstanceId();
+            
+            caseService.cancelCase(caseId);            
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case was aborted so it should not be found any more");
+            } catch (CaseNotFoundException e) {
+                // expected as it was aborted
+            }
+            Map<String, Object> data = new HashMap<>();
+            data.put("name", "my first case");
+
+            caseService.reopenCase(caseId, deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
+            cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals("my first case", cInstance.getCaseDescription());
+            
+            long secondCaseProcessInstanceId = ((CaseInstanceImpl)cInstance).getProcessInstanceId();
+            
+            assertTrue(secondCaseProcessInstanceId > firstCaseProcessInstanceId);
+            
+            caseService.destroyCase(caseId);
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testStartThenReopenActiveCase() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", "my first case");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
+        
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals("my first case", cInstance.getCaseDescription());
+            
+            try {
+                caseService.reopenCase(caseId, deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID);
+                fail("Not allowed to reopen active case");
+                
+            } catch (CaseActiveException e) {
+                // expected
+            }
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testStartScriptRoleAssignmentCase() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), "ScriptRoleAssignmentCase");
+        assertNotNull(caseId);
+        assertEquals(HR_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
+            assertNotNull(tasks);
+            assertEquals(1, tasks.size());
+            
+            TaskSummary task = tasks.get(0);
+            assertEquals("User Task 1", task.getName());
+            
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
     
     /*
      * Helper methods

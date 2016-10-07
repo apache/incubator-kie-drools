@@ -32,8 +32,8 @@ import org.jbpm.casemgmt.api.model.instance.CaseFileDataFilter;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseRoleInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentInstance;
+import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.internal.process.CaseAssignment;
 
 /*
  * Implementation note: since the CaseFileInstanceImpl will be marshalled/unmarshalled by 

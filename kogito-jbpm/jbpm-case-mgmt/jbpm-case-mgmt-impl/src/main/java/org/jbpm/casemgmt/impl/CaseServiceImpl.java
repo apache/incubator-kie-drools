@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.drools.core.ClassObjectFilter;
+import org.jbpm.casemgmt.api.CaseActiveException;
 import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.CaseRuntimeDataService;
 import org.jbpm.casemgmt.api.CaseService;
@@ -48,6 +49,7 @@ import org.jbpm.casemgmt.impl.command.CancelCaseCommand;
 import org.jbpm.casemgmt.impl.command.CaseCommentCommand;
 import org.jbpm.casemgmt.impl.command.ModifyRoleAssignmentCommand;
 import org.jbpm.casemgmt.impl.command.RemoveDataCaseFileInstanceCommand;
+import org.jbpm.casemgmt.impl.command.ReopenCaseCommand;
 import org.jbpm.casemgmt.impl.command.StartCaseCommand;
 import org.jbpm.casemgmt.impl.dynamic.HumanTaskSpecification;
 import org.jbpm.casemgmt.impl.dynamic.WorkItemTaskSpecification;
@@ -195,6 +197,28 @@ public class CaseServiceImpl implements CaseService {
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);        
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CancelCaseCommand(caseId, processService, runtimeDataService, true));
     }
+    
+
+    @Override
+    public void reopenCase(String caseId, String deploymentId, String caseDefinitionId) throws CaseNotFoundException {
+        reopenCase(caseId, deploymentId, caseDefinitionId, new HashMap<>());
+        
+    }
+
+    @Override
+    public void reopenCase(String caseId, String deploymentId, String caseDefinitionId, Map<String, Object> data) throws CaseNotFoundException {
+        ProcessInstanceDesc pi = runtimeDataService.getProcessInstanceByCorrelationKey(correlationKeyFactory.newCorrelationKey(caseId));
+        if (pi != null) {
+            throw new CaseActiveException("Case with id " + caseId + " is still active and cannot be reopened"); 
+        }
+        logger.debug("About to reopen case {} by starting process instance {} from deployment {} with additional data {}", 
+                caseId, caseDefinitionId, deploymentId, data);
+        
+        processService.execute(deploymentId, CaseContext.get(caseId), new ReopenCaseCommand(caseId, deploymentId, caseDefinitionId, data, processService));
+        
+    }
+
+
     
     /*
      * Dynamic operations on a case
@@ -484,6 +508,5 @@ public class CaseServiceImpl implements CaseService {
         }
         return emptyCaseEventSupport;
     }
-
 
 }

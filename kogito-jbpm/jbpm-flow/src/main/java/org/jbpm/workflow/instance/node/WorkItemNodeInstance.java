@@ -18,7 +18,6 @@ package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 
-import org.drools.core.ClassObjectFilter;
 import org.drools.core.WorkItemHandlerNotFoundException;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.DataType;
@@ -61,8 +59,6 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.internal.process.CaseAssignment;
-import org.kie.internal.process.CaseData;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

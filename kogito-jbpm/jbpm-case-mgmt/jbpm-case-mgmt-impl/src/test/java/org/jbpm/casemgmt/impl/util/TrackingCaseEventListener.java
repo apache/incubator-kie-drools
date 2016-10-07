@@ -23,6 +23,7 @@ import org.jbpm.casemgmt.api.event.CaseDestroyEvent;
 import org.jbpm.casemgmt.api.event.CaseDynamicSubprocessEvent;
 import org.jbpm.casemgmt.api.event.CaseDynamicTaskEvent;
 import org.jbpm.casemgmt.api.event.CaseEventListener;
+import org.jbpm.casemgmt.api.event.CaseReopenEvent;
 import org.jbpm.casemgmt.api.event.CaseRoleAssignmentEvent;
 import org.jbpm.casemgmt.api.event.CaseStartEvent;
 import org.slf4j.Logger;
@@ -151,6 +152,16 @@ public class TrackingCaseEventListener implements CaseEventListener {
     @Override
     public void afterDynamicProcessAdded(CaseDynamicSubprocessEvent event) {
         logger.debug("After dynamic subprocess added {}", event);  
+    }
+
+    @Override
+    public void beforeCaseReopen(CaseReopenEvent event) {
+        logger.debug("Before case reopen {}", event);
+    }
+
+    @Override
+    public void afterCaseReopen(CaseReopenEvent event) {
+        logger.debug("After case reopen {}", event);        
     }
 
 }

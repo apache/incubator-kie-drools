@@ -1,6 +1,6 @@
 package org.jbpm.casemgmt.demo.insurance;
 
-import org.kie.internal.process.CaseData;
+import org.kie.api.runtime.process.CaseData;
 import org.jbpm.casemgmt.demo.insurance.ClaimReport;
 
 rule "classify-claim" ruleflow-group "claims"

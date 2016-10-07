@@ -19,7 +19,7 @@ package org.jbpm.casemgmt.api.model.instance;
 import java.util.Date;
 import java.util.Map;
 
-import org.kie.internal.process.CaseData;
+import org.kie.api.runtime.process.CaseData;
 
 /**
  * Represent contextual data of a given Case

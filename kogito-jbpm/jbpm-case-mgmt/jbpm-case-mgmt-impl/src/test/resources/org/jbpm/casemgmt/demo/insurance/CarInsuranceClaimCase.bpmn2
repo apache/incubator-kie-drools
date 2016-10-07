@@ -178,7 +178,7 @@
         </bpmn2:potentialOwner>
       </bpmn2:userTask>
       <bpmn2:sequenceFlow id="_3C60DAAB-83CE-4CCE-9879-46B5285EC13C" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_A5816D33-903D-4CFD-AC24-A9EF21794079" targetRef="_A412D6E5-D4C6-45F6-95FB-DDE7EBE17DF4"/>
-      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_aVxMPmVZEeavbo3IsNuQ1g" language="http://www.jboss.org/drools/rule"><![CDATA[org.kie.internal.process.CaseData(data.get("claimReportDone") == true)]]></bpmn2:completionCondition>
+      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_aVxMPmVZEeavbo3IsNuQ1g" language="http://www.jboss.org/drools/rule"><![CDATA[org.kie.api.runtime.process.CaseData(data.get("claimReportDone") == true)]]></bpmn2:completionCondition>
     </bpmn2:adHocSubProcess>
     <bpmn2:sequenceFlow id="_D40ABA1F-FDC0-4701-B75A-1D53BE841137" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="processStartEvent" targetRef="_A89E06CC-FC11-43E6-8695-0207B2F29033"/>
     <bpmn2:userTask id="_7A5D35F1-7904-45A5-A8DD-EC15536DD35E" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" color:background-color="#CC99FF" color:border-color="#000000" color:color="#000000" name="Contacted by insured">

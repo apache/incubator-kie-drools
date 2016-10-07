@@ -30,8 +30,8 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.context.AbstractContextInstance;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
+import org.kie.api.runtime.process.CaseData;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.process.CaseData;
 
 /**
  * 

@@ -36,6 +36,10 @@ public interface CaseEventListener extends EventListener {
     void beforeCaseDestroyed(CaseDestroyEvent event);
     
     void afterCaseDestroyed(CaseDestroyEvent event);
+    
+    void beforeCaseReopen(CaseReopenEvent event);
+
+    void afterCaseReopen(CaseReopenEvent event);
 
     void beforeCaseCommentAdded(CaseCommentEvent event);
 

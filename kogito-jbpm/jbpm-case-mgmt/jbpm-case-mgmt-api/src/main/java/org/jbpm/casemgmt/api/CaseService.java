@@ -115,6 +115,29 @@ public interface CaseService {
      */
     void destroyCase(String caseId) throws CaseNotFoundException;
     
+    /**
+     * Reopens case given by case id by starting another instance of case definition. It will inherit all data
+     * from case file that was available in before case was closed/canceled.
+     * @param caseId unique case id in the format PREFIX-GENERATED_ID as described on startCase method
+     * @param deploymentId deployment id of project that case definition belongs to
+     * @param caseDefinitionId id of case definition
+     * @throws CaseNotFoundException thrown in case case was not found with given id
+     * @throws CaseActiveException thrown when case is still active
+     */
+    void reopenCase(String caseId, String deploymentId, String caseDefinitionId) throws CaseNotFoundException;
+    
+    /**
+     * Reopens case given by case id by starting another instance of case definition. It will inherit all data
+     * from case file that was available in before case was closed/canceled.
+     * @param caseId unique case id in the format PREFIX-GENERATED_ID as described on startCase method
+     * @param deploymentId deployment id of project that case definition belongs to
+     * @param caseDefinitionId id of case definition
+     * @param data additional data to be set on case file
+     * @throws CaseNotFoundException thrown in case case was not found with given id
+     * @throws CaseActiveException thrown when case is still active
+     */
+    void reopenCase(String caseId, String deploymentId, String caseDefinitionId, Map<String, Object> data) throws CaseNotFoundException;
+    
     /*
      * dynamic case operations section
      */

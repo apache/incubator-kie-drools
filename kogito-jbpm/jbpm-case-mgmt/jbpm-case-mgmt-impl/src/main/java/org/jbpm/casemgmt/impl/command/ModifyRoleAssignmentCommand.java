@@ -23,10 +23,10 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.internal.command.Context;
-import org.kie.internal.process.CaseAssignment;
 
 /**
  * Modifies case role assignments

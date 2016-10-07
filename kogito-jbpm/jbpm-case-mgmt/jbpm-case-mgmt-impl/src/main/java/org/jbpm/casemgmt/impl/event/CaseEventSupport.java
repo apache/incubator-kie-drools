@@ -28,6 +28,7 @@ import org.jbpm.casemgmt.api.event.CaseDestroyEvent;
 import org.jbpm.casemgmt.api.event.CaseDynamicSubprocessEvent;
 import org.jbpm.casemgmt.api.event.CaseDynamicTaskEvent;
 import org.jbpm.casemgmt.api.event.CaseEventListener;
+import org.jbpm.casemgmt.api.event.CaseReopenEvent;
 import org.jbpm.casemgmt.api.event.CaseRoleAssignmentEvent;
 import org.jbpm.casemgmt.api.event.CaseStartEvent;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
@@ -126,7 +127,35 @@ public class CaseEventSupport extends AbstractEventSupport<CaseEventListener> {
                 iter.next().afterCaseDestroyed(event);
             } while (iter.hasNext());
         }
-    }   
+    }  
+    
+    /*
+     * fire*CaseReopened
+     */
+    
+    public void fireBeforeCaseReopened(String caseId, String deploymentId, String caseDefinitionId, Map<String, Object> data) {
+        final Iterator<CaseEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final CaseReopenEvent event = new CaseReopenEvent(caseId, deploymentId, caseDefinitionId, data);
+
+            do{
+                iter.next().beforeCaseReopen(event);
+            } while (iter.hasNext());
+        }
+    }
+
+    public void fireAfterCaseReopened(String caseId, String deploymentId, String caseDefinitionId, Map<String, Object> data, long processInstanceId) {
+        final Iterator<CaseEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final CaseReopenEvent event = new CaseReopenEvent(caseId, deploymentId, caseDefinitionId, data, processInstanceId);
+
+            do {
+                iter.next().afterCaseReopen(event);
+            } while (iter.hasNext());
+        }
+    }
     
     /*
      * fire*CaseCommentAdded
