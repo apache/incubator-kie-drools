@@ -1,5 +1,5 @@
 = OptaPlanner User Guide
-The OptaPlanner Team <http://www.optaplanner.org/community/team.html>
+The OptaPlanner Team <https://www.optaplanner.org/community/team.html>
 :doctype: book
 :title-logo-image: image:Chapter-Planner_introduction/optaPlannerLogo.png[align="center"]
 :toc: left

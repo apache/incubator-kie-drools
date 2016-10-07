@@ -590,7 +590,7 @@ Understand these guidelines to decide the hardware for a Planner service:
 
 
 Keep these guidelines in mind when selecting and configuring the software.
-See http://www.optaplanner.org/blog/archive.html[our blog archive] for the details of our experiments, which use our diverse set of examples.
+See https://www.optaplanner.org/blog/archive.html[our blog archive] for the details of our experiments, which use our diverse set of examples.
 Your mileage may vary.
 
 * Operating System

@@ -10,7 +10,7 @@
 [[whatIsOptaPlanner]]
 == What is OptaPlanner?
 
-*http://www.optaplanner.org[OptaPlanner] is a lightweight, embeddable constraint satisfaction engine which optimizes planning problems.* It solves use cases such as:
+*https://www.optaplanner.org[OptaPlanner] is a lightweight, embeddable constraint satisfaction engine which optimizes planning problems.* It solves use cases such as:
 
 * **Employee shift rostering**: timetabling nurses, repairmen, ...
 * **Agenda scheduling**: scheduling meetings, appointments, maintenance jobs, advertisements, ...
@@ -141,7 +141,7 @@ Depending on the use case, some optimization algorithms perform better than othe
 
 To try it now:
 
-. Download a release zip of OptaPlanner from http://www.optaplanner.org[the OptaPlanner website] and unzip it.
+. Download a release zip of OptaPlanner from https://www.optaplanner.org[the OptaPlanner website] and unzip it.
 . Open the directory [path]_examples_ and run the script.
 + 
 Linux or Mac:
@@ -184,7 +184,7 @@ It runs just as well on a server or a mobile JVM as it does on the desktop.
 Besides the GUI examples, there are also a set of webexamples to try out:
 
 . Download a JEE application server, such as JBoss EAP or http://www.wildfly.org/[WildFly] and unzip it.
-. Download a release zip of OptaPlanner from http://www.optaplanner.org[the OptaPlanner website] and unzip it.
+. Download a release zip of OptaPlanner from https://www.optaplanner.org[the OptaPlanner website] and unzip it.
 . Open the directory [path]_webexamples_ and deploy the `optaplanner-webexamples-*.war` file on the JEE application server.
 . Surf to $$http://localhost:8080/optaplanner-webexamples-*/$$ (replace the $$*$$ with the actual version).
 
@@ -352,7 +352,7 @@ OptaPlanner is:
 === Release Notes
 
 
-We release a `Beta` or `CR` version every few weeks and a `Final` version every few months. http://www.optaplanner.org/download/releaseNotes/[Read the release notes of each release on our website.]
+We release a `Beta` or `CR` version every few weeks and a `Final` version every few months. https://www.optaplanner.org/download/releaseNotes/[Read the release notes of each release on our website.]
 
 [[backwardsCompatibility]]
 === Backwards Compatibility
@@ -360,9 +360,9 @@ We release a `Beta` or `CR` version every few weeks and a `Final` version every 
 
 OptaPlanner separates its API and implementation:
 
-* **Public API**: All classes in the package namespace *org.optaplanner.core.api* are 100% *backwards compatible* in future releases (especially minor and hotfix releases). In rare circumstances, if the major version number changes, a few specific classes might have a few backwards incompatible changes, but those will be clearly documented in http://www.optaplanner.org/download/upgradeRecipe/[the upgrade recipe].
+* **Public API**: All classes in the package namespace *org.optaplanner.core.api* are 100% *backwards compatible* in future releases (especially minor and hotfix releases). In rare circumstances, if the major version number changes, a few specific classes might have a few backwards incompatible changes, but those will be clearly documented in https://www.optaplanner.org/download/upgradeRecipe/[the upgrade recipe].
 * **XML configuration**: The XML solver configuration is backwards compatible for all elements, except for elements that require the use of non public API classes. The XML solver configuration is defined by the classes in the package namespace **org.optaplanner.core.config**.
-* **Implementation classes**: All classes in the package namespace *org.optaplanner.core.impl* are _not_ backwards compatible: they will change in future major or minor releases (but probably not in hotfix releases). http://www.optaplanner.org/download/upgradeRecipe/[The upgrade recipe] describes every such relevant change and on how to quickly deal with it when upgrading to a newer version.
+* **Implementation classes**: All classes in the package namespace *org.optaplanner.core.impl* are _not_ backwards compatible: they will change in future major or minor releases (but probably not in hotfix releases). https://www.optaplanner.org/download/upgradeRecipe/[The upgrade recipe] describes every such relevant change and on how to quickly deal with it when upgrading to a newer version.
 
 
 [NOTE]
@@ -375,15 +375,15 @@ Those documented `impl` classes are reliable and safe to use (unless explicitly 
 === Community and Support
 
 
-For news and articles, check http://www.optaplanner.org/blog/[our blog], Google+ (https://plus.google.com/+OptaPlannerOrg[OptaPlanner], https://plus.google.com/+GeoffreyDeSmet[Geoffrey De Smet]) and twitter (https://twitter.com/OptaPlanner[OptaPlanner], https://twitter.com/GeoffreyDeSmet[Geoffrey De Smet]). *If OptaPlanner
+For news and articles, check https://www.optaplanner.org/blog/[our blog], Google+ (https://plus.google.com/+OptaPlannerOrg[OptaPlanner], https://plus.google.com/+GeoffreyDeSmet[Geoffrey De Smet]) and twitter (https://twitter.com/OptaPlanner[OptaPlanner], https://twitter.com/GeoffreyDeSmet[Geoffrey De Smet]). *If OptaPlanner
       helps you, help us by blogging or tweeting about it!*
 
-Public questions are welcome on http://www.optaplanner.org/community/forum.html[our community forum].
+Public questions are welcome on https://www.optaplanner.org/community/forum.html[our community forum].
 Bugs and feature requests are welcome in https://issues.jboss.org/browse/PLANNER[our issue tracker].
 Pull requests are very welcome on GitHub and get priority treatment! By open sourcing your improvements, you 'll benefit from our peer review and from our improvements made on top of your improvements.
 
 Red Hat sponsors OptaPlanner development by employing the core team.
-For enterprise support and consulting, take a look at http://www.optaplanner.org/community/product.html[the BRMS and BPM Suite products] (which contain OptaPlanner) or http://www.redhat.com/en/about/contact/sales[contact Red Hat].
+For enterprise support and consulting, take a look at https://www.optaplanner.org/community/product.html[the BRMS and BPM Suite products] (which contain OptaPlanner) or https://www.redhat.com/en/about/contact/sales[contact Red Hat].
 
 [[relationshipWithKie]]
 === Relationship with Drools and jBPM
