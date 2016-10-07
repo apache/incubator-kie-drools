@@ -137,8 +137,6 @@ public class IntervalTrigger
         // since time zone is implicit when using a Date in the setTime method.
         Calendar cl = Calendar.getInstance();
         cl.setTime( startTime );
-        cl.set( Calendar.MILLISECOND,
-                0 );
 
         this.startTime = cl.getTime();
     }
