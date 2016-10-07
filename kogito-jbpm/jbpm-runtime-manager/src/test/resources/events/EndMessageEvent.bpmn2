@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn20="http://www.omg.org/bpmn20" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xmlns:java="http://www.java.com/javaTypes" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="_LARLgIvWEealFoY1dyX7eA" exporter="org.eclipse.bpmn2.modeler.core" exporterVersion="1.3.1.Final-v20160831-1132-B55" expressionLanguage="http://www.mvel.org/2.0" targetNamespace="http://www.omg.org/bpmn20" typeLanguage="http://www.java.com/javaTypes">
+  <bpmn2:itemDefinition id="end_messageType" isCollection="false"/>
+  <bpmn2:message id="end_message" itemRef="end_messageType" name="end_message"/>
+  <bpmn2:process id="test-process" drools:packageName="org.jbpm" drools:version="1.0" name="test-process" isExecutable="true">
+    <bpmn2:startEvent id="processStartEvent" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>_000AB536-700D-4DA7-8BC0-9BD27EE2FE50</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="_0A0B7B28-FD36-4777-9C3B-6045AEE5DD80" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Hello Process" scriptFormat="http://www.java.com/java">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[Hello Process]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_000AB536-700D-4DA7-8BC0-9BD27EE2FE50</bpmn2:incoming>
+      <bpmn2:outgoing>_E03601AD-7358-4943-8B13-287DF158B0E9</bpmn2:outgoing>
+      <bpmn2:script>System.out.println(&quot;Hello Process.&quot;);</bpmn2:script>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_000AB536-700D-4DA7-8BC0-9BD27EE2FE50" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="processStartEvent" targetRef="_0A0B7B28-FD36-4777-9C3B-6045AEE5DD80"/>
+    <bpmn2:endEvent id="_C381C3DA-A67C-49FF-924A-530138BFA4AE" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="">
+      <bpmn2:extensionElements>
+        <drools:metaData name="elementname">
+          <drools:metaValue><![CDATA[]]></drools:metaValue>
+        </drools:metaData>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>_E03601AD-7358-4943-8B13-287DF158B0E9</bpmn2:incoming>
+      <bpmn2:messageEventDefinition id="_LARLgYvWEealFoY1dyX7eA" drools:msgref="end_message" messageRef="end_message"/>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_E03601AD-7358-4943-8B13-287DF158B0E9" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_0A0B7B28-FD36-4777-9C3B-6045AEE5DD80" targetRef="_C381C3DA-A67C-49FF-924A-530138BFA4AE"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_LARykIvWEealFoY1dyX7eA">
+    <bpmndi:BPMNPlane id="_LARykYvWEealFoY1dyX7eA" bpmnElement="test-process">
+      <bpmndi:BPMNShape id="_LARykovWEealFoY1dyX7eA" bpmnElement="processStartEvent">
+        <dc:Bounds height="30.0" width="30.0" x="180.0" y="160.0"/>
+        <bpmndi:BPMNLabel labelStyle="#//@definitions/@diagrams.0/@labelStyle.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_LARyk4vWEealFoY1dyX7eA" bpmnElement="_0A0B7B28-FD36-4777-9C3B-6045AEE5DD80">
+        <dc:Bounds height="80.0" width="100.0" x="285.0" y="135.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="11.0" width="57.0" x="306.0" y="169.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_LARylYvWEealFoY1dyX7eA" bpmnElement="_C381C3DA-A67C-49FF-924A-530138BFA4AE">
+        <dc:Bounds height="28.0" width="28.0" x="465.0" y="161.0"/>
+        <bpmndi:BPMNLabel labelStyle="#//@definitions/@diagrams.0/@labelStyle.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_LARylIvWEealFoY1dyX7eA" bpmnElement="_000AB536-700D-4DA7-8BC0-9BD27EE2FE50" sourceElement="_LARykovWEealFoY1dyX7eA" targetElement="_LARyk4vWEealFoY1dyX7eA">
+        <di:waypoint xsi:type="dc:Point" x="195.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="335.0" y="175.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_LARylovWEealFoY1dyX7eA" bpmnElement="_E03601AD-7358-4943-8B13-287DF158B0E9" sourceElement="_LARyk4vWEealFoY1dyX7eA" targetElement="_LARylYvWEealFoY1dyX7eA">
+        <di:waypoint xsi:type="dc:Point" x="335.0" y="175.0"/>
+        <di:waypoint xsi:type="dc:Point" x="479.0" y="175.0"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+    <bpmndi:BPMNLabelStyle>
+      <dc:Font name="arial" size="9.0"/>
+    </bpmndi:BPMNLabelStyle>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

@@ -187,6 +187,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                     "org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();" + EOL +
                     "workItem.setName(\"Send Task\");" + EOL +
                     "workItem.setNodeInstanceId(kcontext.getNodeInstance().getId());" + EOL +
+                    "workItem.setProcessInstanceId(kcontext.getProcessInstance().getId());" + EOL +
                     "workItem.setNodeId(kcontext.getNodeInstance().getNodeId());" + EOL +
                     "workItem.setParameter(\"MessageType\", \"" + message.getType() + "\");" + EOL +
                     (variable == null ? "" : "workItem.setParameter(\"Message\", " + variable + ");" + EOL) +
