@@ -6391,4 +6391,58 @@ public class CepEspTest extends CommonTestMethodBase {
             }
         }
     }
+
+    @Test
+    public void testTimerWithMillisPrecision() {
+        // RHBRMS-2627
+        String drl = "import " + MyEvent.class.getCanonicalName() + "\n" +
+                     "import " + AtomicInteger.class.getCanonicalName() + "\n" +
+                     "declare MyEvent\n" +
+                     "    @role( event )\n" +
+                     "    @timestamp( timestamp )\n" +
+                     "    @expires( 10ms )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R\n" +
+                     "    timer (int: 0 1; start=$startTime, repeat-limit=0 )\n" +
+                     "    when\n" +
+                     "       $event: MyEvent ($startTime : timestamp)\n" +
+                     "       $counter : AtomicInteger(get() > 0)\n" +
+                     "    then\n" +
+                     "        System.out.println(\"RG_TEST_TIMER WITH \" + $event + \" AND \" + $counter);\n" +
+                     "        modify($counter){\n" +
+                     "            decrementAndGet()\n" +
+                     "        }\n" +
+                     "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        long now = 1000; //System.currentTimeMillis();
+        PseudoClockScheduler sessionClock = ksession.getSessionClock();
+        sessionClock.setStartupTime(now - 10);
+
+        AtomicInteger counter = new AtomicInteger( 1 );
+        MyEvent event1 = new MyEvent(now - 8);
+        MyEvent event2 = new MyEvent(now - 7);
+        MyEvent event3 = new MyEvent(now - 6);
+
+        ksession.insert(counter);
+        ksession.insert(event1);
+        ksession.insert(event2);
+        ksession.insert(event3);
+
+        ksession.fireAllRules(); // Nothing Happens
+        assertEquals(1, counter.get());
+
+        sessionClock.advanceTime(10, TimeUnit.MILLISECONDS);
+        ksession.fireAllRules();
+
+        assertEquals(0, counter.get());
+    }
 }
