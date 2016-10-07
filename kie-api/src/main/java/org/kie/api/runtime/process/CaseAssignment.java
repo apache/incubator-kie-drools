@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.internal.process;
+package org.kie.api.runtime.process;
 
 import java.util.Collection;
 
