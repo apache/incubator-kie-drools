@@ -21,7 +21,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,13 +33,11 @@ import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;
 import org.drools.persistence.jta.TransactionLockInterceptor;
-import org.jbpm.process.audit.AuditLogService;
-import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
-import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.jbpm.test.util.CountDownProcessEventListener;
 import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.junit.After;
 import org.junit.Before;
@@ -63,6 +60,7 @@ import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.UserGroupCallback;
@@ -796,5 +794,106 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
 
         // close manager which will close session maintained by the manager
         manager.close();
+    }
+    
+    @Test
+    public void testSignalEventWithDeactivate() {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("events/start-on-event.bpmn"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime1 = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession1 = runtime1.getKieSession();
+          
+        ksession1.signalEvent("SampleEvent", null);        
+        
+        
+        List<? extends ProcessInstanceLog> logs = runtime1.getAuditService().findProcessInstances();
+        assertEquals(1, logs.size());
+        manager.disposeRuntimeEngine(runtime1);
+        
+        ((InternalRuntimeManager) manager).deactivate();
+        
+        runtime1 = manager.getRuntimeEngine(EmptyContext.get());
+        ksession1 = runtime1.getKieSession();
+        
+        ksession1.signalEvent("SampleEvent", null); 
+        
+        logs = runtime1.getAuditService().findProcessInstances();
+        assertEquals(1, logs.size());
+        manager.disposeRuntimeEngine(runtime1);
+        
+        ((InternalRuntimeManager) manager).activate();
+        
+        runtime1 = manager.getRuntimeEngine(EmptyContext.get());
+        ksession1 = runtime1.getKieSession();
+        
+        ksession1.signalEvent("SampleEvent", null); 
+        
+        logs = runtime1.getAuditService().findProcessInstances();
+        assertEquals(2, logs.size());
+        manager.disposeRuntimeEngine(runtime1);
+        
+    }
+    
+
+    @Test(timeout=10000)
+    public void testTimerStartWithDeactivate() {
+        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Hello", 1);
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-TimerStart.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory(){
+
+                    @Override
+                    public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
+
+                        List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+                        listeners.add(countDownListener);
+                        return listeners;
+                    }
+                    
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);        
+        assertNotNull(manager);
+        
+        countDownListener.waitTillCompleted();
+        
+        RuntimeEngine runtime1 = manager.getRuntimeEngine(EmptyContext.get());
+
+        List<? extends ProcessInstanceLog> logs = runtime1.getAuditService().findProcessInstances();
+        assertEquals(1, logs.size());
+        manager.disposeRuntimeEngine(runtime1);        
+        
+        ((InternalRuntimeManager) manager).deactivate();
+        
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted(2000);
+        
+        runtime1 = manager.getRuntimeEngine(EmptyContext.get());
+        
+        logs = runtime1.getAuditService().findProcessInstances();
+        assertEquals(1, logs.size());
+        manager.disposeRuntimeEngine(runtime1);
+        
+        ((InternalRuntimeManager) manager).activate();
+        
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();        
+        
+        runtime1 = manager.getRuntimeEngine(EmptyContext.get());
+        
+        logs = runtime1.getAuditService().findProcessInstances();
+        assertEquals(2, logs.size());
+        manager.disposeRuntimeEngine(runtime1);
+        
     }
 }

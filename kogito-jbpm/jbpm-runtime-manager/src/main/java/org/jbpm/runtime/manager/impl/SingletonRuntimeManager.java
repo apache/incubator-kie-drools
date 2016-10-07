@@ -22,6 +22,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.runtime.process.InternalProcessRuntime;
+import org.jbpm.process.instance.ProcessRuntimeImpl;
 import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
@@ -104,6 +109,47 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
         registerItems(this.singleton);
         attachManager(this.singleton);
         this.registry.register(this);
+    }
+    
+    @Override
+    public void activate() {
+        super.activate();
+        this.singleton.getKieSession().execute(new GenericCommand<Void>() {
+
+            private static final long serialVersionUID = 4698203316007668876L;
+
+            @Override
+            public Void execute(org.kie.internal.command.Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                ksession.getEnvironment().set("Active", true);
+                
+                InternalProcessRuntime processRuntime = ((InternalKnowledgeRuntime) ksession).getProcessRuntime();
+                ((ProcessRuntimeImpl) processRuntime).initProcessEventListeners();
+                ((ProcessRuntimeImpl) processRuntime).initStartTimers();
+                return null;
+            }
+        });
+        
+    }
+
+    @Override
+    public void deactivate() {
+        super.deactivate();
+        this.singleton.getKieSession().execute(new GenericCommand<Void>() {
+
+            private static final long serialVersionUID = 8099201526203340191L;
+
+            @Override
+            public Void execute(org.kie.internal.command.Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                ksession.getEnvironment().set("Active", false);
+                
+                InternalProcessRuntime processRuntime = ((InternalKnowledgeRuntime) ksession).getProcessRuntime();
+                ((ProcessRuntimeImpl) processRuntime).removeProcessEventListeners();
+                return null;
+            }
+        });
+        
     }
 
     @SuppressWarnings("rawtypes")

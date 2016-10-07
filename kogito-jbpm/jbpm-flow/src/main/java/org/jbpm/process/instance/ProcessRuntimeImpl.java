@@ -99,12 +99,14 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		initSignalManager();
 		timerManager = new TimerManager(kruntime, kruntime.getTimerService());
         processEventSupport = new ProcessEventSupport();
-        initProcessEventListeners();
-        initProcessActivationListener();        
-        initStartTimers();
+        if (isActive()) {
+            initProcessEventListeners();                   
+            initStartTimers();
+        }
+        initProcessActivationListener(); 
 	}
 	
-	private void initStartTimers() {
+	public void initStartTimers() {
 	    KieBase kbase = kruntime.getKieBase();
         Collection<Process> processes = kbase.getProcesses();
         for (Process process : processes) {
@@ -127,9 +129,11 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		initSignalManager();
 		timerManager = new TimerManager(kruntime, kruntime.getTimerService());
         processEventSupport = new ProcessEventSupport();
-        initProcessEventListeners();
+        if (isActive()) {
+            initProcessEventListeners();                   
+            initStartTimers();
+        }
         initProcessActivationListener();
-        initStartTimers();
 	}
 	
 	private void initProcessInstanceManager() {
@@ -289,9 +293,25 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         processInstanceManager.removeProcessInstance( processInstance );
     }
     
-    private void initProcessEventListeners() {
+    public void initProcessEventListeners() {
         for ( Process process : kruntime.getKieBase().getProcesses() ) {
             initProcessEventListener(process);
+        }
+    }
+    
+    public void removeProcessEventListeners() {
+        for ( Process process : kruntime.getKieBase().getProcesses() ) {
+            removeProcessEventListener(process);
+        }
+    }
+    
+    private void removeProcessEventListener(Process process) {
+        if (process instanceof RuleFlowProcess) {
+            String type = (String) ((RuleFlowProcess) process).getRuntimeMetaData().get("StartProcessEventType");
+            StartProcessEventListener listener = (StartProcessEventListener) ((RuleFlowProcess) process).getRuntimeMetaData().get("StartProcessEventListener");
+            if (type != null && listener != null) {
+                signalManager.removeEventListener(type, listener);
+            }
         }
     }
     
@@ -513,6 +533,15 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
     public void clearProcessInstancesState() {
         this.processInstanceManager.clearProcessInstancesState();
         
+    }
+    
+    public boolean isActive() {
+        Boolean active = (Boolean) kruntime.getEnvironment().get("Active");
+        if (active == null) {
+            return true;
+        }
+        
+        return active.booleanValue();
     }
 
     public static class RegisterStartTimerAction extends PropagationEntry.AbstractPropagationEntry implements WorkingMemoryAction {

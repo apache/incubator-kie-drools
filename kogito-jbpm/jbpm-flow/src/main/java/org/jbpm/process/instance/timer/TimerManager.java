@@ -322,6 +322,16 @@ public class TimerManager {
             StartProcessJobContext ctx = (StartProcessJobContext) c;
 
             InternalKnowledgeRuntime kruntime = ctx.getKnowledgeRuntime();
+            InternalProcessRuntime processRuntime = ((InternalProcessRuntime) ctx.getKnowledgeRuntime().getProcessRuntime());
+            TimerManager tm = processRuntime.getTimerManager();
+            
+            if (!((ProcessRuntimeImpl) processRuntime).isActive()) {
+                logger.debug("Timer for starting process {} is ignored as the deployment is in deactivated state", ctx.getProcessId());
+                tm.getTimerMap().remove(ctx.getTimer().getId());
+                tm.getTimerService().removeJob(ctx.getJobHandle());
+                
+                return;
+            }
             try {
 
                 ctx.getTimer().setLastTriggered(
@@ -332,8 +342,6 @@ public class TimerManager {
                     ctx.getTimer().setPeriod(0);
                 }
                 ((ProcessRuntimeImpl)kruntime.getProcessRuntime()).startProcess(ctx.getProcessId(), ctx.getParamaeters(), "timer");
-
-                TimerManager tm = ((InternalProcessRuntime) ctx.getKnowledgeRuntime().getProcessRuntime()).getTimerManager();
 
                 if (ctx.getTimer().getPeriod() == 0) {
                     tm.getTimerMap().remove(ctx.getTimer().getId());

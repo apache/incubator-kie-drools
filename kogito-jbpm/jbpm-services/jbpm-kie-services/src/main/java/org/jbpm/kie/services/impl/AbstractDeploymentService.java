@@ -102,17 +102,17 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
     	}
     }
     
-    public void notifyOnActivate(DeploymentUnit unit, DeployedUnit deployedUnit){
-    	DeploymentEvent event = new DeploymentEvent(unit.getIdentifier(), deployedUnit);
+    public void notifyOnActivate(DeploymentUnit unit, DeployedUnit deployedUnit){               
+        DeploymentEvent event = new DeploymentEvent(unit.getIdentifier(), deployedUnit);
     	for (DeploymentEventListener listener : listeners) {
     		listener.onActivate(event);
     	}    
     }
     public void notifyOnDeactivate(DeploymentUnit unit, DeployedUnit deployedUnit){
-    	DeploymentEvent event = new DeploymentEvent(unit.getIdentifier(), deployedUnit);
+        DeploymentEvent event = new DeploymentEvent(unit.getIdentifier(), deployedUnit);
     	for (DeploymentEventListener listener : listeners) {
     		listener.onDeactivate(event);
-    	}
+    	}    	
     }
     
     public void commonDeploy(DeploymentUnit unit, DeployedUnitImpl deployedUnit, RuntimeEnvironment environemnt, KieContainer kieContainer) {
@@ -127,6 +127,7 @@ public abstract class AbstractDeploymentService implements DeploymentService, Li
             RuntimeManager manager = null;
             deploymentsMap.put(unit.getIdentifier(), deployedUnit);
             ((SimpleRuntimeEnvironment) environemnt).addToEnvironment("IdentityProvider", identityProvider);
+            ((SimpleRuntimeEnvironment) environemnt).addToEnvironment("Active", deployedUnit.isActive());
             try {
                 switch (unit.getStrategy()) {
             

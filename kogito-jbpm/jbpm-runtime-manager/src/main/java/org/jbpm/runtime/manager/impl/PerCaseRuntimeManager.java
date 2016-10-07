@@ -443,6 +443,19 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
             throw new RuntimeException("Exception while initializing runtime manager " + this.identifier, e);
         }
     }
+    
+    @Override
+    public void activate() {
+        super.activate();
+        // need to init one session to bootstrap all case - such as start timers
+        KieSession initialKsession = factory.newKieSession();
+        initialKsession.execute(new DestroyKSessionCommand(initialKsession, this));
+    }
+
+    @Override
+    public void deactivate() {
+        super.deactivate();
+    }
 
     public void destroyCase(CaseContext caseContext) {
         KieSession kieSession = null;
@@ -614,6 +627,9 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         public KieSession initKieSession(Context<?> context, InternalRuntimeManager manager, RuntimeEngine engine) {
 
             Object contextId = context.getContextId();
+            if (contextId == null) {
+                contextId = manager.getIdentifier();
+            }
 
             KieSession ksession = null;
             Long ksessionId = null;

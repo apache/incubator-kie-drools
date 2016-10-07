@@ -189,7 +189,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     	TaskContentRegistry.get().addMarshallerContext(getIdentifier(), 
     			new ContentMarshallerContext(environment.getEnvironment(), environment.getClassLoader()));
         configureRuntimeOnTaskService((InternalTaskService) taskServiceFactory.newTaskService(), null);
-    }
+    }   
     
     private class PerRequestInitializer implements RuntimeEngineInitlializer {
 

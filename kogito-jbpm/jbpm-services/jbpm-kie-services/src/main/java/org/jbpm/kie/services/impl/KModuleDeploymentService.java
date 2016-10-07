@@ -76,6 +76,7 @@ import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.ObjectModelResolver;
 import org.kie.internal.runtime.conf.ObjectModelResolverProvider;
 import org.kie.internal.runtime.conf.PersistenceMode;
+import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.scanner.MavenRepository;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
@@ -526,8 +527,12 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		DeployedUnit deployed = getDeployedUnit(deploymentId);
 		if (deployed != null) {
 			((DeployedUnitImpl)deployed).setActive(true);
+			
+			((InternalRuntimeManager)deployed.getRuntimeManager()).activate();
+			
 			notifyOnActivate(deployed.getDeploymentUnit(), deployed);
 		}
+		
 	}
 
 	@Override
@@ -535,8 +540,11 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		DeployedUnit deployed = getDeployedUnit(deploymentId);
 		if (deployed != null) {
 			((DeployedUnitImpl)deployed).setActive(false);
+			
+			((InternalRuntimeManager)deployed.getRuntimeManager()).deactivate();
+					
 			notifyOnDeactivate(deployed.getDeploymentUnit(), deployed);
-		}
+		}		
 	}
 
 

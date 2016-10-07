@@ -419,6 +419,22 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             throw new RuntimeException("Exception while initializing runtime manager " + this.identifier, e);
         }
     }
+    
+
+    @Override
+    public void activate() {
+        super.activate();
+    
+        // need to init one session to bootstrap all case - such as start timers
+        KieSession initialKsession = factory.newKieSession();
+        initialKsession.execute(new DestroyKSessionCommand(initialKsession, this));
+        
+    }
+
+    @Override
+    public void deactivate() {
+        super.deactivate();
+    }
 
     
     private static class DestroyKSessionCommand implements GenericCommand<Void> {            
@@ -566,4 +582,5 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     protected boolean isUseLocking() {
         return useLocking;
     }
+
 }

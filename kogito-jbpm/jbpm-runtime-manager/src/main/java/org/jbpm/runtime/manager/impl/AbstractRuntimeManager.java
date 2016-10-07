@@ -494,4 +494,24 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         }
         
     }
+    
+    protected boolean isActive() {
+        if (hasEnvironmentEntry("Active", false)) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    @Override
+    public void activate() {
+        ((SimpleRuntimeEnvironment) environment).addToEnvironment("Active", true);
+        
+    }
+
+    @Override
+    public void deactivate() {
+        ((SimpleRuntimeEnvironment) environment).addToEnvironment("Active", false);
+        
+    }
 }
