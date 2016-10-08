@@ -16,13 +16,14 @@
 
 package org.drools.core.test.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Person {
+public class Person implements Serializable {
 
     private String name;
     private int    age;

@@ -19,10 +19,11 @@ package org.drools.core.test.model;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.Serializable;
 
 public class Cheese
     implements
-    CheeseInterface {
+    CheeseInterface, Serializable {
 
     public static String staticString;
 
