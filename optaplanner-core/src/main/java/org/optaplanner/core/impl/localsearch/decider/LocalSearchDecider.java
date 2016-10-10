@@ -127,10 +127,10 @@ public class LocalSearchDecider<Solution_> {
                     break;
                 }
             }
+            stepScope.getPhaseScope().getSolverScope().checkYielding();
             if (termination.isPhaseTerminated(stepScope.getPhaseScope())) {
                 break;
             }
-            stepScope.getPhaseScope().getSolverScope().checkYielding();
         }
         scoreDirector.setAllChangesWillBeUndoneBeforeStepEnds(false);
         LocalSearchMoveScope<Solution_> pickedMoveScope = forager.pickMove(stepScope);

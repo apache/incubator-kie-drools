@@ -22,12 +22,15 @@ import java.util.concurrent.Semaphore;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.partitionedsearch.PartitionSolver;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.ChildThreadType;
+import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -239,9 +242,9 @@ public class DefaultSolverScope<Solution_> {
             try {
                 activeThreadSemaphore.acquire();
             } catch (InterruptedException e) {
+                // TODO it will take a while before the BasicPlumbingTermination is called
+                // The BasicPlumbingTermination will terminate the solver.
                 Thread.currentThread().interrupt();
-                throw new IllegalStateException(
-                        "Partition thread was interrupted during activeThreadSemaphore.acquire().", e);
             }
         }
     }
@@ -250,6 +253,11 @@ public class DefaultSolverScope<Solution_> {
      * Similar to {@link Thread#yield()}, but allows capping the number of active solver threads
      * at less than the CPU processor count, so other threads (for example servlet threads that handle REST calls)
      * and other processes (such as SSH) have access to uncontested CPU's and don't suffer any latency.
+     * <p>
+     * Needs to be called <b>before</b> {@link Termination#isPhaseTerminated(AbstractPhaseScope)},
+     * so the decision to start a new iteration is after any yield waiting time has been consumed
+     * (so {@link Solver#terminateEarly()} reacts immediately).
+     * Furthermore, this method will
      */
     public void checkYielding() {
         if (activeThreadSemaphore != null) {
@@ -257,9 +265,8 @@ public class DefaultSolverScope<Solution_> {
             try {
                 activeThreadSemaphore.acquire();
             } catch (InterruptedException e) {
+                // The BasicPlumbingTermination will terminate the solver.
                 Thread.currentThread().interrupt();
-                throw new IllegalStateException(
-                        "Partition thread was interrupted during activeThreadSemaphore.acquire().", e);
             }
         }
     }

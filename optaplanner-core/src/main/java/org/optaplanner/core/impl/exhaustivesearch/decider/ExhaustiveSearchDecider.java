@@ -133,10 +133,10 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
             doMove(stepScope, moveNode);
             // TODO in the lowest level (and only in that level) QuitEarly can be useful
             // No QuitEarly because lower layers might be promising
+            stepScope.getPhaseScope().getSolverScope().checkYielding();
             if (termination.isPhaseTerminated(stepScope.getPhaseScope())) {
                 break;
             }
-            stepScope.getPhaseScope().getSolverScope().checkYielding();
         }
         stepScope.setSelectedMoveCount((long) moveIndex);
     }
