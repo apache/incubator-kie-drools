@@ -16,8 +16,16 @@
 
 package org.kie.dmn.core.api;
 
+import java.util.List;
+
 public interface DMNResult {
 
     DMNContext getContext();
+
+    List<DMNMessage> getMessages();
+
+    List<DMNMessage> getMessages(DMNMessage.Severity... sevs);
+
+    boolean hasErrors();
 
 }

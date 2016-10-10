@@ -21,16 +21,15 @@ import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.core.ast.InputDataNode;
 import org.kie.dmn.feel.model.v1_1.Definitions;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DMNModelImpl
         implements DMNModel {
 
-    private Definitions                definitions;
-    private Map<String, InputDataNode> inputs = new HashMap<>(  );
-    private Map<String, DecisionNode> decisions = new HashMap<>(  );
+    private Definitions definitions;
+    private Map<String, InputDataNode> inputs    = new HashMap<>();
+    private Map<String, DecisionNode>  decisions = new HashMap<>();
 
     public DMNModelImpl() {
     }
@@ -48,6 +47,7 @@ public class DMNModelImpl
         return definitions != null ? definitions.getName() : null;
     }
 
+    @Override
     public Definitions getDefinitions() {
         return definitions;
     }
@@ -60,12 +60,27 @@ public class DMNModelImpl
         inputs.put( idn.getId(), idn );
     }
 
-    public InputDataNode getInput( String id ) {
+    @Override
+    public InputDataNode getInputById(String id) {
         return this.inputs.get( id );
     }
 
-    public Collection<InputDataNode> getInputs() {
-        return this.inputs.values();
+    @Override
+    public InputDataNode getInputByName(String name) {
+        if( name == null ) {
+            return null;
+        }
+        for( InputDataNode in : this.inputs.values() ) {
+            if( in.getName() != null && name.equals( in.getName() ) ) {
+                return in;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Set<InputDataNode> getInputs() {
+        return this.inputs.values().stream().collect( Collectors.toSet());
     }
 
     public void addDecision(DecisionNode dn) {
@@ -73,13 +88,56 @@ public class DMNModelImpl
 
     }
 
-    public DecisionNode getDecision( String id ) {
+    @Override
+    public DecisionNode getDecisionById(String id) {
         return this.decisions.get( id );
     }
 
-    public Collection<DecisionNode> getDecisions() {
-        return this.decisions.values();
+    @Override
+    public DecisionNode getDecisionByName(String name) {
+        if( name == null ) {
+            return null;
+        }
+        for( DecisionNode dn : this.decisions.values() ) {
+            if( dn.getName() != null && name.equals( dn.getName() ) ) {
+                return dn;
+            }
+        }
+        return null;
     }
 
+    @Override
+    public Set<DecisionNode> getDecisions() {
+        return this.decisions.values().stream().collect( Collectors.toSet());
+    }
 
+    @Override
+    public Set<InputDataNode> getRequiredInputsForDecisionName(String decisionName) {
+        DecisionNode decision = getDecisionByName( decisionName );
+        Set<InputDataNode> inputs = new HashSet<>(  );
+        if( decision != null ) {
+            collectInputsForDecision( decision, inputs );
+        }
+        return inputs;
+    }
+
+    @Override
+    public Set<InputDataNode> getRequiredInputsForDecisionId(String decisionId) {
+        DecisionNode decision = getDecisionById( decisionId );
+        Set<InputDataNode> inputs = new HashSet<>(  );
+        if( decision != null ) {
+            collectInputsForDecision( decision, inputs );
+        }
+        return inputs;
+    }
+
+    private void collectInputsForDecision(DecisionNode decision, Set<InputDataNode> inputs) {
+        decision.getDependencies().values().forEach( dep -> {
+            if( dep instanceof InputDataNode ) {
+                inputs.add( (InputDataNode) dep );
+            } else if( dep instanceof DecisionNode ) {
+                collectInputsForDecision( (DecisionNode) dep, inputs );
+            }
+        } );
+    }
 }

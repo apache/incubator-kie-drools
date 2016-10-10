@@ -20,12 +20,12 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.dmn.core.api.*;
+import org.kie.dmn.core.ast.DMNNode;
+import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.model.v1_1.*;
 import org.kie.internal.io.ResourceTypePackage;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class DMNRuntimeImpl
@@ -47,46 +47,64 @@ public class DMNRuntimeImpl
 
     @Override
     public DMNResult evaluateAll(DMNModel model, DMNContext context) {
-        List<DRGElement> drgElements = ((DMNModelImpl)model).getDefinitions().getDrgElement();
-        DMNResultImpl result = new DMNResultImpl();
-        result.setContext( context.clone() );
-        for( DRGElement e : drgElements ) {
-            if( e instanceof Decision ) {
-                Decision decision = (Decision) e;
-                List<InformationRequirement> missingInput = new ArrayList<>(  );
-                for( InformationRequirement ir : decision.getInformationRequirement() ) {
-                    if( ir.getRequiredInput() != null ) {
-                        InputData input = findElementById( model, ir.getRequiredInput().getHref() );
-                        String name = input.getName();
-                        if( ! context.isDefined( name ) ) {
-                            missingInput.add( ir );
-                        }
-                    }
-                }
-                if( ! missingInput.isEmpty() ) {
-                    System.out.println("Missing inputs: "+missingInput );
-                    return null;
-                }
-                Object val = FEEL.newInstance().evaluate( ((LiteralExpression) decision.getExpression()).getText(), result.getContext().getAll() );
-                result.getContext().set( decision.getVariable().getName(), val );
-            }
+        DMNResultImpl result = createResult( context );
+        for( DecisionNode decision : model.getDecisions() ) {
+            if ( ! evaluateDecision( context, result, decision ) )
+                // have to replace this by proper error handling
+                return null;
         }
         return result;
     }
 
-    private InputData findElementById(DMNModel model, String href) {
-        String id = href.contains( "#" ) ? href.substring( href.indexOf( '#' ) + 1 ) : href;
-        for( DRGElement e : ((DMNModelImpl)model).getDefinitions().getDrgElement() ) {
-            if( e instanceof InputData && id.equals( e.getId() ) ) {
-                return (InputData) e;
-            }
+    @Override
+    public DMNResult evaluateDecisionByName(DMNModel model, String decisionName, DMNContext context) {
+        DMNResultImpl result = createResult( context );
+        DecisionNode decision = model.getDecisionByName( decisionName );
+        if( decision != null ) {
+            evaluateDecision( context, result, decision );
+        } else {
+            result.addMessage( DMNMessage.Severity.ERROR, "Decision not found for name '"+decisionName+"'" );
         }
-        return null;
+        return result;
     }
 
     @Override
-    public DMNResult evaluateDecision(DMNModel model, String decisionName, DMNContext context) {
-        return null;
+    public DMNResult evaluateDecisionById(DMNModel model, String decisionId, DMNContext context) {
+        DMNResultImpl result = createResult( context );
+        DecisionNode decision = model.getDecisionById( decisionId );
+        if( decision != null ) {
+            evaluateDecision( context, result, decision );
+        } else {
+            result.addMessage( DMNMessage.Severity.ERROR, "Decision not found for id '"+decisionId+"'" );
+        }
+        return result;
     }
+
+    private DMNResultImpl createResult(DMNContext context) {
+        DMNResultImpl result = new DMNResultImpl();
+        result.setContext( context.clone() );
+        return result;
+    }
+
+    private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode decision) {
+        boolean missingInput = false;
+        for( DMNNode dep : decision.getDependencies().values() ) {
+            if( ! context.isDefined( dep.getName() ) ) {
+                if( dep instanceof DecisionNode ) {
+                    evaluateDecision( context, result, (DecisionNode) dep );
+                } else {
+                    missingInput = true;
+                    result.addMessage( DMNMessage.Severity.ERROR, "Missing input for decision '"+decision.getName()+"': input name='" + dep.getName() + "' input id='" + dep.getId() + "'" );
+                }
+            }
+        }
+        if( missingInput ) {
+            return false;
+        }
+        Object val = FEEL.newInstance().evaluate( ((LiteralExpression) decision.getDecision().getExpression()).getText(), result.getContext().getAll() );
+        result.getContext().set( decision.getDecision().getVariable().getName(), val );
+        return true;
+    }
+
 
 }

@@ -16,14 +16,15 @@
 
 package org.kie.dmn.core.api;
 
-public interface DMNRuntime {
+public interface DMNMessage {
 
-    DMNModel getModel( String namepasce, String modelName );
+    enum Severity {
+        TRACE, INFO, WARN, ERROR;
+    }
 
-    DMNResult evaluateAll( DMNModel model, DMNContext context );
+    Severity getSeverity();
 
-    DMNResult evaluateDecisionByName(DMNModel model, String decisionName, DMNContext context );
+    String getMessage();
 
-    DMNResult evaluateDecisionById(DMNModel model, String decisionId, DMNContext context );
-
+    Throwable getException();
 }

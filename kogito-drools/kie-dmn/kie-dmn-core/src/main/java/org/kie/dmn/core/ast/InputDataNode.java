@@ -39,4 +39,18 @@ public class InputDataNode extends DMNBaseNode
         this.inputData = inputData;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( !(o instanceof InputDataNode) ) return false;
+
+        InputDataNode that = (InputDataNode) o;
+
+        return inputData != null ? inputData.equals( that.inputData ) : that.inputData == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return inputData != null ? inputData.hashCode() : 0;
+    }
 }

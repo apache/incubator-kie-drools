@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Reader;
-import java.util.List;
 
 public class DMNCompilerImpl implements DMNCompiler {
 
@@ -75,11 +74,11 @@ public class DMNCompilerImpl implements DMNCompiler {
         for ( InformationRequirement ir : decision.getDecision().getInformationRequirement() ) {
             if ( ir.getRequiredInput() != null ) {
                 String id = getId( ir.getRequiredInput() );
-                InputDataNode input = model.getInput( id );
+                InputDataNode input = model.getInputById( id );
                 decision.addDependency( input.getName(), input );
             } else if ( ir.getRequiredDecision() != null ) {
                 String id = getId( ir.getRequiredDecision() );
-                DecisionNode dn = model.getDecision( id );
+                DecisionNode dn = model.getDecisionById( id );
                 decision.addDependency( dn.getName(), dn );
             }
         }
