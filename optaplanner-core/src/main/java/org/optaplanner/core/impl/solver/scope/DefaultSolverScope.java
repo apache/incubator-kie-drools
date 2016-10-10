@@ -18,10 +18,12 @@ package org.optaplanner.core.impl.solver.scope;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.partitionedsearch.PartitionSolver;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -39,6 +41,8 @@ public class DefaultSolverScope<Solution_> {
     protected int startingSolverCount;
     protected Random workingRandom;
     protected InnerScoreDirector<Solution_> scoreDirector;
+    /** Used for capping CPU power usage in multi-threaded scenario's */
+    protected Semaphore activeThreadSemaphore = null;
 
     protected Long startingSystemTimeMillis;
     protected Long endingSystemTimeMillis;
@@ -75,6 +79,10 @@ public class DefaultSolverScope<Solution_> {
 
     public void setScoreDirector(InnerScoreDirector<Solution_> scoreDirector) {
         this.scoreDirector = scoreDirector;
+    }
+
+    public void setActiveThreadSemaphore(Semaphore activeThreadSemaphore) {
+        this.activeThreadSemaphore = activeThreadSemaphore;
     }
 
     public Long getStartingSystemTimeMillis() {
@@ -224,6 +232,42 @@ public class DefaultSolverScope<Solution_> {
         childThreadSolverScope.bestScore = null;
         childThreadSolverScope.bestSolutionTimeMillis = null;
         return childThreadSolverScope;
+    }
+
+    public void initializeYielding() {
+        if (activeThreadSemaphore != null) {
+            try {
+                activeThreadSemaphore.acquire();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(
+                        "Partition thread was interrupted during activeThreadSemaphore.acquire().", e);
+            }
+        }
+    }
+
+    /**
+     * Similar to {@link Thread#yield()}, but allows capping the number of active solver threads
+     * at less than the CPU processor count, so other threads (for example servlet threads that handle REST calls)
+     * and other processes (such as SSH) have access to uncontested CPU's and don't suffer any latency.
+     */
+    public void checkYielding() {
+        if (activeThreadSemaphore != null) {
+            activeThreadSemaphore.release();
+            try {
+                activeThreadSemaphore.acquire();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException(
+                        "Partition thread was interrupted during activeThreadSemaphore.acquire().", e);
+            }
+        }
+    }
+
+    public void destroyYielding() {
+        if (activeThreadSemaphore != null) {
+            activeThreadSemaphore.release();
+        }
     }
 
 }

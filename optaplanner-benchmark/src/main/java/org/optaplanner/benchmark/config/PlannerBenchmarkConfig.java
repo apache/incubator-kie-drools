@@ -88,7 +88,7 @@ public class PlannerBenchmarkConfig {
      * Using multiple parallel benchmarks can decrease the reliability of the results.
      * <p>
      * If there aren't enough processors available, it will be decreased.
-     * @return null, {@value #PARALLEL_BENCHMARK_COUNT_AUTO}
+     * @return null, a number, {@value #PARALLEL_BENCHMARK_COUNT_AUTO}
      * or a JavaScript calculation using {@value ConfigUtils#AVAILABLE_PROCESSOR_COUNT}.
      */
     public String getParallelBenchmarkCount() {

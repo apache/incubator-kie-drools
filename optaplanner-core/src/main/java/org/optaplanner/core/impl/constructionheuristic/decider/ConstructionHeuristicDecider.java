@@ -99,6 +99,7 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
             if (termination.isPhaseTerminated(stepScope.getPhaseScope())) {
                 break;
             }
+            stepScope.getPhaseScope().getSolverScope().checkYielding();
         }
         stepScope.setSelectedMoveCount((long) moveIndex);
         ConstructionHeuristicMoveScope pickedMoveScope = forager.pickMove(stepScope);

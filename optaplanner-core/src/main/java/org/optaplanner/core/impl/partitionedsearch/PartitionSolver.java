@@ -22,7 +22,6 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.AbstractSolver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
@@ -105,13 +104,18 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
 
     @Override
     public Solution_ solve(Solution_ part) {
-        solverScope.setBestSolution(part);
-        solvingStarted(solverScope);
-        for (Phase<Solution_> phase : phaseList) {
-            phase.solve(solverScope);
+        solverScope.initializeYielding();
+        try {
+            solverScope.setBestSolution(part);
+            solvingStarted(solverScope);
+            for (Phase<Solution_> phase : phaseList) {
+                phase.solve(solverScope);
+            }
+            solvingEnded(solverScope);
+            return solverScope.getBestSolution();
+        } finally {
+            solverScope.destroyYielding();
         }
-        solvingEnded(solverScope);
-        return solverScope.getBestSolution();
     }
 
     public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {

@@ -131,9 +131,12 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
             // Do not filter out pointless moves, because the original value of the entity(s) is irrelevant.
             // If the original value is null and the variable is nullable, the move to null must be done too.
             doMove(stepScope, moveNode);
+            // TODO in the lowest level (and only in that level) QuitEarly can be useful
+            // No QuitEarly because lower layers might be promising
             if (termination.isPhaseTerminated(stepScope.getPhaseScope())) {
                 break;
             }
+            stepScope.getPhaseScope().getSolverScope().checkYielding();
         }
         stepScope.setSelectedMoveCount((long) moveIndex);
     }

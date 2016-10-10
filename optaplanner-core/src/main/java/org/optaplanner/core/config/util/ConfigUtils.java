@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -186,7 +187,7 @@ public class ConfigUtils {
      */
     public static final String AVAILABLE_PROCESSOR_COUNT = "availableProcessorCount";
 
-    public static int resolveThreadPoolSizeScript(String propertyName, String script, String magicValue) {
+    public static int resolveThreadPoolSizeScript(String propertyName, String script, String... magicValues) {
         final String scriptLanguage = "JavaScript";
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName(scriptLanguage);
         scriptEngine.put(AVAILABLE_PROCESSOR_COUNT, Runtime.getRuntime().availableProcessors());
@@ -195,7 +196,8 @@ public class ConfigUtils {
             scriptResult = scriptEngine.eval(script);
         } catch (ScriptException e) {
             throw new IllegalArgumentException("The " + propertyName + " (" + script
-                    + ") is not " + magicValue + " and cannot be parsed in " + scriptLanguage
+                    + ") is not in magicValues (" + Arrays.toString(magicValues)
+                    + ") and cannot be parsed in " + scriptLanguage
                     + " with the variables ([" + AVAILABLE_PROCESSOR_COUNT + "]).", e);
         }
         if (!(scriptResult instanceof Number)) {

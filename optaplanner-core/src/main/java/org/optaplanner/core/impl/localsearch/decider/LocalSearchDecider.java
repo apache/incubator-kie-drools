@@ -130,6 +130,7 @@ public class LocalSearchDecider<Solution_> {
             if (termination.isPhaseTerminated(stepScope.getPhaseScope())) {
                 break;
             }
+            stepScope.getPhaseScope().getSolverScope().checkYielding();
         }
         scoreDirector.setAllChangesWillBeUndoneBeforeStepEnds(false);
         LocalSearchMoveScope<Solution_> pickedMoveScope = forager.pickMove(stepScope);

@@ -29,9 +29,9 @@ public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance
 
     @Override
     public List<CloudBalance> splitWorkingSolution(ScoreDirector<CloudBalance> scoreDirector) {
-        int partCount = 4;
-        List<CloudBalance> partList = new ArrayList<>(partCount);
         CloudBalance originalSolution = scoreDirector.getWorkingSolution();
+        int partCount = Math.max(4, originalSolution.getComputerList().size() / 100);
+        List<CloudBalance> partList = new ArrayList<>(partCount);
         for (int i = 0; i < partCount; i++) {
             CloudBalance partSolution = new CloudBalance(originalSolution.getId(),
                     new ArrayList<>(originalSolution.getComputerList().size() / partCount + 1),

@@ -19,8 +19,9 @@ package org.optaplanner.core.impl.partitionedsearch;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -41,13 +42,15 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solution_>
         implements PartitionedSearchPhase<Solution_> {
 
-    protected ExecutorService executorService;
+    protected ThreadPoolExecutor threadPoolExecutor;
+    protected Integer activeThreadCount;
     protected SolutionPartitioner<Solution_> solutionPartitioner;
+
     protected List<PhaseConfig> phaseConfigList;
     protected HeuristicConfigPolicy configPolicy;
 
-    public void setExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
+    public void setThreadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
+        this.threadPoolExecutor = threadPoolExecutor;
     }
 
     public void setSolutionPartitioner(SolutionPartitioner<Solution_> solutionPartitioner) {
@@ -76,10 +79,20 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
 //        PartitionedSearchPhaseScope<Solution_> phaseScope = new PartitionedSearchPhaseScope<>(solverScope);
 //        phaseStarted(phaseScope);
         List<Solution_> partList = solutionPartitioner.splitWorkingSolution(solverScope.getScoreDirector());
-        List<Future> futureList = new ArrayList<>(partList.size());
+        int partCount = partList.size();
+        if (threadPoolExecutor.getMaximumPoolSize() < partCount) {
+            throw new IllegalStateException(
+                    "The threadPoolExecutor's maximumPoolSize (" + threadPoolExecutor.getMaximumPoolSize()
+                    + ") is less than the partCount (" + partCount + "), so some partitions will starve.\n"
+                    + "Normally this impossible because the threadPoolExecutor should be unbounded:"
+                    + " Use activeThreadCount (" + activeThreadCount
+                    + ") instead to avoid CPU hogging and live locks.");
+        }
+        List<Future> futureList = new ArrayList<>(partCount);
+        Semaphore activeThreadSemaphore = activeThreadCount == null ? null : new Semaphore(activeThreadCount);
         for (Solution_ part : partList) {
-            PartitionSolver<Solution_> partitionSolver = buildPartitionSolver(solverScope);
-            Future<?> future = executorService.submit(() -> partitionSolver.solve(part));
+            PartitionSolver<Solution_> partitionSolver = buildPartitionSolver(activeThreadSemaphore, solverScope);
+            Future<?> future = threadPoolExecutor.submit(() -> partitionSolver.solve(part));
             futureList.add(future);
         }
         for (Future future : futureList) {
@@ -122,7 +135,8 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
 //        }
     }
 
-    public PartitionSolver<Solution_> buildPartitionSolver(DefaultSolverScope<Solution_> solverScope) {
+    public PartitionSolver<Solution_> buildPartitionSolver(Semaphore activeThreadSemaphore,
+            DefaultSolverScope<Solution_> solverScope) {
         Termination partTermination = termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD);
         BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
                 .buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
@@ -134,7 +148,12 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         }
         // TODO create PartitionSolverScope alternative to deal with 3 layer terminations
         DefaultSolverScope<Solution_> partSolverScope = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
+        partSolverScope.setActiveThreadSemaphore(activeThreadSemaphore);
         return new PartitionSolver<>(partTermination, bestSolutionRecaller, phaseList, partSolverScope);
+    }
+
+    public void setActiveThreadCount(Integer activeThreadCount) {
+        this.activeThreadCount = activeThreadCount;
     }
 
     //    private void doStep(PartitionedSearchStepScope<Solution_> stepScope) {

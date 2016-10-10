@@ -68,6 +68,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
             if (termination.isPhaseTerminated(phaseScope)) {
                 break;
             }
+            solverScope.checkYielding();
             stepStarted(stepScope);
             doStep(stepScope, customPhaseCommand);
             stepEnded(stepScope);
