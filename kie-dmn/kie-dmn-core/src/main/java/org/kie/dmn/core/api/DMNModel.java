@@ -16,7 +16,12 @@
 
 package org.kie.dmn.core.api;
 
+import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.core.ast.InputDataNode;
+import org.kie.dmn.feel.model.v1_1.Definitions;
+
+import java.util.Collection;
+import java.util.Set;
 
 public interface DMNModel {
 
@@ -24,4 +29,21 @@ public interface DMNModel {
 
     String getName();
 
+    Definitions getDefinitions();
+
+    InputDataNode getInputById(String id);
+
+    InputDataNode getInputByName(String name);
+
+    Set<InputDataNode> getInputs();
+
+    DecisionNode getDecisionById(String id);
+
+    DecisionNode getDecisionByName(String name);
+
+    Set<DecisionNode> getDecisions();
+
+    Set<InputDataNode> getRequiredInputsForDecisionName(String decisionName );
+
+    Set<InputDataNode> getRequiredInputsForDecisionId( String decisionName );
 }
