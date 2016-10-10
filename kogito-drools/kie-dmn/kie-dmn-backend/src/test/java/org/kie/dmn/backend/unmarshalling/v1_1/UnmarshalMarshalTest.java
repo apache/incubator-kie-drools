@@ -36,6 +36,24 @@ public class UnmarshalMarshalTest {
         testRoundTrip("org/kie/dmn/backend/unmarshalling/v1_1/", "0001-input-data-string.dmn");
     }
     
+    @Ignore("vaguely working, missing xmlnamespaces....")
+    @Test 
+    public void test0002() throws Exception {
+        testRoundTrip("org/kie/dmn/backend/unmarshalling/v1_1/", "0002-input-data-number.dmn");
+    }
+    
+    @Ignore("vaguely working, missing xmlnamespaces....")
+    @Test 
+    public void test0003() throws Exception {
+        testRoundTrip("org/kie/dmn/backend/unmarshalling/v1_1/", "0003-input-data-string-allowed-values.dmn");
+    }
+    
+    @Ignore("vaguely working, missing xmlnamespaces...., and CDATA is not marshalled - is it really required?")
+    @Test
+    public void testDish() throws Exception {
+        testRoundTrip("", "dish-decision.xml");
+    }
+    
     @Ignore("still converter issues.")
     @Test
     public void testCh11() throws Exception {

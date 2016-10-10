@@ -17,14 +17,8 @@
 package org.kie.dmn.backend.unmarshalling.v1_1.xstream;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.StreamException;
-import com.thoughtworks.xstream.io.xml.Dom4JDriver;
-import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
-import com.thoughtworks.xstream.io.xml.StaxWriter;
 
 import javanet.staxutils.StaxUtilsXMLOutputFactory;
 
@@ -32,20 +26,13 @@ import org.kie.dmn.feel.model.v1_1.*;
 import org.kie.dmn.unmarshalling.v1_1.Unmarshaller;
 import org.xml.sax.InputSource;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -60,7 +47,7 @@ public class XStreamUnmarshaller
     static {
         QNameMap qmap = new QNameMap();
         qmap.setDefaultNamespace("http://www.omg.org/spec/DMN/20151101/dmn.xsd");
-        qmap.registerMapping(new QName("http://www.omg.org/spec/FEEL/20140401", "feel", "feel"), Void.class); // FIXME boh.
+        qmap.registerMapping(new javax.xml.namespace.QName("http://www.omg.org/spec/FEEL/20140401", "feel", "feel"), Void.class); // FIXME boh.
         
         staxDriver = new StaxDriver() {
 
@@ -292,6 +279,9 @@ public class XStreamUnmarshaller
         xStream.registerConverter(new RelationConverter( xStream ) );
         xStream.registerConverter(new TextAnnotationConverter( xStream ) );
         xStream.registerConverter(new UnaryTestsConverter( xStream ) );
+        
+        xStream.registerConverter(new DMNQNameConverter());
+        
         return xStream;
     }
 
