@@ -59,6 +59,12 @@ public class UnmarshalMarshalTest {
     public void testCh11() throws Exception {
         testRoundTrip("", "ch11example.xml");
     }
+    
+    @Ignore("A problem with the StaxDriver has still to be resolved.")
+    @Test
+    public void testFAILforMissingNamespaces() {
+        fail("PERFORM A MANUAL CHECK: does now the Stax driver do output the namespace for 'feel:' ?? ");
+    }
 
     public void testRoundTrip(String subdir, String xmlfile) throws Exception {
         XStreamUnmarshaller marshaller = new XStreamUnmarshaller();

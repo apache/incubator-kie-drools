@@ -19,7 +19,7 @@ public class BindingConverter extends DMNModelInstrumentedBaseConverter {
         
         if (PARAMETER.equals(nodeName)) {
             b.setParameter((InformationItem) child);
-        } else if (EXPRESSION.equals(nodeName)) {
+        } else if (child instanceof Expression) {
             b.setExpression((Expression) child);
         } else {
             super.assignChildElement(parent, nodeName, child);
@@ -39,7 +39,7 @@ public class BindingConverter extends DMNModelInstrumentedBaseConverter {
         Binding b = (Binding) parent;
         
         writeChildrenNode(writer, context, b.getParameter(), PARAMETER);
-        if (b.getExpression() != null) writeChildrenNode(writer, context, b.getExpression(), EXPRESSION);
+        if (b.getExpression() != null) writeChildrenNode(writer, context, b.getExpression(), MarshallingUtils.defineExpressionNodeName(b.getExpression()));
     }
 
     @Override

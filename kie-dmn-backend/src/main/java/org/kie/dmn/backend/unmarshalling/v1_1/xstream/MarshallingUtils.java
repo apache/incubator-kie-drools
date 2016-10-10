@@ -16,7 +16,14 @@
 
 package org.kie.dmn.backend.unmarshalling.v1_1.xstream;
 
+import org.kie.dmn.feel.model.v1_1.Context;
+import org.kie.dmn.feel.model.v1_1.DecisionTable;
+import org.kie.dmn.feel.model.v1_1.Expression;
+import org.kie.dmn.feel.model.v1_1.FunctionDefinition;
+import org.kie.dmn.feel.model.v1_1.Invocation;
+import org.kie.dmn.feel.model.v1_1.LiteralExpression;
 import org.kie.dmn.feel.model.v1_1.QName;
+import org.kie.dmn.feel.model.v1_1.Relation;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,5 +56,26 @@ public class MarshallingUtils {
         }
         sb.append(qname.getLocalPart());
         return sb.toString();
+    }
+
+    /**
+     * TODO missing what-if in the case of List..
+     */
+    public static String defineExpressionNodeName(Expression e) {
+        String nodeName = "expression";
+        if (e instanceof Context) {
+            nodeName = "context";
+        } else if (e instanceof DecisionTable) {
+            nodeName = "decisionTable";
+        } else if (e instanceof FunctionDefinition) {
+            nodeName = "functionDefinition";
+        } else if (e instanceof Invocation) {
+            nodeName = "invocation";
+        } else if (e instanceof LiteralExpression) {
+            nodeName = "literalExpression";
+        } else if (e instanceof Relation) {
+            nodeName = "relation";
+        }
+        return nodeName;
     }
 }

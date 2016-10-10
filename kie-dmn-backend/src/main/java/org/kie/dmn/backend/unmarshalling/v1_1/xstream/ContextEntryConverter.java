@@ -19,7 +19,7 @@ public class ContextEntryConverter extends DMNModelInstrumentedBaseConverter {
         
         if (VARIABLE.equals(nodeName)) {
             ce.setVariable((InformationItem) child);
-        } else if (EXPRESSION.equals(nodeName)) {
+        } else if (child instanceof Expression) {
             ce.setExpression((Expression) child);
         } else {
             super.assignChildElement(parent, nodeName, child);
@@ -39,7 +39,7 @@ public class ContextEntryConverter extends DMNModelInstrumentedBaseConverter {
         ContextEntry ce = (ContextEntry) parent;
         
         if (ce.getVariable() != null) writeChildrenNode(writer, context, ce.getVariable(), VARIABLE);
-        writeChildrenNode(writer, context, ce.getExpression(), EXPRESSION);
+        writeChildrenNode(writer, context, ce.getExpression(), MarshallingUtils.defineExpressionNodeName(ce.getExpression()));
     }
 
     @Override
