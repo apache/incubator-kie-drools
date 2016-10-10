@@ -254,6 +254,7 @@ public class XStreamUnmarshaller
         xStream.registerConverter(new AssociationConverter( xStream ) );
         xStream.registerConverter(new AuthorityRequirementConverter( xStream ) );
         xStream.registerConverter(new BindingConverter( xStream ) );
+        xStream.registerConverter(new BusinessKnowledgeModelConverter( xStream ) );
         xStream.registerConverter(new ContextConverter( xStream ) );
         xStream.registerConverter(new ContextEntryConverter( xStream ) );
         xStream.registerConverter(new DecisionConverter( xStream ) );
