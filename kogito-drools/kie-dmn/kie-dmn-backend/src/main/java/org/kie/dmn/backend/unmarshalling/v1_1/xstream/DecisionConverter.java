@@ -144,23 +144,11 @@ public class DecisionConverter extends DRGElementConverter {
         }
         if (dec.getExpression() != null) {
             Expression e = dec.getExpression();
-            String nodeName = EXPRESSION;
-            if (e instanceof Context) {
-                nodeName = "context";
-            } else if (e instanceof DecisionTable) {
-                nodeName = "decisionTable";
-            } else if (e instanceof FunctionDefinition) {
-                nodeName = "functionDefinition";
-            } else if (e instanceof Invocation) {
-                nodeName = "invocation";
-            } else if (e instanceof LiteralExpression) {
-                nodeName = "literalExpression";
-            } else if (e instanceof Relation) {
-                nodeName = "relation";
-            }
-            writeChildrenNode(writer, context, dec.getExpression(), nodeName);
+            String nodeName = MarshallingUtils.defineExpressionNodeName(e);
+            writeChildrenNode(writer, context, e, nodeName);
         }
     }
+
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
         super.writeAttributes(writer, parent);

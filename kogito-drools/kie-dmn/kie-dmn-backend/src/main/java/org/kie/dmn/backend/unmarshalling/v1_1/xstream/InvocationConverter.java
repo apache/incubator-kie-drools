@@ -18,7 +18,7 @@ public class InvocationConverter extends ExpressionConverter {
     protected void assignChildElement(Object parent, String nodeName, Object child) {
         Invocation i = (Invocation) parent;
         
-        if (EXPRESSION.equals(nodeName)) {
+        if (child instanceof Expression) {
             i.setExpression((Expression) child);
         } else if (BINDING.equals(nodeName)) {
             i.getBinding().add((Binding) child);
@@ -37,7 +37,7 @@ public class InvocationConverter extends ExpressionConverter {
         super.writeChildren(writer, context, parent);
         Invocation i = (Invocation) parent;
         
-        if (i.getExpression() != null) writeChildrenNode(writer, context, i.getExpression(), EXPRESSION);
+        if (i.getExpression() != null) writeChildrenNode(writer, context, i.getExpression(), MarshallingUtils.defineExpressionNodeName(i.getExpression()));
         for (Binding b : i.getBinding()) {
             writeChildrenNode(writer, context, b, BINDING);
         }

@@ -19,7 +19,7 @@ public class FunctionDefinitionConverter extends ExpressionConverter {
         
         if (FORMAL_PARAMETER.equals(nodeName)) {
             fd.getFormalParameter().add((InformationItem) child);
-        } else if (EXPRESSION.equals(nodeName)) {
+        } else if (child instanceof Expression) {
             fd.setExpression((Expression) child);
         } else {
             super.assignChildElement(parent, nodeName, child);
@@ -41,7 +41,7 @@ public class FunctionDefinitionConverter extends ExpressionConverter {
         for (InformationItem fparam : fd.getFormalParameter()) {
             writeChildrenNode(writer, context, fparam, FORMAL_PARAMETER);
         }
-        if (fd.getExpression() != null) writeChildrenNode(writer, context, fd.getExpression(), EXPRESSION);
+        if (fd.getExpression() != null) writeChildrenNode(writer, context, fd.getExpression(), MarshallingUtils.defineExpressionNodeName(fd.getExpression()));
     }
 
     @Override
