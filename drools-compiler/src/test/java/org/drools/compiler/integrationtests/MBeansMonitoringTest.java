@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;

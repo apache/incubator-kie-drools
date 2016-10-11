@@ -132,11 +132,7 @@ public class SingleSessionCommandService
         this.ksession = kbase.newKieSession( conf,
                                              this.env );
         
-        // In order to get the InternalKnowledgeBase is better go through local ksession as the parameter 'kbase' might be a CDI proxy
-        InternalKnowledgeBase internalKnowledgeBase = (InternalKnowledgeBase) this.ksession.getKieBase();
-        StatefulKnowledgeSessionImpl statefulKnowledgeSessionImpl = (StatefulKnowledgeSessionImpl) this.ksession;
-        // DROOLS-1322
-        statefulKnowledgeSessionImpl.initMBeans(internalKnowledgeBase.getContainerId(), internalKnowledgeBase.getId(), "persistent");
+        initKieSessionMBeans(this.ksession);
         
         this.marshallingHelper = new SessionMarshallingHelper( this.ksession, conf );
         
@@ -160,6 +156,13 @@ public class SingleSessionCommandService
         if (timerJobFactoryManager instanceof CommandServiceTimerJobFactoryManager) {
            ( (CommandServiceTimerJobFactoryManager) timerJobFactoryManager ).setCommandService( this );
         }
+    }
+
+    private void initKieSessionMBeans(KieSession ksession) {
+        InternalKnowledgeBase internalKnowledgeBase = (InternalKnowledgeBase) ksession.getKieBase();
+        StatefulKnowledgeSessionImpl statefulKnowledgeSessionImpl = (StatefulKnowledgeSessionImpl) ksession;
+        // DROOLS-1322
+        statefulKnowledgeSessionImpl.initMBeans(internalKnowledgeBase.getContainerId(), internalKnowledgeBase.getId(), "persistent");
     }
     
     public SingleSessionCommandService( Long sessionId,
@@ -270,11 +273,7 @@ public class SingleSessionCommandService
             addInterceptor(iterator.next(), false);
         }
         
-        // In order to get the InternalKnowledgeBase is better go through local ksession as the parameter 'kbase' might be a CDI proxy
-        InternalKnowledgeBase internalKnowledgeBase = (InternalKnowledgeBase) this.ksession.getKieBase();
-        StatefulKnowledgeSessionImpl statefulKnowledgeSessionImpl = (StatefulKnowledgeSessionImpl) this.ksession;
-        // DROOLS-1322
-        statefulKnowledgeSessionImpl.initMBeans(internalKnowledgeBase.getContainerId(), internalKnowledgeBase.getId(), "persistent");
+        initKieSessionMBeans(this.ksession);
     }
 
     public class JpaSessionInitializer implements KieSessionInitializer {
