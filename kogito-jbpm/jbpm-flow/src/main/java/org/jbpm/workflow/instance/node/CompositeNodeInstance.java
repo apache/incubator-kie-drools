@@ -180,7 +180,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     }
 
     public void addNodeInstance(final NodeInstance nodeInstance) {
-        if (nodeInstance.getId() == 0) {
+        if (nodeInstance.getId() == -1) {
             // assign new id only if it does not exist as it might already be set by marshalling 
             // it's important to keep same ids of node instances as they might be references e.g. exclusive group
             long id = singleNodeInstanceCounter.incrementAndGet();        

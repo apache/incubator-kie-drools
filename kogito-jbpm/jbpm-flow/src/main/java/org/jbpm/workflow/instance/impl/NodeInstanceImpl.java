@@ -61,7 +61,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
 	private static final long serialVersionUID = 510l;
 	protected static final Logger logger = LoggerFactory.getLogger(NodeInstanceImpl.class);
 	
-	private long id;
+	private long id = -1;
     private long nodeId;
     private WorkflowProcessInstance processInstance;
     private org.jbpm.workflow.instance.NodeInstanceContainer nodeInstanceContainer;

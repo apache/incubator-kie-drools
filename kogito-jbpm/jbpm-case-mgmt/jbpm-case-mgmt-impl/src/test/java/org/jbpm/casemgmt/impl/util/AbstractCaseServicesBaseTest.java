@@ -118,6 +118,7 @@ public abstract class AbstractCaseServicesBaseTest {
     protected static final String USER_TASK_CASE_P_ID = "UserTaskCase";
     protected static final String USER_TASK_STAGE_AUTO_START_CASE_P_ID = "UserTaskWithStageCaseAutoStart";
     protected static final String USER_TASK_STAGE_ADHOC_CASE_P_ID = "UserStageAdhocCase";
+    protected static final String NO_START_NODE_CASE_P_ID = "NoStartNodeAdhocCase";
 
     protected static final String SUBPROCESS_P_ID = "DataVerification";
 

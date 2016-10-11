@@ -91,6 +91,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         processes.add("cases/UserTaskWithStageCaseAutoStart.bpmn2");
         processes.add("cases/UserStageAdhocCase.bpmn2");
         processes.add("cases/ScriptRoleAssignmentCase.bpmn2");
+        processes.add("cases/NoStartNodeAdhocCase.bpmn2");
         // add processes that can be used by cases but are not cases themselves
         processes.add("processes/DataVerificationProcess.bpmn2");
         
@@ -1137,6 +1138,61 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             TaskSummary task = tasks.get(0);
             assertEquals("User Task 1", task.getName());
             
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testStartCaseWithoutStartNode() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), NO_START_NODE_CASE_P_ID);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            Collection<NodeInstanceDesc> activeNodes = runtimeDataService.getProcessInstanceHistoryActive(((CaseInstanceImpl) cInstance).getProcessInstanceId(), new org.kie.api.runtime.query.QueryContext());
+            assertNotNull(activeNodes);
+            assertEquals(1, activeNodes.size());
+            
+            NodeInstanceDesc active = activeNodes.iterator().next();
+            assertEquals("Initial step", active.getName());
+            
+            List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
+            assertNotNull(tasks);
+            assertEquals(1, tasks.size());
+            
+            TaskSummary task = tasks.get(0);
+            
+            userTaskService.completeAutoProgress(task.getId(), "john", new HashMap<>());
+            activeNodes = runtimeDataService.getProcessInstanceHistoryActive(((CaseInstanceImpl) cInstance).getProcessInstanceId(), new org.kie.api.runtime.query.QueryContext());
+            assertNotNull(activeNodes);
+            assertEquals(1, activeNodes.size());
+            
+            active = activeNodes.iterator().next();
+            assertEquals("stage", active.getName());
+            
+            caseService.cancelCase(caseId);            
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case was aborted so it should not be found any more");
+            } catch (CaseNotFoundException e) {
+                // expected as it was aborted
+            }
+            caseId = null;
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());
