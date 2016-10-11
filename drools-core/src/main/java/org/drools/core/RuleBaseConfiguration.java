@@ -720,13 +720,11 @@ public class RuleBaseConfiguration
      */
     public void setMultithreadEvaluation(boolean enableMultithread) {
         checkCanChange();
-        if( enableMultithread ) {
-            throw new IllegalArgumentException( "Multithread mode is currently not supported. Please disable it." );
-        }
         this.multithread = enableMultithread;
-        if (multithread && isPhreakEnabled()) {
-            throw new IllegalArgumentException( "Multithread evaluation cannot be used when Left & Right Unlinking is enabled." );
-        }
+    }
+
+    public void enforceSingleThreadEvaluation() {
+        this.multithread = false;
     }
 
     /**

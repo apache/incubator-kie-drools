@@ -93,7 +93,7 @@ public class JoinNodeTest extends DroolsTestCase {
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        this.context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        this.context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
         this.workingMemory = new StatefulKnowledgeSessionImpl(1L, kBase);
 
         this.tupleSource = new MockTupleSource(4);
@@ -262,12 +262,12 @@ public class JoinNodeTest extends DroolsTestCase {
         final LeftTupleImpl tuple0 = new LeftTupleImpl( f0, this.node, true );
 
         this.node.assertObject( f0,
-                                pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, f0),
+                                pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, f0),
                                 this.workingMemory );
 
         // assert tuple
         this.node.assertLeftTuple( tuple0,
-                                   pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, f0),
+                                   pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, f0),
                                    this.workingMemory );
 
         assertEquals( 1,
@@ -564,9 +564,9 @@ public class JoinNodeTest extends DroolsTestCase {
 
     @Test
     public void testSlotSpecific() {
-        PropagationContext contextPassAll = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, allSetButTraitBitMask());
-        PropagationContext contextPassNothing = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, EmptyBitMask.get());
-        PropagationContext contextPass2And3 = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, new LongBitMask(6));
+        PropagationContext contextPassAll = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, allSetButTraitBitMask());
+        PropagationContext contextPassNothing = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, EmptyBitMask.get());
+        PropagationContext contextPass2And3 = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null, 0, 0, EntryPointId.DEFAULT, new LongBitMask(6));
 
         when( constraint.isAllowedCachedLeft(any(ContextEntry.class), any(InternalFactHandle.class))).thenReturn(true);
         when( constraint.isAllowedCachedRight(any(LeftTupleImpl.class), any(ContextEntry.class))).thenReturn(true);
@@ -593,7 +593,7 @@ public class JoinNodeTest extends DroolsTestCase {
         final String string1 = "string1";
         final DefaultFactHandle string1Handle = new DefaultFactHandle(1, string1);
 
-        ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(null, null, new EntryPointNode() );
+        ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(null, new EntryPointNode() );
 
         assertLength(0, sink1.getAsserted());
 

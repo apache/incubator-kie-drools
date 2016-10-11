@@ -131,7 +131,7 @@ public abstract class LeftTupleSource extends BaseNode
         return leftInput;
     }
 
-    public void setLeftTupleSource(LeftTupleSource leftInput) {
+    public final void setLeftTupleSource(LeftTupleSource leftInput) {
         this.leftInput = leftInput;
         positionInPath = leftInput.getPositionInPath() + 1;
     }
@@ -189,6 +189,29 @@ public abstract class LeftTupleSource extends BaseNode
 
     public LeftTupleSinkPropagator getSinkPropagator() {
         return this.sink;
+    }
+
+    public void setSourcePartitionId(BuildContext context, RuleBasePartitionId partitionId) {
+        setSourcePartitionId(leftInput, context, partitionId);
+    }
+
+    protected void setSourcePartitionId(BaseNode source, BuildContext context, RuleBasePartitionId partitionId) {
+        if (this.partitionId == partitionId) {
+            return;
+        }
+        this.partitionId = partitionId;
+        if (source.getPartitionId() == RuleBasePartitionId.MAIN_PARTITION) {
+            setPartitionIdWithSinks( partitionId );
+        } else {
+            source.setPartitionId( context, partitionId );
+        }
+    }
+
+    public final void setPartitionIdWithSinks( RuleBasePartitionId partitionId ) {
+        this.partitionId = partitionId;
+        for (LeftTupleSink sink : getSinkPropagator().getSinks()) {
+            sink.setPartitionIdWithSinks( partitionId );
+        }
     }
 
     public abstract void updateSink(LeftTupleSink sink,

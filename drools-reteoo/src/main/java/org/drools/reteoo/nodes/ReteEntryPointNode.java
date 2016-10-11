@@ -85,9 +85,7 @@ public class ReteEntryPointNode extends EntryPointNode {
         }
 
         if ( queryNode != null ) {
-            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), this );
-            factHandle.clearLeftTuples();
-            factHandle.clearRightTuples();
+            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.detachLinkedTuples(), this );
 
             // There may be no queries defined
             this.queryNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );

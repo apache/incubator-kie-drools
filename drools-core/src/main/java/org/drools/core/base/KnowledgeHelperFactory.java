@@ -21,8 +21,8 @@ import org.drools.core.spi.KnowledgeHelper;
 
 public interface KnowledgeHelperFactory {
 
-    public KnowledgeHelper newSequentialKnowledgeHelper( WorkingMemory wm );
+    KnowledgeHelper newSequentialKnowledgeHelper( WorkingMemory wm );
 
-    public KnowledgeHelper newStatefulKnowledgeHelper( WorkingMemory wm );
+    KnowledgeHelper newStatefulKnowledgeHelper( WorkingMemory wm );
 
 }

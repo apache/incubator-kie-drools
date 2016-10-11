@@ -203,9 +203,7 @@ public class EntryPointNode extends ObjectSource
          }
 
          if ( activationNode != null ) {
-             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), this );
-             factHandle.clearLeftTuples();
-             factHandle.clearRightTuples();
+             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.detachLinkedTuples(), this );
 
              // There may be no queries defined
              this.activationNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
@@ -222,7 +220,14 @@ public class EntryPointNode extends ObjectSource
             log.trace("Insert {}", handle.toString());
         }
 
-        workingMemory.addPropagation(new PropagationEntry.Insert(handle, context, workingMemory, objectTypeConf ));
+        if ( workingMemory.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() ) {
+            // In case of multithreaded evaluation the CompositePartitionAwareObjectSinkAdapter
+            // used by the OTNs will take care of enqueueing this inseretion on the propagation queues
+            // of the different agendas
+            PropagationEntry.Insert.execute(  handle, context, workingMemory, objectTypeConf  );
+        } else {
+            workingMemory.addPropagation( new PropagationEntry.Insert( handle, context, workingMemory, objectTypeConf ) );
+        }
     }
 
 
@@ -241,9 +246,7 @@ public class EntryPointNode extends ObjectSource
         ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
 
         // make a reference to the previous tuples, then null then on the handle
-        ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(handle.getFirstLeftTuple(), handle.getFirstRightTuple(), this );
-        handle.clearLeftTuples();
-        handle.clearRightTuples();
+        ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(handle.detachLinkedTuples(), this );
 
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
             cachedNodes[i].modifyObject( handle,
@@ -361,7 +364,7 @@ public class EntryPointNode extends ObjectSource
                                       workingMemory );
         }
 
-        if (handle instanceof EventFactHandle) {
+        if (handle.isEvent()) {
             ((EventFactHandle) handle).unscheduleAllJobs(workingMemory);
         }
     }
@@ -381,10 +384,9 @@ public class EntryPointNode extends ObjectSource
                                  node);
     }
 
-    public boolean removeObjectSink(final ObjectSink objectSink) {
+    public void removeObjectSink(final ObjectSink objectSink) {
         final ObjectTypeNode node = (ObjectTypeNode) objectSink;
         this.objectTypeNodes.remove( node.getObjectType() );
-        return false;
     }
 
     public void attach() {
@@ -406,7 +408,7 @@ public class EntryPointNode extends ObjectSource
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             workingMemory.updateEntryPointsCache();
             PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
             this.source.updateSink( this,
                                     propagationContext,
                                     workingMemory );

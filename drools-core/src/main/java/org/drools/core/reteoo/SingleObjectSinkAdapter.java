@@ -19,7 +19,6 @@ package org.drools.core.reteoo;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.spi.PropagationContext;
 
@@ -27,34 +26,42 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
+public class SingleObjectSinkAdapter implements ObjectSinkPropagator {
 
     private static final long serialVersionUID = 510l;
 
     private ObjectSink      sink;
     private ObjectSink[]    sinks;
 
-    public SingleObjectSinkAdapter() {
-        super( null );
-    }
+    public SingleObjectSinkAdapter() { }
 
-    public SingleObjectSinkAdapter(final RuleBasePartitionId partitionId,
-                                   final ObjectSink sink) {
-        super( partitionId );
+    public SingleObjectSinkAdapter(final ObjectSink sink) {
         this.sink = sink;
         this.sinks = new ObjectSink[]{this.sink};
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        super.readExternal( in );
         this.sink = (ObjectSink) in.readObject();
         this.sinks = new ObjectSink[]{this.sink};
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
         out.writeObject( sink );
+    }
+
+    public ObjectSinkPropagator addObjectSink(ObjectSink sink, int alphaNodeHashingThreshold) {
+        final CompositeObjectSinkAdapter sinkAdapter = new CompositeObjectSinkAdapter( alphaNodeHashingThreshold );
+        sinkAdapter.addObjectSink( this.sink, alphaNodeHashingThreshold );
+        sinkAdapter.addObjectSink( sink, alphaNodeHashingThreshold );
+        return sinkAdapter;
+    }
+
+    public ObjectSinkPropagator removeObjectSink(final ObjectSink sink) {
+        if (this.sink.equals( sink )) {
+            return EmptyObjectSinkAdapter.getInstance();
+        }
+        throw new IllegalArgumentException( "Cannot remove " + sink + " when this sink propagator only contains " + this.sink );
     }
 
     public void propagateAssertObject(final InternalFactHandle factHandle,
@@ -133,10 +140,7 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
-        if (sink.thisNodeEquals(candidate)) {
-            return (BaseNode) sink;
-        }
-        return null;
+        return sink.thisNodeEquals(candidate) ? (BaseNode) sink : null;
     }
 
     public ObjectSink[] getSinks() {
@@ -147,4 +151,7 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
         return 1;
     }
 
+    public boolean isEmpty() {
+        return false;
+    }
 }

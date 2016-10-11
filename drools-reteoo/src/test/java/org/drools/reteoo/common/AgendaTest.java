@@ -109,7 +109,7 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNodeLeftTuple tuple2 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(2, "cheese"), node2, true);
 
         final PropagationContext context1 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule1,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -214,7 +214,7 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNodeLeftTuple tuple = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(1, cheese), node1, true);
 
         final PropagationContext context1 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule1,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -266,7 +266,7 @@ public class AgendaTest extends DroolsTestCase {
         assertEquals(100, cheese.getPrice());
 
         final PropagationContext context0 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.DELETION,
+                                                                                 PropagationContext.Type.DELETION,
                                                                                  rule1,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -332,7 +332,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                               node,
                                                                               true);
         final PropagationContext context = pctxFactory.createPropagationContext(0,
-                                                                                PropagationContext.INSERTION,
+                                                                                PropagationContext.Type.INSERTION,
                                                                                 rule,
                                                                                 null,
                                                                                 new DefaultFactHandle());
@@ -446,7 +446,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext);
         rule0.setConsequence(consequence);
         final PropagationContext context0 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule0,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -461,7 +461,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext);
         rule1.setConsequence(consequence);
         final PropagationContext context1 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule1,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -476,7 +476,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext);
         rule2.setConsequence(consequence);
         final PropagationContext context2 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule2,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -491,7 +491,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext);
         rule3.setConsequence(consequence);
         final PropagationContext context3 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule3,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -737,7 +737,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                               true);
         rule.setConsequence(consequence);
         final PropagationContext context = pctxFactory.createPropagationContext(0,
-                                                                                PropagationContext.INSERTION,
+                                                                                PropagationContext.Type.INSERTION,
                                                                                 rule,
                                                                                 null,
                                                                                 new DefaultFactHandle());
@@ -810,7 +810,7 @@ public class AgendaTest extends DroolsTestCase {
                                                                               true);
 
         final PropagationContext context = pctxFactory.createPropagationContext(0,
-                                                                                PropagationContext.INSERTION,
+                                                                                PropagationContext.Type.INSERTION,
                                                                                 rule,
                                                                                 null,
                                                                                 new DefaultFactHandle());
@@ -890,7 +890,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext);
         rule0.setConsequence(consequence);
         final PropagationContext context0 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule0,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -906,7 +906,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext);
         rule1.setConsequence(consequence);
         final PropagationContext context1 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule1,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -921,7 +921,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext);
         rule2.setConsequence(consequence);
         final PropagationContext context2 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule2,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -938,7 +938,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext);
         rule3.setConsequence(consequence);
         final PropagationContext context3 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule3,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -1134,7 +1134,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext);
 
         final PropagationContext context0 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule0,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -1285,7 +1285,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create context
         final PropagationContext context0 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule1,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -1413,7 +1413,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create context
         final PropagationContext context0 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule1,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -1549,7 +1549,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create context
         final PropagationContext context0 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule0,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -1650,7 +1650,7 @@ public class AgendaTest extends DroolsTestCase {
 
         // create context
         final PropagationContext context0 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule0,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -1807,7 +1807,7 @@ public class AgendaTest extends DroolsTestCase {
         final RuleTerminalNodeLeftTuple tuple3 = new RuleTerminalNodeLeftTuple(new DefaultFactHandle(1, "cheese"), node, true);
 
         final PropagationContext context = pctxFactory.createPropagationContext(0,
-                                                                                PropagationContext.INSERTION,
+                                                                                PropagationContext.Type.INSERTION,
                                                                                 rule,
                                                                                 null,
                                                                                 new DefaultFactHandle());
@@ -1883,7 +1883,7 @@ public class AgendaTest extends DroolsTestCase {
 
         rule0.setConsequence(consequence);
         final PropagationContext context0 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule0,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -1898,7 +1898,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext);
         rule1.setConsequence(consequence);
         final PropagationContext context1 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule1,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -1913,7 +1913,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext);
         rule2.setConsequence(consequence);
         final PropagationContext context2 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule2,
                                                                                  null,
                                                                                  new DefaultFactHandle());
@@ -1928,7 +1928,7 @@ public class AgendaTest extends DroolsTestCase {
                                                             buildContext);
         rule3.setConsequence(consequence);
         final PropagationContext context3 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  rule3,
                                                                                  null,
                                                                                  new DefaultFactHandle());

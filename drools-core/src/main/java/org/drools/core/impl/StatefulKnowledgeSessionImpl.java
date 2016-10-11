@@ -33,8 +33,8 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.common.BaseNode;
+import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.ConcurrentNodeMemories;
-import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventFactHandle;
@@ -68,12 +68,8 @@ import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.phreak.PropagationEntry.AbstractPropagationEntry;
-import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.SegmentUtilities;
-import org.drools.core.phreak.SynchronizedBypassPropagationList;
-import org.drools.core.phreak.SynchronizedPropagationList;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.InitialFactImpl;
@@ -81,7 +77,6 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
@@ -251,7 +246,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private Map<String, Object> runtimeServices;
 
-    protected PropagationList propagationList;
+    private boolean alive = true;
 
     private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
     private DroolsManagementAgent.CBSKey mbeanRegisteredCBSKey;
@@ -334,8 +329,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.agendaEventSupport = agendaEventSupport;
         this.ruleEventListenerSupport = ruleEventListenerSupport;
 
-        init();
-
         this.propagationIdCounter = new AtomicLong(propagationContext);
 
         if (agenda == null) {
@@ -382,14 +375,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         if (((InternalKnowledgeBase) kBase).getConfiguration() != null && ((InternalKnowledgeBase) kBase).getConfiguration().isMBeansEnabled() && mbeanRegistered.compareAndSet(false, true)) {
             this.mbeanRegisteredCBSKey = new DroolsManagementAgent.CBSKey(containerId, kbaseName, ksessionName);
             DroolsManagementAgent.getInstance().registerKnowledgeSessionUnderName(mbeanRegisteredCBSKey, this);
-        }
-    }
-
-    protected void init() {
-        if (config.hasForceEagerActivationFilter()) {
-            this.propagationList = new SynchronizedBypassPropagationList(this);
-        } else {
-            this.propagationList = new SynchronizedPropagationList(this);
         }
     }
 
@@ -496,7 +481,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void dispose() {
-        if (!agenda.dispose()) {
+        if (!agenda.dispose(this)) {
             return;
         }
 
@@ -767,7 +752,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         PropagationContextFactory ctxFact = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
 
 
-        final PropagationContext pctx = ctxFact.createPropagationContext(0, PropagationContext.INSERTION, null,
+        final PropagationContext pctx = ctxFact.createPropagationContext(0, PropagationContext.Type.INSERTION, null,
                                                                          null , initialFactHandle, defaultEntryPoint.getEntryPoint(),
                                                                          context );
 
@@ -814,7 +799,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                                                           this,
                                                                           this );
 
-            final PropagationContext pCtx = pctxFactory.createPropagationContext(getNextPropagationIdCounter(), PropagationContext.INSERTION,
+            final PropagationContext pCtx = pctxFactory.createPropagationContext(getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
                                                                                  null, null, handle, getEntryPoint());
 
 
@@ -874,7 +859,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                                                          this,
                                                                          this);
 
-            final PropagationContext pCtx = pctxFactory.createPropagationContext(getNextPropagationIdCounter(), PropagationContext.INSERTION,
+            final PropagationContext pCtx = pctxFactory.createPropagationContext(getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
                                                                                  null, null, handle, getEntryPoint());
 
             evalQuery( queryObject.getName(), queryObject, handle, pCtx, false );
@@ -1087,13 +1072,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void reset() {
-        propagationList.reset();
-
         if (nodeMemories != null) {
             nodeMemories.resetAllMemories( this );
         }
 
-        ((DefaultAgenda)this.agenda).reset();
+        this.agenda.reset();
 
         this.globalResolver.clear();
         this.kieBaseEventListeners.clear();
@@ -1114,8 +1097,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public void reset(int handleId,
                       long handleCounter,
                       long propagationCounter) {
-        propagationList.reset();
-
         if (nodeMemories != null) {
             nodeMemories.clear();
         }
@@ -1301,42 +1282,19 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void halt() {
-        synchronized (agenda) {
-            // only attempt halt an engine that is currently firing
-            // This will place a halt command on the propagation queue
-            // that will allow the engine to halt safely
-            if ( agenda.isFiring() ) {
-                addPropagation(new Halt());
-            }
-        }
-    }
-
-    private static class Halt extends AbstractPropagationEntry {
-
-        @Override
-        public void execute( InternalWorkingMemory wm ) {
-            wm.getAgenda().halt();
-        }
-
-        @Override
-        public String toString() {
-            return "Halt";
-        }
+        agenda.halt();
     }
 
     public int fireAllRules() {
-        return fireAllRules( null,
-                             -1 );
+        return fireAllRules( null, -1 );
     }
 
     public int fireAllRules(int fireLimit) {
-        return fireAllRules( null,
-                             fireLimit );
+        return fireAllRules( null, fireLimit );
     }
 
     public int fireAllRules(final AgendaFilter agendaFilter) {
-        return fireAllRules( agendaFilter,
-                             -1 );
+        return fireAllRules( agendaFilter, -1 );
     }
 
     public int fireAllRules(final AgendaFilter agendaFilter,
@@ -1471,30 +1429,29 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.agenda.setFocus( focus );
     }
 
+    public FactHandle insertAsync(final Object object) {
+        checkAlive();
+        return defaultEntryPoint.insertAsync( object );
+    }
+
     /**
      * @see org.drools.core.WorkingMemory
      */
     public FactHandle insert(final Object object) {
         return insert( object, /* Not-Dynamic */
-                       null,
-                       false,
-                       false,
-                       null,
-                       null );
+                       false );
     }
 
     public FactHandle insert(final Object object,
-                                             final boolean dynamic) {
+                             final boolean dynamic) {
         return insert( object,
-                       null,
                        dynamic,
-                       false,
                        null,
                        null );
     }
 
     public void submit(AtomicAction action) {
-        propagationList.addEntry( new AbstractPropagationEntry() {
+        agenda.addPropagation( new PropagationEntry.AbstractPropagationEntry() {
             @Override
             public void execute( InternalWorkingMemory wm ) {
                 action.execute( (KieSession)wm );
@@ -1523,9 +1480,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public FactHandle insert(final Object object,
-                             final Object tmsValue,
                              final boolean dynamic,
-                             boolean logical,
                              final RuleImpl rule,
                              final Activation activation) {
         checkAlive();
@@ -1533,19 +1488,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                              dynamic,
                                              rule,
                                              activation);
-    }
-
-    public void insert(final InternalFactHandle handle,
-                       final Object object,
-                       final RuleImpl rule,
-                       final Activation activation,
-                       ObjectTypeConf typeConf) {
-        this.defaultEntryPoint.insert(handle,
-                                      object,
-                                      rule,
-                                      activation,
-                                      typeConf,
-                                      null);
     }
 
     public void retract(FactHandle handle) {
@@ -1695,7 +1637,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public static class WorkingMemoryReteAssertAction
-            extends AbstractPropagationEntry
+            extends PropagationEntry.AbstractPropagationEntry
             implements WorkingMemoryAction {
         private final InternalFactHandle factHandle;
 
@@ -1766,7 +1708,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         public void execute(InternalWorkingMemory workingMemory) {
             PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
 
-            final PropagationContext context = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.INSERTION,
+            final PropagationContext context = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
                                                                                     this.ruleOrigin, this.tuple, this.factHandle);
             workingMemory.getKnowledgeBase().assertObject(this.factHandle,
                                                           this.factHandle.getObject(),
@@ -1777,7 +1719,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public static class WorkingMemoryReteExpireAction
-            extends AbstractPropagationEntry
+            extends PropagationEntry.AbstractPropagationEntry
             implements WorkingMemoryAction {
 
         private EventFactHandle factHandle;
@@ -1839,11 +1781,15 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 return;
             }
 
-            PropagationContext context = createPropagationContextForFact( workingMemory, factHandle, PropagationContext.EXPIRATION );
+            PropagationContext context = createPropagationContextForFact( workingMemory, factHandle, PropagationContext.Type.EXPIRATION );
             retractRightTuples( factHandle, context, workingMemory );
-            expireLeftTuples();
             workingMemory.getAgenda().registerExpiration( context );
 
+            expireFactHandle( workingMemory, factHandle );
+        }
+
+        private static void expireFactHandle( InternalWorkingMemory workingMemory, EventFactHandle factHandle ) {
+            factHandle.forEachLeftTuple( ObjectTypeNode::expireLeftTuple );
             factHandle.decreaseOtnCount();
             if (factHandle.getOtnCount() == 0) {
                 factHandle.setExpired( true );
@@ -1856,27 +1802,58 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
         }
 
-        private void expireLeftTuples() {
-            for ( LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext()) {
-                expireLeftTuple(leftTuple);
-            }
+        @Override
+        public boolean isMarshallable() {
+            return true;
         }
 
-        private void expireLeftTuple(LeftTuple leftTuple) {
-            if (!leftTuple.isExpired()) {
-                leftTuple.setExpired( true );
-                for ( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
-                    expireLeftTuple(child);
-                }
-                for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
-                    expireLeftTuple(peer);
-                }
+        @Override
+        public boolean isPartitionSplittable() {
+            return true;
+        }
+
+        @Override
+        public PropagationEntry getSplitForPartition( int i ) {
+            return new PartitionAwareWorkingMemoryReteExpireAction( factHandle, node, i );
+        }
+
+        @Override
+        public String toString() {
+            return "Expiration of " + factHandle.getObject();
+        }
+    }
+
+    public static class PartitionAwareWorkingMemoryReteExpireAction extends PropagationEntry.AbstractPartitionedPropagationEntry {
+        private final EventFactHandle factHandle;
+        private final ObjectTypeNode node;
+
+        public PartitionAwareWorkingMemoryReteExpireAction(EventFactHandle factHandle,
+                                                           ObjectTypeNode node,
+                                                           int partition) {
+            super(partition);
+            this.factHandle = factHandle;
+            this.node = node;
+        }
+
+        @Override
+        public void execute( InternalWorkingMemory wm ) {
+            if (!factHandle.isValid()) {
+                return;
+            }
+
+            PropagationContext context = createPropagationContextForFact( wm, factHandle, PropagationContext.Type.EXPIRATION );
+            retractRightTuples( factHandle, context, wm, partition );
+            ( (CompositeDefaultAgenda) wm.getAgenda() ).getPartitionedAgenda( partition ).registerExpiration( context );
+
+            // These operations has to be performed only once by a single partition
+            if (isMasterPartition()) {
+                WorkingMemoryReteExpireAction.expireFactHandle( wm, factHandle );
             }
         }
 
         @Override
-        public boolean isMarshallable() {
-            return true;
+        public String toString() {
+            return "Expiration of " + factHandle.getObject() + " for partition " + partition;
         }
     }
 
@@ -2086,43 +2063,28 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void addPropagation(PropagationEntry propagationEntry) {
-        propagationList.addEntry( propagationEntry );
+        agenda.addPropagation( propagationEntry );
     }
 
     public void flushPropagations() {
-        propagationList.flush();
+        agenda.flushPropagations();
         executeQueuedActionsForRete();
     }
 
     @Override
-    public void flushPropagations(PropagationEntry propagationEntry) {
-        propagationList.flush(propagationEntry);
+    public void flushNonMarshallablePropagations() {
+        agenda.flushNonMarshallablePropagations();
         executeQueuedActionsForRete();
-    }
-
-    public PropagationEntry takeAllPropagations() {
-        return propagationList.takeAll();
-    }
-
-    @Override
-    public PropagationEntry handleRestOnFireUntilHalt(DefaultAgenda.ExecutionState currentState) {
-        // this must use the same sync target as takeAllPropagations, to ensure this entire block is atomic, up to the point of wait
-        synchronized (propagationList) {
-            PropagationEntry head = takeAllPropagations();
-
-            // if halt() has called, the thread should not be put into a wait state
-            // instead this is just a safe way to make sure the queue is flushed before exiting the loop
-            if (head == null && currentState == DefaultAgenda.ExecutionState.FIRING_UNTIL_HALT) {
-                propagationList.waitOnRest();
-                head = takeAllPropagations();
-            }
-            return head;
-        }
     }
 
     @Override
     public void notifyWaitOnRest() {
-        propagationList.notifyWaitOnRest();
+        agenda.notifyWaitOnRest();
+    }
+
+    @Override
+    public Iterator<? extends PropagationEntry> getActionsIterator() {
+        return agenda.getActionsIterator();
     }
 
     @Override
@@ -2138,27 +2100,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     @Override
     public boolean tryDeactivate() {
         return agenda.tryDeactivate();
-    }
-
-    @Override
-    public void flushNonMarshallablePropagations() {
-        propagationList.flushNonMarshallable();
-        executeQueuedActionsForRete();
-    }
-
-    @Override
-    public void notifyEngineInactive() {
-        propagationList.onEngineInactive();
-    }
-
-    @Override
-    public boolean hasPendingPropagations() {
-        return !propagationList.isEmpty();
-    }
-
-    @Override
-    public Iterator<? extends PropagationEntry> getActionsIterator() {
-        return propagationList.iterator();
     }
 
     @Override

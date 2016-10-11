@@ -22,10 +22,10 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.PropagationContext;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-import org.kie.api.runtime.rule.PropagationContext;
 
 import java.io.Externalizable;
 import java.io.IOException;

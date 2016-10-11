@@ -102,7 +102,7 @@ public class DisconnectedWorkingMemoryEntryPoint implements InternalWorkingMemor
 
     @Override
     public InternalKnowledgeBase getKnowledgeBase() {
-        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+        return null;
     }
 
     @Override

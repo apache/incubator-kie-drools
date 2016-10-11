@@ -43,20 +43,20 @@ public interface AgendaGroup
      * @return
      *     The int total number of activations
      */
-    public int size();
+    int size();
 
     /**
      * @return
      *     boolean value indicating if this AgendaGroup is empty or not
      */
-    public boolean isEmpty();
+    boolean isEmpty();
 
     /**
      * 
      * @return
      *     boolean value indicating if the AgendaGroup is active and thus being evaluated.
      */
-    public boolean isActive();
+    boolean isActive();
 
     void setAutoFocusActivator(PropagationContext ctx);
     
