@@ -28,6 +28,8 @@ import org.drools.core.command.runtime.UnpersistableCommand;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.KieSessionInitializer;
 import org.drools.core.marshalling.impl.MarshallingConfigurationImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
@@ -129,7 +131,9 @@ public class SingleSessionCommandService
         // create session but bypass command service
         this.ksession = kbase.newKieSession( conf,
                                              this.env );
-
+        
+        initKieSessionMBeans(this.ksession);
+        
         this.marshallingHelper = new SessionMarshallingHelper( this.ksession, conf );
         
         MarshallingConfigurationImpl config = (MarshallingConfigurationImpl) this.marshallingHelper.getMarshaller().getMarshallingConfiguration();
@@ -152,6 +156,13 @@ public class SingleSessionCommandService
         if (timerJobFactoryManager instanceof CommandServiceTimerJobFactoryManager) {
            ( (CommandServiceTimerJobFactoryManager) timerJobFactoryManager ).setCommandService( this );
         }
+    }
+
+    private void initKieSessionMBeans(KieSession ksession) {
+        InternalKnowledgeBase internalKnowledgeBase = (InternalKnowledgeBase) ksession.getKieBase();
+        StatefulKnowledgeSessionImpl statefulKnowledgeSessionImpl = (StatefulKnowledgeSessionImpl) ksession;
+        // DROOLS-1322
+        statefulKnowledgeSessionImpl.initMBeans(internalKnowledgeBase.getContainerId(), internalKnowledgeBase.getId(), "persistent");
     }
     
     public SingleSessionCommandService( Long sessionId,
@@ -261,7 +272,8 @@ public class SingleSessionCommandService
         while (iterator.hasNext()) {
             addInterceptor(iterator.next(), false);
         }
-
+        
+        initKieSessionMBeans(this.ksession);
     }
 
     public class JpaSessionInitializer implements KieSessionInitializer {

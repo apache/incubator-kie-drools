@@ -108,7 +108,7 @@ public class KieServicesImpl implements InternalKieServices {
         }
 
         if (containerId != null && !classpathKContainerId.equals(containerId)) {
-        	throw new IllegalStateException("The default global singletong KieClasspathContainer was already created with id "+classpathKContainerId);
+        	throw new IllegalStateException("The default global singleton KieClasspathContainer was already created with id "+classpathKContainerId);
         }
         
         return classpathKContainer;
