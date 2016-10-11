@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.kie.builder.impl.InternalKieContainer;
+import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 import org.drools.core.ClockType;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.management.DroolsManagementAgent;
@@ -67,13 +67,17 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
 
     @Before
     public void setUp() throws Exception {
+        ((KieServicesImpl) KieServices.Factory.get()).nullKieClasspathContainer();
+        ((KieServicesImpl) KieServices.Factory.get()).nullAllContainerIds();
         mbeansprop = System.getProperty( MBeansOption.PROPERTY_NAME );
         System.setProperty( MBeansOption.PROPERTY_NAME, "enabled" );    
     }
 
     @After
     public void tearDown() throws Exception {
-    	if (mbeansprop != null) {
+        ((KieServicesImpl) KieServices.Factory.get()).nullKieClasspathContainer();
+        ((KieServicesImpl) KieServices.Factory.get()).nullAllContainerIds();
+        if (mbeansprop != null) {
     		System.setProperty( MBeansOption.PROPERTY_NAME, mbeansprop );
     	} else {
     		System.setProperty( MBeansOption.PROPERTY_NAME, MBeansOption.DISABLED.toString() );
