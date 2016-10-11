@@ -2179,7 +2179,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         @Override
         public void clearProcessInstances() {
-            throw new UnsupportedOperationException( );
+            // do nothing.
         }
 
         @Override
