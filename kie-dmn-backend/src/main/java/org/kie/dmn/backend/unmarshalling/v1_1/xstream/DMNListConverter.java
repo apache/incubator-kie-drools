@@ -1,26 +1,21 @@
 package org.kie.dmn.backend.unmarshalling.v1_1.xstream;
 
-import org.kie.dmn.feel.model.v1_1.InformationItem;
-import org.kie.dmn.feel.model.v1_1.Relation;
+import org.kie.dmn.feel.model.v1_1.Expression;
+import org.kie.dmn.feel.model.v1_1.List;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
-public class RelationConverter extends ExpressionConverter {
-    public static final String EXPRESSION = "expression";
-    public static final String ROW = "row";
-    public static final String COLUMN = "column";
+public class DMNListConverter extends ExpressionConverter {
 
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
-        Relation r = (Relation) parent;
+        List list = (List) parent;
         
-        if (COLUMN.equals(nodeName)) {
-            r.getColumn().add((InformationItem) child);
-        } else if (ROW.equals(nodeName)) {
-            r.getRow().add((org.kie.dmn.feel.model.v1_1.List) child);
+        if (child instanceof Expression) {
+            list.getExpression().add((Expression) child);
         } else {
             super.assignChildElement(parent, nodeName, child);
         }
@@ -36,13 +31,10 @@ public class RelationConverter extends ExpressionConverter {
     @Override
     protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
         super.writeChildren(writer, context, parent);
-        Relation r = (Relation) parent;
+        List list = (List) parent;
         
-        for (InformationItem c : r.getColumn()) {
-            writeChildrenNode(writer, context, c, COLUMN);
-        }
-        for (org.kie.dmn.feel.model.v1_1.List row : r.getRow()) {
-            writeChildrenNode(writer, context, row, ROW);
+        for (Expression e : list.getExpression()) {
+            writeChildrenNode(writer, context, e, MarshallingUtils.defineExpressionNodeName(e));
         }
     }
 
@@ -53,18 +45,18 @@ public class RelationConverter extends ExpressionConverter {
         // no attributes.
     }
 
-    public RelationConverter(XStream xstream) {
+    public DMNListConverter(XStream xstream) {
         super(xstream);
     }
 
     @Override
     protected Object createModelObject() {
-        return new Relation();
+        return new List();
     }
 
     @Override
     public boolean canConvert(Class clazz) {
-        return clazz.equals( Relation.class );
+        return clazz.equals( List.class );
     }
 
 }

@@ -22,13 +22,50 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 import javanet.staxutils.StaxUtilsXMLOutputFactory;
 
-import org.kie.dmn.feel.model.v1_1.*;
+import org.kie.dmn.feel.model.v1_1.Artifact;
+import org.kie.dmn.feel.model.v1_1.Association;
+import org.kie.dmn.feel.model.v1_1.AuthorityRequirement;
+import org.kie.dmn.feel.model.v1_1.Binding;
+import org.kie.dmn.feel.model.v1_1.BusinessContextElement;
+import org.kie.dmn.feel.model.v1_1.BusinessKnowledgeModel;
+import org.kie.dmn.feel.model.v1_1.Context;
+import org.kie.dmn.feel.model.v1_1.ContextEntry;
+import org.kie.dmn.feel.model.v1_1.DMNElement;
+import org.kie.dmn.feel.model.v1_1.DMNElementReference;
+import org.kie.dmn.feel.model.v1_1.DRGElement;
+import org.kie.dmn.feel.model.v1_1.Decision;
+import org.kie.dmn.feel.model.v1_1.DecisionRule;
+import org.kie.dmn.feel.model.v1_1.DecisionService;
+import org.kie.dmn.feel.model.v1_1.DecisionTable;
+import org.kie.dmn.feel.model.v1_1.Definitions;
+import org.kie.dmn.feel.model.v1_1.ElementCollection;
+import org.kie.dmn.feel.model.v1_1.Expression;
+import org.kie.dmn.feel.model.v1_1.FunctionDefinition;
+import org.kie.dmn.feel.model.v1_1.Import;
+import org.kie.dmn.feel.model.v1_1.ImportedValues;
+import org.kie.dmn.feel.model.v1_1.InformationItem;
+import org.kie.dmn.feel.model.v1_1.InformationRequirement;
+import org.kie.dmn.feel.model.v1_1.InputClause;
+import org.kie.dmn.feel.model.v1_1.InputData;
+import org.kie.dmn.feel.model.v1_1.Invocation;
+import org.kie.dmn.feel.model.v1_1.ItemDefinition;
+import org.kie.dmn.feel.model.v1_1.KnowledgeRequirement;
+import org.kie.dmn.feel.model.v1_1.KnowledgeSource;
+import org.kie.dmn.feel.model.v1_1.LiteralExpression;
+import org.kie.dmn.feel.model.v1_1.NamedElement;
+import org.kie.dmn.feel.model.v1_1.OrganizationUnit;
+import org.kie.dmn.feel.model.v1_1.OutputClause;
+import org.kie.dmn.feel.model.v1_1.PerformanceIndicator;
+import org.kie.dmn.feel.model.v1_1.Relation;
+import org.kie.dmn.feel.model.v1_1.TextAnnotation;
+import org.kie.dmn.feel.model.v1_1.UnaryTests;
 import org.kie.dmn.unmarshalling.v1_1.Unmarshaller;
 import org.xml.sax.InputSource;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -47,7 +84,7 @@ public class XStreamUnmarshaller
     static {
         QNameMap qmap = new QNameMap();
         qmap.setDefaultNamespace("http://www.omg.org/spec/DMN/20151101/dmn.xsd");
-        qmap.registerMapping(new javax.xml.namespace.QName("http://www.omg.org/spec/FEEL/20140401", "feel", "feel"), Void.class); // FIXME boh.
+        qmap.registerMapping(new javax.xml.namespace.QName("http://www.omg.org/spec/FEEL/20140401", "feel", "feel"), "dddecision"); // FIXME boh.
         
         staxDriver = new StaxDriver() {
 
@@ -63,6 +100,7 @@ public class XStreamUnmarshaller
             }
         };
         staxDriver.setQnameMap(qmap);
+        staxDriver.setRepairingNamespace(false);
     }
 
     @Override
@@ -103,7 +141,7 @@ public class XStreamUnmarshaller
      */
     @Deprecated
     public void marshalMarshall(Object o) {
-        marshal(o, System.out);
+        marshalMarshall(o, System.out);
     }
     /** 
      * Unnecessary as was a tentative UTF-8 preamble output but still not working.
@@ -112,9 +150,9 @@ public class XStreamUnmarshaller
     public void marshalMarshall(Object o, OutputStream out) {
         try {
             XStream xStream = newXStream();
-//            out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".getBytes());
-//            OutputStreamWriter ows = new OutputStreamWriter(out, "UTF-8");
-            xStream.marshal(o, staxDriver.createWriter(out) );
+            out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".getBytes());
+            OutputStreamWriter ows = new OutputStreamWriter(out, "UTF-8");
+            xStream.toXML(o, ows);
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -173,7 +211,7 @@ public class XStreamUnmarshaller
         xStream.alias("defaultOutputEntry", LiteralExpression.class );
         xStream.alias("definitions", Definitions.class );
         xStream.alias("drgElement", DMNElementReference.class );
-        xStream.alias("drgElement", DRGElement.class );
+//        xStream.alias("drgElement", DRGElement.class ); ambiguity, also referring to top-level xsd element just under xsd root.
         xStream.alias("elementCollection", ElementCollection.class );
         xStream.alias("elementCollection", ElementCollection.class );
         xStream.alias("encapsulatedDecision", DMNElementReference.class );
@@ -226,7 +264,7 @@ public class XStreamUnmarshaller
         xStream.alias("targetRef", DMNElementReference.class );
         xStream.alias("textAnnotation", TextAnnotation.class );
         xStream.alias("type", String.class ); // TODO where?
-        xStream.alias("typeRef", QName.class );
+        xStream.alias("typeRef", org.kie.dmn.feel.model.v1_1.QName.class );
         xStream.alias("usingProcess", DMNElementReference.class );
         xStream.alias("usingTask", DMNElementReference.class );
         xStream.alias("variable", InformationItem.class );
@@ -235,13 +273,12 @@ public class XStreamUnmarshaller
         xStream.alias("variable", InformationItem.class );
 //        xStream.alias("allowedAnswers", xsd:string.class );
 //        xStream.alias("description", xsd:string.class );
-//        xStream.alias("list", List.class );
 //        xStream.alias("question", xsd:string.class );
-//        xStream.alias("row", List.class );
 //        xStream.alias("text", xsd:string.class );
 //        xStream.alias("text", xsd:string.class );
 //        xStream.alias("text", xsd:string.class );
-
+        xStream.alias("row", org.kie.dmn.feel.model.v1_1.List.class );
+        xStream.alias("list", org.kie.dmn.feel.model.v1_1.List.class );        
 
         // Manually imported TEXT = String
         xStream.alias( LiteralExpressionConverter.TEXT, String.class );
@@ -282,6 +319,8 @@ public class XStreamUnmarshaller
         xStream.registerConverter(new UnaryTestsConverter( xStream ) );
         
         xStream.registerConverter(new DMNQNameConverter());
+        xStream.registerConverter(new DMNListConverter( xStream ));
+        xStream.registerConverter(new ElementCollectionConverter( xStream ));
         
         return xStream;
     }
