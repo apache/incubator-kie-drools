@@ -57,6 +57,11 @@ public class UnmarshalMarshalTest {
     }
     
     @Test
+    public void testRelationDummy() throws Exception {
+        testRoundTrip("", "relation-dummy.xml");
+    }
+    
+    @Test
     public void testCh11() throws Exception {
         testRoundTrip("", "ch11example.xml");
     }
@@ -95,7 +100,7 @@ public class UnmarshalMarshalTest {
         targetFos.flush();
         targetFos.close();
         
-        System.out.println("Default XMLUnit comparison:");
+        System.out.println("\n---\nDefault XMLUnit comparison:");
         Source control = Input.fromFile( inputXMLFile ).build();
         Source test = Input.fromFile( new File(baseOutputDir, subdir + "b." + xmlfile) ).build();
         Diff allDiffsSimilarAndDifferent = DiffBuilder
