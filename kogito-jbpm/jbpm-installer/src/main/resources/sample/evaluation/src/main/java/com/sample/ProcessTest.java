@@ -84,7 +84,7 @@ public class ProcessTest extends JbpmJUnitBaseTestCase {
 		results.put("performance", "outstanding");
 		taskService.complete(task.getId(), "mary", results);
 		
-		assertProcessInstanceCompleted(processInstance.getId(), ksession);
+		assertProcessInstanceNotActive(processInstance.getId(), ksession);
 		System.out.println("Process instance completed");
 		log.close();
 		
