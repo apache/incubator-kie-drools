@@ -15,22 +15,21 @@
  */
 package org.kie.dmn.feel.model.v1_1;
 
-import java.util.List;
 import java.util.ArrayList;
 
 public class Relation extends Expression {
 
-    private List<InformationItem> column;
-    private List<List<Expression>> row;
+    private java.util.List<InformationItem> column;
+    private java.util.List<List> row;
 
-    public List<InformationItem> getColumn() {
+    public java.util.List<InformationItem> getColumn() {
         if ( column == null ) {
             column = new ArrayList<>();
         }
         return this.column;
     }
 
-    public List<List<Expression>> getRow() {
+    public java.util.List<List> getRow() {
         if ( row == null ) {
             row = new ArrayList<>();
         }
