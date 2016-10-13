@@ -742,10 +742,15 @@ public class PhreakAccumulateNode {
                                  final boolean useLeftMemory) {
         LeftTuple tuple = leftTuple;
         InternalFactHandle handle = rightTuple.getFactHandle();
+
         if (accNode.isUnwrapRightObject()) {
             // if there is a subnetwork, handle must be unwrapped
             tuple = (LeftTuple) rightTuple;
             handle = rightTuple.getFactHandleForEvaluation();
+        }
+
+        if (handle.isEffectivelyExpired()) {
+            return;
         }
 
         accctx.setPropagationContext(rightTuple.getPropagationContext());

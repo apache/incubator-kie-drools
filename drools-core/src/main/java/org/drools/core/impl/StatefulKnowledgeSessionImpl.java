@@ -163,7 +163,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static org.drools.core.common.PhreakPropagationContextFactory.createPropagationContextForFact;
-import static org.drools.core.reteoo.ObjectTypeNode.retractRightTuples;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class StatefulKnowledgeSessionImpl extends AbstractRuntime
@@ -797,6 +796,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.lock.lock();
 
             this.kBase.executeQueuedActions();
+            flushPropagations();
+            // it is necessary to flush the propagation queue twice to perform all the expirations
+            // eventually enqueued by events that have been inserted when already expired
             flushPropagations();
 
             DroolsQuery queryObject = new DroolsQuery( queryName,
@@ -1840,7 +1842,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
 
             PropagationContext context = createPropagationContextForFact( workingMemory, factHandle, PropagationContext.EXPIRATION );
-            retractRightTuples( factHandle, context, workingMemory );
             expireLeftTuples();
             workingMemory.getAgenda().registerExpiration( context );
 
