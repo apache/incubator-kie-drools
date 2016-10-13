@@ -80,7 +80,7 @@ public class HardMediumSoftLongScoreVerifier<Solution_> extends AbstractScoreVer
      * @param solution never null, the actual {@link PlanningSolution}
      */
     public void assertMediumWeight(String constraintPackage, String constraintName, long expectedWeight, Solution_ solution) {
-        assertWeight(constraintPackage, constraintName, 0, Long.valueOf(expectedWeight), solution);
+        assertWeight(constraintPackage, constraintName, 1, Long.valueOf(expectedWeight), solution);
     }
 
     /**
@@ -104,7 +104,7 @@ public class HardMediumSoftLongScoreVerifier<Solution_> extends AbstractScoreVer
      * @param solution never null, the actual {@link PlanningSolution}
      */
     public void assertSoftWeight(String constraintPackage, String constraintName, long expectedWeight, Solution_ solution) {
-        assertWeight(constraintPackage, constraintName, 1, Long.valueOf(expectedWeight), solution);
+        assertWeight(constraintPackage, constraintName, 2, Long.valueOf(expectedWeight), solution);
     }
 
 }
