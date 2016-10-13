@@ -20,7 +20,6 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -40,6 +39,10 @@ import javax.swing.JPanel;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
+import org.optaplanner.examples.cloudbalancing.optional.realtime.AddComputerProblemFactChange;
+import org.optaplanner.examples.cloudbalancing.optional.realtime.AddProcessProblemFactChange;
+import org.optaplanner.examples.cloudbalancing.optional.realtime.DeleteComputerProblemFactChange;
+import org.optaplanner.examples.cloudbalancing.optional.realtime.DeleteProcessProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.swing.impl.SwingUtils;
@@ -237,91 +240,22 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
 
     public void addComputer(final CloudComputer computer) {
         logger.info("Scheduling addition of computer ({}).", computer);
-        doProblemFactChange(scoreDirector -> {
-            CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
-            // Set a unique id on the new computer
-            long nextComputerId = 0L;
-            for (CloudComputer otherComputer : cloudBalance.getComputerList()) {
-                if (nextComputerId <= otherComputer.getId()) {
-                    nextComputerId = otherComputer.getId() + 1L;
-                }
-            }
-            computer.setId(nextComputerId);
-            // A SolutionCloner does not clone problem fact lists (such as computerList)
-            // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
-            cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
-            // Add the problem fact itself
-            scoreDirector.beforeProblemFactAdded(computer);
-            cloudBalance.getComputerList().add(computer);
-            scoreDirector.afterProblemFactAdded(computer);
-        });
+        doProblemFactChange(new AddComputerProblemFactChange(computer));
     }
 
     public void deleteComputer(final CloudComputer computer) {
         logger.info("Scheduling delete of computer ({}).", computer);
-        doProblemFactChange(scoreDirector -> {
-            CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
-            // First remove the problem fact from all planning entities that use it
-            for (CloudProcess process : cloudBalance.getProcessList()) {
-                if (Objects.equals(process.getComputer(), computer)) {
-                    scoreDirector.beforeVariableChanged(process, "computer");
-                    process.setComputer(null);
-                    scoreDirector.afterVariableChanged(process, "computer");
-                }
-            }
-            scoreDirector.triggerVariableListeners();
-            // A SolutionCloner does not clone problem fact lists (such as computerList)
-            // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
-            cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
-            // Remove the problem fact itself
-            for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
-                CloudComputer workingComputer = it.next();
-                if (Objects.equals(workingComputer, computer)) {
-                    scoreDirector.beforeProblemFactRemoved(workingComputer);
-                    it.remove(); // remove from list
-                    scoreDirector.afterProblemFactRemoved(workingComputer);
-                    break;
-                }
-            }
-        });
+        doProblemFactChange(new DeleteComputerProblemFactChange(computer));
     }
 
     public void addProcess(final CloudProcess process) {
         logger.info("Scheduling addition of process ({}).", process);
-        doProblemFactChange(scoreDirector -> {
-            CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
-            // Set a unique id on the new process
-            long nextProcessId = 0L;
-            for (CloudProcess otherProcess : cloudBalance.getProcessList()) {
-                if (nextProcessId <= otherProcess.getId()) {
-                    nextProcessId = otherProcess.getId() + 1L;
-                }
-            }
-            process.setId(nextProcessId);
-            // Add the planning entity itself
-            scoreDirector.beforeEntityAdded(process);
-            cloudBalance.getProcessList().add(process);
-            scoreDirector.afterEntityAdded(process);
-            scoreDirector.triggerVariableListeners();
-        });
+        doProblemFactChange(new AddProcessProblemFactChange(process));
     }
 
     public void deleteProcess(final CloudProcess process) {
         logger.info("Scheduling delete of process ({}).", process);
-        doProblemFactChange(scoreDirector -> {
-            CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
-            // Remove the planning entity itself
-            for (Iterator<CloudProcess> it = cloudBalance.getProcessList().iterator(); it.hasNext(); ) {
-                CloudProcess workingProcess = it.next();
-                if (Objects.equals(workingProcess, process)) {
-                    scoreDirector.beforeEntityRemoved(workingProcess);
-                    it.remove(); // remove from list
-                    scoreDirector.afterEntityRemoved(workingProcess);
-                    break;
-                }
-            }
-            scoreDirector.triggerVariableListeners();
-        });
+        doProblemFactChange(new DeleteProcessProblemFactChange(process));
     }
 
     public JButton createButton(CloudProcess process) {

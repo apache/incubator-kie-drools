@@ -31,15 +31,10 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import static org.junit.Assume.*;
 
 /**
- * Turtle tests are not run by default. They are only run if {@code -DrunTurtleTests=true} because it takes days.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 @RunWith(Parameterized.class)
-public abstract class SolveAllTurtleTest<Solution_> extends LoggingTest {
-
-    protected static void checkRunTurtleTests() {
-        assumeTrue("true".equals(System.getProperty("runTurtleTests")));
-    }
+public abstract class SolveAllTurtleTest<Solution_> extends AbstractTurtleTest {
 
     protected abstract String createSolverConfigResource();
 

@@ -1,0 +1,63 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.optaplanner.examples.cloudbalancing.optional.realtime;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Objects;
+
+import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
+import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
+import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
+import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
+
+public class DeleteComputerProblemFactChange implements ProblemFactChange<CloudBalance> {
+
+    private final CloudComputer computer;
+
+    public DeleteComputerProblemFactChange(CloudComputer computer) {
+        this.computer = computer;
+    }
+
+    public void doChange(ScoreDirector<CloudBalance> scoreDirector) {
+        CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
+        // First remove the problem fact from all planning entities that use it
+        for (CloudProcess process : cloudBalance.getProcessList()) {
+            if (Objects.equals(process.getComputer(), computer)) {
+                scoreDirector.beforeVariableChanged(process, "computer");
+                process.setComputer(null);
+                scoreDirector.afterVariableChanged(process, "computer");
+            }
+        }
+        scoreDirector.triggerVariableListeners();
+        // A SolutionCloner does not clone problem fact lists (such as computerList)
+        // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
+        cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
+        // Remove the problem fact itself
+        for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
+            CloudComputer workingComputer = it.next();
+            if (Objects.equals(workingComputer, computer)) {
+                scoreDirector.beforeProblemFactRemoved(workingComputer);
+                it.remove(); // remove from list
+                scoreDirector.afterProblemFactRemoved(workingComputer);
+                break;
+            }
+        }
+    }
+
+}
