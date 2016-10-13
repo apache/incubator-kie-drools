@@ -29,8 +29,8 @@ public class IntegrationMavenResolver {
         File pom = new File(localRepositoryPath, "org/jbpm/shrinkwrap-war-profiles/" + version
                 + "/shrinkwrap-war-profiles-" + version + ".pom");
 
-        final MavenResolverSystem resolver = Boolean.getBoolean(System.getProperty("MAVEN_USE_LOCAL_REPO", "false"))
-                ? Maven.configureResolver().fromFile("settings.xml") : Maven.resolver();
+        // Custom settings.xml can be passed via org.apache.maven.user-settings property
+        final MavenResolverSystem resolver = Maven.resolver();
 
         return resolver.loadPomFromFile(pom, profiles);
     }
