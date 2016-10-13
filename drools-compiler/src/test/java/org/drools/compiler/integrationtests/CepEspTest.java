@@ -35,6 +35,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
@@ -62,6 +63,9 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.DebugAgendaEventListener;
 import org.kie.api.io.ResourceType;
+import org.kie.api.marshalling.Marshaller;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -79,12 +83,17 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.sql.Timestamp;
@@ -108,7 +117,145 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 public class CepEspTest extends CommonTestMethodBase {
-    
+
+    public class Gameplay {
+
+        private static final long serialVersionUID = 7517352753296362943L;
+
+        protected long id;
+
+        protected Long playerId;
+
+        protected Date timestamp;
+
+        public Gameplay(long id, Long playerId, Date timestamp) {
+            this.id = id;
+            this.playerId = playerId;
+            this.timestamp = timestamp;
+        }
+
+        public long getInstant() {
+            return timestamp.getTime();
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        public Long getPlayerId() {
+            return playerId;
+        }
+
+        public void setPlayerId(Long playerId) {
+            this.playerId = playerId;
+        }
+
+        public Date getTimestamp() {
+            return timestamp;
+        }
+
+        public void setTimestamp(Date timestamp) {
+            this.timestamp = timestamp;
+        }
+
+    }
+
+    @Test(timeout=10000)
+    public void testSerializationDeserliaizationWithRectractedExpireFact() {
+        String rule = "";
+        rule += "package " + Gameplay.class.getPackage().getName() + "\n" +
+                "declare " + Gameplay.class.getCanonicalName() + "\n" +
+                "   @role( event ) \n" +
+                "   @timestamp( instant ) \n" +
+                "   @expires( 60d ) \n" +
+                "end\n" +
+                "rule \"retract test rule\"\n" +
+                "salience 10 \n" +
+                "when\n" +
+                "   $gamePlay : Gameplay($playerId : playerId) over window:length(1)\n" +
+                "then\n" +
+                "   retract($gamePlay);\n" +
+                "   System.out.println(\"amePlay[\"+$gamePlay+\"] retracted\");\n" +
+                "end";
+
+        class KieSessionByteArraySerializer {
+
+            public byte[] writeObject(KieSession kieSession, KieBase kieBase) {
+                Marshaller marshaller = createSerializableMarshaller(kieBase);
+                try  {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(outputStream);
+            /*
+             * It seems that the Marshaller does not persist the actual SessionClock, which is a problem when using the PseudoClock, so we
+             * persist the SessionConfiguration, Environment and clock time to be able to execute the pseudo-clock (if it's used).
+             */
+                    KieSessionConfiguration kieSessionConfiguration = kieSession.getSessionConfiguration();
+                    oos.writeObject(kieSessionConfiguration);
+
+                    marshaller.marshall(outputStream, kieSession);
+                    outputStream.flush();
+                    byte[] bytes = outputStream.toByteArray();
+
+                    return bytes;
+                } catch (IOException ioe) {
+                    String errorMessage = "Unable to marshall KieSession.";
+                    throw new RuntimeException(errorMessage, ioe);
+                }
+            }
+
+            public KieSession readSession(byte[] buffer, KieBase kieBase) {
+                if (buffer == null) {
+                    return null;
+                }
+                Marshaller marshaller = createSerializableMarshaller(kieBase);
+                System.out.println("Read from Serialized buffer [" + buffer.length + "]");
+                try {
+                    ByteArrayInputStream inputStream = new ByteArrayInputStream(buffer);
+                    ObjectInputStream ois = new ObjectInputStream(inputStream);
+                    KieSessionConfiguration kieSessionConfiguration = (KieSessionConfiguration) ois.readObject();
+                    return marshaller.unmarshall(inputStream, kieSessionConfiguration, null);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            private Marshaller createSerializableMarshaller(KieBase kBase) {
+                ObjectMarshallingStrategyAcceptor acceptor = MarshallerFactory.newClassFilterAcceptor(new String[]{"*.*"});
+                ObjectMarshallingStrategy strategy = MarshallerFactory.newSerializeMarshallingStrategy(acceptor);
+                return MarshallerFactory.newMarshaller(kBase, new ObjectMarshallingStrategy[]{strategy});
+            }
+
+        }
+
+        KieSessionByteArraySerializer serializer = new KieSessionByteArraySerializer();
+
+        KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        kBaseConfig.setOption(EventProcessingOption.STREAM);
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( null, kBaseConfig, RuleEngineOption.PHREAK, (NodeFactory)null, rule );
+        KieSessionConfiguration sessionConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConf.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
+        KieSession ksession = kbase.newKieSession(sessionConf, null);
+
+        ksession.insert(new Gameplay(1, new Long(1), Calendar.getInstance().getTime()));
+        ksession.fireAllRules();
+
+        byte[] kieSessionBytes = serializer.writeObject(ksession, kbase);
+        Assert.assertTrue(kieSessionBytes.length > 0);
+        ksession.dispose();
+
+        KieSession kieSessionDeserialized = serializer.readSession(kieSessionBytes, kbase);
+
+        kieSessionDeserialized.insert(new Gameplay(1, new Long(1), Calendar.getInstance().getTime()));
+        kieSessionDeserialized.fireAllRules();
+    }
+
     @Test(timeout=10000)
     public void testComplexTimestamp() {
         String rule = "";
