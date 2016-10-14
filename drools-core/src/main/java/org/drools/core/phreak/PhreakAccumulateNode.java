@@ -749,7 +749,7 @@ public class PhreakAccumulateNode {
             handle = rightTuple.getFactHandleForEvaluation();
         }
 
-        if (handle.isEffectivelyExpired()) {
+        if (handle.isExpired()) {
             return;
         }
 

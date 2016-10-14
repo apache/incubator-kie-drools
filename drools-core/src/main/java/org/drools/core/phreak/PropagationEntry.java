@@ -20,7 +20,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.EntryPointNode;
@@ -127,6 +126,8 @@ public interface PropagationEntry {
             this.objectTypeConf = objectTypeConf;
             this.isEvent = objectTypeConf.isEvent();
             this.insertionTime = isEvent ? workingMemory.getTimerService().getCurrentTime() : 0L;
+
+            scheduleExpiration();
         }
 
         @Override
@@ -136,19 +137,30 @@ public interface PropagationEntry {
         }
 
         public void execute( InternalWorkingMemory wm ) {
-            if (isEvent) {
-                ((StatefulKnowledgeSessionImpl)workingMemory).flushExpirationsUntil( ((EventFactHandle) handle).getEndTimestamp() );
-            }
+//            if (isEvent) {
+//                ((StatefulKnowledgeSessionImpl)workingMemory).flushExpirationsUntil( ((EventFactHandle) handle).getEndTimestamp() );
+//            }
 
             for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
                 otn.propagateAssert( handle, context, wm );
-                if (isEvent) {
-                    scheduleExpiration( otn, otn.getExpirationOffset() );
-                }
+//                if (isEvent) {
+//                    scheduleExpiration( otn, otn.getExpirationOffset() );
+//                }
             }
 
-            if (isEvent && objectTypeConf.getConcreteObjectTypeNode() == null) {
-                scheduleExpiration( null, ( (ClassObjectTypeConf) objectTypeConf ).getExpirationOffset() );
+//            if (isEvent && objectTypeConf.getConcreteObjectTypeNode() == null) {
+//                scheduleExpiration( null, ( (ClassObjectTypeConf) objectTypeConf ).getExpirationOffset() );
+//            }
+        }
+
+        private void scheduleExpiration() {
+            if ( isEvent ) {
+                for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
+                    scheduleExpiration( otn, otn.getExpirationOffset() );
+                }
+                if ( objectTypeConf.getConcreteObjectTypeNode() == null ) {
+                    scheduleExpiration( null, ( (ClassObjectTypeConf) objectTypeConf ).getExpirationOffset() );
+                }
             }
         }
 
@@ -163,8 +175,7 @@ public interface PropagationEntry {
 
             WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn );
             if (nextTimestamp < workingMemory.getTimerService().getCurrentTime()) {
-                eventFactHandle.setExpiredAtInsertion( true );
-                ((StatefulKnowledgeSessionImpl)workingMemory).enqueueExpiration(action, nextTimestamp);
+                  workingMemory.addPropagation( action );
             } else {
                 JobContext jobctx = new ObjectTypeNode.ExpireJobContext( action, workingMemory );
                 JobHandle jobHandle = workingMemory.getTimerService()
