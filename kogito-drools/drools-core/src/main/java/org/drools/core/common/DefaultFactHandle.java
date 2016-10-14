@@ -678,6 +678,10 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return false;
     }
 
+    public boolean isEffectivelyExpired() {
+        return false;
+    }
+
     public boolean isPendingRemoveFromStore() {
         return false;
     }

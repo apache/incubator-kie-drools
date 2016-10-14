@@ -158,12 +158,12 @@ public interface PropagationEntry {
             long nextTimestamp = Math.max( insertionTime,
                                            effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
 
+            WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn );
             if (nextTimestamp < workingMemory.getTimerService().getCurrentTime()) {
-                WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn );
-                action.execute(workingMemory);  // this can now execute straight away, as alpha node propagation is now done by the engine thread
+                eventFactHandle.setExpiredAtInsertion( true );
+                workingMemory.addPropagation( action );
             } else {
-                JobContext jobctx = new ObjectTypeNode.ExpireJobContext( new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn ),
-                                                                         workingMemory );
+                JobContext jobctx = new ObjectTypeNode.ExpireJobContext( action, workingMemory );
                 JobHandle jobHandle = workingMemory.getTimerService()
                                                    .scheduleJob( job,
                                                                  jobctx,
