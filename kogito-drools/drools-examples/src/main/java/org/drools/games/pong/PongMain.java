@@ -41,7 +41,7 @@ public class PongMain {
         PongConfiguration pconf = new PongConfiguration();
         pconf.setExitOnClose(exitOnClose);
         ksession.setGlobal("pconf", pconf);
-        ksession.setGlobal( "fpsTimer", new FPSTimer(3) );
+        ksession.setGlobal( "fpsTimer", new FPSTimer(10) );
         //ksession.getAgenda().getAgendaGroup("Init").setFocus( );
 
         runKSession(ksession);
