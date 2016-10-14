@@ -17,6 +17,9 @@ package org.kie.dmn.feel.model.v1_1;
 
 import java.util.ArrayList;
 
+/**
+ * Representation for DMN XSD tList type.
+ */
 public class List extends Expression {
 
     private java.util.List<Expression> expression;
