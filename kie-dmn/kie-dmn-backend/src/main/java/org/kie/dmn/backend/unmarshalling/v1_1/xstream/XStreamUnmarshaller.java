@@ -178,6 +178,7 @@ public class XStreamUnmarshaller
     
     private XStream newXStream() {
         XStream xStream = new XStream( staxDriver );
+        
         xStream.alias( "artifact", Artifact.class );
         xStream.alias( "definitions", Definitions.class );
         xStream.alias( "inputData", InputData.class );
@@ -279,6 +280,7 @@ public class XStreamUnmarshaller
 //        xStream.alias("text", xsd:string.class );
         xStream.alias("row", org.kie.dmn.feel.model.v1_1.List.class );
         xStream.alias("list", org.kie.dmn.feel.model.v1_1.List.class );        
+        xStream.alias("extensionElements", DMNElement.ExtensionElements.class);
 
         // Manually imported TEXT = String
         xStream.alias( LiteralExpressionConverter.TEXT, String.class );
@@ -319,8 +321,11 @@ public class XStreamUnmarshaller
         xStream.registerConverter(new UnaryTestsConverter( xStream ) );
         
         xStream.registerConverter(new DMNQNameConverter());
-        xStream.registerConverter(new DMNListConverter( xStream ));
-        xStream.registerConverter(new ElementCollectionConverter( xStream ));
+        xStream.registerConverter(new DMNListConverter( xStream ) );
+        xStream.registerConverter(new ElementCollectionConverter( xStream ) );
+        xStream.registerConverter(new ExtensionElementsConverter( xStream ) );
+        
+        xStream.ignoreUnknownElements();
         
         return xStream;
     }
