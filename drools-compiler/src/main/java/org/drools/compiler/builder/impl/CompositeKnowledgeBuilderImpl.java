@@ -103,6 +103,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         kBuilder.registerBuildResources(getResources());
         buildResources();
         buildPackages();
+        buildProcesses();
         buildOthers();
         resourcesByType.clear();
         if (buildException != null) {
@@ -120,7 +121,11 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         normalizeRuleAnnotations( packages );
         buildRules(packages);
     }
-
+    
+    private void buildProcesses() {
+    	buildResourceType(BPMN2_RESOURCE_BUILDER, ResourceType.BPMN2);
+    }
+    
     private void normalizeTypeAnnotations( Collection<CompositePackageDescr> packages ) {
         for (CompositePackageDescr packageDescr : packages) {
             kBuilder.normalizeTypeDeclarationAnnotations( packageDescr );
@@ -142,7 +147,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private void buildResources() {
         buildResourceType(DSL_RESOURCE_BUILDER, ResourceType.DSL);
         buildResourceType(DRF_RESOURCE_BUILDER, ResourceType.DRF);
-        buildResourceType(BPMN2_RESOURCE_BUILDER, ResourceType.BPMN2);
         buildResourceType(PKG_RESOURCE_BUILDER, ResourceType.PKG);
         buildResourceType(CHANGE_SET_RESOURCE_BUILDER, ResourceType.CHANGE_SET);
         buildResourceType(XSD_RESOURCE_BUILDER, ResourceType.XSD);
