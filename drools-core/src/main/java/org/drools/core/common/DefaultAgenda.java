@@ -65,6 +65,7 @@ import java.util.Map;
 
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.ERRORMSG;
 import static org.drools.core.reteoo.ObjectTypeNode.retractLeftTuples;
+import static org.drools.core.reteoo.ObjectTypeNode.retractRightTuples;
 
 /**
  * Rule-firing Agenda.
@@ -1520,6 +1521,7 @@ public class DefaultAgenda
         }
         for (PropagationContext ectx : expirationContexts) {
             InternalFactHandle factHandle = (InternalFactHandle) ectx.getFactHandle();
+            retractRightTuples( factHandle, ectx, workingMemory );
             retractLeftTuples( factHandle, ectx, workingMemory );
             if ( factHandle.isPendingRemoveFromStore() ) {
                 String epId = factHandle.getEntryPoint().getEntryPointId();

@@ -29,6 +29,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
     private long              startTimestamp;
     private long              duration;
     private boolean           expired;
+    private boolean           expiredAtInsertion;
     private boolean           pendingRemoveFromStore;
     private long              activationsCount;
     private int               otnCount;
@@ -168,6 +169,27 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         }
     }
 
+    public boolean isExpiredAtInsertion() {
+        if ( linkedFactHandle != null ) {
+            return linkedFactHandle.isExpiredAtInsertion();
+        }  else {
+            return expiredAtInsertion;
+        }
+    }
+
+    @Override
+    public boolean isEffectivelyExpired() {
+        return isExpired() || isExpiredAtInsertion();
+    }
+
+    public void setExpiredAtInsertion(boolean expiredAtInsertion) {
+        if ( linkedFactHandle != null ) {
+            linkedFactHandle.setExpiredAtInsertion(expiredAtInsertion);
+        }  else {
+            this.expiredAtInsertion = expiredAtInsertion;
+        }
+    }
+
     public boolean isPendingRemoveFromStore() {
         if ( linkedFactHandle != null ) {
             return linkedFactHandle.isPendingRemoveFromStore();
@@ -244,6 +266,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         clone.setActivationsCount( getActivationsCount() );
         clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
+        clone.setExpiredAtInsertion( isExpiredAtInsertion() );
         clone.setEntryPoint( getEntryPoint() );
         clone.setEqualityKey( getEqualityKey() );
         clone.setFirstLeftTuple(getLastLeftTuple());
@@ -265,6 +288,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         clone.setActivationsCount( getActivationsCount() );
         clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
+        clone.setExpiredAtInsertion( isExpiredAtInsertion() );
         clone.setEntryPoint( getEntryPoint() );
         clone.setEqualityKey( getEqualityKey() );
         clone.setObjectHashCode(getObjectHashCode());

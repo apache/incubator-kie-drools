@@ -193,6 +193,17 @@ public class LeftInputAdapterNode extends LeftTupleSource
         // node is not linked, so notify will happen when we link the node
         boolean notifySegment = linkOrNotify && counter != 0;
 
+        if ( counter == 0) {
+            // if there is no left mempry, then there is no linking or notification
+            if ( linkOrNotify ) {
+                // link and notify
+                lm.linkNode( wm );
+            } else {
+                // link without notify, when driven by a query, as we don't want it, placed on the agenda
+                lm.linkNodeWithoutRuleNotify();
+            }
+        }
+
         LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink();
         LeftTuple leftTuple = sink.createLeftTuple( factHandle, sink, useLeftMemory );
         leftTuple.setPropagationContext( context );
@@ -205,17 +216,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 sink =  sm.getSinkFactory();
                 leftTuple = sink.createPeer( leftTuple ); // pctx is set during peer cloning
                 doInsertSegmentMemory( wm, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
-            }
-        }
-
-        if ( counter == 0) {
-            // if there is no left mempry, then there is no linking or notification
-            if ( linkOrNotify ) {
-                // link and notify
-                lm.linkNode( wm );
-            } else {
-                // link without notify, when driven by a query, as we don't want it, placed on the agenda
-                lm.linkNodeWithoutRuleNotify();
             }
         }
     }
