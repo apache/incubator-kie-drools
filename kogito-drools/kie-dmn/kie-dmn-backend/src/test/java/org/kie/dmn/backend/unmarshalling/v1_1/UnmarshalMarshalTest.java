@@ -82,6 +82,12 @@ public class UnmarshalMarshalTest {
     public void testSemanticNamespace() throws Exception {
         testRoundTrip("", "semantic-namespace.xml");
     }
+
+    @Ignore("Need first for XMLUnit to reconciliate the namespaces for comparison. ")
+    @Test
+    public void test20161014() throws Exception {
+        testRoundTrip("", "test20161014.xml");
+    }
     
     @Ignore("A problem with the StaxDriver has still to be resolved.")
     @Test
