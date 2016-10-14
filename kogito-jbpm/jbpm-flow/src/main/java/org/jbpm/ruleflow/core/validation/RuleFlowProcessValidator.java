@@ -24,11 +24,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.datatype.DataType;
-import org.drools.core.process.core.datatype.impl.type.ObjectDataType;
-import org.drools.core.time.TimeUtils;
 import org.drools.core.time.impl.CronExpression;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
@@ -80,7 +77,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of a RuleFlow validator.
- * 
+ *
  */
 public class RuleFlowProcessValidator implements ProcessValidator {
     
@@ -93,9 +90,6 @@ public class RuleFlowProcessValidator implements ProcessValidator {
     
     private static final Logger logger = LoggerFactory.getLogger(RuleFlowProcessValidator.class);
 
-    private boolean startNodeFound;
-    private boolean endNodeFound;
-    
     private RuleFlowProcessValidator() {
     }
 
@@ -130,18 +124,13 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 "Process has no start node."));
         }
 
-        startNodeFound = false;
-        endNodeFound = false;
-        final Node[] nodes = process.getNodes();
-        validateNodes(nodes, errors, process);
-        if (!startNodeFound && !process.isDynamic()) {
-            errors.add(new ProcessValidationErrorImpl(process,
-                "Process has no start node."));
-        }
-        if (!endNodeFound) {
+        // Check end node of the process.
+        if (process.getEndNodes().isEmpty() && !process.isDynamic()) {
             errors.add(new ProcessValidationErrorImpl(process,
                 "Process has no end node."));
         }
+
+        validateNodes(process.getNodes(), errors, process);
 
         validateVariables(errors, process);
 
@@ -156,7 +145,6 @@ public class RuleFlowProcessValidator implements ProcessValidator {
             final Node node = nodes[i];
             if (node instanceof StartNode) {
                 final StartNode startNode = (StartNode) node;
-                startNodeFound = true;
                 if (startNode.getTo() == null) {
                     addErrorMessage(process, node, errors, "Start has no outgoing connection.");
                 }
@@ -166,7 +154,6 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 }
             } else if (node instanceof EndNode) {
                 final EndNode endNode = (EndNode) node;
-                endNodeFound = true;
                 if (endNode.getFrom() == null) {
                     addErrorMessage(process, node, errors, "End has no incoming connection.");
                 }
@@ -461,7 +448,6 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     }
                 }
             } else if (node instanceof FaultNode) {
-            	endNodeFound = true;
                 final FaultNode faultNode = (FaultNode) node;
             	if (faultNode.getFrom() == null && !acceptsNoIncomingConnections(node)) {
                     addErrorMessage(process, node, errors, "Fault has no incoming connection.");
