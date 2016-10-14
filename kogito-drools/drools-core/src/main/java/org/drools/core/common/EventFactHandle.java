@@ -135,6 +135,24 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
     }
 
     @Override
+    public void invalidate() {
+        if ( linkedFactHandle != null ) {
+            linkedFactHandle.invalidate();
+        }  else {
+            super.invalidate();
+        }
+    }
+
+    @Override
+    public boolean isValid() {
+        if ( linkedFactHandle != null ) {
+            return linkedFactHandle.isValid();
+        }  else {
+            return super.isValid();
+        }
+    }
+
+    @Override
     public boolean isExpired() {
         if ( linkedFactHandle != null ) {
             return linkedFactHandle.isExpired();
