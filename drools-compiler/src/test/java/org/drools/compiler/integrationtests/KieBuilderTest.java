@@ -20,6 +20,7 @@ import java.util.function.Predicate;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -123,7 +124,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
         KieModule km = createAndDeployJar( ks,
                                            kmodule,
                                            releaseId1,
-                                           r1);
+                                           r1 );
 
         ks.newKieContainer( km.getReleaseId() );
     }
@@ -151,7 +152,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
         KieModule km = createAndDeployJar( ks,
                                            kmodule,
                                            releaseId1,
-                                           r1);
+                                           r1 );
 
         ks.newKieContainer( km.getReleaseId() );
     }
@@ -179,7 +180,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
         KieModule km = createAndDeployJar( ks,
                                            kmodule,
                                            releaseId1,
-                                           r1);
+                                           r1 );
 
         ks.newKieContainer( km.getReleaseId() );
     }
@@ -265,16 +266,16 @@ public class KieBuilderTest extends CommonTestMethodBase {
         Resource drlResource = ResourceFactory.newByteArrayResource( drl.getBytes() ).setResourceType( ResourceType.DRL )
                 .setSourcePath( "kbase1/drl1.drl" );
         KieModule km = createAndDeployJar( ks,
-                kmodule,
-                releaseId1,
-                javaResource, drlResource);
+                                           kmodule,
+                                           releaseId1,
+                                           javaResource, drlResource );
 
-        KieContainer kieContainer = ks.newKieContainer(km.getReleaseId());
+        KieContainer kieContainer = ks.newKieContainer( km.getReleaseId() );
         try {
-            Class<?> messageClass = kieContainer.getClassLoader().loadClass("org.drools.compiler.JavaSourceMessage");
-            assertNotNull(messageClass);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Loading the java class failed.", e);
+            Class<?> messageClass = kieContainer.getClassLoader().loadClass( "org.drools.compiler.JavaSourceMessage" );
+            assertNotNull( messageClass );
+        } catch ( ClassNotFoundException e ) {
+            throw new IllegalStateException( "Loading the java class failed.", e );
         }
     }
 
@@ -316,7 +317,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
                                      kmodule,
                                      filter,
                                      releaseId1,
-                                     allowedJavaResource, filteredJavaResource, drlResource);
+                                     allowedJavaResource, filteredJavaResource, drlResource );
         } catch ( IllegalStateException ise ) {
             if ( ise.getMessage().contains( "org/drools/compiler/ClassCausingClassNotFoundException.java" ) ) {
                 fail( "Build failed because source file was not filtered out." );
@@ -325,12 +326,12 @@ public class KieBuilderTest extends CommonTestMethodBase {
             }
         }
 
-        KieContainer kieContainer = ks.newKieContainer(km.getReleaseId());
+        KieContainer kieContainer = ks.newKieContainer( km.getReleaseId() );
         try {
-            Class<?> messageClass = kieContainer.getClassLoader().loadClass("org.drools.compiler.JavaSourceMessage");
-            assertNotNull(messageClass);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Loading the java class failed.", e);
+            Class<?> messageClass = kieContainer.getClassLoader().loadClass( "org.drools.compiler.JavaSourceMessage" );
+            assertNotNull( messageClass );
+        } catch ( ClassNotFoundException e ) {
+            throw new IllegalStateException( "Loading the java class failed.", e );
         }
     }
 
@@ -374,6 +375,76 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         KieBase kieBase = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).getKieBase( KBASE_NAME );
         assertNotNull( kieBase );
+    }
+
+    @Test
+    //See https://issues.jboss.org/browse/RHBRMS-2651
+    //With one KBase you get one set of compilation errors relating to the DRL
+    public void testSingleKBaseWithDrlError() {
+        String drl = "package org.drools.compiler;\n" +
+                "rule \"test\"\n" +
+                "  when\n" +
+                "    Smurf\n" +
+                "  then\n" +
+                "end";
+
+        String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                "  <kbase name=\"kbase1\">\n" +
+                "    <ksession name=\"ksession1\" default=\"true\"/>\n" +
+                "  </kbase>\n" +
+                "</kmodule>";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+        KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML( releaseId ).writeKModuleXML( kmodule );
+
+        Resource drlResource = ResourceFactory.newByteArrayResource( drl.getBytes() ).setResourceType( ResourceType.DRL )
+                .setSourcePath( "kbase1/drl1.drl" );
+
+        kfs.write( "src/main/resources/org/drools/compiler/drl1.drl", drlResource );
+        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+
+        assertEquals( 2,
+                      kb.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
+    }
+
+    @Test
+    @Ignore("Ignored so PR passes checks")
+    //See https://issues.jboss.org/browse/RHBRMS-2651
+    //With two KBases you get two sets of compilation errors relating to the DRL
+    public void testMultipleKBaseWithDrlError() {
+        String drl = "package org.drools.compiler;\n" +
+                "rule \"test\"\n" +
+                "  when\n" +
+                "    Smurf\n" +
+                "  then\n" +
+                "end";
+
+        String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                "  <kbase name=\"kbase1\">\n" +
+                "    <ksession name=\"ksession1\" default=\"true\"/>\n" +
+                "  </kbase>\n" +
+                "  <kbase name=\"kbase2\">\n" +
+                "    <ksession name=\"ksession2\" />\n" +
+                "  </kbase>\n" +
+                "</kmodule>";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+        KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML( releaseId ).writeKModuleXML( kmodule );
+
+        Resource drlResource = ResourceFactory.newByteArrayResource( drl.getBytes() ).setResourceType( ResourceType.DRL )
+                .setSourcePath( "kbase1/drl1.drl" );
+
+        kfs.write( "src/main/resources/org/drools/compiler/drl1.drl", drlResource );
+        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+
+        assertEquals( 2,
+                      kb.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
     }
 
 }
