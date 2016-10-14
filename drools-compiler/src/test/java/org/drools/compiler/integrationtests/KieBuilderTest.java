@@ -15,8 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import java.util.function.Predicate;
-
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -35,6 +33,9 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.io.ResourceFactory;
+
+import java.util.List;
+import java.util.function.Predicate;
 
 public class KieBuilderTest extends CommonTestMethodBase {
 
@@ -376,4 +377,38 @@ public class KieBuilderTest extends CommonTestMethodBase {
         assertNotNull( kieBase );
     }
 
+    @Test
+    public void testMultipleKBaseWithDrlError() {
+        // RHBRMS-2651
+        String drl = "package org.drools.compiler;\n" +
+                     "rule \"test\"\n" +
+                     "  when\n" +
+                     "    Smurf\n" +
+                     "  then\n" +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        kproj.newKieBaseModel( "kbase1" ).newKieSessionModel( "ksession1" ).setDefault( true );
+        kproj.newKieBaseModel( "kbase2" ).newKieSessionModel( "ksession2" );
+
+        ReleaseId releaseId = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+        KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML( releaseId ).writeKModuleXML( kproj.toXML() );
+
+        Resource drlResource = ResourceFactory.newByteArrayResource( drl.getBytes() ).setResourceType( ResourceType.DRL )
+                                              .setSourcePath( "kbase1/drl1.drl" );
+
+        kfs.write( "src/main/resources/org/drools/compiler/drl1.drl", drlResource );
+
+        KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+
+        List<org.kie.api.builder.Message> messages = kb.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR );
+        assertEquals( 4, messages.size() );
+
+        assertTrue( messages.get(0).toString().contains( "kbase1" ) );
+        assertTrue( messages.get(1).toString().contains( "kbase1" ) );
+        assertTrue( messages.get(2).toString().contains( "kbase2" ) );
+        assertTrue( messages.get(3).toString().contains( "kbase2" ) );
+    }
 }

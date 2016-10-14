@@ -216,7 +216,7 @@ public abstract class AbstractKieModule
             if (includeModule == null) {
                 String text = "Unable to build KieBase, could not find include: " + include;
                 log.error(text);
-                messages.addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text);
+                messages.addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text).setKieBaseName( kBaseModel.getName() );
                 allIncludesAreValid = false;
                 continue;
             }
@@ -245,13 +245,13 @@ public abstract class AbstractKieModule
 
         if ( kbuilder.hasErrors() ) {
             for ( KnowledgeBuilderError error : kbuilder.getErrors() ) {
-                messages.addMessage( error );
+                messages.addMessage( error ).setKieBaseName( kBaseModel.getName() );
             }
             log.error("Unable to build KieBaseModel:" + kBaseModel.getName() + "\n" + kbuilder.getErrors().toString());
         }
         if ( kbuilder.hasResults( ResultSeverity.WARNING ) ) {
             for ( KnowledgeBuilderResult warn : kbuilder.getResults( ResultSeverity.WARNING ) ) {
-                messages.addMessage( warn );
+                messages.addMessage( warn ).setKieBaseName( kBaseModel.getName() );
             }
             log.warn( "Warning : " + kBaseModel.getName() + "\n" + kbuilder.getResults( ResultSeverity.WARNING ).toString() );
         }

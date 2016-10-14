@@ -15,14 +15,14 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.compiler.commons.jci.problems.CompilationProblem;
-import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Message.Level;
 import org.kie.api.builder.Results;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ResultsImpl
     implements
@@ -50,18 +50,16 @@ public class ResultsImpl
                                        problem ) );
     }
 
-    public void addMessage(KnowledgeBuilderResult result) {
-        messages.add( new MessageImpl( idGenerator++,
-                                       result ) );
+    public MessageImpl addMessage(KnowledgeBuilderResult result) {
+        MessageImpl message = new MessageImpl( idGenerator++, result );
+        messages.add( message );
+        return message;
     }
 
-    public void addMessage(Level level,
-                           String path,
-                           String text) {
-        messages.add( new MessageImpl( idGenerator++,
-                                       level,
-                                       path,
-                                       text ) );
+    public MessageImpl addMessage(Level level, String path, String text) {
+        MessageImpl message = new MessageImpl( idGenerator++, level, path, text );
+        messages.add( message );
+        return message;
     }
 
     public void setMessages(List<Message> messages) {
