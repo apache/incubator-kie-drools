@@ -88,8 +88,8 @@ public class GameUI extends Canvas{
     }
     
     public void repaint() {
-        disposeGraphics();
         getBufferStrategy().show();
+        disposeGraphics();
     }
 
     public static class GameKeyListener extends KeyAdapter {
