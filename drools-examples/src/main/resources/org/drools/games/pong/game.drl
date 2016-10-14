@@ -46,13 +46,10 @@ dialect "mvel"
 
 
 rule "PlayerOne Win" agenda-group "Game" when
-    ui : PongUI( )
     ball : Ball( x >= pconf.tableWidth + width )
     player : Player( id == PlayerId.PlayerOne )
 
 then
-    ui.clearBall(ball); // deltas won't match new position, so clear now
-
     modify ( ball ) { x = (pconf.tableWidth/2)-(pconf.ballWidth/2), y = (pconf.tableHeight/2)-(pconf.ballWidth/2),
                       dx = 1, dy = 0, speed = pconf.ballStartingSpeed }
     modify( player ) { score = player.score + 1 };
@@ -60,12 +57,9 @@ end
 
 
 rule "PlayerTwo Win" agenda-group "Game" when
-    ui : PongUI( )
     ball : Ball( x <= 0 )
     player : Player( id == PlayerId.PlayerTwo )
 then
-    ui.clearBall(ball); // deltas won't match new position, so clear now
-                     
     modify ( ball ) { x = (pconf.tableWidth/2)-(pconf.ballWidth/2), y = (pconf.tableHeight/2)-(pconf.ballWidth/2),
                      dx = -1, dy = 0, speed = pconf.ballStartingSpeed }
 
