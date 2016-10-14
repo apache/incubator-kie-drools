@@ -1874,11 +1874,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 }
             }
         }
-
-        @Override
-        public boolean isMarshallable() {
-            return true;
-        }
     }
 
     public ProcessInstance startProcess(final String processId) {
@@ -2139,12 +2134,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     @Override
     public boolean tryDeactivate() {
         return agenda.tryDeactivate();
-    }
-
-    @Override
-    public void flushNonMarshallablePropagations() {
-        propagationList.flushNonMarshallable();
-        executeQueuedActionsForRete();
     }
 
     @Override

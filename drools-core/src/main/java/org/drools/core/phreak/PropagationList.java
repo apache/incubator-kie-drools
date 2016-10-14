@@ -25,8 +25,6 @@ public interface PropagationList {
     void flush();
     void flush( PropagationEntry currentHead );
 
-    void flushNonMarshallable();
-
     void reset();
 
     boolean isEmpty();
