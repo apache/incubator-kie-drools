@@ -17,6 +17,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,6 +33,10 @@ import org.xmlunit.diff.DOMDifferenceEngine;
 import org.xmlunit.diff.Diff;
 import org.xmlunit.diff.DifferenceEngine;
 import org.xmlunit.diff.DifferenceEvaluators;
+import org.xmlunit.validation.Languages;
+import org.xmlunit.validation.ValidationProblem;
+import org.xmlunit.validation.ValidationResult;
+import org.xmlunit.validation.Validator;
 
 
 public class UnmarshalMarshalTest {
@@ -54,6 +59,11 @@ public class UnmarshalMarshalTest {
     @Test
     public void testDish() throws Exception {
         testRoundTrip("", "dish-decision.xml");
+    }
+    
+    @Test
+    public void testDefinitionsDummy() throws Exception {
+        testRoundTrip("", "definitions-dummy.xml");
     }
     
     @Test
@@ -84,6 +94,16 @@ public class UnmarshalMarshalTest {
         FileInputStream fis = new FileInputStream( inputXMLFile );
                 
         Definitions unmarshal = marshaller.unmarshal( new InputStreamReader( fis ) );
+        
+        Validator v = Validator.forLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
+        v.setSchemaSource(new StreamSource( this.getClass().getResourceAsStream("/dmn.xsd")));
+        ValidationResult r = v.validateInstance(new StreamSource( inputXMLFile ));
+        if (!r.isValid()) {
+            for ( ValidationProblem p : r.getProblems()) {
+                System.err.println(p);
+            }
+        }
+        assertTrue(r.isValid());
         
         new File(baseOutputDir, subdir).mkdirs();
         FileOutputStream sourceFos = new FileOutputStream( new File(baseOutputDir, subdir + "a." + xmlfile) );
