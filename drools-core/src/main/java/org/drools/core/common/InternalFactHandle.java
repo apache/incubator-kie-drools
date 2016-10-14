@@ -113,6 +113,5 @@ public interface InternalFactHandle
     <K> K as( Class<K> klass ) throws ClassCastException;
 
     boolean isExpired();
-    boolean isEffectivelyExpired();
     boolean isPendingRemoveFromStore();
 }
