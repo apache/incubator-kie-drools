@@ -36,6 +36,8 @@ public class MessageImpl implements Message {
     private final int column;
     private final String text;
 
+    private String kieBaseName;
+
     public MessageImpl( long id,
                         Level level,
                         String path,
@@ -113,6 +115,14 @@ public class MessageImpl implements Message {
         return text;
     }
 
+    public String getKieBaseName() {
+        return kieBaseName;
+    }
+
+    public void setKieBaseName( String kieBaseName ) {
+        this.kieBaseName = kieBaseName;
+    }
+
     public static List<Message> filterMessages( List<Message> messages,
                                                 Level... levels ) {
         List<Message> filteredMsgs = new ArrayList<Message>();
@@ -130,7 +140,8 @@ public class MessageImpl implements Message {
 
     @Override
     public String toString() {
-        return "Message [id=" + id + ", level=" + level + ", path=" + path + ", line=" + line + ", column=" + column + "\n   text=" + text + "]";
+        return "Message [id=" + id + (kieBaseName != null ? ", kieBase=" + kieBaseName : "") + ", level=" + level +
+               ", path=" + path + ", line=" + line + ", column=" + column + "\n   text=" + text + "]";
     }
 
 }

@@ -451,7 +451,7 @@ public class KieContainerImpl
         PackageBuilderErrors errors = kbuilder.getErrors();
         if ( !errors.isEmpty() ) {
             for ( KnowledgeBuilderError error : errors.getErrors() ) {
-                results.addMessage(error);
+                results.addMessage(error).setKieBaseName( kieBaseModel.getName() );
             }
             log.error("Unable to update KieBase: " + kieBaseModel.getName() + " to release " + newReleaseId + "\n" + errors.toString());
         }
