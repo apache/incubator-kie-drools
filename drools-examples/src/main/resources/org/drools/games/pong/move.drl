@@ -39,7 +39,6 @@ dialect "mvel"
 
 
 rule MoveBall agenda-group "Move" when
-    ui : PongUI( )
     ball : Ball()
     $r : Run()
 then
@@ -47,7 +46,6 @@ then
 end
 
 rule "Detect Move Bat Up"  agenda-group "Move" when
-    ui : PongUI( )
     ( ( KeyPressed( keyText == "A" ) and  bat : Bat( playerId == PlayerId.PlayerOne ) )
        or
       (KeyPressed( keyText == "K" ) and  bat : Bat( playerId == PlayerId.PlayerTwo ) )
@@ -57,7 +55,6 @@ then
 end
 
 rule "Undetect Move Bat Up"  agenda-group "Move" when
-    ui : PongUI( )
     ( ( not KeyPressed( keyText == "A" ) and  bat : Bat( playerId == PlayerId.PlayerOne ) )
        or
       ( not KeyPressed( keyText == "K" ) and  bat : Bat( playerId == PlayerId.PlayerTwo ) )
@@ -67,7 +64,6 @@ then
 end
 
 rule "Detect Move Bat Down"  agenda-group "Move" when
-    ui : PongUI( )
     ( ( KeyPressed( keyText == "Z" ) and  bat : Bat( playerId == PlayerId.PlayerOne ) )
        or
       (KeyPressed( keyText == "M" ) and  bat : Bat( playerId == PlayerId.PlayerTwo ) )
@@ -78,7 +74,6 @@ end
 
 
 rule "Undetect Move Bat Down"  agenda-group "Move" when
-    ui : PongUI( )
     ( ( not KeyPressed( keyText == "Z" ) and  bat : Bat( playerId == PlayerId.PlayerOne ) )
        or
       ( not KeyPressed( keyText == "M" ) and  bat : Bat( playerId == PlayerId.PlayerTwo ) )
@@ -89,7 +84,6 @@ end
 
 
 rule "Move Bat" agenda-group "Move" when
-    ui : PongUI( )
     bat : Bat()
     $r : Run()
     if ( bat.y + bat.dy <= pconf.boundedTop ) break[boundedTop]
