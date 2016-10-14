@@ -106,6 +106,7 @@ import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
 import org.kie.api.command.Command;
+import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.event.process.ProcessEventListener;
@@ -155,6 +156,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -254,6 +256,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private AtomicBoolean mbeanRegistered = new AtomicBoolean(false);
     private DroolsManagementAgent.CBSKey mbeanRegisteredCBSKey;
+
+    private PriorityQueue<TimestampedExpiration> expirationsQueue;
 
     // ------------------------------------------------------------
     // Constructors
@@ -359,6 +363,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
 
         final RuleBaseConfiguration conf = kBase.getConfiguration();
+
+        if ( conf.getEventProcessingMode() == EventProcessingOption.STREAM ) {
+            this.expirationsQueue = new PriorityQueue<TimestampedExpiration>();
+        }
 
         this.sequential = conf.isSequential();
 
@@ -1361,6 +1369,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 fireCount += internalFireAllRules(agendaFilter, fireLimit);
             }
         }
+        flushAllExpirations();
         return fireCount;
     }
 
@@ -1775,6 +1784,51 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                                           context,
                                                           workingMemory);
             context.evaluateActionQueue( workingMemory );
+        }
+    }
+
+    public static class TimestampedExpiration implements Comparable<TimestampedExpiration> {
+        private final WorkingMemoryReteExpireAction action;
+        private final long timestamp;
+
+        public TimestampedExpiration( WorkingMemoryReteExpireAction action, long timestamp ) {
+            this.action = action;
+            this.timestamp = timestamp;
+        }
+
+        @Override
+        public int compareTo( TimestampedExpiration o ) {
+            if (timestamp < o.timestamp) {
+                return -1;
+            } else if (timestamp > o.timestamp) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public void enqueueExpiration(WorkingMemoryReteExpireAction action, long timestamp) {
+        expirationsQueue.add( new TimestampedExpiration( action, timestamp ) );
+    }
+
+    public void flushExpirationsUntil(long timestamp) {
+        if (expirationsQueue != null) {
+            for ( TimestampedExpiration exp = expirationsQueue.peek(); exp != null; exp = expirationsQueue.peek() ) {
+                if ( exp.timestamp < timestamp ) {
+                    expirationsQueue.poll().action.execute( (InternalWorkingMemory) this );
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+
+    public void flushAllExpirations() {
+        if (expirationsQueue != null) {
+            for ( TimestampedExpiration exp : expirationsQueue ) {
+                exp.action.execute( (InternalWorkingMemory) this );
+            }
         }
     }
 

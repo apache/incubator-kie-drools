@@ -20,6 +20,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.ClassObjectTypeConf;
 import org.drools.core.reteoo.EntryPointNode;
@@ -135,6 +136,10 @@ public interface PropagationEntry {
         }
 
         public void execute( InternalWorkingMemory wm ) {
+            if (isEvent) {
+                ((StatefulKnowledgeSessionImpl)workingMemory).flushExpirationsUntil( ((EventFactHandle) handle).getEndTimestamp() );
+            }
+
             for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
                 otn.propagateAssert( handle, context, wm );
                 if (isEvent) {
@@ -154,14 +159,12 @@ public interface PropagationEntry {
 
             // DROOLS-455 the calculation of the effectiveEnd may overflow and become negative
             EventFactHandle eventFactHandle = (EventFactHandle) handle;
-            long effectiveEnd = eventFactHandle.getEndTimestamp() + expirationOffset;
-            long nextTimestamp = Math.max( insertionTime,
-                                           effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
+            long nextTimestamp = getNextTimestamp( expirationOffset, eventFactHandle );
 
             WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn );
             if (nextTimestamp < workingMemory.getTimerService().getCurrentTime()) {
                 eventFactHandle.setExpiredAtInsertion( true );
-                workingMemory.addPropagation( action );
+                ((StatefulKnowledgeSessionImpl)workingMemory).enqueueExpiration(action, nextTimestamp);
             } else {
                 JobContext jobctx = new ObjectTypeNode.ExpireJobContext( action, workingMemory );
                 JobHandle jobHandle = workingMemory.getTimerService()
@@ -171,6 +174,11 @@ public interface PropagationEntry {
                 jobctx.setJobHandle( jobHandle );
                 eventFactHandle.addJob( jobHandle );
             }
+        }
+
+        private long getNextTimestamp( long expirationOffset, EventFactHandle eventFactHandle ) {
+            long effectiveEnd = eventFactHandle.getEndTimestamp() + expirationOffset;
+            return Math.max( insertionTime, effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
         }
 
         @Override

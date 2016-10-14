@@ -107,8 +107,85 @@ public class ExpirationTest {
         ksession.insert( new B(2) );
 
         sessionClock.advanceTime( 10, TimeUnit.MILLISECONDS );
+
         ksession.fireAllRules();
         assertEquals(2, counter.get());
+    }
+
+    @Test
+    public void testBetaRightExpired() {
+        // DROOLS-1329
+        String drl = "import " + A.class.getCanonicalName() + "\n" +
+                     "import " + B.class.getCanonicalName() + "\n" +
+                     "declare A @role( event ) @expires(11ms) end\n" +
+                     "declare B @role( event ) @expires(11ms) end\n" +
+                     "global java.util.concurrent.atomic.AtomicInteger counter;\n" +
+                     "rule R0 when\n" +
+                     "  $a: A( $Aid: id > 0 )\n" +
+                     "  $b: B( id == $Aid )\n" +
+                     "then\n" +
+                     "  System.out.println(\"[\" + $a + \",\" + $b + \"]\");" +
+                     "  counter.incrementAndGet();\n" +
+                     "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler sessionClock = ksession.getSessionClock();
+
+        AtomicInteger counter = new AtomicInteger( 0 );
+        ksession.setGlobal( "counter", counter );
+
+        ksession.insert( new A(1) );
+
+        sessionClock.advanceTime( 20, TimeUnit.MILLISECONDS );
+        ksession.insert( new B(1) );
+
+        ksession.fireAllRules();
+        assertEquals(0, counter.get());
+    }
+
+    @Test
+    public void testBetaLeftExpired() {
+        // DROOLS-1329
+        String drl = "import " + A.class.getCanonicalName() + "\n" +
+                     "import " + B.class.getCanonicalName() + "\n" +
+                     "declare A @role( event ) @expires(11ms) end\n" +
+                     "declare B @role( event ) @expires(11ms) end\n" +
+                     "global java.util.concurrent.atomic.AtomicInteger counter;\n" +
+                     "rule R0 when\n" +
+                     "  $a: A( $Aid: id > 0 )\n" +
+                     "  $b: B( id == $Aid )\n" +
+                     "then\n" +
+                     "  System.out.println(\"[\" + $a + \",\" + $b + \"]\");" +
+                     "  counter.incrementAndGet();\n" +
+                     "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler sessionClock = ksession.getSessionClock();
+
+        AtomicInteger counter = new AtomicInteger( 0 );
+        ksession.setGlobal( "counter", counter );
+
+        ksession.insert( new B(1) );
+
+        sessionClock.advanceTime( 20, TimeUnit.MILLISECONDS );
+        ksession.insert( new A(1) );
+
+        ksession.fireAllRules();
+        assertEquals(0, counter.get());
     }
 
     public class A {
