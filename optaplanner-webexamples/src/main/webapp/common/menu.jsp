@@ -2,7 +2,7 @@
 
 <div class="logo-nav">
   <div style="margin-top: 20px; margin-bottom: 10px;">
-    <a href="http://www.optaplanner.org"><img src="<%=request.getContextPath()%>/website/optaPlannerLogo.png" alt="OptaPlanner"/></a>
+    <a href="https://www.optaplanner.org"><img src="<%=request.getContextPath()%>/website/optaPlannerLogo.png" alt="OptaPlanner"/></a>
   </div>
   <ul>
     <li><a href="<%=request.getContextPath()%>/vehiclerouting/index.jsp">Vehicle routing</a></li>

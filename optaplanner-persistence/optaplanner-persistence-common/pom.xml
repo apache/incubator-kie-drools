@@ -20,7 +20,7 @@
 
     This module contains the common persistence integration.
   </description>
-  <url>http://www.optaplanner.org</url>
+  <url>https://www.optaplanner.org</url>
 
   <properties>
     <osgi.Bundle-SymbolicName>org.optaplanner.persistence.common</osgi.Bundle-SymbolicName>

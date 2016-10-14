@@ -20,7 +20,7 @@
 
     This module contains the web examples which demonstrate how to use it in a war file.
   </description>
-  <url>http://www.optaplanner.org</url>
+  <url>https://www.optaplanner.org</url>
 
   <properties>
     <!-- Overwrite ip-bom's jboss-logging version of EAP 6.4 to allow Arquillian test to work on WildFly 9 -->

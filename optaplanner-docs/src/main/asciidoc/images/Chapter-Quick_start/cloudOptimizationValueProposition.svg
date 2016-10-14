@@ -540,7 +540,7 @@
         </dc:rights>
         <dc:language>en</dc:language>
         <cc:license
-           rdf:resource="http://www.optaplanner.org/code/license.html" />
+           rdf:resource="https://www.optaplanner.org/code/license.html" />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -1915,5 +1915,5 @@
            width="740"
            id="rect3761" /></flowRegion><flowPara
          id="flowPara3763"
-         style="font-size:12.5px;text-align:center;text-anchor:middle;fill:#555753">Don't believe us? Run our open benchmarks yourself: http://www.optaplanner.org/code/benchmarks.html</flowPara></flowRoot>  </g>
+         style="font-size:12.5px;text-align:center;text-anchor:middle;fill:#555753">Don't believe us? Run our open benchmarks yourself: https://www.optaplanner.org/code/benchmarks.html</flowPara></flowRoot>  </g>
 </svg>

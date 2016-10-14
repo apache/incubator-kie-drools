@@ -236,9 +236,9 @@ public class OptaPlannerExamplesApp extends JFrame {
             }
         };
         extraPanel.add(new JButton(webExamplesAction));
-        Action homepageAction = new OpenBrowserAction("www.optaplanner.org", "http://www.optaplanner.org");
+        Action homepageAction = new OpenBrowserAction("www.optaplanner.org", "https://www.optaplanner.org");
         extraPanel.add(new JButton(homepageAction));
-        Action documentationAction = new OpenBrowserAction("Documentation", "http://www.optaplanner.org/learn/documentation.html");
+        Action documentationAction = new OpenBrowserAction("Documentation", "https://www.optaplanner.org/learn/documentation.html");
         extraPanel.add(new JButton(documentationAction));
         return extraPanel;
     }

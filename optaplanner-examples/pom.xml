@@ -19,7 +19,7 @@
 
     This module contains the non-web examples which demonstrate how to use it in a normal Java application.
   </description>
-  <url>http://www.optaplanner.org</url>
+  <url>https://www.optaplanner.org</url>
 
   <repositories>
     <!-- TODO remove this once maven central replicates the jboss repository -->

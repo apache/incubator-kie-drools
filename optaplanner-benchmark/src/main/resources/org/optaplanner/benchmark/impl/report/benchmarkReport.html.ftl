@@ -81,7 +81,7 @@
         <div class="span2">
             <div class="benchmark-report-nav">
                 <div style="margin-top: 10px;">
-                    <a href="http://www.optaplanner.org">
+                    <a href="https://www.optaplanner.org">
                         <img src="website/img/optaPlannerLogo.png" alt="OptaPlanner"/>
                     </a>
                 </div>

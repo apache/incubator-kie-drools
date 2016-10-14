@@ -21,7 +21,7 @@
         <li><a href="vehiclerouting/index.jsp">Vehicle routing</a></li>
         <li><a href="cloudbalancing/loaded.jsp">Cloud balancing</a></li>
       </ul>
-      <p>For more information, visit <a href="http://www.optaplanner.org">the OptaPlanner project homepage</a>.</p>
+      <p>For more information, visit <a href="https://www.optaplanner.org">the OptaPlanner project homepage</a>.</p>
     </div>
   </div>
 </div>

@@ -300,7 +300,7 @@
         </dc:rights>
         <dc:language>en</dc:language>
         <cc:license
-           rdf:resource="http://www.optaplanner.org/code/license.html" />
+           rdf:resource="https://www.optaplanner.org/code/license.html" />
       </cc:Work>
     </rdf:RDF>
   </metadata>
