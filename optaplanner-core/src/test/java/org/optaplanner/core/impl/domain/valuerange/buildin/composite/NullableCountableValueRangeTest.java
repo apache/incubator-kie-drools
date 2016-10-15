@@ -59,10 +59,10 @@ public class NullableCountableValueRangeTest {
 
     @Test
     public void createOriginalIterator() {
-        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).createOriginalIterator(), 0, 2, 5, 10, null);
-        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8))).createOriginalIterator(), 100, 120, 5, 7, 8, null);
-        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(-15, 25, 0))).createOriginalIterator(), -15, 25, 0, null);
-        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).createOriginalIterator(), "b", "z", "a", null);
+        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5, 10))).createOriginalIterator(), null, 0, 2, 5, 10);
+        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5, 7, 8))).createOriginalIterator(), null, 100, 120, 5, 7, 8);
+        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(-15, 25, 0))).createOriginalIterator(), null, -15, 25, 0);
+        assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a"))).createOriginalIterator(), null, "b", "z", "a");
         assertAllElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Collections.<String>emptyList())).createOriginalIterator(), new String[]{null});
     }
 

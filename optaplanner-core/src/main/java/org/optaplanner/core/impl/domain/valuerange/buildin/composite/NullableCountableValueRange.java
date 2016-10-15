@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
-import com.google.common.collect.Iterators;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
@@ -65,26 +64,31 @@ public class NullableCountableValueRange<T> extends AbstractCountableValueRange<
 
     @Override
     public Iterator<T> createOriginalIterator() {
-        return Iterators.concat(childValueRange.createOriginalIterator(),
-                new NullValueRangeIterator());
+        return new OriginalNullValueRangeIterator(childValueRange.createOriginalIterator());
     }
 
-    private class NullValueRangeIterator extends ValueRangeIterator<T> {
+    private class OriginalNullValueRangeIterator extends ValueRangeIterator<T> {
 
-        private boolean hasNext = true;
+        private boolean nullReturned = false;
+        private final Iterator<T> childIterator;
+
+        public OriginalNullValueRangeIterator(Iterator<T> childIterator) {
+            this.childIterator = childIterator;
+        }
 
         @Override
         public boolean hasNext() {
-            return hasNext;
+            return !nullReturned || childIterator.hasNext();
         }
 
         @Override
         public T next() {
-            if (!hasNext) {
-                throw new NoSuchElementException();
+            if (!nullReturned) {
+                nullReturned = true;
+                return null;
+            } else {
+                return childIterator.next();
             }
-            hasNext = false;
-            return null;
         }
     }
 
