@@ -1198,19 +1198,21 @@ It is just more work to implement (because the average needs to be known) and tr
 
 When the workload is perfect balanced, the user often likes to see a `0` score, instead of the distracting `-34soft` in the image above (for the last solution which is almost perfectly balanced). To nullify this, either add the average multiplied by the number of entities to the score or instead show the variance or standard deviation in the UI.
 
+
 [[explainingTheScore]]
 == Explaining the Score: Using Score Calculation Outside the `Solver`
 
-
-Other parts of your application, for example your webUI, might need to calculate the score too.
-Do that by reusing the `ScoreDirectorFactory` of the `Solver` to build a separate `ScoreDirector` for that webUI:
+If other parts of your application, for example your webUI, need to calculate the score of a solution
+or they need to point out what's causing constraints to be broken/fulfilled,
+reuse the `ScoreDirectorFactory` of the `Solver` to build a separate `ScoreDirector` for that webUI:
 
 [source,java,options="nowrap"]
 ----
 ScoreDirectorFactory<CloudBalance> scoreDirectorFactory = solver.getScoreDirectorFactory();
 ScoreDirector<CloudBalance> guiScoreDirector = scoreDirectorFactory.buildScoreDirector();
+...
+guiScoreDirector.dispose();
 ----
-
 
 Then use it when you need to calculate the `Score` of a ``Solution``:
 
@@ -1218,10 +1220,17 @@ Then use it when you need to calculate the `Score` of a ``Solution``:
 ----
 guiScoreDirector.setWorkingSolution(cloudBalance);
 Score score = guiScoreDirector.calculateScore();
+
 ----
 
+[IMPORTANT]
+====
+Don't forget to call `ScoreDirector.dispose()` when the `ScoreDirector` becomes useless,
+especially with <<droolsScoreCalculation,Drools score calculation>>, to avoid a memory leak.
+====
 
-To explain in the GUI what entities are causing which part of the ``Score``, get the `ConstraintMatch` objects from the ``ScoreDirector``:
+To explain in the GUI which planning entities and problem facts are causing which part of the ``Score``,
+get the `ConstraintMatch` objects from the ``ScoreDirector``:
 
 [source,java,options="nowrap"]
 ----
@@ -1238,7 +1247,8 @@ for (ConstraintMatchTotal constraintMatchTotal : guiScoreDirector.getConstraintM
 
 [NOTE]
 ====
-<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires requires implementing an extra interface (see that section).
+<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically,
+but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires requires implementing an extra interface (see that section).
 ====
 
 [[testingScoreConstraints]]
