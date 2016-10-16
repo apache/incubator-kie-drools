@@ -41,7 +41,7 @@ public class DMNXMLLoaderTest {
 
         assertThat( def, not( nullValue() ) );
         assertThat( def.getName(), is("0001-input-data-string") );
-        assertThat( def.getId(), is("0001-input-data-string") );
+        assertThat( def.getId(), is("_0001-input-data-string") );
         assertThat( def.getNamespace(), is("https://github.com/agilepro/dmn-tck") );
 
         assertThat( def.getDrgElement().size(), is( 2 ) );
