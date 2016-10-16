@@ -85,6 +85,7 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
@@ -1841,8 +1842,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 return;
             }
 
-            PropagationContext context = createPropagationContextForFact( workingMemory, factHandle, PropagationContext.EXPIRATION );
             expireLeftTuples();
+            expireRightTuples();
+            PropagationContext context = createPropagationContextForFact( workingMemory, factHandle, PropagationContext.EXPIRATION );
             workingMemory.getAgenda().registerExpiration( context );
 
             factHandle.decreaseOtnCount();
@@ -1860,6 +1862,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         private void expireLeftTuples() {
             for ( LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext()) {
                 expireLeftTuple(leftTuple);
+            }
+        }
+
+        private void expireRightTuples() {
+            for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = rightTuple.getHandleNext()) {
+                for ( LeftTuple child = rightTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
+                    expireLeftTuple(child);
+                }
             }
         }
 
