@@ -17,7 +17,7 @@
 package org.kie.dmn.core.compiler;
 
 import org.kie.api.io.Resource;
-import org.kie.dmn.backend.unmarshalling.v1_1.DefaultUnmarshaller;
+import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNCompiler;
 import org.kie.dmn.core.api.DMNModel;
 import org.kie.dmn.core.ast.DecisionNode;
@@ -36,7 +36,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     @Override
     public DMNModel compile(Resource resource) {
         try {
-            Definitions dmndefs = new DefaultUnmarshaller().unmarshal( resource.getReader() );
+            Definitions dmndefs = new DMNMarshallerFactory().unmarshal( resource.getReader() );
             if ( dmndefs != null ) {
                 DMNModelImpl model = new DMNModelImpl( dmndefs );
 
