@@ -16,8 +16,9 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
+import javax.xml.namespace.QName;
+
 import org.kie.dmn.feel.model.v1_1.ItemDefinition;
-import org.kie.dmn.feel.model.v1_1.QName;
 import org.kie.dmn.feel.model.v1_1.UnaryTests;
 
 import com.thoughtworks.xstream.XStream;

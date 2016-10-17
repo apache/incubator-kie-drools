@@ -22,11 +22,13 @@ import org.kie.dmn.feel.model.v1_1.Expression;
 import org.kie.dmn.feel.model.v1_1.FunctionDefinition;
 import org.kie.dmn.feel.model.v1_1.Invocation;
 import org.kie.dmn.feel.model.v1_1.LiteralExpression;
-import org.kie.dmn.feel.model.v1_1.QName;
 import org.kie.dmn.feel.model.v1_1.Relation;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 
 public class MarshallingUtils {
     private final static Pattern QNAME_PAT = Pattern.compile( "((\\{([^\\}]*)\\})?([^:]*):)?(.*)" );
@@ -34,10 +36,10 @@ public class MarshallingUtils {
     public static QName parseQNameString(String qns) {
         if ( qns != null ) {
             Matcher m = QNAME_PAT.matcher( qns );
-            if ( m.matches() ) {
+            if ( m.matches() && m.group( 4 ) != null ) {
                 return new QName( m.group( 3 ), m.group( 5 ), m.group( 4 ) );
             } else {
-                return new QName( null, qns, null );
+                return new QName( qns );
             }
         } else {
             return null;
@@ -45,17 +47,11 @@ public class MarshallingUtils {
     }
     
     public static String formatQName(QName qname) {
-        StringBuilder sb = new StringBuilder();
-        if ( qname.getPrefix() != null ) {
-            sb.append(qname.getPrefix());
-            sb.append(":");
+        if ( XMLConstants.NULL_NS_URI.equals(qname.getNamespaceURI()) && !XMLConstants.DEFAULT_NS_PREFIX.equals(qname.getPrefix()) ) {
+            return qname.getPrefix() + ":" + qname.getLocalPart();
+        } else {
+            return qname.toString();
         }
-        if ( qname.getNamespaceURI() != null ) {
-            sb.append(qname.getNamespaceURI());
-            sb.append(":");
-        }
-        sb.append(qname.getLocalPart());
-        return sb.toString();
     }
 
     /**

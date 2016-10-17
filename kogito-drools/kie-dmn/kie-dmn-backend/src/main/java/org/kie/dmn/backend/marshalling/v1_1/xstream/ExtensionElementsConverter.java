@@ -24,6 +24,9 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
+/**
+ * Currently ignoring all extensionElements
+ */
 public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverter {
 
     @Override
@@ -32,6 +35,10 @@ public class ExtensionElementsConverter extends DMNModelInstrumentedBaseConverte
         // no attributes.
     }
 
+    /**
+     * Currently ignoring all extensionElements.
+     * Please note overriding {@link DMNBaseConverter#unmarshal(HierarchicalStreamReader, UnmarshallingContext)} in order to just skip all child elements of this extensionElements.
+     */
     @Override
     public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
         Object obj = createModelObject();
