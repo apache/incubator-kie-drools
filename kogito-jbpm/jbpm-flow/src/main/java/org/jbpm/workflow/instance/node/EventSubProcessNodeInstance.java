@@ -15,6 +15,9 @@
  */
 package org.jbpm.workflow.instance.node;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.jbpm.workflow.core.node.StartNode;
@@ -49,7 +52,7 @@ public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
     public void signalEvent(String type, Object event) {
         if (getNodeInstanceContainer().getNodeInstances().contains(this) || type.startsWith("Error-") || type.equals("timerTriggered") ) {
             StartNode startNode = getCompositeNode().findStartNode();
-            if (((EventSubProcessNode) getEventBasedNode()).getEvents().contains(type) || type.equals("timerTriggered")) {
+            if (resolveVariables(((EventSubProcessNode) getEventBasedNode()).getEvents()).contains(type) || type.equals("timerTriggered")) {
                 NodeInstance nodeInstance = getNodeInstance(startNode);
                 ((StartNodeInstance) nodeInstance).signalEvent(type, event);
             }
@@ -83,5 +86,7 @@ public class EventSubProcessNodeInstance extends CompositeContextNodeInstance {
         }
     }
     
-    
+    protected List<String> resolveVariables(List<String> events) {
+        return events.stream().map( event -> resolveVariable(event)).collect(Collectors.toList());
+    }
 }

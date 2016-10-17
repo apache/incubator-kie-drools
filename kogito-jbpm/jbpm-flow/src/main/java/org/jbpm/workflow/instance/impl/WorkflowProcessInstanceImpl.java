@@ -27,8 +27,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.Timer;
@@ -502,12 +505,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 				}
 				for (Node node : getWorkflowProcess().getNodes()) {
 			        if (node instanceof EventNodeInterface) {
-			            if (((EventNodeInterface) node).acceptsEvent(type, event)) {
+			            if (((EventNodeInterface) node).acceptsEvent(type, event, (e) -> resolveVariable(e) )) {
 			                if (node instanceof EventNode && ((EventNode) node).getFrom() == null) {
 			                    EventNodeInstance eventNodeInstance = (EventNodeInstance) getNodeInstance(node);
 			                    eventNodeInstance.signalEvent(type, event);
 			                } else {
-			                    if (node instanceof EventSubProcessNode && (((EventSubProcessNode) node).getEvents().contains(type))) {
+			                    if (node instanceof EventSubProcessNode && ((resolveVariables(((EventSubProcessNode) node).getEvents()).contains(type)))) {
     			                    EventSubProcessNodeInstance eventNodeInstance = (EventSubProcessNodeInstance) getNodeInstance(node);
     			                    eventNodeInstance.signalEvent(type, event);
 			                    } else {
@@ -549,6 +552,38 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 	}
 
+	protected List<String> resolveVariables(List<String> events) {
+	    return events.stream().map( event -> resolveVariable(event)).collect(Collectors.toList());
+	}
+	
+    private String resolveVariable(String s) {
+        Map<String, String> replacements = new HashMap<String, String>();
+        Matcher matcher = PARAMETER_MATCHER.matcher(s);
+        while (matcher.find()) {
+            String paramName = matcher.group(1);
+            if (replacements.get(paramName) == null) {
+                
+                Object variableValue = getVariable(paramName);
+                if (variableValue != null) {
+                    String variableValueString = variableValue == null ? "" : variableValue.toString(); 
+                    replacements.put(paramName, variableValueString);
+                } else {
+                    try {
+                        variableValue = MVELSafeHelper.getEvaluator().eval(paramName, new ProcessInstanceResolverFactory(this));
+                        String variableValueString = variableValue == null ? "" : variableValue.toString();
+                        replacements.put(paramName, variableValueString);
+                    } catch (Throwable t) {
+                        logger.error("Could not find variable scope for variable {}", paramName);
+                    }
+                }
+            }
+        }
+        for (Map.Entry<String, String> replacement: replacements.entrySet()) {
+            s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
+        }
+        return s;
+    }
+	
 	public void addEventListener(String type, EventListener listener, boolean external) {
 		Map<String, List<EventListener>> eventListeners = external ? this.externalEventListeners : this.eventListeners;
 		List<EventListener> listeners = eventListeners.get(type);

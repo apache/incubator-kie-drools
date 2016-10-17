@@ -17,6 +17,7 @@ package org.jbpm.workflow.core.node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
@@ -71,6 +72,20 @@ public class EventSubProcessNode extends CompositeContextNode {
     public boolean acceptsEvent(String type, Object event) { 
         for( EventTypeFilter filter : this.eventTypeFilters ) { 
             if( filter.acceptsEvent(type, event) ) { 
+                return true;
+            }
+        }
+        return super.acceptsEvent(type, event);
+    }
+
+    @Override
+    public boolean acceptsEvent(String type, Object event, Function<String, String> resolver) {
+        if (resolver == null) {
+            return acceptsEvent(type, event);
+        }
+        
+        for( EventTypeFilter filter : this.eventTypeFilters ) { 
+            if( filter.acceptsEvent(type, event, resolver) ) { 
                 return true;
             }
         }

@@ -2669,4 +2669,22 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         assertProcessInstanceFinished(processInstance, ksession);
     }
+    
+    @Test
+    public void testEventSubprocessWithExpression() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-EventSubprocessSignalExpression.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+               
+        Map<String, Object> params = new HashMap<>();
+        params.put("x", "signalling");
+        ProcessInstance processInstance = ksession.startProcess("BPMN2-EventSubprocessSignalExpression", params);
+        
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        
+        ksession.signalEvent("signalling", null, processInstance.getId());        
+  
+        assertProcessInstanceFinished(processInstance, ksession);
+    }
 }

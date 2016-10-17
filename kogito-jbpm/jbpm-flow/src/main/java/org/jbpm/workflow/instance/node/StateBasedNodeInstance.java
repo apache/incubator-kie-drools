@@ -249,7 +249,7 @@ public abstract class StateBasedNodeInstance extends ExtendedNodeInstanceImpl im
     	}
     }
 
-    private String resolveVariable(String s) {
+    protected String resolveVariable(String s) {
     	if (s == null) {
     		return null;
     	}

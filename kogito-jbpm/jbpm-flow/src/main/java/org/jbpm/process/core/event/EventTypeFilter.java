@@ -17,6 +17,7 @@
 package org.jbpm.process.core.event;
 
 import java.io.Serializable;
+import java.util.function.Function;
 
 public class EventTypeFilter implements EventFilter, Serializable {
 
@@ -42,4 +43,12 @@ public class EventTypeFilter implements EventFilter, Serializable {
 	public String toString() { 
 	    return "Event filter: [" + this.type + "]";
 	}
+
+    @Override
+    public boolean acceptsEvent(String type, Object event, Function<String, String> resolver) {
+        if (this.type != null && resolver.apply(this.type).equals(type)) {
+            return true;
+        }
+        return false;
+    }
 }

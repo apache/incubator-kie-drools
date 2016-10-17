@@ -16,22 +16,14 @@
 
 package org.jbpm.workflow.instance.node;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.util.MVELSafeHelper;
-import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
-import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
-import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
 import org.slf4j.Logger;
@@ -95,37 +87,7 @@ public class TimerNodeInstance extends StateBasedNodeInstance implements EventLi
     	timerInstance.setTimerId(timer.getId());
     	return timerInstance;
     }
-
-    private String resolveVariable(String s) {
-        Map<String, String> replacements = new HashMap<String, String>();
-        Matcher matcher = PARAMETER_MATCHER.matcher(s);
-        while (matcher.find()) {
-            String paramName = matcher.group(1);
-            if (replacements.get(paramName) == null) {
-                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
-                    resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
-                if (variableScopeInstance != null) {
-                    Object variableValue = variableScopeInstance.getVariable(paramName);
-                    String variableValueString = variableValue == null ? "" : variableValue.toString(); 
-                    replacements.put(paramName, variableValueString);
-                } else {
-                    try {
-                        Object variableValue = MVELSafeHelper.getEvaluator().eval(paramName, new NodeInstanceResolverFactory(this));
-                        String variableValueString = variableValue == null ? "" : variableValue.toString();
-                        replacements.put(paramName, variableValueString);
-                    } catch (Throwable t) {
-                        logger.error("Could not find variable scope for variable {}", paramName);
-                        logger.error("when trying to replace variable in processId for sub process {}", getNodeName());
-                        logger.error("Continuing without setting process id.");
-                    }
-                }
-            }
-        }
-        for (Map.Entry<String, String> replacement: replacements.entrySet()) {
-            s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
-        }
-        return s;
-    }
+    
     public void signalEvent(String type, Object event) {
     	if ("timerTriggered".equals(type)) {
     		TimerInstance timer = (TimerInstance) event;
