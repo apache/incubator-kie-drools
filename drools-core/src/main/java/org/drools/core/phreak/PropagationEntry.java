@@ -41,8 +41,6 @@ public interface PropagationEntry {
     PropagationEntry getNext();
     void setNext(PropagationEntry next);
 
-    boolean isMarshallable();
-
     boolean requiresImmediateFlushing();
     
     boolean isCalledFromRHS();
@@ -56,11 +54,6 @@ public interface PropagationEntry {
 
         public PropagationEntry getNext() {
             return next;
-        }
-
-        @Override
-        public boolean isMarshallable() {
-            return false;
         }
 
         @Override
@@ -126,6 +119,8 @@ public interface PropagationEntry {
             this.objectTypeConf = objectTypeConf;
             this.isEvent = objectTypeConf.isEvent();
             this.insertionTime = isEvent ? workingMemory.getTimerService().getCurrentTime() : 0L;
+
+            scheduleExpiration();
         }
 
         @Override
@@ -137,13 +132,17 @@ public interface PropagationEntry {
         public void execute( InternalWorkingMemory wm ) {
             for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
                 otn.propagateAssert( handle, context, wm );
-                if (isEvent) {
+            }
+        }
+
+        private void scheduleExpiration() {
+            if ( isEvent ) {
+                for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
                     scheduleExpiration( otn, otn.getExpirationOffset() );
                 }
-            }
-
-            if (isEvent && objectTypeConf.getConcreteObjectTypeNode() == null) {
-                scheduleExpiration( null, ( (ClassObjectTypeConf) objectTypeConf ).getExpirationOffset() );
+                if ( objectTypeConf.getConcreteObjectTypeNode() == null ) {
+                    scheduleExpiration( null, ( (ClassObjectTypeConf) objectTypeConf ).getExpirationOffset() );
+                }
             }
         }
 
@@ -154,14 +153,11 @@ public interface PropagationEntry {
 
             // DROOLS-455 the calculation of the effectiveEnd may overflow and become negative
             EventFactHandle eventFactHandle = (EventFactHandle) handle;
-            long effectiveEnd = eventFactHandle.getEndTimestamp() + expirationOffset;
-            long nextTimestamp = Math.max( insertionTime,
-                                           effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
+            long nextTimestamp = getNextTimestamp( expirationOffset, eventFactHandle );
 
             WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn );
             if (nextTimestamp < workingMemory.getTimerService().getCurrentTime()) {
-                eventFactHandle.setExpiredAtInsertion( true );
-                workingMemory.addPropagation( action );
+                  workingMemory.addPropagation( action );
             } else {
                 JobContext jobctx = new ObjectTypeNode.ExpireJobContext( action, workingMemory );
                 JobHandle jobHandle = workingMemory.getTimerService()
@@ -171,6 +167,11 @@ public interface PropagationEntry {
                 jobctx.setJobHandle( jobHandle );
                 eventFactHandle.addJob( jobHandle );
             }
+        }
+
+        private long getNextTimestamp( long expirationOffset, EventFactHandle eventFactHandle ) {
+            long effectiveEnd = eventFactHandle.getEndTimestamp() + expirationOffset;
+            return Math.max( insertionTime, effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
         }
 
         @Override

@@ -44,13 +44,10 @@ public class RetePropagationList implements PropagationList {
     @Override
     public void flush() { }
 
-    @Override public void flush(PropagationEntry currentHead)
-    {
+    @Override
+    public void flush(PropagationEntry currentHead) {
 
     }
-
-    @Override
-    public void flushNonMarshallable() { }
 
     @Override
     public void waitOnRest() {

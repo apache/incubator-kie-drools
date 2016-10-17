@@ -204,7 +204,6 @@ public interface InternalWorkingMemory
 
     void flushPropagations();
     void flushPropagations(PropagationEntry propagationEntry);
-    void flushNonMarshallablePropagations();
 
     void activate();
     void deactivate();
