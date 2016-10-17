@@ -16,8 +16,13 @@
 
 package org.jbpm.kie.services.impl.query;
 
+import java.util.List;
+
+import org.dashbuilder.dataset.filter.ColumnFilter;
 import org.dashbuilder.dataset.filter.CoreFunctionFilter;
 import org.dashbuilder.dataset.filter.CoreFunctionType;
+import org.dashbuilder.dataset.filter.LogicalExprFilter;
+import org.dashbuilder.dataset.filter.LogicalExprType;
 import org.dashbuilder.dataset.group.AggregateFunctionType;
 import org.jbpm.services.api.query.QueryParamBuilder;
 import org.jbpm.services.api.query.model.QueryParam;
@@ -46,6 +51,10 @@ public class CoreFunctionQueryParamBuilder implements QueryParamBuilder<Object> 
         CoreFunctionType type = CoreFunctionType.getByName(param.getOperator());
         if (type != null) {
             return new CoreFunctionFilter(param.getColumn(), type, param.getValue());
+        }
+        LogicalExprType  logicalExprType = LogicalExprType.getByName(param.getOperator());
+        if (logicalExprType != null) {
+            return new LogicalExprFilter(param.getColumn(), logicalExprType, (List<ColumnFilter>)param.getValue());
         }
         // check aggregate functions
         AggregateFunctionType aggregationType = AggregateFunctionType.getByName(param.getOperator());
