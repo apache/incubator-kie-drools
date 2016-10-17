@@ -697,10 +697,6 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		delegate.flushPropagations(propagationEntry);
 	}
 
-	public void flushNonMarshallablePropagations() {
-		delegate.flushNonMarshallablePropagations();
-	}
-
 	public void activate() {
 		delegate.activate();
 	}

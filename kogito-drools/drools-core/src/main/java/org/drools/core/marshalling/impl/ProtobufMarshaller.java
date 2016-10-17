@@ -151,7 +151,7 @@ public class ProtobufMarshaller
     public void marshall(final OutputStream stream,
                          final KieSession ksession,
                          final long clockTime) throws IOException {
-        ((InternalWorkingMemory) ksession).flushNonMarshallablePropagations();
+        ((InternalWorkingMemory) ksession).flushPropagations();
         MarshallerWriteContext context = new MarshallerWriteContext( stream,
                                                                      (InternalKnowledgeBase) kbase,
                                                                      (InternalWorkingMemory) ksession,

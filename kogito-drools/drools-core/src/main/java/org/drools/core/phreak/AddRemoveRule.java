@@ -614,7 +614,7 @@ public class AddRemoveRule {
 
     public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode) {
         PathMemory pmem = streamMode ?
-                          getPathMemoryToFlushInStreamMode( sm, leftTuple ) :
+                          sm.getPathMemories().get(0) :
                           getPathMemoryToFlushForEagerEvaluation( sm, leftTuple );
 
         if ( pmem == null ) {
@@ -652,12 +652,6 @@ public class AddRemoveRule {
             pmem = getFirstLinkedPathMemory( sm, sm.getDataDrivenPathMemories(), 1 );
         }
         return pmem;
-    }
-
-    private static PathMemory getPathMemoryToFlushInStreamMode( SegmentMemory sm, LeftTuple leftTuple ) {
-        return leftTuple != null && leftTuple.getPropagationContext().isMarshalling() ?
-               sm.getPathMemories().get(0) : // marshalling requires flushing even if the pmem is unlinked
-               getFirstLinkedPathMemory( sm, sm.getPathMemories(), 0 );
     }
 
     private static PathMemory getFirstLinkedPathMemory( SegmentMemory sm, List<PathMemory> pmems, int start ) {

@@ -5686,7 +5686,7 @@ public class CepEspTest extends CommonTestMethodBase {
         clock.advanceTime( 2, TimeUnit.SECONDS );
         ksession.fireAllRules();
 
-        assertTrue( handle1.isEffectivelyExpired() );
+        assertTrue( handle1.isExpired() );
         assertFalse( ksession.getFactHandles().contains( handle1 ) );
     }
 

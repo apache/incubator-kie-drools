@@ -289,7 +289,7 @@ public class ProtobufOutputMarshaller {
                     }
                 }
             }
-            wm.flushNonMarshallablePropagations();
+            wm.flushPropagations();
         }
     }
 
@@ -726,7 +726,7 @@ public class ProtobufOutputMarshaller {
             EventFactHandle efh = (EventFactHandle) handle;
             _handle.setTimestamp( efh.getStartTimestamp() );
             _handle.setDuration( efh.getDuration() );
-            _handle.setIsExpired( efh.isEffectivelyExpired() );
+            _handle.setIsExpired( efh.isExpired() );
             _handle.setActivationsCount( efh.getActivationsCount() );
             _handle.setOtnCount( efh.getOtnCount() );
         }

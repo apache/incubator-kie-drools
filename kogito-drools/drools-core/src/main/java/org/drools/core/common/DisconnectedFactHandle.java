@@ -170,11 +170,6 @@ public class DisconnectedFactHandle
     }
 
     @Override
-    public boolean isEffectivelyExpired() {
-        return false;
-    }
-
-    @Override
     public boolean isPendingRemoveFromStore() {
         return false;
     }
