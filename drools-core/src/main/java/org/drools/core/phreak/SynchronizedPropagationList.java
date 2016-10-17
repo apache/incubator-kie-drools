@@ -96,26 +96,6 @@ public class SynchronizedPropagationList implements PropagationList {
     }
 
     @Override
-    public synchronized void flushNonMarshallable() {
-        PropagationEntry newHead = null;
-        PropagationEntry newTail = null;
-        for (PropagationEntry entry = head; entry != null; entry = entry.getNext()) {
-            if (entry.isMarshallable()) {
-                if (newHead == null) {
-                    newHead = entry;
-                } else {
-                    newTail.setNext(entry);
-                }
-                newTail = entry;
-            } else {
-                entry.executeForMarshalling(workingMemory);
-            }
-        }
-        head = newHead;
-        tail = newTail;
-    }
-
-    @Override
     public synchronized void reset() {
         head = null;
         tail = null;
