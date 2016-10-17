@@ -34,7 +34,7 @@ public class DMNXMLLoaderTest {
 
     @Test
     public void testLoadingDefinitions() {
-        final DMNMarshaller DMNMarshaller = new DMNMarshallerFactory();
+        final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newDefaultMarshaller();
 
         final InputStream is = this.getClass().getResourceAsStream( "0001-input-data-string.dmn" );
         final InputStreamReader isr = new InputStreamReader( is );
@@ -75,7 +75,7 @@ public class DMNXMLLoaderTest {
     @Test
     @Ignore("No unmarshaller implemented")
     public void testLoadingExample() {
-        final DMNMarshaller DMNMarshaller = new DMNMarshallerFactory();
+        final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newDefaultMarshaller();
 
         final InputStream is = this.getClass().getResourceAsStream( "/src/test/resources/ch11example.xml" );
         final InputStreamReader isr = new InputStreamReader( is );
@@ -89,7 +89,7 @@ public class DMNXMLLoaderTest {
     @Test
     @Ignore("No unmarshaller implemented")
     public void testLoadingDishDecision() {
-        final DMNMarshaller DMNMarshaller = new DMNMarshallerFactory();
+        final DMNMarshaller DMNMarshaller = DMNMarshallerFactory.newDefaultMarshaller();
 
         final InputStream is = this.getClass().getResourceAsStream( "/src/test/resources/dish-decision.xml" );
         final InputStreamReader isr = new InputStreamReader( is );

@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.Arrays;
@@ -51,17 +52,17 @@ public class UnmarshalMarshalTest {
     
     @Test 
     public void test0001() throws Exception {
-        testRoundTrip("org/kie/dmn/backend/unmarshalling/v1_1/", "0001-input-data-string.dmn");
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0001-input-data-string.dmn");
     }
 
     @Test 
     public void test0002() throws Exception {
-        testRoundTrip("org/kie/dmn/backend/unmarshalling/v1_1/", "0002-input-data-number.dmn");
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0002-input-data-number.dmn");
     }
     
     @Test 
     public void test0003() throws Exception {
-        testRoundTrip("org/kie/dmn/backend/unmarshalling/v1_1/", "0003-input-data-string-allowed-values.dmn");
+        testRoundTrip("org/kie/dmn/backend/marshalling/v1_1/", "0003-input-data-string-allowed-values.dmn");
     }
     
     @Test
@@ -136,7 +137,7 @@ public class UnmarshalMarshalTest {
         sourceFos.close();
                 
         marshaller.marshal(unmarshal);
-        FileOutputStream targetFos = new FileOutputStream( new File(baseOutputDir, subdir + "b." + xmlfile) );
+        FileWriter targetFos = new FileWriter( new File(baseOutputDir, subdir + "b." + xmlfile) );
         marshaller.marshal(unmarshal, targetFos);        
         targetFos.flush();
         targetFos.close();

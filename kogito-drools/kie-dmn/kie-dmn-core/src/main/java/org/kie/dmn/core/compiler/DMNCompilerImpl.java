@@ -36,7 +36,7 @@ public class DMNCompilerImpl implements DMNCompiler {
     @Override
     public DMNModel compile(Resource resource) {
         try {
-            Definitions dmndefs = new DMNMarshallerFactory().unmarshal( resource.getReader() );
+            Definitions dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal( resource.getReader() );
             if ( dmndefs != null ) {
                 DMNModelImpl model = new DMNModelImpl( dmndefs );
 
