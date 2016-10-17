@@ -15,6 +15,8 @@
  */
 package org.kie.dmn.feel.model.v1_1;
 
+import javax.xml.namespace.QName;
+
 public class OutputClause extends DMNElement {
 
     private UnaryTests outputValues;

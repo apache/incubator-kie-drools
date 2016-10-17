@@ -65,6 +65,7 @@ import org.xml.sax.InputSource;
 
 import java.io.*;
 
+import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -82,7 +83,7 @@ public class XStreamMarshaller
     static {
         QNameMap qmap = new QNameMap();
         qmap.setDefaultNamespace("http://www.omg.org/spec/DMN/20151101/dmn.xsd");
-        qmap.registerMapping(new javax.xml.namespace.QName("http://www.omg.org/spec/FEEL/20140401", "feel", "feel"), "dddecision"); // FIXME boh.
+        qmap.registerMapping(new javax.xml.namespace.QName("http://www.omg.org/spec/FEEL/20140401", "feel", "feel"), "dddecision"); // FIXME still not sure how to output non-used ns like 'feel:'
         
         staxDriver = new StaxDriver() {
 
@@ -270,7 +271,7 @@ public class XStreamMarshaller
         xStream.alias("targetRef", DMNElementReference.class );
         xStream.alias("textAnnotation", TextAnnotation.class );
         xStream.alias("type", String.class ); // TODO where?
-        xStream.alias("typeRef", org.kie.dmn.feel.model.v1_1.QName.class );
+        xStream.alias("typeRef", QName.class );
         xStream.alias("usingProcess", DMNElementReference.class );
         xStream.alias("usingTask", DMNElementReference.class );
         xStream.alias("variable", InformationItem.class );
@@ -325,7 +326,7 @@ public class XStreamMarshaller
         xStream.registerConverter(new TextAnnotationConverter( xStream ) );
         xStream.registerConverter(new UnaryTestsConverter( xStream ) );
         
-        xStream.registerConverter(new DMNQNameConverter());
+        xStream.registerConverter(new QNameConverter());
         xStream.registerConverter(new DMNListConverter( xStream ) );
         xStream.registerConverter(new ElementCollectionConverter( xStream ) );
         xStream.registerConverter(new ExtensionElementsConverter( xStream ) );
