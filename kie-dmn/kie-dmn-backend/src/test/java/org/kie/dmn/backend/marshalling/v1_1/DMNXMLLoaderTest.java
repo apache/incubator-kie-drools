@@ -19,6 +19,8 @@ package org.kie.dmn.backend.marshalling.v1_1;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import javax.xml.XMLConstants;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.feel.model.v1_1.Decision;
@@ -54,7 +56,7 @@ public class DMNXMLLoaderTest {
         assertThat( dec.getVariable().getName(), is("Greeting Message") );
         assertThat( dec.getVariable().getTypeRef().getPrefix(), is( "feel" ) );
         assertThat( dec.getVariable().getTypeRef().getLocalPart(), is( "string" ) );
-        assertThat( dec.getVariable().getTypeRef().getNamespaceURI(), is( nullValue() ) );
+        assertThat( dec.getVariable().getTypeRef().getNamespaceURI(), is( XMLConstants.NULL_NS_URI ) );
 
         assertThat( dec.getInformationRequirement().size(), is( 1 ) );
         assertThat( dec.getInformationRequirement().get( 0 ).getRequiredInput().getHref(), is( "#i_FullName" ) );
@@ -69,7 +71,7 @@ public class DMNXMLLoaderTest {
         assertThat( idata.getVariable().getName(), is( "Full Name" ) );
         assertThat( idata.getVariable().getTypeRef().getPrefix(), is( "feel" ) );
         assertThat( idata.getVariable().getTypeRef().getLocalPart(), is( "string" ) );
-        assertThat( idata.getVariable().getTypeRef().getNamespaceURI(), is( nullValue() ) );
+        assertThat( idata.getVariable().getTypeRef().getNamespaceURI(), is( XMLConstants.NULL_NS_URI ) );
     }
 
     @Test

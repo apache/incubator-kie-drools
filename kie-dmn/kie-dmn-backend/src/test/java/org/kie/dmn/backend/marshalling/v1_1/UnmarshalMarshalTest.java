@@ -136,7 +136,7 @@ public class UnmarshalMarshalTest {
         sourceFos.flush();
         sourceFos.close();
                 
-        marshaller.marshal(unmarshal);
+        System.out.println( marshaller.marshal(unmarshal) );
         FileWriter targetFos = new FileWriter( new File(baseOutputDir, subdir + "b." + xmlfile) );
         marshaller.marshal(unmarshal, targetFos);        
         targetFos.flush();

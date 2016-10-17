@@ -18,6 +18,8 @@ package org.kie.dmn.feel.model.v1_1;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 public class ItemDefinition extends NamedElement {
 
     private QName typeRef;
