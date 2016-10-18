@@ -17,8 +17,10 @@
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.AbstractPullReader;
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.thoughtworks.xstream.io.xml.StaxReader;
 
 import javanet.staxutils.StaxUtilsXMLOutputFactory;
 
@@ -59,6 +61,7 @@ import org.kie.dmn.feel.model.v1_1.Relation;
 import org.kie.dmn.feel.model.v1_1.TextAnnotation;
 import org.kie.dmn.feel.model.v1_1.UnaryTests;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
+import org.kie.dmn.backend.marshalling.CustomStaxReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -67,6 +70,7 @@ import java.io.*;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -96,6 +100,10 @@ public class XStreamMarshaller
                     outputFactory = factory;
                 }
                 return outputFactory;
+            }
+            
+            public AbstractPullReader createStaxReader(XMLStreamReader in) {
+                return new CustomStaxReader(getQnameMap(), in);
             }
         };
         staxDriver.setQnameMap(qmap);
