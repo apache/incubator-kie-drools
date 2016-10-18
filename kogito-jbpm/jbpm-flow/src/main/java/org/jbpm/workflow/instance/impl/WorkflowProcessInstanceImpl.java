@@ -73,7 +73,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of a RuleFlow process instance.
- * 
+ *
  */
 public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		implements WorkflowProcessInstance,
@@ -107,7 +107,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
 	public void addNodeInstance(final NodeInstance nodeInstance) {
 	    if (nodeInstance.getId() == -1) {
-            // assign new id only if it does not exist as it might already be set by marshalling 
+            // assign new id only if it does not exist as it might already be set by marshalling
             // it's important to keep same ids of node instances as they might be references e.g. exclusive group
     	    long id = singleNodeInstanceCounter.getAndIncrement();
     		((NodeInstanceImpl) nodeInstance).setId(id);
@@ -365,12 +365,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                 if (getParentProcessInstanceId() > 0 && manager != null) {
                 	try {
                 	    org.kie.api.runtime.manager.Context<?> context = ProcessInstanceIdContext.get(getParentProcessInstanceId());
-                        
+
                         String caseId = (String) kruntime.getEnvironment().get(EnvironmentName.CASE_ID);
                         if (caseId != null) {
                             context = CaseContext.get(caseId);
                         }
-                        
+
     	                RuntimeEngine runtime = manager.getRuntimeEngine(context);
     	                KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
     	                managedkruntime.signalEvent("processInstanceCompleted:" + getId(), this);
@@ -479,11 +479,11 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 				return;
 			}
 			InternalRuntimeManager manager = (InternalRuntimeManager) getKnowledgeRuntime().getEnvironment().get("RuntimeManager");
-	        if (manager != null) {            
+	        if (manager != null) {
 	            // check if process instance is owned by the same manager as the one owning ksession
-	            if (!manager.getIdentifier().equals(getDeploymentId())) {	                
+	            if (hasDeploymentId() && !manager.getIdentifier().equals(getDeploymentId())) {
 	                logger.debug("Skipping signal on process instance " + getId() + " as it's owned by another deployment " +
-	                                                    getDeploymentId() + " != " + manager.getIdentifier());	                
+	                                                    getDeploymentId() + " != " + manager.getIdentifier());
 	                return;
 	            }
 	        }
@@ -529,16 +529,16 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 					for (Node node : getWorkflowProcess().getNodes()) {
 						if (type.equals(node.getName()) && node.getIncomingConnections().isEmpty()) {
 						    NodeInstance nodeInstance = getNodeInstance(node);
-			    			if (event != null) {			    			    
+			    			if (event != null) {
 			    			    Map<String, Object> dynamicParams = new HashMap<>();
 			    			    if (event instanceof Map) {
-			    			        dynamicParams.putAll((Map<String, Object>) event);			    			        
+			    			        dynamicParams.putAll((Map<String, Object>) event);
 			    			    } else {
 			    			        dynamicParams.put("Data", event);
 			    			    }
 			    			    ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).setDynamicParameters(dynamicParams);
 			    			}
-			    			
+
 			                ((org.jbpm.workflow.instance.NodeInstance) nodeInstance).trigger(null, NodeImpl.CONNECTION_DEFAULT_TYPE);
 			    		}
 					}
@@ -555,17 +555,17 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	protected List<String> resolveVariables(List<String> events) {
 	    return events.stream().map( event -> resolveVariable(event)).collect(Collectors.toList());
 	}
-	
+
     private String resolveVariable(String s) {
         Map<String, String> replacements = new HashMap<String, String>();
         Matcher matcher = PARAMETER_MATCHER.matcher(s);
         while (matcher.find()) {
             String paramName = matcher.group(1);
             if (replacements.get(paramName) == null) {
-                
+
                 Object variableValue = getVariable(paramName);
                 if (variableValue != null) {
-                    String variableValueString = variableValue == null ? "" : variableValue.toString(); 
+                    String variableValueString = variableValue == null ? "" : variableValue.toString();
                     replacements.put(paramName, variableValueString);
                 } else {
                     try {
@@ -583,7 +583,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         }
         return s;
     }
-	
+
 	public void addEventListener(String type, EventListener listener, boolean external) {
 		Map<String, List<EventListener>> eventListeners = external ? this.externalEventListeners : this.eventListeners;
 		List<EventListener> listeners = eventListeners.get(type);
@@ -722,23 +722,31 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     public void setSignalCompletion(boolean signalCompletion) {
         this.signalCompletion = signalCompletion;
     }
-    
+
     public String getDeploymentId() {
         return deploymentId;
     }
-    
+
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
     }
     
     public String getCorrelationKey() {
         if (correlationKey == null && getMetaData().get("CorrelationKey") != null) {
-            this.correlationKey = ((CorrelationKey) getMetaData().get("CorrelationKey")).toExternalForm(); 
+            this.correlationKey = ((CorrelationKey) getMetaData().get("CorrelationKey")).toExternalForm();
         }
         return correlationKey;
     }
-    
+
     public void setCorrelationKey(String correlationKey) {
         this.correlationKey = correlationKey;
+    }
+
+    protected boolean hasDeploymentId() {
+        if (this.deploymentId == null || this.deploymentId.isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 }
