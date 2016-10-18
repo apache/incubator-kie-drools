@@ -134,6 +134,21 @@ public class DefaultExpanderTest {
         //System.err.println(( (ExpanderException) ex.getErrors().get( 0 )).getMessage());
     }
 
+    @Test(timeout=100)
+    public void testExpandInfiniteLoop() throws Exception {
+        DSLMappingFile file = new DSLTokenizedMappingFile();
+        String dsl = "[when]Foo with {var} bars=Foo( bars == {var} )";
+        file.parseAndLoad( new StringReader( dsl ) );
+        assertEquals( 0, file.getErrors().size() );
+
+        DefaultExpander ex = new DefaultExpander();
+        ex.addDSLMapping( file.getMapping() );
+        String source = "rule 'dsl rule'\nwhen\n    Foo with {var} bars\nthen\n\nend";
+        ex.expand( source );
+        assertTrue( ex.hasErrors() );
+        assertEquals( 1, ex.getErrors().size() );
+    }
+
     @Test
     public void testANTLRExpandFailure() throws Exception {
 
