@@ -21,6 +21,7 @@ import com.thoughtworks.xstream.io.xml.AbstractPullReader;
 import com.thoughtworks.xstream.io.xml.QNameMap;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 import com.thoughtworks.xstream.io.xml.StaxReader;
+import com.thoughtworks.xstream.io.xml.StaxWriter;
 
 import javanet.staxutils.StaxUtilsXMLOutputFactory;
 
@@ -62,6 +63,7 @@ import org.kie.dmn.feel.model.v1_1.TextAnnotation;
 import org.kie.dmn.feel.model.v1_1.UnaryTests;
 import org.kie.dmn.api.marshalling.v1_1.DMNMarshaller;
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
+import org.kie.dmn.backend.marshalling.CustomStaxWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
@@ -70,7 +72,9 @@ import java.io.*;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -86,8 +90,9 @@ public class XStreamMarshaller
     private static StaxDriver staxDriver;
     static {
         QNameMap qmap = new QNameMap();
+        // TODO what-if a given file is setting the default namespace to something else than DMN ?
         qmap.setDefaultNamespace("http://www.omg.org/spec/DMN/20151101/dmn.xsd");
-        qmap.registerMapping(new javax.xml.namespace.QName("http://www.omg.org/spec/FEEL/20140401", "feel", "feel"), "dddecision"); // FIXME still not sure how to output non-used ns like 'feel:'
+//        qmap.registerMapping(new javax.xml.namespace.QName("http://www.omg.org/spec/FEEL/20140401", "feel", "feel"), "dddecision"); // FIXME still not sure how to output non-used ns like 'feel:'
         
         staxDriver = new StaxDriver() {
 
@@ -104,6 +109,10 @@ public class XStreamMarshaller
             
             public AbstractPullReader createStaxReader(XMLStreamReader in) {
                 return new CustomStaxReader(getQnameMap(), in);
+            }
+            
+            public StaxWriter createStaxWriter(XMLStreamWriter out, boolean writeStartEndDocument) throws XMLStreamException {
+                return new CustomStaxWriter(getQnameMap(), out, writeStartEndDocument, isRepairingNamespace(), getNameCoder());
             }
         };
         staxDriver.setQnameMap(qmap);

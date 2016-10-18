@@ -19,12 +19,14 @@ package org.kie.dmn.feel.model.v1_1;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.XMLConstants;
+
 public abstract class DMNModelInstrumentedBase {
     private Map<String, String> NSContext;
 
     /**
      * Namespace context map as defined at the level of the given element.
-     * Please notice it support also default namespace (no prefix) as "" as defined in {@link XMLConstants#NULL_NS_URI} .
+     * Please notice it support also default namespace (no prefix) as "" as defined in {@link XMLConstants#DEFAULT_NS_PREFIX} .
      */
     public Map<String, String> getNSContext() {
         if (NSContext == null) {

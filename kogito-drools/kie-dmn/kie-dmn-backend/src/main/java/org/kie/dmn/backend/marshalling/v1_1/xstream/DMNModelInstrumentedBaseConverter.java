@@ -17,14 +17,19 @@
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
 import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.xml.XMLConstants;
 
 import org.kie.dmn.backend.marshalling.CustomStaxReader;
+import org.kie.dmn.backend.marshalling.CustomStaxWriter;
 import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.StaxWriter;
 
 public abstract class DMNModelInstrumentedBaseConverter
         extends DMNBaseConverter {
@@ -51,6 +56,21 @@ public abstract class DMNModelInstrumentedBaseConverter
     }
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
-        // no call to super as super is abstract method.
+        DMNModelInstrumentedBase mib = (DMNModelInstrumentedBase) parent;
+
+        CustomStaxWriter staxWriter = ((CustomStaxWriter) writer.underlyingWriter());
+        for (Entry<String, String> kv : mib.getNSContext().entrySet()) {
+            try {
+                System.out.println("writing: "+kv);
+                if (XMLConstants.DEFAULT_NS_PREFIX.equals(kv.getKey())) {
+                    // skip as that is the default namespace is handled by the stax driver.
+                } else {
+                    staxWriter.writeNamespace(kv.getKey(), kv.getValue());
+                }
+            } catch (Exception e) {
+                //TODO what to do?
+                e.printStackTrace();
+            }
+        }
     }
 }
