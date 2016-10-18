@@ -19,6 +19,7 @@ package org.kie.dmn.core.impl;
 import org.kie.dmn.core.api.DMNModel;
 import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.core.ast.InputDataNode;
+import org.kie.dmn.core.ast.ItemDefNode;
 import org.kie.dmn.feel.model.v1_1.Definitions;
 
 import java.util.*;
@@ -30,6 +31,7 @@ public class DMNModelImpl
     private Definitions definitions;
     private Map<String, InputDataNode> inputs    = new HashMap<>();
     private Map<String, DecisionNode>  decisions = new HashMap<>();
+    private Map<String, ItemDefNode>   itemDefs = new HashMap<>();
 
     public DMNModelImpl() {
     }
@@ -140,4 +142,33 @@ public class DMNModelImpl
             }
         } );
     }
+
+    public void addItemDefinition(ItemDefNode idn) {
+        this.itemDefs.put( idn.getId(), idn );
+    }
+
+    @Override
+    public ItemDefNode getItemDefinitionById(String id) {
+        return this.itemDefs.get( id );
+    }
+
+    @Override
+    public ItemDefNode getItemDefinitionByName(String name) {
+        if( name == null ) {
+            return null;
+        }
+        for( ItemDefNode in : this.itemDefs.values() ) {
+            if( in.getName() != null && name.equals( in.getName() ) ) {
+                return in;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Set<ItemDefNode> getItemDefinitions() {
+        return this.itemDefs.values().stream().collect( Collectors.toSet());
+    }
+
+
 }
