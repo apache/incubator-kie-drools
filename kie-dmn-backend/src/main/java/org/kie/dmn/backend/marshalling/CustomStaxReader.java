@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamReader;
 
 import com.thoughtworks.xstream.io.xml.QNameMap;
@@ -28,7 +27,7 @@ public class CustomStaxReader extends StaxReader {
         for (int nsIndex = 0; nsIndex < in.getNamespaceCount(); nsIndex++) {
             String nsPrefix = in.getNamespacePrefix(nsIndex);
             String nsId = in.getNamespaceURI(nsIndex);
-            nsContext.put(in.getNamespacePrefix(nsIndex), in.getNamespaceURI(nsIndex) );
+            nsContext.put(in.getNamespacePrefix(nsIndex)!=null?in.getNamespacePrefix(nsIndex):XMLConstants.DEFAULT_NS_PREFIX, in.getNamespaceURI(nsIndex) );
           }
         return nsContext;
     }
