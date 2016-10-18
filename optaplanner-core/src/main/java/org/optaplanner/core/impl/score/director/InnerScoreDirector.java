@@ -65,13 +65,17 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
     ScoreDefinition getScoreDefinition();
 
     /**
-     * @return never null
+     * Returns a planning clone of the solution,
+     * which is not a shallow clone nor a deep clone nor a partition clone.
+     * @return never null, planning clone
      */
     Solution_ cloneWorkingSolution();
 
     /**
+     * Returns a planning clone of the solution,
+     * which is not a shallow clone nor a deep clone nor a partition clone.
      * @param originalSolution never null
-     * @return never null
+     * @return never null, planning clone
      */
     Solution_ cloneSolution(Solution_ originalSolution);
 
