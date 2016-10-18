@@ -17,7 +17,6 @@ package org.drools.compiler.integrationtests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import org.drools.core.test.model.Cheese;
@@ -103,7 +102,7 @@ public class UpdateTest {
         final Person person = new Person("George", 18);
         final FactHandle fact = ksession.insert(person);
 
-        checkObjectsViaQuery(Person.class, "persons", person);
+        checkObjectsViaQuery(Person.class, "persons", new Person[]{person});
 
         final Cheese cheese = new Cheese("Camembert", 2);
         ksession.update(fact, cheese);
@@ -141,22 +140,22 @@ public class UpdateTest {
         final FactHandle georgeFact = ksession.insert(george);
         ksession.insert(henry);
 
-        checkObjectsViaQuery(Person.class, "persons", george, henry);
+        checkObjectsViaQuery(Person.class, "persons", new Person[]{george, henry});
 
         final List<Person> drivers = new ArrayList<>();
         ksession.setGlobal("drivers", drivers);
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        verifyList(drivers, george, henry);
+        verifyList(drivers, george, new Person[]{henry});
 
         george.setAge(18);
         ksession.update(georgeFact, george);
-        checkObjectsViaQuery(Person.class, "persons", george, henry);
+        checkObjectsViaQuery(Person.class, "persons", new Person[]{george, henry});
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        verifyList(drivers, null, george, henry);
+        verifyList(drivers, null, new Person[]{george, henry});
     }
 
     @Test
@@ -168,26 +167,26 @@ public class UpdateTest {
         ksession.insert(cheddar);
 
 
-        checkObjectsViaQuery(Cheese.class, "cheeseTypes", camembert, cheddar);
+        checkObjectsViaQuery(Cheese.class, "cheeseTypes", new Cheese[]{camembert, cheddar});
 
         final List<Cheese> expensiveCheese = new ArrayList<>();
         ksession.setGlobal("expensiveCheese", expensiveCheese);
         final int firedRules = ksession.fireAllRules();
         assertThat(firedRules).isEqualTo(2);
-        verifyList(expensiveCheese, camembert, cheddar);
+        verifyList(expensiveCheese, camembert, new Cheese[]{cheddar});
 
-        checkObjectsViaQuery(Cheese.class, "cheeseTypes", camembert, cheddar);
+        checkObjectsViaQuery(Cheese.class, "cheeseTypes", new Cheese[]{camembert, cheddar});
         assertThat(camembert.getPrice()).isEqualTo(21);
         assertThat(cheddar.getPrice()).isEqualTo(45);
     }
 
-    private <T> void checkObjectsViaQuery(Class<T> expectedContentType, String query, T... objectsToCheck) {
-        QueryResults results = ksession.getQueryResults(query);
+    private <T> void checkObjectsViaQuery(final Class<T> expectedContentType, final String query, final T[] objectsToCheck) {
+        final QueryResults results = ksession.getQueryResults(query);
         assertThat(results).isNotEmpty();
-        QueryResultsRow resultsRow = results.iterator().next();
+        final QueryResultsRow resultsRow = results.iterator().next();
 
         assertThat(resultsRow.get("$" + query)).isInstanceOf(List.class);
-        List<Object> objects = (List<Object>) resultsRow.get("$" + query);
+        final List<Object> objects = (List<Object>) resultsRow.get("$" + query);
         assertThat(objects).hasSize(objectsToCheck.length);
         assertThat(objects).hasOnlyElementsOfType(expectedContentType);
         assertThat(objects).containsAll(Arrays.asList(objectsToCheck));
@@ -199,13 +198,13 @@ public class UpdateTest {
 
         results = ksession.getQueryResults("persons");
         assertThat(results).isNotEmpty();
-        QueryResultsRow resultsRow = results.iterator().next();
+        final QueryResultsRow resultsRow = results.iterator().next();
         assertThat(resultsRow.get("$persons")).isInstanceOf(List.class);
-        List<Object> persons = (List<Object>) resultsRow.get("$persons");
+        final List<Object> persons = (List<Object>) resultsRow.get("$persons");
         assertThat(persons).isEmpty();
     }
 
-    private <T> List<T> checkViaGetObjects(int expectedSize, Class<T> expected) {
+    private <T> List<T> checkViaGetObjects(final int expectedSize, final Class<T> expected) {
         if (expectedSize < 1) {
             assertThat(ksession.getObjects()).isEmpty();
         } else {
@@ -216,19 +215,19 @@ public class UpdateTest {
         return null;
     }
 
-    private <T> T checkViaGetObject(FactHandle fact, Class<T> expected) {
+    private <T> T checkViaGetObject(final FactHandle fact, final Class<T> expected) {
         assertThat(ksession.getObject(fact)).isNotNull();
         assertThat(ksession.getObject(fact)).isInstanceOf(expected);
         return (T) ksession.getObject(fact);
     }
 
-    private void verify(Cheese cheeseToBeVerified, int price, String type) {
+    private void verify(final Cheese cheeseToBeVerified, final int price, final String type) {
         assertThat(cheeseToBeVerified.getPrice()).isEqualTo(price);
         assertThat(cheeseToBeVerified.getType()).isEqualTo(type);
     }
 
-    private void verify(Person original, Person personToBeVerified, int age, String name, boolean shouldBeEqual) {
-        if (original !=null) {
+    private void verify(final Person original, final Person personToBeVerified, final int age, final String name, final boolean shouldBeEqual) {
+        if (original != null) {
             if (shouldBeEqual) {
                 assertThat(personToBeVerified).isEqualTo(original);
             } else {
@@ -239,7 +238,7 @@ public class UpdateTest {
         assertThat(personToBeVerified.getName()).isEqualTo(name);
     }
 
-    private <T> void verifyList(List<T> list, T objectToNotContain, T... objectsToContain) {
+    private <T> void verifyList(final List<T> list, final T objectToNotContain, final T[] objectsToContain) {
         assertThat(list).isNotEmpty();
         assertThat(list).hasSize(objectsToContain.length);
         assertThat(list).containsAll(Arrays.asList(objectsToContain));
