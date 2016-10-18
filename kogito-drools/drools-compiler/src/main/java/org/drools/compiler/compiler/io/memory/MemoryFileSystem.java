@@ -36,6 +36,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -102,7 +104,7 @@ public class MemoryFileSystem
         if ( lastSlashPos >= 0 ) {
             Folder folder = getFolder( path.substring( 0,
                                                        lastSlashPos ) );
-            String name = path.substring( lastSlashPos + 1 );
+            String name = decode( path ).substring( lastSlashPos + 1 );
             return new MemoryFile( this,
                                    name,
                                    folder );
@@ -165,7 +167,7 @@ public class MemoryFileSystem
     }
 
     public boolean existsFolder(MemoryFolder folder) {
-        return existsFolder( folder.getPath().toPortableString() ); 
+        return existsFolder( folder.getPath().toPortableString() );
     }
 
     public boolean existsFolder(String path) {
@@ -182,14 +184,14 @@ public class MemoryFileSystem
         return fileContents.containsKey(MemoryFolder.trimLeadingAndTrailing(path));
     }
 
-    public void createFolder(MemoryFolder folder) {                
+    public void createFolder(MemoryFolder folder) {
         // create current, if it does not exist.
         if ( !existsFolder( folder ) ) {
             // create parent if it does not exist
             if ( !existsFolder( ( MemoryFolder) folder.getParent() ) ) {
                 createFolder( (MemoryFolder) folder.getParent() );
             }
-            
+
             folders.put( folder.getPath().toPortableString(),
                          new HashSet<Resource>() );
 
@@ -436,12 +438,12 @@ public class MemoryFileSystem
             }
         }
     }
-    
+
     public void writeAsFs(java.io.File file) {
         file.mkdir();
         writeAsFs(this.getRootFolder(), file);
-    }    
-    
+    }
+
     public void writeAsFs(Folder f,
                           java.io.File file1) {
         for ( Resource rs : f.getMembers() ) {
@@ -459,7 +461,7 @@ public class MemoryFileSystem
                 }
             }
         }
-    }    
+    }
 
     private void writeJarEntries(Folder f,
                                  ZipOutputStream out) throws IOException {
@@ -519,11 +521,11 @@ public class MemoryFileSystem
         }
         return mfs;
     }
-    
+
     public static MemoryFileSystem readFromJar(byte[] jarFile) {
         return readFromJar( new ByteArrayInputStream( jarFile ) );
     }
-    
+
     public static MemoryFileSystem readFromJar(InputStream jarFile) {
         MemoryFileSystem mfs = new MemoryFileSystem();
         JarInputStream zipFile = null;
@@ -552,7 +554,7 @@ public class MemoryFileSystem
         }
         return mfs;
     }
-    
+
     public String findPomProperties() {
         for( Entry<String, byte[]> content : fileContents.entrySet() ) {
             if ( content.getKey().endsWith( "pom.properties" ) && content.getKey().startsWith( "META-INF/maven/" ) ) {
@@ -569,5 +571,13 @@ public class MemoryFileSystem
             clone.write(entry.getKey(), entry.getValue());
         }
         return clone;
+    }
+
+    private String decode( final String path ) {
+        try {
+            return URLDecoder.decode( path, "UTF-8" );
+        } catch ( UnsupportedEncodingException e ) {
+            return path;
+        }
     }
 }
