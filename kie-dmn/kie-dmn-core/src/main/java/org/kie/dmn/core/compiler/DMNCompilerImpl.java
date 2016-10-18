@@ -66,7 +66,6 @@ public class DMNCompilerImpl implements DMNCompiler {
         for( ItemDefinition id : dmndefs.getItemDefinition() ) {
             ItemDefNode idn = new ItemDefNode( id );
             model.addItemDefinition( idn );
-
         }
     }
 
