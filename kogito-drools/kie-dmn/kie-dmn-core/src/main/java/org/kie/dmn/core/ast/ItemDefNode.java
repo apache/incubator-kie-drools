@@ -30,6 +30,14 @@ public class ItemDefNode
     public ItemDefNode(ItemDefinition itemDef) {
         super( itemDef );
         this.itemDef = itemDef;
+        buildTypeDef();
+    }
+
+    private void buildTypeDef() {
+        if( itemDef.getTypeRef() != null ) {
+            // this is an "simple" type
+
+        }
     }
 
     public ItemDefinition getItemDef() {
