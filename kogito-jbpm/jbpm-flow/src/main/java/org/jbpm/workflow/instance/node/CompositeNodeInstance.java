@@ -390,7 +390,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 	        }
 	    }
 	    if (nodeInstance instanceof EndNodeInstance || nodeInstance instanceof EventSubProcessNodeInstance ) {
-            if (((org.jbpm.workflow.core.WorkflowProcess) getProcessInstance().getProcess()).isAutoComplete()) {
+            if (getCompositeNode().isAutoComplete()) {
                 if (nodeInstances.isEmpty()) {
                     triggerCompleted(
                         org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);

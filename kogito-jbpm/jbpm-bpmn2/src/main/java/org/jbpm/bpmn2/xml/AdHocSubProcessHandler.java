@@ -51,6 +51,8 @@ public class AdHocSubProcessHandler extends CompositeContextNodeHandler {
     	if ("false".equals(cancelRemainingInstances)) {
     		dynamicNode.setCancelRemainingInstances(false);
     	}
+    	// by default it should not autocomplete as it's adhoc
+    	dynamicNode.setAutoComplete(false);
     	org.w3c.dom.Node xmlNode = element.getFirstChild();
         while (xmlNode != null) {
         	String nodeName = xmlNode.getNodeName();

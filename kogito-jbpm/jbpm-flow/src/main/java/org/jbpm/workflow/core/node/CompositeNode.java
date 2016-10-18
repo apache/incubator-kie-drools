@@ -41,6 +41,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     private Map<String, CompositeNode.NodeAndType> outConnectionMap = new HashMap<String, CompositeNode.NodeAndType>();
 	private boolean cancelRemainingInstances = true;
 
+	private boolean autoComplete = true;
 	
     public CompositeNode() {
         this.nodeContainer = new NodeContainerImpl();
@@ -349,6 +350,14 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
 	public void setCancelRemainingInstances(boolean cancelRemainingInstances) {
 		this.cancelRemainingInstances = cancelRemainingInstances;
 	}
+	
+	public boolean isAutoComplete() {
+        return autoComplete;
+    }
+    
+    public void setAutoComplete(boolean autoComplete) {
+        this.autoComplete = autoComplete;
+    }
 
     public class NodeAndType implements Serializable {
 

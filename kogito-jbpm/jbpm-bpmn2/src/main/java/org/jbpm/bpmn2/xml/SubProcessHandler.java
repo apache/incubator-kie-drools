@@ -57,7 +57,7 @@ public class SubProcessHandler extends AbstractNodeHandler {
                 subProcessNode.setMetaData("isForCompensation", isForCompensation );
             }
         }        
-        
+        subProcessNode.setAutoComplete(true);
         return subProcessNode;
     }
     
@@ -82,6 +82,8 @@ public class SubProcessHandler extends AbstractNodeHandler {
 				ForEachNode forEachNode = new ForEachNode();
 				forEachNode.setId(node.getId());
 				forEachNode.setName(node.getName());
+				
+				forEachNode.setAutoComplete(((CompositeContextNode) node).isAutoComplete());
 				
 				for (org.kie.api.definition.process.Node subNode: ((CompositeContextNode) node).getNodes()) {
 			

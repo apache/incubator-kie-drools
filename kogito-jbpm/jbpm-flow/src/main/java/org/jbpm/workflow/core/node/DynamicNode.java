@@ -27,18 +27,9 @@ public class DynamicNode extends CompositeContextNode {
 
 	private static final long serialVersionUID = 510l;
 	
-	private boolean autoComplete = false;
 	private String completionExpression;
 	private String language;
-		
-	public boolean isAutoComplete() {
-		return autoComplete;
-	}
-
-	public void setAutoComplete(boolean autoComplete) {
-		this.autoComplete = autoComplete;
-	}
-
+			
 	public boolean acceptsEvent(String type, Object event) {
 		for (Node node: getNodes()) {
 			if (type.equals(node.getName()) && node.getIncomingConnections().isEmpty()) {
