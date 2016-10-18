@@ -24,24 +24,27 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.feel.model.v1_1.DMNElement;
 
 public abstract class DMNElementConverter
-        extends DMNBaseConverter {
+        extends DMNModelInstrumentedBaseConverter {
     public static final String ID          = "id";
     public static final String LABEL       = "label";
     public static final String DESCRIPTION = "description";
 
     public DMNElementConverter(XStream xstream) {
-        super( xstream.getMapper() );
+        super( xstream );
     }
 
     @Override
     protected void assignChildElement(Object parent, String nodeName, Object child) {
         if ( DESCRIPTION.equals( nodeName ) && child instanceof String ) {
             ((DMNElement) parent).setDescription( (String) child );
+        } else {
+            super.assignChildElement(parent, nodeName, child);
         }
     }
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
+        super.assignAttributes(reader, parent);
         String id = reader.getAttribute( ID );
         String label = reader.getAttribute( LABEL );
 
@@ -53,7 +56,7 @@ public abstract class DMNElementConverter
     
     @Override
     protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
-        // there is no call to super as super is an abstract method.
+        super.writeChildren(writer, context, parent);
         DMNElement e = (DMNElement) parent;
 
         if (e.getDescription() !=null) writeChildrenNodeAsValue(writer, context, e.getDescription(), DESCRIPTION);
@@ -61,7 +64,7 @@ public abstract class DMNElementConverter
     }
     @Override
     protected void writeAttributes(HierarchicalStreamWriter writer, Object parent) {
-        // there is no call to super as super is an abstract method.
+        super.writeAttributes(writer, parent);
         DMNElement e = (DMNElement) parent;
         
         if (e.getId() != null) writer.addAttribute( ID , e.getId() );

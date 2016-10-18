@@ -16,6 +16,6 @@
 
 package org.kie.dmn.feel.model.v1_1;
 
-public class DMNModelInstrumentedBase {
+public abstract class DMNModelInstrumentedBase {
 
 }
