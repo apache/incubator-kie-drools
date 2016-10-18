@@ -1,0 +1,25 @@
+package org.drools.compiler.integrationtests;
+
+rule "Rule with forall_1"
+when
+    forall ($obj : Object()
+            Object(this == $obj)
+    )
+then
+end
+
+rule "Rule with forall_2"
+when
+    forall ($obj : Object()
+            Object(this == $obj)
+    )
+then
+end
+
+rule "Rule with forall_3"
+when
+    forall ($obj : Object()
+            Object(this == $obj)
+    )
+then
+end
