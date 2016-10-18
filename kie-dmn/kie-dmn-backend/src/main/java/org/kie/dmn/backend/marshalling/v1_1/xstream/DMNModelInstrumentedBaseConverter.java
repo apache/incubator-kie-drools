@@ -16,6 +16,11 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
+import java.util.Map;
+
+import org.kie.dmn.backend.marshalling.CustomStaxReader;
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
@@ -34,6 +39,10 @@ public abstract class DMNModelInstrumentedBaseConverter
 
     @Override
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
+        DMNModelInstrumentedBase mib = (DMNModelInstrumentedBase) parent;
+
+        Map<String, String> currentNSCtx = ((CustomStaxReader) reader.underlyingReader()).getNSContext();
+        mib.getNSContext().putAll(currentNSCtx);
     }
     
     @Override
