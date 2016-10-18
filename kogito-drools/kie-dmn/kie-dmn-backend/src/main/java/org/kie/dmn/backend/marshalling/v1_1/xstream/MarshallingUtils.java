@@ -47,7 +47,7 @@ public class MarshallingUtils {
     }
     
     public static String formatQName(QName qname) {
-        if ( XMLConstants.NULL_NS_URI.equals(qname.getNamespaceURI()) && !XMLConstants.DEFAULT_NS_PREFIX.equals(qname.getPrefix()) ) {
+        if ( !XMLConstants.DEFAULT_NS_PREFIX.equals(qname.getPrefix()) ) {
             return qname.getPrefix() + ":" + qname.getLocalPart();
         } else {
             return qname.toString();

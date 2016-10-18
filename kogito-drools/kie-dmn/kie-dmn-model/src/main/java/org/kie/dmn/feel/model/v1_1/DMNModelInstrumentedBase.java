@@ -22,16 +22,16 @@ import java.util.Map;
 import javax.xml.XMLConstants;
 
 public abstract class DMNModelInstrumentedBase {
-    private Map<String, String> NSContext;
+    private Map<String, String> nsContext;
 
     /**
      * Namespace context map as defined at the level of the given element.
      * Please notice it support also default namespace (no prefix) as "" as defined in {@link XMLConstants#DEFAULT_NS_PREFIX} .
      */
-    public Map<String, String> getNSContext() {
-        if (NSContext == null) {
-            NSContext = new HashMap<String, String>();  
+    public Map<String, String> getNsContext() {
+        if (nsContext == null) {
+            nsContext = new HashMap<String, String>();  
         }
-        return NSContext;
+        return nsContext;
     }
 }

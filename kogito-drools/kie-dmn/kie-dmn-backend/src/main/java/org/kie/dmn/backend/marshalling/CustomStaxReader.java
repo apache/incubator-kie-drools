@@ -22,7 +22,7 @@ public class CustomStaxReader extends StaxReader {
         this.in = in;
     }
     
-    public Map<String, String> getNSContext() {
+    public Map<String, String> getNsContext() {
         Map<String, String> nsContext = new HashMap<>();
         for (int nsIndex = 0; nsIndex < in.getNamespaceCount(); nsIndex++) {
             String nsPrefix = in.getNamespacePrefix(nsIndex);
