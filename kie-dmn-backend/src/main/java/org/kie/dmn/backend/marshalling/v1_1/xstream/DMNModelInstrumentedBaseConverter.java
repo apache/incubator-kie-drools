@@ -46,8 +46,8 @@ public abstract class DMNModelInstrumentedBaseConverter
     protected void assignAttributes(HierarchicalStreamReader reader, Object parent) {
         DMNModelInstrumentedBase mib = (DMNModelInstrumentedBase) parent;
 
-        Map<String, String> currentNSCtx = ((CustomStaxReader) reader.underlyingReader()).getNSContext();
-        mib.getNSContext().putAll(currentNSCtx);
+        Map<String, String> currentNSCtx = ((CustomStaxReader) reader.underlyingReader()).getNsContext();
+        mib.getNsContext().putAll(currentNSCtx);
     }
     
     @Override
@@ -59,9 +59,8 @@ public abstract class DMNModelInstrumentedBaseConverter
         DMNModelInstrumentedBase mib = (DMNModelInstrumentedBase) parent;
 
         CustomStaxWriter staxWriter = ((CustomStaxWriter) writer.underlyingWriter());
-        for (Entry<String, String> kv : mib.getNSContext().entrySet()) {
+        for (Entry<String, String> kv : mib.getNsContext().entrySet()) {
             try {
-                System.out.println("writing: "+kv);
                 if (XMLConstants.DEFAULT_NS_PREFIX.equals(kv.getKey())) {
                     // skip as that is the default namespace is handled by the stax driver.
                 } else {
