@@ -91,6 +91,10 @@ public class MavenRepository {
         return defaultMavenRepository;
     }
 
+    public void addRemoteRepository(RemoteRepository remoteRepository) {
+        remoteRepositoriesForRequest.add(remoteRepository);
+    }
+
     private Collection<RemoteRepository> initRemoteRepositoriesForRequest() {
         final MavenRepositoryConfiguration repositoryUtils = getMavenRepositoryConfiguration();
         Collection<RemoteRepository> remoteRepos = new HashSet<RemoteRepository>();
