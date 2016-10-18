@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Person implements Serializable {
+public class Person {
 
     private String name;
     private int    age;
