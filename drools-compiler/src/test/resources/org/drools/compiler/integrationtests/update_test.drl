@@ -23,10 +23,6 @@ global java.util.List drivers;
 global java.util.List expensiveCheese;
 
 
-/* ******* */
-/* QUERIES */
-/* ******* */
-
 query countPerson
    $personCount : Long() from accumulate ($person: Person(), count( $person ))
 end
@@ -43,9 +39,6 @@ query cheeseTypes
     $cheeseTypes : List() from accumulate ($cheese : Cheese(), collectList ( $cheese ))
 end
 
-/* ***** */
-/* RULES */
-/* ***** */
 
 rule "driver"
 when

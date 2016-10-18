@@ -16,6 +16,7 @@
 package org.drools.compiler.integrationtests;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -35,7 +36,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 public class UpdateTest {
@@ -44,26 +45,22 @@ public class UpdateTest {
 
     private KieSession ksession;
 
-    /* ************** */
-    /* PUBLIC METHODS */
-    /* ************** */
-
     @Before
     public void setUp() {
-        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
+        final KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
 
         kfs.write(KieServices.Factory.get().getResources()
                 .newClassPathResource(DELETE_TEST_DRL, DeleteTest.class));
 
-        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
+        final KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
 
         kbuilder.buildAll();
 
-        List<Message> res = kbuilder.getResults().getMessages(Message.Level.ERROR);
+        final List<Message> res = kbuilder.getResults().getMessages(Message.Level.ERROR);
 
         assertEquals(res.toString(), 0, res.size());
 
-        KieBase kbase = KieServices.Factory.get()
+        final KieBase kbase = KieServices.Factory.get()
                 .newKieContainer(kbuilder.getKieModule().getReleaseId())
                 .getKieBase();
 
@@ -77,210 +74,177 @@ public class UpdateTest {
 
     @Test
     public void updateTheOnlyFactTest() {
-        Person person = new Person("George", 18);
-        FactHandle factPerson = ksession.insert(person);
+        final Person person = new Person("George", 18);
+        final FactHandle factPerson = ksession.insert(person);
         assertThat(ksession.getObjects()).hasSize(1);
         assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Person.class);
 
         Person personToBeVerified = (Person) ksession.getObjects().iterator().next();
-        assertThat(personToBeVerified.getName()).isEqualTo("George");
-        assertThat(personToBeVerified.getAge()).isEqualTo(18);
+        verify(person, personToBeVerified, 18, "George", true);
 
         ksession.update(factPerson, new Person("Henry", 21));
-        assertThat(ksession.getObjects()).hasSize(1);
-        assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Person.class);
+        checkViaGetObjects(1, Person.class);
 
         personToBeVerified = (Person) ksession.getObjects().iterator().next();
-        assertThat(personToBeVerified).isNotEqualTo(person);
-        assertThat(personToBeVerified.getAge()).isEqualTo(21);
-        assertThat(personToBeVerified.getName()).isEqualTo("Henry");
+        verify(person, personToBeVerified, 21, "Henry", false);
     }
 
     @Test(expected = NullPointerException.class)
     public void updateWithNullTest() {
-        Person person = new Person("George", 18);
-        FactHandle factPerson = ksession.insert(person);
-        assertThat(ksession.getObjects()).hasSize(1);
+        final Person person = new Person("George", 18);
+        final FactHandle factPerson = ksession.insert(person);
+        checkViaGetObjects(1, Person.class);
 
         ksession.update(factPerson, null);
     }
 
     @Test
     public void updateWithDifferentClassGetQueryResultsTest() {
-        Person person = new Person("George", 18);
-        FactHandle fact = ksession.insert(person);
+        final Person person = new Person("George", 18);
+        final FactHandle fact = ksession.insert(person);
 
-        QueryResults results = ksession.getQueryResults("persons");
-        assertThat(results).isNotEmpty();
-        QueryResultsRow resultsRow = results.iterator().next();
+        checkObjectsViaQuery(Person.class, "persons", person);
 
-        /* checking original object */
-        assertThat(resultsRow.get("$persons")).isInstanceOf(List.class);
-        List<Object> persons = (List<Object>) resultsRow.get("$persons");
-        assertThat(persons).hasSize(1);
-        assertThat(persons).hasOnlyElementsOfType(Person.class);
-        assertThat(persons.get(0)).isEqualTo(person);
-
-        Cheese cheese = new Cheese("Camembert", 2);
+        final Cheese cheese = new Cheese("Camembert", 2);
         ksession.update(fact, cheese);
 
-        /* getting updated object via getQueryResults(String s) */
-        results = ksession.getQueryResults("persons");
-        assertThat(results).isNotEmpty();
-        resultsRow = results.iterator().next();
-        assertThat(resultsRow.get("$persons")).isInstanceOf(List.class);
-        persons = (List<Object>) resultsRow.get("$persons");
-        assertThat(persons).isEmpty();
+        checkViaQueryContainsNoPersons();
 
-        /* getting updated object via getObjects() */
-        assertThat(ksession.getObjects()).hasSize(1);
-        assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Cheese.class);
+        checkViaGetObjects(1, Cheese.class);
         Cheese cheeseToBeVerified = (Cheese) ksession.getObjects().iterator().next();
-        assertThat(cheeseToBeVerified.getPrice()).isEqualTo(2);
-        assertThat(cheeseToBeVerified.getType()).isEqualTo("Camembert");
+        verify(cheeseToBeVerified, 2, "Camembert");
 
-        /* getting updated object via getObject(FactHandle f) */
-        assertThat(ksession.getObject(fact)).isNotNull();
-        assertThat(ksession.getObject(fact)).isInstanceOf(Cheese.class);
-        cheeseToBeVerified = (Cheese) ksession.getObject(fact);
-        assertThat(cheeseToBeVerified.getPrice()).isEqualTo(2);
-        assertThat(cheeseToBeVerified.getType()).isEqualTo("Camembert");
+        cheeseToBeVerified = checkViaGetObject(fact, Cheese.class);
+        verify(cheeseToBeVerified, 2, "Camembert");
 
     }
 
     @Test
     public void updateWithDifferentClassGetObjectsTest() {
-        Person person = new Person("George", 18);
-        FactHandle factPerson = ksession.insert(person);
-        assertThat(ksession.getObjects()).hasSize(1);
-        assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Person.class);
-        Person personToBeVerified = (Person) ksession.getObjects().iterator().next();
+        final Person person = new Person("George", 18);
+        final FactHandle factPerson = ksession.insert(person);
+        final Person personToBeVerified = checkViaGetObjects(1, Person.class).get(0);
         assertThat(personToBeVerified).isEqualTo(person);
 
-        Cheese cheese = new Cheese("Camembert", 50);
+        final Cheese cheese = new Cheese("Camembert", 50);
         ksession.update(factPerson, cheese);
-        assertThat(ksession.getObjects()).hasSize(1);
-        assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Cheese.class);
+        checkViaGetObjects(1, Cheese.class);
 
-        Cheese cheeseToBeVerified = (Cheese) ksession.getObjects().iterator().next();
-        assertThat(cheeseToBeVerified.getPrice()).isEqualTo(50);
-        assertThat(cheeseToBeVerified.getType()).isEqualTo("Camembert");
-
+        final Cheese cheeseToBeVerified = (Cheese) ksession.getObjects().iterator().next();
+        verify(cheeseToBeVerified, 50, "Camembert");
     }
 
     @Test
     public void updateFireRulesTest() {
-        Person george = new Person("George", 17);
-        Person henry = new Person("Henry", 25);
-        FactHandle georgeFact = ksession.insert(george);
+        final Person george = new Person("George", 17);
+        final Person henry = new Person("Henry", 25);
+        final FactHandle georgeFact = ksession.insert(george);
         ksession.insert(henry);
 
-        QueryResults results = ksession.getQueryResults("persons");
-        assertThat(results).isNotEmpty();
-        QueryResultsRow resultsRow = results.iterator().next();
-        assertThat(resultsRow.get("$persons")).isInstanceOf(List.class);
-        assertThat((List<Object>) resultsRow.get("$persons")).hasOnlyElementsOfType(Person.class);
-        List<Person> persons = new ArrayList<>((List<Person>) resultsRow.get("$persons"));
-        assertThat(persons).hasSize(2);
-        persons.sort(new PersonAlphabeticalComparator());
-        assertThat(persons.get(0).getName()).isEqualTo("George");
-        assertThat(persons.get(0).getAge()).isEqualTo(17);
-        assertThat(persons.get(1).getName()).isEqualTo("Henry");
-        assertThat(persons.get(1).getAge()).isEqualTo(25);
+        checkObjectsViaQuery(Person.class, "persons", george, henry);
 
         final List<Person> drivers = new ArrayList<>();
         ksession.setGlobal("drivers", drivers);
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        assertThat(drivers).isNotEmpty();
-        assertThat(drivers).hasSize(1);
-        assertThat(drivers).contains(henry);
-        assertThat(drivers).doesNotContain(george);
+        verifyList(drivers, george, henry);
 
         george.setAge(18);
         ksession.update(georgeFact, george);
-        results = ksession.getQueryResults("persons");
-        assertThat(results).isNotEmpty();
-        resultsRow = results.iterator().next();
-        assertThat(resultsRow.get("$persons")).isInstanceOf(List.class);
-        assertThat((List<Object>) resultsRow.get("$persons")).hasOnlyElementsOfType(Person.class);
-        persons = new ArrayList<>((List<Person>) resultsRow.get("$persons"));
-        assertThat(persons).hasSize(2);
-        persons.sort(new PersonAlphabeticalComparator());
-        assertThat(persons.get(0).getName()).isEqualTo("George");
-        assertThat(persons.get(0).getAge()).isEqualTo(18);
-        assertThat(persons.get(1).getName()).isEqualTo("Henry");
-        assertThat(persons.get(1).getAge()).isEqualTo(25);
+        checkObjectsViaQuery(Person.class, "persons", george, henry);
 
         assertThat(ksession.fireAllRules()).isEqualTo(1);
 
-        assertThat(drivers).isNotEmpty();
-        assertThat(drivers).hasSize(2);
-        assertThat(drivers).contains(henry);
-        assertThat(drivers).contains(george);
+        verifyList(drivers, null, george, henry);
     }
 
     @Test
     public void updateFactOnRuleFireTest() {
-        Cheese camembert = new Cheese("Camembert", 19);
-        Cheese cheddar = new Cheese("Cheddar", 45);
+        final Cheese camembert = new Cheese("Camembert", 19);
+        final Cheese cheddar = new Cheese("Cheddar", 45);
 
         ksession.insert(camembert);
         ksession.insert(cheddar);
 
-        QueryResults results = ksession.getQueryResults("cheeseTypes");
-        assertThat(results).isNotEmpty();
-        QueryResultsRow resultsRow = results.iterator().next();
-        assertThat(resultsRow.get("$cheeseTypes")).isInstanceOf(List.class);
-        assertThat((List<Object>) resultsRow.get("$cheeseTypes")).hasOnlyElementsOfType(Cheese.class);
-        List<Cheese> cheese = new ArrayList<>((List<Cheese>) resultsRow.get("$cheeseTypes"));
-        assertThat(cheese).hasSize(2);
-        cheese.sort(new CheeseTypeAlphabeticalComparator());
-        assertThat(cheese.get(0).getType()).isEqualTo("Camembert");
-        assertThat(cheese.get(0).getPrice()).isEqualTo(19);
-        assertThat(cheese.get(1).getType()).isEqualTo("Cheddar");
-        assertThat(cheese.get(1).getPrice()).isEqualTo(45);
+
+        checkObjectsViaQuery(Cheese.class, "cheeseTypes", camembert, cheddar);
 
         final List<Cheese> expensiveCheese = new ArrayList<>();
         ksession.setGlobal("expensiveCheese", expensiveCheese);
-        int firedRules = ksession.fireAllRules();
+        final int firedRules = ksession.fireAllRules();
         assertThat(firedRules).isEqualTo(2);
-        assertThat(expensiveCheese).hasSize(1);
-        assertThat(expensiveCheese).contains(cheddar);
-        assertThat(expensiveCheese).doesNotContain(camembert);
+        verifyList(expensiveCheese, camembert, cheddar);
 
+        checkObjectsViaQuery(Cheese.class, "cheeseTypes", camembert, cheddar);
+        assertThat(camembert.getPrice()).isEqualTo(21);
+        assertThat(cheddar.getPrice()).isEqualTo(45);
+    }
 
-        results = ksession.getQueryResults("cheeseTypes");
+    private <T> void checkObjectsViaQuery(Class<T> expectedContentType, String query, T... objectsToCheck) {
+        QueryResults results = ksession.getQueryResults(query);
         assertThat(results).isNotEmpty();
-        resultsRow = results.iterator().next();
-        assertThat(resultsRow.get("$cheeseTypes")).isInstanceOf(List.class);
-        assertThat((List<Object>) resultsRow.get("$cheeseTypes")).hasOnlyElementsOfType(Cheese.class);
-        cheese = new ArrayList<>((List<Cheese>) resultsRow.get("$cheeseTypes"));
-        assertThat(cheese).hasSize(2);
-        cheese.sort(new CheeseTypeAlphabeticalComparator());
-        assertThat(cheese.get(0).getType()).isEqualTo("Camembert");
-        assertThat(cheese.get(0).getPrice()).isEqualTo(21);
-        assertThat(cheese.get(1).getType()).isEqualTo("Cheddar");
-        assertThat(cheese.get(1).getPrice()).isEqualTo(45);
+        QueryResultsRow resultsRow = results.iterator().next();
+
+        assertThat(resultsRow.get("$" + query)).isInstanceOf(List.class);
+        List<Object> objects = (List<Object>) resultsRow.get("$" + query);
+        assertThat(objects).hasSize(objectsToCheck.length);
+        assertThat(objects).hasOnlyElementsOfType(expectedContentType);
+        assertThat(objects).containsAll(Arrays.asList(objectsToCheck));
     }
 
-    /* ************** */
-    /* PRIVATE SECTOR */
-    /* ************** */
-    private static class PersonAlphabeticalComparator implements Comparator<Person> {
+    private void checkViaQueryContainsNoPersons() {
+        QueryResults results = ksession.getQueryResults("persons");
+        assertThat(results).isNotEmpty();
 
-        @Override
-        public int compare(Person o1, Person o2) {
-            return o1.getName().compareToIgnoreCase(o2.getName());
+        results = ksession.getQueryResults("persons");
+        assertThat(results).isNotEmpty();
+        QueryResultsRow resultsRow = results.iterator().next();
+        assertThat(resultsRow.get("$persons")).isInstanceOf(List.class);
+        List<Object> persons = (List<Object>) resultsRow.get("$persons");
+        assertThat(persons).isEmpty();
+    }
+
+    private <T> List<T> checkViaGetObjects(int expectedSize, Class<T> expected) {
+        if (expectedSize < 1) {
+            assertThat(ksession.getObjects()).isEmpty();
+        } else {
+            assertThat(ksession.getObjects()).hasSize(expectedSize);
+            assertThat(ksession.getObjects()).hasOnlyElementsOfType(expected);
+            return (List<T>) new ArrayList<Object>(ksession.getObjects());
         }
+        return null;
     }
 
-    private static class CheeseTypeAlphabeticalComparator implements Comparator<Cheese> {
+    private <T> T checkViaGetObject(FactHandle fact, Class<T> expected) {
+        assertThat(ksession.getObject(fact)).isNotNull();
+        assertThat(ksession.getObject(fact)).isInstanceOf(expected);
+        return (T) ksession.getObject(fact);
+    }
 
-        @Override
-        public int compare(Cheese c1, Cheese c2) {
-            return c1.getType().compareToIgnoreCase(c2.getType());
+    private void verify(Cheese cheeseToBeVerified, int price, String type) {
+        assertThat(cheeseToBeVerified.getPrice()).isEqualTo(price);
+        assertThat(cheeseToBeVerified.getType()).isEqualTo(type);
+    }
+
+    private void verify(Person original, Person personToBeVerified, int age, String name, boolean shouldBeEqual) {
+        if (original !=null) {
+            if (shouldBeEqual) {
+                assertThat(personToBeVerified).isEqualTo(original);
+            } else {
+                assertThat(personToBeVerified).isNotEqualTo(original);
+            }
+        }
+        assertThat(personToBeVerified.getAge()).isEqualTo(age);
+        assertThat(personToBeVerified.getName()).isEqualTo(name);
+    }
+
+    private <T> void verifyList(List<T> list, T objectToNotContain, T... objectsToContain) {
+        assertThat(list).isNotEmpty();
+        assertThat(list).hasSize(objectsToContain.length);
+        assertThat(list).containsAll(Arrays.asList(objectsToContain));
+        if (objectToNotContain != null) {
+            assertThat(list).doesNotContain(objectToNotContain);
         }
     }
 

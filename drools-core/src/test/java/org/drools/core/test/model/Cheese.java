@@ -23,7 +23,7 @@ import java.io.Serializable;
 
 public class Cheese
     implements
-    CheeseInterface, Serializable {
+    CheeseInterface {
 
     public static String staticString;
 
