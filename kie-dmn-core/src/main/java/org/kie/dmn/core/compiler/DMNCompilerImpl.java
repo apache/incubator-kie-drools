@@ -22,11 +22,13 @@ import org.kie.dmn.core.api.DMNCompiler;
 import org.kie.dmn.core.api.DMNModel;
 import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.core.ast.InputDataNode;
+import org.kie.dmn.core.ast.ItemDefNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.feel.model.v1_1.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.Reader;
 
 public class DMNCompilerImpl implements DMNCompiler {
@@ -36,22 +38,36 @@ public class DMNCompilerImpl implements DMNCompiler {
     @Override
     public DMNModel compile(Resource resource) {
         try {
-            Definitions dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal( resource.getReader() );
-            if ( dmndefs != null ) {
-                DMNModelImpl model = new DMNModelImpl( dmndefs );
-
-                processDrgElements( model, dmndefs );
-                return model;
-            }
-        } catch ( Exception e ) {
-            logger.error( "Error compiling model for resource '" + resource.getSourcePath() + "'", e );
+            return compile( resource.getReader() );
+        } catch ( IOException e ) {
+            logger.error( "Error retrieving reader for resource: "+resource.getSourcePath(), e );
         }
         return null;
     }
 
     @Override
     public DMNModel compile(Reader source) {
+        try {
+            Definitions dmndefs = DMNMarshallerFactory.newDefaultMarshaller().unmarshal( source );
+            if ( dmndefs != null ) {
+                DMNModelImpl model = new DMNModelImpl( dmndefs );
+
+                processItemDefinitions( model, dmndefs );
+                processDrgElements( model, dmndefs );
+                return model;
+            }
+        } catch ( Exception e ) {
+            logger.error( "Error compiling model from source.", e );
+        }
         return null;
+    }
+
+    private void processItemDefinitions(DMNModelImpl model, Definitions dmndefs) {
+        for( ItemDefinition id : dmndefs.getItemDefinition() ) {
+            ItemDefNode idn = new ItemDefNode( id );
+            model.addItemDefinition( idn );
+
+        }
     }
 
     private void processDrgElements(DMNModelImpl model, Definitions dmndefs) {
