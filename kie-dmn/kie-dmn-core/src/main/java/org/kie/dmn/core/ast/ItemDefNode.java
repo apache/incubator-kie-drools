@@ -16,25 +16,39 @@
 
 package org.kie.dmn.core.ast;
 
-import org.kie.dmn.feel.model.v1_1.NamedElement;
+import org.kie.dmn.feel.model.v1_1.ItemDefinition;
 
-public abstract class DMNBaseNode {
+public class ItemDefNode
+        extends DMNBaseNode
+        implements DMNNode {
 
-    private NamedElement source;
+    private ItemDefinition itemDef;
 
-    public DMNBaseNode() {
+    public ItemDefNode() {
     }
 
-    public DMNBaseNode(NamedElement source) {
-        this.source = source;
+    public ItemDefNode(ItemDefinition itemDef) {
+        super( itemDef );
+        this.itemDef = itemDef;
+    }
+
+    public ItemDefinition getItemDef() {
+        return itemDef;
+    }
+
+    public void setItemDef(ItemDefinition itemDef) {
+        this.itemDef = itemDef;
     }
 
     public String getId() {
-        return source != null ? source.getId() : null;
+        return itemDef.getId();
     }
 
     public String getName() {
-        return source != null ? source.getName() : null;
+        return itemDef.getName();
     }
 
+    public boolean isCollection() {
+        return itemDef.isIsCollection();
+    }
 }

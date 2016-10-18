@@ -18,6 +18,7 @@ package org.kie.dmn.core.api;
 
 import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.core.ast.InputDataNode;
+import org.kie.dmn.core.ast.ItemDefNode;
 import org.kie.dmn.feel.model.v1_1.Definitions;
 
 import java.util.Collection;
@@ -46,4 +47,10 @@ public interface DMNModel {
     Set<InputDataNode> getRequiredInputsForDecisionName(String decisionName );
 
     Set<InputDataNode> getRequiredInputsForDecisionId( String decisionName );
+
+    ItemDefNode getItemDefinitionById(String id);
+
+    ItemDefNode getItemDefinitionByName(String name);
+
+    Set<ItemDefNode> getItemDefinitions();
 }
