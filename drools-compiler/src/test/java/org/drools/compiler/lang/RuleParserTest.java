@@ -16,6 +16,15 @@
 
 package org.drools.compiler.lang;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import junit.framework.TestCase;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CharStream;
@@ -53,19 +62,11 @@ import org.drools.compiler.lang.descr.WindowDeclarationDescr;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import static org.drools.compiler.compiler.DRLFactory.buildParser;
+import static org.drools.compiler.compiler.DRLFactory.*;
 
 public class RuleParserTest extends TestCase {
 
@@ -3135,7 +3136,7 @@ public class RuleParserTest extends TestCase {
                 "then\n" + 
                 "end\n";
         final PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
-                                                        drl );
+                                                       drl );
 
         assertEquals( 1,
                       pkg.getRules().size() );
@@ -3866,7 +3867,7 @@ public class RuleParserTest extends TestCase {
         // prefix for queries from the ternary operator "? :"
         final String text = "rule X when Cheese() from $cheesery ?person( \"Mark\", 42; ) then end";
         RuleDescr rule = (RuleDescr) parse( "rule",
-                                             text );
+                                            text );
         assertFalse( parser.getErrors().toString(),
                      parser.hasErrors() );
 
@@ -4238,6 +4239,27 @@ public class RuleParserTest extends TestCase {
                       pd.getObjectType() );
         assertEquals( "Y",
                       pd.getSource().getText() );
+    }
+
+    @Test
+    @Ignore("failing unit test")
+    //See https://bugzilla.redhat.com/show_bug.cgi?id=1269366
+    public void testRuleNameWithUnderScore() throws Exception {
+        final String text = "package org.drools\n" +
+                "rule 1_1\n" +
+                "when\n" +
+                "then\n" +
+                "end\n";
+
+        final PackageDescr pkg = (PackageDescr) parse( "compilationUnit",
+                                                       text );
+        assertNotNull( pkg );
+        assertEquals( 1,
+                      pkg.getRules() );
+
+        final RuleDescr rule = pkg.getRules().get( 0 );
+        assertEquals( "1_1",
+                      rule.getName() );
     }
 
     private Object parse( final String parserRuleName,
