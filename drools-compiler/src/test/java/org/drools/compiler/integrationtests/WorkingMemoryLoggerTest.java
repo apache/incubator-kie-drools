@@ -49,11 +49,11 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
         // BZ-1271909
         String drl =
                 "import " + Message.class.getCanonicalName() + "\n" +
-                "rule \"Hello World\"\n" +
+                "rule \"Hello World\" no-loop\n" +
                 "    when\n" +
                 "        $messageInstance : Message( $myMessage : message )\n" +
                 "    then\n" +
-                "        delete($messageInstance);\n" +
+                "        update($messageInstance);\n" +
                 "end\n";
 
         KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
@@ -73,5 +73,58 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
                 assertTrue( ((ActivationLogEvent) logEvent ).getDeclarations().contains( "$myMessage" ));
             }
         }
+    }
+
+    public static class AnyType {
+        private Integer typeId = 1;
+        private String typeName = "test";
+
+        public String getTypeName() {
+            return typeName;
+        }
+
+        public Integer getTypeId() {
+            return typeId.intValue();
+        }
+
+        public void setTypeId(Integer id) {
+            typeId = id;
+        }
+
+        public AnyType() {
+            typeId = 1;
+            typeName = "test";
+        }
+
+        public AnyType(Integer id, String type) {
+            typeId = id;
+            typeName = type;
+        }
+    }
+
+    @Test
+    public void testRetraction() throws Exception {
+        // RHBRMS-2641
+        String drl =
+                 "import " + AnyType.class.getCanonicalName() + ";\n" +
+                 "rule \"retract\" when\n" +
+                 "		$any : AnyType( $typeId :typeId, typeName in (\"Standard\", \"Extended\") )\n" +
+                 "		$any_c1 : AnyType( typeId == $typeId, typeName not in (\"Standard\", \"Extended\") ) \r\n" +
+                 "	then\n" +
+                 "		delete($any);\n" +
+                 "		$any.setTypeId(null);\n" +
+                 "end";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger( (WorkingMemory) ksession );
+
+        ksession.insert(new AnyType(1, "Standard"));
+        ksession.insert(new AnyType(1, "Extended"));
+        ksession.insert(new AnyType(1, "test"));
+
+        assertEquals( 2, ksession.fireAllRules() );
     }
 }
