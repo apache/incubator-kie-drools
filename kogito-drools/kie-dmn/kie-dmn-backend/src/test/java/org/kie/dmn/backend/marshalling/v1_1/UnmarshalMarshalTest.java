@@ -118,14 +118,14 @@ public class UnmarshalMarshalTest {
         Definitions unmarshal = marshaller.unmarshal( new InputStreamReader( fis ) );
         
         Validator v = Validator.forLanguage(Languages.W3C_XML_SCHEMA_NS_URI);
-        v.setSchemaSource(new StreamSource( this.getClass().getResourceAsStream("/dmn.xsd")));
-        ValidationResult r = v.validateInstance(new StreamSource( inputXMLFile ));
-        if (!r.isValid()) {
-            for ( ValidationProblem p : r.getProblems()) {
+        v.setSchemaSource(new StreamSource( this.getClass().getResource("/dmn.xsd").getFile() ));
+        ValidationResult validateInputResult = v.validateInstance(new StreamSource( inputXMLFile ));
+        if (!validateInputResult.isValid()) {
+            for ( ValidationProblem p : validateInputResult.getProblems()) {
                 System.err.println(p);
             }
         }
-        assertTrue(r.isValid());
+        assertTrue(validateInputResult.isValid());
         
         new File(baseOutputDir, subdir).mkdirs();
         FileOutputStream sourceFos = new FileOutputStream( new File(baseOutputDir, subdir + "a." + xmlfile) );
@@ -137,14 +137,24 @@ public class UnmarshalMarshalTest {
         sourceFos.close();
                 
         System.out.println( marshaller.marshal(unmarshal) );
-        FileWriter targetFos = new FileWriter( new File(baseOutputDir, subdir + "b." + xmlfile) );
+        File outputXMLFile = new File(baseOutputDir, subdir + "b." + xmlfile);
+        FileWriter targetFos = new FileWriter( outputXMLFile );
         marshaller.marshal(unmarshal, targetFos);        
         targetFos.flush();
         targetFos.close();
         
+        // Should also validate output XML:
+        ValidationResult validateOutputResult = v.validateInstance(new StreamSource( outputXMLFile ));
+        if (!validateOutputResult.isValid()) {
+            for ( ValidationProblem p : validateOutputResult.getProblems()) {
+                System.err.println(p);
+            }
+        }
+        assertTrue(validateOutputResult.isValid());
+        
         System.out.println("\n---\nDefault XMLUnit comparison:");
         Source control = Input.fromFile( inputXMLFile ).build();
-        Source test = Input.fromFile( new File(baseOutputDir, subdir + "b." + xmlfile) ).build();
+        Source test = Input.fromFile( outputXMLFile ).build();
         Diff allDiffsSimilarAndDifferent = DiffBuilder
                 .compare( control )
                 .withTest( test )
@@ -211,6 +221,9 @@ public class UnmarshalMarshalTest {
                 .checkForSimilar()
                 .build();
         checkSimilar.getDifferences().forEach(System.err::println);
+        if (!checkSimilar.getDifferences().iterator().hasNext()) {
+            System.out.println("[ EMPTY - no diffs using customized similarity ]");
+        }
         assertFalse("XML are NOT similar: " + checkSimilar.toString(), checkSimilar.hasDifferences());
     }
 }
