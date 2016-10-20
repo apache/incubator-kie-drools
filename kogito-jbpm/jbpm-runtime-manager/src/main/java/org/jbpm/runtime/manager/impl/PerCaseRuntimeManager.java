@@ -149,12 +149,14 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
                 Object contexts = mapper.findContextId(ksession.getIdentifier(), this.identifier);
                 if (contexts instanceof Collection) {
                     RuntimeEngine finalRuntimeEngnie = runtime;
+                    KieSession finalKieSession = ksession;
                     ((Collection<Object>) contexts).forEach(o -> {
                         try {
                             
                             saveLocalRuntime(null, Long.parseLong(o.toString()), finalRuntimeEngnie);
                         } catch (NumberFormatException e) {
                             saveLocalRuntime(o.toString(), null, finalRuntimeEngnie);
+                            finalKieSession.getEnvironment().set("CaseId", o.toString());
                         }
                     });                    
                 }
@@ -662,13 +664,14 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
             } else {
                 Object contexts = mapper.findContextId(ksession.getIdentifier(), manager.getIdentifier());
                 if (contexts instanceof Collection) {
-                    
+                    KieSession finalKieSession = ksession;
                     ((Collection<Object>) contexts).forEach(o -> {
                         try {
                             
                             saveLocalRuntime(null, Long.parseLong(o.toString()), engine);
                         } catch (NumberFormatException e) {
                             saveLocalRuntime(o.toString(), null, engine);
+                            finalKieSession.getEnvironment().set("CaseId", o.toString());
                         }
                     });                    
                 }

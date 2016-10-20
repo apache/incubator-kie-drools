@@ -34,6 +34,8 @@ import org.jbpm.casemgmt.api.model.instance.CaseRoleInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentInstance;
 import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.internal.task.api.TaskModelFactory;
+import org.kie.internal.task.api.TaskModelProvider;
 
 /*
  * Implementation note: since the CaseFileInstanceImpl will be marshalled/unmarshalled by 
@@ -54,6 +56,8 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
     private Map<String, Object> data = new HashMap<>();    
     private Map<String, CaseRoleInstance> roles = new HashMap<>();    
     private List<CommentInstance> comments = new ArrayList<>();
+    
+    private TaskModelFactory factory = TaskModelProvider.getFactory();
     
     public CaseFileInstanceImpl() {
         
@@ -167,6 +171,19 @@ public class CaseFileInstanceImpl implements CaseFileInstance, CaseAssignment, S
         if (caseRoleInstance != null) {
             ((CaseRoleInstanceImpl)caseRoleInstance).removeRoleAssignment(entity);
         }      
+    }
+    
+
+    @Override
+    public void assignUser(String roleName, String userId) {
+       assign(roleName, factory.newUser(userId));
+        
+    }
+
+    @Override
+    public void assignGroup(String roleName, String groupId) {
+        assign(roleName, factory.newGroup(groupId));
+        
     }
     
     @Override

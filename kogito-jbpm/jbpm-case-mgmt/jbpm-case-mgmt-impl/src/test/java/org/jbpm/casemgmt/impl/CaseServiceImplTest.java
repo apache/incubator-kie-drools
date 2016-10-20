@@ -54,6 +54,7 @@ import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.jbpm.services.api.model.VariableDesc;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.junit.After;
 import org.junit.Before;
@@ -63,6 +64,8 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.KieInternalServices;
+import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
 import org.kie.scanner.MavenRepository;
@@ -211,6 +214,14 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             assertNotNull(cInstance.getCaseFile());
             assertEquals("my first case", cInstance.getCaseFile().getData("name"));
             assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            
+            Collection<VariableDesc> vars = runtimeDataService.getVariablesCurrentState(((CaseInstanceImpl)cInstance).getProcessInstanceId());
+            assertNotNull(vars);
+            assertEquals(2, vars.size());
+            Map<String, Object> mappedVars = vars.stream().collect(toMap(v-> v.getVariableId(), v -> v.getNewValue()));
+            assertEquals("my first case", mappedVars.get("caseFile_name"));
+            assertEquals(FIRST_CASE_ID, mappedVars.get("CaseId"));
             
             caseService.cancelCase(caseId);            
             try {
@@ -1193,6 +1204,204 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
                 // expected as it was aborted
             }
             caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testStartEmptyCaseViaProcessService() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        
+        String caseId = FIRST_CASE_ID;
+        
+        CorrelationKey correlationKey = KieInternalServices.Factory.get().newCorrelationKeyFactory().newCorrelationKey(caseId);
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "my case via process service");
+        Long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, correlationKey, params);
+        
+        assertNotNull(processInstanceId);
+        
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals(caseId, cInstance.getCaseId());
+            
+            caseService.cancelCase(caseId);            
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case was aborted so it should not be found any more");
+            } catch (CaseNotFoundException e) {
+                // expected as it was aborted
+            }
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testStartEmptyCaseViaProcessServiceWithoutCorrelationKey() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);               
+               
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "my case via process service");
+        Long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, params);        
+        assertNotNull(processInstanceId);
+        
+        String caseId = processInstanceId.toString();
+        
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals(caseId, cInstance.getCaseId());
+            
+            caseService.cancelCase(caseId);            
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case was aborted so it should not be found any more");
+            } catch (CaseNotFoundException e) {
+                // expected as it was aborted
+            }
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testStartEmptyCaseViaProcessServiceWithoutCorrelationKeyWithMilestones() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);               
+               
+        Map<String, Object> params = new HashMap<>();
+        params.put("s", "my case via process service");
+        Long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, params);        
+        assertNotNull(processInstanceId);
+        
+        String caseId = processInstanceId.toString();
+        
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals(caseId, cInstance.getCaseId());
+            
+            Collection<CaseMilestoneInstance> milestones = caseRuntimeDataService.getCaseInstanceMilestones(caseId, true, new QueryContext());
+            assertNotNull(milestones);
+            assertEquals(0, milestones.size());
+            
+            // trigger milestone node
+            caseService.triggerAdHocFragment(caseId, "Milestone1", null);
+            
+            milestones = caseRuntimeDataService.getCaseInstanceMilestones(caseId, true, new QueryContext());
+            assertNotNull(milestones);
+            assertEquals(1, milestones.size());
+            
+            caseService.cancelCase(caseId);            
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case was aborted so it should not be found any more");
+            } catch (CaseNotFoundException e) {
+                // expected as it was aborted
+            }
+            caseId = null;
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testStartThenCancelRetrieveCaseFile() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        
+        try {            
+            caseService.getCaseFileInstance(FIRST_CASE_ID);
+            fail("There is no case yet started");
+        } catch (CaseNotFoundException e) {
+            // expected
+        }        
+        
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", "my first case");
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, data);
+        
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), EMPTY_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            assertEquals("my first case", cInstance.getCaseDescription());
+            
+            CaseFileInstance caseFileFromCase = caseService.getCaseFileInstance(FIRST_CASE_ID);
+            assertNotNull(caseFileFromCase);
+            
+            caseService.cancelCase(caseId);            
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case was aborted so it should not be found any more");
+            } catch (CaseNotFoundException e) {
+                // expected as it was aborted
+            }
+            
+            caseFileFromCase = caseService.getCaseFileInstance(FIRST_CASE_ID);
+            assertNotNull(caseFileFromCase);
+            
+            caseService.destroyCase(caseId);            
+            try {
+                caseService.getCaseInstance(caseId);
+                fail("Case was aborted so it should not be found any more");
+            } catch (CaseNotFoundException e) {
+                // expected as it was aborted
+            }
+            caseId = null;
+            
+            try {            
+                caseService.getCaseFileInstance(FIRST_CASE_ID);
+                fail("There is no case yet started");
+            } catch (CaseNotFoundException e) {
+                // expected
+            }
+            
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
             fail("Unexpected exception " + e.getMessage());

@@ -18,17 +18,26 @@ package org.jbpm.casemgmt.impl.command;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.event.ProcessEventSupport;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
+import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.services.api.ProcessService;
 import org.kie.api.KieServices;
 import org.kie.api.command.KieCommands;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.command.Context;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
+import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,8 +81,35 @@ public class StartCaseCommand extends CaseCommand<Void> {
         Map<String, Object> params = new HashMap<>();
         // set case id to allow it to use CaseContext when creating runtime engine
         params.put(EnvironmentName.CASE_ID, caseId);
-        long processInstanceId = processService.startProcess(deploymentId, caseDefinitionId, correlationKey, params);
+        final long processInstanceId = processService.startProcess(deploymentId, caseDefinitionId, correlationKey, params);
         logger.debug("Case {} successfully started (process instance id {})", caseId, processInstanceId);
+        
+        final Map<String, Object> caseData = caseFile.getData();
+        if (caseData != null && !caseData.isEmpty()) {
+            processService.execute(deploymentId, CaseContext.get(caseId), new GenericCommand<Void>() {
+    
+                private static final long serialVersionUID = -7093369406457484236L;
+    
+                @Override
+                public Void execute(Context context) {
+                    KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                    ProcessInstance pi = (ProcessInstance) ksession.getProcessInstance(processInstanceId);
+                    if (pi != null) {
+                        ProcessEventSupport processEventSupport = ((InternalProcessRuntime) ((InternalKnowledgeRuntime) ksession).getProcessRuntime()).getProcessEventSupport();
+                        for (Entry<String, Object> entry : caseData.entrySet()) {  
+                            String name = "caseFile_" + entry.getKey();
+                            processEventSupport.fireAfterVariableChanged(
+                                name,
+                                name,
+                                null, entry.getValue(), 
+                                pi,
+                                (KnowledgeRuntime) ksession);
+                        }
+                    }
+                    return null;
+                }
+            });
+        }
         caseEventSupport.fireAfterCaseStarted(caseId, deploymentId, caseDefinitionId, caseFile, processInstanceId);
         return null;
     }

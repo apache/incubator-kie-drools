@@ -27,7 +27,9 @@ import org.jbpm.casemgmt.api.model.instance.CaseRoleInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentSortBy;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
+import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.User;
 import org.kie.internal.query.QueryContext;
 
 /**
@@ -401,4 +403,18 @@ public interface CaseService {
      * @return
      */
     TaskSpecification newTaskSpec(String nodeType, String nodeName, Map<String, Object> parameters);
+    
+    /**
+     * Creates new user with given id;
+     * @param userId user id to be used when creating User instance
+     * @return new instance for userId
+     */
+    User newUser(String userId);
+    
+    /**
+     * Creates new group with given id;
+     * @param groupId group id to be used when creating Group instance
+     * @return new instance for groupId
+     */
+    Group newGroup(String groupId);
 }

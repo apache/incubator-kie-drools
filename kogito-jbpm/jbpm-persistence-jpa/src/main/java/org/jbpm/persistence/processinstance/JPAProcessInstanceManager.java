@@ -29,6 +29,7 @@ import org.drools.persistence.TransactionManagerHelper;
 import org.jbpm.persistence.ProcessPersistenceContext;
 import org.jbpm.persistence.ProcessPersistenceContextManager;
 import org.jbpm.persistence.correlation.CorrelationKeyInfo;
+import org.jbpm.persistence.correlation.CorrelationPropertyInfo;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstanceManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
@@ -78,12 +79,15 @@ public class JPAProcessInstanceManager
         processInstanceInfo = context.persist( processInstanceInfo );
         ((org.jbpm.process.instance.ProcessInstance) processInstance).setId( processInstanceInfo.getId() );
         processInstanceInfo.updateLastReadDate();
-        // persist correlation if exists
-        if (correlationKey != null) {
-            CorrelationKeyInfo correlationKeyInfo = (CorrelationKeyInfo) correlationKey;
-            correlationKeyInfo.setProcessInstanceId(processInstanceInfo.getId());
-            context.persist(correlationKeyInfo);
+        // generate correlation key if not given which is same as process instance id to keep uniqueness 
+        if (correlationKey == null) {
+            correlationKey = new CorrelationKeyInfo();
+            ((CorrelationKeyInfo)correlationKey).addProperty(new CorrelationPropertyInfo(null, processInstanceInfo.getId().toString()));
+            ((org.jbpm.process.instance.ProcessInstance) processInstance).getMetaData().put("CorrelationKey", correlationKey);
         }
+        CorrelationKeyInfo correlationKeyInfo = (CorrelationKeyInfo) correlationKey;
+        correlationKeyInfo.setProcessInstanceId(processInstanceInfo.getId());
+        context.persist(correlationKeyInfo);
         internalAddProcessInstance(processInstance);
     }
     

@@ -66,12 +66,16 @@ import org.kie.api.KieServices;
 import org.kie.api.command.KieCommands;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.api.task.model.User;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.task.api.TaskModelFactory;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +86,7 @@ public class CaseServiceImpl implements CaseService {
     
     private CorrelationKeyFactory correlationKeyFactory = KieInternalServices.Factory.get().newCorrelationKeyFactory();
     private KieCommands commandsFactory = KieServices.Factory.get().getCommands();
+    private TaskModelFactory factory = TaskModelProvider.getFactory();
     
     private CaseIdGenerator caseIdGenerator;
     
@@ -144,7 +149,7 @@ public class CaseServiceImpl implements CaseService {
     
     @Override
     public CaseFileInstance getCaseFileInstance(String caseId) throws CaseNotFoundException {
-        ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
+        ProcessInstanceDesc pi = verifyCaseIdExisted(caseId);
 
         return internalGetCaseFileInstance(caseId, pi);
     }
@@ -194,7 +199,7 @@ public class CaseServiceImpl implements CaseService {
     @Override
     public void destroyCase(String caseId) throws CaseNotFoundException {
         logger.debug("About to destroy permanently case {}", caseId);  
-        ProcessInstanceDesc pi = verifyCaseIdExists(caseId);        
+        ProcessInstanceDesc pi = verifyCaseIdExisted(caseId);        
         processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new CancelCaseCommand(caseId, processService, runtimeDataService, true));
     }
     
@@ -461,6 +466,16 @@ public class CaseServiceImpl implements CaseService {
     public TaskSpecification newTaskSpec(String nodeType, String nodeName, Map<String, Object> parameters) {
         return new WorkItemTaskSpecification(nodeType, nodeName, parameters);
     }
+
+    @Override
+    public User newUser(String userId) {
+        return factory.newUser(userId);
+    }
+
+    @Override
+    public Group newGroup(String groupId) {
+        return factory.newGroup(groupId);
+    }
     
     /*
      * internal methods
@@ -470,7 +485,9 @@ public class CaseServiceImpl implements CaseService {
     protected CaseFileInstance internalGetCaseFileInstance(String caseId, ProcessInstanceDesc pi) {
         logger.debug("Retrieving case file from working memory for case " + caseId);
         Collection<CaseFileInstance> caseFiles = (Collection<CaseFileInstance>) processService.execute(pi.getDeploymentId(), CaseContext.get(caseId), commandsFactory.newGetObjects(new ClassObjectFilter(CaseFileInstance.class)));
-        if (caseFiles.size() == 1) {
+        if (caseFiles.size() == 0) {
+            throw new CaseNotFoundException("Case with id " + caseId + " was not found");
+        } else if (caseFiles.size() == 1) {
             CaseFileInstance caseFile =  caseFiles.iterator().next();
             logger.debug("Single case file {} found in working memory", caseFile);
             return caseFile;
@@ -496,6 +513,15 @@ public class CaseServiceImpl implements CaseService {
         
         return pi;
     }
+    
+    protected ProcessInstanceDesc verifyCaseIdExisted(String caseId) throws CaseNotFoundException {
+        Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstancesByCorrelationKey(correlationKeyFactory.newCorrelationKey(caseId), new org.kie.api.runtime.query.QueryContext(0, 1));
+        if (instances.isEmpty()) {
+            throw new CaseNotFoundException("Case with id " + caseId + " was not found"); 
+        }
+        
+        return instances.iterator().next();
+    }
 
 
     protected CaseEventSupport getCaseEventSupport(String deploymentId) {
@@ -508,5 +534,6 @@ public class CaseServiceImpl implements CaseService {
         }
         return emptyCaseEventSupport;
     }
+
 
 }

@@ -27,9 +27,9 @@
     </bpmn2:extensionElements>
     <bpmn2:property id="callbackAfter" itemSubjectRef="_callbackAfterItem"/>
     <bpmn2:property id="claimReportDone" itemSubjectRef="_claimReportDoneItem"/>
-    <bpmn2:property id="claimReport" itemSubjectRef="_claimReportItem"/>
-    <bpmn2:property id="propertyDamageReport" itemSubjectRef="_propertyDamageReportItem"/>
-    <bpmn2:property id="policeReport" itemSubjectRef="_policeReportItem"/>
+    <bpmn2:property id="caseFile_claimReport" itemSubjectRef="_claimReportItem"/>
+    <bpmn2:property id="caseFile_propertyDamageReport" itemSubjectRef="_propertyDamageReportItem"/>
+    <bpmn2:property id="caseFile_policeReport" itemSubjectRef="_policeReportItem"/>
     <bpmn2:property id="requiresCallback" itemSubjectRef="_requiresCallbackItem"/>
     <bpmn2:property id="claimAccepted" itemSubjectRef="_claimAcceptedItem"/>
     <bpmn2:startEvent id="processStartEvent" drools:selectable="true" color:background-color="#9acd32" color:border-color="#000000" color:color="#000000" name="">
@@ -75,7 +75,7 @@
           </bpmn2:outputSet>
         </bpmn2:ioSpecification>
         <bpmn2:dataInputAssociation id="_aVxMFmVZEeavbo3IsNuQ1g">
-          <bpmn2:sourceRef>claimReport</bpmn2:sourceRef>
+          <bpmn2:sourceRef>caseFile_claimReport</bpmn2:sourceRef>
           <bpmn2:targetRef>_A5816D33-903D-4CFD-AC24-A9EF21794079__claimReportInputX</bpmn2:targetRef>
         </bpmn2:dataInputAssociation>
         <bpmn2:dataInputAssociation id="_aVxMF2VZEeavbo3IsNuQ1g">
@@ -333,7 +333,7 @@
           </bpmn2:outputSet>
         </bpmn2:ioSpecification>
         <bpmn2:dataInputAssociation id="_aVxzLWVZEeavbo3IsNuQ1g">
-          <bpmn2:sourceRef>claimReport</bpmn2:sourceRef>
+          <bpmn2:sourceRef>caseFile_claimReport</bpmn2:sourceRef>
           <bpmn2:targetRef>_14392A9B-D1E5-426A-9AD4-10B905159BD6__claimReportInputX</bpmn2:targetRef>
         </bpmn2:dataInputAssociation>
         <bpmn2:dataInputAssociation id="_aVxzLmVZEeavbo3IsNuQ1g">
@@ -372,7 +372,7 @@
           </bpmn2:outputSet>
         </bpmn2:ioSpecification>
         <bpmn2:dataInputAssociation id="_aVxzOWVZEeavbo3IsNuQ1g">
-          <bpmn2:sourceRef>claimReport</bpmn2:sourceRef>
+          <bpmn2:sourceRef>caseFile_claimReport</bpmn2:sourceRef>
           <bpmn2:targetRef>_C88DB70F-951D-4F4F-BE06-651EBFC184AB__claimReportInputX</bpmn2:targetRef>
         </bpmn2:dataInputAssociation>
         <bpmn2:dataInputAssociation id="_FA4oi2YUEeavbo3IsNuQ1g">
@@ -388,7 +388,7 @@
         </bpmn2:dataOutputAssociation>
       </bpmn2:serviceTask>
       <bpmn2:sequenceFlow id="_9306433A-6A3B-49EB-AA7A-08B51AF77A58" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_170D7F9B-2F7E-4CD5-9C22-692CC881EA90" targetRef="_14392A9B-D1E5-426A-9AD4-10B905159BD6"/>
-      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_aVxzO2VZEeavbo3IsNuQ1g"><![CDATA[return claimReport.getCalculated() == true;]]></bpmn2:completionCondition>
+      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_aVxzO2VZEeavbo3IsNuQ1g"><![CDATA[return caseFile_claimReport.getCalculated() == true;]]></bpmn2:completionCondition>
     </bpmn2:adHocSubProcess>
     <bpmn2:sequenceFlow id="_E194B917-01E3-4B13-888A-0FEB8642C8A1" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_A89E06CC-FC11-43E6-8695-0207B2F29033" targetRef="_1805A328-1FFF-4257-B21D-8F63EF631729"/>
     <bpmn2:userTask id="_0DC21BCB-1E29-4255-A43D-1EFBEEDCF6B4" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Present calculated claim">
@@ -412,7 +412,7 @@
         </bpmn2:outputSet>
       </bpmn2:ioSpecification>
       <bpmn2:dataInputAssociation id="_aVxzP2VZEeavbo3IsNuQ1g">
-        <bpmn2:sourceRef>claimReport</bpmn2:sourceRef>
+        <bpmn2:sourceRef>caseFile_claimReport</bpmn2:sourceRef>
         <bpmn2:targetRef>_0DC21BCB-1E29-4255-A43D-1EFBEEDCF6B4__claimReportInputX</bpmn2:targetRef>
       </bpmn2:dataInputAssociation>
       <bpmn2:dataInputAssociation id="_aVxzQGVZEeavbo3IsNuQ1g">
@@ -482,7 +482,7 @@
           </bpmn2:outputSet>
         </bpmn2:ioSpecification>
         <bpmn2:dataInputAssociation id="_aVxzT2VZEeavbo3IsNuQ1g">
-          <bpmn2:sourceRef>claimReport</bpmn2:sourceRef>
+          <bpmn2:sourceRef>caseFile_claimReport</bpmn2:sourceRef>
           <bpmn2:targetRef>_27E8BA49-0BB5-4153-B7CF-80D44B675A0D__claimReportInputX</bpmn2:targetRef>
         </bpmn2:dataInputAssociation>
         <bpmn2:dataInputAssociation id="_aVyaMGVZEeavbo3IsNuQ1g">
