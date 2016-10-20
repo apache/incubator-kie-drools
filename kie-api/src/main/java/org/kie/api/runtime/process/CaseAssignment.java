@@ -34,6 +34,20 @@ public interface CaseAssignment {
     void assign(String roleName, OrganizationalEntity entity);
     
     /**
+     * Assigns given user to given role
+     * @param roleName name of the role user should be assigned to
+     * @param userId user to be assigned
+     */
+    void assignUser(String roleName, String userId);
+    
+    /**
+     * Assigns given group to given role
+     * @param roleName name of the role group should be assigned to
+     * @param groupId group to be assigned
+     */
+    void assignGroup(String roleName, String groupId);
+    
+    /**
      * Removes given entity from the role
      * @param roleName name of the role that given entity should be removed from
      * @param entity use or group to be removed
@@ -43,7 +57,7 @@ public interface CaseAssignment {
     /**
      * Returns assigned entities for given role
      * @param roleName name of the role assignment should be returned for
-     * @return
+     * @return returns all assignments for the given role
      */
     Collection<OrganizationalEntity> getAssignments(String roleName);
 }
