@@ -69,12 +69,9 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
         setLayout(new BorderLayout());
         groupByMachineCheckBox = new JCheckBox("Group by assigned machine", false);
         groupByMachineCheckBox.setHorizontalAlignment(SwingConstants.RIGHT);
-        groupByMachineCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                updatePanel(getSolution());
-                validate();
-            }
+        groupByMachineCheckBox.addActionListener(e -> {
+            updatePanel(getSolution());
+            validate();
         });
     }
 

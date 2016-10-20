@@ -105,12 +105,7 @@ public class EmployeePanel extends JPanel {
             JPanel deletePanel = new JPanel(new BorderLayout());
             deleteButton = SwingUtils.makeSmallButton(new JButton(nurseRosteringPanel.getDeleteEmployeeIcon()));
             deleteButton.setToolTipText("Delete");
-            deleteButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    nurseRosteringPanel.deleteEmployee(employee);
-                }
-            });
+            deleteButton.addActionListener(e -> nurseRosteringPanel.deleteEmployee(employee));
             deletePanel.add(deleteButton, BorderLayout.NORTH);
             labelAndDeletePanel.add(deletePanel, BorderLayout.EAST);
         }

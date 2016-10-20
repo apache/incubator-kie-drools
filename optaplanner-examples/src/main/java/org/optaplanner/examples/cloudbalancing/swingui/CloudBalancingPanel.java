@@ -128,29 +128,23 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
         JPanel addPanel = new JPanel(new GridLayout());
         JButton addComputerButton = SwingUtils.makeSmallButton(new JButton(addCloudComputerIcon));
         addComputerButton.setToolTipText("Add computer");
-        addComputerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CloudComputer computer = new CloudComputer();
-                computer.setCpuPower(12);
-                computer.setMemory(32);
-                computer.setNetworkBandwidth(12);
-                computer.setCost(400 + 400 + 600);
-                addComputer(computer);
-            }
+        addComputerButton.addActionListener(e -> {
+            CloudComputer computer = new CloudComputer();
+            computer.setCpuPower(12);
+            computer.setMemory(32);
+            computer.setNetworkBandwidth(12);
+            computer.setCost(400 + 400 + 600);
+            addComputer(computer);
         });
         addPanel.add(addComputerButton);
         JButton addProcessButton = SwingUtils.makeSmallButton(new JButton(addCloudProcessIcon));
         addProcessButton.setToolTipText("Add process");
-        addProcessButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                CloudProcess process = new CloudProcess();
-                process.setRequiredCpuPower(3);
-                process.setRequiredMemory(8);
-                process.setRequiredNetworkBandwidth(3);
-                addProcess(process);
-            }
+        addProcessButton.addActionListener(e -> {
+            CloudProcess process = new CloudProcess();
+            process.setRequiredCpuPower(3);
+            process.setRequiredMemory(8);
+            process.setRequiredNetworkBandwidth(3);
+            addProcess(process);
         });
         addPanel.add(addProcessButton);
         JPanel cornerPanel = new JPanel(new BorderLayout());
