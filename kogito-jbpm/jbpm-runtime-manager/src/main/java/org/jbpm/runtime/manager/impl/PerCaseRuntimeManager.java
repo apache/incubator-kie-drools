@@ -683,6 +683,7 @@ public class PerCaseRuntimeManager extends AbstractRuntimeManager {
         @Override
         public TaskService initTaskService(Context<?> context, InternalRuntimeManager manager, RuntimeEngine engine) {
             InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();
+            registerDisposeCallback(engine, new DisposeSessionTransactionSynchronization(manager, engine));
             configureRuntimeOnTaskService(internalTaskService, engine);
             return internalTaskService;
         }
