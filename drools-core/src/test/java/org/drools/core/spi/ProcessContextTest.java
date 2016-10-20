@@ -122,6 +122,14 @@ public class ProcessContextTest {
         }
 
         @Override
+        public void assignUser(String roleName, String userId) {
+        }
+
+        @Override
+        public void assignGroup(String roleName, String groupId) {
+        }
+
+        @Override
         public void remove(String roleName, OrganizationalEntity entity) {
             assignment.remove(roleName);
         }
