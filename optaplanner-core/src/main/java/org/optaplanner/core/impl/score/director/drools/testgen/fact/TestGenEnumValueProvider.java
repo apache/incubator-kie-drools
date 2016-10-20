@@ -15,15 +15,15 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-class TestGenEnumValueProvider extends TestGenAbstractValueProvider {
+class TestGenEnumValueProvider extends TestGenAbstractValueProvider<Enum<?>> {
 
-    public TestGenEnumValueProvider(Object value) {
+    public TestGenEnumValueProvider(Enum<?> value) {
         super(value);
     }
 
     @Override
     public String toString() {
-        return value.getClass().getSimpleName() + "." + ((Enum) value).name();
+        return value.getClass().getSimpleName() + "." + value.name();
     }
 
 }

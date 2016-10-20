@@ -21,9 +21,9 @@ import org.optaplanner.core.impl.solver.event.AbstractEventSupport;
 public class TestGenKieSessionEventSupport extends AbstractEventSupport<TestGenKieSessionListener> implements TestGenKieSessionListener {
 
     @Override
-    public void afterFireAllRules(KieSession kieSession) {
+    public void afterFireAllRules(KieSession kieSession, TestGenKieSessionJournal journal) {
         for (TestGenKieSessionListener listener : eventListenerSet) {
-            listener.afterFireAllRules(kieSession);
+            listener.afterFireAllRules(kieSession, journal);
         }
     }
 

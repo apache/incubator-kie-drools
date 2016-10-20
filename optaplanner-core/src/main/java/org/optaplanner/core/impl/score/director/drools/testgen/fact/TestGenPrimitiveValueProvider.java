@@ -15,7 +15,7 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-class TestGenPrimitiveValueProvider extends TestGenAbstractValueProvider {
+class TestGenPrimitiveValueProvider extends TestGenAbstractValueProvider<Object> {
 
     public TestGenPrimitiveValueProvider(Object value) {
         super(value);

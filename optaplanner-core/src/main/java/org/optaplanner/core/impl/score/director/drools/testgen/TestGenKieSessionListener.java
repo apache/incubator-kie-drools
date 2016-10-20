@@ -21,5 +21,5 @@ import org.kie.api.runtime.KieSession;
 
 public interface TestGenKieSessionListener extends EventListener {
 
-    void afterFireAllRules(KieSession kieSession);
+    void afterFireAllRules(KieSession kieSession, TestGenKieSessionJournal journal);
 }

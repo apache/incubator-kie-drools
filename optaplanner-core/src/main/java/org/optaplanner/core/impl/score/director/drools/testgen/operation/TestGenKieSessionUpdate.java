@@ -24,9 +24,12 @@ import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccess
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenNullFact;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
 
+    private static final Logger logger = LoggerFactory.getLogger(TestGenKieSessionUpdate.class);
     private final int id;
     private final TestGenFact entity;
     private final BeanPropertyMemberAccessor accessor;
@@ -60,6 +63,7 @@ public class TestGenKieSessionUpdate implements TestGenKieSessionOperation {
 
     @Override
     public void invoke(KieSession kieSession) {
+        logger.trace("        {} ← {}", entity.getInstance(), value.getInstance());
         accessor.executeSetter(entity.getInstance(), value.getInstance());
         FactHandle fh = kieSession.getFactHandle(entity.getInstance());
         if (fh == null) {

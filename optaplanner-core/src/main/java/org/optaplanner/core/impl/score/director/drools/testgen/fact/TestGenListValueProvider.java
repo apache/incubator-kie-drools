@@ -20,28 +20,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-class TestGenListValueProvider extends TestGenAbstractValueProvider {
+class TestGenListValueProvider extends TestGenAbstractValueProvider<List<?>> {
 
     private final String identifier;
     private final Type typeArgument;
     private final Map<Object, TestGenFact> existingInstances;
     private final List<Class<?>> imports = new ArrayList<>();
 
-    public TestGenListValueProvider(Object value, String identifier, Type genericType, Map<Object, TestGenFact> existingInstances) {
+    public TestGenListValueProvider(List<?> value, String identifier, Type genericType, Map<Object, TestGenFact> existingInstances) {
         super(value);
         this.identifier = identifier;
         this.typeArgument = genericType;
         this.existingInstances = existingInstances;
         imports.add(ArrayList.class);
         imports.add((Class<?>) genericType);
-        for (Object item : ((java.util.List<?>) value)) {
-            imports.add(item.getClass());
-        }
     }
 
     public List<TestGenFact> getFacts() {
-        ArrayList<TestGenFact> facts = new ArrayList<TestGenFact>();
-        for (Object o : (List<?>) value) {
+        ArrayList<TestGenFact> facts = new ArrayList<>();
+        for (Object o : value) {
             TestGenFact fact = existingInstances.get(o);
             if (fact != null) {
                 facts.add(fact);
@@ -58,7 +55,7 @@ class TestGenListValueProvider extends TestGenAbstractValueProvider {
     public void printSetup(StringBuilder sb) {
         String e = ((Class<?>) typeArgument).getSimpleName();
         sb.append(String.format("        ArrayList<%s> %s = new ArrayList<%s>();%n", e, identifier, e));
-        for (Object item : ((java.util.List<?>) value)) {
+        for (Object item : value) {
             sb.append(String.format("        //%s%n", item));
             sb.append(String.format("        %s.add(%s);%n", identifier, existingInstances.get(item)));
         }

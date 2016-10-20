@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGen
 public class TestGenKieSessionJournal {
 
     private final TestGenKieSessionEventSupport eventSupport = new TestGenKieSessionEventSupport();
-    private final HashMap<Object, TestGenFact> existingInstances = new HashMap<Object, TestGenFact>();
+    private final HashMap<Object, TestGenFact> existingInstances = new HashMap<>();
     private final List<TestGenFact> facts;
     private final List<TestGenKieSessionInsert> initialInsertJournal;
     private final List<TestGenKieSessionOperation> updateJournal;
@@ -69,7 +69,7 @@ public class TestGenKieSessionJournal {
                 op.invoke(replayKieSession);
                 // detect corrupted score after firing rules
                 if (op.getClass().equals(TestGenKieSessionFireAllRules.class)) {
-                    eventSupport.afterFireAllRules(replayKieSession);
+                    eventSupport.afterFireAllRules(replayKieSession, this);
                 }
             }
         } catch (RuntimeException ex) {

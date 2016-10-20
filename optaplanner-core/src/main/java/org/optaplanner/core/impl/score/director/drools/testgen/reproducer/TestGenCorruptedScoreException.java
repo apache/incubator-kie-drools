@@ -15,20 +15,27 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.reproducer;
 
-class TestGenCorruptedScoreException extends RuntimeException {
+import org.optaplanner.core.api.score.Score;
 
-    /**
-     * Creates a new instance of <code>CorruptedScoreException</code> without detail message.
-     */
-    public TestGenCorruptedScoreException() {
+public class TestGenCorruptedScoreException extends RuntimeException {
+
+    private static final long serialVersionUID = -8432764392597925152L;
+
+    private final Score<?> workingScore;
+    private final Score<?> uncorruptedScore;
+
+    public TestGenCorruptedScoreException(Score<?> workingScore, Score<?> uncorruptedScore) {
+        super("Working: " + workingScore + ", uncorrupted: " + uncorruptedScore);
+        this.workingScore = workingScore;
+        this.uncorruptedScore = uncorruptedScore;
     }
 
-    /**
-     * Constructs an instance of <code>CorruptedScoreException</code> with the specified detail message.
-     *
-     * @param msg the detail message.
-     */
-    public TestGenCorruptedScoreException(String msg) {
-        super(msg);
+    public Score<?> getWorkingScore() {
+        return workingScore;
     }
+
+    public Score<?> getUncorruptedScore() {
+        return uncorruptedScore;
+    }
+
 }

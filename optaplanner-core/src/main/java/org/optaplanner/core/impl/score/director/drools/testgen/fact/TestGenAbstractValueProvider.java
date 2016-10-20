@@ -15,16 +15,16 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-abstract class TestGenAbstractValueProvider implements TestGenValueProvider {
+abstract class TestGenAbstractValueProvider<T> implements TestGenValueProvider<T> {
 
-    protected final Object value;
+    protected final T value;
 
-    public TestGenAbstractValueProvider(Object value) {
+    public TestGenAbstractValueProvider(T value) {
         this.value = value;
     }
 
     @Override
-    public Object get() {
+    public T get() {
         return value;
     }
 

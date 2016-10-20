@@ -15,7 +15,7 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-class TestGenExistingInstanceValueProvider extends TestGenAbstractValueProvider {
+class TestGenExistingInstanceValueProvider extends TestGenAbstractValueProvider<Object> {
 
     private final String identifier;
 

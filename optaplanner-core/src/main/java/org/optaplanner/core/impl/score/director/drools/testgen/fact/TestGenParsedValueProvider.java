@@ -17,7 +17,7 @@ package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
 import java.lang.reflect.Method;
 
-class TestGenParsedValueProvider extends TestGenAbstractValueProvider {
+class TestGenParsedValueProvider extends TestGenAbstractValueProvider<Object> {
 
     private final Method parseMethod;
 

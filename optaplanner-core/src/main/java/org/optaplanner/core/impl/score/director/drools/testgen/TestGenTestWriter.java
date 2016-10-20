@@ -26,6 +26,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
+import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
 import org.slf4j.Logger;
@@ -33,17 +36,36 @@ import org.slf4j.LoggerFactory;
 
 class TestGenTestWriter {
 
-    private static final Logger log = LoggerFactory.getLogger(TestGenTestWriter.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestGenTestWriter.class);
     private final TestGenKieSessionJournal journal;
     private final StringBuilder sb;
+    private final Class<?> scoreDefClass;
+    private final boolean constraintMatchEnabled;
+    private final String score;
 
-    public TestGenTestWriter(TestGenKieSessionJournal journal) {
+    public TestGenTestWriter(
+            TestGenKieSessionJournal journal,
+            Class<?> scoreDefClass,
+            boolean constraintMatchEnabled,
+            String score) {
         this.journal = journal;
         this.sb = new StringBuilder(1 << 15); // 2^15 initial capacity
+        this.scoreDefClass = scoreDefClass;
+        this.constraintMatchEnabled = constraintMatchEnabled;
+        this.score = score;
     }
 
     static void print(TestGenKieSessionJournal journal, File testFile) {
-        new TestGenTestWriter(journal).print(testFile);
+        new TestGenTestWriter(journal, null, false, null).print(testFile);
+    }
+
+    static void printWithScoreAssert(
+            TestGenKieSessionJournal journal,
+            Class<?> scoreDefClass,
+            boolean constraintMatchEnabled,
+            String score,
+            File testFile) {
+        new TestGenTestWriter(journal, scoreDefClass, constraintMatchEnabled, score).print(testFile);
     }
 
     private void print(File testFile) {
@@ -73,7 +95,7 @@ class TestGenTestWriter {
         }
 
         sb.append(String.format("package %s;%n%n", domainPackage));
-        SortedSet<String> imports = new TreeSet<String>();
+        SortedSet<String> imports = new TreeSet<>();
         imports.add("org.junit.Before");
         imports.add("org.junit.Test");
         imports.add("org.kie.api.KieServices");
@@ -82,9 +104,16 @@ class TestGenTestWriter {
         imports.add("org.kie.api.io.ResourceType");
         imports.add("org.kie.api.runtime.KieContainer");
         imports.add("org.kie.api.runtime.KieSession");
+        if (scoreDefClass != null) {
+            imports.add("org.junit.Assert");
+            imports.add(Score.class.getCanonicalName());
+            imports.add(ScoreHolder.class.getCanonicalName());
+            imports.add(scoreDefClass.getCanonicalName());
+        }
         for (TestGenFact fact : journal.getFacts()) {
             for (Class<?> cls : fact.getImports()) {
-                if (!cls.getPackage().getName().equals(domainPackage)) {
+                String pkgName = cls.getPackage().getName();
+                if (!pkgName.equals(domainPackage) && !pkgName.equals("java.lang")) {
                     imports.add(cls.getCanonicalName());
                 }
             }
@@ -119,6 +148,13 @@ class TestGenTestWriter {
                 .append("        KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());").append(System.lineSeparator())
                 .append("        kieSession = kieContainer.newKieSession();").append(System.lineSeparator())
                 .append(System.lineSeparator());
+        if (scoreDefClass != null) {
+            sb.append("        kieSession.setGlobal(\"").append(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY)
+                    .append("\", new ").append(scoreDefClass.getSimpleName()).append("().buildScoreHolder(")
+                    .append(constraintMatchEnabled).append("));")
+                    .append(System.lineSeparator())
+                    .append(System.lineSeparator());
+        }
         for (TestGenFact fact : journal.getFacts()) {
             fact.printSetup(sb);
         }
@@ -138,6 +174,13 @@ class TestGenTestWriter {
         for (TestGenKieSessionOperation op : journal.getMoveOperations()) {
             op.print(sb);
         }
+        if (scoreDefClass != null) {
+            sb.append("        Score<?> score = ((ScoreHolder) kieSession.getGlobal(\"")
+                    .append(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY).append("\")).extractScore(0);")
+                    .append(System.lineSeparator());
+            sb.append("        Assert.assertEquals(\"").append(score).append("\", score.toString());")
+                    .append(System.lineSeparator());
+        }
         sb
                 .append("    }").append(System.lineSeparator())
                 .append("}").append(System.lineSeparator());
@@ -148,25 +191,25 @@ class TestGenTestWriter {
         try {
             fos = new FileOutputStream(file);
         } catch (FileNotFoundException ex) {
-            log.error("Cannot open test file: " + file.toString(), ex);
+            logger.error("Cannot open test file: " + file.toString(), ex);
             return;
         }
         OutputStreamWriter out;
         try {
             out = new OutputStreamWriter(fos, "UTF-8");
         } catch (UnsupportedEncodingException ex) {
-            log.error("Can't open", ex);
+            logger.error("Can't open", ex);
             return;
         }
         try {
             out.append(sb);
         } catch (IOException ex) {
-            log.error("Can't write", ex);
+            logger.error("Can't write", ex);
         } finally {
             try {
                 out.close();
             } catch (IOException ex) {
-                log.error("Can't close", ex);
+                logger.error("Can't close", ex);
             }
         }
     }

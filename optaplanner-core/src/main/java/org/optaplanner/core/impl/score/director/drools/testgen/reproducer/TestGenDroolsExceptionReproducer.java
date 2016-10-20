@@ -17,36 +17,26 @@ package org.optaplanner.core.impl.score.director.drools.testgen.reproducer;
 
 import java.util.Objects;
 
-import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.impl.score.director.drools.testgen.TestGenDroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.testgen.TestGenKieSessionJournal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TestGenDroolsExceptionReproducer implements TestGenOriginalProblemReproducer {
 
-    private static final Logger log = LoggerFactory.getLogger(TestGenDroolsExceptionReproducer.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestGenDroolsExceptionReproducer.class);
     private final RuntimeException originalException;
-    private final KieSession originalKieSession;
+    private final TestGenDroolsScoreDirector<?> scoreDirector;
 
-    public TestGenDroolsExceptionReproducer(RuntimeException originalException, KieSession originalKieSession) {
+    public TestGenDroolsExceptionReproducer(RuntimeException originalException, TestGenDroolsScoreDirector<?> scoreDirector) {
         this.originalException = originalException;
-        this.originalKieSession = originalKieSession;
-    }
-
-    private KieSession createKieSession() {
-        KieSession newKieSession = originalKieSession.getKieBase().newKieSession();
-
-        for (String globalKey : originalKieSession.getGlobals().getGlobalKeys()) {
-            newKieSession.setGlobal(globalKey, originalKieSession.getGlobal(globalKey));
-        }
-
-        return newKieSession;
+        this.scoreDirector = scoreDirector;
     }
 
     @Override
     public boolean isReproducible(TestGenKieSessionJournal journal) {
         try {
-            journal.replay(createKieSession());
+            journal.replay(scoreDirector.createKieSession());
             return false;
         } catch (RuntimeException reproducedException) {
             if (areEqual(originalException, reproducedException)) {
@@ -54,9 +44,9 @@ public class TestGenDroolsExceptionReproducer implements TestGenOriginalProblemR
             } else {
                 if (reproducedException.getMessage().startsWith("No fact handle for ")) {
                     // this is common when removing insert of a fact that is later updated - not interesting
-                    log.debug("    Can't remove insert: {}", reproducedException.toString());
+                    logger.debug("    Can't remove insert: {}", reproducedException.toString());
                 } else {
-                    log.info("Unexpected exception", reproducedException);
+                    logger.info("Unexpected exception", reproducedException);
                 }
                 return false;
             }
@@ -66,7 +56,7 @@ public class TestGenDroolsExceptionReproducer implements TestGenOriginalProblemR
     @Override
     public void assertReproducible(TestGenKieSessionJournal journal, String message) {
         try {
-            journal.replay(createKieSession());
+            journal.replay(scoreDirector.createKieSession());
             throw new IllegalStateException(message + " No exception thrown.");
         } catch (RuntimeException reproducedException) {
             if (!areEqual(originalException, reproducedException)) {

@@ -15,9 +15,9 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
-interface TestGenValueProvider {
+interface TestGenValueProvider<T> {
 
-    Object get();
+    T get();
 
     void printSetup(StringBuilder sb);
 

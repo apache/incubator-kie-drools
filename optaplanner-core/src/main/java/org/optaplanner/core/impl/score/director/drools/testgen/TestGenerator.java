@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 
 final class TestGenerator {
 
-    private static final Logger log = LoggerFactory.getLogger(TestGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(TestGenerator.class);
     private final TestGenOriginalProblemReproducer reproducer;
     private TestGenKieSessionJournal journal;
 
@@ -44,13 +44,13 @@ final class TestGenerator {
     }
 
     private TestGenKieSessionJournal run() {
-        log.info("Creating a minimal test that reproduces following Drools problem: {}", reproducer);
-        log.info("The KIE session journal has {} facts, {} inserts and {} updates.",
+        logger.info("Creating a minimal test that reproduces following Drools problem: {}", reproducer);
+        logger.info("The KIE session journal has {} facts, {} inserts and {} updates.",
                 journal.getFacts().size(), journal.getInitialInserts().size(), journal.getMoveOperations().size());
-        log.info("Trying to reproduce with the complete KIE session journal...");
+        logger.info("Trying to reproduce with the complete KIE session journal...");
         assertOriginalExceptionReproduced("Cannot reproduce the original problem even without journal modifications. "
                 + "This is a bug!");
-        log.info("Reproduced.");
+        logger.info("Reproduced.");
         dropOldestUpdates();
         pruneUpdates();
         pruneInserts();
@@ -62,63 +62,63 @@ final class TestGenerator {
     }
 
     private void dropOldestUpdates() {
-        log.info("Dropping oldest updates...", journal.getMoveOperations().size());
-        TestGenHeadCuttingMutator<TestGenKieSessionOperation> m = new TestGenHeadCuttingMutator<TestGenKieSessionOperation>(journal.getMoveOperations());
+        logger.info("Dropping oldest updates...", journal.getMoveOperations().size());
+        TestGenHeadCuttingMutator<TestGenKieSessionOperation> m = new TestGenHeadCuttingMutator<>(journal.getMoveOperations());
         while (m.canMutate()) {
             long start = System.currentTimeMillis();
             TestGenKieSessionJournal testJournal = new TestGenKieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.mutate());
             boolean reproduced = reproduce(testJournal);
             double tookSeconds = (System.currentTimeMillis() - start) / 1000d;
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
-            log.debug("    {} with journal size: {} (took {}s)", outcome, m.getResult().size(), tookSeconds);
+            logger.debug("    {} with journal size: {} (took {}s)", outcome, m.getResult().size(), tookSeconds);
             if (!reproduced) {
                 m.revert();
             }
         }
         journal = new TestGenKieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.getResult());
-        log.info("{} updates remaining.", journal.getMoveOperations().size());
+        logger.info("{} updates remaining.", journal.getMoveOperations().size());
     }
 
     private void pruneUpdates() {
-        log.info("Pruning updates...", journal.getMoveOperations().size());
-        TestGenRemoveRandomBlockMutator<TestGenKieSessionOperation> m = new TestGenRemoveRandomBlockMutator<TestGenKieSessionOperation>(journal.getMoveOperations());
+        logger.info("Pruning updates...", journal.getMoveOperations().size());
+        TestGenRemoveRandomBlockMutator<TestGenKieSessionOperation> m = new TestGenRemoveRandomBlockMutator<>(journal.getMoveOperations());
         while (m.canMutate()) {
-            log.debug("    Current journal size: {}", m.getResult().size());
+            logger.debug("    Current journal size: {}", m.getResult().size());
             TestGenKieSessionJournal testJournal = new TestGenKieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.mutate());
             boolean reproduced = reproduce(testJournal);
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             List<TestGenKieSessionOperation> block = m.getRemovedBlock();
-            log.debug("    {} without block of {} [{} - {}]",
+            logger.debug("    {} without block of {} [{} - {}]",
                     outcome, block.size(), block.get(0), block.get(block.size() - 1));
             if (!reproduced) {
                 m.revert();
             }
         }
         journal = new TestGenKieSessionJournal(journal.getFacts(), journal.getInitialInserts(), m.getResult());
-        log.info("{} updates remaining.", journal.getMoveOperations().size());
+        logger.info("{} updates remaining.", journal.getMoveOperations().size());
     }
 
     private void pruneInserts() {
-        log.info("Pruning inserts...", journal.getInitialInserts().size());
-        TestGenRemoveRandomBlockMutator<TestGenKieSessionInsert> m = new TestGenRemoveRandomBlockMutator<TestGenKieSessionInsert>(journal.getInitialInserts());
+        logger.info("Pruning inserts...", journal.getInitialInserts().size());
+        TestGenRemoveRandomBlockMutator<TestGenKieSessionInsert> m = new TestGenRemoveRandomBlockMutator<>(journal.getInitialInserts());
         while (m.canMutate()) {
-            log.debug("    Current journal size: {}", m.getResult().size());
+            logger.debug("    Current journal size: {}", m.getResult().size());
             TestGenKieSessionJournal testJournal = new TestGenKieSessionJournal(journal.getFacts(), m.mutate(), journal.getMoveOperations());
             boolean reproduced = reproduce(testJournal);
             String outcome = reproduced ? "Reproduced" : "Can't reproduce";
             List<TestGenKieSessionInsert> block = m.getRemovedBlock();
-            log.debug("    {} without block of {} [{} - {}]",
+            logger.debug("    {} without block of {} [{} - {}]",
                     outcome, block.size(), block.get(0), block.get(block.size() - 1));
             if (!reproduced) {
                 m.revert();
             }
         }
         journal = new TestGenKieSessionJournal(journal.getFacts(), m.getResult(), journal.getMoveOperations());
-        log.info("{} inserts remaining.", journal.getInitialInserts().size());
+        logger.info("{} inserts remaining.", journal.getInitialInserts().size());
     }
 
     private void pruneFacts() {
-        log.info("Pruning {} facts...", journal.getFacts().size());
+        logger.info("Pruning {} facts...", journal.getFacts().size());
         ArrayList<TestGenFact> minimal = new ArrayList<>();
         for (TestGenKieSessionInsert insert : journal.getInitialInserts()) {
             addWithDependencies(insert.getFact(), minimal);
@@ -130,7 +130,7 @@ final class TestGenerator {
             }
         }
         journal = new TestGenKieSessionJournal(minimal, journal.getInitialInserts(), journal.getMoveOperations());
-        log.info("{} facts remaining.", journal.getFacts().size());
+        logger.info("{} facts remaining.", journal.getFacts().size());
     }
 
     private static void addWithDependencies(TestGenFact f, List<TestGenFact> factList) {

@@ -29,7 +29,7 @@ public class TestGenRemoveRandomBlockMutator<T> {
     private List<T> removedBlock;
 
     public TestGenRemoveRandomBlockMutator(List<T> list) {
-        this.list = new ArrayList<T>(list);
+        this.list = new ArrayList<>(list);
     }
 
     public boolean canMutate() {

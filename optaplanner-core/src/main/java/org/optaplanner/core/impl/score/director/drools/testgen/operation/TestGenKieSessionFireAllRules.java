@@ -16,9 +16,12 @@
 package org.optaplanner.core.impl.score.director.drools.testgen.operation;
 
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TestGenKieSessionFireAllRules implements TestGenKieSessionOperation {
 
+    private static final Logger logger = LoggerFactory.getLogger(TestGenKieSessionFireAllRules.class);
     private final int id;
 
     public TestGenKieSessionFireAllRules(int id) {
@@ -27,6 +30,7 @@ public class TestGenKieSessionFireAllRules implements TestGenKieSessionOperation
 
     @Override
     public void invoke(KieSession kieSession) {
+        logger.trace("        FIRE");
         kieSession.fireAllRules();
     }
 
