@@ -6488,4 +6488,33 @@ public class CepEspTest extends CommonTestMethodBase {
         kieSessionDeserialized.insert(new TestEvent("test2"));
         kieSessionDeserialized.fireAllRules();
     }
+
+    @Test
+    public void testConflictingRightTuplesUpdate() {
+        // DROOLS-1338
+        String drl =
+                "declare Integer @role(event) end\n" +
+                "rule R when\n" +
+                "    Integer()\n" +
+                "    not String()\n" +
+                "\n" +
+                "then end";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build( EventProcessingOption.STREAM )
+                                               .newKieSession();
+
+        FactHandle fhA = kieSession.insert("A");
+        FactHandle fhB = kieSession.insert("B");
+        FactHandle fh1 = kieSession.insert(1);
+
+        assertEquals( 0, kieSession.fireAllRules() );
+
+        kieSession.delete( fh1 );
+        kieSession.update(fhA, "A");
+        kieSession.update(fhB, "B");
+        FactHandle fh2 = kieSession.insert(2);
+
+        assertEquals( 0, kieSession.fireAllRules() );
+    }
 }
