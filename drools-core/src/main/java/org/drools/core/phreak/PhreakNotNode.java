@@ -113,6 +113,7 @@ public class PhreakNotNode {
             RuleNetworkEvaluator.findLeftTupleBlocker( notNode, rtm, contextEntry, constraints, leftTuple, useLeftMemory );
 
             if (leftTuple.getBlocker() == null) {
+                // tuple is not blocked, so add to memory so other fact handles can attempt to match
                 insertChildLeftTuple( sink, trgLeftTuples, ltm, leftTuple, leftTuple.getPropagationContext(), useLeftMemory );
             }
             leftTuple.clearStaged();
@@ -303,8 +304,7 @@ public class PhreakNotNode {
 
         boolean iterateFromStart = notNode.isIndexedUnificationJoin() || rtm.getIndexType().isComparison();
 
-        for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
-            RightTuple next = rightTuple.getStagedNext();
+        for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext() ) {
 
             if ( ltm != null && ltm.size() > 0 ) {
                 constraints.updateFromFactHandle( contextEntry,
@@ -345,6 +345,10 @@ public class PhreakNotNode {
                     leftTuple = temp;
                 }
             }
+        }
+
+        for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; ) {
+            RightTuple next = rightTuple.getStagedNext();
 
             LeftTuple firstBlocked = rightTuple.getTempBlocked();
             if ( firstBlocked != null ) {
