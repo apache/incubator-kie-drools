@@ -612,7 +612,11 @@ public class AddRemoveRule {
         }
     }
 
-    public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode) {
+    public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, boolean streamMode) {
+        return flushLeftTupleIfNecessary(wm, sm, null, streamMode, Tuple.NONE);
+    }
+
+    public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode, short stagedType) {
         PathMemory pmem = streamMode ?
                           sm.getPathMemories().get(0) :
                           getPathMemoryToFlushForEagerEvaluation( sm, leftTuple );
@@ -623,7 +627,17 @@ public class AddRemoveRule {
 
         TupleSets<LeftTuple> leftTupleSets = new TupleSetsImpl<LeftTuple>();
         if (leftTuple != null) {
-            leftTupleSets.addInsert(leftTuple);
+            switch (stagedType) {
+                case Tuple.INSERT:
+                    leftTupleSets.addInsert(leftTuple);
+                    break;
+                case Tuple.DELETE:
+                    leftTupleSets.addDelete(leftTuple);
+                    break;
+                case Tuple.UPDATE:
+                    leftTupleSets.addUpdate(leftTuple);
+                    break;
+            }
         }
 
         forceFlushLeftTuple( pmem, sm, wm, leftTupleSets );

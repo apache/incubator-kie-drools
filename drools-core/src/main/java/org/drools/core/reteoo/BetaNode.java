@@ -299,7 +299,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
 
         if (shouldFlush) {
-            flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), null, isStreamMode() );
+            flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), isStreamMode() );
         }
     }
 
