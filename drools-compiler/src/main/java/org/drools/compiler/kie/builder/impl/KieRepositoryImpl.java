@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +51,7 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
+import static org.drools.compiler.kproject.ReleaseIdImpl.fromPropertiesStream;
 
 public class KieRepositoryImpl
         implements
@@ -144,9 +146,40 @@ public class KieRepositoryImpl
     }
 
     private KieModule checkClasspathForKieModule(ReleaseId releaseId) {
-        // TODO
-        // ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        // URL url = classLoader.getResource( ((ReleaseIdImpl)releaseId).getPomPropertiesPath() );
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+
+        URL kmoduleUrl = contextClassLoader.getResource( KieModuleModelImpl.KMODULE_JAR_PATH );
+        if (kmoduleUrl == null) {
+            return null;
+        }
+
+        String pomPropertiesPath = ((ReleaseIdImpl)releaseId).getPomPropertiesPath();
+        URL pomPropertiesUrl = contextClassLoader.getResource( pomPropertiesPath );
+        if (pomPropertiesUrl == null) {
+            return null;
+        }
+
+        ReleaseId pomReleaseId = fromPropertiesStream( contextClassLoader.getResourceAsStream(pomPropertiesPath),
+                                                       pomPropertiesUrl.getPath());
+        if (pomReleaseId.equals(releaseId)) {
+            String path = pomPropertiesUrl.getPath();
+            String pathToJar = path.substring( 0, path.indexOf( ".jar!" ) + 4 );
+
+            URL pathToKmodule;
+            try {
+                pathToKmodule = new URL( pomPropertiesUrl.getProtocol(),
+                                         pomPropertiesUrl.getHost(),
+                                         pomPropertiesUrl.getPort(),
+                                         pathToJar + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH );
+            } catch (MalformedURLException e) {
+                log.error( "Unable to reconstruct path to kmodule for " + releaseId );
+                return null;
+            }
+
+            log.info( "Adding KieModule from classpath: " + pathToJar );
+            return ClasspathKieProject.fetchKModule( pathToKmodule );
+        }
+
         return null;
     }
 
