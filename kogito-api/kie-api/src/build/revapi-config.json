@@ -287,7 +287,13 @@
         "code": "java.method.addedToInterface",
         "new": "method org.kie.api.runtime.process.CaseAssignment org.kie.api.runtime.process.ProcessContext::getCaseAssignment()",
         "justification": "Added operations to simplify access to case assignments from kcontext"
-      }
+      },
+      {
+       "code": "java.method.numberOfParametersChanged",
+       "old": "method java.util.List<java.lang.String> org.kie.api.task.UserGroupCallback::getGroupsForUser(java.lang.String, java.util.List<java.lang.String>, java.util.List<java.lang.String>)",
+       "new": "method java.util.List<java.lang.String> org.kie.api.task.UserGroupCallback::getGroupsForUser(java.lang.String)",
+       "justification": "Removed unused and confusing arguments"
+     }
     ]
   }
 }
