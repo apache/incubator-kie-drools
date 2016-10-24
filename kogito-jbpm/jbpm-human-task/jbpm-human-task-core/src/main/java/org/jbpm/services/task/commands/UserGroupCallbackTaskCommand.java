@@ -151,7 +151,7 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
 
             if (groupIds != null && groupIds.size() > 0) {
 
-                List<String> userGroups = filterGroups(context.getUserGroupCallback().getGroupsForUser(userId, groupIds, null));
+                List<String> userGroups = filterGroups(context.getUserGroupCallback().getGroupsForUser(userId));
                 for (String groupId : groupIds) {
 
                     if (context.getUserGroupCallback().existsGroup(groupId) && userGroups != null && userGroups.contains(groupId)) {
@@ -160,7 +160,7 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
                 }
             } else {
                 if (!(userGroupsMap.containsKey(userId) && userGroupsMap.get(userId).booleanValue())) {
-                    List<String> userGroups = filterGroups(context.getUserGroupCallback().getGroupsForUser(userId, null, null));
+                    List<String> userGroups = filterGroups(context.getUserGroupCallback().getGroupsForUser(userId));
                     if (userGroups != null && userGroups.size() > 0) {
                         for (String group : userGroups) {
                             addGroupFromCallbackOperation(group, context);

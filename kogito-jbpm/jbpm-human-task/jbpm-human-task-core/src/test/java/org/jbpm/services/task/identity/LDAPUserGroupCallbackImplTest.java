@@ -56,7 +56,7 @@ public class LDAPUserGroupCallbackImplTest extends LDAPBaseTest {
         UserGroupCallback ldapUserGroupCallback = createLdapUserGroupCallback(Configuration.CUSTOM);
         Assertions.assertThat(ldapUserGroupCallback).isNotNull();
 
-        List<String> userGroups = ldapUserGroupCallback.getGroupsForUser("john", null, null);
+        List<String> userGroups = ldapUserGroupCallback.getGroupsForUser("john");
         Assertions.assertThat(userGroups).hasSize(1);
     }
 
@@ -83,7 +83,7 @@ public class LDAPUserGroupCallbackImplTest extends LDAPBaseTest {
         UserGroupCallback ldapUserGroupCallback = createLdapUserGroupCallback(Configuration.DEFAULT);
         Assertions.assertThat(ldapUserGroupCallback).isNotNull();
 
-        List<String> userGroups = ldapUserGroupCallback.getGroupsForUser("john", null, null);
+        List<String> userGroups = ldapUserGroupCallback.getGroupsForUser("john");
         Assertions.assertThat(userGroups).hasSize(1);
     }
 
@@ -110,7 +110,7 @@ public class LDAPUserGroupCallbackImplTest extends LDAPBaseTest {
         UserGroupCallback ldapUserGroupCallback = createLdapUserGroupCallback(Configuration.SYSTEM);
         Assertions.assertThat(ldapUserGroupCallback).isNotNull();
 
-        List<String> userGroups = ldapUserGroupCallback.getGroupsForUser("john", null, null);
+        List<String> userGroups = ldapUserGroupCallback.getGroupsForUser("john");
         Assertions.assertThat(userGroups).hasSize(1);
     }
 

@@ -91,7 +91,7 @@ public class LocalWithCustomCallbackTaskAuditTest extends HumanTaskServicesBaseT
         }
 
         @Override
-        public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
+        public List<String> getGroupsForUser(String userId) {
 
             return null;
         }

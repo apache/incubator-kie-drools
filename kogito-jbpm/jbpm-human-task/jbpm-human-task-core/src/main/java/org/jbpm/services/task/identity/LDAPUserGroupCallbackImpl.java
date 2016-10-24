@@ -108,7 +108,7 @@ public class LDAPUserGroupCallbackImpl extends AbstractLDAPUserGroupInfo impleme
     }
 
     @Override
-    public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
+    public List<String> getGroupsForUser(String userId) {
         String roleContext = getConfigProperty(USER_ROLES_CTX, getConfigProperty(ROLE_CTX));
         String roleFilter = getConfigProperty(USER_ROLES_FILTER);
         String roleAttributeId = getConfigProperty(ROLE_ATTR_ID, DEFAULT_ROLE_ATTR_ID);

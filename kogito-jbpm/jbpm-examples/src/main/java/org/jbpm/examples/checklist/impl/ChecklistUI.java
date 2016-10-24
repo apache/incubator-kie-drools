@@ -96,7 +96,7 @@ public class ChecklistUI extends JFrame {
 		JBPMHelper.setupDataSource();
 		RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
             .userGroupCallback(new UserGroupCallback() {
-    			public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
+    			public List<String> getGroupsForUser(String userId) {
     				List<String> result = new ArrayList<String>();
     				if ("actor4".equals(userId)) {
     					result.add("group1");

@@ -247,7 +247,7 @@ public class TaskSummaryQueryCriteriaUtil extends AbstractTaskQueryCriteriaUtil 
      * @param userGroupCallback A {@link UserGroupCallback} instance in order to retrieve the groups of the given user
      */
     private void checkExistingCriteriaForUserBasedLimit(QueryWhere queryWhere, String userId, UserGroupCallback userGroupCallback) {
-        List<String> groupIds = userGroupCallback.getGroupsForUser(userId, null, null);
+        List<String> groupIds = userGroupCallback.getGroupsForUser(userId);
         Set<String> userAndGroupIds = new HashSet<String>();
         if( groupIds != null ) {
             userAndGroupIds.addAll(groupIds);

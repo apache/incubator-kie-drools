@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -78,14 +77,6 @@ public class MvelUserGroupCallbackImpl implements UserGroupCallback {
         return false;
     }
 
-    public List<String> getGroupsForUser(String userId, List<String> groupIds) {
-        return getGroupsForUser(userId);
-    }
-
-    public List<String> getGroupsForUser(String userId, List<String> groupIds,
-            List<String> allExistingGroupIds) {
-        return getGroupsForUser(userId);
-    }
 
     public List<String> getGroupsForUser(String userId) {
         Iterator<User> iter = userGroupMapping.keySet().iterator();

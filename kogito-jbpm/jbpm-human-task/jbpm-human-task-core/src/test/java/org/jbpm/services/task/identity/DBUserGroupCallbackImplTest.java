@@ -165,7 +165,7 @@ public class DBUserGroupCallbackImplTest {
     public void testUserGroups() {
 
         DBUserGroupCallbackImpl callback = new DBUserGroupCallbackImpl(props);
-        List<String> groups = callback.getGroupsForUser("john", null, null);
+        List<String> groups = callback.getGroupsForUser("john");
         assertNotNull(groups);
         assertEquals(1, groups.size());
         assertEquals("PM", groups.get(0));
@@ -191,7 +191,7 @@ public class DBUserGroupCallbackImplTest {
     public void testNoUserGroups() {
 
         DBUserGroupCallbackImpl callback = new DBUserGroupCallbackImpl(props);
-        List<String> groups = callback.getGroupsForUser("mike", null, null);
+        List<String> groups = callback.getGroupsForUser("mike");
         assertNotNull(groups);
         assertEquals(0, groups.size());
 
@@ -202,7 +202,7 @@ public class DBUserGroupCallbackImplTest {
 
         Properties invalidProps = new Properties();
         DBUserGroupCallbackImpl callback = new DBUserGroupCallbackImpl(invalidProps);
-        callback.getGroupsForUser("mike", null, null);
+        callback.getGroupsForUser("mike");
         fail("Should fail as it does not have valid configuration");
 
     }
@@ -211,7 +211,7 @@ public class DBUserGroupCallbackImplTest {
     public void testInvalidArgument() {
 
         DBUserGroupCallbackImpl callback = new DBUserGroupCallbackImpl(props);
-        callback.getGroupsForUser(null, null, null);
+        callback.getGroupsForUser(null);
         fail("Should fail as it does not have valid configuration");
 
     }

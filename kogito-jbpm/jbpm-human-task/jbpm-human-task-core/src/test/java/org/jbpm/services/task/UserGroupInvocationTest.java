@@ -198,7 +198,7 @@ public class UserGroupInvocationTest extends HumanTaskServicesBaseTest {
 		}
 
 		@Override
-		public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
+		public List<String> getGroupsForUser(String userId) {
 			getGroupCounter++;
 			List<String> groups = new ArrayList<String>();
 			groups.add("Knights Templer");

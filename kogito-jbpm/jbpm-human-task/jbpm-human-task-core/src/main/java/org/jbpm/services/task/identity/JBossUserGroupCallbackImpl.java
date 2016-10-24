@@ -93,8 +93,7 @@ public class JBossUserGroupCallbackImpl extends AbstractUserGroupInfo implements
 		return allgroups.contains(groupId);
 	}
 	
-	public List<String> getGroupsForUser(String userId, List<String> groupIds,
-			List<String> allExistingGroupIds) {
+	public List<String> getGroupsForUser(String userId) {
 		
 		List<String> groups = groupStore.get(userId);
 		if( groups == null ) { 
