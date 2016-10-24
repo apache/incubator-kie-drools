@@ -15,15 +15,16 @@
 
 package org.drools.compiler.kproject;
 
+import org.drools.core.util.StringUtils;
+import org.kie.api.builder.ReleaseId;
+
 import java.io.Externalizable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.StringReader;
 import java.util.Properties;
-
-import org.drools.core.util.StringUtils;
-import org.kie.api.builder.ReleaseId;
 
 public class ReleaseIdImpl implements ReleaseId, Externalizable {
 
@@ -101,23 +102,34 @@ public class ReleaseIdImpl implements ReleaseId, Externalizable {
         return version.endsWith("-SNAPSHOT");
     }
 
-    public static ReleaseId fromPropertiesString(String string) {
+    public static ReleaseId fromPropertiesString(String path) {
         Properties props = new Properties();
-        ReleaseId releaseId = null;
         try {
-            props.load(new StringReader(string));
-            String groupId = props.getProperty("groupId");
-            String artifactId = props.getProperty("artifactId");
-            String version = props.getProperty("version");
-            if (StringUtils.isEmpty(groupId) || StringUtils.isEmpty(artifactId) || StringUtils.isEmpty(version)) {
-                throw new RuntimeException("pom.properties exists but ReleaseId content is malformed\n" + string);
-            }
-            releaseId = new ReleaseIdImpl(groupId, artifactId, version);
+            props.load(new StringReader(path));
+            return getReleaseIdFromProperties(props, path);
         } catch (IOException e) {
-            throw new RuntimeException("pom.properties was malformed\n" + string, e);
+            throw new RuntimeException("pom.properties was malformed\n" + path, e);
         }
+    }
+    
+    public static ReleaseId fromPropertiesStream(InputStream stream, String path) {
+        Properties props = new Properties();
+        try {
+            props.load(stream);
+            return getReleaseIdFromProperties(props, path);
+        } catch (IOException e) {
+            throw new RuntimeException("pom.properties was malformed\n" + path, e);
+        }
+    }
 
-        return releaseId;
+    private static ReleaseId getReleaseIdFromProperties(Properties props, String path) {
+        String groupId = props.getProperty("groupId");
+        String artifactId = props.getProperty("artifactId");
+        String version = props.getProperty("version");
+        if (StringUtils.isEmpty(groupId) || StringUtils.isEmpty(artifactId) || StringUtils.isEmpty(version)) {
+            throw new RuntimeException("pom.properties exists but ReleaseId content is malformed\n" + path);
+        }
+        return new ReleaseIdImpl(groupId, artifactId, version);
     }
 
     @Override
