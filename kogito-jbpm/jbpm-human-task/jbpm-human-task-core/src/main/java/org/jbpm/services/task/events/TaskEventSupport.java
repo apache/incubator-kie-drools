@@ -165,9 +165,8 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
         if (iter.hasNext()) {
             do{
             	TaskLifeCycleEventListener listener = iter.next();
-            	if (listener instanceof org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener) {
-            		((org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener)listener).beforeTaskUpdatedEvent(new TaskEventImpl(task, context));
-            	}
+        		listener.beforeTaskUpdatedEvent(new TaskEventImpl(task, context));
+            	
             } while (iter.hasNext());
         }
     }
@@ -176,10 +175,8 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
         final Iterator<TaskLifeCycleEventListener> iter = getEventListenersIterator();
         if (iter.hasNext()) {
             do{
-                TaskLifeCycleEventListener listener = iter.next();
-                if (listener instanceof org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener) {
-                    ((org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener)listener).beforeTaskReassignedEvent(new TaskEventImpl(task, context));
-                }
+                TaskLifeCycleEventListener listener = iter.next();                
+                listener.beforeTaskReassignedEvent(new TaskEventImpl(task, context));                
             } while (iter.hasNext());
         }
     }
@@ -189,9 +186,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
         if (iter.hasNext()) {
             do{
                 TaskLifeCycleEventListener listener = iter.next();
-                if (listener instanceof org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener) {
-                    ((org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener)listener).beforeTaskNominatedEvent(new TaskEventImpl(task, context));
-                }
+                listener.beforeTaskNominatedEvent(new TaskEventImpl(task, context));
             } while (iter.hasNext());
         }
     }
@@ -339,9 +334,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
         if (iter.hasNext()) {
             do{
             	TaskLifeCycleEventListener listener = iter.next();
-            	if (listener instanceof org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener) {
-            		((org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener)listener).afterTaskUpdatedEvent(new TaskEventImpl(task, context));
-            	}
+            	listener.afterTaskUpdatedEvent(new TaskEventImpl(task, context));
             } while (iter.hasNext());
         }
     }
@@ -351,9 +344,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
         if (iter.hasNext()) {
             do{
                 TaskLifeCycleEventListener listener = iter.next();
-                if (listener instanceof org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener) {
-                    ((org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener)listener).afterTaskReassignedEvent(new TaskEventImpl(task, context));
-                }
+                listener.afterTaskReassignedEvent(new TaskEventImpl(task, context));
             } while (iter.hasNext());
         }
     }
@@ -363,9 +354,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
         if (iter.hasNext()) {
             do{
                 TaskLifeCycleEventListener listener = iter.next();
-                if (listener instanceof org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener) {
-                    ((org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener)listener).afterTaskNotificationEvent(new TaskEventImpl(task, context));
-                }
+                listener.afterTaskNotificationEvent(new TaskEventImpl(task, context));                
             } while (iter.hasNext());
         }
     }
@@ -375,9 +364,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
         if (iter.hasNext()) {
             do{
                 TaskLifeCycleEventListener listener = iter.next();
-                if (listener instanceof org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener) {
-                    ((org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener)listener).afterTaskInputVariableChangedEvent(new TaskEventImpl(task, context), variables);
-                }
+                listener.afterTaskInputVariableChangedEvent(new TaskEventImpl(task, context), variables);                
             } while (iter.hasNext());
         }
     }
@@ -388,9 +375,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
         if (iter.hasNext()) {
             do{
                 TaskLifeCycleEventListener listener = iter.next();
-                if (listener instanceof org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener) {
-                    ((org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener)listener).afterTaskOutputVariableChangedEvent(new TaskEventImpl(task, context), variables);
-                }
+                listener.afterTaskOutputVariableChangedEvent(new TaskEventImpl(task, context), variables);                
             } while (iter.hasNext());
         }
     }

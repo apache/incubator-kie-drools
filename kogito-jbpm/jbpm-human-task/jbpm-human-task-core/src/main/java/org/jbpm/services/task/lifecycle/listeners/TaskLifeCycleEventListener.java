@@ -15,29 +15,8 @@
  */
 package org.jbpm.services.task.lifecycle.listeners;
 
-import java.util.Map;
-
-import org.kie.api.task.TaskEvent;
-
-/**
- * Methods of this interface will be promoted to main (public) TaskLifeCycleEventListener on next major version
- *
- */
 public interface TaskLifeCycleEventListener extends org.kie.api.task.TaskLifeCycleEventListener {
     
-	public void beforeTaskUpdatedEvent(TaskEvent event);
-    
-    public void afterTaskUpdatedEvent(TaskEvent event); 
-    
-    public void beforeTaskReassignedEvent(TaskEvent event);
-    
-    public void afterTaskReassignedEvent(TaskEvent event); 
-    
-    public void beforeTaskNotificationEvent(TaskEvent event);
-    
-    public void afterTaskNotificationEvent(TaskEvent event); 
-    
-    public void afterTaskInputVariableChangedEvent(TaskEvent event, Map<String, Object> variables);
-    
-    public void afterTaskOutputVariableChangedEvent(TaskEvent event, Map<String, Object> variables); 
+	
+
 }
