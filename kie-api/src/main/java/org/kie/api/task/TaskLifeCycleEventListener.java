@@ -16,6 +16,7 @@
 package org.kie.api.task;
 
 import java.util.EventListener;
+import java.util.Map;
 
 public interface TaskLifeCycleEventListener extends EventListener {
 
@@ -34,6 +35,9 @@ public interface TaskLifeCycleEventListener extends EventListener {
     public void beforeTaskForwardedEvent(TaskEvent event);
     public void beforeTaskDelegatedEvent(TaskEvent event);
     public void beforeTaskNominatedEvent(TaskEvent event);
+    public default void beforeTaskUpdatedEvent(TaskEvent event){};            
+    public default void beforeTaskReassignedEvent(TaskEvent event){};       
+    public default void beforeTaskNotificationEvent(TaskEvent event){};
 
     public void afterTaskActivatedEvent(TaskEvent event);
     public void afterTaskClaimedEvent(TaskEvent event);
@@ -49,6 +53,11 @@ public interface TaskLifeCycleEventListener extends EventListener {
     public void afterTaskSuspendedEvent(TaskEvent event);
     public void afterTaskForwardedEvent(TaskEvent event);
     public void afterTaskDelegatedEvent(TaskEvent event);
-    public void afterTaskNominatedEvent(TaskEvent event);
+    public void afterTaskNominatedEvent(TaskEvent event);    
+    public default void afterTaskReassignedEvent(TaskEvent event){}; 
+    public default void afterTaskUpdatedEvent(TaskEvent event){}; 
+    public default void afterTaskNotificationEvent(TaskEvent event){};    
+    public default void afterTaskInputVariableChangedEvent(TaskEvent event, Map<String, Object> variables){};    
+    public default void afterTaskOutputVariableChangedEvent(TaskEvent event, Map<String, Object> variables){}; 
 
 }
