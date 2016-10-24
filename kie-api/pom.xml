@@ -117,10 +117,7 @@
           <oldArtifacts>
             <artifact>${project.groupId}:${project.artifactId}:${version.org.kie.latestFinal.release}</artifact>
           </oldArtifacts>
-          <newArtifacts>
-            <!-- The special 'BUILD' GAV is used to specify artifacts that were produced during the build of the current project. -->
-            <artifact>BUILD</artifact>
-          </newArtifacts>
+          <!-- By default revapi will check the oldArtifact against the currently executed build -->
           <analysisConfigurationFiles>
             <configurationFile>
               <path>src/build/revapi-config.json</path>

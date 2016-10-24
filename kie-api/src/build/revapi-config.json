@@ -1,5 +1,19 @@
 {
   "revapi" : {
+    "java" : {
+      "filter" : {
+        "classes" : {
+          "regex" : true,
+          "exclude" : ["org\\.kie\\.api\\.osgi\\.Activator.*"],
+          "_comment": [
+            "Not used. The class is not referenced in any of the downstream (Drools, jBPM) code. The Activator itself was disabled in 2013.",
+            "Exclusion is here in order not to check the transitive classes from dependencies which this class used.",
+            "This exclude can be removed once this class is not present in the oldVersion of artifact, i.e. 7.0.0.Final."
+          ]
+        }
+      }
+    },
+    "_comment": "Changes between 6.4.0.Final and master. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
     "ignore" : [
       {
           "code": "java.method.addedToInterface",
@@ -211,11 +225,6 @@
         "code" : "java.method.addedToInterface",
         "new" : "method void org.kie.api.runtime.rule.EntryPoint::delete(org.kie.api.runtime.rule.FactHandle, org.kie.api.runtime.rule.FactHandle.State)",
         "justification" : "Allows to state if the FactHandle has to be removed as an explicitly asserted fact, from the Truth Maintenance System or both."
-      },
-      {
-        "code": "java.class.removed",
-        "old": "class org.kie.api.osgi.Activator",
-        "justification": "Not used. The class is not referenced in any of the downstream (Drools, jBPM) code. The Activator itself was disabled in 2013."
       },
       {
         "code": "java.method.parameterTypeChanged",
