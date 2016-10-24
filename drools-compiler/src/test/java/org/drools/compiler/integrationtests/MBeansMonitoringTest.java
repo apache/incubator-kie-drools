@@ -26,6 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
@@ -47,6 +49,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.management.ManagementFactory;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -484,5 +488,40 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         assertEquals(mCreated     , mb.getTotalMatchesCreated()   );
         assertEquals(mCancelled   , mb.getTotalMatchesCancelled() );
         assertEquals(mFired       , mb.getTotalMatchesFired()     );
+    }
+    
+    /**
+     * Copied from KieRepositoryTest to test JMX monitoring
+     */
+    @Test
+    public void testLoadKjarFromClasspath() {
+        // DROOLS-1335
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    
+        URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{this.getClass().getResource( "/kie-project-simple-1.0.0.jar" )} );
+        Thread.currentThread().setContextClassLoader( urlClassLoader );
+        
+        MBeanServer mbserver = ManagementFactory.getPlatformMBeanServer();
+    
+        try {
+            KieServices ks = KieServices.Factory.get();
+            KieRepository kieRepository = ks.getRepository();
+            ReleaseId releaseId = ks.newReleaseId( "org.test", "kie-project-simple", "1.0.0" );
+            KieModule kieModule = kieRepository.getKieModule( releaseId );
+            assertNotNull( kieModule );
+            assertEquals( releaseId, kieModule.getReleaseId() );
+            
+            ks.newKieContainer("myID", releaseId);
+            
+            KieContainerMonitorMXBean c1Monitor = JMX.newMXBeanProxy(
+                    mbserver,
+                    DroolsManagementAgent.createObjectNameBy("myID"),
+                    KieContainerMonitorMXBean.class);
+            
+            assertTrue(c1Monitor.getConfiguredReleaseId().sameGAVof(releaseId));
+            assertTrue(c1Monitor.getResolvedReleaseId().sameGAVof(releaseId));
+        } finally {
+            Thread.currentThread().setContextClassLoader( cl );
+        }
     }
 }
