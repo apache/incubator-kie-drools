@@ -15,6 +15,9 @@
 
 package org.drools.compiler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -408,5 +411,34 @@ public class InlineCastTest extends CommonTestMethodBase {
         } finally {
             ksession.dispose();
         }
+    }
+    
+    @Test
+    public void testInlineCastWithFQNAndMethodInvocation() throws Exception {
+        // DROOLS-1337
+        String str =
+                "import org.drools.compiler.Person;\n" +
+                "global java.util.List list;\n" +
+                "rule R1 when\n" +
+                "   Person( name == \"mark\", $x : address#org.drools.compiler.LongAddress.country.substring(1) )\n" +
+                "then\n" +
+                "   list.add($x);" +
+                "end\n";
+ 
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+ 
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+ 
+        Person mark1 = new Person("mark");
+        mark1.setAddress(new LongAddress("uk"));
+        ksession.insert(mark1);
+ 
+        assertEquals(1, ksession.fireAllRules());
+        assertEquals(1, list.size());
+        assertEquals("k", list.get(0));
+ 
+        ksession.dispose();
     }
 }
