@@ -386,7 +386,8 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
         }
 
         ClassLoader cl = context.getRuleContext().getKnowledgeBuilder().getRootClassLoader();
-        for (int i = split.length-1; i > 1; i++) {
+        // DROOLS-1337, attempt to identify FQN by progressively iterating from the /beginning/ of split[] 
+        for (int i = 2; i <= split.length; i++) {
             String className = concatDotSeparated(split, 0, i);
             if (className.endsWith("!")) {
                 className = className.substring(0, className.length()-1);
