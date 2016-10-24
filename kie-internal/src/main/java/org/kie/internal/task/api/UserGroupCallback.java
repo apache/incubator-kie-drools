@@ -41,5 +41,5 @@ public interface UserGroupCallback extends org.kie.api.task.UserGroupCallback {
      * @return A list of group ids: all implementations of this interface should always return
      * a list here, regardless of whether groups are found or not.
      */
-    List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds);
+    List<String> getGroupsForUser(String userId);
 }
