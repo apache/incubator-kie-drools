@@ -1481,6 +1481,9 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     }
 
     @Override
+    public void executeFlush() { }
+
+    @Override
     public void activate( ) {
         throw new UnsupportedOperationException( "Cannot invoke activate on ReteAgenda" );
     }

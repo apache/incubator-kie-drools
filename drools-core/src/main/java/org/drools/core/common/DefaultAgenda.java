@@ -1409,6 +1409,22 @@ public class DefaultAgenda
         }
     }
 
+    public void executeFlush() {
+        synchronized (stateMachineLock) {
+            // state is never changed outside of a sync block, so this is safe.
+            if (!currentState.isAlive() || currentState.isFiring()) {
+                return;
+            }
+            waitAndEnterExecutionState( ExecutionState.EXECUTING_TASK );
+        }
+
+        try {
+            workingMemory.flushPropagations();
+        } finally {
+            immediateHalt();
+        }
+    }
+
     public void activate() {
         immediateHalt();
         if (wasFiringUntilHalt) {

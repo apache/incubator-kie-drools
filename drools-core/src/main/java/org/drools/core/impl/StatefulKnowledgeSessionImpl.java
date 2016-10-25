@@ -797,10 +797,15 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.lock.lock();
 
             this.kBase.executeQueuedActions();
-            flushPropagations();
             // it is necessary to flush the propagation queue twice to perform all the expirations
             // eventually enqueued by events that have been inserted when already expired
-            flushPropagations();
+            if (calledFromRHS) {
+                flushPropagations();
+                flushPropagations();
+            } else {
+                agenda.executeFlush();
+                agenda.executeFlush();
+            }
 
             DroolsQuery queryObject = new DroolsQuery( queryName,
                                                        arguments,
@@ -861,7 +866,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.lock.lock();
 
             this.kBase.executeQueuedActions();
-            flushPropagations();
+            agenda.executeFlush();
 
             DroolsQuery queryObject = new DroolsQuery( query,
                                                        arguments,
