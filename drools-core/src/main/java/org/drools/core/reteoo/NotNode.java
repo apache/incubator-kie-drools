@@ -187,6 +187,8 @@ public class NotNode extends BetaNode {
             // nothing staged before, notify rule, so it can evaluate network
             memory.setNodeDirty( wm );
         }
+
+        flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), isStreamMode() );
     }
 
     @Override

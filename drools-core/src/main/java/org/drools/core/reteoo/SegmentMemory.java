@@ -192,14 +192,13 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         pmem.linkSegment(segmentPosMaskBit, wm);
     }
 
-    public void unlinkNode(long mask,
-                           InternalWorkingMemory wm) {
+    public boolean unlinkNode(long mask,
+                              InternalWorkingMemory wm) {
+        boolean dataDrivePmemLinked = false;
         boolean linked = isSegmentLinked();
         // some node unlinking does not unlink the segment, such as nodes after a Branch CE
         linkedNodeMask ^= mask;
         dirtyNodeMask |= mask;
-        //dirtyNodeMask = dirtyNodeMask | mask;
-
 
         if (isLogTraceEnabled) {
             log.trace("UnlinkNode notify=true nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
@@ -208,8 +207,10 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         if (linked && !isSegmentLinked()) {
             for (int i = 0, length = pathMemories.size(); i < length; i++) {
                 // do not use foreach, don't want Iterator object creation
-                pathMemories.get(i).unlinkedSegment(segmentPosMaskBit,
-                                                    wm);
+                PathMemory pmem = pathMemories.get(i);
+                // the data driven pmem has to be flushed only if the pmem was formerly linked
+                dataDrivePmemLinked |= ( pmem.isDataDriven() && pmem.isRuleLinked() );
+                pmem.unlinkedSegment(segmentPosMaskBit, wm);
             }
         } else {
             // if not unlinked, then we still need to notify if the rule is linked
@@ -220,6 +221,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                 }
             }
         }
+        return dataDrivePmemLinked;
     }
 
     public void unlinkSegment(InternalWorkingMemory wm) {

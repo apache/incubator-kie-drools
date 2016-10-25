@@ -45,8 +45,8 @@ public class SegmentPropagator {
         SegmentMemory firstSmem = sourceSegment.getFirst();
 
         // Process Deletes
-        processPeerDeletes( leftTuples, leftTuples.getDeleteFirst(), firstSmem );
-        processPeerDeletes( leftTuples, leftTuples.getNormalizedDeleteFirst(), firstSmem );
+        processPeerDeletes( leftTuples, leftTuples.getDeleteFirst(), firstSmem, wm );
+        processPeerDeletes( leftTuples, leftTuples.getNormalizedDeleteFirst(), firstSmem, wm );
 
         // Process Updates
         for ( LeftTuple leftTuple = leftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
@@ -82,6 +82,7 @@ public class SegmentPropagator {
 
                         if (smem.hasDataDrivenPathMemories()) {
                             for (PathMemory dataDrivenPmem : smem.getDataDrivenPathMemories()) {
+                                // on insert only totally linked pmems need to be flushed
                                 if (dataDrivenPmem.isRuleLinked()) {
                                     forceFlushLeftTuple(dataDrivenPmem, smem, wm, smem.getStagedLeftTuples());
                                     break;
@@ -97,7 +98,7 @@ public class SegmentPropagator {
         leftTuples.resetAll();
     }
 
-    private static void processPeerDeletes( TupleSets<LeftTuple> leftTuples, LeftTuple leftTuple, SegmentMemory firstSmem ) {
+    private static void processPeerDeletes( TupleSets<LeftTuple> leftTuples, LeftTuple leftTuple, SegmentMemory firstSmem, InternalWorkingMemory wm ) {
         for (; leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
             SegmentMemory smem = firstSmem.getNext();
             if ( smem != null ) {
@@ -106,6 +107,11 @@ public class SegmentPropagator {
                     TupleSets<LeftTuple> stagedLeftTuples = smem.getStagedLeftTuples();
                     // if the peer is already staged as insert or update the LeftTupleSets will reconcile it internally
                     stagedLeftTuples.addDelete( peer );
+
+                    if (smem.hasDataDrivenPathMemories()) {
+                        forceFlushLeftTuple(smem.getFirstDataDrivenPathMemory(), smem, wm, smem.getStagedLeftTuples());
+                    }
+
                     smem = smem.getNext();
                 }
             }
