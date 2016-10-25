@@ -17,30 +17,31 @@
 package org.kie.dmn.core.impl;
 
 import org.kie.dmn.core.api.DMNType;
+import org.kie.dmn.feel.lang.Type;
 
-import java.util.Map;
+import java.util.List;
 
-public class DMNTypeImpl
+public class FeelTypeImpl
         implements DMNType {
 
-    private String name;
-    private String id;
-    private boolean simple;
-    private Class<?> javaType;
-    private Map<String, DMNTypeImpl> fields;
+    private String  name;
+    private String  id;
+    private Type    feelType;
+    private List<?> allowedValues;
 
-    public DMNTypeImpl() {
+    public FeelTypeImpl() {
+        this( null, null, null, null );
     }
 
-    public DMNTypeImpl(String name, String id) {
-        this.name = name;
-        this.id = id;
+    public FeelTypeImpl(String name, String id) {
+        this( name, id, null, null );
     }
 
-    public DMNTypeImpl(String name, String id, Class<?> javaType) {
+    public FeelTypeImpl(String name, String id, Type feelType, List<?> allowedValues) {
         this.name = name;
         this.id = id;
-        this.javaType = javaType;
+        this.feelType = feelType;
+        this.allowedValues = allowedValues;
     }
 
     @Override
@@ -61,27 +62,19 @@ public class DMNTypeImpl
         this.id = id;
     }
 
-    public boolean isSimple() {
-        return simple;
+    public Type getFeelType() {
+        return feelType;
     }
 
-    public void setSimple(boolean simple) {
-        this.simple = simple;
+    public void setFeelType(Type feelType) {
+        this.feelType = feelType;
     }
 
-    public Class<?> getJavaType() {
-        return javaType;
+    public List<?> getAllowedValues() {
+        return allowedValues;
     }
 
-    public void setJavaType(Class<?> javaType) {
-        this.javaType = javaType;
-    }
-
-    public Map<String, DMNTypeImpl> getFields() {
-        return fields;
-    }
-
-    public void setFields(Map<String, DMNTypeImpl> fields) {
-        this.fields = fields;
+    public void setAllowedValues(List<?> allowedValues) {
+        this.allowedValues = allowedValues;
     }
 }
