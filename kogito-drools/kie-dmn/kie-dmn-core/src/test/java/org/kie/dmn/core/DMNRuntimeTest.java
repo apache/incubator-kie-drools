@@ -23,6 +23,7 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.ast.InputDataNode;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Set;
 
@@ -116,5 +117,38 @@ public class DMNRuntimeTest {
         assertThat( inputs.size(), is(1) );
         assertThat( inputs.iterator().next().getName(), is("Full Name") );
     }
+
+    @Test
+    public void testSimpleInputDataNumber() {
+        DMNRuntime runtime = createRuntime( "0002-input-data-number.dmn" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0002-input-data-number" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Monthly Salary", new BigDecimal( 1000 ) );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        DMNContext result = dmnResult.getContext();
+
+        assertThat( result.get( "Yearly Salary" ), is( new BigDecimal( 12000 ) ) );
+    }
+
+    @Test
+    public void testSimpleAllowedValuesString() {
+        DMNRuntime runtime = createRuntime( "0003-input-data-string-allowed-values.dmn" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0003-input-data-string-allowed-values" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Employment Status", "SELF-EMPLOYED" );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        DMNContext result = dmnResult.getContext();
+
+        assertThat( result.get( "Employment Status Statement" ), is( "You are SELF-EMPLOYED" ) );
+    }
+
 
 }

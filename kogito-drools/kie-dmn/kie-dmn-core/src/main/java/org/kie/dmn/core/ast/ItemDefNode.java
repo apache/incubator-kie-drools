@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.ast;
 
+import org.kie.dmn.core.api.DMNType;
 import org.kie.dmn.feel.model.v1_1.ItemDefinition;
 
 public class ItemDefNode
@@ -23,21 +24,16 @@ public class ItemDefNode
         implements DMNNode {
 
     private ItemDefinition itemDef;
-
-    public ItemDefNode() {
-    }
+    private DMNType        type;
 
     public ItemDefNode(ItemDefinition itemDef) {
-        super( itemDef );
-        this.itemDef = itemDef;
-        buildTypeDef();
+        this( itemDef, null );
     }
 
-    private void buildTypeDef() {
-        if( itemDef.getTypeRef() != null ) {
-            // this is an "simple" type
-
-        }
+    public ItemDefNode(ItemDefinition itemDef, DMNType type) {
+        super( itemDef );
+        this.itemDef = itemDef;
+        this.type = type;
     }
 
     public ItemDefinition getItemDef() {
@@ -58,5 +54,13 @@ public class ItemDefNode
 
     public boolean isCollection() {
         return itemDef.isIsCollection();
+    }
+
+    public DMNType getType() {
+        return type;
+    }
+
+    public void setType(DMNType type) {
+        this.type = type;
     }
 }
