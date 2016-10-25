@@ -20,16 +20,22 @@ import org.kie.api.io.Resource;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNCompiler;
 import org.kie.dmn.core.api.DMNModel;
+import org.kie.dmn.core.api.DMNType;
 import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.core.ast.InputDataNode;
 import org.kie.dmn.core.ast.ItemDefNode;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.FeelTypeImpl;
+import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.model.v1_1.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collections;
 
 public class DMNCompilerImpl implements DMNCompiler {
 
@@ -64,7 +70,8 @@ public class DMNCompilerImpl implements DMNCompiler {
 
     private void processItemDefinitions(DMNModelImpl model, Definitions dmndefs) {
         for( ItemDefinition id : dmndefs.getItemDefinition() ) {
-            ItemDefNode idn = new ItemDefNode( id );
+            DMNType type = buildTypeDef( id );
+            ItemDefNode idn = new ItemDefNode( id, type );
             model.addItemDefinition( idn );
         }
     }
@@ -103,4 +110,28 @@ public class DMNCompilerImpl implements DMNCompiler {
         String href = er.getHref();
         return href.contains( "#" ) ? href.substring( href.indexOf( '#' ) + 1 ) : href;
     }
+
+    private DMNType buildTypeDef( ItemDefinition itemDef ) {
+        DMNType type = null;
+        if( itemDef.getTypeRef() != null ) {
+            // this is an "simple" type, so find the namespace
+            String prefix = itemDef.getTypeRef().getPrefix();
+            String namespace = itemDef.getNsContext().get( prefix );
+            UnaryTests allowedValuesStr = itemDef.getAllowedValues();
+            if( DMNModelInstrumentedBase.URI_FEEL.equals( namespace ) ) {
+                Type feelType = BuiltInType.determineTypeFromName( itemDef.getTypeRef().getLocalPart() );
+                java.util.List<?> allowedValues = null;
+                if( allowedValuesStr != null ) {
+                    Object av = FEEL.newInstance().evaluate( "[" + allowedValuesStr.getText() + "]" );
+                    allowedValues = av instanceof java.util.List ? (java.util.List) av : Collections.singletonList( av );
+                }
+                type = new FeelTypeImpl( itemDef.getName(), itemDef.getId(), feelType, allowedValues );
+            } else {
+                logger.error( "Unknown namespace for type reference prefix: "+prefix );
+            }
+        }
+        return type;
+    }
+
+
 }
