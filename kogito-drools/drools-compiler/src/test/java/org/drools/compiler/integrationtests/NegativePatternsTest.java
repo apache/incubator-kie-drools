@@ -15,13 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.drools.core.time.SessionPseudoClock;
 import org.junit.After;
 import org.junit.Before;
@@ -38,6 +31,13 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests negative patterns with or without additional constraints and events are
@@ -222,9 +222,10 @@ public class NegativePatternsTest {
 
         entryPoint.delete(handle);
         ksession.fireAllRules();
-        count++;
+        // it shouldn't fire because of the duration
         advanceTime(SHORT_SLEEP_TIME);
         ksession.fireAllRules();
+        // it shouldn't fire because event A is gone out of window
 
         for (; count < LOOPS;) {
             entryPoint.insert(new TestEvent(count, "EventA"));

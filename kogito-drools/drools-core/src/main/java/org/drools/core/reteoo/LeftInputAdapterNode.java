@@ -33,6 +33,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
@@ -222,7 +223,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     public static void doInsertSegmentMemory( InternalWorkingMemory wm, boolean linkOrNotify, final LiaNodeMemory lm,
                                                SegmentMemory sm, LeftTuple leftTuple, boolean streamMode ) {
-        if ( flushLeftTupleIfNecessary( wm, sm, leftTuple, streamMode ) ) {
+        if ( flushLeftTupleIfNecessary( wm, sm, leftTuple, streamMode, Tuple.INSERT ) ) {
             if ( linkOrNotify ) {
                 lm.setNodeDirty( wm );
             }
@@ -255,7 +256,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             sm = sm.getFirst(); // repoint to the child sm
         }
 
-        doDeleteSegmentMemory(leftTuple, context, lm, sm, wm, linkOrNotify);
+        doDeleteSegmentMemory(leftTuple, context, lm, sm, wm, linkOrNotify, liaNode.isStreamMode());
 
         if ( sm.getNext() != null) {
             // sm points to lia child sm, so iterate for all remaining children
@@ -266,7 +267,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 if (leftTuple == null) {
                     break;
                 }
-                doDeleteSegmentMemory(leftTuple, context, lm, sm, wm, linkOrNotify);
+                doDeleteSegmentMemory(leftTuple, context, lm, sm, wm, linkOrNotify, liaNode.isStreamMode());
             }
         }
 
@@ -280,7 +281,14 @@ public class LeftInputAdapterNode extends LeftTupleSource
     }
 
     private static void doDeleteSegmentMemory(LeftTuple leftTuple, PropagationContext pctx, final LiaNodeMemory lm,
-                                              SegmentMemory sm, InternalWorkingMemory wm, boolean linkOrNotify) {
+                                              SegmentMemory sm, InternalWorkingMemory wm, boolean linkOrNotify, boolean streamMode) {
+        if ( flushLeftTupleIfNecessary( wm, sm, leftTuple, streamMode, Tuple.DELETE ) ) {
+            if ( linkOrNotify ) {
+                lm.setNodeDirty( wm );
+            }
+            return;
+        }
+
         TupleSets<LeftTuple> leftTuples = sm.getStagedLeftTuples();
         leftTuple.setPropagationContext( pctx );
 
@@ -311,7 +319,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         TupleSets<LeftTuple> leftTuples = sm.getStagedLeftTuples();
 
-        doUpdateSegmentMemory(leftTuple, context, wm, linkOrNotify, lm, leftTuples );
+        doUpdateSegmentMemory(leftTuple, context, wm, linkOrNotify, lm, leftTuples, sm, liaNode.isStreamMode() );
 
         if (  sm.getNext() != null ) {
             // sm points to lia child sm, so iterate for all remaining children
@@ -320,14 +328,21 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 leftTuple = leftTuple.getPeer();
                 leftTuples = sm.getStagedLeftTuples();
 
-                doUpdateSegmentMemory(leftTuple, context, wm, linkOrNotify, lm, leftTuples );
+                doUpdateSegmentMemory(leftTuple, context, wm, linkOrNotify, lm, leftTuples, sm, liaNode.isStreamMode() );
             }
         }
     }
 
     private static void doUpdateSegmentMemory( LeftTuple leftTuple, PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify,
-                                               final LiaNodeMemory lm, TupleSets<LeftTuple> leftTuples ) {
+                                               final LiaNodeMemory lm, TupleSets<LeftTuple> leftTuples, SegmentMemory sm, boolean streamMode ) {
         if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
+            if ( flushLeftTupleIfNecessary( wm, sm, leftTuple, streamMode, Tuple.UPDATE ) ) {
+                if ( linkOrNotify ) {
+                    lm.setNodeDirty( wm );
+                }
+                return;
+            }
+
             // if LeftTuple is already staged, leave it there
             leftTuple.setPropagationContext( pctx );
             boolean stagedUpdateWasEmpty = leftTuples.addUpdate(leftTuple);
@@ -560,8 +575,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
             segmentMemory.linkNode(nodePosMaskBit, wm);
         }
 
-        public void unlinkNode(InternalWorkingMemory wm) {
-            segmentMemory.unlinkNode(nodePosMaskBit, wm);
+        public boolean unlinkNode(InternalWorkingMemory wm) {
+            return segmentMemory.unlinkNode(nodePosMaskBit, wm);
         }
 
         public void unlinkNodeWithoutRuleNotify() {

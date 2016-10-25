@@ -94,8 +94,8 @@ public class BetaMemory extends AbstractBaseLinkedListNode<Memory>
                segmentMemory.linkNodeWithoutRuleNotify(nodePosMaskBit);
     }
 
-    public void unlinkNode(InternalWorkingMemory wm) {
-        segmentMemory.unlinkNode(nodePosMaskBit, wm);
+    public boolean unlinkNode(InternalWorkingMemory wm) {
+        return segmentMemory.unlinkNode(nodePosMaskBit, wm);
     }
 
     public short getNodeType() {
