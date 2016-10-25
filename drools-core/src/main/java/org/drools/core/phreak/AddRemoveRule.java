@@ -612,10 +612,14 @@ public class AddRemoveRule {
         }
     }
 
-    public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode) {
+    public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, boolean streamMode) {
+        return flushLeftTupleIfNecessary(wm, sm, null, streamMode, Tuple.NONE);
+    }
+
+    public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode, short stagedType) {
         PathMemory pmem = streamMode ?
                           sm.getPathMemories().get(0) :
-                          getPathMemoryToFlushForEagerEvaluation( sm, leftTuple );
+                          sm.getFirstDataDrivenPathMemory();
 
         if ( pmem == null ) {
             return false;
@@ -623,7 +627,17 @@ public class AddRemoveRule {
 
         TupleSets<LeftTuple> leftTupleSets = new TupleSetsImpl<LeftTuple>();
         if (leftTuple != null) {
-            leftTupleSets.addInsert(leftTuple);
+            switch (stagedType) {
+                case Tuple.INSERT:
+                    leftTupleSets.addInsert(leftTuple);
+                    break;
+                case Tuple.DELETE:
+                    leftTupleSets.addDelete(leftTuple);
+                    break;
+                case Tuple.UPDATE:
+                    leftTupleSets.addUpdate(leftTuple);
+                    break;
+            }
         }
 
         forceFlushLeftTuple( pmem, sm, wm, leftTupleSets );
@@ -643,24 +657,6 @@ public class AddRemoveRule {
         }
 
         return true;
-    }
-
-    private static PathMemory getPathMemoryToFlushForEagerEvaluation( SegmentMemory sm, LeftTuple leftTuple ) {
-        PathMemory pmem = sm.getFirstDataDrivenPathMemory();
-        if ( leftTuple == null && pmem != null && !pmem.isRuleLinked() ) {
-            // skip the first, we already know it isn't linked
-            pmem = getFirstLinkedPathMemory( sm, sm.getDataDrivenPathMemories(), 1 );
-        }
-        return pmem;
-    }
-
-    private static PathMemory getFirstLinkedPathMemory( SegmentMemory sm, List<PathMemory> pmems, int start ) {
-        for (int i = start; i < pmems.size(); i++) {
-            if (pmems.get(i).isRuleLinked()) {
-                return pmems.get(i);
-            }
-        }
-        return null;
     }
 
     public static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, TupleSets<LeftTuple> leftTupleSets) {
