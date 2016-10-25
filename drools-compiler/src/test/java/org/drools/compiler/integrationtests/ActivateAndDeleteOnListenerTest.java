@@ -23,6 +23,7 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
@@ -166,8 +167,14 @@ public class ActivateAndDeleteOnListenerTest extends CommonTestMethodBase {
         final List list = new ArrayList();
 
         AgendaEventListener agendaEventListener = new org.kie.api.event.rule.DefaultAgendaEventListener() {
+            @Override
             public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) {
                 list.add("activated");
+            }
+
+            @Override
+            public void matchCancelled( MatchCancelledEvent event ) {
+                list.add("cancelled");
             }
         };
         ksession.addEventListener(agendaEventListener);
@@ -175,8 +182,16 @@ public class ActivateAndDeleteOnListenerTest extends CommonTestMethodBase {
         ksession.insert("test");
         assertEquals(0, list.size());
 
-        ksession.insert(1);
+        FactHandle fh = ksession.insert(1);
         assertEquals(2, list.size());
+        assertEquals("activated", list.get(0));
+        assertEquals("activated", list.get(1));
+
+        list.clear();
+        ksession.delete( fh );
+        assertEquals(2, list.size());
+        assertEquals("cancelled", list.get(0));
+        assertEquals("cancelled", list.get(1));
     }
 
     @Test

@@ -158,7 +158,7 @@ public class NotNode extends BetaNode {
             memory.setNodeDirty(wm);
         }
 
-        flushLeftTupleIfNecessary(wm, memory.getSegmentMemory(), null, isStreamMode());
+        flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), isStreamMode() );
     }
 
     public void retractRightTuple(final RightTuple rightTuple,
@@ -187,6 +187,8 @@ public class NotNode extends BetaNode {
             // nothing staged before, notify rule, so it can evaluate network
             memory.setNodeDirty( wm );
         }
+
+        flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), isStreamMode() );
     }
 
     @Override

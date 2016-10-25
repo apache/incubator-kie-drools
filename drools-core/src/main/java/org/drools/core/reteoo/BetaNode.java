@@ -299,7 +299,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
 
         if (shouldFlush) {
-            flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), null, isStreamMode() );
+            flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), isStreamMode() );
         }
     }
 
@@ -347,14 +347,19 @@ public abstract class BetaNode extends LeftTupleSource
 
         boolean stagedDeleteWasEmpty = stagedRightTuples.addDelete(rightTuple);
 
+        boolean shouldFlush = isStreamMode();
         if ( memory.getAndDecCounter() == 1 ) {
             if ( stagedDeleteWasEmpty ) {
                 memory.setNodeDirtyWithoutNotify();
             }
-            memory.unlinkNode(wm);
+            shouldFlush = memory.unlinkNode(wm) | shouldFlush;
         } else if ( stagedDeleteWasEmpty ) {
             // nothing staged before, notify rule, so it can evaluate network
-            memory.setNodeDirty( wm );
+            shouldFlush = memory.setNodeDirty( wm ) | shouldFlush;
+        }
+
+        if (shouldFlush) {
+            flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), isStreamMode() );
         }
     }
 
@@ -365,8 +370,13 @@ public abstract class BetaNode extends LeftTupleSource
 
         boolean stagedUpdateWasEmpty = stagedRightTuples.addUpdate( rightTuple );
 
+        boolean shouldFlush = isStreamMode();
         if ( stagedUpdateWasEmpty  ) {
-            memory.setNodeDirty( wm );
+            shouldFlush = memory.setNodeDirty( wm ) | shouldFlush;
+        }
+
+        if (shouldFlush) {
+            flushLeftTupleIfNecessary( wm, memory.getSegmentMemory(), isStreamMode() );
         }
     }
 
