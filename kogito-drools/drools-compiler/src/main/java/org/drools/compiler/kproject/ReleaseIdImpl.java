@@ -86,11 +86,19 @@ public class ReleaseIdImpl implements ReleaseId, Externalizable {
     }
 
     public String getPomXmlPath() {
-        return "META-INF/maven/" + groupId + "/" + artifactId + "/pom.xml";
+        return getPomXmlPath(this);
     }
 
     public String getPomPropertiesPath() {
-        return "META-INF/maven/" + groupId + "/" + artifactId + "/pom.properties";
+        return getPomPropertiesPath(this);
+    }
+
+    public static String getPomXmlPath(ReleaseId releaseId) {
+        return "META-INF/maven/" + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/pom.xml";
+    }
+    
+    public static String getPomPropertiesPath(ReleaseId releaseId) {
+        return "META-INF/maven/" + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/pom.properties";
     }
 
     public String getCompilationCachePathPrefix() {

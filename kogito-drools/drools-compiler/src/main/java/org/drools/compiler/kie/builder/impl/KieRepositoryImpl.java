@@ -153,7 +153,7 @@ public class KieRepositoryImpl
             return null;
         }
 
-        String pomPropertiesPath = ((ReleaseIdImpl)releaseId).getPomPropertiesPath();
+        String pomPropertiesPath = ReleaseIdImpl.getPomPropertiesPath(releaseId);
         URL pomPropertiesUrl = contextClassLoader.getResource( pomPropertiesPath );
         if (pomPropertiesUrl == null) {
             return null;
