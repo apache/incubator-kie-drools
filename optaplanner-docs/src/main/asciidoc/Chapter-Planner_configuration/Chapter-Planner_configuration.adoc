@@ -266,29 +266,7 @@ Most use cases also have only one planning variable per planning entity class.
 In <<realTimePlanning,real-time planning>>, even though the problem itself changes, problem facts do not really change during planning, instead they change between planning (because the Solver temporarily stops to apply the problem fact changes).
 ====
 
-
-A good model can greatly improve the success of your planning implementation.
-Follow these guidelines to design a good model:
-
-* In a _many to one_ relationship, it is normally the _many_ side that is the planning entity class. The property referencing the other side is then the planning variable. For example in employee rostering: the planning entity class is ``ShiftAssignment``, not ``Employee``, and the planning variable is `ShiftAssignment.getEmployee()` because one `Employee` has multiple ``ShiftAssignment``s but one `ShiftAssignment` has only one ``Employee``.
-* A planning entity class should have at least one problem property. A planning entity class with only planning variables can normally be simplified by converting one of those planning variables into a problem property. That heavily decreases <<searchSpaceSize,the search space size>>. For example in employee rostering: the ``ShiftAssignment``'s `getShift()` is a problem property and the `getEmployee()` is a planning variable. If both were a planning variable, solving it would be far less efficient.
-** A surrogate ID does not suffice as the required minimum of one problem property. It needs to be understandable by the business. A business key does suffice. This prevents an unassigned entity from being nameless (unidentifiable by the business).
-** This way, there is no need to add a hard constraint to assure that two planning entities are different: they are already different due to their problem properties.
-** In some cases, multiple planning entities have the same problem property. In such cases, it can be useful to create an extra problem property to distinguish them. For example in employee rostering: `ShiftAssignment` has besides the problem property `Shift` also the problem property ``indexInShift``.
-* The number of planning entities is recommended to be fixed during planning. When unsure of which property should be a planning variable and which should be a problem property, choose it so the number of planning entities is fixed. For example in employee rostering: if the planning entity class had been `EmployeeAssignment` with a problem property `getEmployee()` and a planning variable ``getShift()``, then it would have been impossible to accurately predict how many `EmployeeAssignment` instances to make per ``Employee``.
-
-
-For inspiration, take a look at <<designPatterns,typical design patterns>> or how the examples modeled their domain:
-
-
-image::Chapter-Planner_configuration/entityVariableAndValueExamples.png[align="center"]
-
-
-[NOTE]
-====
-Vehicle routing is special, because it uses a <<chainedPlanningVariable,chained planning
-        variable>>.
-====
+To create a good domain model, read the <<domainModelingGuide,domain modeling guide>>.
 
 *In Planner, all problems facts and planning entities are plain old JavaBeans (POJOs).* Load them from a database, an XML file, a data repository, a REST service, a noSQL cloud, ... (see <<integration,integration>>): it doesn't matter.
 
