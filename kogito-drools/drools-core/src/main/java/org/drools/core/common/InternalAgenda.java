@@ -285,6 +285,7 @@ public interface InternalAgenda
 
     boolean isFiring();
     void executeTask( ExecutableEntry executable );
+    void executeFlush();
 
     void activate();
     void deactivate();
