@@ -393,7 +393,7 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     	org.jbpm.workflow.instance.NodeInstance nodeInstance = (org.jbpm.workflow.instance.NodeInstance)
     		((org.jbpm.workflow.instance.NodeInstanceContainer) getNodeInstanceContainer())
             	.getNodeInstance(getNode().getNodeContainer().getNode(nodeId));
-    	triggerNodeInstance(nodeInstance, null);
+    	triggerNodeInstance(nodeInstance, org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE);
     }
     
     public Context resolveContext(String contextId, Object param) {

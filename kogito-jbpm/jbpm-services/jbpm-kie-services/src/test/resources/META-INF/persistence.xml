@@ -65,7 +65,7 @@
     <class>org.jbpm.kie.services.impl.query.persistence.QueryDefinitionEntity</class>
 
     <properties>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect" />
       <property name="hibernate.connection.autocommit" value="false" />
 
       <property name="hibernate.max_fetch_depth" value="3" />

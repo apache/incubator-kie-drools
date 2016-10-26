@@ -20,6 +20,8 @@ import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BrokenBarrierException;
@@ -39,6 +41,7 @@ import org.jbpm.kie.services.impl.query.QueryServiceImpl;
 import org.jbpm.kie.services.test.TestIdentityProvider;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl;
+import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentService;
@@ -64,6 +67,9 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.task.TaskService;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.conf.DeploymentDescriptorBuilder;
+import org.kie.internal.runtime.conf.ObjectModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -192,8 +198,22 @@ public abstract class AbstractKieServicesBaseTest {
 
         KieFileSystem kfs = createKieFileSystemWithKProject(ks);
         kfs.writePomXML( getPom(releaseId) );
-
-
+        
+        if (createDescriptor()) {
+            DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+            DeploymentDescriptorBuilder ddBuilder = customDescriptor.getBuilder();
+    
+            for (ObjectModel listener : getProcessListeners()) {
+                ddBuilder.addEventListener(listener);
+            }
+            for (ObjectModel listener : getTaskListeners()) {
+                ddBuilder.addTaskEventListener(listener);
+            }
+            if (extraResources == null) {
+                extraResources = new HashMap<String, String>();
+            }
+            extraResources.put("src/main/resources/" + DeploymentDescriptor.META_INF_LOCATION, customDescriptor.toXml());
+        }
         for (String resource : resources) {
             kfs.write("src/main/resources/KBase-test/" + resource, ResourceFactory.newClassPathResource(resource));
         }
@@ -285,6 +305,18 @@ public abstract class AbstractKieServicesBaseTest {
                 new File(tempDir, file).delete();
             }
         }
+    }
+    
+    protected boolean createDescriptor() {
+        return false;
+    }
+    
+    protected List<ObjectModel> getProcessListeners() {
+        return new ArrayList<>();
+    }
+    
+    protected List<ObjectModel> getTaskListeners() {
+        return new ArrayList<>();
     }
 
 	public void setDeploymentService(DeploymentService deploymentService) {

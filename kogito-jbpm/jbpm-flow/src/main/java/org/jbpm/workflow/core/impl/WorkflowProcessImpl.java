@@ -18,6 +18,10 @@ package org.jbpm.workflow.core.impl;
 
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.jbpm.process.core.impl.ProcessImpl;
 import org.jbpm.workflow.core.WorkflowProcess;
 
@@ -43,7 +47,7 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
     
     public Node[] getNodes() {
         return nodeContainer.getNodes();
-    }
+    }    
 
     public Node getNode(final long id) {
         return nodeContainer.getNode(id);
@@ -95,4 +99,21 @@ public class WorkflowProcessImpl extends ProcessImpl implements WorkflowProcess,
         return PROCESS_TYPE;
     }
 
+    public List<Node> getNodesRecursively() {
+        List<Node> nodes = new ArrayList<>(); 
+        
+        processNodeContainer(nodeContainer, nodes);
+                
+        return nodes;        
+    }
+    
+    protected void processNodeContainer(org.jbpm.workflow.core.NodeContainer nodeContainer, List<Node> nodes) {
+        
+        for (Node node : nodeContainer.getNodes()){
+            nodes.add(node);
+            if (node instanceof org.jbpm.workflow.core.NodeContainer) {
+                processNodeContainer((org.jbpm.workflow.core.NodeContainer) node, nodes);
+            }
+        }
+    }
 }

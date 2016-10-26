@@ -38,32 +38,39 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.ProcessInstanceIdCommand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @XmlRootElement(name = "update-timer-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class UpdateTimerCommand implements GenericCommand<Void>, ProcessInstanceIdCommand {
 
     private static final long serialVersionUID = -8252686458877022330L;
+    private static final Logger logger = LoggerFactory.getLogger(UpdateTimerCommand.class);
 
     @XmlElement
     @XmlSchemaType(name = "long")
-    private long processInstanceId;
+    protected long processInstanceId;
+    
+    @XmlElement
+    @XmlSchemaType(name = "long")
+    protected long timerId;
 
     @XmlElement
     @XmlSchemaType(name = "string")
-    private String timerName;
+    protected String timerName;
 
     @XmlElement
     @XmlSchemaType(name = "long")
-    private long delay;
+    protected long delay;
 
     @XmlElement
     @XmlSchemaType(name = "long")
-    private long period;
+    protected long period;
 
     @XmlElement
     @XmlSchemaType(name = "int")
-    private int repeatLimit;
+    protected int repeatLimit;
 
     public UpdateTimerCommand(long processInstanceId, String timerName, long delay) {
         this(processInstanceId, timerName, delay, 0, 0);
@@ -76,6 +83,23 @@ public class UpdateTimerCommand implements GenericCommand<Void>, ProcessInstance
     public UpdateTimerCommand(long processInstanceId, String timerName, long delay, long period, int repeatLimit) {
         this.processInstanceId = processInstanceId;
         this.timerName = timerName;
+        this.timerId = -1;
+        this.delay = delay;
+        this.period = period;
+        this.repeatLimit = repeatLimit;
+    }
+    
+    public UpdateTimerCommand(long processInstanceId, long timerId, long delay) {
+        this(processInstanceId, timerId, delay, 0, 0);
+    }
+
+    public UpdateTimerCommand(long processInstanceId, long timerId, long period, int repeatLimit) {
+        this(processInstanceId, timerId, 0, period, repeatLimit);
+    }
+
+    public UpdateTimerCommand(long processInstanceId, long timerId, long delay, long period, int repeatLimit) {
+        this.processInstanceId = processInstanceId;
+        this.timerId = timerId;
         this.delay = delay;
         this.period = period;
         this.repeatLimit = repeatLimit;
@@ -83,57 +107,44 @@ public class UpdateTimerCommand implements GenericCommand<Void>, ProcessInstance
 
     @Override
     public Void execute(Context context) {
+        logger.debug("About to cancel timer in process instance {} by name '{}' or id {}", processInstanceId, timerName, timerId);
         KieSession kieSession = ((KnowledgeCommandContext) context).getKieSession();
         TimerManager tm = getTimerManager(kieSession);
 
         RuleFlowProcessInstance wfp = (RuleFlowProcessInstance) kieSession.getProcessInstance(processInstanceId);
-
+        if (wfp == null) {
+            throw new IllegalArgumentException("Process instance with id " + processInstanceId + " not found");
+        }
         for (NodeInstance nodeInstance : wfp.getNodeInstances()) {
             if (nodeInstance instanceof TimerNodeInstance) {
                 TimerNodeInstance tni = (TimerNodeInstance) nodeInstance;
-                if (tni.getNodeName().equals(timerName)) {
+                if (tni.getNodeName().equals(timerName) || tni.getTimerId() == timerId) {
                     TimerInstance timer = tm.getTimerMap().get(tni.getTimerId());
-
-                    tm.cancelTimer(timer.getTimerId());
-                    TimerInstance newTimer = new TimerInstance();
-
-                    if (delay != 0) {
-                        long diff = System.currentTimeMillis() - timer.getActivated().getTime();
-                        newTimer.setDelay(delay * 1000 - diff);
-                    }
-                    newTimer.setPeriod(period);
-                    newTimer.setRepeatLimit(repeatLimit);
-                    newTimer.setTimerId(timer.getTimerId());
-                    tm.registerTimer(newTimer, wfp);
-
+                    
+                    TimerInstance newTimer = rescheduleTimer(timer, tm);
+                    logger.debug("New timer {} about to be registered", newTimer);
+                    tm.registerTimer(newTimer, wfp);                    
                     tni.internalSetTimerId(newTimer.getId());
+                    logger.debug("New timer {} successfully registered", newTimer);
 
                     break;
                 }
             } else if (nodeInstance instanceof StateBasedNodeInstance) {
                 StateBasedNodeInstance sbni = (StateBasedNodeInstance) nodeInstance;
-                
-                if (sbni.getNodeName().equals(timerName)) {
-                    List<Long> timerList = sbni.getTimerInstances();
+                List<Long> timerList = sbni.getTimerInstances();
+                if (sbni.getNodeName().equals(timerName) || timerList.contains(timerId)) {
+                    
                     if (timerList != null && timerList.size() == 1) {
                         TimerInstance timer = tm.getTimerMap().get(timerList.get(0));
     
-                        tm.cancelTimer(timer.getTimerId());
-                        TimerInstance newTimer = new TimerInstance();
-    
-                        if (delay != 0) {
-                            long diff = System.currentTimeMillis() - timer.getActivated().getTime();
-                            newTimer.setDelay(delay * 1000 - diff);
-                        }
-                        newTimer.setPeriod(period);
-                        newTimer.setRepeatLimit(repeatLimit);
-                        newTimer.setTimerId(timer.getTimerId());
-                        tm.registerTimer(newTimer, wfp);
-                        
+                        TimerInstance newTimer = rescheduleTimer(timer, tm);
+                        logger.debug("New timer {} about to be registered", newTimer);
+                        tm.registerTimer(newTimer, wfp);                        
                         timerList.clear();
                         timerList.add(newTimer.getId());
     
                         sbni.internalSetTimerInstances(timerList);
+                        logger.debug("New timer {} successfully registered", newTimer);
                     
                     }
                     break;
@@ -153,7 +164,7 @@ public class UpdateTimerCommand implements GenericCommand<Void>, ProcessInstance
         return processInstanceId;
     }
 
-    private TimerManager getTimerManager(KieSession ksession) {
+    protected TimerManager getTimerManager(KieSession ksession) {
         KieSession internal = ksession;
         if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
             internal = ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().getContext()).getKieSession();
@@ -166,4 +177,25 @@ public class UpdateTimerCommand implements GenericCommand<Void>, ProcessInstance
         return "processInstance.updateTimer(" + timerName + ", " + delay + ", " + period + ", " + repeatLimit + ");";
     }
 
+    protected long calculateDelay(long delay, TimerInstance timer) {
+        long diff = System.currentTimeMillis() - timer.getActivated().getTime();
+        return delay * 1000 - diff;
+    }
+    
+    protected TimerInstance rescheduleTimer(TimerInstance timer, TimerManager tm) {
+        logger.debug("Found timer {} that is going to be canceled", timer);
+        tm.cancelTimer(timer.getTimerId());
+        logger.debug("Timer {} canceled successfully", timer);
+        
+        TimerInstance newTimer = new TimerInstance();
+
+        if (delay != 0) {
+            newTimer.setDelay(calculateDelay(delay, timer));
+        }
+        newTimer.setPeriod(period);
+        newTimer.setRepeatLimit(repeatLimit);
+        newTimer.setTimerId(timer.getTimerId());        
+        
+        return newTimer;
+    }
 }
