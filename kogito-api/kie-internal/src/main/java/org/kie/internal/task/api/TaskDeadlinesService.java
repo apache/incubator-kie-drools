@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.kie.api.task.model.Status;
+import org.kie.internal.task.api.model.Deadline;
 
 /**
  * The Task Deadlines Service is intended to handle
@@ -44,5 +45,7 @@ public interface TaskDeadlinesService {
     public void schedule(long taskId, long deadlineId, long delay, DeadlineType type);
 
     public void unschedule(long taskId, DeadlineType type);
+    
+    void unschedule(long taskId, Deadline deadline, DeadlineType type);
 
 }
