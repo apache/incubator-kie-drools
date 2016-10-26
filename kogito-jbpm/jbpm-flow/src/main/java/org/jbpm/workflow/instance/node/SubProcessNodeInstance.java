@@ -322,6 +322,10 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
             }
 
         }
+        // handle dynamic subprocess
+        if (getNode() == null) {
+            setMetaData("NodeType", "SubProcessNode");
+        }
         // if there were no exception proceed normally
         triggerCompleted();
 

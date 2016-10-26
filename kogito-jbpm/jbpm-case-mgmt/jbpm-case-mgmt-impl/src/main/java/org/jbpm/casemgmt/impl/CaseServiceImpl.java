@@ -269,40 +269,40 @@ public class CaseServiceImpl implements CaseService {
     
 
     @Override
-    public void addDynamicSubprocess(String caseId, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
+    public Long addDynamicSubprocess(String caseId, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + pi.getId() + " or it's not active anymore");
         }
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicProcessCommand(caseId, pi.getId(), processId, parameters));
+        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicProcessCommand(caseId, pi.getId(), processId, parameters));
     }
 
     @Override
-    public void addDynamicSubprocess(Long processInstanceId, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
+    public Long addDynamicSubprocess(Long processInstanceId, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
         ProcessInstanceDesc pi = runtimeDataService.getProcessInstanceById(processInstanceId);
         if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + processInstanceId + " or it's not active anymore");
         }
         
         String caseId = pi.getCorrelationKey();
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicProcessCommand(caseId, pi.getId(), processId, parameters));
+        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicProcessCommand(caseId, pi.getId(), processId, parameters));
     }
     
     @Override
-    public void addDynamicSubprocessToStage(String caseId, String stageId, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
+    public Long addDynamicSubprocessToStage(String caseId, String stageId, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
         ProcessInstanceDesc pi = verifyCaseIdExists(caseId);
         
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicProcessToStageCommand(caseId, pi.getId(), stageId, processId, parameters));
+        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(pi.getId()), new AddDynamicProcessToStageCommand(caseId, pi.getId(), stageId, processId, parameters));
     }
 
     @Override
-    public void addDynamicSubprocessToStage(Long processInstanceId, String stageId, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
+    public Long addDynamicSubprocessToStage(Long processInstanceId, String stageId, String processId, Map<String, Object> parameters) throws CaseNotFoundException {
         ProcessInstanceDesc pi = runtimeDataService.getProcessInstanceById(processInstanceId);
         if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
             throw new ProcessInstanceNotFoundException("No process instance found with id " + processInstanceId + " or it's not active anymore");
         }
         String caseId = pi.getCorrelationKey();
-        processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicProcessToStageCommand(caseId, pi.getId(), stageId, processId, parameters));
+        return processService.execute(pi.getDeploymentId(), ProcessInstanceIdContext.get(processInstanceId), new AddDynamicProcessToStageCommand(caseId, pi.getId(), stageId, processId, parameters));
     }
     
     @Override

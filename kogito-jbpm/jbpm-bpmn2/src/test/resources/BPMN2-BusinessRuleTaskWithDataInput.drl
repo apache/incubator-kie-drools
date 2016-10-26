@@ -21,7 +21,7 @@ import org.jbpm.bpmn2.objects.Person;
 rule "Person rule" ruleflow-group "MyRuleFlow"
 no-loop
     when
-        $p : Person()
+        $p : Person(name == null)
     then
         modify ($p){
             setName("john")

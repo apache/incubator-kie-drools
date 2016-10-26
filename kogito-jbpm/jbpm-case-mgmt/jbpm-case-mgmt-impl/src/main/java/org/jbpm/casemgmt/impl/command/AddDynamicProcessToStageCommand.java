@@ -32,7 +32,7 @@ import org.kie.internal.command.Context;
 /**
  * Adds subprocess (identified by processId) to selected ad hoc process instance with given parameters
  */
-public class AddDynamicProcessToStageCommand extends CaseCommand<Void> {
+public class AddDynamicProcessToStageCommand extends CaseCommand<Long> {
 
     private static final long serialVersionUID = 6345222909719335953L;
 
@@ -55,7 +55,7 @@ public class AddDynamicProcessToStageCommand extends CaseCommand<Void> {
     }
 
     @Override
-    public Void execute(Context context) {
+    public Long execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         
         ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
@@ -77,7 +77,7 @@ public class AddDynamicProcessToStageCommand extends CaseCommand<Void> {
         long subProcessInstanceId = DynamicUtils.addDynamicSubProcess(dynamicContext, ksession, processId, parameters);
         
         caseEventSupport.fireAfterDynamicProcessAdded(caseId, processInstanceId, processId, parameters, subProcessInstanceId);
-        return null;
+        return subProcessInstanceId;
     }
 
 }

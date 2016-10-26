@@ -316,7 +316,8 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
             
             // add dynamic user task to empty case instance - first by case id
-            Map<String, Object> parameters = new HashMap<>();            
+            Map<String, Object> parameters = new HashMap<>();  
+            parameters.put("variable", "#{name}");
             caseService.addDynamicTask(FIRST_CASE_ID, caseService.newHumanTaskSpec("First task", "test", "john", null, parameters));
             
             List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("john", new QueryFilter());
@@ -326,6 +327,10 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             TaskSummary task = tasks.get(0);
             assertTask(task, "john", "First task", Status.Reserved);
             assertEquals("test", task.getDescription());
+            
+            Map<String, Object> inputs = userTaskService.getTaskInputContentByTaskId(task.getId());
+            assertNotNull(inputs);
+            assertEquals("my first case", inputs.get("variable"));
             
             String nameVar = (String)processService.getProcessInstanceVariable(task.getProcessInstanceId(), "name");
             assertNotNull(nameVar);
@@ -564,12 +569,27 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             assertNotNull(casePI);
             assertEquals(FIRST_CASE_ID, casePI.getCorrelationKey());
             
+
+            Collection<NodeInstanceDesc> nodes = runtimeDataService.getProcessInstanceHistoryCompleted(casePI.getId(), new QueryContext());
+            assertNotNull(nodes);
+            
+            assertEquals(3, nodes.size());
+            
+            Map<String, String> nodesByName = nodes.stream().collect(toMap(NodeInstanceDesc::getName, NodeInstanceDesc::getNodeType));
+            assertTrue(nodesByName.containsKey("StartProcess"));
+            assertTrue(nodesByName.containsKey("EndProcess"));
+            assertTrue(nodesByName.containsKey("[Dynamic] Sub Process"));
+            
+            assertEquals("StartNode", nodesByName.get("StartProcess"));
+            assertEquals("EndNode", nodesByName.get("EndProcess"));
+            assertEquals("SubProcessNode", nodesByName.get("[Dynamic] Sub Process"));
+            
             caseService.addDynamicSubprocess(casePI.getId(), SUBPROCESS_P_ID, parameters);
             
             // let's verify that there are three process instances related to this case
             caseProcessInstances = caseRuntimeDataService.getProcessInstancesForCase(caseId, new QueryContext());
             assertNotNull(caseProcessInstances);
-            assertEquals(3, caseProcessInstances.size());
+            assertEquals(3, caseProcessInstances.size());            
             
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);

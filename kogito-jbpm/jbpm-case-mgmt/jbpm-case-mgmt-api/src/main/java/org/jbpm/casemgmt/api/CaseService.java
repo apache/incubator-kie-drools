@@ -190,18 +190,20 @@ public interface CaseService {
      * @param caseId unique case id in the format PREFIX-GENERATED_ID as described on startCase method
      * @param processId identifier of the process to be added
      * @param parameters optional parameters for the subprocess
+     * @return returns process instance id of the subprocess
      * @throws CaseNotFoundException thrown in case case was not found with given id
      */
-    void addDynamicSubprocess(String caseId, String processId, Map<String, Object> parameters) throws CaseNotFoundException;
+    Long addDynamicSubprocess(String caseId, String processId, Map<String, Object> parameters) throws CaseNotFoundException;
     
     /**
      * Adds new subprocess (identified by process id) to case.
      * @param processInstanceId unique process instance id
      * @param processId identifier of the process to be added
      * @param parameters optional parameters for the subprocess
+     * @return returns process instance id of the subprocess
      * @throws CaseNotFoundException thrown in case case was not found with given id
      */
-    void addDynamicSubprocess(Long processInstanceId, String processId, Map<String, Object> parameters) throws CaseNotFoundException;
+    Long addDynamicSubprocess(Long processInstanceId, String processId, Map<String, Object> parameters) throws CaseNotFoundException;
     
     /**
      * Adds new subprocess (identified by process id) to given process instance. Should be used when subprocess should be added to the 
@@ -211,9 +213,10 @@ public interface CaseService {
      * @param stageId id of the stage there the task should be added
      * @param processId identifier of the process to be added
      * @param parameters optional parameters for the subprocess
+     * @return returns process instance id of the subprocess
      * @throws CaseNotFoundException thrown in case case was not found with given id
      */
-    void addDynamicSubprocessToStage(String caseId, String stageId, String processId, Map<String, Object> parameters) throws CaseNotFoundException;
+    Long addDynamicSubprocessToStage(String caseId, String stageId, String processId, Map<String, Object> parameters) throws CaseNotFoundException;
     
     /**
      * Adds new subprocess (identified by process id) to case.
@@ -221,9 +224,10 @@ public interface CaseService {
      * @param stageId id of the stage there the task should be added
      * @param processId identifier of the process to be added
      * @param parameters optional parameters for the subprocess
+     * @return returns process instance id of the subprocess
      * @throws CaseNotFoundException thrown in case case was not found with given id
      */
-    void addDynamicSubprocessToStage(Long processInstanceId, String stageId, String processId, Map<String, Object> parameters) throws CaseNotFoundException;
+    Long addDynamicSubprocessToStage(Long processInstanceId, String stageId, String processId, Map<String, Object> parameters) throws CaseNotFoundException;
     
     /**
      * Triggers given by fragmentName adhoc element (such as task, milestone) within given case.  Should be used when fragment should be triggered 

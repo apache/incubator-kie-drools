@@ -19,6 +19,8 @@ package org.jbpm.workflow.instance.node;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
@@ -29,11 +31,13 @@ import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
+import org.jbpm.workflow.instance.impl.ProcessInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.EnvironmentName;
@@ -52,6 +56,7 @@ import org.slf4j.LoggerFactory;
 public class DynamicUtils {
     
     private static final Logger logger = LoggerFactory.getLogger(DynamicUtils.class);
+    protected static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{([\\S&&[^\\}]]+)\\}", Pattern.DOTALL);
 	
 	public static void addDynamicWorkItem(
 			final DynamicNodeInstance dynamicContext, KieRuntime ksession,
@@ -75,6 +80,32 @@ public class DynamicUtils {
 		workItem.setDeploymentId( (String) ksession.getEnvironment().get(EnvironmentName.DEPLOYMENT_ID));
 		workItem.setName(workItemName);
 		workItem.setParameters(parameters);
+		
+        for (Map.Entry<String, Object> entry: workItem.getParameters().entrySet()) {
+            if (entry.getValue() instanceof String) {
+                String s = (String) entry.getValue();
+                Object variableValue = null;                
+                Matcher matcher = PARAMETER_MATCHER.matcher(s);
+                while (matcher.find()) {
+                    String paramName = matcher.group(1);                    
+                    variableValue = processInstance.getVariable(paramName);
+                    if (variableValue == null) {
+                        try {
+                            variableValue = MVELSafeHelper.getEvaluator().eval(paramName, new ProcessInstanceResolverFactory(processInstance));        
+                        } catch (Throwable t) {
+                            logger.error("Could not find variable scope for variable {}", paramName);
+                            logger.error("when trying to replace variable in string for Dynamic Work Item {}", workItemName);
+                            logger.error("Continuing without setting parameter.");
+                        }
+                    }
+                    
+                }            
+                if (variableValue != null) {
+                    workItem.setParameter(entry.getKey(), variableValue);
+                }                
+            }
+        }
+		
 		final WorkItemNodeInstance workItemNodeInstance = new WorkItemNodeInstance();	    
 		workItemNodeInstance.internalSetWorkItem(workItem);
     	workItemNodeInstance.setMetaData("NodeType", workItemName);
@@ -145,6 +176,7 @@ public class DynamicUtils {
 		final SubProcessNodeInstance subProcessNodeInstance = new SubProcessNodeInstance();
     	subProcessNodeInstance.setNodeInstanceContainer(dynamicContext == null ? processInstance : dynamicContext);
 		subProcessNodeInstance.setProcessInstance(processInstance);
+		subProcessNodeInstance.setMetaData("NodeType", "SubProcessNode");
     	if (ksession instanceof StatefulKnowledgeSessionImpl) {
     		return executeSubProcess((StatefulKnowledgeSessionImpl) ksession, processId, parameters, processInstance, subProcessNodeInstance);
     	} else if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
