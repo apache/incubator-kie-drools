@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import org.junit.runners.Parameterized;
+import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class FEELContextsTest extends BaseFEELTest {
 
@@ -44,11 +45,11 @@ public class FEELContextsTest extends BaseFEELTest {
                             put( "salutation", "Hello Bob" );
                         }} },
                 // Example from spec. chapter "10.3.2.7 Ranges"
-                { "{ startdate: date(\"1978-09-12\"), enddate: date(\"1978-10-12\"), rangedates: [startdate..enddate] }",
+                { "{ startdate: date(\"1978-09-12\"), enddate: date(\"1978-10-13\"), rangedates: [startdate..enddate] }",
                         new HashMap<String,Object>() {{
                             put( "startdate", LocalDate.of(1978, 9, 12) );
                             put( "enddate", LocalDate.of(1978, 10, 13) );
-                            put( "rangedates", "[\"1978-09-12\"..\"1978-10-12\"]" );
+                            put( "rangedates", new RangeImpl( Range.RangeBoundary.CLOSED, LocalDate.of(1978, 9, 12), LocalDate.of(1978, 10, 13), Range.RangeBoundary.CLOSED ) );
                 }} }
         };
         return Arrays.asList( cases );

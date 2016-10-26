@@ -239,6 +239,7 @@ unaryExpressionNotPlusMinus
 
 primary
     : literal                     #primaryLiteral
+    | interval                    #primaryInterval
     | list                        #primaryList
     | context                     #primaryContext
     | '(' expression ')'          #primaryParens
