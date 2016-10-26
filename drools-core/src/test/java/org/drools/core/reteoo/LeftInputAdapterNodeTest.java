@@ -84,7 +84,7 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
     @Test
     public void testAssertObjectWithoutMemory() throws Exception {
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        final PropagationContext pcontext = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        final PropagationContext pcontext = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
 
         BuildContext context = new BuildContext(kBase, kBase.getReteooBuilder().getIdGenerator() );
         final EntryPointNode entryPoint = new EntryPointNode( -1,

@@ -62,7 +62,6 @@ public class WindowNode extends ObjectSource
     private EntryPointId                   entryPoint;
     private ObjectSinkNode                 previousRightTupleSinkNode;
     private ObjectSinkNode                 nextRightTupleSinkNode;
-    protected EntryPointNode               epNode;
     private transient ObjectTypeNode.Id rightInputOtnId = ObjectTypeNode.DEFAULT_ID;
 
     public WindowNode() {
@@ -96,8 +95,6 @@ public class WindowNode extends ObjectSource
                 ((SlidingTimeWindow)b).setWindowNode( this );
             }
         }
-        epNode = (EntryPointNode) getObjectTypeNode().getParentObjectSource();
-
         hashcode = calculateHashCode();
     }
 
@@ -108,7 +105,6 @@ public class WindowNode extends ObjectSource
         constraints = (List<AlphaNodeFieldConstraint>) in.readObject();
         behavior = (BehaviorManager) in.readObject();
         entryPoint = (EntryPointId) in.readObject();
-        epNode = (EntryPointNode) getObjectTypeNode().getParentObjectSource();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -116,7 +112,6 @@ public class WindowNode extends ObjectSource
         out.writeObject(constraints);
         out.writeObject(behavior);
         out.writeObject(entryPoint);
-        epNode = (EntryPointNode) getObjectTypeNode().getParentObjectSource();
     }
 
     public short getType() {
@@ -152,7 +147,7 @@ public class WindowNode extends ObjectSource
 
         for (InternalWorkingMemory workingMemory : context.getWorkingMemories()) {
             PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
             this.source.updateSink(this,
                                    propagationContext,
                                    workingMemory);
@@ -214,9 +209,7 @@ public class WindowNode extends ObjectSource
         }
 
         if  ( isAllowed ) {
-            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(cloneFactHandle.getFirstLeftTuple(), cloneFactHandle.getFirstRightTuple(), epNode );
-            cloneFactHandle.clearLeftTuples();
-            cloneFactHandle.clearRightTuples();
+            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(cloneFactHandle.detachLinkedTuples() );
 
             this.sink.propagateModifyObject(cloneFactHandle,
                                             modifyPreviousTuples,

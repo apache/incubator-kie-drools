@@ -38,6 +38,8 @@ import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
+import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -149,6 +151,8 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
     private boolean alive = true;
 
+    private PropagationList propagationList;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -255,6 +259,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         } else {
             this.knowledgeHelper = rbc.getComponentFactory().getKnowledgeHelperFactory().newStatefulKnowledgeHelper( this.workingMemory );
         }
+        propagationList = new RetePropagationList(workingMemory);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -675,7 +680,6 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
     public void cancelActivation(final Tuple leftTuple,
                                  final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory,
                                  final Activation activation,
                                  final TerminalNode rtn) {
         AgendaItem item = (AgendaItem) activation;
@@ -691,7 +695,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
         if ( activation.isQueued() ) {
             // on fact expiration, we don't remove the activation, but let it fire
-            if ( context.getType() != PropagationContext.EXPIRATION || context.getFactHandle() == null ) {
+            if ( context.getType() != PropagationContext.Type.EXPIRATION || context.getFactHandle() == null ) {
                 activation.remove();
 
                 if ( activation.getActivationGroupNode() != null ) {
@@ -1022,6 +1026,10 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         return this.scheduledActivations;
     }
 
+    public void reset() {
+        clear();
+    }
+
     public void clear() {
         // reset focus stack
         this.focusStack.clear();
@@ -1180,10 +1188,6 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         clearAndCancelAgendaGroup( (InternalAgendaGroup) agendaGroups.get( name ) );
     }
 
-    public void clearAndCancelAndCancel(final RuleFlowGroup ruleFlowGroup) {
-        clearAndCancelAgendaGroup((InternalAgendaGroup)ruleFlowGroup);
-    }
-
     /**
      * Fire the next scheduled <code>Agenda</code> item, skipping items
      * that are not allowed by the agenda filter.
@@ -1240,12 +1244,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         return localFireCount;
     }
 
-    public void evaluateEagerList() {
-        while ( !eager.isEmpty() ) {
-            RuleAgendaItem item = eager.removeFirst();
-            item.getRuleExecutor().evaluateNetwork(this.workingMemory);
-        }
-    }
+    public void evaluateEagerList() { }
 
     public int sizeOfRuleFlowGroup(String name) {
         InternalAgendaGroup group = (InternalAgendaGroup) agendaGroups.get(name);
@@ -1352,10 +1351,6 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             }
             this.workingMemory.endOperation();
         }
-    }
-
-    public synchronized void fireConsequenceEvent(Activation activation, String consequenceName) throws ConsequenceException {
-        throw new UnsupportedOperationException("Cannot invoke fireActivationEvent on ReteAgenda");
     }
 
     public synchronized boolean fireTimedActivation(final Activation activation) throws ConsequenceException {
@@ -1518,7 +1513,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     public void registerExpiration(PropagationContext ectx) { }
 
     @Override
-    public boolean dispose() {
+    public boolean dispose(InternalWorkingMemory wm) {
         boolean wasAlive = alive;
         alive = false;
         return wasAlive;
@@ -1527,5 +1522,35 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     @Override
     public boolean isAlive() {
         return alive;
+    }
+
+    @Override
+    public void addPropagation(PropagationEntry propagationEntry ) {
+        propagationList.addEntry( propagationEntry );
+    }
+
+    @Override
+    public void flushPropagations() {
+        propagationList.flush();
+    }
+
+    @Override
+    public void notifyWaitOnRest() {
+        propagationList.notifyWaitOnRest();
+    }
+
+    @Override
+    public Iterator<PropagationEntry> getActionsIterator() {
+        return propagationList.iterator();
+    }
+
+    @Override
+    public boolean hasPendingPropagations() {
+        return !propagationList.isEmpty();
+    }
+
+    @Override
+    public void handleException( InternalWorkingMemory wm, Activation activation, Exception e ) {
+        throw new RuntimeException( e );
     }
 }

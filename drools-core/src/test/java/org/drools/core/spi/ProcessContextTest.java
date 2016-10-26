@@ -16,6 +16,14 @@
 
 package org.drools.core.spi;
 
+import org.junit.Test;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.CaseAssignment;
+import org.kie.api.runtime.process.CaseData;
+import org.kie.api.task.model.OrganizationalEntity;
+import org.kie.internal.KnowledgeBaseFactory;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -24,14 +32,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.CaseAssignment;
-import org.kie.api.runtime.process.CaseData;
-import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.internal.KnowledgeBaseFactory;
 
 import static org.junit.Assert.*;
 

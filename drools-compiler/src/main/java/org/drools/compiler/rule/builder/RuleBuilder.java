@@ -275,6 +275,7 @@ public class RuleBuilder {
             }
 
             rule.setAllMatches(ruleDescr.hasAnnotation(All.class));
+
         } catch (Exception e) {
             DroolsError err = new RuleBuildError( rule, context.getParentDescr(), null,
                                                   e.getMessage() );

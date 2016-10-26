@@ -133,7 +133,7 @@ public class TraitHelper implements Externalizable {
                 if ( h != null ) {
                     NamedEntryPoint nep = (NamedEntryPoint) h.getEntryPoint();
                     PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getInternalWorkingMemory().getNextPropagationIdCounter(),
-                                                                                                           PropagationContext.MODIFICATION,
+                                                                                                           PropagationContext.Type.MODIFICATION,
                                                                                                            activation != null ? activation.getRule() : null,
                                                                                                            activation != null ? activation.getTuple() : null,
                                                                                                            h,
@@ -292,7 +292,7 @@ public class TraitHelper implements Externalizable {
             Object o = h.getObject();
             NamedEntryPoint nep = (NamedEntryPoint) h.getEntryPoint();
             PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getInternalWorkingMemory().getNextPropagationIdCounter(),
-                                                                                                   PropagationContext.MODIFICATION,
+                                                                                                   PropagationContext.Type.MODIFICATION,
                                                                                                    activation.getRule(),
                                                                                                    activation.getTuple(),
                                                                                                    h,
@@ -308,9 +308,7 @@ public class TraitHelper implements Externalizable {
                         propagationContext );
         } else {
             handle = this.workingMemory.insert( inner,
-                                                null,
                                                 false,
-                                                logical,
                                                 activation.getRule(),
                                                 activation );
         }
@@ -438,9 +436,7 @@ public class TraitHelper implements Externalizable {
             }
             if ( h == null ) {
                 h = (InternalFactHandle) this.workingMemory.insert( core,
-                                                                    null,
                                                                     false,
-                                                                    logical,
                                                                     activation.getRule(),
                                                                     activation );
             }
@@ -479,9 +475,7 @@ public class TraitHelper implements Externalizable {
                 FactHandle handle = lookupFactHandle( inner );
                 if ( handle == null ) {
                     handle = this.workingMemory.insert( inner,
-                                                        null,
                                                         false,
-                                                        logical,
                                                         activation.getRule(),
                                                         activation );
                 }
@@ -612,8 +606,6 @@ public class TraitHelper implements Externalizable {
     public FactHandle insert(final Object object,
                              final Activation activation) {
         FactHandle handle = this.workingMemory.insert( object,
-                                                       null,
-                                                       false,
                                                        false,
                                                        activation.getRule(),
                                                        activation );

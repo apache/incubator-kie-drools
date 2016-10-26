@@ -111,7 +111,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
 
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
 
         ObjectTypeNode otn = new ObjectTypeNode( 4, null, new ClassObjectType( String.class ), buildContext );
         lian = new LeftInputAdapterNode(5, otn, buildContext );

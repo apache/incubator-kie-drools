@@ -21,6 +21,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.ClassAwareObjectStore;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
@@ -28,6 +29,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -127,7 +129,7 @@ public class ObjectTypeNode extends ObjectSource
                           final ObjectType objectType,
                           final BuildContext context) {
         super(id,
-              context.getPartitionId(),
+              RuleBasePartitionId.MAIN_PARTITION,
               context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
               source,
               context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold());
@@ -143,6 +145,10 @@ public class ObjectTypeNode extends ObjectSource
         this.dirty = true;
 
         hashcode = calculateHashCode();
+
+        if (objectType != ClassObjectType.InitialFact_ObjectType && context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation()) {
+            this.sink = new CompositePartitionAwareObjectSinkAdapter();
+        }
     }
 
     private static class IdGenerator {
@@ -241,6 +247,13 @@ public class ObjectTypeNode extends ObjectSource
         return this.objectType;
     }
 
+    /**
+     * Returns the partition ID for which this node belongs to
+     */
+    public RuleBasePartitionId getPartitionId() {
+        return RuleBasePartitionId.MAIN_PARTITION;
+    }
+
     @Override
     public BitMask calculateDeclaredMask(List<String> settableProperties) {
         return EmptyBitMask.get();
@@ -323,6 +336,16 @@ public class ObjectTypeNode extends ObjectSource
         doRetractObject( factHandle, context, workingMemory);
     }
 
+    public void retractObject(final InternalFactHandle factHandle,
+                              final PropagationContext context,
+                              final InternalWorkingMemory workingMemory,
+                              int partition) {
+        checkDirty();
+
+        retractRightTuples( factHandle, context, workingMemory, partition );
+        retractLeftTuples( factHandle, context, workingMemory, partition );
+    }
+
     public static void doRetractObject(final InternalFactHandle factHandle,
                                        final PropagationContext context,
                                        final InternalWorkingMemory workingMemory) {
@@ -330,24 +353,54 @@ public class ObjectTypeNode extends ObjectSource
         retractLeftTuples( factHandle, context, workingMemory );
     }
 
-    public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
-        for ( LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext()) {
-            // must go via the LiaNode, so that the fact counter is updated, for linking
-            LeftTupleSink sink = leftTuple.getTupleSink();
-            ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple( leftTuple,
-                                                                                 context,
-                                                                                 workingMemory );
+    public static void expireLeftTuple(LeftTuple leftTuple) {
+        if (!leftTuple.isExpired()) {
+            leftTuple.setExpired( true );
+            for ( LeftTuple child = leftTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
+                expireLeftTuple(child);
+            }
+            for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
+                expireLeftTuple(peer);
+            }
         }
+    }
+
+    public static void expireRightTuple(RightTuple rightTuple) {
+        for ( LeftTuple child = rightTuple.getFirstChild(); child != null; child = child.getHandleNext() ) {
+            expireLeftTuple(child);
+        }
+    }
+
+    public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
+        factHandle.forEachLeftTuple( lt -> {
+            LeftTupleSink sink = lt.getTupleSink();
+            ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple(lt,
+                                                                                context,
+                                                                                workingMemory);
+        } );
         factHandle.clearLeftTuples();
     }
 
+    public static void retractLeftTuples( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory, int partition ) {
+        DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
+        linkedTuples.forEachLeftTuple( partition, lt -> {
+            LeftTupleSink sink = lt.getTupleSink();
+            ((LeftInputAdapterNode) sink.getLeftTupleSource()).retractLeftTuple(lt,
+                                                                                context,
+                                                                                workingMemory);
+        } );
+        linkedTuples.clearLeftTuples(partition);
+    }
+
     public static void retractRightTuples( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
-        for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; ) {
-            RightTuple nextRightTuple = rightTuple.getHandleNext();
-            rightTuple.retractTuple( context, workingMemory);
-            rightTuple = nextRightTuple;
-        }
+        factHandle.forEachRightTuple( rt -> rt.retractTuple( context, workingMemory) );
         factHandle.clearRightTuples();
+    }
+
+    public static void retractRightTuples( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory, int partition ) {
+        DefaultFactHandle.CompositeLinkedTuples linkedTuples = ( (DefaultFactHandle.CompositeLinkedTuples) factHandle.getLinkedTuples() );
+        linkedTuples.forEachRightTuple( partition, rt -> rt.retractTuple( context, workingMemory) );
+        linkedTuples.clearRightTuples(partition);
     }
 
     protected void resetIdGenerator() {
@@ -360,7 +413,6 @@ public class ObjectTypeNode extends ObjectSource
                              InternalWorkingMemory workingMemory) {
         checkDirty();
 
-        context.setObjectType(objectType);
         if (compiledNetwork != null) {
             compiledNetwork.modifyObject(factHandle,
                                          modifyPreviousTuples,
@@ -459,10 +511,7 @@ public class ObjectTypeNode extends ObjectSource
                 Iterator<InternalFactHandle> it = memory.iterator();
                 while (it.hasNext()) {
                     InternalFactHandle handle = it.next();
-                    for (LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext()) {
-                        adapter.cleanUp(leftTuple,
-                                        workingMemory);
-                    }
+                    handle.forEachLeftTuple( lt -> adapter.cleanUp(lt, workingMemory) );
                 }
             }
             context.setCleanupAdapter(null);

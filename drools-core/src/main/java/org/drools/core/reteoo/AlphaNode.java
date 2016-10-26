@@ -347,9 +347,4 @@ public class AlphaNode extends ObjectSource
     public BitMask getInferredMask() {
         return inferredMask;
     }
-
-    @Override
-    public void addObjectSink(final ObjectSink objectSink) {
-        super.addObjectSink(objectSink);
-    }
 }

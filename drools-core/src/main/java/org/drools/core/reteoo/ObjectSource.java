@@ -63,7 +63,7 @@ public abstract class ObjectSource extends BaseNode
 
     protected ObjectSource         source;
 
-    private int                    alphaNodeHashingThreshold;
+    protected int                  alphaNodeHashingThreshold;
 
 
     protected BitMask declaredMask = EmptyBitMask.get();
@@ -173,6 +173,35 @@ public abstract class ObjectSource extends BaseNode
         return returnMask;
     }
 
+    @Override
+    public void setPartitionId(BuildContext context, RuleBasePartitionId partitionId) {
+        if (this.partitionId != null && this.partitionId != partitionId) {
+            source.sink.changeSinkPartition( (ObjectSink)this, this.partitionId, partitionId, source.alphaNodeHashingThreshold );
+        }
+        this.partitionId = partitionId;
+    }
+
+    public final RuleBasePartitionId setSourcePartitionId(RuleBasePartitionId partitionId) {
+        if (this.partitionId == null || this.partitionId == partitionId) {
+            this.partitionId = partitionId;
+            return partitionId;
+        }
+        this.partitionId = partitionId;
+        if (source.getPartitionId() == RuleBasePartitionId.MAIN_PARTITION) {
+            setPartitionIdWithSinks( partitionId );
+        } else {
+            source.setSourcePartitionId( partitionId );
+        }
+        return partitionId;
+    }
+
+    public final void setPartitionIdWithSinks( RuleBasePartitionId partitionId ) {
+        this.partitionId = partitionId;
+        for (ObjectSink sink : getObjectSinkPropagator().getSinks()) {
+            ( (ObjectSinkNode) sink ).setPartitionIdWithSinks( partitionId );
+        }
+    }
+
     /**
      * Adds the <code>ObjectSink</code> so that it may receive
      * <code>FactHandleImpl</code> propagated from this
@@ -183,17 +212,7 @@ public abstract class ObjectSource extends BaseNode
      *            <code>FactHandleImpl</code>.
      */
     public void addObjectSink(final ObjectSink objectSink) {
-        if ( this.sink instanceof EmptyObjectSinkAdapter ) {
-            this.sink = new SingleObjectSinkAdapter( this.getPartitionId(), objectSink );
-        } else if ( this.sink instanceof SingleObjectSinkAdapter ) {
-            final CompositeObjectSinkAdapter sinkAdapter;
-            sinkAdapter = new CompositeObjectSinkAdapter( this.getPartitionId(), this.alphaNodeHashingThreshold );
-            sinkAdapter.addObjectSink( this.sink.getSinks()[0] );
-            sinkAdapter.addObjectSink( objectSink );
-            this.sink = sinkAdapter;
-        } else {
-            ((CompositeObjectSinkAdapter) this.sink).addObjectSink( objectSink );
-        }
+        this.sink = this.sink.addObjectSink( objectSink, this.alphaNodeHashingThreshold );
     }
 
     /**
@@ -202,21 +221,8 @@ public abstract class ObjectSource extends BaseNode
      * @param objectSink
      *            The <code>ObjectSink</code> to remove
      */
-    public boolean removeObjectSink(final ObjectSink objectSink) {
-        if ( this.sink instanceof EmptyObjectSinkAdapter ) {
-            throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
-        }
-
-        if ( this.sink instanceof SingleObjectSinkAdapter ) {
-            this.sink = EmptyObjectSinkAdapter.getInstance();
-        } else {
-            final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) this.sink;
-            sinkAdapter.removeObjectSink( objectSink );
-            if ( sinkAdapter.size() == 1 ) {
-                this.sink = new SingleObjectSinkAdapter( this.getPartitionId(), sinkAdapter.getSinks()[0] );
-            }
-        }
-        return true;
+    public void removeObjectSink(final ObjectSink objectSink) {
+        this.sink = this.sink.removeObjectSink( objectSink );
     }
 
     public abstract void updateSink(ObjectSink sink,
@@ -229,6 +235,10 @@ public abstract class ObjectSource extends BaseNode
 
     public ObjectSinkPropagator getObjectSinkPropagator() {
         return this.sink;
+    }
+
+    public void setObjectSinkPropagator(ObjectSinkPropagator sink) {
+        this.sink = sink;
     }
 
     public boolean isInUse() {

@@ -25,7 +25,7 @@ import org.drools.core.util.bitmask.BitMask;
 public interface PropagationContextFactory {
 
     public PropagationContext createPropagationContext(final long number,
-                                                       final int type,
+                                                       final PropagationContext.Type type,
                                                        final RuleImpl rule,
                                                        final Tuple leftTuple,
                                                        final InternalFactHandle factHandle,
@@ -35,7 +35,7 @@ public interface PropagationContextFactory {
                                                        final MarshallerReaderContext readerContext);
 
     public PropagationContext createPropagationContext(final long number,
-                                                       final int type,
+                                                       final PropagationContext.Type type,
                                                        final RuleImpl rule,
                                                        final Tuple leftTuple,
                                                        final InternalFactHandle factHandle,
@@ -43,7 +43,7 @@ public interface PropagationContextFactory {
                                                        final MarshallerReaderContext readerContext);
 
     public PropagationContext createPropagationContext(final long number,
-                                                       final int type,
+                                                       final PropagationContext.Type type,
                                                        final RuleImpl rule,
                                                        final Tuple leftTuple,
                                                        final InternalFactHandle factHandle,
@@ -53,14 +53,14 @@ public interface PropagationContextFactory {
                                                        final BitMask modificationMask);
 
     public PropagationContext createPropagationContext(final long number,
-                                                       final int type,
+                                                       final PropagationContext.Type type,
                                                        final RuleImpl rule,
                                                        final Tuple leftTuple,
                                                        final InternalFactHandle factHandle,
                                                        final EntryPointId entryPoint);
 
     public PropagationContext createPropagationContext(final long number,
-                                                       final int type,
+                                                       final PropagationContext.Type type,
                                                        final RuleImpl rule,
                                                        final Tuple leftTuple,
                                                        final InternalFactHandle factHandle);

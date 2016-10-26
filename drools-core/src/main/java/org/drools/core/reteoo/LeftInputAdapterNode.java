@@ -693,4 +693,16 @@ public class LeftInputAdapterNode extends LeftTupleSource
         public int nodeHashCode() {return this.hashCode();}
     }
 
+    @Override
+    public void setSourcePartitionId(BuildContext context, RuleBasePartitionId partitionId) {
+        setSourcePartitionId(objectSource, context, partitionId);
+    }
+
+    @Override
+    public void setPartitionId(BuildContext context, RuleBasePartitionId partitionId) {
+        if (this.partitionId != null && this.partitionId != partitionId) {
+            objectSource.sink.changeSinkPartition( (ObjectSink)this, this.partitionId, partitionId, objectSource.alphaNodeHashingThreshold );
+        }
+        this.partitionId = partitionId;
+    }
 }

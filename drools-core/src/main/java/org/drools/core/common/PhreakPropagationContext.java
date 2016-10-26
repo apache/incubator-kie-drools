@@ -29,7 +29,6 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
-import org.kie.api.runtime.rule.FactHandle;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -46,7 +45,7 @@ public class PhreakPropagationContext
 
     private static final long               serialVersionUID = 510l;
 
-    private int                             type;
+    private Type                            type;
 
     private RuleImpl                        rule;
 
@@ -68,8 +67,6 @@ public class PhreakPropagationContext
 
     private Class<?>                        modifiedClass;
 
-    private ObjectType                      objectType;
-
     // this field is only set for propagations happening during
     // the deserialization of a session
     private transient MarshallerReaderContext readerContext;
@@ -81,7 +78,7 @@ public class PhreakPropagationContext
     }
 
     public PhreakPropagationContext(final long number,
-                                    final int type,
+                                    final Type type,
                                     final RuleImpl rule,
                                     final Tuple leftTuple,
                                     final InternalFactHandle factHandle) {
@@ -98,7 +95,7 @@ public class PhreakPropagationContext
     }
 
     public PhreakPropagationContext(final long number,
-                                    final int type,
+                                    final Type type,
                                     final RuleImpl rule,
                                     final Tuple leftTuple,
                                     final InternalFactHandle factHandle,
@@ -115,7 +112,7 @@ public class PhreakPropagationContext
     }
 
     public PhreakPropagationContext(final long number,
-                                    final int type,
+                                    final Type type,
                                     final RuleImpl rule,
                                     final Tuple leftTuple,
                                     final InternalFactHandle factHandle,
@@ -135,7 +132,7 @@ public class PhreakPropagationContext
     }
 
     public PhreakPropagationContext(final long number,
-                                    final int type,
+                                    final Type type,
                                     final RuleImpl rule,
                                     final Tuple leftTuple,
                                     final InternalFactHandle factHandle,
@@ -153,7 +150,7 @@ public class PhreakPropagationContext
     }
 
     public PhreakPropagationContext(final long number,
-                                    final int type,
+                                    final Type type,
                                     final RuleImpl rule,
                                     final Tuple leftTuple,
                                     final InternalFactHandle factHandle,
@@ -177,7 +174,7 @@ public class PhreakPropagationContext
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        this.type = in.readInt();
+        this.type = (Type) in.readObject();
         this.propagationNumber = in.readLong();
         this.rule = (RuleImpl) in.readObject();
         this.leftTuple = (LeftTuple) in.readObject();
@@ -187,7 +184,7 @@ public class PhreakPropagationContext
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeInt( this.type );
+        out.writeObject( this.type );
         out.writeLong( this.propagationNumber );
         out.writeObject( this.rule );
         out.writeObject( this.leftTuple );
@@ -217,34 +214,24 @@ public class PhreakPropagationContext
         return terminalNodeOrigin;
     }
 
-    public org.kie.api.definition.rule.Rule getRule() {
-        return this.rule;
-    }
-
     public Tuple getLeftTupleOrigin() {
         return this.leftTuple;
     }
 
-    public FactHandle getFactHandle() {
+    public InternalFactHandle getFactHandle() {
         return this.factHandle;
     }
     
-    public void setFactHandle(FactHandle factHandle) {
-        this.factHandle = (InternalFactHandle) factHandle;
+    public void setFactHandle(InternalFactHandle factHandle) {
+        this.factHandle = factHandle;
     }    
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.kie.reteoo.PropagationContext#getType()
-     */
-    public int getType() {
+    public Type getType() {
         return this.type;
     }
 
     public void releaseResources() {
         this.leftTuple = null;
-        //this.rule = null;
     }
 
     /**
@@ -259,10 +246,6 @@ public class PhreakPropagationContext
      */
     public void setEntryPoint(EntryPointId entryPoint) {
         this.entryPoint = entryPoint;
-    }
-
-    public void setFactHandle(InternalFactHandle factHandle) {
-        this.factHandle = factHandle;
     }
 
     public int getOriginOffset() {
@@ -363,14 +346,6 @@ public class PhreakPropagationContext
         return tdecl != null ? tdecl.getSettableProperties() : Collections.EMPTY_LIST;
     }
 
-    public ObjectType getObjectType() {
-        return objectType;
-    }
-
-    public void setObjectType(ObjectType objectType) {
-        this.objectType = objectType;
-    }
-
     public MarshallerReaderContext getReaderContext() {
         return this.readerContext;
     }
@@ -386,17 +361,17 @@ public class PhreakPropagationContext
     public static String intEnumToString( PropagationContext pctx ) {
         String pctxType = null;
         switch( pctx.getType() ) {
-            case PropagationContext.INSERTION:
+            case INSERTION:
                 return "INSERTION";
-            case PropagationContext.RULE_ADDITION:
+            case RULE_ADDITION:
                 return "RULE_ADDITION";
-            case PropagationContext.MODIFICATION:
+            case MODIFICATION:
                 return "MODIFICATION";
-            case PropagationContext.RULE_REMOVAL:
+            case RULE_REMOVAL:
                 return "RULE_REMOVAL";
-            case PropagationContext.DELETION:
+            case DELETION:
                 return "DELETION";
-            case PropagationContext.EXPIRATION:
+            case EXPIRATION:
                 return "EXPIRATION";
         }
         throw new IllegalStateException( "Int type unknown");
