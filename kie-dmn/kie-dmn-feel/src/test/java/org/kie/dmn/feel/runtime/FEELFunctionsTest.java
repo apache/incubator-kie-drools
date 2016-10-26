@@ -16,21 +16,16 @@
 
 package org.kie.dmn.feel.runtime;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collection;
 import org.junit.runners.Parameterized;
 
-import java.math.BigDecimal;
-import java.util.*;
-
-import static org.junit.Assert.assertThat;
-
-@RunWith(Parameterized.class)
 public class FEELFunctionsTest extends BaseFEELTest {
 
     @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
     public static Collection<Object[]> data() {
-        Object[][] cases = new Object[][] {
+        final Object[][] cases = new Object[][] {
                 // constants
                 { "string(1.1)", "1.1" },
                 { "string(null)", null },
@@ -135,19 +130,8 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "ceiling( 1.5 )", new BigDecimal("2") },
                 { "ceiling( -1.5 )", new BigDecimal("-1") },
                 { "ceiling( null )", null },
-                { "ceiling( n : 1.5 )", new BigDecimal("2") },
-                };
+                { "ceiling( n : 1.5 )", new BigDecimal("2") }
+        };
         return Arrays.asList( cases );
-    }
-
-    @Parameterized.Parameter(0)
-    public String expression;
-
-    @Parameterized.Parameter(1)
-    public Object result;
-
-    @Test
-    public void testExpression() {
-        assertResult( expression, result );
     }
 }
