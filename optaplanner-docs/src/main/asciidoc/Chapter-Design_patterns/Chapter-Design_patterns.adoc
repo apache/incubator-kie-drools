@@ -18,52 +18,69 @@ These design patterns list and solve common design challenges.
 A good model can greatly improve the success of your planning implementation.
 These guidelines help to design a good model:
 
-. Draw a class diagram of your domain model. _Normalize_ it get rid of duplicate data.
+. *Draw a class diagram* of your domain model. _Normalize_ it get rid of duplicate data.
+** Write down some sample instances for each class.
+*** For example in employee rostering, the samples for the `Employee` class are _Ann_, _Bert_ and _Carl_.
 
-. Determine which relationships (or fields) change during planning, color them orange.
-These will become a planning variable on one side.
+. *Determine which relationships (or fields) change during planning*. Color them orange.
 Often there is only 1 such relationship (or field).
+One side of these relationships will become a planning variable later on.
 ** For example in employee rostering, the `Shift` to `Employee` relationship changes during planning,
 so it is orange.
 Other relationships, such as from `Employee` to `Skill`, are immutable during planning
 because Planner can't decide to give an employee an extra skill.
 
-. If there are multiple relationships (or fields): determine if there are any <<shadowVariable,shadow variables>>.
+. If there are multiple relationships (or fields): *check for <<shadowVariable,shadow variables>>*.
 A shadow variables does change during planning,
 but its value can be calculated based on one or more genuine planning variables, without dispute.
-Color the relationships (or fields) which are pure shadows purple.
+Color those shadow relationships (or fields) purple.
+** Only one side of a bi-directional relationship can be a genuine planning variable,
+the other side will become an <<bidirectionalVariable,inverse relation shadow variable>> later on.
+Keep those relationships in orange.
 
-. If an orange relationship is a _many to many_ relationship, replace that relationship with an extra class
-to have a _one to many_ and a _many to one_ relationship.
-** For example in employee rostering the `ShiftAssignment` class sits between the `Shift` and `Employee`.
+. *Check for <<chainedPlanningVariable,chained planning variables>>*.
+In a chained variable design, the focus lies on deciding the order of a set planning entity instances,
+instead of assigning them to a date/time (although there can be an assigned date/time as a shadow variable).
+A typical use case is <<vehicleRouting,vehicle routing>>.
+
+. If there is an orange _many to many_ relationship, *replace that _many to many_ relationship*
+with a _one to many_ and a _many to one_ relationship to a new intermediate class.
+** Planner currently doesn't support a `@PlanningVariable` on a collection.
+Although a future version will support it for flexibility reasons,
+it probably has an inherit performance and complexity cost, so it might be better to avoid it anyway.
+** For example in employee rostering the `ShiftAssignment` class is
+the _many to many_ relationship between the `Shift` and `Employee`.
 It's effectively every spot that needs to be filled with an employee.
 +
 image::Chapter-Design_patterns/employeeShiftRosteringModelingGuideA.png[align="center"]
 
-. In a _many to one_ relationship, it is usually the _many_ side that is the planning entity class.
+. In a _many to one_ relationship, *usually the _many_ side is the planning entity class*.
 Annotate it with a `@PlanningEntity` annotation.
+** For example in employee rostering, the `ShiftAssignment` class has an `@PlanningEntity` annotation.
 
-. The planning entity class should have at least one problem property.
-This means, a planning entity class cannot consist out of only planning variables
+. The planning entity class should have *at least one problem property*.
+So a planning entity class cannot consist out of only planning variables
 (or even an id and only planning variables).
-For example in employee rostering, the `ShiftAssignment` class should not annotate
+Remove a surplus `@PlanningVariable` so it becomes a problem property.
+This heavily decreases <<searchSpaceSize,the search space size>> and heavily increases solving efficiency.
+** For example in employee rostering, the `ShiftAssignment` class should not annotate
 both the shift and employee relationship with `@PlanningVariable`.
-** When all planning variables are `null`, a planning entity instance should still be describable to the business.
-** Remove a surplus `@PlanningVariable` so it becomes a problem property.
-This heavily decreases <<searchSpaceSize,the search space size>> and makes solving far more efficient.
-** A surrogate ID does not suffice as the required minimum of one problem property.
+** When all planning variables are `null` (which occurs when the planning solution is still uninitialized),
+a planning entity instance should still be describable to the business people.
+*** So a surrogate ID does not suffice as the required minimum of one problem property.
 ** This way, there is no need to add a hard constraint to assure that two planning entities are different:
 they are already different due to their problem properties.
-** In some cases, multiple planning entities have the same problem property.
+** In some cases, multiple planning entity instances have the same set of problem properties.
 In such cases, it can be useful to create an extra problem property to distinguish them.
-For example in employee rostering, the `ShiftAssignment` class has besides the problem property `Shift`
-also the problem property `indexInShift`.
+*** For example in employee rostering, the `ShiftAssignment` class has besides the problem property `Shift`
+also the problem property `indexInShift` (which is an `int`).
 
-. Choose the model in which the number of planning entities is fixed during planning.
-For example in employee rostering, it's impossible to know in advance how many shifts each employee will have
-before OptaPlanner solved it - it can even differ per best solution found.
+. Choose the model in which *the number of planning entities is fixed during planning*.
+** For example in employee rostering, it's impossible to know in advance how many shifts each employee will have
+before Planner solves it (and it can even differ per best solution found).
 On the other hand, the number of employees per shift is known in advance,
-so the `Employee` relationship makes a better planning variable.
+so it's better to make the `Shift` relationship a problem property
+and the `Employee` relationship a planning variable.
 +
 image::Chapter-Design_patterns/employeeShiftRosteringModelingGuideB.png[align="center"]
 
@@ -157,8 +174,8 @@ However, such solution is not impossible, as shown in <<cheapTimeScheduling,chea
 === Chained Through Time Pattern: Assign in a Chain that Determines Starting Time
 
 
-If a person or a machine continuously works on **1 task at a time in
-      sequence**, which means starting a task when the previous is finished (or with a deterministic delay), the Chained Through Time pattern is useful.
+If a person or a machine continuously works on **1 task at a time in sequence**,
+which means starting a task when the previous is finished (or with a deterministic delay), the Chained Through Time pattern is useful.
 For example, in the vehicle routing with time windows example, a vehicle drives from customer to customer (thus it handles one customer at a time).
 
 In this pattern, the planning entities are <<chainedPlanningVariable,chained>>.
