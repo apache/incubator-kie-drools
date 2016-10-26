@@ -16,59 +16,48 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
 
 public class ModifyPreviousTuples {
-    private LeftTuple                       leftTuple;
-    private RightTuple                      rightTuple;
-    private EntryPointNode                  epNode;
+    private final DefaultFactHandle.LinkedTuples linkedTuples;
 
-    public ModifyPreviousTuples(LeftTuple leftTuple,                                
-                                RightTuple rightTuple, 
-                                EntryPointNode epNode) {
-        this.leftTuple = leftTuple;
-        this.rightTuple = rightTuple;
-        this.epNode = epNode;
+    public ModifyPreviousTuples(InternalFactHandle.LinkedTuples linkedTuples) {
+        this.linkedTuples = linkedTuples;
     }
     
     public LeftTuple peekLeftTuple() {
-        return this.leftTuple;
+        return linkedTuples.getFirstLeftTuple();
     }
     
     public RightTuple peekRightTuple() {
-        return this.rightTuple;
+        return linkedTuples.getFirstRightTuple();
     }
 
     public void removeLeftTuple() {
-        LeftTuple current = this.leftTuple;
-        current.setHandlePrevious( null );
-        this.leftTuple = current.getHandleNext();
-        current.setHandleNext( null );
+        linkedTuples.removeLeftTuple( peekLeftTuple() );
     }
     
     public void removeRightTuple() {
-        RightTuple current = this.rightTuple;
-        current.setHandlePrevious( null );
-        this.rightTuple = current.getHandleNext();
-        current.setHandleNext( null );       
-    }        
+        linkedTuples.removeRightTuple( peekRightTuple() );
+    }
     
     public void retractTuples(PropagationContext pctx,
                               InternalWorkingMemory wm) {
-        // retract any remaining LeftTuples
-        if ( this.leftTuple != null ) {
-            for ( LeftTuple current = this.leftTuple; current != null; current = (LeftTuple) current.getHandleNext() ) {
-                epNode.doDeleteObject(pctx, wm, current);
-            }
-        }
-        
-        // retract any remaining RightTuples
-        if (this.rightTuple != null ) {
-            for ( RightTuple current = this.rightTuple; current != null; current = (RightTuple) current.getHandleNext() ) {
-                epNode.doRightDelete(pctx, wm, current);
-            }
-        }
+        linkedTuples.forEachLeftTuple( lt -> doDeleteObject(pctx, wm, lt) );
+        linkedTuples.forEachRightTuple( rt -> doRightDelete(pctx, wm, rt) );
     }
 
+    public void doDeleteObject(PropagationContext pctx, InternalWorkingMemory wm, LeftTuple leftTuple) {
+        LeftInputAdapterNode liaNode = leftTuple.getTupleSource();
+        LeftInputAdapterNode.LiaNodeMemory lm = wm.getNodeMemory( liaNode );
+        LeftInputAdapterNode.doDeleteObject(leftTuple, pctx, lm.getSegmentMemory(), wm, liaNode, true, lm);
+    }
+
+    public void doRightDelete(PropagationContext pctx, InternalWorkingMemory wm, RightTuple rightTuple) {
+        rightTuple.setPropagationContext( pctx );
+        rightTuple.retractTuple( pctx, wm );
+    }
 }

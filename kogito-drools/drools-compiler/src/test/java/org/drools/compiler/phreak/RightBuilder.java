@@ -67,10 +67,6 @@ public class RightBuilder {
         return this;
     }
 
-    TupleSets<RightTuple> get() {
-        return this.rightTuples;
-    }
-
     public StagedBuilder result() {
         StagedBuilder stagedBuilder = new StagedBuilder( scenario, null );
         scenario.setExpectedResultBuilder( stagedBuilder );

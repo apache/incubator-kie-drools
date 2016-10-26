@@ -495,7 +495,7 @@ public class ProtobufInputMarshaller {
 
         PropagationContextFactory pctxFactory = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
 
-        PropagationContext propagationContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.INSERTION, null, null, handle, ep.getEntryPoint(), context);
+        PropagationContext propagationContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION, null, null, handle, ep.getEntryPoint(), context);
         // keeping this list for a later cleanup is necessary because of the lazy propagations that might occur
         pctxs.add( propagationContext );
 

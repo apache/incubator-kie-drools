@@ -24,7 +24,6 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
@@ -203,9 +202,7 @@ public class EntryPointNode extends ObjectSource
          }
 
          if ( activationNode != null ) {
-             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), this );
-             factHandle.clearLeftTuples();
-             factHandle.clearRightTuples();
+             ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( factHandle.detachLinkedTuples() );
 
              // There may be no queries defined
              this.activationNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
@@ -222,7 +219,14 @@ public class EntryPointNode extends ObjectSource
             log.trace("Insert {}", handle.toString());
         }
 
-        workingMemory.addPropagation(new PropagationEntry.Insert(handle, context, workingMemory, objectTypeConf ));
+        if ( partitionsEnabled ) {
+            // In case of multithreaded evaluation the CompositePartitionAwareObjectSinkAdapter
+            // used by the OTNs will take care of enqueueing this inseretion on the propagation queues
+            // of the different agendas
+            PropagationEntry.Insert.execute( handle, context, workingMemory, objectTypeConf );
+        } else {
+            workingMemory.addPropagation( new PropagationEntry.Insert( handle, context, workingMemory, objectTypeConf ) );
+        }
     }
 
 
@@ -234,68 +238,57 @@ public class EntryPointNode extends ObjectSource
             log.trace( "Update {}", handle.toString()  );
         }
 
-        workingMemory.addPropagation(new PropagationEntry.Update(this, handle, pctx, objectTypeConf));
+        workingMemory.addPropagation(new PropagationEntry.Update(handle, pctx, objectTypeConf));
     }
 
-    public void propagateModify(InternalFactHandle handle, PropagationContext pctx, ObjectTypeConf objectTypeConf, InternalWorkingMemory wm) {
-        ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
-
+    public static void propagateModify(InternalFactHandle handle, PropagationContext pctx, ObjectTypeConf objectTypeConf, InternalWorkingMemory wm) {
         // make a reference to the previous tuples, then null then on the handle
-        ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(handle.getFirstLeftTuple(), handle.getFirstRightTuple(), this );
-        handle.clearLeftTuples();
-        handle.clearRightTuples();
+        propagateModify( handle, pctx, objectTypeConf, wm, new ModifyPreviousTuples( handle.detachLinkedTuples() ) );
+    }
 
+    public static void propagateModify( InternalFactHandle handle, PropagationContext pctx, ObjectTypeConf objectTypeConf, InternalWorkingMemory wm, ModifyPreviousTuples modifyPreviousTuples ) {
+        ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
         for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
-            cachedNodes[i].modifyObject( handle,
-                                         modifyPreviousTuples,
-                                         pctx, wm );
-
-            // remove any right tuples that matches the current OTN before continue the modify on the next OTN cache entry
+            cachedNodes[i].modifyObject( handle, modifyPreviousTuples, pctx, wm );
             if (i < cachedNodes.length - 1) {
-                RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
-                while ( rightTuple != null &&
-                        ((BetaNode) rightTuple.getTupleSink()).getObjectTypeNode() == cachedNodes[i] ) {
-                    modifyPreviousTuples.removeRightTuple();
-
-                    doRightDelete(pctx, wm, rightTuple);
-
-                    rightTuple = modifyPreviousTuples.peekRightTuple();
-                }
-
-
-                LeftTuple leftTuple;
-                ObjectTypeNode otn;
-                while ( true ) {
-                    leftTuple = modifyPreviousTuples.peekLeftTuple();
-                    otn = null;
-                    if (leftTuple != null) {
-                        LeftTupleSink leftTupleSink = leftTuple.getTupleSink();
-                        if (leftTupleSink instanceof LeftTupleSource) {
-                            otn = leftTupleSink.getLeftTupleSource().getObjectTypeNode();
-                        } else if (leftTupleSink instanceof RuleTerminalNode) {
-                            otn = ((RuleTerminalNode)leftTupleSink).getObjectTypeNode();
-                        }
-                    }
-
-                    if ( otn == null || cachedNodes[i] != otn ) break;
-
-                    modifyPreviousTuples.removeLeftTuple();
-                    doDeleteObject(pctx, wm, leftTuple);
-                }
+                removeRightTuplesMatchingOTN( pctx, wm, modifyPreviousTuples, cachedNodes[i] );
             }
         }
         modifyPreviousTuples.retractTuples(pctx, wm);
     }
 
-    public void doDeleteObject(PropagationContext pctx, InternalWorkingMemory wm, LeftTuple leftTuple) {
-        LeftInputAdapterNode liaNode = leftTuple.getTupleSource();
-        LiaNodeMemory lm = wm.getNodeMemory( liaNode );
-        LeftInputAdapterNode.doDeleteObject(leftTuple, pctx, lm.getSegmentMemory(), wm, liaNode, true, lm);
-    }
+    public static void removeRightTuplesMatchingOTN( PropagationContext pctx, InternalWorkingMemory wm, ModifyPreviousTuples modifyPreviousTuples, ObjectTypeNode node ) {
+        // remove any right tuples that matches the current OTN before continue the modify on the next OTN cache entry
+        RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
+        while ( rightTuple != null &&
+                ((BetaNode) rightTuple.getTupleSink()).getObjectTypeNode() == node ) {
+            modifyPreviousTuples.removeRightTuple();
 
-    public void doRightDelete(PropagationContext pctx, InternalWorkingMemory wm, RightTuple rightTuple) {
-        rightTuple.setPropagationContext( pctx );
-        rightTuple.retractTuple( pctx, wm );
+            modifyPreviousTuples.doRightDelete(pctx, wm, rightTuple);
+
+            rightTuple = modifyPreviousTuples.peekRightTuple();
+        }
+
+
+        while ( true ) {
+            LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
+            ObjectTypeNode otn = null;
+            if (leftTuple != null) {
+                LeftTupleSink leftTupleSink = leftTuple.getTupleSink();
+                if (leftTupleSink instanceof LeftTupleSource ) {
+                    otn = leftTupleSink.getLeftTupleSource().getObjectTypeNode();
+                } else if (leftTupleSink instanceof RuleTerminalNode ) {
+                    otn = ((RuleTerminalNode)leftTupleSink).getObjectTypeNode();
+                }
+            }
+
+            if ( otn == node ) {
+                modifyPreviousTuples.removeLeftTuple();
+                modifyPreviousTuples.doDeleteObject( pctx, wm, leftTuple );
+            } else {
+                break;
+            }
+        }
     }
 
     public void modifyObject(InternalFactHandle factHandle,
@@ -361,7 +354,7 @@ public class EntryPointNode extends ObjectSource
                                       workingMemory );
         }
 
-        if (handle instanceof EventFactHandle) {
+        if (handle.isEvent()) {
             ((EventFactHandle) handle).unscheduleAllJobs(workingMemory);
         }
     }
@@ -381,10 +374,9 @@ public class EntryPointNode extends ObjectSource
                                  node);
     }
 
-    public boolean removeObjectSink(final ObjectSink objectSink) {
+    public void removeObjectSink(final ObjectSink objectSink) {
         final ObjectTypeNode node = (ObjectTypeNode) objectSink;
         this.objectTypeNodes.remove( node.getObjectType() );
-        return false;
     }
 
     public void attach() {
@@ -406,7 +398,7 @@ public class EntryPointNode extends ObjectSource
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             workingMemory.updateEntryPointsCache();
             PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
             this.source.updateSink( this,
                                     propagationContext,
                                     workingMemory );
@@ -434,11 +426,8 @@ public class EntryPointNode extends ObjectSource
 
     @Override
     protected boolean internalEquals( Object object ) {
-        if ( object == null || !(object instanceof EntryPointNode) || this.hashCode() != object.hashCode() ) {
-            return false;
-        }
-
-        return this.entryPoint.equals( ((EntryPointNode)object).entryPoint );
+        return object instanceof EntryPointNode && this.hashCode() == object.hashCode() &&
+               this.entryPoint.equals( ( (EntryPointNode) object ).entryPoint );
     }
 
     public void updateSink(final ObjectSink sink,

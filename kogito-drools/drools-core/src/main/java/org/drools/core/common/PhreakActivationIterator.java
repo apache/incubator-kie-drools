@@ -196,13 +196,11 @@ public class PhreakActivationIterator
         java.util.Iterator<InternalFactHandle> it = omem.iterator();
         while (it.hasNext()) {
             InternalFactHandle fh = it.next();
-            if (fh.getFirstLeftTuple() != null ) {
-                for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; childLt = childLt.getHandleNext()) {
-                    if ( childLt.getTupleSink() == firstLiaSink ) {
-                        collectFromLeftInput(childLt, agendaItems, nodeSet, wm);
-                    }
+            fh.forEachLeftTuple( lt -> {
+                if ( lt.getTupleSink() == firstLiaSink ) {
+                    collectFromLeftInput(lt, agendaItems, nodeSet, wm);
                 }
-            }
+            });
         }
     }
 

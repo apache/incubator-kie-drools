@@ -79,7 +79,7 @@ public class FromNodeTest {
 
     @Test
     public void testAlphaNode() {
-        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
         final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1L, kBase);
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
@@ -180,7 +180,7 @@ public class FromNodeTest {
 
     @Test
     public void testBetaNode() {
-        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
 
         final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1L, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
 
@@ -294,7 +294,7 @@ public class FromNodeTest {
 
     @Test
     public void testRestract() {
-        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
         final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1L, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
         final ClassFieldReader extractor = store.getReader( Cheese.class,
                                                             "type" );
@@ -370,7 +370,7 @@ public class FromNodeTest {
     
     @Test
     public void testAssignable() {
-        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
         final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
 

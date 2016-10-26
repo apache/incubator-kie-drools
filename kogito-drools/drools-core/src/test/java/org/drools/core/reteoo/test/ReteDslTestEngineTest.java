@@ -332,7 +332,7 @@ public class ReteDslTestEngineTest {
 
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
 
-        PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
         StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
         BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( join1 );

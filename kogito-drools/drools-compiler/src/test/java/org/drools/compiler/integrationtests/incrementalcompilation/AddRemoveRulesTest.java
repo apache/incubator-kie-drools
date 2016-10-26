@@ -1290,7 +1290,6 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         StatefulKnowledgeSession ksession = runAddRemoveTest(builder.build(), additionalGlobals);
         InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
-        assertNotNull( fh1.getLastLeftTuple() );
     }
 
     @Test
@@ -1312,7 +1311,6 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
         assertNotNull( fh1.getFirstRightTuple() );
-        assertSame( fh1.getFirstRightTuple() , fh1.getLastRightTuple() );
         assertEquals( 1, fh1.getFirstRightTuple().getTupleSink().getAssociatedRuleSize() );
         assertTrue( fh1.getFirstRightTuple().getTupleSink().isAssociatedWith(rulesMap.get(RULE2_NAME)));
     }
@@ -1336,7 +1334,6 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
         InternalFactHandle  fh1 = (InternalFactHandle) ksession.getFactHandle(3);
         assertNotNull( fh1.getFirstRightTuple() );
-        assertSame( fh1.getFirstRightTuple() , fh1.getLastRightTuple() );
         assertEquals( 1, fh1.getFirstRightTuple().getTupleSink().getAssociatedRuleSize() );
         assertTrue( fh1.getFirstRightTuple().getTupleSink().isAssociatedWith(rulesMap.get(RULE1_NAME)));
     }

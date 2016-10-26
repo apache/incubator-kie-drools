@@ -23,14 +23,14 @@ import org.drools.core.phreak.PropagationEntry;
 import java.io.IOException;
 
 public interface WorkingMemoryAction extends PropagationEntry {
-    public static final short WorkingMemoryReteAssertAction  = 1;
-    public static final short DeactivateCallback             = 2;
-    public static final short PropagateAction                = 3;
-    public static final short LogicalRetractCallback         = 4;
-    public static final short WorkingMemoryReteExpireAction  = 5;
-    public static final short SignalProcessInstanceAction    = 6;
-    public static final short SignalAction                   = 7;
-    public static final short WorkingMemoryBehahviourRetract = 8;
+    short WorkingMemoryReteAssertAction  = 1;
+    short DeactivateCallback             = 2;
+    short PropagateAction                = 3;
+    short LogicalRetractCallback         = 4;
+    short WorkingMemoryReteExpireAction  = 5;
+    short SignalProcessInstanceAction    = 6;
+    short SignalAction                   = 7;
+    short WorkingMemoryBehahviourRetract = 8;
 
     ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext context) throws IOException;
 }

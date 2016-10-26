@@ -180,4 +180,6 @@ public class MockObjectSink
     }
 
     public int nodeHashCode() {return this.hashCode();}
+
+    public void setPartitionIdWithSinks( RuleBasePartitionId partitionId ) { }
 }

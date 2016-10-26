@@ -16,7 +16,7 @@
 package org.drools.core.phreak;
 
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -39,26 +39,26 @@ import java.util.List;
 */
 public class PhreakQueryTerminalNode {
     public void doNode(QueryTerminalNode qtnNode,
-                       InternalWorkingMemory wm,
+                       InternalAgenda agenda,
                        TupleSets<LeftTuple> srcLeftTuples,
                        LinkedList<StackEntry> stack) {
         if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(qtnNode, wm, srcLeftTuples, stack);
+            doLeftDeletes(qtnNode, agenda, srcLeftTuples, stack);
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(qtnNode, wm, srcLeftTuples, stack);
+            doLeftUpdates(qtnNode, agenda, srcLeftTuples, stack);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(qtnNode, wm, srcLeftTuples, stack);
+            doLeftInserts(qtnNode, agenda, srcLeftTuples, stack);
         }
 
         srcLeftTuples.resetAll();
     }
 
     public void doLeftInserts(QueryTerminalNode qtnNode,
-                              InternalWorkingMemory wm,
+                              InternalAgenda agenda,
                               TupleSets<LeftTuple> srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
@@ -75,14 +75,14 @@ public class PhreakQueryTerminalNode {
             DroolsQuery dquery = (DroolsQuery) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());
             if (dquery.getStackEntry() != null) {
-                checkAndTriggerQueryReevaluation(wm, stack, rootEntry, dquery);
+                checkAndTriggerQueryReevaluation(agenda, stack, rootEntry, dquery);
             }
 
             // Add results to the adapter
             dquery.getQueryResultCollector().rowAdded(qtnNode.getQuery(),
                                                       leftTuple,
                                                       pCtx,
-                                                      wm);
+                                                      agenda.getWorkingMemory());
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -90,7 +90,7 @@ public class PhreakQueryTerminalNode {
     }
 
     public void doLeftUpdates(QueryTerminalNode qtnNode,
-                              InternalWorkingMemory wm,
+                              InternalAgenda agenda,
                               TupleSets<LeftTuple> srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
@@ -110,14 +110,14 @@ public class PhreakQueryTerminalNode {
             DroolsQuery dquery = (DroolsQuery) rootEntry.getFactHandle().getObject();
             dquery.setQuery(qtnNode.getQuery());
             if (dquery.getStackEntry() != null) {
-                checkAndTriggerQueryReevaluation(wm, stack, rootEntry, dquery);
+                checkAndTriggerQueryReevaluation(agenda, stack, rootEntry, dquery);
             }
 
             // Add results to the adapter
             dquery.getQueryResultCollector().rowUpdated(qtnNode.getQuery(),
                                                         leftTuple,
                                                         pCtx,
-                                                        wm);
+                                                        agenda.getWorkingMemory());
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -125,7 +125,7 @@ public class PhreakQueryTerminalNode {
     }
 
     public void doLeftDeletes(QueryTerminalNode qtnNode,
-                              InternalWorkingMemory wm,
+                              InternalAgenda agenda,
                               TupleSets<LeftTuple> srcLeftTuples,
                               LinkedList<StackEntry> stack) {
 
@@ -147,14 +147,14 @@ public class PhreakQueryTerminalNode {
             dquery.setQuery(qtnNode.getQuery());
 
             if (dquery.getStackEntry() != null) {
-                checkAndTriggerQueryReevaluation(wm, stack, rootEntry, dquery);
+                checkAndTriggerQueryReevaluation(agenda, stack, rootEntry, dquery);
             }
 
             // Add results to the adapter
             dquery.getQueryResultCollector().rowRemoved(qtnNode.getQuery(),
                                                         leftTuple,
                                                         pCtx,
-                                                        wm);
+                                                        agenda.getWorkingMemory());
 
             leftTuple.clearStaged();
             leftTuple = next;
@@ -162,7 +162,7 @@ public class PhreakQueryTerminalNode {
     }
 
 
-    public static void checkAndTriggerQueryReevaluation(InternalWorkingMemory wm, LinkedList<StackEntry> stack, Tuple rootEntry, DroolsQuery dquery) {
+    public static void checkAndTriggerQueryReevaluation(InternalAgenda agenda, LinkedList<StackEntry> stack, Tuple rootEntry, DroolsQuery dquery) {
         StackEntry stackEntry = dquery.getStackEntry();
         if (!isAdded(stack, stackEntry)) {
             // Ignore unless stackEntry is not added to stack
@@ -182,7 +182,7 @@ public class PhreakQueryTerminalNode {
                     // reactivity comes form within the query, so need to notify parent rules to evaluate the results
                     for (int i = 0, length = pmems.size(); i < length; i++) {
                         PathMemory pmem = pmems.get(i);
-                        pmem.doLinkRule(wm); // method already ignores is rule is activated and on agenda
+                        pmem.doLinkRule(agenda); // method already ignores is rule is activated and on agenda
                     }
                 }
             }

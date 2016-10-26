@@ -454,15 +454,10 @@ public class PropagationQueuingNode extends ObjectSource
 
         public void execute( final ObjectSinkPropagator sink,
                              final InternalWorkingMemory workingMemory ) {
-
-            for ( RightTuple rightTuple = (RightTuple) this.handle.getFirstRightTuple(); rightTuple != null; rightTuple = rightTuple.getHandleNext() ) {
-                rightTuple.retractTuple( context, workingMemory );
-            }
+            this.handle.forEachRightTuple( rt -> rt.retractTuple( context, workingMemory ) );
             this.handle.clearRightTuples();
 
-            for ( LeftTuple leftTuple = (LeftTuple) this.handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext() ) {
-                leftTuple.retractTuple(  context, workingMemory );
-            }
+            this.handle.forEachLeftTuple( lt -> lt.retractTuple(  context, workingMemory ) );
             this.handle.clearLeftTuples();
             context.evaluateActionQueue( workingMemory );
         }

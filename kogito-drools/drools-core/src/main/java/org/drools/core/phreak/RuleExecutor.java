@@ -18,8 +18,10 @@ package org.drools.core.phreak;
 import org.drools.core.base.SalienceInteger;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.DefaultAgenda;
+import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.conflict.PhreakConflictResolver;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -27,6 +29,10 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.Consequence;
+import org.drools.core.spi.ConsequenceException;
+import org.drools.core.spi.InternalActivationGroup;
+import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.BinaryHeapQueue;
 import org.drools.core.util.index.TupleList;
@@ -48,6 +54,7 @@ public class RuleExecutor {
     private volatile boolean                  dirty;
     private final boolean                     declarativeAgendaEnabled;
     private boolean                           fireExitedEarly;
+    private KnowledgeHelper                   knowledgeHelper;
 
     public RuleExecutor(final PathMemory pmem,
             RuleAgendaItem ruleAgendaItem,
@@ -61,28 +68,36 @@ public class RuleExecutor {
         }
     }
 
-    public void evaluateNetwork(InternalWorkingMemory wm) {
-        NETWORK_EVALUATOR.evaluateNetwork( pmem, this, wm );
+    public void evaluateNetwork(InternalAgenda agenda) {
+        NETWORK_EVALUATOR.evaluateNetwork( pmem, this, agenda );
         setDirty( false );
     }
 
-    public int  evaluateNetworkAndFire( InternalWorkingMemory wm,
-                                                    final AgendaFilter filter,
-                                                    int fireCount,
-                                                    int fireLimit ) {
+    public int evaluateNetworkAndFire( InternalWorkingMemory wm,
+                                       AgendaFilter filter,
+                                       int fireCount,
+                                       int fireLimit ) {
         reEvaluateNetwork( wm );
-        return fire(wm, filter, fireCount, fireLimit, wm.getAgenda());
+        return fire(wm, wm.getAgenda(), filter, fireCount, fireLimit);
     }
 
-    public void fire(InternalWorkingMemory wm) {
-        fire(wm, null, 0, Integer.MAX_VALUE, wm.getAgenda());
+    public int evaluateNetworkAndFire( InternalAgenda agenda,
+                                       AgendaFilter filter,
+                                       int fireCount,
+                                       int fireLimit ) {
+        reEvaluateNetwork( agenda );
+        return fire(agenda.getWorkingMemory(), agenda, filter, fireCount, fireLimit);
+    }
+
+    public void fire(InternalAgenda agenda) {
+        fire(agenda.getWorkingMemory(), agenda, null, 0, Integer.MAX_VALUE);
     }
 
     private int fire( InternalWorkingMemory wm,
+                      InternalAgenda agenda,
                       AgendaFilter filter,
                       int fireCount,
-                      int fireLimit,
-                      InternalAgenda agenda) {
+                      int fireLimit) {
         int localFireCount = 0;
 
         if (!tupleList.isEmpty()) {
@@ -100,7 +115,7 @@ public class RuleExecutor {
             Tuple tuple = getNextTuple();
             
             if (rule.isAllMatches()) {
-                agenda.fireConsequenceEvent((AgendaItem) tuple, DefaultAgenda.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
+                fireConsequenceEvent(wm, agenda, (AgendaItem) tuple, DefaultAgenda.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
             }
 
             Tuple lastTuple = null;
@@ -118,14 +133,14 @@ public class RuleExecutor {
                     continue;
                 }
 
-                agenda.fireActivation( item );
+                fireActivation( wm, agenda, item );
                 localFireCount++;
 
                 if (rtn.getLeftTupleSource() == null) {
                     break; // The activation firing removed this rule from the rule base
                 }
 
-                wm.flushPropagations();
+                agenda.flushPropagations();
 
                 int salience = ruleAgendaItem.getSalience(); // dyanmic salience may have updated it, so get again.
                 if (queue != null && !queue.isEmpty() && salience != queue.peek().getSalience()) {
@@ -139,13 +154,13 @@ public class RuleExecutor {
                         break; // another rule has high priority and is on the agenda, so evaluate it first
                     }
                     if (!wm.isSequential()) {
-                        reEvaluateNetwork( wm );
+                        reEvaluateNetwork( agenda );
                     }
                 }
             }
 
             if (rule.isAllMatches()) {
-                agenda.fireConsequenceEvent((AgendaItem) lastTuple, DefaultAgenda.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
+                fireConsequenceEvent(wm, agenda, (AgendaItem) lastTuple, DefaultAgenda.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
             }
         }
 
@@ -189,9 +204,13 @@ public class RuleExecutor {
     }
 
     public void reEvaluateNetwork(InternalWorkingMemory wm) {
+        reEvaluateNetwork(wm.getAgenda());
+    }
+
+    public void reEvaluateNetwork(InternalAgenda agenda) {
         if ( isDirty() ) {
             setDirty(false);
-            NETWORK_EVALUATOR.evaluateNetwork(pmem, this, wm);
+            NETWORK_EVALUATOR.evaluateNetwork(pmem, this, agenda);
         }
     }
 
@@ -340,4 +359,92 @@ public class RuleExecutor {
         }
     }
 
+    public void fireActivation(InternalWorkingMemory wm, InternalAgenda agenda, Activation activation) throws ConsequenceException {
+        // We do this first as if a node modifies a fact that causes a recursion
+        // on an empty pattern
+        // we need to make sure it re-activates
+        wm.startOperation();
+        try {
+            final EventSupport eventsupport = (EventSupport) wm;
+
+            eventsupport.getAgendaEventSupport().fireBeforeActivationFired( activation, wm );
+
+            if ( activation.getActivationGroupNode() != null ) {
+                // We know that this rule will cancel all other activations in the group
+                // so lets remove the information now, before the consequence fires
+                final InternalActivationGroup activationGroup = activation.getActivationGroupNode().getActivationGroup();
+                activationGroup.removeActivation( activation );
+                agenda.clearAndCancelActivationGroup( activationGroup);
+            }
+            activation.setQueued(false);
+
+            try {
+                innerFireActivation( wm, agenda, activation, activation.getConsequence() );
+            } finally {
+                // if the tuple contains expired events
+                for ( Tuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
+                    if ( tuple.getFactHandle() != null &&  tuple.getFactHandle().isEvent() ) {
+                        // can be null for eval, not and exists that have no right input
+
+                        EventFactHandle handle = (EventFactHandle) tuple.getFactHandle();
+                        // decrease the activation count for the event
+                        handle.decreaseActivationsCount();
+                        // handles "expire" only in stream mode.
+                        if ( handle.expirePartition() && handle.isExpired() ) {
+                            if ( handle.getActivationsCount() <= 0 ) {
+                                // and if no more activations, retract the handle
+                                handle.getEntryPoint().delete( handle );
+                            }
+                        }
+                    }
+                }
+            }
+
+            eventsupport.getAgendaEventSupport().fireAfterActivationFired( activation, wm );
+        } finally {
+            wm.endOperation();
+        }
+    }
+
+    public void fireConsequenceEvent(InternalWorkingMemory wm, InternalAgenda agenda, Activation activation, String consequenceName) {
+        Consequence consequence = activation.getRule().getNamedConsequence( consequenceName );
+        if (consequence != null) {
+            fireActivationEvent(wm, agenda, activation, consequence);
+        }
+    }
+
+    private void fireActivationEvent(InternalWorkingMemory wm, InternalAgenda agenda, Activation activation, Consequence consequence) throws ConsequenceException {
+        wm.startOperation();
+        try {
+            innerFireActivation( wm, agenda, activation, consequence );
+        } finally {
+            wm.endOperation();
+        }
+    }
+
+    private void innerFireActivation( InternalWorkingMemory wm, InternalAgenda agenda, Activation activation, Consequence consequence ) {
+        try {
+            knowledgeHelper.setActivation( activation );
+            if ( log.isTraceEnabled() ) {
+                log.trace( "Fire event {} for rule \"{}\" \n{}", consequence.getName(), activation.getRule().getName(), activation.getTuple() );
+            }
+            consequence.evaluate(knowledgeHelper, wm);
+            activation.setActive(false);
+            knowledgeHelper.cancelRemainingPreviousLogicalDependencies();
+            knowledgeHelper.reset();
+        } catch ( final Exception e ) {
+            agenda.handleException( wm, activation, e );
+        } finally {
+            if ( activation.getActivationFactHandle() != null ) {
+                // update the Activation in the WM
+                InternalFactHandle factHandle = activation.getActivationFactHandle();
+                wm.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), wm );
+                activation.getPropagationContext().evaluateActionQueue( wm );
+            }
+        }
+    }
+
+    public void setKnowledgeHelper( KnowledgeHelper knowledgeHelper ) {
+        this.knowledgeHelper = knowledgeHelper;
+    }
 }

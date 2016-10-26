@@ -110,16 +110,6 @@ public class EvalConditionNode extends LeftTupleSource
         return this.condition;
     }
     
-    public LeftTupleSource getLeftTupleSource() {
-        return this.leftInput;
-    }
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // org.kie.reteoo.impl.TupleSink
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-
     /**
      * Produce a debug string.
      *

@@ -116,7 +116,6 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
 
         agenda.cancelActivation( leftTuple,
                                  context,
-                                 workingMemory,
                                  activation,
                                  this );
 
@@ -139,7 +138,7 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
 
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
             getLeftTupleSource().updateSink(this, propagationContext, workingMemory);
         }
     }

@@ -33,16 +33,23 @@ import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.test.model.Cheese;
-import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.test.model.Cheese;
+import org.drools.core.test.model.DroolsTestCase;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
+
+import java.beans.IntrospectionException;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @Ignore("phreak")
 public class NotNodeTest extends DroolsTestCase {
@@ -74,7 +81,7 @@ public class NotNodeTest extends DroolsTestCase {
 
         this.rule = new RuleImpl("test-rule");
         pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        this.context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        this.context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
         this.workingMemory = new StatefulKnowledgeSessionImpl(1L, kBase);
 
         final RuleBaseConfiguration configuration = new RuleBaseConfiguration();
@@ -417,7 +424,7 @@ public class NotNodeTest extends DroolsTestCase {
 
         // assert tuple
         this.node.assertLeftTuple( tuple0,
-                                   pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, f0),
+                                   pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, f0),
                                    this.workingMemory );
 
         assertEquals( 0,

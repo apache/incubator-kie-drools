@@ -42,6 +42,8 @@ public abstract class BaseTuple implements Tuple {
     protected Tuple handlePrevious;
     protected Tuple handleNext;
 
+    private boolean expired;
+
     public Object getObject(Declaration declaration) {
         return getObject(declaration.getPattern().getOffset());
     }
@@ -183,6 +185,11 @@ public abstract class BaseTuple implements Tuple {
 
     @Override
     public boolean isExpired() {
-        return handle != null && handle.isExpired();
+        return expired;
+    }
+
+    @Override
+    public void setExpired( boolean expired ) {
+        this.expired = expired;
     }
 }

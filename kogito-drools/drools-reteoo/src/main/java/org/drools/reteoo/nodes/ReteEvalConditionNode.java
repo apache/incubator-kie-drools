@@ -128,7 +128,7 @@ public class ReteEvalConditionNode extends EvalConditionNode {
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
 
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION,
                                                                                                null, null, null);
             this.leftInput.updateSink( this,
                                        propagationContext,

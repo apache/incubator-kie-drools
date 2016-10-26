@@ -19,24 +19,20 @@ import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
-import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.reteoo.ObjectTypeConf;
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.PropagationContext;
-
-import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
 public class JTMSBeliefSystem<M extends JTMSMode<M>>
         implements
@@ -86,8 +82,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
                       payload,
                       rule,
                       activation,
-                      typeConf,
-                      null);
+                      typeConf);
         } else {
             processBeliefSet(rule, activation, payload, context, jtmsBeliefSet, wasDecided,wasNegated, fh);
         }
@@ -142,7 +137,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
 
         if ( beliefSet.isEmpty() && fh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
             // the set is empty, so delete form the EP, so things are cleaned up.
-            ep.delete(fh, fh.getObject(), getObjectTypeConf(beliefSet), (RuleImpl) context.getRule(), (Activation) context.getLeftTupleOrigin() );
+            ep.delete(fh, fh.getObject(), getObjectTypeConf(beliefSet), (RuleImpl) context.getRuleOrigin(), (Activation) context.getLeftTupleOrigin() );
         } else  if ( !(processBeliefSet( rule, activation, payload, context, jtmsBeliefSet, wasDecided, wasNegated, fh) && beliefSet.isEmpty())  ) {
             //  The state of the BS did not change, but maybe the prime did
             if ( fh.getObject() == payload ) {
@@ -197,8 +192,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
                       payload,
                       rule,
                       activation,
-                      getObjectTypeConf(jtmsBeliefSet),
-                      null);
+                      getObjectTypeConf(jtmsBeliefSet));
             return true;
         } else if ( wasDecided && !jtmsBeliefSet.isDecided() ) {
             // Handle Conflict
@@ -207,15 +201,15 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
             }
 
             // was decided, now is not, so must be removed from the network. Leave in EP though, we only delete from that when the set is empty
-            ep.delete(fh, fh.getObject(), getObjectTypeConf(jtmsBeliefSet), (RuleImpl) pctx.getRule(), (Activation) pctx.getLeftTupleOrigin() );
+            ep.delete(fh, fh.getObject(), getObjectTypeConf(jtmsBeliefSet), (RuleImpl) pctx.getRuleOrigin(), (Activation) pctx.getLeftTupleOrigin() );
             return true;
         } else if (wasNegated != jtmsBeliefSet.isNegated()) {
             // was decided, still is decided by the negation changed. This must be propagated through the engine
             // This does not happen for pure JTMS, but does for DFL.
-            final PropagationContext updatePctx = ep.getPctxFactory().createPropagationContext(ep.getInternalWorkingMemory().getNextPropagationIdCounter(), PropagationContext.MODIFICATION,
-                                                                                                       (RuleImpl) pctx.getRule(), (pctx.getLeftTupleOrigin() == null) ? null : pctx.getLeftTupleOrigin(),
+            final PropagationContext updatePctx = ep.getPctxFactory().createPropagationContext(ep.getInternalWorkingMemory().getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
+                                                                                                       pctx.getRuleOrigin(), (pctx.getLeftTupleOrigin() == null) ? null : pctx.getLeftTupleOrigin(),
                                                                                                        fh, ep.getEntryPoint());
-            ep.update(fh, fh.getObject(), fh.getObject(),  getObjectTypeConf(jtmsBeliefSet), (RuleImpl) pctx.getRule(), updatePctx );
+            ep.update(fh, fh.getObject(), fh.getObject(),  getObjectTypeConf(jtmsBeliefSet), pctx.getRuleOrigin(), updatePctx );
         }
         return false;
     }
@@ -224,7 +218,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
                       BeliefSet<M> beliefSet) {
         InternalFactHandle bfh = beliefSet.getFactHandle();
         // Remove the FH from the network
-        ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet),(RuleImpl) context.getRule(), null);
+        ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), context.getRuleOrigin(), null);
     }
 
     public void unstage(PropagationContext context,
@@ -232,7 +226,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         InternalFactHandle bfh = beliefSet.getFactHandle();
 
         // Add the FH back into the network
-        ep.insert(bfh, bfh.getObject(), (RuleImpl) context.getRule(), null, getObjectTypeConf(beliefSet), null );
+        ep.insert(bfh, bfh.getObject(), context.getRuleOrigin(), null, getObjectTypeConf(beliefSet) );
     }
 
     private ObjectTypeConf getObjectTypeConf(BeliefSet<M> jtmsBeliefSet) {

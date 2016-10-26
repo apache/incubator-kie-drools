@@ -129,7 +129,7 @@ public class ReteTest extends DroolsTestCase {
                                                            new ArrayList());
         rete.assertObject(h1,
                           pctxFactory.createPropagationContext(0,
-                                                               PropagationContext.INSERTION,
+                                                               PropagationContext.Type.INSERTION,
                                                                null,
                                                                null,
                                                                null),
@@ -139,7 +139,7 @@ public class ReteTest extends DroolsTestCase {
         h1.setObject(new LinkedList());
         rete.assertObject(h1,
                           pctxFactory.createPropagationContext(0,
-                                                               PropagationContext.INSERTION,
+                                                               PropagationContext.Type.INSERTION,
                                                                null,
                                                                null,
                                                                null),
@@ -182,7 +182,7 @@ public class ReteTest extends DroolsTestCase {
 
         rete.assertObject(h1,
                           pctxFactory.createPropagationContext(0,
-                                                               PropagationContext.INSERTION,
+                                                               PropagationContext.Type.INSERTION,
                                                                null,
                                                                null,
                                                                null),
@@ -198,7 +198,7 @@ public class ReteTest extends DroolsTestCase {
 
         rete.assertObject(h2,
                           pctxFactory.createPropagationContext(0,
-                                                               PropagationContext.INSERTION,
+                                                               PropagationContext.Type.INSERTION,
                                                                null,
                                                                null,
                                                                null),
@@ -334,7 +334,7 @@ public class ReteTest extends DroolsTestCase {
 
         rete.assertObject(h1,
                           pctxFactory.createPropagationContext(0,
-                                                               PropagationContext.INSERTION,
+                                                               PropagationContext.Type.INSERTION,
                                                                null,
                                                                null,
                                                                null),
@@ -352,7 +352,7 @@ public class ReteTest extends DroolsTestCase {
         // need  to assert first, to force it to build  up the cache
         rete.assertObject(h2,
                           pctxFactory.createPropagationContext(0,
-                                                               PropagationContext.INSERTION,
+                                                               PropagationContext.Type.INSERTION,
                                                                null,
                                                                null,
                                                                null),
@@ -360,7 +360,7 @@ public class ReteTest extends DroolsTestCase {
 
         rete.retractObject(h2,
                            pctxFactory.createPropagationContext(0,
-                                                                PropagationContext.INSERTION,
+                                                                PropagationContext.Type.INSERTION,
                                                                 null,
                                                                 null,
                                                                 null),
@@ -400,7 +400,7 @@ public class ReteTest extends DroolsTestCase {
 
         rete.assertObject(h1,
                           pctxFactory.createPropagationContext(0,
-                                                               PropagationContext.INSERTION,
+                                                               PropagationContext.Type.INSERTION,
                                                                null,
                                                                null,
                                                                null),
@@ -447,7 +447,7 @@ public class ReteTest extends DroolsTestCase {
 
         rete.assertObject(h1,
                           pctxFactory.createPropagationContext(0,
-                                                               PropagationContext.INSERTION,
+                                                               PropagationContext.Type.INSERTION,
                                                                null,
                                                                null,
                                                                null),

@@ -19,11 +19,13 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectSource;
+import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
@@ -39,16 +41,6 @@ public class ReteEntryPointNode extends EntryPointNode {
 
     public ReteEntryPointNode(int id, RuleBasePartitionId partitionId, boolean partitionsEnabled, ObjectSource objectSource, EntryPointId entryPoint) {
         super(id, partitionId, partitionsEnabled, objectSource, entryPoint);
-    }
-
-    public void doRightDelete(PropagationContext pctx, InternalWorkingMemory wm, RightTuple rightTuple) {
-        ((BetaNode) rightTuple.getTupleSink()).retractRightTuple(rightTuple,
-                                                                      pctx,
-                                                                      wm);
-    }
-
-    public void doDeleteObject(PropagationContext pctx, InternalWorkingMemory wm, LeftTuple leftTuple) {
-        leftTuple.retractTuple( pctx, wm );
     }
 
     public void assertQuery(final InternalFactHandle factHandle,
@@ -85,13 +77,57 @@ public class ReteEntryPointNode extends EntryPointNode {
         }
 
         if ( queryNode != null ) {
-            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(), factHandle.getFirstRightTuple(), this );
-            factHandle.clearLeftTuples();
-            factHandle.clearRightTuples();
+            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.detachLinkedTuples());
 
             // There may be no queries defined
             this.queryNode.modifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
             modifyPreviousTuples.retractTuples(context, workingMemory);
+        }
+    }
+
+    public void modifyObject(final InternalFactHandle handle,
+                             final PropagationContext pctx,
+                             final ObjectTypeConf objectTypeConf,
+                             final InternalWorkingMemory workingMemory) {
+        if ( log.isTraceEnabled() ) {
+            log.trace( "Update {}", handle.toString()  );
+        }
+
+        workingMemory.addPropagation(new ReteUpdate( handle, pctx, objectTypeConf) );
+    }
+
+    public static class ReteUpdate extends PropagationEntry.AbstractPropagationEntry {
+        private final InternalFactHandle handle;
+        private final PropagationContext context;
+        private final ObjectTypeConf objectTypeConf;
+
+        public ReteUpdate(InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf) {
+            this.handle = handle;
+            this.context = context;
+            this.objectTypeConf = objectTypeConf;
+        }
+
+        public void execute(InternalWorkingMemory wm) {
+            EntryPointNode.propagateModify(handle, context, objectTypeConf, wm, new ReteModifyPreviousTuples( handle.detachLinkedTuples() ));
+        }
+
+        @Override
+        public String toString() {
+            return "Update of " + handle.getObject();
+        }
+    }
+
+    public static class ReteModifyPreviousTuples extends ModifyPreviousTuples {
+        public ReteModifyPreviousTuples(InternalFactHandle.LinkedTuples linkedTuples) {
+            super(linkedTuples);
+        }
+
+        public void doRightDelete(PropagationContext pctx, InternalWorkingMemory wm, RightTuple rightTuple) {
+            ((BetaNode) rightTuple.getTupleSink()).retractRightTuple( rightTuple, pctx, wm );
+        }
+
+        public void doDeleteObject(PropagationContext pctx, InternalWorkingMemory wm, LeftTuple leftTuple) {
+            leftTuple.retractTuple( pctx, wm );
         }
     }
 }

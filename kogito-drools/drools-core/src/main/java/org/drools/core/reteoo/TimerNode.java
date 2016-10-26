@@ -114,10 +114,6 @@ public class TimerNode extends LeftTupleSource
         return this.declarations;
     }
 
-    public LeftTupleSource getLeftTupleSource() {
-        return this.leftInput;
-    }
-
     /**
      * Produce a debug string.
      *
@@ -362,5 +358,4 @@ public class TimerNode extends LeftTupleSource
     public void modifyLeftTuple(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
         throw new UnsupportedOperationException();
     }
-
 }

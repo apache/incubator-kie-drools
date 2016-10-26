@@ -138,7 +138,7 @@ public class TruthMaintenanceSystem {
 
         InternalWorkingMemory wm = ep.getInternalWorkingMemory();
 
-        final PropagationContext propagationContext = ep.getPctxFactory().createPropagationContext( wm.getNextPropagationIdCounter(), PropagationContext.DELETION,
+        final PropagationContext propagationContext = ep.getPctxFactory().createPropagationContext( wm.getNextPropagationIdCounter(), PropagationContext.Type.DELETION,
                                                                                                     null, null, ifh,  ep.entryPoint);
 
         TruthMaintenanceSystemHelper.removeLogicalDependencies( ifh, propagationContext );
@@ -220,7 +220,7 @@ public class TruthMaintenanceSystem {
 
         BeliefSet beliefSet = handle.getEqualityKey().getBeliefSet();
         if ( beliefSet == null ) {
-            if ( context.getType() == PropagationContext.MODIFICATION ) {
+            if ( context.getType() == PropagationContext.Type.MODIFICATION ) {
                 // if this was a  update, chances  are its trying  to retract a logical assertion
             }
             beliefSet = beliefSystem.newBeliefSet( handle );

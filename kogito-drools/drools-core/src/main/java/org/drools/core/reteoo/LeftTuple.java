@@ -57,7 +57,5 @@ public interface LeftTuple extends Tuple {
     short getStagedTypeForQueries();
     void setStagedTypeForQueries( short stagedTypeForQueries );
 
-    void setExpired( boolean expired );
-
     boolean isStagedOnRight();
 }

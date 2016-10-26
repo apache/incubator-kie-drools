@@ -78,8 +78,7 @@ public class ReteSimpleBeliefSystem
                        handle.getObject(),
                        rule,
                        activation,
-                       typeConf,
-                       null );
+                       typeConf );
         }
         return beliefSet;
     }
@@ -119,7 +118,7 @@ public class ReteSimpleBeliefSystem
         InternalFactHandle bfh = beliefSet.getFactHandle();
         
         if ( beliefSet.isEmpty() &&
-             !((context.getType() == PropagationContext.DELETION || context.getType() == PropagationContext.MODIFICATION) // retract and modifies clean up themselves
+             !((context.getType() == PropagationContext.Type.DELETION || context.getType() == PropagationContext.Type.MODIFICATION) // retract and modifies clean up themselves
              &&
              context.getFactHandle() == bfh) ) {
             

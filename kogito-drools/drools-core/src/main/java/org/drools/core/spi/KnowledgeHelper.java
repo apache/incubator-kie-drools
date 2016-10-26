@@ -48,9 +48,9 @@ public interface KnowledgeHelper
     RuleContext,
     Serializable {
     
-    public void setActivation(final Activation agendaItem);
+    void setActivation(final Activation agendaItem);
     
-    public void reset();
+    void reset();
     
     
     /**
@@ -60,6 +60,8 @@ public interface KnowledgeHelper
      *            the object to be asserted
      */
     InternalFactHandle insert(Object object) ;
+
+    FactHandle insertAsync( Object object );
     
     /**
      * Asserts an object specifying that it implement the onPropertyChange
@@ -73,16 +75,15 @@ public interface KnowledgeHelper
     InternalFactHandle insert(Object object,
                 boolean dynamic) ;
     
-    public InternalFactHandle insertLogical(Object object) ;
+    InternalFactHandle insertLogical(Object object) ;
     
-    public InternalFactHandle insertLogical(Object object,
-                              boolean dynamic) ;
+    InternalFactHandle insertLogical(Object object, boolean dynamic) ;
 
-    public InternalFactHandle insertLogical(Object object, Mode belief) ;
+    InternalFactHandle insertLogical(Object object, Mode belief) ;
 
-    public InternalFactHandle insertLogical(Object object, Mode... beliefs) ;
+    InternalFactHandle insertLogical(Object object, Mode... beliefs) ;
     
-    public void cancelRemainingPreviousLogicalDependencies();
+    void cancelRemainingPreviousLogicalDependencies();
     
     InternalFactHandle getFactHandle(Object object);
     
@@ -160,9 +161,9 @@ public interface KnowledgeHelper
 
     <T, K, X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait );
 
-    InternalFactHandle bolster( Object object, Object value );
-
     InternalFactHandle bolster( Object object );
+
+    InternalFactHandle bolster( Object object, Object value );
 
     ClassLoader getProjectClassLoader();
 }

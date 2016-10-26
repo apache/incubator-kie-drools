@@ -15,6 +15,7 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 
@@ -46,14 +47,22 @@ public class RiaPathMemory extends PathMemory {
         return (RightInputAdapterNode) getPathEndNode();
     }
 
+    @Override
     public void doLinkRule(InternalWorkingMemory wm) {
         getRightInputAdapterNode().getObjectSinkPropagator().doLinkRiaNode( wm );
     }
-        
+
+    @Override
+    public void doLinkRule(InternalAgenda agenda ) {
+        doLinkRule(agenda.getWorkingMemory());
+    }
+
+    @Override
     public void doUnlinkRule(InternalWorkingMemory wm) {
         getRightInputAdapterNode().getObjectSinkPropagator().doUnlinkRiaNode( wm );
     }
-    
+
+    @Override
     public short getNodeType() {
         return NodeTypeEnums.RightInputAdaterNode;
     }

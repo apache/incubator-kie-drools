@@ -16,7 +16,10 @@
 
 package org.drools.core.common;
 
+import org.kie.api.concurrent.KieExecutors;
+
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A class to identify RuleBase partitions
@@ -25,48 +28,41 @@ public final class RuleBasePartitionId implements Serializable {
 
     private static final long serialVersionUID = 510l;
 
-    public static final RuleBasePartitionId MAIN_PARTITION = new RuleBasePartitionId( "P-MAIN" );
+    public static final int PARALLEL_PARTITIONS_NUMBER = KieExecutors.Pool.SIZE;
 
-    private final String                    id;
+    public static final RuleBasePartitionId MAIN_PARTITION = new RuleBasePartitionId( 0 );
 
-    public RuleBasePartitionId( final String id ) {
+    private static final AtomicInteger PARTITION_COUNTER = new AtomicInteger( 1 );
+
+    private final int id;
+
+    private RuleBasePartitionId( int id ) {
         this.id = id;
     }
 
-    /**
-     * @return the id
-     */
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
+    public int getParallelEvaluationSlot() {
+        return id % PARALLEL_PARTITIONS_NUMBER;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
     @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
-        final RuleBasePartitionId other = (RuleBasePartitionId) obj;
-        if ( id == null  ) {
-            if ( other.id != null ) return false;
-        } else if ( !id.equals( other.id ) ) return false;
-        return true;
+        return this == obj || (obj instanceof RuleBasePartitionId && id == ((RuleBasePartitionId)obj).id);
     }
 
     public String toString() {
-        return "Partition::"+this.id;
+        return "Partition(" + (id == 0 ? "MAIN" : id) + ")";
+    }
+
+    public static RuleBasePartitionId createPartition() {
+        return new RuleBasePartitionId( PARTITION_COUNTER.getAndIncrement() );
     }
 }

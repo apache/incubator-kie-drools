@@ -48,7 +48,7 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
         this.sink = sink;
 
         // add to end of RightTuples on handle
-        handle.addTupleInPosition( this );
+        handle.addLastRightTuple( this );
     }
 
     public RightTupleSink getTupleSink() {

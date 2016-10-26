@@ -20,7 +20,6 @@ import org.drools.core.base.ValueType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.FieldValue;
@@ -40,7 +39,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
+public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
     //    /** You can override this property via a system property (eg -Ddrools.hashThreshold=4) */
     //    public static final String HASH_THRESHOLD_SYSTEM_PROPERTY = "drools.hashThreshold";
@@ -62,19 +61,15 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     private ObjectSink[]      sinks;
 
     public CompositeObjectSinkAdapter() {
-        this( null,
-              3 );
+        this( 3 );
     }
 
-    public CompositeObjectSinkAdapter(final RuleBasePartitionId partitionId,
-                                      final int alphaNodeHashingThreshold) {
-        super( partitionId );
+    public CompositeObjectSinkAdapter(final int alphaNodeHashingThreshold) {
         this.alphaNodeHashingThreshold = alphaNodeHashingThreshold;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        super.readExternal( in );
         otherSinks = (ObjectSinkNodeList) in.readObject();
         hashableSinks = (ObjectSinkNodeList) in.readObject();
         hashedFieldIndexes = (LinkedList) in.readObject();
@@ -83,7 +78,6 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
         out.writeObject( otherSinks );
         out.writeObject( hashableSinks );
         out.writeObject( hashedFieldIndexes );
@@ -103,42 +97,40 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         return this.hashedSinkMap;
     }
 
-    public void addObjectSink(final ObjectSink sink) {
+    public ObjectSinkPropagator addObjectSink(ObjectSink sink) {
+        return addObjectSink(sink, 0);
+    }
+
+    public ObjectSinkPropagator addObjectSink(ObjectSink sink, int alphaNodeHashingThreshold) {
         this.sinks = null; // dirty it, so it'll rebuild on next get
         if ( sink.getType() ==  NodeTypeEnums.AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
-            final AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
+            final InternalReadAccessor readAccessor = getHashableAccessor(alphaNode);
 
-            if ( fieldConstraint instanceof IndexableConstraint) {
-                final IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
+            if ( readAccessor != null ) {
+                final int index = readAccessor.getIndex();
+                final FieldIndex fieldIndex = registerFieldIndex( index, readAccessor );
 
-                if ( isHashable( indexableConstraint ) ) {
-                    final InternalReadAccessor readAccessor = indexableConstraint.getFieldExtractor();
-                    final int index = readAccessor.getIndex();
-                    final FieldIndex fieldIndex = registerFieldIndex( index,
-                                                                      readAccessor );
-
-                    //DROOLS-678 : prevent null values from being hashed as 0s
-                    final FieldValue value = indexableConstraint.getField();
-                    if ( fieldIndex.getCount() >= this.alphaNodeHashingThreshold && this.alphaNodeHashingThreshold != 0 && ! value.isNull() ) {
-                        if ( !fieldIndex.isHashed() ) {
-                            hashSinks( fieldIndex );
-                        }
-
-                        // no need to check, we know  the sink  does not exist
-                        this.hashedSinkMap.put( new HashKey( index,
-                                                             value,
-                                                             fieldIndex.getFieldExtractor() ),
-                                                alphaNode,
-                                                false );
-                    } else {
-                        if ( this.hashableSinks == null ) {
-                            this.hashableSinks = new ObjectSinkNodeList();
-                        }
-                        this.hashableSinks.add( alphaNode );
+                //DROOLS-678 : prevent null values from being hashed as 0s
+                final FieldValue value = ((IndexableConstraint)alphaNode.getConstraint()).getField();
+                if ( fieldIndex.getCount() >= this.alphaNodeHashingThreshold && this.alphaNodeHashingThreshold != 0 && ! value.isNull() ) {
+                    if ( !fieldIndex.isHashed() ) {
+                        hashSinks( fieldIndex );
                     }
-                    return;
+
+                    // no need to check, we know  the sink  does not exist
+                    this.hashedSinkMap.put( new HashKey( index,
+                                                         value,
+                                                         fieldIndex.getFieldExtractor() ),
+                                            alphaNode,
+                                            false );
+                } else {
+                    if ( this.hashableSinks == null ) {
+                        this.hashableSinks = new ObjectSinkNodeList();
+                    }
+                    this.hashableSinks.add( alphaNode );
                 }
+                return this;
             }
         }
 
@@ -147,17 +139,28 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         }
 
         this.otherSinks.add( (ObjectSinkNode) sink );
+        return this;
     }
 
-    private boolean isHashable( IndexableConstraint indexableConstraint ) {
+    static InternalReadAccessor getHashableAccessor(AlphaNode alphaNode) {
+        AlphaNodeFieldConstraint fieldConstraint = alphaNode.getConstraint();
+        if ( fieldConstraint instanceof IndexableConstraint ) {
+            IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
+            if ( isHashable( indexableConstraint ) ) {
+                return indexableConstraint.getFieldExtractor();
+            }
+        }
+        return null;
+    }
+
+    private static boolean isHashable( IndexableConstraint indexableConstraint ) {
         return indexableConstraint.isIndexable( NodeTypeEnums.AlphaNode) && indexableConstraint.getField() != null &&
                 indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
                 // our current implementation does not support hashing of deeply nested properties
                 indexableConstraint.getFieldExtractor().getIndex() >= 0;
     }
 
-
-    public void removeObjectSink(final ObjectSink sink) {
+    public ObjectSinkPropagator removeObjectSink(final ObjectSink sink) {
         this.sinks = null; // dirty it, so it'll rebuild on next get
         if ( sink.getType() ==  NodeTypeEnums.AlphaNode ) {
             final AlphaNode alphaNode = (AlphaNode) sink;
@@ -189,7 +192,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                         this.hashableSinks = null;
                     }
 
-                    return;
+                    return size() == 1 ? new SingleObjectSinkAdapter( getSinks()[0] ) : this;
                 }
             }
         }
@@ -199,6 +202,8 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         if ( this.otherSinks.isEmpty() ) {
             this.otherSinks = null;
         }
+
+        return size() == 1 ? new SingleObjectSinkAdapter( getSinks()[0] ) : this;
     }
 
     void hashSinks(final FieldIndex fieldIndex) {
@@ -356,11 +361,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                     continue;
                 }
                 // this field is hashed so set the existing hashKey and see if there is a sink for it
-                final int index = fieldIndex.getIndex();
-                final HashKey hashKey = new HashKey( index,
-                                                     object,
-                                                     fieldIndex.getFieldExtractor() );
-                final AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( hashKey );
+                final AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( new HashKey( fieldIndex, object ) );
                 if ( sink != null ) {
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
                     sink.getObjectSinkPropagator().propagateAssertObject( factHandle, context, workingMemory );
@@ -405,11 +406,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                     continue;
                 }
                 // this field is hashed so set the existing hashKey and see if there is a sink for it
-                final int index = fieldIndex.getIndex();
-                final HashKey hashKey = new HashKey( index,
-                                                     object,
-                                                     fieldIndex.getFieldExtractor() );
-                final AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( hashKey );
+                final AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( new HashKey( fieldIndex, object ) );
                 if ( sink != null ) {
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
                     sink.getObjectSinkPropagator().propagateModifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
@@ -454,11 +451,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                     continue;
                 }
                 // this field is hashed so set the existing hashKey and see if there is a sink for it
-                final int index = fieldIndex.getIndex();
-                final HashKey hashKey = new HashKey( index,
-                                                     object,
-                                                     fieldIndex.getFieldExtractor() );
-                final AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( hashKey );
+                final AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( new HashKey( fieldIndex, object ) );
                 if ( sink != null ) {
                     // only alpha nodes are hashable
                     sink.getObjectSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
@@ -598,6 +591,10 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         return (this.otherSinks != null ? this.otherSinks.size() : 0) + (this.hashableSinks != null ? this.hashableSinks.size() : 0) + (this.hashedSinkMap != null ? this.hashedSinkMap.size() : 0);
     }
 
+    public boolean isEmpty() {
+        return false;
+    }
+
     public static class HashKey
         implements
         Externalizable {
@@ -623,20 +620,18 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         public HashKey() {
         }
 
+        public HashKey(FieldIndex fieldIndex, Object value) {
+            this.setValue( fieldIndex.getIndex(),
+                           value,
+                           fieldIndex.getFieldExtractor() );
+        }
+
         public HashKey(final int index,
                        final FieldValue value,
                        final InternalReadAccessor extractor) {
             this.setValue( index,
                            extractor,
                            value );
-        }
-
-        public HashKey(final int index,
-                       final Object value,
-                       final InternalReadAccessor extractor) {
-            this.setValue( index,
-                           value,
-                           extractor );
         }
 
         public void readExternal(ObjectInput in) throws IOException,
@@ -672,8 +667,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             this.index = index;
             final ValueType vtype = extractor.getValueType();
 
-            isNull = extractor.isNullValue( null,
-                                            value );
+            isNull = extractor.isNullValue( null, value );
 
             if ( vtype.isBoolean() ) {
                 this.type = BOOL;

@@ -16,28 +16,27 @@
 
 package org.drools.core.base;
 
-import java.util.List;
-
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.spi.PropagationContext;
 
+import java.util.List;
+
 public interface InternalViewChangedEventListener {
-    public void rowAdded(RuleImpl rule,
-                         LeftTuple tuple,
-                         PropagationContext context,
-                         InternalWorkingMemory workingMemory);
+    void rowAdded(RuleImpl rule,
+                  LeftTuple tuple,
+                  PropagationContext context,
+                  InternalWorkingMemory workingMemory);
 
-    public void rowRemoved(RuleImpl rule, LeftTuple tuple,
-                           PropagationContext context,
-                           InternalWorkingMemory workingMemory);
+    void rowRemoved(RuleImpl rule, LeftTuple tuple,
+                    PropagationContext context,
+                    InternalWorkingMemory workingMemory);
 
-    public void rowUpdated(RuleImpl rule,
-                           LeftTuple leftTuple,
-                           PropagationContext context,
-                           InternalWorkingMemory workingMemory);
+    void rowUpdated(RuleImpl rule,
+                    LeftTuple leftTuple,
+                    PropagationContext context,
+                    InternalWorkingMemory workingMemory);
     
-    public List<? extends Object> getResults();
-    
+    List<? extends Object> getResults();
 }

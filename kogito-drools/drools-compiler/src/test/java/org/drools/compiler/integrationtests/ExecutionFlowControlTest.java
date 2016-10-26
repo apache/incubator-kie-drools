@@ -476,7 +476,7 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
             agenda.setFocus( group1 );
             assertEquals( 1, group1.size() );
             RuleAgendaItem ruleItem1 = (RuleAgendaItem) group1.getActivations()[0];
-            ruleItem1.getRuleExecutor().evaluateNetwork(wm);
+            ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
             assertEquals(3, ruleItem1.getRuleExecutor().getLeftTupleList().size());
 
             agenda.fireNextItem( null, 0, 0 );
@@ -485,14 +485,14 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
             ksession.update( brieHandle, brie );
             assertEquals( 1, group1.size() );
-            ruleItem1.getRuleExecutor().evaluateNetwork(wm);
+            ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
             assertEquals(2, ruleItem1.getRuleExecutor().getLeftTupleList().size());
 
             AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
             agenda.setFocus( group2);
             assertEquals( 1, group2.size() );
             RuleAgendaItem ruleItem2 = (RuleAgendaItem) group2.getActivations()[0];
-            ruleItem2.getRuleExecutor().evaluateNetwork(wm);
+            ruleItem2.getRuleExecutor().evaluateNetwork(wm.getAgenda());
             assertEquals(3, ruleItem2.getRuleExecutor().getLeftTupleList().size());
 
             agenda.fireNextItem( null, 0, 0 );

@@ -22,7 +22,9 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.reteoo.ClassObjectTypeConf;
+import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.spi.PropagationContext;
@@ -35,7 +37,6 @@ import java.util.concurrent.CountDownLatch;
 public interface PropagationEntry {
 
     void execute(InternalWorkingMemory wm);
-    void executeForMarshalling(InternalWorkingMemory wm);
     void execute(InternalKnowledgeRuntime kruntime);
 
     PropagationEntry getNext();
@@ -44,6 +45,9 @@ public interface PropagationEntry {
     boolean requiresImmediateFlushing();
     
     boolean isCalledFromRHS();
+
+    boolean isPartitionSplittable();
+    PropagationEntry getSplitForPartition(int partitionNr);
 
     abstract class AbstractPropagationEntry implements PropagationEntry {
         private PropagationEntry next;
@@ -72,8 +76,25 @@ public interface PropagationEntry {
         }
 
         @Override
-        public void executeForMarshalling(InternalWorkingMemory wm) {
-            execute( wm );
+        public boolean isPartitionSplittable() {
+            return false;
+        }
+
+        @Override
+        public PropagationEntry getSplitForPartition(int partitionNr) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    abstract class AbstractPartitionedPropagationEntry extends AbstractPropagationEntry {
+        protected final int partition;
+
+        protected AbstractPartitionedPropagationEntry( int partition ) {
+            this.partition = partition;
+        }
+
+        protected boolean isMasterPartition() {
+            return partition == 0;
         }
     }
 
@@ -107,69 +128,68 @@ public interface PropagationEntry {
 
         private final InternalFactHandle handle;
         private final PropagationContext context;
-        private final InternalWorkingMemory workingMemory;
         private final ObjectTypeConf objectTypeConf;
-        private final boolean isEvent;
-        private final long insertionTime;
 
         public Insert( InternalFactHandle handle, PropagationContext context, InternalWorkingMemory workingMemory, ObjectTypeConf objectTypeConf) {
             this.handle = handle;
             this.context = context;
-            this.workingMemory = workingMemory;
             this.objectTypeConf = objectTypeConf;
-            this.isEvent = objectTypeConf.isEvent();
-            this.insertionTime = isEvent ? workingMemory.getTimerService().getCurrentTime() : 0L;
 
-            scheduleExpiration();
+            if ( objectTypeConf.isEvent() ) {
+                scheduleExpiration(workingMemory, handle, context, objectTypeConf, workingMemory.getTimerService().getCurrentTime());
+            }
         }
 
-        @Override
-        public void executeForMarshalling( InternalWorkingMemory wm ) {
-            context.setMarshalling( true );
-            execute(wm);
+        public static void execute( InternalFactHandle handle, PropagationContext context, InternalWorkingMemory wm, ObjectTypeConf objectTypeConf) {
+            if ( objectTypeConf.isEvent() ) {
+                scheduleExpiration(wm, handle, context, objectTypeConf, wm.getTimerService().getCurrentTime());
+            }
+            propagate( handle, context, wm, objectTypeConf );
         }
 
-        public void execute( InternalWorkingMemory wm ) {
+        private static void propagate( InternalFactHandle handle, PropagationContext context, InternalWorkingMemory wm, ObjectTypeConf objectTypeConf ) {
             for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
                 otn.propagateAssert( handle, context, wm );
             }
         }
 
-        private void scheduleExpiration() {
-            if ( isEvent ) {
-                for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
-                    scheduleExpiration( otn, otn.getExpirationOffset() );
-                }
-                if ( objectTypeConf.getConcreteObjectTypeNode() == null ) {
-                    scheduleExpiration( null, ( (ClassObjectTypeConf) objectTypeConf ).getExpirationOffset() );
-                }
+        public void execute( InternalWorkingMemory wm ) {
+            propagate( handle, context, wm, objectTypeConf );
+        }
+
+        private static void scheduleExpiration(InternalWorkingMemory wm, InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, long insertionTime) {
+            for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
+                scheduleExpiration( wm, handle, context, otn, insertionTime, otn.getExpirationOffset() );
+            }
+            if ( objectTypeConf.getConcreteObjectTypeNode() == null ) {
+                scheduleExpiration( wm, handle, context, null, insertionTime, ( (ClassObjectTypeConf) objectTypeConf ).getExpirationOffset() );
             }
         }
 
-        private void scheduleExpiration( ObjectTypeNode otn, long expirationOffset ) {
+        private static void scheduleExpiration( InternalWorkingMemory wm, InternalFactHandle handle, PropagationContext context, ObjectTypeNode otn, long insertionTime, long expirationOffset ) {
             if ( expirationOffset < 0 || expirationOffset == Long.MAX_VALUE || context.getReaderContext() != null ) {
                 return;
             }
 
             // DROOLS-455 the calculation of the effectiveEnd may overflow and become negative
             EventFactHandle eventFactHandle = (EventFactHandle) handle;
-            long nextTimestamp = getNextTimestamp( expirationOffset, eventFactHandle );
+            long nextTimestamp = getNextTimestamp( insertionTime, expirationOffset, eventFactHandle );
 
             WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn );
-            if (nextTimestamp < workingMemory.getTimerService().getCurrentTime()) {
-                  workingMemory.addPropagation( action );
+            if (nextTimestamp < wm.getTimerService().getCurrentTime()) {
+                wm.addPropagation( action );
             } else {
-                JobContext jobctx = new ObjectTypeNode.ExpireJobContext( action, workingMemory );
-                JobHandle jobHandle = workingMemory.getTimerService()
-                                                   .scheduleJob( job,
-                                                                 jobctx,
-                                                                 new PointInTimeTrigger( nextTimestamp, null, null ) );
+                JobContext jobctx = new ObjectTypeNode.ExpireJobContext( action, wm );
+                JobHandle jobHandle = wm.getTimerService()
+                                        .scheduleJob( job,
+                                                      jobctx,
+                                                      new PointInTimeTrigger( nextTimestamp, null, null ) );
                 jobctx.setJobHandle( jobHandle );
                 eventFactHandle.addJob( jobHandle );
             }
         }
 
-        private long getNextTimestamp( long expirationOffset, EventFactHandle eventFactHandle ) {
+        private static long getNextTimestamp( long insertionTime, long expirationOffset, EventFactHandle eventFactHandle ) {
             long effectiveEnd = eventFactHandle.getEndTimestamp() + expirationOffset;
             return Math.max( insertionTime, effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
         }
@@ -181,25 +201,67 @@ public interface PropagationEntry {
     }
 
     class Update extends AbstractPropagationEntry {
-        private final EntryPointNode epn;
         private final InternalFactHandle handle;
         private final PropagationContext context;
         private final ObjectTypeConf objectTypeConf;
 
-        public Update(EntryPointNode epn, InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf) {
-            this.epn = epn;
+        public Update(InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf) {
             this.handle = handle;
             this.context = context;
             this.objectTypeConf = objectTypeConf;
         }
 
         public void execute(InternalWorkingMemory wm) {
-            epn.propagateModify(handle, context, objectTypeConf, wm);
+            EntryPointNode.propagateModify(handle, context, objectTypeConf, wm);
+        }
+
+        @Override
+        public boolean isPartitionSplittable() {
+            return true;
+        }
+
+        @Override
+        public PropagationEntry getSplitForPartition( int partitionNr ) {
+            return new PartitionedUpdate( handle, context, objectTypeConf, partitionNr );
         }
 
         @Override
         public String toString() {
             return "Update of " + handle.getObject();
+        }
+    }
+
+    class PartitionedUpdate extends AbstractPartitionedPropagationEntry {
+        private final InternalFactHandle handle;
+        private final PropagationContext context;
+        private final ObjectTypeConf objectTypeConf;
+
+        PartitionedUpdate(InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, int partition) {
+            super( partition );
+            this.handle = handle;
+            this.context = context;
+            this.objectTypeConf = objectTypeConf;
+        }
+
+        public void execute(InternalWorkingMemory wm) {
+            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( handle.detachLinkedTuplesForPartition(partition) );
+            ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
+            for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
+                ObjectTypeNode otn = cachedNodes[i];
+                ( (CompositePartitionAwareObjectSinkAdapter) otn.getObjectSinkPropagator() )
+                        .propagateModifyObjectForPartition( handle, modifyPreviousTuples,
+                                                            context.adaptModificationMaskForObjectType(otn.getObjectType(), wm),
+                                                            wm, partition );
+                if (i < cachedNodes.length - 1) {
+                    EntryPointNode.removeRightTuplesMatchingOTN( context, wm, modifyPreviousTuples, otn );
+                }
+            }
+            modifyPreviousTuples.retractTuples(context, wm);
+        }
+
+        @Override
+        public String toString() {
+            return "Update of " + handle.getObject() + " for partition " + partition;
         }
     }
 
@@ -221,8 +283,53 @@ public interface PropagationEntry {
         }
 
         @Override
+        public boolean isPartitionSplittable() {
+            return true;
+        }
+
+        @Override
+        public PropagationEntry getSplitForPartition( int partitionNr ) {
+            return new PartitionedDelete( handle, context, objectTypeConf, partitionNr );
+        }
+
+        @Override
         public String toString() {
             return "Delete of " + handle.getObject();
+        }
+    }
+
+    class PartitionedDelete extends AbstractPartitionedPropagationEntry {
+        private final InternalFactHandle handle;
+        private final PropagationContext context;
+        private final ObjectTypeConf objectTypeConf;
+
+        PartitionedDelete(InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, int partition) {
+            super( partition );
+            this.handle = handle;
+            this.context = context;
+            this.objectTypeConf = objectTypeConf;
+        }
+
+        public void execute(InternalWorkingMemory wm) {
+            ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
+
+            if ( cachedNodes == null ) {
+                // it is  possible that there are no ObjectTypeNodes for an  object being retracted
+                return;
+            }
+
+            for ( ObjectTypeNode cachedNode : cachedNodes ) {
+                cachedNode.retractObject( handle, context, wm, partition );
+            }
+
+            if (handle.isEvent() && isMasterPartition()) {
+                ((EventFactHandle) handle).unscheduleAllJobs(wm);
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "Delete of " + handle.getObject() + " for partition " + partition;
         }
     }
 }

@@ -19,6 +19,7 @@ package org.drools.core.common;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
@@ -34,6 +35,7 @@ import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -129,27 +131,16 @@ public interface InternalAgenda
     /**
      * Clears all Activations from an Activation Group. Any Activations that are also in an Agenda Group are removed
      * from the Agenda Group.
-     *
-     * @param activationGroup
-     *
      */
     void clearAndCancelActivationGroup(InternalActivationGroup activationGroup);
 
     void clearAndCancelRuleFlowGroup(final String name);
 
-    void clearAndCancelAndCancel(final RuleFlowGroup ruleFlowGroup);
-
     /**
      * Returns the name of the agenda group that currently
      * has the focus
-     *
-     * @return
      */
     String getFocusName();
-
-    void fireActivation(final Activation activation) throws ConsequenceException;
-
-    void fireConsequenceEvent(Activation activation, String consequenceName) throws ConsequenceException;
 
     boolean fireTimedActivation(final Activation activation) throws ConsequenceException;
 
@@ -174,7 +165,6 @@ public interface InternalAgenda
 
     void cancelActivation(final Tuple leftTuple,
                           final PropagationContext context,
-                          final InternalWorkingMemory workingMemory,
                           final Activation activation,
                           final TerminalNode rtn );
 
@@ -182,8 +172,6 @@ public interface InternalAgenda
      * Adds the activation to the agenda. Depending on the mode the agenda is running,
      * the activation may be added to the agenda priority queue (synchronously or
      * asynchronously) or be executed immediately.
-     *
-     * @param activation
      *
      * @return true if the activation was really added, and not ignored in cases of lock-on-active or no-loop
      */
@@ -200,11 +188,6 @@ public interface InternalAgenda
     /**
      * Returns true if there is at least one activation of the given rule name
      * in the given ruleflow group name
-     *
-     * @param ruleflowGroupName
-     * @param ruleName
-     *
-     * @return
      */
     boolean isRuleInstanceAgendaItem(String ruleflowGroupName,
                                             String ruleName,
@@ -221,7 +204,6 @@ public interface InternalAgenda
      * @param fireLimit the maximum number of activations that may fire. If -1, then it will
      *                  fire until no more activations exist.
      *
-     * @param fireLimit
      * @return the number of rules that were actually fired
      */
     int fireAllRules(AgendaFilter agendaFilter,
@@ -249,9 +231,11 @@ public interface InternalAgenda
      */
     void fireUntilHalt(AgendaFilter agendaFilter);
 
-    boolean dispose();
+    boolean dispose(InternalWorkingMemory wm);
 
     boolean isAlive();
+
+    void reset();
 
     AgendaGroup getAgendaGroup(String name);
 
@@ -265,15 +249,11 @@ public interface InternalAgenda
     /**
      * Sets a filter that prevents activations from being added to
      * the agenda.
-     *
-     * @param filter
      */
     void setActivationsFilter( ActivationsFilter filter );
 
     /**
      * Returns the current activations filter or null if none is set
-     *
-     * @return
      */
     ActivationsFilter getActivationsFilter();
 
@@ -301,11 +281,6 @@ public interface InternalAgenda
     void addQueryAgendaItem(final RuleAgendaItem item);
     void removeQueryAgendaItem(final RuleAgendaItem item);
 
-    /*
-         * (non-Javadoc)
-         *
-         * @see org.kie.common.AgendaI#setFocus(org.kie.spi.AgendaGroup)
-         */
     boolean setFocus(AgendaGroup agendaGroup);
 
     void stageLeftTuple(RuleAgendaItem ruleAgendaItem, AgendaItem justified);
@@ -333,4 +308,12 @@ public interface InternalAgenda
     boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId);
 
     void registerExpiration(PropagationContext expirationContext);
+
+    void addPropagation(PropagationEntry propagationEntry );
+    void flushPropagations();
+    void notifyWaitOnRest();
+    Iterator<PropagationEntry> getActionsIterator();
+    boolean hasPendingPropagations();
+
+    void handleException(InternalWorkingMemory wm, Activation activation, Exception e);
 }

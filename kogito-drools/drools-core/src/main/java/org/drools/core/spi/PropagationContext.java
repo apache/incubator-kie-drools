@@ -16,6 +16,7 @@
 
 package org.drools.core.spi;
 
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -23,21 +24,30 @@ import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.util.bitmask.BitMask;
-import org.kie.api.runtime.rule.FactHandle;
 
 import java.io.Externalizable;
 import java.util.LinkedList;
 
-public interface PropagationContext
-    extends
-    Externalizable,
-    org.kie.api.runtime.rule.PropagationContext {
+public interface PropagationContext extends Externalizable {
+
+    enum Type {
+        INSERTION, DELETION, MODIFICATION, RULE_ADDITION, RULE_REMOVAL, EXPIRATION
+    }
+
+    long getPropagationNumber();
+
+
+    Type getType();
 
     RuleImpl getRuleOrigin();
 
     TerminalNode getTerminalNodeOrigin();
-    
-    void setFactHandle(FactHandle factHandle);
+
+    /**
+     * @return fact handle that was inserted, updated or retracted that created the PropagationContext
+     */
+    InternalFactHandle getFactHandle();
+    void setFactHandle(InternalFactHandle factHandle);
 
     Tuple getLeftTupleOrigin();
 
@@ -75,9 +85,6 @@ public interface PropagationContext
     BitMask getModificationMask();
     PropagationContext adaptModificationMaskForObjectType(ObjectType type, InternalWorkingMemory workingMemory);
     void setModificationMask(BitMask mask);
-
-    ObjectType getObjectType();
-    void setObjectType(ObjectType objectType);
 
     MarshallerReaderContext getReaderContext();
 

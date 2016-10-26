@@ -20,6 +20,8 @@ import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.LinkedList;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class EventFactHandle extends DefaultFactHandle implements Comparable<EventFactHandle> {
 
     private static final long serialVersionUID = 510l;
@@ -34,6 +36,8 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
     private int               otnCount;
 
     private EventFactHandle   linkedFactHandle;
+
+    private AtomicInteger     notExpiredPartitions;
 
     private final transient LinkedList<JobHandle> jobs = new LinkedList<JobHandle>();
 
@@ -79,6 +83,10 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                isTraitOrTraitable );
         this.startTimestamp = timestamp;
         this.duration = duration;
+
+        if ( wmEntryPoint.getKnowledgeBase() != null && wmEntryPoint.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() ) {
+            notExpiredPartitions = new AtomicInteger( RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER );
+        }
     }
 
     protected String getFormatVersion() {
@@ -157,6 +165,14 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
             return linkedFactHandle.isExpired();
         }  else {
             return expired;
+        }
+    }
+
+    public boolean expirePartition() {
+        if ( linkedFactHandle != null ) {
+            return linkedFactHandle.expirePartition();
+        }  else {
+            return notExpiredPartitions == null || notExpiredPartitions.decrementAndGet() == 0;
         }
     }
 
@@ -244,12 +260,9 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         clone.setActivationsCount( getActivationsCount() );
         clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
-        clone.setEntryPoint( getEntryPoint() );
+        clone.entryPoint = entryPoint;
         clone.setEqualityKey( getEqualityKey() );
-        clone.setFirstLeftTuple(getLastLeftTuple());
-        clone.setLastLeftTuple(getLastLeftTuple());
-        clone.setFirstRightTuple(getFirstRightTuple());
-        clone.setLastRightTuple(getLastRightTuple());
+        clone.linkedTuples = this.linkedTuples.clone();
         clone.setObjectHashCode(getObjectHashCode());
         return clone;
     }
@@ -265,7 +278,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         clone.setActivationsCount( getActivationsCount() );
         clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
-        clone.setEntryPoint( getEntryPoint() );
+        clone.entryPoint = entryPoint;
         clone.setEqualityKey( getEqualityKey() );
         clone.setObjectHashCode(getObjectHashCode());
         return clone;

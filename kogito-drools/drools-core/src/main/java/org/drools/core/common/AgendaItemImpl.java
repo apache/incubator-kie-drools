@@ -129,6 +129,10 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
         return this.rtn.getRule();
     }
 
+    public RuleBasePartitionId getPartition() {
+        return this.rtn.getPartitionId();
+    }
+
     @Override
     public Consequence getConsequence() {
         String consequenceName = ((RuleTerminalNode) rtn).getConsequenceName();

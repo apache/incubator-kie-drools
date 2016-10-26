@@ -158,11 +158,10 @@ public class Rete extends ObjectSource
         kBase.registerAddedEntryNodeCache(node);
     }
 
-    public boolean removeObjectSink(final ObjectSink objectSink) {
+    public void removeObjectSink(final ObjectSink objectSink) {
         final EntryPointNode node = (EntryPointNode) objectSink;
         entryPoints.remove(node.getEntryPoint());
         kBase.registeRremovedEntryNodeCache(node);
-        return false;
     }
 
     public void attach( BuildContext context ) {

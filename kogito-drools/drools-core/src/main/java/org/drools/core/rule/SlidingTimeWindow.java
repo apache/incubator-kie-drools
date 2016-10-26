@@ -174,7 +174,7 @@ public class SlidingTimeWindow
             queue.remove();
             if( handle.isValid()) {
                 // if not expired yet, expire it
-                final PropagationContext expiresPctx = createPropagationContextForFact( workingMemory, handle, PropagationContext.EXPIRATION );
+                final PropagationContext expiresPctx = createPropagationContextForFact( workingMemory, handle, PropagationContext.Type.EXPIRATION );
                 ObjectTypeNode.doRetractObject(handle, expiresPctx, workingMemory);
                 expiresPctx.evaluateActionQueue( workingMemory );
             }

@@ -418,7 +418,7 @@ public class RuleImpl implements Externalizable,
         this.agendaGroup = agendaGroup;
     }
 
-    private void set(int flag, boolean b) {
+    private void set( int flag, boolean b ) {
         if (b) {
             ruleFlags |= flag;
         } else {

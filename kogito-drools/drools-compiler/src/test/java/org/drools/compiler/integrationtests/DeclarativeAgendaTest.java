@@ -933,7 +933,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new DebugList<String>();
 
         ksession.setGlobal("list", list);
 
@@ -957,6 +957,13 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
 
         ksession.dispose();
         list.clear();
+    }
+
+    public static class DebugList<T> extends ArrayList<T> {
+        @Override
+        public boolean add( T t ) {
+            return super.add( t );
+        }
     }
 
     @Test

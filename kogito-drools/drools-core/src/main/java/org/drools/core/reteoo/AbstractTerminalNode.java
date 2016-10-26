@@ -333,4 +333,9 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     public LeftTupleSinkPropagator getSinkPropagator() {
         return EmptyLeftTupleSinkAdapter.getInstance();
     }
+
+    @Override
+    public final void setPartitionIdWithSinks( RuleBasePartitionId partitionId ) {
+        this.partitionId = partitionId;
+    }
 }

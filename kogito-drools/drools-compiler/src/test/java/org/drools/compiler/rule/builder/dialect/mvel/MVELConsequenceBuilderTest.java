@@ -52,6 +52,7 @@ import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PatternExtractor;
+import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.conf.LanguageLevelOption;
@@ -123,7 +124,7 @@ public class MVELConsequenceBuilderTest {
         f0.removeLeftTuple(tuple);
 
         final AgendaItem item = new AgendaItemImpl( 0, tuple, 10,
-                                                pctxFactory.createPropagationContext(1, 1, null, tuple, null),
+                                                pctxFactory.createPropagationContext( 1, PropagationContext.Type.DELETION, null, tuple, null),
                                                 new RuleTerminalNode(0, new CompositeObjectSinkAdapterTest.MockBetaNode(), context.getRule(), subrule, 0, new BuildContext( kBase, null )), null);
         final DefaultKnowledgeHelper kbHelper = new DefaultKnowledgeHelper( ksession );
         kbHelper.setActivation( item );

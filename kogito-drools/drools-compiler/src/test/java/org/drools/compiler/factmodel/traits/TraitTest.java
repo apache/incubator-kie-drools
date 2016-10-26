@@ -5663,8 +5663,6 @@ public class TraitTest extends CommonTestMethodBase {
         } ) ) {
             InternalFactHandle handle = (InternalFactHandle) ksession.getFactHandle( o );
             LeftTuple first = handle.getFirstLeftTuple();
-            LeftTuple last = handle.getLastLeftTuple();
-            assertSame( first, last );
             assertTrue( first instanceof RuleTerminalNodeLeftTuple );
             assertEquals( "Check", ((RuleTerminalNodeLeftTuple) first).getRule().getName() );
         }

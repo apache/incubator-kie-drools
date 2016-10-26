@@ -16,17 +16,17 @@
 
 package org.drools.core.spi;
 
-import java.util.Collection;
-
 import org.drools.core.ClassObjectFilter;
 import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.process.CaseAssignment;
+import org.kie.api.runtime.process.CaseData;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.api.runtime.process.CaseAssignment;
-import org.kie.api.runtime.process.CaseData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 public class ProcessContext implements org.kie.api.runtime.process.ProcessContext {
     
@@ -108,6 +108,4 @@ public class ProcessContext implements org.kie.api.runtime.process.ProcessContex
 
         return (CaseAssignment) objects.iterator().next();
     }
-
-    
 }

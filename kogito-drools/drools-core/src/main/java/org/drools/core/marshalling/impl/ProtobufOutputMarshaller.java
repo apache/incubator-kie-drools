@@ -579,18 +579,19 @@ public class ProtobufOutputMarshaller {
     public static void writeActionQueue(MarshallerWriteContext context,
                                         ProtobufMessages.RuleData.Builder _session) throws IOException {
 
-        if ( context.wm.hasPendingPropagations() ) {
-            ProtobufMessages.ActionQueue.Builder _queue = ProtobufMessages.ActionQueue.newBuilder();
-
-            Iterator<? extends PropagationEntry> i = context.wm.getActionsIterator();
-            while ( i.hasNext() ) {
-                PropagationEntry entry = i.next();
-                if (entry instanceof WorkingMemoryAction) {
-                    _queue.addAction(((WorkingMemoryAction) entry).serialize(context));
-                }
-            }
-            _session.setActionQueue( _queue.build() );
+        Iterator<? extends PropagationEntry> i = context.wm.getActionsIterator();
+        if ( !i.hasNext() ) {
+            return;
         }
+
+        ProtobufMessages.ActionQueue.Builder _queue = ProtobufMessages.ActionQueue.newBuilder();
+        while ( i.hasNext() ) {
+            PropagationEntry entry = i.next();
+            if (entry instanceof WorkingMemoryAction) {
+                _queue.addAction(((WorkingMemoryAction) entry).serialize(context));
+            }
+        }
+        _session.setActionQueue( _queue.build() );
     }
 
     public static void writeTruthMaintenanceSystem(MarshallerWriteContext context,

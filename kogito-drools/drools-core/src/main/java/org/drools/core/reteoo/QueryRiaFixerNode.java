@@ -112,7 +112,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
 
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             PropagationContextFactory pctxFactory = context.getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION,
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION,
                                                                                                null, null, null);
             this.leftInput.updateSink( this,
                                          propagationContext,
@@ -282,10 +282,6 @@ public class QueryRiaFixerNode extends LeftTupleSource
     @Override
     public boolean isInUse() {
         return this.betaNode != null;
-    }
-
-    public LeftTupleSource getLeftTupleSource() {
-        return this.leftInput;
     }
 
     protected ObjectTypeNode getObjectTypeNode() {

@@ -60,6 +60,9 @@ public class RetePropagationList implements PropagationList {
     }
 
     @Override
+    public void dispose() { }
+
+    @Override
     public void notifyWaitOnRest() {
         synchronized ( this ) {
             this.notifyAll();

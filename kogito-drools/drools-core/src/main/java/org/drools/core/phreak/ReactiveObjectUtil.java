@@ -57,7 +57,7 @@ public class ReactiveObjectUtil {
     }
 
     private static InternalWorkingMemory getInternalWorkingMemory(PropagationContext propagationContext) {
-        InternalFactHandle fh = (InternalFactHandle) propagationContext.getFactHandle();
+        InternalFactHandle fh = propagationContext.getFactHandle();
         return fh.getEntryPoint().getInternalWorkingMemory();
     }
 

@@ -16,7 +16,6 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -27,7 +26,6 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
-import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.test.model.DroolsTestCase;
 import org.junit.Before;
@@ -50,7 +48,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
                                               kBase.getReteooBuilder().getIdGenerator() );
         this.buildContext.setRule(new RuleImpl());
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        this.context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        this.context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
 
         this.workingMemory = new InstrumentedWorkingMemory( 0, this.kBase );
     }
@@ -148,30 +146,10 @@ public class QueryElementNodeTest extends DroolsTestCase {
 
     public static class InstrumentedWorkingMemory extends StatefulKnowledgeSessionImpl {
 
-        public InstrumentedWorkingMemory(final int id,
-                                         final InternalKnowledgeBase kBase) {
-            super( new Long(id),
+        public InstrumentedWorkingMemory( final int id,
+                                          final InternalKnowledgeBase kBase ) {
+            super( new Long( id ),
                    kBase );
-        }
-
-        public void insert(final InternalFactHandle handle,
-                           final Object object,
-                           final RuleImpl rule,
-                           final Activation activation,
-                           ObjectTypeConf typeConf) {
-            if( object instanceof DroolsQuery ) {
-//                DroolsQuery query = ( DroolsQuery ) object;
-//                UnificationNodeViewChangedEventListener collector = ( UnificationNodeViewChangedEventListener ) query.getQueryResultCollector();
-//                for ( int i = 0; i < 3; i++ ) {
-//                    Variable[] args = query.getVariables();
-//                    args[0].setValue( "string_0_" + i );
-//                    args[2].setValue( "string_2_" + i );
-//                    args[5].setValue( "string_5_" + i );
-//                    collector.rowAdded( rule, null, null, this );
-//                }
-            } else {
-                super.insert( handle, object, rule, activation, typeConf );
-            }
         }
     }
 }

@@ -16,18 +16,16 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class KnowledgeHelperFixer {
-    private static final Map<String, Macro> macros;
+    private static final Map<String, Macro> macros = new HashMap<String, Macro>();
     
     static {
-        macros = new HashMap<String, Macro>(5);
-        
         macros.put( "insert",
                     new Macro() {
                         public String doMacro() {
@@ -41,7 +39,14 @@ public class KnowledgeHelperFixer {
                             return "drools.insertLogical";
                         }
                     } );
-        
+
+        macros.put( "insertAsync",
+                    new Macro() {
+                        public String doMacro() {
+                            return "drools.insertAsync";
+                        }
+                    } );
+
         macros.put( "bolster",
                     new Macro() {
                         public String doMacro() {

@@ -116,7 +116,7 @@ public class ReteSlidingTimeWindow extends SlidingTimeWindow
                 if ( handle.isValid() ) {
                     // if not expired yet, expire it
                     PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-                    final PropagationContext expiresPctx = pctxFactory.createPropagationContext( workingMemory.getNextPropagationIdCounter(), PropagationContext.EXPIRATION,
+                    final PropagationContext expiresPctx = pctxFactory.createPropagationContext( workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.EXPIRATION,
                                                                                                  null, null, handle );
                     ObjectTypeNode.doRetractObject( handle, expiresPctx, workingMemory );
                     expiresPctx.evaluateActionQueue( workingMemory );

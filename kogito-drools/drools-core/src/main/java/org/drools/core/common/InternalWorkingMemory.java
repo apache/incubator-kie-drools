@@ -23,7 +23,6 @@ import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
@@ -74,12 +73,6 @@ public interface InternalWorkingMemory
 
     EntryPoint getEntryPoint(String name);
 
-    void insert(final InternalFactHandle handle,
-                       final Object object,
-                       final RuleImpl rule,
-                       final Activation activation,
-                       ObjectTypeConf typeConf);
-    
     /**
      * Looks for the fact handle associated to the given object
      * by looking up the object IDENTITY (==), even if rule base
@@ -203,22 +196,14 @@ public interface InternalWorkingMemory
     void addPropagation(PropagationEntry propagationEntry);
 
     void flushPropagations();
-    void flushPropagations(PropagationEntry propagationEntry);
 
     void activate();
     void deactivate();
     boolean tryDeactivate();
-
-    void notifyEngineInactive();
-
-    boolean hasPendingPropagations();
-    PropagationEntry takeAllPropagations();
 
     Iterator<? extends PropagationEntry> getActionsIterator();
 
     void removeGlobal(String identifier);
 
     void notifyWaitOnRest();
-
-    PropagationEntry handleRestOnFireUntilHalt(DefaultAgenda.ExecutionState currentState);
 }

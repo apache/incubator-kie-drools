@@ -87,14 +87,10 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
         // retrieve handle from memory
         final InternalFactHandle factHandle = (InternalFactHandle) tuple.getContextObject();
 
-        for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = rightTuple.getHandleNext() ) {
-            rightTuple.retractTuple( context, workingMemory );
-        }
+        factHandle.forEachRightTuple( rt -> rt.retractTuple( context, workingMemory ) );
         factHandle.clearRightTuples();
 
-        for ( LeftTuple leftTuple = factHandle.getLastLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext() ) {
-            leftTuple.retractTuple( context, workingMemory );
-        }
+        factHandle.forEachLeftTuple( lt -> lt.retractTuple( context, workingMemory ) );
         factHandle.clearLeftTuples();
     }
 
@@ -106,9 +102,7 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
         InternalFactHandle handle = (InternalFactHandle) leftTuple.getContextObject();
 
         // propagate it
-        for ( RightTuple rightTuple = handle.getFirstRightTuple(); rightTuple != null; rightTuple = rightTuple.getHandleNext() ) {
-            rightTuple.modifyTuple( context, workingMemory );
-        }
+        handle.forEachRightTuple( rt -> rt.modifyTuple( context, workingMemory ) );
     }
 
     public void updateSink(final ObjectSink sink,

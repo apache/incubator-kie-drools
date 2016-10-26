@@ -366,9 +366,7 @@ public class RemoveRuleTest {
         list.clear();
 
         assertNull( fh1.getFirstLeftTuple() );
-        assertNull( fh1.getLastLeftTuple() );
         assertNull( fh2.getFirstLeftTuple() );
-        assertNull( fh2.getLastLeftTuple() );
         wm.update( fh1,a1 );
         wm.update( fh2,a2 );
         wm.fireAllRules();

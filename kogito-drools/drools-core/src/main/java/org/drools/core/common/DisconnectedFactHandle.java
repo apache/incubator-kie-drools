@@ -37,6 +37,8 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 @XmlRootElement(name="disconnected-fact-handle")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -174,6 +176,21 @@ public class DisconnectedFactHandle
         return false;
     }
 
+    public void forEachRightTuple( Consumer<RightTuple> rightTupleConsumer ) { }
+
+    @Override
+    public void forEachLeftTuple( Consumer<LeftTuple> leftTupleConsumer ) { }
+
+    @Override
+    public RightTuple findFirstRightTuple( Predicate<RightTuple> rightTuplePredicate ) {
+        return null;
+    }
+
+    @Override
+    public LeftTuple findFirstLeftTuple( Predicate<LeftTuple> lefttTuplePredicate ) {
+        return null;
+    }
+
     public int getId() {
         return this.id;
     }
@@ -249,6 +266,21 @@ public class DisconnectedFactHandle
     }
 
     public void setFirstLeftTuple(LeftTuple leftTuple) {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    @Override
+    public LinkedTuples getLinkedTuples() {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    @Override
+    public LinkedTuples detachLinkedTuples() {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    @Override
+    public LinkedTuples detachLinkedTuplesForPartition(int i) {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 

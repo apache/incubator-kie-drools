@@ -53,8 +53,6 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     private short              stagedTypeForQueries;
 
-    private boolean            expired;
-
     public BaseLeftTuple() {
         // constructor needed for serialisation
     }
@@ -658,15 +656,6 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     public void setStagedTypeForQueries( short stagedTypeForQueries ) {
         this.stagedTypeForQueries = stagedTypeForQueries;
-    }
-
-    @Override
-    public boolean isExpired() {
-        return expired;
-    }
-
-    public void setExpired( boolean expired ) {
-        this.expired = expired;
     }
 
     public boolean isStagedOnRight() {
