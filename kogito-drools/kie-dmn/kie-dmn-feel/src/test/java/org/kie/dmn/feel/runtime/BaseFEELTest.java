@@ -16,17 +16,31 @@
 
 package org.kie.dmn.feel.runtime;
 
-import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.lang.impl.FEELImpl;
-
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.dmn.feel.FEEL;
+
+@RunWith(Parameterized.class)
 public abstract class BaseFEELTest {
 
     private final FEEL feel = FEEL.newInstance();
+
+    @Parameterized.Parameter(0)
+    public String expression;
+
+    @Parameterized.Parameter(1)
+    public Object result;
+
+    @Test
+    public void testExpression() {
+        assertResult( expression, result );
+    }
 
     protected void assertResult( String expression, Object result ) {
         if( result == null ) {
@@ -37,5 +51,4 @@ public abstract class BaseFEELTest {
             assertThat( "Evaluating: '"+expression+"'", feel.evaluate( expression ), is( result ) );
         }
     }
-
 }
