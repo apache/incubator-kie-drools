@@ -40,8 +40,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * it clones the {@link Collection} (or {@link Map}),
  * but its elements (or keys and values) are only cloned if they are of a type that needs to be planning cloned.
  * <p>
- * This annotation is ignored if a custom {@link SolutionCloner} is set with {@link PlanningSolution#solutionCloner()}
- * or if the {@link PlanningSolution} implements {@link PlanningCloneable}.
+ * This annotation is ignored if a custom {@link SolutionCloner} is set with {@link PlanningSolution#solutionCloner()}.
  */
 @Target({TYPE, METHOD, FIELD})
 @Inherited

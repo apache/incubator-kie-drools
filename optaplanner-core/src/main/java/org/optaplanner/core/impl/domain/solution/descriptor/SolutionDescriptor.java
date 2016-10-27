@@ -41,7 +41,6 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
@@ -68,7 +67,6 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
-import org.optaplanner.core.impl.domain.solution.cloner.PlanningCloneableSolutionCloner;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -298,11 +296,7 @@ public class SolutionDescriptor<Solution_> {
         if (solutionClonerClass != null) {
             solutionCloner = ConfigUtils.newInstance(this, "solutionClonerClass", solutionClonerClass);
         } else {
-            if (PlanningCloneable.class.isAssignableFrom(solutionClass)) {
-                solutionCloner = new PlanningCloneableSolutionCloner<>();
-            } else {
-                solutionCloner = new FieldAccessingSolutionCloner<>(this);
-            }
+            solutionCloner = new FieldAccessingSolutionCloner<>(this);
         }
     }
 

@@ -19,7 +19,6 @@ package org.optaplanner.core.api.domain.solution;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
@@ -56,8 +55,8 @@ public @interface PlanningSolution {
     /**
      * Overrides the default {@link SolutionCloner} to implement a custom {@link PlanningSolution} cloning implementation.
      * <p>
-     * If this is not specified and the {@link PlanningSolution} does not implement {@link PlanningCloneable},
-     * the default reflection-based {@link SolutionCloner} is used, so you don't have to worry about it.
+     * If this is not specified, then the default reflection-based {@link SolutionCloner} is used,
+     * so you don't have to worry about it.
      * @return {@link NullSolutionCloner} when it is null (workaround for annotation limitation)
      */
     Class<? extends SolutionCloner> solutionCloner()

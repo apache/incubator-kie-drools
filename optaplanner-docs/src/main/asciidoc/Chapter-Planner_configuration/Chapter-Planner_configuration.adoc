@@ -1530,24 +1530,22 @@ A planning clone of a solution must fulfill these requirements:
 * The clone must represent the same planning problem. Usually it reuses the same instances of the problem facts and problem fact collections as the original.
 * The clone must use different, cloned instances of the entities and entity collections. Changes to an original `Solution` entity's variables must not affect its clone.
 
-
-
 image::Chapter-Planner_configuration/solutionCloning.png[align="center"]
 
-*
-Implementing a planning clone method is hard, therefore you do not need to implement
-        it.*
+*Implementing a planning clone method is hard, therefore you do not need to implement it.*
 
 [[fieldAccessingSolutionCloner]]
 ===== `FieldAccessingSolutionCloner`
-
 
 This `SolutionCloner` is used by default.
 It works well for most use cases.
 
 [WARNING]
 ====
-When the `FieldAccessingSolutionCloner` clones your entity collection, it may not recognize the implementation and replace it with ``ArrayList``, `LinkedHashSet` or `TreeSet` (whichever is more applicable). It recognizes most of the common JDK `Collection` implementations.
+When the `FieldAccessingSolutionCloner` clones one of your collections or maps,
+it may not recognize the implementation and replace it with `ArrayList`, `LinkedHashSet`, `TreeSet`, `LinkedHashMap`
+or `TreeMap` (whichever is more applicable) .
+It recognizes most of the common JDK collection and map implementations.
 ====
 
 
@@ -1570,51 +1568,55 @@ In the example above, because `SeatDesignation` is a planning entity (which is d
 Alternatively, the `@DeepPlanningClone` annotation can also be used on a getter method.
 
 [[customCloning]]
-===== Custom Cloning: Make `Solution` Implement `PlanningCloneable`
+===== Custom Cloning with a SolutionCloner
 
-
-If your `Solution` implements ``PlanningCloneable``, Planner will automatically choose to clone it by calling the `planningClone()` method.
+To use a customer cloner, configure it on the planning solution:
 
 [source,java,options="nowrap"]
 ----
-public interface PlanningCloneable<T> {
-
-    T planningClone();
-
+@PlanningSolution(solutionCloner = NQueensSolutionCloner.class)
+public class NQueens {
+    ...
 }
 ----
 
-
-For example: If `NQueens` implements ``PlanningCloneable``, it would only deep clone all `Queen` instances.
-When the original solution is changed during planning, by changing a ``Queen``, the clone stays the same.
+For example, a `NQueens` planning clone only deep clones all `Queen` instances.
+So when the original solution changes (later on during planning) and one or more ``Queen`` instances change,
+the planning clone isn't affected.
 
 [source,java,options="nowrap"]
 ----
-public class NQueens PlanningCloneable<NQueens> {
-    ...
+public class NQueensSolutionCloner implements SolutionCloner<NQueens> {
 
-    /**
-     * Clone will only deep copy the {@link #queenList}.
-     */
-    public NQueens planningClone() {
+    @Override
+    public NQueens cloneSolution(CloneLedger ledger, NQueens original) {
         NQueens clone = new NQueens();
-        clone.id = id;
-        clone.n = n;
-        clone.columnList = columnList;
-        clone.rowList = rowList;
+        ledger.registerClone(original, clone);
+        clone.setId(original.getId());
+        clone.setN(original.getN());
+        clone.setColumnList(original.getColumnList());
+        clone.setRowList(original.getRowList());
+        List<Queen> queenList = original.getQueenList();
         List<Queen> clonedQueenList = new ArrayList<Queen>(queenList.size());
-        for (Queen queen : queenList) {
-            clonedQueenList.add(queen.planningClone());
+        for (Queen originalQueen : queenList) {
+            Queen cloneQueen = new Queen();
+            ledger.registerClone(originalQueen, cloneQueen);
+            cloneQueen.setId(originalQueen.getId());
+            cloneQueen.setColumn(originalQueen.getColumn());
+            cloneQueen.setRow(originalQueen.getRow());
+            clonedQueenList.add(cloneQueen);
         }
-        clone.queenList = clonedQueenList;
-        clone.score = score;
+        clone.setQueenList(clonedQueenList);
+        clone.setScore(original.getScore());
         return clone;
     }
+
 }
 ----
 
-_The ``__planningClone()__`` method should only deep clone the planning entities._ Notice that the problem facts, such as `Column` and `Row` are _not_ normally cloned: even their `List` instances are _not_ cloned.
-If you were to clone the problem facts too, then you would have to make sure that the new planning entity clones also refer to the new problem facts clones used by the solution.
+_The `cloneSolution()` method should only deep clone the planning entities._
+Notice that the problem facts, such as `Column` and `Row` are normally _not_ cloned: even their `List` instances are _not_ cloned.
+If the problem facts were cloned too, then you would have to make sure that the new planning entity clones also refer to the new problem facts clones used by the cloned solution.
 For example, if you were to clone all `Row` instances, then each `Queen` clone and the `NQueens` clone itself should refer to those new `Row` clones.
 
 [WARNING]
