@@ -22,7 +22,9 @@ import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
+import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer;
+import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 
 // TODO When this class is added only for TimeWindowedCustomer, use TimeWindowedCustomer instead of Customer
 public class ArrivalTimeUpdatingVariableListener implements VariableListener<Customer> {
@@ -63,8 +65,10 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
 
     protected void updateArrivalTime(ScoreDirector scoreDirector, TimeWindowedCustomer sourceCustomer) {
         Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
-        Long departureTime = (previousStandstill instanceof TimeWindowedCustomer)
-                ? ((TimeWindowedCustomer) previousStandstill).getDepartureTime() : null;
+        Long departureTime = previousStandstill == null ? null
+                : (previousStandstill instanceof TimeWindowedCustomer)
+                ? ((TimeWindowedCustomer) previousStandstill).getDepartureTime()
+                : ((TimeWindowedDepot) ((Vehicle) previousStandstill).getDepot()).getReadyTime();
         TimeWindowedCustomer shadowCustomer = sourceCustomer;
         Long arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
         while (shadowCustomer != null && !Objects.equals(shadowCustomer.getArrivalTime(), arrivalTime)) {
@@ -81,9 +85,10 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
         if (customer == null || customer.getPreviousStandstill() == null) {
             return null;
         }
-        if (previousDepartureTime == null) {
+        if (customer.getPreviousStandstill() instanceof Vehicle) {
             // PreviousStandstill is the Vehicle, so we leave from the Depot at the best suitable time
-            return Math.max(customer.getReadyTime(), customer.getDistanceFromPreviousStandstill());
+            return Math.max(customer.getReadyTime(),
+                    previousDepartureTime + customer.getDistanceFromPreviousStandstill());
         }
         return previousDepartureTime + customer.getDistanceFromPreviousStandstill();
     }
