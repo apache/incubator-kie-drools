@@ -263,10 +263,6 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
-    public InternalFactHandle quickClone() {
-        return new DisconnectedFactHandle(id, identityHashCode, objectHashCode, recency, entryPointId, object, traitType != TraitTypeEnum.NON_TRAIT );
-    }
-
     public InternalFactHandle clone() {
         return clone();
     }

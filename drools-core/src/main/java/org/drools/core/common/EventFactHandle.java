@@ -218,7 +218,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         return clone;
     }
 
-    public EventFactHandle quickClone() {
+    private EventFactHandle cloneWithoutTuples() {
         EventFactHandle clone = new EventFactHandle( getId(),
                                                      getObject(),
                                                      getRecency(),
@@ -236,9 +236,21 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
     }
 
     public EventFactHandle cloneAndLink() {
-        EventFactHandle clone =  quickClone();
+        EventFactHandle clone = cloneWithoutTuples();
         clone.linkedFactHandle = this;
         return clone;
+    }
+
+    public void quickCloneUpdate(DefaultFactHandle clone) {
+        clone.setObject( getObject() );
+        clone.setRecency( getRecency() );
+        clone.setEqualityKey( getEqualityKey() );
+
+        clone.setObjectHashCode( getObjectHashCode() );
+        clone.setIdentityHashCode( getIdentityHashCode() );
+        clone.setTraitType( getTraitType() );
+        clone.setDisconnected( isDisconnected() );
+        clone.setNegated( isNegated() );
     }
 
     public int compareTo(EventFactHandle e) {

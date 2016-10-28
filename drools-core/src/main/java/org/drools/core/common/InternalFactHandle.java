@@ -105,8 +105,6 @@ public interface InternalFactHandle
 
     void addTupleInPosition( Tuple tuple );
 
-    InternalFactHandle quickClone();
-
     boolean isNegated();
     void setNegated(boolean negated);
 
