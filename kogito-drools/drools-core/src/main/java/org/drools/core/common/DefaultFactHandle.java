@@ -188,6 +188,10 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return disconnected;
     }
 
+    protected void setDisconnected( boolean disconnected ) {
+        this.disconnected = disconnected;
+    }
+
     public int getObjectHashCode() {
         return this.objectHashCode;
     }
@@ -198,6 +202,10 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     public static int determineIdentityHashCode( Object object ) {
         return System.identityHashCode( object );
+    }
+
+    protected void setIdentityHashCode( int identityHashCode ) {
+        this.identityHashCode = identityHashCode;
     }
 
     protected void setObjectHashCode( int hashCode ) {
@@ -379,30 +387,6 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         linkedTuples.clearRightTuples();
     }
 
-    public DefaultFactHandle quickClone() {
-        DefaultFactHandle clone = new DefaultFactHandle( this.id, this.object, this.recency, this.entryPoint );
-        clone.key = this.key;
-
-        clone.objectHashCode = this.objectHashCode;
-        clone.identityHashCode = this.identityHashCode;
-        clone.disconnected = this.disconnected;
-        clone.traitType = this.traitType;
-        clone.negated = this.negated;
-        return clone;
-    }
-
-    public void quickCloneUpdate(DefaultFactHandle clone) {
-        clone.object = this.object;
-        clone.recency  = this.recency;
-        clone.key = this.key;
-
-        clone.objectHashCode = this.objectHashCode;
-        clone.identityHashCode = this.identityHashCode;
-        clone.traitType = this.traitType;
-        clone.disconnected = this.disconnected;
-        clone.negated = this.negated;
-    }
-    
     public DefaultFactHandle clone() {
         DefaultFactHandle clone = new DefaultFactHandle( this.id, this.object, this.recency, this.entryPoint );
         clone.key = this.key;
@@ -473,6 +457,10 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
     public TraitTypeEnum getTraitType() {
         return traitType;
+    }
+
+    protected void setTraitType( TraitTypeEnum traitType ) {
+        this.traitType = traitType;
     }
 
     public boolean isExpired() {
