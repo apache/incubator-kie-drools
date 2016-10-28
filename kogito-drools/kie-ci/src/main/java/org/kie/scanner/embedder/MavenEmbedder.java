@@ -15,6 +15,16 @@
  */
 package org.kie.scanner.embedder;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map.Entry;
+import java.util.Properties;
+
 import org.apache.maven.DefaultMaven;
 import org.apache.maven.Maven;
 import org.apache.maven.artifact.InvalidRepositoryException;
@@ -24,6 +34,7 @@ import org.apache.maven.execution.DefaultMavenExecutionResult;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequestPopulationException;
 import org.apache.maven.execution.MavenExecutionRequestPopulator;
+import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.building.ModelSource;
@@ -49,22 +60,11 @@ import org.eclipse.aether.RepositorySystemSession;
 import org.kie.scanner.MavenRepositoryConfiguration;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map.Entry;
-import java.util.Properties;
-
-import static org.drools.core.util.IoUtils.copyInTempFile;
-
+import static org.drools.core.util.IoUtils.*;
 
 public class MavenEmbedder {
 
-    private static final org.slf4j.Logger log = LoggerFactory.getLogger(MavenEmbedder.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger( MavenEmbedder.class );
 
     public static final File DEFAULT_GLOBAL_SETTINGS_FILE =
             new File( System.getProperty( "maven.home", System.getProperty( "user.dir", "" ) ), "conf/settings.xml" );
@@ -101,7 +101,7 @@ public class MavenEmbedder {
             componentProvider.lookup( LegacySupport.class ).setSession( mavenSession );
         } catch ( MavenEmbedderException e ) {
             log.error( "Unable to build MavenEmbedder", e );
-            throw new MavenEmbedderException( e.getMessage(), e );
+            throw e;
         } catch ( ComponentLookupException e ) {
             log.error( "Unable to build MavenEmbedder", e );
             throw new MavenEmbedderException( e.getMessage(), e );
@@ -123,7 +123,7 @@ public class MavenEmbedder {
             } else {
                 try {
                     mavenExecutionRequest.setUserSettingsFile( copyInTempFile( userSettings.getInputStream(), "xml" ) );
-                } catch (IOException ioe) {
+                } catch ( IOException ioe ) {
                     log.warn( "Unable to use maven settings defined in " + userSettings, ioe );
                 }
             }
@@ -361,8 +361,26 @@ public class MavenEmbedder {
 
     public void dispose() {
         PlexusContainer plexusContainer = componentProvider.getPlexusContainer();
-        if (plexusContainer != null) {
+        if ( plexusContainer != null ) {
             plexusContainer.dispose();
+        }
+    }
+
+    public MavenExecutionResult execute( final MavenRequest mavenRequest )
+            throws MavenEmbedderException {
+        final ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader( componentProvider.getSystemClassLoader() );
+            final Maven maven = componentProvider.lookup( Maven.class );
+            return maven.execute( buildMavenExecutionRequest( mavenRequest ) );
+        } catch ( final MavenEmbedderException e ) {
+            log.error( "An MavenEmbedderException occurred during maven execution.", e );
+            throw e;
+        } catch ( final Throwable e ) {
+            log.error( "An exception occurred during maven execution.", e );
+            throw new MavenEmbedderException( e.getMessage(), e );
+        } finally {
+            Thread.currentThread().setContextClassLoader( originalCl );
         }
     }
 }
