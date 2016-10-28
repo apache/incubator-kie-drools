@@ -17,7 +17,9 @@
 package org.optaplanner.core.impl.partitionedsearch;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
@@ -28,6 +30,8 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
+import org.optaplanner.core.impl.partitionedsearch.queue.PartitionChangeMove;
+import org.optaplanner.core.impl.partitionedsearch.queue.PartitionQueue;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.solver.ChildThreadType;
@@ -88,19 +92,25 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                     + " Use activeThreadCount (" + activeThreadCount
                     + ") instead to avoid CPU hogging and live locks.");
         }
-        List<Future> futureList = new ArrayList<>(partCount);
+        PartitionQueue<Solution_> partitionQueue = new PartitionQueue<>(partCount);
         Semaphore activeThreadSemaphore = activeThreadCount == null ? null : new Semaphore(activeThreadCount);
-        for (Solution_ part : partList) {
+        for (ListIterator<Solution_> it = partList.listIterator(); it.hasNext(); ) {
+            int partIndex = it.nextIndex();
+            Solution_ part = it.next();
             PartitionSolver<Solution_> partitionSolver = buildPartitionSolver(activeThreadSemaphore, solverScope);
-            Future<?> future = threadPoolExecutor.submit(() -> partitionSolver.solve(part));
-            futureList.add(future);
+            threadPoolExecutor.submit(() -> {
+                try {
+                    partitionSolver.solve(part);
+                    partitionQueue.addFinish(partIndex);
+                } catch (Throwable throwable) {
+                    partitionQueue.addExceptionThrown(partIndex, throwable);
+                }
+            });
         }
-        for (Future future : futureList) {
-            try {
-                future.get();
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace(); // TODO remove
-            }
+        for (PartitionChangeMove step : partitionQueue) {
+            /// TODO do the step
+
+
         }
 //        phaseEnded(phaseScope);
 

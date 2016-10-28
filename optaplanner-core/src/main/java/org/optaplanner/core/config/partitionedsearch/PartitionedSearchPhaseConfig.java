@@ -156,7 +156,8 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         int availableProcessorCount = Runtime.getRuntime().availableProcessors();
         Integer resolvedActiveThreadCount;
         if (activeThreadCount == null || activeThreadCount.equals(ACTIVE_THREAD_COUNT_AUTO)) {
-            resolvedActiveThreadCount = availableProcessorCount <= 1 ? 1 : availableProcessorCount - 1;
+            // Leave one for the Operating System and 1 for the solver thread, take the rest
+            resolvedActiveThreadCount = availableProcessorCount <= 2 ? 1 : availableProcessorCount - 2;
         } else if (activeThreadCount.equals(ACTIVE_THREAD_COUNT_UNLIMITED)) {
             resolvedActiveThreadCount = null;
         } else {
