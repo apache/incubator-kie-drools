@@ -74,6 +74,16 @@ public abstract class BaseTuple implements Tuple {
         return handle;
     }
 
+    /**
+     * This method is used by the consequence invoker (generated via asm by the ConsequenceGenerator)
+     * to always pass to the consequence the original fact handle even in case when it has been
+     * cloned and linked by a WindowNode
+     */
+    public InternalFactHandle getOriginalFactHandle() {
+        InternalFactHandle linkedFH = handle.isEvent() ? ((EventFactHandle)handle).getLinkedFactHandle() : null;
+        return linkedFH != null ? linkedFH : handle;
+    }
+
     public void setFactHandle( InternalFactHandle handle ) {
         this.handle = handle;
     }

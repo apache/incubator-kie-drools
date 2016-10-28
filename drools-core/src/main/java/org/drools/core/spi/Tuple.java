@@ -88,6 +88,7 @@ public interface Tuple extends Serializable, Entry<Tuple> {
 
     InternalFactHandle getFactHandle();
     void setFactHandle( InternalFactHandle handle );
+    InternalFactHandle getOriginalFactHandle();
 
     /**
      * Returns the ReteTuple that contains the "elements"
