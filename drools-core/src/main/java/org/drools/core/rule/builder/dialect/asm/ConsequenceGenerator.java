@@ -86,7 +86,7 @@ public class ConsequenceGenerator {
 
                     // handle = tuple.getFactHandle()
                     mv.visitVarInsn(ALOAD, 3);
-                    invokeInterface(LeftTuple.class, "getFactHandle", InternalFactHandle.class);
+                    invokeInterface(Tuple.class, "getOriginalFactHandle", InternalFactHandle.class);
                     mv.visitVarInsn(ASTORE, handlePos);
 
                     String declarationType = declarations[i].getTypeName();
