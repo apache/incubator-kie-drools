@@ -16,10 +16,9 @@
 
 package org.drools.compiler.compiler;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.lang.descr.BaseDescr;
 
-public class DescrBuildError extends DroolsError {
+public class DescrBuildError extends DroolsError implements CompilationProblemResult {
     private BaseDescr parentDescr;
     private BaseDescr descr;
     private Object    object;
@@ -51,15 +50,21 @@ public class DescrBuildError extends DroolsError {
         return this.descr;
     }
 
+    @Override
     public Object getObject() {
         return this.object;
+    }
+
+    @Override
+    public String getSummary() {
+        return this.message;
     }
 
     public int[] getLines() {
         return this.errorLines;
     }
 
-    /** 
+    /**
      * This will return the line number of the error, if possible
      * Otherwise it will be -1
      */
@@ -71,20 +76,9 @@ public class DescrBuildError extends DroolsError {
         return this.descr != null ? this.descr.getColumn() : -1;
     }
 
+    @Override
     public String getMessage() {
-        String summary = this.message;
-        if ( this.object instanceof CompilationProblem[] ) {
-            final CompilationProblem[] problem = (CompilationProblem[]) this.object;
-            for ( int i = 0; i < problem.length; i++ ) {
-                if ( i != 0 ) {
-                    summary = summary + "\n" + problem[i].getMessage();
-                } else {
-                    summary = summary + " " + problem[i].getMessage();
-                }
-            }
-
-        }
-        return summary;
+        return getProblemMessage();
     }
 
     public String toString() {
@@ -93,16 +87,6 @@ public class DescrBuildError extends DroolsError {
         buf.append( " : " );
         buf.append( this.parentDescr );
         buf.append( "\n" );
-        if ( this.object instanceof CompilationProblem[] ) {
-            final CompilationProblem[] problem = (CompilationProblem[]) this.object;
-            for ( int i = 0; i < problem.length; i++ ) {
-                buf.append( "\t" );
-                buf.append( problem[i] );
-                buf.append( "\n" );
-            }
-        } else if ( this.object != null ) {
-            buf.append( this.object );
-        }
-        return buf.toString();
+        return appendProblems(buf).toString();
     }
 }

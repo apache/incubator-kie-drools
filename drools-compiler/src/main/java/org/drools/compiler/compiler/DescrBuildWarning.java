@@ -16,10 +16,9 @@
 
 package org.drools.compiler.compiler;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.lang.descr.BaseDescr;
 
-public class DescrBuildWarning extends DroolsWarning {
+public class DescrBuildWarning extends DroolsWarning implements CompilationProblemResult {
     private BaseDescr parentDescr;
     private BaseDescr descr;
     private Object    object;
@@ -46,8 +45,14 @@ public class DescrBuildWarning extends DroolsWarning {
         return this.descr;
     }
 
+    @Override
     public Object getObject() {
         return this.object;
+    }
+
+    @Override
+    public String getSummary() {
+        return this.message;
     }
 
     public int[] getLines() {
@@ -67,19 +72,7 @@ public class DescrBuildWarning extends DroolsWarning {
     }
 
     public String getMessage() {
-        String summary = this.message;
-        if ( this.object instanceof CompilationProblem[] ) {
-            final CompilationProblem[] problem = (CompilationProblem[]) this.object;
-            for ( int i = 0; i < problem.length; i++ ) {
-                if ( i != 0 ) {
-                    summary = summary + "\n" + problem[i].getMessage();
-                } else {
-                    summary = summary + " " + problem[i].getMessage();
-                }
-            }
-
-        }
-        return summary;
+        return getProblemMessage();
     }
 
     public String toString() {
@@ -88,16 +81,6 @@ public class DescrBuildWarning extends DroolsWarning {
         buf.append( " : " );
         buf.append( this.parentDescr );
         buf.append( "\n" );
-        if ( this.object instanceof CompilationProblem[] ) {
-            final CompilationProblem[] problem = (CompilationProblem[]) this.object;
-            for ( int i = 0; i < problem.length; i++ ) {
-                buf.append( "\t" );
-                buf.append( problem[i] );
-                buf.append( "\n" );
-            }
-        } else if ( this.object != null ) {
-            buf.append( this.object );
-        }
-        return buf.toString();
+        return appendProblems(buf).toString();
     }
 }
