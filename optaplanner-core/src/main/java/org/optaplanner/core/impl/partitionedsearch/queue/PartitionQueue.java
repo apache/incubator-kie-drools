@@ -69,8 +69,9 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove> 
      * @param move never null
      */
     public void addMove(int partIndex, PartitionChangeMove<Solution_> move) {
+        long eventIndex = nextEventIndexMap.get(partIndex).getAndIncrement();
         PartitionChangedEvent<Solution_> event = new PartitionChangedEvent<>(
-                buildPartitionEventId(partIndex), move);
+                partIndex, eventIndex, move);
         moveEventMap.put(event.getPartIndex(), event);
         queue.add(event);
     }
@@ -81,8 +82,9 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove> 
      * @param partIndex {@code 0 <= partIndex < partCount}
      */
     public void addFinish(int partIndex) {
+        long eventIndex = nextEventIndexMap.get(partIndex).getAndIncrement();
         PartitionChangedEvent<Solution_> event = new PartitionChangedEvent<>(
-                buildPartitionEventId(partIndex), PartitionChangedEvent.PartitionChangedEventType.FINISHED);
+                partIndex, eventIndex, PartitionChangedEvent.PartitionChangedEventType.FINISHED);
         queue.add(event);
     }
 
@@ -94,14 +96,10 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove> 
      * @param throwable never null
      */
     public void addExceptionThrown(int partIndex, Throwable throwable) {
-        PartitionChangedEvent<Solution_> event = new PartitionChangedEvent<>(
-                buildPartitionEventId(partIndex), throwable);
-        queue.add(event);
-    }
-
-    protected PartitionEventId buildPartitionEventId(int partIndex) {
         long eventIndex = nextEventIndexMap.get(partIndex).getAndIncrement();
-        return new PartitionEventId(partIndex, eventIndex);
+        PartitionChangedEvent<Solution_> event = new PartitionChangedEvent<>(
+                partIndex, eventIndex, throwable);
+        queue.add(event);
     }
 
     @Override

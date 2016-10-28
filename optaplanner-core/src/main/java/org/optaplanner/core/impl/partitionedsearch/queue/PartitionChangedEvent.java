@@ -25,42 +25,42 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
  */
 public final class PartitionChangedEvent<Solution_> implements Serializable {
 
-    private final PartitionEventId id;
+    private final int partIndex;
+    private final long eventIndex;
     private final PartitionChangedEventType type;
     private final PartitionChangeMove<Solution_> move;
     private final Throwable throwable;
 
-    public PartitionChangedEvent(PartitionEventId id, PartitionChangedEventType type) {
-        this.id = id;
+    public PartitionChangedEvent(int partIndex, long eventIndex, PartitionChangedEventType type) {
+        this.partIndex = partIndex;
+        this.eventIndex = eventIndex;
         this.type = type;
         move = null;
         throwable = null;
     }
 
-    public PartitionChangedEvent(PartitionEventId id, PartitionChangeMove<Solution_>  move) {
-        this.id = id;
+    public PartitionChangedEvent(int partIndex, long eventIndex, PartitionChangeMove<Solution_>  move) {
+        this.partIndex = partIndex;
+        this.eventIndex = eventIndex;
         type = PartitionChangedEventType.MOVE;
         this.move = move;
         throwable = null;
     }
 
-    public PartitionChangedEvent(PartitionEventId id, Throwable throwable) {
-        this.id = id;
+    public PartitionChangedEvent(int partIndex, long eventIndex, Throwable throwable) {
+        this.partIndex = partIndex;
+        this.eventIndex = eventIndex;
         type = PartitionChangedEventType.EXCEPTION_THROWN;
         move = null;
         this.throwable = throwable;
     }
 
-    public PartitionEventId getId() {
-        return id;
-    }
-
     public int getPartIndex() {
-        return id.getPartIndex();
+        return partIndex;
     }
 
     public Long getEventIndex() {
-        return id.getEventIndex();
+        return eventIndex;
     }
 
     public PartitionChangedEventType getType() {
