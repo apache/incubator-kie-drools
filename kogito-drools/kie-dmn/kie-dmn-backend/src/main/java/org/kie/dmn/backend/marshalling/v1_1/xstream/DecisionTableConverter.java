@@ -16,13 +16,7 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
-import org.kie.dmn.feel.model.v1_1.BuiltinAggregator;
-import org.kie.dmn.feel.model.v1_1.DecisionRule;
-import org.kie.dmn.feel.model.v1_1.DecisionTable;
-import org.kie.dmn.feel.model.v1_1.DecisionTableOrientation;
-import org.kie.dmn.feel.model.v1_1.HitPolicy;
-import org.kie.dmn.feel.model.v1_1.InputClause;
-import org.kie.dmn.feel.model.v1_1.OutputClause;
+import org.kie.dmn.feel.model.v1_1.*;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -101,7 +95,7 @@ public class DecisionTableConverter extends ExpressionConverter {
     }
 
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new DecisionTable();
     }
 

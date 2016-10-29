@@ -27,6 +27,8 @@ public abstract class DMNModelInstrumentedBase {
 
     private Map<String, String> nsContext;
 
+    private DMNModelInstrumentedBase parent;
+
     /**
      * Namespace context map as defined at the level of the given element.
      * Please notice it support also default namespace (no prefix) as "" as defined in {@link XMLConstants#DEFAULT_NS_PREFIX} .
@@ -36,5 +38,23 @@ public abstract class DMNModelInstrumentedBase {
             nsContext = new HashMap<String, String>();  
         }
         return nsContext;
+    }
+
+    public String getNamespaceURI( String prefix ) {
+        if( this.nsContext != null && this.nsContext.containsKey( prefix ) ) {
+            return this.nsContext.get( prefix );
+        }
+        if( this.parent != null ) {
+            return parent.getNamespaceURI( prefix );
+        }
+        return null;
+    }
+
+    public DMNModelInstrumentedBase getParent() {
+        return parent;
+    }
+
+    public void setParent(DMNModelInstrumentedBase parent) {
+        this.parent = parent;
     }
 }

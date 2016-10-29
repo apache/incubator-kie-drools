@@ -23,10 +23,15 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.ast.InputDataNode;
 import org.kie.dmn.core.ast.ItemDefNode;
+import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.FeelTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.mvel2.MVEL;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.*;
@@ -73,7 +78,43 @@ public class DMNCompilerTest {
         assertThat( feelType.getAllowedValues().get( 1 ), is( "EMPLOYED" ) );
         assertThat( feelType.getAllowedValues().get( 2 ), is( "SELF-EMPLOYED" ) );
         assertThat( feelType.getAllowedValues().get( 3 ), is( "STUDENT" ) );
+    }
 
+    @Test
+    public void testCompositeItemDefinition() {
+        DMNRuntime runtime = createRuntime( "0008-LX-arithmetic.dmn" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0008-LX-arithmetic" );
+        assertThat( dmnModel, notNullValue() );
+
+        ItemDefNode itemDef = dmnModel.getItemDefinitionByName( "tLoan" );
+
+        assertThat( itemDef.getName(), is( "tLoan" ) );
+        assertThat( itemDef.getId(), is( "tLoan" ) );
+
+        DMNType type = itemDef.getType();
+
+        assertThat( type, is( notNullValue() ) );
+        assertThat( type.getName(), is( "tLoan" ) );
+        assertThat( type.getId(), is( "tLoan" ) );
+        assertThat( type, is( instanceOf( CompositeTypeImpl.class ) ) );
+
+        CompositeTypeImpl compType = (CompositeTypeImpl) type;
+
+        assertThat( compType.getFields().size(), is( 3 ) );
+        DMNType principal = compType.getFields().get( "principal" );
+        assertThat( principal, is( notNullValue() ) );
+        assertThat( principal.getName(), is( "principal" ) );
+        assertThat( ((FeelTypeImpl)principal).getFeelType(), is( BuiltInType.NUMBER ) );
+
+        DMNType rate = compType.getFields().get( "rate" );
+        assertThat( rate, is( notNullValue() ) );
+        assertThat( rate.getName(), is( "rate" ) );
+        assertThat( ((FeelTypeImpl)rate).getFeelType(), is( BuiltInType.NUMBER ) );
+
+        DMNType termMonths = compType.getFields().get( "termMonths" );
+        assertThat( termMonths, is( notNullValue() ) );
+        assertThat( termMonths.getName(), is( "termMonths" ) );
+        assertThat( ((FeelTypeImpl)termMonths).getFeelType(), is( BuiltInType.NUMBER ) );
     }
 
 

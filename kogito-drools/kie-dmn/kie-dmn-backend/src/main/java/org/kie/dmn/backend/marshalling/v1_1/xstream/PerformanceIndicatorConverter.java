@@ -17,6 +17,7 @@
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
 import org.kie.dmn.feel.model.v1_1.DMNElementReference;
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.feel.model.v1_1.PerformanceIndicator;
 
 import com.thoughtworks.xstream.XStream;
@@ -67,7 +68,7 @@ public class PerformanceIndicatorConverter extends BusinessContextElementConvert
     }
 
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new PerformanceIndicator();
     }
 

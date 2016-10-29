@@ -24,6 +24,7 @@ import org.kie.dmn.core.api.DMNType;
 import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.core.ast.InputDataNode;
 import org.kie.dmn.core.ast.ItemDefNode;
+import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.FeelTypeImpl;
 import org.kie.dmn.feel.FEEL;
@@ -116,7 +117,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         if( itemDef.getTypeRef() != null ) {
             // this is an "simple" type, so find the namespace
             String prefix = itemDef.getTypeRef().getPrefix();
-            String namespace = itemDef.getNsContext().get( prefix );
+            String namespace = itemDef.getNamespaceURI( prefix );
             UnaryTests allowedValuesStr = itemDef.getAllowedValues();
             if( DMNModelInstrumentedBase.URI_FEEL.equals( namespace ) ) {
                 Type feelType = BuiltInType.determineTypeFromName( itemDef.getTypeRef().getLocalPart() );
@@ -129,6 +130,14 @@ public class DMNCompilerImpl implements DMNCompiler {
             } else {
                 logger.error( "Unknown namespace for type reference prefix: "+prefix );
             }
+        } else {
+            // this is a composite type
+            CompositeTypeImpl compType = new CompositeTypeImpl( itemDef.getName(), itemDef.getId() );
+            for( ItemDefinition fieldDef : itemDef.getItemComponent() ) {
+                DMNType field = buildTypeDef( fieldDef );
+                compType.getFields().put( field.getName(), field );
+            }
+            type = compType;
         }
         return type;
     }

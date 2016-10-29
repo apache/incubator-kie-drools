@@ -21,13 +21,7 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
-import org.kie.dmn.feel.model.v1_1.AuthorityRequirement;
-import org.kie.dmn.feel.model.v1_1.DMNElementReference;
-import org.kie.dmn.feel.model.v1_1.Decision;
-import org.kie.dmn.feel.model.v1_1.Expression;
-import org.kie.dmn.feel.model.v1_1.InformationItem;
-import org.kie.dmn.feel.model.v1_1.InformationRequirement;
-import org.kie.dmn.feel.model.v1_1.KnowledgeRequirement;
+import org.kie.dmn.feel.model.v1_1.*;
 
 public class DecisionConverter extends DRGElementConverter {
     public static final String QUESTION = "question";
@@ -95,7 +89,7 @@ public class DecisionConverter extends DRGElementConverter {
     }
 
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new Decision();
     }
     

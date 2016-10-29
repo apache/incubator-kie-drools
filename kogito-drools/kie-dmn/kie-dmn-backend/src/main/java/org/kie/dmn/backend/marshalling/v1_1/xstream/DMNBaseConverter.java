@@ -22,6 +22,7 @@ import com.thoughtworks.xstream.converters.collections.AbstractCollectionConvert
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.mapper.Mapper;
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 
 public abstract class DMNBaseConverter
         extends AbstractCollectionConverter {
@@ -57,7 +58,7 @@ public abstract class DMNBaseConverter
     public Object unmarshal(
             HierarchicalStreamReader reader,
             UnmarshallingContext context) {
-        Object obj = createModelObject();
+        DMNModelInstrumentedBase obj = createModelObject();
         assignAttributes( reader, obj );
         parseElements( reader, context, obj );
         return obj;
@@ -71,12 +72,15 @@ public abstract class DMNBaseConverter
                     reader,
                     context,
                     null );
+            if( object instanceof DMNModelInstrumentedBase ) {
+                ((DMNModelInstrumentedBase) object).setParent( (DMNModelInstrumentedBase) parent );
+            }
             reader.moveUp();
             assignChildElement( parent, nodeName, object );
         }
     }
 
-    protected abstract Object createModelObject();
+    protected abstract DMNModelInstrumentedBase createModelObject();
 
     protected abstract void assignChildElement(Object parent, String nodeName, Object child);
 

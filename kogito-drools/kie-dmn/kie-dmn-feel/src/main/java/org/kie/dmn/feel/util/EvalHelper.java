@@ -20,6 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -37,11 +38,11 @@ public class EvalHelper {
         if ( !BigDecimal.class.isAssignableFrom( value.getClass() ) ) {
             if ( value instanceof Long || value instanceof Integer || value instanceof Short || value instanceof Byte ||
                  value instanceof AtomicLong || value instanceof AtomicInteger ) {
-                value = BigDecimal.valueOf( ((Number) value).longValue() );
+                value = new BigDecimal( ((Number) value).longValue(), MathContext.DECIMAL128 );
             } else if ( value instanceof BigInteger ) {
-                value = new BigDecimal( ((BigInteger) value).toString() );
+                value = new BigDecimal( ((BigInteger) value).toString(), MathContext.DECIMAL128 );
             } else {
-                value = BigDecimal.valueOf( ((Number) value).doubleValue() );
+                value = new BigDecimal( ((Number) value).doubleValue(), MathContext.DECIMAL128 );
             }
         }
         return (BigDecimal) value;

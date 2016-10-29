@@ -16,6 +16,7 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.feel.model.v1_1.ImportedValues;
 
 import com.thoughtworks.xstream.XStream;
@@ -69,7 +70,7 @@ public class ImportedValuesConverter extends ImportConverter {
     }
 
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new ImportedValues();
     }
 

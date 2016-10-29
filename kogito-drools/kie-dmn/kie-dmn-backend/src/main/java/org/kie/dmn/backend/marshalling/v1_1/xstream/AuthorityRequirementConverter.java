@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 
 public class AuthorityRequirementConverter extends DMNModelInstrumentedBaseConverter {
     public static final String REQUIRED_AUTHORITY = "requiredAuthority";
@@ -74,7 +75,7 @@ public class AuthorityRequirementConverter extends DMNModelInstrumentedBaseConve
     }
 
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new AuthorityRequirement();
     }
 

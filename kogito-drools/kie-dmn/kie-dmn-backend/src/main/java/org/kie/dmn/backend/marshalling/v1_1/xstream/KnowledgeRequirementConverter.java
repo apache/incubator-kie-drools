@@ -17,6 +17,7 @@
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
 import org.kie.dmn.feel.model.v1_1.DMNElementReference;
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.feel.model.v1_1.KnowledgeRequirement;
 
 import com.thoughtworks.xstream.XStream;
@@ -65,7 +66,7 @@ public class KnowledgeRequirementConverter extends DMNModelInstrumentedBaseConve
     }
 
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new KnowledgeRequirement();
     }
 

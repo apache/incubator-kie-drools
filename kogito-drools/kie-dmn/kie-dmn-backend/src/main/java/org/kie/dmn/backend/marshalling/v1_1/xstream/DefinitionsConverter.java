@@ -85,7 +85,7 @@ public class DefinitionsConverter
     }
 
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new Definitions();
     }
 

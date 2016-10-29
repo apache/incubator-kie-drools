@@ -24,6 +24,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 
 public class AssociationConverter extends ArtifactConverter {
     public static final String TARGET_REF = "targetRef";
@@ -35,7 +36,7 @@ public class AssociationConverter extends ArtifactConverter {
     }
 
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new Association();
     }
 

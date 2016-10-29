@@ -16,9 +16,6 @@
 
 package org.kie.dmn.core.api;
 
-/**
- * Created by etirelli on 2016-10-24.
- */
 public interface DMNType {
     String getName();
 

@@ -16,6 +16,7 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.feel.model.v1_1.InputClause;
 import org.kie.dmn.feel.model.v1_1.LiteralExpression;
 import org.kie.dmn.feel.model.v1_1.UnaryTests;
@@ -66,7 +67,7 @@ public class InputClauseConverter extends DMNElementConverter {
     }
 
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new InputClause();
     }
 
