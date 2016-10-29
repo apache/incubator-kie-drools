@@ -17,6 +17,7 @@
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
 import org.kie.dmn.feel.model.v1_1.Binding;
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.feel.model.v1_1.Expression;
 import org.kie.dmn.feel.model.v1_1.Invocation;
 
@@ -68,7 +69,7 @@ public class InvocationConverter extends ExpressionConverter {
     }
 
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new Invocation();
     }
 

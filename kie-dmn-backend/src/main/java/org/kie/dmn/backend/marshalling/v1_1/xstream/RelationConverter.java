@@ -16,6 +16,7 @@
 
 package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.feel.model.v1_1.InformationItem;
 import org.kie.dmn.feel.model.v1_1.Relation;
 
@@ -74,7 +75,7 @@ public class RelationConverter extends ExpressionConverter {
     }
 
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new Relation();
     }
 

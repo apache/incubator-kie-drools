@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 
 public class ContextConverter extends ExpressionConverter {
     public static final String CONTEXT_ENTRY = "contextEntry";
@@ -67,7 +68,7 @@ public class ContextConverter extends ExpressionConverter {
     }
 
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new Context();
     }
 

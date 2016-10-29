@@ -18,6 +18,7 @@ package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
 import javax.xml.namespace.QName;
 
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.feel.model.v1_1.ItemDefinition;
 import org.kie.dmn.feel.model.v1_1.UnaryTests;
 
@@ -86,7 +87,7 @@ public class ItemDefinitionConverter extends NamedElementConverter {
     }
 
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new ItemDefinition();
     }
 

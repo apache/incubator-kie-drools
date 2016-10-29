@@ -18,29 +18,29 @@ package org.kie.dmn.core.impl;
 
 import org.kie.dmn.core.api.DMNType;
 
+import java.util.HashMap;
 import java.util.Map;
 
-public class DMNTypeImpl
+public class CompositeTypeImpl
         implements DMNType {
 
-    private String name;
-    private String id;
-    private boolean simple;
-    private Class<?> javaType;
-    private Map<String, DMNTypeImpl> fields;
+    private String               name;
+    private String               id;
+    private boolean              collection;
+    private Map<String, DMNType> fields;
 
-    public DMNTypeImpl() {
+    public CompositeTypeImpl() {
+        this( null, null, new HashMap<>(  ) );
     }
 
-    public DMNTypeImpl(String name, String id) {
-        this.name = name;
-        this.id = id;
+    public CompositeTypeImpl(String name, String id) {
+        this( name, id, new HashMap<>(  ) );
     }
 
-    public DMNTypeImpl(String name, String id, Class<?> javaType) {
+    public CompositeTypeImpl(String name, String id, Map<String, DMNType> fields) {
         this.name = name;
         this.id = id;
-        this.javaType = javaType;
+        this.fields = fields;
     }
 
     @Override
@@ -61,27 +61,19 @@ public class DMNTypeImpl
         this.id = id;
     }
 
-    public boolean isSimple() {
-        return simple;
+    public boolean isCollection() {
+        return collection;
     }
 
-    public void setSimple(boolean simple) {
-        this.simple = simple;
+    public void setCollection(boolean collection) {
+        this.collection = collection;
     }
 
-    public Class<?> getJavaType() {
-        return javaType;
-    }
-
-    public void setJavaType(Class<?> javaType) {
-        this.javaType = javaType;
-    }
-
-    public Map<String, DMNTypeImpl> getFields() {
+    public Map<String, DMNType> getFields() {
         return fields;
     }
 
-    public void setFields(Map<String, DMNTypeImpl> fields) {
+    public void setFields(Map<String, DMNType> fields) {
         this.fields = fields;
     }
 }

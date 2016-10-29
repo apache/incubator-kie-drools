@@ -27,8 +27,8 @@ public class CustomStaxReader extends StaxReader {
         for (int nsIndex = 0; nsIndex < in.getNamespaceCount(); nsIndex++) {
             String nsPrefix = in.getNamespacePrefix(nsIndex);
             String nsId = in.getNamespaceURI(nsIndex);
-            nsContext.put(in.getNamespacePrefix(nsIndex)!=null?in.getNamespacePrefix(nsIndex):XMLConstants.DEFAULT_NS_PREFIX, in.getNamespaceURI(nsIndex) );
-          }
+            nsContext.put(nsPrefix!=null?nsPrefix:XMLConstants.DEFAULT_NS_PREFIX, nsId );
+        }
         return nsContext;
     }
 }
