@@ -18,6 +18,7 @@ package org.kie.dmn.backend.marshalling.v1_1.xstream;
 
 import org.kie.dmn.feel.model.v1_1.AuthorityRequirement;
 import org.kie.dmn.feel.model.v1_1.DMNElementReference;
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
 import org.kie.dmn.feel.model.v1_1.KnowledgeSource;
 
 import com.thoughtworks.xstream.XStream;
@@ -81,7 +82,7 @@ public class KnowledgeSourceConverter extends DRGElementConverter {
     }
     
     @Override
-    protected Object createModelObject() {
+    protected DMNModelInstrumentedBase createModelObject() {
         return new KnowledgeSource();
     }
 

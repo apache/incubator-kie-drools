@@ -24,7 +24,10 @@ import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.ast.InputDataNode;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -150,5 +153,26 @@ public class DMNRuntimeTest {
         assertThat( result.get( "Employment Status Statement" ), is( "You are SELF-EMPLOYED" ) );
     }
 
+    @Test
+    public void testCompositeItemDefinition() {
+        DMNRuntime runtime = createRuntime( "0008-LX-arithmetic.dmn" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0008-LX-arithmetic" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        Map loan = new HashMap(  );
+        loan.put( "__TYPE__", "tLoan" ); // this should not be necessary, just experimenting here
+        loan.put( "principal", new BigDecimal( 600000, MathContext.DECIMAL128 ) );
+        loan.put( "rate", new BigDecimal( 0.0375, MathContext.DECIMAL128 ) );
+        loan.put( "termMonths", new BigDecimal( 360, MathContext.DECIMAL128 ) );
+        context.set( "loan", loan );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        DMNContext result = dmnResult.getContext();
+
+        assertThat( ((BigDecimal)result.get( "payment" )).round( MathContext.DECIMAL128 ),
+                    is( new BigDecimal( "2778.693549432766720839844710324306", MathContext.DECIMAL128 ) ) );
+    }
 
 }
