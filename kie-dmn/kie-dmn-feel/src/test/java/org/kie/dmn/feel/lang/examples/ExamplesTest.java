@@ -16,26 +16,22 @@
 
 package org.kie.dmn.feel.lang.examples;
 
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-public class ExamplesTest {
+public class ExamplesTest
+        extends ExamplesBaseTest {
 
-    private static final Logger logger = LoggerFactory.getLogger( ExamplesTest.class );
-    public static final String DEFAULT_IDENT = "    ";
+    private static final Logger logger        = LoggerFactory.getLogger( ExamplesTest.class );
 
     private static Map  context;
     private static FEEL feel;
@@ -139,44 +135,11 @@ public class ExamplesTest {
 
         Object result = feel.evaluate( expression );
 
-        if( result instanceof Map ) {
+        if ( result instanceof Map ) {
             System.out.println( printContext( (Map) result ) );
         } else {
             System.out.println( "Result: " + result );
         }
-    }
-
-    private static String loadExpression(String fileName) {
-        try {
-            return new String( Files.readAllBytes( Paths.get( ExamplesTest.class.getResource( fileName ).toURI() ) ) );
-        } catch ( Exception e ) {
-            logger.error( "Error reading file " + fileName, e );
-            Assert.fail("Error reading file "+fileName);
-        }
-        return null;
-    }
-
-    private String printContext( Map context ) {
-        return printContext( context, "" );
-    }
-
-    private String printContext( Map<String, Object> context, String ident ) {
-        StringBuilder builder = new StringBuilder(  );
-        builder.append( "{\n" );
-        for( Map.Entry e : context.entrySet() ) {
-            builder.append( ident )
-                    .append( DEFAULT_IDENT )
-                    .append( e.getKey() )
-                    .append( ": " );
-            if( e.getValue() instanceof Map ) {
-                builder.append( printContext( (Map<String, Object>) e.getValue(), ident + DEFAULT_IDENT ) );
-            } else {
-                builder.append( e.getValue() )
-                        .append( "\n" );
-            }
-        }
-        builder.append( ident+"}\n" );
-        return builder.toString();
     }
 
 }
