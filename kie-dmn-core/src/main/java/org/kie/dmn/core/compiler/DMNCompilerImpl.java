@@ -28,15 +28,22 @@ import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.FeelTypeImpl;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.model.v1_1.*;
+import org.kie.dmn.feel.model.v1_1.DecisionRule;
+import org.kie.dmn.feel.model.v1_1.List;
+import org.kie.dmn.feel.runtime.Range;
+import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.decisiontables.*;
+import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Collections;
+import java.util.*;
 
 public class DMNCompilerImpl implements DMNCompiler {
 
@@ -84,6 +91,8 @@ public class DMNCompilerImpl implements DMNCompiler {
                 model.addInput( idn );
             } else if ( e instanceof Decision ) {
                 DecisionNode dn = new DecisionNode( (Decision) e );
+                DecisionNode.DecisionEvaluator evaluator = compileDecision( dn.getDecision() );
+                dn.setEvaluator( evaluator );
                 model.addDecision( dn );
             }
         }
@@ -140,6 +149,50 @@ public class DMNCompilerImpl implements DMNCompiler {
             type = compType;
         }
         return type;
+    }
+
+    private DecisionNode.DecisionEvaluator compileDecision(Decision decision) {
+        FEEL feel = FEEL.newInstance();
+        Expression expression = decision.getExpression();
+        if( expression instanceof LiteralExpression ) {
+            CompiledExpression compiledExpression = feel.compile( ((LiteralExpression) expression).getText(), feel.newCompilerContext() );
+            DecisionNode.LiteralExpressionFEELEvaluator evaluator = new DecisionNode.LiteralExpressionFEELEvaluator( compiledExpression );
+            return evaluator;
+        } else if( expression instanceof DecisionTable ) {
+            DecisionTable dt = (DecisionTable) expression;
+            java.util.List<String> inputs = new ArrayList<>(  );
+            for( InputClause ic : dt.getInput() ) {
+                inputs.add( ic.getInputExpression().getText() );
+            }
+            java.util.List<org.kie.dmn.feel.runtime.decisiontables.DecisionRule> rules = new ArrayList<>(  );
+            for( DecisionRule dr : dt.getRule() ) {
+                org.kie.dmn.feel.runtime.decisiontables.DecisionRule rule = new org.kie.dmn.feel.runtime.decisiontables.DecisionRule();
+                for( UnaryTests ut : dr.getInputEntry() ) {
+                    // quick hack to parse values, in case they are a list
+                    java.util.List<Object> ie = (java.util.List<Object>) feel.evaluate( "[ " + ut.getText() + " ]" );
+                    java.util.List<UnaryTest> tests = new ArrayList<>(  );
+                    for( Object o : ie ) {
+                        if ( o instanceof UnaryTest ) {
+                            tests.add( (UnaryTest) o );
+                        } else if ( o instanceof Range ) {
+                            tests.add( x -> ((Range) o).includes( (Comparable<?>) x ) );
+                        } else {
+                            tests.add( x -> x.equals( o ) );
+                        }
+                    }
+                    rule.getInputEntry().add( x -> tests.stream().anyMatch( t -> t.apply( x ) ) );
+                }
+                for( LiteralExpression le : dr.getOutputEntry() ) {
+                    Object oe = feel.evaluate( le.getText() );
+                    rule.getOutputEntry().add( oe );
+                }
+                rules.add( rule );
+            }
+            ConcreteDTFunction dtf = new ConcreteDTFunction( decision.getName()+"_DT", inputs, rules, HitPolicy.fromString( dt.getHitPolicy().value() ) );
+            DecisionNode.DTExpressionEvaluator dtee = new DecisionNode.DTExpressionEvaluator( dtf );
+            return dtee;
+        }
+        return null;
     }
 
 
