@@ -161,18 +161,33 @@ public class DMNRuntimeTest {
 
         DMNContext context = DMNFactory.newContext();
         Map loan = new HashMap(  );
-        loan.put( "__TYPE__", "tLoan" ); // this should not be necessary, just experimenting here
-        loan.put( "principal", new BigDecimal( 600000, MathContext.DECIMAL128 ) );
-        loan.put( "rate", new BigDecimal( 0.0375, MathContext.DECIMAL128 ) );
-        loan.put( "termMonths", new BigDecimal( 360, MathContext.DECIMAL128 ) );
+        loan.put( "principal", 600000 );
+        loan.put( "rate", 0.0375 );
+        loan.put( "termMonths", 360 );
         context.set( "loan", loan );
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
 
         DMNContext result = dmnResult.getContext();
 
-        assertThat( ((BigDecimal)result.get( "payment" )).round( MathContext.DECIMAL128 ),
-                    is( new BigDecimal( "2778.693549432766720839844710324306", MathContext.DECIMAL128 ) ) );
+        assertThat( result.get( "payment" ), is( new BigDecimal( "2778.693549432766720839844710324306" ) ) );
     }
 
+    @Test
+    public void testSimpleDTUnique() {
+        DMNRuntime runtime = createRuntime( "0004-simpletable-U.dmn" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0004-simpletable-U" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Age", new BigDecimal( 18 ) );
+        context.set( "RiskCategory", "Medium" );
+        context.set( "isAffordable", true );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        DMNContext result = dmnResult.getContext();
+
+        assertThat( result.get( "Approval Status" ), is( "Approved" ) );
+    }
 }

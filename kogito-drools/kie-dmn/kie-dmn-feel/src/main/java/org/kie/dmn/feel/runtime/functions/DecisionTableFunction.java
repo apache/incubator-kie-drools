@@ -16,15 +16,16 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.decisiontables.ConcreteDTFunction;
+import org.kie.dmn.feel.runtime.decisiontables.DecisionRule;
+import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class DecisionTableFunction
         extends BaseFEELFunction {
@@ -68,109 +69,4 @@ public class DecisionTableFunction
         return dr;
     }
 
-    public static class DecisionRule {
-        private List<UnaryTest> inputEntry;
-        private List<Object>    outputEntry;
-
-        public List<UnaryTest> getInputEntry() {
-            if ( inputEntry == null ) {
-                inputEntry = new ArrayList<>();
-            }
-            return this.inputEntry;
-        }
-
-        public List<Object> getOutputEntry() {
-            if ( outputEntry == null ) {
-                outputEntry = new ArrayList<>();
-            }
-            return this.outputEntry;
-        }
-    }
-
-    public static enum HitPolicy {
-        UNIQUE( "U" ),
-        FIRST( "F" ),
-        PRIORITY( "P" ),
-        ANY( "A" ),
-        COLLECT( "C" ),
-        COLLECT_SUM( "C+" ),
-        COLLECT_COUNT( "C#" ),
-        COLLECT_MIN( "C<" ),
-        COLLECT_MAX( "C>" ),
-        RULE_ORDER( "R" ),
-        OUTPUT_ORDER( "O" );
-
-        private final String value;
-
-        HitPolicy(final String v) {
-            value = v;
-        }
-
-        public String value() {
-            return value;
-        }
-
-        public static HitPolicy fromString(final String policy) {
-            for ( HitPolicy c : HitPolicy.values() ) {
-                if ( c.value.equals( policy ) ) {
-                    return c;
-                }
-            }
-            throw new IllegalArgumentException( "Unknown hit policy: " + policy );
-        }
-    }
-
-    public static class ConcreteDTFunction
-            extends BaseFEELFunction {
-        private       List<DecisionRule> decisionRules;
-        private       List<String>       inputs;
-        private final HitPolicy          hitPolicy;
-
-        public ConcreteDTFunction(String name, List<String> inputs, List<DecisionRule> decisionRules, HitPolicy hitPolicy) {
-            super( name );
-            this.decisionRules = decisionRules;
-            this.inputs = inputs;
-            this.hitPolicy = hitPolicy;
-        }
-
-        public Object apply(EvaluationContext ctx, Object[] params) {
-            if ( decisionRules.isEmpty() ) {
-                return null;
-            }
-
-            if ( params.length != decisionRules.get( 0 ).getInputEntry().size() ) {
-                LOG.error( "The parameters supplied does not match input expression list" );
-                return null;
-            }
-
-            for ( DecisionRule decisionRule : decisionRules ) {
-                Boolean ruleMatches = IntStream.range( 0, params.length )                         // TODO could short-circuit by using for/continue
-                        .mapToObj( i -> decisionRule.getInputEntry().get( i ).apply( params[i] ) )
-                        .reduce( (a, b) -> a && b )
-                        .orElse( false );
-                if ( ruleMatches ) {
-                    if ( decisionRule.getOutputEntry().size() == 1 ) {
-                        return decisionRule.getOutputEntry().get( 0 );
-                    } else {
-                        return decisionRule.getOutputEntry();
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        @Override
-        protected boolean isCustomFunction() {
-            return true;
-        }
-
-        public List<List<String>> getParameterNames() {
-            return Arrays.asList( inputs );
-        }
-
-        public HitPolicy getHitPolicy() {
-            return hitPolicy;
-        }
-    }
 }

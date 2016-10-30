@@ -19,9 +19,9 @@ package org.kie.dmn.feel.runtime.functions;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.functions.DecisionTableFunction.ConcreteDTFunction;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.FunctionSymbol;
+import org.kie.dmn.feel.runtime.decisiontables.ConcreteDTFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

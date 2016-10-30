@@ -101,7 +101,7 @@ public class DMNRuntimeImpl
         if( missingInput ) {
             return false;
         }
-        Object val = FEEL.newInstance().evaluate( ((LiteralExpression) decision.getDecision().getExpression()).getText(), result.getContext().getAll() );
+        Object val = decision.getEvaluator().evaluate( result );
         result.getContext().set( decision.getDecision().getVariable().getName(), val );
         return true;
     }
