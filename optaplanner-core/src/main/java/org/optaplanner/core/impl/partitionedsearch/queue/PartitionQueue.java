@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.partitionedsearch.queue;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -49,11 +50,11 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove> 
         // TODO partCount * 100 is pulled from thin air
         queue = new ArrayBlockingQueue<>(partCount * 100);
         moveEventMap = new ConcurrentHashMap<>(partCount);
-        // HashMap because it's never modified after creation
-        nextEventIndexMap = new HashMap<>(partCount);
+        Map<Integer, AtomicLong> nextEventIndexMap = new HashMap<>(partCount);
         for (int i = 0; i < partCount; i++) {
             nextEventIndexMap.put(i, new AtomicLong(0));
         }
+        this.nextEventIndexMap = Collections.unmodifiableMap(nextEventIndexMap);
         openPartCount = partCount;
         // HashMap because only the consumer thread uses it
         processedEventIndexMap = new HashMap<>(partCount);
