@@ -101,6 +101,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -6516,5 +6517,42 @@ public class CepEspTest extends CommonTestMethodBase {
         FactHandle fh2 = kieSession.insert(2);
 
         assertEquals( 0, kieSession.fireAllRules() );
+    }
+
+    @Test
+    public void testModifyEventOverWindow() {
+        // DROOLS-1346
+        String drl =
+                "import " + AtomicBoolean.class.getCanonicalName() + "\n" +
+                "declare AtomicBoolean @role(event) end\n" +
+                "global java.util.List list;\n" +
+                "rule R1 when\n" +
+                "    $event : AtomicBoolean(!get())\n" +
+                "    String()\n" +
+                "then\n" +
+                "    retract($event);\n" +
+                "    list.add(\"R1\");\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    $b : AtomicBoolean() over window:length(10)\n" +
+                "    not String()\n" +
+                "then\n" +
+                "    modify($b) { set(true) }\n" +
+                "    insert(\"check\");\n" +
+                "    list.add(\"R2\");\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                          .build( EventProcessingOption.STREAM )
+                                          .newKieSession();
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(new AtomicBoolean( false ));
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "R2", list.get(0) );
     }
 }

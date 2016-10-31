@@ -82,7 +82,7 @@ public class MavenProjectLoader {
         return mavenEmbedder;
     }
 
-    private static MavenRequest createMavenRequest(boolean offline) {
+    public static MavenRequest createMavenRequest(boolean offline) {
         MavenRequest mavenRequest = new MavenRequest();
         mavenRequest.setLocalRepositoryPath( MavenSettings.getSettings().getLocalRepository() );
         mavenRequest.setUserSettingsSource(MavenSettings.getUserSettingsSource());
