@@ -29,7 +29,7 @@ public class ConstructionHeuristicPhaseScope<Solution_> extends AbstractPhaseSco
 
     public ConstructionHeuristicPhaseScope(DefaultSolverScope<Solution_> solverScope) {
         super(solverScope);
-        lastCompletedStepScope = new ConstructionHeuristicStepScope(this, -1);
+        lastCompletedStepScope = new ConstructionHeuristicStepScope<>(this, -1);
     }
 
     @Override

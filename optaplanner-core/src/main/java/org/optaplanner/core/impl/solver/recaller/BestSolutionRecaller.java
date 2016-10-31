@@ -121,17 +121,22 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         }
     }
 
-    public void updateBestSolution(DefaultSolverScope<Solution_> solverScope, Solution_ solution) {
-        Score score = solverScope.getSolutionDescriptor().getScore(solution);
+    public void updateBestSolution(DefaultSolverScope<Solution_> solverScope) {
+        Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
+        updateBestSolution(solverScope, newBestSolution);
+    }
+
+    public void updateBestSolution(DefaultSolverScope<Solution_> solverScope, Solution_ newBestSolution) {
+        Score score = solverScope.getSolutionDescriptor().getScore(newBestSolution);
         if (score.isSolutionInitialized()) {
             if (!solverScope.isBestSolutionInitialized()) {
                 solverScope.setStartingInitializedScore(score);
             }
         }
-        solverScope.setBestSolution(solution);
+        solverScope.setBestSolution(newBestSolution);
         solverScope.setBestScore(score);
         solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
-        solverEventSupport.fireBestSolutionChanged(solverScope, solution);
+        solverEventSupport.fireBestSolutionChanged(solverScope, newBestSolution);
     }
 
 }

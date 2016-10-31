@@ -132,8 +132,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
 
     public void phaseEnded(ConstructionHeuristicPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
-        Solution_ newBestSolution = phaseScope.getScoreDirector().cloneWorkingSolution();
-        bestSolutionRecaller.updateBestSolution(phaseScope.getSolverScope(), newBestSolution);
+        bestSolutionRecaller.updateBestSolution(phaseScope.getSolverScope());
         entityPlacer.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
         phaseScope.endingNow();

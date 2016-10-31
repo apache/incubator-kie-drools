@@ -101,9 +101,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
         super.stepEnded(stepScope);
         boolean bestScoreImproved = stepScope.getBestScoreImproved();
         if (forceUpdateBestSolution && !bestScoreImproved) {
-            DefaultSolverScope<Solution_> solverScope = stepScope.getPhaseScope().getSolverScope();
-            Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
-            bestSolutionRecaller.updateBestSolution(solverScope, newBestSolution);
+            bestSolutionRecaller.updateBestSolution(stepScope.getPhaseScope().getSolverScope());
         }
         CustomPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {

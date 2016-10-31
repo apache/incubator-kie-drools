@@ -232,8 +232,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
                 problemFactChange = problemFactChangeQueue.poll();
             }
             basicPlumbingTermination.endProblemFactChangesProcessing();
-            Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
-            bestSolutionRecaller.updateBestSolution(solverScope, newBestSolution);
+            bestSolutionRecaller.updateBestSolution(solverScope);
             logger.info("Real-time problem fact changes done: step total ({}), new best score ({}).",
                     stepIndex, score);
             return true;
