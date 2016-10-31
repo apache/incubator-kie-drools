@@ -29,7 +29,9 @@ import org.kie.api.io.Resource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -178,7 +180,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
 
     public static class DummyResource extends BaseResource {
         public DummyResource(String resourceName) {
-            setSourcePath(resourceName);
+            setSourcePath( decode( resourceName ) );
         }
 
         @Override
@@ -224,6 +226,14 @@ public class KieBuilderSetImpl implements KieBuilderSet {
         @Override
         public Reader getReader() throws IOException {
             throw new UnsupportedOperationException();
+        }
+
+        private String decode( final String resourceName ) {
+            try {
+                return URLDecoder.decode( resourceName, "UTF-8" );
+            } catch ( UnsupportedEncodingException e ) {
+                return resourceName;
+            }
         }
     }
 }
