@@ -15,14 +15,14 @@
 
 package org.drools.core.phreak;
 
+import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
+import org.drools.core.spi.Tuple;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-
-import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
-import org.drools.core.spi.Tuple;
 
 public class ReactiveList<T> extends AbstractReactiveObject implements List<T> {
 

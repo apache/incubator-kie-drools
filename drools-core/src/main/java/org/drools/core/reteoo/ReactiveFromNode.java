@@ -18,6 +18,7 @@ package org.drools.core.reteoo;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
@@ -25,6 +26,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.From;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
+import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.index.TupleList;
 
 public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemory> {
@@ -73,6 +75,40 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
         public TupleSets<LeftTuple> getStagedLeftTuples() {
             return stagedLeftTuples;
         }
+    }
+
+    public LeftTuple createLeftTuple(InternalFactHandle factHandle,
+                                     Sink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new ReactiveFromNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
+                                     final LeftTuple leftTuple,
+                                     final Sink sink) {
+        return new ReactiveFromNodeLeftTuple(factHandle, leftTuple, sink );
+    }
+
+    public LeftTuple createLeftTuple( LeftTuple leftTuple,
+                                      Sink sink,
+                                      PropagationContext pctx, boolean leftTupleMemoryEnabled ) {
+        return new FromNodeLeftTuple(leftTuple, sink, pctx, leftTupleMemoryEnabled );
+    }
+
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     Sink sink) {
+        return new FromNodeLeftTuple(leftTuple, rightTuple, sink );
+    }
+
+    @Override
+    public LeftTuple createLeftTuple(LeftTuple leftTuple,
+                                     RightTuple rightTuple,
+                                     LeftTuple currentLeftChild,
+                                     LeftTuple currentRightChild,
+                                     Sink sink,
+                                     boolean leftTupleMemoryEnabled) {
+        return new ReactiveFromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
     }
 
     @Override

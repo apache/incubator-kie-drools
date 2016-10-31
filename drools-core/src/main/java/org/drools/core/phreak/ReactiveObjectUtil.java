@@ -22,37 +22,38 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.ReactiveFromNode;
+import org.drools.core.reteoo.ReactiveFromNodeLeftTuple;
 import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 
-import java.util.List;
+import java.util.Collection;
 
 import static org.drools.core.phreak.PhreakFromNode.*;
 
 public class ReactiveObjectUtil {
-    
+
     public enum ModificationType {
-        MODIFY, ADD, REMOVE
+        NONE, MODIFY, ADD, REMOVE
     }
 
     public static void notifyModification(ReactiveObject reactiveObject) {
         notifyModification( reactiveObject, reactiveObject.getLeftTuples(), ModificationType.MODIFY);
     }
 
-    public static void notifyModification(Object object, List<Tuple> leftTuples, ModificationType type) {
-        if (leftTuples == null) {
-            return;
-        }
+    public static void notifyModification( Object object, Collection<Tuple> leftTuples, ModificationType type ) {
         for (Tuple leftTuple : leftTuples) {
+            if (!( (ReactiveFromNodeLeftTuple) leftTuple ).updateModificationState( type )) {
+                continue;
+            }
             PropagationContext propagationContext = leftTuple.getPropagationContext();
             ReactiveFromNode node = (ReactiveFromNode)leftTuple.getTupleSink();
 
             LeftTupleSinkNode sink = node.getSinkPropagator().getFirstLeftTupleSink();
             InternalWorkingMemory wm = getInternalWorkingMemory(propagationContext);
 
-            wm.addPropagation(new ReactivePropagation(object, leftTuple, propagationContext, node, sink, type));
+            wm.addPropagation(new ReactivePropagation(object, (ReactiveFromNodeLeftTuple)leftTuple, propagationContext, node, sink, type));
         }
     }
 
@@ -64,13 +65,13 @@ public class ReactiveObjectUtil {
     static class ReactivePropagation extends PropagationEntry.AbstractPropagationEntry {
 
         private final Object object;
-        private final Tuple leftTuple;
+        private final ReactiveFromNodeLeftTuple leftTuple;
         private final PropagationContext propagationContext;
         private final ReactiveFromNode node;
         private final LeftTupleSinkNode sink;
         private final ModificationType type;
 
-        ReactivePropagation( Object object, Tuple leftTuple, PropagationContext propagationContext, ReactiveFromNode node, LeftTupleSinkNode sink, ModificationType type ) {
+        ReactivePropagation( Object object, ReactiveFromNodeLeftTuple leftTuple, PropagationContext propagationContext, ReactiveFromNode node, LeftTupleSinkNode sink, ModificationType type ) {
             this.object = object;
             this.leftTuple = leftTuple;
             this.propagationContext = propagationContext;
@@ -81,6 +82,10 @@ public class ReactiveObjectUtil {
 
         @Override
         public void execute( InternalWorkingMemory wm ) {
+            if ( leftTuple.getModificationType() == ModificationType.NONE ) {
+                return;
+            }
+
             ReactiveFromNode.ReactiveFromMemory mem = wm.getNodeMemory(node);
             InternalFactHandle factHandle = node.createFactHandle( leftTuple, propagationContext, wm, object );
 
@@ -112,6 +117,8 @@ public class ReactiveObjectUtil {
             }
 
             mem.getBetaMemory().setNodeDirty(wm);
+
+            leftTuple.resetModificationState();
         }
     }
 }
