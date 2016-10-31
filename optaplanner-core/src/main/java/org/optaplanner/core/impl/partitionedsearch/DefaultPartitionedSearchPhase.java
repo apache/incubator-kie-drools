@@ -37,6 +37,8 @@ import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.termination.ChildThreadPlumbingTermination;
+import org.optaplanner.core.impl.solver.termination.OrCompositeTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
@@ -92,25 +94,32 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                     + " Use activeThreadCount (" + activeThreadCount
                     + ") instead to avoid CPU hogging and live locks.");
         }
+        ChildThreadPlumbingTermination childThreadPlumbingTermination = new ChildThreadPlumbingTermination();
         PartitionQueue<Solution_> partitionQueue = new PartitionQueue<>(partCount);
         Semaphore activeThreadSemaphore = activeThreadCount == null ? null : new Semaphore(activeThreadCount);
-        for (ListIterator<Solution_> it = partList.listIterator(); it.hasNext(); ) {
-            int partIndex = it.nextIndex();
-            Solution_ part = it.next();
-            PartitionSolver<Solution_> partitionSolver = buildPartitionSolver(activeThreadSemaphore, solverScope);
-            threadPoolExecutor.submit(() -> {
-                try {
-                    partitionSolver.solve(part);
-                    partitionQueue.addFinish(partIndex);
-                } catch (Throwable throwable) {
-                    partitionQueue.addExceptionThrown(partIndex, throwable);
-                }
-            });
-        }
-        for (PartitionChangeMove step : partitionQueue) {
-            /// TODO do the step
+        try {
+            for (ListIterator<Solution_> it = partList.listIterator(); it.hasNext(); ) {
+                int partIndex = it.nextIndex();
+                Solution_ part = it.next();
+                PartitionSolver<Solution_> partitionSolver = buildPartitionSolver(
+                        childThreadPlumbingTermination, activeThreadSemaphore, solverScope);
+                threadPoolExecutor.submit(() -> {
+                    try {
+                        partitionSolver.solve(part);
+                        partitionQueue.addFinish(partIndex);
+                    } catch (Throwable throwable) {
+                        partitionQueue.addExceptionThrown(partIndex, throwable);
+                    }
+                });
+            }
+            for (PartitionChangeMove step : partitionQueue) {
+                /// TODO do the step
 
-
+            }
+        } finally {
+            // If a partition thread throws an Exception, it is propagated here
+            // but the other partition thread won't finish any time soon, so we need to terminate them
+            childThreadPlumbingTermination.terminateChildren();
         }
 //        phaseEnded(phaseScope);
 
@@ -145,9 +154,11 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
 //        }
     }
 
-    public PartitionSolver<Solution_> buildPartitionSolver(Semaphore activeThreadSemaphore,
+    public PartitionSolver<Solution_> buildPartitionSolver(
+            ChildThreadPlumbingTermination childThreadPlumbingTermination, Semaphore activeThreadSemaphore,
             DefaultSolverScope<Solution_> solverScope) {
-        Termination partTermination = termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD);
+        Termination partTermination = new OrCompositeTermination(childThreadPlumbingTermination,
+                termination.createChildThreadTermination( solverScope, ChildThreadType.PART_THREAD));
         BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
                 .buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());

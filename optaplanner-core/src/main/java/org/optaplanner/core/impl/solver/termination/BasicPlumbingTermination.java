@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.solver;
+package org.optaplanner.core.impl.solver.termination;
 
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.solver.ChildThreadType;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.AbstractTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -46,11 +48,16 @@ public class BasicPlumbingTermination extends AbstractTermination {
     // Plumbing worker methods
     // ************************************************************************
 
+    /**
+     * Thread-safe.
+     */
     public synchronized void resetTerminateEarly() {
         terminatedEarly = false;
     }
 
     /**
+     * Thread-safe.
+     * <p>
      * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}.
      * @return true if successful
      */
@@ -64,6 +71,9 @@ public class BasicPlumbingTermination extends AbstractTermination {
         return terminationEarlySuccessful;
     }
 
+    /**
+     * Thread-safe.
+     */
     public synchronized boolean isTerminateEarly() {
         return terminatedEarly;
     }
@@ -130,8 +140,8 @@ public class BasicPlumbingTermination extends AbstractTermination {
 
     @Override
     public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
-        throw new IllegalStateException(
-                "BasicPlumbingTermination configured only as solver termination."
+        throw new IllegalStateException(BasicPlumbingTermination.class.getSimpleName()
+                + " configured only as solver termination."
                 + " It is always bridged to phase termination.");
     }
 
@@ -142,8 +152,8 @@ public class BasicPlumbingTermination extends AbstractTermination {
 
     @Override
     public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
-        throw new IllegalStateException(
-                "BasicPlumbingTermination configured only as solver termination."
+        throw new IllegalStateException(BasicPlumbingTermination.class.getSimpleName()
+                + " configured only as solver termination."
                 + " It is always bridged to phase termination.");
     }
 
