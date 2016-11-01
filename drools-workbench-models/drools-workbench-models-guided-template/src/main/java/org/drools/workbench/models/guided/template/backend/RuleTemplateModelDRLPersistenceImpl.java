@@ -162,20 +162,29 @@ public class RuleTemplateModelDRLPersistenceImpl
                         buf.delete( buf.length() - 4, buf.length() );
                     }
                 }
-                buf.append( ") || hasLHSNonTemplateOutput" ).append( gctx.getDepth() + "_" + gctx.getOffset() ).append( "}" );
-            } else {
-                LHSGeneratorContext parentContext = gctx.getParent();
-                if ( parentContext != null ) {
-                    Set<String> parentVarsInScope = new HashSet<String>( parentContext.getVarsInScope() );
-                    parentVarsInScope.removeAll( gctx.getVarsInScope() );
-                    if ( parentVarsInScope.size() > 0 ) {
-                        buf.append( "@if{!(" );
-                        for ( String var : parentVarsInScope ) {
-                            buf.append( var + " == empty && " );
-                        }
-                        buf.delete( buf.length() - 4, buf.length() );
-                        buf.append( ")}" );
+                int ctxOffset = gctx.getOffset();
+                if ( ctxOffset > 0 ) {
+                    buf.append( ") || (" );
+                    do {
+                        ctxOffset--;
+                        buf.append( "hasLHSNonTemplateOutput" + gctx.getDepth() + "_" + ctxOffset + " || " );
                     }
+                    while ( ctxOffset > 0 );
+                    buf.delete( buf.length() - 4, buf.length() );
+                    buf.append( ")}" );
+                }
+
+            } else {
+                int ctxOffset = gctx.getOffset();
+                if ( ctxOffset > 0 ) {
+                    buf.append( "@if{" );
+                    do {
+                        ctxOffset--;
+                        buf.append( "hasLHSOutput" + gctx.getDepth() + "_" + ctxOffset + " || " );
+                    }
+                    while ( ctxOffset > 0 );
+                    buf.delete( buf.length() - 4, buf.length() );
+                    buf.append( "}" );
                 }
             }
         }
