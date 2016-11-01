@@ -39,7 +39,7 @@ public class RHSGeneratorContextFactory {
         final RHSGeneratorContext gc = new RHSGeneratorContext( parent,
                                                                 action,
                                                                 getMaximumDepth() + 1,
-                                                                parent.getOffset() );
+                                                                0 );
         contexts.add( gc );
         return gc;
     }
@@ -49,7 +49,7 @@ public class RHSGeneratorContextFactory {
         final RHSGeneratorContext gc = new RHSGeneratorContext( parent,
                                                                 afv,
                                                                 getMaximumDepth() + 1,
-                                                                parent.getOffset() );
+                                                                0 );
         contexts.add( gc );
         return gc;
     }
