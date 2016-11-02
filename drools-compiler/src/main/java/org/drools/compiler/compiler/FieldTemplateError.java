@@ -70,15 +70,7 @@ public class FieldTemplateError extends DroolsError {
     }
 
     public String getMessage() {
-        String summary = this.message;
-        if ( this.object instanceof CompilationProblem[] ) {
-            final CompilationProblem[] problem = (CompilationProblem[]) this.object;
-            for ( int i = 0; i < problem.length; i++ ) {
-                summary = summary + " " + problem[i].getMessage();
-            }
-
-        }
-        return summary;
+        return BuilderResultUtils.getProblemMessage( this.object, this.message );
     }
 
 }

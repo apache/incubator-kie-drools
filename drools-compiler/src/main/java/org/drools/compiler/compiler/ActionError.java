@@ -16,7 +16,6 @@
 
 package org.drools.compiler.compiler;
 
-import org.drools.compiler.commons.jci.problems.CompilationProblem;
 import org.drools.compiler.lang.descr.BaseDescr;
 
 public class ActionError extends DroolsError {
@@ -45,12 +44,12 @@ public class ActionError extends DroolsError {
     public Object getObject() {
         return this.object;
     }
-    
+
     public int[] getLines() {
         return this.errorLines;
     }
 
-    /** 
+    /**
      * This will return the line number of the error, if possible
      * Otherwise it will be -1
      */
@@ -59,37 +58,15 @@ public class ActionError extends DroolsError {
     }
 
     public String getMessage() {
-        String summary = this.message;
-        if ( this.object instanceof CompilationProblem[] ) {
-            final CompilationProblem[] problem = (CompilationProblem[]) this.object;
-            for ( int i = 0; i < problem.length; i++ ) {
-                if (i != 0) {
-                    summary = summary + "\n" + problem[i].getMessage();
-                } else {
-                    summary = summary + " " + problem[i].getMessage();
-                }
-            }
-
-        }
-        return summary;
+        return BuilderResultUtils.getProblemMessage( this.object, this.message, "\n" );
     }
 
     public String toString() {
-        final StringBuilder buf = new StringBuilder();
-        buf.append( this.message );
-        buf.append( " : " );
-        buf.append( "\n" );
-        if ( this.object instanceof CompilationProblem[] ) {
-            final CompilationProblem[] problem = (CompilationProblem[]) this.object;
-            for ( int i = 0; i < problem.length; i++ ) {
-                buf.append( "\t" );
-                buf.append( problem[i] );
-                buf.append( "\n" );
-            }
-        } else if ( this.object != null ) {
-            buf.append( this.object );
-        }
-        return buf.toString();
+        final StringBuilder builder = new StringBuilder()
+                .append( this.message )
+                .append( " : " )
+                .append( "\n" );
+        return BuilderResultUtils.appendProblems( this.object, builder ).toString();
     }
-    
+
 }
