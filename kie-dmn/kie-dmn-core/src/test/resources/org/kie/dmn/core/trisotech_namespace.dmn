@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd"
+                      xmlns="http://www.trisotech.com/dmn/definitions/_b8feec86-dadf-4051-9feb-8e6093bbb530"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler"
+                      exporterVersion="5.0.33.201611011126"
+                      id="_c2cd0a08-95bb-4955-aada-f1997b0bc145"
+                      name="Solution 3"
+                      namespace="http://www.trisotech.com/dmn/definitions/_b8feec86-dadf-4051-9feb-8e6093bbb530"
+                      triso:logoChoice="Default">
+  <semantic:decision id="_42806504-8ed5-488f-b274-de98c1bc67b9" name="Ship can enter a Dutch port">
+    <semantic:variable id="_5e5f1d3a-2476-4688-82c6-796f23ab1b38" name="Ship can enter a Dutch port" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_b932dcf4-5462-42bb-8c6b-9280ec229d7a"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_ac1c5fe0-e9ca-4338-b102-68e3f045ec37"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_06cf4d4c-2fb0-457b-aefc-c7b7e2138234"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression>
+      <semantic:text>if Ship Size &lt; 80 and Residual Cargo Size &lt;0.5
+        then true
+        else
+        if Ship Size &gt;= 80 and Residual Cargo Size &lt;0.5 and IsDoubleHulled
+        then true
+        else false
+      </semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:inputData id="_06cf4d4c-2fb0-457b-aefc-c7b7e2138234" name="Ship Size">
+    <semantic:description>&lt;p&gt;Ship Size should be specified in meters.&lt;/p&gt;</semantic:description>
+    <semantic:variable id="_4fac5c53-13c7-46be-8191-e99fbb57b968" name="Ship Size"/>
+  </semantic:inputData>
+  <semantic:inputData id="_ac1c5fe0-e9ca-4338-b102-68e3f045ec37" name="Residual Cargo Size">
+    <semantic:description>&lt;p&gt;&lt;span&gt;&amp;nbsp;Residual cargo measurement should be specified in mg dry weight per cm&amp;sup2;.&lt;/span&gt;&lt;/p&gt;</semantic:description>
+    <semantic:variable id="_9c203107-95b4-48d4-86ec-bf4208e870b0" name="Residual Cargo Size"/>
+  </semantic:inputData>
+  <semantic:inputData id="_b932dcf4-5462-42bb-8c6b-9280ec229d7a" name="IsDoubleHulled">
+    <semantic:variable id="_48888a03-aa38-43f0-bef0-ee8e5ee32dde" name="IsDoubleHulled"/>
+  </semantic:inputData>
+</semantic:definitions>
