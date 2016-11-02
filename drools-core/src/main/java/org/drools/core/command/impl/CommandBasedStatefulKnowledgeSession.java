@@ -82,6 +82,7 @@ import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -551,7 +552,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     }
     
     public KieSessionConfiguration getSessionConfiguration() {
-        return ((KnowledgeCommandContext) commandService.getContext()).getKieSession().getSessionConfiguration();
+        return ((RegistryContext) commandService.getContext()).lookup( KieSession.class ).getSessionConfiguration();
     }
 
     public void addInterceptor(Interceptor interceptor) {

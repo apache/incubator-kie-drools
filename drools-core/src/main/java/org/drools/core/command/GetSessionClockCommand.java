@@ -16,21 +16,18 @@
 
 package org.drools.core.command;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.kie.internal.command.Context;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.time.SessionClock;
+import org.kie.internal.command.Context;
 
 public class GetSessionClockCommand
     implements
-    GenericCommand<SessionClock> {
+    ExecutableCommand<SessionClock> {
 
     public SessionClock execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup(KieSession.class);
         return ksession.<SessionClock>getSessionClock();
     }
 

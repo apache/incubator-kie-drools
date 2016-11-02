@@ -1,10 +1,10 @@
 package org.drools.core.command;
 
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.internal.command.Context;
 
 
-public class LeaveConversationCommand<Void> implements GenericCommand<Void> {
+public class LeaveConversationCommand<Void> implements ExecutableCommand<Void> {
     public LeaveConversationCommand() {
     }
 

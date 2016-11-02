@@ -16,19 +16,18 @@
 
 package org.drools.core.runtime.impl;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.kie.api.runtime.ExecutionResults;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.kie.api.runtime.ExecutionResults;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @XmlRootElement(name="execution-results")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -64,6 +63,10 @@ public class ExecutionResultImpl implements ExecutionResults, Serializable {
      */
     public Map<String, Object> getResults() {
         return this.results;
+    }
+
+    public void setResult(String identifier, Object result) {
+        this.results.put( identifier, result );
     }
 
     public void setResults(HashMap<String, Object> results) {

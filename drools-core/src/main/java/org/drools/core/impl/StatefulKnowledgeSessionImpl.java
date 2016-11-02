@@ -28,10 +28,9 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
-import org.drools.core.command.impl.FixedKnowledgeCommandContext;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.drools.core.command.impl.ContextImpl;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.ConcurrentNodeMemories;
@@ -100,6 +99,8 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
+import org.kie.api.KieBase;
+import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.kiebase.KieBaseEventListener;
@@ -113,7 +114,6 @@ import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -231,8 +231,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private Map<String, Channel> channels;
 
     private Environment environment;
-
-    private ExecutionResults batchExecutionResult;
 
     // this is a counter of concurrent operations happening. When this counter is zero,
     // the engine is idle.
@@ -701,39 +699,29 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public <T> T execute(Command<T> command) {
-        return execute( null,
-                        command );
+        return execute( new ContextImpl(), command );
     }
 
     public <T> T execute(Context context,
                          Command<T> command) {
 
-        ExecutionResultImpl results = null;
-        if ( context != null ) {
-            results = (ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults();
-        }
-
+        ExecutionResultImpl results = ((RegistryContext) context).lookup( ExecutionResultImpl.class );
         if ( results == null ) {
             results = new ExecutionResultImpl();
+            ((RegistryContext) context).register( ExecutionResultImpl.class, results );
         }
 
-        if ( !(command instanceof BatchExecutionCommandImpl) ) {
-            return (T) ((GenericCommand) command).execute( new FixedKnowledgeCommandContext( context,
-                                                                                             null,
-                                                                                             this.kBase,
-                                                                                             this,
-                                                                                             results ) );
+        ((RegistryContext) context).register( KieBase.class, this.kBase )
+                                   .register( KieSession.class, this );
+
+        if ( !(command instanceof BatchExecutionCommand) ) {
+            return (T) ((ExecutableCommand) command).execute( context );
         }
 
         try {
-            startBatchExecution( results );
-            ((GenericCommand) command).execute( new FixedKnowledgeCommandContext( context,
-                                                                                  null,
-                                                                                  this.kBase,
-                                                                                  this,
-                                                                                  results ) );
-            ExecutionResults result = getExecutionResult();
-            return (T) result;
+            startBatchExecution();
+            ((ExecutableCommand) command).execute( context );
+            return (T) results;
         } finally {
             endBatchExecution();
             if (kBase.flushModifications()) {
@@ -1956,17 +1944,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return (SessionClock) this.timerService;
     }
 
-    public void startBatchExecution(ExecutionResultImpl results) {
+    public void startBatchExecution() {
         this.lock.lock();
-        this.batchExecutionResult = results;
-    }
-
-    public ExecutionResultImpl getExecutionResult() {
-        return (ExecutionResultImpl) this.batchExecutionResult;
     }
 
     public void endBatchExecution() {
-        this.batchExecutionResult = null;
         this.lock.unlock();
     }
 

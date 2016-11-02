@@ -2,10 +2,10 @@ package org.drools.core.fluent.impl;
 
 
 import org.drools.core.command.RequestContextImpl;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.internal.command.Context;
 
-public class GetContextCommand<Void> implements GenericCommand<Void> {
+public class GetContextCommand<Void> implements ExecutableCommand<Void> {
     private String name;
 
     public GetContextCommand(String name) {

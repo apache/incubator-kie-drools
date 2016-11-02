@@ -21,8 +21,7 @@ import org.drools.core.command.Interceptor;
 import org.drools.core.command.impl.AbstractInterceptor;
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
-import org.drools.core.command.impl.FixedKnowledgeCommandContext;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.command.runtime.UnpersistableCommand;
 import org.drools.core.common.EndOperationListener;
@@ -66,7 +65,7 @@ public class SingleSessionCommandService
 
     private KieSession                 ksession;
     private Environment                env;
-    private KnowledgeCommandContext    kContext;
+    private RegistryContext            sessionContext;
     private CommandService             commandService;
 
     private TransactionManager         txm;
@@ -143,14 +142,10 @@ public class SingleSessionCommandService
         this.sessionInfo.setJPASessionMashallingHelper( this.marshallingHelper );
 
         ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl(this.txm, this.sessionInfo ) );
-        
-        this.kContext = new FixedKnowledgeCommandContext( new ContextImpl( "ksession", null),
-                                                          null,
-                                                          null,
-                                                          this.ksession,
-                                                          null );
 
-        this.commandService = new TransactionInterceptor(kContext);
+        this.sessionContext = new ContextImpl().register( KieSession.class, this.ksession );
+
+        this.commandService = new TransactionInterceptor(sessionContext);
 
         TimerJobFactoryManager timerJobFactoryManager = ((InternalKnowledgeRuntime) ksession ).getTimerService().getTimerJobFactoryManager();
         if (timerJobFactoryManager instanceof CommandServiceTimerJobFactoryManager) {
@@ -257,16 +252,12 @@ public class SingleSessionCommandService
         kruntime.setIdentifier( this.sessionInfo.getId() );
         kruntime.setEndOperationListener( new EndOperationListenerImpl( this.txm, this.sessionInfo ) );
 
-        if ( this.kContext == null ) {
+        if ( this.sessionContext == null ) {
             // this should only happen when this class is first constructed
-            this.kContext = new FixedKnowledgeCommandContext( new ContextImpl( "ksession", null),
-                                                              null,
-                                                              null,
-                                                              this.ksession,
-                                                              null );
+            this.sessionContext = new ContextImpl().register( KieSession.class, this.ksession );
         }
 
-        this.commandService = new TransactionInterceptor(kContext);
+        this.commandService = new TransactionInterceptor(sessionContext);
         // apply interceptors
         Iterator<Interceptor> iterator = this.interceptors.descendingIterator();
         while (iterator.hasNext()) {
@@ -386,7 +377,7 @@ public class SingleSessionCommandService
     }
 
     public Context getContext() {
-        return this.kContext;
+        return this.sessionContext;
     }
 
     public CommandService getCommandService() {

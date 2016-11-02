@@ -15,16 +15,16 @@
 
 package org.drools.core.command.runtime.rule;
 
-import java.util.Collection;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalFactHandle;
-import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.Context;
 
-public class FromExternalFactHandleCommand implements GenericCommand<FactHandle> {
+import java.util.Collection;
+
+public class FromExternalFactHandleCommand implements ExecutableCommand<FactHandle> {
 
     private String factHandleExternalForm;
     private boolean disconnected;
@@ -42,7 +42,7 @@ public class FromExternalFactHandleCommand implements GenericCommand<FactHandle>
     }
 
     public FactHandle execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         Collection<FactHandle> factHandles = ksession.getFactHandles();
         int fhId = Integer.parseInt(factHandleExternalForm.split(":")[1]);
         for (FactHandle factHandle : factHandles) {

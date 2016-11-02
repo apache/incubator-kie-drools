@@ -16,7 +16,7 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.command.Context;
 
@@ -24,7 +24,7 @@ import org.kie.internal.command.Context;
  *
  * @author salaboy
  */
-public class KBuilderSetPropertyCommand implements GenericCommand<Void> {
+public class KBuilderSetPropertyCommand implements ExecutableCommand<Void> {
 	
     private String kbuilderConfId;
     private String name;

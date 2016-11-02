@@ -18,11 +18,11 @@ package org.drools.core.world.impl;
 
 import org.drools.core.command.GetDefaultValue;
 import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.api.command.Command;
+import org.kie.api.runtime.CommandExecutor;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.ContextManager;
-import org.kie.api.runtime.CommandExecutor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,16 +31,20 @@ public class ContextManagerImpl
         implements ContextManager, GetDefaultValue, CommandExecutor {
 
 
-    private Context                       root;
-    private Map<String, Context>          contexts;
+    private Context root;
+    private Map<String, Context> contexts;
 
-    private static String                 ROOT             = "ROOT";
+    public static String ROOT = "ROOT";
 
-    private CommandExecutionHandler       executionHandler = new DefaultCommandExecutionHandler();
+    private CommandExecutionHandler executionHandler = new DefaultCommandExecutionHandler();
 
-    private Object                        lastReturnValue;
+    private Object lastReturnValue;
 
-    public ContextManagerImpl(Map<String, Context>          contexts) {
+    public ContextManagerImpl() {
+        this( new HashMap<String, Context>() );
+    }
+
+    public ContextManagerImpl( Map<String, Context> contexts ) {
         this.root = new ContextImpl( ROOT,
                                      this );
 
@@ -52,98 +56,46 @@ public class ContextManagerImpl
                            this.root );
     }
 
-    public ContextManagerImpl() {
-        this( new HashMap<String, Context>() );
-    }
-
-    public <T> T execute(Command<T> command) {
+    public <T> T execute( Command<T> command ) {
         return null;
     }
-//    public void run() {
-//        SimulationStep step;
-//        while ( (step = executeNextStep()) != null ) {
-//
-//        }
-//    }
 
-//    public SimulationStep executeNextStep() {
-//        if ( this.queue.isEmpty() ) {
-//            return null;
-//        }
-//        SimulationStepImpl step = (SimulationStepImpl) this.queue.remove();
-//        SimulationPathImpl path = (SimulationPathImpl) step.getPath();
-//
-//        Context pathContext = new ResolvingKnowledgeCommandContext( this.contexts.get( path.getName() ) );
-//
-//        // increment the clock for all the registered ksessions
-//        for ( StatefulKnowledgeSession ksession : this.ksessions ) {
-//            SessionPseudoClock clock = (SessionPseudoClock) ksession.getSessionClock();
-//            long newTime = startTime + step.getTemporalDistance();
-//            long currentTime = clock.getCurrentTime();
-//
-//            clock.advanceTime( newTime - currentTime,
-//                               TimeUnit.MILLISECONDS );
-//        }
-//
-//        for ( Command cmd : step.getCommands() ) {
-//            if ( cmd instanceof NewStatefulKnowledgeSessionCommand ) {
-//                // instantiate the ksession, set it's clock and register it
-//                StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) executionHandler.execute( (GenericCommand) cmd,
-//                                                                                                         pathContext );
-//                if ( ksession != null ) {
-//                    SessionPseudoClock clock = (SessionPseudoClock) ksession.getSessionClock();
-//                    long newTime = startTime + step.getTemporalDistance();
-//                    long currentTime = clock.getCurrentTime();
-//                    clock.advanceTime( newTime - currentTime,
-//                                       TimeUnit.MILLISECONDS );
-//                    this.ksessions.add( ksession );
-//                    this.lastReturnValue = ksession;
-//                }
-//            } else if ( cmd instanceof GenericCommand ) {
-//                this.lastReturnValue = executionHandler.execute( (GenericCommand) cmd,
-//                                                                 pathContext );
-//            }
-//        }
-//
-//        return step;
-//    }
-
-    public void setCommandExecutionHandler(CommandExecutionHandler executionHandler) {
+    public void setCommandExecutionHandler( CommandExecutionHandler executionHandler ) {
         this.executionHandler = executionHandler;
     }
-    
-    public Context createContext(String identifier) {
-        Context ctx = this.contexts.get(  identifier );
+
+    public Context createContext( String identifier ) {
+        Context ctx = this.contexts.get( identifier );
         if ( ctx == null ) {
             ctx = new ContextImpl( identifier, this, root );
-            this.contexts.put(  identifier, ctx );
+            this.contexts.put( identifier, ctx );
         }
-        
+
         return ctx;
     }
 
-    public Context getContext(String identifier) {
+    public Context getContext( String identifier ) {
         return this.contexts.get( identifier );
     }
 
     public Context getRootContext() {
         return this.root;
     }
-    
+
     public Object getLastReturnValue() {
         return this.lastReturnValue;
     }
 
     public static interface CommandExecutionHandler {
-        public Object execute(GenericCommand command,
-                              Context context);
+        public Object execute( ExecutableCommand command,
+                               Context context );
     }
 
     public static class DefaultCommandExecutionHandler
-        implements
-        CommandExecutionHandler {
-        public Object execute(GenericCommand command,
-                              Context context) {
+            implements
+            CommandExecutionHandler {
+        public Object execute( ExecutableCommand command,
+                               Context context ) {
             return command.execute( context );
         }
     }
@@ -152,59 +104,23 @@ public class ContextManagerImpl
         return lastReturnValue;
     }
 
-	public ContextManager getContextManager() {
-		return this;
-	}
+    public ContextManager getContextManager() {
+        return this;
+    }
 
-	public String getName() {
-		return root.getName();
-	}
+    public String getName() {
+        return root.getName();
+    }
 
-	public Object get(String identifier) {
-		return root.get( identifier );
-	}
+    public Object get( String identifier ) {
+        return root.get( identifier );
+    }
 
-	public void set(String identifier, Object value) {
-		root.set( identifier, value );
-	}
+    public void set( String identifier, Object value ) {
+        root.set( identifier, value );
+    }
 
-	public void remove(String identifier) {
-		root.remove( identifier );
-	}
-
-    //    public static interface CommandExecutorService<T> {
-    //        T execute(Command command);
-    //    }
-    //    
-    //    public static class SimulatorCommandExecutorService<T> implements CommandExecutorService {
-    //        Map map = new HashMap() {
-    //            {
-    //               put( KnowledgeBuilderAddCommand.class, null);
-    //            }
-    //        };
-    //        
-    //        public  T execute(Command command) {
-    //            return null;
-    //        }
-    //    }
-    //    
-    //    public static interface CommandContextAdapter {
-    //        Context getContext();
-    //    }
-    //    
-    //    public static class KnowledgeBuilderCommandContextAdapter implements CommandContextAdapter {
-    //
-    //        public Context getContext() {
-    //            return new KnowledgeBuilderCommandContext();
-    //        }
-    //        
-    //    }
-
-    //    public void runUntil(SimulationStep step) {
-    //        
-    //    }
-    //    
-    //    public void runForTemporalDistance(long distance) {
-    //        
-    //    }
+    public void remove( String identifier ) {
+        root.remove( identifier );
+    }
 }

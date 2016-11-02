@@ -16,15 +16,15 @@
 
 package org.drools.core.command.builder;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.command.Context;
 
 public class KnowledgeBuilderHasErrorsCommand
     implements
-    GenericCommand<Boolean> {
+    ExecutableCommand<Boolean> {
 
     private String outIdentifier;
 
@@ -36,10 +36,10 @@ public class KnowledgeBuilderHasErrorsCommand
     }
 
     public Boolean execute(Context context) {
-        KnowledgeBuilder kbuilder = ((KnowledgeCommandContext) context).getKnowledgeBuilder();
+        KnowledgeBuilder kbuilder = ((RegistryContext) context).lookup(KnowledgeBuilder.class);
         boolean errors = kbuilder.hasErrors();
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl)((KnowledgeCommandContext) context).getExecutionResults()).getResults().put( this.outIdentifier, errors );
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, errors );
         }
         return errors;
     }

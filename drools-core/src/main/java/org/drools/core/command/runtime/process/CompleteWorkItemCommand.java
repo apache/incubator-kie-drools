@@ -16,8 +16,11 @@
 
 package org.drools.core.command.runtime.process;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.command.Context;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -25,16 +28,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.kie.internal.command.Context;
-import org.kie.api.runtime.KieSession;
+import java.util.HashMap;
+import java.util.Map;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class CompleteWorkItemCommand implements GenericCommand<Void> {
+public class CompleteWorkItemCommand implements ExecutableCommand<Void> {
 
     @XmlAttribute(name="id", required = true)
     private Long workItemId;
@@ -71,7 +70,7 @@ public class CompleteWorkItemCommand implements GenericCommand<Void> {
     }
 
     public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         ksession.getWorkItemManager().completeWorkItem(workItemId, results);
         return null;
     }

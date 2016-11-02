@@ -17,10 +17,11 @@
 package org.drools.core.command.runtime.rule;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -36,7 +37,7 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectsInEntryPointCommand
     implements
-    GenericCommand<Collection>, IdentifiableResult {
+    ExecutableCommand<Collection>, IdentifiableResult {
 
     public String getOutIdentifier() {
         return outIdentifier;
@@ -69,7 +70,7 @@ public class GetObjectsInEntryPointCommand
     }
 
     public Collection execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         EntryPoint ep = ksession.getEntryPoint(entryPoint);
 
         Collection col = null;
@@ -84,7 +85,7 @@ public class GetObjectsInEntryPointCommand
         if ( this.outIdentifier != null ) {
             List objects = new ArrayList( col );
 
-            ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult().getResults().put( this.outIdentifier, objects );
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, objects );
         }
 
         return col;

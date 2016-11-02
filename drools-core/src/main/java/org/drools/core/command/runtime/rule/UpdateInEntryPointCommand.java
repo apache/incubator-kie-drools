@@ -16,8 +16,8 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -30,7 +30,7 @@ import java.util.Arrays;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class UpdateInEntryPointCommand
-        implements GenericCommand<Void> {
+        implements ExecutableCommand<Void> {
 
     private static final long serialVersionUID = 3255044102543531497L;
 
@@ -59,7 +59,7 @@ public class UpdateInEntryPointCommand
     }
 
     public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         EntryPoint ep = ksession.getEntryPoint( entryPoint );
         if (modifiedProperties != null) {
             ep.update( handle, object, modifiedProperties );

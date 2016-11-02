@@ -16,8 +16,8 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class DeleteCommand
-        implements GenericCommand<Void> {
+        implements ExecutableCommand<Void> {
 
     @XmlElement(name="handle")
     private DisconnectedFactHandle handle;
@@ -71,7 +71,7 @@ public class DeleteCommand
     }
 
     public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         ksession.getEntryPoint( handle.getEntryPointId() ).delete( handle, fhState );
         return null;
     }

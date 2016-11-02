@@ -16,25 +16,25 @@
 
 package org.drools.core.command.runtime.rule;
 
+import org.drools.core.command.IdentifiableResult;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.Context;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
-import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.command.Context;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.EntryPoint;
-
 @XmlAccessorType(XmlAccessType.NONE)
 public class InsertObjectInEntryPointCommand
         implements
-        GenericCommand<FactHandle>, IdentifiableResult {
+        ExecutableCommand<FactHandle>, IdentifiableResult {
 
     private static final long serialVersionUID = 510l;
     @XmlElement
@@ -63,7 +63,7 @@ public class InsertObjectInEntryPointCommand
 
     public FactHandle execute(Context context) {
 
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         EntryPoint ep = ksession.getEntryPoint(entryPoint);
         FactHandle factHandle = ep.insert(object);
 
@@ -72,11 +72,9 @@ public class InsertObjectInEntryPointCommand
 
         if (outIdentifier != null) {
             if (this.returnObject) {
-                ((ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults()).getResults().put(this.outIdentifier,
-                        object);
+                ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier, object);
             }
-            ((ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults()).getFactHandles().put(this.outIdentifier,
-                    disconnectedHandle);
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).getFactHandles().put(this.outIdentifier, disconnectedHandle);
         }
 
         return disconnectedHandle;

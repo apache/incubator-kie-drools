@@ -16,18 +16,8 @@
 
 package org.drools.core.command.runtime.process;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -35,9 +25,18 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.ProcessInstanceIdCommand;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.HashMap;
+import java.util.Map;
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SetProcessInstanceVariablesCommand implements GenericCommand<Void>, ProcessInstanceIdCommand {
+public class SetProcessInstanceVariablesCommand implements ExecutableCommand<Void>, ProcessInstanceIdCommand {
 
 	/** Generated serial version UID */
     private static final long serialVersionUID = 7802415761845739379L;
@@ -77,7 +76,7 @@ public class SetProcessInstanceVariablesCommand implements GenericCommand<Void>,
     }
 
     public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
         if (processInstance != null) {
         	if (variables != null) {
