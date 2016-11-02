@@ -17,30 +17,29 @@
 package org.drools.core.command.runtime.process;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.Context;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetWorkItemIdsCommand implements GenericCommand<List<Long>> {
+public class GetWorkItemIdsCommand implements ExecutableCommand<List<Long>> {
 
     /** generated serial version UID */
     private static final long serialVersionUID = 1471981530823361925L;
 
     public List<Long> execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         Set<WorkItem> workItems = ((WorkItemManager) ksession.getWorkItemManager()).getWorkItems();
         List<Long> workItemIds = new ArrayList<Long>(workItems.size());
         for(WorkItem workItem : workItems ) { 

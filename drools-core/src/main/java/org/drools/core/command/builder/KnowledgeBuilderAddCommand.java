@@ -16,17 +16,17 @@
 
 package org.drools.core.command.builder;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.command.Context;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.command.Context;
 
 public class KnowledgeBuilderAddCommand
     implements
-    GenericCommand<Void> {
+    ExecutableCommand<Void> {
 
     private Resource              resource;
     private ResourceType          resourceType;
@@ -42,7 +42,7 @@ public class KnowledgeBuilderAddCommand
     
 
     public Void execute(Context context) {
-        KnowledgeBuilder kbuilder = ((KnowledgeCommandContext) context).getKnowledgeBuilder();
+        KnowledgeBuilder kbuilder = ((RegistryContext) context).lookup(KnowledgeBuilder.class);
         if ( resourceConfiguration == null ) {
             kbuilder.add( resource,
                           resourceType );

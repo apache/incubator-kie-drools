@@ -16,25 +16,26 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.kie.api.KieBase;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.command.Context;
 
 public class KnowledgeBaseAddKnowledgePackagesCommand
     implements
-    GenericCommand<Void> {
+    ExecutableCommand<Void> {
 
     public KnowledgeBaseAddKnowledgePackagesCommand() {
     }
 
     public Void execute(Context context) {
-        KnowledgeBuilder kbuilder = ((KnowledgeCommandContext) context).getKnowledgeBuilder();
+        KnowledgeBuilder kbuilder = ((RegistryContext) context).lookup(KnowledgeBuilder.class);
         if (kbuilder.hasErrors()) {
             throw new IllegalStateException("There are rule compilation errors:\n" + kbuilder.getErrors().toString());
         }
-        KnowledgeBase kbase = (KnowledgeBase) ((KnowledgeCommandContext) context).getKieBase();
+        KnowledgeBase kbase = (KnowledgeBase) ((RegistryContext) context).lookup(KieBase.class);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return null;
     }

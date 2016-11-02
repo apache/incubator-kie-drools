@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BatchImpl implements Batch {
-    private long distance;
+    private final long distance;
 
     private List<Command> commands = new ArrayList<Command>();
 
     public BatchImpl() {
+        this(0L);
     }
 
     public BatchImpl(long distance) {
@@ -22,12 +23,9 @@ public class BatchImpl implements Batch {
         return distance;
     }
 
-    public void setDistance(int distance) {
-        this.distance = distance;
-    }
-
-    public void addCommand(Command cmd) {
+    public BatchImpl addCommand(Command cmd) {
         this.commands.add(cmd);
+        return this;
     }
 
     @Override

@@ -15,28 +15,26 @@
  */
 package org.drools.persistence.jta;
 
-import static org.drools.persistence.jta.JtaTransactionManagerTest.COMMAND_ENTITY_MANAGER;
-import static org.drools.persistence.jta.JtaTransactionManagerTest.COMMAND_ENTITY_MANAGER_FACTORY;
-
-import java.util.HashMap;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
+import bitronix.tm.TransactionManagerServices;
 import org.drools.core.base.MapGlobalResolver;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.EnvironmentFactory;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.command.Context;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.KieSession;
 
-import bitronix.tm.TransactionManagerServices;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import java.util.HashMap;
+
+import static org.drools.persistence.jta.JtaTransactionManagerTest.COMMAND_ENTITY_MANAGER;
+import static org.drools.persistence.jta.JtaTransactionManagerTest.COMMAND_ENTITY_MANAGER_FACTORY;
 
 
 /**
@@ -47,7 +45,7 @@ import bitronix.tm.TransactionManagerServices;
  * 
  *
  */
-public class TransactionTestCommand implements GenericCommand<Void> {
+public class TransactionTestCommand implements ExecutableCommand<Void> {
 
     private static final long serialVersionUID = -7640078670024414748L;
     
@@ -86,7 +84,7 @@ public class TransactionTestCommand implements GenericCommand<Void> {
         em.persist(mainObject);
 
         if( subObject != null ) { 
-            KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+            KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
   
             // THe following 3 lines are the important ones! (See below for an explanation)
             KnowledgeBase cleanKBase = KnowledgeBaseFactory.newKnowledgeBase();

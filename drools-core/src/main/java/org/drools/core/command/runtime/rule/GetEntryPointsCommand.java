@@ -16,26 +16,25 @@
 
 package org.drools.core.command.runtime.rule;
 
+import org.drools.core.command.EntryPointCreator;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.internal.command.Context;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.drools.core.command.EntryPointCreator;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.reteoo.builder.EntryPointBuilder;
-import org.kie.internal.command.Context;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.EntryPoint;
-
 public class GetEntryPointsCommand
     implements
-    GenericCommand<Collection< ? extends EntryPoint>> {
+    ExecutableCommand<Collection< ? extends EntryPoint>> {
 
     public GetEntryPointsCommand() {
     }
 
     public Collection< ? extends EntryPoint> execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         Collection< ? extends EntryPoint> eps = ksession.getEntryPoints();
         EntryPointCreator epCreator = (EntryPointCreator)context.get(EntryPointCreator.class.getName());
         if (epCreator == null) {

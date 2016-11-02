@@ -1,13 +1,10 @@
 package org.drools.core.command;
 
-import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.internal.command.Context;
 
-import java.util.Map;
 
-
-public class OutCommand<T> implements GenericCommand<T> {
+public class OutCommand<T> implements ExecutableCommand<T> {
     private String name;
 
     public OutCommand() {

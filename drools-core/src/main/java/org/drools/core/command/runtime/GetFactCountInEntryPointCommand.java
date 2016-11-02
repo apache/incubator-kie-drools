@@ -16,14 +16,14 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.Context;
 
 public class GetFactCountInEntryPointCommand
     implements
-    GenericCommand<Long> {
+    ExecutableCommand<Long> {
 
     private String entryPoint;
 
@@ -32,7 +32,7 @@ public class GetFactCountInEntryPointCommand
     }
 
     public Long execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         return ksession.getEntryPoint(entryPoint).getFactCount();
     }
 

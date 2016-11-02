@@ -17,24 +17,23 @@ package org.drools.core.command.runtime.rule;
 
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
-import org.drools.core.command.impl.FixedKnowledgeCommandContext;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalFactHandle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.rule.FactHandle;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("unchecked")
 public class GetFactHandlesCommandTest {
@@ -47,9 +46,8 @@ public class GetFactHandlesCommandTest {
     public void setup() { 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = kbase.newStatefulKnowledgeSession();
-        FixedKnowledgeCommandContext kContext 
-            = new FixedKnowledgeCommandContext( new ContextImpl( "ksession", null ), null, null, this.ksession, null );
-        commandService = new DefaultCommandService(kContext);
+        RegistryContext context = new ContextImpl().register( KieSession.class, ksession );
+        commandService = new DefaultCommandService(context);
         
     }
     

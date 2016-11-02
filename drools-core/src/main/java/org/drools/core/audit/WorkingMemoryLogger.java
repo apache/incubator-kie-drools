@@ -28,7 +28,7 @@ import org.drools.core.audit.event.RuleFlowLogEvent;
 import org.drools.core.audit.event.RuleFlowNodeLogEvent;
 import org.drools.core.audit.event.RuleFlowVariableLogEvent;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -79,6 +79,7 @@ import org.kie.api.event.rule.ObjectUpdatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.rule.FactHandle;
@@ -158,7 +159,7 @@ public abstract class WorkingMemoryLogger
             statelessSession.getKnowledgeBase().addEventListener( (KieBaseEventListener) this );
         } else if (session instanceof CommandBasedStatefulKnowledgeSession) {
             StatefulKnowledgeSessionImpl statefulSession =
-                    ((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getKieSession());
+                    ((StatefulKnowledgeSessionImpl)(( RegistryContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).lookup( KieSession.class));
             isPhreak = statefulSession.getKnowledgeBase().getConfiguration().isPhreakEnabled();
             InternalWorkingMemory eventManager = statefulSession;
             eventManager.addEventListener( (RuleRuntimeEventListener) this );

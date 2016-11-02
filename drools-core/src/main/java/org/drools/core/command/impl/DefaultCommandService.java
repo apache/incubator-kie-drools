@@ -33,7 +33,7 @@ public class DefaultCommandService implements CommandService {
     }
 
     public <T> T execute(Command<T> command) {
-        return ((GenericCommand<T>)command).execute(context);
+        return ((ExecutableCommand<T>)command).execute( context );
     }
 
 }

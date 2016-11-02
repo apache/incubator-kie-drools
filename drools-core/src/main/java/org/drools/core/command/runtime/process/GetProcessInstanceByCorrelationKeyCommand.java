@@ -16,26 +16,25 @@
 
 package org.drools.core.command.runtime.process;
 
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.command.Context;
+import org.kie.internal.command.CorrelationKeyCommand;
+import org.kie.internal.jaxb.CorrelationKeyXmlAdapter;
+import org.kie.internal.process.CorrelationAwareProcessRuntime;
+import org.kie.internal.process.CorrelationKey;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.command.Context;
-import org.kie.internal.command.CorrelationKeyCommand;
-import org.kie.internal.command.ProcessInstanceIdCommand;
-import org.kie.internal.jaxb.CorrelationKeyXmlAdapter;
-import org.kie.internal.process.CorrelationAwareProcessRuntime;
-import org.kie.internal.process.CorrelationKey;
-
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetProcessInstanceByCorrelationKeyCommand implements GenericCommand<ProcessInstance>, CorrelationKeyCommand {
+public class GetProcessInstanceByCorrelationKeyCommand implements ExecutableCommand<ProcessInstance>, CorrelationKeyCommand {
 
     /** Generated serial version UID */
     private static final long serialVersionUID = -211522165088235065L;
@@ -61,7 +60,7 @@ public class GetProcessInstanceByCorrelationKeyCommand implements GenericCommand
     }
 
     public ProcessInstance execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         if (correlationKey == null) {
             return null;
         }

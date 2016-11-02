@@ -2,12 +2,12 @@ package org.drools.core.fluent.impl;
 
 
 import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.internal.command.Context;
 
 import java.util.Map;
 
-public class SetVarAsRegistryEntry<Void> implements GenericCommand<Void> {
+public class SetVarAsRegistryEntry<Void> implements ExecutableCommand<Void> {
     private String registryName;
     private String varName;
 

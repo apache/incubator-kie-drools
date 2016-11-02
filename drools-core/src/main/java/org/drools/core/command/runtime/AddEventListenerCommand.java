@@ -16,17 +16,17 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.internal.command.Context;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.command.Context;
 
 public class AddEventListenerCommand
     implements
-    GenericCommand<Void> {
+    ExecutableCommand<Void> {
 
     private RuleRuntimeEventListener   ruleRuntimeEventlistener = null;
     private AgendaEventListener        agendaEventlistener        = null;
@@ -46,7 +46,7 @@ public class AddEventListenerCommand
 
 
     public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
         if ( ruleRuntimeEventlistener != null ) {
             ksession.addEventListener( ruleRuntimeEventlistener );
