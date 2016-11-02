@@ -983,7 +983,7 @@ public class FEELParserTest {
     public void testFunctionDecisionTableInvocation() {
         String inputExpression = "decision table( "
                                  + "    outputs: \"Applicant Risk Rating\","
-                                 + "    input expression list: [Applicant Age, Medical History],"
+                                 + "    input expression list: [\"Applicant Age\", \"Medical History\"],"
                                  + "    rule list: ["
                                  + "        [ >60      , \"good\" , \"Medium\" ],"
                                  + "        [ >60      , \"bad\"  , \"High\"   ],"
@@ -992,7 +992,7 @@ public class FEELParserTest {
                                  + "        [ <25      , \"bad\"  , \"Medium\" ] ],"
                                  + "    hit policy: \"Unique\" )";
         // need to call parse passing in the input variables
-        BaseNode functionBase = parse( inputExpression, new HashMap<String, Object>() {{ put("Applicant Age", 51); put( "Medical History", "good" ); }} );
+        BaseNode functionBase = parse( inputExpression );
 
         assertThat( functionBase, is( instanceOf( FunctionInvocationNode.class ) ) );
         assertThat( functionBase.getText(), is( inputExpression ) );
@@ -1019,10 +1019,10 @@ public class FEELParserTest {
 
         ListNode list = (ListNode) named.getExpression();
         assertThat( list.getElements().size(), is( 2 ) );
-        assertThat( list.getElements().get( 0 ), is( instanceOf( NameRefNode.class ) ) );
-        assertThat( list.getElements().get( 0 ).getText(), is( "Applicant Age" ) );
-        assertThat( list.getElements().get( 1 ), is( instanceOf( NameRefNode.class ) ) );
-        assertThat( list.getElements().get( 1 ).getText(), is( "Medical History" ) );
+        assertThat( list.getElements().get( 0 ), is( instanceOf( StringNode.class ) ) );
+        assertThat( list.getElements().get( 0 ).getText(), is( "\"Applicant Age\"" ) );
+        assertThat( list.getElements().get( 1 ), is( instanceOf( StringNode.class ) ) );
+        assertThat( list.getElements().get( 1 ).getText(), is( "\"Medical History\"" ) );
 
         named = (NamedParameterNode) function.getParams().getElements().get( 2 );
         assertThat( named.getName().getText(), is( "rule list" ) );
@@ -1107,7 +1107,7 @@ public class FEELParserTest {
     }
 
     private BaseNode parse(String input, Map<String, Object> inputVariables) {
-        FEEL_1_1Parser parser = FEELParser.parse( input, inputVariables );
+        FEEL_1_1Parser parser = FEELParser.parse( input, Collections.EMPTY_MAP, inputVariables );
 
         ParseTree tree = parser.expression();
 
