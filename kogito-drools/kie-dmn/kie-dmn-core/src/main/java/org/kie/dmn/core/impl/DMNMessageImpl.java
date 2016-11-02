@@ -21,20 +21,20 @@ import org.kie.dmn.core.api.DMNMessage;
 public class DMNMessageImpl implements DMNMessage {
     private Severity severity;
     private String message;
+    private String sourceId;
     private Throwable exception;
 
     public DMNMessageImpl() {
     }
 
-    public DMNMessageImpl(Severity severity, String message) {
-        this.severity = severity;
-        this.message = message;
-        this.exception = null;
+    public DMNMessageImpl(Severity severity, String message, String sourceId) {
+        this( severity, message, sourceId, null);
     }
 
-    public DMNMessageImpl(Severity severity, String message, Throwable exception) {
+    public DMNMessageImpl(Severity severity, String message, String sourceId, Throwable exception) {
         this.severity = severity;
         this.message = message;
+        this.sourceId = sourceId;
         this.exception = exception;
     }
 
@@ -49,7 +49,22 @@ public class DMNMessageImpl implements DMNMessage {
     }
 
     @Override
+    public String getSourceId() {
+        return sourceId;
+    }
+
+    @Override
     public Throwable getException() {
         return exception;
+    }
+
+    @Override
+    public String toString() {
+        return "DMNMessage{" +
+               " severity=" + severity +
+               ", message='" + message + '\'' +
+               ", sourceId='" + sourceId + '\'' +
+               ", exception='" + exception.getClass().getName() + " : " + exception.getMessage() +
+               "' }";
     }
 }

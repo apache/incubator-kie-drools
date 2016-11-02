@@ -36,25 +36,35 @@ public interface DMNResult {
     DMNContext getContext();
 
     /**
-     * Returns a map containing all the results
-     * of the decisions executed, by name.
+     * Returns a list containing all the results
+     * of the decisions executed
      *
-     * @return A map where the name of the decision
-     *         is the key, and the result of the
-     *         decision is the value of the map entry
+     * @return A list with the result of the
+     *         decisions
      */
-    Map<String, Object> getDecisionResults();
+    List<DMNDecisionResult> getDecisionResults();
 
     /**
      * Returns the result of a single decision.
      *
      * @param name the name of the decision
      *
-     * @return the resulting value of the decision
+     * @return the result of the decision
      *         or null if the decision was not
-     *         executed.
+     *         evaluated.
      */
-    Object getDecisionResult( String name );
+    DMNDecisionResult getDecisionResultByName( String name );
+
+    /**
+     * Returns the result of a single decision.
+     *
+     * @param id the id of the decision
+     *
+     * @return the result of the decision
+     *         or null if the decision was not
+     *         evaluated.
+     */
+    DMNDecisionResult getDecisionResultById( String id );
 
     /**
      * Returns a list of all the messages produced
