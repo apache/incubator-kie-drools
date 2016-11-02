@@ -282,6 +282,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private static void doDeleteSegmentMemory(LeftTuple leftTuple, PropagationContext pctx, final LiaNodeMemory lm,
                                               SegmentMemory sm, InternalWorkingMemory wm, boolean linkOrNotify, boolean streamMode) {
+        leftTuple.setPropagationContext( pctx );
         if ( flushLeftTupleIfNecessary( wm, sm, leftTuple, streamMode, Tuple.DELETE ) ) {
             if ( linkOrNotify ) {
                 lm.setNodeDirty( wm );
@@ -290,8 +291,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
 
         TupleSets<LeftTuple> leftTuples = sm.getStagedLeftTuples();
-        leftTuple.setPropagationContext( pctx );
-
         boolean stagedDeleteWasEmpty = leftTuples.addDelete(leftTuple);
 
         if (  stagedDeleteWasEmpty && linkOrNotify ) {
@@ -335,6 +334,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private static void doUpdateSegmentMemory( LeftTuple leftTuple, PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify,
                                                final LiaNodeMemory lm, TupleSets<LeftTuple> leftTuples, SegmentMemory sm, boolean streamMode ) {
+        leftTuple.setPropagationContext( pctx );
         if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
             if ( flushLeftTupleIfNecessary( wm, sm, leftTuple, streamMode, Tuple.UPDATE ) ) {
                 if ( linkOrNotify ) {
@@ -344,7 +344,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
             }
 
             // if LeftTuple is already staged, leave it there
-            leftTuple.setPropagationContext( pctx );
             boolean stagedUpdateWasEmpty = leftTuples.addUpdate(leftTuple);
 
             if ( stagedUpdateWasEmpty  && linkOrNotify ) {

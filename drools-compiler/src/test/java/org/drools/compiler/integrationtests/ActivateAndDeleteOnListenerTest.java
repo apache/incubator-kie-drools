@@ -17,6 +17,7 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.Alarm;
 import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
 import org.drools.compiler.Sensor;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.junit.Test;
@@ -520,5 +521,31 @@ public class ActivateAndDeleteOnListenerTest extends CommonTestMethodBase {
 
         assertEquals( 2, list.size() );
         assertTrue( list.containsAll( asList("1", "2") ) );
+    }
+
+    @Test(timeout = 10000L)
+    public void testNoLoopWithForceEagerActivation() throws InterruptedException {
+        // DROOLS-1349
+        String drl = "import " + Person.class.getCanonicalName() + "\n" +
+                     "\n" +
+                     "rule Birthday no-loop when\n" +
+                     "    $p: Person()\n" +
+                     "then\n" +
+                     "    modify($p) { setAge($p.getAge()+1) };\n" +
+                     "end";
+
+        KieSessionConfiguration config = KieServices.Factory.get().newKieSessionConfiguration();
+        config.setOption( ForceEagerActivationOption.YES );
+
+        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                                   .build()
+                                                   .newKieSession( config, null );
+
+        Person mario = new Person("mario", 42);
+
+        ksession.insert( mario );
+        ksession.fireAllRules();
+
+        assertEquals( 43, mario.getAge() );
     }
 }
