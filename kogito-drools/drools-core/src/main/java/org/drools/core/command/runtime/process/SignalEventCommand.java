@@ -16,17 +16,8 @@
 
 package org.drools.core.command.runtime.process;
 
-import java.util.Map;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -36,9 +27,16 @@ import org.kie.internal.jaxb.CorrelationKeyXmlAdapter;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SignalEventCommand implements GenericCommand<Void>, ProcessInstanceIdCommand {
+public class SignalEventCommand implements ExecutableCommand<Void>, ProcessInstanceIdCommand {
 
     /** Generated serial version UID */
     private static final long serialVersionUID = 2134028686669740220L;
@@ -110,7 +108,7 @@ public class SignalEventCommand implements GenericCommand<Void>, ProcessInstance
     }
 
     public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         
         if (processInstanceId == -1 && correlationKey == null) {
             ksession.signalEvent(eventType, event);

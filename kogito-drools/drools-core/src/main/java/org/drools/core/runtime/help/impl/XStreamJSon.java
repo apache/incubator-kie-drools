@@ -27,7 +27,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.mapper.Mapper;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.GetGlobalCommand;
 import org.drools.core.command.runtime.SetGlobalCommand;
@@ -219,9 +219,8 @@ public class XStreamJSon {
                 writer.setValue( cmds.getLookup() );
                 writer.endNode();
             }
-            List<GenericCommand< ? >> list = cmds.getCommands();
 
-            for ( GenericCommand cmd : list ) {
+            for ( Command cmd : cmds.getCommands() ) {
                 writeItem( new CommandsObjectContainer( cmd ),
                            context,
                            writer );
@@ -230,16 +229,16 @@ public class XStreamJSon {
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
-            List<GenericCommand< ? >> list = new ArrayList<GenericCommand< ? >>();
+            List<Command> list = new ArrayList<Command>();
             String lookup = null;
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 if ( "commands".equals( reader.getNodeName() ) ) {
                     while ( reader.hasMoreChildren() ) {
                         reader.moveDown();
-                        GenericCommand cmd = (GenericCommand) readItem( reader,
-                                                                        context,
-                                                                        null );
+                        ExecutableCommand cmd = (ExecutableCommand) readItem( reader,
+                                                                              context,
+                                                                              null );
                         list.add( cmd );
                         reader.moveUp();
                     }
@@ -250,8 +249,7 @@ public class XStreamJSon {
                 }
                 reader.moveUp();
             }
-            return new BatchExecutionCommandImpl( list,
-                                              lookup );
+            return new BatchExecutionCommandImpl( list, lookup );
         }
 
         public boolean canConvert(Class clazz) {

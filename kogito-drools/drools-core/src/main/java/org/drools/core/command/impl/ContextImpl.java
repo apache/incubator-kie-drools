@@ -16,25 +16,35 @@
 
 package org.drools.core.command.impl;
 
+import org.drools.core.world.impl.ContextManagerImpl;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.ContextManager;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ContextImpl
-        implements
-    Context {
+public class ContextImpl implements RegistryContext {
 
-    public static final String         REGISTRY = "__REGISTRY__";
+    public static final String        REGISTRY = "__REGISTRY__";
 
-    private Map<String, Object> map = new ConcurrentHashMap<String, Object>();
+    private final Map<String, Object> map = new ConcurrentHashMap<String, Object>();
 
-    private ContextManager      manager;
+    private final ContextManager      manager;
 
-    private String              name;
+    private final String              name;
 
-    private Context             delegate;
+    private final Context             delegate;
+
+    public ContextImpl() {
+        this( UUID.randomUUID().toString(), new ContextManagerImpl() );
+    }
+
+    public ContextImpl(String name,
+                       ContextManager manager) {
+        this( name, manager, null );
+    }
 
     public ContextImpl(String name,
                        ContextManager manager,
@@ -42,12 +52,7 @@ public class ContextImpl
         this.name = name;
         this.manager = manager;
         this.delegate = delegate;
-    }
-
-    public ContextImpl(String name,
-                       ContextManager manager) {
-        this.name = name;
-        this.manager = manager;
+        set(REGISTRY, new HashMap<String, Object>() );
     }
 
     public Object get(String identifier) {
@@ -92,5 +97,16 @@ public class ContextImpl
         return "ContextImpl{" +
                "name='" + name + '\'' +
                '}';
+    }
+
+    @Override
+    public <T> ContextImpl register( Class<T> clazz, T instance ) {
+        ((Map<String, Object>)get(ContextImpl.REGISTRY)).put( clazz.getName(), instance );
+        return this;
+    }
+
+    @Override
+    public <T> T lookup( Class<T> clazz ) {
+        return (T) ((Map<String, Object>)get(ContextImpl.REGISTRY)).get( clazz.getName() );
     }
 }

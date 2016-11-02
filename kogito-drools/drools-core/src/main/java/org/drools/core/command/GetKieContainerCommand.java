@@ -16,18 +16,16 @@
 
 package org.drools.core.command;
 
-import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.command.Context;
 
-import java.util.Map;
-
 public class GetKieContainerCommand
     implements
-    GenericCommand<KieContainer> {
+    ExecutableCommand<KieContainer> {
 
     private static final long serialVersionUID = 8748826714594402049L;
     private ReleaseId releaseId;
@@ -41,7 +39,7 @@ public class GetKieContainerCommand
         KieServices  kieServices  = KieServices.Factory.get();
         KieContainer kieContainer = kieServices.newKieContainer(releaseId);
 
-        ((Map<String, Object>)context.get(ContextImpl.REGISTRY)).put(KieContainer.class.getName(), kieContainer);
+        ((RegistryContext)context).register( KieContainer.class, kieContainer );
         return kieContainer;
     }
 

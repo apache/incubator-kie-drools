@@ -17,20 +17,20 @@
 package org.drools.core.command.runtime.process;
 
 
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.internal.command.Context;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
-import org.kie.internal.command.Context;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.WorkItemHandler;
-
 @XmlAccessorType(XmlAccessType.NONE)
-public class RegisterWorkItemHandlerCommand implements GenericCommand<Void> {
+public class RegisterWorkItemHandlerCommand implements ExecutableCommand<Void> {
 
     @XmlElement
     @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
@@ -64,7 +64,7 @@ public class RegisterWorkItemHandlerCommand implements GenericCommand<Void> {
     }
 
     public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         ksession.getWorkItemManager().registerWorkItemHandler(workItemName, handler);
         return null;
     }

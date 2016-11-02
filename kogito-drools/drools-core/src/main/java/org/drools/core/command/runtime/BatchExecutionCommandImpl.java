@@ -16,8 +16,31 @@
 
 package org.drools.core.command.runtime;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.runtime.process.AbortWorkItemCommand;
+import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
+import org.drools.core.command.runtime.process.SignalEventCommand;
+import org.drools.core.command.runtime.process.StartProcessCommand;
+import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
+import org.drools.core.command.runtime.rule.ClearActivationGroupCommand;
+import org.drools.core.command.runtime.rule.ClearAgendaCommand;
+import org.drools.core.command.runtime.rule.ClearAgendaGroupCommand;
+import org.drools.core.command.runtime.rule.ClearRuleFlowGroupCommand;
+import org.drools.core.command.runtime.rule.DeleteCommand;
+import org.drools.core.command.runtime.rule.FireAllRulesCommand;
+import org.drools.core.command.runtime.rule.FireUntilHaltCommand;
+import org.drools.core.command.runtime.rule.GetFactHandlesCommand;
+import org.drools.core.command.runtime.rule.GetObjectCommand;
+import org.drools.core.command.runtime.rule.GetObjectsCommand;
+import org.drools.core.command.runtime.rule.InsertElementsCommand;
+import org.drools.core.command.runtime.rule.InsertObjectCommand;
+import org.drools.core.command.runtime.rule.ModifyCommand;
+import org.drools.core.command.runtime.rule.QueryCommand;
+import org.kie.api.command.Command;
+import org.kie.api.runtime.ExecutionResults;
+import org.kie.internal.command.Context;
+import org.kie.internal.fluent.Batch;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -26,19 +49,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.runtime.process.AbortWorkItemCommand;
-import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
-import org.drools.core.command.runtime.process.SignalEventCommand;
-import org.drools.core.command.runtime.process.StartProcessCommand;
-import org.drools.core.command.runtime.rule.*;
-import org.kie.api.command.BatchExecutionCommand;
-import org.kie.internal.command.Context;
-import org.kie.api.runtime.ExecutionResults;
-
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -52,7 +64,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 @XmlRootElement(name="batch-execution")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "batch-execution", propOrder = {"lookup", "commands"})
-public class BatchExecutionCommandImpl implements BatchExecutionCommand, GenericCommand<ExecutionResults> {
+public class BatchExecutionCommandImpl implements Batch, ExecutableCommand<ExecutionResults> {
 
     private static final long serialVersionUID = 510l;
 
@@ -83,18 +95,18 @@ public class BatchExecutionCommandImpl implements BatchExecutionCommand, Generic
                          @XmlElement(name = "clear-ruleflow-group", type = ClearRuleFlowGroupCommand.class),
                          @XmlElement(name = "get-fact-handles", type = GetFactHandlesCommand.class)
                  })
-    protected List<GenericCommand<?>> commands;
+    protected List<Command> commands;
 
     public BatchExecutionCommandImpl() {
         // JAXB constructor
     }
 
-    public BatchExecutionCommandImpl( List<GenericCommand<?>> commands ) {
-        this.commands = commands;
+    public BatchExecutionCommandImpl( List<? extends Command> commands ) {
+        this( commands, null );
     }
 
-    public BatchExecutionCommandImpl( List<GenericCommand<?>> commands, String lookup ) {
-        this.commands = commands;
+    public BatchExecutionCommandImpl( List<? extends Command> commands, String lookup ) {
+        this.commands = (List<Command>) commands;
         this.lookup = lookup;
     }
 
@@ -127,18 +139,27 @@ public class BatchExecutionCommandImpl implements BatchExecutionCommand, Generic
      * {@link QueryCommand }
      * {@link InsertObjectCommand }
      */
-    public List<GenericCommand<?>> getCommands() {
-        if ( commands == null ) {
-            commands = new ArrayList<GenericCommand<?>>();
-        }
+    public List<Command> getCommands() {
         return this.commands;
     }
 
+    public BatchExecutionCommandImpl addCommand( Command cmd ) {
+        if ( commands == null ) {
+            commands = new ArrayList<Command>();
+        }
+        this.commands.add(cmd);
+        return this;
+    }
+
     public ExecutionResults execute(Context context) {
-        for ( GenericCommand<?> command : commands ) {
-            ((GenericCommand<?>) command).execute( context );
+        for ( Command command : commands ) {
+            ((ExecutableCommand<?>) command).execute( context );
         }
         return null;
+    }
+
+    public long getDistance() {
+        return 0L;
     }
 
     public void setLookup(String lookup) {

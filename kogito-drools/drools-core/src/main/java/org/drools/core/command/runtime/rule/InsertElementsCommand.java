@@ -16,20 +16,10 @@
 
 package org.drools.core.command.runtime.rule;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.jaxb.util.JaxbListAdapter;
 import org.kie.api.runtime.KieSession;
@@ -37,10 +27,19 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.Context;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 @XmlAccessorType( XmlAccessType.NONE )
 public class InsertElementsCommand
     implements
-    GenericCommand<Collection<FactHandle>>, IdentifiableResult {
+    ExecutableCommand<Collection<FactHandle>>, IdentifiableResult {
 
     private static final long serialVersionUID = 510l;
 
@@ -79,7 +78,7 @@ public class InsertElementsCommand
     }
 
     public Collection<FactHandle> execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         List<FactHandle> handles = new ArrayList<FactHandle>();
         
         EntryPoint wmep;
@@ -95,11 +94,9 @@ public class InsertElementsCommand
 
         if ( outIdentifier != null ) {
             if ( this.returnObject ) {
-                ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult().getResults().put( this.outIdentifier,
-                                                               objects);
+                ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, objects );
             }
-            ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult().getFactHandles().put( this.outIdentifier,
-                                                               handles );
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).getFactHandles().put( this.outIdentifier, handles );
         }
         return handles;
     }

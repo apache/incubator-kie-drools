@@ -16,27 +16,26 @@
 
 package org.drools.core.command.runtime.process;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.command.Context;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.kie.internal.command.Context;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessInstancesCommand
     implements
-    GenericCommand<Collection<ProcessInstance>> {
+    ExecutableCommand<Collection<ProcessInstance>> {
 
     public Collection<ProcessInstance> execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
         Collection<ProcessInstance> instances = ksession.getProcessInstances();
         Collection<ProcessInstance> result = new ArrayList<ProcessInstance>();

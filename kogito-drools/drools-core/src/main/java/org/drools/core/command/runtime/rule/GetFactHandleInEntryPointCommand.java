@@ -16,8 +16,8 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalFactHandle;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -26,7 +26,7 @@ import org.kie.internal.command.Context;
 
 public class GetFactHandleInEntryPointCommand
     implements
-    GenericCommand<FactHandle> {
+    ExecutableCommand<FactHandle> {
 
     private Object object;
     private boolean disconnected;
@@ -48,7 +48,7 @@ public class GetFactHandleInEntryPointCommand
     }
 
     public FactHandle execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         EntryPoint ep = ksession.getEntryPoint(entryPoint);
         InternalFactHandle factHandle = (InternalFactHandle) ep.getFactHandle( object );
         if ( factHandle != null ){

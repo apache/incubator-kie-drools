@@ -17,10 +17,10 @@
 package org.drools.core.command.runtime.rule;
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlElement;
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectInEntryPointCommand
     implements
-    GenericCommand<Object>, IdentifiableResult {
+    ExecutableCommand<Object>, IdentifiableResult {
 
     private FactHandle factHandle;
     private String     outIdentifier;
@@ -74,14 +74,13 @@ public class GetObjectInEntryPointCommand
     }
 
     public Object execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         EntryPoint ep = ksession.getEntryPoint(entryPoint);
 
         Object object = ep.getObject( factHandle );
 
         if (this.outIdentifier != null) {
-            ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult()
-                .getResults().put( this.outIdentifier, object );
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, object );
         }
 
         return object;

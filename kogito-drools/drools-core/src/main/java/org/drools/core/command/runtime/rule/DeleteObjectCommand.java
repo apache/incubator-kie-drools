@@ -16,8 +16,8 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.api.runtime.KieSession;
@@ -32,7 +32,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class DeleteObjectCommand
-        implements GenericCommand<Void> {
+        implements ExecutableCommand<Void> {
 
     @XmlAttribute(name="object")
     @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
@@ -52,7 +52,7 @@ public class DeleteObjectCommand
     }
 
     public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         EntryPoint ep = ksession.getEntryPoint( entryPoint );
         if ( ep != null ) {
             FactHandle handle = ksession.getEntryPoint( entryPoint ).getFactHandle( object );

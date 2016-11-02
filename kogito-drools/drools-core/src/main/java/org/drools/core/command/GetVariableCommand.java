@@ -22,12 +22,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.internal.command.Context;
 
 @XmlRootElement(name="get-variable-command")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class GetVariableCommand implements GenericCommand<Object> {
+public class GetVariableCommand implements ExecutableCommand<Object> {
    
     @XmlElement
     @XmlSchemaType(name="string")

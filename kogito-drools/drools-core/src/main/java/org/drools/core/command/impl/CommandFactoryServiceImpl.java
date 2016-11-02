@@ -259,7 +259,7 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
     }
 
     public BatchExecutionCommand newBatchExecution(List<? extends Command> commands, String lookup) {
-        return new BatchExecutionCommandImpl((List<GenericCommand<?>>) commands, lookup);
+        return new BatchExecutionCommandImpl( commands, lookup );
     }
 
     @Deprecated

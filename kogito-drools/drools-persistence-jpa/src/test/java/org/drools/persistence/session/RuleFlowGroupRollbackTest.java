@@ -16,8 +16,8 @@
 package org.drools.persistence.session;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.persistence.util.DroolsPersistenceUtil;
@@ -46,10 +46,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
-import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
-import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
+import static org.drools.persistence.util.DroolsPersistenceUtil.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -129,7 +126,7 @@ public class RuleFlowGroupRollbackTest {
 	}
 	
 	@SuppressWarnings("serial")
-	public class ActivateRuleFlowCommand implements GenericCommand<Object> {
+	public class ActivateRuleFlowCommand implements ExecutableCommand<Object> {
 		
 		private String ruleFlowGroupName;
 		
@@ -138,7 +135,7 @@ public class RuleFlowGroupRollbackTest {
 		}
 
 	    public Void execute(Context context) {
-	        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+	        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 	        ((InternalAgenda) ksession.getAgenda()).activateRuleFlowGroup(ruleFlowGroupName);
 	        return null;
 	    }
@@ -146,7 +143,7 @@ public class RuleFlowGroupRollbackTest {
 	}
 	
 	@SuppressWarnings("serial")
-	public class ExceptionCommand implements GenericCommand<Object> {
+	public class ExceptionCommand implements ExecutableCommand<Object> {
 
 	    public Void execute(Context context) {
 	    	throw new RuntimeException("(Expected) exception thrown by test");

@@ -24,7 +24,6 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
@@ -119,9 +118,7 @@ public interface InternalWorkingMemory
 
     SessionConfiguration getSessionConfiguration();
     
-    void startBatchExecution(ExecutionResultImpl results);
-    
-    ExecutionResultImpl getExecutionResult();
+    void startBatchExecution();
     
     void endBatchExecution();
     

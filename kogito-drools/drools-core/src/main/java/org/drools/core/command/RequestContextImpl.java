@@ -24,30 +24,26 @@ import org.kie.internal.fluent.RequestContext;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RequestContextImpl extends ContextImpl implements Context, RequestContext {
+public class RequestContextImpl extends ContextImpl implements RequestContext {
 
     private ContextImpl         appContext;
     private ConversationContext conversationContext;
 
     private ConversationContextManager cvnManager;
 
-    private long                requestId;
+    private final long requestId;
 
-    private Object              lastReturned;
+    private Object lastReturned;
 
-    private String              lastSet;
+    private String lastSet;
 
-    private Map<String, Object> out;
-    private Map<String, Object> registry;
-    private Exception           exception;
+    private final Map<String, Object> out = new HashMap<String, Object>();
 
+    private Exception exception;
 
     public RequestContextImpl(long requestId, ContextManager ctxManager, ConversationContextManager cvnManager) {
         super(Long.toString(requestId), ctxManager);
         this.requestId = requestId;
-        out = new HashMap<String, Object>();
-        registry = new HashMap<String, Object>();
-        set(REGISTRY, registry);
         this.cvnManager = cvnManager;
     }
 
@@ -71,8 +67,6 @@ public class RequestContextImpl extends ContextImpl implements Context, RequestC
         return cvnManager;
     }
 
-
-
     public Object get(String identifier) {
         if(identifier == null || identifier.equals("")){
             return null;
@@ -94,10 +88,6 @@ public class RequestContextImpl extends ContextImpl implements Context, RequestC
     @Override
     public long getRequestId() {
         return requestId;
-    }
-
-    public void setRequestId(long requestId) {
-        this.requestId = requestId;
     }
 
     @Override
@@ -124,10 +114,6 @@ public class RequestContextImpl extends ContextImpl implements Context, RequestC
     @Override
     public Map<String, Object> getOut() {
         return out;
-    }
-
-    public Map<String, Object> getRegistry() {
-        return registry;
     }
 
     public Exception getException() {

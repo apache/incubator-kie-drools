@@ -1,10 +1,10 @@
 package org.drools.core.command;
 
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.internal.command.Context;
 
 
-public class JoinConversationCommand<Void> implements GenericCommand<Void> {
+public class JoinConversationCommand<Void> implements ExecutableCommand<Void> {
     private long conversationId;
 
     public JoinConversationCommand(long conversationId) {

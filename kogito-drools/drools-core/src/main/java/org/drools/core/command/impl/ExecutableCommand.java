@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.core.command.runtime;
+package org.drools.core.command.impl;
 
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.command.impl.RegistryContext;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.Context;
 
-public class GetEnvironmentCommand
-    implements
-    ExecutableCommand<Environment> {
+public interface ExecutableCommand<T> extends org.kie.api.command.Command<T> {
 
-    public Environment execute(Context context) {
-        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        return ksession.getEnvironment();
-    }
-
-    public String toString() {
-        return "session.getEnvironment();";
-    }
+    T execute(Context context);
 
 }

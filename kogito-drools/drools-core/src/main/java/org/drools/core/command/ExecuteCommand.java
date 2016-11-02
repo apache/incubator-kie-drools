@@ -16,22 +16,22 @@
 
 package org.drools.core.command;
 
-import java.util.HashMap;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.Command;
-import org.kie.internal.command.Context;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.Context;
+
+import java.util.HashMap;
 
 public class ExecuteCommand
     implements
-    GenericCommand<ExecutionResults> {
+    ExecutableCommand<ExecutionResults> {
 
     private String   outIdentifier;
     private Command<ExecutionResults>  command;
@@ -58,7 +58,7 @@ public class ExecuteCommand
     }
 
     public ExecutionResults execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         
         ExecutionResults kresults = null;
         if( ksession instanceof StatefulKnowledgeSessionImpl ) { 
@@ -70,7 +70,7 @@ public class ExecuteCommand
         }
         
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl)((KnowledgeCommandContext) context ).getExecutionResults()).getResults().put( this.outIdentifier, kresults );
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, kresults );
         }
         if (disconnected) {
             ExecutionResultImpl disconnectedResults = new ExecutionResultImpl();

@@ -16,10 +16,10 @@
 
 package org.drools.core.command.builder;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.util.StringUtils;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.core.util.StringUtils;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
@@ -28,7 +28,7 @@ import org.kie.internal.command.Context;
 
 public class NewKnowledgeBuilderCommand
     implements
-    GenericCommand<KnowledgeBuilder> {
+    ExecutableCommand<KnowledgeBuilder> {
 
     private KnowledgeBuilderConfiguration kbuilderConf;
     
@@ -89,12 +89,12 @@ public class NewKnowledgeBuilderCommand
                                                                     this.kbuilderConf );
         }
         
-        if( context instanceof KnowledgeCommandContext ) { 
-            ((KnowledgeCommandContext) context).setKnowledgeBuilder(kbuilder);
+         if ( context instanceof RegistryContext ) {
+            ((RegistryContext) context).register( KnowledgeBuilder.class, kbuilder );
         }
-        
+
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl)((KnowledgeCommandContext) context).getExecutionResults()).getResults().put( this.outIdentifier, kbuilder );
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, kbuilder );
         }
         
         return kbuilder;

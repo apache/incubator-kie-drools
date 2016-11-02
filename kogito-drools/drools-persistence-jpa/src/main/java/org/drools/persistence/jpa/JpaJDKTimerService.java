@@ -22,7 +22,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.drools.core.command.CommandService;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -117,7 +117,7 @@ public class JpaJDKTimerService extends JDKTimerService {
 
     public static class JDKCallableJobCommand
         implements
-        GenericCommand<Void> {
+        ExecutableCommand<Void> {
 
         private static final long serialVersionUID = 4L;
 

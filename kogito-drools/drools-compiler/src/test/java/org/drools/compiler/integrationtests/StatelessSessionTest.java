@@ -15,34 +15,34 @@
 
 package org.drools.compiler.integrationtests;
 
+import org.drools.compiler.Cheese;
+import org.drools.compiler.Cheesery;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.runtime.BatchExecutionCommandImpl;
+import org.junit.Test;
+import org.kie.api.command.Command;
+import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.Channel;
+import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.StatelessKieSession;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.command.CommandFactory;
+import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatelessKnowledgeSession;
+import org.mockito.Mockito;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.drools.compiler.Cheese;
-import org.drools.compiler.Cheesery;
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.runtime.BatchExecutionCommandImpl;
-import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.command.Command;
-import org.kie.internal.command.CommandFactory;
-import org.kie.internal.definition.KnowledgePackage;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.api.io.Resource;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.Channel;
-import org.kie.api.runtime.ExecutionResults;
-import org.kie.api.runtime.StatelessKieSession;
-import org.mockito.Mockito;
 
 public class StatelessSessionTest extends CommonTestMethodBase {
     final List list = new ArrayList();
@@ -105,8 +105,8 @@ public class StatelessSessionTest extends CommonTestMethodBase {
         Cheese stilton = new Cheese( "stilton", 5 );
         
         StatelessKnowledgeSession ksession = getSession2( ResourceFactory.newByteArrayResource( str.getBytes() ) );
-        GenericCommand cmd = ( GenericCommand ) CommandFactory.newInsert( stilton, "outStilton" );
-        BatchExecutionCommandImpl batch = new BatchExecutionCommandImpl(  Arrays.asList( new GenericCommand<?>[] { cmd } ) );
+        ExecutableCommand cmd = (ExecutableCommand) CommandFactory.newInsert( stilton, "outStilton" );
+        BatchExecutionCommandImpl batch = new BatchExecutionCommandImpl(  Arrays.asList( new ExecutableCommand<?>[] { cmd } ) );
         
         ExecutionResults result = ( ExecutionResults ) ksession.execute( batch );
         stilton = ( Cheese ) result.getValue( "outStilton" );

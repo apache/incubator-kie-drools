@@ -28,7 +28,6 @@ import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AsyncExceptionHandler;
@@ -583,16 +582,12 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		return delegate.getSessionConfiguration();
 	}
 
-	public void startBatchExecution(ExecutionResultImpl results) {
-		delegate.startBatchExecution(results);
-	}
-
-	public ExecutionResultImpl getExecutionResult() {
-		return delegate.getExecutionResult();
-	}
-
 	public Collection<? extends Object> getObjects() {
 		return delegate.getObjects();
+	}
+
+	public void startBatchExecution() {
+		delegate.startBatchExecution();
 	}
 
 	public void endBatchExecution() {

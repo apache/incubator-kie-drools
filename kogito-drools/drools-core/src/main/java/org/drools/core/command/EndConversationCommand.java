@@ -1,10 +1,10 @@
 package org.drools.core.command;
 
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.internal.command.Context;
 
 
-public class EndConversationCommand<Void> implements GenericCommand<Void> {
+public class EndConversationCommand<Void> implements ExecutableCommand<Void> {
     private long conversationId;
 
     public EndConversationCommand() {

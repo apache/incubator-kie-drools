@@ -16,24 +16,23 @@
 
 package org.drools.core.command.runtime.process;
 
-import java.util.Collection;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.kie.api.event.process.ProcessEventListener;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.command.Context;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.kie.internal.command.Context;
-import org.kie.api.event.process.ProcessEventListener;
-import org.kie.api.runtime.KieSession;
+import java.util.Collection;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetProcessEventListenersCommand
     implements
-    GenericCommand<Collection<ProcessEventListener> > {
+    ExecutableCommand<Collection<ProcessEventListener> > {
 
     public Collection<ProcessEventListener> execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         return ksession.getProcessEventListeners();
     }
 

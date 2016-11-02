@@ -16,15 +16,15 @@
 
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.kie.internal.command.Context;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.command.Context;
 
 public class RegisterChannelCommand
     implements
-    GenericCommand<Void> {
+    ExecutableCommand<Void> {
 
     private static final long serialVersionUID = 510l;
 
@@ -41,7 +41,7 @@ public class RegisterChannelCommand
     }
 
     public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
         ksession.registerChannel( name,
                                   channel );

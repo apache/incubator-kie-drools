@@ -18,10 +18,10 @@ package org.drools.core.command.runtime.rule;
 
 
 import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.util.StringUtils;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.api.runtime.KieSession;
@@ -34,13 +34,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import java.util.Map;
 
 @XmlRootElement(name="insert-object-command")
 @XmlAccessorType(XmlAccessType.NONE)
 public class InsertObjectCommand
     implements
-    GenericCommand<FactHandle>, IdentifiableResult {
+    ExecutableCommand<FactHandle>, IdentifiableResult {
 
     private static final long serialVersionUID = 510l;
 
@@ -79,7 +78,7 @@ public class InsertObjectCommand
     }
 
     public FactHandle execute(Context context) {
-        KieSession ksession = (KieSession) ((Map<String, Object>)context.get(ContextImpl.REGISTRY)).get(KieSession.class.getName()); //((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext)context).lookup( KieSession.class );
         
         FactHandle factHandle;
         if ( StringUtils.isEmpty( this.entryPoint ) ) {
@@ -88,7 +87,12 @@ public class InsertObjectCommand
             factHandle = ksession.getEntryPoint( this.entryPoint ).insert( object );
         }
 
-        InternalWorkingMemory session = ((InternalWorkingMemory)ksession);
+        if ( outIdentifier != null ) {
+            if ( this.returnObject ) {
+                ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, object );
+            }
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).getFactHandles().put( this.outIdentifier, factHandle );
+        }
 
         if ( disconnected ) {
             DefaultFactHandle disconnectedHandle = ((DefaultFactHandle)factHandle).clone();
@@ -142,10 +146,4 @@ public class InsertObjectCommand
     public String toString() {
         return "session.entryPoints(" + ((this.entryPoint == null ) ? "DEFAULT" : this.entryPoint) + ").insert(" + object + ");";
     }
-    
-//    private Object readResolve() throws ObjectStreamException {
-//        this.returnObject = true;
-//        return this;
-//    }
-
 }

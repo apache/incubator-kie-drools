@@ -16,24 +16,17 @@
 
 package org.drools.core.command;
 
-import org.drools.core.ClockType;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.SessionConfigurationImpl;
-import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieService;
-
-import java.util.Map;
+import org.kie.internal.command.Context;
 
 public class NewKieSessionCommand
     implements
-    GenericCommand<KieSession> {
+    ExecutableCommand<KieSession> {
 
     private static final long serialVersionUID = 8748826714594402049L;
     private String sessionId;
@@ -56,7 +49,7 @@ public class NewKieSessionCommand
             KieServices  kieServices  = KieServices.Factory.get();
             kieContainer = kieServices.newKieContainer(releaseId);
         } else {
-            kieContainer = (KieContainer) ((Map<String, Object>)context.get(ContextImpl.REGISTRY)).get(KieContainer.class.getName());
+            kieContainer = ((RegistryContext)context).lookup( KieContainer.class );
             if ( kieContainer == null ) {
                 throw new RuntimeException("ReleaseId was not specfied, nor was an existing KieContainer assigned to the Registry");
             }
@@ -64,7 +57,7 @@ public class NewKieSessionCommand
 
         KieSession ksession  = sessionId != null ? kieContainer.newKieSession(sessionId) : kieContainer.newKieSession();
 
-        ((Map<String, Object>)context.get(ContextImpl.REGISTRY)).put(KieSession.class.getName(), ksession);
+        ((RegistryContext)context).register( KieSession.class, ksession );
 
         return ksession;
     }

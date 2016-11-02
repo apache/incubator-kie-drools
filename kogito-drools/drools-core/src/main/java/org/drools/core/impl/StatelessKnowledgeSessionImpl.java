@@ -20,8 +20,8 @@ import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.FixedKnowledgeCommandContext;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.common.InternalFactHandle;
@@ -29,14 +29,15 @@ import org.drools.core.common.WorkingMemoryFactory;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.KieBase;
+import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.Globals;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.StatelessKieSession;
@@ -226,17 +227,16 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
     public <T> T execute(Command<T> command) {
         StatefulKnowledgeSession ksession = newWorkingMemory();
 
-        FixedKnowledgeCommandContext context = new FixedKnowledgeCommandContext( new ContextImpl( "ksession",
-                                                                                                  null ),
-                                                                                 null,
-                                                                                 null,
-                                                                                 ksession,
-                                                                                 new ExecutionResultImpl() );
+        RegistryContext context = new ContextImpl().register( KieSession.class, ksession );
 
         try {
-            ((StatefulKnowledgeSessionImpl) ksession).startBatchExecution( new ExecutionResultImpl() );
+            if ( command instanceof BatchExecutionCommand ) {
+                ((RegistryContext) context).register( ExecutionResultImpl.class, new ExecutionResultImpl() );
+            }
 
-            Object o = ((GenericCommand) command).execute( context );
+            ((StatefulKnowledgeSessionImpl) ksession).startBatchExecution();
+
+            Object o = ((ExecutableCommand) command).execute( context );
             // did the user take control of fireAllRules, if not we will auto execute
             boolean autoFireAllRules = true;
             if ( command instanceof FireAllRulesCommand ) {
@@ -252,9 +252,8 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
             if ( autoFireAllRules ) {
                 ksession.fireAllRules();
             }
-            if ( command instanceof BatchExecutionCommandImpl ) {
-                ExecutionResults result = ((StatefulKnowledgeSessionImpl) ksession).getExecutionResult();
-                return (T) result;
+            if ( command instanceof BatchExecutionCommand ) {
+                return (T) ((RegistryContext) context).lookup( ExecutionResultImpl.class );
             } else {
                 return (T) o;
             }

@@ -16,9 +16,14 @@
 
 package org.drools.core.command.runtime.process;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.drools.core.command.IdentifiableResult;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.command.Context;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -27,19 +32,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.command.Context;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class StartProcessCommand implements GenericCommand<ProcessInstance>, IdentifiableResult {
+public class StartProcessCommand implements ExecutableCommand<ProcessInstance>, IdentifiableResult {
 
     @XmlAttribute(required = true)
     private String processId;
@@ -112,7 +111,7 @@ public class StartProcessCommand implements GenericCommand<ProcessInstance>, Ide
     }
 
     public ProcessInstance execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
         if (data != null) {
             for (Object o: data) {
@@ -121,8 +120,7 @@ public class StartProcessCommand implements GenericCommand<ProcessInstance>, Ide
         }
         ProcessInstance processInstance = (ProcessInstance) ksession.startProcess(processId, parameters);
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl) ((KnowledgeCommandContext) context).getExecutionResults()).getResults().put(this.outIdentifier,
-                                                                                                               processInstance.getId());
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult(this.outIdentifier, processInstance.getId());
         }
         return processInstance;
     }

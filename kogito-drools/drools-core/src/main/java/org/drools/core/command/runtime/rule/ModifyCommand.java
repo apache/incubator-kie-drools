@@ -16,17 +16,8 @@
 
 package org.drools.core.command.runtime.rule;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.command.Setter;
@@ -35,8 +26,16 @@ import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.Context;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
+
 @XmlAccessorType(XmlAccessType.NONE)
-public class ModifyCommand implements GenericCommand<Object> {
+public class ModifyCommand implements ExecutableCommand<Object> {
 
     /**
      * if this is true, modify can be any MVEL expressions. If false, it will only allow literal values.
@@ -122,7 +121,7 @@ public class ModifyCommand implements GenericCommand<Object> {
     }
 
     public Object execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         EntryPoint wmep = ksession.getEntryPoint( factHandle.getEntryPointId() );
 
         Object object = wmep.getObject( this.factHandle );

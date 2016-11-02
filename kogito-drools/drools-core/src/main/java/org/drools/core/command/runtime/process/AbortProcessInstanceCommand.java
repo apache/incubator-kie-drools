@@ -16,20 +16,20 @@
 
 package org.drools.core.command.runtime.process;
 
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.command.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.command.Context;
-import org.kie.internal.command.ProcessInstanceIdCommand;
-
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class AbortProcessInstanceCommand implements GenericCommand<Void>, ProcessInstanceIdCommand {
+public class AbortProcessInstanceCommand implements ExecutableCommand<Void>, ProcessInstanceIdCommand {
 
     /** Generated serial version UID */
     private static final long serialVersionUID = 2482483392339538998L;
@@ -48,7 +48,7 @@ public class AbortProcessInstanceCommand implements GenericCommand<Void>, Proces
     }
 
     public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         if (processInstanceId == null) {
             return null;
         }

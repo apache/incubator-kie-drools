@@ -16,18 +16,18 @@
 
 package org.drools.core.command.builder;
 
-import java.util.Collection;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.command.Context;
 import org.kie.internal.definition.KnowledgePackage;
 
+import java.util.Collection;
+
 public class KnowledgeBuilderGetKnowledgePackagesCommand
     implements
-    GenericCommand<Collection<KnowledgePackage>> {
+    ExecutableCommand<Collection<KnowledgePackage>> {
 
     private String outIdentifier;
 
@@ -39,12 +39,11 @@ public class KnowledgeBuilderGetKnowledgePackagesCommand
     }
 
     public Collection<KnowledgePackage> execute(Context context) {
-        KnowledgeBuilder kbuilder = ((KnowledgeCommandContext) context).getKnowledgeBuilder();
+        KnowledgeBuilder kbuilder = ((RegistryContext) context).lookup(KnowledgeBuilder.class);
         
         Collection<KnowledgePackage> knowledgePackages = kbuilder.getKnowledgePackages();
         if ( this.outIdentifier != null ) {
-            ((ExecutionResultImpl)((KnowledgeCommandContext) context).getExecutionResults()).getResults()
-                .put( this.outIdentifier, knowledgePackages );
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, knowledgePackages );
         }
         
         return knowledgePackages;

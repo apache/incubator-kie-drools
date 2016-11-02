@@ -1,11 +1,11 @@
 package org.drools.core.fluent.impl;
 
 import org.drools.core.command.RequestContextImpl;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.internal.command.Context;
 import org.kie.internal.fluent.Scope;
 
-public class GetCommand<T> implements GenericCommand<T> {
+public class GetCommand<T> implements ExecutableCommand<T> {
     private String name;
     private Scope scope;
 

@@ -16,30 +16,28 @@
 
 package org.drools.core.command.runtime.rule;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import org.drools.core.ClassObjectSerializationFilter;
+import org.drools.core.command.IdentifiableResult;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.kie.api.runtime.ClassObjectFilter;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.ObjectFilter;
+import org.kie.internal.command.Context;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-
-import org.drools.core.ClassObjectSerializationFilter;
-import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
-import org.kie.internal.command.Context;
-import org.kie.api.runtime.ClassObjectFilter;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.ObjectFilter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectsCommand
     implements
-    GenericCommand<Collection>, IdentifiableResult {
+    ExecutableCommand<Collection>, IdentifiableResult {
 
     @XmlElement(name="class-object-filter", required=false)
     private ClassObjectSerializationFilter classObjectFilter = null;
@@ -84,7 +82,7 @@ public class GetObjectsCommand
     }
 
     public Collection execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
         Collection col = null;
 
@@ -97,7 +95,7 @@ public class GetObjectsCommand
         if ( this.outIdentifier != null ) {
             List objects = new ArrayList( col );
 
-            ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult().getResults().put( this.outIdentifier, objects );
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, objects );
         }
 
         return col;

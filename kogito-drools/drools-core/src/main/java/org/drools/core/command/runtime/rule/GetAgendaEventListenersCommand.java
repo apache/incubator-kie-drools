@@ -16,20 +16,20 @@
 
 package org.drools.core.command.runtime.rule;
 
-import java.util.Collection;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.kie.internal.command.Context;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.command.Context;
+
+import java.util.Collection;
 
 public class GetAgendaEventListenersCommand
     implements
-    GenericCommand<Collection<AgendaEventListener>> {
+    ExecutableCommand<Collection<AgendaEventListener>> {
 
     public Collection<AgendaEventListener> execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         return ksession.getAgendaEventListeners();
     }
 

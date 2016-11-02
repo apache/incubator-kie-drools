@@ -31,7 +31,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.LIANodePropagation;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
@@ -307,9 +306,9 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
     }
 
     @Override
-    public void startBatchExecution(ExecutionResultImpl results ) {
+    public void startBatchExecution() {
         kBase.readLock();
-        super.startBatchExecution( results );
+        super.startBatchExecution();
     }
 
     @Override

@@ -16,6 +16,14 @@
 
 package org.drools.core.command.runtime;
 
+import org.drools.core.command.IdentifiableResult;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.command.Context;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -23,19 +31,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
-import org.kie.internal.command.Context;
-import org.kie.api.runtime.KieSession;
-
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
 public class SetGlobalCommand
     implements
-    GenericCommand<Object> , IdentifiableResult{
+    ExecutableCommand<Object>, IdentifiableResult{
 
     @XmlAttribute(required=true)
     private String  identifier;
@@ -57,11 +57,10 @@ public class SetGlobalCommand
     }
 
     public Object execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
         if ( this.outIdentifier != null ) {
-            ((StatefulKnowledgeSessionImpl) ksession).getExecutionResult().getResults().put( this.outIdentifier ,
-                                                                                                     object );
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, object );
         }
 
         ksession.setGlobal( this.identifier,

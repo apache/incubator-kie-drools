@@ -1,17 +1,18 @@
 package org.drools.compiler.simulation;
 
+import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.core.command.RequestContextImpl;
 import org.drools.core.fluent.impl.FluentBuilderImpl;
-import org.drools.core.fluent.impl.PsuedoClockRunner;
-import org.kie.internal.fluent.runtime.FluentBuilder;
+import org.drools.core.fluent.impl.PseudoClockRunner;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.ResourceType;
-import org.drools.compiler.CommonTestMethodBase;
+import org.kie.internal.fluent.RequestContext;
 import org.kie.internal.fluent.Scope;
+import org.kie.internal.fluent.runtime.FluentBuilder;
 import org.kie.internal.fluent.runtime.KieSessionFluent;
 
 public class BatchRunFluentTest extends CommonTestMethodBase {
@@ -31,7 +32,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testOutName() {
-        PsuedoClockRunner runner = new PsuedoClockRunner();
+        PseudoClockRunner runner = new PseudoClockRunner();
 
         FluentBuilder f          = new FluentBuilderImpl();
 
@@ -42,7 +43,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .getGlobal("outS").out("outS")
          .dispose();
 
-        RequestContextImpl requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
+        RequestContext requestContext = (RequestContext) runner.execute( f.getExecutable() );
 
         assertEquals("h1", requestContext.getOut().get("outS"));
     }
@@ -50,7 +51,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testOutWithPriorSetAndNoName() {
-        PsuedoClockRunner runner = new PsuedoClockRunner();
+        PseudoClockRunner runner = new PseudoClockRunner();
 
         FluentBuilder f         = new FluentBuilderImpl();
 
@@ -69,7 +70,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testOutWithoutPriorSetAndNoName() {
-        PsuedoClockRunner runner = new PsuedoClockRunner();
+        PseudoClockRunner runner = new PseudoClockRunner();
 
         FluentBuilder f         = new FluentBuilderImpl();
 
@@ -92,7 +93,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testSetAndGetWithCommandRegisterWithEnds() {
-        PsuedoClockRunner runner = new PsuedoClockRunner();
+        PseudoClockRunner runner = new PseudoClockRunner();
 
         FluentBuilder f         = new FluentBuilderImpl();
 
@@ -124,7 +125,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testSetAndGetWithCommandRegisterWithoutEnds() {
-        PsuedoClockRunner runner = new PsuedoClockRunner();
+        PseudoClockRunner runner = new PseudoClockRunner();
 
         FluentBuilder f         = new FluentBuilderImpl();
 
@@ -157,7 +158,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testConversationIdIncreases() {
-        PsuedoClockRunner runner = new PsuedoClockRunner();
+        PseudoClockRunner runner = new PseudoClockRunner();
 
         FluentBuilder f         = new FluentBuilderImpl();
 
@@ -180,7 +181,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testRequestScope() {
-        PsuedoClockRunner runner = new PsuedoClockRunner();
+        PseudoClockRunner runner = new PseudoClockRunner();
 
         FluentBuilder f         = new FluentBuilderImpl();
 
@@ -202,7 +203,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testApplicationScope() {
-        PsuedoClockRunner runner = new PsuedoClockRunner();
+        PseudoClockRunner runner = new PseudoClockRunner();
 
         FluentBuilder f         = new FluentBuilderImpl();
 
@@ -237,7 +238,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testConversationScope() {
-        PsuedoClockRunner runner = new PsuedoClockRunner();
+        PseudoClockRunner runner = new PseudoClockRunner();
 
         FluentBuilder f         = new FluentBuilderImpl();
 
@@ -282,7 +283,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testContextScopeSearching() {
-        PsuedoClockRunner runner = new PsuedoClockRunner();
+        PseudoClockRunner runner = new PseudoClockRunner();
 
         FluentBuilder f         = new FluentBuilderImpl();
 
@@ -340,7 +341,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testAfter() {
-        PsuedoClockRunner runner = new PsuedoClockRunner(0);
+        PseudoClockRunner runner = new PseudoClockRunner( 0);
 
         FluentBuilder f         = new FluentBuilderImpl();
 

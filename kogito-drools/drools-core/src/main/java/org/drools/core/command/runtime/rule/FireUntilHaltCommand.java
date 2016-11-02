@@ -16,8 +16,8 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.command.runtime.UnpersistableCommand;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
@@ -33,7 +33,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlAccessorType(XmlAccessType.NONE)
 public class FireUntilHaltCommand
 	implements
-	GenericCommand<Void>, UnpersistableCommand {
+    ExecutableCommand<Void>, UnpersistableCommand {
     private static final long serialVersionUID = 510l;
 
     @XmlTransient
@@ -56,7 +56,7 @@ public class FireUntilHaltCommand
     }
 
     public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         final StatefulRuleSession session = (StatefulRuleSession)ksession;
         
         new Thread(new Runnable() {

@@ -16,28 +16,27 @@
 
 package org.drools.core.command.runtime.rule;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import org.drools.core.QueryResultsImpl;
+import org.drools.core.command.IdentifiableResult;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.core.runtime.rule.impl.FlatQueryResults;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.Variable;
+import org.kie.internal.command.Context;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-
-import org.drools.core.QueryResultsImpl;
-import org.drools.core.command.IdentifiableResult;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.kie.internal.command.Context;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.QueryResults;
-import org.kie.api.runtime.rule.Variable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @XmlAccessorType( XmlAccessType.NONE )
-public class QueryCommand  implements GenericCommand<QueryResults>, IdentifiableResult {
+public class QueryCommand implements ExecutableCommand<QueryResults>, IdentifiableResult {
 
     private static final long serialVersionUID = 510l;
 
@@ -90,7 +89,7 @@ public class QueryCommand  implements GenericCommand<QueryResults>, Identifiable
     }
 
     public QueryResults execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
         if ( this.arguments == null || this.arguments.isEmpty() ) {
             this.arguments = Collections.emptyList();
@@ -105,9 +104,7 @@ public class QueryCommand  implements GenericCommand<QueryResults>, Identifiable
         QueryResults results = ksession.getQueryResults( name, this.arguments.toArray() );
 
         if ( this.outIdentifier != null ) {
-            if(((StatefulKnowledgeSessionImpl)ksession).getExecutionResult() != null){
-                ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult().getResults().put( this.outIdentifier, new FlatQueryResults((QueryResultsImpl) results) );
-            }
+            ((RegistryContext) context).lookup( ExecutionResultImpl.class ).setResult( this.outIdentifier, new FlatQueryResults( (QueryResultsImpl) results) );
         }
 
         return results;
