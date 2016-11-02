@@ -17,6 +17,7 @@
 package org.kie.dmn.core.impl;
 
 import org.kie.dmn.core.api.DMNContext;
+import org.kie.dmn.core.api.DMNDecisionResult;
 import org.kie.dmn.core.api.DMNMessage;
 import org.kie.dmn.core.api.DMNResult;
 
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 public class DMNResultImpl implements DMNResult {
     private DMNContext context;
     private List<DMNMessage> messages;
-    private Map<String, Object> decisionResults;
+    private Map<String, DMNDecisionResult> decisionResults;
 
     public DMNResultImpl() {
         messages = new ArrayList<>(  );
@@ -62,24 +63,30 @@ public class DMNResultImpl implements DMNResult {
         this.messages.add( msg );
     }
 
-    public void addMessage( DMNMessage.Severity severity, String message ) {
-        this.messages.add( new DMNMessageImpl( severity, message ) );
+    public DMNMessage addMessage( DMNMessage.Severity severity, String message, String sourceId ) {
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, sourceId );
+        this.messages.add( msg );
+        return msg;
     }
 
-    public void addMessage( DMNMessage.Severity severity, String message, Throwable exception ) {
-        this.messages.add( new DMNMessageImpl( severity, message, exception ) );
+    public void addMessage( DMNMessage.Severity severity, String message, String sourceId, Throwable exception ) {
+        this.messages.add( new DMNMessageImpl( severity, message, sourceId, exception ) );
     }
 
-    public Map<String, Object> getDecisionResults() {
-        return decisionResults;
+    public List<DMNDecisionResult> getDecisionResults() {
+        return new ArrayList<>( decisionResults.values() );
     }
 
-    public Object getDecisionResult( String name ) {
-        return decisionResults.get( name );
+    public DMNDecisionResult getDecisionResultByName( String name ) {
+        return decisionResults.values().stream().filter( dr -> dr.getDecisionName().equals( name ) ).findFirst().get();
     }
 
-    public void setDecisionResult( String name, Object value ) {
-        this.decisionResults.put( name, value );
+    public DMNDecisionResult getDecisionResultById( String id ) {
+        return decisionResults.get( id );
+    }
+
+    public void setDecisionResult( String id, DMNDecisionResult result ) {
+        this.decisionResults.put( id, result );
     }
 
     @Override
@@ -89,4 +96,5 @@ public class DMNResultImpl implements DMNResult {
                ", messages=" + messages +
                '}';
     }
+
 }

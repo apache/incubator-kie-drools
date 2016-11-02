@@ -63,7 +63,7 @@ public class DMNRuntimeImpl
         if( decision != null ) {
             evaluateDecision( context, result, decision );
         } else {
-            result.addMessage( DMNMessage.Severity.ERROR, "Decision not found for name '"+decisionName+"'" );
+            result.addMessage( DMNMessage.Severity.ERROR, "Decision not found for name '"+decisionName+"'", null );
         }
         return result;
     }
@@ -75,7 +75,7 @@ public class DMNRuntimeImpl
         if( decision != null ) {
             evaluateDecision( context, result, decision );
         } else {
-            result.addMessage( DMNMessage.Severity.ERROR, "Decision not found for id '"+decisionId+"'" );
+            result.addMessage( DMNMessage.Severity.ERROR, "Decision not found for id '"+decisionId+"'", decisionId );
         }
         return result;
     }
@@ -88,13 +88,18 @@ public class DMNRuntimeImpl
 
     private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode decision) {
         boolean missingInput = false;
+        DMNDecisionResultImpl dr = new DMNDecisionResultImpl( decision.getId(), decision.getName() );
+        result.setDecisionResult( decision.getId(), dr );
         for( DMNNode dep : decision.getDependencies().values() ) {
             if( ! context.isDefined( dep.getName() ) ) {
                 if( dep instanceof DecisionNode ) {
                     evaluateDecision( context, result, (DecisionNode) dep );
                 } else {
                     missingInput = true;
-                    result.addMessage( DMNMessage.Severity.ERROR, "Missing input for decision '"+decision.getName()+"': input name='" + dep.getName() + "' input id='" + dep.getId() + "'" );
+                    DMNMessage msg = result.addMessage( DMNMessage.Severity.ERROR,
+                                                        "Missing input for decision '"+decision.getName()+"': input name='" + dep.getName() + "' input id='" + dep.getId() + "'",
+                                                        decision.getId() );
+                    dr.getMessages().add( msg );
                 }
             }
         }
@@ -103,9 +108,8 @@ public class DMNRuntimeImpl
         }
         Object val = decision.getEvaluator().evaluate( result );
         result.getContext().set( decision.getDecision().getVariable().getName(), val );
-        result.setDecisionResult( decision.getName(), val );
+        dr.setResult( val );
         return true;
     }
-
 
 }
