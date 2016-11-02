@@ -69,4 +69,23 @@ public class KieRepositoryTest {
             Thread.currentThread().setContextClassLoader( cl );
         }
     }
+    
+    @Test
+    public void testLoadingNotAKJar() {
+        // DROOLS-1351
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+
+        URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{this.getClass().getResource( "/only-jar-pojo-not-kjar-no-kmodule-1.0.0.jar" )} );
+        Thread.currentThread().setContextClassLoader( urlClassLoader );
+
+        try {
+            KieServices ks = KieServices.Factory.get();
+            KieRepository kieRepository = ks.getRepository();
+            ReleaseId releaseId = ks.newReleaseId( "org.test", "only-jar-pojo-not-kjar-no-kmodule", "1.0.0" );
+            KieModule kieModule = kieRepository.getKieModule( releaseId );
+            assertNull( kieModule );
+        } finally {
+            Thread.currentThread().setContextClassLoader( cl );
+        }
+    }
 }
