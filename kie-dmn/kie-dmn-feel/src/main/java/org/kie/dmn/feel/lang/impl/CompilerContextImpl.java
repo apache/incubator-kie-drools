@@ -24,6 +24,18 @@ import java.util.Map;
 
 public class CompilerContextImpl implements CompilerContext {
     private Map<String, Object> inputVariables = new HashMap<>();
+    private Map<String, Type> inputVariableTypes = new HashMap<>();
+
+    @Override
+    public CompilerContext addInputVariableType(String name, Type type) {
+        this.inputVariableTypes.put( name, type );
+        return this;
+    }
+
+    @Override
+    public Map<String, Type> getInputVariableTypes() {
+        return inputVariableTypes;
+    }
 
     @Override
     public CompilerContext addInputVariable(String name, Object value) {

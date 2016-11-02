@@ -20,6 +20,10 @@ import java.util.Map;
 
 public interface CompilerContext {
 
+    CompilerContext addInputVariableType( String name, Type type );
+
+    Map<String, Type> getInputVariableTypes();
+
     CompilerContext addInputVariable( String name, Object value );
 
     Map<String, Object> getInputVariables();
