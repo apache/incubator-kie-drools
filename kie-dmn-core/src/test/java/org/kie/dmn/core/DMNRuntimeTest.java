@@ -61,7 +61,7 @@ public class DMNRuntimeTest {
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
 
         assertThat( dmnResult.getDecisionResults().size(), is(1) );
-        assertThat( dmnResult.getDecisionResult( "Greeting Message" ), is( "Hello John Doe" ) );
+        assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getResult(), is( "Hello John Doe" ) );
 
         DMNContext result = dmnResult.getContext();
 
@@ -80,7 +80,7 @@ public class DMNRuntimeTest {
         DMNResult dmnResult = runtime.evaluateDecisionByName( dmnModel, "Greeting Message", context );
 
         assertThat( dmnResult.getDecisionResults().size(), is(1) );
-        assertThat( dmnResult.getDecisionResult( "Greeting Message" ), is( "Hello John Doe" ) );
+        assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getResult(), is( "Hello John Doe" ) );
 
         DMNContext result = dmnResult.getContext();
 
@@ -99,7 +99,7 @@ public class DMNRuntimeTest {
         DMNResult dmnResult = runtime.evaluateDecisionById( dmnModel, "d_GreetingMessage", context );
 
         assertThat( dmnResult.getDecisionResults().size(), is(1) );
-        assertThat( dmnResult.getDecisionResult( "Greeting Message" ), is( "Hello John Doe" ) );
+        assertThat( dmnResult.getDecisionResultById( "d_GreetingMessage" ).getResult(), is( "Hello John Doe" ) );
 
         DMNContext result = dmnResult.getContext();
 
