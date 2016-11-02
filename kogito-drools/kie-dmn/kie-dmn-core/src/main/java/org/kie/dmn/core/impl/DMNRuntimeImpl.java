@@ -103,6 +103,7 @@ public class DMNRuntimeImpl
         }
         Object val = decision.getEvaluator().evaluate( result );
         result.getContext().set( decision.getDecision().getVariable().getName(), val );
+        result.setDecisionResult( decision.getName(), val );
         return true;
     }
 

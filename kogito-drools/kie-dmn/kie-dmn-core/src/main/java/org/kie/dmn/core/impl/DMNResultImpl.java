@@ -20,17 +20,17 @@ import org.kie.dmn.core.api.DMNContext;
 import org.kie.dmn.core.api.DMNMessage;
 import org.kie.dmn.core.api.DMNResult;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DMNResultImpl implements DMNResult {
     private DMNContext context;
     private List<DMNMessage> messages;
+    private Map<String, Object> decisionResults;
 
     public DMNResultImpl() {
         messages = new ArrayList<>(  );
+        decisionResults = new HashMap<>(  );
     }
 
     public void setContext(DMNContext context) {
@@ -68,6 +68,18 @@ public class DMNResultImpl implements DMNResult {
 
     public void addMessage( DMNMessage.Severity severity, String message, Throwable exception ) {
         this.messages.add( new DMNMessageImpl( severity, message, exception ) );
+    }
+
+    public Map<String, Object> getDecisionResults() {
+        return decisionResults;
+    }
+
+    public Object getDecisionResult( String name ) {
+        return decisionResults.get( name );
+    }
+
+    public void setDecisionResult( String name, Object value ) {
+        this.decisionResults.put( name, value );
     }
 
     @Override

@@ -60,6 +60,9 @@ public class DMNRuntimeTest {
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
 
+        assertThat( dmnResult.getDecisionResults().size(), is(1) );
+        assertThat( dmnResult.getDecisionResult( "Greeting Message" ), is( "Hello John Doe" ) );
+
         DMNContext result = dmnResult.getContext();
 
         assertThat( result.get( "Greeting Message" ), is( "Hello John Doe" ) );
@@ -76,6 +79,9 @@ public class DMNRuntimeTest {
 
         DMNResult dmnResult = runtime.evaluateDecisionByName( dmnModel, "Greeting Message", context );
 
+        assertThat( dmnResult.getDecisionResults().size(), is(1) );
+        assertThat( dmnResult.getDecisionResult( "Greeting Message" ), is( "Hello John Doe" ) );
+
         DMNContext result = dmnResult.getContext();
 
         assertThat( result.get( "Greeting Message" ), is( "Hello John Doe" ) );
@@ -91,6 +97,9 @@ public class DMNRuntimeTest {
         context.set( "Full Name", "John Doe" );
 
         DMNResult dmnResult = runtime.evaluateDecisionById( dmnModel, "d_GreetingMessage", context );
+
+        assertThat( dmnResult.getDecisionResults().size(), is(1) );
+        assertThat( dmnResult.getDecisionResult( "Greeting Message" ), is( "Hello John Doe" ) );
 
         DMNContext result = dmnResult.getContext();
 
@@ -189,5 +198,20 @@ public class DMNRuntimeTest {
         DMNContext result = dmnResult.getContext();
 
         assertThat( result.get( "Approval Status" ), is( "Approved" ) );
+    }
+
+    @Test
+    public void testTrisotechNamespace() {
+        DMNRuntime runtime = createRuntime( "trisotech_namespace.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_b8feec86-dadf-4051-9feb-8e6093bbb530", "Solution 3" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "IsDoubleHulled", true );
+        context.set("Residual Cargo Size", new BigDecimal( 0.1 ) );
+        context.set("Ship Size", new BigDecimal( 50 ) );
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get("Ship can enter a Dutch port"), is( true ) );
     }
 }
