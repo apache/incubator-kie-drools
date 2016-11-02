@@ -29,6 +29,7 @@ import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.FeelTypeImpl;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
+import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.model.v1_1.*;
@@ -91,14 +92,14 @@ public class DMNCompilerImpl implements DMNCompiler {
                 model.addInput( idn );
             } else if ( e instanceof Decision ) {
                 DecisionNode dn = new DecisionNode( (Decision) e );
-                DecisionNode.DecisionEvaluator evaluator = compileDecision( dn.getDecision() );
-                dn.setEvaluator( evaluator );
                 model.addDecision( dn );
             }
         }
 
         for ( DecisionNode d : model.getDecisions() ) {
             linkDecisionRequirements( model, d );
+            DecisionNode.DecisionEvaluator evaluator = compileDecision( d );
+            d.setEvaluator( evaluator );
         }
     }
 
@@ -151,11 +152,17 @@ public class DMNCompilerImpl implements DMNCompiler {
         return type;
     }
 
-    private DecisionNode.DecisionEvaluator compileDecision(Decision decision) {
+    private DecisionNode.DecisionEvaluator compileDecision(DecisionNode decisionNode) {
+        Decision decision = decisionNode.getDecision();
         FEEL feel = FEEL.newInstance();
         Expression expression = decision.getExpression();
         if( expression instanceof LiteralExpression ) {
-            CompiledExpression compiledExpression = feel.compile( ((LiteralExpression) expression).getText(), feel.newCompilerContext() );
+            CompilerContext ctx = feel.newCompilerContext();
+            decisionNode.getDependencies().forEach( (name, node) -> {
+                // TODO: need to properly resolve types here
+                ctx.addInputVariableType( name, BuiltInType.UNKNOWN );
+            } );
+            CompiledExpression compiledExpression = feel.compile( ((LiteralExpression) expression).getText(), ctx );
             DecisionNode.LiteralExpressionFEELEvaluator evaluator = new DecisionNode.LiteralExpressionFEELEvaluator( compiledExpression );
             return evaluator;
         } else if( expression instanceof DecisionTable ) {

@@ -17,12 +17,14 @@
 package org.kie.dmn.feel.parser.feel11;
 
 import org.antlr.v4.runtime.*;
+import org.kie.dmn.feel.lang.Type;
 
+import java.util.Collections;
 import java.util.Map;
 
 public class FEELParser {
 
-    public static FEEL_1_1Parser parse(String source, Map<String, Object> inputVariables) {
+    public static FEEL_1_1Parser parse(String source, Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables) {
         ANTLRInputStream input = new ANTLRInputStream(source);
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
@@ -30,24 +32,29 @@ public class FEELParser {
         parser.setErrorHandler( new FEELErrorHandler() );
 
         // pre-loads the parser with symbols
-        defineVariables( inputVariables, parser );
+        defineVariables( inputVariableTypes, inputVariables, parser );
         return parser;
     }
 
-    private static void defineVariables(Map<String, Object> inputVariables, FEEL_1_1Parser parser) {
-        for( Map.Entry<String, Object> e : inputVariables.entrySet() ) {
-            parser.getHelper().defineVariable( e.getKey() );
-            if( e.getValue() instanceof Map ) {
+    private static void defineVariables(Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables, FEEL_1_1Parser parser) {
+        inputVariables.forEach( (name, value) -> {
+            parser.getHelper().defineVariable( name );
+            if( value instanceof Map ) {
                 try {
-                    parser.getHelper().pushName( e.getKey() );
+                    parser.getHelper().pushName( name );
                     parser.getHelper().pushScope();
-                    defineVariables( (Map<String, Object>) e.getValue(), parser );
+                    defineVariables( Collections.EMPTY_MAP, (Map<String, Object>) value, parser );
                 } finally {
                     parser.getHelper().popScope();
                     parser.getHelper().popName();
                 }
             }
-        }
+        } );
+        inputVariableTypes.forEach( (name, type) -> {
+            if( ! inputVariables.containsKey( name ) ) {
+                parser.getHelper().defineVariable( name );
+            }
+        } );
     }
 
     public static class FEELErrorHandler extends DefaultErrorStrategy {

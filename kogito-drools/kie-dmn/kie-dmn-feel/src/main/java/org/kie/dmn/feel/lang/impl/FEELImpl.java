@@ -41,7 +41,7 @@ public class FEELImpl
     }
 
     public CompiledExpression compile(String expression, CompilerContext ctx) {
-        FEEL_1_1Parser parser = FEELParser.parse( expression, ctx.getInputVariables() );
+        FEEL_1_1Parser parser = FEELParser.parse( expression, ctx.getInputVariableTypes(), ctx.getInputVariables() );
         ParseTree tree = parser.compilation_unit();
         ASTBuilderVisitor v = new ASTBuilderVisitor();
         BaseNode expr = v.visit( tree );
