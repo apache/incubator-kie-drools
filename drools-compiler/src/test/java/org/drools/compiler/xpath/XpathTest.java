@@ -1121,4 +1121,49 @@ public class XpathTest {
 
         assertEquals(2, list.size());
     }
+
+    @Test
+    public void testSingleFireOnReactiveChange() {
+        // DROOLS-1302
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  Man( $toy: /wife/children{age > 10}/toys )\n" +
+                "then\n" +
+                "  list.add( $toy );\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
+        KieSession ksession = kbase.newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        Woman alice = new Woman( "Alice", 38 );
+        Man bob = new Man( "Bob", 40 );
+        bob.setWife( alice );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        list.clear();
+        Child eleonor = new Child( "Eleonor", 10 );
+        alice.addChild( eleonor );
+        Toy toy = new Toy( "eleonor toy 1" );
+        eleonor.addToy( toy );
+        eleonor.setAge(11);
+
+        ksession.fireAllRules();
+        System.out.println(list);
+        assertEquals( 1, list.size() );
+
+        list.clear();
+
+        toy.setName( "eleonor toy 2" );
+        ksession.fireAllRules();
+        System.out.println(list);
+        assertEquals( 1, list.size() );
+    }
 }
