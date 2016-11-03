@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
  * Default implementation for {@link Solver}.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Solver
+ * @see AbstractSolver
  */
 public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
@@ -156,7 +157,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         boolean restartSolver = true;
         while (restartSolver) {
             solvingStarted(solverScope);
-            runPhases();
+            runPhases(solverScope);
             solvingEnded(solverScope);
             restartSolver = checkProblemFactChanges();
         }
@@ -183,18 +184,6 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
                 solverScope.getBestScore(),
                 environmentMode.name(),
                 (randomFactory != null ? randomFactory : "not fixed"));
-    }
-
-    protected void runPhases() {
-        Iterator<Phase<Solution_>> it = phaseList.iterator();
-        while (!termination.isSolverTerminated(solverScope) && it.hasNext()) {
-            Phase<Solution_> phase = it.next();
-            phase.solve(solverScope);
-            if (it.hasNext()) {
-                solverScope.setWorkingSolutionFromBestSolution();
-            }
-        }
-        // TODO support doing round-robin of phases (only non-construction heuristics)
     }
 
     public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {

@@ -108,9 +108,7 @@ public class PartitionSolver<Solution_> extends AbstractSolver<Solution_> {
         try {
             solverScope.setBestSolution(part);
             solvingStarted(solverScope);
-            for (Phase<Solution_> phase : phaseList) {
-                phase.solve(solverScope);
-            }
+            runPhases(solverScope);
             solvingEnded(solverScope);
             return solverScope.getBestSolution();
         } finally {

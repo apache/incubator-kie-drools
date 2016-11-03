@@ -16,11 +16,13 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
+import org.optaplanner.core.impl.partitionedsearch.PartitionSolver;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
@@ -32,6 +34,10 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
+ * Common code between {@link DefaultSolver} and child solvers (such as {@link PartitionSolver}.
+ * <p>
+ * Do not create a new child {@link Solver} to implement a new heuristic or metaheuristic,
+ * just use a new {@link Phase} for that.
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Solver
  * @see DefaultSolver
@@ -72,6 +78,18 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
         for (Phase<Solution_> phase : phaseList) {
             phase.solvingStarted(solverScope);
         }
+    }
+
+    protected void runPhases(DefaultSolverScope<Solution_> solverScope) {
+        Iterator<Phase<Solution_>> it = phaseList.iterator();
+        while (!termination.isSolverTerminated(solverScope) && it.hasNext()) {
+            Phase<Solution_> phase = it.next();
+            phase.solve(solverScope);
+            if (it.hasNext()) {
+                solverScope.setWorkingSolutionFromBestSolution();
+            }
+        }
+        // TODO support doing round-robin of phases (only non-construction heuristics)
     }
 
     public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
