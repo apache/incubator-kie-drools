@@ -271,12 +271,12 @@ public class ReteDiagram {
     }
     
     private static void printPartitionMap(HashMap<Class<? extends BaseNode>, List<BaseNode>> nodeMap, PrintStream out, List<Vertex<BaseNode, BaseNode>> vertexes) {
-        Map<String, List<BaseNode>> byPartition = nodeMap.entrySet().stream()
+        Map<Integer, List<BaseNode>> byPartition = nodeMap.entrySet().stream()
             .flatMap(kv->kv.getValue().stream())
-            .collect(groupingBy(n->n.getPartitionId() == null ? "null" : n.getPartitionId().getId()));
+            .collect(groupingBy(n->n.getPartitionId() == null ? 0 : n.getPartitionId().getId()));
         
-        for (Entry<String, List<BaseNode>> kv : byPartition.entrySet()) {
-            printClusterMapCluster(kv.getKey().replaceAll("-", "_"), new HashSet<>(kv.getValue()), out);
+        for (Entry<Integer, List<BaseNode>> kv : byPartition.entrySet()) {
+            printClusterMapCluster("P"+kv.getKey(), new HashSet<>(kv.getValue()), out);
         }
     }
 
