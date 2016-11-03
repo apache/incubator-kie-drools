@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
@@ -78,6 +79,12 @@ public class RangeNode
     public Range evaluate(EvaluationContext ctx) {
         Comparable s = (Comparable) start.evaluate( ctx );
         Comparable e = (Comparable) end.evaluate( ctx );
+
+        if( s == null || e == null ||
+            ( BuiltInType.determineTypeFromInstance( s ) != BuiltInType.determineTypeFromInstance( e ) &&
+              ! s.getClass().isAssignableFrom( e.getClass() ) ) ) {
+            return null;
+        }
 
         return new RangeImpl( lowerBound==IntervalBoundary.OPEN ? Range.RangeBoundary.OPEN : Range.RangeBoundary.CLOSED,
                               s,
