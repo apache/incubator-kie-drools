@@ -26,6 +26,8 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
+import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig;
@@ -34,6 +36,7 @@ import org.optaplanner.core.impl.partitionedsearch.queue.PartitionChangeMove;
 import org.optaplanner.core.impl.partitionedsearch.queue.PartitionQueue;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.Phase;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -103,6 +106,12 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 Solution_ part = it.next();
                 PartitionSolver<Solution_> partitionSolver = buildPartitionSolver(
                         childThreadPlumbingTermination, activeThreadSemaphore, solverScope);
+                partitionSolver.addEventListener(event -> {
+                    InnerScoreDirector<Solution_> scoreDirector = partitionSolver.solverScope.getScoreDirector();
+                    // TODO use scoreDirector
+                    PartitionChangeMove<Solution_> move = new PartitionChangeMove<>();
+                    partitionQueue.addMove(partIndex, move);
+                });
                 threadPoolExecutor.submit(() -> {
                     try {
                         partitionSolver.solve(part);
@@ -113,8 +122,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 });
             }
             for (PartitionChangeMove step : partitionQueue) {
-                /// TODO do the step
-
+                // TODO do the step
             }
         } finally {
             // If a partition thread throws an Exception, it is propagated here

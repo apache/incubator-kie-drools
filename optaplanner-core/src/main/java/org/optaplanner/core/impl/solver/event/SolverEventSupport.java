@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
  */
 public class SolverEventSupport<Solution_> extends AbstractEventSupport<SolverEventListener<Solution_>> {
 
-    private Solver<Solution_> solver;
+    private final Solver<Solution_> solver;
 
     public SolverEventSupport(Solver<Solution_> solver) {
         this.solver = solver;
