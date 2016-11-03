@@ -293,80 +293,139 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         final String TYPE_NAME = BuildUtils.getInternalType( classDef.getClassName() );
 
         FieldVisitor fv;
+        /*
+            private Collection<Tuple> _lts;
+         */
         {
-            fv = cw.visitField( ACC_PRIVATE, LEFT_TUPLES_FIELD_NAME, "Ljava/util/List;", "Ljava/util/List<Lorg/drools/core/reteoo/LeftTuple;>;", null );
+            fv = cw.visitField( ACC_PRIVATE, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;", "Ljava/util/Collection<Lorg/drools/core/spi/Tuple;>;", null );
             fv.visitEnd();
         }
 
         MethodVisitor mv;
+        /*
+            public void addLeftTuple(Tuple leftTuple) {
+                if (_lts == null) {
+                    _lts = new HashSet<Tuple>();
+                }
+                _lts.add(leftTuple);
+            }
+         */
         {
             mv = cw.visitMethod( ACC_PUBLIC, "addLeftTuple", "(Lorg/drools/core/spi/Tuple;)V", null, null );
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel( l0 );
-            mv.visitLineNumber( 28, l0 );
+            mv.visitLineNumber( 30, l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/List;" );
+            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
             Label l1 = new Label();
             mv.visitJumpInsn( IFNONNULL, l1 );
             Label l2 = new Label();
             mv.visitLabel( l2 );
-            mv.visitLineNumber( 29, l2 );
+            mv.visitLineNumber( 31, l2 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitTypeInsn( NEW, "java/util/ArrayList" );
+            mv.visitTypeInsn( NEW, "java/util/HashSet" );
             mv.visitInsn( DUP );
-            mv.visitMethodInsn( INVOKESPECIAL, "java/util/ArrayList", "<init>", "()V", false );
-            mv.visitFieldInsn( PUTFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/List;" );
+            mv.visitMethodInsn( INVOKESPECIAL, "java/util/HashSet", "<init>", "()V", false );
+            mv.visitFieldInsn( PUTFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
             mv.visitLabel( l1 );
-            mv.visitLineNumber( 31, l1 );
+            mv.visitLineNumber( 33, l1 );
             mv.visitFrame( Opcodes.F_SAME, 0, null, 0, null );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/List;" );
+            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
             mv.visitVarInsn( ALOAD, 1 );
-            mv.visitMethodInsn( INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true );
+            mv.visitMethodInsn( INVOKEINTERFACE, "java/util/Collection", "add", "(Ljava/lang/Object;)Z", true );
             mv.visitInsn( POP );
             Label l3 = new Label();
             mv.visitLabel( l3 );
-            mv.visitLineNumber( 32, l3 );
+            mv.visitLineNumber( 34, l3 );
             mv.visitInsn( RETURN );
             Label l4 = new Label();
             mv.visitLabel( l4 );
             mv.visitLocalVariable( "this", "L" + TYPE_NAME + ";", null, l0, l4, 0 );
-            mv.visitLocalVariable( "leftTuple", "Lorg/drools/core/reteoo/LeftTuple;", null, l0, l4, 1 );
+            mv.visitLocalVariable( "leftTuple", "Lorg/drools/core/spi/Tuple;", null, l0, l4, 1 );
             mv.visitMaxs( 3, 2 );
             mv.visitEnd();
         }
+        /*
+            public Collection<Tuple> getLeftTuples() {             
+                return _lts != null ? _lts : Collections.emptyList();
+            }                                                      
+         */
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "getLeftTuples", "()Ljava/util/List;", "()Ljava/util/List<Lorg/drools/core/reteoo/LeftTuple;>;", null );
+            mv = cw.visitMethod( ACC_PUBLIC, "getLeftTuples", "()Ljava/util/Collection;", "()Ljava/util/Collection<Lorg/drools/core/spi/Tuple;>;", null );
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel( l0 );
-            mv.visitLineNumber( 32, l0 );
+            mv.visitLineNumber( 37, l0 );
             mv.visitVarInsn( ALOAD, 0 );
-            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/List;" );
-            mv.visitInsn( ARETURN );
+            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;");
             Label l1 = new Label();
+            mv.visitJumpInsn( IFNULL, l1 );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
+            Label l2 = new Label();
+            mv.visitJumpInsn( GOTO, l2 );
             mv.visitLabel( l1 );
-            mv.visitLocalVariable( "this", "L" + TYPE_NAME + ";", null, l0, l1, 0 );
+            mv.visitFrame( Opcodes.F_SAME, 0, null, 0, null );
+            mv.visitMethodInsn( INVOKESTATIC, "java/util/Collections", "emptyList", "()Ljava/util/List;", false );
+            mv.visitLabel( l2 );
+            mv.visitFrame( Opcodes.F_SAME1, 0, null, 1, new Object[] {"java/util/Collection"} );
+            mv.visitInsn( ARETURN );
+            Label l3 = new Label();
+            mv.visitLabel( l3 );
+            mv.visitLocalVariable( "this", "L" + TYPE_NAME + ";", null, l0, l3, 0 );
             mv.visitMaxs( 1, 1 );
             mv.visitEnd();
         }
+        /*
+            protected void notifyModification() {           
+                ReactiveObjectUtil.notifyModification(this);
+            }                                               
+         */
         {
             mv = cw.visitMethod( ACC_PROTECTED, "notifyModification", "()V", null, null );
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel( l0 );
-            mv.visitLineNumber( 36, l0 );
+            mv.visitLineNumber( 41, l0 );
             mv.visitVarInsn( ALOAD, 0 );
             mv.visitMethodInsn( INVOKESTATIC, "org/drools/core/phreak/ReactiveObjectUtil", "notifyModification", "(Lorg/drools/core/phreak/ReactiveObject;)V", false );
             Label l1 = new Label();
             mv.visitLabel( l1 );
-            mv.visitLineNumber( 37, l1 );
+            mv.visitLineNumber( 42, l1 );
             mv.visitInsn( RETURN );
             Label l2 = new Label();
             mv.visitLabel( l2 );
             mv.visitLocalVariable( "this", "L" + TYPE_NAME + ";", null, l0, l2, 0 );
             mv.visitMaxs( 1, 1 );
+            mv.visitEnd();
+        }
+        /*
+            public void removeLeftTuple(Tuple leftTuple) {
+                _lts.remove(leftTuple);
+            }
+         */
+        {
+            mv = cw.visitMethod( ACC_PUBLIC, "removeLeftTuple", "(Lorg/drools/core/spi/Tuple;)V", null, null );
+            mv.visitCode();
+            Label l0 = new Label();
+            mv.visitLabel( l0 );
+            mv.visitLineNumber( 46, l0 );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/Collection;" );
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitMethodInsn( INVOKEINTERFACE, "java/util/Collection", "remove", "(Ljava/lang/Object;)Z", true );
+            mv.visitInsn( POP );
+            Label l1 = new Label();
+            mv.visitLabel( l1 );
+            mv.visitLineNumber( 47, l1 );
+            mv.visitInsn(RETURN);
+            Label l2 = new Label();
+            mv.visitLabel( l2 );
+            mv.visitLocalVariable( "this", "Lorg/drools/core/phreak/AbstractReactiveObject;", null, l0, l2, 0 );
+            mv.visitLocalVariable( "leftTuple", "Lorg/drools/core/spi/Tuple;", null, l0, l2, 1 );
+            mv.visitMaxs( 2, 2 );
             mv.visitEnd();
         }
     }

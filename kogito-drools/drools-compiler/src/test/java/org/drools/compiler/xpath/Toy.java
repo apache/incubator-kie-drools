@@ -19,7 +19,7 @@ import org.drools.core.phreak.AbstractReactiveObject;
 
 public class Toy extends AbstractReactiveObject {
 
-    private final String name;
+    private String name;
 
     private String owner;
 
@@ -31,11 +31,21 @@ public class Toy extends AbstractReactiveObject {
         return name;
     }
 
+    public void setName( String name ) {
+        this.name = name;
+        notifyModification();
+    }
+
     public String getOwner() {
         return owner;
     }
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    @Override
+    public String toString() {
+        return "Toy: " + name;
     }
 }

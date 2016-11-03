@@ -15,12 +15,13 @@
 
 package org.drools.compiler.xpath;
 
-import java.util.ArrayList;
+import org.drools.core.phreak.ReactiveList;
+
 import java.util.List;
 
 public class Adult extends Person {
 
-    private final List<Child> children = new ArrayList<Child>();
+    private final List<Child> children = new ReactiveList<Child>();
 
     public Adult(String name, int age) {
         super(name, age);

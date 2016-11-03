@@ -18,21 +18,22 @@ package org.drools.core.phreak;
 
 import org.drools.core.spi.Tuple;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 
 public class AbstractReactiveObject implements ReactiveObject {
-    private List<Tuple> lts;
+
+    private Collection<Tuple> lts;
 
     public void addLeftTuple(Tuple leftTuple) {
         if (lts == null) {
-            lts = new ArrayList<Tuple>();
+            lts = new HashSet<Tuple>();
         }
         lts.add(leftTuple);
     }
 
-    public List<Tuple> getLeftTuples() {
+    public Collection<Tuple> getLeftTuples() {
         return lts != null ? lts : Collections.emptyList();
     }
 
