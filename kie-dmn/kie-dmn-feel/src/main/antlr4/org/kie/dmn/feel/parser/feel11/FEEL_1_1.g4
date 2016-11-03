@@ -282,7 +282,7 @@ simpleUnaryTest
 
 // #18
 endpoint
-    : unaryExpression
+    : additiveExpression
     ;
 
 // #8-#12
