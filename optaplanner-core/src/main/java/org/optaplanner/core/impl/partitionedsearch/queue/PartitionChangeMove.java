@@ -30,7 +30,9 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove {
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
-        throw new UnsupportedOperationException();
+        // TODO do something
+
+
     }
 
     @Override

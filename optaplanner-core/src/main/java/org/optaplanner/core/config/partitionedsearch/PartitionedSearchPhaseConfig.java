@@ -32,6 +32,7 @@ import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPh
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.partitionedsearch.DefaultPartitionedSearchPhase;
 import org.optaplanner.core.impl.partitionedsearch.PartitionedSearchPhase;
@@ -124,17 +125,14 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         }
         phase.setPhaseConfigList(phaseConfigList_);
         phase.setConfigPolicy(phaseConfigPolicy);
-
-
-        // TODO check if any asserts should happen in EnvironmentMode
-//        EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
-//        if (environmentMode.isNonIntrusiveFullAsserted()) {
-//            phase.setAssertStepScoreFromScratch(true);
-//        }
-//        if (environmentMode.isIntrusiveFastAsserted()) {
-//            phase.setAssertExpectedStepScore(true);
-//            phase.setAssertShadowVariablesAreNotStaleAfterStep(true);
-//        }
+        EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
+        if (environmentMode.isNonIntrusiveFullAsserted()) {
+            phase.setAssertStepScoreFromScratch(true);
+        }
+        if (environmentMode.isIntrusiveFastAsserted()) {
+            phase.setAssertExpectedStepScore(true);
+            phase.setAssertShadowVariablesAreNotStaleAfterStep(true);
+        }
         return phase;
     }
 

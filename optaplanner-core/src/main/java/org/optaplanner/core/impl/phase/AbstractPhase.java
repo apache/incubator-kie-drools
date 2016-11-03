@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.phase;
 import java.util.Iterator;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -144,6 +145,18 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
         solverPhaseLifecycleSupport.fireStepStarted(stepScope);
         termination.stepStarted(stepScope);
         phaseLifecycleSupport.fireStepStarted(stepScope);
+    }
+
+    protected void calculateWorkingStepScore(AbstractStepScope<Solution_> stepScope, Object completedAction) {
+        AbstractPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
+        Score score = phaseScope.calculateScore();
+        stepScope.setScore(score);
+        if (assertStepScoreFromScratch) {
+            phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), completedAction);
+        }
+        if (assertShadowVariablesAreNotStaleAfterStep) {
+            phaseScope.assertShadowVariablesAreNotStale(stepScope.getScore(), completedAction);
+        }
     }
 
     protected void predictWorkingStepScore(AbstractStepScope<Solution_> stepScope, Object completedAction) {

@@ -89,11 +89,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
     private void doStep(CustomStepScope<Solution_> stepScope, CustomPhaseCommand<Solution_> customPhaseCommand) {
         InnerScoreDirector<Solution_> scoreDirector = stepScope.getScoreDirector();
         customPhaseCommand.changeWorkingSolution(scoreDirector);
-        Score score = scoreDirector.calculateScore();
-        stepScope.setScore(score);
-        if (assertStepScoreFromScratch) {
-            stepScope.getPhaseScope().assertWorkingScoreFromScratch(stepScope.getScore(), customPhaseCommand);
-        }
+        calculateWorkingStepScore(stepScope, customPhaseCommand);
         bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
     }
 

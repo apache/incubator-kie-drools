@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.localsearch.scope;
+package org.optaplanner.core.impl.partitionedsearch.scope;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
@@ -23,22 +23,21 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class LocalSearchPhaseScope<Solution_> extends AbstractPhaseScope<Solution_> {
+public class PartitionedSearchPhaseScope<Solution_> extends AbstractPhaseScope<Solution_> {
 
-    private LocalSearchStepScope<Solution_> lastCompletedStepScope;
+    private PartitionedSearchStepScope<Solution_> lastCompletedStepScope;
 
-    public LocalSearchPhaseScope(DefaultSolverScope<Solution_> solverScope) {
+    public PartitionedSearchPhaseScope(DefaultSolverScope<Solution_> solverScope) {
         super(solverScope);
-        lastCompletedStepScope = new LocalSearchStepScope<>(this, -1);
-        lastCompletedStepScope.setTimeGradient(0.0);
+        lastCompletedStepScope = new PartitionedSearchStepScope<>(this, -1);
     }
 
     @Override
-    public LocalSearchStepScope<Solution_> getLastCompletedStepScope() {
+    public PartitionedSearchStepScope<Solution_> getLastCompletedStepScope() {
         return lastCompletedStepScope;
     }
 
-    public void setLastCompletedStepScope(LocalSearchStepScope<Solution_> lastCompletedStepScope) {
+    public void setLastCompletedStepScope(PartitionedSearchStepScope<Solution_> lastCompletedStepScope) {
         this.lastCompletedStepScope = lastCompletedStepScope;
     }
 
