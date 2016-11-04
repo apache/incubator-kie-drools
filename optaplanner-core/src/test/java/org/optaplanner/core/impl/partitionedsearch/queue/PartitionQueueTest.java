@@ -20,9 +20,9 @@ import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import org.junit.Test;
+import org.optaplanner.core.impl.partitionedsearch.scope.PartitionChangeMove;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.junit.Assert.*;
@@ -136,7 +136,7 @@ public class PartitionQueueTest {
     }
 
     public PartitionChangeMove<TestdataSolution> buildMove() {
-        return new PartitionChangeMove<>();
+        return new PartitionChangeMove<>(null);
     }
 
 }

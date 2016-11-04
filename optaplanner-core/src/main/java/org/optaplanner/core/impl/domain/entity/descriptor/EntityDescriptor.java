@@ -469,6 +469,15 @@ public class EntityDescriptor<Solution_> {
         return movableEntitySelectionFilter == null || movableEntitySelectionFilter.accept(scoreDirector, entity);
     }
 
+    /**
+     * @param scoreDirector never null
+     * @param entity never null
+     * @return true if the entity is initialized or immovable
+     */
+    public boolean isEntityInitializedOrImmovable(ScoreDirector<Solution_> scoreDirector, Object entity) {
+        return isInitialized(entity) || !isMovable(scoreDirector, entity);
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" + entityClass.getName() + ")";

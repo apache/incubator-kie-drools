@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.partitionedsearch.scope;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.impl.partitionedsearch.queue.PartitionChangeMove;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
 /**

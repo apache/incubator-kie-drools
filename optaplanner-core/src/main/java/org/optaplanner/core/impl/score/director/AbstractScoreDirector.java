@@ -388,6 +388,27 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     // ************************************************************************
+    // Rebase methods
+    // ************************************************************************
+
+    @Override
+    public Object translateForRebase(InnerScoreDirector<Solution_> originScoreDirector, Object originObject) {
+        if (originObject == null) {
+            return null;
+        }
+
+        // TODO HACK UNEFFICIENT BUGGY IMPLEMENTATION!!!!
+
+        SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
+        for (Object object : solutionDescriptor.getAllFacts(workingSolution)) {
+            if (originObject.toString().equals(object.toString())) {
+                return object;
+            }
+        }
+        throw new IllegalArgumentException("The originObject (" + originObject + ") cannot be translated for rebase.");
+    }
+
+    // ************************************************************************
     // Assert methods
     // ************************************************************************
 

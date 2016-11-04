@@ -892,16 +892,6 @@ public class SolutionDescriptor<Solution_> {
         return count;
     }
 
-    /**
-     * @param scoreDirector never null
-     * @param entity never null
-     * @return true if the entity is initialized or immovable
-     */
-    public boolean isEntityInitializedOrImmovable(ScoreDirector scoreDirector, Object entity) {
-        EntityDescriptor<Solution_> entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-        return entityDescriptor.isInitialized(entity) || !entityDescriptor.isMovable(scoreDirector, entity);
-    }
-
     public int countReinitializableVariables(ScoreDirector scoreDirector, Solution_ solution) {
         int count = 0;
         for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext(); ) {

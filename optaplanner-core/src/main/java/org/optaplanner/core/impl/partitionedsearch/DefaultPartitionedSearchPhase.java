@@ -17,25 +17,19 @@
 package org.optaplanner.core.impl.partitionedsearch;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
-import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.recaller.BestSolutionRecallerConfig;
 import org.optaplanner.core.impl.heuristic.move.Move;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.partitionedsearch.event.PartitionedSearchPhaseLifecycleListener;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
-import org.optaplanner.core.impl.partitionedsearch.queue.PartitionChangeMove;
+import org.optaplanner.core.impl.partitionedsearch.scope.PartitionChangeMove;
 import org.optaplanner.core.impl.partitionedsearch.queue.PartitionQueue;
 import org.optaplanner.core.impl.partitionedsearch.scope.PartitionedSearchPhaseScope;
 import org.optaplanner.core.impl.partitionedsearch.scope.PartitionedSearchStepScope;
@@ -112,9 +106,10 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                 PartitionSolver<Solution_> partitionSolver = buildPartitionSolver(
                         childThreadPlumbingTermination, activeThreadSemaphore, solverScope);
                 partitionSolver.addEventListener(event -> {
-                    InnerScoreDirector<Solution_> scoreDirector = partitionSolver.solverScope.getScoreDirector();
-                    // TODO use scoreDirector
-                    PartitionChangeMove<Solution_> move = new PartitionChangeMove<>();
+                    InnerScoreDirector<Solution_> childScoreDirector = partitionSolver.solverScope.getScoreDirector();
+                    PartitionChangeMove<Solution_> move = PartitionChangeMove.createMove(childScoreDirector);
+                    InnerScoreDirector<Solution_> parentScoreDirector = solverScope.getScoreDirector();
+                    move = move.rebase(childScoreDirector, parentScoreDirector);
                     partitionQueue.addMove(partIndex, move);
                 });
                 threadPoolExecutor.submit(() -> {

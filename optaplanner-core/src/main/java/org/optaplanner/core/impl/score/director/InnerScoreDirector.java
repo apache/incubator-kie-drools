@@ -125,6 +125,14 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
     void setAllChangesWillBeUndoneBeforeStepEnds(boolean allChangesWillBeUndoneBeforeStepEnds);
 
     /**
+     * Rebasing translates an entity or fact instance from another {@link Thread}'s {@link ScoreDirector} to this one's.
+     * @param originScoreDirector never null
+     * @param originEntity sometimes null
+     * @return only null if originEntity is null
+     */
+    Object translateForRebase(InnerScoreDirector<Solution_> originScoreDirector, Object originEntity);
+
+    /**
      * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}
      * in the current {@link ScoreDirector} (with possibly incremental calculation residue),
      * it is equal to the parameter {@link Score expectedWorkingScore}.

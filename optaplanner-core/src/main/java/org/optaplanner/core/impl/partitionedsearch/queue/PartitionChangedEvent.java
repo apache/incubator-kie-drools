@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.partitionedsearch.queue;
 import java.io.Serializable;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.impl.partitionedsearch.scope.PartitionChangeMove;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
