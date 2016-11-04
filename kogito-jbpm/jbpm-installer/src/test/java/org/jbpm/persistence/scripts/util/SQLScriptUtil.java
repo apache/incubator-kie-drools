@@ -37,13 +37,14 @@ public final class SQLScriptUtil {
         final StringBuilder command = new StringBuilder();
         for (String line : scriptLines) {
             // Ignore comments.
-            if (line.trim().startsWith("--") || line.trim().startsWith("#")) {
+            final String trimmedLine = line.trim();
+            if ("".equals(trimmedLine) || trimmedLine.startsWith("--") || trimmedLine.startsWith("#")) {
                 continue;
             }
             // If the whole line is a delimiter -> add buffered command to found commands.
-            if (line.equals(DELIMITER_STANDARD)
+            if (trimmedLine.equals(DELIMITER_STANDARD)
                     || ((databaseType == DatabaseType.SQLSERVER || databaseType == DatabaseType.SQLSERVER2008)
-                            && line.equals(DELIMITER_MSSQL))) {
+                            && trimmedLine.equals(DELIMITER_MSSQL))) {
                 if (!"".equals(command.toString())) {
                     foundCommands.add(command.toString());
                     command.setLength(0);
@@ -51,13 +52,13 @@ public final class SQLScriptUtil {
                 }
             }
             // Split line by delimiter.
-            if (line.contains(DELIMITER_STANDARD)) {
-                extractCommandsFromLine(line, "\\" + DELIMITER_STANDARD, command, foundCommands);
+            if (trimmedLine.contains(DELIMITER_STANDARD)) {
+                extractCommandsFromLine(trimmedLine, "\\" + DELIMITER_STANDARD, command, foundCommands);
             } else if ((databaseType == DatabaseType.SQLSERVER || databaseType == DatabaseType.SQLSERVER2008)
-                    && line.contains(DELIMITER_MSSQL)) {
-                extractCommandsFromLine(line, DELIMITER_MSSQL, command, foundCommands);
+                    && trimmedLine.contains(DELIMITER_MSSQL)) {
+                extractCommandsFromLine(trimmedLine, DELIMITER_MSSQL, command, foundCommands);
             } else {
-                command.append(line).append(" ");
+                command.append(trimmedLine).append(" ");
             }
         }
         // If there's still some buffered command, add it to found commands.

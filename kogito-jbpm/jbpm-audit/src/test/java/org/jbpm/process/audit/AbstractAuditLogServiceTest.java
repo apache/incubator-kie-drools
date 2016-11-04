@@ -19,6 +19,7 @@ package org.jbpm.process.audit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.drools.core.io.impl.ClassPathResource;
+import org.hamcrest.core.AnyOf;
+import org.hamcrest.core.Is;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.kie.api.KieBase;
@@ -483,7 +486,8 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         VariableInstanceLog var = listVariables.get(0);
         
         assertEquals("One", var.getValue());
-        assertEquals("", var.getOldValue());
+        // Various DBs return various empty values. (E.g. Oracle returns null.)
+        assertThat(var.getOldValue(), AnyOf.anyOf(Is.is(""), Is.is((String) null), Is.is(" ")));
         assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
         assertEquals(processInstance.getProcessId(), var.getProcessId());
         assertEquals("list[0]", var.getVariableId());
@@ -491,7 +495,7 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         
         var = listVariables.get(1);
         assertEquals("Two", var.getValue());
-        assertEquals("", var.getOldValue());
+        assertThat(var.getOldValue(), AnyOf.anyOf(Is.is(""), Is.is((String) null), Is.is(" ")));
         assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
         assertEquals(processInstance.getProcessId(), var.getProcessId());
         assertEquals("list[1]", var.getVariableId());
@@ -499,7 +503,7 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
         
         var = listVariables.get(2);        
         assertEquals("Three", var.getValue());
-        assertEquals("", var.getOldValue());
+        assertThat(var.getOldValue(), AnyOf.anyOf(Is.is(""), Is.is((String) null), Is.is(" ")));
         assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
         assertEquals(processInstance.getProcessId(), var.getProcessId());
         assertEquals("list[2]", var.getVariableId());

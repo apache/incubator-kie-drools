@@ -497,39 +497,44 @@ public class AuditQueryTest extends JPAAuditLogService {
     }
 
     @Test
-    public void orderByQueryBuilderTest() { 
-       ProcessInstanceLogQueryBuilder builder = this.processInstanceLogQuery();
-       List<org.kie.api.runtime.manager.audit.ProcessInstanceLog> resultList = builder.build().getResultList();
-       for( int i = 1; i < resultList.size(); ++i ) { 
-          ProcessInstanceLog pilB = (ProcessInstanceLog) resultList.get(i);
-          ProcessInstanceLog pilA = (ProcessInstanceLog) resultList.get(i-1);
-          assertTrue( pilA.getId() < pilB.getId() );
-       }
-       
-       builder.ascending(OrderBy.processInstanceId);
-       resultList = builder.build().getResultList();
-       for( int i = 1; i < resultList.size(); ++i ) { 
-          ProcessInstanceLog pilB = (ProcessInstanceLog) resultList.get(i);
-          ProcessInstanceLog pilA = (ProcessInstanceLog) resultList.get(i-1);
-          assertTrue( "order by process instance id failed:  " + pilA.getProcessInstanceId() + " ? " +  pilB.getProcessInstanceId(),
-                  pilA.getProcessInstanceId() <= pilB.getProcessInstanceId() );
-       }
-       
-       builder.descending(OrderBy.processInstanceId);
-       resultList = builder.build().getResultList();
-       for( int i = 1; i < resultList.size(); ++i ) { 
-          ProcessInstanceLog pilB = (ProcessInstanceLog) resultList.get(i);
-          ProcessInstanceLog pilA = (ProcessInstanceLog) resultList.get(i-1);
-          assertTrue( "order desc by process instance id failed", pilA.getProcessInstanceId() >= pilB.getProcessInstanceId() );
-       }
-      
-       builder.ascending(OrderBy.processId);
-       resultList = builder.build().getResultList();
-       for( int i = 1; i < resultList.size(); ++i ) { 
-          ProcessInstanceLog pilA = (ProcessInstanceLog) resultList.get(i-1);
-          ProcessInstanceLog pilB = (ProcessInstanceLog) resultList.get(i);
-          assertTrue( "order desc by process id failed", pilA.getProcessId().compareTo(pilB.getProcessId()) <= 0 );
-       }
+    public void orderByQueryBuilderTest() {
+        ProcessInstanceLogQueryBuilder builder = this.processInstanceLogQuery();
+
+        builder.ascending(OrderBy.processInstanceId);
+        List<org.kie.api.runtime.manager.audit.ProcessInstanceLog> resultList = builder.build().getResultList();
+        for (int i = 1; i < resultList.size(); ++i) {
+            ProcessInstanceLog pilB = (ProcessInstanceLog) resultList.get(i);
+            ProcessInstanceLog pilA = (ProcessInstanceLog) resultList.get(i - 1);
+            assertTrue("order by asc process instance id failed: " + pilA.getProcessInstanceId() + " ? " + pilB.getProcessInstanceId(),
+                    pilA.getProcessInstanceId() <= pilB.getProcessInstanceId());
+        }
+
+        builder.descending(OrderBy.processInstanceId);
+        resultList = builder.build().getResultList();
+        for (int i = 1; i < resultList.size(); ++i) {
+            ProcessInstanceLog pilB = (ProcessInstanceLog) resultList.get(i);
+            ProcessInstanceLog pilA = (ProcessInstanceLog) resultList.get(i - 1);
+            assertTrue("order by desc process instance id failed: " + pilA.getProcessInstanceId() + " ? " + pilB.getProcessInstanceId(),
+                    pilA.getProcessInstanceId() >= pilB.getProcessInstanceId());
+        }
+
+        builder.ascending(OrderBy.processId);
+        resultList = builder.build().getResultList();
+        for (int i = 1; i < resultList.size(); ++i) {
+            ProcessInstanceLog pilA = (ProcessInstanceLog) resultList.get(i - 1);
+            ProcessInstanceLog pilB = (ProcessInstanceLog) resultList.get(i);
+            assertTrue("order by asc process id failed: " + pilA.getProcessId() + " ? " + pilB.getProcessId(),
+                    pilA.getProcessId().compareTo(pilB.getProcessId()) <= 0);
+        }
+
+        builder.descending(OrderBy.processId);
+        resultList = builder.build().getResultList();
+        for (int i = 1; i < resultList.size(); ++i) {
+            ProcessInstanceLog pilA = (ProcessInstanceLog) resultList.get(i - 1);
+            ProcessInstanceLog pilB = (ProcessInstanceLog) resultList.get(i);
+            assertTrue("order by desc process id failed: " + pilA.getProcessId() + " ? " + pilB.getProcessId(),
+                    pilA.getProcessId().compareTo(pilB.getProcessId()) >= 0);
+        }
     }
    
     @Test
