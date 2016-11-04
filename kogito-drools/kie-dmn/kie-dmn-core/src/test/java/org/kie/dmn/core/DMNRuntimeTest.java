@@ -17,11 +17,14 @@
 package org.kie.dmn.core;
 
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.ast.InputDataNode;
+
+import junit.framework.Assert;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -32,8 +35,10 @@ import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class DMNRuntimeTest {
 
@@ -198,6 +203,26 @@ public class DMNRuntimeTest {
         DMNContext result = dmnResult.getContext();
 
         assertThat( result.get( "Approval Status" ), is( "Approved" ) );
+    }
+    
+    @Ignore("Should have at least one message for failing the (allowed) input values - ASD is not a valid input value for RiskCategory")
+    @Test
+    public void testSimpleDTUniqueSatisfies() {
+        DMNRuntime runtime = createRuntime( "0004-simpletable-U.dmn" );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0004-simpletable-U" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Age", new BigDecimal( 18 ) );
+        context.set( "RiskCategory", "ASD" );
+        context.set( "isAffordable", false );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        DMNContext result = dmnResult.getContext();
+
+        assertThat( result.get( "Approval Status" ), nullValue() );
+        assertTrue( dmnResult.getMessages().size() > 0 ); 
     }
 
     @Test

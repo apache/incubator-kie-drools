@@ -21,7 +21,7 @@ import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.FunctionSymbol;
-import org.kie.dmn.feel.runtime.decisiontables.ConcreteDTFunction;
+import org.kie.dmn.feel.runtime.decisiontables.DTInvokerFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,11 +95,11 @@ public abstract class BaseFEELFunction implements FEELFunction {
                         params = rearrangeParameters( params, ((JavaFunction) this).getParameterNames().get( 0 ) );
                     }
                     result = ((JavaFunction)this).apply( ctx, params );
-                } else if( this instanceof ConcreteDTFunction ) {
+                } else if( this instanceof DTInvokerFunction ) {
                     if( isNamedParams ) {
-                        params = rearrangeParameters( params, ((ConcreteDTFunction) this).getParameterNames().get( 0 ) );
+                        params = rearrangeParameters( params, ((DTInvokerFunction) this).getParameterNames().get( 0 ) );
                     }
-                    result = ((ConcreteDTFunction)this).apply( ctx, params );
+                    result = ((DTInvokerFunction)this).apply( ctx, params );
                 } else {
                     logger.error( "Unable to find function '" + toString() +"'" );
                 }

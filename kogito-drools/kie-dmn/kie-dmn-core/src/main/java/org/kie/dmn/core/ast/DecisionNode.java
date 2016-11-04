@@ -22,7 +22,7 @@ import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.model.v1_1.Decision;
 import org.kie.dmn.feel.model.v1_1.LiteralExpression;
-import org.kie.dmn.feel.runtime.decisiontables.ConcreteDTFunction;
+import org.kie.dmn.feel.runtime.decisiontables.DTInvokerFunction;
 
 import java.util.HashMap;
 import java.util.List;
@@ -89,9 +89,9 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
     }
 
     public static class DTExpressionEvaluator implements DecisionEvaluator {
-        private ConcreteDTFunction dt;
+        private DTInvokerFunction dt;
 
-        public DTExpressionEvaluator(ConcreteDTFunction dt) {
+        public DTExpressionEvaluator(DTInvokerFunction dt) {
             this.dt = dt;
         }
 
