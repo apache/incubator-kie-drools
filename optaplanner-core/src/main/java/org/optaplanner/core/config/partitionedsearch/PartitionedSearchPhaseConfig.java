@@ -39,6 +39,7 @@ import org.optaplanner.core.impl.partitionedsearch.PartitionedSearchPhase;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
+import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -141,7 +142,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         if (threadFactoryClass != null) {
             threadFactory = ConfigUtils.newInstance(this, "threadFactoryClass", threadFactoryClass);
         } else {
-            threadFactory = Executors.defaultThreadFactory();
+            threadFactory = new DefaultSolverThreadFactory("PS-child-solver");
         }
         // Based on Executors.newCachedThreadPool(...)
         return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
