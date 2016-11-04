@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,38 +51,26 @@ import org.kie.internal.task.api.model.Reassignment;
 public class CollectionUtils {
     
     public static boolean equals(List list1, List list2) {
-        if ( list1 == null && list2 == null ) {
-            // both are null
+        if ( list1 == list2 ) {
+            //both are the same
             return true;
         }
-        
         if ( list1 == null || list2 == null ) {
             // we know both aren't null, so if one is null them obviously false
             return false;
-        }        
-        
+        }
         if ( list1.size() != list2.size() ) {
             return false;
-        } 
-        
-        if ( list1.isEmpty() && list2.isEmpty() ) {
+        }
+        if ( list1.isEmpty() ) {
             return true;
         }
-        
-       
-        for ( Object item1 : list1) {
-            boolean exists = false;
-            for ( Object item2 : list2 ) {
-                if ( item1.equals( item2 )) {
-                    exists = true;
-                    break;
-                }
-            }  
-            if ( !exists ) {
+        ArrayList<?> arr = new ArrayList<>(list2);
+        for ( Object obj :  list1 ) {
+            if ( !arr.remove( obj ) ) {
                 return false;
             }
         }
-        
         return true;
     }
     
@@ -89,15 +78,13 @@ public class CollectionUtils {
         if ( list == null ) {
             return 0;
         }
-        
-        final int prime = 31;
-        int result = 1;        
-        for ( Iterator it = list.iterator(); it.hasNext(); ) {
-            Object next = it.next();
-            result = prime * result + ((next == null)? 0 : next.hashCode());
-        }        
-        return result;
-    }       
+        if ( list.isEmpty() ) {
+            return 1;
+        }
+        ArrayList<?> tmp = new ArrayList<>(list);
+        Collections.sort(tmp, (o1, o2) -> Integer.compare(o1.hashCode(), o2.hashCode()));
+        return tmp.hashCode();
+    }
     
     public static void writeCommentList(List<Comment> list, ObjectOutput out) throws IOException {
         out.writeInt( list.size() );
