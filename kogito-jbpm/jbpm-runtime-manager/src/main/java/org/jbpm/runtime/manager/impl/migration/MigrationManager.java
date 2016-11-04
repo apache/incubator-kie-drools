@@ -16,17 +16,8 @@
 
 package org.jbpm.runtime.manager.impl.migration;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.persistence.SessionNotFoundException;
 import org.drools.persistence.TransactionManager;
@@ -53,6 +44,14 @@ import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * MigrationManager is responsible for updating all required components during process instance migration.
@@ -443,7 +442,7 @@ public class MigrationManager {
     
     private  KieRuntime extractIfNeeded(KieRuntime ksession) {
     	if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-    		return ((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().getContext()).getKieSession();
+    		return ((RegistryContext)((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().getContext()).lookup( KieSession.class );
     	}
     	
     	return ksession;

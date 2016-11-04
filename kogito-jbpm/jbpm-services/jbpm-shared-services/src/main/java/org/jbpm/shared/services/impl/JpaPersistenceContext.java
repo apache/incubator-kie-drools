@@ -15,15 +15,13 @@
 
 package org.jbpm.shared.services.impl;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.kie.internal.command.Context;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
-
-import org.kie.internal.command.Context;
-import org.kie.internal.command.World;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JpaPersistenceContext implements Context {
 
@@ -228,7 +226,7 @@ public class JpaPersistenceContext implements Context {
 
 
 	@Override
-	public World getContextManager() {
+	public org.kie.internal.command.ContextManager getContextManager() {
 		return null;
 	}
 

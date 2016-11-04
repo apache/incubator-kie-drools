@@ -15,21 +15,9 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.process.instance.WorkItemHandler;
@@ -77,6 +65,17 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 @RunWith(Parameterized.class)
 public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
@@ -119,8 +118,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     private TimerManager getTimerManager(KieSession ksession) {
         KieSession internal = ksession;
         if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-            internal =  ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                    .getCommandService().getContext()).getKieSession();
+            internal =  ((RegistryContext) ((CommandBasedStatefulKnowledgeSession) ksession)
+                    .getCommandService().getContext()).lookup( KieSession.class );
         }
 
         return ((InternalProcessRuntime)((StatefulKnowledgeSessionImpl)internal).getProcessRuntime()).getTimerManager();
@@ -1525,10 +1524,10 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
 
         final long piId = processInstance.getId();
-        ksession.execute(new GenericCommand<Void>() {
+        ksession.execute(new ExecutableCommand<Void>() {
 
             public Void execute(Context context) {
-                StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((KnowledgeCommandContext) context).getKieSession();
+                StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((RegistryContext) context).lookup( KieSession.class );
                 WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.getProcessInstance(piId);
                 processInstance.setVariable("x", 0);
                 return null;
@@ -1539,10 +1538,10 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         countDownListener.waitTillCompleted();
         assertProcessInstanceActive(processInstance);
 
-        Integer xValue = ksession.execute(new GenericCommand<Integer>() {
+        Integer xValue = ksession.execute(new ExecutableCommand<Integer>() {
 
             public Integer execute(Context context) {
-                StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((KnowledgeCommandContext) context).getKieSession();
+                StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((RegistryContext) context).lookup( KieSession.class );
                 WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.getProcessInstance(piId);
                 return (Integer) processInstance.getVariable("x");
 
@@ -1741,7 +1740,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         ksession.startProcess("BPMN2-IntermediateCatchSignalBetweenUserTasks");
 
-        int signalListSize = ksession.execute(new GenericCommand<Integer>() {
+        int signalListSize = ksession.execute(new ExecutableCommand<Integer>() {
             public Integer execute(Context context) {
                 SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession)
                         .getCommandService();
@@ -1760,7 +1759,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         ksession.getWorkItemManager().completeWorkItem(1, null);
 
-        signalListSize = ksession.execute(new GenericCommand<Integer>() {
+        signalListSize = ksession.execute(new ExecutableCommand<Integer>() {
             public Integer execute(Context context) {
                 SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession)
                         .getCommandService();
@@ -1779,7 +1778,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         ksession.signalEvent("MySignal", null);
 
-        signalListSize = ksession.execute(new GenericCommand<Integer>() {
+        signalListSize = ksession.execute(new ExecutableCommand<Integer>() {
             public Integer execute(Context context) {
                 SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession)
                         .getCommandService();

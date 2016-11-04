@@ -16,17 +16,9 @@
 
 package org.jbpm.process.instance.command;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
@@ -41,9 +33,16 @@ import org.kie.internal.command.ProcessInstanceIdCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import java.util.List;
+
 @XmlRootElement(name = "update-timer-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class UpdateTimerCommand implements GenericCommand<Void>, ProcessInstanceIdCommand {
+public class UpdateTimerCommand implements ExecutableCommand<Void>, ProcessInstanceIdCommand {
 
     private static final long serialVersionUID = -8252686458877022330L;
     private static final Logger logger = LoggerFactory.getLogger(UpdateTimerCommand.class);
@@ -108,7 +107,7 @@ public class UpdateTimerCommand implements GenericCommand<Void>, ProcessInstance
     @Override
     public Void execute(Context context) {
         logger.debug("About to cancel timer in process instance {} by name '{}' or id {}", processInstanceId, timerName, timerId);
-        KieSession kieSession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession kieSession = ((RegistryContext) context).lookup( KieSession.class );
         TimerManager tm = getTimerManager(kieSession);
 
         RuleFlowProcessInstance wfp = (RuleFlowProcessInstance) kieSession.getProcessInstance(processInstanceId);
@@ -167,7 +166,7 @@ public class UpdateTimerCommand implements GenericCommand<Void>, ProcessInstance
     protected TimerManager getTimerManager(KieSession ksession) {
         KieSession internal = ksession;
         if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-            internal = ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().getContext()).getKieSession();
+            internal = ((RegistryContext) ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().getContext()).lookup( KieSession.class );
         }
 
         return ((InternalProcessRuntime) ((StatefulKnowledgeSessionImpl) internal).getProcessRuntime()).getTimerManager();

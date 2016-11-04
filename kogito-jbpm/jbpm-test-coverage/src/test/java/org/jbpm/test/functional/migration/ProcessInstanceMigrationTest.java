@@ -16,16 +16,10 @@
 package org.jbpm.test.functional.migration;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import bitronix.tm.BitronixTransactionManager;
+import bitronix.tm.TransactionManagerServices;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.persistence.processinstance.ProcessInstanceInfo;
 import org.jbpm.test.JbpmTestCase;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -45,8 +39,12 @@ import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
 
-import bitronix.tm.BitronixTransactionManager;
-import bitronix.tm.TransactionManagerServices;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProcessInstanceMigrationTest extends JbpmTestCase {
 
@@ -270,7 +268,7 @@ public class ProcessInstanceMigrationTest extends JbpmTestCase {
         }
     }
 
-    private static class UpgradeCommand implements GenericCommand<Object> {
+    private static class UpgradeCommand implements ExecutableCommand<Object> {
 
         private static final long serialVersionUID = -626809842544969669L;
 
@@ -285,7 +283,7 @@ public class ProcessInstanceMigrationTest extends JbpmTestCase {
         }
 
         public Object execute(org.kie.internal.command.Context arg0) {
-            KieSession ksession = ((KnowledgeCommandContext) arg0).getKieSession();
+            KieSession ksession = ((RegistryContext) arg0).lookup( KieSession.class );
 
             WorkflowProcessInstanceUpgrader.upgradeProcessInstance(ksession,
                     pid, toProcessId, mapping);
@@ -295,7 +293,7 @@ public class ProcessInstanceMigrationTest extends JbpmTestCase {
         }
     }
 
-    private static class ExplicitUpgradeCommand implements GenericCommand<Object> {
+    private static class ExplicitUpgradeCommand implements ExecutableCommand<Object> {
         private static final long serialVersionUID = 8673518721648293556L;
         
         private long pid;
@@ -309,7 +307,7 @@ public class ProcessInstanceMigrationTest extends JbpmTestCase {
         }
 
         public Object execute(org.kie.internal.command.Context arg0) {
-            KieSession ksession = ((KnowledgeCommandContext) arg0).getKieSession();
+            KieSession ksession = ((RegistryContext) arg0).lookup( KieSession.class );
 
             WorkflowProcessInstanceUpgrader.upgradeProcessInstanceByNodeNames(
                     ksession,

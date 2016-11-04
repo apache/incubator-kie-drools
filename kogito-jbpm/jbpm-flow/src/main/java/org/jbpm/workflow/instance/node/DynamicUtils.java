@@ -16,16 +16,10 @@
 
 package org.jbpm.workflow.instance.node;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -42,6 +36,7 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieRuntime;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.KieInternalServices;
@@ -52,6 +47,12 @@ import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DynamicUtils {
     
@@ -117,10 +118,10 @@ public class DynamicUtils {
     		executeWorkItem((StatefulKnowledgeSessionImpl) ksession, workItem, workItemNodeInstance);
 		} else if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
     		CommandService commandService = ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
-    		commandService.execute(new GenericCommand<Void>() {
+    		commandService.execute(new ExecutableCommand<Void>() {
 				private static final long serialVersionUID = 5L;
 				public Void execute(Context context) {
-                    StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((KnowledgeCommandContext) context).getKieSession();
+                    StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((RegistryContext) context).lookup( KieSession.class );
                     WorkflowProcessInstance realProcessInstance = (WorkflowProcessInstance) ksession.getProcessInstance(processInstance.getId());
                     workItemNodeInstance.setProcessInstance(realProcessInstance);
                     if (dynamicContext == null) {
@@ -181,10 +182,10 @@ public class DynamicUtils {
     		return executeSubProcess((StatefulKnowledgeSessionImpl) ksession, processId, parameters, processInstance, subProcessNodeInstance);
     	} else if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
     		CommandService commandService = ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
-    		return commandService.execute(new GenericCommand<Long>() {
+    		return commandService.execute(new ExecutableCommand<Long>() {
 				private static final long serialVersionUID = 5L;
 				public Long execute(Context context) {
-                    StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((KnowledgeCommandContext) context).getKieSession();
+                    StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((RegistryContext) context).lookup( KieSession.class );
                     WorkflowProcessInstance realProcessInstance = (WorkflowProcessInstance) ksession.getProcessInstance(processInstance.getId());
                     subProcessNodeInstance.setProcessInstance(realProcessInstance);
                     if (dynamicContext == null) {

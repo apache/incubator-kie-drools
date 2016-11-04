@@ -16,15 +16,8 @@
 
 package org.jbpm.executor.impl.jpa;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.NoResultException;
-
 import org.drools.core.command.CommandService;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.shared.services.impl.JpaPersistenceContext;
 import org.jbpm.shared.services.impl.QueryManager;
 import org.kie.api.executor.ErrorInfo;
@@ -34,6 +27,12 @@ import org.kie.api.executor.STATUS;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.command.Context;
 import org.kie.internal.executor.api.ExecutorQueryService;
+
+import javax.persistence.NoResultException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 
@@ -221,7 +220,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
         return request;
     }
 
-    private class LockAndUpdateRequestInfoCommand implements GenericCommand<RequestInfo> {
+    private class LockAndUpdateRequestInfoCommand implements ExecutableCommand<RequestInfo> {
 
 		private static final long serialVersionUID = 8670412133363766161L;
 
@@ -251,7 +250,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     	
     }
     
-    private class LockAndUpdateRequestInfoByIdCommand implements GenericCommand<RequestInfo> {
+    private class LockAndUpdateRequestInfoByIdCommand implements ExecutableCommand<RequestInfo> {
 
         private static final long serialVersionUID = 8670412133363766161L;
         

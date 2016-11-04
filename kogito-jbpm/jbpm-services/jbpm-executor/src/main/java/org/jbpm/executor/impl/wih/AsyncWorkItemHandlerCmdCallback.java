@@ -16,10 +16,8 @@
 
 package org.jbpm.executor.impl.wih;
 
-import java.util.Collection;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
@@ -38,6 +36,8 @@ import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 /**
  * Dedicated callback for <code>AsyncWorkItemHandler</code> that is responsible for:
@@ -77,13 +77,13 @@ public class AsyncWorkItemHandlerCmdCallback implements CommandCallback {
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         try {
             
-            engine.getKieSession().execute(new GenericCommand<Void>() {
+            engine.getKieSession().execute(new ExecutableCommand<Void>() {
 
                 private static final long serialVersionUID = 1L;
 
                 @Override
                 public Void execute(Context context) {
-                    KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                    KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
                     WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.getProcessInstance(processInstanceId);        
                     NodeInstance nodeInstance = getNodeInstance(workItem, processInstance);
                     

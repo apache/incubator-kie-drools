@@ -16,15 +16,15 @@
 
 package org.jbpm.casemgmt.impl.command;
 
-import java.util.Map;
-
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.Context;
+
+import java.util.Map;
 
 /**
  * Adds subprocess (identified by processId) to selected ad hoc process instance with given parameters
@@ -51,7 +51,7 @@ public class AddDynamicProcessCommand extends CaseCommand<Long> {
 
     @Override
     public Long execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         
         ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
         if (processInstance == null) {

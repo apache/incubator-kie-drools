@@ -15,9 +15,6 @@
 
 package org.jbpm.services.task.persistence;
 
-import java.lang.reflect.Constructor;
-import java.util.Collection;
-
 import org.drools.core.command.CommandService;
 import org.drools.core.command.Interceptor;
 import org.drools.core.command.impl.AbstractInterceptor;
@@ -31,7 +28,7 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.Task;
 import org.kie.internal.command.Context;
-import org.kie.internal.command.World;
+import org.kie.internal.command.ContextManager;
 import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.TaskPersistenceContextManager;
@@ -40,6 +37,9 @@ import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.exception.TaskException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Constructor;
+import java.util.Collection;
 
 public class TaskTransactionInterceptor extends AbstractInterceptor {
 
@@ -131,7 +131,7 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
 			}
 			
 			@Override
-			public World getContextManager() {
+			public ContextManager getContextManager() {
 				return null;
 			}
 			

@@ -15,13 +15,7 @@
 
 package org.jbpm.casemgmt.impl.generator;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.NoResultException;
-
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.casemgmt.api.generator.CaseIdGenerator;
 import org.jbpm.casemgmt.api.generator.CasePrefixNotFoundException;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
@@ -31,6 +25,11 @@ import org.jbpm.shared.services.impl.commands.RemoveObjectCommand;
 import org.kie.internal.command.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.NoResultException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Data base tabled backed case id generator. The underlying table keeps single entry per case prefix and updates it 
@@ -101,7 +100,7 @@ public class TableCaseIdGenerator implements CaseIdGenerator {
         return caseIdInfos.get(0);
     }
     
-    private class IncrementAndGetCaseIdCommand implements GenericCommand<CaseIdInfo> {
+    private class IncrementAndGetCaseIdCommand implements ExecutableCommand<CaseIdInfo> {
 
         private static final long serialVersionUID = 8670412133363766162L;
         

@@ -16,11 +16,8 @@
 
 package org.jbpm.executor.impl.jpa;
 
-import java.util.Date;
-import java.util.List;
-
 import org.drools.core.command.CommandService;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.executor.RequeueAware;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
@@ -29,6 +26,9 @@ import org.kie.api.executor.STATUS;
 import org.kie.internal.command.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Default implementation of <code>ExecutorAdminService</code> backed with JPA
@@ -82,7 +82,7 @@ public class ExecutorRequestAdminServiceImpl implements ExecutorAdminService, Re
 		commandService.execute(new RequeueRunningJobCommand(requestId));
 	}
 	
-	private class RequeueRunningJobsCommand implements GenericCommand<Void> {
+	private class RequeueRunningJobsCommand implements ExecutableCommand<Void> {
 
 		private Logger logger = LoggerFactory.getLogger(RequeueRunningJobsCommand.class);
 		private static final long serialVersionUID = 8670412133363766161L;
@@ -126,7 +126,7 @@ public class ExecutorRequestAdminServiceImpl implements ExecutorAdminService, Re
 		
 	}
 	
-	private class RequeueRunningJobCommand implements GenericCommand<Void> {
+	private class RequeueRunningJobCommand implements ExecutableCommand<Void> {
 
 		private Logger logger = LoggerFactory.getLogger(RequeueRunningJobCommand.class);
 		private static final long serialVersionUID = 8670412133363766161L;

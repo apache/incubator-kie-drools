@@ -15,17 +15,9 @@
 
 package org.jbpm.process.instance;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.SessionConfiguration;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
@@ -47,8 +39,6 @@ import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.BusinessCalendar;
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.process.core.timer.Timer;
-import org.jbpm.process.instance.event.DefaultSignalManager.SignalAction;
-import org.jbpm.process.instance.event.DefaultSignalManager;
 import org.jbpm.process.instance.event.SignalManager;
 import org.jbpm.process.instance.event.SignalManagerFactory;
 import org.jbpm.process.instance.timer.TimerInstance;
@@ -77,6 +67,12 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.utils.CompositeClassLoader;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProcessRuntimeImpl implements InternalProcessRuntime {
 	
@@ -472,7 +468,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
         } );
     }
     
-    private class StartProcessWithTypeCommand implements  GenericCommand<Void> {
+    private class StartProcessWithTypeCommand implements ExecutableCommand<Void> {
 		private static final long serialVersionUID = -8890906804846111698L;
 		
 		private String processId;
@@ -487,7 +483,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		
 		@Override
 		public Void execute(Context context) {
-			KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+            KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 			((ProcessRuntimeImpl)((InternalKnowledgeRuntime)ksession).getProcessRuntime()).startProcess( processId,
                       params, type );
 			

@@ -16,12 +16,8 @@
 
 package org.jbpm.casemgmt.impl.command;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.core.ClassObjectFilter;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
@@ -35,6 +31,10 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ReopenCaseCommand extends CaseCommand<Void> {
     
@@ -64,7 +64,7 @@ public class ReopenCaseCommand extends CaseCommand<Void> {
         
         CaseEventSupport caseEventSupport = getCaseEventSupport(context);
         caseEventSupport.fireBeforeCaseReopened(caseId, deploymentId, caseDefinitionId, data);
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         
         if (data != null && !data.isEmpty()) {
             logger.debug("Updating case file in working memory");

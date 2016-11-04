@@ -15,17 +15,8 @@
 
 package org.jbpm.process.instance.command;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
@@ -37,9 +28,17 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.ProcessInstanceIdCommand;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import java.util.HashMap;
+import java.util.Map;
+
 @XmlRootElement(name="get-completed-tasks-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class MigrateProcessInstanceCommand implements GenericCommand<Void>, ProcessInstanceIdCommand  {
+public class MigrateProcessInstanceCommand implements ExecutableCommand<Void>, ProcessInstanceIdCommand  {
 	
     private static final long serialVersionUID = 6L;
 
@@ -92,7 +91,7 @@ public class MigrateProcessInstanceCommand implements GenericCommand<Void>, Proc
 	}
 
 	public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         WorkflowProcessInstanceImpl processInstance = (WorkflowProcessInstanceImpl)
     		ksession.getProcessInstance(processInstanceId);
         if (processInstance == null) {

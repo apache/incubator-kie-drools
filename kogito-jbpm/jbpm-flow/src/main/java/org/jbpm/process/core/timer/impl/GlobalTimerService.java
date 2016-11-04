@@ -17,7 +17,7 @@ package org.jbpm.process.core.timer.impl;
 
 import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
@@ -35,6 +35,7 @@ import org.jbpm.process.core.timer.NamedJobContext;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.internal.command.Context;
@@ -233,7 +234,7 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         if (runtime.getKieSession() instanceof CommandBasedStatefulKnowledgeSession) {
             CommandBasedStatefulKnowledgeSession cmd = (CommandBasedStatefulKnowledgeSession) runtime.getKieSession();
             if (ctx != null) {
-            	ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) ((KnowledgeCommandContext) cmd.getCommandService().getContext()).getKieSession());
+            	ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) ((RegistryContext) cmd.getCommandService().getContext()).lookup( KieSession.class ) );
             }
             return new DisposableCommandService(cmd.getCommandService(), manager, runtime, schedulerService.retryEnabled());
         } else if (runtime.getKieSession() instanceof InternalKnowledgeRuntime && ctx != null) {

@@ -16,8 +16,8 @@
 
 package org.jbpm.kie.services.impl.admin.commands;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.services.api.NodeInstanceNotFoundException;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
@@ -29,7 +29,7 @@ import org.kie.internal.command.ProcessInstanceIdCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RetriggerNodeInstanceCommand implements GenericCommand<Void>, ProcessInstanceIdCommand {
+public class RetriggerNodeInstanceCommand implements ExecutableCommand<Void>, ProcessInstanceIdCommand {
 
     private static final long serialVersionUID = -8252686458877022331L;
     private static final Logger logger = LoggerFactory.getLogger(RetriggerNodeInstanceCommand.class);
@@ -43,7 +43,7 @@ public class RetriggerNodeInstanceCommand implements GenericCommand<Void>, Proce
     }
 
     public Void execute(Context context) {
-    	KieSession kieSession = ((KnowledgeCommandContext) context).getKieSession();
+    	KieSession kieSession = ((RegistryContext) context).lookup( KieSession.class );
     	logger.debug("About to retrigger node instance with id {} on process instance {}", nodeInstanceId, processInstanceId);
         RuleFlowProcessInstance wfp = (RuleFlowProcessInstance) kieSession.getProcessInstance(processInstanceId, false);
         if (wfp == null) {

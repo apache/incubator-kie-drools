@@ -15,13 +15,13 @@
 
 package org.jbpm.shared.services.impl.commands;
 
-import java.util.Map;
-
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.shared.services.impl.JpaPersistenceContext;
 import org.kie.internal.command.Context;
 
-public class QueryStringCommand<T> implements GenericCommand<T> {
+import java.util.Map;
+
+public class QueryStringCommand<T> implements ExecutableCommand<T> {
 
 	private static final long serialVersionUID = -4014807273522465028L;
 

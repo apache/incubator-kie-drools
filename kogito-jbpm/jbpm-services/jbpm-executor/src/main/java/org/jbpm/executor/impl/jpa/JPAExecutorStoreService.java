@@ -16,14 +16,8 @@
 
 package org.jbpm.executor.impl.jpa;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-
 import org.drools.core.command.CommandService;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.impl.event.ExecutorEventSupport;
 import org.kie.api.executor.ErrorInfo;
@@ -31,6 +25,11 @@ import org.kie.api.executor.ExecutorStoreService;
 import org.kie.api.executor.RequestInfo;
 import org.kie.api.executor.STATUS;
 import org.kie.internal.command.Context;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -113,7 +112,7 @@ public class JPAExecutorStoreService implements ExecutorStoreService{
 	}
 
 
-    private class LockAndCancelRequestInfoCommand implements GenericCommand<RequestInfo> {
+    private class LockAndCancelRequestInfoCommand implements ExecutableCommand<RequestInfo> {
 
 		private static final long serialVersionUID = 8670412133363766161L;
 

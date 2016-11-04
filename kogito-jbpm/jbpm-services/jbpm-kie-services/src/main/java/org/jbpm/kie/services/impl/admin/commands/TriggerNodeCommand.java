@@ -16,8 +16,8 @@
 
 package org.jbpm.kie.services.impl.admin.commands;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.services.api.NodeNotFoundException;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
@@ -28,7 +28,7 @@ import org.kie.internal.command.ProcessInstanceIdCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TriggerNodeCommand implements GenericCommand<Void>, ProcessInstanceIdCommand {
+public class TriggerNodeCommand implements ExecutableCommand<Void>, ProcessInstanceIdCommand {
 
     private static final long serialVersionUID = -8252686458877022331L;
     private static final Logger logger = LoggerFactory.getLogger(TriggerNodeCommand.class);
@@ -42,7 +42,7 @@ public class TriggerNodeCommand implements GenericCommand<Void>, ProcessInstance
     }
 
     public Void execute(Context context) {
-    	KieSession kieSession = ((KnowledgeCommandContext) context).getKieSession();
+    	KieSession kieSession = ((RegistryContext) context).lookup( KieSession.class );
     	logger.debug("About to trigger (create) node instance for node {} in process instance {}", nodeId, processInstanceId); 
         RuleFlowProcessInstance wfp = (RuleFlowProcessInstance) kieSession.getProcessInstance(processInstanceId, false);
         if (wfp == null) {

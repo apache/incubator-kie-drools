@@ -16,20 +16,20 @@
 
 package org.jbpm.kie.services.impl.query.persistence;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.dashbuilder.dataset.def.DataSetDef;
 import org.dashbuilder.dataset.def.DataSetDefRegistryListener;
 import org.dashbuilder.dataset.def.SQLDataSetDef;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.services.api.query.model.QueryDefinition.Target;
 import org.jbpm.shared.services.impl.JpaPersistenceContext;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.internal.command.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class PersistDataSetListener implements DataSetDefRegistryListener {
@@ -60,7 +60,7 @@ public class PersistDataSetListener implements DataSetDefRegistryListener {
                 final QueryDefinitionEntity updated = get(newDef);
                 
                 if (updated != null) {
-                    commandService.execute(new GenericCommand<Void>() {
+                    commandService.execute(new ExecutableCommand<Void>() {
         
                         private static final long serialVersionUID = 6476274660250555118L;
         
@@ -104,7 +104,7 @@ public class PersistDataSetListener implements DataSetDefRegistryListener {
             try {
                 final QueryDefinitionEntity entity = get(newDef);
                 if (entity != null) {
-                    commandService.execute(new GenericCommand<Void>() {
+                    commandService.execute(new ExecutableCommand<Void>() {
                         
                         private static final long serialVersionUID = 6476274660250555128L;
         
@@ -139,7 +139,7 @@ public class PersistDataSetListener implements DataSetDefRegistryListener {
                         
             final String uniqueQueryName = oldDef.getUUID();
             try {
-                commandService.execute(new GenericCommand<Void>() {
+                commandService.execute(new ExecutableCommand<Void>() {
     
                     private static final long serialVersionUID = 6476274660250555118L;
     

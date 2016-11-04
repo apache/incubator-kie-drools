@@ -15,20 +15,19 @@
  */
 package org.jbpm.services.task.commands;
 
-import java.util.List;
+import org.drools.core.command.impl.ExecutableCommand;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-
-import org.drools.core.command.impl.GenericCommand;
+import java.util.List;
 
 /**
  *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class TaskCommand<T> implements GenericCommand<T> {
+public abstract class TaskCommand<T> implements ExecutableCommand<T> {
 
 	private static final long serialVersionUID = -8814813191723981179L;
 	

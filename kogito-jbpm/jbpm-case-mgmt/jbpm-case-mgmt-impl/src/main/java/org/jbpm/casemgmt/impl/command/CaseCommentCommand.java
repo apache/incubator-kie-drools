@@ -16,10 +16,8 @@
 
 package org.jbpm.casemgmt.impl.command;
 
-import java.util.Collection;
-
 import org.drools.core.ClassObjectFilter;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.api.CaseCommentNotFoundException;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentInstance;
@@ -29,6 +27,8 @@ import org.jbpm.casemgmt.impl.model.instance.CommentInstanceImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.Context;
+
+import java.util.Collection;
 
 /**
  * Adds or removes comment to/from case
@@ -42,11 +42,11 @@ public class CaseCommentCommand extends CaseCommand<Void> {
     private boolean add;
     private boolean update;
     private boolean remove;
-    
+
     private String commentId;
-    
+
     private String updatedText;
-    
+
     public CaseCommentCommand(String author, String comment) {
         this.author = author;
         this.comment = comment;
@@ -57,28 +57,28 @@ public class CaseCommentCommand extends CaseCommand<Void> {
         this.commentId = commentId;
         this.remove = true;
     }
-    
+
     public CaseCommentCommand(String commentId, String author, String updatedText) {
         this.commentId = commentId;
         this.author = author;
         this.updatedText = updatedText;
         this.update = true;
-        
+
     }
-    
+
     @Override
     public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
+
         Collection<? extends Object> caseFiles = ksession.getObjects(new ClassObjectFilter(CaseFileInstance.class));
         if (caseFiles.size() != 1) {
             throw new IllegalStateException("Not able to find distinct case file - found case files " + caseFiles.size());
         }
         CaseFileInstance caseFile = (CaseFileInstance) caseFiles.iterator().next();
         FactHandle factHandle = ksession.getFactHandle(caseFile);
-        
-        CaseEventSupport caseEventSupport = getCaseEventSupport(context);        
-        
+
+        CaseEventSupport caseEventSupport = getCaseEventSupport(context);
+
         if (add) {
             CommentInstance commentInstance = new CommentInstanceImpl(author, comment);
             caseEventSupport.fireBeforeCaseCommentAdded(caseFile.getCaseId(), commentInstance);
@@ -93,7 +93,7 @@ public class CaseCommentCommand extends CaseCommand<Void> {
                 throw new IllegalStateException("Only original author can update comment");
             }
             caseEventSupport.fireBeforeCaseCommentUpdated(caseFile.getCaseId(), toUpdate);
-            ((CommentInstanceImpl)toUpdate).setComment(updatedText);            
+            ((CommentInstanceImpl)toUpdate).setComment(updatedText);
             caseEventSupport.fireBeforeCaseCommentUpdated(caseFile.getCaseId(), toUpdate);
         } else if (remove) {
             CommentInstance toRemove = ((CaseFileInstanceImpl)caseFile).getComments().stream()
@@ -101,7 +101,7 @@ public class CaseCommentCommand extends CaseCommand<Void> {
                     .findFirst()
                     .orElseThrow(() -> new CaseCommentNotFoundException("Cannot find comment with id " + commentId));
             caseEventSupport.fireBeforeCaseCommentRemoved(caseFile.getCaseId(), toRemove);
-            ((CaseFileInstanceImpl)caseFile).removeComment(toRemove);            
+            ((CaseFileInstanceImpl)caseFile).removeComment(toRemove);
             caseEventSupport.fireBeforeCaseCommentRemoved(caseFile.getCaseId(), toRemove);
         }
         ksession.update(factHandle, caseFile);

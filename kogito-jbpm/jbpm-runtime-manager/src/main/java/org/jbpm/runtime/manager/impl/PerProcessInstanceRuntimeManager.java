@@ -15,15 +15,11 @@
  */
 package org.jbpm.runtime.manager.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.command.CommandService;
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.persistence.OrderedTransactionSynchronization;
 import org.drools.persistence.TransactionManager;
@@ -58,6 +54,10 @@ import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A RuntimeManager implementation that is backed by the "Per Process Instance" strategy. This means that every 
@@ -388,12 +388,12 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             // need to init one session to bootstrap all case - such as start timers
             KieSession initialKsession = factory.newKieSession();
             // there is a need to call getProcessRuntime otherwise the start listeners are not registered
-            initialKsession.execute(new GenericCommand<Void>() {
+            initialKsession.execute(new ExecutableCommand<Void>() {
                 private static final long serialVersionUID = 1L;
 
                 @Override
                 public Void execute(org.kie.internal.command.Context context) {
-                    KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                    KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
                     ((InternalKnowledgeRuntime) ksession).getProcessRuntime();
                     return null;
                 }
@@ -437,7 +437,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     }
 
     
-    private static class DestroyKSessionCommand implements GenericCommand<Void> {            
+    private static class DestroyKSessionCommand implements ExecutableCommand<Void> {
         private static final long serialVersionUID = 1L;
 
         private KieSession initialKsession;
@@ -456,7 +456,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
                     CommandService commandService = ((CommandBasedStatefulKnowledgeSession) initialKsession).getCommandService();
                     ((SingleSessionCommandService) commandService).destroy();
                  } else {
-            		((KnowledgeCommandContext) context).getKieSession().destroy();
+                    ((RegistryContext) context).lookup( KieSession.class ).destroy();
             	}
             	return null;
         	}
@@ -487,7 +487,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         }
     }
     
-    private static class DisposeKSessionCommand implements GenericCommand<Void> {            
+    private static class DisposeKSessionCommand implements ExecutableCommand<Void> {
         private static final long serialVersionUID = 1L;
 
         private KieSession initialKsession;

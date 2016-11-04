@@ -15,11 +15,8 @@
 
 package org.jbpm.shared.services.impl;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.drools.core.command.CommandService;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerFactory;
 import org.kie.api.command.Command;
@@ -27,6 +24,9 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.command.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 
 public class TransactionalCommandService implements CommandService {
 	
@@ -68,7 +68,7 @@ public class TransactionalCommandService implements CommandService {
             }
             JpaPersistenceContext context = new JpaPersistenceContext(em);
             context.joinTransaction();
-            result = ((GenericCommand<T>)command).execute(context);
+            result = ((ExecutableCommand<T>)command).execute( context );
             txm.commit( transactionOwner );
             context.close(transactionOwner, emOwner);
             return result;

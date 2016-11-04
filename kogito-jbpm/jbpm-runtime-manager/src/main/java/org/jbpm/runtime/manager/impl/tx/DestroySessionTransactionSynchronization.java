@@ -18,7 +18,7 @@ package org.jbpm.runtime.manager.impl.tx;
 import org.drools.core.command.CommandService;
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.persistence.OrderedTransactionSynchronization;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.Context;
@@ -38,7 +38,7 @@ public class DestroySessionTransactionSynchronization extends OrderedTransaction
 
     @Override
     public void beforeCompletion() {
-        ksession.execute(new GenericCommand<Void>() {
+        ksession.execute(new ExecutableCommand<Void>() {
             private static final long serialVersionUID = 1L;
 
             @Override

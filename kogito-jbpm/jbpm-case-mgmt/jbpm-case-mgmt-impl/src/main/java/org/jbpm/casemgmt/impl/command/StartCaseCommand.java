@@ -16,12 +16,8 @@
 
 package org.jbpm.casemgmt.impl.command;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.event.ProcessEventSupport;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
@@ -41,6 +37,10 @@ import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class StartCaseCommand extends CaseCommand<Void> {
     
@@ -86,13 +86,13 @@ public class StartCaseCommand extends CaseCommand<Void> {
         
         final Map<String, Object> caseData = caseFile.getData();
         if (caseData != null && !caseData.isEmpty()) {
-            processService.execute(deploymentId, CaseContext.get(caseId), new GenericCommand<Void>() {
+            processService.execute(deploymentId, CaseContext.get(caseId), new ExecutableCommand<Void>() {
     
                 private static final long serialVersionUID = -7093369406457484236L;
     
                 @Override
                 public Void execute(Context context) {
-                    KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                    KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
                     ProcessInstance pi = (ProcessInstance) ksession.getProcessInstance(processInstanceId);
                     if (pi != null) {
                         ProcessEventSupport processEventSupport = ((InternalProcessRuntime) ((InternalKnowledgeRuntime) ksession).getProcessRuntime()).getProcessEventSupport();

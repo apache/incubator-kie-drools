@@ -15,21 +15,8 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -47,11 +34,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
-import org.kie.api.definition.process.Node;
 import org.kie.api.event.process.DefaultProcessEventListener;
-import org.kie.api.event.process.ProcessEventListener;
-import org.kie.api.event.process.ProcessNodeEvent;
-import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.KieSession;
@@ -66,6 +49,16 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 @RunWith(Parameterized.class)
 public class FlowTest extends JbpmBpmn2TestCase {
@@ -1562,7 +1555,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(instance);
     }
 
-    private static class GetProcessVariableCommand implements GenericCommand<Object> {
+    private static class GetProcessVariableCommand implements ExecutableCommand<Object> {
 
         private long processInstanceId;
         private String variableName;
@@ -1575,7 +1568,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
 
 
         public Object execute(Context context) {
-            KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+            KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
             org.jbpm.process.instance.ProcessInstance processInstance = 
                     (org.jbpm.process.instance.ProcessInstance) ksession.getProcessInstance(processInstanceId);

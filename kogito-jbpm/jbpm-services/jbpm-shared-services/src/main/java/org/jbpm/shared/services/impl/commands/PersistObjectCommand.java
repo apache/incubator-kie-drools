@@ -15,11 +15,11 @@
 
 package org.jbpm.shared.services.impl.commands;
 
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.shared.services.impl.JpaPersistenceContext;
 import org.kie.internal.command.Context;
 
-public class PersistObjectCommand implements GenericCommand<Void> {
+public class PersistObjectCommand implements ExecutableCommand<Void> {
 
 	private static final long serialVersionUID = -4014807273522465028L;
 

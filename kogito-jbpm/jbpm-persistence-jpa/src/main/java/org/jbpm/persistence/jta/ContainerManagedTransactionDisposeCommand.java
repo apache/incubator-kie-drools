@@ -15,8 +15,8 @@
  */
 package org.jbpm.persistence.jta;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionSynchronization;
 import org.kie.api.runtime.EnvironmentName;
@@ -39,14 +39,14 @@ import org.slf4j.LoggerFactory;
  * <br/>
  * <code>ksession.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER)</code>
  */
-public class ContainerManagedTransactionDisposeCommand implements GenericCommand<Void> {
+public class ContainerManagedTransactionDisposeCommand implements ExecutableCommand<Void> {
 
     private static final long serialVersionUID = 1L;
     private static final Logger logger = LoggerFactory.getLogger(ContainerManagedTransactionDisposeCommand.class);
 
     @Override
     public Void execute(Context context) {
-        final KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        final KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
         logger.debug("Trying to dispose KieSession ({}). Checking for active transactions.", ksession);
 

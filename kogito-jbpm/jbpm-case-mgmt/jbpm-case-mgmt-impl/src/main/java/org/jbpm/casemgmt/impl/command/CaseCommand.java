@@ -16,10 +16,8 @@
 
 package org.jbpm.casemgmt.impl.command;
 
-import java.util.Collections;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.runtime.manager.impl.PerCaseRuntimeManager;
 import org.kie.api.runtime.EnvironmentName;
@@ -27,7 +25,9 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.internal.command.Context;
 
-public abstract class CaseCommand<T> implements GenericCommand<T> {
+import java.util.Collections;
+
+public abstract class CaseCommand<T> implements ExecutableCommand<T> {
 
     private static final long serialVersionUID = 4116744986913465571L;
     
@@ -46,7 +46,7 @@ public abstract class CaseCommand<T> implements GenericCommand<T> {
     }
     
     protected RuntimeManager getRuntimeManager(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();        
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         RuntimeManager runtimeManager = (RuntimeManager) ksession.getEnvironment().get(EnvironmentName.RUNTIME_MANAGER);
         
         return runtimeManager;

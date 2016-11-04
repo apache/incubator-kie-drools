@@ -16,8 +16,8 @@
 package org.jbpm.bpmn2.persistence;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
 import org.jbpm.persistence.session.objects.TestWorkItemHandler;
@@ -38,6 +38,7 @@ import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.Context;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -117,9 +118,9 @@ public class DynamicProcessTest extends JbpmBpmn2TestCase {
 		node.setId(4);
 		insertNodeInBetween(process, 2, 3, node);
 		
-		((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().execute(new GenericCommand<Void>() {
+		((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().execute(new ExecutableCommand<Void>() {
 			public Void execute(Context context) {
-				StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((KnowledgeCommandContext) context).getKieSession();
+				StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((RegistryContext) context).lookup( KieSession.class );
 				((ProcessInstanceImpl) ksession.getProcessInstance(processInstance.getId())).updateProcess(process);
 				return null;
 			}

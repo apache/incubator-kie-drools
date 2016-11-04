@@ -17,7 +17,7 @@ package org.jbpm.services.task.commands;
 
 import org.drools.core.command.CommandService;
 import org.drools.core.command.Interceptor;
-import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.Environment;
@@ -62,7 +62,7 @@ public class TaskCommandExecutorImpl implements CommandService {
 		@Override
 		public <T> T execute(Command<T> command) {
 			if (command instanceof TaskCommand) {
-	    		return (T)((GenericCommand<T>) command).execute(getContext());
+	    		return (T)((ExecutableCommand<T>) command).execute( getContext() );
 	    	} else {
 	    		throw new IllegalArgumentException("Task service can only execute task commands");
 	    	}

@@ -16,17 +16,9 @@
 
 package org.jbpm.kie.services.impl.admin.commands;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.jbpm.kie.services.impl.admin.TimerInstanceImpl;
 import org.jbpm.process.instance.InternalProcessRuntime;
@@ -42,7 +34,15 @@ import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.ProcessInstanceIdCommand;
 
-public class ListTimersCommand implements GenericCommand<List<TimerInstance>>, ProcessInstanceIdCommand {
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class ListTimersCommand implements ExecutableCommand<List<TimerInstance>>, ProcessInstanceIdCommand {
 
     private static final long serialVersionUID = -8252686458877022330L;
     private static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{([\\S&&[^\\}]]+)\\}", Pattern.DOTALL);
@@ -56,7 +56,7 @@ public class ListTimersCommand implements GenericCommand<List<TimerInstance>>, P
     public List<TimerInstance> execute(Context context) {
     	List<TimerInstance> timers = new ArrayList<TimerInstance>();
     	
-    	KieSession kieSession = ((KnowledgeCommandContext) context).getKieSession();
+    	KieSession kieSession = ((RegistryContext) context).lookup( KieSession.class );
         TimerManager tm = getTimerManager(kieSession);
 
         RuleFlowProcessInstance wfp = (RuleFlowProcessInstance) kieSession.getProcessInstance(processInstanceId, true);
@@ -73,7 +73,7 @@ public class ListTimersCommand implements GenericCommand<List<TimerInstance>>, P
     private TimerManager getTimerManager(KieSession ksession) {
         KieSession internal = ksession;
         if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-            internal = ((KnowledgeCommandContext) ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().getContext()).getKieSession();
+            internal = ((RegistryContext) ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().getContext()).lookup( KieSession.class );
         }
 
         return ((InternalProcessRuntime) ((StatefulKnowledgeSessionImpl) internal).getProcessRuntime()).getTimerManager();

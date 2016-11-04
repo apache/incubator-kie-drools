@@ -35,7 +35,7 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.Task;
 import org.kie.internal.command.Context;
-import org.kie.internal.command.World;
+import org.kie.internal.command.ContextManager;
 import org.kie.internal.task.api.TaskAdminService;
 import org.kie.internal.task.api.TaskAttachmentService;
 import org.kie.internal.task.api.TaskCommentService;
@@ -157,7 +157,7 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
 	 * currently not used methods 
 	 */
 	
-    public World getContextManager() {
+    public ContextManager getContextManager() {
         throw new UnsupportedOperationException("Not supported for this type of context.");
     }
 

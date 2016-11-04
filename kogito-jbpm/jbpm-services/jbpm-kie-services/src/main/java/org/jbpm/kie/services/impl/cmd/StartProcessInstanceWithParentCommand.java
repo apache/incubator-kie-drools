@@ -15,9 +15,8 @@
 
 package org.jbpm.kie.services.impl.cmd;
 
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.command.runtime.process.StartProcessInstanceCommand;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -32,7 +31,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 
 @XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name="start-process-instance-with-parent-command")
-public class StartProcessInstanceWithParentCommand implements GenericCommand<ProcessInstance>, ProcessInstanceIdCommand {
+public class StartProcessInstanceWithParentCommand implements ExecutableCommand<ProcessInstance>, ProcessInstanceIdCommand {
     
     /** Generated serial version UID */
     private static final long serialVersionUID = 7634752111656248015L;
@@ -74,7 +73,7 @@ public class StartProcessInstanceWithParentCommand implements GenericCommand<Pro
 
     @Override
     public ProcessInstance execute( Context context ) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId.longValue());
         if( parentProcessInstanceId > 0 ) {
             ((ProcessInstanceImpl) processInstance).setMetaData("ParentProcessInstanceId", parentProcessInstanceId);

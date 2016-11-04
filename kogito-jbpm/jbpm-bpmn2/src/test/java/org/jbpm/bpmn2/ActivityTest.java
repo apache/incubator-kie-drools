@@ -16,8 +16,8 @@ limitations under the License.*/
 package org.jbpm.bpmn2;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
@@ -421,10 +421,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-RuleTask3.drl");
         ksession = createKnowledgeSession(kbase);
 
-        ((KnowledgeCommandContext)
+        ((RegistryContext)
                 ((CommandBasedStatefulKnowledgeSession) ksession)
                 .getCommandService().getContext())
-        .getKieSession().addEventListener(new TriggerRulesEventListener(ksession));
+                .lookup( KieSession.class )
+                .addEventListener(new TriggerRulesEventListener(ksession));
         ksession.addEventListener(new DebugAgendaEventListener());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "SomeString");
@@ -507,12 +508,12 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("john", workItem.getParameter("ActorId"));
         final long pId = processInstance.getId();
 
-        ksession.execute(new GenericCommand<Void>() {
+        ksession.execute(new ExecutableCommand<Void>() {
 
             @Override
             public Void execute(Context context) {
 
-                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
                 ProcessInstance processInstance = ksession.getProcessInstance(pId);
                 assertNotNull(processInstance);
                 NodeInstance nodeInstance = ((WorkflowProcessInstance) processInstance)

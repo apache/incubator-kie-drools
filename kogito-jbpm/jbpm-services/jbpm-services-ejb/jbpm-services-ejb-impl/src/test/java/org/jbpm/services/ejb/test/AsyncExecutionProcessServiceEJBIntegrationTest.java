@@ -16,23 +16,9 @@
 
 package org.jbpm.services.ejb.test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ejb.EJB;
-
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -52,6 +38,17 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.Context;
 import org.kie.scanner.MavenRepository;
+
+import javax.ejb.EJB;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 @RunWith(Arquillian.class)
 public class AsyncExecutionProcessServiceEJBIntegrationTest extends AbstractTestSupport {
@@ -134,13 +131,13 @@ public class AsyncExecutionProcessServiceEJBIntegrationTest extends AbstractTest
     	
         
         // register count down listener
-        processService.execute(deploymentUnit.getIdentifier(), new GenericCommand<Void>() {
+        processService.execute(deploymentUnit.getIdentifier(), new ExecutableCommand<Void>() {
 
             private static final long serialVersionUID = -5416366832158798895L;
 
             @Override
             public Void execute(Context context) {
-                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
                 ksession.addEventListener(countDownListener);
                 return null;
             }

@@ -15,21 +15,20 @@
  */
 package org.jbpm.process.audit.command;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlTransient;
-
-import org.drools.core.command.impl.FixedKnowledgeCommandContext;
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.strategy.PersistenceStrategyType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.Context;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlTransient;
+
 @XmlAccessorType(XmlAccessType.NONE)
-public abstract class AuditCommand<T> implements GenericCommand<T> {
+public abstract class AuditCommand<T> implements ExecutableCommand<T> {
 
     @XmlTransient
     protected AuditLogService auditLogService = null;
@@ -45,11 +44,10 @@ public abstract class AuditCommand<T> implements GenericCommand<T> {
         if( auditLogService != null ) { 
             return;
         }
-        if( ! (cntxt instanceof KnowledgeCommandContext) ) { 
+        if( ! (cntxt instanceof RegistryContext ) ) {
             throw new UnsupportedOperationException("This command must be executed by a " + KieSession.class.getSimpleName() + " instance!");
         }
-        KnowledgeCommandContext realContext = (FixedKnowledgeCommandContext) cntxt;
-        this.auditLogService = new JPAAuditLogService(realContext.getKieSession().getEnvironment(), PersistenceStrategyType.KIE_SESSION);
+        this.auditLogService = new JPAAuditLogService( ((RegistryContext) cntxt).lookup( KieSession.class ).getEnvironment(), PersistenceStrategyType.KIE_SESSION);
     }
     
 }

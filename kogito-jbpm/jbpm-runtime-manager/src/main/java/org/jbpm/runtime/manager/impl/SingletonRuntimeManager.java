@@ -15,15 +15,8 @@
  */
 package org.jbpm.runtime.manager.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
@@ -39,6 +32,13 @@ import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 /**
  * This RuntimeManager is backed by a "Singleton" strategy, meaning that only one <code>RuntimeEngine</code> instance will
@@ -114,13 +114,13 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
     @Override
     public void activate() {
         super.activate();
-        this.singleton.getKieSession().execute(new GenericCommand<Void>() {
+        this.singleton.getKieSession().execute(new ExecutableCommand<Void>() {
 
             private static final long serialVersionUID = 4698203316007668876L;
 
             @Override
             public Void execute(org.kie.internal.command.Context context) {
-                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
                 ksession.getEnvironment().set("Active", true);
                 
                 InternalProcessRuntime processRuntime = ((InternalKnowledgeRuntime) ksession).getProcessRuntime();
@@ -135,13 +135,13 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
     @Override
     public void deactivate() {
         super.deactivate();
-        this.singleton.getKieSession().execute(new GenericCommand<Void>() {
+        this.singleton.getKieSession().execute(new ExecutableCommand<Void>() {
 
             private static final long serialVersionUID = 8099201526203340191L;
 
             @Override
             public Void execute(org.kie.internal.command.Context context) {
-                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
                 ksession.getEnvironment().set("Active", false);
                 
                 InternalProcessRuntime processRuntime = ((InternalKnowledgeRuntime) ksession).getProcessRuntime();

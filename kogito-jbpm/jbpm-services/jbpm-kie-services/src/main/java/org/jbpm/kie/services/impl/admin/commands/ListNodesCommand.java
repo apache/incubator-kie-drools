@@ -16,11 +16,8 @@
 
 package org.jbpm.kie.services.impl.admin.commands;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.drools.core.command.impl.GenericCommand;
-import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.kie.services.impl.admin.ProcessNodeImpl;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
@@ -29,7 +26,10 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.Context;
 import org.kie.internal.command.ProcessInstanceIdCommand;
 
-public class ListNodesCommand implements GenericCommand<List<ProcessNode>>, ProcessInstanceIdCommand {
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class ListNodesCommand implements ExecutableCommand<List<ProcessNode>>, ProcessInstanceIdCommand {
 
     private static final long serialVersionUID = -8252686458877022330L;
 
@@ -42,7 +42,7 @@ public class ListNodesCommand implements GenericCommand<List<ProcessNode>>, Proc
     public List<ProcessNode> execute(Context context) {
     	List<ProcessNode> nodes = null;
     	
-    	KieSession kieSession = ((KnowledgeCommandContext) context).getKieSession();
+    	KieSession kieSession = ((RegistryContext) context).lookup( KieSession.class );
         RuleFlowProcessInstance wfp = (RuleFlowProcessInstance) kieSession.getProcessInstance(processInstanceId, true);
         
         if (wfp == null) {
