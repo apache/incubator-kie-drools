@@ -20,4 +20,8 @@ public interface Type {
 
     String getName();
 
+    Object fromString( String value );
+
+    String toString( Object value );
+
 }
