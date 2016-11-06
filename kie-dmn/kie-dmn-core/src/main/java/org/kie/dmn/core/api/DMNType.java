@@ -17,7 +17,12 @@
 package org.kie.dmn.core.api;
 
 public interface DMNType {
+
     String getName();
 
     String getId();
+
+    Object parseValue( String value );
+
+    String toString( Object value );
 }

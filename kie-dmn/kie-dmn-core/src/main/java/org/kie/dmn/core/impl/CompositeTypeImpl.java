@@ -76,4 +76,14 @@ public class CompositeTypeImpl
     public void setFields(Map<String, DMNType> fields) {
         this.fields = fields;
     }
+
+    @Override
+    public Object parseValue(String value) {
+        return null;
+    }
+
+    @Override
+    public String toString(Object value) {
+        return null;
+    }
 }

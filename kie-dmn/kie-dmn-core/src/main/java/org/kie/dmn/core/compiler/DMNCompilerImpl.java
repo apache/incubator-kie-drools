@@ -42,6 +42,7 @@ import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.*;
@@ -88,8 +89,11 @@ public class DMNCompilerImpl implements DMNCompiler {
     private void processDrgElements(DMNModelImpl model, Definitions dmndefs) {
         for ( DRGElement e : dmndefs.getDrgElement() ) {
             if ( e instanceof InputData ) {
-                InputDataNode idn = new InputDataNode( (InputData) e );
+                InputData input = (InputData) e;
+                DMNType type = resolveSimpleTypeRef( e, input.getVariable().getTypeRef() );
+                InputDataNode idn = new InputDataNode( input, type );
                 model.addInput( idn );
+                model.getTypeRegistry().put( input.getVariable().getTypeRef(), type );
             } else if ( e instanceof Decision ) {
                 DecisionNode dn = new DecisionNode( (Decision) e );
                 model.addDecision( dn );
@@ -126,19 +130,12 @@ public class DMNCompilerImpl implements DMNCompiler {
         DMNType type = null;
         if( itemDef.getTypeRef() != null ) {
             // this is an "simple" type, so find the namespace
-            String prefix = itemDef.getTypeRef().getPrefix();
-            String namespace = itemDef.getNamespaceURI( prefix );
+            type = resolveSimpleTypeRef( itemDef, itemDef.getTypeRef() );
             UnaryTests allowedValuesStr = itemDef.getAllowedValues();
-            if( DMNModelInstrumentedBase.URI_FEEL.equals( namespace ) ) {
-                Type feelType = BuiltInType.determineTypeFromName( itemDef.getTypeRef().getLocalPart() );
-                java.util.List<?> allowedValues = null;
-                if( allowedValuesStr != null ) {
-                    Object av = FEEL.newInstance().evaluate( "[" + allowedValuesStr.getText() + "]" );
-                    allowedValues = av instanceof java.util.List ? (java.util.List) av : Collections.singletonList( av );
-                }
-                type = new FeelTypeImpl( itemDef.getName(), itemDef.getId(), feelType, allowedValues );
-            } else {
-                logger.error( "Unknown namespace for type reference prefix: "+prefix );
+            if( allowedValuesStr != null ) {
+                Object av = FEEL.newInstance().evaluate( "[" + allowedValuesStr.getText() + "]" );
+                java.util.List<?> allowedValues = av instanceof java.util.List ? (java.util.List) av : Collections.singletonList( av );
+                ((FeelTypeImpl)type).setAllowedValues( allowedValues );
             }
         } else {
             // this is a composite type
@@ -150,6 +147,21 @@ public class DMNCompilerImpl implements DMNCompiler {
             type = compType;
         }
         return type;
+    }
+
+    private DMNType resolveSimpleTypeRef(NamedElement model, QName typeRef) {
+        if( typeRef != null ) {
+            String prefix = typeRef.getPrefix();
+            String namespace = model.getNamespaceURI( prefix );
+            if( DMNModelInstrumentedBase.URI_FEEL.equals( namespace ) ) {
+                Type feelType = BuiltInType.determineTypeFromName( typeRef.getLocalPart() );
+                return new FeelTypeImpl( model.getName(), model.getId(), feelType, null );
+            } else {
+                logger.error( "Unknown namespace for type reference prefix: "+prefix );
+            }
+            return null;
+        }
+        return new FeelTypeImpl( model.getName(), model.getId(), BuiltInType.UNKNOWN, null );
     }
 
     private DecisionNode.DecisionEvaluator compileDecision(DecisionNode decisionNode) {
