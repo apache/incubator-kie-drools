@@ -18,6 +18,8 @@ package org.kie.dmn.feel.runtime.functions;
 
 import org.kie.dmn.feel.runtime.FEELFunction;
 
+import java.util.stream.Stream;
+
 public class BuiltInFunctions {
 
     protected final static FEELFunction[] FUNCTIONS = new FEELFunction[]{
@@ -63,5 +65,9 @@ public class BuiltInFunctions {
 
     public static FEELFunction[] getFunctions() {
         return FUNCTIONS;
+    }
+
+    public static <T extends FEELFunction> T getFunction( Class<T> functionClazz ) {
+        return (T) Stream.of( FUNCTIONS ).filter( f -> functionClazz.isAssignableFrom( f.getClass() ) ).findFirst().get();
     }
 }

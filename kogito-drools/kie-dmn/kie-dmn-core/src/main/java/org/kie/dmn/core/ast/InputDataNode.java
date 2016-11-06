@@ -16,19 +16,34 @@
 
 package org.kie.dmn.core.ast;
 
+import org.kie.dmn.core.api.DMNType;
 import org.kie.dmn.feel.model.v1_1.InputData;
 
 public class InputDataNode extends DMNBaseNode
         implements DMNNode {
 
+    private DMNType dmnType;
     private InputData inputData;
 
     public InputDataNode() {
     }
 
-    public InputDataNode(InputData inputData) {
+    public InputDataNode(InputData inputData, DMNType dmnType ) {
         super( inputData );
         this.inputData = inputData;
+        this.dmnType = dmnType;
+    }
+
+    public String getName() {
+        return this.inputData.getName();
+    }
+
+    public DMNType getDmnType() {
+        return dmnType;
+    }
+
+    public void setDmnType(DMNType dmnType) {
+        this.dmnType = dmnType;
     }
 
     public InputData getInputData() {

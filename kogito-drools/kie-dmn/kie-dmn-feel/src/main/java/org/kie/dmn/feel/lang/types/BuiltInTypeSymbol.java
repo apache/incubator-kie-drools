@@ -34,4 +34,14 @@ public class BuiltInTypeSymbol
     public String getName() {
         return getId();
     }
+
+    @Override
+    public Object fromString(String value) {
+        return null;
+    }
+
+    @Override
+    public String toString(Object value) {
+        return null;
+    }
 }

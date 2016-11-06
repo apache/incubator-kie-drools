@@ -16,12 +16,15 @@
 
 package org.kie.dmn.feel.lang.types;
 
+import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.functions.*;
 
+import java.math.BigDecimal;
 import java.time.*;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +55,31 @@ public enum BuiltInType implements Type {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Object fromString(String value) {
+        switch ( this ) {
+            case NUMBER: return BuiltInFunctions.getFunction( NumberFunction.class).apply( value, null, null );
+            case STRING: return value;
+            case DATE: return BuiltInFunctions.getFunction( DateFunction.class ).apply( value );
+            case TIME: return BuiltInFunctions.getFunction( TimeFunction.class ).apply( value );
+            case DATE_TIME: return BuiltInFunctions.getFunction( DateTimeFunction.class ).apply( value );
+            case DURATION: return BuiltInFunctions.getFunction( DurationFunction.class ).apply( value );
+            case BOOLEAN: return Boolean.parseBoolean( value );
+            case RANGE:
+            case FUNCTION:
+            case LIST:
+            case CONTEXT:
+            case UNARY_TEST:
+                return FEEL.newInstance().evaluate( value );
+        }
+        return null;
+    }
+
+    @Override
+    public String toString(Object value) {
+        return BuiltInFunctions.getFunction( StringFunction.class ).apply( value );
     }
 
     public Symbol getSymbol() { return symbol; }
@@ -110,4 +138,6 @@ public enum BuiltInType implements Type {
     public static boolean isInstanceOf( Object o, String name ) {
         return determineTypeFromInstance( o ) == determineTypeFromName( name );
     }
+
+
 }

@@ -17,11 +17,13 @@
 package org.kie.dmn.core.impl;
 
 import org.kie.dmn.core.api.DMNModel;
+import org.kie.dmn.core.api.DMNType;
 import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.core.ast.InputDataNode;
 import org.kie.dmn.core.ast.ItemDefNode;
 import org.kie.dmn.feel.model.v1_1.Definitions;
 
+import javax.xml.namespace.QName;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,7 @@ public class DMNModelImpl
         implements DMNModel {
 
     private Definitions definitions;
+    private Map<QName, DMNType>        typeRegistry = new HashMap<>();
     private Map<String, InputDataNode> inputs    = new HashMap<>();
     private Map<String, DecisionNode>  decisions = new HashMap<>();
     private Map<String, ItemDefNode>   itemDefs = new HashMap<>();
@@ -170,5 +173,12 @@ public class DMNModelImpl
         return this.itemDefs.values().stream().collect( Collectors.toSet());
     }
 
+    public Map<QName, DMNType> getTypeRegistry() {
+        return typeRegistry;
+    }
 
+    @Override
+    public DMNType resolveType(QName ref) {
+        return typeRegistry.get( ref );
+    }
 }

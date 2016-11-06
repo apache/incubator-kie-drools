@@ -26,7 +26,8 @@ import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.model.v1_1.*;
 import org.kie.internal.io.ResourceTypePackage;
 
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 public class DMNRuntimeImpl
         implements DMNRuntime {
@@ -35,6 +36,18 @@ public class DMNRuntimeImpl
 
     public DMNRuntimeImpl(KieRuntime runtime) {
         this.runtime = runtime;
+    }
+
+    @Override
+    public List<DMNModel> getModels() {
+        List<DMNModel> models = new ArrayList<>(  );
+        runtime.getKieBase().getKiePackages().forEach( kpkg -> {
+            DMNPackage dmnPkg = (DMNPackage) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get( ResourceType.DMN );
+            if( dmnPkg != null ) {
+                dmnPkg.getAllModels().values().forEach( model -> models.add( model ) );
+            }
+        } );
+        return models;
     }
 
     @Override

@@ -18,6 +18,7 @@ package org.kie.dmn.core.impl;
 
 import org.kie.dmn.core.api.DMNType;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 
 import java.util.List;
 
@@ -76,5 +77,15 @@ public class FeelTypeImpl
 
     public void setAllowedValues(List<?> allowedValues) {
         this.allowedValues = allowedValues;
+    }
+
+    @Override
+    public Object parseValue(String value) {
+        return feelType.fromString( value );
+    }
+
+    @Override
+    public String toString(Object value) {
+        return feelType.toString( value );
     }
 }
