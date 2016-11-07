@@ -17,23 +17,25 @@
 package org.kie.dmn.feel.runtime.decisiontables;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class ConcreteDTFunction
+public class DTInvokerFunction
         extends BaseFEELFunction {
-    private static final Logger logger = LoggerFactory.getLogger( ConcreteDTFunction.class );
+    private static final Logger logger = LoggerFactory.getLogger( DTInvokerFunction.class );
 
-    private       List<DecisionRule> decisionRules;
-    private       List<String>       inputs;
-    private final HitPolicy          hitPolicy;
+    private       List<DTDecisionRule> decisionRules;
+    private       List<DTInputClause>  inputs;
+    private final HitPolicy            hitPolicy;
 
-    public ConcreteDTFunction(String name, List<String> inputs, List<DecisionRule> decisionRules, HitPolicy hitPolicy) {
+    public DTInvokerFunction(String name, List<DTInputClause> inputs, List<DTDecisionRule> decisionRules, HitPolicy hitPolicy) {
         super( name );
         this.decisionRules = decisionRules;
         this.inputs = inputs;
@@ -50,9 +52,9 @@ public class ConcreteDTFunction
             return null;
         }
 
-        for ( DecisionRule decisionRule : decisionRules ) {
+        for ( DTDecisionRule decisionRule : decisionRules ) {
             Boolean ruleMatches = IntStream.range( 0, params.length )                         // TODO could short-circuit by using for/continue
-                    .mapToObj( i -> decisionRule.getInputEntry().get( i ).apply( params[i] ) )
+                    .mapToObj( i -> satisfies(params[i], decisionRule.getInputEntry().get( i ), inputs.get( i ).getInputValues() ) )
                     .reduce( (a, b) -> a && b )
                     .orElse( false );
             if ( ruleMatches ) {
@@ -66,6 +68,28 @@ public class ConcreteDTFunction
 
         return null;
     }
+    
+    /**
+Unary tests (grammar rule 17) are used to represent both input values and input entries. An input expression e is said to
+satisfy an input entry t (with optional input values v), depending on the syntax of t, as follows:
+ grammar rule 17.a: FEEL(e in (t))=true
+ grammar rule 17.b: FEEL(e in (t))=false
+ grammar rule 17.c when v is not provided: e != null
+ grammar rule 17.c when v is provided: FEEL(e in (v))=true
+     */
+    public static boolean satisfies(Object inputExpressionE, UnaryTest inputEntryT, List<UnaryTest> inputValuesV) {
+        if (inputValuesV == null || inputValuesV.size() == 0) {
+            if (inputExpressionE == null) {
+                return false;
+            }
+        } else {
+            boolean EinV = inputValuesV.stream().map(vut->vut.apply(inputExpressionE)).filter(Boolean::booleanValue).findAny().orElse(false);
+            if ( !EinV ) {
+                return false;
+            }
+        }
+        return inputEntryT.apply(inputExpressionE);
+    }
 
     @Override
     protected boolean isCustomFunction() {
@@ -73,7 +97,7 @@ public class ConcreteDTFunction
     }
 
     public List<List<String>> getParameterNames() {
-        return Arrays.asList( inputs );
+        return Arrays.asList( inputs.stream().map(DTInputClause::getInputExpression).collect(Collectors.toList()) );
     }
 
     public HitPolicy getHitPolicy() {

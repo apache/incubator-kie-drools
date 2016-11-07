@@ -33,11 +33,11 @@ import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.model.v1_1.*;
-import org.kie.dmn.feel.model.v1_1.DecisionRule;
-import org.kie.dmn.feel.model.v1_1.List;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.runtime.decisiontables.*;
+import org.kie.dmn.feel.runtime.decisiontables.DTDecisionRule;
+import org.kie.dmn.feel.runtime.decisiontables.DTInputClause;
+import org.kie.dmn.feel.runtime.decisiontables.DTInvokerFunction;
 import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,10 @@ import org.slf4j.LoggerFactory;
 import javax.xml.namespace.QName;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class DMNCompilerImpl implements DMNCompiler {
 
@@ -179,26 +182,17 @@ public class DMNCompilerImpl implements DMNCompiler {
             return evaluator;
         } else if( expression instanceof DecisionTable ) {
             DecisionTable dt = (DecisionTable) expression;
-            java.util.List<String> inputs = new ArrayList<>(  );
+            List<DTInputClause> inputs = new ArrayList<>(  );
             for( InputClause ic : dt.getInput() ) {
-                inputs.add( ic.getInputExpression().getText() );
+                String inputExpressionText = ic.getInputExpression().getText();
+                String inputValuesText =  Optional.ofNullable( ic.getInputValues() ).map(UnaryTests::getText).orElse(null);
+                inputs.add( new DTInputClause(inputExpressionText, textToUnaryTestList(inputValuesText) ) );
             }
-            java.util.List<org.kie.dmn.feel.runtime.decisiontables.DecisionRule> rules = new ArrayList<>(  );
+            List<DTDecisionRule> rules = new ArrayList<>(  );
             for( DecisionRule dr : dt.getRule() ) {
-                org.kie.dmn.feel.runtime.decisiontables.DecisionRule rule = new org.kie.dmn.feel.runtime.decisiontables.DecisionRule();
+                DTDecisionRule rule = new DTDecisionRule();
                 for( UnaryTests ut : dr.getInputEntry() ) {
-                    // quick hack to parse values, in case they are a list
-                    java.util.List<Object> ie = (java.util.List<Object>) feel.evaluate( "[ " + ut.getText() + " ]" );
-                    java.util.List<UnaryTest> tests = new ArrayList<>(  );
-                    for( Object o : ie ) {
-                        if ( o instanceof UnaryTest ) {
-                            tests.add( (UnaryTest) o );
-                        } else if ( o instanceof Range ) {
-                            tests.add( x -> ((Range) o).includes( (Comparable<?>) x ) );
-                        } else {
-                            tests.add( x -> x.equals( o ) );
-                        }
-                    }
+                    List<UnaryTest> tests = textToUnaryTestList( ut.getText() );
                     rule.getInputEntry().add( x -> tests.stream().anyMatch( t -> t.apply( x ) ) );
                 }
                 for( LiteralExpression le : dr.getOutputEntry() ) {
@@ -207,11 +201,34 @@ public class DMNCompilerImpl implements DMNCompiler {
                 }
                 rules.add( rule );
             }
-            ConcreteDTFunction dtf = new ConcreteDTFunction( decision.getName()+"_DT", inputs, rules, HitPolicy.fromString( dt.getHitPolicy().value() ) );
+            DTInvokerFunction dtf = new DTInvokerFunction( decision.getName()+"_DT", inputs, rules, HitPolicy.fromString( dt.getHitPolicy().value() ) );
             DecisionNode.DTExpressionEvaluator dtee = new DecisionNode.DTExpressionEvaluator( dtf );
             return dtee;
         }
         return null;
+    }
+    
+    /**
+     * TODO quick hack to parse values, in case they are a list
+     * @param text
+     * @return
+     */
+    protected static List<UnaryTest> textToUnaryTestList(String text) {
+        if (text == null || text.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<Object> ie = (List<Object>) FEEL.newInstance().evaluate( "[ " + text + " ]" );
+        List<UnaryTest> tests = new ArrayList<>(  );
+        for( Object o : ie ) {
+            if ( o instanceof UnaryTest ) {
+                tests.add( (UnaryTest) o );
+            } else if ( o instanceof Range ) {
+                tests.add( x -> ((Range) o).includes( (Comparable<?>) x ) );
+            } else {
+                tests.add( x -> x.equals( o ) );
+            }
+        }
+        return tests;
     }
 
 
