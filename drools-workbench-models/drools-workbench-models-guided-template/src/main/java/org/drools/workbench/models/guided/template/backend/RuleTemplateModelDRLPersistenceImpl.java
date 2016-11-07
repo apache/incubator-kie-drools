@@ -141,42 +141,55 @@ public class RuleTemplateModelDRLPersistenceImpl
             buf.append( "@end{}" );
         }
 
+        private boolean isCompositeConstraintWithoutVariable(FieldConstraint constraint, Set<String> variables) {
+            if(constraint instanceof CompositeFieldConstraint) {
+                CompositeFieldConstraint compositeConstraint = (CompositeFieldConstraint) constraint;
+                for(FieldConstraint constraintPart: compositeConstraint.getConstraints()) {
+                    if(constraintPart instanceof SingleFieldConstraint && !variables.contains(((SingleFieldConstraint) constraintPart).getValue())) {
+                        return true;
+                    }
+                    if(constraintPart instanceof CompositeFieldConstraint) {
+                        return isCompositeConstraintWithoutVariable( constraintPart, variables);
+                    }
+                }
+            }
+
+            return false;
+        }
+
         @Override
         protected void preGenerateNestedConnector( final LHSGeneratorContext gctx ) {
-            if ( gctx.getVarsInScope().size() > 0 ) {
+            Set<String> precedingVars = new HashSet<String>();
+            final List<LHSGeneratorContext> peers = generatorContextFactory.getPeers( gctx );
+            for(LHSGeneratorContext peer : peers) {
+                precedingVars.addAll(peer.getVarsInScope());
+                if( peer.getVarsInScope().isEmpty() || isCompositeConstraintWithoutVariable( peer.getFieldConstraint(), peer.getVarsInScope()) ) {
+                    buf.append("@if{true}");
+                    return;
+                }
+            }
+
+            if( precedingVars.isEmpty() ) {
+                buf.append("@if{false}");
+                return;
+            } else {
                 buf.append( "@if{(" );
-                for ( String var : gctx.getVarsInScope() ) {
+                for ( String var : precedingVars ) {
                     buf.append( var + " != empty || " );
                 }
                 buf.delete( buf.length() - 4, buf.length() );
 
-                LHSGeneratorContext parentContext = gctx.getParent();
-                if ( parentContext != null ) {
-                    Set<String> parentVarsInScope = new HashSet<String>( parentContext.getVarsInScope() );
-                    parentVarsInScope.removeAll( gctx.getVarsInScope() );
-                    if ( parentVarsInScope.size() > 0 ) {
-                        buf.append( ") && !(" );
-                        for ( String var : parentVarsInScope ) {
-                            buf.append( var + " == empty && " );
-                        }
-                        buf.delete( buf.length() - 4, buf.length() );
+                Set<String> vars = gctx.getVarsInScope();
+                vars.removeAll(precedingVars);
+
+                if( !vars.isEmpty() ) {
+                    buf.append( ") && !(" );
+                    for ( String var : vars ) {
+                        buf.append( var + " == empty && " );
                     }
+                    buf.delete( buf.length() - 4, buf.length() );
                 }
-                buf.append( ") || hasLHSNonTemplateOutput" ).append( gctx.getDepth() + "_" + gctx.getOffset() ).append( "}" );
-            } else {
-                LHSGeneratorContext parentContext = gctx.getParent();
-                if ( parentContext != null ) {
-                    Set<String> parentVarsInScope = new HashSet<String>( parentContext.getVarsInScope() );
-                    parentVarsInScope.removeAll( gctx.getVarsInScope() );
-                    if ( parentVarsInScope.size() > 0 ) {
-                        buf.append( "@if{!(" );
-                        for ( String var : parentVarsInScope ) {
-                            buf.append( var + " == empty && " );
-                        }
-                        buf.delete( buf.length() - 4, buf.length() );
-                        buf.append( ")}" );
-                    }
-                }
+                buf.append( ")}" );
             }
         }
 
