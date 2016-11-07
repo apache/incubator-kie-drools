@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.command.impl.KnowledgeCommandContext;
+import org.jbpm.casemgmt.api.CaseCommentNotFoundException;
 import org.jbpm.casemgmt.api.model.instance.CaseFileInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentInstance;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
@@ -87,7 +88,7 @@ public class CaseCommentCommand extends CaseCommand<Void> {
             CommentInstance toUpdate = ((CaseFileInstanceImpl)caseFile).getComments().stream()
                     .filter(c -> c.getId().equals(commentId))
                     .findFirst()
-                    .get();
+                    .orElseThrow(() -> new CaseCommentNotFoundException("Cannot find comment with id " + commentId));
             if (!this.author.equals(toUpdate.getAuthor())) {
                 throw new IllegalStateException("Only original author can update comment");
             }
@@ -98,7 +99,7 @@ public class CaseCommentCommand extends CaseCommand<Void> {
             CommentInstance toRemove = ((CaseFileInstanceImpl)caseFile).getComments().stream()
                     .filter(c -> c.getId().equals(commentId))
                     .findFirst()
-                    .get();
+                    .orElseThrow(() -> new CaseCommentNotFoundException("Cannot find comment with id " + commentId));
             caseEventSupport.fireBeforeCaseCommentRemoved(caseFile.getCaseId(), toRemove);
             ((CaseFileInstanceImpl)caseFile).removeComment(toRemove);            
             caseEventSupport.fireBeforeCaseCommentRemoved(caseFile.getCaseId(), toRemove);
