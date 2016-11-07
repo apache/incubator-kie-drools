@@ -267,6 +267,10 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
 
     @Override
     public Collection<CaseMilestoneInstance> getCaseInstanceMilestones(String caseId, boolean achievedOnly, QueryContext queryContext) {
+        ProcessInstanceDesc pi = runtimeDataService.getProcessInstanceByCorrelationKey(correlationKeyFactory.newCorrelationKey(caseId));        
+        if (pi == null || !pi.getState().equals(ProcessInstance.STATE_ACTIVE)) {
+            throw new CaseNotFoundException("No case instance found with id " + caseId + " or it's not active anymore");
+        }
         CorrelationKey correlationKey = correlationKeyFactory.newCorrelationKey(caseId);
         
         Collection<org.jbpm.services.api.model.NodeInstanceDesc> nodes = runtimeDataService.getNodeInstancesByCorrelationKeyNodeType(correlationKey, 

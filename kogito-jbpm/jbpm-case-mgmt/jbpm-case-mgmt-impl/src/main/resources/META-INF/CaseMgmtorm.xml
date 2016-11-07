@@ -163,5 +163,19 @@
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
+  
+    <!-- case id to ksession mapping -->
+  <named-query name="findCaseIdContextMapping">
+
+    <query>
+      select
+        ksessionId
+      from
+        ContextMappingInfo m
+      where 
+        m.contextId = :caseId
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
 
 </entity-mappings>

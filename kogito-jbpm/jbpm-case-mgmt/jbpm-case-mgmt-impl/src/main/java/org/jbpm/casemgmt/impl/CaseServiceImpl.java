@@ -62,6 +62,8 @@ import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.jbpm.shared.services.impl.commands.QueryNameCommand;
 import org.kie.api.KieServices;
 import org.kie.api.command.KieCommands;
 import org.kie.api.runtime.manager.RuntimeManager;
@@ -94,6 +96,7 @@ public class CaseServiceImpl implements CaseService {
     private RuntimeDataService runtimeDataService;
     private DeploymentService deploymentService;
     private CaseRuntimeDataService caseRuntimeDataService;
+    private TransactionalCommandService commandService;
     
     private CaseEventSupport emptyCaseEventSupport = new CaseEventSupport(Collections.emptyList());
     
@@ -115,6 +118,10 @@ public class CaseServiceImpl implements CaseService {
     
     public void setCaseIdGenerator(CaseIdGenerator caseIdGenerator) {
         this.caseIdGenerator = caseIdGenerator;
+    }
+    
+    public void setCommandService(TransactionalCommandService commandService) {
+        this.commandService = commandService;
     }
 
     @Override
@@ -216,6 +223,15 @@ public class CaseServiceImpl implements CaseService {
         if (pi != null) {
             throw new CaseActiveException("Case with id " + caseId + " is still active and cannot be reopened"); 
         }
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("caseId", caseId);
+        params.put("maxResults", 1);
+
+        List<Long> caseIdMapping = commandService.execute(new QueryNameCommand<List<Long>>("findCaseIdContextMapping", params));
+        if (caseIdMapping.isEmpty()) {
+            throw new CaseNotFoundException("Case with id " + caseId + " was not found");
+        }
+        
         logger.debug("About to reopen case {} by starting process instance {} from deployment {} with additional data {}", 
                 caseId, caseDefinitionId, deploymentId, data);
         

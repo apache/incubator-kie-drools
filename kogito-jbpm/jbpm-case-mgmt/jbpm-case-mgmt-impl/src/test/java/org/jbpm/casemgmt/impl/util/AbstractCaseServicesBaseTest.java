@@ -196,6 +196,7 @@ public abstract class AbstractCaseServicesBaseTest {
         ((CaseServiceImpl) caseService).setProcessService(processService);
         ((CaseServiceImpl) caseService).setDeploymentService(deploymentService);
         ((CaseServiceImpl) caseService).setRuntimeDataService(runtimeDataService);
+        ((CaseServiceImpl) caseService).setCommandService(new TransactionalCommandService(emf));
 
         CaseConfigurationDeploymentListener configurationListener = new CaseConfigurationDeploymentListener();
 
