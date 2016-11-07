@@ -13,11 +13,11 @@
   CloudBalance solution = (CloudBalance) session.getAttribute(CloudBalancingSessionAttributeName.SHOWN_SOLUTION);
   HardSoftScore score = solution.getScore();
   List<CloudComputer> computerList = solution.getComputerList();
-  Map<CloudComputer, List<CloudProcess>> computerToProcessListMap = new LinkedHashMap<CloudComputer, List<CloudProcess>>(
+  Map<CloudComputer, List<CloudProcess>> computerToProcessListMap = new LinkedHashMap<>(
       computerList.size());
-  computerToProcessListMap.put(null, new ArrayList<CloudProcess>()); // unassigned
+  computerToProcessListMap.put(null, new ArrayList<>()); // unassigned
   for (CloudComputer computer : computerList) {
-    computerToProcessListMap.put(computer, new ArrayList<CloudProcess>());
+    computerToProcessListMap.put(computer, new ArrayList<>());
   }
   for (CloudProcess process : solution.getProcessList()) {
     computerToProcessListMap.get(process.getComputer()).add(process);
@@ -27,7 +27,7 @@
 <table>
   <thead>
   <tr>
-    <th>Computer Name</th>
+    <th>Computer name</th>
     <th>CPU power</th>
     <th>Memory</th>
     <th>Network bandwidth</th>
