@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.runners.Parameterized;
@@ -130,7 +131,8 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "ceiling( 1.5 )", new BigDecimal("2") },
                 { "ceiling( -1.5 )", new BigDecimal("-1") },
                 { "ceiling( null )", null },
-                { "ceiling( n : 1.5 )", new BigDecimal("2") }
+                { "ceiling( n : 1.5 )", new BigDecimal("2") },
+                { "now()", ZonedDateTime.class }
         };
         return Arrays.asList( cases );
     }
