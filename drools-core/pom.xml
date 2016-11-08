@@ -242,6 +242,7 @@
               org.drools.core.*
             </Export-Package>
             <Import-Package>
+               com.sun.tools.xjc.*;resolution:=optional,
                org.drools.persistence.jpa;resolution:=optional,
                org.drools.persistence.jpa.processinstance;resolution:=optional,
                org.jbpm.marshalling.impl;resolution:=optional,
