@@ -26,6 +26,11 @@ import org.optaplanner.examples.scrabble.domain.ScrabbleWordDirection;
 public class CellUpdatingVariableListener implements VariableListener<ScrabbleWordAssignment> {
 
     @Override
+    public boolean requiresUniqueEntityEvents() {
+        return true;
+    }
+
+    @Override
     public void beforeEntityAdded(ScoreDirector scoreDirector, ScrabbleWordAssignment wordAssignment) {
         // Do nothing
     }
