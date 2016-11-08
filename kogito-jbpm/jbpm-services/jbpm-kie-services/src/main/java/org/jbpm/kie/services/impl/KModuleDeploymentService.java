@@ -372,7 +372,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                 } catch (UnsupportedEncodingException e) {
                     throw new IllegalArgumentException("Unsupported encoding while processing process " + fileName);
                 }
-            } else if (fileName.matches(".+ftl$") || fileName.matches(".+form$")) {
+            } else if (fileName.matches(".+ftl$") || fileName.matches(".+form$") || fileName.matches( ".+frm$" )) {
                 try {
                     String formContent = new String(module.getBytes(fileName), "UTF-8");
                     if (fileName.indexOf( "/" ) != -1) fileName = fileName.substring( fileName.lastIndexOf( "/" ) + 1);

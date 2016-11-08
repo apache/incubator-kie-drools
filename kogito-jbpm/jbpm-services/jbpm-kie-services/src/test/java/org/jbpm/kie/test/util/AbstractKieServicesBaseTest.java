@@ -31,6 +31,7 @@ import javax.persistence.EntityManagerFactory;
 
 import org.dashbuilder.DataSetCore;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.jbpm.kie.services.impl.FormManagerService;
 import org.jbpm.kie.services.impl.FormManagerServiceImpl;
 import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.kie.services.impl.ProcessServiceImpl;
@@ -95,6 +96,8 @@ public abstract class AbstractKieServicesBaseTest {
 
 	protected TestIdentityProvider identityProvider;
 
+    protected FormManagerService formManagerService;
+
     @BeforeClass
     public static void configure() {
         LoggingPrintStream.interceptSysOutSysErr();
@@ -120,6 +123,7 @@ public abstract class AbstractKieServicesBaseTest {
 		buildDatasource();
 		emf = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.domain");
 		identityProvider = new TestIdentityProvider();
+        formManagerService = new FormManagerServiceImpl();
 
 		// build definition service
 		bpmn2Service = new BPMN2DataServiceImpl();
@@ -135,10 +139,10 @@ public abstract class AbstractKieServicesBaseTest {
 		((KModuleDeploymentService)deploymentService).setEmf(emf);
 		((KModuleDeploymentService)deploymentService).setIdentityProvider(identityProvider);
 		((KModuleDeploymentService)deploymentService).setManagerFactory(new RuntimeManagerFactoryImpl());
-		((KModuleDeploymentService)deploymentService).setFormManagerService(new FormManagerServiceImpl());
+		((KModuleDeploymentService)deploymentService).setFormManagerService( formManagerService );
 
 		TaskService taskService = HumanTaskServiceFactory.newTaskServiceConfigurator().entityManagerFactory(emf).getTaskService();
-		
+
 		// build runtime data service
 		runtimeDataService = new RuntimeDataServiceImpl();
 		((RuntimeDataServiceImpl) runtimeDataService).setCommandService(new TransactionalCommandService(emf));
@@ -198,11 +202,11 @@ public abstract class AbstractKieServicesBaseTest {
 
         KieFileSystem kfs = createKieFileSystemWithKProject(ks);
         kfs.writePomXML( getPom(releaseId) );
-        
+
         if (createDescriptor()) {
             DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
             DeploymentDescriptorBuilder ddBuilder = customDescriptor.getBuilder();
-    
+
             for (ObjectModel listener : getProcessListeners()) {
                 ddBuilder.addEventListener(listener);
             }
@@ -224,6 +228,8 @@ public abstract class AbstractKieServicesBaseTest {
         }
 
         kfs.write("src/main/resources/forms/DefaultProcess.ftl", ResourceFactory.newClassPathResource("repo/globals/forms/DefaultProcess.ftl"));
+        kfs.write("src/main/resources/forms/DefaultProcess.form", ResourceFactory.newClassPathResource("repo/globals/forms/DefaultProcess.form"));
+        kfs.write("src/main/resources/forms/DefaultProcess.frm", ResourceFactory.newClassPathResource("repo/globals/forms/DefaultProcess.frm"));
 
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         if (!kieBuilder.buildAll().getResults().getMessages().isEmpty()) {
@@ -278,7 +284,7 @@ public abstract class AbstractKieServicesBaseTest {
         ds.getDriverProperties().put("user", "sa");
         ds.getDriverProperties().put("password", "sasa");
         ds.getDriverProperties().put("URL", "jdbc:h2:mem:mydb");
-        
+
         ds.init();
     }
 
@@ -306,15 +312,15 @@ public abstract class AbstractKieServicesBaseTest {
             }
         }
     }
-    
+
     protected boolean createDescriptor() {
         return false;
     }
-    
+
     protected List<ObjectModel> getProcessListeners() {
         return new ArrayList<>();
     }
-    
+
     protected List<ObjectModel> getTaskListeners() {
         return new ArrayList<>();
     }
@@ -338,11 +344,11 @@ public abstract class AbstractKieServicesBaseTest {
 	public void setUserTaskService(UserTaskService userTaskService) {
 		this.userTaskService = userTaskService;
 	}
-    
+
     public void setQueryService(QueryService queryService) {
         this.queryService = queryService;
     }
-    
+
     public void setIdentityProvider(TestIdentityProvider identityProvider) {
         this.identityProvider = identityProvider;
     }
