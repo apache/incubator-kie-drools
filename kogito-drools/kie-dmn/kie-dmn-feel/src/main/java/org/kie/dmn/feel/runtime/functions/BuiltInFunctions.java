@@ -60,7 +60,10 @@ public class BuiltInFunctions {
             new DecimalFunction(),
             new FloorFunction(),
             new CeilingFunction(),
-            new DecisionTableFunction()
+            new DecisionTableFunction(),
+
+            // additional functions not part of the spec version 1.1
+            new NowFunction()
     };
 
     public static FEELFunction[] getFunctions() {

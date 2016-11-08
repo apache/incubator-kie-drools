@@ -36,7 +36,19 @@
     comparison2 : date and time( "2017-01-02T08:00:00+09:00" ) - date and time( "2017-01-01T16:00:00-07:00" ),
 
     date check : date( date and time( "2017-01-02T08:00:00+09:00" ) ),
-    date check2 : date( date and time( "2017-01-01T16:00:00-07:00" ) )
+    date check2 : date( date and time( "2017-01-01T16:00:00-07:00" ) ),
 
+    date arithmetic 1 : date and time( "2015-01-28T00:00:00" ) + duration( "P0Y1M" ),
+    date arithmetic 2 : date and time( "2015-01-29T00:00:00" ) + duration( "P0Y1M" ),
+    date arithmetic 3 : date and time( "2015-01-30T00:00:00" ) + duration( "P0Y1M" ),
+    date arithmetic 4 : date and time( "2015-01-31T00:00:00" ) + duration( "P0Y1M" ),
+
+    date arithmetic 5 : date and time( "2015-01-28T00:00:00" ) + duration( "P30D" ),
+    date arithmetic 6 : date and time( "2015-01-29T00:00:00" ) + duration( "P30D" ),
+    date arithmetic 7 : date and time( "2015-01-30T00:00:00" ) + duration( "P30D" ),
+    date arithmetic 8 : date and time( "2015-01-31T00:00:00" ) + duration( "P30D" ),
+
+    current : now()
 }
+
 
