@@ -39,7 +39,7 @@ public class LHSGeneratorContextFactory {
         final LHSGeneratorContext gc = new LHSGeneratorContext( parent,
                                                                 pattern,
                                                                 getMaximumDepth() + 1,
-                                                                parent.getOffset() );
+                                                                0 );
         contexts.add( gc );
         return gc;
     }
@@ -49,7 +49,7 @@ public class LHSGeneratorContextFactory {
         final LHSGeneratorContext gc = new LHSGeneratorContext( parent,
                                                                 fieldConstraint,
                                                                 getMaximumDepth() + 1,
-                                                                parent.getOffset() );
+                                                                0 );
         contexts.add( gc );
         return gc;
     }
