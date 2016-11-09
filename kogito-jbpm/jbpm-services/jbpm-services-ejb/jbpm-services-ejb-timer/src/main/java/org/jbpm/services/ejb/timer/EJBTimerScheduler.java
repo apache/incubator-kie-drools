@@ -24,6 +24,7 @@ import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
+import javax.ejb.NoSuchObjectLocalException;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
@@ -97,21 +98,25 @@ public class EJBTimerScheduler {
 		EjbGlobalJobHandle ejbHandle = (EjbGlobalJobHandle) jobHandle;
 		
 		for (Timer timer : timerService.getTimers()) {
-			Serializable info = timer.getInfo();
-			if (info instanceof EjbTimerJob) {
-				EjbTimerJob job = (EjbTimerJob) info;
-				
-				EjbGlobalJobHandle handle = (EjbGlobalJobHandle) job.getTimerJobInstance().getJobHandle();
-				if (handle.getUuid().equals(ejbHandle.getUuid())) {
-					logger.debug("Job handle {} does match timer and is going to be canceled", jobHandle);
-					try {
-					    timer.cancel();
-					} catch (Throwable e) {
-					    logger.debug("Timer cancel error due to {}", e.getMessage());
-					    return false;
-					}
-					return true;
-				}
+			try {
+    		    Serializable info = timer.getInfo();
+    			if (info instanceof EjbTimerJob) {
+    				EjbTimerJob job = (EjbTimerJob) info;
+    				
+    				EjbGlobalJobHandle handle = (EjbGlobalJobHandle) job.getTimerJobInstance().getJobHandle();
+    				if (handle.getUuid().equals(ejbHandle.getUuid())) {
+    					logger.debug("Job handle {} does match timer and is going to be canceled", jobHandle);
+    					try {
+    					    timer.cancel();
+    					} catch (Throwable e) {
+    					    logger.debug("Timer cancel error due to {}", e.getMessage());
+    					    return false;
+    					}
+    					return true;
+    				}
+    			}
+			} catch (NoSuchObjectLocalException e) {
+			    logger.debug("Timer {} has already expired or was canceled ", timer);
 			}
 		}
 		logger.debug("Job handle {} does not match any timer on {} scheduler service", jobHandle, this);
