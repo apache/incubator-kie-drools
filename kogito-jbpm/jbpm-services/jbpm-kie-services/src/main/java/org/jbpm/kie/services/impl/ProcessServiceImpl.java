@@ -54,6 +54,7 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
+import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.kie.internal.runtime.manager.context.CorrelationKeyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
@@ -158,9 +159,11 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
-        KieSession ksession = engine.getKieSession();
         try {
+            KieSession ksession = engine.getKieSession();
             ksession.abortProcessInstance(processInstanceId);
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -186,9 +189,11 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
 		event = process(event, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
-        KieSession ksession = engine.getKieSession();
         try {
+            KieSession ksession = engine.getKieSession();
             ksession.signalEvent(signalName, event, processInstanceId);
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -226,9 +231,11 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
-        KieSession ksession = engine.getKieSession();
         try {
-        	return ksession.getProcessInstance(processInstanceId);
+            KieSession ksession = engine.getKieSession();
+            return ksession.getProcessInstance(processInstanceId);
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -267,9 +274,11 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
 		value = process(value, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
-        KieSession ksession = engine.getKieSession();
         try {
-        	ksession.execute(new SetProcessInstanceVariablesCommand(processInstanceId, Collections.singletonMap(variableId, value)));
+            KieSession ksession = engine.getKieSession();
+            ksession.execute(new SetProcessInstanceVariablesCommand(processInstanceId, Collections.singletonMap(variableId, value)));
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -288,9 +297,11 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
 		variables = process(variables, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
-        KieSession ksession = engine.getKieSession();
         try {
-        	ksession.execute(new SetProcessInstanceVariablesCommand(processInstanceId, variables));
+            KieSession ksession = engine.getKieSession();
+            ksession.execute(new SetProcessInstanceVariablesCommand(processInstanceId, variables));
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -308,8 +319,8 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
-        KieSession ksession = engine.getKieSession();
         try {
+            KieSession ksession = engine.getKieSession();
             Object variable = ksession.execute(new GenericCommand<Object>() {
 
                 private static final long serialVersionUID = -2693525229757876896L;
@@ -326,6 +337,8 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
                 }
             });
             return variable;
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -343,11 +356,13 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
-        KieSession ksession = engine.getKieSession();
         try {
-        	WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) ksession.getProcessInstance(processInstanceId, true);
+            KieSession ksession = engine.getKieSession();
+            WorkflowProcessInstanceImpl pi = (WorkflowProcessInstanceImpl) ksession.getProcessInstance(processInstanceId, true);
         	
         	return pi.getVariables();
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -365,9 +380,9 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
-        KieSession ksession = engine.getKieSession();
         try {
-        	ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
+            KieSession ksession = engine.getKieSession();
+            ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId);
             Collection<String> activeSignals = new ArrayList<String>();
 
             if (processInstance != null) {
@@ -379,6 +394,8 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
             }
 
             return activeSignals;
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -394,12 +411,15 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		if (deployedUnit == null) {
 			throw new DeploymentNotFoundException("No deployments available for " + nodeDesc.getDeploymentId());
 		}
+		Long processInstanceId = nodeDesc.getProcessInstanceId();
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
 		results = process(results, ((InternalRuntimeManager) manager).getEnvironment().getClassLoader());
-        RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(nodeDesc.getProcessInstanceId()));
-        KieSession ksession = engine.getKieSession();
+        RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         try {
-        	ksession.getWorkItemManager().completeWorkItem(id, results);
+            KieSession ksession = engine.getKieSession();
+            ksession.getWorkItemManager().completeWorkItem(id, results);
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -416,11 +436,14 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		if (deployedUnit == null) {
 			throw new DeploymentNotFoundException("No deployments available for " + nodeDesc.getDeploymentId());
 		}
+		Long processInstanceId = nodeDesc.getProcessInstanceId();
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
-        RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(nodeDesc.getProcessInstanceId()));
-        KieSession ksession = engine.getKieSession();
+        RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         try {
-        	ksession.getWorkItemManager().abortWorkItem(id);
+            KieSession ksession = engine.getKieSession();
+            ksession.getWorkItemManager().abortWorkItem(id);
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -436,11 +459,14 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		if (deployedUnit == null) {
 			throw new DeploymentNotFoundException("No deployments available for " + nodeDesc.getDeploymentId());
 		}
+		Long processInstanceId = nodeDesc.getProcessInstanceId();
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
-        RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(nodeDesc.getProcessInstanceId()));
-        KieSession ksession = engine.getKieSession();
+        RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         try {
-        	return ((WorkItemManager)ksession.getWorkItemManager()).getWorkItem(id);
+            KieSession ksession = engine.getKieSession();
+            return ((WorkItemManager)ksession.getWorkItemManager()).getWorkItem(id);
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -458,9 +484,9 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		}
 		RuntimeManager manager = deployedUnit.getRuntimeManager();
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
-        KieSession ksession = engine.getKieSession();
         try {
-        	List<WorkItem> workItems = new ArrayList<WorkItem>();
+            KieSession ksession = engine.getKieSession();
+            List<WorkItem> workItems = new ArrayList<WorkItem>();
         	
         	Collection<NodeInstanceDesc> nodes = dataService.getProcessInstanceHistoryActive(processInstanceId, null);
         	
@@ -471,7 +497,8 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
         	}
         	
         	return workItems;
-        	
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -490,9 +517,11 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		
 		RuntimeManager manager = deployedUnit.getRuntimeManager();		
         RuntimeEngine engine = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
-        KieSession ksession = engine.getKieSession();
         try {
-        	return ksession.execute(command);
+            KieSession ksession = engine.getKieSession();
+            return ksession.execute(command);
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with id " + processInstanceId + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }
@@ -509,9 +538,11 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
 		
 		RuntimeManager manager = deployedUnit.getRuntimeManager();		
         RuntimeEngine engine = manager.getRuntimeEngine(context);
-        KieSession ksession = engine.getKieSession();
         try {
-        	return ksession.execute(command);
+            KieSession ksession = engine.getKieSession();
+            return ksession.execute(command);
+        } catch(SessionNotFoundException e) {
+            throw new ProcessInstanceNotFoundException("Process instance with context id " + context.getContextId() + " was not found", e);
         } finally {
         	disposeRuntimeEngine(manager, engine);
         }

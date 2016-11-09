@@ -972,7 +972,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         assertEquals(FIRST_CASE_ID, caseId);
         try {
             caseService.updateCaseComment(FIRST_CASE_ID, "not-existing-comment", "poul", "just a tiny comment");
-            fail("Not existing comment cannot be updated.");
+            fail("Updating non-existent case comment should throw CaseCommentNotFoundException.");
         } catch (CaseCommentNotFoundException e) {
             // expected
         } finally {
@@ -997,7 +997,7 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
         assertEquals(FIRST_CASE_ID, caseId);
         try {
             caseService.removeCaseComment(FIRST_CASE_ID, "not-existing-comment");
-            fail("Not existing comment cannot be deleted.");
+            fail("Removing non-existent case comment should throw CaseCommentNotFoundException.");
         } catch (CaseCommentNotFoundException e) {
             // expected
         } finally {

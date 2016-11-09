@@ -39,6 +39,7 @@ import org.drools.core.command.runtime.process.GetProcessInstanceCommand;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
+import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
@@ -54,7 +55,6 @@ import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
-import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -770,8 +770,8 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
 
         try {
             processService.getProcessInstance(processInstanceId);
-        } catch (SessionNotFoundException e) {
-
+        } catch (ProcessInstanceNotFoundException e) {
+            // expected
         }
 
     }
@@ -822,8 +822,8 @@ public class ProcessServiceImplTest extends AbstractKieServicesBaseTest {
 
         try {
             processService.getProcessInstance(processInstanceId);
-        } catch (SessionNotFoundException e) {
-
+        } catch (ProcessInstanceNotFoundException e) {
+            // expected
         }
 
     }
