@@ -252,6 +252,9 @@ public abstract class BasicExecutorBaseTest {
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(1, inErrorRequests.size());
+        
+        RequestInfo failedJob = inErrorRequests.get(0);
+        assertEquals(4, failedJob.getExecutions());
 
         List<ErrorInfo> errors = executorService.getAllErrors(new QueryContext());
         logger.info("Errors: {}", errors);
@@ -408,6 +411,9 @@ public abstract class BasicExecutorBaseTest {
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(1, inErrorRequests.size());
+        
+        RequestInfo failedJob = inErrorRequests.get(0);
+        assertEquals(3, failedJob.getExecutions());
 
         List<ErrorInfo> errors = executorService.getAllErrors(new QueryContext());
         // Three retries means 4 executions in total 1(regular) + 2(retries)
