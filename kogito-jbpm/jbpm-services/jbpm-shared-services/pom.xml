@@ -53,10 +53,6 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.as</groupId>
-      <artifactId>jboss-as-arquillian-protocol-jmx</artifactId>
-    </dependency>
   </dependencies>
 
   <build>
