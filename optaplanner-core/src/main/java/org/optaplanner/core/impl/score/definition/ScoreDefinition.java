@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.definition;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
+import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
@@ -73,6 +74,7 @@ public interface ScoreDefinition<S extends Score> {
      * @param scoreString never null
      * @return never null
      * @see #formatScore(Score)
+     * @see ScoreUtils#parseScore(Class, String)
      */
     S parseScore(String scoreString);
 

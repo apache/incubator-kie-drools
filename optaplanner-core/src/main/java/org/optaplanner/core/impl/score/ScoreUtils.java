@@ -17,8 +17,62 @@
 package org.optaplanner.core.impl.score;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
+import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
+import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class ScoreUtils {
+
+    /**
+     * @param scoreClass never null, should be of the same {@link ClassLoader} as this class.
+     * @param scoreString never null
+     * @return never null
+     * @throws IllegalArgumentException if the scoreClass is a custom {@link Score}
+     * @see ScoreDefinition#parseScore(String)
+     */
+    public static Score parseScore(Class<? extends Score> scoreClass, String scoreString) {
+        if (SimpleScore.class.equals(scoreClass)) {
+            return SimpleScore.parseScore(scoreString);
+        } else if (SimpleLongScore.class.equals(scoreClass)) {
+            return SimpleLongScore.parseScore(scoreString);
+        } else if (SimpleDoubleScore.class.equals(scoreClass)) {
+            return SimpleDoubleScore.parseScore(scoreString);
+        } else if (SimpleBigDecimalScore.class.equals(scoreClass)) {
+            return SimpleBigDecimalScore.parseScore(scoreString);
+        } else if (HardSoftScore.class.equals(scoreClass)) {
+            return HardSoftScore.parseScore(scoreString);
+        } else if (HardSoftLongScore.class.equals(scoreClass)) {
+            return HardSoftLongScore.parseScore(scoreString);
+        } else if (HardSoftDoubleScore.class.equals(scoreClass)) {
+            return HardSoftDoubleScore.parseScore(scoreString);
+        } else if (HardSoftBigDecimalScore.class.equals(scoreClass)) {
+            return HardSoftBigDecimalScore.parseScore(scoreString);
+        } else if (HardMediumSoftScore.class.equals(scoreClass)) {
+            return HardMediumSoftScore.parseScore(scoreString);
+        } else if (HardMediumSoftLongScore.class.equals(scoreClass)) {
+            return HardMediumSoftLongScore.parseScore(scoreString);
+        } else if (BendableScore.class.equals(scoreClass)) {
+            return BendableScore.parseScore(scoreString);
+        } else if (BendableLongScore.class.equals(scoreClass)) {
+            return BendableLongScore.parseScore(scoreString);
+        } else if (BendableBigDecimalScore.class.equals(scoreClass)) {
+            return BendableBigDecimalScore.parseScore(scoreString);
+        } else {
+            throw new IllegalArgumentException("Unrecognized scoreClass (" + scoreClass
+                    + ") for scoreString (" + scoreString + ").");
+        }
+    }
 
     public static double[] extractLevelDoubles(Score score) {
         Number[] levelNumbers = score.toLevelNumbers();
