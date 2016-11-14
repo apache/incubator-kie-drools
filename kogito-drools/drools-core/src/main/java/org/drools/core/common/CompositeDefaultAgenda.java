@@ -629,4 +629,9 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     public void registerExpiration( PropagationContext expirationContext ) {
         throw new UnsupportedOperationException( "This method has to be called on the single partitioned agendas" );
     }
+
+    @Override
+    public boolean isParallelAgenda() {
+        return true;
+    }
 }

@@ -408,14 +408,15 @@ public class RuleImpl implements Externalizable,
     }
 
     public String getAgendaGroup() {
-        if ( this.agendaGroup.equals( "" ) ) {
-            return AgendaGroup.MAIN;
-        }
         return this.agendaGroup;
     }
 
     public void setAgendaGroup(final String agendaGroup) {
         this.agendaGroup = agendaGroup;
+    }
+
+    public boolean isMainAgendaGroup() {
+        return AgendaGroup.MAIN.equals( agendaGroup );
     }
 
     private void set( int flag, boolean b ) {

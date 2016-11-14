@@ -925,8 +925,10 @@ public class KnowledgeBaseImpl
             }
 
             // add the rules to the RuleBase
-            for ( Rule rule : newPkg.getRules() ) {
-                addRule( newPkg, (RuleImpl)rule );
+            for ( Rule r : newPkg.getRules() ) {
+                RuleImpl rule = (RuleImpl)r;
+                checkMultithreadedEvaluation( rule );
+                addRule( newPkg, rule );
             }
 
             // add the flows to the RuleBase
@@ -951,7 +953,17 @@ public class KnowledgeBaseImpl
         }
 
         if (config.isMultithreadEvaluation() && !hasMultiplePartitions()) {
-            disableMultithreadEvaluationForSinglePartition();
+            disableMultithreadEvaluation("The rete network cannot be partitioned: disabling multithread evaluation");
+        }
+    }
+
+    private void checkMultithreadedEvaluation( RuleImpl rule ) {
+        if (config.isMultithreadEvaluation()) {
+            if (!rule.isMainAgendaGroup()) {
+                disableMultithreadEvaluation( "Agenda-groups are not supported with multithread evaluation: disabling it" );
+            } else if (!rule.getSalience().isDefault()) {
+                disableMultithreadEvaluation( "Salience is not supported with multithread evaluation: disabling it" );
+            }
         }
     }
 
@@ -967,8 +979,9 @@ public class KnowledgeBaseImpl
         return false;
     }
 
-    private void disableMultithreadEvaluationForSinglePartition() {
+    private void disableMultithreadEvaluation(String warningMessage) {
         config.enforceSingleThreadEvaluation();
+        logger.warn( warningMessage );
         for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
             for (ObjectTypeNode otn : entryPointNode.getObjectTypeNodes().values()) {
                 ObjectSinkPropagator sink = otn.getObjectSinkPropagator();

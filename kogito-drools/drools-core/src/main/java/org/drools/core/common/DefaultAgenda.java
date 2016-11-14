@@ -1560,4 +1560,9 @@ public class DefaultAgenda
             ( (InternalWorkingMemoryEntryPoint) workingMemory.getEntryPoint( epId ) ).removeFromObjectStore( factHandle );
         }
     }
+
+    @Override
+    public boolean isParallelAgenda() {
+        return false;
+    }
 }

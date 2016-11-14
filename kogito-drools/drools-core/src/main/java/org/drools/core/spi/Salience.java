@@ -16,17 +16,24 @@
 
 package org.drools.core.spi;
 
-import java.io.Serializable;
-
 import org.drools.core.WorkingMemory;
 import org.kie.api.definition.rule.Rule;
 
-public interface Salience extends Serializable {
-    public int getValue(final KnowledgeHelper khelper,
-                        final Rule rule,
-                        final WorkingMemory workingMemory);
+import java.io.Serializable;
 
-    public int getValue();
+public interface Salience extends Serializable {
+
+    int DEFAULT_SALIENCE_VALUE = 0;
+
+    int getValue(final KnowledgeHelper khelper,
+                 final Rule rule,
+                 final WorkingMemory workingMemory);
+
+    int getValue();
 
     boolean isDynamic();
+
+    default boolean isDefault() {
+        return getValue() == DEFAULT_SALIENCE_VALUE;
+    }
 }

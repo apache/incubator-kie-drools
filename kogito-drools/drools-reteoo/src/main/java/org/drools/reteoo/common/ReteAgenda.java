@@ -1553,4 +1553,9 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     public void handleException( InternalWorkingMemory wm, Activation activation, Exception e ) {
         throw new RuntimeException( e );
     }
+
+    @Override
+    public boolean isParallelAgenda() {
+        return false;
+    }
 }

@@ -316,4 +316,6 @@ public interface InternalAgenda
     boolean hasPendingPropagations();
 
     void handleException(InternalWorkingMemory wm, Activation activation, Exception e);
+
+    boolean isParallelAgenda();
 }

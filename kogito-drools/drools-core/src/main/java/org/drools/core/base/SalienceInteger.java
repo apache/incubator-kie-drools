@@ -16,15 +16,15 @@
 
 package org.drools.core.base;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
 import org.kie.api.definition.rule.Rule;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class SalienceInteger
     implements
@@ -32,7 +32,7 @@ public class SalienceInteger
 
     private static final long serialVersionUID = 510l;
 
-    public static final Salience DEFAULT_SALIENCE = new SalienceInteger( 0 );
+    public static final Salience DEFAULT_SALIENCE = new SalienceInteger( DEFAULT_SALIENCE_VALUE );
 
     private int value;
 
@@ -58,6 +58,11 @@ public class SalienceInteger
 
     public int getValue() {
         return value;
+    }
+
+    @Override
+    public boolean isDefault() {
+        return getValue() == DEFAULT_SALIENCE.getValue();
     }
 
     public String toString() {
