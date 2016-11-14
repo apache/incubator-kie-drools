@@ -15,6 +15,9 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.util.List;
+import java.util.function.Predicate;
+
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -33,9 +36,6 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.io.ResourceFactory;
-
-import java.util.List;
-import java.util.function.Predicate;
 
 public class KieBuilderTest extends CommonTestMethodBase {
 
@@ -411,4 +411,25 @@ public class KieBuilderTest extends CommonTestMethodBase {
         assertTrue( messages.get(2).toString().contains( "kbase2" ) );
         assertTrue( messages.get(3).toString().contains( "kbase2" ) );
     }
+
+    @Test
+    public void testBuildWithKBaseAndKSessionWithIdenticalNames() {
+        String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                "  <kbase name=\"name\">\n" +
+                "    <ksession name=\"name\" default=\"true\"/>\n" +
+                "  </kbase>\n" +
+                "</kmodule>";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+
+        KieModule km = createAndDeployJar( ks,
+                                           kmodule,
+                                           releaseId1 );
+
+        assertNotNull( km );
+    }
+
 }
