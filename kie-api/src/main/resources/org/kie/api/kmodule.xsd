@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- For a list of all released XSD files, visit http://www.drools.org/xsd/ -->
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:kie="http://www.drools.org/xsd/kmodule"
             elementFormDefault="qualified" attributeFormDefault="unqualified"
             targetNamespace="http://www.drools.org/xsd/kmodule" xmlns="http://www.drools.org/xsd/kmodule">
 
@@ -13,6 +13,22 @@
         <xsd:element ref="kbase" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
     </xsd:complexType>
+    <xsd:unique name="unique-kbase-name">
+      <xsd:selector xpath="kie:kbase"/>
+      <xsd:field xpath="@name"/>
+    </xsd:unique>
+    <xsd:unique name="unique-ksession-name">
+      <xsd:selector xpath="kie:kbase/kie:ksession"/>
+      <xsd:field xpath="@name"/>
+    </xsd:unique>
+    <xsd:unique name="unique-consoleLogger-name">
+      <xsd:selector xpath="kie:kbase/kie:ksession/kie:consoleLogger"/>
+      <xsd:field xpath="@name"/>
+    </xsd:unique>
+    <xsd:unique name="unique-fileLogger-name">
+      <xsd:selector xpath="kie:kbase/kie:ksession/kie:fileLogger"/>
+      <xsd:field xpath="@name"/>
+    </xsd:unique>
   </xsd:element>
 
   <xsd:element name="configuration">
@@ -40,7 +56,7 @@
         <xsd:element ref="ruleTemplate" minOccurs="0" maxOccurs="unbounded"/>
         <xsd:element ref="ksession" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
-      <xsd:attribute name="name" type="xsd:ID"/>
+      <xsd:attribute name="name" type="xsd:string"/>
       <xsd:attribute name="includes" type="xsd:string"/>
       <xsd:attribute name="packages" type="xsd:string"/>
       <xsd:attribute name="default" type="xsd:boolean"/>
@@ -70,7 +86,7 @@
         <xsd:element ref="workItemHandlers" minOccurs="0" maxOccurs="1"/>
         <xsd:element ref="listeners" minOccurs="0" maxOccurs="1"/>
       </xsd:sequence>
-      <xsd:attribute name="name" use="required" type="xsd:ID"/>
+      <xsd:attribute name="name" use="required" type="xsd:string"/>
       <xsd:attribute name="type" type="ksessionType"/>
       <xsd:attribute name="default" type="xsd:boolean"/>
       <xsd:attribute name="scope" type="xsd:string"/>
@@ -81,13 +97,13 @@
 
   <xsd:element name="consoleLogger">
     <xsd:complexType>
-      <xsd:attribute name="name" type="xsd:ID"/>
+      <xsd:attribute name="name" type="xsd:string"/>
     </xsd:complexType>
   </xsd:element>
 
   <xsd:element name="fileLogger">
     <xsd:complexType>
-      <xsd:attribute name="name" type="xsd:ID"/>
+      <xsd:attribute name="name" type="xsd:string"/>
       <xsd:attribute name="file" use="required" type="xsd:string"/>
       <xsd:attribute name="threaded" type="xsd:boolean" default="false"/>
       <xsd:attribute name="interval" type="xsd:int" default="30"/>
