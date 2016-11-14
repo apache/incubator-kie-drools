@@ -18,7 +18,7 @@ package org.drools.compiler.integrationtests;
 
 import org.drools.core.ClockType;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.DefaultAgenda;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
@@ -39,14 +39,14 @@ import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ParallelEvaluationTest {
 
@@ -66,6 +66,7 @@ public class ParallelEvaluationTest {
         assertTrue( ( (CompositePartitionAwareObjectSinkAdapter) otn.getObjectSinkPropagator() ).isHashed() );
 
         KieSession ksession = kbase.newKieSession();
+        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
         List<Integer> list = new DebugList<Integer>();
         ksession.setGlobal( "list", list );
@@ -93,6 +94,8 @@ public class ParallelEvaluationTest {
         KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
                                              .build( MultithreadEvaluationOption.YES )
                                              .newKieSession();
+
+        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
         List<Integer> list = new DebugList<Integer>();
         ksession.setGlobal( "list", list );
@@ -122,6 +125,8 @@ public class ParallelEvaluationTest {
                                              .build( MultithreadEvaluationOption.YES )
                                              .newKieSession();
 
+        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+
         List<Integer> list = new DebugList<Integer>();
         ksession.setGlobal( "list", list );
 
@@ -149,6 +154,8 @@ public class ParallelEvaluationTest {
                                              .build( MultithreadEvaluationOption.YES )
                                              .newKieSession();
 
+        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+
         StatefulKnowledgeSessionImpl session = (StatefulKnowledgeSessionImpl) ksession;
 
         List<Integer> list = new DebugList<Integer>();
@@ -165,7 +172,11 @@ public class ParallelEvaluationTest {
     }
 
     private String getRule(int i, String rhs) {
-        return  "rule R" + i + " when\n" +
+        return getRule( i, rhs, "" );
+    }
+
+    private String getRule(int i, String rhs, String attributes) {
+        return  "rule R" + i + " " + attributes + "when\n" +
                 "    $i : Integer( intValue == " + i + " )" +
                 "    String( toString == $i.toString )\n" +
                 "then\n" +
@@ -208,6 +219,8 @@ public class ParallelEvaluationTest {
         KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
                                              .build( MultithreadEvaluationOption.YES )
                                              .newKieSession();
+
+        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
         CountDownLatch done = new CountDownLatch(1);
 
@@ -256,6 +269,7 @@ public class ParallelEvaluationTest {
         for (int loop = 0; loop < 10; loop++) {
             System.out.println("Starting loop " + loop);
             KieSession ksession = kbase.newKieSession();
+            assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
             CountDownLatch done = new CountDownLatch( 1 );
             ksession.setGlobal( "done", done );
@@ -347,6 +361,8 @@ public class ParallelEvaluationTest {
                                              .build( MultithreadEvaluationOption.YES )
                                              .newKieSession();
 
+        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+
         StatefulKnowledgeSessionImpl session = (StatefulKnowledgeSessionImpl) ksession;
 
         CountDownLatch done = new CountDownLatch(1);
@@ -394,10 +410,10 @@ public class ParallelEvaluationTest {
                                              .build( MultithreadEvaluationOption.YES )
                                              .newKieSession();
 
-        StatefulKnowledgeSessionImpl session = (StatefulKnowledgeSessionImpl) ksession;
+        InternalWorkingMemory session = (InternalWorkingMemory) ksession;
 
         // since there is only one partition the multithread evaluation should be disabled and run with the DefaultAgenda
-        assertTrue( session.getAgenda() instanceof DefaultAgenda );
+        assertFalse( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
     }
 
     @Test
@@ -416,6 +432,8 @@ public class ParallelEvaluationTest {
         KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
                                              .build( EventProcessingOption.STREAM, MultithreadEvaluationOption.YES )
                                              .newKieSession( sessionConfig, null );
+
+        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
         PseudoClockScheduler sessionClock = ksession.getSessionClock();
         sessionClock.setStartupTime(0);
@@ -456,6 +474,8 @@ public class ParallelEvaluationTest {
         KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
                                              .build( EventProcessingOption.STREAM, MultithreadEvaluationOption.YES )
                                              .newKieSession( sessionConfig, null );
+
+        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
         List<Integer> list = new DebugList<Integer>();
         ksession.setGlobal( "list", list );
@@ -529,6 +549,8 @@ public class ParallelEvaluationTest {
         KieSession ksession = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
                                              .build( EventProcessingOption.STREAM, MultithreadEvaluationOption.YES )
                                              .newKieSession( sessionConfig, null );
+
+        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
 
         PseudoClockScheduler sessionClock = ksession.getSessionClock();
         sessionClock.setStartupTime(0);
@@ -625,6 +647,8 @@ public class ParallelEvaluationTest {
                                              .build( EventProcessingOption.STREAM, MultithreadEvaluationOption.YES )
                                              .newKieSession( sessionConfig, null );
 
+        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+
         PseudoClockScheduler sessionClock = ksession.getSessionClock();
         sessionClock.setStartupTime( 0 );
 
@@ -664,6 +688,8 @@ public class ParallelEvaluationTest {
                                              .build( MultithreadEvaluationOption.YES )
                                              .newKieSession();
 
+        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+
         List<Integer> list = new DebugList<Integer>();
         ksession.setGlobal( "list", list );
 
@@ -685,5 +711,69 @@ public class ParallelEvaluationTest {
 
         ksession.fireAllRules();
         assertEquals(10, list.size());
+    }
+
+    @Test(timeout = 10000L)
+    public void testDisableParallelismWithAgendaGroups() {
+        StringBuilder sb = new StringBuilder( 400 );
+        sb.append( "global java.util.List list;\n" );
+        sb.append( "rule first\n" +
+                   "when\n" +
+                   "then\n" +
+                   "    drools.getKnowledgeRuntime().getAgenda().getAgendaGroup(\"agenda\").setFocus();\n" +
+                   "end\n" );
+        for (int i = 0; i < 10; i++) {
+            sb.append( getRule( i, "", "agenda-group \"agenda\"" ) );
+        }
+
+        KieBase kbase = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
+                                       .build( MultithreadEvaluationOption.YES );
+
+        KieSession ksession = kbase.newKieSession();
+
+        // multithread evaluation is not allowed when using agenda-groups
+        assertFalse( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+
+        List<Integer> list = new DebugList<Integer>();
+        ksession.setGlobal( "list", list );
+
+        for (int i = 0; i < 10; i++) {
+            ksession.insert( i );
+            ksession.insert( "" + i );
+        }
+
+        ksession.fireAllRules();
+
+        assertEquals(10, list.size());
+    }
+
+    @Test(timeout = 10000L)
+    public void testDisableParallelismWithSalience() {
+        StringBuilder sb = new StringBuilder( 400 );
+        sb.append( "global java.util.List list;\n" );
+        for (int i = 0; i < 10; i++) {
+            sb.append( getRule( i, "", "salience " + i ) );
+        }
+
+        KieBase kbase = new KieHelper().addContent( sb.toString(), ResourceType.DRL )
+                                       .build( MultithreadEvaluationOption.YES );
+
+        KieSession ksession = kbase.newKieSession();
+
+        // multithread evaluation is not allowed when using salience
+        assertFalse( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+
+        List<Integer> list = new DebugList<Integer>();
+        ksession.setGlobal( "list", list );
+
+        for (int i = 0; i < 10; i++) {
+            ksession.insert( i );
+            ksession.insert( "" + i );
+        }
+
+        ksession.fireAllRules();
+
+        assertEquals(10, list.size());
+        assertEquals( list, Arrays.asList(9, 8, 7, 6, 5, 4, 3, 2, 1, 0) );
     }
 }
