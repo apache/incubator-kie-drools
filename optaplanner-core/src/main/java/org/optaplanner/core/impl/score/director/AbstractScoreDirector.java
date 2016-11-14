@@ -60,9 +60,10 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final Factory_ scoreDirectorFactory;
+    protected final boolean locatorEnabled;
+    protected final Locator<Solution_> locator;
     protected boolean constraintMatchEnabledPreference;
     protected final VariableListenerSupport<Solution_> variableListenerSupport;
-    protected final Locator locator;
 
     protected Solution_ workingSolution;
     protected long workingEntityListRevision = 0L;
@@ -75,10 +76,11 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     protected AbstractScoreDirector(Factory_ scoreDirectorFactory,
             boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
         this.scoreDirectorFactory = scoreDirectorFactory;
+        this.locatorEnabled = locatorEnabled;
+        locator = locatorEnabled ? new Locator<>(this) : null;
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
         variableListenerSupport = new VariableListenerSupport<>(this);
         variableListenerSupport.linkVariableListeners();
-        locator = locatorEnabled ? new Locator() : null;
     }
 
     @Override
@@ -97,7 +99,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     public boolean isLocatorEnabled() {
-        return locator != null;
+        return locatorEnabled;
     }
 
     public boolean isConstraintMatchEnabledPreference() {
@@ -150,7 +152,11 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     @Override
     public void setWorkingSolution(Solution_ workingSolution) {
         this.workingSolution = workingSolution;
-        workingInitScore = - getSolutionDescriptor().countUninitializedVariables(workingSolution);
+        SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
+        workingInitScore = - solutionDescriptor.countUninitializedVariables(workingSolution);
+        if (locatorEnabled) {
+            locator.resetWorkingObjects(solutionDescriptor.getAllFacts(workingSolution));
+        }
         variableListenerSupport.resetWorkingSolution();
         setWorkingEntityListDirty();
     }
@@ -272,8 +278,10 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     public void dispose() {
         workingSolution = null;
         workingInitScore = null;
+        if (locatorEnabled) {
+            locator.clearWorkingObjects();
+        }
         variableListenerSupport.clearWorkingSolution();
-        locator.clearWorkingSolution();
     }
 
     // ************************************************************************
@@ -320,6 +328,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     public void afterEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         workingInitScore -= entityDescriptor.countUninitializedVariables(entity);
+        if (locatorEnabled) {
+            locator.addWorkingObject(entity);
+        }
         variableListenerSupport.afterEntityAdded(entityDescriptor, entity);
         if (!allChangesWillBeUndoneBeforeStepEnds) {
             setWorkingEntityListDirty();
@@ -355,6 +366,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     }
 
     public void afterEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
+        if (locatorEnabled) {
+            locator.removeWorkingObject(entity);
+        }
         variableListenerSupport.afterEntityRemoved(entityDescriptor, entity);
         if (!allChangesWillBeUndoneBeforeStepEnds) {
             setWorkingEntityListDirty();
@@ -372,6 +386,9 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public void afterProblemFactAdded(Object problemFact) {
+        if (locatorEnabled) {
+            locator.addWorkingObject(problemFact);
+        }
         variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
     }
 
@@ -392,13 +409,16 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     @Override
     public void afterProblemFactRemoved(Object problemFact) {
+        if (locatorEnabled) {
+            locator.removeWorkingObject(problemFact);
+        }
         variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
     }
 
     @Override
     public <E> E locateWorkingObject(E externalObject) {
-        if (!isLocatorEnabled()) {
-            throw new IllegalStateException("When locatorEnabled (" + isLocatorEnabled()
+        if (!locatorEnabled) {
+            throw new IllegalStateException("When locatorEnabled (" + locatorEnabled
                     + ") is disabled in the constructor, this method should not be called.");
         }
         return locator.locateWorkingObject(externalObject);
