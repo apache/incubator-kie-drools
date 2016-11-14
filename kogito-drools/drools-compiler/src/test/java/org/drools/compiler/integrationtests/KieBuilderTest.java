@@ -32,6 +32,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.io.ResourceFactory;
 
 import java.util.List;
@@ -410,5 +411,60 @@ public class KieBuilderTest extends CommonTestMethodBase {
         assertTrue( messages.get(1).toString().contains( "kbase1" ) );
         assertTrue( messages.get(2).toString().contains( "kbase2" ) );
         assertTrue( messages.get(3).toString().contains( "kbase2" ) );
+    }
+
+    @Test
+    public void testBuildWithKBaseAndKSessionWithIdenticalNames() {
+        // RHBRMS-2689
+        String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                         "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                         "  <kbase name=\"name\">\n" +
+                         "    <ksession name=\"name\" default=\"true\"/>\n" +
+                         "  </kbase>\n" +
+                         "</kmodule>";
+
+        checkKModule( kmodule, 0 );
+    }
+
+    @Test
+    public void testBuildWithDuplicatedKSessionNames() {
+        // RHBRMS-2689
+        String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                         "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                         "  <kbase name=\"kbase1\">\n" +
+                         "    <ksession name=\"ksessionA\" default=\"true\"/>\n" +
+                         "  </kbase>\n" +
+                         "  <kbase name=\"kbase2\">\n" +
+                         "    <ksession name=\"ksessionA\"/>\n" +
+                         "  </kbase>\n" +
+                         "</kmodule>";
+
+        checkKModule( kmodule, 1 );
+    }
+
+    @Test
+    public void testBuildWithDuplicatedKBaseNames() {
+        // RHBRMS-2689
+        String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                         "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                         "  <kbase name=\"kbase1\">\n" +
+                         "    <ksession name=\"ksessionA\" default=\"true\"/>\n" +
+                         "  </kbase>\n" +
+                         "  <kbase name=\"kbase1\">\n" +
+                         "    <ksession name=\"ksessionB\"/>\n" +
+                         "  </kbase>\n" +
+                         "</kmodule>";
+
+        checkKModule( kmodule, 1 );
+    }
+
+    private void checkKModule( String kmodule, int expectedErrors ) {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+        KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML( releaseId ).writeKModuleXML( kmodule );
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+        ((InternalKieBuilder) kieBuilder).buildAll();
+        Results results = kieBuilder.getResults();
+        assertEquals( expectedErrors, results.getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
     }
 }
