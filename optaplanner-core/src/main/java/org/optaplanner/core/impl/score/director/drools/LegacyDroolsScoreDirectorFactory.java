@@ -42,8 +42,9 @@ public class LegacyDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDire
     // ************************************************************************
 
     @Override
-    public DroolsScoreDirector<Solution_> buildScoreDirector(boolean constraintMatchEnabledPreference) {
-        return new DroolsScoreDirector<>(this, constraintMatchEnabledPreference);
+    public DroolsScoreDirector<Solution_> buildScoreDirector(
+            boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
+        return new DroolsScoreDirector<>(this, locatorEnabled, constraintMatchEnabledPreference);
     }
 
     @Override

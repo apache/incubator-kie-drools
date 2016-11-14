@@ -44,8 +44,8 @@ public class DroolsScoreDirector<Solution_>
     protected ScoreHolder workingScoreHolder;
 
     public DroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
-                               boolean constraintMatchEnabledPreference) {
-        super(scoreDirectorFactory, constraintMatchEnabledPreference);
+            boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
+        super(scoreDirectorFactory, locatorEnabled, constraintMatchEnabledPreference);
     }
 
     public KieSession getKieSession() {

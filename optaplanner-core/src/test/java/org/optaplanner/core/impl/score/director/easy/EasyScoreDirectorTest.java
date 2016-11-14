@@ -31,7 +31,7 @@ public class EasyScoreDirectorTest {
     @Test
     public void constraintMatchTotalsUnsupported() {
         EasyScoreDirector<Object> director
-                = new EasyScoreDirector<>(mockEasyScoreDirectorFactory(), true, null);
+                = new EasyScoreDirector<>(mockEasyScoreDirectorFactory(), false, true, null);
         assertFalse(director.isConstraintMatchEnabled());
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("not supported");

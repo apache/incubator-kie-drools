@@ -19,6 +19,7 @@ package org.optaplanner.examples.common.domain;
 import java.io.Serializable;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.optaplanner.core.api.domain.id.PlanningId;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 
 public abstract class AbstractPersistable implements Serializable, Comparable<AbstractPersistable> {
@@ -32,6 +33,7 @@ public abstract class AbstractPersistable implements Serializable, Comparable<Ab
         this.id = id;
     }
 
+    @PlanningId
     public Long getId() {
         return id;
     }

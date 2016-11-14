@@ -38,10 +38,10 @@ public class IncrementalScoreDirector<Solution_>
 
     private final IncrementalScoreCalculator<Solution_> incrementalScoreCalculator;
 
-    public IncrementalScoreDirector(IncrementalScoreDirectorFactory scoreDirectorFactory,
-                                    boolean constraintMatchEnabledPreference,
-                                    IncrementalScoreCalculator<Solution_> incrementalScoreCalculator) {
-        super(scoreDirectorFactory, constraintMatchEnabledPreference);
+    public IncrementalScoreDirector(IncrementalScoreDirectorFactory<Solution_> scoreDirectorFactory,
+            boolean locatorEnabled, boolean constraintMatchEnabledPreference,
+            IncrementalScoreCalculator<Solution_> incrementalScoreCalculator) {
+        super(scoreDirectorFactory, locatorEnabled, constraintMatchEnabledPreference);
         this.incrementalScoreCalculator = incrementalScoreCalculator;
     }
 
@@ -57,7 +57,7 @@ public class IncrementalScoreDirector<Solution_>
     public void setWorkingSolution(Solution_ workingSolution) {
         super.setWorkingSolution(workingSolution);
         if (incrementalScoreCalculator instanceof ConstraintMatchAwareIncrementalScoreCalculator) {
-            ((ConstraintMatchAwareIncrementalScoreCalculator) incrementalScoreCalculator)
+            ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
                     .resetWorkingSolution(workingSolution, constraintMatchEnabledPreference);
         } else {
             incrementalScoreCalculator.resetWorkingSolution(workingSolution);
@@ -82,7 +82,7 @@ public class IncrementalScoreDirector<Solution_>
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
         if (!isConstraintMatchEnabled()) {
             throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
-                    + ") is disabled, this method should not be called.");
+                    + ") is disabled in the constructor, this method should not be called.");
         }
         return ((ConstraintMatchAwareIncrementalScoreCalculator<Solution_>) incrementalScoreCalculator)
                 .getConstraintMatchTotals();

@@ -104,8 +104,7 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove {
         throw new UnsupportedOperationException();
     }
 
-    public PartitionChangeMove<Solution_> rebase(InnerScoreDirector<Solution_> originScoreDirector,
-            InnerScoreDirector<Solution_> destinationScoreDirector) {
+    public PartitionChangeMove<Solution_> relocate(InnerScoreDirector<Solution_> destinationScoreDirector) {
         Map<GenuineVariableDescriptor<Solution_>, List<Pair<Object, Object>>> destinationChangeMap
                 = new LinkedHashMap<>(changeMap.size());
         for (Map.Entry<GenuineVariableDescriptor<Solution_>, List<Pair<Object, Object>>> entry : changeMap.entrySet()) {
@@ -115,8 +114,8 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove {
             for (Pair<Object, Object> pair : originPairList) {
                 Object originEntity = pair.getKey();
                 Object originValue = pair.getValue();
-                Object destinationEntity = destinationScoreDirector.translateForRebase(originScoreDirector, originEntity);
-                Object destinationValue = destinationScoreDirector.translateForRebase(originScoreDirector, originValue);
+                Object destinationEntity = destinationScoreDirector.locateWorkingObject(originEntity);
+                Object destinationValue = destinationScoreDirector.locateWorkingObject(originValue);
                 destinationPairList.add(Pair.of(destinationEntity, destinationValue));
             }
             destinationChangeMap.put(variableDescriptor, destinationPairList);

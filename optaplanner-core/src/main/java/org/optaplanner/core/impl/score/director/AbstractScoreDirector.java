@@ -32,8 +32,8 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.id.Locator;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
@@ -62,6 +62,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     protected final Factory_ scoreDirectorFactory;
     protected boolean constraintMatchEnabledPreference;
     protected final VariableListenerSupport<Solution_> variableListenerSupport;
+    protected final Locator locator;
 
     protected Solution_ workingSolution;
     protected long workingEntityListRevision = 0L;
@@ -71,11 +72,13 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
 
     protected long calculationCount = 0L;
 
-    protected AbstractScoreDirector(Factory_ scoreDirectorFactory, boolean constraintMatchEnabledPreference) {
+    protected AbstractScoreDirector(Factory_ scoreDirectorFactory,
+            boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
         this.scoreDirectorFactory = scoreDirectorFactory;
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
         variableListenerSupport = new VariableListenerSupport<>(this);
         variableListenerSupport.linkVariableListeners();
+        locator = locatorEnabled ? new Locator() : null;
     }
 
     @Override
@@ -91,6 +94,10 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     @Override
     public ScoreDefinition getScoreDefinition() {
         return scoreDirectorFactory.getScoreDefinition();
+    }
+
+    public boolean isLocatorEnabled() {
+        return locator != null;
     }
 
     public boolean isConstraintMatchEnabledPreference() {
@@ -242,7 +249,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         // Breaks incremental score calculation.
         // Subclasses should overwrite this method to avoid breaking it if possible.
         AbstractScoreDirector<Solution_, Factory_> clone = (AbstractScoreDirector<Solution_, Factory_>)
-                scoreDirectorFactory.buildScoreDirector(constraintMatchEnabledPreference);
+                scoreDirectorFactory.buildScoreDirector(isLocatorEnabled(), constraintMatchEnabledPreference);
         clone.setWorkingSolution(cloneWorkingSolution());
         return clone;
     }
@@ -250,7 +257,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
     @Override
     public InnerScoreDirector<Solution_> createChildThreadScoreDirector(ChildThreadType childThreadType) {
         AbstractScoreDirector<Solution_, Factory_> childThreadScoreDirector = (AbstractScoreDirector<Solution_, Factory_>)
-                scoreDirectorFactory.buildScoreDirector(constraintMatchEnabledPreference);
+                scoreDirectorFactory.buildScoreDirector(false, constraintMatchEnabledPreference);
         if (childThreadType == ChildThreadType.PART_THREAD) {
             // ScoreCalculationCountTermination takes into account previous phases
             // but the calculationCount of partitions is maxed, not summed.
@@ -266,6 +273,7 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         workingSolution = null;
         workingInitScore = null;
         variableListenerSupport.clearWorkingSolution();
+        locator.clearWorkingSolution();
     }
 
     // ************************************************************************
@@ -387,25 +395,13 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
     }
 
-    // ************************************************************************
-    // Rebase methods
-    // ************************************************************************
-
     @Override
-    public Object translateForRebase(InnerScoreDirector<Solution_> originScoreDirector, Object originObject) {
-        if (originObject == null) {
-            return null;
+    public <E> E locateWorkingObject(E externalObject) {
+        if (!isLocatorEnabled()) {
+            throw new IllegalStateException("When locatorEnabled (" + isLocatorEnabled()
+                    + ") is disabled in the constructor, this method should not be called.");
         }
-
-        // TODO HACK UNEFFICIENT BUGGY IMPLEMENTATION!!!!
-
-        SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
-        for (Object object : solutionDescriptor.getAllFacts(workingSolution)) {
-            if (originObject.toString().equals(object.toString())) {
-                return object;
-            }
-        }
-        throw new IllegalArgumentException("The originObject (" + originObject + ") cannot be translated for rebase.");
+        return locator.locateWorkingObject(externalObject);
     }
 
     // ************************************************************************
@@ -481,7 +477,8 @@ public abstract class AbstractScoreDirector<Solution_, Factory_ extends Abstract
         if (assertionScoreDirectorFactory == null) {
             assertionScoreDirectorFactory = scoreDirectorFactory;
         }
-        InnerScoreDirector<Solution_> uncorruptedScoreDirector = assertionScoreDirectorFactory.buildScoreDirector(true);
+        InnerScoreDirector<Solution_> uncorruptedScoreDirector =
+                assertionScoreDirectorFactory.buildScoreDirector(false, true);
         uncorruptedScoreDirector.setWorkingSolution(workingSolution);
         Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
         if (!workingScore.equals(uncorruptedScore)) {

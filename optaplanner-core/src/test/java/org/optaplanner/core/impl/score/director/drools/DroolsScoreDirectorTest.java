@@ -32,7 +32,7 @@ public class DroolsScoreDirectorTest {
 
     @Test
     public void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {
-        DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false);
+        DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, false);
         director.setWorkingSolution(new Object());
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("constraintMatchEnabled");
@@ -41,7 +41,7 @@ public class DroolsScoreDirectorTest {
 
     @Test
     public void constraintMatchTotalsNeverNull() {
-        DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), true);
+        DroolsScoreDirector<Object> director = new DroolsScoreDirector<>(mockDroolsScoreDirectorFactory(), false, true);
         director.setWorkingSolution(new Object());
         assertNotNull(director.getConstraintMatchTotals());
     }

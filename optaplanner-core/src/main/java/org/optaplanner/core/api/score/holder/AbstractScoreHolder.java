@@ -64,7 +64,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {
         if (!isConstraintMatchEnabled()) {
             throw new IllegalStateException("When constraintMatchEnabled (" + isConstraintMatchEnabled()
-                    + ") is disabled, this method should not be called.");
+                    + ") is disabled in the constructor, this method should not be called.");
         }
         return constraintMatchTotalMap.values();
     }

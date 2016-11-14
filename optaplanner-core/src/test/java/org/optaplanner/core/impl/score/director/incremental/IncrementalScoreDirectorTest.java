@@ -59,12 +59,12 @@ public class IncrementalScoreDirectorTest {
         List<TestdataRichChainedEntity> originalEntityList = Arrays.asList(a1, a2, a3, b1);
         solution.setChainedEntityList(originalEntityList);
 
-        SolutionDescriptor solutionDescriptor = TestdataRichChainedSolution.buildSolutionDescriptor();
-        IncrementalScoreDirectorFactory scoreDirectorFactory = mock(IncrementalScoreDirectorFactory.class);
+        SolutionDescriptor<TestdataRichChainedSolution> solutionDescriptor = TestdataRichChainedSolution.buildSolutionDescriptor();
+        IncrementalScoreDirectorFactory<TestdataRichChainedSolution> scoreDirectorFactory = mock(IncrementalScoreDirectorFactory.class);
         when(scoreDirectorFactory.getSolutionDescriptor()).thenReturn(solutionDescriptor);
-        IncrementalScoreCalculator incrementalScoreCalculator = mock(IncrementalScoreCalculator.class);
-        IncrementalScoreDirector scoreDirector = new IncrementalScoreDirector(
-                scoreDirectorFactory, false, incrementalScoreCalculator) {
+        IncrementalScoreCalculator<TestdataRichChainedSolution> incrementalScoreCalculator = mock(IncrementalScoreCalculator.class);
+        IncrementalScoreDirector<TestdataRichChainedSolution> scoreDirector = new IncrementalScoreDirector<TestdataRichChainedSolution>(
+                scoreDirectorFactory, false, false, incrementalScoreCalculator) {
             @Override
             public Score calculateScore() {
                 return SimpleScore.valueOfInitialized(-100);
@@ -92,8 +92,8 @@ public class IncrementalScoreDirectorTest {
     @Test
     public void illegalStateExceptionThrownWhenConstraintMatchNotEnabled() {
         IncrementalScoreDirector<Object> director
-                = new IncrementalScoreDirector<>(mockIncrementalScoreDirectorFactory(), false,
-                        mockIncrementalScoreCalculator(false));
+                = new IncrementalScoreDirector<>(mockIncrementalScoreDirectorFactory(), false, false,
+                mockIncrementalScoreCalculator(false));
         director.setWorkingSolution(new Object());
         expectedException.expect(IllegalStateException.class);
         expectedException.expectMessage("constraintMatchEnabled");
@@ -103,8 +103,8 @@ public class IncrementalScoreDirectorTest {
     @Test
     public void constraintMatchTotalsNeverNull() {
         IncrementalScoreDirector<Object> director
-                = new IncrementalScoreDirector<>(mockIncrementalScoreDirectorFactory(), true,
-                        mockIncrementalScoreCalculator(true));
+                = new IncrementalScoreDirector<>(mockIncrementalScoreDirectorFactory(), false, true,
+                mockIncrementalScoreCalculator(true));
         director.setWorkingSolution(new Object());
         assertNotNull(director.getConstraintMatchTotals());
     }
@@ -112,8 +112,8 @@ public class IncrementalScoreDirectorTest {
     @Test
     public void constraintMatchIsNotEnabledWhenScoreCalculatorNotConstraintMatchAware() {
         IncrementalScoreDirector<Object> director
-                = new IncrementalScoreDirector<>(mockIncrementalScoreDirectorFactory(), true,
-                        mockIncrementalScoreCalculator(false));
+                = new IncrementalScoreDirector<>(mockIncrementalScoreDirectorFactory(), false, true,
+                mockIncrementalScoreCalculator(false));
         assertFalse(director.isConstraintMatchEnabled());
     }
 

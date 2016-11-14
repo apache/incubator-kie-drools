@@ -36,8 +36,9 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
     private final TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
     private final File testFile = new File("DroolsReproducerTest.java");
 
-    public TestGenDroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory, boolean constraintMatchEnabledPreference) {
-        super(scoreDirectorFactory, constraintMatchEnabledPreference);
+    public TestGenDroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
+            boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
+        super(scoreDirectorFactory, locatorEnabled, constraintMatchEnabledPreference);
     }
 
     public KieSession createKieSession() {

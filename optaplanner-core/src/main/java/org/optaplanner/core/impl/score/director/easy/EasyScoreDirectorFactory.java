@@ -43,8 +43,9 @@ public class EasyScoreDirectorFactory<Solution_> extends AbstractScoreDirectorFa
     // ************************************************************************
 
     @Override
-    public EasyScoreDirector<Solution_> buildScoreDirector(boolean constraintMatchEnabledPreference) {
-        return new EasyScoreDirector<>(this, constraintMatchEnabledPreference, easyScoreCalculator);
+    public EasyScoreDirector<Solution_> buildScoreDirector(
+            boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
+        return new EasyScoreDirector<>(this, locatorEnabled, constraintMatchEnabledPreference, easyScoreCalculator);
     }
 
 }

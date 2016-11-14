@@ -109,7 +109,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                     InnerScoreDirector<Solution_> childScoreDirector = partitionSolver.solverScope.getScoreDirector();
                     PartitionChangeMove<Solution_> move = PartitionChangeMove.createMove(childScoreDirector);
                     InnerScoreDirector<Solution_> parentScoreDirector = solverScope.getScoreDirector();
-                    move = move.rebase(childScoreDirector, parentScoreDirector);
+                    move = move.relocate(parentScoreDirector);
                     partitionQueue.addMove(partIndex, move);
                 });
                 threadPoolExecutor.submit(() -> {

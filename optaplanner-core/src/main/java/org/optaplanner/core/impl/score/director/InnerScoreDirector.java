@@ -24,8 +24,10 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.ChildThreadType;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
@@ -123,14 +125,6 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
      * @param allChangesWillBeUndoneBeforeStepEnds true if all changes will be undone
      */
     void setAllChangesWillBeUndoneBeforeStepEnds(boolean allChangesWillBeUndoneBeforeStepEnds);
-
-    /**
-     * Rebasing translates an entity or fact instance from another {@link Thread}'s {@link ScoreDirector} to this one's.
-     * @param originScoreDirector never null
-     * @param originEntity sometimes null
-     * @return only null if originEntity is null
-     */
-    Object translateForRebase(InnerScoreDirector<Solution_> originScoreDirector, Object originEntity);
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}

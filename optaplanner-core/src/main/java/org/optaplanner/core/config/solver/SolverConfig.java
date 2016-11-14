@@ -221,7 +221,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 configContext, environmentMode_, solutionDescriptor);
         boolean constraintMatchEnabledPreference = environmentMode_.isAsserted();
         DefaultSolverScope<Solution_> solverScope = new DefaultSolverScope<>();
-        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(constraintMatchEnabledPreference));
+        solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(true, constraintMatchEnabledPreference));
 
         HeuristicConfigPolicy configPolicy = new HeuristicConfigPolicy(environmentMode_, scoreDirectorFactory);
         TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()

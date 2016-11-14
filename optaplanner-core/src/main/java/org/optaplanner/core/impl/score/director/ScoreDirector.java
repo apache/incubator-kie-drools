@@ -20,12 +20,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.optaplanner.core.api.domain.id.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
  * The ScoreDirector holds the {@link PlanningSolution working solution}
@@ -119,6 +122,18 @@ public interface ScoreDirector<Solution_> {
     void beforeProblemFactRemoved(Object problemFact);
 
     void afterProblemFactRemoved(Object problemFact);
+
+    /**
+     * Translates an entity or fact instance (often from another {@link Thread} or JVM)
+     * to this {@link ScoreDirector}'s internal working instance.
+     * Useful during {@link Move} relocation and in a {@link ProblemFactChange}.
+     * <p>
+     * Matching uses a {@link PlanningId} by default, but can also be configured to use equals/hashcode.
+     * @param externalObject sometimes null
+     * @return only null if originEntity is null
+     * @param <E> the object type
+     */
+    <E> E locateWorkingObject(E externalObject);
 
     /**
      * Needs to be called after use because some implementations needs to clean up their resources.

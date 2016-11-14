@@ -86,14 +86,14 @@ public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerSc
 
     @Override
     public InnerScoreDirector<Solution_> buildScoreDirector() {
-        return buildScoreDirector(true);
+        return buildScoreDirector(true, true);
     }
 
     @Override
     public void assertScoreFromScratch(Solution_ solution) {
         // Get the score before uncorruptedScoreDirector.calculateScore() modifies it
         Score score = getSolutionDescriptor().getScore(solution);
-        InnerScoreDirector<Solution_> uncorruptedScoreDirector = buildScoreDirector(true);
+        InnerScoreDirector<Solution_> uncorruptedScoreDirector = buildScoreDirector(false, true);
         uncorruptedScoreDirector.setWorkingSolution(solution);
         Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
         uncorruptedScoreDirector.dispose();
