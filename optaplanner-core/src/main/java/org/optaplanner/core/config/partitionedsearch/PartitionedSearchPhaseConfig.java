@@ -54,7 +54,6 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
-
     protected Class<? extends ThreadFactory> threadFactoryClass = null;
     protected String activeThreadCount = null;
 

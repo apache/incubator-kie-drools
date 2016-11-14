@@ -190,6 +190,10 @@ public class DefaultSolverScope<Solution_> {
         endingSystemTimeMillis = null;
     }
 
+    public Long getBestSolutionTimeMillisSpent() {
+        return bestSolutionTimeMillis - startingSystemTimeMillis;
+    }
+
     public void endingNow() {
         endingSystemTimeMillis = System.currentTimeMillis();
     }
