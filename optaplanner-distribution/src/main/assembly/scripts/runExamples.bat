@@ -9,9 +9,9 @@ set "mainClasspath=binaries/*;../binaries/*"
 echo Usage: runExamples.bat
 echo Notes:
 echo - Java must be installed. Get the JRE ^(http://www.java.com^) or the JDK.
-echo - For optimal performance, Java is recommended to be OpenJDK 7 or higher.
+echo - For optimal performance, Java is recommended to be OpenJDK 8 or higher.
 echo - For JDK, the environment variable JAVA_HOME should be set to the JDK installation directory
-echo   For example: set "JAVA_HOME=C:\Program Files\Java\jdk1.6.0"
+echo   For example: set "JAVA_HOME=C:\Program Files\Java\jdk1.8.0"
 echo - The working dir should be the directory of this script.
 echo.
 
