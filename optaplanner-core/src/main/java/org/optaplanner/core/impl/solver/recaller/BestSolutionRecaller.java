@@ -94,7 +94,8 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         stepScope.setBestScoreImproved(bestScoreImproved);
         if (bestScoreImproved) {
             phaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
-            updateBestSolution(solverScope, score, () -> stepScope.createOrGetClonedSolution());
+            Solution_ newBestSolution = stepScope.createOrGetClonedSolution();
+            updateBestSolution(solverScope, score, newBestSolution);
         } else if (assertBestScoreIsUnmodified) {
             solverScope.assertScoreFromScratch(solverScope.getBestSolution());
         }
@@ -111,7 +112,8 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         }
         if (bestScoreImproved) {
             phaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
-            updateBestSolution(solverScope, score, () -> solverScope.getScoreDirector().cloneWorkingSolution());
+            Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
+            updateBestSolution(solverScope, score, newBestSolution);
         } else if (assertBestScoreIsUnmodified) {
             solverScope.assertScoreFromScratch(solverScope.getBestSolution());
         }
@@ -120,21 +122,20 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
     public void updateBestSolution(DefaultSolverScope<Solution_> solverScope) {
         Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
         Score newBestScore = solverScope.getSolutionDescriptor().getScore(newBestSolution);
-        updateBestSolution(solverScope, newBestScore, () -> newBestSolution);
+        updateBestSolution(solverScope, newBestScore, newBestSolution);
     }
 
-    public void updateBestSolution(DefaultSolverScope<Solution_> solverScope, Score bestScore,
-            Supplier<Solution_> bestSolutionCloneSupplier) {
-        solverScope.setBestScore(bestScore);
-        solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
+    protected void updateBestSolution(DefaultSolverScope<Solution_> solverScope, Score bestScore,
+            Solution_ bestSolution) {
         if (bestScore.isSolutionInitialized()) {
             if (!solverScope.isBestSolutionInitialized()) {
                 solverScope.setStartingInitializedScore(bestScore);
             }
-            Solution_ bestSolution = bestSolutionCloneSupplier.get();
-            solverScope.setBestSolution(bestSolution);
-            solverEventSupport.fireBestSolutionChanged(solverScope, bestSolution);
         }
+        solverScope.setBestSolution(bestSolution);
+        solverScope.setBestScore(bestScore);
+        solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
+        solverEventSupport.fireBestSolutionChanged(solverScope, bestSolution);
     }
 
 }

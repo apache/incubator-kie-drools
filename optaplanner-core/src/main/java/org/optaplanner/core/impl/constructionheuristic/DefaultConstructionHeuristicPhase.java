@@ -36,6 +36,8 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     protected EntityPlacer entityPlacer;
     protected ConstructionHeuristicDecider decider;
 
+    protected final boolean skipBestSolutionCloningInSteps = true;
+
     public void setEntityPlacer(EntityPlacer entityPlacer) {
         this.entityPlacer = entityPlacer;
     }
@@ -94,7 +96,11 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
         Move nextStep = stepScope.getStep();
         nextStep.doMove(stepScope.getScoreDirector());
         predictWorkingStepScore(stepScope, nextStep);
-        bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
+        if (!skipBestSolutionCloningInSteps) {
+            // Causes a planning clone, which is expensive
+            // For example, on cloud balancing 1200c-4800p this reduces performance by 18%
+            bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
+        }
     }
 
     @Override
@@ -133,7 +139,9 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
 
     public void phaseEnded(ConstructionHeuristicPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
-        bestSolutionRecaller.updateBestSolution(phaseScope.getSolverScope());
+        if (skipBestSolutionCloningInSteps) {
+            bestSolutionRecaller.updateBestSolution(phaseScope.getSolverScope());
+        }
         entityPlacer.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
         phaseScope.endingNow();

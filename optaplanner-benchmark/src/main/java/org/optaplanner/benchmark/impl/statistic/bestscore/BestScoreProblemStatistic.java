@@ -82,6 +82,9 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
                         singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
                 List<BestScoreStatisticPoint> points = subSingleStatistic.getPointList();
                 for (BestScoreStatisticPoint point : points) {
+                    if (!point.getScore().isSolutionInitialized()) {
+                        continue;
+                    }
                     long timeMillisSpent = point.getTimeMillisSpent();
                     double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {

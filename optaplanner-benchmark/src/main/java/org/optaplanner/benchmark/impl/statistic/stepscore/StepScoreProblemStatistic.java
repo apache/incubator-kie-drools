@@ -82,6 +82,9 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
                         singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
                 List<StepScoreStatisticPoint> points = subSingleStatistic.getPointList();
                 for (StepScoreStatisticPoint point : points) {
+                    if (!point.getScore().isSolutionInitialized()) {
+                        continue;
+                    }
                     long timeMillisSpent = point.getTimeMillisSpent();
                     double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
