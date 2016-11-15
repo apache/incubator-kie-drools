@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.optaplanner.core.api.domain.id.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -130,6 +131,12 @@ public class Locator<Solution_> {
 
     protected static class PlanningIdLocationStrategy implements LocationStrategy {
 
+        private MemberAccessor memberAccessor;
+
+        public PlanningIdLocationStrategy(MemberAccessor memberAccessor) {
+            this.memberAccessor = memberAccessor;
+        }
+
         @Override
         public void addWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject) {
             Object key = extractKey(workingObject);
@@ -164,7 +171,7 @@ public class Locator<Solution_> {
         }
 
         protected Object extractKey(Object externalObject) {
-            return null; // TODO FIXME
+            return memberAccessor.executeGetter(externalObject);
         }
 
     }
