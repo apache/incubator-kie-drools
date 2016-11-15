@@ -315,10 +315,12 @@ public class MVELDialectRuntimeData
 
             }
 
-            this.parserConfiguration = new ParserConfiguration();
-            this.parserConfiguration.setImports( this.imports );
-            this.parserConfiguration.setPackageImports( this.packageImports );
-            this.parserConfiguration.setClassLoader( packageClassLoader );
+            ParserConfiguration parserConfiguration = new ParserConfiguration();
+            parserConfiguration.setImports( this.imports );
+            parserConfiguration.setPackageImports( this.packageImports );
+            parserConfiguration.setClassLoader( packageClassLoader );
+            
+            this.parserConfiguration = parserConfiguration;
         }
         return this.parserConfiguration;
     }
