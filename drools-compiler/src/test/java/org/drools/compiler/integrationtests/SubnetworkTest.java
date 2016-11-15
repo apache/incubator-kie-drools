@@ -24,7 +24,11 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.utils.KieHelper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.junit.Assert.assertEquals;
 
 public class SubnetworkTest {
 
@@ -100,5 +104,49 @@ public class SubnetworkTest {
         kieSession.insert( "test" );
 
         kieSession.fireAllRules();
+    }
+
+    @Test(timeout = 10000L)
+    public void testUpdateOnSharedSubnetwork() {
+        // DROOLS-1360
+        String drl =
+                "import " + AtomicInteger.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule R1y when\n" +
+                "    AtomicInteger() \n" +
+                "    Number() from accumulate ( AtomicInteger( ) and $s : String( ) ; count($s) )" +
+                "    eval(false)\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    $i : AtomicInteger( get() < 3 )\n" +
+                "then\n" +
+                "    $i.incrementAndGet();" +
+                "    insert(\"test\" + $i.get());" +
+                "    update($i);" +
+                "end\n" +
+                "\n" +
+                "rule R1x when\n" +
+                "    AtomicInteger() \n" +
+                "    $c : Number() from accumulate ( AtomicInteger( ) and $s : String( ) ; count($s) )\n" +
+                "    eval(true)\n" +
+                "then\n" +
+                "    list.add($c);" +
+                "end\n";
+
+        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                               .build().newKieSession();
+
+        List<Number> list = new ArrayList<Number>();
+        kieSession.setGlobal( "list", list );
+
+        kieSession.insert( new AtomicInteger( 0 ) );
+        kieSession.insert( "test" );
+
+        kieSession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(4, list.get(0).intValue());
     }
 }
