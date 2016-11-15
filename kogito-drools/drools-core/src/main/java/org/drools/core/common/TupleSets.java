@@ -41,10 +41,6 @@ public interface TupleSets<T extends Tuple> {
     void removeDelete(T leftTuple);
     void removeUpdate(T leftTuple);
 
-    void addAllInserts(TupleSets<T> tupleSets);
-    void addAllDeletes(TupleSets<T> tupleSets);
-    void addAllUpdates(TupleSets<T> tupleSets);
-
     void addAll(TupleSets<T> source);
 
     void addTo(TupleSets<T> target);
