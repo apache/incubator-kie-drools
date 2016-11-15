@@ -650,8 +650,8 @@ public class RuleNetworkEvaluator {
                     if ( bms[i].getStagedRightTuples().isEmpty() ) {
                         bms[i].setNodeDirtyWithoutNotify();
                     }
-                    leftTuple.clearStaged();
                     bms[i].getStagedRightTuples().addDelete((RightTuple)leftTuple);
+                    ( (SubnetworkTuple) leftTuple ).setStagedOnRight( true );
                 }
             }
 
@@ -675,8 +675,8 @@ public class RuleNetworkEvaluator {
                     if ( bms[i].getStagedRightTuples().isEmpty() ) {
                         bms[i].setNodeDirtyWithoutNotify();
                     }
-                    leftTuple.clearStaged();
                     bms[i].getStagedRightTuples().addUpdate((RightTuple)leftTuple);
+                    ( (SubnetworkTuple) leftTuple ).setStagedOnRight( true );
                 }
             }
 
