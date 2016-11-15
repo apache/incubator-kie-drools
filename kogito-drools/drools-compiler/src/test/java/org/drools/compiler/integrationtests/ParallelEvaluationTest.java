@@ -390,7 +390,7 @@ public class ParallelEvaluationTest {
         assertEquals(10, list.size());
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testDisableParallelismOnSinglePartition() {
         String drl =
                 "rule R1 when\n" +
@@ -416,7 +416,7 @@ public class ParallelEvaluationTest {
         assertFalse( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testEventsExpiration() {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
@@ -459,7 +459,7 @@ public class ParallelEvaluationTest {
         assertEquals( 0L, ksession.getFactCount() );
     }
 
-    @Test
+    @Test(timeout = 10000L)
     public void testImmediateEventsExpiration() {
         StringBuilder sb = new StringBuilder( 400 );
         sb.append( "global java.util.List list;\n" );
