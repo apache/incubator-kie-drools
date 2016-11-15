@@ -18,7 +18,9 @@ package org.jbpm.casemgmt.impl;
 
 import static java.util.stream.Collectors.toMap;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
@@ -26,6 +28,7 @@ import static org.kie.scanner.MavenRepository.getMavenRepository;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -46,6 +49,7 @@ import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseMilestoneInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentInstance;
 import org.jbpm.casemgmt.api.model.instance.CommentSortBy;
+import org.jbpm.casemgmt.api.model.instance.MilestoneStatus;
 import org.jbpm.casemgmt.impl.model.instance.CaseInstanceImpl;
 import org.jbpm.casemgmt.impl.objects.EchoService;
 import org.jbpm.casemgmt.impl.util.AbstractCaseServicesBaseTest;
@@ -733,6 +737,18 @@ public class CaseServiceImplTest extends AbstractCaseServicesBaseTest {
             Collection<CaseMilestoneInstance> milestones = caseRuntimeDataService.getCaseInstanceMilestones(HR_CASE_ID, true, new QueryContext());
             assertNotNull(milestones);
             assertEquals(0, milestones.size());
+            
+            milestones = caseRuntimeDataService.getCaseInstanceMilestones(HR_CASE_ID, false, new QueryContext());
+            assertNotNull(milestones);
+            assertEquals(2, milestones.size());
+            
+            List<String> expectedMilestones = Arrays.asList("Milestone1", "Milestone2");
+            for (CaseMilestoneInstance mi : milestones) {
+                assertTrue("Expected mile stopne not found", expectedMilestones.contains(mi.getName()));
+                assertEquals("Wrong milestone status", MilestoneStatus.Available, mi.getStatus());
+                assertFalse("Should not be achieved", mi.isAchieved());
+                assertNull("Achieved date should be null", mi.getAchievedAt());
+            }
             
             // trigger milestone node
             caseService.triggerAdHocFragment(HR_CASE_ID, "Milestone1", null);

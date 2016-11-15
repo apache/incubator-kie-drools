@@ -285,10 +285,24 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         } else {
             filterNodes = n -> ((NodeInstanceDesc)n).getType() == 0;
         }
+        List<String> foundMilestones = new ArrayList<>();
+        
         Collection<CaseMilestoneInstance> milestones = nodes.stream()
         .filter(filterNodes)
-        .map(n -> new CaseMilestoneInstanceImpl(String.valueOf(n.getId()), n.getName(), completedNodes.contains(n.getId()), n.getDataTimeStamp()))
+        .map(n -> {
+            foundMilestones.add(n.getName());
+            return new CaseMilestoneInstanceImpl(String.valueOf(n.getId()), n.getName(), completedNodes.contains(n.getId()), n.getDataTimeStamp());        
+        })
         .collect(toList());
+        
+        if (!achievedOnly) {
+            // add other milestones that are present in the definition
+            CaseDefinition caseDef = getCase(pi.getDeploymentId(), pi.getProcessId());
+            caseDef.getCaseMilestones().stream()
+            .filter(cm -> !foundMilestones.contains(cm.getName()))
+            .map(cm -> new CaseMilestoneInstanceImpl(cm.getId(), cm.getName(), false, null))
+            .forEach(cmi -> milestones.add(cmi));
+        }
         
         return milestones;
     }
