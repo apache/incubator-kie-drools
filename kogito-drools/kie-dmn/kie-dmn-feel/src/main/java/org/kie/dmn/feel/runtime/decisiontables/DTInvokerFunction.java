@@ -33,12 +33,14 @@ public class DTInvokerFunction
 
     private       List<DTDecisionRule> decisionRules;
     private       List<DTInputClause>  inputs;
+    private       List<DTOutputClause> outputs;
     private final HitPolicy            hitPolicy;
 
-    public DTInvokerFunction(String name, List<DTInputClause> inputs, List<DTDecisionRule> decisionRules, HitPolicy hitPolicy) {
+    public DTInvokerFunction(String name, List<DTInputClause> inputs, List<DTDecisionRule> decisionRules, List<DTOutputClause> outputs, HitPolicy hitPolicy) {
         super( name );
         this.decisionRules = decisionRules;
         this.inputs = inputs;
+        this.outputs = outputs;
         this.hitPolicy = hitPolicy;
     }
 
@@ -51,24 +53,19 @@ public class DTInvokerFunction
             logger.error( "The parameters supplied does not match input expression list" );
             return null;
         }
-
-        for ( DTDecisionRule decisionRule : decisionRules ) {
-            Boolean ruleMatches = IntStream.range( 0, params.length )                         // TODO could short-circuit by using for/continue
-                    .mapToObj( i -> satisfies(params[i], decisionRule.getInputEntry().get( i ), inputs.get( i ).getInputValues() ) )
-                    .reduce( (a, b) -> a && b )
-                    .orElse( false );
-            if ( ruleMatches ) {
-                if ( decisionRule.getOutputEntry().size() == 1 ) {
-                    return decisionRule.getOutputEntry().get( 0 );
-                } else {
-                    return decisionRule.getOutputEntry();
-                }
-            }
-        }
-
-        return null;
+        
+        return hitPolicy.getDti().dti(params, decisionRules, inputs, outputs);
     }
-    
+    /**
+A rule with input entries t1,t2,…,tN is said to match the input expression list [e1,e2,…,eN] (with optional input values list[v1,v2,…vN])
+if ei satisfies ti (with optional input values vi) for all i in 1..N.
+     */
+    public static boolean match(Object[] inputExpressionlist, DTDecisionRule rule, List<DTInputClause>  inputs) {
+        return IntStream.range( 0, inputExpressionlist.length )                         // TODO could short-circuit by using for/continue
+            .mapToObj( i -> satisfies(inputExpressionlist[i], rule.getInputEntry().get( i ), inputs.get( i ).getInputValues() ) )
+            .reduce( (a, b) -> a && b )
+            .orElse( false );
+    }
     /**
 Unary tests (grammar rule 17) are used to represent both input values and input entries. An input expression e is said to
 satisfy an input entry t (with optional input values v), depending on the syntax of t, as follows:
@@ -83,7 +80,7 @@ satisfy an input entry t (with optional input values v), depending on the syntax
                 return false;
             }
         } else {
-            boolean EinV = inputValuesV.stream().map(vut->vut.apply(inputExpressionE)).filter(Boolean::booleanValue).findAny().orElse(false);
+            boolean EinV = inputValuesV.stream().map(ut->ut.apply(inputExpressionE)).filter(Boolean::booleanValue).findAny().orElse(false);
             if ( !EinV ) {
                 return false;
             }

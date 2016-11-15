@@ -32,12 +32,28 @@ import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.model.v1_1.*;
+import org.kie.dmn.feel.model.v1_1.DMNElementReference;
+import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
+import org.kie.dmn.feel.model.v1_1.DRGElement;
+import org.kie.dmn.feel.model.v1_1.Decision;
+import org.kie.dmn.feel.model.v1_1.DecisionRule;
+import org.kie.dmn.feel.model.v1_1.DecisionTable;
+import org.kie.dmn.feel.model.v1_1.Definitions;
+import org.kie.dmn.feel.model.v1_1.Expression;
+import org.kie.dmn.feel.model.v1_1.InformationRequirement;
+import org.kie.dmn.feel.model.v1_1.InputClause;
+import org.kie.dmn.feel.model.v1_1.InputData;
+import org.kie.dmn.feel.model.v1_1.ItemDefinition;
+import org.kie.dmn.feel.model.v1_1.LiteralExpression;
+import org.kie.dmn.feel.model.v1_1.NamedElement;
+import org.kie.dmn.feel.model.v1_1.OutputClause;
+import org.kie.dmn.feel.model.v1_1.UnaryTests;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.DTDecisionRule;
 import org.kie.dmn.feel.runtime.decisiontables.DTInputClause;
 import org.kie.dmn.feel.runtime.decisiontables.DTInvokerFunction;
+import org.kie.dmn.feel.runtime.decisiontables.DTOutputClause;
 import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,6 +204,12 @@ public class DMNCompilerImpl implements DMNCompiler {
                 String inputValuesText =  Optional.ofNullable( ic.getInputValues() ).map(UnaryTests::getText).orElse(null);
                 inputs.add( new DTInputClause(inputExpressionText, textToUnaryTestList(inputValuesText) ) );
             }
+            List<DTOutputClause> outputs = new ArrayList<>(  );
+            for( OutputClause oc : dt.getOutput() ) {
+                String outputName = oc.getName();
+                String outputValuesText =  Optional.ofNullable( oc.getOutputValues() ).map(UnaryTests::getText).orElse(null);
+                outputs.add( new DTOutputClause(outputName, (List<String>) feel.evaluate("["+outputValuesText+"]") ) );         // TODO another hack to be revised
+            }
             List<DTDecisionRule> rules = new ArrayList<>(  );
             for( DecisionRule dr : dt.getRule() ) {
                 DTDecisionRule rule = new DTDecisionRule();
@@ -201,7 +223,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                 }
                 rules.add( rule );
             }
-            DTInvokerFunction dtf = new DTInvokerFunction( decision.getName()+"_DT", inputs, rules, HitPolicy.fromString( dt.getHitPolicy().value() ) );
+            DTInvokerFunction dtf = new DTInvokerFunction( decision.getName()+"_DT", inputs, rules, outputs, HitPolicy.fromString( dt.getHitPolicy().value() ) );
             DecisionNode.DTExpressionEvaluator dtee = new DecisionNode.DTExpressionEvaluator( dtf );
             return dtee;
         }
