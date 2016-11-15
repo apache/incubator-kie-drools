@@ -152,7 +152,6 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
     }
 
     public void removeInsert(T tuple) {
-        setStagedType( tuple, Tuple.NONE );
         if ( tuple == insertFirst ) {
             T next = getNextTuple( tuple );
             if ( next != null ) {
@@ -172,13 +171,12 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
     }
 
     public void removeDelete(T tuple) {
-        setStagedType( tuple, Tuple.NONE );
         if ( tuple == deleteFirst ) {
             T next = getNextTuple( tuple );
             if ( next != null ) {
                 setPreviousTuple( next, null );
             }
-            deleteFirst = (T) next;
+            deleteFirst = next;
         } else {
             T next = getNextTuple( tuple );
             T previous = getPreviousTuple( tuple );
@@ -192,7 +190,6 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
     }
 
     public void removeUpdate(Tuple tuple) {
-        setStagedType( (T) tuple, Tuple.NONE );
         if ( tuple == updateFirst ) {
             T next = getNextTuple( (T) tuple );
             if ( next != null ) {
@@ -210,7 +207,7 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
         tuple.clearStaged();
     }
 
-    public void addAllInserts(TupleSets<T> tupleSets) {
+    private void addAllInserts(TupleSets<T> tupleSets) {
         if ( tupleSets.getInsertFirst() != null ) {
             if ( insertFirst == null ) {
                 setInsertFirst( tupleSets.getInsertFirst() );
@@ -231,7 +228,7 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
         }
     }
 
-    public void addAllDeletes(TupleSets<T> tupleSets) {
+    private void addAllDeletes(TupleSets<T> tupleSets) {
         if ( tupleSets.getDeleteFirst() != null ) {
             if ( deleteFirst == null ) {
                 setDeleteFirst( tupleSets.getDeleteFirst() );
@@ -250,7 +247,7 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
         }
     }
 
-    public void addAllUpdates(TupleSets<T> tupleSets) {
+    private void addAllUpdates(TupleSets<T> tupleSets) {
         if ( tupleSets.getUpdateFirst() != null ) {
             if ( updateFirst == null ) {
                 setUpdateFirst( tupleSets.getUpdateFirst() );
