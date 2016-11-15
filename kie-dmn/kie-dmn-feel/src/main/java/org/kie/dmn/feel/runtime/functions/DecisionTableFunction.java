@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime.functions;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.DTInvokerFunction;
+import org.kie.dmn.feel.runtime.decisiontables.DTOutputClause;
 import org.kie.dmn.feel.runtime.decisiontables.DTDecisionRule;
 import org.kie.dmn.feel.runtime.decisiontables.DTInputClause;
 import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
@@ -79,12 +80,31 @@ of the output values.
             inputs = inputExpressions.stream().map(ie -> new DTInputClause(ie, null)).collect(Collectors.toList());
         }
         
+        List<String> parseOutputs = outputs instanceof List ? (List) outputs : Collections.singletonList( (String) outputs );
+        List<DTOutputClause> outputClauses;
+        if ( outputValues != null ) {
+            if ( parseOutputs.size() == 1 ) {
+                outputClauses = new ArrayList<>();
+                outputClauses.add( new DTOutputClause(parseOutputs.get(0), (List<String>) outputValues) );
+            } else {
+                List<List<String>> listOfList = (List<List<String>>) outputValues;
+                // zip inputExpression with its inputValue
+                outputClauses = IntStream.range( 0, parseOutputs.size() ) 
+                      .mapToObj(i -> new DTOutputClause(parseOutputs.get(i), listOfList.get(i)))
+                      .collect(Collectors.toList());
+            }
+        } else {
+            outputClauses = parseOutputs.stream().map(out -> new DTOutputClause(out, null)).collect(Collectors.toList());
+        }
+        
+        // TODO parse default output value.
+        
         
         List<DTDecisionRule> decisionRules = ruleList.stream()
                 .map( o -> DecisionTableFunction.toDecisionRule( o, inputExpressions.size() ) )
                 .collect( Collectors.toList() );
 
-        return new DTInvokerFunction( UUID.randomUUID().toString(), inputs, decisionRules, HitPolicy.fromString( hitPolicy ) );
+        return new DTInvokerFunction( UUID.randomUUID().toString(), inputs, decisionRules, outputClauses, HitPolicy.fromString( hitPolicy ) );
     }
 
     public static DTDecisionRule toDecisionRule(List<?> rule, int inputSize) {
