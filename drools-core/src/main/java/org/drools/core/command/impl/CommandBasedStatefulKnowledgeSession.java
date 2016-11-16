@@ -436,6 +436,11 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         throw new UnsupportedOperationException( "It is not necessary to use submit with a command based session, commands are already atomic" );
     }
 
+    @Override
+    public <T> T getKieRuntime(Class<T> cls) {
+        throw new UnsupportedOperationException( "Retrieving runtimes is not supported  throught the command based session at this time." );
+    }
+
     public void retract(FactHandle handle) {
         commandService.execute( new DeleteCommand( handle ) );
     }
