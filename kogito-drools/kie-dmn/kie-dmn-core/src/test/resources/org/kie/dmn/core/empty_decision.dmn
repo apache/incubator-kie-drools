@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN1-2Alpha/20160929/MODEL" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns="http://www.trisotech.com/dmn/definitions/_ba9fc4b1-5ced-4d00-9b61-290de4bf3213" id="_c2cd0a08-95bb-4955-aada-f1997b0bc145" namespace="http://www.trisotech.com/dmn/definitions/_ba9fc4b1-5ced-4d00-9b61-290de4bf3213"
+                      exporter="DMN Modeler" exporterVersion="5.0.34.201611081547" name="Solution 3" triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <rss xmlns="http://purl.org/rss/2.0/" version="2.0">
+      <channel/>
+    </rss>
+  </semantic:extensionElements>
+  <semantic:itemDefinition id="tShipInfo" name="tShipInfo">
+    <semantic:itemComponent id="_de46ed8e-2d54-4089-9100-a13db913d1c4" name="Size">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_be6b98c7-56b0-47fc-9819-fcffa1d38fdc" name="Is Double Hulled">
+      <semantic:typeRef>feel:boolean</semantic:typeRef>
+    </semantic:itemComponent>
+    <semantic:itemComponent id="_a78a9198-fb57-4726-87b0-ae2a1ce61979" name="Residual Cargo Size">
+      <semantic:typeRef>feel:number</semantic:typeRef>
+    </semantic:itemComponent>
+  </semantic:itemDefinition>
+  <semantic:decision id="_42806504-8ed5-488f-b274-de98c1bc67b9" name="Ship can enter a Dutch port">
+    <semantic:variable name="Ship can enter a Dutch port" id="_5e5f1d3a-2476-4688-82c6-796f23ab1b38" typeRef="feel:string"/>
+    <semantic:informationRequirement id="e9a6db01-1096-4de4-a3e8-a12daa32f049" label="">
+      <semantic:requiredInput href="#_b932dcf4-5462-42bb-8c6b-9280ec229d7a"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement id="_7b156527-07dc-493a-a4a3-ff5d6c4059f0" label="">
+      <semantic:requiredInput href="#_ac1c5fe0-e9ca-4338-b102-68e3f045ec37"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement id="_613fdbea-3951-445d-b0a0-a926050b5525" label="">
+      <semantic:requiredInput href="#_06cf4d4c-2fb0-457b-aefc-c7b7e2138234"/>
+    </semantic:informationRequirement>
+  </semantic:decision>
+  <semantic:inputData id="_06cf4d4c-2fb0-457b-aefc-c7b7e2138234" name="Ship Size">
+    <semantic:description>&lt;p&gt;Ship Size should be specified in meters.&lt;/p&gt;</semantic:description>
+    <semantic:variable name="Ship Size" id="_4fac5c53-13c7-46be-8191-e99fbb57b968" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:inputData id="_ac1c5fe0-e9ca-4338-b102-68e3f045ec37" name="Residual Cargo Size">
+    <semantic:description>&lt;p&gt;&lt;span&gt;&amp;nbsp;Residual cargo measurement should be specified in mg dry weight per cm&amp;sup2;.&lt;/span&gt;&lt;/p&gt;</semantic:description>
+    <semantic:variable name="Residual Cargo Size" id="_9c203107-95b4-48d4-86ec-bf4208e870b0" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:inputData id="_b932dcf4-5462-42bb-8c6b-9280ec229d7a" name="IsDoubleHulled">
+    <semantic:variable name="IsDoubleHulled" id="_48888a03-aa38-43f0-bef0-ee8e5ee32dde" typeRef="feel:boolean"/>
+  </semantic:inputData>
+  <semantic:decision id="_cae29991-e03b-4fe7-869d-8e3bf5a2b871" name="Ship Can Enter v2">
+    <semantic:variable name="Ship Can Enter v2" id="_564d744f-45c0-4302-8d07-27d099371a9b"/>
+    <semantic:informationRequirement id="_0e317f8d-7df6-4b64-98aa-dfbd59b58051" label="">
+      <semantic:requiredInput href="#_3c741ade-9d8c-4f21-8681-8c714ab25fe3"/>
+    </semantic:informationRequirement>
+    <semantic:literalExpression>
+      <semantic:text>if Ship Info.Size &lt; 80 and Ship Info.Residual Cargo Size &lt;0.5&#10; then true&#10;else&#10; if Ship Info.Size &gt;= 80 and Ship Info.Residual Cargo Size &lt;0.5 and Ship Info.Is Double Hulled&#10; then true&#10;else false
+      </semantic:text>
+    </semantic:literalExpression>
+  </semantic:decision>
+  <semantic:inputData id="_3c741ade-9d8c-4f21-8681-8c714ab25fe3" name="Ship Info">
+    <semantic:variable name="Ship Info" id="_af76de24-6fcc-40ac-b610-c4004ca744b9" typeRef="tShipInfo"/>
+  </semantic:inputData>
+</semantic:definitions>

@@ -239,4 +239,23 @@ public class DMNRuntimeTest {
         DMNContext result = dmnResult.getContext();
         assertThat( result.get("Ship can enter a Dutch port"), is( true ) );
     }
+
+    @Test
+    public void testEmptyDecision() {
+        DMNRuntime runtime = createRuntime( "empty_decision.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_ba9fc4b1-5ced-4d00-9b61-290de4bf3213", "Solution 3" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        Map shipInfo = new HashMap(  );
+        shipInfo.put( "Size", BigDecimal.valueOf( 70 ) );
+        shipInfo.put( "Is Double Hulled", Boolean.FALSE );
+        shipInfo.put( "Residual Cargo Size", BigDecimal.valueOf( 0.1 ) );
+        context.set( "Ship Info", shipInfo );
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get("Ship Can Enter v2"), is( true ) );
+    }
+
 }
