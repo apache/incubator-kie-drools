@@ -302,7 +302,12 @@
        "old": "method java.util.List<java.lang.String> org.kie.api.task.UserGroupCallback::getGroupsForUser(java.lang.String, java.util.List<java.lang.String>, java.util.List<java.lang.String>)",
        "new": "method java.util.List<java.lang.String> org.kie.api.task.UserGroupCallback::getGroupsForUser(java.lang.String)",
        "justification": "Removed unused and confusing arguments"
-     }
+      },
+      {
+       "code": "java.method.addedToInterface",
+       "new": "method <T> T org.kie.api.runtime.KieSession::getKieRuntime(java.lang.Class<T>)",
+       "justification": "Promoting internal method getKieRuntime() to the public API"
+      }
     ]
   }
 }
