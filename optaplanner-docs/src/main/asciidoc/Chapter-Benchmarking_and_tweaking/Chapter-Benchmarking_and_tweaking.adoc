@@ -873,8 +873,6 @@ If you have multiple processors available on your computer, you can run multiple
 ====
 Running too many benchmarks in parallel will affect the results of benchmarks negatively.
 Leave some processors unused for garbage collection and other processes.
-
-We tweak `parallelBenchmarkCount` `AUTO` to maximize the reliability and efficiency of the benchmark results.
 ====
 
 
@@ -897,7 +895,6 @@ The following ``parallelBenchmarkCount``s are supported:
 <parallelBenchmarkCount>(availableProcessorCount / 2) + 1</parallelBenchmarkCount>
 ----
 
-
 [NOTE]
 ====
 The `parallelBenchmarkCount` is always limited to the number of available processors.
@@ -912,6 +909,18 @@ The `sensors` command can help you detect if this is the case.
 It is available in the package `lm_sensors` or `lm-sensors` in most Linux distributions.
 There are several freeware tools available for Windows too.
 ====
+
+The benchmarker uses a thread pool internally, but you can optionally plug in a custom `ThreadFactory`,
+for example when running benchmarks on an application server or a cloud platform:
+
+[source,xml,options="nowrap"]
+----
+<plannerBenchmark>
+  ...
+  <threadFactoryClass>...MyCustomThreadFactory</threadFactoryClass>
+  ...
+</plannerBenchmark>
+----
 
 [NOTE]
 ====
