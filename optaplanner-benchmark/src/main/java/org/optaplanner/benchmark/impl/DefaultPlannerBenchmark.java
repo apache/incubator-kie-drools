@@ -56,25 +56,29 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     private final PlannerBenchmarkResult plannerBenchmarkResult;
     private final SolverConfigContext solverConfigContext;
 
-    private File benchmarkDirectory = null;
-    private BenchmarkReport benchmarkReport = null;
-
-    private ExecutorService warmUpExecutorService;
-    private ExecutorCompletionService<SubSingleBenchmarkRunner> warmUpExecutorCompletionService;
-    private ExecutorService executorService;
-    private BenchmarkResultIO benchmarkResultIO;
+    private final File benchmarkDirectory;
+    private final ExecutorService warmUpExecutorService;
+    private final ExecutorCompletionService<SubSingleBenchmarkRunner> warmUpExecutorCompletionService;
+    private final ExecutorService executorService;
+    private final BenchmarkResultIO benchmarkResultIO;
+    private final BenchmarkReport benchmarkReport;
 
     private long startingSystemTimeMillis = -1L;
     private SubSingleBenchmarkRunner firstFailureSubSingleBenchmarkRunner = null;
 
-    public DefaultPlannerBenchmark(PlannerBenchmarkResult plannerBenchmarkResult) {
-        this(plannerBenchmarkResult, new SolverConfigContext());
-    }
-
-    public DefaultPlannerBenchmark(PlannerBenchmarkResult plannerBenchmarkResult,
-            SolverConfigContext solverConfigContext) {
+    public DefaultPlannerBenchmark(
+            PlannerBenchmarkResult plannerBenchmarkResult, SolverConfigContext solverConfigContext,
+            File benchmarkDirectory,
+            ExecutorService warmUpExecutorService, ExecutorService executorService,
+            BenchmarkReport benchmarkReport) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
         this.solverConfigContext = solverConfigContext;
+        this.benchmarkDirectory = benchmarkDirectory;
+        this.warmUpExecutorService = warmUpExecutorService;
+        warmUpExecutorCompletionService = new ExecutorCompletionService<>(warmUpExecutorService);
+        this.executorService = executorService;
+        this.benchmarkReport = benchmarkReport;
+        benchmarkResultIO = new BenchmarkResultIO();
     }
 
     public PlannerBenchmarkResult getPlannerBenchmarkResult() {
@@ -85,16 +89,8 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         return benchmarkDirectory;
     }
 
-    public void setBenchmarkDirectory(File benchmarkDirectory) {
-        this.benchmarkDirectory = benchmarkDirectory;
-    }
-
     public BenchmarkReport getBenchmarkReport() {
         return benchmarkReport;
-    }
-
-    public void setBenchmarkReport(BenchmarkReport benchmarkReport) {
-        this.benchmarkReport = benchmarkReport;
     }
 
     // ************************************************************************
@@ -122,10 +118,6 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
         }
         initBenchmarkDirectoryAndSubdirs();
         plannerBenchmarkResult.initSystemProperties();
-        warmUpExecutorService = Executors.newFixedThreadPool(plannerBenchmarkResult.getParallelBenchmarkCount());
-        warmUpExecutorCompletionService = new ExecutorCompletionService<>(warmUpExecutorService);
-        executorService = Executors.newFixedThreadPool(plannerBenchmarkResult.getParallelBenchmarkCount());
-        benchmarkResultIO = new BenchmarkResultIO();
         logger.info("Benchmarking started: parallelBenchmarkCount ({})"
                 + " for problemCount ({}), solverCount ({}), totalSubSingleCount ({}).",
                 plannerBenchmarkResult.getParallelBenchmarkCount(),

@@ -143,7 +143,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         if (threadFactoryClass != null) {
             threadFactory = ConfigUtils.newInstance(this, "threadFactoryClass", threadFactoryClass);
         } else {
-            threadFactory = new DefaultSolverThreadFactory("PS-child-solver");
+            threadFactory = new DefaultSolverThreadFactory("PartThread");
         }
         // Based on Executors.newCachedThreadPool(...)
         return new ThreadPoolExecutor(0, Integer.MAX_VALUE,

@@ -22,6 +22,12 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -30,9 +36,11 @@ import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintConfig;
 import org.optaplanner.benchmark.config.report.BenchmarkReportConfig;
 import org.optaplanner.benchmark.impl.DefaultPlannerBenchmark;
+import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +55,7 @@ public class PlannerBenchmarkConfig {
     private String name = null;
     private File benchmarkDirectory = null;
 
+    private Class<? extends ThreadFactory> threadFactoryClass = null;
     private String parallelBenchmarkCount = null;
     private Long warmUpMillisecondsSpentLimit = null;
     private Long warmUpSecondsSpentLimit = null;
@@ -82,6 +91,14 @@ public class PlannerBenchmarkConfig {
 
     public void setBenchmarkDirectory(File benchmarkDirectory) {
         this.benchmarkDirectory = benchmarkDirectory;
+    }
+
+    public Class<? extends ThreadFactory> getThreadFactoryClass() {
+        return threadFactoryClass;
+    }
+
+    public void setThreadFactoryClass(Class<? extends ThreadFactory> threadFactoryClass) {
+        this.threadFactoryClass = threadFactoryClass;
     }
 
     /**
@@ -179,21 +196,34 @@ public class PlannerBenchmarkConfig {
         PlannerBenchmarkResult plannerBenchmarkResult = new PlannerBenchmarkResult();
         plannerBenchmarkResult.setName(name);
         plannerBenchmarkResult.setAggregation(false);
-        DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark(plannerBenchmarkResult, solverConfigContext);
-        plannerBenchmark.setBenchmarkDirectory(benchmarkDirectory);
-        plannerBenchmarkResult.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
+        int parallelBenchmarkCount = resolveParallelBenchmarkCount();
+        plannerBenchmarkResult.setParallelBenchmarkCount(parallelBenchmarkCount);
         plannerBenchmarkResult.setWarmUpTimeMillisSpentLimit(calculateWarmUpTimeMillisSpentLimit());
-        BenchmarkReportConfig benchmarkReportConfig_ = benchmarkReportConfig == null ? new BenchmarkReportConfig()
-                : benchmarkReportConfig;
-        plannerBenchmark.setBenchmarkReport(benchmarkReportConfig_.buildBenchmarkReport(plannerBenchmarkResult));
-
         plannerBenchmarkResult.setUnifiedProblemBenchmarkResultList(new ArrayList<>());
         plannerBenchmarkResult.setSolverBenchmarkResultList(new ArrayList<>(
                 effectiveSolverBenchmarkConfigList.size()));
         for (SolverBenchmarkConfig solverBenchmarkConfig : effectiveSolverBenchmarkConfigList) {
             solverBenchmarkConfig.buildSolverBenchmark(solverConfigContext, plannerBenchmarkResult);
         }
+
+        BenchmarkReportConfig benchmarkReportConfig_ = benchmarkReportConfig == null ? new BenchmarkReportConfig()
+                : benchmarkReportConfig;
+        BenchmarkReport benchmarkReport = benchmarkReportConfig_.buildBenchmarkReport(plannerBenchmarkResult);
+        DefaultPlannerBenchmark plannerBenchmark = new DefaultPlannerBenchmark(
+                plannerBenchmarkResult, solverConfigContext, benchmarkDirectory,
+                buildExecutorService(parallelBenchmarkCount), buildExecutorService(parallelBenchmarkCount),
+                benchmarkReport);
         return plannerBenchmark;
+    }
+
+    private ExecutorService buildExecutorService(int parallelBenchmarkCount) {
+        ThreadFactory threadFactory;
+        if (threadFactoryClass != null) {
+            threadFactory = ConfigUtils.newInstance(this, "threadFactoryClass", threadFactoryClass);
+        } else {
+            threadFactory = new DefaultSolverThreadFactory("BenchmarkThread");
+        }
+        return Executors.newFixedThreadPool(parallelBenchmarkCount, threadFactory);
     }
 
     protected void validate() {

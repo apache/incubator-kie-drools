@@ -32,18 +32,14 @@ public class DefaultSolverThreadFactory implements ThreadFactory {
     private final String namePrefix;
 
     public DefaultSolverThreadFactory() {
-        this("solver");
+        this("Solver");
     }
 
     public DefaultSolverThreadFactory(String threadPrefix) {
-        this("planner-pool", threadPrefix);
-    }
-
-    public DefaultSolverThreadFactory(String poolPrefix, String threadPrefix) {
         SecurityManager s = System.getSecurityManager();
         group = (s != null) ? s.getThreadGroup() :
                 Thread.currentThread().getThreadGroup();
-        namePrefix = poolPrefix + "-" + poolNumber.getAndIncrement() + "-" + threadPrefix + "-";
+        namePrefix = "OptaPool-" + poolNumber.getAndIncrement() + "-" + threadPrefix + "-";
     }
 
     @Override
