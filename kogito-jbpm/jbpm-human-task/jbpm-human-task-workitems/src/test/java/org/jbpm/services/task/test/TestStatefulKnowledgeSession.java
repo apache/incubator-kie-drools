@@ -283,6 +283,11 @@ public class TestStatefulKnowledgeSession extends AbstractRuntime implements Sta
     public void submit(AtomicAction action) {
     }
 
+    @Override
+    public <T> T getKieRuntime(Class<T> cls) {
+        return null;
+    }
+
     public void dispose() {
     }
 
