@@ -77,7 +77,7 @@ public class KieHelper {
         return kieContainer.newKieBase(kieBaseConf);
     }
 
-    protected KieContainer getKieContainer() {
+    public KieContainer getKieContainer() {
         KieBuilder kieBuilder = ks.newKieBuilder( kfs, classLoader ).buildAll();
         Results results = kieBuilder.getResults();
         if (results.hasMessages(Message.Level.ERROR)) {

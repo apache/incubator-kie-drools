@@ -129,9 +129,24 @@ public interface KieSession
     void submit(AtomicAction action);
 
     /**
+     * Returns a runtime for the given interface. This method is used to retrieve runtime
+     * extensions to the engine. It is used as the hook point for the custom pluggable
+     * knowledge extensions like the bayes engine and the DMN engine.
+     *
+     * E.g.:
+     *
+     * <code>DMNRuntime dmnRuntime = session.getKieRuntime( DMNRuntime.class );</code>
+     *
+     * @param cls the runtime interface for the extension
+     * @return the runtime instance for the extension
+     */
+    <T> T getKieRuntime(Class<T> cls);
+
+    /**
      * An action that will be executed atomically on this session.
      */
     interface AtomicAction {
         void execute(KieSession kieSession);
     }
+
 }
