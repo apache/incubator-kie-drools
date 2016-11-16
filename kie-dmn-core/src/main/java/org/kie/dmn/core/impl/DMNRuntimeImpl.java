@@ -62,9 +62,10 @@ public class DMNRuntimeImpl
     public DMNResult evaluateAll(DMNModel model, DMNContext context) {
         DMNResultImpl result = createResult( context );
         for( DecisionNode decision : model.getDecisions() ) {
-            if ( ! evaluateDecision( context, result, decision ) )
-                // have to replace this by proper error handling
-                return null;
+            evaluateDecision( context, result, decision );
+//            if ( ! evaluateDecision( context, result, decision ) )
+//                // have to replace this by proper error handling
+//                return null;
         }
         return result;
     }
@@ -117,6 +118,13 @@ public class DMNRuntimeImpl
             }
         }
         if( missingInput ) {
+            return false;
+        }
+        if( decision.getEvaluator() == null ) {
+            DMNMessage msg = result.addMessage( DMNMessage.Severity.WARN,
+                                                "Missing expression for decision '"+decision.getName()+"'. Skipping evaluation.",
+                                                decision.getId() );
+            dr.getMessages().add( msg );
             return false;
         }
         Object val = decision.getEvaluator().evaluate( result );
