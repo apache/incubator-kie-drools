@@ -29,10 +29,14 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecorder;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
+import org.optaplanner.core.impl.solver.ChildThreadType;
+import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.termination.Termination;
 
 public class HeuristicConfigPolicy {
 
     private final EnvironmentMode environmentMode;
+    private final String logIndentation;
     private final InnerScoreDirectorFactory scoreDirectorFactory;
 
     private EntitySorterManner entitySorterManner = EntitySorterManner.NONE;
@@ -46,12 +50,21 @@ public class HeuristicConfigPolicy {
             = new HashMap<>();
 
     public HeuristicConfigPolicy(EnvironmentMode environmentMode, InnerScoreDirectorFactory scoreDirectorFactory) {
+        this(environmentMode, "", scoreDirectorFactory);
+    }
+
+    public HeuristicConfigPolicy(EnvironmentMode environmentMode, String logIndentation, InnerScoreDirectorFactory scoreDirectorFactory) {
         this.environmentMode = environmentMode;
+        this.logIndentation = logIndentation;
         this.scoreDirectorFactory = scoreDirectorFactory;
     }
 
     public EnvironmentMode getEnvironmentMode() {
         return environmentMode;
+    }
+
+    public String getLogIndentation() {
+        return logIndentation;
     }
 
     public SolutionDescriptor getSolutionDescriptor() {
@@ -120,6 +133,10 @@ public class HeuristicConfigPolicy {
 
     public HeuristicConfigPolicy createPhaseConfigPolicy() {
         return new HeuristicConfigPolicy(environmentMode, scoreDirectorFactory);
+    }
+
+    public HeuristicConfigPolicy createChildThreadConfigPolicy(ChildThreadType childThreadType) {
+        return new HeuristicConfigPolicy(environmentMode, logIndentation + "        ", scoreDirectorFactory);
     }
 
     // ************************************************************************

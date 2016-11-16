@@ -36,7 +36,9 @@ import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Default implementation of {@link ExhaustiveSearchPhase}.
@@ -51,6 +53,11 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
 
     protected boolean assertWorkingSolutionScoreFromScratch = false;
     protected boolean assertExpectedWorkingSolutionScore = false;
+
+    public DefaultExhaustiveSearchPhase(int phaseIndex, String logIndentation,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+        super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
+    }
 
     public Comparator<ExhaustiveSearchNode> getNodeComparator() {
         return nodeComparator;
@@ -233,7 +240,8 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         decider.stepEnded(stepScope);
         if (logger.isDebugEnabled()) {
             ExhaustiveSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
-            logger.debug("    ES step ({}), time spent ({}), treeId ({}), {} best score ({}), selected move count ({}).",
+            logger.debug("{}    ES step ({}), time spent ({}), treeId ({}), {} best score ({}), selected move count ({}).",
+                    logIndentation,
                     stepScope.getStepIndex(),
                     phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                     stepScope.getTreeId(),
@@ -248,8 +256,9 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         entitySelector.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
         phaseScope.endingNow();
-        logger.info("Exhaustive Search phase ({}) ended: time spent ({}), best score ({}),"
+        logger.info("{}Exhaustive Search phase ({}) ended: time spent ({}), best score ({}),"
                         + " score calculation speed ({}/sec), step total ({}).",
+                logIndentation,
                 phaseIndex,
                 phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                 phaseScope.getBestScore(),

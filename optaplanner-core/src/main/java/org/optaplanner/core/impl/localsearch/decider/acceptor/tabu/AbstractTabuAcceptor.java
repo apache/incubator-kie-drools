@@ -36,6 +36,8 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
  */
 public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
+    protected final String logIndentation;
+
     protected TabuSizeStrategy tabuSizeStrategy = null;
     protected TabuSizeStrategy fadingTabuSizeStrategy = null;
     protected boolean aspirationEnabled = true;
@@ -47,6 +49,10 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
 
     protected int workingTabuSize = -1;
     protected int workingFadingTabuSize = -1;
+
+    public AbstractTabuAcceptor(String logIndentation) {
+        this.logIndentation = logIndentation;
+    }
 
     public void setTabuSizeStrategy(TabuSizeStrategy tabuSizeStrategy) {
         this.tabuSizeStrategy = tabuSizeStrategy;
@@ -139,23 +145,27 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
             // Natural comparison because shifting penalties don't apply
             if (moveScope.getScore().compareTo(
                     moveScope.getStepScope().getPhaseScope().getBestScore()) > 0) {
-                logger.trace("        Proposed move ({}) is tabu, but is accepted anyway due to aspiration.",
+                logger.trace("{}        Proposed move ({}) is tabu, but is accepted anyway due to aspiration.",
+                        logIndentation,
                         moveScope.getMove());
                 return true;
             }
         }
         int tabuStepCount = moveScope.getStepScope().getStepIndex() - maximumTabuStepIndex; // at least 1
         if (tabuStepCount <= workingTabuSize) {
-            logger.trace("        Proposed move ({}) is tabu and is therefore not accepted.", moveScope.getMove());
+            logger.trace("{}        Proposed move ({}) is tabu and is therefore not accepted.",
+                    logIndentation, moveScope.getMove());
             return false;
         }
         double acceptChance = calculateFadingTabuAcceptChance(tabuStepCount - workingTabuSize);
         boolean accepted = moveScope.getWorkingRandom().nextDouble() < acceptChance;
         if (accepted) {
-            logger.trace("        Proposed move ({}) is fading tabu with acceptChance ({}) and is accepted.",
+            logger.trace("{}        Proposed move ({}) is fading tabu with acceptChance ({}) and is accepted.",
+                    logIndentation,
                     moveScope.getMove(), acceptChance);
         } else {
-            logger.trace("        Proposed move ({}) is fading tabu with acceptChance ({}) and is not accepted.",
+            logger.trace("{}        Proposed move ({}) is fading tabu with acceptChance ({}) and is not accepted.",
+                    logIndentation,
                     moveScope.getMove(), acceptChance);
         }
         return accepted;

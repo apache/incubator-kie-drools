@@ -44,10 +44,10 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected int phaseIndex = -1;
-
-    protected Termination termination;
-    protected BestSolutionRecaller<Solution_> bestSolutionRecaller;
+    protected final int phaseIndex;
+    protected final String logIndentation;
+    protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
+    protected final Termination termination;
 
     /** Used for {@link DefaultSolver#addPhaseLifecycleListener(PhaseLifecycleListener)}. */
     protected PhaseLifecycleSupport<Solution_> solverPhaseLifecycleSupport;
@@ -58,24 +58,20 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
     protected boolean assertExpectedStepScore = false;
     protected boolean assertShadowVariablesAreNotStaleAfterStep = false;
 
-    public Termination getTermination() {
-        return termination;
+    public AbstractPhase(int phaseIndex, String logIndentation,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+        this.phaseIndex = phaseIndex;
+        this.logIndentation = logIndentation;
+        this.bestSolutionRecaller = bestSolutionRecaller;
+        this.termination = termination;
     }
 
     public int getPhaseIndex() {
         return phaseIndex;
     }
 
-    public void setPhaseIndex(int phaseIndex) {
-        this.phaseIndex = phaseIndex;
-    }
-
-    public void setTermination(Termination termination) {
-        this.termination = termination;
-    }
-
-    public void setBestSolutionRecaller(BestSolutionRecaller<Solution_> bestSolutionRecaller) {
-        this.bestSolutionRecaller = bestSolutionRecaller;
+    public Termination getTermination() {
+        return termination;
     }
 
     @Override

@@ -84,8 +84,9 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
     public CustomPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        DefaultCustomPhase customPhase = new DefaultCustomPhase();
-        configurePhase(customPhase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
+        DefaultCustomPhase phase = new DefaultCustomPhase(
+                phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
+                buildPhaseTermination(phaseConfigPolicy, solverTermination));
         if (ConfigUtils.isEmptyCollection(customPhaseCommandClassList)) {
             throw new IllegalArgumentException(
                     "Configure at least 1 <customPhaseCommandClass> in the <customPhase> configuration.");
@@ -99,13 +100,13 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
             customPhaseCommand.applyCustomProperties(customProperties_);
             customPhaseCommandList.add(customPhaseCommand);
         }
-        customPhase.setCustomPhaseCommandList(customPhaseCommandList);
-        customPhase.setForceUpdateBestSolution(forceUpdateBestSolution == null ? false : forceUpdateBestSolution);
+        phase.setCustomPhaseCommandList(customPhaseCommandList);
+        phase.setForceUpdateBestSolution(forceUpdateBestSolution == null ? false : forceUpdateBestSolution);
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
-            customPhase.setAssertStepScoreFromScratch(true);
+            phase.setAssertStepScoreFromScratch(true);
         }
-        return customPhase;
+        return phase;
     }
 
     @Override

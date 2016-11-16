@@ -70,17 +70,13 @@ public abstract class PhaseConfig<C extends PhaseConfig> extends AbstractConfig<
     public abstract Phase buildPhase(int phaseIndex,
             HeuristicConfigPolicy solverConfigPolicy, BestSolutionRecaller bestSolutionRecaller, Termination solverTermination);
 
-    protected void configurePhase(AbstractPhase phase, int phaseIndex,
-            HeuristicConfigPolicy configPolicy, BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
-        phase.setPhaseIndex(phaseIndex);
-        phase.setBestSolutionRecaller(bestSolutionRecaller);
+    protected Termination buildPhaseTermination(HeuristicConfigPolicy configPolicy, Termination solverTermination) {
         TerminationConfig terminationConfig_ = terminationConfig == null ? new TerminationConfig()
                 : terminationConfig;
         // In case of childThread PART_THREAD, the solverTermination is actually the parent phase's phaseTermination
         // with the bridge removed, so it's ok to add it again
         Termination phaseTermination = new PhaseToSolverTerminationBridge(solverTermination);
-        phase.setTermination(terminationConfig_.buildTermination(configPolicy,
-                phaseTermination));
+        return terminationConfig_.buildTermination(configPolicy, phaseTermination);
     }
 
     @Override

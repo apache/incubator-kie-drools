@@ -36,7 +36,7 @@ public class ValueTabuAcceptorTest {
 
     @Test
     public void tabuSize() {
-        ValueTabuAcceptor acceptor = new ValueTabuAcceptor();
+        ValueTabuAcceptor acceptor = new ValueTabuAcceptor("");
         acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
 
@@ -116,7 +116,7 @@ public class ValueTabuAcceptorTest {
 
     @Test
     public void tabuSizeMultipleEntitiesPerStep() {
-        ValueTabuAcceptor acceptor = new ValueTabuAcceptor();
+        ValueTabuAcceptor acceptor = new ValueTabuAcceptor("");
         acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
 
@@ -216,7 +216,7 @@ public class ValueTabuAcceptorTest {
 
     @Test
     public void aspiration() {
-        ValueTabuAcceptor acceptor = new ValueTabuAcceptor();
+        ValueTabuAcceptor acceptor = new ValueTabuAcceptor("");
         acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
 

@@ -36,7 +36,7 @@ public class EntityTabuAcceptorTest {
 
     @Test
     public void tabuSize() {
-        EntityTabuAcceptor acceptor = new EntityTabuAcceptor();
+        EntityTabuAcceptor acceptor = new EntityTabuAcceptor("");
         acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
 
@@ -116,7 +116,7 @@ public class EntityTabuAcceptorTest {
 
     @Test
     public void tabuSizeMultipleEntitiesPerStep() {
-        EntityTabuAcceptor acceptor = new EntityTabuAcceptor();
+        EntityTabuAcceptor acceptor = new EntityTabuAcceptor("");
         acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
 
@@ -216,7 +216,7 @@ public class EntityTabuAcceptorTest {
 
     @Test
     public void aspiration() {
-        EntityTabuAcceptor acceptor = new EntityTabuAcceptor();
+        EntityTabuAcceptor acceptor = new EntityTabuAcceptor("");
         acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(2));
         acceptor.setAspirationEnabled(true);
 

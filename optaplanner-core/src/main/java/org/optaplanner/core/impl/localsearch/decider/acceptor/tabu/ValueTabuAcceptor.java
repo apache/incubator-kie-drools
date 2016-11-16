@@ -23,6 +23,10 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 public class ValueTabuAcceptor extends AbstractTabuAcceptor {
 
+    public ValueTabuAcceptor(String logIndentation) {
+        super(logIndentation);
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

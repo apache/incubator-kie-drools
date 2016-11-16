@@ -114,8 +114,9 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
         phaseConfigPolicy.setReinitializeVariableFilterEnabled(true);
         phaseConfigPolicy.setInitializedChainedValueFilterEnabled(true);
-        DefaultConstructionHeuristicPhase phase = new DefaultConstructionHeuristicPhase();
-        configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
+        DefaultConstructionHeuristicPhase phase = new DefaultConstructionHeuristicPhase(
+                phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
+                buildPhaseTermination(phaseConfigPolicy, solverTermination));
         phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
         ConstructionHeuristicType constructionHeuristicType_ = defaultIfNull(
                 constructionHeuristicType, ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
@@ -157,7 +158,8 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
         ConstructionHeuristicForagerConfig foragerConfig_ = foragerConfig == null
                 ? new ConstructionHeuristicForagerConfig() : foragerConfig;
         ConstructionHeuristicForager forager = foragerConfig_.buildForager(configPolicy);
-        ConstructionHeuristicDecider decider = new ConstructionHeuristicDecider(termination, forager);
+        ConstructionHeuristicDecider decider = new ConstructionHeuristicDecider(
+                configPolicy.getLogIndentation(), termination, forager);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             decider.setAssertMoveScoreFromScratch(true);

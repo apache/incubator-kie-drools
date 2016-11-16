@@ -57,6 +57,11 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     protected List<PhaseConfig> phaseConfigList;
     protected HeuristicConfigPolicy configPolicy;
 
+    public DefaultPartitionedSearchPhase(int phaseIndex, String logIndentation,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+        super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
+    }
+
     public void setThreadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
         this.threadPoolExecutor = threadPoolExecutor;
     }
@@ -185,8 +190,9 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         super.stepEnded(stepScope);
         PartitionedSearchPhaseScope phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
-            logger.debug("    PS step ({}), time spent ({}), score ({}), {} best score ({})," +
+            logger.debug("{}    PS step ({}), time spent ({}), score ({}), {} best score ({})," +
                     " picked move ({}).",
+                    logIndentation,
                     stepScope.getStepIndex(),
                     phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                     stepScope.getScore(),
@@ -199,8 +205,9 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     public void phaseEnded(PartitionedSearchPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         phaseScope.endingNow();
-        logger.info("Partitioned Search phase ({}) ended: time spent ({}), best score ({}),"
+        logger.info("{}Partitioned Search phase ({}) ended: time spent ({}), best score ({}),"
                         + " score calculation speed ({}/sec), step total ({}).",
+                logIndentation,
                 phaseIndex,
                 phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                 phaseScope.getBestScore(),

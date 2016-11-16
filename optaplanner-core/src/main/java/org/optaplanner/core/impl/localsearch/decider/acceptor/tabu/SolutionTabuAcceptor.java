@@ -25,7 +25,8 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
 
-    public SolutionTabuAcceptor() {
+    public SolutionTabuAcceptor(String logIndentation) {
+        super(logIndentation);
         // Disable aspiration by default because it's useless on solution tabu
         aspirationEnabled = false;
     }

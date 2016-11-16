@@ -130,8 +130,9 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
                 : exhaustiveSearchType_.getDefaultEntitySorterManner());
         phaseConfigPolicy.setValueSorterManner(valueSorterManner != null ? valueSorterManner
                 : exhaustiveSearchType_.getDefaultValueSorterManner());
-        DefaultExhaustiveSearchPhase phase = new DefaultExhaustiveSearchPhase();
-        configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
+        DefaultExhaustiveSearchPhase phase = new DefaultExhaustiveSearchPhase(
+                phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
+                buildPhaseTermination(phaseConfigPolicy, solverTermination));
         boolean scoreBounderEnabled = exhaustiveSearchType_.isScoreBounderEnabled();
         NodeExplorationType nodeExplorationType_;
         if (exhaustiveSearchType_ == ExhaustiveSearchType.BRUTE_FORCE) {
@@ -213,7 +214,8 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
                 SelectionCacheType.JUST_IN_TIME, SelectionOrder.ORIGINAL);
         ScoreBounder scoreBounder = scoreBounderEnabled
                 ? new TrendBasedScoreBounder(configPolicy.getScoreDirectorFactory()) : null;
-        ExhaustiveSearchDecider decider = new ExhaustiveSearchDecider(bestSolutionRecaller, termination,
+        ExhaustiveSearchDecider decider = new ExhaustiveSearchDecider(configPolicy.getLogIndentation(),
+                bestSolutionRecaller, termination,
                 manualEntityMimicRecorder, moveSelector, scoreBounderEnabled, scoreBounder);
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {

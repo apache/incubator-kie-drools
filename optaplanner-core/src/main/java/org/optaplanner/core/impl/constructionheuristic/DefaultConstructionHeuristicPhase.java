@@ -24,7 +24,9 @@ import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeurist
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Default implementation of {@link ConstructionHeuristicPhase}.
@@ -37,6 +39,11 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     protected ConstructionHeuristicDecider decider;
 
     protected final boolean skipBestSolutionCloningInSteps = true;
+
+    public DefaultConstructionHeuristicPhase(int phaseIndex, String logIndentation,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+        super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
+    }
 
     public void setEntityPlacer(EntityPlacer entityPlacer) {
         this.entityPlacer = entityPlacer;
@@ -66,12 +73,14 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
             decider.decideNextStep(stepScope, placement);
             if (stepScope.getStep() == null) {
                 if (termination.isPhaseTerminated(phaseScope)) {
-                    logger.trace("    Step index ({}), time spent ({}) terminated without picking a nextStep.",
+                    logger.trace("{}    Step index ({}), time spent ({}) terminated without picking a nextStep.",
+                            logIndentation,
                             stepScope.getStepIndex(),
                             stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow());
                 } else if (stepScope.getSelectedMoveCount() == 0L) {
-                    logger.warn("    No doable selected move at step index ({}), time spent ({})."
+                    logger.warn("{}    No doable selected move at step index ({}), time spent ({})."
                             + " Terminating phase early.",
+                            logIndentation,
                             stepScope.getStepIndex(),
                             stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow());
                 } else {
@@ -128,8 +137,9 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
         decider.stepEnded(stepScope);
         if (logger.isDebugEnabled()) {
             long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
-            logger.debug("    CH step ({}), time spent ({}), score ({}), selected move count ({}),"
+            logger.debug("{}    CH step ({}), time spent ({}), score ({}), selected move count ({}),"
                     + " picked move ({}).",
+                    logIndentation,
                     stepScope.getStepIndex(), timeMillisSpent,
                     stepScope.getScore(),
                     stepScope.getSelectedMoveCount(),
@@ -145,8 +155,9 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
         entityPlacer.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
         phaseScope.endingNow();
-        logger.info("Construction Heuristic phase ({}) ended: time spent ({}), best score ({}),"
+        logger.info("{}Construction Heuristic phase ({}) ended: time spent ({}), best score ({}),"
                         + " score calculation speed ({}/sec), step total ({}).",
+                logIndentation,
                 phaseIndex,
                 phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                 phaseScope.getBestScore(),

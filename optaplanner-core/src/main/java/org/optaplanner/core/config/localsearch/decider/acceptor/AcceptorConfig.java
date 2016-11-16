@@ -253,7 +253,7 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.ENTITY_TABU))
                 || entityTabuSize != null || entityTabuRatio != null
                 || fadingEntityTabuSize != null || fadingEntityTabuRatio != null) {
-            EntityTabuAcceptor acceptor = new EntityTabuAcceptor();
+            EntityTabuAcceptor acceptor = new EntityTabuAcceptor(configPolicy.getLogIndentation());
             if (entityTabuSize != null) {
                 if (entityTabuRatio != null) {
                     throw new IllegalArgumentException("The acceptor cannot have both entityTabuSize ("
@@ -283,7 +283,7 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.VALUE_TABU))
                 || valueTabuSize != null || valueTabuRatio != null
                 || fadingValueTabuSize != null  || fadingValueTabuRatio != null) {
-            ValueTabuAcceptor acceptor = new ValueTabuAcceptor();
+            ValueTabuAcceptor acceptor = new ValueTabuAcceptor(configPolicy.getLogIndentation());
             if (valueTabuSize != null) {
                 if (valueTabuRatio != null) {
                     throw new IllegalArgumentException("The acceptor cannot have both valueTabuSize ("
@@ -317,7 +317,7 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.MOVE_TABU))
                 || moveTabuSize != null || fadingMoveTabuSize != null) {
-            MoveTabuAcceptor acceptor = new MoveTabuAcceptor();
+            MoveTabuAcceptor acceptor = new MoveTabuAcceptor(configPolicy.getLogIndentation());
             acceptor.setUseUndoMoveAsTabuMove(false);
             if (moveTabuSize != null) {
                 acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(moveTabuSize));
@@ -332,7 +332,7 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.UNDO_MOVE_TABU))
                 || undoMoveTabuSize != null || fadingUndoMoveTabuSize != null) {
-            MoveTabuAcceptor acceptor = new MoveTabuAcceptor();
+            MoveTabuAcceptor acceptor = new MoveTabuAcceptor(configPolicy.getLogIndentation());
             acceptor.setUseUndoMoveAsTabuMove(true);
             if (undoMoveTabuSize != null) {
                 acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(undoMoveTabuSize));
@@ -347,7 +347,7 @@ public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
         }
         if ((acceptorTypeList != null && acceptorTypeList.contains(AcceptorType.SOLUTION_TABU))
                 || solutionTabuSize != null || fadingSolutionTabuSize != null) {
-            SolutionTabuAcceptor acceptor = new SolutionTabuAcceptor();
+            SolutionTabuAcceptor acceptor = new SolutionTabuAcceptor(configPolicy.getLogIndentation());
             if (solutionTabuSize != null) {
                 acceptor.setTabuSizeStrategy(new FixedTabuSizeStrategy(solutionTabuSize));
             }

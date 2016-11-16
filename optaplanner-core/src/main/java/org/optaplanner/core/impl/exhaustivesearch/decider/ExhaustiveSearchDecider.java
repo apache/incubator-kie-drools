@@ -38,6 +38,7 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
+    protected final String logIndentation;
     protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
     protected final Termination termination;
     protected final ManualEntityMimicRecorder manualEntityMimicRecorder;
@@ -48,9 +49,11 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
     protected boolean assertMoveScoreFromScratch = false;
     protected boolean assertExpectedUndoMoveScore = false;
 
-    public ExhaustiveSearchDecider(BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination,
+    public ExhaustiveSearchDecider(String logIndentation,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination,
             ManualEntityMimicRecorder manualEntityMimicRecorder, MoveSelector moveSelector,
             boolean scoreBounderEnabled, ScoreBounder scoreBounder) {
+        this.logIndentation = logIndentation;
         this.bestSolutionRecaller = bestSolutionRecaller;
         this.termination = termination;
         this.manualEntityMimicRecorder = manualEntityMimicRecorder;
@@ -156,7 +159,8 @@ public class ExhaustiveSearchDecider<Solution_> implements ExhaustiveSearchPhase
                 phaseScope.assertExpectedUndoMoveScore(move, undoMove, stepScope.getStartingStepScore());
             }
         }
-        logger.trace("        Move treeId ({}), score ({}), expandable ({}), move ({}).",
+        logger.trace("{}        Move treeId ({}), score ({}), expandable ({}), move ({}).",
+                logIndentation,
                 moveNode.getTreeId(), moveNode.getScore(), moveNode.isExpandable(), moveNode.getMove());
     }
 

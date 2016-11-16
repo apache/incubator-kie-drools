@@ -27,6 +27,10 @@ public class MoveTabuAcceptor extends AbstractTabuAcceptor {
 
     protected boolean useUndoMoveAsTabuMove = true;
 
+    public MoveTabuAcceptor(String logIndentation) {
+        super(logIndentation);
+    }
+
     public void setUseUndoMoveAsTabuMove(boolean useUndoMoveAsTabuMove) {
         this.useUndoMoveAsTabuMove = useUndoMoveAsTabuMove;
     }

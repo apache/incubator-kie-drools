@@ -107,8 +107,9 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
     public LocalSearchPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        DefaultLocalSearchPhase phase = new DefaultLocalSearchPhase();
-        configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
+        DefaultLocalSearchPhase phase = new DefaultLocalSearchPhase(
+                phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
+                buildPhaseTermination(phaseConfigPolicy, solverTermination));
         phase.setDecider(buildDecider(phaseConfigPolicy,
                 phase.getTermination()));
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
@@ -123,20 +124,17 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
     }
 
     private LocalSearchDecider buildDecider(HeuristicConfigPolicy configPolicy, Termination termination) {
-        LocalSearchDecider decider = new LocalSearchDecider();
-        decider.setTermination(termination);
         MoveSelector moveSelector = buildMoveSelector(configPolicy);
-        decider.setMoveSelector(moveSelector);
         Acceptor acceptor = buildAcceptor(configPolicy);
-        decider.setAcceptor(acceptor);
         Forager forager = buildForager(configPolicy);
-        decider.setForager(forager);
+        LocalSearchDecider decider = new LocalSearchDecider(configPolicy.getLogIndentation(),
+                termination, moveSelector, acceptor, forager);
         if (moveSelector.isNeverEnding() && !forager.supportsNeverEndingMoveSelector()) {
             throw new IllegalStateException("The moveSelector (" + moveSelector
                     + ") has neverEnding (" + moveSelector.isNeverEnding()
                     + "), but the forager (" + forager
-                    + ") does not support it."
-                    + " Configure the <forager> with <acceptedCountLimit>.");
+                    + ") does not support it.\n"
+                    + " Maybe configure the <forager> with an <acceptedCountLimit>.");
         }
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {

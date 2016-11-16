@@ -24,7 +24,9 @@ import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.custom.scope.CustomPhaseScope;
 import org.optaplanner.core.impl.phase.custom.scope.CustomStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * Default implementation of {@link CustomPhase}.
@@ -35,7 +37,10 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
     protected List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
     protected boolean forceUpdateBestSolution;
 
-    protected boolean assertStepScoreFromScratch = false;
+    public DefaultCustomPhase(int phaseIndex, String logIndentation,
+            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination termination) {
+        super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
+    }
 
     public void setCustomPhaseCommandList(List<CustomPhaseCommand<Solution_>> customPhaseCommandList) {
         this.customPhaseCommandList = customPhaseCommandList;
@@ -43,10 +48,6 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
 
     public void setForceUpdateBestSolution(boolean forceUpdateBestSolution) {
         this.forceUpdateBestSolution = forceUpdateBestSolution;
-    }
-
-    public void setAssertStepScoreFromScratch(boolean assertStepScoreFromScratch) {
-        this.assertStepScoreFromScratch = assertStepScoreFromScratch;
     }
 
     @Override
@@ -101,7 +102,8 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
         }
         CustomPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
-            logger.debug("    Custom step ({}), time spent ({}), score ({}), {} best score ({}).",
+            logger.debug("{}    Custom step ({}), time spent ({}), score ({}), {} best score ({}).",
+                    logIndentation,
                     stepScope.getStepIndex(),
                     phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                     stepScope.getScore(),
@@ -113,8 +115,9 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
     public void phaseEnded(CustomPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         phaseScope.endingNow();
-        logger.info("Custom phase ({}) ended: time spent ({}), best score ({}),"
+        logger.info("{}Custom phase ({}) ended: time spent ({}), best score ({}),"
                         + " score calculation speed ({}/sec), step total ({}).",
+                logIndentation,
                 phaseIndex,
                 phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                 phaseScope.getBestScore(),

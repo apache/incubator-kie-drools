@@ -23,6 +23,10 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 
 public class EntityTabuAcceptor extends AbstractTabuAcceptor {
 
+    public EntityTabuAcceptor(String logIndentation) {
+        super(logIndentation);
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

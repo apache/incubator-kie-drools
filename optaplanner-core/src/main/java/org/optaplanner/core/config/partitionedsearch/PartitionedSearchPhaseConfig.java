@@ -37,6 +37,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.partitionedsearch.DefaultPartitionedSearchPhase;
 import org.optaplanner.core.impl.partitionedsearch.PartitionedSearchPhase;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
+import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.DefaultSolverThreadFactory;
@@ -112,8 +113,9 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     public PartitionedSearchPhase buildPhase(int phaseIndex, HeuristicConfigPolicy solverConfigPolicy,
             BestSolutionRecaller bestSolutionRecaller, Termination solverTermination) {
         HeuristicConfigPolicy phaseConfigPolicy = solverConfigPolicy.createPhaseConfigPolicy();
-        DefaultPartitionedSearchPhase phase = new DefaultPartitionedSearchPhase();
-        configurePhase(phase, phaseIndex, phaseConfigPolicy, bestSolutionRecaller, solverTermination);
+        DefaultPartitionedSearchPhase phase = new DefaultPartitionedSearchPhase(
+                phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
+                buildPhaseTermination(phaseConfigPolicy, solverTermination));
         phase.setThreadPoolExecutor(buildThreadPoolExecutor());
         phase.setActiveThreadCount(resolvedActiveThreadCount());
         phase.setSolutionPartitioner(buildSolutionPartitioner());
@@ -124,7 +126,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
                     new LocalSearchPhaseConfig());
         }
         phase.setPhaseConfigList(phaseConfigList_);
-        phase.setConfigPolicy(phaseConfigPolicy);
+        phase.setConfigPolicy(phaseConfigPolicy.createChildThreadConfigPolicy(ChildThreadType.PART_THREAD));
         EnvironmentMode environmentMode = phaseConfigPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             phase.setAssertStepScoreFromScratch(true);

@@ -30,13 +30,16 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
 
+    protected final String logIndentation;
     protected final Termination termination;
     protected final ConstructionHeuristicForager forager;
 
     protected boolean assertMoveScoreFromScratch = false;
     protected boolean assertExpectedUndoMoveScore = false;
 
-    public ConstructionHeuristicDecider(Termination termination, ConstructionHeuristicForager forager) {
+    public ConstructionHeuristicDecider(String logIndentation,
+            Termination termination, ConstructionHeuristicForager forager) {
+        this.logIndentation = logIndentation;
         this.termination = termination;
         this.forager = forager;
     }
@@ -126,7 +129,8 @@ public class ConstructionHeuristicDecider extends AbstractEntityPlacer {
             ConstructionHeuristicPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
             phaseScope.assertExpectedUndoMoveScore(move, undoMove, phaseScope.getLastCompletedStepScope().getScore());
         }
-        logger.trace("        Move index ({}), score ({}), move ({}).",
+        logger.trace("{}        Move index ({}), score ({}), move ({}).",
+                logIndentation,
                 moveScope.getMoveIndex(), moveScope.getScore(), moveScope.getMove());
     }
 
