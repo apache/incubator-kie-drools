@@ -16,7 +16,6 @@
 
 package org.kie.dmn.core;
 
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -24,11 +23,8 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.ast.InputDataNode;
 
-import junit.framework.Assert;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -48,8 +44,7 @@ public class DMNRuntimeTest {
                 ks.newReleaseId( "org.kie", "dmn-test", "1.0" ),
                 ks.getResources().newClassPathResource( resourceName, DMNRuntimeTest.class ) );
 
-        // the method getKieRuntime() needs to be moved to the public API
-        DMNRuntime runtime = ((StatefulKnowledgeSessionImpl) kieContainer.newKieSession()).getKieRuntime( DMNRuntime.class );
+        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime( DMNRuntime.class );
         assertNotNull( runtime );
         return runtime;
     }
@@ -254,6 +249,7 @@ public class DMNRuntimeTest {
         context.set( "Ship Info", shipInfo );
 
         DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        System.out.println(dmnResult.getMessages());
         DMNContext result = dmnResult.getContext();
         assertThat( result.get("Ship Can Enter v2"), is( true ) );
     }

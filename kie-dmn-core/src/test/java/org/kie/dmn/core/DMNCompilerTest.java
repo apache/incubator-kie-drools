@@ -16,23 +16,14 @@
 
 package org.kie.dmn.core;
 
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.core.api.*;
-import org.kie.dmn.core.ast.InputDataNode;
 import org.kie.dmn.core.ast.ItemDefNode;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.FeelTypeImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.mvel2.MVEL;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertNotNull;
@@ -46,8 +37,7 @@ public class DMNCompilerTest {
                 ks.newReleaseId( "org.kie", "dmn-test", "1.0" ),
                 ks.getResources().newClassPathResource( resourceName, DMNCompilerTest.class ) );
 
-        // the method getKieRuntime() needs to be moved to the public API
-        DMNRuntime runtime = ((StatefulKnowledgeSessionImpl) kieContainer.newKieSession()).getKieRuntime( DMNRuntime.class );
+        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime( DMNRuntime.class );
         assertNotNull( runtime );
         return runtime;
     }
