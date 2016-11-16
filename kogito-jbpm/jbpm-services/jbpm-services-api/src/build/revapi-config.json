@@ -1,0 +1,48 @@
+{
+  "revapi": {
+    "_comment": "Changes between 6.4.0.Final and master. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
+    "ignore": [
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method java.util.Collection<org.jbpm.services.api.model.NodeInstanceDesc> org.jbpm.services.api.RuntimeDataService::getNodeInstancesByCorrelationKeyNodeType(org.kie.internal.process.CorrelationKey, java.util.List<java.lang.Integer>, java.util.List<java.lang.String>, org.kie.api.runtime.query.QueryContext)",
+        "justification": "Added as it's required by case management to efficiently find node instance of given type for a case"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method java.util.Collection<org.jbpm.services.api.model.NodeInstanceDesc> org.jbpm.services.api.RuntimeDataService::getNodeInstancesByNodeType(long, java.util.List<java.lang.String>, org.kie.api.runtime.query.QueryContext)",
+        "justification": "Added as it's required by case management to efficiently find node instance of given type for a case"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method java.util.Collection<org.jbpm.services.api.model.ProcessInstanceDesc> org.jbpm.services.api.RuntimeDataService::getProcessInstancesByCorrelationKeyAndStatus(org.kie.internal.process.CorrelationKey, java.util.List<java.lang.Integer>, org.kie.api.runtime.query.QueryContext)",
+        "justification": "Needed for case mgmt to find all instances belonging to a case instance with status filtering"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method java.util.Collection<java.lang.String> org.jbpm.services.api.model.ProcessDefinition::getGlobals()",
+        "justification": "Required by change impact support to find all process definitions that might be affected in case of refactoring"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method java.util.Collection<java.lang.String> org.jbpm.services.api.model.ProcessDefinition::getReferencedRules()",
+        "justification": "Required by change impact support to find all process definitions that might be affected in case of refactoring"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method java.util.Collection<java.lang.String> org.jbpm.services.api.model.ProcessDefinition::getSignals()",
+        "justification": "Required by change impact support to find all process definitions that might be affected in case of refactoring"
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method boolean org.jbpm.services.api.model.ProcessDefinition::isDynamic()",
+        "justification": "Used by case mgmt to identify process as case - being dynamic"
+      },
+      {
+        "code": "java.field.constantValueChanged",
+        "old": "field org.jbpm.services.api.query.QueryResultMapper<T>.COLUMN_ORGANIZATIONAL_ENTITY",
+        "new": "field org.jbpm.services.api.query.QueryResultMapper<T>.COLUMN_ORGANIZATIONAL_ENTITY",
+        "justification": "Fix for some of dbs with query aliases"
+      }
+    ]
+  }
+}
