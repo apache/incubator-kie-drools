@@ -38,6 +38,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     protected EntityPlacer entityPlacer;
     protected ConstructionHeuristicDecider decider;
 
+    // TODO make this configurable or make it constant
     protected final boolean skipBestSolutionCloningInSteps = true;
 
     public DefaultConstructionHeuristicPhase(int phaseIndex, String logIndentation,
