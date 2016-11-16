@@ -64,7 +64,7 @@ public class DMNMessageImpl implements DMNMessage {
                " severity=" + severity +
                ", message='" + message + '\'' +
                ", sourceId='" + sourceId + '\'' +
-               ", exception='" + exception.getClass().getName() + " : " + exception.getMessage() +
+               ", exception='" + ( exception != null ? ( exception.getClass().getName() + " : " + exception.getMessage() ) : "" ) +
                "' }";
     }
 }
