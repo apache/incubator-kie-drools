@@ -20,6 +20,7 @@ import org.kie.dmn.feel.util.EvalHelper;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ExecutionFrame {
     private ExecutionFrame parentFrame;
@@ -55,5 +56,9 @@ public class ExecutionFrame {
 
     public void setValue(String symbol, Object value) {
         this.variables.put( EvalHelper.normalizeVariableName( symbol ), value );
+    }
+
+    public Map<String, Object> getAllValues() {
+        return this.variables;
     }
 }

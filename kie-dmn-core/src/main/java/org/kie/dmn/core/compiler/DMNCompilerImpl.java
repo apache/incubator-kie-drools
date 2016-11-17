@@ -207,8 +207,9 @@ public class DMNCompilerImpl implements DMNCompiler {
             List<DTOutputClause> outputs = new ArrayList<>(  );
             for( OutputClause oc : dt.getOutput() ) {
                 String outputName = oc.getName();
+                String id = oc.getId();
                 String outputValuesText =  Optional.ofNullable( oc.getOutputValues() ).map(UnaryTests::getText).orElse(null);
-                outputs.add( new DTOutputClause(outputName, (List<String>) feel.evaluate("["+outputValuesText+"]") ) );         // TODO another hack to be revised
+                outputs.add( new DTOutputClause(outputName, id, (List<String>) feel.evaluate("["+outputValuesText+"]") ) );         // TODO another hack to be revised
             }
             List<DTDecisionRule> rules = new ArrayList<>(  );
             for( DecisionRule dr : dt.getRule() ) {
@@ -218,8 +219,8 @@ public class DMNCompilerImpl implements DMNCompiler {
                     rule.getInputEntry().add( x -> tests.stream().anyMatch( t -> t.apply( x ) ) );
                 }
                 for( LiteralExpression le : dr.getOutputEntry() ) {
-                    Object oe = feel.evaluate( le.getText() );
-                    rule.getOutputEntry().add( oe );
+                    // we might want to compile and save the compiled expression here
+                    rule.getOutputEntry().add( le );
                 }
                 rules.add( rule );
             }
