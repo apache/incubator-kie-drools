@@ -16,21 +16,25 @@
 
 package org.kie.dmn.feel.runtime.decisiontables;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.minBy;
+import static java.util.stream.Collectors.maxBy;
 import static java.util.stream.IntStream.range;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import org.kie.dmn.feel.model.v1_1.DecisionRule;
+import java.math.BigDecimal;
 
 public enum HitPolicy {
     UNIQUE( "U", "UNIQUE", HitPolicy::unique ),
@@ -105,12 +109,14 @@ public enum HitPolicy {
     /**
      *  Each hit results in one output value (multiple outputs are collected into a single context value)
      */
-    public static Object hitToOutput(DTDecisionRule hit) {
+    private static Object hitToOutput(DTDecisionRule hit, List<DTOutputClause> outputs) {
         List<Object> outputEntry = hit.getOutputEntry();
         if ( outputEntry.size() == 1 ) {
             return outputEntry.get( 0 );
         } else {
-            return outputEntry;
+            // zip outputEntry with its name:
+            return IntStream.range(0, outputs.size()).boxed()
+                    .collect( toMap( i -> outputs.get(i).getName(), i -> hit.getOutputEntry().get(i) ));
         }
     }
     
@@ -125,7 +131,7 @@ public enum HitPolicy {
         }
             
         if ( matchingDecisionRules.size() == 1 ) {
-            return hitToOutput( matchingDecisionRules.get(0) );
+            return hitToOutput( matchingDecisionRules.get(0), outputs );
         }
         
         return null;
@@ -138,7 +144,7 @@ public enum HitPolicy {
         List<DTDecisionRule> matchingDecisionRules = matchingDecisionRules(params, decisionRules, inputs);
             
         if ( matchingDecisionRules.size() >= 1 ) {
-            return hitToOutput( matchingDecisionRules.get(0) );
+            return hitToOutput( matchingDecisionRules.get(0), outputs );
         }
         
         return null;
@@ -162,7 +168,7 @@ public enum HitPolicy {
         }
             
         if ( matchingDecisionRules.size() >= 1 ) {
-            return hitToOutput( matchingDecisionRules.get(0) );
+            return hitToOutput( matchingDecisionRules.get(0), outputs );
         }
         
         return null;
@@ -182,22 +188,26 @@ public enum HitPolicy {
     public static Object priority(Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
         List<DTDecisionRule> matchingDecisionRules = matchingDecisionRules(params, decisionRules, inputs);  
         
-        List<Object> resultOrdered = new ArrayList<>();
+        Map<String, Object> resultOrdered = new HashMap<>();
         for ( int i = 0; i < outputs.size(); i++ ) {
             final int outIndex = i;
             DTOutputClause out = outputs.get( outIndex );
-            for ( String outValue : out.getOutputValues() ) {
+            for ( Object outValue : out.getOutputValues() ) {
                 boolean inMatchedRules = matchingDecisionRules.stream()
                     .map( dr -> dr.getOutputEntry().get( outIndex ) )
                     .anyMatch( outN -> outN.equals( outValue ) );
                 if ( inMatchedRules ) {
-                    resultOrdered.add(outValue);
+                    resultOrdered.put(out.getName(), outValue);
                     break; // outValue found, now move fwd to the next outputs[i]
                 }
             }
         }
         
-        return resultOrdered;
+        if (resultOrdered.size() == 1) {
+            return resultOrdered.entrySet().iterator().next().getValue();
+        } else {
+            return resultOrdered;
+        }
     }
 
     /**
@@ -206,22 +216,36 @@ public enum HitPolicy {
     public static Object outputOrder(Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
         List<DTDecisionRule> matchingDecisionRules = matchingDecisionRules(params, decisionRules, inputs);  
         
-        List<Object> resultOrdered = new ArrayList<>();
+        Map<String, List<Object>> resultOrdered = new HashMap<>();
         for ( int i = 0; i < outputs.size(); i++ ) {
             final int outIndex = i;
             DTOutputClause out = outputs.get( outIndex );
-            for ( String outValue : out.getOutputValues() ) {
+            for ( Object outValue : out.getOutputValues() ) {
                 boolean inMatchedRules = matchingDecisionRules.stream()
                     .map( dr -> dr.getOutputEntry().get( outIndex ) )
                     .anyMatch( outN -> outN.equals( outValue ) );
                 if ( inMatchedRules ) {
-                    resultOrdered.add(outValue);
+                    resultOrdered.computeIfAbsent(out.getName(), k->new ArrayList<>()).add(outValue);
                     // similar to hitpolicy "priority" but in this case I continue to evaluate all elements of .getOutputValues() ..
                 }
             }
         }
         
-        return resultOrdered;
+        if (resultOrdered.size() == 1) {
+            if ( matchingDecisionRules.size() == 1 ) {
+                return resultOrdered.entrySet().iterator().next().getValue().get(0);
+            }
+            return resultOrdered.entrySet().iterator().next().getValue();
+        } else {
+            if ( matchingDecisionRules.size() == 1 ) {
+                Map<String, Object> res = new HashMap<>();
+                for ( Entry<String, List<Object>> kv : resultOrdered.entrySet() ) {
+                    res.put(kv.getKey(), kv.getValue().get(0));
+                }
+                return res;
+            }
+            return resultOrdered;
+        }
     }
     
     /**
@@ -229,23 +253,34 @@ public enum HitPolicy {
      * Collect – return a list of the outputs in arbitrary order 
      */
     public static Object ruleOrder(Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
-        return matchingDecisionRules(params, decisionRules, inputs).stream()
-                .map( HitPolicy::hitToOutput )
-                .collect( Collectors.toList() );
+         List<List<?>> collectedOuts = matchingDecisionRules(params, decisionRules, inputs).stream()
+                .map( DTDecisionRule::getOutputEntry )
+                .collect( toList() );
+         if ( outputs.size() == 1 ) {
+             return collectedOuts.stream().map(outputEntryList->outputEntryList.get(0)).collect(toList());
+         } else {
+             // zip outputEntry with its name; do not use .collect( Collectors.toMap ) as it does not support null for values.
+             Map<String, Object> res = new HashMap<>();
+             for ( int i=0 ; i < outputs.size(); i++  ) {
+                 final int index = i;
+                 res.put(outputs.get(i).getName(), collectedOuts.stream().map(outputEntryList->outputEntryList.get(index)).collect(toList()));
+             }
+             return res;
+         }
     }
     
-    public static <T> Collector<T, ?, Object> singleValueOrList() {
-        return new SingleValueOrListCollector<T>();
+    public static <T> Collector<T, ?, Object> singleValueOrContext(List<DTOutputClause> outputs) {
+        return new SingleValueOrContextCollector<T>( outputs.stream().map(DTOutputClause::getName).collect(toList()) );
     }
     
     public static Object generalizedCollect(Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs,
             Function<Stream<Object>, Object> resultCollector) {
         List<List<Object>> raw = matchingDecisionRules(params, decisionRules, inputs).stream()
                  .map( DTDecisionRule::getOutputEntry )
-                 .collect( Collectors.toList() );
+                 .collect( toList() );
         return range(0, outputs.size()).mapToObj( c ->
             resultCollector.apply( raw.stream().map( r -> r.get(c) ) )
-        ).collect( singleValueOrList() );
+        ).collect( singleValueOrContext( outputs ) );
     }
     
     /**
@@ -253,7 +288,7 @@ public enum HitPolicy {
      */
     public static Object countCollect(Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
        return generalizedCollect(params, decisionRules, inputs, outputs, 
-               x -> x.collect( Collectors.toSet() ).size() );
+               x -> new BigDecimal(x.collect( toSet() ).size()) );
     }
 
     /**
@@ -261,7 +296,7 @@ public enum HitPolicy {
      */
     public static Object minCollect(Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
         return generalizedCollect(params, decisionRules, inputs, outputs, 
-                x -> x.map( y -> (Comparable) y ).collect( Collectors.minBy( Comparator.naturalOrder() ) ).orElse(null) );
+                x -> x.map( y -> (Comparable) y ).collect( minBy( Comparator.naturalOrder() ) ).orElse(null) );
     }
     
     /**
@@ -269,7 +304,7 @@ public enum HitPolicy {
      */
     public static Object maxCollect(Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
         return generalizedCollect(params, decisionRules, inputs, outputs,
-                x -> x.map( y -> (Comparable) y ).collect( Collectors.maxBy( Comparator.naturalOrder() ) ).orElse(null) );
+                x -> x.map( y -> (Comparable) y ).collect( maxBy( Comparator.naturalOrder() ) ).orElse(null) );
     }
     
     /**
@@ -278,9 +313,13 @@ public enum HitPolicy {
     public static Object sumCollect(Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
         return generalizedCollect(params, decisionRules, inputs, outputs,
                 x -> x.reduce( BigDecimal.ZERO , (a, b) -> {
-                    return Stream.of(a, b).filter(n->n instanceof Number)
-                        .map(n -> new BigDecimal( n.toString() ))
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    if ( !( a instanceof Number && b instanceof Number ) ) {
+                        return null;
+                    } else {
+                        BigDecimal aB = new BigDecimal( ((Number) a).toString() );
+                        BigDecimal bB = new BigDecimal( ((Number) b).toString() );
+                        return aB.add( bB );
+                    }
                 }) );
     }
 }
