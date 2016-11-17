@@ -106,7 +106,7 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove> 
 
     @Override
     public Iterator<PartitionChangeMove> iterator() {
-        // Currently doesn't be support to be called twice on the same instance
+        // TODO Currently doesn't be support to be called twice on the same instance
         return new PartitionQueueIterator();
     }
 
