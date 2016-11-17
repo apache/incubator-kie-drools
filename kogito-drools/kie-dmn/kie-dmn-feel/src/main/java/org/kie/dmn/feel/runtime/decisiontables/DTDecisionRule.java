@@ -16,6 +16,7 @@
 
 package org.kie.dmn.feel.runtime.decisiontables;
 
+import org.kie.dmn.feel.model.v1_1.LiteralExpression;
 import org.kie.dmn.feel.runtime.UnaryTest;
 
 import java.util.ArrayList;
@@ -48,8 +49,8 @@ th outputEntry SHALL be consistent with the typeRef of the i
 th OutputClause.
  */
 public class DTDecisionRule {
-    private List<UnaryTest> inputEntry;
-    private List<Object>    outputEntry;
+    private List<UnaryTest>         inputEntry;
+    private List<LiteralExpression> outputEntry;
 
     /**
 The instances of UnaryTests that specify the input conditions
@@ -68,7 +69,7 @@ A list of the instances of LiteralExpression that compose
 the output components of this DecisionRule. 
      * @return
      */
-    public List<Object> getOutputEntry() {
+    public List<LiteralExpression> getOutputEntry() {
         if ( outputEntry == null ) {
             outputEntry = new ArrayList<>();
         }

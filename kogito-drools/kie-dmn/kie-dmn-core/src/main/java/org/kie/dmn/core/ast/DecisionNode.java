@@ -99,10 +99,12 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
         public Object evaluate(DMNResultImpl result) {
             List<String> paramNames = dt.getParameterNames().get( 0 );
             Object[] params = new Object[ paramNames.size() ];
+            EvaluationContextImpl ctx = new EvaluationContextImpl();
             for( int i = 0; i < params.length; i++ ) {
                 params[i] = result.getContext().get( paramNames.get( i ) );
+                ctx.setValue( paramNames.get( i ), params[i] );
             }
-            Object dtr = dt.apply( new EvaluationContextImpl(), params );
+            Object dtr = dt.apply( ctx, params );
             return dtr;
         }
     }
