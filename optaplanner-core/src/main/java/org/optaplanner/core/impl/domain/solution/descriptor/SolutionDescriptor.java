@@ -32,6 +32,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import com.google.common.collect.Iterators;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -151,7 +153,8 @@ public class SolutionDescriptor<Solution_> {
 
     private final Map<Class<?>, EntityDescriptor<Solution_>> entityDescriptorMap;
     private final List<Class<?>> reversedEntityClassList;
-    private final Map<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorCache;
+
+    private final ConcurrentMap<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorCache = new ConcurrentHashMap<>();
 
     public SolutionDescriptor(Class<Solution_> solutionClass) {
         this.solutionClass = solutionClass;
@@ -161,7 +164,6 @@ public class SolutionDescriptor<Solution_> {
         entityCollectionMemberAccessorMap = new LinkedHashMap<>();
         entityDescriptorMap = new LinkedHashMap<>();
         reversedEntityClassList = new ArrayList<>();
-        lowestEntityDescriptorCache = new HashMap<>();
     }
 
     public void addEntityDescriptor(EntityDescriptor<Solution_> entityDescriptor) {
@@ -714,18 +716,15 @@ public class SolutionDescriptor<Solution_> {
     }
 
     public EntityDescriptor<Solution_> findEntityDescriptor(Class<?> entitySubclass) {
-        EntityDescriptor<Solution_> entityDescriptor = lowestEntityDescriptorCache.get(entitySubclass);
-        if (entityDescriptor == null) {
+        return lowestEntityDescriptorCache.computeIfAbsent(entitySubclass, key -> {
             // Reverse order to find the nearest ancestor
             for (Class<?> entityClass : reversedEntityClassList) {
                 if (entityClass.isAssignableFrom(entitySubclass)) {
-                    entityDescriptor = entityDescriptorMap.get(entityClass);
-                    lowestEntityDescriptorCache.put(entitySubclass, entityDescriptor);
-                    break;
+                    return entityDescriptorMap.get(entityClass);
                 }
             }
-        }
-        return entityDescriptor;
+            return null;
+        });
     }
 
     public GenuineVariableDescriptor<Solution_> findGenuineVariableDescriptor(Object entity, String variableName) {
