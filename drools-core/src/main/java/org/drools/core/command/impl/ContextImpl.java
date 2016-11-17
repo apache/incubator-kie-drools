@@ -17,7 +17,7 @@
 package org.drools.core.command.impl;
 
 import org.drools.core.world.impl.ContextManagerImpl;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.command.ContextManager;
 
 import java.util.HashMap;

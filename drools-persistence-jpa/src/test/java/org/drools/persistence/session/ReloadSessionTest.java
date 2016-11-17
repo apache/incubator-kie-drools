@@ -135,7 +135,7 @@ public class ReloadSessionTest {
         commandKSession.insert( integerFact );
        
         // At this point in the code, the fact has been persisted to the database
-        //  (within a transaction via the SingleSessionCommandService) 
+        //  (within a transaction via the PersistableRunner)
         Collection<FactHandle> factHandles =  commandKSession.getFactHandles();
         assertTrue("At least one fact should have been inserted by the ksession.insert() method above.", !factHandles.isEmpty());
         FactHandle origFactHandle = factHandles.iterator().next();

@@ -25,7 +25,7 @@ import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

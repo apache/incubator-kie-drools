@@ -16,24 +16,24 @@
 
 package org.drools.persistence.jta;
 
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.locks.ReentrantLock;
-
-import javax.transaction.Status;
-
 import org.drools.core.command.impl.AbstractInterceptor;
 import org.drools.persistence.OrderedTransactionSynchronization;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerHelper;
-import org.kie.api.command.Command;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.Executable;
+import org.kie.api.runtime.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.transaction.Status;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
- * Interceptor that will lock underlying <code>CommandService</code> until transaction completion.
+ * ExecutableInterceptor that will lock underlying <code>Runner</code> until transaction completion.
  * In case there is no transaction active lock is released directly.
  *
  * By default, interceptor is disabled and needs to be explicitly enabled in one of two ways:
@@ -68,9 +68,10 @@ public class TransactionLockInterceptor extends AbstractInterceptor {
     }
 
     @Override
-    public <T> T execute(Command<T> command) {
+    public RequestContext execute( Executable executable, RequestContext ctx ) {
         if (!active) {
-            return executeNext(command);
+            executeNext(executable, ctx);
+            return ctx;
         }
         // release before entering in case it failed previously to avoid deadlock
         releaseAfterFailure();
@@ -83,7 +84,7 @@ public class TransactionLockInterceptor extends AbstractInterceptor {
             logger.debug("Lock taken by {}", Thread.currentThread().getName());
         }
         try {
-            return executeNext(command);
+            executeNext(executable, ctx);
         } finally {
             if (locked) {
                 logger.debug("About to register lock release handler by {}", Thread.currentThread().getName());
@@ -91,6 +92,7 @@ public class TransactionLockInterceptor extends AbstractInterceptor {
             }
             releaseAfterFailure();
         }
+        return ctx;
     }
 
     protected void release(TransactionManager txm) {

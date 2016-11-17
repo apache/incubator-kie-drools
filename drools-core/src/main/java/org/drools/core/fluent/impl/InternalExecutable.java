@@ -16,29 +16,18 @@
 
 package org.drools.core.fluent.impl;
 
-import org.drools.core.command.RequestContextImpl;
 import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.command.impl.RegistryContext;
-import org.kie.api.runtime.Context;
+import org.kie.api.runtime.Executable;
 
-public class GetContextCommand<Void> implements ExecutableCommand<Void> {
-    private String name;
+import java.util.List;
 
-    public GetContextCommand(String name) {
-        this.name = name;
-    }
+public interface InternalExecutable extends Executable {
+    List<Batch> getBatches();
 
-    @Override
-    public Void execute(Context context) {
-        Context returned = ( (RegistryContext) context ).getContextManager().getContext( name );
-        ((RequestContextImpl)context).setApplicationContext(returned);
-        return null;
-    }
-
-    @Override
-    public String toString() {
-        return "GetContextCommand{" +
-               "name='" + name + '\'' +
-               '}';
+    default boolean canRunInTransaction() {
+        return getBatches().stream()
+                           .flatMap( batch -> batch.getCommands().stream() )
+                           .map( ExecutableCommand.class::cast )
+                           .allMatch( ExecutableCommand::canRunInTransaction );
     }
 }

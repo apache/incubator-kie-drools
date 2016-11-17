@@ -1,13 +1,13 @@
 package org.drools.core.command;
 
 import org.drools.core.command.impl.ExecutableCommand;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 
 public class JoinConversationCommand<Void> implements ExecutableCommand<Void> {
-    private long conversationId;
+    private String conversationId;
 
-    public JoinConversationCommand(long conversationId) {
+    public JoinConversationCommand(String conversationId) {
         this.conversationId = conversationId;
     }
 
