@@ -2,7 +2,7 @@ package org.drools.core.fluent.impl;
 
 import org.drools.core.command.GetKieContainerCommand;
 import org.kie.api.builder.ReleaseId;
-import org.kie.internal.fluent.Executable;
+import org.kie.api.runtime.Executable;
 import org.kie.internal.fluent.runtime.FluentBuilder;
 import org.kie.internal.fluent.runtime.KieContainerFluent;
 

@@ -16,6 +16,7 @@
 
 package org.drools.core.impl;
 
+import org.kie.api.runtime.ExecutableRunner;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
@@ -28,8 +29,6 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
-import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.CompositeDefaultAgenda;
@@ -84,7 +83,6 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.runtime.process.ProcessRuntimeFactory;
 import org.drools.core.runtime.rule.impl.LiveQueryImpl;
@@ -126,7 +124,7 @@ import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
@@ -699,29 +697,19 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public <T> T execute(Command<T> command) {
-        return execute( new ContextImpl(), command );
-    }
-
-    public <T> T execute(Context context,
-                         Command<T> command) {
-
-        ExecutionResultImpl results = ((RegistryContext) context).lookup( ExecutionResultImpl.class );
-        if ( results == null ) {
-            results = new ExecutionResultImpl();
-            ((RegistryContext) context).register( ExecutionResultImpl.class, results );
-        }
+        ExecutableRunner runner = ExecutableRunner.create();
+        Context context = runner.createContext();
 
         ((RegistryContext) context).register( KieBase.class, this.kBase )
                                    .register( KieSession.class, this );
 
         if ( !(command instanceof BatchExecutionCommand) ) {
-            return (T) ((ExecutableCommand) command).execute( context );
+            return runner.execute( command, context );
         }
 
         try {
             startBatchExecution();
-            ((ExecutableCommand) command).execute( context );
-            return (T) results;
+            return runner.execute( command, context );
         } finally {
             endBatchExecution();
             if (kBase.flushModifications()) {

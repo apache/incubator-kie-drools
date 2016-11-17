@@ -3,7 +3,8 @@ package org.drools.core.fluent.impl;
 
 import org.drools.core.command.RequestContextImpl;
 import org.drools.core.command.impl.ExecutableCommand;
-import org.kie.internal.command.Context;
+import org.drools.core.command.impl.RegistryContext;
+import org.kie.api.runtime.Context;
 
 public class GetContextCommand<Void> implements ExecutableCommand<Void> {
     private String name;
@@ -14,7 +15,7 @@ public class GetContextCommand<Void> implements ExecutableCommand<Void> {
 
     @Override
     public Void execute(Context context) {
-        Context returned = context.getContextManager().getContext(name);
+        Context returned = ( (RegistryContext) context ).getContextManager().getContext( name );
         ((RequestContextImpl)context).setApplicationContext(returned);
         return null;
     }

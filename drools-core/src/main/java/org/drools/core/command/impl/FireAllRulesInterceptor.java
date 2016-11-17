@@ -22,18 +22,32 @@ import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.command.runtime.process.StartProcessInstanceCommand;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.kie.api.command.Command;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.Batch;
+import org.kie.api.runtime.Executable;
 
 public class FireAllRulesInterceptor extends AbstractInterceptor {
 
-	public <T> T execute(Command<T> command) {
-		T result = executeNext(command);
-		if (requiresFireAllRules(command)) {
-			executeNext(new FireAllRulesCommand());
+	public Context execute( Executable executable, Context ctx ) {
+		executeNext(executable, ctx);
+		if (requiresFireAllRules(executable)) {
+			new FireAllRulesCommand().execute( ctx );
 		}
-		return result;
+		return ctx;
 	}
 	
-	protected <T> boolean requiresFireAllRules(Command<T> command) {
+	protected boolean requiresFireAllRules(Executable executable) {
+		for (Batch batch : executable.getBatches()) {
+			for (Command command : batch.getCommands()) {
+				if (requiresFireAllRules( command )) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	protected boolean requiresFireAllRules(Command command) {
 		return command instanceof AbortWorkItemCommand
 			|| command instanceof CompleteWorkItemCommand
 			|| command instanceof SignalEventCommand

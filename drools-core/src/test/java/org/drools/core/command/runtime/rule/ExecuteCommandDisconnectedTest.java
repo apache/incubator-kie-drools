@@ -15,9 +15,9 @@
  */
 package org.drools.core.command.runtime.rule;
 
+import org.kie.api.runtime.ExecutableRunner;
 import org.drools.core.command.ExecuteCommand;
 import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.DefaultCommandService;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
@@ -36,8 +36,6 @@ import static org.junit.Assert.*;
 
 public class ExecuteCommandDisconnectedTest {
 
-    private DefaultCommandService commandService;
-
     @Test
     public void executeDisconnected() {
         KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -48,7 +46,7 @@ public class ExecuteCommandDisconnectedTest {
         RegistryContext context = new ContextImpl().register( KieSession.class, ksession )
                                                    .register( ExecutionResultImpl.class, localKresults );
 
-        commandService = new DefaultCommandService(context);
+        ExecutableRunner runner = ExecutableRunner.create();
 
         List cmds = new ArrayList();
         cmds.add(new InsertObjectCommand(new String("Hi!"), "handle"));

@@ -749,14 +749,14 @@ public class MultithreadTest extends CommonTestMethodBase {
 //        }
 //    }
 //
-//    class Runner
+//    class ExecutableRunner
 //        implements
 //        Runnable {
 //        private final long             TIME_SPAN;
 //        private final StatelessSession session;
 //        private final AtomicInteger    count;
 //
-//        public Runner(long BASE_TIME,
+//        public ExecutableRunner(long BASE_TIME,
 //                      StatelessSession session,
 //                      final AtomicInteger count) {
 //            this.TIME_SPAN = BASE_TIME;
@@ -812,7 +812,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 //        for ( int i = 0; i < THREADS; i++ ) {
 //            RuleBase ruleBase = createRuleBase( pkgs );
 //            StatelessSession session = createSession( ruleBase );
-//            new Thread( new Runner( BASE_TIME,
+//            new Thread( new ExecutableRunner( BASE_TIME,
 //                                    session,
 //                                    count ) ).start();
 //        }

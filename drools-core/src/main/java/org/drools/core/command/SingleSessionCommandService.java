@@ -17,7 +17,9 @@
 package org.drools.core.command;
 
 
-public interface SingleSessionCommandService extends CommandService {
+import org.drools.core.runtime.InternalRunner;
+
+public interface SingleSessionCommandService extends InternalRunner {
     Long getSessionId();
     void dispose();
     void destroy();

@@ -20,7 +20,7 @@ import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.definition.KnowledgePackage;
 
 import java.util.Collection;

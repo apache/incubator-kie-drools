@@ -17,7 +17,8 @@
 package org.drools.core.command;
 
 import org.drools.core.command.impl.ContextImpl;
-import org.kie.internal.command.Context;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.kie.api.runtime.Context;
 import org.kie.internal.command.ContextManager;
 import org.kie.internal.fluent.RequestContext;
 
@@ -41,10 +42,16 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
 
     private Exception exception;
 
+    public RequestContextImpl() {
+        this.requestId = -1L;
+        register( ExecutionResultImpl.class, new ExecutionResultImpl() );
+    }
+
     public RequestContextImpl(long requestId, ContextManager ctxManager, ConversationContextManager cvnManager) {
         super(Long.toString(requestId), ctxManager);
         this.requestId = requestId;
         this.cvnManager = cvnManager;
+        register( ExecutionResultImpl.class, new ExecutionResultImpl() );
     }
 
     public Context getApplicationContext() {
@@ -99,7 +106,12 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
         return lastReturned;
     }
 
-    public void setLastReturned(Object lastReturned) {
+    @Override
+    public Object getResult() {
+        return getLastReturned();
+    }
+
+    public void setLastReturned( Object lastReturned ) {
         this.lastReturned = lastReturned;
     }
 

@@ -16,15 +16,16 @@
 
 package org.drools.persistence.jpa;
 
-import javax.persistence.OptimisticLockException;
-
 import org.drools.core.command.impl.AbstractInterceptor;
-import org.kie.api.command.Command;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.Executable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.OptimisticLockException;
+
 /**
- * Interceptor that is capable of retrying command execution. It is intended to retry only if right exception
+ * ExecutableInterceptor that is capable of retrying command execution. It is intended to retry only if right exception
  * has been thrown. By default it will look for <code>org.hibernate.StaleObjectStateException</code> and only
  * then attempt to retry.
  * Since this is Hibernate specific class another can be given as system property to override default. Name of the
@@ -68,7 +69,7 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
     }
 
     @Override
-    public <T> T execute(Command<T> command) {
+    public Context execute( Executable executable, Context ctx ) {
         int attempt = 1;
         long sleepTime = delay;
         RuntimeException originException = null;
@@ -79,7 +80,8 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
             }
             try {
 
-                return executeNext(command);
+                executeNext(executable, ctx);
+                return ctx;
 
             } catch (RuntimeException ex) {
                 // in case there is another interceptor of this type in the stack don't handle it here
@@ -108,7 +110,6 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
         }
         logger.warn("Retry failed after {} attempts", attempt);
         throw originException;
-
     }
 
     protected boolean isCausedByOptimisticLockingFailure(Throwable throwable) {

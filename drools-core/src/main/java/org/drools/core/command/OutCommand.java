@@ -1,7 +1,8 @@
 package org.drools.core.command;
 
 import org.drools.core.command.impl.ExecutableCommand;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
+import org.kie.internal.fluent.RequestContext;
 
 
 public class OutCommand<T> implements ExecutableCommand<T> {
@@ -16,7 +17,7 @@ public class OutCommand<T> implements ExecutableCommand<T> {
 
     @Override
     public T execute(Context context) {
-        T returned = (T) ((RequestContextImpl)context).getLastReturned();
+        T returned = (T) ((RequestContext)context).getResult();
 
         String actualName;
         if ( this.name != null ) {

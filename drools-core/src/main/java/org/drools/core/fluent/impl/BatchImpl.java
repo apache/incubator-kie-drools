@@ -1,7 +1,7 @@
 package org.drools.core.fluent.impl;
 
 import org.kie.api.command.Command;
-import org.kie.internal.fluent.Batch;
+import org.kie.api.runtime.Batch;
 
 import java.util.ArrayList;
 import java.util.List;

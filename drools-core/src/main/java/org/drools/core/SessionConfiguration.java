@@ -16,12 +16,12 @@
 
 package org.drools.core;
 
-import org.drools.core.command.CommandService;
 import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.core.util.StringUtils;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
@@ -101,7 +101,7 @@ public abstract class SessionConfiguration implements KieSessionConfiguration, E
 
     public abstract String getSignalManagerFactory();
 
-    public abstract CommandService getCommandService(KnowledgeBase kbase, Environment environment);
+    public abstract ExecutableRunner getRunner( KnowledgeBase kbase, Environment environment );
 
     public abstract TimerService newTimerService();
 

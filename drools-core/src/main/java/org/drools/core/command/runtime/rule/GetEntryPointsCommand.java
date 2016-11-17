@@ -21,7 +21,7 @@ import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 import java.util.ArrayList;
 import java.util.Collection;

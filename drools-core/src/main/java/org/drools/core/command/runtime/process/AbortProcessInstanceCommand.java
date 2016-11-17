@@ -19,7 +19,7 @@ package org.drools.core.command.runtime.process;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.command.ProcessInstanceIdCommand;
 
 import javax.xml.bind.annotation.XmlAccessType;

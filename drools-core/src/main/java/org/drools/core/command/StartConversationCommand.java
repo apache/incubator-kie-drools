@@ -1,7 +1,7 @@
 package org.drools.core.command;
 
 import org.drools.core.command.impl.ExecutableCommand;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 
 public class StartConversationCommand<Void> implements ExecutableCommand<Void> {

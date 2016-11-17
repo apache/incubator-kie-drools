@@ -2,7 +2,7 @@ package org.drools.core.fluent.impl;
 
 import org.drools.core.command.RequestContextImpl;
 import org.drools.core.command.impl.ExecutableCommand;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.fluent.Scope;
 
 public class SetCommand<T> implements ExecutableCommand<T> {
@@ -21,7 +21,7 @@ public class SetCommand<T> implements ExecutableCommand<T> {
     @Override
     public T execute(Context context) {
         RequestContextImpl reqContext = (RequestContextImpl)context;
-        T returned = (T) reqContext.getLastReturned();
+        T returned = (T) reqContext.getResult();
 
         if ( scope == Scope.REQUEST ) {
             reqContext.set(name, returned);

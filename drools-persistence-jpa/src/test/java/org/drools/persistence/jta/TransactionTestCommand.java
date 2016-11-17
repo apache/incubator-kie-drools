@@ -25,7 +25,7 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -93,7 +93,7 @@ public class TransactionTestCommand implements ExecutableCommand<Void> {
 
             /**
              *  Here's what's going on: 
-             *  If the SingleSessionCommandService (SSCS) & JtaTransactionManager (JTM) were _not_ aware of transactions, 
+             *  If the PersistableRunner (SSCS) & JtaTransactionManager (JTM) were _not_ aware of transactions,
              *  -> then inserting the mainObject _before_ having inserted the subObject
              *     would cause the operation/persist to fail and the transaction to fail. 
              *     - This is because the mainObject contains a foreign key referring to the subObject.

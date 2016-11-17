@@ -1,7 +1,7 @@
 package org.drools.core.command;
 
 import org.drools.core.command.impl.ContextImpl;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.command.ContextManager;
 
 public class ConversationContext extends ContextImpl {

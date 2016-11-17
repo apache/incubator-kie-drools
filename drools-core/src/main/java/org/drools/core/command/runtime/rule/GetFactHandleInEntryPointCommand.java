@@ -22,7 +22,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 public class GetFactHandleInEntryPointCommand
     implements

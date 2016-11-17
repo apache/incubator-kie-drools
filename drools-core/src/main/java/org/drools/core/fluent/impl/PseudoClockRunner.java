@@ -16,16 +16,17 @@
 
 package org.drools.core.fluent.impl;
 
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.runtime.InternalRunner;
 import org.drools.core.command.ConversationContextManager;
 import org.drools.core.command.RequestContextImpl;
-import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.time.SessionPseudoClock;
 import org.drools.core.world.impl.ContextManagerImpl;
 import org.kie.api.command.Command;
+import org.kie.api.runtime.Batch;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.command.Context;
-import org.kie.internal.fluent.Batch;
-import org.kie.internal.fluent.Executable;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -35,15 +36,17 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class PseudoClockRunner {
-    private PriorityQueue<Batch>          queue = new PriorityQueue<Batch>(BatchSorter.instance);
-    private Set<KieSession>               ksessions = new HashSet<KieSession>();
+public class PseudoClockRunner implements InternalRunner {
 
     private final Map<String, Context>    appContexts = new HashMap<String, Context>();
     private ConversationContextManager    cvnManager = new ConversationContextManager();
     private long                          counter;
 
-    private long                          startTime;
+    private Set<KieSession> ksessions = new HashSet<KieSession>();
+
+    private PriorityQueue<Batch> queue = new PriorityQueue<Batch>( BatchSorter.instance);
+
+    private final long startTime;
 
     public PseudoClockRunner() {
         this(System.currentTimeMillis());
@@ -62,6 +65,20 @@ public class PseudoClockRunner {
     }
 
     public Context execute( Executable executable, Context ctx ) {
+        executeBatches( executable, ctx );
+        executeQueue( ctx );
+        return ctx;
+    }
+
+    public void evaluateExecutable( Executable executable, Context ctx ) {
+        if (executable != null) {
+            for ( Batch batch : executable.getBatches() ) {
+                executeBatch( batch, ctx );
+            }
+        }
+    }
+
+    public void executeBatches( Executable executable, Context ctx ) {
         for (Batch batch : executable.getBatches()) {
             if ( batch.getDistance() == 0L ) {
                 executeBatch( batch, ctx );
@@ -69,7 +86,9 @@ public class PseudoClockRunner {
                 queue.add( batch );
             }
         }
+    }
 
+    public void executeQueue( Context ctx ) {
         while ( !queue.isEmpty() ) {
             Batch batch = queue.remove();
             long timeNow = startTime + batch.getDistance();
@@ -80,7 +99,7 @@ public class PseudoClockRunner {
             for (Command cmd : batch.getCommands() ) {
                 Object returned = ((ExecutableCommand)cmd).execute( ctx );
                 if ( returned != null ) {
-                    if (ctx instanceof RequestContextImpl) {
+                    if (ctx instanceof RequestContextImpl ) {
                         ( (RequestContextImpl) ctx ).setLastReturned( returned );
                     }
                     if ( returned instanceof KieSession ) {
@@ -91,8 +110,6 @@ public class PseudoClockRunner {
                 }
             }
         }
-
-        return ctx;
     }
 
     private void executeBatch( Batch batch, Context ctx ) {
@@ -114,12 +131,6 @@ public class PseudoClockRunner {
         }
     }
 
-    public RequestContextImpl createContext() {
-        return new RequestContextImpl( counter++,
-                                       new ContextManagerImpl( appContexts ),
-                                       cvnManager );
-    }
-
     private void updateKieSessionTime(long timeNow, long distance, KieSession ksession) {
         SessionPseudoClock clock = ksession.getSessionClock();
 
@@ -127,10 +138,9 @@ public class PseudoClockRunner {
             long               newTime     = startTime + distance;
             long               currentTime = clock.getCurrentTime();
             clock.advanceTime( newTime - currentTime,
-                               TimeUnit.MILLISECONDS);
+                               TimeUnit.MILLISECONDS );
         }
     }
-
 
     private static class BatchSorter implements Comparator<Batch> {
         public static BatchSorter instance = new BatchSorter();
@@ -147,6 +157,11 @@ public class PseudoClockRunner {
 
             return 0;
         }
+    }
 
+    public RequestContextImpl createContext() {
+        return new RequestContextImpl( counter++,
+                                       new ContextManagerImpl( appContexts ),
+                                       cvnManager );
     }
 }

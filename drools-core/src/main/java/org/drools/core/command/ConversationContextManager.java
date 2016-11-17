@@ -1,9 +1,6 @@
 package org.drools.core.command;
 
-import org.drools.core.command.RequestContextImpl;
-import org.kie.internal.command.Context;
-
-import org.drools.core.command.impl.ContextImpl;
+import org.kie.api.runtime.Context;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -21,7 +21,7 @@ import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 public class KnowledgeBuilderGetErrorsCommand
     implements
