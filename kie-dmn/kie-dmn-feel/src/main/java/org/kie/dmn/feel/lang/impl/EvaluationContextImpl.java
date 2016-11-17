@@ -20,6 +20,8 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
 import org.kie.dmn.feel.runtime.FEELFunction;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 public class EvaluationContextImpl implements EvaluationContext {
@@ -81,4 +83,12 @@ public class EvaluationContextImpl implements EvaluationContext {
         return peek().getValue( name );
     }
 
+    @Override
+    public Map<String, Object> getAllValues() {
+        Map<String, Object> values = new HashMap<>(  );
+        for( int i = 0; i < stack.size(); i++ ) {
+            values.putAll( stack.get( i ).getAllValues() );
+        }
+        return values;
+    }
 }

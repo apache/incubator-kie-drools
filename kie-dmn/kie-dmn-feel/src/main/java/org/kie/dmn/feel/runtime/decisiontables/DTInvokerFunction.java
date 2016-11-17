@@ -54,7 +54,7 @@ public class DTInvokerFunction
             return null;
         }
         
-        return hitPolicy.getDti().dti(params, decisionRules, inputs, outputs);
+        return hitPolicy.getDti().dti( ctx, params, decisionRules, inputs, outputs );
     }
     /**
 A rule with input entries t1,t2,…,tN is said to match the input expression list [e1,e2,…,eN] (with optional input values list[v1,v2,…vN])

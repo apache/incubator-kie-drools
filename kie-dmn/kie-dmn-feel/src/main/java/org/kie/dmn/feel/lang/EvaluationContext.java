@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.lang;
 
+import java.util.Map;
+
 public interface EvaluationContext {
 
     void enterFrame();
@@ -27,4 +29,6 @@ public interface EvaluationContext {
     Object getValue(String name );
 
     Object getValue(String[] name );
+
+    Map<String, Object> getAllValues();
 }

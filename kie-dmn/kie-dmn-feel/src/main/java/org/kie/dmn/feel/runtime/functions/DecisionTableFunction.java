@@ -16,6 +16,7 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import org.kie.dmn.feel.model.v1_1.LiteralExpression;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.DTInvokerFunction;
@@ -115,7 +116,7 @@ of the output values.
             if ( i < inputSize ) {
                 dr.getInputEntry().add( toUnaryTest(o) );
             } else {
-                dr.getOutputEntry().add( o );
+                dr.getOutputEntry().add( (LiteralExpression) o );
             }
         }
         return dr;

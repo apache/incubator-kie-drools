@@ -25,6 +25,8 @@ import org.kie.dmn.core.ast.InputDataNode;
 
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -285,4 +287,23 @@ public class DMNRuntimeTest {
         DMNContext result = dmnResult.getContext();
         assertThat( result.get("Ship Can Enter v2"), is( true ) );
     }
+
+    @Test
+    public void testDecisionTableWithCalculatedResult() {
+        DMNRuntime runtime = createRuntime( "calculation1.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_77ae284e-ce52-4579-a50f-f3cc584d7f4b", "Calculation1" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "MonthlyDeptPmt", BigDecimal.valueOf( 200 ) );
+        context.set( "MonthlyPmt", BigDecimal.valueOf( 100 ) );
+        context.set( "MonthlyIncome", BigDecimal.valueOf( 600 ) );
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat( dmnResult.hasErrors(), is( false ) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( ((BigDecimal)result.get("Logique de décision 1")).setScale( 1, RoundingMode.CEILING), is( BigDecimal.valueOf( 0.5 ) ) );
+    }
+
 }

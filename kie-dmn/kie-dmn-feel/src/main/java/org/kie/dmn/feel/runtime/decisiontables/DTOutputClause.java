@@ -6,14 +6,21 @@ import java.util.List;
 
 public class DTOutputClause {
     private final String name;
+    private final String id;
     /**
 [...] output values is a list of values for the one output. Each value is a string.
 TODO ^ this might be conflict in specs if comparing FEEL scope Vs broader DMN scope.
      */
     private final List<String> outputValues;
+
+    public DTOutputClause(String name, List<String> outputValues ) {
+        this( name, null, outputValues );
+    }
     
-    public DTOutputClause(String name, List<String> outputValues) {
+    public DTOutputClause(String name, String id, List<String> outputValues) {
         this.name = name;
+        this.id = id;
+
         if (outputValues != null) {
             this.outputValues = Collections.unmodifiableList(new ArrayList<String>(outputValues));
         } else {
@@ -24,7 +31,11 @@ TODO ^ this might be conflict in specs if comparing FEEL scope Vs broader DMN sc
     public String getName() {
         return name;
     }
-    
+
+    public String getId() {
+        return id;
+    }
+
     public List<String> getOutputValues() {
         return outputValues;
     }
