@@ -26,6 +26,7 @@ import org.kie.dmn.core.ast.InputDataNode;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -236,7 +237,7 @@ public class DMNRuntimeTest {
     }
 
     @Test
-    public void testEmptyDecision() {
+    public void testEmptyDecision1() {
         DMNRuntime runtime = createRuntime( "empty_decision.dmn" );
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_ba9fc4b1-5ced-4d00-9b61-290de4bf3213", "Solution 3" );
         assertThat( dmnModel, notNullValue() );
@@ -248,10 +249,40 @@ public class DMNRuntimeTest {
         shipInfo.put( "Residual Cargo Size", BigDecimal.valueOf( 0.1 ) );
         context.set( "Ship Info", shipInfo );
 
+        // Test that even if one decision is empty or missing input data,
+        // the other decisions in the model are still evaluated
         DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        System.out.println(dmnResult.getMessages());
         DMNContext result = dmnResult.getContext();
+        assertThat( dmnResult.hasErrors(), is( true ) );
         assertThat( result.get("Ship Can Enter v2"), is( true ) );
     }
 
+    @Test
+    public void testEmptyDecision2() {
+        DMNRuntime runtime = createRuntime( "empty_decision.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_ba9fc4b1-5ced-4d00-9b61-290de4bf3213", "Solution 3" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        Map shipInfo = new HashMap(  );
+        shipInfo.put( "Size", BigDecimal.valueOf( 70 ) );
+        shipInfo.put( "Is Double Hulled", Boolean.FALSE );
+        shipInfo.put( "Residual Cargo Size", BigDecimal.valueOf( 0.1 ) );
+        context.set( "Ship Info", shipInfo );
+        context.set( "Ship Size", BigDecimal.valueOf( 70 ) );
+        context.set( "IsDoubleHulled", Boolean.FALSE );
+        context.set( "Residual Cargo Size", BigDecimal.valueOf( 0.1 ) );
+
+        // check that if all the input data is available, but the
+        // decision expression is empty, the model returns a warning
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+
+        List<DMNMessage> messages = dmnResult.getMessages( DMNMessage.Severity.WARN );
+        assertThat( messages.size(), is( 1 ) );
+        assertThat( messages.get( 0 ).getSeverity(), is( DMNMessage.Severity.WARN ) );
+        assertThat( messages.get( 0 ).getSourceId(), is( "_42806504-8ed5-488f-b274-de98c1bc67b9" ) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get("Ship Can Enter v2"), is( true ) );
+    }
 }
