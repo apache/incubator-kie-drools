@@ -240,6 +240,27 @@ public class ConfigUtils {
             .collect(Collectors.toList());
     }
 
+    /**
+     * @param baseClass never null
+     * @param annotationClass never null
+     * @return never null, sorted by type (fields before methods), then by {@link AlphabeticMemberComparator}.
+     */
+    public static List<Member> getAllMembers(Class<?> baseClass, Class<? extends Annotation> annotationClass) {
+        Class<?> clazz = baseClass;
+        Stream<Member> memberStream = Stream.empty();
+        while (clazz != null) {
+            Stream<Field> fieldStream = Stream.of(clazz.getDeclaredFields())
+                    .filter(field -> field.isAnnotationPresent(annotationClass))
+                    .sorted(new AlphabeticMemberComparator());
+            Stream<Method> methodStream = Stream.of(clazz.getDeclaredMethods())
+                    .filter(method -> method.isAnnotationPresent(annotationClass))
+                    .sorted(new AlphabeticMemberComparator());
+            memberStream = Stream.concat(memberStream, Stream.concat(fieldStream, methodStream));
+            clazz = clazz.getSuperclass();
+        }
+        return memberStream.collect(Collectors.toList());
+    }
+
     public static Class<? extends Annotation> extractAnnotationClass(Member member,
             Class<? extends Annotation>... annotations) {
         Class<? extends Annotation> annotationClass = null;

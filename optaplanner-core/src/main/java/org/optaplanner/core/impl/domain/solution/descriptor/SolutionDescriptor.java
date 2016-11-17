@@ -66,6 +66,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.id.LocatorCache;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.AbstractSolution;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
@@ -155,6 +156,7 @@ public class SolutionDescriptor<Solution_> {
     private final List<Class<?>> reversedEntityClassList;
 
     private final ConcurrentMap<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorCache = new ConcurrentHashMap<>();
+    private final LocatorCache locatorCache = new LocatorCache();
 
     public SolutionDescriptor(Class<Solution_> solutionClass) {
         this.solutionClass = solutionClass;
@@ -753,6 +755,14 @@ public class SolutionDescriptor<Solution_> {
             throw new IllegalArgumentException(entityDescriptor.buildInvalidVariableNameExceptionMessage(variableName));
         }
         return variableDescriptor;
+    }
+
+    // ************************************************************************
+    // Locator methods
+    // ************************************************************************
+
+    public LocatorCache getLocatorCache() {
+        return locatorCache;
     }
 
     // ************************************************************************
