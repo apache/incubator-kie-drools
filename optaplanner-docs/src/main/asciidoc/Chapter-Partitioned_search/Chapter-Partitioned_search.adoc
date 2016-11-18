@@ -32,4 +32,4 @@ It only works on use cases for which the planning entities and value ranges can 
 [[activeThreadCount]]
 == Active thread count
 
-image::Chapter-Partitioned_search/partionedSearchThreading.png[align="center"]
+image::Chapter-Partitioned_search/partitionedSearchThreading.png[align="center"]
