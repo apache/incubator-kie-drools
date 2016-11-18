@@ -129,7 +129,7 @@ public interface ScoreDirector<Solution_> {
      * to this {@link ScoreDirector}'s internal working instance.
      * Useful during {@link Move} relocation and in a {@link ProblemFactChange}.
      * <p>
-     * Matching is determined by the {@link LocationStrategyType}.
+     * Matching is determined by the {@link LocationStrategyType} on {@link PlanningSolution}.
      * Matching uses a {@link PlanningId} by default.
      * @param externalObject sometimes null
      * @return only null if originEntity is null

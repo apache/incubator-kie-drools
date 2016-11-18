@@ -61,6 +61,13 @@ public class Locator<Solution_> {
         idToWorkingObjectMap = null;
     }
 
+    /**
+     * As defined by {@link ScoreDirector#locateWorkingObject(Object)}.
+     * @param externalObject sometimes null
+     * @return only null if originEntity is null
+     * @throws IllegalArgumentException if it cannot be located
+     * @param <E> the object type
+     */
     public <E> E locateWorkingObject(E externalObject) {
         if (externalObject == null) {
             return null;
