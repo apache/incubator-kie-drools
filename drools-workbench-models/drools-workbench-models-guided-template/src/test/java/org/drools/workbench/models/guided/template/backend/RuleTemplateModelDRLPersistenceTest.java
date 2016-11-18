@@ -4425,6 +4425,81 @@ public class RuleTemplateModelDRLPersistenceTest {
                        m4 );
     }
 
+    @Test
+    public void checkLHSMultipleFactPatternsWhenPattern1LiteralPattern2Template() {
+        FactPattern fp1 = new FactPattern( "Smurf" );
+        fp1.setBoundName( "p1" );
+
+        SingleFieldConstraint p1sfc1 = new SingleFieldConstraint();
+        p1sfc1.setOperator( "==" );
+        p1sfc1.setFactType( "Smurf" );
+        p1sfc1.setFieldName( "field1" );
+        p1sfc1.setFieldType( DataType.TYPE_STRING );
+        p1sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p1sfc1.setValue( "value1" );
+
+        SingleFieldConstraint p1sfc2 = new SingleFieldConstraint();
+        p1sfc2.setOperator( "==" );
+        p1sfc2.setFactType( "Smurf" );
+        p1sfc2.setFieldName( "field2" );
+        p1sfc2.setFieldType( DataType.TYPE_STRING );
+        p1sfc2.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p1sfc2.setValue( "value2" );
+
+        fp1.addConstraint( p1sfc1 );
+        fp1.addConstraint( p1sfc2 );
+
+        FactPattern fp2 = new FactPattern( "Smurf" );
+        fp2.setBoundName( "p2" );
+
+        SingleFieldConstraint p2sfc1 = new SingleFieldConstraint();
+        p2sfc1.setOperator( "==" );
+        p2sfc1.setFactType( "Smurf" );
+        p2sfc1.setFieldName( "field3" );
+        p2sfc1.setFieldType( DataType.TYPE_STRING );
+        p2sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE);
+        p2sfc1.setValue( "$key" );
+
+        fp2.addConstraint( p2sfc1 );
+
+        //Test 1
+        TemplateModel m1 = new TemplateModel();
+        m1.addLhsItem( fp1 );
+        m1.addLhsItem( fp2 );
+        m1.name = "r1";
+
+        m1.addRow( new String[]{ null } );
+
+        final String expected1 = "rule \"r1_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf( field1 == \"value1\", field2 == \"value2\" )\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall( expected1,
+                       m1 );
+
+        //Test 2
+        TemplateModel m2 = new TemplateModel();
+        m2.addLhsItem( fp1 );
+        m2.addLhsItem( fp2 );
+        m2.name = "r2";
+
+        m2.addRow( new String[]{ "value3" } );
+
+        final String expected2 = "rule \"r2_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf( field1 == \"value1\", field2 == \"value2\" )\n" +
+                "    p2 : Smurf( field3 == \"value3\" )\n" +
+                "  then\n" +
+                "end";
+
+        checkMarshall( expected2,
+                       m2 );
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
