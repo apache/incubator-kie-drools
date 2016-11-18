@@ -156,7 +156,7 @@ public class SolutionDescriptor<Solution_> {
     private final List<Class<?>> reversedEntityClassList;
 
     private final ConcurrentMap<Class<?>, EntityDescriptor<Solution_>> lowestEntityDescriptorCache = new ConcurrentHashMap<>();
-    private final LocatorCache locatorCache = new LocatorCache();
+    private LocatorCache locatorCache = null;
 
     public SolutionDescriptor(Class<Solution_> solutionClass) {
         this.solutionClass = solutionClass;
@@ -290,6 +290,7 @@ public class SolutionDescriptor<Solution_> {
                     " but does not have a " + PlanningSolution.class.getSimpleName() + " annotation.");
         }
         processSolutionCloner(descriptorPolicy, solutionAnnotation);
+        locatorCache = new LocatorCache(solutionAnnotation.locationStrategyType());
     }
 
     private void processSolutionCloner(DescriptorPolicy descriptorPolicy, PlanningSolution solutionAnnotation) {

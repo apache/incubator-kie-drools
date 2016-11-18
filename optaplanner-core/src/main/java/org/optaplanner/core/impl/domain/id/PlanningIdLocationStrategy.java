@@ -24,7 +24,7 @@ import org.optaplanner.core.api.domain.id.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
-class PlanningIdLocationStrategy implements LocationStrategy {
+public class PlanningIdLocationStrategy implements LocationStrategy {
 
     private MemberAccessor memberAccessor;
 

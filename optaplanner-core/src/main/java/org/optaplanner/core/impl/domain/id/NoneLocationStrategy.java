@@ -18,25 +18,33 @@ package org.optaplanner.core.impl.domain.id;
 
 import java.util.Map;
 
-public class EqualsLocationStrategy implements LocationStrategy {
+import org.optaplanner.core.api.domain.id.LocationStrategyType;
+import org.optaplanner.core.api.domain.id.PlanningId;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
+
+public class NoneLocationStrategy implements LocationStrategy {
 
     @Override
     public void addWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject) {
-        idToWorkingObjectMap.put(workingObject, workingObject);
+        // Do nothing
     }
 
     @Override
     public void removeWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject) {
-        Object removedObject = idToWorkingObjectMap.remove(workingObject);
-        if (workingObject != removedObject) {
-            throw new IllegalStateException("The workingObject (" + workingObject
-                    + ") differs from the removedObject (" + removedObject + ").");
-        }
+        // Do nothing
     }
 
     @Override
     public <E> E locateWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
-        return (E) idToWorkingObjectMap.get(externalObject);
+        throw new IllegalArgumentException("The externalObject (" + externalObject
+                + ") cannot be located.\n"
+                + "Maybe give the class (" + externalObject.getClass()
+                + ") a " + PlanningId.class.getSimpleName() + " annotation"
+                + " or change the " + PlanningSolution.class.getSimpleName() + " annotation's "
+                + LocationStrategyType.class.getSimpleName()
+                + " or don't rely on functionality that depends on "
+                + ScoreDirector.class.getSimpleName() + ".locateWorkingObject().");
     }
 
 }

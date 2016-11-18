@@ -29,7 +29,9 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.optaplanner.core.api.domain.id.LocationStrategyType;
 import org.optaplanner.core.api.domain.id.PlanningId;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -42,9 +44,12 @@ import static org.optaplanner.core.config.util.ConfigUtils.MemberAccessorType.FI
 
 public class LocatorCache {
 
+    private final LocationStrategyType locationStrategyType;
+
     private final ConcurrentMap<Class, LocationStrategy> decisionClassCache = new ConcurrentHashMap<>();
 
-    public LocatorCache() {
+    public LocatorCache(LocationStrategyType locationStrategyType) {
+        this.locationStrategyType = locationStrategyType;
         decisionClassCache.put(Boolean.class, new ImmutableLocationStrategy());
         decisionClassCache.put(Byte.class, new ImmutableLocationStrategy());
         decisionClassCache.put(Short.class, new ImmutableLocationStrategy());
@@ -64,12 +69,32 @@ public class LocatorCache {
     protected LocationStrategy retrieveLocationStrategy(Object object) {
         Class<?> objectClass = object.getClass();
         return decisionClassCache.computeIfAbsent(objectClass, key -> {
-            MemberAccessor memberAccessor = findPlanningIdMemberAccessor(objectClass);
-            if (memberAccessor != null) {
-                return new PlanningIdLocationStrategy(memberAccessor);
+            switch (locationStrategyType) {
+                case PLANNING_ID_OR_NONE:
+                    MemberAccessor memberAccessor1 = findPlanningIdMemberAccessor(objectClass);
+                    if (memberAccessor1 == null) {
+                        return new NoneLocationStrategy();
+                    }
+                    return new PlanningIdLocationStrategy(memberAccessor1);
+                case PLANNING_ID_OR_FAIL_FAST:
+                    MemberAccessor memberAccessor2 = findPlanningIdMemberAccessor(objectClass);
+                    if (memberAccessor2 == null) {
+                        throw new IllegalArgumentException("The class (" + objectClass
+                                + ") does not have a " + PlanningId.class.getSimpleName() + " annotation,"
+                                + " but the locationStrategyType (" + locationStrategyType + ") requires it.\n"
+                                + "Maybe add the " + PlanningId.class.getSimpleName() + " annotation"
+                                + " or change the " + PlanningSolution.class.getSimpleName() + " annotation's "
+                                + LocationStrategyType.class.getSimpleName() + ".");
+                    }
+                    return new PlanningIdLocationStrategy(memberAccessor2);
+                case EQUALITY:
+                    return new EqualsLocationStrategy();
+                case NONE:
+                    return new NoneLocationStrategy();
+                default:
+                    throw new IllegalStateException("The locationStrategyType (" + locationStrategyType
+                            + ") is not implemented.");
             }
-            throw new UnsupportedOperationException("" + objectClass); // TODO
-//            return new EqualsLocationStrategy();
         });
     }
 

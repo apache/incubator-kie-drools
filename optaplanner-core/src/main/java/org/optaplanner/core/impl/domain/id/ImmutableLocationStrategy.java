@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.domain.id;
 
 import java.util.Map;
 
-class ImmutableLocationStrategy implements LocationStrategy {
+public class ImmutableLocationStrategy implements LocationStrategy {
 
     @Override
     public void addWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject) {
