@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
- * Non-cacheable.
+ * This {@link Move} is not cacheable.
  */
 public class SubChainSwapMove extends AbstractMove {
 
