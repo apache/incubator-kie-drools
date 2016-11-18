@@ -19,7 +19,9 @@ package org.optaplanner.core.impl.domain.id;
 import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.optaplanner.core.api.domain.id.LocationStrategyType;
 import org.optaplanner.core.api.domain.id.PlanningId;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 class PlanningIdLocationStrategy implements LocationStrategy {
@@ -64,7 +66,17 @@ class PlanningIdLocationStrategy implements LocationStrategy {
     }
 
     protected Object extractKey(Object externalObject) {
-        return Pair.of(externalObject.getClass(), memberAccessor.executeGetter(externalObject));
+        Object planningId = memberAccessor.executeGetter(externalObject);
+        if (planningId == null) {
+            throw new IllegalStateException("The planningId (" + planningId
+                    + ") of the member (" + memberAccessor + ") on externalObject (" + externalObject
+                    + ") must not be null.\n"
+                    + "Maybe initialize the planningId of the original object before solving" +
+                    " or remove the " + PlanningId.class.getSimpleName() + " annotation"
+                    + " or change the " + PlanningSolution.class.getSimpleName() + " annotation's "
+                    + LocationStrategyType.class.getSimpleName() + ".");
+        }
+        return Pair.of(externalObject.getClass(), planningId);
     }
 
 }

@@ -134,7 +134,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
                     + ") has neverEnding (" + moveSelector.isNeverEnding()
                     + "), but the forager (" + forager
                     + ") does not support it.\n"
-                    + " Maybe configure the <forager> with an <acceptedCountLimit>.");
+                    + "Maybe configure the <forager> with an <acceptedCountLimit>.");
         }
         EnvironmentMode environmentMode = configPolicy.getEnvironmentMode();
         if (environmentMode.isNonIntrusiveFullAsserted()) {

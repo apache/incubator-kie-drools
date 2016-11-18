@@ -47,7 +47,7 @@ public abstract class VariableDescriptor<Solution_> {
                     + ") that returns a primitive type (" + variableMemberAccessor.getType()
                     + "). This means it cannot represent an uninitialized variable as null"
                     + " and the Construction Heuristics think it's already initialized.\n"
-                    + "  Maybe let the member (" + getSimpleEntityAndVariableName()
+                    + "Maybe let the member (" + getSimpleEntityAndVariableName()
                     + ") return its primitive wrapper type instead.");
         }
     }

@@ -19,6 +19,7 @@ package org.optaplanner.core.api.domain.solution;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.optaplanner.core.api.domain.id.LocationStrategyType;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.drools.ProblemFactProperty;
@@ -64,5 +65,7 @@ public @interface PlanningSolution {
 
     /** Workaround for annotation limitation in {@link #solutionCloner()}. */
     interface NullSolutionCloner extends SolutionCloner {}
+
+    LocationStrategyType locationStrategyType() default LocationStrategyType.PLANNING_ID_OR_NONE;
 
 }

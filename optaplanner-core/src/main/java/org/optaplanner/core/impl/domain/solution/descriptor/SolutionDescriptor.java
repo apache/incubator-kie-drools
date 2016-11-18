@@ -395,7 +395,7 @@ public class SolutionDescriptor<Solution_> {
                         + " annotated member (" + memberAccessor
                         + ") but the solver configuration still has a deprecated scoreDefinitionType"
                         + " or scoreDefinitionClass element.\n"
-                        + "  Maybe remove the <scoreDefinitionType>, <bendableHardLevelsSize>, <bendableSoftLevelsSize> and <scoreDefinitionClass> elements from the solver configuration.");
+                        + "Maybe remove the <scoreDefinitionType>, <bendableHardLevelsSize>, <bendableSoftLevelsSize> and <scoreDefinitionClass> elements from the solver configuration.");
             }
             if (!Score.class.isAssignableFrom(memberAccessor.getType())) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
@@ -441,7 +441,7 @@ public class SolutionDescriptor<Solution_> {
                         + ") has a " + PlanningScore.class.getSimpleName()
                         + " annotated member (" + scoreMemberAccessor
                         + ") that doesn't return a non-abstract " + Score.class.getSimpleName() + " class.\n"
-                        + "  Maybe make it return " + HardSoftScore.class.getSimpleName()
+                        + "Maybe make it return " + HardSoftScore.class.getSimpleName()
                         + " or another specific " + Score.class.getSimpleName() + " implementation.");
             } else {
                 // Magic to support AbstractSolution

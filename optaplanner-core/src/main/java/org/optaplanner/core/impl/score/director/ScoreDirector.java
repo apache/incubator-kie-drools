@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.optaplanner.core.api.domain.id.LocationStrategyType;
 import org.optaplanner.core.api.domain.id.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
@@ -128,9 +129,11 @@ public interface ScoreDirector<Solution_> {
      * to this {@link ScoreDirector}'s internal working instance.
      * Useful during {@link Move} relocation and in a {@link ProblemFactChange}.
      * <p>
-     * Matching uses a {@link PlanningId} by default, but can also be configured to use equals/hashcode.
+     * Matching is determined by the {@link LocationStrategyType}.
+     * Matching uses a {@link PlanningId} by default.
      * @param externalObject sometimes null
      * @return only null if originEntity is null
+     * @throws IllegalArgumentException if it cannot be located
      * @param <E> the object type
      */
     <E> E locateWorkingObject(E externalObject);
