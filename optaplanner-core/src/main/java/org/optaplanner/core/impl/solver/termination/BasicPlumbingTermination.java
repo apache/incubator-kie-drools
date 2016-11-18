@@ -47,14 +47,14 @@ public class BasicPlumbingTermination extends AbstractTermination {
     // ************************************************************************
 
     /**
-     * Thread-safe.
+     * This method is thread-safe.
      */
     public synchronized void resetTerminateEarly() {
         terminatedEarly = false;
     }
 
     /**
-     * Thread-safe.
+     * This method is thread-safe.
      * <p>
      * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}.
      * @return true if successful
@@ -70,7 +70,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
     }
 
     /**
-     * Thread-safe.
+     * This method is thread-safe.
      */
     public synchronized boolean isTerminateEarly() {
         return terminatedEarly;

@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Thread-safe.
+ * This class is thread-safe.
  */
 public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove> {
 
@@ -65,7 +65,7 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove> 
     }
 
     /**
-     * Thread-safe method.
+     * This method is thread-safe.
      * The previous move(s) for this partIndex (if it hasn't been consumed yet), will be skipped during iteration.
      * @param partIndex {@code 0 <= partIndex < partCount}
      * @param move never null
@@ -79,7 +79,7 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove> 
     }
 
     /**
-     * Thread-safe method.
+     * This method is thread-safe.
      * The previous move for this partIndex (if it hasn't been consumed yet), will still be returned during iteration.
      * @param partIndex {@code 0 <= partIndex < partCount}
      */
@@ -91,7 +91,7 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove> 
     }
 
     /**
-     * Thread-safe method.
+     * This method is thread-safe.
      * The previous move for this partIndex (if it hasn't been consumed yet), will still be returned during iteration
      * before the iteration throws an exception.
      * @param partIndex {@code 0 <= partIndex < partCount}
