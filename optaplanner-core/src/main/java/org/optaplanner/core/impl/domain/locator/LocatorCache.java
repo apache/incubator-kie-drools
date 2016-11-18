@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.id;
+package org.optaplanner.core.impl.domain.locator;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
 import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -29,16 +26,11 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import org.optaplanner.core.api.domain.id.LocationStrategyType;
-import org.optaplanner.core.api.domain.id.PlanningId;
+import org.optaplanner.core.api.domain.locator.LocationStrategyType;
+import org.optaplanner.core.api.domain.locator.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
-import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.common.ReflectionHelper;
-import org.optaplanner.core.impl.domain.common.accessor.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
-import org.optaplanner.core.impl.domain.common.accessor.MethodMemberAccessor;
 
 import static org.optaplanner.core.config.util.ConfigUtils.MemberAccessorType.FIELD_OR_READ_METHOD;
 

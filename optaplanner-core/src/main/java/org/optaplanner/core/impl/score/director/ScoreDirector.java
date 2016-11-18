@@ -20,8 +20,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.core.api.domain.id.LocationStrategyType;
-import org.optaplanner.core.api.domain.id.PlanningId;
+import org.optaplanner.core.api.domain.locator.LocationStrategyType;
+import org.optaplanner.core.api.domain.locator.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.id;
+package org.optaplanner.core.impl.domain.locator;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.optaplanner.core.api.domain.id.PlanningId;
+import org.optaplanner.core.api.domain.locator.PlanningId;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
