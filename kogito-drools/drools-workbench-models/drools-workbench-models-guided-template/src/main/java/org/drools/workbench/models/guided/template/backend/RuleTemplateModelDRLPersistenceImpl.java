@@ -194,13 +194,9 @@ public class RuleTemplateModelDRLPersistenceImpl
             if ( gctx.getVarsInScope().size() > 0 ) {
                 buf.append( "@end{}" );
             } else {
-                LHSGeneratorContext parentContext = gctx.getParent();
-                if ( parentContext != null ) {
-                    Set<String> parentVarsInScope = new HashSet<String>( parentContext.getVarsInScope() );
-                    parentVarsInScope.removeAll( gctx.getVarsInScope() );
-                    if ( parentVarsInScope.size() > 0 ) {
-                        buf.append( "@end{}" );
-                    }
+                int ctxOffset = gctx.getOffset();
+                if ( ctxOffset > 0 ) {
+                    buf.append( "@end{}" );
                 }
             }
         }
