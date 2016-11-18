@@ -72,18 +72,18 @@ public class TennisGenerator extends LoggingMain {
         tennisSolution.setDayList(dayList);
 
         List<UnavailabilityPenalty> unavailabilityPenaltyList = new ArrayList<>();
-        unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(4), dayList.get(0)));
-        unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(6), dayList.get(1)));
-        unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(2), dayList.get(2)));
-        unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(4), dayList.get(3)));
-        unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(4), dayList.get(5)));
-        unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(2), dayList.get(6)));
-        unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(1), dayList.get(8)));
-        unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(2), dayList.get(9)));
-        unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(4), dayList.get(10)));
-        unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(4), dayList.get(11)));
-        unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(6), dayList.get(12)));
-        unavailabilityPenaltyList.add(new UnavailabilityPenalty(teamList.get(5), dayList.get(15)));
+        unavailabilityPenaltyList.add(new UnavailabilityPenalty(0L, teamList.get(4), dayList.get(0)));
+        unavailabilityPenaltyList.add(new UnavailabilityPenalty(1L, teamList.get(6), dayList.get(1)));
+        unavailabilityPenaltyList.add(new UnavailabilityPenalty(2L, teamList.get(2), dayList.get(2)));
+        unavailabilityPenaltyList.add(new UnavailabilityPenalty(3L, teamList.get(4), dayList.get(3)));
+        unavailabilityPenaltyList.add(new UnavailabilityPenalty(4L, teamList.get(4), dayList.get(5)));
+        unavailabilityPenaltyList.add(new UnavailabilityPenalty(5L, teamList.get(2), dayList.get(6)));
+        unavailabilityPenaltyList.add(new UnavailabilityPenalty(6L, teamList.get(1), dayList.get(8)));
+        unavailabilityPenaltyList.add(new UnavailabilityPenalty(7L, teamList.get(2), dayList.get(9)));
+        unavailabilityPenaltyList.add(new UnavailabilityPenalty(8L, teamList.get(4), dayList.get(10)));
+        unavailabilityPenaltyList.add(new UnavailabilityPenalty(9L, teamList.get(4), dayList.get(11)));
+        unavailabilityPenaltyList.add(new UnavailabilityPenalty(10L, teamList.get(6), dayList.get(12)));
+        unavailabilityPenaltyList.add(new UnavailabilityPenalty(11L, teamList.get(5), dayList.get(15)));
         tennisSolution.setUnavailabilityPenaltyList(unavailabilityPenaltyList);
 
         List<TeamAssignment> teamAssignmentList = new ArrayList<>();

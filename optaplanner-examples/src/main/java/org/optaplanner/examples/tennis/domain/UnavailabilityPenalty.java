@@ -28,7 +28,8 @@ public class UnavailabilityPenalty extends AbstractPersistable {
     public UnavailabilityPenalty() {
     }
 
-    public UnavailabilityPenalty(Team team, Day day) {
+    public UnavailabilityPenalty(long id, Team team, Day day) {
+        super(id);
         this.team = team;
         this.day = day;
     }

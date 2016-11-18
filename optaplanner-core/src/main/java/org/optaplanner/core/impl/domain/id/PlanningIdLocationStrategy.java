@@ -26,50 +26,44 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 public class PlanningIdLocationStrategy implements LocationStrategy {
 
-    private MemberAccessor memberAccessor;
+    private MemberAccessor planningIdMemberAccessor;
 
-    public PlanningIdLocationStrategy(MemberAccessor memberAccessor) {
-        this.memberAccessor = memberAccessor;
+    public PlanningIdLocationStrategy(MemberAccessor planningIdMemberAccessor) {
+        this.planningIdMemberAccessor = planningIdMemberAccessor;
     }
 
     @Override
     public void addWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject) {
-        Object key = extractKey(workingObject);
-        if (key == null) {
-            throw new IllegalArgumentException("The workingObject (" + workingObject
-                    + ") cannot be added because there is no key (" + key
-                    + ") for the class (" + workingObject.getClass() + ").");
+        Object planningId = extractPlanningId(workingObject);
+        Object oldAddedObject = idToWorkingObjectMap.put(planningId, workingObject);
+        if (oldAddedObject != null) {
+            throw new IllegalStateException("The workingObjects (" + oldAddedObject + ", " + workingObject
+                    + ") have the same planningId (" + planningId + ").");
         }
-        idToWorkingObjectMap.put(key, workingObject);
     }
 
     @Override
     public void removeWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject) {
-        Object key = extractKey(workingObject);
-        Object removedObject = idToWorkingObjectMap.remove(key);
+        Object planningId = extractPlanningId(workingObject);
+        Object removedObject = idToWorkingObjectMap.remove(planningId);
         if (workingObject != removedObject) {
             throw new IllegalStateException("The workingObject (" + workingObject
-                    + ") differs from the removedObject (" + removedObject + ") for key (" + key + ").");
+                    + ") differs from the removedObject (" + removedObject + ") for planningId (" + planningId + ").");
         }
     }
 
     @Override
     public <E> E locateWorkingObject(Map<Object, Object> idToWorkingObjectMap, E externalObject) {
-        Object key = extractKey(externalObject);
-        if (key == null) {
-            throw new IllegalArgumentException("The externalObject (" + externalObject
-                    + ") cannot be located because there is no key (" + key
-                    + ") for the class (" + externalObject.getClass() + ").\n"
-                    + "Maybe add a " + PlanningId.class.getSimpleName() + " annotation or enable equals semantics.");
-        }
-        return (E) idToWorkingObjectMap.get(key);
+        Object planningId = extractPlanningId(externalObject);
+        return (E) idToWorkingObjectMap.get(planningId);
     }
 
-    protected Object extractKey(Object externalObject) {
-        Object planningId = memberAccessor.executeGetter(externalObject);
+    protected Object extractPlanningId(Object externalObject) {
+        Object planningId = planningIdMemberAccessor.executeGetter(externalObject);
         if (planningId == null) {
             throw new IllegalStateException("The planningId (" + planningId
-                    + ") of the member (" + memberAccessor + ") on externalObject (" + externalObject
+                    + ") of the member (" + planningIdMemberAccessor + ") of the class (" + externalObject.getClass()
+                    + ") on externalObject (" + externalObject
                     + ") must not be null.\n"
                     + "Maybe initialize the planningId of the original object before solving" +
                     " or remove the " + PlanningId.class.getSimpleName() + " annotation"

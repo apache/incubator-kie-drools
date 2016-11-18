@@ -41,7 +41,7 @@ public class TaskAssigningScoreConstraintTest {
         Skill s1 = new Skill(1L, "Law degree");
         TaskType tt1 = new TaskType(1L, "TT1", "Task type 1", 100);
         tt1.getRequiredSkillList().add(s1);
-        TaskType tt2 = new TaskType(1L, "TT2", "Task type 2", 2000);
+        TaskType tt2 = new TaskType(2L, "TT2", "Task type 2", 2000);
         Customer c1 = new Customer(1L, "Steel Inc");
         Employee e1 = new Employee(1L, "Ann");
         Employee e2 = new Employee(2L, "Beth");

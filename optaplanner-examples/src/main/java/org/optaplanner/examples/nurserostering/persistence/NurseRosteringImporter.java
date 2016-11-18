@@ -201,6 +201,7 @@ public class NurseRosteringImporter extends AbstractXmlSolutionImporter<NurseRos
         private void generateNurseRosterInfo(NurseRoster nurseRoster) {
             List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
             NurseRosterParametrization nurseRosterParametrization = new NurseRosterParametrization();
+            nurseRosterParametrization.setId(0L);
             nurseRosterParametrization.setFirstShiftDate(shiftDateList.get(0));
             nurseRosterParametrization.setLastShiftDate(shiftDateList.get(shiftDateList.size() - 1));
             nurseRosterParametrization.setPlanningWindowStart(shiftDateList.get(0));
