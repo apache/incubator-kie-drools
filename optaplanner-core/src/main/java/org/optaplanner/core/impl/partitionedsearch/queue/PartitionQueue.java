@@ -31,7 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Thread-safe
+ * Thread-safe.
  */
 public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove> {
 

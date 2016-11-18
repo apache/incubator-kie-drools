@@ -149,7 +149,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
             ChildThreadPlumbingTermination childThreadPlumbingTermination, Semaphore activeThreadSemaphore,
             DefaultSolverScope<Solution_> solverScope) {
         Termination partTermination = new OrCompositeTermination(childThreadPlumbingTermination,
-                termination.createChildThreadTermination( solverScope, ChildThreadType.PART_THREAD));
+                termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD));
         BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecallerConfig()
                 .buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());

@@ -76,7 +76,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     }
 
     /**
-     * If there aren't enough processors available, CPU's will be shared by threads in a round-robin matter,.
+     * If there aren't enough processors available, CPUs will be shared by threads in a round-robin matter,
      * resulting in a slower score calculation speed per partition {@link Solver}.
      * @return null, a number, {@value #ACTIVE_THREAD_COUNT_AUTO}, {@value #ACTIVE_THREAD_COUNT_UNLIMITED}
      * or a JavaScript calculation using {@value ConfigUtils#AVAILABLE_PROCESSOR_COUNT}.

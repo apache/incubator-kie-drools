@@ -93,7 +93,7 @@ public class SubChainSwapMoveSelectorConfig extends MoveSelectorConfig<SubChainS
                 entityDescriptor,
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         return new SubChainSwapMoveSelector(leftSubChainSelector, rightSubChainSelector, randomSelection,
-                defaultIfNull(selectReversingMoveToo , true));
+                defaultIfNull(selectReversingMoveToo, true));
     }
 
     @Override
