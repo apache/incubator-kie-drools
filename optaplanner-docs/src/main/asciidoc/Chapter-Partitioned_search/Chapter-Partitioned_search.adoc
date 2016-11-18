@@ -28,3 +28,8 @@ Use an `Solver` to solve each piece.
 Not all use cases can be partitioned.
 It only works on use cases for which the planning entities and value ranges can be divided into n pieces, such that none of the constraints cross piece boundaries.
 ====
+
+[[activeThreadCount]]
+== Active thread count
+
+image::Chapter-Partitioned_search/partionedSearchThreading.png[align="center"]
