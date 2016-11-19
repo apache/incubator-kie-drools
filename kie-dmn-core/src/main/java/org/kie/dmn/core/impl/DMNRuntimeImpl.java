@@ -20,6 +20,9 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.dmn.core.api.*;
+import org.kie.dmn.core.api.event.DMNRuntimeEventListener;
+import org.kie.dmn.core.api.event.DMNRuntimeEventManager;
+import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
 import org.kie.dmn.core.ast.DMNNode;
 import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.feel.FEEL;
@@ -32,10 +35,12 @@ import java.util.List;
 public class DMNRuntimeImpl
         implements DMNRuntime {
 
-    private KieRuntime runtime;
+    private KieRuntime                     runtime;
+    private InternalDMNRuntimeEventManager eventManager;
 
     public DMNRuntimeImpl(KieRuntime runtime) {
         this.runtime = runtime;
+        this.eventManager = new DMNRuntimeEventManagerImpl();
     }
 
     @Override
@@ -63,9 +68,6 @@ public class DMNRuntimeImpl
         DMNResultImpl result = createResult( context );
         for( DecisionNode decision : model.getDecisions() ) {
             evaluateDecision( context, result, decision );
-//            if ( ! evaluateDecision( context, result, decision ) )
-//                // have to replace this by proper error handling
-//                return null;
         }
         return result;
     }
@@ -94,6 +96,21 @@ public class DMNRuntimeImpl
         return result;
     }
 
+    @Override
+    public void addListener(DMNRuntimeEventListener listener) {
+        this.eventManager.addListener( listener );
+    }
+
+    @Override
+    public void removeListener(DMNRuntimeEventListener listener) {
+        this.eventManager.removeListener( listener );
+    }
+
+    @Override
+    public Set<DMNRuntimeEventListener> getListeners() {
+        return this.eventManager.getListeners();
+    }
+
     private DMNResultImpl createResult(DMNContext context) {
         DMNResultImpl result = new DMNResultImpl();
         result.setContext( context.clone() );
@@ -101,40 +118,49 @@ public class DMNRuntimeImpl
     }
 
     private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode decision) {
-        boolean missingInput = false;
-        DMNDecisionResultImpl dr = new DMNDecisionResultImpl( decision.getId(), decision.getName() );
-        result.setDecisionResult( decision.getId(), dr );
-        for( DMNNode dep : decision.getDependencies().values() ) {
-            if( ! context.isDefined( dep.getName() ) ) {
-                if( dep instanceof DecisionNode ) {
-                    evaluateDecision( context, result, (DecisionNode) dep );
-                } else {
-                    missingInput = true;
-                    DMNMessage msg = result.addMessage( DMNMessage.Severity.ERROR,
-                                                        "Missing input for decision '"+decision.getName()+"': input name='" + dep.getName() + "' input id='" + dep.getId() + "'",
-                                                        decision.getId() );
-                    dr.getMessages().add( msg );
-                }
-            }
-        }
-        if( missingInput ) {
-            return false;
-        }
-        if( decision.getEvaluator() == null ) {
-            DMNMessage msg = result.addMessage( DMNMessage.Severity.WARN,
-                                                "Missing expression for decision '"+decision.getName()+"'. Skipping evaluation.",
-                                                decision.getId() );
-            dr.getMessages().add( msg );
-            return false;
+        if( result.getContext().isDefined( decision.getName() ) ) {
+            // already resolved
+            return true;
         }
         try {
-            Object val = decision.getEvaluator().evaluate( result );
-            result.getContext().set( decision.getDecision().getVariable().getName(), val );
-            dr.setResult( val );
-        } catch( Throwable t ) {
-            result.addMessage( DMNMessage.Severity.ERROR, "Error evaluating decision '"+decision.getName()+"': "+t.getMessage(), decision.getId(), t );
+            eventManager.fireBeforeEvaluateDecision( decision, result );
+            boolean missingInput = false;
+            DMNDecisionResultImpl dr = new DMNDecisionResultImpl( decision.getId(), decision.getName() );
+            result.setDecisionResult( decision.getId(), dr );
+            for( DMNNode dep : decision.getDependencies().values() ) {
+                if( ! result.getContext().isDefined( dep.getName() ) ) {
+                    if( dep instanceof DecisionNode ) {
+                        evaluateDecision( context, result, (DecisionNode) dep );
+                    } else {
+                        missingInput = true;
+                        DMNMessage msg = result.addMessage( DMNMessage.Severity.ERROR,
+                                                            "Missing input for decision '"+decision.getName()+"': input name='" + dep.getName() + "' input id='" + dep.getId() + "'",
+                                                            decision.getId() );
+                        dr.getMessages().add( msg );
+                    }
+                }
+            }
+            if( missingInput ) {
+                return false;
+            }
+            if( decision.getEvaluator() == null ) {
+                DMNMessage msg = result.addMessage( DMNMessage.Severity.WARN,
+                                                    "Missing expression for decision '"+decision.getName()+"'. Skipping evaluation.",
+                                                    decision.getId() );
+                dr.getMessages().add( msg );
+                return false;
+            }
+            try {
+                Object val = decision.getEvaluator().evaluate( eventManager, result );
+                result.getContext().set( decision.getDecision().getVariable().getName(), val );
+                dr.setResult( val );
+            } catch( Throwable t ) {
+                result.addMessage( DMNMessage.Severity.ERROR, "Error evaluating decision '"+decision.getName()+ "': "+t.getMessage(), decision.getId(), t );
+            }
+            return true;
+        } finally {
+            eventManager.fireAfterEvaluateDecision( decision, result );
         }
-        return true;
     }
 
 }

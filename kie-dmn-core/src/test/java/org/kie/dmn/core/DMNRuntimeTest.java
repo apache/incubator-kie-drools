@@ -21,8 +21,10 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.core.api.*;
+import org.kie.dmn.core.api.event.*;
 import org.kie.dmn.core.ast.InputDataNode;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -38,6 +40,10 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class DMNRuntimeTest {
 
@@ -326,4 +332,66 @@ public class DMNRuntimeTest {
         assertThat( result.get("Payment method"), is( "Check" ) );
     }
 
+    @Test
+    public void testEventListeners() {
+        DMNRuntime runtime = createRuntime( "car_damage_responsibility.dmn" );
+
+        DMNRuntimeEventListener listener = mock( DMNRuntimeEventListener.class );
+        runtime.addListener( listener );
+        runtime.addListener( createListener() );
+
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_820611e9-c21c-47cd-8e52-5cba2be9f9cc", "Car Damage Responsibility" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Membership Level", "Silver" );
+        context.set( "Damage Types", "Body" );
+        context.set( "Responsible", "Driver" );
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+
+        verify( listener, times(2) )
+                .beforeEvaluateDecision( any( BeforeEvaluateDecisionEvent.class ) );
+        verify( listener, times(2) )
+                .afterEvaluateDecision( any( AfterEvaluateDecisionEvent.class ) );
+        verify( listener, times(2) )
+                .beforeEvaluateDecisionTable( any( BeforeEvaluateDecisionTableEvent.class ) );
+        verify( listener, times(2) )
+                .afterEvaluateDecisionTable( any( AfterEvaluateDecisionTableEvent.class ) );
+
+        assertThat( dmnResult.hasErrors(), is( false ) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( (Map<String,Object>)result.get("Car Damage Responsibility"), hasEntry( is( "EU Rent" ), is( BigDecimal.valueOf( 40 )) ));
+        assertThat( (Map<String,Object>)result.get("Car Damage Responsibility"), hasEntry( is( "Renter" ), is( BigDecimal.valueOf( 60 )) ));
+        assertThat( result.get("Payment method"), is( "Check" ) );
+    }
+
+    private DMNRuntimeEventListener createListener() {
+        return new DMNRuntimeEventListener() {
+            private final Logger logger = LoggerFactory.getLogger( DMNRuntimeEventListener.class );
+
+            @Override
+            public void beforeEvaluateDecision(BeforeEvaluateDecisionEvent event) {
+                logger.info( event.toString() );
+            }
+
+            @Override
+            public void afterEvaluateDecision(AfterEvaluateDecisionEvent event) {
+                logger.info( event.toString() );
+            }
+
+            @Override
+            public void beforeEvaluateDecisionTable(BeforeEvaluateDecisionTableEvent event) {
+                logger.info( event.toString() );
+
+            }
+
+            @Override
+            public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
+                logger.info( event.toString() );
+
+            }
+        };
+    }
 }
