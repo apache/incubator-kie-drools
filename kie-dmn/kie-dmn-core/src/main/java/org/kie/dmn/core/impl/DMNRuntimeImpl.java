@@ -127,9 +127,13 @@ public class DMNRuntimeImpl
             dr.getMessages().add( msg );
             return false;
         }
-        Object val = decision.getEvaluator().evaluate( result );
-        result.getContext().set( decision.getDecision().getVariable().getName(), val );
-        dr.setResult( val );
+        try {
+            Object val = decision.getEvaluator().evaluate( result );
+            result.getContext().set( decision.getDecision().getVariable().getName(), val );
+            dr.setResult( val );
+        } catch( Throwable t ) {
+            result.addMessage( DMNMessage.Severity.ERROR, "Error evaluating decision '"+decision.getName()+"': "+t.getMessage(), decision.getId(), t );
+        }
         return true;
     }
 
