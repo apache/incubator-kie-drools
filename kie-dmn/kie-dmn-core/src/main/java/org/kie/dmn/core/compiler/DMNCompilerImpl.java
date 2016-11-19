@@ -220,7 +220,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                 }
                 for( LiteralExpression le : dr.getOutputEntry() ) {
                     // we might want to compile and save the compiled expression here
-                    rule.getOutputEntry().add( le );
+                    rule.getOutputEntry().add( le.getText() );
                 }
                 rules.add( rule );
             }

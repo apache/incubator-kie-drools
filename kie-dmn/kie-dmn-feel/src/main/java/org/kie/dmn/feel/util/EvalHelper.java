@@ -55,13 +55,53 @@ public class EvalHelper {
         return (Boolean) value;
     }
 
-    public static String stripQuotes(String text) {
+    public static String unescapeString(String text) {
         if ( text == null ) {
             return null;
-        } else if ( text.length() >= 2 && text.startsWith( "\"" ) && text.endsWith( "\"" ) ) {
-            return text.substring( 1, text.length() - 1 );
         }
-        // not sure this is ever possible, but using some defensive code here
+        if ( text.length() >= 2 && text.startsWith( "\"" ) && text.endsWith( "\"" ) ) {
+            // remove the quotes
+            text = text.substring( 1, text.length() - 1 );
+        }
+        if( text.indexOf( '\\' ) >= 0 ) {
+            // might require un-escaping
+            StringBuilder r = new StringBuilder(  );
+            for( int i = 0; i < text.length(); i++ ) {
+                char c = text.charAt( i );
+                if( c == '\\' ) {
+                    if( text.length() > i+1 ) {
+                        i++;
+                        char cn = text.charAt( i );
+                        switch ( cn ) {
+                            case 'b' : r.append( '\b' ); break;
+                            case 't' : r.append( '\t' ); break;
+                            case 'n' : r.append( '\n' ); break;
+                            case 'f' : r.append( '\f' ); break;
+                            case 'r' : r.append( '\r' ); break;
+                            case '"' : r.append( '"' ); break;
+                            case '\'' : r.append( '\'' ); break;
+                            case '\\' : r.append( '\\' ); break;
+                            case 'u' : {
+                                if( text.length() >= i+5 ) {
+                                    // escape unicode
+                                    String hex = text.substring( i+1, i+5 );
+                                    char[] chars = Character.toChars( Integer.parseInt( hex, 16 ) );
+                                    r.append( chars );
+                                    i+=4;
+                                } else {
+                                    // not really unicode
+                                    r.append( "\\" ).append( cn );
+                                }
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    r.append( c );
+                }
+            }
+            text = r.toString();
+        }
         return text;
     }
 

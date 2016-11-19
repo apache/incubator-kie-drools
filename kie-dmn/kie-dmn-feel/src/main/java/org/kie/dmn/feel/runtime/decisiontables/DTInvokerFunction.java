@@ -50,42 +50,56 @@ public class DTInvokerFunction
         }
 
         if ( params.length != decisionRules.get( 0 ).getInputEntry().size() ) {
-            logger.error( "The parameters supplied does not match input expression list" );
+            logger.error( "The parameters supplied do not match input expression list for decision table '"+ getName() +"'" );
             return null;
         }
-        
-        return hitPolicy.getDti().dti( ctx, params, decisionRules, inputs, outputs );
+
+        try {
+            ctx.enterFrame();
+            for ( int i = 0; i < params.length; i++ ) {
+                ctx.setValue( inputs.get( i ).getInputExpression(), params[i] );
+            }
+            Object result = hitPolicy.getDti().dti( ctx, params, decisionRules, inputs, outputs );
+            return result;
+        } catch( Exception e ) {
+            logger.error( "Error invoking decision table '" + getName() + "'.", e );
+        } finally {
+            ctx.exitFrame();
+        }
+        return null;
     }
+
     /**
-A rule with input entries t1,t2,…,tN is said to match the input expression list [e1,e2,…,eN] (with optional input values list[v1,v2,…vN])
-if ei satisfies ti (with optional input values vi) for all i in 1..N.
+     A rule with input entries t1,t2,…,tN is said to match the input expression list [e1,e2,…,eN] (with optional input values list[v1,v2,…vN])
+     if ei satisfies ti (with optional input values vi) for all i in 1..N.
      */
-    public static boolean match(Object[] inputExpressionlist, DTDecisionRule rule, List<DTInputClause>  inputs) {
+    public static boolean match(Object[] inputExpressionlist, DTDecisionRule rule, List<DTInputClause> inputs) {
         return IntStream.range( 0, inputExpressionlist.length )                         // TODO could short-circuit by using for/continue
-            .mapToObj( i -> satisfies(inputExpressionlist[i], rule.getInputEntry().get( i ), inputs.get( i ).getInputValues() ) )
-            .reduce( (a, b) -> a && b )
-            .orElse( false );
+                .mapToObj( i -> satisfies( inputExpressionlist[i], rule.getInputEntry().get( i ), inputs.get( i ).getInputValues() ) )
+                .reduce( (a, b) -> a && b )
+                .orElse( false );
     }
+
     /**
-Unary tests (grammar rule 17) are used to represent both input values and input entries. An input expression e is said to
-satisfy an input entry t (with optional input values v), depending on the syntax of t, as follows:
- grammar rule 17.a: FEEL(e in (t))=true
- grammar rule 17.b: FEEL(e in (t))=false
- grammar rule 17.c when v is not provided: e != null
- grammar rule 17.c when v is provided: FEEL(e in (v))=true
+     Unary tests (grammar rule 17) are used to represent both input values and input entries. An input expression e is said to
+     satisfy an input entry t (with optional input values v), depending on the syntax of t, as follows:
+     grammar rule 17.a: FEEL(e in (t))=true
+     grammar rule 17.b: FEEL(e in (t))=false
+     grammar rule 17.c when v is not provided: e != null
+     grammar rule 17.c when v is provided: FEEL(e in (v))=true
      */
     public static boolean satisfies(Object inputExpressionE, UnaryTest inputEntryT, List<UnaryTest> inputValuesV) {
-        if (inputValuesV == null || inputValuesV.size() == 0) {
-            if (inputExpressionE == null) {
-                return false;
-            }
+        if ( inputValuesV == null || inputValuesV.size() == 0 ) {
+//            if ( inputExpressionE == null ) {
+//                return false;
+//            }
         } else {
-            boolean EinV = inputValuesV.stream().map(ut->ut.apply(inputExpressionE)).filter(Boolean::booleanValue).findAny().orElse(false);
+            boolean EinV = inputValuesV.stream().map( ut -> ut.apply( inputExpressionE ) ).filter( Boolean::booleanValue ).findAny().orElse( false );
             if ( !EinV ) {
                 return false;
             }
         }
-        return inputEntryT.apply(inputExpressionE);
+        return inputEntryT.apply( inputExpressionE );
     }
 
     @Override
@@ -94,7 +108,7 @@ satisfy an input entry t (with optional input values v), depending on the syntax
     }
 
     public List<List<String>> getParameterNames() {
-        return Arrays.asList( inputs.stream().map(DTInputClause::getInputExpression).collect(Collectors.toList()) );
+        return Arrays.asList( inputs.stream().map( DTInputClause::getInputExpression ).collect( Collectors.toList() ) );
     }
 
     public HitPolicy getHitPolicy() {
