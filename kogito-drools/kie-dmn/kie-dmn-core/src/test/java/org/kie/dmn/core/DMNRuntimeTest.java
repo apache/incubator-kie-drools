@@ -25,7 +25,6 @@ import org.kie.dmn.core.ast.InputDataNode;
 
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
@@ -304,6 +304,26 @@ public class DMNRuntimeTest {
 
         DMNContext result = dmnResult.getContext();
         assertThat( ((BigDecimal)result.get("Logique de décision 1")).setScale( 1, RoundingMode.CEILING), is( BigDecimal.valueOf( 0.5 ) ) );
+    }
+
+    @Test
+    public void testDecisionTableMultipleResults() {
+        DMNRuntime runtime = createRuntime( "car_damage_responsibility.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_820611e9-c21c-47cd-8e52-5cba2be9f9cc", "Car Damage Responsibility" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Membership Level", "Silver" );
+        context.set( "Damage Types", "Body" );
+        context.set( "Responsible", "Driver" );
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat( dmnResult.hasErrors(), is( false ) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( (Map<String,Object>)result.get("Car Damage Responsibility"), hasEntry( is( "EU Rent" ), is( BigDecimal.valueOf( 40 )) ));
+        assertThat( (Map<String,Object>)result.get("Car Damage Responsibility"), hasEntry( is( "Renter" ), is( BigDecimal.valueOf( 60 )) ));
+        assertThat( result.get("Payment method"), is( "Check" ) );
     }
 
 }

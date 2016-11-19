@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+                      xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      exporter="DMN Modeler" exporterVersion="5.0.34.201611081547" id="_820611e9-c21c-47cd-8e52-5cba2be9f9cc"
+                      name="Car Damage Responsibility"
+                      namespace="http://www.trisotech.com/definitions/_820611e9-c21c-47cd-8e52-5cba2be9f9cc"
+                      triso:logoChoice="Default">
+  <semantic:extensionElements>
+    <rss:rss version="2.0">
+      <rss:channel/>
+    </rss:rss>
+  </semantic:extensionElements>
+  <semantic:decision id="_5693fada-33cb-4a9e-bcfa-6fc343505538" name="Car Damage Responsibility">
+    <semantic:variable id="_1b9f9da5-ec0b-49e8-8ab6-a7767c05cf1d" name="Car Damage Responsibility"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_46252761-a3a1-4628-ae06-4b3652116f61"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_90aab494-9458-4b43-bdf4-0a82c2276100"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_90aab494-9458-4b43-bdf4-0a82c22761b3"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Car Damage Responsibility">
+      <semantic:input id="_2d0d4099-eecc-4898-b4d3-84bce9396499" label="Membership Level">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Membership Level</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Gold", "None", "Silver"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_6c9a31d3-2acf-482d-92de-3739ffaa51b7" label="Responsible">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Responsible</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"3rd Party", "Driver"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:input id="_868d8ddd-b250-4a5b-bd9f-3619fc7c5f66" label="Damage Types">
+        <semantic:inputExpression typeRef="feel:string">
+          <semantic:text>Damage Types</semantic:text>
+        </semantic:inputExpression>
+        <semantic:inputValues>
+          <semantic:text>"Body", "Engine", "Glass", "Tires"</semantic:text>
+        </semantic:inputValues>
+      </semantic:input>
+      <semantic:output id="_203e4c58-30fe-4ccc-a6ae-a14372a78955" name="EU Rent" typeRef="feel:number">
+        <semantic:outputValues>
+          <semantic:text>[0..100]</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:output id="_fec6ab93-c094-44cb-a6a6-a2e78a46a37f" name="Renter" typeRef="feel:number">
+        <semantic:outputValues>
+          <semantic:text>[0..100]</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_18c88bf1-4b27-4898-9237-ad9084a4432e">
+        <semantic:inputEntry id="_18c88bf1-4b27-4898-9237-ad9084a4432e-0">
+          <semantic:text>"Gold"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_18c88bf1-4b27-4898-9237-ad9084a4432e-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_18c88bf1-4b27-4898-9237-ad9084a4432e-2">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_18c88bf1-4b27-4898-9237-ad9084a4432e-3">
+          <semantic:text>100</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_18c88bf1-4b27-4898-9237-ad9084a4432e-4">
+          <semantic:text>0</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_681840e4-4714-404c-97cb-07d2c84922df">
+        <semantic:inputEntry id="_681840e4-4714-404c-97cb-07d2c84922df-0">
+          <semantic:text>"Silver"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_681840e4-4714-404c-97cb-07d2c84922df-1">
+          <semantic:text>"3rd Party"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_681840e4-4714-404c-97cb-07d2c84922df-2">
+          <semantic:text>"Tires", "Glass"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_681840e4-4714-404c-97cb-07d2c84922df-3">
+          <semantic:text>50</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_681840e4-4714-404c-97cb-07d2c84922df-4">
+          <semantic:text>50</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_d6b4af9d-4f50-40ad-950d-a4843a10a6e5">
+        <semantic:inputEntry id="_d6b4af9d-4f50-40ad-950d-a4843a10a6e5-0">
+          <semantic:text>"Silver"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_d6b4af9d-4f50-40ad-950d-a4843a10a6e5-1">
+          <semantic:text>"3rd Party"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_d6b4af9d-4f50-40ad-950d-a4843a10a6e5-2">
+          <semantic:text>"Body", "Engine"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_d6b4af9d-4f50-40ad-950d-a4843a10a6e5-3">
+          <semantic:text>80</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_d6b4af9d-4f50-40ad-950d-a4843a10a6e5-4">
+          <semantic:text>20</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_ef8a4bc0-230a-4d6c-825b-e5806ca05998">
+        <semantic:inputEntry id="_ef8a4bc0-230a-4d6c-825b-e5806ca05998-0">
+          <semantic:text>"Silver"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_ef8a4bc0-230a-4d6c-825b-e5806ca05998-1">
+          <semantic:text>"Driver"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_ef8a4bc0-230a-4d6c-825b-e5806ca05998-2">
+          <semantic:text>"Tires","Glass"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_ef8a4bc0-230a-4d6c-825b-e5806ca05998-3">
+          <semantic:text>20</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_ef8a4bc0-230a-4d6c-825b-e5806ca05998-4">
+          <semantic:text>80</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_87553b65-1396-49ef-bacd-08a0e51da508">
+        <semantic:inputEntry id="_87553b65-1396-49ef-bacd-08a0e51da508-0">
+          <semantic:text>"Silver"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_87553b65-1396-49ef-bacd-08a0e51da508-1">
+          <semantic:text>"Driver"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_87553b65-1396-49ef-bacd-08a0e51da508-2">
+          <semantic:text>"Body", "Engine"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_87553b65-1396-49ef-bacd-08a0e51da508-3">
+          <semantic:text>40</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_87553b65-1396-49ef-bacd-08a0e51da508-4">
+          <semantic:text>60</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_58b7d0ed-b82b-4228-abe3-574d8dc9fcdb">
+        <semantic:inputEntry id="_58b7d0ed-b82b-4228-abe3-574d8dc9fcdb-0">
+          <semantic:text>"None"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_58b7d0ed-b82b-4228-abe3-574d8dc9fcdb-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_58b7d0ed-b82b-4228-abe3-574d8dc9fcdb-2">
+          <semantic:text>"Engine"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_58b7d0ed-b82b-4228-abe3-574d8dc9fcdb-3">
+          <semantic:text>90</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_58b7d0ed-b82b-4228-abe3-574d8dc9fcdb-4">
+          <semantic:text>10</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_1b2955e0-16fc-4abc-9310-451eeb439d27">
+        <semantic:inputEntry id="_1b2955e0-16fc-4abc-9310-451eeb439d27-0">
+          <semantic:text>"None"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_1b2955e0-16fc-4abc-9310-451eeb439d27-1">
+          <semantic:text>-</semantic:text>
+        </semantic:inputEntry>
+        <semantic:inputEntry id="_1b2955e0-16fc-4abc-9310-451eeb439d27-2">
+          <semantic:text>"Body","Tires","Glass"</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_1b2955e0-16fc-4abc-9310-451eeb439d27-3">
+          <semantic:text>0</semantic:text>
+        </semantic:outputEntry>
+        <semantic:outputEntry id="_1b2955e0-16fc-4abc-9310-451eeb439d27-4">
+          <semantic:text>100</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:inputData id="_90aab494-9458-4b43-bdf4-0a82c22761b3" name="Membership Level">
+    <semantic:variable id="_ecf0e0cc-7eee-4609-9cd1-4fcea7c30f8a" name="Membership Level"/>
+  </semantic:inputData>
+  <semantic:inputData id="_90aab494-9458-4b43-bdf4-0a82c2276100" name="Responsible">
+    <semantic:variable id="_ecf0e0cc-7eee-4609-9cd1-4fcea7c30f01" name="Responsible"/>
+  </semantic:inputData>
+  <semantic:knowledgeSource id="_48fa7a11-feea-4fbc-843d-ddba575cb43e" name="Membership Database">
+    <semantic:authorityRequirement>
+      <semantic:requiredInput href="#_90aab494-9458-4b43-bdf4-0a82c22761b3"/>
+    </semantic:authorityRequirement>
+  </semantic:knowledgeSource>
+  <semantic:inputData id="_46252761-a3a1-4628-ae06-4b3652116f61" name="Damage Types">
+    <semantic:variable id="_f1cae571-f0a9-45c8-ab09-c4f1bc63124a" name="Damage Types"/>
+  </semantic:inputData>
+  <semantic:knowledgeSource id="_08793113-0699-46bc-b9ea-101caafae621" name="Reservation System">
+    <semantic:authorityRequirement>
+      <semantic:requiredInput href="#_46252761-a3a1-4628-ae06-4b3652116f61"/>
+    </semantic:authorityRequirement>
+  </semantic:knowledgeSource>
+  <semantic:decision id="_102eeaac-bb9f-402e-a610-8a426372935e" name="Payment method">
+    <semantic:variable id="_1a8694b8-844f-4813-9978-fc5cd5bafae1" name="Payment method" typeRef="feel:string"/>
+    <semantic:informationRequirement>
+      <semantic:requiredDecision href="#_5693fada-33cb-4a9e-bcfa-6fc343505538"/>
+    </semantic:informationRequirement>
+    <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Payment method">
+      <semantic:input id="_f4812049-7585-46fd-a3ca-806eb5ba6b22" label="Car Damage Responsibility.Renter">
+        <semantic:inputExpression typeRef="feel:number">
+          <semantic:text>Car Damage Responsibility.Renter</semantic:text>
+        </semantic:inputExpression>
+      </semantic:input>
+      <semantic:output id="_bead87bd-fa73-4594-a237-b74d34824427">
+        <semantic:outputValues>
+          <semantic:text>"Cash", "Check", "N/A"</semantic:text>
+        </semantic:outputValues>
+      </semantic:output>
+      <semantic:rule id="_a90e7355-901e-41aa-bab0-0a299e295360">
+        <semantic:inputEntry id="_a90e7355-901e-41aa-bab0-0a299e295360-0">
+          <semantic:text>0</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_a90e7355-901e-41aa-bab0-0a299e295360-1">
+          <semantic:text>"N/A"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_398e6792-0617-47a3-890a-d80660c882a4">
+        <semantic:inputEntry id="_398e6792-0617-47a3-890a-d80660c882a4-0">
+          <semantic:text>&lt;50</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_398e6792-0617-47a3-890a-d80660c882a4-1">
+          <semantic:text>"Cash"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+      <semantic:rule id="_70810771-1c66-4b0e-abe6-b8874a544f97">
+        <semantic:inputEntry id="_70810771-1c66-4b0e-abe6-b8874a544f97-0">
+          <semantic:text>&gt;50</semantic:text>
+        </semantic:inputEntry>
+        <semantic:outputEntry id="_70810771-1c66-4b0e-abe6-b8874a544f97-1">
+          <semantic:text>"Check"</semantic:text>
+        </semantic:outputEntry>
+      </semantic:rule>
+    </semantic:decisionTable>
+  </semantic:decision>
+  <semantic:textAnnotation id="_2be598cb-09bc-43c4-af77-646ca21eae45">
+    <semantic:text>Question: Repair cost split
+      Answers: Renter %, EU-Rent %
+    </semantic:text>
+  </semantic:textAnnotation>
+  <semantic:association id="_dacfeefd-7fe2-4dfd-8d0c-d99d963a785c" label="">
+    <semantic:sourceRef href="#_5693fada-33cb-4a9e-bcfa-6fc343505538"/>
+    <semantic:targetRef href="#_2be598cb-09bc-43c4-af77-646ca21eae45"/>
+  </semantic:association>
+</semantic:definitions>

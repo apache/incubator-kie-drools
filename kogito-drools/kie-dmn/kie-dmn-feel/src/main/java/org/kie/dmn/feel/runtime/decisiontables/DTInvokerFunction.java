@@ -63,10 +63,10 @@ public class DTInvokerFunction
             return result;
         } catch( Exception e ) {
             logger.error( "Error invoking decision table '" + getName() + "'.", e );
+            throw e;
         } finally {
             ctx.exitFrame();
         }
-        return null;
     }
 
     /**

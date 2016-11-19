@@ -90,6 +90,7 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
 
     public static class DTExpressionEvaluator implements DecisionEvaluator {
         private DTInvokerFunction dt;
+        private FEEL feel = FEEL.newInstance();
 
         public DTExpressionEvaluator(DTInvokerFunction dt) {
             this.dt = dt;
@@ -101,7 +102,8 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
             Object[] params = new Object[ paramNames.size() ];
             EvaluationContextImpl ctx = new EvaluationContextImpl();
             for( int i = 0; i < params.length; i++ ) {
-                params[i] = result.getContext().get( paramNames.get( i ) );
+                params[i] = feel.evaluate( paramNames.get( i ), result.getContext().getAll() );
+                // TODO: how do we resolve cases where the expression is not a valid identifier???
                 ctx.setValue( paramNames.get( i ), params[i] );
             }
             Object dtr = dt.apply( ctx, params );
