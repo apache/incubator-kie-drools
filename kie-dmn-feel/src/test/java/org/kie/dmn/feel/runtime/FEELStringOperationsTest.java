@@ -26,8 +26,13 @@ public class FEELStringOperationsTest extends BaseFEELTest {
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // string concatenation
-                { "\"foo\"+\"bar\"", "foobar" }
+                { "\"foo\"+\"bar\"", "foobar" },
+                // string escapes
+                { "\"string with \\\"quotes\\\"\"", "string with \"quotes\""},
+                { "\"a\\b\\t\\n\\f\\r\\\"\\'\\\\\\u2202b\"", "a\b\t\n\f\r\"\'\\\u2202b"}
         };
         return Arrays.asList( cases );
     }
 }
+
+// :	'\\' [btnfr"'\\]
