@@ -246,9 +246,9 @@ public class DMNCompilerImpl implements DMNCompiler {
             if ( o instanceof UnaryTest ) {
                 tests.add( (UnaryTest) o );
             } else if ( o instanceof Range ) {
-                tests.add( x -> ((Range) o).includes( (Comparable<?>) x ) );
+                tests.add( x -> x != null && ((Range) o).includes( (Comparable<?>) x ) );
             } else {
-                tests.add( x -> x.equals( o ) );
+                tests.add( x -> x != null && x.equals( o ) );
             }
         }
         return tests;
