@@ -3,8 +3,8 @@
                                 outputs: "Out",
                                 input expression list: ["In1", "In2"],
                                 rule list: [
-                                    [ >0, >0, "row1" ],
-                                    [ >0,  -, "row2" ]
+                                    [ >0, >0, "\"row1\"" ],
+                                    [ >0,  -, "\"row2\"" ]
                                 ],
                                 hit policy: "U"
                             ),
@@ -16,9 +16,9 @@
                                 outputs: "Out",
                                 input expression list: ["In1", "In2"],
                                 rule list: [
-                                    [ >0, >0, "row1" ],
-                                    [ >0,  -, "row2" ],
-                                    [ - ,  -, "row3" ]
+                                    [ >0, >0, "\"row1\"" ],
+                                    [ >0,  -, "\"row2\"" ],
+                                    [ - ,  -, "\"row3\"" ]
                                 ],
                                 hit policy: "F"
                             ),
@@ -29,9 +29,9 @@
                                 outputs: "Out",
                                 input expression list: ["In1", "In2"],
                                 rule list: [
-                                    [ >0, >0, "A" ],
-                                    [ >0,  -, "B" ],
-                                    [ - ,  -, "B" ]
+                                    [ >0, >0, "\"A\"" ],
+                                    [ >0,  -, "\"B\"" ],
+                                    [ - ,  -, "\"B\"" ]
                                 ],
                                 hit policy: "A"
                             ),
@@ -43,9 +43,9 @@
                                 outputs: "Out",
                                 input expression list: ["In1", "In2"],
                                 rule list: [
-                                    [ >0, >0, "A" ],
-                                    [ >0,  -, "B" ],
-                                    [ - ,  -, "B" ]
+                                    [ >0, >0, "\"A\"" ],
+                                    [ >0,  -, "\"B\"" ],
+                                    [ - ,  -, "\"B\"" ]
                                 ],
                                 hit policy: "R"
                             ),
@@ -57,8 +57,8 @@
                                 outputs: "Out",
                                 input expression list: ["In1", "In2"],
                                 rule list: [
-                                    [ >0, >0, "A" ],
-                                    [ >0,  -, "B" ]
+                                    [ >0, >0, "\"A\"" ],
+                                    [ >0,  -, "\"B\"" ]
                                 ],
                                 hit policy: "C"
                             ),
@@ -70,8 +70,8 @@
                                 output values: ["B", "A"],
                                 input expression list: ["In1", "In2"],
                                 rule list: [
-                                    [ >0, >0, "A" ],
-                                    [ >0,  -, "B" ]
+                                    [ >0, >0, "\"A\"" ],
+                                    [ >0,  -, "\"B\"" ]
                                 ],
                                 hit policy: "P"
                             ),
@@ -83,8 +83,8 @@
                                 output values: ["C", "B", "A"],
                                 input expression list: ["In1", "In2"],
                                 rule list: [
-                                    [ >0, >0, "A" ],
-                                    [ >0,  -, "B" ]
+                                    [ >0, >0, "\"A\"" ],
+                                    [ >0,  -, "\"B\"" ]
                                 ],
                                 hit policy: "O"
                             ),
@@ -95,9 +95,9 @@
                                 outputs: "Out",
                                 input expression list: ["In1", "In2"],
                                 rule list: [
-                                    [ >0, >0, "A" ],
-                                    [ >0,  -, "B" ],
-                                    [ - ,  -, "B" ]
+                                    [ >0, >0, "\"A\"" ],
+                                    [ >0,  -, "\"B\"" ],
+                                    [ - ,  -, "\"B\"" ]
                                 ],
                                 hit policy: "C#"
                             ),
@@ -108,9 +108,9 @@
                                 outputs: "Out",
                                 input expression list: ["In1", "In2"],
                                 rule list: [
-                                    [ >0, >0, 1 ],
-                                    [ >0,  -, 2 ],
-                                    [ - ,  -, 3 ]
+                                    [ >0, >0, "1" ],
+                                    [ >0,  -, "2" ],
+                                    [ - ,  -, "3" ]
                                 ],
                                 hit policy: "C+"
                             ),
@@ -121,9 +121,9 @@
                                 outputs: "Out",
                                 input expression list: ["In1", "In2"],
                                 rule list: [
-                                    [ >0, >0, 1 ],
-                                    [ >0,  -, 2 ],
-                                    [ - ,  -, 3 ]
+                                    [ >0, >0, "1" ],
+                                    [ >0,  -, "2" ],
+                                    [ - ,  -, "3" ]
                                 ],
                                 hit policy: "C<"
                             ),
@@ -134,9 +134,9 @@
                                 outputs: "Out",
                                 input expression list: ["In1", "In2"],
                                 rule list: [
-                                    [ >0, >0, 1 ],
-                                    [ >0,  -, 2 ],
-                                    [ - ,  -, 3 ]
+                                    [ >0, >0, "1" ],
+                                    [ >0,  -, "2" ],
+                                    [ - ,  -, "3" ]
                                 ],
                                 hit policy: "C>"
                             ),

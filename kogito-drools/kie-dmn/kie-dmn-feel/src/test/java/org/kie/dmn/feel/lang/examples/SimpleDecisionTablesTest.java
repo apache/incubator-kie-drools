@@ -4,6 +4,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.dmn.feel.FEEL;
@@ -48,7 +49,18 @@ public class SimpleDecisionTablesTest
         assertThat( (Map<?, ?>) context.get( "result4" ), hasEntry("Out1", "io1a" ));
         assertThat( (Map<?, ?>) context.get( "result4" ), hasEntry("Out2", "io2a" ));
     }
-    
+
+    @Test
+    public void testDecisionTableFormulaOut() {
+        String expression = loadExpression( "dt_formula_out.feel" );
+        Map context = (Map) feel.evaluate( expression );
+
+        System.out.println( printContext( context ) );
+
+        assertThat( context.get( "square area" ), is( BigDecimal.valueOf( 25 ) ) );
+        assertThat( context.get( "circle area" ), is( BigDecimal.valueOf( 78.5 ).setScale( 2 ) ) );
+    }
+
     @Test
     public void testt0004simpletableU() {
         String expression = loadExpression( "t0004simpletableU.feel" );
@@ -123,25 +135,36 @@ public class SimpleDecisionTablesTest
         assertThat( (Map<?, ?>) context.get( "DTAny10" ), hasEntry("Out2", new BigDecimal(7) ));
         assertThat( context.get( "DTAny11" ), nullValue()      );
         
-        assertThat( (Map<?, ?>) context.get( "DTruleOrder10" ), hasSize(2));
-        assertThat( (Map<?, ?>) context.get( "DTruleOrder10" ), hasEntry(is("Out1"), is( Arrays.asList("B", "B")                            )));
-        assertThat( (Map<?, ?>) context.get( "DTruleOrder10" ), hasEntry(is("Out2"), is( Arrays.asList(new BigDecimal(2), new BigDecimal(3) ))));
-        assertThat( (Map<?, ?>) context.get( "DTruleOrder11" ), hasSize(2));
-        assertThat( (Map<?, ?>) context.get( "DTruleOrder11" ), hasEntry(is("Out1"), is( Arrays.asList("A", "B", "B")                            )));
-        assertThat( (Map<?, ?>) context.get( "DTruleOrder11" ), hasEntry(is("Out2"), is( Arrays.asList(new BigDecimal(1), new BigDecimal(2), new BigDecimal(3) ))));
-        
-        assertThat( (Map<?, ?>) context.get( "DTcollect11" ), hasSize(2));
-        assertThat( (Map<?, Iterable<?>>) context.get( "DTcollect11" ), hasEntry(is("Out1"), containsInAnyOrder( "B", "A"                             )));
-        assertThat( (Map<?, Iterable<?>>) context.get( "DTcollect11" ), hasEntry(is("Out2"), containsInAnyOrder( new BigDecimal(1), new BigDecimal(2) )));
-        
+        assertThat( (List<Map<String, Object>>) context.get( "DTruleOrder10" ), IsCollectionWithSize.hasSize( 2 ));
+        assertThat( ((List<Map<String,Object>>) context.get( "DTruleOrder10" )).get( 0 ), hasEntry( is("Out1"), is( "B" ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DTruleOrder10" )).get( 0 ), hasEntry( is("Out2"), is( BigDecimal.valueOf( 2 ) ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DTruleOrder10" )).get( 1 ), hasEntry( is("Out1"), is( "B" ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DTruleOrder10" )).get( 1 ), hasEntry( is("Out2"), is( BigDecimal.valueOf( 3 ) ) ) );
+
+        assertThat( (List<Map<String, Object>>) context.get( "DTruleOrder11" ), IsCollectionWithSize.hasSize( 3 ));
+        assertThat( ((List<Map<String,Object>>) context.get( "DTruleOrder11" )).get( 0 ), hasEntry( is("Out1"), is( "A" ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DTruleOrder11" )).get( 0 ), hasEntry( is("Out2"), is( BigDecimal.valueOf( 1 ) ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DTruleOrder11" )).get( 1 ), hasEntry( is("Out1"), is( "B" ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DTruleOrder11" )).get( 1 ), hasEntry( is("Out2"), is( BigDecimal.valueOf( 2 ) ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DTruleOrder11" )).get( 2 ), hasEntry( is("Out1"), is( "B" ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DTruleOrder11" )).get( 2 ), hasEntry( is("Out2"), is( BigDecimal.valueOf( 3 ) ) ) );
+
+        assertThat( (List<Map<String, Object>>) context.get( "DTcollect11" ), IsCollectionWithSize.hasSize( 2 ));
+        assertThat( ((List<Map<String,Object>>) context.get( "DTcollect11" )).get( 0 ), hasEntry( is("Out1"), is( "A" ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DTcollect11" )).get( 0 ), hasEntry( is("Out2"), is( BigDecimal.valueOf( 1 ) ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DTcollect11" )).get( 1 ), hasEntry( is("Out1"), is( "B" ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DTcollect11" )).get( 1 ), hasEntry( is("Out2"), is( BigDecimal.valueOf( 2 ) ) ) );
+
         assertThat( (Map<?, ?>) context.get( "DTpriority11" ), hasSize(2));
         assertThat( (Map<?, ?>) context.get( "DTpriority11" ), hasEntry("Out1", "B"               ));
-        assertThat( (Map<?, ?>) context.get( "DTpriority11" ), hasEntry("Out2", new BigDecimal(1) ));
-        
-        assertThat( (Map<?, ?>) context.get( "DToutputOrder11" ), hasSize(2));
-        assertThat( (Map<?, ?>) context.get( "DToutputOrder11" ), hasEntry(is("Out1"), is( Arrays.asList("B", "A")                            )));
-        assertThat( (Map<?, ?>) context.get( "DToutputOrder11" ), hasEntry(is("Out2"), is( Arrays.asList(new BigDecimal(1), new BigDecimal(2) ))));
-        
+        assertThat( (Map<?, ?>) context.get( "DTpriority11" ), hasEntry("Out2", new BigDecimal(2) ));
+
+        assertThat( (List<Map<String, Object>>) context.get( "DToutputOrder11" ), IsCollectionWithSize.hasSize( 2 ));
+        assertThat( ((List<Map<String,Object>>) context.get( "DToutputOrder11" )).get( 0 ), hasEntry( is("Out1"), is( "B" ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DToutputOrder11" )).get( 0 ), hasEntry( is("Out2"), is( BigDecimal.valueOf( 2 ) ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DToutputOrder11" )).get( 1 ), hasEntry( is("Out1"), is( "A" ) ) );
+        assertThat( ((List<Map<String,Object>>) context.get( "DToutputOrder11" )).get( 1 ), hasEntry( is("Out2"), is( BigDecimal.valueOf( 1 ) ) ) );
+
         assertThat( (Map<?, ?>) context.get( "DTcount10" ), hasSize(2));
         assertThat( (Map<?, ?>) context.get( "DTcount10" ), hasEntry("Out1", new BigDecimal(1) ));
         assertThat( (Map<?, ?>) context.get( "DTcount10" ), hasEntry("Out2", new BigDecimal(2) ));
@@ -181,4 +204,6 @@ public class SimpleDecisionTablesTest
             }
         };
     }
+
+
 }

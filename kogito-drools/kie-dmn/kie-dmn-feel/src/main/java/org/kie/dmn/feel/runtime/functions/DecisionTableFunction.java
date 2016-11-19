@@ -50,7 +50,7 @@ per output; else output values is a list of values for the one output.
 Each value is a string.
 @param ruleList a list of R>0 rules. A rule is a list of N input entries followed by M
 output entries. An input entry is a unary tests literal. An output entry is
-an expression.
+an expression represented as a string.
 @param hitPolicy * one of: "U", "A", “P”, “F”, "R", "O", "C", "C+", "C#", "C<", “C>”
 (default is "U")
 @param defaultOutputValue * if outputs is a list, then default output value is a context with entries
@@ -116,7 +116,8 @@ of the output values.
             if ( i < inputSize ) {
                 dr.getInputEntry().add( toUnaryTest(o) );
             } else {
-                dr.getOutputEntry().add( (LiteralExpression) o );
+                // TODO: should we pre-compile the expression? probably...
+                dr.getOutputEntry().add( (String) o );
             }
         }
         return dr;

@@ -50,7 +50,7 @@ th OutputClause.
  */
 public class DTDecisionRule {
     private List<UnaryTest>         inputEntry;
-    private List<LiteralExpression> outputEntry;
+    private List<String>            outputEntry;
 
     /**
 The instances of UnaryTests that specify the input conditions
@@ -69,7 +69,7 @@ A list of the instances of LiteralExpression that compose
 the output components of this DecisionRule. 
      * @return
      */
-    public List<LiteralExpression> getOutputEntry() {
+    public List<String> getOutputEntry() {
         if ( outputEntry == null ) {
             outputEntry = new ArrayList<>();
         }

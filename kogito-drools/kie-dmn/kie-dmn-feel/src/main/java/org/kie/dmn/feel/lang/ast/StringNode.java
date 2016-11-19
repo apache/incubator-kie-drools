@@ -29,6 +29,6 @@ public class StringNode
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
-        return EvalHelper.stripQuotes( getText() );
+        return EvalHelper.unescapeString( getText() );
     }
 }
