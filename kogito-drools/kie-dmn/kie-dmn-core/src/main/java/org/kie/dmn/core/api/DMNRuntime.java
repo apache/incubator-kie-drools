@@ -16,9 +16,11 @@
 
 package org.kie.dmn.core.api;
 
+import org.kie.dmn.core.api.event.DMNRuntimeEventManager;
+
 import java.util.List;
 
-public interface DMNRuntime {
+public interface DMNRuntime extends DMNRuntimeEventManager {
 
     /**
      * Returns a list of all models available to this runtime

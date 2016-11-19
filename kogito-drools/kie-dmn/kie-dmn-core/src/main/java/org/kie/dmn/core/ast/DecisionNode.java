@@ -16,12 +16,12 @@
 
 package org.kie.dmn.core.ast;
 
+import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.model.v1_1.Decision;
-import org.kie.dmn.feel.model.v1_1.LiteralExpression;
 import org.kie.dmn.feel.runtime.decisiontables.DTInvokerFunction;
 
 import java.util.HashMap;
@@ -71,7 +71,7 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
     }
 
     public static interface DecisionEvaluator {
-        public Object evaluate(DMNResultImpl result);
+        Object evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result);
     }
 
     public static class LiteralExpressionFEELEvaluator implements DecisionEvaluator {
@@ -82,7 +82,7 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
         }
 
         @Override
-        public Object evaluate(DMNResultImpl result) {
+        public Object evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
             Object val = FEEL.newInstance().evaluate( expression, result.getContext().getAll() );
             return val;
         }
@@ -97,17 +97,22 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
         }
 
         @Override
-        public Object evaluate(DMNResultImpl result) {
-            List<String> paramNames = dt.getParameterNames().get( 0 );
-            Object[] params = new Object[ paramNames.size() ];
-            EvaluationContextImpl ctx = new EvaluationContextImpl();
-            for( int i = 0; i < params.length; i++ ) {
-                params[i] = feel.evaluate( paramNames.get( i ), result.getContext().getAll() );
-                // TODO: how do we resolve cases where the expression is not a valid identifier???
-                ctx.setValue( paramNames.get( i ), params[i] );
+        public Object evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+            try {
+                eventManager.fireBeforeEvaluateDecisionTable( dt.getName(), result );
+                List<String> paramNames = dt.getParameterNames().get( 0 );
+                Object[] params = new Object[ paramNames.size() ];
+                EvaluationContextImpl ctx = new EvaluationContextImpl();
+                for( int i = 0; i < params.length; i++ ) {
+                    params[i] = feel.evaluate( paramNames.get( i ), result.getContext().getAll() );
+                    // TODO: how do we resolve cases where the expression is not a valid identifier???
+                    ctx.setValue( paramNames.get( i ), params[i] );
+                }
+                Object dtr = dt.apply( ctx, params );
+                return dtr;
+            } finally {
+                eventManager.fireAfterEvaluateDecisionTable( dt.getName(), result );
             }
-            Object dtr = dt.apply( ctx, params );
-            return dtr;
         }
     }
 
