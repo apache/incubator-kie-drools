@@ -384,13 +384,11 @@ public class DMNRuntimeTest {
             @Override
             public void beforeEvaluateDecisionTable(BeforeEvaluateDecisionTableEvent event) {
                 logger.info( event.toString() );
-
             }
 
             @Override
             public void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event) {
                 logger.info( event.toString() );
-
             }
         };
     }

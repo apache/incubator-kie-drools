@@ -21,7 +21,6 @@ import org.junit.Test;
 import org.kie.dmn.feel.lang.ast.*;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -1107,7 +1106,7 @@ public class FEELParserTest {
     }
 
     private BaseNode parse(String input, Map<String, Object> inputVariables) {
-        FEEL_1_1Parser parser = FEELParser.parse( input, Collections.EMPTY_MAP, inputVariables );
+        FEEL_1_1Parser parser = FEELParser.parse( null, input, Collections.EMPTY_MAP, inputVariables );
 
         ParseTree tree = parser.expression();
 

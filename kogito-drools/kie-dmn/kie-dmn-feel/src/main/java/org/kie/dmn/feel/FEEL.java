@@ -19,8 +19,10 @@ package org.kie.dmn.feel;
 import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
+import org.kie.dmn.feel.runtime.events.FEELEventListener;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * FEEL expression language engine interface
@@ -100,5 +102,26 @@ public interface FEEL {
      */
     Object evaluate(CompiledExpression expression, Map<String, Object> inputVariables);
 
+    /**
+     * Registers a new event listener into this FEEL instance.
+     * The event listeners are notified about signitificative
+     * events during compilation or evaluation of expressions.
+     *
+     * @param listener the listener to register
+     */
+    void addListener( FEELEventListener listener );
 
+    /**
+     * Removes a listener from the list of event listeners.
+     *
+     * @param listener the listener to remove
+     */
+    void removeListener( FEELEventListener listener );
+
+    /**
+     * Retrieves the set of registered event listeners
+     *
+     * @return the set of listeners
+     */
+    Set<FEELEventListener> getListeners();
 }

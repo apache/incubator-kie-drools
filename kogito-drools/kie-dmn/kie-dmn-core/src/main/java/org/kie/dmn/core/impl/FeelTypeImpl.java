@@ -20,7 +20,9 @@ import org.kie.dmn.core.api.DMNType;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class FeelTypeImpl
         implements DMNType {
@@ -87,5 +89,20 @@ public class FeelTypeImpl
     @Override
     public String toString(Object value) {
         return feelType.toString( value );
+    }
+
+    @Override
+    public boolean isComposite() {
+        return false;
+    }
+
+    @Override
+    public Map<String, DMNType> getFields() {
+        return Collections.emptyMap();
+    }
+
+    @Override
+    public DMNType getField(String typeName) {
+        return null;
     }
 }

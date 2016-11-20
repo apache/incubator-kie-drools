@@ -18,18 +18,23 @@ package org.kie.dmn.feel.parser.feel11;
 
 import org.antlr.v4.runtime.*;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 
 import java.util.Collections;
 import java.util.Map;
 
 public class FEELParser {
 
-    public static FEEL_1_1Parser parse(String source, Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables) {
+    public static FEEL_1_1Parser parse(FEELEventListenersManager eventsManager, String source, Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables) {
         ANTLRInputStream input = new ANTLRInputStream(source);
         FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
         FEEL_1_1Parser parser = new FEEL_1_1Parser( tokens );
         parser.setErrorHandler( new FEELErrorHandler() );
+//        parser.removeErrorListeners(); // removes the error listener that prints to the console
+        parser.addErrorListener( new FEELParserErrorListener( eventsManager ) );
 
         // pre-loads the parser with symbols
         defineVariables( inputVariableTypes, inputVariables, parser );
@@ -63,9 +68,27 @@ public class FEELParser {
         protected void reportFailedPredicate(Parser recognizer, FailedPredicateException e) {
             // don't do anything
         }
+    }
 
+    public static class FEELParserErrorListener extends BaseErrorListener {
+        private final FEELEventListenersManager eventsManager;
 
+        public FEELParserErrorListener(FEELEventListenersManager eventsManager) {
+            this.eventsManager = eventsManager;
+        }
 
+        @Override
+        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+            if( eventsManager != null && eventsManager.hasListeners() ) {
+                SyntaxErrorEvent event = new SyntaxErrorEvent( FEELEvent.Severity.ERROR,
+                                                               msg,
+                                                               e,
+                                                               line,
+                                                               charPositionInLine,
+                                                               offendingSymbol );
+                eventsManager.notifyListeners( event );
+            }
+        }
     }
 
 }
