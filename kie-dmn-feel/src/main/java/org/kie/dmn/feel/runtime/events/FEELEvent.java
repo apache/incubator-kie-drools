@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.api;
+package org.kie.dmn.feel.runtime.events;
 
-import java.util.Map;
+public interface FEELEvent {
 
-public interface DMNType {
+    enum Severity {
+        TRACE, INFO, WARN, ERROR;
+    }
 
-    String getName();
+    Severity getSeverity();
 
-    String getId();
+    String getMessage();
 
-    Object parseValue( String value );
-
-    String toString( Object value );
-
-    boolean isComposite();
-
-    Map<String, DMNType> getFields();
-
-    DMNType getField( String fieldName );
+    Throwable getSourceException();
 }

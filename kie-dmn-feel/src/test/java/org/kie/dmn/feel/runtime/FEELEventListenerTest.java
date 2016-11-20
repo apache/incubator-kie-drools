@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.api;
+package org.kie.dmn.feel.runtime;
 
-import java.util.Map;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.dmn.feel.FEEL;
 
-public interface DMNType {
+public class FEELEventListenerTest {
 
-    String getName();
+    private FEEL feel;
 
-    String getId();
+    @Before
+    public void setup() {
+        feel = FEEL.newInstance();
+        feel.addListener( event -> System.out.println( event ) );
+    }
 
-    Object parseValue( String value );
+    @Test
+    public void testParserError() {
+        feel.evaluate( "10 + / 5" );
 
-    String toString( Object value );
-
-    boolean isComposite();
-
-    Map<String, DMNType> getFields();
-
-    DMNType getField( String fieldName );
+    }
 }
