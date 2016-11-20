@@ -73,6 +73,11 @@ public class CompositeTypeImpl
         return fields;
     }
 
+    @Override
+    public DMNType getField(String fieldName) {
+        return fields.get( fieldName );
+    }
+
     public void setFields(Map<String, DMNType> fields) {
         this.fields = fields;
     }
@@ -85,5 +90,10 @@ public class CompositeTypeImpl
     @Override
     public String toString(Object value) {
         return null;
+    }
+
+    @Override
+    public boolean isComposite() {
+        return true;
     }
 }

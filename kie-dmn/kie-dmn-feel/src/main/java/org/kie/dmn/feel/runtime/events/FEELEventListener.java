@@ -14,23 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.api;
+package org.kie.dmn.feel.runtime.events;
 
-import java.util.Map;
+/**
+ * A general interface for a FEEL event listener
+ */
+public interface FEELEventListener {
 
-public interface DMNType {
-
-    String getName();
-
-    String getId();
-
-    Object parseValue( String value );
-
-    String toString( Object value );
-
-    boolean isComposite();
-
-    Map<String, DMNType> getFields();
-
-    DMNType getField( String fieldName );
+    void onEvent( FEELEvent event );
 }

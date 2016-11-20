@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.ast;
 
+import org.kie.dmn.core.api.DMNType;
 import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.feel.FEEL;
@@ -33,13 +34,15 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
     private Decision decision;
     private Map<String, DMNNode> dependencies = new HashMap<>(  );
     private DecisionEvaluator evaluator;
+    private DMNType resultType;
 
     public DecisionNode() {
     }
 
-    public DecisionNode(Decision decision) {
+    public DecisionNode(Decision decision, DMNType resultType ) {
         super( decision );
         this.decision = decision;
+        this.resultType = resultType;
     }
 
     public Decision getDecision() {
@@ -68,6 +71,10 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
 
     public void setEvaluator(DecisionEvaluator evaluator) {
         this.evaluator = evaluator;
+    }
+
+    public DMNType getResultType() {
+        return resultType;
     }
 
     public static interface DecisionEvaluator {

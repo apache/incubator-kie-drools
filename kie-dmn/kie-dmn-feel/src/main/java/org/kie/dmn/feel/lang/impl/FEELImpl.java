@@ -24,9 +24,11 @@ import org.kie.dmn.feel.lang.ast.BaseNode;
 import org.kie.dmn.feel.parser.feel11.ASTBuilderVisitor;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser;
+import org.kie.dmn.feel.runtime.events.FEELEventListener;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Language runtime entry point
@@ -36,12 +38,14 @@ public class FEELImpl
 
     private static final Map<String,Object> EMPTY_INPUT = Collections.emptyMap();
 
+    private FEELEventListenersManager eventsManager = new FEELEventListenersManager();
+
     public CompilerContext newCompilerContext() {
         return new CompilerContextImpl();
     }
 
     public CompiledExpression compile(String expression, CompilerContext ctx) {
-        FEEL_1_1Parser parser = FEELParser.parse( expression, ctx.getInputVariableTypes(), ctx.getInputVariables() );
+        FEEL_1_1Parser parser = FEELParser.parse( eventsManager, expression, ctx.getInputVariableTypes(), ctx.getInputVariables() );
         ParseTree tree = parser.compilation_unit();
         ASTBuilderVisitor v = new ASTBuilderVisitor();
         BaseNode expr = v.visit( tree );
@@ -66,5 +70,19 @@ public class FEELImpl
         return ((CompiledExpressionImpl) expr).evaluate( inputVariables );
     }
 
+    @Override
+    public void addListener(FEELEventListener listener) {
+        this.eventsManager.addListener( listener );
+    }
+
+    @Override
+    public void removeListener(FEELEventListener listener) {
+        this.eventsManager.removeListener( listener );
+    }
+
+    @Override
+    public Set<FEELEventListener> getListeners() {
+        return eventsManager.getListeners();
+    }
 
 }
