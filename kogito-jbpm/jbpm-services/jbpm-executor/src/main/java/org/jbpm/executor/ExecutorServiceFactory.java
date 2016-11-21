@@ -49,6 +49,9 @@ import org.slf4j.LoggerFactory;
 public class ExecutorServiceFactory {
 
 	private final static String mode = System.getProperty( "org.jbpm.cdi.executor.mode", "singleton" );
+	
+	private final static String availableJobsExecutorName = System.getProperty(
+	    "org.jbpm.cdi.executor.jndi", "java:module/AvailableJobsExecutor" );
 
 	private static final Logger logger = LoggerFactory.getLogger(ExecutorServiceFactory.class);
    
@@ -150,7 +153,7 @@ public class ExecutorServiceFactory {
         AvailableJobsExecutor jobExecutor = null;
 
         try {
-            jobExecutor = InitialContext.doLookup("java:module/AvailableJobsExecutor");
+            jobExecutor = InitialContext.doLookup(availableJobsExecutorName);
         } catch (Exception e) {
             jobExecutor = buildJobExecutor(emf, eventSupport);
         }
@@ -190,7 +193,7 @@ public class ExecutorServiceFactory {
     	ExecutorRunnable runnable = new ExecutorRunnable();
     	AvailableJobsExecutor jobExecutor = null;
     	try {
-    		jobExecutor = InitialContext.doLookup("java:module/AvailableJobsExecutor");
+    		jobExecutor = InitialContext.doLookup(availableJobsExecutorName);
     	} catch (Exception e) {
     		jobExecutor = new AvailableJobsExecutor();
 	    	ClassCacheManager classCacheManager = new ClassCacheManager();
