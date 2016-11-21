@@ -166,7 +166,6 @@ public class UpdateTest {
         ksession.insert(camembert);
         ksession.insert(cheddar);
 
-
         verifyFactsWithQuery(Cheese.class, "cheeseTypes", camembert, cheddar);
 
         final List<Cheese> expensiveCheese = new ArrayList<>();
@@ -227,7 +226,7 @@ public class UpdateTest {
     }
 
     private void verify(final Person original, final Person personToBeVerified, final int age, final String name, final boolean shouldBeEqual) {
-        if (original !=null) {
+        if (original != null) {
             if (shouldBeEqual) {
                 assertThat(personToBeVerified).isEqualTo(original);
             } else {
