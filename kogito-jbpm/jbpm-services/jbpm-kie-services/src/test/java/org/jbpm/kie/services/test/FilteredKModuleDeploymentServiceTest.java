@@ -436,4 +436,43 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractKieServicesBas
 
        verifyDeployedUnitContainsCorrectClasses(parentDeploymentUnit);
     }
+
+    @Test
+    public void testMultipleRemotableInPojoJar() {
+        String groupId = "org.test";
+        String pojoArtifactId = "jbpm-kie-services-filter-test-pojo";
+        String projectArtifactId = "jbpm-kie-services-filter-test-project";
+        String version = VERSION;
+
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId pojoReleaseId = ks.newReleaseId( groupId, pojoArtifactId, VERSION );
+        File pojojar = new File( "src/test/resources/multi-remotable/pojo.jar" ); // contains two @Remotable classes MyPojo, MyPojo2
+        File pojopom = new File( "src/test/resources/multi-remotable/pojo-pom.xml" );
+        MavenRepository.getMavenRepository().installArtifact( pojoReleaseId, pojojar, pojopom );
+
+        FluentKieModuleDeploymentHelper.newFluentInstance()
+            .setGroupId( groupId )
+            .setArtifactId( projectArtifactId )
+            .setVersion( version )
+            .addDependencies( groupId + ":" + pojoArtifactId + ":" + version )
+            .createKieJarAndDeployToMaven();
+
+        configureServices();
+
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit( groupId, projectArtifactId, version );
+        DeploymentDescriptor depDesc = new DeploymentDescriptorImpl().getBuilder().setLimitSerializationClasses( true ).get();
+        deploymentUnit.setDeploymentDescriptor( depDesc );
+        deploymentService.deploy( deploymentUnit );
+
+        DeployedUnit deployedUnit = deploymentService.getDeployedUnit( deploymentUnit.getIdentifier() );
+        Collection<Class<?>> deployedClasses = deployedUnit.getDeployedClasses();
+        ClassLoader classLoader = deploymentUnit.getKieContainer().getClassLoader();
+
+        try {
+            assertTrue( "MyPojo is not added", deployedClasses.contains( classLoader.loadClass( "com.sample.MyPojo" ) ) );
+            assertTrue( "MyPojo2 is not added", deployedClasses.contains( classLoader.loadClass( "com.sample.MyPojo2" ) ) );
+        } catch ( ClassNotFoundException e ) {
+            fail( e.getMessage() );
+        }
+    }
 }

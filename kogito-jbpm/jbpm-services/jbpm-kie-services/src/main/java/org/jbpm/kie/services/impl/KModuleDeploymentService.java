@@ -449,7 +449,6 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 
 				for (Class<?> clazz : allClasses) {
 				    filterClassesAddedToDeployedUnit(deployedUnit, clazz);
-				    break;
 				}
 			}
 	    }
