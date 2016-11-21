@@ -79,13 +79,13 @@ public class UpdateTest {
         assertThat(ksession.getObjects().iterator().next()).isInstanceOf(Person.class);
 
         Person personToBeVerified = (Person) ksession.getObjects().iterator().next();
-        verify(person, personToBeVerified, 18, "George", true);
+        verifyPerson(person, personToBeVerified, 18, "George", true);
 
         ksession.update(factPerson, new Person("Henry", 21));
         verifyFactsPresentInSession(1, Person.class);
 
         personToBeVerified = (Person) ksession.getObjects().iterator().next();
-        verify(person, personToBeVerified, 21, "Henry", false);
+        verifyPerson(person, personToBeVerified, 21, "Henry", false);
     }
 
     @Test(expected = NullPointerException.class)
@@ -111,10 +111,10 @@ public class UpdateTest {
 
         verifyFactsPresentInSession(1, Cheese.class);
         Cheese cheeseToBeVerified = (Cheese) ksession.getObjects().iterator().next();
-        verify(cheeseToBeVerified, 2, "Camembert");
+        verifyCheese(cheeseToBeVerified, 2, "Camembert");
 
         cheeseToBeVerified = verifyFactPresentInSession(fact, Cheese.class);
-        verify(cheeseToBeVerified, 2, "Camembert");
+        verifyCheese(cheeseToBeVerified, 2, "Camembert");
 
     }
 
@@ -130,7 +130,7 @@ public class UpdateTest {
         verifyFactsPresentInSession(1, Cheese.class);
 
         final Cheese cheeseToBeVerified = (Cheese) ksession.getObjects().iterator().next();
-        verify(cheeseToBeVerified, 50, "Camembert");
+        verifyCheese(cheeseToBeVerified, 50, "Camembert");
     }
 
     @Test
@@ -220,12 +220,12 @@ public class UpdateTest {
         return (T) ksession.getObject(factToVerify);
     }
 
-    private void verify(final Cheese cheeseToBeVerified, final int price, final String type) {
+    private void verifyCheese(final Cheese cheeseToBeVerified, final int price, final String type) {
         assertThat(cheeseToBeVerified.getPrice()).isEqualTo(price);
         assertThat(cheeseToBeVerified.getType()).isEqualTo(type);
     }
 
-    private void verify(final Person original, final Person personToBeVerified, final int age, final String name, final boolean shouldBeEqual) {
+    private void verifyPerson(final Person original, final Person personToBeVerified, final int age, final String name, final boolean shouldBeEqual) {
         if (original != null) {
             if (shouldBeEqual) {
                 assertThat(personToBeVerified).isEqualTo(original);
