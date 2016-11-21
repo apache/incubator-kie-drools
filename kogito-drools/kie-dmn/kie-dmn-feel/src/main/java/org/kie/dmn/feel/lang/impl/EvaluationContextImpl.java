@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.impl;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.functions.BuiltInFunctions;
+import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.runtime.FEELFunction;
 
 import java.util.HashMap;
@@ -70,7 +71,7 @@ public class EvaluationContextImpl implements EvaluationContext {
 
     @Override
     public void setValue(String name, Object value) {
-        peek().setValue( name, value );
+        peek().setValue( name, EvalHelper.coerceNumber( value ) );
     }
 
     @Override

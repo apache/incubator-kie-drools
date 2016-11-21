@@ -47,6 +47,14 @@ public class EvalHelper {
         }
         return (BigDecimal) value;
     }
+    
+    public static Object coerceNumber(Object value) {
+        if ( value instanceof Number && !( value instanceof BigDecimal )  ) {
+            return getBigDecimalOrNull(value);
+        } else {
+            return value;
+        }
+    }
 
     public static Boolean getBooleanOrNull(Object value) {
         if ( value == null || !(value instanceof Boolean) ) {
@@ -115,7 +123,7 @@ public class EvalHelper {
             Method getter = getAccessor( current.getClass(), property );
             current = getter.invoke( current );
         }
-        return current;
+        return coerceNumber( current );
     }
 
     public static Method getAccessor(Class<?> clazz, String field) {
