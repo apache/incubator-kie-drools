@@ -8718,6 +8718,82 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
+    public void testReorderRightMemoryOnIndexedField() {
+        // DROOLS-1174
+        String rule = "import " + Misc2Test.Seat.class.getCanonicalName() + ";\n"
+                + "\n"
+                + "rule twoSameJobTypePerTable when\n"
+                + "    $job: String()\n"
+                + "    $table : Long()\n"
+                + "    not (\n"
+                + "        Seat( guestJob == $job, table == $table, $leftId : id )\n"
+                + "        and Seat( guestJob == $job, table == $table, id > $leftId )\n"
+                + "    )\n"
+                + "then\n"
+                + "end";
+
+        KieSession kieSession = new KieHelper().addContent(rule, ResourceType.DRL).build().newKieSession();
+
+        String doctor = "D";
+        String politician = "P";
+        Long table1 = 1L;
+        Long table2 = 2L;
+        Seat seat0 = new Seat(0, politician, table2);
+        Seat seat1 = new Seat(1, politician, null);
+        Seat seat2 = new Seat(2, politician, table2);
+        Seat seat3 = new Seat(3, doctor, table1);
+        Seat seat4 = new Seat(4, doctor, table1);
+
+        kieSession.insert(seat0);
+        FactHandle fh1 = kieSession.insert(seat1);
+        FactHandle fh2 = kieSession.insert(seat2);
+        FactHandle fh3 = kieSession.insert(seat3);
+        kieSession.insert(seat4);
+        kieSession.insert(politician);
+        kieSession.insert(doctor);
+        kieSession.insert(table1);
+        kieSession.insert(table2);
+
+        assertEquals(2, kieSession.fireAllRules());
+
+        kieSession.update(fh3, seat3); // no change but the update is necessary to reproduce the bug
+        kieSession.update(fh2, seat2.setTable(null));
+        kieSession.update(fh1, seat1.setTable(table2));
+
+        assertEquals(0, kieSession.fireAllRules());
+    }
+
+    public static class Seat {
+
+        private final int id;
+        private final String guestJob;
+        private Long table;
+
+        public Seat(int id, String guestJob, Long table) {
+            this.id = id;
+            this.guestJob = guestJob;
+            this.table = table;
+        }
+
+        public String getGuestJob() {
+            return guestJob;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public Long getTable() {
+            return table;
+        }
+
+        public Seat setTable(Long table) {
+            this.table = table;
+            return this;
+        }
+    }
+
+    @Test
     public void testChildLeftTuplesIterationOnLeftUpdate() {
         // DROOLS-1186
         String drl =
