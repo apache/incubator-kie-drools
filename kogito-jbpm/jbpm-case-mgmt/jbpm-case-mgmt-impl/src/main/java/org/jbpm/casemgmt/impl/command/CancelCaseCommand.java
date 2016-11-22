@@ -66,7 +66,14 @@ public class CancelCaseCommand extends CaseCommand<Void> {
         if (caseProcesses.isEmpty()) {
             throw new CaseNotFoundException("Case with id " + caseId + " was not found");
         }
-        List<Long> processInstanceIds = caseProcesses.stream().filter(pi -> pi.getState().equals(ProcessInstance.STATE_ACTIVE)).map(pi -> pi.getId()).collect(toList());
+        List<Long> processInstanceIds = caseProcesses.stream()
+                .filter(pi -> pi.getState().equals(ProcessInstance.STATE_ACTIVE))
+                .sorted((ProcessInstanceDesc o1, ProcessInstanceDesc o2) -> {
+
+                        return Long.valueOf(o2.getParentId()).compareTo(Long.valueOf(o1.getParentId()));
+                    }
+                )
+                .map(pi -> pi.getId()).collect(toList());
         CaseEventSupport caseEventSupport = getCaseEventSupport(context);
         caseEventSupport.fireBeforeCaseCancelled(caseId, processInstanceIds);
         

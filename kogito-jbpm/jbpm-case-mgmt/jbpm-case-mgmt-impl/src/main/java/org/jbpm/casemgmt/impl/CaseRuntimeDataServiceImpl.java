@@ -71,6 +71,8 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.process.CorrelationKey;
@@ -94,6 +96,14 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
     
     // default statuses set to active only
     private List<Integer> statuses = Arrays.asList(ProcessInstance.STATE_ACTIVE);
+    
+    private static final List<Status> allActiveStatus = Arrays.asList(
+        Status.Created,
+        Status.Ready,
+        Status.Reserved,
+        Status.InProgress,
+        Status.Suspended
+      );
     
     public CaseRuntimeDataServiceImpl() {
         QueryManager.get().addNamedQueries("META-INF/CaseMgmtorm.xml");
@@ -411,6 +421,35 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
     }
     
     /*
+     * Task related queries
+     */   
+
+    @Override
+    public List<TaskSummary> getCaseTasksAssignedAsPotentialOwner(String caseId, String userId, List<Status> status, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("caseId", caseId + "%");
+        params.put("userId", userId);
+        params.put("status", adoptList(status, allActiveStatus));
+        params.put("groupIds", identityProvider.getRoles());
+        applyQueryContext(params, queryContext);
+        List<TaskSummary> tasks =  commandService.execute(new QueryNameCommand<List<TaskSummary>>("getCaseTasksAsPotentialOwner", params));
+        return tasks;
+    }
+
+
+    @Override
+    public List<TaskSummary> getCaseTasksAssignedAsBusinessAdmin(String caseId, String userId, List<Status> status, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("caseId", caseId + "%");
+        params.put("userId", userId);
+        params.put("status", adoptList(status, allActiveStatus));
+        params.put("groupIds", identityProvider.getRoles());
+        applyQueryContext(params, queryContext);
+        List<TaskSummary> tasks =  commandService.execute(new QueryNameCommand<List<TaskSummary>>("getCaseTasksAsBusinessAdmin", params));
+        return tasks;
+    }
+    
+    /*
      * Helper methods to parse process and extract case related information
      */
     
@@ -548,5 +587,19 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
             }
         }
     }
+    
+    protected List<?> adoptList(List<?> source, List<?> values) {
+        
+        if (source == null || source.isEmpty()) {
+            List<Object> data = new ArrayList<Object>();            
+            for (Object value : values) {
+                data.add(value);
+            }
+            
+            return data;
+        }
+        return source;
+    }
+
 
 }

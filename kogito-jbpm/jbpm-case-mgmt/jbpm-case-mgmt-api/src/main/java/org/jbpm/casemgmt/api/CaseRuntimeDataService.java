@@ -26,6 +26,8 @@ import org.jbpm.casemgmt.api.model.instance.CaseMilestoneInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseStageInstance;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryContext;
 
 /**
@@ -167,5 +169,25 @@ public interface CaseRuntimeDataService {
      *
      */
     Collection<CaseInstance> getCaseInstancesOwnedBy(String owner, List<Integer> statuses, QueryContext queryContext);
+    
+    /**
+     * Returns all tasks associated with given case id that are eligible for user to see.
+     * @param caseId unique id of the case 
+     * @param userId user id that the tasks should be available for
+     * @param status status of the task
+     * @param queryContext control parameters for the result e.g. sorting, paging 
+     * @return list of tasks found for given case id and user
+     */
+    List<TaskSummary> getCaseTasksAssignedAsPotentialOwner(String caseId, String userId, List<Status> status, QueryContext queryContext);
+    
+    /**
+     * Returns all tasks associated with given case id that are eligible for user to see as business admin role.
+     * @param caseId unique id of the case 
+     * @param userId user id that the tasks should be available for
+     * @param status status of the task
+     * @param queryContext control parameters for the result e.g. sorting, paging 
+     * @return list of tasks found for given case id and user
+     */
+    List<TaskSummary> getCaseTasksAssignedAsBusinessAdmin(String caseId, String userId, List<Status> status, QueryContext queryContext);
     
 }

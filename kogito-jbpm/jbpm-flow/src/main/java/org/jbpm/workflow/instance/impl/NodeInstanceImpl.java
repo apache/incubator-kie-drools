@@ -397,6 +397,9 @@ public abstract class NodeInstanceImpl implements org.jbpm.workflow.instance.Nod
     }
     
     public Context resolveContext(String contextId, Object param) {
+        if (getNode() == null) {
+            return null;
+        }
         return ((NodeImpl) getNode()).resolveContext(contextId, param);
     }
     

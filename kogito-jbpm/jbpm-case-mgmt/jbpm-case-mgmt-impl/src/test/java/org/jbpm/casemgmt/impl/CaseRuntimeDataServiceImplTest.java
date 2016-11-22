@@ -48,6 +48,7 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryContext;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
@@ -73,6 +74,7 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         processes.add("cases/UserTaskWithStageCase.bpmn2");
         // add processes that can be used by cases but are not cases themselves
         processes.add("processes/DataVerificationProcess.bpmn2");
+        processes.add("processes/UserTaskProcess.bpmn2");
         
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
@@ -456,6 +458,13 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
             NodeInstanceDesc activeNode = activeNodes.iterator().next();
             assertNotNull(activeNodes);
             assertEquals("[Dynamic] First task", activeNode.getName());
+            
+            List<TaskSummary> tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
+            assertNotNull(tasks);
+            assertEquals(1, tasks.size());
+            TaskSummary task = tasks.get(0);
+            assertEquals("First task", task.getName());
+            assertEquals("test", task.getDescription());
 
         } catch (Exception e) {
             logger.error("Unexpected error {}", e.getMessage(), e);
@@ -463,6 +472,191 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         } finally {
             if (caseId != null) {
                 caseService.cancelCase(caseId);
+            }
+        }
+    }
+    
+    @Test
+    public void testUserTasksInCase() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        Map<String, Object> data = new HashMap<>();
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data);
+        String caseId2 = null;
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            List<TaskSummary> tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
+            assertNotNull(tasks);
+            assertEquals(0, tasks.size());
+            
+            Map<String, Object> taskInput = new HashMap<>();
+            taskInput.put("ActorId", "john");
+            caseService.triggerAdHocFragment(caseId, "Missing data", taskInput);
+            
+            tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
+            assertNotNull(tasks);
+            assertEquals(1, tasks.size());
+            TaskSummary task = tasks.get(0);
+            assertEquals("Missing data", task.getName());
+            
+            
+            caseId2 = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
+            assertNotNull(caseId2);
+            assertEquals("CASE-0000000002", caseId2);
+            
+            caseService.triggerAdHocFragment(caseId2, "Missing data", taskInput);
+            
+            tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId2, "john", null, new QueryContext());
+            assertNotNull(tasks);
+            assertEquals(1, tasks.size());
+            task = tasks.get(0);
+            assertEquals("Missing data", task.getName());
+            
+            tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
+            assertNotNull(tasks);
+            assertEquals(1, tasks.size());
+            task = tasks.get(0);
+            assertEquals("Missing data", task.getName());
+            
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+            if (caseId2 != null) {
+                caseService.cancelCase(caseId2);
+            }
+        }
+    }
+    
+    @Test
+    public void testUserTasksInCaseWithSubprocess() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        Map<String, Object> data = new HashMap<>();
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data);
+        
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            List<TaskSummary> tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
+            assertNotNull(tasks);
+            assertEquals(0, tasks.size());
+            
+            Map<String, Object> taskInput = new HashMap<>();
+            taskInput.put("ActorId", "john");
+            caseService.triggerAdHocFragment(caseId, "Missing data", taskInput);
+            
+            tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
+            assertNotNull(tasks);
+            assertEquals(1, tasks.size());
+            TaskSummary task = tasks.get(0);
+            assertEquals("Missing data", task.getName());
+            
+            caseService.addDynamicSubprocess(caseId, "UserTask", null);
+            
+            tasks = caseRuntimeDataService.getCaseTasksAssignedAsPotentialOwner(caseId, "john", null, new QueryContext());
+            assertNotNull(tasks);
+            assertEquals(2, tasks.size());
+            task = tasks.get(0);
+            assertEquals("Hello", task.getName());
+            task = tasks.get(1);
+            assertEquals("Missing data", task.getName());
+
+            
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+            
+        }
+    }
+    
+    @Test
+    public void testUserTasksInCaseAdBusinessAdmin() {
+        assertNotNull(deploymentService);        
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        Map<String, Object> data = new HashMap<>();
+        CaseFileInstance caseFile = caseService.newCaseFileInstance(deploymentUnit.getIdentifier(), USER_TASK_CASE_P_ID, data);
+        String caseId2 = null;
+        String caseId = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
+        assertNotNull(caseId);
+        assertEquals(FIRST_CASE_ID, caseId);
+        try {
+            CaseInstance cInstance = caseService.getCaseInstance(caseId);
+            assertNotNull(cInstance);
+            assertEquals(FIRST_CASE_ID, cInstance.getCaseId());
+            assertEquals(deploymentUnit.getIdentifier(), cInstance.getDeploymentId());
+            
+            List<TaskSummary> tasks = caseRuntimeDataService.getCaseTasksAssignedAsBusinessAdmin(caseId, "Administrator", null, new QueryContext());
+            assertNotNull(tasks);
+            assertEquals(0, tasks.size());
+            
+            Map<String, Object> taskInput = new HashMap<>();
+            taskInput.put("ActorId", "john");
+            caseService.triggerAdHocFragment(caseId, "Missing data", taskInput);
+            
+            tasks = caseRuntimeDataService.getCaseTasksAssignedAsBusinessAdmin(caseId, "Administrator", null, new QueryContext());
+            assertNotNull(tasks);
+            assertEquals(1, tasks.size());
+            TaskSummary task = tasks.get(0);
+            assertEquals("Missing data", task.getName());
+            
+            
+            caseId2 = caseService.startCase(deploymentUnit.getIdentifier(), USER_TASK_STAGE_CASE_P_ID, caseFile);
+            assertNotNull(caseId2);
+            assertEquals("CASE-0000000002", caseId2);
+            
+            caseService.triggerAdHocFragment(caseId2, "Missing data", taskInput);
+            
+            tasks = caseRuntimeDataService.getCaseTasksAssignedAsBusinessAdmin(caseId2, "Administrator", null, new QueryContext());
+            assertNotNull(tasks);
+            assertEquals(1, tasks.size());
+            task = tasks.get(0);
+            assertEquals("Missing data", task.getName());
+            
+            tasks = caseRuntimeDataService.getCaseTasksAssignedAsBusinessAdmin(caseId, "Administrator", null, new QueryContext());
+            assertNotNull(tasks);
+            assertEquals(1, tasks.size());
+            task = tasks.get(0);
+            assertEquals("Missing data", task.getName());
+            
+        } catch (Exception e) {
+            logger.error("Unexpected error {}", e.getMessage(), e);
+            fail("Unexpected exception " + e.getMessage());
+        } finally {
+            if (caseId != null) {
+                caseService.cancelCase(caseId);
+            }
+            if (caseId2 != null) {
+                caseService.cancelCase(caseId2);
             }
         }
     }

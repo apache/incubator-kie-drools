@@ -316,7 +316,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                 exceptionScopeInstance.handleException(faultName, processInstance.getFaultData());
                 cancel();
                 return;
-            } else if (!getSubProcessNode().isIndependent()){
+            } else if (getSubProcessNode() != null && !getSubProcessNode().isIndependent()){
                 ((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED, faultName);
                 return;
             }
