@@ -18,13 +18,13 @@ public class ConversationContextManager {
 
     public void startConversation(RequestContextImpl requestContext) {
         long conversationId = counter++;
-        ConversationContext ctx = new ConversationContext(conversationId, null);
+        ConversationContextImpl ctx = new ConversationContextImpl( conversationId, null);
         conversationContexts.put(conversationId, ctx);
         requestContext.setConversationContext(ctx);
     }
 
     public void joinConversation(RequestContextImpl requestContext, long conversationId) {
-        ConversationContext ctx = (ConversationContext) conversationContexts.get(conversationId);
+        ConversationContextImpl ctx = (ConversationContextImpl) conversationContexts.get( conversationId );
         if ( ctx == null ) {
             throw new RuntimeException("Conversation cannot be found");
         }

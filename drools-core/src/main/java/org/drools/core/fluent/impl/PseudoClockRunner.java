@@ -17,7 +17,7 @@
 package org.drools.core.fluent.impl;
 
 import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.runtime.InternalRunner;
+import org.drools.core.runtime.InternalLocalRunner;
 import org.drools.core.command.ConversationContextManager;
 import org.drools.core.command.RequestContextImpl;
 import org.drools.core.time.SessionPseudoClock;
@@ -27,6 +27,7 @@ import org.kie.api.runtime.Batch;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.RequestContext;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -36,7 +37,7 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class PseudoClockRunner implements InternalRunner {
+public class PseudoClockRunner implements InternalLocalRunner {
 
     private final Map<String, Context>    appContexts = new HashMap<String, Context>();
     private ConversationContextManager    cvnManager = new ConversationContextManager();
@@ -60,11 +61,8 @@ public class PseudoClockRunner implements InternalRunner {
         return appContexts;
     }
 
-    public Context execute(Executable executable) {
-        return execute( executable, createContext() );
-    }
-
-    public Context execute( Executable executable, Context ctx ) {
+    @Override
+    public RequestContext execute( Executable executable, RequestContext ctx ) {
         executeBatches( executable, ctx );
         executeQueue( ctx );
         return ctx;
@@ -159,7 +157,7 @@ public class PseudoClockRunner implements InternalRunner {
         }
     }
 
-    public RequestContextImpl createContext() {
+    public RequestContext createContext() {
         return new RequestContextImpl( counter++,
                                        new ContextManagerImpl( appContexts ),
                                        cvnManager );

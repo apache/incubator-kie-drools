@@ -22,8 +22,8 @@ import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerHelper;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Executable;
+import org.kie.api.runtime.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +68,7 @@ public class TransactionLockInterceptor extends AbstractInterceptor {
     }
 
     @Override
-    public Context execute( Executable executable, Context ctx ) {
+    public RequestContext execute( Executable executable, RequestContext ctx ) {
         if (!active) {
             executeNext(executable, ctx);
             return ctx;

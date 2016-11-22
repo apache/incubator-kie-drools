@@ -21,6 +21,7 @@ import org.drools.core.runtime.ChainableRunner;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.ExecutableRunner;
+import org.kie.api.runtime.RequestContext;
 
 public abstract class AbstractInterceptor extends PseudoClockRunner implements ChainableRunner {
 
@@ -35,6 +36,6 @@ public abstract class AbstractInterceptor extends PseudoClockRunner implements C
     }
 
     protected void executeNext( Executable executable, Context ctx ) {
-        next.execute(executable, ctx);
+        next.execute(executable, ( (RequestContext) ctx ) );
     }
 }

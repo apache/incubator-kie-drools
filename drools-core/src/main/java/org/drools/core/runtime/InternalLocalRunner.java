@@ -25,13 +25,17 @@ import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Batch;
 import org.kie.api.runtime.Executable;
-import org.kie.internal.fluent.RequestContext;
+import org.kie.api.runtime.RequestContext;
 
 import java.util.List;
 
 import static java.util.Collections.singletonList;
 
-public interface InternalRunner extends ExecutableRunner {
+public interface InternalLocalRunner extends ExecutableRunner<RequestContext> {
+    default RequestContext execute(Executable executable) {
+        return execute( executable, createContext() );
+    }
+
     default <T> T execute( Command<T> command ) {
         Context ctx = execute( new SingleCommandExecutable( command ) );
         return command instanceof BatchExecutionCommand ?
@@ -40,7 +44,7 @@ public interface InternalRunner extends ExecutableRunner {
     }
 
     default <T> T execute( Command<T> command, Context ctx ) {
-        execute( new SingleCommandExecutable( command ), ctx );
+        execute( new SingleCommandExecutable( command ), (RequestContext) ctx );
         return command instanceof BatchExecutionCommand ?
                (T) ( (RegistryContext) ctx ).lookup( ExecutionResultImpl.class ) :
                (T) ( (RequestContext) ctx ).getResult();

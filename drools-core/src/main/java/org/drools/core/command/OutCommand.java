@@ -2,7 +2,7 @@ package org.drools.core.command;
 
 import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.api.runtime.Context;
-import org.kie.internal.fluent.RequestContext;
+import org.kie.api.runtime.RequestContext;
 
 
 public class OutCommand<T> implements ExecutableCommand<T> {

@@ -22,13 +22,13 @@ import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.command.runtime.process.StartProcessInstanceCommand;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.kie.api.command.Command;
-import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Batch;
 import org.kie.api.runtime.Executable;
+import org.kie.api.runtime.RequestContext;
 
 public class FireAllRulesInterceptor extends AbstractInterceptor {
 
-	public Context execute( Executable executable, Context ctx ) {
+	public RequestContext execute( Executable executable, RequestContext ctx ) {
 		executeNext(executable, ctx);
 		if (requiresFireAllRules(executable)) {
 			new FireAllRulesCommand().execute( ctx );

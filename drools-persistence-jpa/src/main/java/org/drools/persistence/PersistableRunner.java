@@ -16,10 +16,8 @@
 package org.drools.persistence;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.command.RequestContextImpl;
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.AbstractInterceptor;
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
@@ -37,12 +35,12 @@ import org.drools.persistence.jpa.JpaPersistenceContextManager;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
 import org.kie.api.KieBase;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +58,7 @@ public class PersistableRunner implements SingleSessionCommandService {
 
     private KieSession                 ksession;
     private Environment                env;
-    private RegistryContext            sessionContext;
+    private RequestContext             sessionContext;
     private ChainableRunner            runner;
 
     private TransactionManager         txm;
@@ -138,9 +136,9 @@ public class PersistableRunner implements SingleSessionCommandService {
 
         ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl(this.txm, this.sessionInfo ) );
 
-        this.sessionContext = new RequestContextImpl().register( KieSession.class, this.ksession );
+        this.sessionContext = RequestContext.create().with( this.ksession );
 
-        this.runner = new TransactionInterceptor( sessionContext);
+        this.runner = new TransactionInterceptor();
 
         TimerJobFactoryManager timerJobFactoryManager = ((InternalKnowledgeRuntime) ksession ).getTimerService().getTimerJobFactoryManager();
         if (timerJobFactoryManager instanceof CommandServiceTimerJobFactoryManager) {
@@ -249,10 +247,10 @@ public class PersistableRunner implements SingleSessionCommandService {
 
         if ( this.sessionContext == null ) {
             // this should only happen when this class is first constructed
-            this.sessionContext = new RequestContextImpl().register( KieSession.class, this.ksession );
+            this.sessionContext = RequestContext.create().with( this.ksession );
         }
 
-        this.runner = new TransactionInterceptor( sessionContext);
+        this.runner = new TransactionInterceptor();
         // apply interceptors
         Iterator<ChainableRunner> iterator = this.interceptors.descendingIterator();
         while (iterator.hasNext()) {
@@ -343,15 +341,11 @@ public class PersistableRunner implements SingleSessionCommandService {
     private static String SPRING_TM_CLASSNAME = "org.springframework.transaction.support.AbstractPlatformTransactionManager";
 
     public static boolean isSpringTransactionManager( Class<?> clazz ) {
-        if ( SPRING_TM_CLASSNAME.equals(clazz.getName()) ) {
+        if ( SPRING_TM_CLASSNAME.equals( clazz.getName() ) ) {
             return true;
         }
         // Try to find from the ancestors
-        if (clazz.getSuperclass() != null)
-        {
-            return isSpringTransactionManager(clazz.getSuperclass());
-        }
-        return false;
+        return clazz.getSuperclass() != null && isSpringTransactionManager( clazz.getSuperclass() );
     }
 
     public static class EndOperationListenerImpl
@@ -371,8 +365,8 @@ public class PersistableRunner implements SingleSessionCommandService {
         }
     }
 
-    public Context createContext() {
-        return this.sessionContext;
+    public RequestContext createContext() {
+        return RequestContext.create().with( this.ksession );
     }
 
     public ChainableRunner getChainableRunner() {
@@ -380,13 +374,7 @@ public class PersistableRunner implements SingleSessionCommandService {
     }
 
     @Override
-    public Context execute(Executable executable) {
-        ( (RequestContextImpl) sessionContext ).setLastReturned( null );
-        return execute( executable, sessionContext );
-    }
-
-    @Override
-    public Context execute( Executable executable, Context ctx ) {
+    public RequestContext execute( Executable executable, RequestContext ctx ) {
         runner.execute( executable, ctx );
         return ctx;
     }
@@ -517,7 +505,7 @@ public class PersistableRunner implements SingleSessionCommandService {
         return this.ksession;
     }
 
-    public void addInterceptor(ChainableRunner interceptor ) {
+    public void addInterceptor(ChainableRunner interceptor) {
         addInterceptor(interceptor, true);
     }
 
@@ -543,15 +531,12 @@ public class PersistableRunner implements SingleSessionCommandService {
 
     private class TransactionInterceptor extends AbstractInterceptor {
 
-        private final Context context;
-
-        public TransactionInterceptor(Context context) {
+        public TransactionInterceptor() {
             setNext(new PseudoClockRunner());
-            this.context = context;
         }
 
         @Override
-        public Context execute( Executable executable, Context ignored ) {
+        public RequestContext execute( Executable executable, RequestContext context ) {
             // Open the entity manager before the transaction begins.
             PersistenceContext persistenceContext = jpm.getApplicationScopedPersistenceContext();
 

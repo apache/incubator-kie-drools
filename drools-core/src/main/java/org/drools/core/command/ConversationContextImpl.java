@@ -2,17 +2,18 @@ package org.drools.core.command;
 
 import org.drools.core.command.impl.ContextImpl;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ConversationContext;
 import org.kie.internal.command.ContextManager;
 
-public class ConversationContext extends ContextImpl {
+public class ConversationContextImpl extends ContextImpl implements ConversationContext {
 
     private long conversationId;
 
-    public ConversationContext(long conversationId, ContextManager manager, Context delegate) {
+    public ConversationContextImpl( long conversationId, ContextManager manager, Context delegate ) {
         super(Long.toString(conversationId), manager, delegate);
     }
 
-    public ConversationContext(long conversationId, ContextManager manager) {
+    public ConversationContextImpl( long conversationId, ContextManager manager ) {
         super(Long.toString(conversationId), manager);
         this.conversationId = conversationId;
 

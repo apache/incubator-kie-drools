@@ -17,12 +17,13 @@
 package org.drools.persistence.jpa;
 
 import org.drools.core.command.impl.AbstractInterceptor;
-import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Executable;
+import org.kie.api.runtime.RequestContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.OptimisticLockException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * ExecutableInterceptor that is capable of retrying command execution. It is intended to retry only if right exception
@@ -52,6 +53,8 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
 
     protected Class<?> targetConstraintViolationExceptionClass;
 
+    private static final ThreadLocal<AtomicInteger> invocationsCounter = new ThreadLocal<>();
+
     public OptimisticLockRetryInterceptor() {
         String clazz = System.getProperty("org.kie.optlock.exclass", "org.hibernate.StaleObjectStateException");
         try {
@@ -69,7 +72,23 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
     }
 
     @Override
-    public Context execute( Executable executable, Context ctx ) {
+    public final RequestContext execute( Executable executable, RequestContext ctx ) {
+        AtomicInteger counter = invocationsCounter.get();
+        if (counter == null) {
+            counter = new AtomicInteger( 0 );
+            invocationsCounter.set( counter );
+        }
+        counter.incrementAndGet();
+        try {
+            return internalExecute( executable, ctx );
+        } finally {
+            if (counter.decrementAndGet() == 0) {
+                invocationsCounter.remove();
+            }
+        }
+    }
+
+    protected RequestContext internalExecute( Executable executable, RequestContext ctx ) {
         int attempt = 1;
         long sleepTime = delay;
         RuntimeException originException = null;
@@ -179,19 +198,7 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
     }
 
     protected boolean hasInterceptorInStack() {
-        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-        int counter = -1;
-        for (StackTraceElement element : elements) {
-            if (element.getClassName().equals(this.getClass().getName()) && element.getMethodName().equals("execute")) {
-                counter++;
-            }
-            // avoid iterating entire stack if possible
-            if (counter > 0) {
-                return true;
-            }
-        }
-
-        return false;
+        return invocationsCounter.get().get() > 1;
     }
 
 }

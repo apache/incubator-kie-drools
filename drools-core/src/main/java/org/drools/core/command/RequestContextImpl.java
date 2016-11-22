@@ -18,9 +18,12 @@ package org.drools.core.command;
 
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.Context;
+import org.kie.api.runtime.ConversationContext;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.RequestContext;
 import org.kie.internal.command.ContextManager;
-import org.kie.internal.fluent.RequestContext;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -66,7 +69,7 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
         return conversationContext;
     }
 
-    public void setConversationContext(ConversationContext conversationContext) {
+    public void setConversationContext(ConversationContext conversationContext ) {
         this.conversationContext = conversationContext;
     }
 
@@ -109,6 +112,18 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
     @Override
     public Object getResult() {
         return getLastReturned();
+    }
+
+    @Override
+    public RequestContext with( KieBase kieBase ) {
+        register( KieBase.class, kieBase );
+        return this;
+    }
+
+    @Override
+    public RequestContext with( KieSession kieSession ) {
+        register( KieSession.class, kieSession );
+        return this;
     }
 
     public void setLastReturned( Object lastReturned ) {

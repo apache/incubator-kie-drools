@@ -18,7 +18,7 @@ package org.drools.core.runtime;
 
 import org.kie.api.runtime.ExecutableRunner;
 
-public interface ChainableRunner extends InternalRunner {
+public interface ChainableRunner extends InternalLocalRunner {
     void setNext(ExecutableRunner runner);
     ExecutableRunner getNext();
 }

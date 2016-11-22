@@ -17,10 +17,13 @@
 package org.drools.core.command;
 
 
-import org.drools.core.runtime.InternalRunner;
+import org.drools.core.runtime.InternalLocalRunner;
+import org.kie.api.runtime.KieSession;
 
-public interface SingleSessionCommandService extends InternalRunner {
+public interface SingleSessionCommandService extends InternalLocalRunner {
+    KieSession getKieSession();
     Long getSessionId();
+
     void dispose();
     void destroy();
 }

@@ -16,7 +16,6 @@
 
 package org.drools.core.impl;
 
-import org.kie.api.runtime.ExecutableRunner;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
@@ -29,7 +28,6 @@ import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.base.NonCloningQueryViewListener;
 import org.drools.core.base.QueryRowWithSubruleIndex;
 import org.drools.core.base.StandardQueryViewChangedEventListener;
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.CompositeDefaultAgenda;
 import org.drools.core.common.ConcurrentNodeMemories;
@@ -97,7 +95,6 @@ import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
-import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 import org.kie.api.event.KieRuntimeEventManager;
@@ -112,8 +109,10 @@ import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.RequestContext;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -124,7 +123,6 @@ import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.KnowledgeBase;
-import org.kie.api.runtime.Context;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
@@ -697,11 +695,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public <T> T execute(Command<T> command) {
-        ExecutableRunner runner = ExecutableRunner.create();
-        Context context = runner.createContext();
-
-        ((RegistryContext) context).register( KieBase.class, this.kBase )
-                                   .register( KieSession.class, this );
+        ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
+        RequestContext context = runner.createContext().with( this.kBase ).with( this );
 
         if ( !(command instanceof BatchExecutionCommand) ) {
             return runner.execute( command, context );
