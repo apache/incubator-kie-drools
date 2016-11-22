@@ -15,10 +15,16 @@
 
 package org.jbpm.process.workitem;
 
+import org.drools.core.process.core.datatype.impl.type.EnumDataType;
 import org.drools.core.process.core.datatype.impl.type.ListDataType;
 import org.drools.core.process.core.datatype.impl.type.StringDataType;
+import org.jbpm.process.workitem.enums.AnimalsEnum;
+import org.jbpm.process.workitem.enums.CarsEnum;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -30,7 +36,7 @@ public class WorkDefinitionImplTest extends AbstractBaseTest {
         Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString());
         assertNotNull(repoResults);
         assertFalse(repoResults.isEmpty());
-        assertEquals(repoResults.size(), 6);
+        assertEquals(repoResults.size(), 9);
 
         WorkDefinitionImpl testServiceOne = repoResults.get("TestServiceOne");
         assertNotNull(testServiceOne);
@@ -94,6 +100,167 @@ public class WorkDefinitionImplTest extends AbstractBaseTest {
         assertEquals("TestServiceFive", testServiceFive.getDisplayName());
         assertNull(testServiceFive.getDependencies());
 
+    }
+
+    @Test
+    public void testParameterValuesWithEnumsOnly() throws Exception {
+        Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString());
+        assertNotNull(repoResults);
+        assertFalse(repoResults.isEmpty());
+        assertEquals(repoResults.size(), 9);
+
+        WorkDefinitionImpl testServiceWithParamValues = repoResults.get("TestServiceWithParamValues");
+        assertNotNull(testServiceWithParamValues);
+        assertNotNull(testServiceWithParamValues.getParameterValues());
+
+        Map<String, Object> parameterValues = testServiceWithParamValues.getParameterValues();
+        assertNotNull(parameterValues);
+        assertEquals(parameterValues.size(), 2);
+        for( Map.Entry<String, Object> entry : parameterValues.entrySet() ) {
+            assertTrue( entry.getValue() instanceof  EnumDataType );
+
+            if (entry.getKey().equals("param1")) {
+                EnumDataType paramEnum = (EnumDataType) entry.getValue();
+                assertEquals("org.jbpm.process.workitem.enums.AnimalsEnum", paramEnum.getClassName());
+                Map<String, Object> paramValuesMap = paramEnum.getValueMap();
+                assertNotNull(paramValuesMap);
+                assertEquals(5, paramValuesMap.size());
+
+                assertTrue(paramValuesMap.containsKey("DOGS"));
+                assertTrue(paramValuesMap.containsKey("CATS"));
+                assertTrue(paramValuesMap.containsKey("ELEPHANTS"));
+                assertTrue(paramValuesMap.containsKey("GIRAFFES"));
+                assertTrue(paramValuesMap.containsKey("BIRDS"));
+
+                assertEquals(paramValuesMap.get("DOGS"), AnimalsEnum.DOGS);
+                assertEquals(paramValuesMap.get("CATS"), AnimalsEnum.CATS);
+                assertEquals(paramValuesMap.get("ELEPHANTS"), AnimalsEnum.ELEPHANTS);
+                assertEquals(paramValuesMap.get("GIRAFFES"), AnimalsEnum.GIRAFFES);
+                assertEquals(paramValuesMap.get("BIRDS"), AnimalsEnum.BIRDS);
+
+            } else if(entry.getKey().equals("param3")) {
+                EnumDataType paramEnum = (EnumDataType) entry.getValue();
+                assertEquals("org.jbpm.process.workitem.enums.CarsEnum", paramEnum.getClassName());
+                Map<String, Object> paramValuesMap = paramEnum.getValueMap();
+                assertNotNull(paramValuesMap);
+                assertEquals(5, paramValuesMap.size());
+
+                assertTrue(paramValuesMap.containsKey("HONDA"));
+                assertTrue(paramValuesMap.containsKey("MAZDA"));
+                assertTrue(paramValuesMap.containsKey("NISSAN"));
+                assertTrue(paramValuesMap.containsKey("TOYOTA"));
+                assertTrue(paramValuesMap.containsKey("FORD"));
+
+                assertEquals(paramValuesMap.get("HONDA"), CarsEnum.HONDA);
+                assertEquals(paramValuesMap.get("MAZDA"), CarsEnum.MAZDA);
+                assertEquals(paramValuesMap.get("NISSAN"), CarsEnum.NISSAN);
+                assertEquals(paramValuesMap.get("TOYOTA"), CarsEnum.TOYOTA);
+                assertEquals(paramValuesMap.get("FORD"), CarsEnum.FORD);
+            } else {
+                fail("invalid parameter name");
+            }
+        }
+
+    }
+
+    @Test
+    public void testParameterValuesWithStringsOnly() throws Exception {
+        Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString());
+        assertNotNull(repoResults);
+        assertFalse(repoResults.isEmpty());
+        assertEquals(repoResults.size(), 9);
+
+        WorkDefinitionImpl testServiceWithParamValuesTwo = repoResults.get("TestServiceWithParamValuesTwo");
+        assertNotNull(testServiceWithParamValuesTwo);
+        assertNotNull(testServiceWithParamValuesTwo.getParameterValues());
+
+        Map<String, Object> parameterValues = testServiceWithParamValuesTwo.getParameterValues();
+        assertNotNull(parameterValues);
+        assertEquals(parameterValues.size(), 2);
+
+        for( Map.Entry<String, Object> entry : parameterValues.entrySet() ) {
+            assertTrue( entry.getValue() instanceof  String );
+            assertNotNull( entry.getValue());
+
+            if (entry.getKey().equals("param1")) {
+                String paramValue = (String) entry.getValue();
+                List<String> paramValueList = Arrays.asList(paramValue.split(","));
+                assertNotNull(paramValueList);
+                assertEquals(3, paramValueList.size());
+                assertTrue(paramValueList.contains("one"));
+                assertTrue(paramValueList.contains("two"));
+                assertTrue(paramValueList.contains("three"));
+            } else if(entry.getKey().equals("param3")) {
+                String paramValue = (String) entry.getValue();
+                List<String> paramValueList = Arrays.asList(paramValue.split(","));
+                assertNotNull(paramValueList);
+                assertEquals(3, paramValueList.size());
+                assertTrue(paramValueList.contains("four"));
+                assertTrue(paramValueList.contains("five"));
+                assertTrue(paramValueList.contains("six"));
+            } else {
+                fail("invalid parameter name");
+            }
+        }
+    }
+
+    @Test
+    public void testParameterValuesWithStringsAndEnums() throws Exception {
+        Map<String, WorkDefinitionImpl> repoResults = WorkItemRepository.getWorkDefinitions(getClass().getResource("repository").toURI().toString());
+        assertNotNull(repoResults);
+        assertFalse(repoResults.isEmpty());
+        assertEquals(repoResults.size(), 9);
+
+        WorkDefinitionImpl testServiceWithParamValuesThree = repoResults.get("TestServiceWithParamValuesThree");
+        assertNotNull(testServiceWithParamValuesThree);
+        assertNotNull(testServiceWithParamValuesThree.getParameterValues());
+
+        Map<String, Object> parameterValues = testServiceWithParamValuesThree.getParameterValues();
+        assertNotNull(parameterValues);
+        assertEquals(parameterValues.size(), 2);
+
+        /**
+         *  "parameterValues" : [
+         "param1" : new EnumDataType("org.jbpm.process.workitem.enums.AnimalsEnum"),
+         "param3" : "one, two, three"
+         ],
+         */
+        for( Map.Entry<String, Object> entry : parameterValues.entrySet() ) {
+            assertNotNull( entry.getValue());
+
+            if (entry.getKey().equals("param1")) {
+                assertTrue( entry.getValue() instanceof  EnumDataType );
+                EnumDataType paramEnum = (EnumDataType) entry.getValue();
+                assertEquals("org.jbpm.process.workitem.enums.AnimalsEnum", paramEnum.getClassName());
+                Map<String, Object> paramValuesMap = paramEnum.getValueMap();
+                assertNotNull(paramValuesMap);
+                assertEquals(5, paramValuesMap.size());
+
+                assertTrue(paramValuesMap.containsKey("DOGS"));
+                assertTrue(paramValuesMap.containsKey("CATS"));
+                assertTrue(paramValuesMap.containsKey("ELEPHANTS"));
+                assertTrue(paramValuesMap.containsKey("GIRAFFES"));
+                assertTrue(paramValuesMap.containsKey("BIRDS"));
+
+                assertEquals(paramValuesMap.get("DOGS"), AnimalsEnum.DOGS);
+                assertEquals(paramValuesMap.get("CATS"), AnimalsEnum.CATS);
+                assertEquals(paramValuesMap.get("ELEPHANTS"), AnimalsEnum.ELEPHANTS);
+                assertEquals(paramValuesMap.get("GIRAFFES"), AnimalsEnum.GIRAFFES);
+                assertEquals(paramValuesMap.get("BIRDS"), AnimalsEnum.BIRDS);
+            } else if(entry.getKey().equals("param3")) {
+                assertTrue( entry.getValue() instanceof  String );
+                String paramValue = (String) entry.getValue();
+                List<String> paramValueList = Arrays.asList(paramValue.split(","));
+                assertNotNull(paramValueList);
+                assertEquals(3, paramValueList.size());
+                assertTrue(paramValueList.contains("one"));
+                assertTrue(paramValueList.contains("two"));
+                assertTrue(paramValueList.contains("three"));
+            } else {
+                fail("invalid parameter name");
+            }
+
+        }
     }
 
 }

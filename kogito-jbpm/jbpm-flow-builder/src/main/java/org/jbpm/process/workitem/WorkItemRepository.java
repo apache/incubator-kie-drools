@@ -56,6 +56,12 @@ public class WorkItemRepository {
 					}
 				}
 				workDefinition.setParameters(parameters);
+
+
+				if(workDefinitionMap.get("parameterValues") != null) {
+					workDefinition.setParameterValues( (Map<String, Object>) workDefinitionMap.get("parameterValues") );
+				}
+
 				Set<ParameterDefinition> results = new HashSet<ParameterDefinition>();
 				Map<String, DataType> resultMap = (Map<String, DataType>) workDefinitionMap.get("results");
 				if (resultMap != null) {

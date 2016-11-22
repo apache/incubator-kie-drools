@@ -15,6 +15,11 @@
 
 package org.jbpm.process.workitem;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 public class WorkDefinitionImpl extends org.drools.core.process.core.impl.WorkDefinitionExtensionImpl {
 
 	private static final long serialVersionUID = 5L;
@@ -30,6 +35,7 @@ public class WorkDefinitionImpl extends org.drools.core.process.core.impl.WorkDe
 	private String iconEncoded;
 	private String version;
 	private String widType;
+	private Map<String, Object> parameterValues = new HashMap<>();
 	
 	public String getDocumentation() {
 		return documentation;
@@ -106,5 +112,29 @@ public class WorkDefinitionImpl extends org.drools.core.process.core.impl.WorkDe
 	public String getWidType() { return widType; }
 
 	public void setWidType(String widType) { this.widType = widType; }
+
+	public Map<String, Object> getParameterValues() {
+		return this.parameterValues;
+	}
+
+	public void setParameterValues(Map<String, Object> parameterValues) {
+		this.parameterValues.clear();
+		if(parameterValues != null) {
+			this.parameterValues.putAll(parameterValues);
+		}
+
+	}
+
+	public void addParameterValue(String key, Object value) {
+		this.parameterValues.put(key, value);
+	}
+
+	public void removeParameterValue(String key) {
+		this.parameterValues.remove(key);
+	}
+
+	public String[] getParameterValueNames() {
+		return (String[])this.parameterValues.keySet().toArray(new String[this.parameterValues.size()]);
+	}
 	
 }
