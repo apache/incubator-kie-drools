@@ -659,6 +659,35 @@ public class FEELParserTest {
     }
 
     @Test
+    public void testNestedContexts2() {
+        String inputExpression = "{ an applicant : { "
+                                 + "    home address : {"
+                                 + "        street name: \"broadway st\","
+                                 + "        city : \"New York\" "
+                                 + "    } "
+                                 + " },\n "
+                                 + " street : an applicant.home address.street name \n"
+                                 + "}";
+        BaseNode ctxbase = parse( inputExpression );
+
+        assertThat( ctxbase, is( instanceOf( ContextNode.class ) ) );
+        assertThat( ctxbase.getText(), is( inputExpression ) );
+
+        ContextNode ctx = (ContextNode) ctxbase;
+        assertThat( ctx.getEntries().size(), is( 2 ) );
+
+        ContextEntryNode entry = ctx.getEntries().get( 1 );
+        assertThat( entry.getName(), is( instanceOf( NameDefNode.class ) ) );
+        NameDefNode name = (NameDefNode) entry.getName();
+        assertThat( name.getText(), is("street") );
+        assertThat( entry.getValue(), is( instanceOf( QualifiedNameNode.class ) ) );
+        QualifiedNameNode qnn = (QualifiedNameNode) entry.getValue();
+        assertThat( qnn.getParts().get( 0 ).getText(), is("an applicant") );
+        assertThat( qnn.getParts().get( 1 ).getText(), is("home address") );
+        assertThat( qnn.getParts().get( 2 ).getText(), is("street name") );
+    }
+
+    @Test
     public void testFunctionDefinition() {
         String inputExpression = "{ is minor : function( person's age ) person's age < 21 }";
         BaseNode ctxbase = parse( inputExpression );
