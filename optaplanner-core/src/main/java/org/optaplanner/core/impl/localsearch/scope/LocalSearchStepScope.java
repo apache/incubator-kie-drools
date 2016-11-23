@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
  */
 public class LocalSearchStepScope<Solution_> extends AbstractStepScope<Solution_> {
 
-    private final LocalSearchPhaseScope phaseScope;
+    private final LocalSearchPhaseScope<Solution_> phaseScope;
 
     private double timeGradient = Double.NaN;
     private Move step = null;

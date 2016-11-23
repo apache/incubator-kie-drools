@@ -576,12 +576,13 @@ public class SolutionDescriptor<Solution_> {
 
     private void determineGlobalShadowOrder() {
         // Topological sorting with Kahn's algorithm
-        List<Pair<ShadowVariableDescriptor, Integer>> pairList = new ArrayList<>();
-        Map<ShadowVariableDescriptor, Pair<ShadowVariableDescriptor, Integer>> shadowToPairMap = new HashMap<>();
+        List<Pair<ShadowVariableDescriptor<Solution_>, Integer>> pairList = new ArrayList<>();
+        Map<ShadowVariableDescriptor<Solution_>, Pair<ShadowVariableDescriptor<Solution_>, Integer>> shadowToPairMap
+                = new HashMap<>();
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             for (ShadowVariableDescriptor<Solution_> shadow : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
                 int sourceSize = shadow.getSourceVariableDescriptorList().size();
-                Pair<ShadowVariableDescriptor, Integer> pair = MutablePair.of(shadow, sourceSize);
+                Pair<ShadowVariableDescriptor<Solution_>, Integer> pair = MutablePair.of(shadow, sourceSize);
                 pairList.add(pair);
                 shadowToPairMap.put(shadow, pair);
             }
@@ -589,7 +590,7 @@ public class SolutionDescriptor<Solution_> {
         for (EntityDescriptor<Solution_> entityDescriptor : entityDescriptorMap.values()) {
             for (GenuineVariableDescriptor<Solution_> genuine : entityDescriptor.getDeclaredGenuineVariableDescriptors()) {
                 for (ShadowVariableDescriptor<Solution_> sink : genuine.getSinkVariableDescriptorList()) {
-                    Pair<ShadowVariableDescriptor, Integer> sinkPair = shadowToPairMap.get(sink);
+                    Pair<ShadowVariableDescriptor<Solution_>, Integer> sinkPair = shadowToPairMap.get(sink);
                     sinkPair.setValue(sinkPair.getValue() - 1);
                 }
             }
@@ -597,7 +598,7 @@ public class SolutionDescriptor<Solution_> {
         int globalShadowOrder = 0;
         while (!pairList.isEmpty()) {
             Collections.sort(pairList, (a, b) -> Integer.compare(a.getValue(), b.getValue()));
-            Pair<ShadowVariableDescriptor, Integer> pair = pairList.remove(0);
+            Pair<ShadowVariableDescriptor<Solution_>, Integer> pair = pairList.remove(0);
             ShadowVariableDescriptor<Solution_> shadow = pair.getKey();
             if (pair.getValue() != 0) {
                 if (pair.getValue() < 0) {
@@ -611,7 +612,7 @@ public class SolutionDescriptor<Solution_> {
                         + ") and also earlier than its sinks (" + shadow.getSinkVariableDescriptorList() + ").");
             }
             for (ShadowVariableDescriptor<Solution_> sink : shadow.getSinkVariableDescriptorList()) {
-                Pair<ShadowVariableDescriptor, Integer> sinkPair = shadowToPairMap.get(sink);
+                Pair<ShadowVariableDescriptor<Solution_>, Integer> sinkPair = shadowToPairMap.get(sink);
                 sinkPair.setValue(sinkPair.getValue() - 1);
             }
             shadow.setGlobalShadowOrder(globalShadowOrder);
@@ -902,7 +903,7 @@ public class SolutionDescriptor<Solution_> {
         return count;
     }
 
-    public int countReinitializableVariables(ScoreDirector scoreDirector, Solution_ solution) {
+    public int countReinitializableVariables(ScoreDirector<Solution_> scoreDirector, Solution_ solution) {
         int count = 0;
         for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext(); ) {
             Object entity = it.next();
