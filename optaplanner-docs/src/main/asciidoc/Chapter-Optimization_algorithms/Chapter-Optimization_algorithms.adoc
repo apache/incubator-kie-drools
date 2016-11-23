@@ -370,7 +370,8 @@ Other phases (especially metaheuristics) will only terminate if the `Phase` is c
 ----
 
 
-If the `Solver` terminates (before the last `Phase` terminates itself), the current phase is terminated and all subsequent phases won't run.
+If the `Solver` terminates (before the last `Phase` terminates itself),
+the current phase is terminated and all subsequent phases won't run.
 
 [[scopeOverview]]
 == Scope Overview
@@ -765,14 +766,16 @@ So it should return quickly to avoid slowing down the solving.
 == Custom Solver Phase
 
 
-Between phases or before the first phase, you might want to run a custom optmization algorithm to initialize the `Solution` or to take some low hanging fruit to get a better score quickly.
+Between phases or before the first phase, you might want to run a custom optmization algorithm to initialize the `Solution`
+or to take some low hanging fruit to get a better score quickly.
 Yet you'll still want to reuse the score calculation.
 For example, to implement a custom Construction Heuristic without implementing an entire ``Phase``.
 
 [NOTE]
 ====
 Most of the time, a custom solver phase is not worth the hassle.
-The supported <<constructionHeuristics,Constructions Heuristics>> are configurable (use the <<benchmarker,Benchmarker>> to tweak them), `Termination` aware and support partially initialized solutions too.
+The supported <<constructionHeuristics,Constructions Heuristics>> are configurable (use the <<benchmarker,Benchmarker>> to tweak them),
+`Termination` aware and support partially initialized solutions too.
 ====
 
 
@@ -891,4 +894,19 @@ public class MySolutionInitializer extends AbstractCustomPhaseCommand<MySolution
 
     ...
 }
+----
+
+[[noChangeSolverPhase]]
+== No Change Solver Phase
+
+In rare cases it can be useful to configure that no solver phase should be run.
+By default, configuring no phase will trigger the use of the default phases.
+To avoid those, configure a `NoChangePhase`:
+
+[source,xml,options="nowrap"]
+----
+<solver>
+  ...
+  <noChangePhase/>
+</solver>
 ----

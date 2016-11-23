@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.config.phase;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.config.AbstractConfig;
@@ -30,7 +27,6 @@ import org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfi
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.PhaseToSolverTerminationBridge;
@@ -38,6 +34,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamInclude({
         CustomPhaseConfig.class,
+        NoChangePhaseConfig.class,
         ExhaustiveSearchPhaseConfig.class,
         ConstructionHeuristicPhaseConfig.class,
         LocalSearchPhaseConfig.class,
