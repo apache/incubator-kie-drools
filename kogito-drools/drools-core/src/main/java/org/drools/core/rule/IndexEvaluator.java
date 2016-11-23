@@ -53,9 +53,14 @@ public interface IndexEvaluator extends Serializable {
      *
      * @return Returns true if evaluation is successful. false otherwise.
      */
-    public boolean evaluate(InternalWorkingMemory workingMemory,
-                            InternalReadAccessor leftExtractor,
-                            Object left,
-                            InternalReadAccessor rightExtractor,
-                            Object right);
+    boolean evaluate(InternalWorkingMemory workingMemory,
+                     InternalReadAccessor leftExtractor,
+                     Object left,
+                     InternalReadAccessor rightExtractor,
+                     Object right);
+
+    boolean evaluate(InternalWorkingMemory workingMemory,
+                     Object value1,
+                     InternalReadAccessor extractor2,
+                     Object object2);
 }

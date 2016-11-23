@@ -40,14 +40,19 @@ import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;
+import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,7 +64,6 @@ import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 
 public class IndexingTest extends CommonTestMethodBase {
 
-    //@Test(timeout=10000)
     @Test()
     public void testAlphaNodeSharing() {
         String drl = "";
@@ -694,5 +698,167 @@ public class IndexingTest extends CommonTestMethodBase {
         ksession.insert( c );
 
         ksession.fireAllRules();
+    }
+    @Test
+    public void testHashingAfterRemoveRightTuple() {
+        // DROOLS-1326
+        String drl = "package "+this.getClass().getPackage().getName()+";\n" +
+                     "import "+MyPojo.class.getCanonicalName()+"\n" +
+                     "global java.util.List list;\n" +
+                     "rule R1\n" +
+                     "when\n" +
+                     "    $my: MyPojo(\n" +
+                     "        vBoolean == true,\n" +
+                     "        $s : vString != \"y\",\n" +
+                     "        $l : vLong\n" +
+                     "    )\n" +
+                     "    not MyPojo(\n" +
+                     "        vBoolean == true,\n" +
+                     "        vString == $s,\n" +
+                     "        vLong != $l\n" +
+                     "    )\n" +
+                     "then\n" +
+                     "    list.add($my.getName());\n" +
+                     "end";
+
+        KieSession session = new KieHelper().addContent( drl, ResourceType.DRL ).build().newKieSession();
+
+        List<Long> check = new ArrayList<Long>();
+        session.setGlobal("list", check);
+
+        MyPojo a = new MyPojo("A", true, "x", 0);
+        MyPojo b = new MyPojo("B", true, "x", 7);
+        MyPojo c = new MyPojo("C", false, "y", 7);
+
+        FactHandle fh_a = session.insert( a );
+        FactHandle fh_b = session.insert(b);
+        FactHandle fh_c = session.insert(c);
+
+        session.fireAllRules();
+        assertFalse( check.contains("A") );         // A should be blocked by B.
+
+        c.setvBoolean(true);
+        c.setvString("x");
+        session.update(fh_c, c);
+
+        b.setvBoolean(false);
+        b.setvString("y");
+        session.update(fh_b, b);
+
+        session.fireAllRules();
+        assertFalse( check.contains("A") );       // A is no longer blocked by B, *however* it is now blocked by C !
+    }
+
+    public static class MyPojo {
+        private final String name;
+        private boolean vBoolean;
+        private String vString;
+        private long vLong;
+
+        public MyPojo(String name, boolean vBoolean, String vString, long vLong) {
+            this.name = name;
+            this.vBoolean = vBoolean;
+            this.vString = vString;
+            this.vLong = vLong;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isvBoolean() {
+            return vBoolean;
+        }
+
+        public String getvString() {
+            return vString;
+        }
+
+        public long getvLong() {
+            return vLong;
+        }
+
+        public void setvBoolean(boolean vBoolean) {
+            this.vBoolean = vBoolean;
+        }
+
+        public void setvString(String vString) {
+            this.vString = vString;
+        }
+
+        public void setvLong(long vLong) {
+            this.vLong = vLong;
+        }
+
+        @Override
+        public String toString() {
+            return "MyPojo: " + name;
+        }
+    }
+
+    @Test
+    public void testRequireLeftReorderingWithRangeIndex() {
+        // DROOLS-1326
+        String drl = "import " + Queen.class.getCanonicalName() + ";\n"
+                     + "\n"
+                     + "rule \"multipleQueensHorizontal\"\n"
+                     + "when\n"
+                     + "    Queen($id : id, row != null, $i : rowIndex)\n"
+                     + "    Queen(id > $id, rowIndex == $i)\n"
+                     + "then\n"
+                     + "end\n";
+        KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        Queen queen1 = new Queen(1);
+        Queen queen2 = new Queen(2);
+        Integer row1 = 1;
+        Integer row2 = 2;
+
+        FactHandle fq1 = kieSession.insert(queen1);
+        FactHandle fq2 = kieSession.insert(queen2);
+        // initially both queens have null row
+        Assert.assertEquals( 0, kieSession.fireAllRules() );
+
+        // now Q1 is the only queen on row1
+        kieSession.update(fq1, queen1.setRow(row1));
+        Assert.assertEquals(0, kieSession.fireAllRules());
+
+        // Q1 moved to row2 but it's still alone
+        kieSession.update(fq1, queen1.setRow(row2));
+        Assert.assertEquals(0, kieSession.fireAllRules());
+
+        // now Q2 is on row2 together with Q1 -> rule should fire
+        kieSession.update(fq2, queen2.setRow(row2));
+        Assert.assertEquals(1, kieSession.fireAllRules());
+    }
+
+    public static class Queen {
+
+        private final int id;
+        private Integer row;
+
+        public Queen(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public Integer getRow() {
+            return row;
+        }
+
+        public Queen setRow(Integer row) {
+            this.row = row;
+            return this;
+        }
+
+        public int getRowIndex() {
+            if (row == null) {
+                return Integer.MIN_VALUE;
+            }
+            return row;
+        }
     }
 }

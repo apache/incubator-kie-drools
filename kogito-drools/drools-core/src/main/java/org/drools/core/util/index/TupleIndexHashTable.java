@@ -188,7 +188,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
                     }
                 }
 
-                tuple = (Tuple) tuple.getNext();
+                tuple = tuple.getNext();
                 if ( tuple != null ) {
                     // we have a next tuple so return
                     return tuple;
@@ -270,7 +270,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
                     }
                 }
 
-                this.tuple = (Tuple) this.tuple.getNext();
+                this.tuple = this.tuple.getNext();
                 if ( this.tuple != null ) {
                     // we have a next tuple so return
                     return this.tuple;
@@ -312,7 +312,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
                 Tuple entry = bucket.getFirst();
                 while (entry != null) {
                     result[index++] = entry;
-                    entry = (Tuple) entry.getNext();
+                    entry = entry.getNext();
                 }
                 bucket = bucket.getNext();
             }
@@ -395,14 +395,14 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
 
         // search to find an existing entry
         while ( entry != null ) {
-            if ( matchesRight( entry, tuple, hashCode ) ) {
+            if ( matches( entry, tuple, hashCode, !left ) ) {
                 return entry;
             }
             entry = entry.getNext();
         }
 
         // entry does not exist, so create
-        entry = new TupleList( this.index, hashCode );
+        entry = this.index.createEntry( tuple, hashCode, left );
         entry.setNext( (TupleList) this.table[index] );
         this.table[index] = entry;
 
@@ -423,7 +423,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         TupleList entry = (TupleList) this.table[index];
 
         while ( entry != null ) {
-            if ( matches(entry, tuple, hashCode ) ) {
+            if ( matches(entry, tuple, hashCode, left ) ) {
                 return entry;
             }
             entry = entry.getNext();
@@ -432,24 +432,14 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         return null;
     }
 
-    private boolean matches(TupleList list, Tuple tuple, int tupleHashCode) {
+    private boolean matches( TupleList list, Tuple tuple, int tupleHashCode, boolean left ) {
         if ( list.hashCode() != tupleHashCode ) {
             return false;
         }
 
         return left ?
-               this.index.equal( tuple.getFactHandle().getObject(), list.getFirst() ) :
-               this.index.equal( list.getFirst().getFactHandle().getObject(), tuple );
-    }
-
-    private boolean matchesRight( TupleList list, Tuple tuple, int tupleHashCode ) {
-        if ( list.hashCode() != tupleHashCode ) {
-            return false;
-        }
-
-        return left ?
-               this.index.equal( list.getFirst(), tuple ) :
-               this.index.equal( list.getFirst().getFactHandle().getObject(), tuple.getFactHandle().getObject() );
+               this.index.equal( list, tuple.getFactHandle().getObject() ) :
+               this.index.equal( list, tuple );
     }
 
     public int size() {
@@ -496,7 +486,7 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
             entry = entry.getNext();
         }
 
-        return entry;
+        return null;
     }
 
     private boolean matches(TupleList tupleList, Tuple tuple, int tupleHashCode, InternalFactHandle factHandle) {
@@ -505,13 +495,13 @@ public class TupleIndexHashTable extends AbstractHashTable implements TupleMemor
         }
 
         if ( tupleList.getFirst().getFactHandle() == factHandle ) {
-            Tuple rightTuple = ( Tuple ) tupleList.getFirst().getNext();
+            Tuple rightTuple = tupleList.getFirst().getNext();
             if ( rightTuple != null ) {
                 return this.index.equal( rightTuple.getFactHandle().getObject(),
                                          tuple );
             }
         }
 
-        return this.index.equal( tupleList.getFirst().getFactHandle().getObject(), tuple );
+        return this.index.equal( tupleList, tuple );
     }
 }

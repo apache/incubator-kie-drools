@@ -828,14 +828,24 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 final InternalReadAccessor extractor1,
                                 final Object object1,
-                                final InternalReadAccessor extractor2, final Object object2) {
-            final Object value1 = extractor1.getValue( workingMemory, object1 );
+                                final InternalReadAccessor extractor2,
+                                final Object object2) {
+            return evaluate(workingMemory, extractor1.getValue( workingMemory, object1 ), extractor2, object2);
+        }
+
+        public boolean evaluate(InternalWorkingMemory workingMemory,
+                                final Object value1,
+                                final InternalReadAccessor extractor2,
+                                final Object object2) {
             final Object value2 = extractor2.getValue( workingMemory, object2 );
             if (value1 == null) {
                 return value2 == null;
             }
             if (value1 instanceof String) {
                 return value2 != null && value1.equals(value2.toString());
+            }
+            if (value2 instanceof String) {
+                return value1 != null && value2.equals(value1.toString());
             }
             return value1.equals( value2 );
         }
