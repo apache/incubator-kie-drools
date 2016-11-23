@@ -9003,4 +9003,101 @@ public class Misc2Test extends CommonTestMethodBase {
             assertTrue( e.getMessage().contains( "name.startsWith(\"A\")" ) );
         }
     }
+
+    @Test
+    public void testHashingAfterRemoveRightTuple() {
+        // DROOLS-1326
+        String drl = "package "+this.getClass().getPackage().getName()+";\n" +
+                     "import "+MyPojo.class.getCanonicalName()+"\n" +
+                     "global java.util.List list;\n" +
+                     "rule R1\n" +
+                     "when\n" +
+                     "    $my: MyPojo(\n" +
+                     "        vBoolean == true,\n" +
+                     "        $s : vString != \"y\",\n" +
+                     "        $l : vLong\n" +
+                     "    )\n" +
+                     "    not MyPojo(\n" +
+                     "        vBoolean == true,\n" +
+                     "        vString == $s,\n" +
+                     "        vLong != $l\n" +
+                     "    )\n" +
+                     "then\n" +
+                     "    list.add($my.getName());\n" +
+                     "end";
+
+        KieSession session = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        List<Long> check = new ArrayList<Long>();
+        session.setGlobal("list", check);
+
+        MyPojo a = new MyPojo("A", true, "x", 0);
+        MyPojo b = new MyPojo("B", true, "x", 7);
+        MyPojo c = new MyPojo("C", false, "y", 7);
+
+        FactHandle fh_a = session.insert(a);
+        FactHandle fh_b = session.insert(b);
+        FactHandle fh_c = session.insert(c);
+
+        session.fireAllRules();
+        assertFalse( check.contains("A") );         // A should be blocked by B.
+
+        c.setvBoolean(true);
+        c.setvString("x");
+        session.update(fh_c, c);
+
+        b.setvBoolean(false);
+        b.setvString("y");
+        session.update(fh_b, b);
+
+        session.fireAllRules();
+        assertFalse( check.contains("A") );       // A is no longer blocked by B, *however* it is now blocked by C !
+    }
+
+    public static class MyPojo {
+        private final String name;
+        private boolean vBoolean;
+        private String vString;
+        private long vLong;
+
+        public MyPojo(String name, boolean vBoolean, String vString, long vLong) {
+            this.name = name;
+            this.vBoolean = vBoolean;
+            this.vString = vString;
+            this.vLong = vLong;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isvBoolean() {
+            return vBoolean;
+        }
+
+        public String getvString() {
+            return vString;
+        }
+
+        public long getvLong() {
+            return vLong;
+        }
+
+        public void setvBoolean(boolean vBoolean) {
+            this.vBoolean = vBoolean;
+        }
+
+        public void setvString(String vString) {
+            this.vString = vString;
+        }
+
+        public void setvLong(long vLong) {
+            this.vLong = vLong;
+        }
+
+        @Override
+        public String toString() {
+            return "MyPojo: " + name;
+        }
+    }
 }

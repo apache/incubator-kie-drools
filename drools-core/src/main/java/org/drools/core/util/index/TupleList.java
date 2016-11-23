@@ -19,7 +19,6 @@ package org.drools.core.util.index;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.spi.Tuple;
-import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
@@ -34,32 +33,17 @@ public class TupleList implements TupleMemory, Entry<TupleList> {
     private Tuple                  first;
     private Tuple                  last;
 
-    private int                    hashCode;
-    private Index                  index;
-
     private TupleHashTableIterator iterator;
 
     private int                    size;
 
     public TupleList() {
-        // this is not an index bucket
-        this.hashCode = 0;
-        this.index = null;
     }
 
     public TupleList( Tuple first, Tuple last, int size ) {
-        // this is not an index bucket
-        this.hashCode = 0;
-        this.index = null;
         this.first = first;
         this.last = last;
         this.size = size;
-    }
-
-    public TupleList( final Index index,
-                      final int hashCode ) {
-        this.index = index;
-        this.hashCode = hashCode;
     }
 
     public boolean isEmpty() {
@@ -134,7 +118,7 @@ public class TupleList implements TupleMemory, Entry<TupleList> {
             this.last = null;
             this.first = null;
         }  else {
-            this.first = (Tuple) tuple.getNext();
+            this.first = tuple.getNext();
             if ( this.first != null ) {
                 this.first.setPrevious(null);
             }
@@ -154,7 +138,7 @@ public class TupleList implements TupleMemory, Entry<TupleList> {
             if ( tuple.equals( current ) ) {
                 return current;
             }
-            current = (Tuple) current.getNext();
+            current = current.getNext();
         }
         return null;
     }
@@ -165,7 +149,7 @@ public class TupleList implements TupleMemory, Entry<TupleList> {
             if ( handle == current.getFactHandle() ) {
                 return current;
             }
-            current = (Tuple) current.getNext();
+            current = current.getNext();
         }
         return null;
     }
@@ -180,7 +164,7 @@ public class TupleList implements TupleMemory, Entry<TupleList> {
         Tuple current = first;
         for ( int i = 0; i < this.size; i++ ) {
             tuples[i] = current;
-            current = (Tuple) current.getNext();
+            current = current.getNext();
         }
 
         return tuples;
@@ -224,7 +208,7 @@ public class TupleList implements TupleMemory, Entry<TupleList> {
         public Tuple next() {
             if ( this.current != null ) {
                 Tuple returnValue = this.current;
-                this.current = (Tuple) current.getNext();
+                this.current = current.getNext();
                 return returnValue;
             } else {
                 return null;
@@ -238,15 +222,6 @@ public class TupleList implements TupleMemory, Entry<TupleList> {
 
     public boolean isIndexed() {
         return false;
-    }
-
-    public int hashCode() {
-        return this.hashCode;
-    }
-
-    public boolean equals(final Object object) {
-        final TupleList other = (TupleList) object;
-        return this.hashCode == other.hashCode && this.index == other.index;
     }
 
     public TupleList getNext() {
@@ -271,12 +246,10 @@ public class TupleList implements TupleMemory, Entry<TupleList> {
         other.next = next;
         other.first = first;
         other.last = last;
-        other.hashCode = hashCode;
-        other.index = index;
         other.iterator = iterator;
         other.size = size;
 
-        for ( Tuple current = first; current != null; current = (Tuple)current.getNext()) {
+        for ( Tuple current = first; current != null; current = current.getNext() ) {
             current.setMemory(other);
         }
     }
