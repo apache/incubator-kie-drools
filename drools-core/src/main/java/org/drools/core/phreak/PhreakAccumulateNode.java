@@ -71,11 +71,6 @@ public class PhreakAccumulateNode {
             doRightDeletes(accNode, am, wm, srcRightTuples, tempLeftTuples);
         }
 
-        if (srcLeftTuples.getUpdateFirst() != null ) {
-            RuleNetworkEvaluator.doUpdatesReorderLeftMemory(am.getBetaMemory(),
-                                                            srcLeftTuples);
-        }
-
         if (srcRightTuples.getUpdateFirst() != null) {
             RuleNetworkEvaluator.doUpdatesReorderRightMemory(am.getBetaMemory(),
                                                              srcRightTuples);

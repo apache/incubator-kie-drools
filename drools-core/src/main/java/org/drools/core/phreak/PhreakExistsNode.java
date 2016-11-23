@@ -52,11 +52,6 @@ public class PhreakExistsNode {
             doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
-        if (srcLeftTuples.getUpdateFirst() != null )  {
-            RuleNetworkEvaluator.doUpdatesExistentialReorderLeftMemory(bm,
-                                                                       srcLeftTuples);
-        }
-
         if ( srcRightTuples.getUpdateFirst() != null ) {
             RuleNetworkEvaluator.doUpdatesExistentialReorderRightMemory(bm,
                                                                         existsNode,
