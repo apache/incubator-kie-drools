@@ -8885,6 +8885,101 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
+    public void test1187() {
+        // DROOLS-1187
+        String drl = "import " + Misc2Test.Shift1187.class.getCanonicalName() + "\n"
+                + "rule insertEmployeeConsecutiveWeekendAssignmentStart when\n"
+                + "    Shift1187(\n"
+                + "        weekend == true,\n"
+                + "        $employee : employee, employee != null,\n"
+                + "        $week : week\n"
+                + "    )\n"
+                + "    // The first working weekend has no working weekend before it\n"
+                + "    not Shift1187(\n"
+                + "        weekend == true,\n"
+                + "        employee == $employee,\n"
+                + "        week == ($week - 1)\n"
+                + "    )\n"
+                + "then\n"
+                + "end";
+
+        KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        Shift1187 shift1 = new Shift1187(0, 4);
+        Shift1187 shift2 = new Shift1187(1, 5);
+        Shift1187 shift3 = new Shift1187(2, 6);
+        Shift1187 shift4 = new Shift1187(2, 6);
+        Shift1187 shift5 = new Shift1187(2, 0);
+        Shift1187 shift6 = new Shift1187(3, 0);
+
+        String employeeA = "Sarah";
+        String employeeB = "Susan";
+        String employeeC = "Fred";
+
+        shift4.setEmployee(employeeB);
+        shift5.setEmployee(employeeA);
+
+        FactHandle fh1 = kieSession.insert(shift1);
+        FactHandle fh2 = kieSession.insert(shift2);
+        FactHandle fh3 = kieSession.insert(shift3);
+        FactHandle fh4 = kieSession.insert(shift4);
+        FactHandle fh5 = kieSession.insert(shift5);
+        FactHandle fh6 = kieSession.insert(shift6);
+
+        assertEquals(2, kieSession.fireAllRules());
+
+        kieSession.update(fh6, shift6.setEmployee(employeeA));
+        kieSession.update(fh1, shift1.setEmployee(employeeA));
+        kieSession.update(fh2, shift2.setEmployee(employeeC));
+
+        assertEquals(1, kieSession.fireAllRules());
+
+        kieSession.update(fh4, shift4.setEmployee(employeeB));
+        kieSession.update(fh3, shift3.setEmployee(employeeB));
+        kieSession.update(fh5, shift5.setEmployee(employeeB));
+        kieSession.update(fh2, shift2.setEmployee(employeeA));
+        kieSession.update(fh4, shift4.setEmployee(employeeA));
+
+        kieSession.fireAllRules();
+    }
+
+    public class Shift1187 {
+
+        private final int week;
+        private final int dayOfWeek;
+        private String employee;
+
+        public Shift1187(int week, int dayOfWeek) {
+            this.dayOfWeek = dayOfWeek;
+            this.week = week;
+        }
+
+        public String getEmployee() {
+            return employee;
+        }
+
+        public Shift1187 setEmployee(String employee) {
+            this.employee = employee;
+            return this;
+        }
+
+        public int getWeek() {
+            return week;
+        }
+
+        public boolean isWeekend() {
+            if (employee == null) {
+                return false;
+            }
+            return dayOfWeek == 6 || dayOfWeek == 0 || dayOfWeek == 5 && hasWeekendOnFriday(employee);
+        }
+
+        private boolean hasWeekendOnFriday(String employee) {
+            return employee.startsWith("F");
+        }
+    }
+
+    @Test
     public void testReportFailingConstraintOnError() {
         // DROOLS-1071
         String drl =
