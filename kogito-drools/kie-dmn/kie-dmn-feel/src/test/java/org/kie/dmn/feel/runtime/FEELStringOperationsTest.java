@@ -35,4 +35,3 @@ public class FEELStringOperationsTest extends BaseFEELTest {
     }
 }
 
-// :	'\\' [btnfr"'\\]
