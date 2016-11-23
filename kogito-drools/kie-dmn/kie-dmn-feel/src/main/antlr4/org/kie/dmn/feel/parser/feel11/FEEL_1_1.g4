@@ -294,8 +294,18 @@ interval
 qualifiedName
 @init {
     String name = null;
+    int count = 0;
 }
-    : n1=nameRef { name = getOriginalText( $n1.ctx ); } ( '.' {helper.recoverScope( name );} n2=nameRef {name=getOriginalText( $n2.ctx ); helper.dismissScope();} )*
+@after {
+    for( int i = 0; i < count; i++ )
+        helper.dismissScope();
+}
+    : n1=nameRef { name = getOriginalText( $n1.ctx ); }
+        ( '.'
+            {helper.recoverScope( name ); count++;}
+            n2=nameRef
+            {name=getOriginalText( $n2.ctx );}
+        )*
     ;
 
 nameRef
