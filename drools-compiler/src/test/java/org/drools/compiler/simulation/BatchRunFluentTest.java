@@ -163,7 +163,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
 
     @Test
-    public void testConversationIdIncreases() {
+    public void testDifferentConversationIds() {
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
         RequestContext requestContext = runner.createContext();
 
@@ -177,13 +177,11 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
         runner.execute(f.getExecutable(), requestContext);
 
-        long conversationId = requestContext.getConversationContext().getConversationId();
-        assertEquals(0, conversationId);
+        String conversationId = requestContext.getConversationContext().getName();
 
         runner.execute(f.getExecutable(), requestContext);
 
-        conversationId = requestContext.getConversationContext().getConversationId();
-        assertEquals(1, conversationId);
+        assertNotEquals(conversationId, requestContext.getConversationContext().getName());
     }
 
     @Test
@@ -259,7 +257,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         // check that nothing went to the 'out'
         assertEquals(null, requestContext.getOut().get("outS"));
 
-        long conversationId = requestContext.getConversationContext().getConversationId();
+        String conversationId = requestContext.getConversationContext().getName();
 
         assertEquals("h1", requestContext.getConversationContext().get("outS1") );
 
@@ -327,7 +325,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         // Check that get() will search directly to Request, thus over-riding Application and Conversation scoped values
         f         = new FluentBuilderImpl();
 
-        f.getApplicationContext("app1").joinConversation(requestContext.getConversationContext().getConversationId())
+        f.getApplicationContext("app1").joinConversation(requestContext.getConversationContext().getName())
          .getKieContainer(releaseId).newSession()
          .insert("h3")
          .fireAllRules()

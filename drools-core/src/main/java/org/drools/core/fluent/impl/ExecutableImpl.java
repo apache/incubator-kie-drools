@@ -16,15 +16,13 @@
 
 package org.drools.core.fluent.impl;
 
-import org.kie.api.runtime.Batch;
-import org.kie.api.runtime.Executable;
-import org.kie.internal.fluent.runtime.FluentBuilder;
 import org.kie.api.command.Command;
+import org.kie.internal.fluent.runtime.FluentBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExecutableImpl implements Executable {
+public class ExecutableImpl implements InternalExecutable {
     private FluentComponentFactory factory;
     private FluentBuilder          fluentBuilder;
 

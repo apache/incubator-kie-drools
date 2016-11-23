@@ -40,7 +40,7 @@ import org.drools.core.command.runtime.rule.QueryCommand;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.Context;
-import org.kie.api.runtime.Batch;
+import org.drools.core.fluent.impl.Batch;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

@@ -5,9 +5,9 @@ import org.kie.api.runtime.Context;
 
 
 public class JoinConversationCommand<Void> implements ExecutableCommand<Void> {
-    private long conversationId;
+    private String conversationId;
 
-    public JoinConversationCommand(long conversationId) {
+    public JoinConversationCommand(String conversationId) {
         this.conversationId = conversationId;
     }
 

@@ -23,7 +23,6 @@ import org.drools.core.command.RequestContextImpl;
 import org.drools.core.time.SessionPseudoClock;
 import org.drools.core.world.impl.ContextManagerImpl;
 import org.kie.api.command.Command;
-import org.kie.api.runtime.Batch;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.KieSession;
@@ -63,20 +62,12 @@ public class PseudoClockRunner implements InternalLocalRunner {
 
     @Override
     public RequestContext execute( Executable executable, RequestContext ctx ) {
-        executeBatches( executable, ctx );
+        executeBatches( ( (InternalExecutable) executable ), ctx );
         executeQueue( ctx );
         return ctx;
     }
 
-    public void evaluateExecutable( Executable executable, Context ctx ) {
-        if (executable != null) {
-            for ( Batch batch : executable.getBatches() ) {
-                executeBatch( batch, ctx );
-            }
-        }
-    }
-
-    public void executeBatches( Executable executable, Context ctx ) {
+    private void executeBatches( InternalExecutable executable, Context ctx ) {
         for (Batch batch : executable.getBatches()) {
             if ( batch.getDistance() == 0L ) {
                 executeBatch( batch, ctx );
@@ -86,7 +77,7 @@ public class PseudoClockRunner implements InternalLocalRunner {
         }
     }
 
-    public void executeQueue( Context ctx ) {
+    private void executeQueue( Context ctx ) {
         while ( !queue.isEmpty() ) {
             Batch batch = queue.remove();
             long timeNow = startTime + batch.getDistance();

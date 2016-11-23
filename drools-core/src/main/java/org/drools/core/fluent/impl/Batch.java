@@ -16,35 +16,16 @@
 
 package org.drools.core.fluent.impl;
 
+import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class BatchImpl implements Batch {
-    private final long distance;
+public interface Batch extends BatchExecutionCommand {
 
-    private List<Command> commands = new ArrayList<Command>();
+    long getDistance();
 
-    public BatchImpl() {
-        this(0L);
-    }
+    Batch addCommand(Command cmd);
 
-    public BatchImpl(long distance) {
-        this.distance = distance;
-    }
-
-    public long getDistance() {
-        return distance;
-    }
-
-    public BatchImpl addCommand(Command cmd) {
-        this.commands.add(cmd);
-        return this;
-    }
-
-    @Override
-    public List<Command> getCommands() {
-        return commands;
-    }
+    List<Command> getCommands();
 }

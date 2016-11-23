@@ -12,7 +12,7 @@ public class LeaveConversationCommand<Void> implements ExecutableCommand<Void> {
     public Void execute(Context context) {
         RequestContextImpl         reqContext = (RequestContextImpl)context;
         ConversationContextManager cvnManager = reqContext.getConversationManager();
-        cvnManager.leaveConversation(reqContext, reqContext.getConversationContext().getConversationId());
+        cvnManager.leaveConversation(reqContext, reqContext.getConversationContext().getName());
 
         return (Void) null;
     }

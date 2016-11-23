@@ -5,12 +5,12 @@ import org.kie.api.runtime.Context;
 
 
 public class EndConversationCommand<Void> implements ExecutableCommand<Void> {
-    private long conversationId;
+    private String conversationId;
 
     public EndConversationCommand() {
     }
 
-    public EndConversationCommand(long conversationId) {
+    public EndConversationCommand(String conversationId) {
         this.conversationId = conversationId;
     }
 

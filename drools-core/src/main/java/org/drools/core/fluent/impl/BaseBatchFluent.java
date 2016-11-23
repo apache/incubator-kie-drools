@@ -122,8 +122,8 @@ public class BaseBatchFluent<T, E> implements ContextFluent<T, E> {
     }
 
     @Override
-    public T joinConversation(long id) {
-        fluentCtx.addCommand(new JoinConversationCommand(id));
+    public T joinConversation(String uuid) {
+        fluentCtx.addCommand(new JoinConversationCommand(uuid));
         return (T) this;
     }
 
@@ -134,8 +134,8 @@ public class BaseBatchFluent<T, E> implements ContextFluent<T, E> {
     }
 
     @Override
-    public T endConversation(long id) {
-        fluentCtx.addCommand(new EndConversationCommand(id));
+    public T endConversation(String uuid) {
+        fluentCtx.addCommand(new EndConversationCommand(uuid));
         return (T) this;
     }
 

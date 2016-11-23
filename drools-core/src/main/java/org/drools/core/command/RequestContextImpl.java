@@ -20,7 +20,6 @@ import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Context;
-import org.kie.api.runtime.ConversationContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.RequestContext;
 import org.kie.internal.command.ContextManager;
@@ -30,12 +29,10 @@ import java.util.Map;
 
 public class RequestContextImpl extends ContextImpl implements RequestContext {
 
-    private ContextImpl         appContext;
-    private ConversationContext conversationContext;
+    private Context appContext;
+    private Context conversationContext;
 
     private ConversationContextManager cvnManager;
-
-    private final long requestId;
 
     private Object lastReturned;
 
@@ -46,13 +43,11 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
     private Exception exception;
 
     public RequestContextImpl() {
-        this.requestId = -1L;
         register( ExecutionResultImpl.class, new ExecutionResultImpl() );
     }
 
     public RequestContextImpl(long requestId, ContextManager ctxManager, ConversationContextManager cvnManager) {
         super(Long.toString(requestId), ctxManager);
-        this.requestId = requestId;
         this.cvnManager = cvnManager;
         register( ExecutionResultImpl.class, new ExecutionResultImpl() );
     }
@@ -65,11 +60,11 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
         this.appContext = (ContextImpl)appContext;
     }
 
-    public ConversationContext getConversationContext() {
+    public Context getConversationContext() {
         return conversationContext;
     }
 
-    public void setConversationContext(ConversationContext conversationContext ) {
+    public void setConversationContext(Context conversationContext ) {
         this.conversationContext = conversationContext;
     }
 
@@ -93,16 +88,6 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
         }
 
         return object;
-    }
-
-    @Override
-    public long getRequestId() {
-        return requestId;
-    }
-
-    @Override
-    public long getConversationId() {
-        return conversationContext.getConversationId();
     }
 
     public Object getLastReturned() {

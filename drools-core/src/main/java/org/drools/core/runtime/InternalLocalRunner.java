@@ -17,14 +17,15 @@
 package org.drools.core.runtime;
 
 import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.fluent.impl.Batch;
 import org.drools.core.fluent.impl.BatchImpl;
+import org.drools.core.fluent.impl.InternalExecutable;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
-import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.Context;
-import org.kie.api.runtime.Batch;
 import org.kie.api.runtime.Executable;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.RequestContext;
 
 import java.util.List;
@@ -50,7 +51,7 @@ public interface InternalLocalRunner extends ExecutableRunner<RequestContext> {
                (T) ( (RequestContext) ctx ).getResult();
     }
 
-    class SingleBatchExecutable implements Executable {
+    class SingleBatchExecutable implements InternalExecutable {
         private final Batch batch;
 
         public SingleBatchExecutable( Batch batch ) {
