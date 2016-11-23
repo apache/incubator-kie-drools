@@ -26,7 +26,7 @@ import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPh
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
 import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.phase.custom.DummyCustomPhaseCommand;
+import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -75,7 +75,7 @@ public class DefaultSolverTest {
         SolverFactory<TestdataSolution> solverFactory = PlannerTestUtils.buildSolverFactory(
                 TestdataSolution.class, TestdataEntity.class);
         CustomPhaseConfig phaseConfig = new CustomPhaseConfig();
-        phaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(DummyCustomPhaseCommand.class));
+        phaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(NoChangeCustomPhaseCommand.class));
         solverFactory.getSolverConfig().setPhaseConfigList(Collections.singletonList(phaseConfig));
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
 

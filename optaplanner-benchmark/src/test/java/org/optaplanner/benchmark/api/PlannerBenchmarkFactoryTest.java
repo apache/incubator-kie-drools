@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
 import org.optaplanner.core.api.solver.DivertingClassLoader;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
-import org.optaplanner.core.impl.phase.custom.DummyCustomPhaseCommand;
+import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
 
 import static org.junit.Assert.*;
 
@@ -63,7 +63,7 @@ public class PlannerBenchmarkFactoryTest {
                 "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfig.xml");
         SolverBenchmarkConfig solverBenchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig().getSolverBenchmarkConfigList().get(0);
         CustomPhaseConfig phaseConfig = new CustomPhaseConfig();
-        phaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(DummyCustomPhaseCommand.class));
+        phaseConfig.setCustomPhaseCommandClassList(Collections.singletonList(NoChangeCustomPhaseCommand.class));
         solverBenchmarkConfig.getSolverConfig() .setPhaseConfigList(Collections.singletonList(phaseConfig));
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);

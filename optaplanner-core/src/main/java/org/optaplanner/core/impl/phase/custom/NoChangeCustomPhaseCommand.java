@@ -18,7 +18,10 @@ package org.optaplanner.core.impl.phase.custom;
 
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class DummyCustomPhaseCommand extends AbstractCustomPhaseCommand<Object> {
+/**
+ * Makes no changes.
+ */
+public class NoChangeCustomPhaseCommand extends AbstractCustomPhaseCommand<Object> {
 
     @Override
     public void changeWorkingSolution(ScoreDirector<Object> scoreDirector) {
