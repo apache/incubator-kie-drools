@@ -55,7 +55,8 @@ public class FieldIndexEntryTest {
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 
-        final TupleList index = new TupleList( singleIndex, "stilton".hashCode() );
+        Tuple tuple = new RightTupleImpl( new DefaultFactHandle( 1, new Cheese("stilton", 10) ) );
+        final TupleList index = new AbstractHashTable.SingleIndexTupleList( singleIndex, tuple, "stilton".hashCode(), false );
 
         // Test initial construction
         assertNull( index.getFirst() );
@@ -98,7 +99,8 @@ public class FieldIndexEntryTest {
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 
-        final TupleList index = new TupleList( singleIndex, "stilton".hashCode() );
+        Tuple tuple = new RightTupleImpl( new DefaultFactHandle( 1, new Cheese("stilton", 10) ) );
+        final TupleList index = new AbstractHashTable.SingleIndexTupleList( singleIndex, tuple, "stilton".hashCode(), false );
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
@@ -152,7 +154,8 @@ public class FieldIndexEntryTest {
         final SingleIndex singleIndex = new SingleIndex( new FieldIndex[]{fieldIndex},
                                                          1 );
 
-        final TupleList index = new TupleList( singleIndex, "stilton".hashCode() );
+        Tuple tuple = new RightTupleImpl( new DefaultFactHandle( 1, new Cheese("stilton", 10) ) );
+        final TupleList index = new AbstractHashTable.SingleIndexTupleList( singleIndex, tuple, "stilton".hashCode(), false );
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );

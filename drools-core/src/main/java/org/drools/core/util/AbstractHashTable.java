@@ -134,9 +134,8 @@ public abstract class AbstractHashTable
                 continue;
             }
             this.table[i] = null;
-            Entry next = null;
             while ( entry != null ) {
-                next = entry.getNext();
+                Entry next = entry.getNext();
                                 
                 // we must use getResizeHashcode as some sub classes cache the hashcode and some don't
                 // otherwise we end up rehashing a cached hashcode that has already been rehashed.
@@ -334,6 +333,12 @@ public abstract class AbstractHashTable
                    declaration.getHashCode( null, tuple.getObject( declaration ) ) :
                    extractor.getHashCode( null, tuple.getFactHandle().getObject() );
         }
+
+        public Object indexedValueOf(Tuple tuple, boolean left) {
+            return left ?
+                   declaration.getValue( null, tuple.getObject( declaration ) ) :
+                   extractor.getValue( null, tuple.getFactHandle().getObject() );
+        }
     }
 
     public interface Index extends Externalizable {
@@ -343,9 +348,11 @@ public abstract class AbstractHashTable
 
         boolean equal(Object object, Tuple tuple);
 
-        boolean equal(Tuple tuple1, Tuple tuple2);
+        boolean equal(TupleList list, Tuple tuple2);
 
-        boolean equal(Object object1, Object object2);
+        boolean equal(TupleList list, Object object2);
+
+        TupleList createEntry(Tuple tuple, int hashCode, boolean left);
     }
 
     public static class SingleIndex
@@ -399,11 +406,10 @@ public abstract class AbstractHashTable
                                                   right );
         }
 
-        public boolean equal(final Object object1,
+        public boolean equal(final TupleList list,
                              final Object object2) {
             return this.index.evaluator.evaluate( null,
-                                                  this.index.extractor,
-                                                  object1,
+                                                  ( (SingleIndexTupleList) list ).indexKey,
                                                   this.index.extractor,
                                                   object2 );
         }
@@ -415,6 +421,57 @@ public abstract class AbstractHashTable
                                                   tuple1.getObject( this.index.declaration ),
                                                   this.index.declaration.getExtractor(),
                                                   tuple2.getObject( this.index.declaration ) );
+        }
+
+        public boolean equal(final TupleList list,
+                             final Tuple tuple2) {
+            return this.index.evaluator.evaluate( null,
+                                                  ( (SingleIndexTupleList) list ).indexKey,
+                                                  this.index.declaration.getExtractor(),
+                                                  tuple2.getObject( this.index.declaration ) );
+        }
+
+        public TupleList createEntry(Tuple tuple, int hashCode, boolean left) {
+            return new SingleIndexTupleList( this, tuple, hashCode, left );
+        }
+    }
+
+    public static class AbstractIndexTupleList extends TupleList {
+        private int hashCode;
+        private Index index;
+
+        public AbstractIndexTupleList( Index index, int hashCode ) {
+            this.index = index;
+            this.hashCode = hashCode;
+        }
+
+        public boolean equals(final Object object) {
+            final AbstractIndexTupleList other = (AbstractIndexTupleList) object;
+            return this.hashCode == other.hashCode && this.index == other.index;
+        }
+
+        public int hashCode() {
+            return this.hashCode;
+        }
+
+        protected void copyStateInto(TupleList other) {
+            super.copyStateInto( other );
+            ( (AbstractIndexTupleList) other ).hashCode = hashCode;
+            ( (AbstractIndexTupleList) other ).index = index;
+        }
+    }
+
+    public static class SingleIndexTupleList extends AbstractIndexTupleList {
+        private Object indexKey;
+
+        public SingleIndexTupleList( SingleIndex index, Tuple tuple, int hashCode, boolean left ) {
+            super( index, hashCode );
+            indexKey = index.index.indexedValueOf(tuple, left);
+        }
+
+        protected void copyStateInto(TupleList other) {
+            super.copyStateInto( other );
+            ( (SingleIndexTupleList) other ).indexKey = indexKey;
         }
     }
 
@@ -487,34 +544,51 @@ public abstract class AbstractHashTable
                                                    right );
         }
 
-        public boolean equal(final Tuple tuple1,
+        public boolean equal(final TupleList list,
                              final Tuple tuple2) {
             return this.index0.evaluator.evaluate( null,
-                                                   this.index0.declaration.getExtractor(),
-                                                   tuple1.getObject( this.index0.declaration ),
-                                                   this.index0.declaration.getExtractor(),
-                                                   tuple2.getObject( this.index0.declaration ) )
+                                                  ( (DoubleIndexTupleList) list ).indexKey0,
+                                                  this.index0.declaration.getExtractor(),
+                                                  tuple2.getObject( this.index0.declaration ) )
                    &&
                    this.index1.evaluator.evaluate( null,
-                                                   this.index1.declaration.getExtractor(),
-                                                   tuple1.getObject( this.index1.declaration ),
+                                                   ( (DoubleIndexTupleList) list ).indexKey1,
                                                    this.index1.declaration.getExtractor(),
                                                    tuple2.getObject( this.index1.declaration ) );
         }
 
-        public boolean equal(final Object object1,
+        public boolean equal(final TupleList list,
                              final Object object2) {
             return this.index0.evaluator.evaluate( null,
-                                                   this.index0.extractor,
-                                                   object1,
-                                                   this.index0.extractor,
-                                                   object2 )
+                                                  ( (DoubleIndexTupleList) list ).indexKey0,
+                                                  this.index0.extractor,
+                                                  object2 )
                    &&
                    this.index1.evaluator.evaluate( null,
-                                                   this.index1.extractor,
-                                                   object1,
+                                                   ( (DoubleIndexTupleList) list ).indexKey1,
                                                    this.index1.extractor,
                                                    object2 );
+        }
+
+        public TupleList createEntry(Tuple tuple, int hashCode, boolean left) {
+            return new DoubleIndexTupleList( this, tuple, hashCode, left );
+        }
+    }
+
+    public static class DoubleIndexTupleList extends AbstractIndexTupleList {
+        private Object indexKey0;
+        private Object indexKey1;
+
+        public DoubleIndexTupleList( DoubleCompositeIndex index, Tuple tuple, int hashCode, boolean left ) {
+            super( index, hashCode );
+            indexKey0 = index.index0.indexedValueOf(tuple, left);
+            indexKey1 = index.index1.indexedValueOf(tuple, left);
+        }
+
+        protected void copyStateInto(TupleList other) {
+            super.copyStateInto( other );
+            ( (DoubleIndexTupleList) other ).indexKey0 = indexKey0;
+            ( (DoubleIndexTupleList) other ).indexKey1 = indexKey1;
         }
     }
 
@@ -599,48 +673,65 @@ public abstract class AbstractHashTable
                                                       right );
         }
 
-        public boolean equal(final Tuple tuple1,
+        public boolean equal(final TupleList list,
                              final Tuple tuple2) {
             return this.index0.evaluator.evaluate( null,
-                                                   this.index0.declaration.getExtractor(),
-                                                   tuple1.getObject( this.index0.declaration ),
+                                                   ( (TripleIndexTupleList) list ).indexKey0,
                                                    this.index0.declaration.getExtractor(),
                                                    tuple2.getObject( this.index0.declaration ) )
                    &&
                    this.index1.evaluator.evaluate( null,
-                                                   this.index1.declaration.getExtractor(),
-                                                   tuple1.getObject( this.index1.declaration ),
+                                                   ( (TripleIndexTupleList) list ).indexKey1,
                                                    this.index1.declaration.getExtractor(),
                                                    tuple2.getObject( this.index1.declaration ) )
                    &&
                    this.index2.evaluator.evaluate( null,
-                                                   this.index2.declaration.getExtractor(),
-                                                   tuple1.getObject( this.index2.declaration ),
+                                                   ( (TripleIndexTupleList) list ).indexKey2,
                                                    this.index2.declaration.getExtractor(),
                                                    tuple2.getObject( this.index2.declaration ) );
         }
 
-        public boolean equal(final Object object1,
+        public boolean equal(final TupleList list,
                              final Object object2) {
             return this.index0.evaluator.evaluate( null,
-                                                   this.index0.extractor,
-                                                   object1,
+                                                   ( (TripleIndexTupleList) list ).indexKey0,
                                                    this.index0.extractor,
                                                    object2 )
                    &&
                    this.index1.evaluator.evaluate( null,
-                                                   this.index1.extractor,
-                                                   object1,
+                                                   ( (TripleIndexTupleList) list ).indexKey1,
                                                    this.index1.extractor,
                                                    object2 )
                    &&
                    this.index2.evaluator.evaluate( null,
-                                                   this.index2.extractor,
-                                                   object1,
+                                                   ( (TripleIndexTupleList) list ).indexKey2,
                                                    this.index2.extractor,
                                                    object2 );
         }
 
+        public TupleList createEntry(Tuple tuple, int hashCode, boolean left) {
+            return new TripleIndexTupleList( this, tuple, hashCode, left );
+        }
+    }
+
+    public static class TripleIndexTupleList extends AbstractIndexTupleList {
+        private Object indexKey0;
+        private Object indexKey1;
+        private Object indexKey2;
+
+        public TripleIndexTupleList( TripleCompositeIndex index, Tuple tuple, int hashCode, boolean left ) {
+            super( index, hashCode );
+            indexKey0 = index.index0.indexedValueOf(tuple, left);
+            indexKey1 = index.index1.indexedValueOf(tuple, left);
+            indexKey2 = index.index2.indexedValueOf(tuple, left);
+        }
+
+        protected void copyStateInto(TupleList other) {
+            super.copyStateInto( other );
+            ( (TripleIndexTupleList) other ).indexKey0 = indexKey0;
+            ( (TripleIndexTupleList) other ).indexKey1 = indexKey1;
+            ( (TripleIndexTupleList) other ).indexKey2 = indexKey2;
+        }
     }
 
     public void clear() {
