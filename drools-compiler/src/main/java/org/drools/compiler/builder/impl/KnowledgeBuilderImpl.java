@@ -37,8 +37,6 @@ import org.drools.compiler.compiler.GuidedDecisionTableProvider;
 import org.drools.compiler.compiler.GuidedRuleTemplateFactory;
 import org.drools.compiler.compiler.GuidedRuleTemplateProvider;
 import org.drools.compiler.compiler.GuidedScoreCardFactory;
-import org.drools.compiler.compiler.PMMLCompiler;
-import org.drools.compiler.compiler.PMMLCompilerFactory;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.compiler.compiler.PackageBuilderResults;
 import org.drools.compiler.compiler.PackageRegistry;
@@ -192,8 +190,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     private IllegalArgumentException                          processBuilderCreationFailure;
 
-    private PMMLCompiler                                      pmmlCompiler;
-
     //This list of package level attributes is initialised with the PackageDescr's attributes added to the assembler.
     //The package level attributes are inherited by individual rules not containing explicit overriding parameters.
     //The map is keyed on the PackageDescr's namespace and contains a map of AttributeDescr's keyed on the
@@ -311,13 +307,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    private PMMLCompiler getPMMLCompiler() {
-        if (this.pmmlCompiler == null) {
-            this.pmmlCompiler = PMMLCompilerFactory.getPMMLCompiler();
-        }
-        return this.pmmlCompiler;
-    }
-
     Resource getCurrentResource() {
         return resource;
     }
@@ -419,7 +408,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return conversionResultToPackageDescr(resource, conversionResult);
     }
 
-    private PackageDescr generatedDrlToPackageDescr( Resource resource, String generatedDrl ) throws DroolsParserException {
+    public PackageDescr generatedDrlToPackageDescr( Resource resource, String generatedDrl ) throws DroolsParserException {
         // dump the generated DRL if the dump dir was configured
         if (this.configuration.getDumpDir() != null) {
             dumpDrlGeneratedFromDTable(this.configuration.getDumpDir(), generatedDrl, resource.getSourcePath());
@@ -770,8 +759,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 addPackageFromChangeSet(resource);
             } else if (ResourceType.XSD.equals(type)) {
                 addPackageFromXSD(resource, (JaxbConfigurationImpl) configuration);
-            } else if (ResourceType.PMML.equals(type)) {
-                addPackageFromPMML(resource, type, configuration);
             } else if (ResourceType.SCARD.equals(type)) {
                 addPackageFromScoreCard(resource, configuration);
             } else if (ResourceType.TDRL.equals(type)) {
@@ -792,7 +779,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    void addPackageForExternalType(Resource resource,
+    public void addPackageForExternalType(Resource resource,
                                    ResourceType type,
                                    ResourceConfiguration configuration) throws Exception {
         KieAssemblers assemblers = ServiceRegistryImpl.getInstance().get(KieAssemblers.class);
@@ -808,41 +795,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         } else {
             throw new RuntimeException("Unknown resource type: " + type);
         }
-    }
-
-    public void addPackageFromPMML(Resource resource,
-                                   ResourceType type,
-                                   ResourceConfiguration configuration) throws Exception {
-        PMMLCompiler compiler = getPMMLCompiler();
-        if (compiler != null) {
-            if (compiler.getResults().isEmpty()) {
-                this.resource = resource;
-                PackageDescr descr = pmmlModelToPackageDescr(compiler, resource);
-                if (descr != null) {
-                    addPackage(descr);
-                }
-                this.resource = null;
-            } else {
-                this.results.addAll(compiler.getResults());
-            }
-            compiler.clearResults();
-        } else {
-            addPackageForExternalType(resource, type, configuration);
-        }
-    }
-
-    PackageDescr pmmlModelToPackageDescr(PMMLCompiler compiler,
-                                         Resource resource) throws DroolsParserException,
-                                                                   IOException {
-        String theory = compiler.compile(resource.getInputStream(),
-                                         rootClassLoader);
-
-        if (!compiler.getResults().isEmpty()) {
-            this.results.addAll(compiler.getResults());
-            return null;
-        }
-
-        return generatedDrlToPackageDescr( resource, theory );
     }
 
     void addPackageFromXSD(Resource resource,
@@ -1007,7 +959,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         }
     }
 
-    void addBuilderResult(KnowledgeBuilderResult result) {
+    public void addBuilderResult(KnowledgeBuilderResult result) {
         this.results.add(result);
     }
 

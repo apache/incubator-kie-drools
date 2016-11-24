@@ -24,7 +24,6 @@ import org.dmg.pmml.pmml_4_2.descr.RegressionModel;
 import org.dmg.pmml.pmml_4_2.descr.Scorecard;
 import org.dmg.pmml.pmml_4_2.descr.SupportVectorMachineModel;
 import org.dmg.pmml.pmml_4_2.descr.TreeModel;
-import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.util.IoUtils;
@@ -59,7 +58,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class PMML4Compiler implements PMMLCompiler {
+public class PMML4Compiler {
 
 
     public static final String PMML_NAMESPACE = "org.dmg.pmml.pmml_4_2";
@@ -497,7 +496,6 @@ public class PMML4Compiler implements PMMLCompiler {
         return combinedResults;
     }
 
-    @Override
     public void clearResults() {
         this.results.clear();
     }
