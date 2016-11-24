@@ -33,8 +33,8 @@ public class CompiledExpressionImpl implements CompiledExpression {
         return expression;
     }
 
-    public Object evaluate(Map<String, Object> inputVariables) {
-        EvaluationContextImpl ctx = new EvaluationContextImpl();
+    public Object evaluate(FEELEventListenersManager eventsManager, Map<String, Object> inputVariables) {
+        EvaluationContextImpl ctx = new EvaluationContextImpl( eventsManager );
         inputVariables.entrySet().stream().forEach( e -> ctx.setValue( e.getKey(), e.getValue() ) );
         return expression.evaluate( ctx );
     }

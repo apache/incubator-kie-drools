@@ -16,7 +16,9 @@
 
 package org.kie.dmn.feel.lang.impl;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.FEELEventListener;
+import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 
 import java.util.HashSet;
@@ -59,7 +61,7 @@ public class FEELEventListenersManager {
         return !this.listeners.isEmpty();
     }
 
-    public void notifyListeners(SyntaxErrorEvent event) {
+    public void notifyListeners(FEELEvent event) {
         this.listeners.forEach( l -> {
             try {
                 l.onEvent( event );

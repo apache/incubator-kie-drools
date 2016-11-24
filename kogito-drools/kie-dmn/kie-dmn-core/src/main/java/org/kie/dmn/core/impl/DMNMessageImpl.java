@@ -17,18 +17,20 @@
 package org.kie.dmn.core.impl;
 
 import org.kie.dmn.core.api.DMNMessage;
+import org.kie.dmn.feel.runtime.events.FEELEvent;
 
 public class DMNMessageImpl implements DMNMessage {
-    private Severity severity;
-    private String message;
-    private String sourceId;
+    private Severity  severity;
+    private String    message;
+    private String    sourceId;
     private Throwable exception;
+    private FEELEvent feelEvent;
 
     public DMNMessageImpl() {
     }
 
     public DMNMessageImpl(Severity severity, String message, String sourceId) {
-        this( severity, message, sourceId, null);
+        this( severity, message, sourceId, (Throwable) null);
     }
 
     public DMNMessageImpl(Severity severity, String message, String sourceId, Throwable exception) {
@@ -36,6 +38,13 @@ public class DMNMessageImpl implements DMNMessage {
         this.message = message;
         this.sourceId = sourceId;
         this.exception = exception;
+    }
+
+    public DMNMessageImpl(Severity severity, String message, String sourceId, FEELEvent feelEvent) {
+        this.severity = severity;
+        this.message = message;
+        this.sourceId = sourceId;
+        this.feelEvent = feelEvent;
     }
 
     @Override
@@ -59,12 +68,18 @@ public class DMNMessageImpl implements DMNMessage {
     }
 
     @Override
+    public FEELEvent getFeelEvent() {
+        return feelEvent;
+    }
+
+    @Override
     public String toString() {
         return "DMNMessage{" +
                " severity=" + severity +
                ", message='" + message + '\'' +
                ", sourceId='" + sourceId + '\'' +
                ", exception='" + ( exception != null ? ( exception.getClass().getName() + " : " + exception.getMessage() ) : "" ) +
+               ", feelEvent='" + ( feelEvent != null ? ( feelEvent.getClass().getName() + " : " + feelEvent.getMessage() ) : "" ) +
                "' }";
     }
 }
