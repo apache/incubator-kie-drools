@@ -248,7 +248,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                 rules.add( rule );
             }
             DTInvokerFunction dtf = new DTInvokerFunction( decision.getName()+"_DT", inputs, rules, outputs, HitPolicy.fromString( dt.getHitPolicy().value() ) );
-            DecisionNode.DTExpressionEvaluator dtee = new DecisionNode.DTExpressionEvaluator( dtf );
+            DecisionNode.DTExpressionEvaluator dtee = new DecisionNode.DTExpressionEvaluator( decision, dtf );
             return dtee;
         }
         return null;

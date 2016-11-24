@@ -41,7 +41,7 @@ public class FEELImpl
     private FEELEventListenersManager eventsManager = new FEELEventListenersManager();
 
     public CompilerContext newCompilerContext() {
-        return new CompilerContextImpl();
+        return new CompilerContextImpl( eventsManager );
     }
 
     public CompiledExpression compile(String expression, CompilerContext ctx) {
@@ -67,7 +67,7 @@ public class FEELImpl
     }
 
     public Object evaluate(CompiledExpression expr, Map<String, Object> inputVariables) {
-        return ((CompiledExpressionImpl) expr).evaluate( inputVariables );
+        return ((CompiledExpressionImpl) expr).evaluate( eventsManager, inputVariables );
     }
 
     @Override
@@ -83,6 +83,10 @@ public class FEELImpl
     @Override
     public Set<FEELEventListener> getListeners() {
         return eventsManager.getListeners();
+    }
+
+    public FEELEventListenersManager getEventsManager() {
+        return this.eventsManager;
     }
 
 }

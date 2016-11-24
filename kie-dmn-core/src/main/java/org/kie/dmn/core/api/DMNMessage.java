@@ -16,6 +16,8 @@
 
 package org.kie.dmn.core.api;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+
 public interface DMNMessage {
 
     enum Severity {
@@ -26,7 +28,9 @@ public interface DMNMessage {
 
     String getMessage();
 
-    Throwable getException();
-
     String getSourceId();
+
+    FEELEvent getFeelEvent();
+
+    Throwable getException();
 }
