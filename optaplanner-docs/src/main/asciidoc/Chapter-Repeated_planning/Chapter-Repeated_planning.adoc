@@ -10,7 +10,6 @@
 [[introductionToRepeatedPlanning]]
 == Introduction to Repeated Planning
 
-
 The world constantly changes.
 The problem facts used to create a solution, might change before or during the execution of that solution.
 There are different situations (which can be combined):
@@ -30,7 +29,6 @@ Luckily, the optimization algorithms support planning a solution that's already 
 [[backupPlanning]]
 == Backup Planning
 
-
 Backup planning is the technique of adding extra score constraints to create space in the planning for when things go wrong.
 That creates a backup plan in the plan.
 For example: try to assign an employee as the spare employee (1 for every 10 shifts at the same time), keep 1 hospital bed open in each department, ...
@@ -40,7 +38,6 @@ The construction heuristics will fill in the newly created gaps (probably with t
 
 [[overconstrainedPlanning]]
 == Overconstrained Planning
-
 
 When there is no feasible solution to assign all planning entities, it's often desired to assign as many entities as possible without breaking hard constraints.
 This is called overconstrained planning.
@@ -54,7 +51,6 @@ There are 2 ways to avoid that:
 
 [[overconstrainedPlanningWithNullableVariables]]
 === Overconstrained Planning with Nullable Variables
-
 
 If we handle overconstrained planning with nullable variables, the overload entities will be left unassigned:
 
@@ -72,7 +68,6 @@ To implement this:
 [[overconstrainedPlanningWithVirutalValues]]
 === Overconstrained Planning with Virtual Values
 
-
 In overconstrained planning it's often useful to know which resources are lacking.
 In overconstrained planning with virtual values, the solution indicates which resources to buy.
 
@@ -88,7 +83,6 @@ To implement this:
 
 [[continuousPlanning]]
 == Continuous Planning (Windowed Planning)
-
 
 Continuous planning is the technique of planning one or more upcoming planning periods at the same time and repeating that process monthly, weekly, daily, hourly or even more frequently.
 Time is infinite, so planning all future time periods is impossible.
@@ -130,7 +124,6 @@ In the hospital bed planning example above, notice the difference between the or
 [[immovablePlanningEntities]]
 === Immovable Planning Entities
 
-
 To make some planning entities immovable, simply add an entity `SelectionFilter` that returns `true` if an entity is movable and `false` if it is immovable.
 
 [source,java,options="nowrap"]
@@ -164,7 +157,6 @@ Custom `MoveListFactory` and `MoveIteratorFactory` implementations must make sur
 
 [[nonvolatileReplanning]]
 === Nonvolatile Replanning to minimize disruption (Semi-movable Planning Entities)
-
 
 Replanning an existing plan can be very disruptive on the plan.
 If the plan affects humans (such as employees, drivers, ...), very disruptive changes are often undesirable.
@@ -219,7 +211,6 @@ The soft penalty of `-1000` means that a better solution is only accepted if it 
 [[realTimePlanning]]
 == Real-time Planning
 
-
 To do real-time planning, first combine <<backupPlanning,backup planning>> and <<continuousPlanning,continuous planning>> with short planning windows to lower the burden of real-time planning.
 As time passes, the problem itself changes:
 
@@ -233,7 +224,6 @@ Planner can handle such scenario's with `ProblemFactChange` (in combination with
 
 [[problemFactChange]]
 === `ProblemFactChange`
-
 
 While the `Solver` is solving, an outside event might want to change one of the problem facts, for example an airplane is delayed and needs the runway at a later time.
 Do not change the problem fact instances used by the `Solver` while it is solving (from another thread or even in the same thread), as that will corrupt it.
@@ -337,7 +327,6 @@ Alternatively, do configure a `Termination` and use the daemon mode in combinati
 
 [[daemon]]
 === Daemon: `solve()` Does Not Return
-
 
 In real-time planning, it's often useful to have a solver thread wait when it runs out of work, and immediately resume solving a problem once new problem fact changes are added.
 Putting the `Solver` in daemon mode has these effects:

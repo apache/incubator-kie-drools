@@ -10,7 +10,6 @@
 [[constructionHeuristicsOverview]]
 == Overview
 
-
 A construction heuristic builds a pretty good initial solution in a finite length of time.
 Its solution isn't always feasible, but it finds it fast so metaheuristics can finish the job.
 
@@ -21,7 +20,6 @@ Construction heuristics terminate automatically, so there's usually no need to c
 
 [[firstFitAlgorithm]]
 === Algorithm Description
-
 
 The First Fit algorithm cycles through all the planning entities (in default order), initializing 1 planning entity at a time.
 It assigns the planning entity to the best available planning value, taking the already initialized planning entities into account.
@@ -37,7 +35,6 @@ Suffixing this construction heuristic with metaheuristics can remedy that.
 
 [[firstFitConfiguration]]
 === Configuration
-
 
 Configure this solver phase:
 
@@ -63,7 +60,6 @@ For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
 [[firstFitDecreasingAlgorithm]]
 === Algorithm Description
 
-
 Like First Fit, but assigns the more difficult planning entities first, because they are less likely to fit in the leftovers.
 So it sorts the planning entities on decreasing difficulty.
 
@@ -82,7 +78,6 @@ That's usually the case, but not always.
 
 [[firstFitDecreasingConfiguration]]
 === Configuration
-
 
 Configure this solver phase:
 
@@ -108,7 +103,6 @@ For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
 [[weakestFitAlgorithm]]
 === Algorithm Description
 
-
 Like First Fit, but uses the weaker planning values first, because the strong planning values are more likely to be able to accommodate later planning entities.
 So it sorts the planning values on increasing strength.
 
@@ -123,7 +117,6 @@ That's often not the case.
 
 [[weakestFitConfiguration]]
 === Configuration
-
 
 Configure this solver phase:
 
@@ -149,7 +142,6 @@ For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
 [[weakestFitDecreasingAlgorithm]]
 === Algorithm Description
 
-
 Combines First Fit Decreasing and Weakest Fit.
 So it sorts the planning entities on decreasing difficulty and the planning values on increasing strength.
 
@@ -165,7 +157,6 @@ However, it is usually better than Weakest Fit.
 
 [[weakestFitDecreasingConfiguration]]
 === Configuration
-
 
 Configure this solver phase:
 
@@ -191,7 +182,6 @@ For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
 [[strongestFitAlgorithm]]
 === Algorithm Description
 
-
 Like First Fit, but uses the strong planning values first, because the strong planning values are more likely to have a lower soft cost to use.
 So it sorts the planning values on decreasing strength.
 
@@ -206,7 +196,6 @@ That's often not the case.
 
 [[strongestFitConfiguration]]
 === Configuration
-
 
 Configure this solver phase:
 
@@ -232,7 +221,6 @@ For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
 [[strongestFitDecreasingAlgorithm]]
 === Algorithm Description
 
-
 Combines First Fit Decreasing and Strongest Fit.
 So it sorts the planning entities on decreasing difficulty and the planning values on decreasing strength.
 
@@ -248,7 +236,6 @@ However, it is usually better than Strongest Fit.
 
 [[strongestFitDecreasingConfiguration]]
 === Configuration
-
 
 Configure this solver phase:
 
@@ -274,7 +261,6 @@ For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
 [[allocateEntityFromQueueAlgorithm]]
 === Algorithm Description
 
-
 Allocate Entity From Queue is a versatile, generic form of <<firstFit,First Fit>>, <<firstFitDecreasing,First Fit Decreasing>>, <<weakestFit,Weakest Fit>> and <<weakestFitDecreasing,Weakest Fit Decreasing>>.
 It works like this:
 
@@ -285,7 +271,6 @@ It works like this:
 
 [[allocateEntityFromQueueConfiguration]]
 === Configuration
-
 
 Simple configuration:
 
@@ -358,7 +343,6 @@ Other `Selector` customization (such as <<filteredSelection,filtering>> and <<li
 
 [[allocateEntityFromQueueMultipleVariables]]
 === Multiple Variables
-
 
 There are 2 ways to deal with multiple variables, depending on how their ``ChangeMove``s are combined:
 
@@ -455,7 +439,6 @@ With 3 or more variables, it's possible to combine the cartesian product and seq
 [[allocateEntityFromQueueMultipleEntityClasses]]
 === Multiple Entity Classes
 
-
 The easiest way to deal with multiple entity classes is to run a separate construction heuristic for each entity class:
 
 [source,xml,options="nowrap"]
@@ -488,7 +471,6 @@ The easiest way to deal with multiple entity classes is to run a separate constr
 
 [[constructionHeuristicsPickEarlyType]]
 === Pick Early Type
-
 
 There are several pick early types for Construction Heuristics:
 
@@ -557,7 +539,6 @@ If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, use `
 [[allocateToValueFromQueueAlgorithm]]
 === Algorithm Description
 
-
 Allocate To Value From Queue works like this:
 
 . Put all values in a round-robin queue.
@@ -567,7 +548,6 @@ Allocate To Value From Queue works like this:
 
 [[allocateToValueFromQueueConfiguration]]
 === Configuration
-
 
 Simple configuration:
 
@@ -621,7 +601,6 @@ For example, a configuration for a single entity class with a single variable:
 [[cheapestInsertionAlgorithm]]
 === Algorithm Description
 
-
 The Cheapest Insertion algorithm cycles through all the planning values for all the planning entities, initializing 1 planning entity at a time.
 It assigns a planning entity to the best available planning value (out of all the planning entities and values), taking the already initialized planning entities into account.
 It terminates when all planning entities have been initialized.
@@ -638,7 +617,6 @@ Cheapest Insertion scales considerably worse than First Fit, etc.
 
 [[cheapestInsertionConfiguration]]
 === Configuration
-
 
 Simplest configuration of Cheapest Insertion:
 
@@ -663,7 +641,6 @@ For advanced configuration, see <<allocateFromPool,Allocate from pool>>.
 [[regretInsertionAlgorithm]]
 === Algorithm Description
 
-
 The Regret Insertion algorithm behaves like the Cheapest Insertion algorithm.
 It also cycles through all the planning values for all the planning entities, initializing 1 planning entity at a time.
 But instead of picking the entity-value combination with the best score, it picks the entity which has the largest score loss between its best and second best value assignment.
@@ -672,7 +649,6 @@ It then assigns that entity to its best value, to avoid regretting not having do
 [[regretInsertionConfiguration]]
 === Configuration
 
-
 This algorithm has not been implemented yet.
 
 [[allocateFromPool]]
@@ -680,7 +656,6 @@ This algorithm has not been implemented yet.
 
 [[allocateFromPoolAlgorithm]]
 === Algorithm Description
-
 
 Allocate From Pool is a versatile, generic form of <<cheapestInsertion,Cheapest
       Insertion>> and <<regretInsertion,Regret Insertion>>.
@@ -693,7 +668,6 @@ It works like this:
 
 [[allocateFromPoolConfiguration]]
 === Configuration
-
 
 Simple configuration:
 

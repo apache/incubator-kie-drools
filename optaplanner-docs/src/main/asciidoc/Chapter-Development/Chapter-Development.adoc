@@ -10,7 +10,6 @@
 [[methodologyOverview]]
 == Methodology Overview
 
-
 The diagram below explains the overall structure of the OptaPlanner source code:
 
 

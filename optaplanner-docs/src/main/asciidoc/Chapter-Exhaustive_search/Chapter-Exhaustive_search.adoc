@@ -10,7 +10,6 @@
 [[exhaustiveSearchOverview]]
 == Overview
 
-
 Exhaustive Search will always find the global optimum and recognize it too.
 That being said, it doesn't scale (not even beyond toy data sets) and is therefore mostly useless.
 
@@ -19,7 +18,6 @@ That being said, it doesn't scale (not even beyond toy data sets) and is therefo
 
 [[bruteForceAlgorithm]]
 === Algorithm Description
-
 
 The Brute Force algorithm creates and evaluates every possible solution.
 
@@ -39,7 +37,6 @@ Notice that it creates a search tree that explodes exponentially as the problem 
 [[bruteForceConfiguration]]
 === Configuration
 
-
 Simplest configuration of Brute Force:
 
 [source,xml,options="nowrap"]
@@ -57,7 +54,6 @@ Simplest configuration of Brute Force:
 
 [[branchAndBoundAlgorithm]]
 === Algorithm Description
-
 
 Branch And Bound also explores nodes in an exponential search tree, but it investigates more promising nodes first and prunes away worthless nodes.
 
@@ -91,7 +87,6 @@ So it hits the same scalability wall, only a little bit later.
 
 [[branchAndBoundConfiguration]]
 === Configuration
-
 
 Simplest configuration of Branch And Bound:
 
@@ -187,7 +182,6 @@ The `valueSorterManner` options are:
 
 [[scalabilityOfExhaustiveSearch]]
 == Scalability of Exhaustive Search
-
 
 Exhaustive Search variants suffer from 2 big scalability issues:
 

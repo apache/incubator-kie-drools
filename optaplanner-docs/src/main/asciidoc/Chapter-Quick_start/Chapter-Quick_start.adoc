@@ -13,7 +13,6 @@
 [[cloudBalancingProblemDescription]]
 === Problem Description
 
-
 Suppose your company owns a number of cloud computers and needs to run a number of processes on those computers.
 Assign each process to a computer.
 
@@ -46,7 +45,6 @@ It also scales: both in data (more processes, more computers) and constraints (m
 
 [[cloudBalancingValueProposition]]
 === Value Proposition
-
 
 Here's executive summary of this example and <<machineReassignment,a more advanced
       implementation with more constraints>>:
@@ -105,7 +103,6 @@ image::Chapter-Quick_start/cloudOptimizationValueProposition.png[align="center"]
 [[cloudBalancingDomainModelDesign]]
 === Domain Model Design
 
-
 Beginning with the domain model:
 
 * ``Computer``: represents a computer with certain hardware (CPU power, RAM memory, network bandwidth) and maintenance cost.
@@ -126,7 +123,6 @@ In the UML class diagram above, the Planner concepts are already annotated:
 
 [[cloudBalancingMainMethod]]
 === Main Method
-
 
 Try it yourself. <<downloadAndRunTheExamples,Download and configure the examples in your
       preferred IDE.>> Run ``org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld``.
@@ -202,7 +198,6 @@ The only complicated part is building the ``Solver``, as detailed in the next se
 [[cloudBalancingSolverConfiguration]]
 === Solver Configuration
 
-
 Take a look at the solver configuration:
 
 .cloudBalancingSolverConfig.xml
@@ -273,7 +268,6 @@ Let's examine the domain model classes and the score configuration.
 [[cloudBalancingClassComputer]]
 ==== The `Computer` Class
 
-
 The `Computer` class is a POJO (Plain Old Java Object). Usually, you will have more of this kind of classes with input data.
 
 .CloudComputer.java
@@ -294,7 +288,6 @@ public class CloudComputer ... {
 
 [[cloudBalancingClassProcess]]
 ==== The `Process` Class
-
 
 The `Process` class is particularly important.
 It is the class that is modified during solving.
@@ -348,7 +341,6 @@ Instead of getter annotations, it is also possible to use <<annotationAlternativ
 
 [[cloudBalancingClassCloudBalance]]
 ==== The `CloudBalance` Class
-
 
 The `CloudBalance` class has a [path]_@PlanningSolution_
  annotation.
@@ -404,7 +396,6 @@ Especially for score calculation with Drools, the property `computerList` needs 
 [[_cloudbalancingscoreconfiguration]]
 === Score Configuration
 
-
 Planner will search for the `Solution` with the highest ``Score``.
 This example uses a ``HardSoftScore``, which means Planner will look for the solution with no hard constraints broken (fulfill hardware requirements) and as little as possible soft constraints broken (minimize maintenance cost).
 
@@ -424,7 +415,6 @@ Let's take a look at two different implementations:
 
 [[cloudBalancingEasyJavaScoreConfiguration]]
 ==== Easy Java Score Configuration
-
 
 One way to define a score function is to implement the interface `EasyScoreCalculator` in plain Java.
 
@@ -500,7 +490,6 @@ Let's take a look at the latter.
 
 [[cloudBalancingDroolsScoreConfiguration]]
 ==== Drools Score Configuration
-
 
 To use the Drools rule engine as a score function, simply add a `scoreDrl` resource in the classpath:
 
@@ -580,7 +569,6 @@ If you use the Drools rule engine for score calculation, you can integrate with 
 
 [[cloudBalancingBeyondThisTutorial]]
 === Beyond this Tutorial
-
 
 Now that this simple example works, try going further.
 Enrich the domain model and add extra constraints such as these:

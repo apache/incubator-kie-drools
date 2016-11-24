@@ -10,7 +10,6 @@
 [[localSearchOverview]]
 == Overview
 
-
 Local Search starts from an initial solution and evolves that single solution into a mostly better and better solution.
 It uses a single search path of solutions, not a search tree.
 At each solution in this path it evaluates a number of moves on the solution and applies the most suitable move to take the step to the next solution.
@@ -26,7 +25,6 @@ Therefore it's pretty natural to implement.
 
 [[localSearchStepByStep]]
 === Step by Step
-
 
 A step is the winning ``Move``.
 Local Search tries a number of moves on the current solution and picks the best accepted move as the step:
@@ -81,7 +79,6 @@ By using a <<constructionHeuristics,Construction Heuristics>> phase first, it's 
 
 [[localSearchConceptsDecideTheNextStep]]
 === Decide the Next Step
-
 
 Local Search decides the next step with the aid of 3 configurable components:
 
@@ -145,7 +142,6 @@ image::Chapter-Local_search/localSearchScoreOverTime.png[align="center"]
 [[localSearchAcceptor]]
 === Acceptor
 
-
 An `Acceptor` is used (together with a ``Forager``) to active Tabu Search, Simulated Annealing, Late Acceptance, ... For each move it checks whether it is accepted or not.
 
 By changing a few lines of configuration, you can easily switch from Tabu Search to Simulated Annealing or Late Acceptance and back.
@@ -155,7 +151,6 @@ You can also combine multiple acceptors.
 
 [[localSearchForager]]
 === Forager
-
 
 A `Forager` gathers all accepted moves and picks the move which is the next step.
 Normally it picks the accepted move with the highest score.
@@ -173,7 +168,6 @@ It is possible to disable breaking ties randomly by explicitly setting `breakTie
 
 [[acceptedCountLimit]]
 ==== Accepted Count Limit
-
 
 When there are many possible moves, it becomes inefficient to evaluate all of them at every step.
 To evaluate only a random subset of all the moves, use:
@@ -200,7 +194,6 @@ With a low `acceptedCountLimit` (so a fast stepping algorithm), it is recommende
 
 [[localSearchPickEarlyType]]
 ==== Pick Early Type
-
 
 A forager can pick a move early during a step, ignoring subsequent selected moves.
 There are 3 pick early types for Local Search:
@@ -240,7 +233,6 @@ There are 3 pick early types for Local Search:
 [[hillClimbingAlgorithm]]
 === Algorithm Description
 
-
 Hill Climbing tries all selected moves and then takes the best move, which is the move which leads to the solution with the highest score.
 That best move is called the step move.
 From that new solution, it again tries all selected moves and takes the best move and continues like that iteratively.
@@ -256,7 +248,6 @@ This is a good thing, because in an NP-complete problem it's impossible to predi
 [[hillClimbingStuckInLocalOptima]]
 === Stuck in Local Optima
 
-
 Hill Climbing always takes improving moves.
 This may seem like a good thing, but it's not: *Hill Climbing can easily get stuck in a local optimum.* This happens when it reaches a solution for which all the moves deteriorate the score.
 Even if it picks one of those moves, the next step might go back to the original solution and which case chasing its own tail:
@@ -270,7 +261,6 @@ Therefore, it's recommend to never use Hill Climbing, unless you're absolutely s
 
 [[hillClimbingConfigure]]
 === Configuration
-
 
 Simplest configuration:
 
@@ -303,7 +293,6 @@ Advanced configuration:
 [[tabuSearchAlgorithm]]
 === Algorithm Description
 
-
 Tabu Search works like Hill Climbing, but it maintains a tabu list to avoid getting stuck in local optima.
 The tabu list holds recently used objects that are _taboo_ to use for now.
 Moves that involve an object in the tabu list, are not accepted.
@@ -324,7 +313,6 @@ Scientific paper: _Tabu Search - Part 1 and Part 2_ by Fred Glover (1989 - 1990)
 
 [[tabuSearchConfiguration]]
 === Configuration
-
 
 Simplest configuration:
 
@@ -453,7 +441,6 @@ Use the <<benchmarker,Benchmarker>> to fine tweak your configuration.
 [[simulatedAnnealingAlgorithm]]
 === Algorithm Description
 
-
 Simulated Annealing evaluates only a few moves per step, so it steps quickly.
 In the classic implementation, the first accepted move is the winning step.
 A move is accepted if it doesn't decrease the score or - in case it does decrease the score - it passes a random check.
@@ -470,7 +457,6 @@ In the end, it gradually turns into Hill Climbing, only accepting improving move
 
 [[simulatedAnnealingConfiguration]]
 === Configuration
-
 
 Start with a `simulatedAnnealingStartingTemperature` set to the maximum score delta a single move can cause.
 Use the <<benchmarker,Benchmarker>> to tweak the value.
@@ -517,7 +503,6 @@ Use a lower tabu size than in a pure Tabu Search configuration.
 [[lateAcceptanceAlgorithm]]
 === Algorithm Description
 
-
 Late Acceptance (also known as Late Acceptance Hill Climbing) also evaluates only a few moves per step.
 A move is accepted if it does not decrease the score, or if it leads to a score that is at least the late score (which is the winning score of a fixed number of steps ago).
 
@@ -529,7 +514,6 @@ Scientific paper: http://www.cs.stir.ac.uk/research/publications/techreps/pdf/TR
 
 [[lateAcceptanceConfiguration]]
 === Configuration
-
 
 Simplest configuration:
 
@@ -585,7 +569,6 @@ Use a lower tabu size than in a pure Tabu Search configuration.
 [[stepCountingHillClimbingAlgorithm]]
 === Algorithm Description
 
-
 Step Counting Hill Climbing also evaluates only a few moves per step.
 For a number of steps, it keeps the step score as a threshold.
 A move is accepted if it does not decrease the score, or if it leads to a score that is at least the threshold score.
@@ -596,7 +579,6 @@ Scientific paper: https://www.cs.nott.ac.uk/~yxb/SCHC/SCHC_mista2013_79.pdf[An
 
 [[stepCountingHillClimbingConfiguration]]
 === Configuration
-
 
 Step Counting Hill Climbing accepts any move that has a score which is higher than a threshold score.
 Every number of steps (specified by ``stepCountingHillClimbingSize``), the threshold score is set to the step score.
@@ -625,7 +607,6 @@ Step Counting Hill Climbing can be combined with a tabu acceptor at the same tim
 [[strategicOscillationAlgorithm]]
 === Algorithm Description
 
-
 Strategic Oscillation is an add-on, which works especially well with <<tabuSearch,Tabu
       Search>>.
 Instead of picking the accepted move with the highest score, it employs a different mechanism: If there's an improving move, it picks it.
@@ -633,7 +614,6 @@ If there's no improving move however, it prefers moves which improve a softer sc
 
 [[strategicOscillationConfiguration]]
 === Configuration
-
 
 Configure a ``finalistPodiumType``, for example in a Tabu Search configuration:
 
@@ -662,7 +642,6 @@ The following ``finalistPodiumType``s are supported:
 
 [[customTerminationSelectorOrAcceptor]]
 == Using a Custom Termination, MoveSelector, EntitySelector, ValueSelector or Acceptor
-
 
 You can plug in a custom ``Termination``, ``MoveSelector``, ``EntitySelector``, `ValueSelector` or `Acceptor` by extending the abstract class and also the related `\*Config` class.
 

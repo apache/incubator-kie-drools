@@ -10,7 +10,6 @@
 [[searchSpaceSize]]
 == Search Space Size in the Real World
 
-
 The number of possible solutions for a planning problem can be mind blowing.
 For example:
 
@@ -54,7 +53,6 @@ Planning competitions (such as the International Timetabling Competition) show t
 [[doesPlannerFindTheOptimalSolution]]
 == Does Planner Find the Optimal Solution?
 
-
 The business wants the optimal solution, but they also have other requirements:
 
 * Scale out: Large production datasets must not crash and have good results too.
@@ -75,7 +73,6 @@ Don't assess quality on small datasets (unless production encounters only such d
 [[architectureOverview]]
 == Architecture Overview
 
-
 Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score calculation by a rule engine (such as Drools Expert). This combination turns out to be a very efficient, because:
 
 * A rule engine such as Drools Expert is *great for calculating the score* of a solution of a planning problem. It makes it easy and scalable to add additional soft or hard constraints such as "a teacher shouldn't teach more then 7 hours a day". It does delta based score calculation without any extra code. However it tends to be not suitable to actually find new solutions.
@@ -88,7 +85,6 @@ image::Chapter-Optimization_algorithms/architectureOverview.png[align="center"]
 
 [[optimizationAlgorithmsOverview]]
 == Optimization Algorithms Overview
-
 
 Planner supports 3 _families_ of optimization algorithms: Exhaustive Search, Construction Heuristics and Metaheuristics.
 In practice, Metaheuristics (in combination with Construction Heuristics to initialize) are the recommended choice:
@@ -245,7 +241,6 @@ If you want to learn more about metaheuristics, read the free books http://www.c
 [[whichOptimizationAlgorithmsShouldIUse]]
 == Which Optimization Algorithms Should I Use?
 
-
 The _best_ optimization algorithms configuration for your use case depends heavily on your use case.
 Nevertheless, this vanilla recipe will get you into the game with a pretty good configuration, probably much better than what you're used to.
 
@@ -289,7 +284,6 @@ For example, try combining multiple algorithms together:
 [[powerTweaking]]
 == Power tweaking or default parameter values
 
-
 Many optimization algorithms have parameters which affect results and scalability.
 Planner applies __configuration by exception__, so all optimization algorithms have default parameter values.
 This is very similar to the Garbage Collection parameters in a JVM: most users have no need to tweak them, but power users do tweak them.
@@ -305,7 +299,6 @@ This is not recommended.
 
 [[solverPhase]]
 == Solver Phase
-
 
 A `Solver` can use multiple optimization algorithms in sequence. *Each
     optimization algorithm is represented by a solver ``**Phase**``.* There is never more than 1 `Phase` solving at the same time.
@@ -376,7 +369,6 @@ the current phase is terminated and all subsequent phases won't run.
 [[scopeOverview]]
 == Scope Overview
 
-
 A solver will iteratively run phases.
 Each phase will usually iteratively run steps.
 Each step, in turn, usually iteratively runs moves.
@@ -390,7 +382,6 @@ Configure <<logging,logging>> to display the log messages of each scope.
 
 [[termination]]
 == Termination
-
 
 Not all phases terminate automatically and sometimes you don't want to wait that long anyway.
 A `Solver` can be terminated synchronously by up-front configuration or asynchronously from another thread.
@@ -413,7 +404,6 @@ Every `Termination` can calculate a _time gradient_ (needed for some optimizatio
 
 [[timeMillisSpentTermination]]
 === TimeMillisSpentTermination
-
 
 Terminates when an amount of time has been used.
 
@@ -485,7 +475,6 @@ This `Termination` will most likely sacrifice perfect reproducibility (even with
 [[unimprovedTimeMillisSpentTermination]]
 === UnimprovedTimeMillisSpentTermination
 
-
 Terminates when the best score hasn't improved in an amount of time.
 
 [source,xml,options="nowrap"]
@@ -549,7 +538,6 @@ This `Termination` will most likely sacrifice perfect reproducibility (even with
 [[bestScoreTermination]]
 === BestScoreTermination
 
-
 Terminates when a certain score has been reached.
 Use this `Termination` if you know the perfect score, for example for 4 queens (which uses a <<simpleScore,SimpleScore>>):
 
@@ -587,7 +575,6 @@ Instead, use the next termination.
 [[bestScoreFeasibleTermination]]
 === BestScoreFeasibleTermination
 
-
 Terminates when a certain score is feasible.
 Requires that the `Score` implementation implements ``FeasibilityScore``.
 
@@ -603,7 +590,6 @@ This `Termination` is usually combined with other terminations.
 
 [[stepCountTermination]]
 === StepCountTermination
-
 
 Terminates when a number of steps has been reached.
 This is useful for hardware performance independent runs.
@@ -622,7 +608,6 @@ This `Termination` can only be used for a `Phase` (such as ``<localSearch>``), n
 
 [[unimprovedStepCountTermination]]
 === UnimprovedStepCountTermination
-
 
 Terminates when the best score hasn't improved in a number of steps.
 This is useful for hardware performance independent runs.
@@ -645,7 +630,6 @@ This `Termination` can only be used for a `Phase` (such as ``<localSearch>``), n
 [[scoreCalculationCountTermination]]
 === ScoreCalculationCountTermination
 
-
 Terminates when a number of score calculations have been reached.
 That's usually the sum of the number of moves and the number of steps.
 This is useful for benchmarking.
@@ -662,7 +646,6 @@ Switching <<environmentMode,EnvironmentMode>> can heavily impact when this termi
 
 [[combiningMultipleTerminations]]
 === Combining Multiple Terminations
-
 
 Terminations can be combined, for example: terminate after `100` steps or if a score of `0` has been reached:
 
@@ -693,7 +676,6 @@ This example ensures it doesn't just terminate after finding a feasible solution
 [[asynchronousTermination]]
 === Asynchronous Termination from Another Thread
 
-
 Sometimes you'll want to terminate a Solver early from another thread, for example because a user action or a server restart.
 This cannot be configured by a `Termination` as it's impossible to predict when and if it will occur.
 Therefore the `Solver` interface has these 2 thread-safe methods:
@@ -720,7 +702,6 @@ This guarantees a graceful shutdown when an `ExecutorService` (such as a thread 
 
 [[SolverEventListener]]
 == SolverEventListener
-
 
 Each time a new best solution is found, the `Solver` fires a ``BestSolutionChangedEvent``, in the solver's thread.
 
@@ -764,7 +745,6 @@ So it should return quickly to avoid slowing down the solving.
 
 [[customSolverPhase]]
 == Custom Solver Phase
-
 
 Between phases or before the first phase, you might want to run a custom optmization algorithm to initialize the `Solution`
 or to take some low hanging fruit to get a better score quickly.

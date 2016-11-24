@@ -10,7 +10,6 @@
 [[plannerConfigurationOverview]]
 == Overview
 
-
 Solving a planning problem with Planner consists of the following steps:
 
 . *Model your planning problem* as a class that implements the interface ``Solution``, for example the class ``NQueens``.
@@ -28,7 +27,6 @@ image::Chapter-Planner_configuration/inputOutputOverview.png[align="center"]
 
 [[solverConfigurationByXML]]
 === Solver Configuration by XML
-
 
 Build a `Solver` instance with the ``SolverFactory``.
 Configure the `SolverFactory` with a solver configuration XML file, provided as a classpath resource (as definied by ``ClassLoader.getResource()``):
@@ -121,7 +119,6 @@ These various parts of a configuration are explained further in this manual.
 [[solverConfigurationByJavaAPI]]
 === Solver Configuration by Java API
 
-
 A solver configuration can also be configured with the `SolverConfig` API.
 This is especially useful to change some values dynamically at runtime.
 For example, to change the running time based on user input, before building the ``Solver``:
@@ -174,7 +171,6 @@ To configure a `SolverFactory` dynamically for each user request, build a `Solve
 
 [[automaticScanningForAnnotations]]
 ==== Automatic Scanning for Annotations
-
 
 Instead of the declaring the classes that have a `@PlanningSolution` or `@PlanningEntity` manually:
 
@@ -230,7 +226,6 @@ If `scanAnnotatedClasses` is not specified, the `org.reflections` transitive mav
 [[annotationAlternatives]]
 ==== Annotation Alternatives
 
-
 Planner needs to be told which classes in your domain model are planning entities, which properties are planning variables, etc.
 There are several ways to deliver this information:
 
@@ -246,7 +241,6 @@ This manual focuses on the first manner, but every features supports all 3 manne
 
 [[isThisClassAProblemFactOrPlanningEntity]]
 === Is This Class a Problem Fact or Planning Entity?
-
 
 Look at a dataset of your planning problem.
 You will recognize domain classes in there, each of which can be categorized as one of the following:
@@ -272,7 +266,6 @@ To create a good domain model, read the <<domainModelingGuide,domain modeling gu
 
 [[problemFact]]
 === Problem Fact
-
 
 A problem fact is any JavaBean (POJO) with getters that does not change during planning.
 Implementing the interface `Serializable` is recommended (but not required). For example in n queens, the columns and rows are problem facts:
@@ -336,7 +329,6 @@ Alternatively, you can sometimes also introduce <<cachedProblemFact,_a cached
 
 [[planningEntityAnnotation]]
 ==== Planning Entity Annotation
-
 
 A planning entity is a JavaBean (POJO) that changes during solving, for example a `Queen` that changes to another row.
 A planning problem has multiple planning entities, for example for a single n queens problem, each `Queen` is a planning entity.
@@ -412,7 +404,6 @@ If historic data needs to be considered too, then create problem fact to hold th
 [[planningEntityDifficulty]]
 ==== Planning Entity Difficulty
 
-
 Some optimization algorithms work more efficiently if they have an estimation of which planning entities are more difficult to plan.
 For example: in bin packing bigger items are harder to fit, in course scheduling lectures with more students are more difficult to schedule, and in n queens the middle queens are more difficult to fit on the board.
 
@@ -481,7 +472,6 @@ For example, a ``Queen``'s `row` variable should not be used.
 [[planningVariableAnnotation]]
 ==== Planning Variable Annotation
 
-
 A planning variable is a JavaBean property (so a getter and setter) on a planning entity.
 It points to a planning value, which changes during planning.
 For example, a ``Queen``'s `row` property is a genuine planning variable.
@@ -538,7 +528,6 @@ public class Queen {
 [[nullablePlanningVariable]]
 ==== Nullable Planning Variable
 
-
 By default, an initialized planning variable cannot be ``null``, so an initialized solution will never use `null` for any of its planning variables.
 In an over-constrained use case, this can be counterproductive.
 For example: in task assignment with too many tasks for the workforce, we would rather leave low priority tasks unassigned instead of assigning them to an overloaded worker.
@@ -581,7 +570,6 @@ One way to deal with this, is to change when a planning entity should be reiniti
 [[whenIsAPlanningVariableInitialized]]
 ==== When is a Planning Variable Considered Initialized?
 
-
 A planning variable is considered initialized if its value is not `null` or if the variable is ``nullable``.
 So a nullable variable is always considered initialized, even when a custom `reinitializeVariableEntityFilter` triggers a reinitialization during construction heuristics.
 
@@ -595,7 +583,6 @@ A `Solution` is initialized if all of its planning entities are initialized.
 [[planningValue]]
 ==== Planning Value
 
-
 A planning value is a possible value for a genuine planning variable.
 Usually, a planning value is a problem fact, but it can also be any object, for example a ``double``.
 It can even be another planning entity or even a interface implemented by both a planning entity and a problem fact.
@@ -608,7 +595,6 @@ This set can be a countable (for example row ``1``, ``2``, `3` or ``4``) or unco
 
 [[planningValueRangeProviderOverview]]
 ===== Overview
-
 
 The value range of a planning variable is defined with the `@ValueRangeProvider` annotation.
 A `@ValueRangeProvider` annotation always has a property ``id``, which is referenced by the ``@PlanningVariable``'s property ``valueRangeProviderRefs``.
@@ -686,7 +672,6 @@ public class NQueens {
 [[valueRangeProviderOnPlanningEntity]]
 ===== `ValueRangeProvider` on the Planning Entity
 
-
 Each planning entity has its own value range (a set of possible planning values) for the planning variable.
 For example, if a teacher can *never* teach in a room that does not belong to his department, lectures of that teacher can limit their room value range to the rooms of his department.
 
@@ -735,7 +720,6 @@ A `ValueRangeProvider` on the planning entity is not currently compatible with a
 [[valueRangeFactory]]
 ===== `ValueRangeFactory`
 
-
 Instead of a ``Collection``, you can also return a `ValueRange` or ``CountableValueRange``, build by the ``ValueRangeFactory``:
 
 [source,java,options="nowrap"]
@@ -781,7 +765,6 @@ The `ValueRangeFactory` has creation methods for several value class types:
 [[combineValueRangeProviders]]
 ===== Combine ValueRangeProviders
 
-
 Value range providers can be combined, for example:
 
 [source,java,options="nowrap"]
@@ -807,7 +790,6 @@ Value range providers can be combined, for example:
 
 [[planningValueStrength]]
 ==== Planning Value Strength
-
 
 Some optimization algorithms work a bit more efficiently if they have an estimation of which planning values are stronger, which means they are more likely to satisfy a planning entity.
 For example: in bin packing bigger containers are more likely to fit an item and in course scheduling bigger rooms are less likely to break the student capacity constraint.
@@ -879,7 +861,6 @@ For example, none of the `row` variables of any `Queen` may be used to determine
 
 [[chainedPlanningVariable]]
 ==== Chained Planning Variable (TSP, VRP, ...)
-
 
 Some use cases, such as TSP and Vehicle Routing, require __chaining__.
 This means the planning entities point to each other and form a chain.
@@ -991,7 +972,6 @@ Notice how two value range providers are usually combined:
 [[shadowVariableIntroduction]]
 ==== Introduction
 
-
 A shadow variable is a planning variable whose correct value can be deduced from the state of the genuine planning variables.
 Even though such a variable violates the principle of normalization by definition, in some use cases it can be very practical to use a shadow variable, especially to express the constraints more naturally.
 For example in vehicle routing with time windows: the arrival time at a customer for a vehicle can be calculated based on the previously visited customers of that vehicle (and the known travel times between two locations).
@@ -1022,7 +1002,6 @@ There are several build-in shadow variables:
 
 [[bidirectionalVariable]]
 ==== Bi-directional Variable (Inverse Relation Shadow Variable)
-
 
 Two variables are bi-directional if their instances always point to each other (unless one side points to `null` and the other side does not exist). So if A references B, then B references A.
 
@@ -1118,7 +1097,6 @@ Planner will not violate that principle during planning, but the input must not 
 [[anchorShadowVariable]]
 ==== Anchor Shadow Variable
 
-
 An anchor shadow variable is the anchor of <<chainedPlanningVariable,a chained
         variable>>.
 
@@ -1141,7 +1119,6 @@ The `sourceVariableName` property is the name of the chained variable on the sam
 
 [[customVariableListener]]
 ==== Custom `VariableListener`
-
 
 To update a shadow variable, Planner uses a ``VariableListener``.
 To define a custom shadow variable, write a custom ``VariableListener``: implement the interface and annotate it on the shadow variable that needs to change.
@@ -1237,7 +1214,6 @@ If one `VariableListener` changes two shadow variables (because having two separ
 [[variableListenerTriggeringOrder]]
 ==== VariableListener triggering order
 
-
 All shadow variables are triggered by a ``VariableListener``, regardless if it's a build-in or a custom shadow variable.
 The genuine and shadow variables form a graph, that determines the order in which the ``afterEntityAdded()``, `afterVariableChanged()` and `afterEntityRemoved()` methods are called:
 
@@ -1283,7 +1259,6 @@ public class StartTimeUpdatingVariableListener implements VariableListener<Task>
 [[planningProblemInstance]]
 ==== Planning Problem Instance
 
-
 A dataset for a planning problem needs to be wrapped in a class for the `Solver` to solve.
 That solution class represents both the planning problem and (if solved) a solution.
 It is annotated with a `@PlanningSolution` annotation.
@@ -1296,7 +1271,6 @@ It's an uninitialized solution.
 
 [[solutionClass]]
 ==== Solution Class
-
 
 A solution class holds all problem facts, planning entities and a score.
 It is annotated with a``
@@ -1337,7 +1311,6 @@ Without <<automaticScanningForAnnotations,automated scanning>>, the solver confi
 [[planningEntitiesOfASolution]]
 ==== Planning Entities of a Solution (@PlanningEntityCollectionProperty)
 
-
 Planner needs to extract the entity instances from the solution instance.
 It gets those collection(s) by calling every getter (or field) that is annotated with ``@PlanningEntityCollectionProperty``:
 
@@ -1372,7 +1345,6 @@ In rare cases, a planning entity might be a singleton: use `@PlanningEntityPrope
 
 [[scoreOfASolution]]
 ==== `Score` of a Solution (``@PlanningScore``)
-
 
 A `Solution` requires a score property, which is annotated with a `@PlanningScore` annotation.
 The score property is `null` if the the score hasn't been calculated yet.
@@ -1427,7 +1399,6 @@ Some use cases use <<scoreType,other `Score` types>>.
 [[getProblemFacts]]
 ==== Problem Facts of a Solution (``@ProblemFactCollectionProperty``)
 
-
 For <<droolsScoreCalculation,Drools score calculation>>, Planner needs to extract the problem fact instances from the solution instance.
 It gets those collection(s) by calling every method (or field) that is annotated with ``@ProblemFactCollectionProperty``.
 All objects returned by those methods will be inserted into the Drools session, so the score rules can access them.
@@ -1480,7 +1451,6 @@ In rare cases, a problem fact might be a singleton: use `@ProblemFactProperty` o
 [[cachedProblemFact]]
 ===== Cached Problem Fact
 
-
 A cached problem fact is a problem fact that does not exist in the real domain model, but is calculated before the `Solver` really starts solving.
 The problem facts methods have the opportunity to enrich the domain model with such cached problem facts, which can lead to simpler and faster score constraints.
 
@@ -1515,7 +1485,6 @@ Where a score constraint needs to check that no two exams with a topic that shar
 
 [[cloningASolution]]
 ==== Cloning a Solution
-
 
 Most (if not all) optimization algorithms clone the solution each time they encounter a new best solution (so they can recall it later) or to work with multiple solutions in parallel.
 
@@ -1628,7 +1597,6 @@ If A is cloned, then its variable must point to the clone of B, not the original
 [[createAnUninitializedSolution]]
 ==== Create an Uninitialized Solution
 
-
 Create a `Solution` instance to represent your planning problem's dataset, so it can be set on the `Solver` as the planning problem to solve.
 For example in n queens, an `NQueens` instance is created with the required `Column` and `Row` instances and every `Queen` set to a different `column` and every `row` set to ``null``.
 
@@ -1693,7 +1661,6 @@ Usually, most of this data comes from your data layer, and your `Solution` imple
 [[theSolverInterface]]
 === The `Solver` Interface
 
-
 A `Solver` implementation will solve your planning problem.
 
 [source,java,options="nowrap"]
@@ -1713,7 +1680,6 @@ It is built with a ``SolverFactory``, there is no need to implement it yourself.
 
 [[solvingAProblem]]
 === Solving a Problem
-
 
 Solving a problem is quite easy once you have:
 
@@ -1755,7 +1721,6 @@ It can be partially or fully initialized, which is often the case in <<repeatedP
 [[environmentMode]]
 === Environment Mode: Are There Bugs in my Code?
 
-
 The environment mode allows you to detect common bugs in your implementation.
 It does not affect the logging level.
 
@@ -1780,7 +1745,6 @@ These are the environment modes:
 [[environmentModeFullAssert]]
 ==== FULL_ASSERT
 
-
 The FULL_ASSERT mode turns on all assertions (such as assert that the incremental score calculation is uncorrupted for each move) to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself, ...
 
 This mode is reproducible (see the reproducible mode). It is also intrusive because it calls the method `calculateScore()` more frequently than a non-assert mode.
@@ -1790,7 +1754,6 @@ The FULL_ASSERT mode is horribly slow (because it does not rely on incremental s
 [[environmentModeNonIntrusiveFullAssert]]
 ==== NON_INTRUSIVE_FULL_ASSERT
 
-
 The NON_INTRUSIVE_FULL_ASSERT turns on several assertions to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself, ...
 
 This mode is reproducible (see the reproducible mode). It is non-intrusive because it does not call the method `calculateScore()` more frequently than a non assert mode.
@@ -1799,7 +1762,6 @@ The NON_INTRUSIVE_FULL_ASSERT mode is horribly slow (because it does not rely on
 
 [[environmentModeFastAssert]]
 ==== FAST_ASSERT
-
 
 The FAST_ASSERT mode turns on most assertions (such as assert that an undoMove's score is the same as before the Move) to fail-fast on a bug in a Move implementation, a score rule, the rule engine itself, ...
 
@@ -1811,7 +1773,6 @@ It is recommended to write a test case that does a short run of your planning pr
 
 [[environmentModeReproducible]]
 ==== REPRODUCIBLE (default)
-
 
 The reproducible mode is the default mode because it is recommended during development.
 In this mode, two runs in the same Planner version will execute the same code in the same order. **Those two
@@ -1837,7 +1798,6 @@ In practice, this mode uses the default, fixed <<randomNumberGenerator,random se
 [[environmentModeProduction]]
 ==== NON_REPRODUCIBLE
 
-
 The non-reproducible mode can be slightly faster than the reproducible mode.
 Avoid using it during development as it makes debugging and bug fixing painful.
 If your production environment doesn't care about reproducibility, use this mode in production.
@@ -1846,7 +1806,6 @@ In practice, this mode uses no fixed <<randomNumberGenerator,random seed>> if no
 
 [[logging]]
 === Logging Level: What is the `Solver` Doing?
-
 
 The best way to illuminate the black box that is a ``Solver``, is to play with the logging level:
 
@@ -1986,7 +1945,6 @@ For example in Logback, use a `SiftingAppender` in ``logback.xml``:
 
 [[randomNumberGenerator]]
 === Random Number Generator
-
 
 Many heuristics and metaheuristics depend on a pseudorandom number generator for move selection, to resolve score ties, probability based move acceptance, ... During solving, the same `Random` instance is reused to improve reproducibility, performance and uniform distribution of random values.
 

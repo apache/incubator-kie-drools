@@ -13,7 +13,6 @@
 [[whatIsAMove]]
 === What is a ``Move``?
 
-
 A `Move` is a change (or set of changes) from a solution A to a solution B.
 For example, the move below changes queen `C` from row `0` to row ``2``:
 
@@ -56,7 +55,6 @@ Therefore, all the optimization algorithms are confronted with `Move` selection:
 [[whatIsAMoveSelector]]
 === What is a ``MoveSelector``?
 
-
 A ``MoveSelector``'s main function is to create `Iterator<Move>` when needed.
 An optimization algorithm will iterate through a subset of those moves.
 
@@ -76,7 +74,6 @@ For example: you might want to configure a <<filteredSelection,filter>> to disca
 
 [[subselectingOfEntitiesValuesAndOtherMoves]]
 === Subselecting of Entities, Values and Other Moves
-
 
 To create a ``Move``, a `MoveSelector` needs to select 1 or more planning entities and/or planning values to move.
 Just like ``MoveSelector``s, ``EntitySelector``s and ``ValueSelector``s need to support a similar feature set (such as scalable just-in-time selection). Therefore, they all implement a common interface `Selector` and they are configured similarly.
@@ -115,7 +112,6 @@ The root of this tree is a `MoveSelector` which is injected into the optimizatio
 
 [[changeMoveSelector]]
 === changeMoveSelector
-
 
 For 1 planning variable, the `ChangeMove` selects 1 planning entity and 1 planning value and assigns the entity's variable to that value.
 
@@ -162,7 +158,6 @@ This guarantees that every possible `Solution` can be reached through applying a
 
 [[swapMoveSelector]]
 === swapMoveSelector
-
 
 The `SwapMove` selects 2 different planning entities and swaps the planning values of all their planning variables.
 
@@ -211,7 +206,6 @@ For example for course scheduling, specifying only `variableNameInclude` room wi
 
 [[pillarChangeMoveSelector]]
 === pillarChangeMoveSelector
-
 
 A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarChangeMove` selects 1 entity pillar (or subset of those) and changes the value of 1 variable (which is the same for all entities) to another value.
 
@@ -270,7 +264,6 @@ The other properties are explained in <<changeMoveSelector,changeMoveSelector>>.
 [[pillarSwapMoveSelector]]
 === pillarSwapMoveSelector
 
-
 A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarSwapMove` selects 2 different entity pillars and swaps the values of all their variables for all their entities.
 
 
@@ -319,7 +312,6 @@ The other properties are explained in <<swapMoveSelector,swapMoveSelector>> and 
 [[tailChainSwapMoveSelector]]
 === tailChainSwapMoveSelector or 2-opt (chained variables only)
 
-
 A _tailChain_ is a set of planning entities with a chained planning variable which form a last part of a chain.
 The `tailChainSwapMove` selects a tail chain and swaps it with the tail chain of another planning value (in a different or the same anchor chain). If the targeted planning value, doesn't have a tail chain, it swaps with nothing (resulting in a change like move). If it occurs within the same anchor chain, a partial chain reverse occurs.
 In academic papers, this is often called a 2-opt move.
@@ -363,7 +355,6 @@ Although `subChainChangeMoveSelector` and `subChainSwapMoveSelector` include alm
 
 [[subChainChangeMoveSelector]]
 === subChainChangeMoveSelector (chained variables only)
-
 
 A _subChain_ is a set of planning entities with a chained planning variable which form part of a chain.
 The `subChainChangeMoveSelector` selects a subChain and moves it to another place (in a different or the same anchor chain).
@@ -415,7 +406,6 @@ The `selectReversingMoveToo` property (defaults to true) enables selecting the r
 [[subChainSwapMoveSelector]]
 === subChainSwapMoveSelector (chained variables only)
 
-
 The `subChainSwapMoveSelector` selects 2 different subChains and moves them to another place in a different or the same anchor chain.
 
 Simplest configuration:
@@ -463,7 +453,6 @@ The other properties are explained in <<subChainChangeMoveSelector,subChainChang
 
 [[unionMoveSelector]]
 === unionMoveSelector
-
 
 A `unionMoveSelector` selects a `Move` by selecting 1 of its `MoveSelector` children to supply the next ``Move``.
 
@@ -544,7 +533,6 @@ To give each individual `Move` the same selection chance (as opposed to each ``M
 [[cartesianProductMoveSelector]]
 === cartesianProductMoveSelector
 
-
 A `cartesianProductMoveSelector` selects a new ``CompositeMove``.
 It builds that `CompositeMove` by selecting 1 `Move` per `MoveSelector` child and adding it to the ``CompositeMove``.
 
@@ -590,7 +578,6 @@ To enforce that 2 child selectors use the same entity or value efficiently, use 
 [[entitySelector]]
 == EntitySelector
 
-
 Simplest configuration:
 
 [source,xml,options="nowrap"]
@@ -614,7 +601,6 @@ The `entityClass` property is only required if it cannot be deduced automaticall
 
 [[valueSelector]]
 == ValueSelector
-
 
 Simplest configuration:
 
@@ -656,7 +642,6 @@ If a selected entity cannot be downcasted, the `ValueSelector` is empty for that
 [[cacheType]]
 === ``CacheType``: Create Moves Ahead of Time or Just In Time
 
-
 A ``Selector``'s `cacheType` determines when a selection (such as a ``Move``, an entity, a value, ...) is created and how long it lives.
 
 Almost every `Selector` supports setting a ``cacheType``:
@@ -696,7 +681,6 @@ For example: a `STEP` cached `unionMoveSelector` can hold a `PHASE` cached ``cha
 
 [[selectionOrder]]
 === SelectionOrder: Original, Sorted, Random, Shuffled or Probabilistic
-
 
 A ``Selector``'s `selectionOrder` determines the order in which the selections (such as ``Move``s, entities, values, ...) are iterated.
 An optimization algorithm will usually only iterate through a subset of its ``MoveSelector``'s selections, starting from the start, so the `selectionOrder` is critical to decide which ``Move``s are actually evaluated.
@@ -741,7 +725,6 @@ Avoid overwriting the `selectionOrder` of those nested ``Selector``s.
 [[justInTimeRandomSelection]]
 ==== Just in Time Random Selection (default)
 
-
 This combination is great for big use cases (10 000 entities or more), as it scales up well in memory footprint and performance.
 Other combinations are often not even viable on such sizes.
 It works for smaller use cases too, so it's a good way to start out.
@@ -770,7 +753,6 @@ Notice that *it never creates a list of ``**Move**``s* and it generates random n
 
 [[cachedShuffledSelection]]
 ==== Cached Shuffled Selection
-
 
 This combination often wins for small and medium use cases (5000 entities or less). Beyond that size, it scales up badly in memory footprint and performance.
 
@@ -816,7 +798,6 @@ Otherwise, do something like this:
 [[cachedRandomSelection]]
 ==== Cached Random Selection
 
-
 This combination is often a worthy competitor for medium use cases, especially with fast stepping optimization algorithms (such as Simulated Annealing). Unlike cached shuffled selection, it doesn't waste time shuffling the moves list at the beginning of every step.
 
 [source,xml,options="nowrap"]
@@ -832,7 +813,6 @@ This combination is often a worthy competitor for medium use cases, especially w
 
 [[filteredSelection]]
 === Filtered Selection
-
 
 There can be certain moves that you don't want to select, because:
 
@@ -878,7 +858,6 @@ In most cases, you'll need to know both the entity and the value involved so you
 [[filteredMoveSelection]]
 ==== Filtered Move Selection
 
-
 Unaccepted moves will not be selected and will therefore never have their `doMove()` method called:
 
 [source,java,options="nowrap"]
@@ -909,7 +888,6 @@ You can configure multiple `filterClass` elements on a single move selector.
 
 [[filteredEntitySelection]]
 ==== Filtered Entity Selection
-
 
 Unaccepted entities will not be selected and will therefore never be used to create a move.
 
@@ -944,7 +922,6 @@ You can configure multiple `filterClass` elements on a single entity selector.
 [[filteredValueSelection]]
 ==== Filtered Value Selection
 
-
 Unaccepted values will not be selected and will therefore never be used to create a move.
 
 [source,java,options="nowrap"]
@@ -976,7 +953,6 @@ You can configure multiple `filterClass` elements on a single value selector.
 [[sortedSelection]]
 === Sorted Selection
 
-
 Sorted selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
 It does not work with `cacheType```JUST_IN_TIME`` and it only works with ``selectionOrder SORTED``.
 
@@ -990,7 +966,6 @@ If you do explicitly configure the ``Selector``, it overwrites the default setti
 
 [[sortedSelectionBySorterManner]]
 ==== Sorted Selection by `SorterManner`
-
 
 Some `Selector` types implement a `SorterManner` out of the box:
 
@@ -1023,7 +998,6 @@ Some `Selector` types implement a `SorterManner` out of the box:
 [[sortedSelectionByComparator]]
 ==== Sorted Selection by `Comparator`
 
-
 An easy way to sort a `Selector` is with a plain old ``Comparator``:
 
 [source,java,options="nowrap"]
@@ -1055,7 +1029,6 @@ You 'll also need to configure it (unless it's annotated on the domain model and
 
 [[sortedSelectionBySelectionSorterWeightFactory]]
 ==== Sorted Selection by `SelectionSorterWeightFactory`
-
 
 If you need the entire `Solution` to sort a ``Selector``, use a `SelectionSorterWeightFactory` instead:
 
@@ -1119,7 +1092,6 @@ You 'll also need to configure it (unless it's annotated on the domain model and
 [[sortedSelectionBySelectionSorter]]
 ==== Sorted Selection by `SelectionSorter`
 
-
 Alternatively, you can also use the interface `SelectionSorter` directly:
 
 [source,java,options="nowrap"]
@@ -1142,7 +1114,6 @@ public interface SelectionSorter<Solution_, T> {
 
 [[probabilisticSelection]]
 === Probabilistic Selection
-
 
 Probabilistic selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
 It does not work with `cacheType```JUST_IN_TIME`` and it only works with ``selectionOrder PROBABILISTIC``.
@@ -1177,7 +1148,6 @@ For example, if there are 3 entities: process A (probabilityWeight 2.0), process
 [[limitedSelection]]
 === Limited Selection
 
-
 Selecting all possible moves sometimes does not scale well enough, especially for construction heuristics (which don't support <<acceptedCountLimit,acceptedCountLimit>>).
 
 To limit the number of selected selection per step, apply a `selectedCountLimit` on the selector:
@@ -1196,7 +1166,6 @@ To scale Local Search, setting <<acceptedCountLimit,acceptedCountLimit>> is usua
 
 [[mimicSelection]]
 === Mimic Selection (Record/Replay)
-
 
 During mimic selection, 1 normal selector records its selection and 1 or multiple other special selectors replay that selection.
 The recording selector acts as a normal selector and supports all other configuration properties.
@@ -1228,7 +1197,6 @@ Mimic selection is useful to create <<cartesianProductMoveSelector,a composite m
 
 [[nearbySelection]]
 === Nearby Selection
-
 
 In some use cases (such as TSP and VRP, but also in non-chained variable cases), changing entities to nearby values or swapping nearby entities can *heavily increase scalability* and improve solution quality.
 
@@ -1370,7 +1338,6 @@ As always, use the <<benchmarker,Benchmarker>> to tweak values if desired.
 [[whichMoveTypesMightBeMissing]]
 === Which Move Types Might be Missing in my Implementation?
 
-
 To determine which move types might be missing in your implementation, run a <<benchmarker,Benchmarker>>__for a short amount of time__ and <<writeTheOutputSolutionOfBenchmarkRuns,configure it to write the best solutions to disk>>.
 Take a look at such a best solution: it will likely be a local optima.
 Try to figure out if there's a move that could get out of that local optima faster.
@@ -1379,7 +1346,6 @@ If you find one, implement that coarse-grained move, mix it with the existing mo
 
 [[_custommovesintroduction]]
 === Custom Moves Introduction
-
 
 Instead of reusing the generic ``Move``s (such as ``ChangeMove``) you can also implement your own ``Move``s.
 Generic and custom ``MoveSelector``s can be combined as desired.
@@ -1393,7 +1359,6 @@ After implementing a custom ``Move``, make sure to turn on `environmentMode```FU
 
 [[theInterfaceMove]]
 === The Interface `Move`
-
 
 Your custom moves must implement the `Move` interface:
 
@@ -1576,7 +1541,6 @@ Now that we can implement a single custom ``Move``, let's take a look at generat
 [[moveListFactory]]
 === ``MoveListFactory``: the Easy Way to Generate Custom Moves
 
-
 The easiest way to generate custom moves is by implementing the interface ``MoveListFactory``:
 
 [source,java,options="nowrap"]
@@ -1635,7 +1599,6 @@ Therefore, `moveListFactory` uses `cacheType```STEP`` by default and it scales b
 
 [[moveIteratorFactory]]
 === ``MoveIteratorFactory``: Generate Custom Moves Just in Time
-
 
 Use this advanced form to generate custom moves by implementing the `MoveIteratorFactory` interface:
 

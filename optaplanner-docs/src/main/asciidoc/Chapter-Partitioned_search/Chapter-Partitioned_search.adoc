@@ -10,7 +10,6 @@
 [[partitionedSearchOverview]]
 == Overview
 
-
 For very big datasets, it is sometimes worthwhile to partition the datasets into smaller pieces.
 
 However, **partitioning leads to suboptimal results**, even if the pieces are solved optimally:

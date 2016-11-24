@@ -10,7 +10,6 @@
 [[hyperheuristicsOverview]]
 == Overview
 
-
 A hyperheuristic automates the decision which heuristic(s) to use on a specific data set.
 
 A future version of Planner will have native support for hyperheuristics.

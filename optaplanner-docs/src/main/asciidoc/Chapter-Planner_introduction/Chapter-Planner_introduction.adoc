@@ -41,7 +41,6 @@ Under the hood, it combines optimization heuristics and metaheuristics with very
 [[requirements]]
 == Requirements
 
-
 OptaPlanner is _open source_ software, released under http://www.apache.org/licenses/LICENSE-2.0.html[the Apache Software License 2.0].
 This license is very liberal and allows reuse for commercial purposes.
 Read http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN[the layman's explanation].
@@ -61,7 +60,6 @@ image::Chapter-Planner_introduction/compatibility.png[align="center"]
 
 [[aPlanningProblemIsNPCompleteOrNPHard]]
 === A Planning Problem is NP-complete or NP-hard
-
 
 All the use cases above are _probably_ http://en.wikipedia.org/wiki/NP-complete[NP-complete] or harder.
 In layman's terms, NP-complete means:
@@ -91,7 +89,6 @@ By using advanced optimization algorithms, *OptaPlanner does find a good solutio
 [[aPlanningProblemHasConstraints]]
 === A Planning Problem Has (Hard and Soft) Constraints
 
-
 Usually, a planning problem has at least 2 levels of constraints:
 
 * A _(negative) hard constraint_ must not be broken. For example: __1 teacher can not teach 2 different lessons at the same time__.
@@ -115,7 +112,6 @@ Such code is easy, flexible and scalable.
 [[aPlanningProblemHasAHugeSearchSpace]]
 === A Planning Problem Has a Huge Search Space
 
-
 A planning problem has a number of __solutions__.
 There are several categories of solutions:
 
@@ -137,7 +133,6 @@ Depending on the use case, some optimization algorithms perform better than othe
 
 [[getTheReleaseZipAndRunTheExamples]]
 === Get the Release .zip and Run the Examples
-
 
 To try it now:
 
@@ -205,7 +200,6 @@ image::Chapter-Planner_introduction/plannerWebexamplesScreenshot.png[align="cent
 [[runTheExamplesInAnIDE]]
 === Run the Examples in an IDE (IntelliJ, Eclipse, NetBeans)
 
-
 To run the examples in your favorite IDE:
 
 . Configure your IDE:
@@ -224,8 +218,7 @@ To run a specific example directly and skip the example selection window, run it
 [[useWithMavenGradleEtc]]
 === Use OptaPlanner with Maven, Gradle, Ivy, Buildr or ANT
 
-
-The OptaPlanner jars are also available in http://search.maven.org/#search|ga|1|org.optaplanner[the central maven repository] (and also in 
+The OptaPlanner jars are also available in http://search.maven.org/#search|ga|1|org.optaplanner[the central maven repository] (and also in
 pass:macros[https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.optaplanner~~~~[the JBoss maven repository\]]).
 
 If you use Maven, add a dependency to `optaplanner-core` in your project's [path]_pom.xml_
@@ -277,7 +270,6 @@ Check the maven repository [path]_pom.xml_
 
 [[buildFromSource]]
 === Build OptaPlanner from Source
-
 
 It's easy to build OptaPlanner from source:
 
@@ -339,7 +331,6 @@ $ mvn exec:java
 [[statusOfOptaPlanner]]
 === Status of OptaPlanner
 
-
 OptaPlanner is:
 
 * **Stable**: Heavily tested with unit, integration and stress tests.
@@ -351,12 +342,10 @@ OptaPlanner is:
 [[releaseNotes]]
 === Release Notes
 
-
 We release a `Beta` or `CR` version every few weeks and a `Final` version every few months. https://www.optaplanner.org/download/releaseNotes/[Read the release notes of each release on our website.]
 
 [[backwardsCompatibility]]
 === Backwards Compatibility
-
 
 OptaPlanner separates its API and implementation:
 
@@ -374,7 +363,6 @@ Those documented `impl` classes are reliable and safe to use (unless explicitly 
 [[communityAndSupport]]
 === Community and Support
 
-
 For news and articles, check https://www.optaplanner.org/blog/[our blog], Google+ (https://plus.google.com/+OptaPlannerOrg[OptaPlanner], https://plus.google.com/+GeoffreyDeSmet[Geoffrey De Smet]) and twitter (https://twitter.com/OptaPlanner[OptaPlanner], https://twitter.com/GeoffreyDeSmet[Geoffrey De Smet]). *If OptaPlanner
       helps you, help us by blogging or tweeting about it!*
 
@@ -387,7 +375,6 @@ For enterprise support and consulting, take a look at https://www.optaplanner.or
 
 [[relationshipWithKie]]
 === Relationship with Drools and jBPM
-
 
 OptaPlanner is part of the http://www.kiegroup.org[KIE group of projects].
 It releases regularly (often once or twice per month) together with the http://www.drools.org/[Drools] rule engine and the http://www.jbpm.org/[jBPM] workflow engine.

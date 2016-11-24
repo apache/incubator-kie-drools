@@ -96,7 +96,6 @@ Vehicle routing is special, because it uses a <<chainedPlanningVariable,chained 
 [[assigningTimeToPlanningEntities]]
 == Assigning Time to Planning Entities
 
-
 Dealing with time and dates in planning problems may be problematic because it is dependent on the needs of your use case.
 
 There are several representations of timestamps, dates, durations and periods in Java.
@@ -136,7 +135,6 @@ image::Chapter-Design_patterns/assigningTimeToPlanningEntities.png[align="center
 [[timeslotPattern]]
 === Timeslot Pattern: Assign to a Fixed-Length Timeslot
 
-
 If all planning entities have *the same duration* (or can be inflated to the same duration), the Timeslot pattern is useful.
 The planning entities are assigned to a timeslot rather than time.
 For example in <<curriculumCourse,course timetabling>>, all lectures take 1 hour.
@@ -155,7 +153,6 @@ However, in exam timetabling, that is allowed, if there is enough seating capaci
 [[timeGrainPattern]]
 === TimeGrain Pattern: Assign to a Starting TimeGrain
 
-
 Assigning humans to start a meeting at 4 seconds after 9 o'clock is pointless because most human activities have a time granularity of 5 minutes or 15 minutes.
 Therefore it is not necessary to allow a planning entity to be assigned subsecond, second or even 1 minute accuracy.
 The 5 minute or 15 minutes accuracy suffices.
@@ -172,7 +169,6 @@ However, such solution is not impossible, as shown in <<cheapTimeScheduling,chea
 
 [[chainedThroughTimePattern]]
 === Chained Through Time Pattern: Assign in a Chain that Determines Starting Time
-
 
 If a person or a machine continuously works on **1 task at a time in sequence**,
 which means starting a task when the previous is finished (or with a deterministic delay), the Chained Through Time pattern is useful.
@@ -199,7 +195,6 @@ Between planning entities, there are three ways to create gaps:
 
 [[multiStragePlanning]]
 == Multi-stage planning
-
 
 For practical or organizational reasons (such as Conway's law), complex planning problems are often broken down in multiple stages.
 A typical example is train scheduling, where one department decides where and when a train will arrive or depart, and another departments assigns the operators to the actual train cars/locomotives.

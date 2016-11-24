@@ -10,7 +10,6 @@
 [[examplesOverview]]
 == Examples Overview
 
-
 Planner has several examples.
 In this manual we explain mainly using the n queens example and cloud balancing example.
 So it's advisable to read at least those sections.
@@ -477,7 +476,6 @@ These realistic competitions provide an objective comparison of Planner with com
 [[nQueensProblemDescription]]
 ==== Problem Description
 
-
 Place n queens on a n sized chessboard so no 2 queens can attack each other.
 The most common n queens puzzle is the 8 queens puzzle, with __n = 8__:
 
@@ -532,7 +530,6 @@ With a few changes it has been shown to easily handle 5000 queens and more.
 
 [[nQueensDomainModel]]
 ==== Domain Model
-
 
 Use a good domain model: it will be easier to understand and solve your planning problem.
 This is the domain model for the n queens example:
@@ -639,7 +636,6 @@ When 2 queens share the same column, row or diagonal line, such as ($$*$$) and (
 [[cloudBalancing]]
 === Cloud Balancing
 
-
 This example is explained in <<cloudBalancingTutorial,a tutorial>>.
 
 [[tsp]]
@@ -647,7 +643,6 @@ This example is explained in <<cloudBalancingTutorial,a tutorial>>.
 
 [[tspProblemDescription]]
 ==== Problem Description
-
 
 Given a list of cities, find the shortest tour for a salesman that visits each city exactly once.
 
@@ -670,7 +665,6 @@ lu980    has 980 cities with a search space of 10^2927.
 [[tspProblemDifficulty]]
 ==== Problem Difficulty
 
-
 Despite TSP's simple definition, the problem is surprisingly hard to solve.
 Because it's an NP-hard problem (like most planning problems), the optimal solution for a specific problem dataset can change a lot when that problem dataset is slightly altered:
 
@@ -683,7 +677,6 @@ image::Chapter-Use_cases_and_examples/tspOptimalSolutionVolatility.png[align="ce
 
 [[dinnerPartyProblemDescription]]
 ==== Problem Description
-
 
 Miss Manners is throwing another dinner party.
 
@@ -710,7 +703,6 @@ wedding01 has 18 jobs, 144 guests, 288 hobby practicians, 12 tables and 144 seat
 
 [[tennisProblemDescription]]
 ==== Problem Description
-
 
 Every week the tennis club has 4 teams playing round robin against each other.
 Assign those 4 spots to the teams fairly.
@@ -742,7 +734,6 @@ munich-7teams has 7 teams, 18 days, 12 unavailabilityPenalties and 72 teamAssign
 [[tennisDomainModel]]
 ==== Domain Model
 
-
 image::Chapter-Use_cases_and_examples/tennisClassDiagram.png[align="center"]
 
 
@@ -751,7 +742,6 @@ image::Chapter-Use_cases_and_examples/tennisClassDiagram.png[align="center"]
 
 [[meetingSchedulingProblemDescription]]
 ==== Problem Description
-
 
 Assign each meeting to a starting time and a room.
 Meetings have different durations.
@@ -789,7 +779,6 @@ Soft constraints:
 
 [[curriculumCourseProblemDescription]]
 ==== Problem Description
-
 
 Schedule each lecture into a timeslot and into a room.
 
@@ -835,7 +824,6 @@ comp14 has 68 teachers,  60 curricula,  85 courses, 275 lectures, 25 periods, 17
 [[curriculumCourseDomainModel]]
 ==== Domain Model
 
-
 image::Chapter-Use_cases_and_examples/curriculumCourseClassDiagram.png[align="center"]
 
 
@@ -844,7 +832,6 @@ image::Chapter-Use_cases_and_examples/curriculumCourseClassDiagram.png[align="ce
 
 [[machineReassignmentProblemDescription]]
 ==== Problem Description
-
 
 Assign each process to a machine.
 All processes already have an original (unoptimized) assignment.
@@ -874,7 +861,6 @@ image::Chapter-Use_cases_and_examples/cloudOptimizationIsLikeTetris.png[align="c
 
 [[machineReassignmentValueProposition]]
 ==== Value Proposition
-
 
 See <<cloudBalancingValueProposition,the Cloud Balancing value proposition>>.
 
@@ -908,7 +894,6 @@ model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  48
 [[machineReassignmentDomainModel]]
 ==== Domain Model
 
-
 image::Chapter-Use_cases_and_examples/machineReassignmentClassDiagram.png[align="center"]
 
 
@@ -917,7 +902,6 @@ image::Chapter-Use_cases_and_examples/machineReassignmentClassDiagram.png[align=
 
 [[vehicleRoutingProblemDescription]]
 ==== Problem Description
-
 
 Using a fleet of vehicles, pick up the objects of each customer and bring them to the depot.
 Each vehicle can service multiple customers, but it has a limited capacity.
@@ -948,13 +932,11 @@ The capacitated vehicle routing problem (CVRP) and its timewindowed variant (CVR
 [[vehicleRoutingValueProposition]]
 ==== Value Proposition
 
-
 image::Chapter-Use_cases_and_examples/vehicleRoutingValueProposition.png[align="center"]
 
 
 [[vehicleRoutingProblemSize]]
 ==== Problem Size
-
 
 CVRP instances (without time windows):
 
@@ -1044,7 +1026,6 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
 [[vehicleRoutingDomainModel]]
 ==== Domain Model
 
-
 image::Chapter-Use_cases_and_examples/vehicleRoutingClassDiagram.png[align="center"]
 
 
@@ -1053,7 +1034,6 @@ This allows it to express its constraints more naturally, because properties suc
 
 [[roadDistancesInsteadOfAirDistances]]
 ==== Road Distances Instead of Air Distances
-
 
 In the real world, vehicles can't follow a straight line from location to location: they have to use roads and highways.
 From a business point of view, this matters a lot:
@@ -1099,7 +1079,6 @@ In the real world, the fastest and shortest route are rarely the same.
 
 [[projectJobSchedulingProblemDescription]]
 ==== Problem Description
-
 
 Schedule all jobs in time and execution mode to minimize project delays.
 Each job is part of a project.
@@ -1163,7 +1142,6 @@ Schedule B-10 has 20 projects, 460 jobs, 1300 execution modes, 42 resources and 
 [[bedAllocationProblemDescription]]
 ==== Problem Description
 
-
 Assign each patient (that will come to the hospital) into a bed for each night that the patient will stay in the hospital.
 Each bed belongs to a room and each room belongs to a department.
 The arrival and departure dates of the patients is fixed: only a bed needs to be assigned for each night.
@@ -1221,7 +1199,6 @@ testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 
 [[bedAllocationDomainModel]]
 ==== Domain Model
 
-
 image::Chapter-Use_cases_and_examples/hospitalBedAllocationClassDiagram.png[align="center"]
 
 
@@ -1230,7 +1207,6 @@ image::Chapter-Use_cases_and_examples/hospitalBedAllocationClassDiagram.png[alig
 
 [[taskAssigningProblemDescription]]
 ==== Problem Description
-
 
 Assign each task to a spot in an employee's queue.
 Each task has a duration which is affected by the employee's affinity level with the task's customer.
@@ -1275,7 +1251,6 @@ Soft level 3 constraints:
 [[taskAssigningDomainModel]]
 ==== Domain Model
 
-
 image::Chapter-Use_cases_and_examples/taskAssigningClassDiagram.png[align="center"]
 
 
@@ -1287,7 +1262,6 @@ image::Chapter-Use_cases_and_examples/taskAssigningClassDiagram.png[align="cente
 
 [[examinationProblemDescription]]
 ==== Problem Description
-
 
 Schedule each exam into a period and into a room.
 Multiple exams can share the same room during the same period.
@@ -1344,7 +1318,6 @@ exam_comp_set8 has  7718 students,  598 exams, 80 periods,  8 rooms,  20 period 
 [[examinationDomainModel]]
 ==== Domain Model
 
-
 Below you can see the main examination domain classes:
 
 .Examination Domain Class Diagram
@@ -1360,7 +1333,6 @@ The ``Topic``, `Period` and `Room` instances never change during solving (these 
 
 [[employeeRosteringProblemDescription]]
 ==== Problem Description
-
 
 For each shift, assign a nurse to work that shift.
 
@@ -1397,13 +1369,11 @@ The problem is defined by http://www.kuleuven-kortrijk.be/nrpcompetition[the Int
 [[employeeRosteringValueProposition]]
 ==== Value Proposition
 
-
 image::Chapter-Use_cases_and_examples/employeeRosteringValueProposition.png[align="center"]
 
 
 [[employeeRosteringProblemSize]]
 ==== Problem Size
-
 
 There are 3 dataset types:
 
@@ -1473,7 +1443,6 @@ long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees,
 [[employeeRosteringDomainModel]]
 ==== Domain Model
 
-
 image::Chapter-Use_cases_and_examples/employeeShiftRosteringClassDiagram.png[align="center"]
 
 
@@ -1482,7 +1451,6 @@ image::Chapter-Use_cases_and_examples/employeeShiftRosteringClassDiagram.png[ali
 
 [[travelingTournamentProblemDescription]]
 ==== Problem Description
-
 
 Schedule matches between _n_ teams.
 
@@ -1559,7 +1527,6 @@ The problem is defined on http://mat.gsia.cmu.edu/TOURN/[Michael Trick's website
 
 [[cheapTimeSchedulingProblemDescription]]
 ==== Problem Description
-
 
 Schedule all tasks in time and on a machine to minimize power cost.
 Power prices differs in time.
@@ -1658,7 +1625,6 @@ instance49 has 4 resources, 100 machines, 288 periods and 5000 tasks with a sear
 
 [[investmentProblemDescription]]
 ==== Problem Description
-
 
 Decide the relative quantity to invest in each asset class.
 

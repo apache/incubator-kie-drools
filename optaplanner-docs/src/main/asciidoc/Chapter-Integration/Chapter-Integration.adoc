@@ -10,7 +10,6 @@
 [[integrationOverview]]
 == Overview
 
-
 Planner's input and output data (the planning problem and the best solution) are plain old JavaBeans (POJO's), so integration with other Java technologies is straightforward.
 For example:
 
@@ -28,7 +27,6 @@ image::Chapter-Integration/integrationOverview.png[align="center"]
 
 [[integrationWithJpaAndHibernate]]
 === Database: JPA and Hibernate
-
 
 Enrich the domain POJO's (solution, entities and problem facts) with JPA annotations to store them in a database.
 
@@ -50,7 +48,6 @@ Add a dependency to the `optaplanner-persistence-jpa` jar to take advantage of t
 
 [[jpaAndHibernatePersistingAScore]]
 ==== JPA and Hibernate: Persisting a `Score`
-
 
 When a `Score` is persisted into a relational database, JPA and Hibernate will default to Java serializing it to a `BLOB` column.
 This has several disadvantages:
@@ -161,7 +158,6 @@ All this support is Hibernate specific because currently JPA 2.1's converters do
 [[jpaAndHibernatePlanningCloning]]
 ==== JPA and Hibernate: Planning Cloning
 
-
 In JPA and Hibernate, there is usually a `@ManyToOne` relationship from most problem fact classes to the planning solution class.
 Therefore, the problem fact classes reference the planning solution class, which implies that when the solution is <<cloningASolution,planning cloned>>, they need to be cloned too.
 Use an `@DeepPlanningClone` on each such problem fact class to enforce that:
@@ -197,14 +193,12 @@ Neglecting to do this can lead to persisting duplicate solutions, JPA exceptions
 [[integrationWithXStream]]
 === XML or JSON: XStream
 
-
 Enrich the domain POJO's (solution, entities and problem facts) with XStream annotations to serialize them to/from XML or JSON.
 
 Add a dependency to the `optaplanner-persistence-xstream` jar to take advantage of these extra integration features:
 
 [[xStreamMarshallingAScore]]
 ==== XStream: Marshalling a `Score`
-
 
 When a `Score` is marshalled to XML or JSON by the default XStream configuration, it's verbose and ugly.
 To fix that, configure the appropriate ``ScoreXStreamConverter``:
@@ -268,14 +262,12 @@ The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score
 [[integrationWithJaxb]]
 === XML or JSON: JAXB
 
-
 Enrich the domain POJO's (solution, entities and problem facts) with JAXB annotations to serialize them to/from XML or JSON.
 
 Add a dependency to the `optaplanner-persistence-jaxb` jar to take advantage of these extra integration features:
 
 [[jaxbMarshallingAScore]]
 ==== JAXB: Marshalling a `Score`
-
 
 When a `Score` is marshalled to XML or JSON by the default JAXB configuration, it's corrupted.
 To fix that, configure the appropriate ``ScoreJaxbXmlAdapter``:
@@ -339,14 +331,12 @@ The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score
 [[integrationWithJackson]]
 === JSON: Jackson
 
-
 Enrich the domain POJO's (solution, entities and problem facts) with Jackson annotations to serialize them to/from JSON.
 
 Add a dependency to the `optaplanner-persistence-jackson` jar to take advantage of these extra integration features:
 
 [[jacksonMarshallingAScore]]
 ==== JAXB: Marshalling a `Score`
-
 
 When a `Score` is marshalled to JSON by the default Jackson configuration, it fails.
 To fix that, configure a `ScoreJacksonJsonSerializer` and the appropriate ``ScoreJacksonJsonDeserializer``:
@@ -424,7 +414,6 @@ That component works in Karaf too.
 [[integrationWithJBossModules]]
 === JBoss Modules, WildFly and JBoss EAP
 
-
 To deploy an Planner web application on WildFly, simply include the optaplanner dependency jars in the `war` file's `WEB-INF/lib` directory (just like any other dependency) as shown in the ``optaplanner-webexamples-*.war``.
 However, in this approach the war file can easily grow to several MB in size, which is fine for a one-time deployment, but too heavyweight for frequent redeployments (especially over a slow network connection).
 
@@ -478,7 +467,6 @@ Because of JBoss Modules' `ClassLoader` magic, you'll likely need to provide the
 [[integrationWithOSGi]]
 === OSGi
 
-
 The `optaplanner-core` jar includes OSGi metadata in its `MANIFEST.MF` file to function properly in an OSGi environment too.
 Furthermore, the maven artifact `kie-karaf-features` contains a `features.xml` file that supports the OSGi-feature ``optaplanner-engine``.
 
@@ -493,7 +481,6 @@ It works perfectly fine in a normal Java environment too.
 
 [[integrationWithAndroid]]
 === Android
-
 
 Android is not a complete JVM (because some JDK libraries are missing), but Planner works on Android with <<easyJavaScoreCalculation,easy Java>> or <<incrementalJavaScoreCalculation,incremental Java>> score calculation.
 The Drools rule engine does not work on Android yet, so Drools score calculation doesn't work on Android and its dependencies need to be excluded.
@@ -518,7 +505,6 @@ dependencies {
 
 [[integrationWithHumanPlanners]]
 == Integration with Human Planners (Politics)
-
 
 A good Planner implementation beats any good human planner for non-trivial datasets.
 Many human planners fail to accept this, often because they feel threatened by an automated system.
@@ -545,7 +531,6 @@ image::Chapter-Integration/keepTheUserInControl.png[align="center"]
 
 [[sizingHardwareAndSoftware]]
 == Sizing Hardware and Software
-
 
 Before sizing a Planner service, first understand the typical behaviour of a `Solver.solve()` call:
 
