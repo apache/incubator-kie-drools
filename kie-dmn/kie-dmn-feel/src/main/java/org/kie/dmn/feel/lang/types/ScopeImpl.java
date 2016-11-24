@@ -23,11 +23,15 @@ import org.kie.dmn.feel.lang.Scope;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.TokenTree;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 public class ScopeImpl
         implements Scope {
+    public static final Logger LOG = LoggerFactory.getLogger(ScopeImpl.class);
 
     private String name;
     private Scope  parentScope;
@@ -110,8 +114,14 @@ public class ScopeImpl
     public void setChildScopes(Map<String, Scope> childScopes) {
         this.childScopes = childScopes;
     }
+    
+    @Override
+    public Map<String, Symbol> getSymbols() {
+        return symbols;
+    }
 
     public void start( String token ) {
+        LOG.trace("[{}]: start() {}", name, token);
         if( tokenTree == null ) {
             initializeTokenTree();
         }
@@ -122,12 +132,14 @@ public class ScopeImpl
     }
 
     public boolean followUp( String token, boolean isPredict ) {
+        LOG.trace("[{}]: followUp() {}", name, token);
         // must call followup on parent scope
         boolean parent = this.parentScope != null ? this.parentScope.followUp( token, isPredict ) : false;
         return this.tokenTree.followUp( token, !isPredict ) || parent;
     }
 
     private void initializeTokenTree() {
+        LOG.trace("[{}]: initializeTokenTree()");
         tokenTree = new TokenTree();
         for( String symbol : symbols.keySet() ) {
             List<String> tokens = tokenize( symbol );

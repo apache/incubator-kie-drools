@@ -18,6 +18,7 @@ package org.kie.dmn.feel.parser.feel11;
 
 import org.antlr.v4.runtime.*;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.JavaBackedType;
 import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
@@ -38,10 +39,22 @@ public class FEELParser {
 
         // pre-loads the parser with symbols
         defineVariables( inputVariableTypes, inputVariables, parser );
+        
         return parser;
     }
 
     private static void defineVariables(Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables, FEEL_1_1Parser parser) {
+
+        // switched order:
+        
+        inputVariableTypes.forEach( (name, type) -> {
+//          if( ! inputVariables.containsKey( name ) ) {
+//              parser.getHelper().defineVariable( name );
+//          }
+            parser.getHelper().defineVariable( name, type );
+        } );
+        
+        // TODO the following may be no longer necessary:
         inputVariables.forEach( (name, value) -> {
             parser.getHelper().defineVariable( name );
             if( value instanceof Map ) {
@@ -55,11 +68,7 @@ public class FEELParser {
                 }
             }
         } );
-        inputVariableTypes.forEach( (name, type) -> {
-            if( ! inputVariables.containsKey( name ) ) {
-                parser.getHelper().defineVariable( name );
-            }
-        } );
+
     }
 
     public static class FEELErrorHandler extends DefaultErrorStrategy {
