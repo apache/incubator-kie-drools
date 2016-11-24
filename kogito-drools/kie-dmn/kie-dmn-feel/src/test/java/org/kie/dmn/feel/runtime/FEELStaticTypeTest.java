@@ -18,13 +18,19 @@ package org.kie.dmn.feel.runtime;
 
 import org.junit.runners.Parameterized;
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.JavaBackedType;
+import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
+
+import test.Address;
+import test.Person;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 public class FEELStaticTypeTest
         extends BaseFEELCompilerTest {
@@ -32,6 +38,7 @@ public class FEELStaticTypeTest
     @Parameterized.Parameters(name = "{index}: {0} ({1} | {2}) = {3}")
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
+            
                 { "{ name : first name + last name }",
                     new HashMap<String, Type>() {{
                         put( "first name", BuiltInType.STRING );
@@ -43,7 +50,47 @@ public class FEELStaticTypeTest
                     }},
                     new HashMap<String,Object>() {{
                         put( "name", "John Doe" );
-                    }} }
+                    }} },
+                
+                { "{ name : person.first name + person.last name }",
+                  new HashMap<String, Type>() {{
+                      put( "person", new MapBackedType()
+                                      .addField( "first name", BuiltInType.STRING )
+                                      .addField( "last name", BuiltInType.STRING )
+                      );
+                  }},
+                  new HashMap<String, Object>() {{
+                      Map<String, String> person = new HashMap<>();
+                      person.put("first name", "John ");
+                      person.put("last name", "Doe");
+                      put( "person", person ); 
+                  }},
+                  new HashMap<String,Object>() {{
+                      put( "name", "John Doe" );
+                  }} },
+            
+                { "{ myFeelVar : person.first name + person.last name }",
+                  new HashMap<String, Type>() {{
+                      put( "person", new JavaBackedType(Person.class) );
+                  }},
+                  new HashMap<String, Object>() {{
+                      put( "person", new Person("John ", "Doe") ); 
+                  }},
+                  new HashMap<String,Object>() {{
+                      put( "myFeelVar", "John Doe" );
+                  }} },
+                
+                { "{ myFeelVar : person.first name + person.last name + \" resides in \" + person.home address.street name }",
+                      new HashMap<String, Type>() {{
+                          put( "person", new JavaBackedType(Person.class) );
+                      }},
+                      new HashMap<String, Object>() {{
+                          put( "person", new Person("John ", "Doe", new Address("Lumbard St.")) ); 
+                      }},
+                      new HashMap<String,Object>() {{
+                          put( "myFeelVar", "John Doe resides in Lumbard St." );
+                      }} }
+                
         };
         return Arrays.asList( cases );
     }

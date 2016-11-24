@@ -104,4 +104,6 @@ public interface Scope {
      */
     boolean followUp(String token, boolean isPredict);
 
+    Map<String, Symbol> getSymbols();
+
 }
