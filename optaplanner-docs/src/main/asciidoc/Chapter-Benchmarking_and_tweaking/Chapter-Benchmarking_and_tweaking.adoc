@@ -11,11 +11,13 @@
 [[findTheBestSolverConfiguration]]
 == Find The Best `Solver` Configuration
 
-Planner supports several optimization algorithms, so you're probably wondering which is the best one? Although some optimization algorithms generally perform better than others, it really depends on your problem domain.
+Planner supports several optimization algorithms, so you're probably wondering which is the best one?
+Although some optimization algorithms generally perform better than others, it really depends on your problem domain.
 Most solver phases have parameters which can be tweaked.
 Those parameters can influence the results a lot, even though most solver phases work pretty well out-of-the-box.
 
-Luckily, Planner includes a benchmarker, which allows you to play out different solver phases with different settings against each other in development, so you can use the best configuration for your planning problem in production.
+Luckily, Planner includes a benchmarker, which allows you to play out different solver phases with different settings
+against each other in development, so you can use the best configuration for your planning problem in production.
 
 
 image::Chapter-Benchmarking_and_tweaking/benchmarkOverview.png[align="center"]
@@ -129,7 +131,9 @@ Usually that directory is called ``local``.
 ====
 
 
-If an `Exception` or `Error` occurs in a single benchmark, the entire Benchmarker will not fail-fast (unlike everything else in Planner). Instead, the Benchmarker will continue to run all other benchmarks, write the benchmark report and then fail (if there is at least 1 failing single benchmark). The failing benchmarks will be clearly marked as such in the benchmark report.
+If an `Exception` or `Error` occurs in a single benchmark, the entire Benchmarker will not fail-fast (unlike everything else in Planner).
+Instead, the Benchmarker will continue to run all other benchmarks, write the benchmark report and then fail (if there is at least 1 failing single benchmark).
+The failing benchmarks will be clearly marked as such in the benchmark report.
 
 
 [[inheritedSolverBenchmark]]
@@ -137,7 +141,8 @@ If an `Exception` or `Error` occurs in a single benchmark, the entire Benchmarke
 
 To lower verbosity, the common parts of multiple `<solverBenchmark>` elements are extracted to the `<inheritedSolverBenchmark>` element.
 Every property can still be overwritten per `<solverBenchmark>` element.
-Note that inherited solver phases such as `<constructionHeuristic>` or `<localSearch>` are not overwritten but instead are added to the tail of the solver phases list.
+Note that inherited solver phases such as `<constructionHeuristic>` or `<localSearch>` are not overwritten
+but instead are added to the tail of the solver phases list.
 
 
 [[solutionFileIO]]
@@ -163,7 +168,8 @@ public interface SolutionFileIO<Solution_> {
 ----
 
 
-The `SolutionFileIO` interface is in the `optaplanner-persistence-common` jar (which is a dependency of the `optaplanner-benchmark` jar). There are several ways to serialize a solution:
+The `SolutionFileIO` interface is in the `optaplanner-persistence-common` jar (which is a dependency of the `optaplanner-benchmark` jar).
+There are several ways to serialize a solution:
 
 
 [[xStreamSolutionFileIO]]
@@ -181,13 +187,14 @@ To use the `XStreamSolutionFileIO` instance to read and write solutions, just co
 ----
 
 
-Those input files need to have been written with a `XStreamSolutionFileIO` instance, not just any `XStream` instance, because the `XStreamSolutionFileIO` uses a customized `XStream` instance.
+Those input files need to have been written with a `XStreamSolutionFileIO` instance, not just any `XStream` instance,
+because the `XStreamSolutionFileIO` uses a customized `XStream` instance.
 Add XStream annotations (such as ``@XStreamAlias``) on your domain classes to use a less verbose XML format.
 
 [WARNING]
 ====
 XML is a very verbose format.
-Reading or writing large datasets in this format can cause an `OutOfMemoryError` , `StackOverflowError` or large performance degradation.
+Reading or writing large datasets in this format can cause an `OutOfMemoryError`, `StackOverflowError` or large performance degradation.
 ====
 
 
@@ -206,7 +213,8 @@ Implement your own `SolutionFileIO` implementation and configure it with the `so
 ----
 
 
-It's recommended that output files can be read as input files, which implies that `getInputFileExtension()` and `getOutputFileExtension()` return the same value.
+It's recommended that output files can be read as input files,
+which implies that `getInputFileExtension()` and `getOutputFileExtension()` return the same value.
 
 [WARNING]
 ====
@@ -220,8 +228,10 @@ A `SolutionFileIO` implementation must be thread-safe.
 The benchmark configuration currently expects an `<inputSolutionFile>` element, so a separate file, for each dataset.
 There are 2 ways to deal with this if your dataset is in a relational database or another type of repository:
 
-* Extract the datasets from the database and serialize them to a local file (for example as XML with `XStreamSolutionFileIO` if XML isn't too verbose). Then use those files an `<inputSolutionFile>` elements.
-* For each dataset, create a txt file that holds the unique id of the dataset. Write <<customSolutionFileIO,a custom `SolutionFileIO`>> that reads that identifier, connects to the database and extract the problem identified by that id. Configure those txt files as `<inputSolutionFile>` elements.
+* Extract the datasets from the database and serialize them to a local file (for example as XML with `XStreamSolutionFileIO` if XML isn't too verbose).
+Then use those files an `<inputSolutionFile>` elements.
+* For each dataset, create a txt file that holds the unique id of the dataset.
+Write <<customSolutionFileIO,a custom `SolutionFileIO`>> that reads that identifier, connects to the database and extract the problem identified by that id. Configure those txt files as `<inputSolutionFile>` elements.
 
 
 [NOTE]
@@ -234,9 +244,8 @@ Otherwise, an unstable network connection can ruin a long running benchmark.
 [[warmingUpTheHotSpotCompiler]]
 === Warming Up The HotSpot Compiler
 
-**
-Without a warm up, the results of the first (or first few) benchmarks are not
-      reliable**, because they will have lost CPU time on HotSpot JIT compilation (and possibly DRL compilation too).
+**Without a warm up, the results of the first (or first few) benchmarks are not reliable**,
+because they will have lost CPU time on HotSpot JIT compilation (and possibly DRL compilation too).
 
 To avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time, before running the real benchmarks.
 Generally, a warm up of 30 seconds suffices:
@@ -299,9 +308,7 @@ The following ``SolverBenchmarkBluePrintType``s are supported:
 
 * ``EVERY_CONSTRUCTION_HEURISTIC_TYPE``: Run every Construction Heuristic type (First Fit, First Fit Decreasing, Cheapest Insertion, ...).
 
-
 * ``EVERY_LOCAL_SEARCH_TYPE``: Run every Local Search type (Tabu Search, Late Acceptance, ...) with the default Construction Heuristic.
-
 
 * ``EVERY_CONSTRUCTION_HEURISTIC_TYPE_WITH_EVERY_LOCAL_SEARCH_TYPE``: Run every Construction Heuristic type with every Local Search type.
 
