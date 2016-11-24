@@ -67,8 +67,7 @@ When using Workbench or Execution Server or to take advantage of Drools's `KieCo
                kieContainer, ".../nqueensSolverConfig.xml");
 ----
 
-Also use <<droolsScoreCalculationKsessionName,a ksessionName in the solver
-        configuration>>.
+Also use <<droolsScoreCalculationKsessionName,a ksessionName in the solver configuration>>.
 ====
 
 Both a `Solver` and a `SolverFactory` have a generic type called ``Solution_``, which is the class representing a <<planningProblemAndPlanningSolution,planning problem and solution>>.
@@ -315,8 +314,7 @@ Generally, better designed domain classes lead to simpler and more efficient sco
 Therefore, when dealing with a messy (denormalized) legacy system, it can sometimes be worthwhile to convert the messy domain model into a Planner specific model first.
 For example: if your domain model has two `Teacher` instances for the same teacher that teaches at two different departments, it is harder to write a correct score constraint that constrains a teacher's spare time on the original model than on an adjusted model.
 
-Alternatively, you can sometimes also introduce <<cachedProblemFact,_a cached
-        problem fact_>> to enrich the domain model for planning only.
+Alternatively, you can sometimes also introduce <<cachedProblemFact,_a cached problem fact_>> to enrich the domain model for planning only.
 ====
 
 
@@ -503,8 +501,7 @@ A @PlanningVariable annotation needs to be on a member in a class with a @Planni
 It is ignored on parent classes or subclasses without that annotation.
 ====
 
-<<annotationAlternatives,
-Annotating the field>> instead of the property works too:
+<<annotationAlternatives,Annotating the field>> instead of the property works too:
 
 [source,java,options="nowrap"]
 ----
@@ -547,10 +544,9 @@ There is no need to add `null` in a collection used by a ``ValueRangeProvider``.
 Using a nullable planning variable implies that your score calculation is responsible for punishing (or even rewarding) variables with a null value.
 ====
 
-<<repeatedPlanning,
-Repeated planning>> (especially <<realTimePlanning,real-time planning>>) does not mix well with a nullable planning variable.
-Every time the Solver starts or a problem fact change is made, the <<constructionHeuristics,Construction
-        Heuristics>> will try to initialize all the `null` variables again, which can be a huge waste of time.
+<<repeatedPlanning,Repeated planning>> (especially <<realTimePlanning,real-time planning>>) does not mix well with a nullable planning variable.
+Every time the Solver starts or a problem fact change is made,
+the <<constructionHeuristics,Construction Heuristics>> will try to initialize all the `null` variables again, which can be a huge waste of time.
 One way to deal with this, is to change when a planning entity should be reinitialized with an ``reinitializeVariableEntityFilter``:
 
 [source,java,options="nowrap"]
@@ -648,12 +644,10 @@ public class NQueens {
 
 [IMPORTANT]
 ====
-That `Collection` (or ``ValueRange``) must not contain the value ``null``, not even for a <<nullablePlanningVariable,nullable planning
-            variable>>.
+That `Collection` (or ``ValueRange``) must not contain the value ``null``, not even for a <<nullablePlanningVariable,nullable planning variable>>.
 ====
 
-<<annotationAlternatives,
-Annotating the field>> instead of the property works too:
+<<annotationAlternatives,Annotating the field>> instead of the property works too:
 
 [source,java,options="nowrap"]
 ----
@@ -797,8 +791,7 @@ Usually, the efficiency gain of planning value strength is far less than that of
 *Do not try to use planning value strength to implement a business
           constraint.* It will not affect the score function: if we have infinite solving time, the returned solution will be the same.
 
-To affect the score function, <<formalizeTheBusinessConstraints,add a score
-          constraint>>.
+To affect the score function, <<formalizeTheBusinessConstraints,add a score constraint>>.
 Only consider adding planning value strength too if it can make the solver more efficient.
 ====
 
@@ -974,10 +967,9 @@ From an optimization perspective, Planner effectively only optimizes the genuine
 
 [IMPORTANT]
 ====
-**Any class that has at least one shadow variable, is a planning entity
-          class**, even if it has no genuine planning variables.
-That entity class needs to be defined in the solver configuration (unless classes are <<automaticScanningForAnnotations,automatically
-          scanned>>) and be annotated accordingly.
+**Any class that has at least one shadow variable, is a planning entity class**, even if it has no genuine planning variables.
+That entity class needs to be defined in the solver configuration (unless classes are <<automaticScanningForAnnotations,automatically scanned>>)
+and be annotated accordingly.
 
 An genuine planning entity class has at least one genuine planning variable, but can have shadow variables too.
 A shadow planning entity class has no genuine planning variables and at least one shadow planning variable.
@@ -1078,8 +1070,7 @@ Planner will not violate that principle during planning, but the input must not 
 [[anchorShadowVariable]]
 ==== Anchor Shadow Variable
 
-An anchor shadow variable is the anchor of <<chainedPlanningVariable,a chained
-        variable>>.
+An anchor shadow variable is the anchor of <<chainedPlanningVariable,a chained variable>>.
 
 Annotate the anchor property as a `@AnchorShadowVariable` annotation:
 
@@ -1675,8 +1666,7 @@ For example in n queens, the `solve()` method will return an `NQueens` instance 
 image::Chapter-Planner_configuration/solvedNQueens04.png[align="left"]
 
 The `solve(Solution)` method can take a long time (depending on the problem size and the solver configuration). The `Solver` intelligently wades through <<searchSpaceSize,the search space>> of possible solutions and remembers the best solution it encounters during solving.
-Depending on a number factors (including problem size, how much time the `Solver` has, the solver configuration, ...), <<doesPlannerFindTheOptimalSolution,that best solution might or might not be an optimal
-      solution>>.
+Depending on a number factors (including problem size, how much time the `Solver` has, the solver configuration, ...), <<doesPlannerFindTheOptimalSolution,that best solution might or might not be an optimal solution>>.
 
 [NOTE]
 ====
@@ -1789,7 +1779,6 @@ The best way to illuminate the black box that is a ``Solver``, is to play with t
 
 * **error**: Log errors, except those that are thrown to the calling code as a ``RuntimeException``.
 +
-
 [NOTE]
 ====
 **If an error happens, Planner normally fails fast**: it throws a subclass of `RuntimeException` with a detailed message to the calling code.
@@ -1802,7 +1791,6 @@ Meanwhile, the code is disrupted from doing further harm or obfuscating the erro
 * **debug**: Log every step of every phase. See <<scopeOverview,scope overview>>.
 * **trace**: Log every move of every step of every phase. See <<scopeOverview,scope overview>>.
 +
-
 [NOTE]
 ====
 Turning on `trace` logging, will slow down performance considerably: it is often four times slower.

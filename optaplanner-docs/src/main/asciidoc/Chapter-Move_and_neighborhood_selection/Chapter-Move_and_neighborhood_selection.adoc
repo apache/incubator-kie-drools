@@ -1194,8 +1194,8 @@ public class CustomerNearbyDistanceMeter implements NearbyDistanceMeter<Customer
 }
 ----
 
-To configure nearby selection, add a `nearbySelection` element in the `entitySelector` or `valueSelector` and use <<mimicSelection,mimic
-      selection>> to specify which entity should be near by the selection.
+To configure nearby selection, add a `nearbySelection` element in the `entitySelector` or `valueSelector`
+and use <<mimicSelection,mimic selection>> to specify which entity should be near by the selection.
 
 [source,xml,options="nowrap"]
 ----

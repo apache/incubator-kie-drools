@@ -30,9 +30,8 @@ Notice that it creates a search tree that explodes exponentially as the problem 
 
 [IMPORTANT]
 ====
-**Brute Force is mostly unusable for a real-world problem due to time
-        limitations**, as shown in <<scalabilityOfExhaustiveSearch,scalability of Exhaustive
-        Search>>.
+**Brute Force is mostly unusable for a real-world problem due to time limitations**,
+as shown in <<scalabilityOfExhaustiveSearch,scalability of Exhaustive  Search>>.
 ====
 
 
@@ -81,9 +80,8 @@ So it hits the same scalability wall, only a little bit later.
 
 [IMPORTANT]
 ====
-**Branch And Bound is mostly unusable for a real-world problem due to time
-        limitations**, as shown in <<scalabilityOfExhaustiveSearch,scalability of Exhaustive
-        Search>>.
+**Branch And Bound is mostly unusable for a real-world problem due to time limitations**,
+as shown in <<scalabilityOfExhaustiveSearch,scalability of Exhaustive Search>>.
 ====
 
 
@@ -165,7 +163,8 @@ The `nodeExplorationType` options are:
 
 The `entitySorterManner` options are:
 
-* ``DECREASING_DIFFICULTY``: Initialize the more difficult planning entities first. This usually increases pruning (and therefore improves scalability). Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>.
+* ``DECREASING_DIFFICULTY``: Initialize the more difficult planning entities first. This usually increases pruning (and therefore improves scalability).
+Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>.
 * `DECREASING_DIFFICULTY_IF_AVAILABLE` (default): If the model supports <<planningEntityDifficulty,planning entity difficulty comparison>>, behave like ``DECREASING_DIFFICULTY``, else like ``NONE``.
 * ``NONE``: Initialize the planning entities in original order.
 

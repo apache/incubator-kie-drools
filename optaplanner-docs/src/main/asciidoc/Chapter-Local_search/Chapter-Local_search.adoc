@@ -108,8 +108,7 @@ In the example below, the `MoveSelector` generated the moves shown with the blue
 
 image::Chapter-Local_search/decideNextStepNQueens04.png[align="center"]
 
-<<logging,
-Turn on `trace` logging>> to show the decision making in the log:
+<<logging,Turn on `trace` logging>> to show the decision making in the log:
 
 [source,options="nowrap"]
 ----
@@ -603,8 +602,7 @@ Step Counting Hill Climbing can be combined with a tabu acceptor at the same tim
 [[strategicOscillationAlgorithm]]
 === Algorithm Description
 
-Strategic Oscillation is an add-on, which works especially well with <<tabuSearch,Tabu
-      Search>>.
+Strategic Oscillation is an add-on, which works especially well with <<tabuSearch,Tabu Search>>.
 Instead of picking the accepted move with the highest score, it employs a different mechanism: If there's an improving move, it picks it.
 If there's no improving move however, it prefers moves which improve a softer score level, over moves which break a harder score level less.
 

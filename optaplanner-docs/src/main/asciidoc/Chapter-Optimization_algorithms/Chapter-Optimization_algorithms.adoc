@@ -43,8 +43,9 @@ Even in cases were adding some of the hard constraints in the formula is practic
 An algorithm that checks every possible solution (even with pruning such as in <<branchAndBound,Branch And Bound>>) can easily run for billions of years on a single real-life planning problem.
 What we really want is to **find the best solution in the limited time at our
     disposal**.
-Planning competitions (such as the International Timetabling Competition) show that Local Search variations (<<tabuSearch,Tabu Search>>, <<simulatedAnnealing,Simulated
-    Annealing>>, <<lateAcceptance,Late Acceptance>>, ...) usually perform best for real-world problems given real-world time limitations.
+Planning competitions (such as the International Timetabling Competition) show that Local Search variations
+(<<tabuSearch,Tabu Search>>, <<simulatedAnnealing,Simulated Annealing>>, <<lateAcceptance,Late Acceptance>>, ...)
+usually perform best for real-world problems given real-world time limitations.
 
 
 [[doesPlannerFindTheOptimalSolution]]

@@ -149,8 +149,8 @@ For example: a company might decide that profit outranks employee satisfaction (
 
 [NOTE]
 ====
-To model fairness or load balancing, there is <<fairnessScoreConstraints,no need to use lots
-        of score levels>> (even though Planner can handle many score levels).
+To model fairness or load balancing, there is <<fairnessScoreConstraints,no need to use lots of score levels>>
+(even though Planner can handle many score levels).
 ====
 
 Most use cases use a `Score` with two weights, such as <<hardSoftScore,HardSoftScore>>.
@@ -177,8 +177,7 @@ Scores are considered equal far more often.
 It is left up to a human to choose the better out of a set of best solutions (with equal scores) found by Planner.
 In the example above, the user must choose between solution A (three apples and one orange) and solution B (one apple and six oranges). It is guaranteed that Planner has not found another solution which has more apples or more oranges or even a better combination of both (such as two apples and three oranges).
 
-To implement pareto scoring in Planner, <<customScore,implement a custom
-      `ScoreDefinition` and `Score`>> (and replace the ``BestSolutionRecaller``). Future versions will provide out-of-the-box support.
+To implement pareto scoring in Planner, <<customScore,implement a custom `ScoreDefinition` and `Score`>> (and replace the ``BestSolutionRecaller``). Future versions will provide out-of-the-box support.
 
 [NOTE]
 ====

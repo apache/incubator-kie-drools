@@ -164,9 +164,9 @@ Each planning entity is assigned to a start time grain.
 The end time grain is calculated by adding the duration in grains to the starting time grain.
 Overlap of two entities is determined by comparing their start and end time grains.
 
-This pattern also works well with a coarser time granularity (such as days, half days, hours, ...). With a finer time granularity (such as seconds, milliseconds, ...) and a long time window, the value range (and therefore <<searchSpaceSize,the search space>>) can become too high, which reduces efficiency and scalability.
-However, such solution is not impossible, as shown in <<cheapTimeScheduling,cheap time
-      scheduling>>.
+This pattern also works well with a coarser time granularity (such as days, half days, hours, ...).
+With a finer time granularity (such as seconds, milliseconds, ...) and a long time window, the value range (and therefore <<searchSpaceSize,the search space>>) can become too high, which reduces efficiency and scalability.
+However, such solution is not impossible, as shown in <<cheapTimeScheduling,cheap time scheduling>>.
 
 
 [[chainedThroughTimePattern]]

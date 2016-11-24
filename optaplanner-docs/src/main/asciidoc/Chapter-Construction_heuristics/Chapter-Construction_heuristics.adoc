@@ -52,8 +52,7 @@ Configure this solver phase:
 If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this algorithm is faster: for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves.
 ====
 
-For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
-      Queue>>.
+For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
 
 
 [[firstFitDecreasing]]
@@ -66,8 +65,7 @@ For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
 Like First Fit, but assigns the more difficult planning entities first, because they are less likely to fit in the leftovers.
 So it sorts the planning entities on decreasing difficulty.
 
-Requires the model to support <<planningEntityDifficulty,planning entity difficulty
-      comparison>>.
+Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>.
 
 image::Chapter-Construction_heuristics/firstFitDecreasingNQueens04.png[align="center"]
 
@@ -96,8 +94,7 @@ Configure this solver phase:
 If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this algorithm is faster: for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves.
 ====
 
-For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
-      Queue>>.
+For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
 
 
 [[weakestFit]]
@@ -110,8 +107,7 @@ For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
 Like First Fit, but uses the weaker planning values first, because the strong planning values are more likely to be able to accommodate later planning entities.
 So it sorts the planning values on increasing strength.
 
-Requires the model to support <<planningValueStrength,planning value strength
-      comparison>>.
+Requires the model to support <<planningValueStrength,planning value strength comparison>>.
 
 [NOTE]
 ====
@@ -137,8 +133,7 @@ Configure this solver phase:
 If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this algorithm is faster: for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves.
 ====
 
-For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
-      Queue>>.
+For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
 
 
 [[weakestFitDecreasing]]
@@ -151,8 +146,8 @@ For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
 Combines First Fit Decreasing and Weakest Fit.
 So it sorts the planning entities on decreasing difficulty and the planning values on increasing strength.
 
-Requires the model to support <<planningEntityDifficulty,planning entity difficulty
-      comparison>> and <<planningValueStrength,planning value strength comparison>>.
+Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>
+and <<planningValueStrength,planning value strength comparison>>.
 
 [NOTE]
 ====
@@ -179,8 +174,7 @@ Configure this solver phase:
 If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this algorithm is faster: for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves.
 ====
 
-For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
-      Queue>>.
+For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
 
 
 [[strongestFit]]
@@ -193,8 +187,7 @@ For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
 Like First Fit, but uses the strong planning values first, because the strong planning values are more likely to have a lower soft cost to use.
 So it sorts the planning values on decreasing strength.
 
-Requires the model to support <<planningValueStrength,planning value strength
-      comparison>>.
+Requires the model to support <<planningValueStrength,planning value strength comparison>>.
 
 [NOTE]
 ====
@@ -220,8 +213,7 @@ Configure this solver phase:
 If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this algorithm is faster: for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves.
 ====
 
-For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
-      Queue>>.
+For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
 
 
 [[strongestFitDecreasing]]
@@ -234,8 +226,8 @@ For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
 Combines First Fit Decreasing and Strongest Fit.
 So it sorts the planning entities on decreasing difficulty and the planning values on decreasing strength.
 
-Requires the model to support <<planningEntityDifficulty,planning entity difficulty
-      comparison>> and <<planningValueStrength,planning value strength comparison>>.
+Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>
+and <<planningValueStrength,planning value strength comparison>>.
 
 [NOTE]
 ====
@@ -262,8 +254,7 @@ Configure this solver phase:
 If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this algorithm is faster: for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves.
 ====
 
-For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
-      Queue>>.
+For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From Queue>>.
 
 
 [[allocateEntityFromQueue]]
@@ -342,8 +333,8 @@ For example, a Weakest Fit Decreasing configuration for a single entity class wi
   </constructionHeuristic>
 ----
 
-Per step, the `QueuedEntityPlacer` selects 1 uninitialized entity from the `EntitySelector` and applies the winning `Move` (out of all the moves for that entity generated by the ``MoveSelector``). The <<mimicSelection,mimic
-      selection>> ensures that the winning `Move` changes (only) the selected entity.
+Per step, the `QueuedEntityPlacer` selects 1 uninitialized entity from the `EntitySelector` and applies the winning `Move` (out of all the moves for that entity generated by the ``MoveSelector``).
+The <<mimicSelection,mimic selection>> ensures that the winning `Move` changes (only) the selected entity.
 
 To customize the entity or value sorting, see <<sortedSelection,sorted selection>>.
 Other `Selector` customization (such as <<filteredSelection,filtering>> and <<limitedSelection,limiting>>) is supported too.
@@ -509,7 +500,8 @@ There are several pick early types for Construction Heuristics:
 
 [NOTE]
 ====
-If there are only negative constraints, but the <<initializingScoreTrend,InitializingScoreTrend>> is strictly not ``ONLY_DOWN``, it can sometimes make sense to apply FIRST_NON_DETERIORATING_SCORE.
+If there are only negative constraints, but the <<initializingScoreTrend,InitializingScoreTrend>> is strictly not ``ONLY_DOWN``,
+it can sometimes make sense to apply FIRST_NON_DETERIORATING_SCORE.
 Use the <<benchmarker,Benchmarker>> to decide if the score quality loss is worth the time gain.
 ====
 * ``FIRST_FEASIBLE_SCORE``: Initialize the variable(s) with the first move that has a feasible score.
@@ -669,8 +661,7 @@ This algorithm has not been implemented yet.
 [[allocateFromPoolAlgorithm]]
 === Algorithm Description
 
-Allocate From Pool is a versatile, generic form of <<cheapestInsertion,Cheapest
-      Insertion>> and <<regretInsertion,Regret Insertion>>.
+Allocate From Pool is a versatile, generic form of <<cheapestInsertion,Cheapest Insertion>> and <<regretInsertion,Regret Insertion>>.
 It works like this:
 
 . Put all entity-value combinations in a pool.

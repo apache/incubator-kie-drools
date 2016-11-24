@@ -210,8 +210,7 @@ As time passes, the problem itself changes:
 image::Chapter-Repeated_planning/realTimePlanningVehicleRouting.png[align="center"]
 
 In the example above, 3 customers are added at different times (``07:56``, `08:02` and ``08:45``), after the original customer set finished solving at `07:55` and in some cases after the vehicles already left.
-Planner can handle such scenario's with `ProblemFactChange` (in combination with <<immovablePlanningEntities,immovable
-    planning entities>>).
+Planner can handle such scenario's with `ProblemFactChange` (in combination with <<immovablePlanningEntities,immovable planning entities>>).
 
 
 [[problemFactChange]]

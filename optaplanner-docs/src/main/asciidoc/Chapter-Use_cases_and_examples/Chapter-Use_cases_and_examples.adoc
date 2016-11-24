@@ -64,8 +64,7 @@ None
 
 * <<realTimePlanning,Real-time planning>>
 
-|<<tsp,
-Traveling salesman>>
+|<<tsp,Traveling salesman>>
 |
 
 * 1 entity class
@@ -86,8 +85,7 @@ Traveling salesman>>
 
 * <<realTimePlanning,Real-time planning>>
 
-|<<dinnerParty,
-Dinner party>>
+|<<dinnerParty,Dinner party>>
 |
 
 * 1 entity class
@@ -107,8 +105,7 @@ Dinner party>>
 
 * Decision Table spreadsheet (XLS) for score constraints
 
-|<<tennis,
-Tennis club scheduling>>
+|<<tennis,Tennis club scheduling>>
 |
 
 * 1 entity class
@@ -130,8 +127,7 @@ Tennis club scheduling>>
 * <<fairnessScoreConstraints,Fairness score constraints>>
 * <<immovablePlanningEntities,Immovable entities>>
 
-|<<meetingScheduling,
-Meeting scheduling>>
+|<<meetingScheduling,Meeting scheduling>>
 |
 
 * 1 entity class
@@ -152,8 +148,7 @@ Meeting scheduling>>
 
 * <<timeGrainPattern,TimeGrain pattern>>
 
-|<<curriculumCourse,
-Course timetabling>>
+|<<curriculumCourse,Course timetabling>>
 |
 
 * 1 entity class
@@ -174,8 +169,7 @@ Course timetabling>>
 
 * <<immovablePlanningEntities,Immovable entities>>
 
-|<<machineReassignment,
-Machine reassignment>>
+|<<machineReassignment,Machine reassignment>>
 |
 
 * 1 entity class
@@ -196,8 +190,7 @@ Machine reassignment>>
 
 * <<realTimePlanning,Real-time planning>>
 
-|<<vehicleRouting,
-Vehicle routing>>
+|<<vehicleRouting,Vehicle routing>>
 |
 
 * 1 entity class
@@ -223,8 +216,7 @@ Vehicle routing>>
 * <<nearbySelection,Nearby selection>>
 * Real road distances
 
-|<<vehicleRouting,
-Vehicle routing>> with time windows
+|<<vehicleRouting,Vehicle routing>> with time windows
 |
 
 Extra on Vehicle routing:
@@ -248,8 +240,7 @@ Extra on Vehicle routing:
 
 * Custom <<customVariableListener,VariableListener>>
 
-|<<projectJobScheduling,
-Project job scheduling>>
+|<<projectJobScheduling,Project job scheduling>>
 |
 
 * 1 entity class
@@ -273,8 +264,7 @@ Project job scheduling>>
 * Custom <<customVariableListener,VariableListener>>
 * <<valueRangeFactory,ValueRangeFactory>>
 
-|<<bedAllocation,
-Hospital bed planning>>
+|<<bedAllocation,Hospital bed planning>>
 |
 
 * 1 entity class
@@ -295,8 +285,7 @@ Hospital bed planning>>
 
 * <<overconstrainedPlanning,Overconstrained planning>>
 
-|<<taskAssigning,
-Task assigning>>
+|<<taskAssigning,Task assigning>>
 |
 
 * 1 entity class
@@ -324,8 +313,7 @@ Task assigning>>
 * <<continuousPlanning,Continuous planning>>
 * <<realTimePlanning,Real-time planning>>
 
-|<<examination,
-Exam timetabling>>
+|<<examination,Exam timetabling>>
 |
 
 * 2 entity classes (same hierarchy)
@@ -346,8 +334,7 @@ Exam timetabling>>
 
 * Custom <<customVariableListener,VariableListener>>
 
-|<<employeeRostering,
-Employee rostering>>
+|<<employeeRostering,Employee rostering>>
 |
 
 * 1 entity class
@@ -369,8 +356,7 @@ Employee rostering>>
 * <<continuousPlanning,Continuous planning>>
 * <<realTimePlanning,Real-time planning>>
 
-|<<travelingTournament,
-Traveling tournament>>
+|<<travelingTournament,Traveling tournament>>
 |
 
 * 1 entity class
@@ -391,8 +377,7 @@ Traveling tournament>>
 
 * Custom <<moveListFactory,MoveListFactory>>
 
-|<<cheapTimeScheduling,
-Cheap time scheduling>>
+|<<cheapTimeScheduling,Cheap time scheduling>>
 |
 
 * 1 entity class
@@ -414,8 +399,7 @@ Cheap time scheduling>>
 * <<annotationAlternatives,Field annotations>>
 * <<valueRangeFactory,ValueRangeFactory>>
 
-|<<investment,
-Investment>>
+|<<investment,Investment>>
 |
 
 * 1 entity class

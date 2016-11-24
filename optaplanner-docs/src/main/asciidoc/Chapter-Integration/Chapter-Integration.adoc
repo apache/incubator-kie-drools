@@ -452,8 +452,8 @@ Let's create an module called __org.optaplanner__:
 </jboss-deployment-structure>
 ----
 
-Because of JBoss Modules' `ClassLoader` magic, you'll likely need to provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory
-      creation>>, so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
+Because of JBoss Modules' `ClassLoader` magic, you'll likely need to provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
+so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
 
 
 [[integrationWithOSGi]]
@@ -462,8 +462,8 @@ Because of JBoss Modules' `ClassLoader` magic, you'll likely need to provide the
 The `optaplanner-core` jar includes OSGi metadata in its `MANIFEST.MF` file to function properly in an OSGi environment too.
 Furthermore, the maven artifact `kie-karaf-features` contains a `features.xml` file that supports the OSGi-feature ``optaplanner-engine``.
 
-Because of the OSGi's `ClassLoader` magic, you'll likely need to provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory
-      creation>>, so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
+Because of the OSGi's `ClassLoader` magic, you'll likely need to provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
+so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
 
 [NOTE]
 ====

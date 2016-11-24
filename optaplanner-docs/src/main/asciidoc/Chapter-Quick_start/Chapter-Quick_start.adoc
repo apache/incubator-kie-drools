@@ -45,8 +45,7 @@ It also scales: both in data (more processes, more computers) and constraints (m
 [[cloudBalancingValueProposition]]
 === Value Proposition
 
-Here's executive summary of this example and <<machineReassignment,a more advanced
-      implementation with more constraints>>:
+Here's executive summary of this example and <<machineReassignment,a more advanced implementation with more constraints>>:
 
 image::Chapter-Quick_start/cloudOptimizationValueProposition.png[align="center"]
 
@@ -120,8 +119,8 @@ In the UML class diagram above, the Planner concepts are already annotated:
 [[cloudBalancingMainMethod]]
 === Main Method
 
-Try it yourself. <<downloadAndRunTheExamples,Download and configure the examples in your
-      preferred IDE.>> Run ``org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld``.
+Try it yourself. <<downloadAndRunTheExamples,Download and configure the examples in your preferred IDE.>>
+Run ``org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld``.
 By default, it is configured to run for 120 seconds.
 It will execute this code:
 
@@ -247,7 +246,8 @@ This solver configuration consists of three parts:
   </termination>
 ----
 +
-Planner should get a good result in seconds (and even in less than 15 milliseconds with <<realTimePlanning,real-time planning>>), but the more time it has, the better the result will be.
+Planner should get a good result in seconds (and even in less than 15 milliseconds with <<realTimePlanning,real-time planning>>),
+but the more time it has, the better the result will be.
 Advanced use cases might use a different <<termination,termination criteria>> than a hard time limit.
 + 
 The default algorithms will already easily surpass human planners and most in-house implementations.
@@ -330,8 +330,7 @@ The ``@PlanningVariable``'s `valueRangeProviderRefs` parameter on `CloudProcess.
 
 [NOTE]
 ====
-Instead of getter annotations, it is also possible to use <<annotationAlternatives,field
-          annotations>>.
+Instead of getter annotations, it is also possible to use <<annotationAlternatives,field annotations>>.
 ====
 
 
