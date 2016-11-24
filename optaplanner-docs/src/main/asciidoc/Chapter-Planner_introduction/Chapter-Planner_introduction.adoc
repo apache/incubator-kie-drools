@@ -23,17 +23,12 @@
 * **Sport scheduling**: planning football leagues, baseball leagues, ...
 * **Financial optimization**: investment portfolio optimization, risk spreading, ...
 
-
-
 image::Chapter-Planner_introduction/useCaseOverview.png[align="center"]
-
 
 Every organization faces planning problems: provide products or services with a limited set of _constrained_ resources (employees, assets, time and money). OptaPlanner optimizes such planning to do more business with less resources.
 This is known as _Constraint Satisfaction Programming_ (which is part of the _Operations Research_ discipline).
 
-
 image::Chapter-Planner_introduction/whatIsAPlanningProblem.png[align="center"]
-
 
 OptaPlanner helps normal Java^TM^
  programmers solve constraint satisfaction problems efficiently.
@@ -52,7 +47,6 @@ OptaPlanner is 100% pure Java^TM^
 It <<integration,integrates very easily>> with other Java^TM^
  technologies.
 OptaPlanner is available in <<useWithMavenGradleEtc,the Maven Central Repository>>.
-
 
 image::Chapter-Planner_introduction/compatibility.png[align="center"]
 
@@ -79,12 +73,10 @@ But if they find one for 1 NP-complete problem, it will work for every NP-comple
 In fact, there's a $ 1,000,000 reward for anyone that proves if http://en.wikipedia.org/wiki/P_%3D_NP_problem[such a silver bullet actually exists or not].
 ====
 
-
 The implication of this is pretty dire: solving your problem is probably harder than you anticipated, because the 2 common techniques won't suffice:
 
 * A Brute Force algorithm (even a smarter variant) will take too long.
 * A quick algorithm, for example in bin packing, __putting in the largest items first__, will return a solution that is far from optimal.
-
 
 By using advanced optimization algorithms, *OptaPlanner does find a good solution in
       reasonable time for such planning problems.*
@@ -98,11 +90,9 @@ Usually, a planning problem has at least 2 levels of constraints:
 * A _(negative) hard constraint_ must not be broken. For example: __1 teacher can not teach 2 different lessons at the same time__.
 * A _(negative) soft constraint_ should not be broken if it can be avoided. For example: __Teacher A does not like to teach on Friday afternoon__.
 
-
 Some problems have positive constraints too:
 
 * A _positive soft constraint (or reward)_ should be fulfilled if possible. For example: __Teacher B likes to teach on Monday morning__.
-
 
 Some basic problems (such as N Queens) only have hard constraints.
 Some problems have 3 or more levels of constraints, for example hard, medium and soft constraints.
@@ -124,7 +114,6 @@ There are several categories of solutions:
 * A _feasible solution_ is a solution that does not break any (negative) hard constraints. The number of feasible solutions tends to be relative to the number of possible solutions. Sometimes there are no feasible solutions. Every feasible solution is a possible solution.
 * An _optimal solution_ is a solution with the highest score. Planning problems tend to have 1 or a few optimal solutions. There is always at least 1 optimal solution, even in the case that there are no feasible solutions and the optimal solution isn't feasible.
 * The _best solution found_ is the solution with the highest score found by an implementation in a given amount of time. The best solution found is likely to be feasible and, given enough time, it's an optimal solution.
-
 
 Counterintuitively, the number of possible solutions is huge (if calculated correctly), even with a small dataset.
 As you can see in the examples, most instances have a lot more possible solutions than the minimal number of atoms in the known universe (10^80). Because there is no silver bullet to find the optimal solution, any implementation is forced to evaluate at least a subset of all those possible solutions.
@@ -164,14 +153,10 @@ $ cd examples
 $ runExamples.bat
 ----
 
-
-
 image::Chapter-Planner_introduction/distributionZip.png[align="center"]
-
 
 The Examples GUI application will open.
 Pick an example to try it out:
-
 
 image::Chapter-Planner_introduction/plannerExamplesAppScreenshot.png[align="center"]
 
@@ -181,7 +166,6 @@ image::Chapter-Planner_introduction/plannerExamplesAppScreenshot.png[align="cent
 OptaPlanner itself has no GUI dependencies.
 It runs just as well on a server or a mobile JVM as it does on the desktop.
 ====
-
 
 Besides the GUI examples, there are also a set of webexamples to try out:
 
@@ -197,9 +181,7 @@ The webexamples (but not OptaPlanner itself) require several JEE API's (such as 
 To successfully deploy `optaplanner-webexamples-*.war` on a servlet container (such as Jetty or Tomcat), instead of on a real JEE application server (such as WildFly), add the missing implementation libraries (for example RestEasy and Weld) in the war manually.
 ====
 
-
 Pick an example to try it out, such as the Vehicle Routing example:
-
 
 image::Chapter-Planner_introduction/plannerWebexamplesScreenshot.png[align="center"]
 
@@ -218,7 +200,6 @@ To run the examples in your favorite IDE:
 ** Main class: `org.optaplanner.examples.app.OptaPlannerExamplesApp`
 ** VM parameters (optional): `-Xmx512M -server`
 . Run that run configuration.
-
 
 To run a specific example directly and skip the example selection window, run its `App` class (for example ``CloudBalancingApp``) instead of ``OptaPlannerExamplesApp``.
 
@@ -240,7 +221,6 @@ If you use Maven, add a dependency to `optaplanner-core` in your project's [path
     </dependency>
 ----
 
-
 This is similar for Gradle, Ivy and Buildr.
 To identify the latest version, check http://search.maven.org/#search|ga|1|org.optaplanner[the central maven repository].
 
@@ -261,7 +241,6 @@ Because you might end up using other OptaPlanner modules too, it's recommended t
     </dependencies>
   </dependencyManagement>
 ----
-
 
 If you're still using ANT (without Ivy), copy all the jars from the download zip's [path]_binaries_
  directory in your classpath.
@@ -392,8 +371,6 @@ For enterprise support and consulting, take a look at https://www.optaplanner.or
 OptaPlanner is part of the http://www.kiegroup.org[KIE group of projects].
 It releases regularly (often once or twice per month) together with the http://www.drools.org/[Drools] rule engine and the http://www.jbpm.org/[jBPM] workflow engine.
 
-
 image::Chapter-Planner_introduction/kieFunctionalityOverview.png[align="center"]
-
 
 See <<architectureOverview,the architecture overview>> to learn more about the optional integration with Drools.

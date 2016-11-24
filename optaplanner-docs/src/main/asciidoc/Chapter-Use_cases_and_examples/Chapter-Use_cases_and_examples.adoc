@@ -64,7 +64,6 @@ None
 
 * <<realTimePlanning,Real-time planning>>
 
-
 |<<tsp,
 Traveling salesman>>
 |
@@ -87,7 +86,6 @@ Traveling salesman>>
 
 * <<realTimePlanning,Real-time planning>>
 
-
 |<<dinnerParty,
 Dinner party>>
 |
@@ -108,7 +106,6 @@ Dinner party>>
 |
 
 * Decision Table spreadsheet (XLS) for score constraints
-
 
 |<<tennis,
 Tennis club scheduling>>
@@ -133,7 +130,6 @@ Tennis club scheduling>>
 * <<fairnessScoreConstraints,Fairness score constraints>>
 * <<immovablePlanningEntities,Immovable entities>>
 
-
 |<<meetingScheduling,
 Meeting scheduling>>
 |
@@ -155,7 +151,6 @@ Meeting scheduling>>
 |
 
 * <<timeGrainPattern,TimeGrain pattern>>
-
 
 |<<curriculumCourse,
 Course timetabling>>
@@ -179,7 +174,6 @@ Course timetabling>>
 
 * <<immovablePlanningEntities,Immovable entities>>
 
-
 |<<machineReassignment,
 Machine reassignment>>
 |
@@ -201,7 +195,6 @@ Machine reassignment>>
 |
 
 * <<realTimePlanning,Real-time planning>>
-
 
 |<<vehicleRouting,
 Vehicle routing>>
@@ -230,7 +223,6 @@ Vehicle routing>>
 * <<nearbySelection,Nearby selection>>
 * Real road distances
 
-
 |<<vehicleRouting,
 Vehicle routing>> with time windows
 |
@@ -252,11 +244,9 @@ Extra on Vehicle routing:
 
 |
 
-
 Extra on Vehicle routing:
 
 * Custom <<customVariableListener,VariableListener>>
-
 
 |<<projectJobScheduling,
 Project job scheduling>>
@@ -283,7 +273,6 @@ Project job scheduling>>
 * Custom <<customVariableListener,VariableListener>>
 * <<valueRangeFactory,ValueRangeFactory>>
 
-
 |<<bedAllocation,
 Hospital bed planning>>
 |
@@ -305,7 +294,6 @@ Hospital bed planning>>
 |
 
 * <<overconstrainedPlanning,Overconstrained planning>>
-
 
 |<<taskAssigning,
 Task assigning>>
@@ -336,7 +324,6 @@ Task assigning>>
 * <<continuousPlanning,Continuous planning>>
 * <<realTimePlanning,Real-time planning>>
 
-
 |<<examination,
 Exam timetabling>>
 |
@@ -358,7 +345,6 @@ Exam timetabling>>
 |
 
 * Custom <<customVariableListener,VariableListener>>
-
 
 |<<employeeRostering,
 Employee rostering>>
@@ -383,7 +369,6 @@ Employee rostering>>
 * <<continuousPlanning,Continuous planning>>
 * <<realTimePlanning,Real-time planning>>
 
-
 |<<travelingTournament,
 Traveling tournament>>
 |
@@ -405,7 +390,6 @@ Traveling tournament>>
 |
 
 * Custom <<moveListFactory,MoveListFactory>>
-
 
 |<<cheapTimeScheduling,
 Cheap time scheduling>>
@@ -429,7 +413,6 @@ Cheap time scheduling>>
 
 * <<annotationAlternatives,Field annotations>>
 * <<valueRangeFactory,ValueRangeFactory>>
-
 
 |<<investment,
 Investment>>
@@ -455,7 +438,6 @@ Investment>>
 
 |===
 
-
 A _realistic competition_ is **an official, independent
     competition**:
 
@@ -464,7 +446,6 @@ A _realistic competition_ is **an official, independent
 * with multiple, real-world datasets
 * that expects reproducible results within a specific time limit on specific hardware
 * that has had serious participation from the academic and/or enterprise Operations Research community
-
 
 These realistic competitions provide an objective comparison of Planner with competitive software and academic research.
 
@@ -483,16 +464,13 @@ These realistic competitions provide an objective comparison of Planner with com
 Place n queens on a n sized chessboard so no 2 queens can attack each other.
 The most common n queens puzzle is the 8 queens puzzle, with __n = 8__:
 
-
 image::Chapter-Use_cases_and_examples/nQueensScreenshot.png[align="center"]
-
 
 Constraints:
 
 * Use a chessboard of _n_ columns and _n_ rows.
 * Place _n_ queens on the chessboard.
 * No 2 queens can attack each other. A queen can attack any other queen on the same horizontal, vertical or diagonal line.
-
 
 This documentation heavily uses the 4 queens puzzle as the primary example.
 
@@ -501,14 +479,12 @@ A proposed solution could be:
 .A Wrong Solution for the 4 Queens Puzzle
 image::Chapter-Use_cases_and_examples/partiallySolvedNQueens04Explained.png[align="center"]
 
-
 The above solution is wrong because queens `A1` and `B0` can attack each other (so can queens `B0` and ``D0``). Removing queen `B0` would respect the "no 2 queens can attack each other" constraint, but would break the "place n queens" constraint.
 
 Below is a correct solution:
 
 .A Correct Solution for the 4 Queens Puzzle
 image::Chapter-Use_cases_and_examples/solvedNQueens04.png[align="center"]
-
 
 All the constraints have been met, so the solution is correct.
 Note that most n queens puzzles have multiple correct solutions.
@@ -527,7 +503,6 @@ We'll focus on finding a single correct solution for a given n, not on finding t
 64queens  has  64 queens with a search space of 10^115.
 256queens has 256 queens with a search space of 10^616.
 ----
-
 
 The implementation of the N queens example has not been optimized because it functions as a beginner example.
 Nevertheless, it can easily handle 64 queens.
@@ -574,7 +549,6 @@ public class Queen {
 }
 ----
 
-
 A `Queen` instance has a `Column` (for example: 0 is column A, 1 is column B, ...) and a `Row` (its row, for example: 0 is row 0, 1 is row 1, ...). Based on the column and the row, the ascending diagonal line as well as the descending diagonal line can be calculated.
 The column and row indexes start from the upper left corner of the chessboard.
 
@@ -593,7 +567,6 @@ public class NQueens {
     // ... getters and setters
 }
 ----
-
 
 A single `NQueens` instance contains a list of all `Queen` instances.
 It is the `Solution` implementation which will be supplied to, solved by and retrieved from the Solver.
@@ -635,7 +608,6 @@ Notice that in the 4 queens example, NQueens's `getN()` method will always retur
 |3
 |3
 |===
-
 
 When 2 queens share the same column, row or diagonal line, such as ($$*$$) and ($$**$$), they can attack each other.
 
@@ -679,7 +651,6 @@ lu980    has 980 cities with a search space of 10^2927.
 Despite TSP's simple definition, the problem is surprisingly hard to solve.
 Because it's an NP-hard problem (like most planning problems), the optimal solution for a specific problem dataset can change a lot when that problem dataset is slightly altered:
 
-
 image::Chapter-Use_cases_and_examples/tspOptimalSolutionVolatility.png[align="center"]
 
 
@@ -697,7 +668,6 @@ Miss Manners is throwing another dinner party.
 * And that neighbour should have at least one hobby in common with the guest.
 * At every table, there should be 2 politicians, 2 doctors, 2 socialites, 2 coaches, 2 teachers and 2 programmers.
 * And the 2 politicians, 2 doctors, 2 coaches and 2 programmers shouldn't be the same kind at a table.
-
 
 Drools Expert also has the normal Miss Manners example (which is much smaller) and employs an exhaustive heuristic to solve it.
 Planner's implementation is far more scalable because it uses heuristics to find the best solution and Drools Expert to calculate the score of each solution.
@@ -727,11 +697,9 @@ Hard constraints:
 * Conflict: A team can only play once per day.
 * Unavailability: Some teams are unavailable on some dates.
 
-
 Medium constraints:
 
 * Fair assignment: All teams should play an (almost) equal number of times.
-
 
 Soft constraints:
 
@@ -768,11 +736,9 @@ Hard constraints:
 * Room conflict: 2 meetings must not use the same room at the same time.
 * Required attendance: A person cannot have 2 required meetings at the same time.
 
-
 Medium constraints:
 
 * Preferred attendance: A person cannot have 2 preferred meetings at the same time, nor a preferred and a required meeting at the same time.
-
 
 Soft constraints:
 
@@ -809,14 +775,12 @@ Hard constraints:
 * Room occupancy: 2 lectures must not be in the same room in the same period.
 * Unavailable period (specified per dataset): A specific lecture must not be assigned to a specific period.
 
-
 Soft constraints:
 
 * Room capacity: A room's capacity should not be less than the number of students in its lecture.
 * Minimum working days: Lectures of the same course should be spread out into a minimum number of days.
 * Curriculum compactness: Lectures belonging to the same curriculum should be adjacent to each other (so in consecutive periods).
 * Room stability: Lectures of the same course should be assigned the same room.
-
 
 The problem is defined by http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm[the International Timetabling Competition 2007 track 3].
 
@@ -868,7 +832,6 @@ Hard constraints:
 * Dependency: The processes of a service depending on another service must run in the neighborhood of a process of the other service.
 * Transient usage: Some resources are transient and count towards the maximum capacity of both the original machine as the newly assigned machine.
 
-
 Soft constraints:
 
 * Load: The safety capacity for each resource for each machine should not be exceeded.
@@ -876,7 +839,6 @@ Soft constraints:
 * Process move cost: A process has a move cost.
 * Service move cost: A service has a move cost.
 * Machine move cost: Moving a process from machine A to machine B has another A-B specific move cost.
-
 
 The problem is defined by http://challenge.roadef.org/2012/en/[the Google ROADEF/EURO Challenge 2012].
 
@@ -933,9 +895,7 @@ image::Chapter-Use_cases_and_examples/machineReassignmentClassDiagram.png[align=
 Using a fleet of vehicles, pick up the objects of each customer and bring them to the depot.
 Each vehicle can service multiple customers, but it has a limited capacity.
 
-
 image::Chapter-Use_cases_and_examples/vehicleRoutingUseCase.png[align="center"]
-
 
 Besides the basic case (CVRP), there is also a variant with time windows (CVRPTW).
 
@@ -948,11 +908,9 @@ Hard constraints:
 ** Customer ready time: a vehicle may arrive before the customer's ready time, but it must wait until the ready time before servicing.
 ** Customer due time: a vehicle must arrive on time, before the customer's due time.
 
-
 Soft constraints:
 
 * Total distance: minimize the total distance driven (fuel consumption) of all vehicles.
-
 
 The capacitated vehicle routing problem (CVRP) and its timewindowed variant (CVRPTW) are defined by http://neo.lcc.uma.es/vrp/[the VRP web].
 
@@ -1001,7 +959,6 @@ F-n135-k7 has 1 depots,  7 vehicles and 134 customers with a search space of 10^
 F-n45-k4  has 1 depots,  4 vehicles and  44 customers with a search space of  10^72.
 F-n72-k4  has 1 depots,  4 vehicles and  71 customers with a search space of 10^131.
 ----
-
 
 CVRPTW instances (with time windows):
 
@@ -1057,7 +1014,6 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
 
 image::Chapter-Use_cases_and_examples/vehicleRoutingClassDiagram.png[align="center"]
 
-
 The vehicle routing with timewindows domain model makes heavily use of <<shadowVariable,shadow variables>>.
 This allows it to express its constraints more naturally, because properties such as `arrivalTime` and ``departureTime``, are directly available on the domain model.
 
@@ -1068,36 +1024,26 @@ This allows it to express its constraints more naturally, because properties suc
 In the real world, vehicles can't follow a straight line from location to location: they have to use roads and highways.
 From a business point of view, this matters a lot:
 
-
 image::Chapter-Use_cases_and_examples/vehicleRoutingDistanceType.png[align="center"]
-
 
 For the optimization algorithm, this doesn't matter much, as long as the distance between 2 points can be looked up (and are preferably precalculated). The road cost doesn't even need to be a distance, it can also be travel time, fuel cost, or a weighted function of those.
 There are several technologies available to precalculate road costs, such as https://graphhopper.com/[GraphHopper] (embeddable, offline Java engine), http://open.mapquestapi.com/directions/#matrix[Open MapQuest] (web service) and https://developers.google.com/maps/documentation/webservices/client-library[Google Maps Client API] (web service).
 
-
 image::Chapter-Use_cases_and_examples/integrationWithRealMaps.png[align="center"]
-
 
 There are also several technologies to render it, such as http://leafletjs.com[Leaflet] and https://developers.google.com/maps/[Google Maps for developers]: the `optaplanner-webexamples-*.war` has an example which demonstrates such rendering:
 
-
 image::Chapter-Use_cases_and_examples/vehicleRoutingLeafletAndGoogleMaps.png[align="center"]
-
 
 It's even possible to render the actual road routes with GraphHopper or Google Map Directions, but because of route overlaps on highways, it can become harder to see the standstill order:
 
-
 image::Chapter-Use_cases_and_examples/vehicleRoutingGoogleMapsDirections.png[align="center"]
-
 
 Take special care that the road costs between 2 points use the same optimization criteria as the one used in Planner.
 For example, GraphHopper etc will by default return the fastest route, not the shortest route.
 Don't use the km (or miles) distances of the fastest GPS routes to optimize the shortest trip in Planner: this leads to a suboptimal solution as shown below:
 
-
 image::Chapter-Use_cases_and_examples/roadDistanceTriangleInequality.png[align="center"]
-
 
 Contrary to popular belief, most users don't want the shortest route: they want the fastest route instead.
 They prefer highways over normal roads.
@@ -1117,9 +1063,7 @@ Each job is part of a project.
 A job can be executed in different ways: each way is an execution mode that implies a different duration but also different resource usages.
 This is a form of flexible __job shop scheduling__.
 
-
 image::Chapter-Use_cases_and_examples/projectJobSchedulingUseCase.png[align="center"]
-
 
 Hard constraints:
 
@@ -1128,16 +1072,13 @@ Hard constraints:
 ** Resources are local (shared between jobs of the same project) or global (shared between all jobs)
 ** Resource are renewable (capacity available per day) or nonrenewable (capacity available for all days)
 
-
 Medium constraints:
 
 * Total project delay: minimize the duration (makespan) of each project.
 
-
 Soft constraints:
 
 * Total makespan: minimize the duration of the whole multi-project schedule.
-
 
 The problem is defined by http://gent.cs.kuleuven.be/mista2013challenge/[the MISTA 2013 challenge].
 
@@ -1183,9 +1124,7 @@ The arrival and departure dates of the patients is fixed: only a bed needs to be
 
 This problem features <<overconstrainedPlanning,overconstrained>> datasets.
 
-
 image::Chapter-Use_cases_and_examples/patientAdmissionScheduleUseCase.png[align="center"]
-
 
 Hard constraints:
 
@@ -1194,11 +1133,9 @@ Hard constraints:
 * A department can have a minimum or maximum age. Weight: ``-100hard * nightCount``.
 * A patient can require a room with specific equipment(s). Weight: ``-50hard * nightCount``.
 
-
 Medium constraints:
 
 * Assign every patient to a bed, unless the dataset is overconstrained. Weight: ``-1medium * nightCount``.
-
 
 Soft constraints:
 
@@ -1207,7 +1144,6 @@ Soft constraints:
 * A patient is best assigned to a room that specializes in his/her problem. Weight: ``-20soft * nightCount``.
 ** That room speciality should be priority 1. Weight: ``-10soft * (priority - 1) * nightCount``.
 * A patient can prefer a room with specific equipment(s). Weight: ``-20soft * nightCount``.
-
 
 The problem is a variant on https://people.cs.kuleuven.be/~wim.vancroonenburg/pas/[Kaho's Patient Scheduling] and the datasets come from real world hospitals.
 
@@ -1253,22 +1189,18 @@ Hard constraints:
 
 * Skill: Each task requires one or more skills. The employee must posses all these skills.
 
-
 Soft level 0 constraints:
 
 * Critical tasks: Complete critical tasks first, sooner than major and minor tasks.
-
 
 Soft level 1 constraints:
 
 * Minimize makespan: Reduce the time to complete all tasks.
 ** Start with the longest working employee first, then the second longest working employee and so forth, to creates <<fairnessScoreConstraints,fairness and load balancing>>.
 
-
 Soft level 2 constraints:
 
 * Major tasks: Complete major tasks as soon as possible, sooner than minor tasks.
-
 
 Soft level 3 constraints:
 
@@ -1307,9 +1239,7 @@ image::Chapter-Use_cases_and_examples/taskAssigningClassDiagram.png[align="cente
 Schedule each exam into a period and into a room.
 Multiple exams can share the same room during the same period.
 
-
 image::Chapter-Use_cases_and_examples/examinationTimetablingUseCase.png[align="center"]
-
 
 Hard constraints:
 
@@ -1323,7 +1253,6 @@ Hard constraints:
 * Room related hard constraints (specified per dataset):
 ** Exclusive: 1 specified exam should not have to share its room with any other exam.
 
-
 Soft constraints (each of which has a parametrized penalty):
 
 * The same student should not have 2 exams in a row.
@@ -1333,7 +1262,6 @@ Soft constraints (each of which has a parametrized penalty):
 * Front load: Large exams should be scheduled earlier in the schedule.
 * Period penalty (specified per dataset): Some periods have a penalty when used.
 * Room penalty (specified per dataset): Some rooms have a penalty when used.
-
 
 It uses large test data sets of real-life universities.
 
@@ -1366,7 +1294,6 @@ Below you can see the main examination domain classes:
 .Examination Domain Class Diagram
 image::Chapter-Use_cases_and_examples/examinationDomainDiagram.png[align="center"]
 
-
 Notice that we've split up the exam concept into an `Exam` class and a `Topic` class.
 The `Exam` instances change during solving (this is the planning entity class), when their period or room property changes.
 The ``Topic``, `Period` and `Room` instances never change during solving (these are problem facts, just like some other classes).
@@ -1381,15 +1308,12 @@ The ``Topic``, `Period` and `Room` instances never change during solving (these 
 
 For each shift, assign a nurse to work that shift.
 
-
 image::Chapter-Use_cases_and_examples/employeeShiftRosteringUseCase.png[align="center"]
-
 
 Hard constraints:
 
 * *No unassigned shifts* (build-in): Every shift need to be assigned to an employee.
 * **Shift conflict**: An employee can have only 1 shift per day.
-
 
 Soft constraints:
 
@@ -1407,7 +1331,6 @@ Soft constraints:
 ** **Shift on request**: An employee wants to be assigned to a specific shift.
 ** **Shift off request**: An employee does not want to be assigned to a specific shift.
 * **Alternative skill**: An employee assigned to a skill should have a proficiency in every skill required by that shift.
-
 
 The problem is defined by http://www.kuleuven-kortrijk.be/nrpcompetition[the International Nurse Rostering Competition 2010].
 
@@ -1502,9 +1425,7 @@ image::Chapter-Use_cases_and_examples/employeeShiftRosteringClassDiagram.png[ali
 
 Schedule matches between _n_ teams.
 
-
 image::Chapter-Use_cases_and_examples/travelingTournamentUseCase.png[align="center"]
-
 
 Hard constraints:
 
@@ -1513,11 +1434,9 @@ Hard constraints:
 * No team must have more than 3 consecutive home or 3 consecutive away matches.
 * No repeaters: no 2 consecutive matches of the same 2 opposing teams.
 
-
 Soft constraints:
 
 * Minimize the total distance traveled by all teams.
-
 
 The problem is defined on http://mat.gsia.cmu.edu/TOURN/[Michael Trick's website (which contains the world records too)].
 
@@ -1589,7 +1508,6 @@ Hard constraints:
 * Maximum capacity: the maximum capacity for each resource for each machine must not be exceeded.
 * Startup and shutdown: each machine must be active in the periods during which it has assigned tasks. Between tasks it is allowed to be idle to avoid startup and shutdown costs.
 
-
 Medium constraints:
 
 * Power cost: minimize the total power cost of the whole schedule.
@@ -1597,11 +1515,9 @@ Medium constraints:
 ** Task power cost: Each task consumes power too, which infers a power cost (depending on the power price during its time).
 ** Machine startup and shutdown cost: Every time a machine starts up or shuts down, an extra cost is inflicted.
 
-
 Soft constraints (addendum to the original problem definition):
 
 * Start early: prefer starting a task sooner rather than later.
-
 
 The problem is defined by http://iconchallenge.insight-centre.org/[the ICON challenge].
 
@@ -1689,7 +1605,6 @@ Hard constraints:
 * Region maximum: Each region has a quantity maximum.
 * Sector maximum: Each sector has a quantity maximum.
 
-
 Soft constraints:
 
 * Maximize expected return.
@@ -1703,6 +1618,5 @@ Soft constraints:
 de_smet_1 has 1 regions, 3 sectors and 11 asset classes with a search space of 10^4.
 irrinki_1 has 2 regions, 3 sectors and 6 asset classes with a search space of 10^3.
 ----
-
 
 Larger datasets have not been created or tested yet, but should not pose a problem.

@@ -18,8 +18,6 @@ Solving a planning problem with Planner consists of the following steps:
 . *Load a problem data set* from your data layer, for example a 4 Queens instance. That is the planning problem.
 . *Solve it* with `Solver.solve(planningProblem)` which returns the best solution found.
 
-
-
 image::Chapter-Planner_configuration/inputOutputOverview.png[align="center"]
 
 
@@ -39,7 +37,6 @@ Configure the `SolverFactory` with a solver configuration XML file, provided as 
                "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
        Solver<NQueens> solver = solverFactory.buildSolver();
 ----
-
 
 In a typical project (following the Maven directory structure), that solverConfig XML file would be located at ``$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml``.
 Alternatively, a `SolverFactory` can be created from a ``File``, an `InputStream` or a `Reader` with methods such as ``SolverFactory.createFromXmlFile()``.
@@ -74,7 +71,6 @@ Also use <<droolsScoreCalculationKsessionName,a ksessionName in the solver
         configuration>>.
 ====
 
-
 Both a `Solver` and a `SolverFactory` have a generic type called ``Solution_``, which is the class representing a <<planningProblemAndPlanningSolution,planning problem and solution>>.
 
 A solver configuration XML file looks like this:
@@ -105,13 +101,11 @@ A solver configuration XML file looks like this:
 </solver>
 ----
 
-
 Notice the three parts in it:
 
 * Define the model.
 * Define the score function.
 * Optionally configure the optimization algorithm(s).
-
 
 These various parts of a configuration are explained further in this manual.
 
@@ -137,7 +131,6 @@ For example, to change the running time based on user input, before building the
 
         Solver<NQueens> solver = solverFactory.buildSolver();
 ----
-
 
 Every element in the solver configuration XML is available as a `$$*$$Config` class or a property on a `$$*$$Config` class in the package namespace ``org.optaplanner.core.config``.
 These `$$*$$Config` classes are the Java representation of the XML format.
@@ -190,7 +183,6 @@ Instead of the declaring the classes that have a `@PlanningSolution` or `@Planni
 </solver>
 ----
 
-
 Planner can find scan the classpath and find them automatically:
 
 [source,xml,options="nowrap"]
@@ -202,7 +194,6 @@ Planner can find scan the classpath and find them automatically:
   ...
 </solver>
 ----
-
 
 This comes at a bootstrap performance cost.
 
@@ -219,7 +210,6 @@ If there are multiple models in your classpath or to speed up scanning, specify 
   ...
 </solver>
 ----
-
 
 This finds all solution and entity classes in that package or its subpackages.
 
@@ -239,7 +229,6 @@ There are several ways to deliver this information:
 * Add class annotations and field annotations on the domain model. Such a field does not need to be public.
 * No annotations: externalize the domain configuration in an XML file. This is https://issues.jboss.org/browse/PLANNER-151[not yet supported].
 
-
 This manual focuses on the first manner, but every features supports all 3 manners, even if it's not explicitly mentioned.
 
 
@@ -256,7 +245,6 @@ You will recognize domain classes in there, each of which can be categorized as 
 * A unrelated class: not used by any of the score constraints. From a planning standpoint, this data is obsolete.
 * A *problem fact* class: used by the score constraints, but does NOT change during planning (as long as the problem stays the same). For example: ``Bed``, ``Room``, ``Shift``, ``Employee``, ``Topic``, ``Period``, ... All the properties of a problem fact class are problem properties.
 * A *planning entity* class: used by the score constraints and changes during planning. For example: ``BedDesignation``, ``ShiftAssignment``, ``Exam``, ... The properties that change during planning are planning variables. The other properties are problem properties.
-
 
 Ask yourself: _What class changes during planning?___Which class has variables
       that I want the ``__Solver__`` to change for me?__ That class is a planning entity.
@@ -299,7 +287,6 @@ public class Row implements Serializable {
 }
 ----
 
-
 A problem fact can reference other problem facts of course:
 
 [source,java,options="nowrap"]
@@ -318,7 +305,6 @@ public class Course implements Serializable {
     // ... getters
 }
 ----
-
 
 A problem fact class does _not_ require any Planner specific code.
 For example, you can reuse your domain classes, which might have JPA annotations.
@@ -365,7 +351,6 @@ public class Queen {
 }
 ----
 
-
 A planning entity class can have multiple planning variables.
 For example, a `Lecture` is defined by its `Course` and its index in that course (because one course has multiple lectures). Each `Lecture` needs to be scheduled into a `Period` and a `Room` so it has two planning variables (period and room). For example: the course Mathematics has eight lectures per week, of which the first lecture is Monday morning at 08:00 in room 212.
 
@@ -385,7 +370,6 @@ public class Lecture {
 }
 ----
 
-
 Without <<automaticScanningForAnnotations,automated scanning>>, the solver configuration also needs to declare each planning entity class:
 
 [source,java,options="nowrap"]
@@ -396,7 +380,6 @@ Without <<automaticScanningForAnnotations,automated scanning>>, the solver confi
   ...
 </solver>
 ----
-
 
 Some uses cases have multiple planning entity classes.
 For example: route freight and trains into railway network arcs, where each freight can use multiple trains over its journey and each train can carry multiple freights per arc.
@@ -428,7 +411,6 @@ To attain a schedule in which certain entities are scheduled earlier in the sche
 Only consider adding planning entity difficulty too if it can make the solver more efficient.
 ====
 
-
 To allow the heuristics to take advantage of that domain specific information, set a `difficultyComparatorClass` to the `@PlanningEntity` annotation:
 
 [source,java,options="nowrap"]
@@ -453,7 +435,6 @@ public class CloudProcessDifficultyComparator implements Comparator<CloudProcess
 }
 ----
 
-
 Alternatively, you can also set a `difficultyWeightFactoryClass` to the `@PlanningEntity` annotation, so that you have access to the rest of the problem facts from the `Solution` too:
 
 [source,java,options="nowrap"]
@@ -463,7 +444,6 @@ public class Queen {
     // ...
 }
 ----
-
 
 See <<sortedSelection,sorted selection>> for more information.
 
@@ -513,7 +493,6 @@ public class Queen {
 
 }
 ----
-
 
 The `valueRangeProviderRefs` property defines what are the possible planning values for this planning variable.
 It references one or more `@ValueRangeProvider```id``'s.
@@ -631,7 +610,6 @@ A @ValueRangeProvider annotation needs to be on a member in a class with a @Plan
 It is ignored on parent classes or subclasses without those annotations.
 ====
 
-
 The return type of that method can be 2 types:
 
 * ``Collection``: The value range is defined by a `Collection` (usually a ``List``) of its possible values.
@@ -709,7 +687,6 @@ For example, if a teacher can *never* teach in a room that does not belong to hi
     }
 ----
 
-
 Never use this to enforce a soft constraint (or even a hard constraint when the problem might not have a feasible solution). For example: __Unless there is no other way__, a teacher can not teach in a room that does not belong to his department.
 In this case, the teacher should _not_ be limited in his room value range (because sometimes there is no other way).
 
@@ -718,7 +695,6 @@ In this case, the teacher should _not_ be limited in his room value range (becau
 By limiting the value range specifically of one planning entity, you are effectively creating a __built-in hard constraint__.
 This can have the benefit of severely lowering the number of possible solutions; however, it can also away the freedom of the optimization algorithms to temporarily break that constraint in order to escape from a local optimum.
 ====
-
 
 A planning entity should _not_ use other planning entities to determinate its value range.
 That would only try to make the planning entity solve the planning problem itself and interfere with the optimization algorithms.
@@ -752,7 +728,6 @@ Instead of a ``Collection``, you can also return a `ValueRange` or ``CountableVa
     }
 ----
 
-
 A `ValueRange` uses far less memory, because it only holds the bounds.
 In the example above, a `Collection` would need to hold all `5000` ints, instead of just the two bounds.
 
@@ -771,7 +746,6 @@ Furthermore, an `incrementUnit` can be specified, for example if you have to buy
 ====
 Return `CountableValueRange` instead of `ValueRange` whenever possible (so Planner knows that it's countable).
 ====
-
 
 The `ValueRangeFactory` has creation methods for several value class types:
 
@@ -828,7 +802,6 @@ To affect the score function, <<formalizeTheBusinessConstraints,add a score
 Only consider adding planning value strength too if it can make the solver more efficient.
 ====
 
-
 To allow the heuristics to take advantage of that domain specific information, set a `strengthComparatorClass` to the `@PlanningVariable` annotation:
 
 [source,java,options="nowrap"]
@@ -859,7 +832,6 @@ public class CloudComputerStrengthComparator implements Comparator<CloudComputer
 If you have multiple planning value classes in the _same_ value range, the `strengthComparatorClass` needs to implement a `Comparator` of a common superclass (for example ``Comparator<Object>``) and be able to handle comparing instances of those different classes.
 ====
 
-
 Alternatively, you can also set a `strengthWeightFactoryClass` to the `@PlanningVariable` annotation, so you have access to the rest of the problem facts from the solution too:
 
 [source,java,options="nowrap"]
@@ -869,7 +841,6 @@ Alternatively, you can also set a `strengthWeightFactoryClass` to the `@Planning
         return row;
     }
 ----
-
 
 See <<sortedSelection,sorted selection>> for more information.
 
@@ -895,9 +866,7 @@ A planning variable that is chained either:
 * Directly points to a problem fact (or planning entity), which is called an __anchor__.
 * Points to another planning entity with the same planning variable, which recursively points to an anchor.
 
-
 Here are some example of valid and invalid chains:
-
 
 image::Chapter-Planner_configuration/chainPrinciples.png[align="center"]
 
@@ -920,9 +889,7 @@ A planning problem instance given to the `Solver` must be valid.
 If your constraints dictate a closed chain, model it as an open-ended chain (which is easier to persist in a database) and implement a score constraint for the last entity back to the anchor.
 ====
 
-
 The optimization algorithms and built-in ``Move``s do chain correction to guarantee that the model stays valid:
-
 
 image::Chapter-Planner_configuration/chainCorrection.png[align="center"]
 
@@ -931,7 +898,6 @@ image::Chapter-Planner_configuration/chainCorrection.png[align="center"]
 ====
 A custom `Move` implementation must leave the model in a valid state.
 ====
-
 
 For example, in TSP the anchor is a `Domicile` (in vehicle routing it is ``Vehicle``):
 
@@ -945,7 +911,6 @@ public class Domicile ... implements Standstill {
 }
 ----
 
-
 The anchor (which is a problem fact) and the planning entity implement a common interface, for example TSP's ``Standstill``:
 
 [source,java,options="nowrap"]
@@ -956,7 +921,6 @@ public interface Standstill {
 
 }
 ----
-
 
 That interface is the return type of the planning variable.
 Furthermore, the planning variable is chained.
@@ -983,7 +947,6 @@ public class Visit ... implements Standstill {
 }
 ----
 
-
 Notice how two value range providers are usually combined:
 
 * The value range provider that holds the anchors, for example ``domicileList``.
@@ -1001,9 +964,7 @@ A shadow variable is a planning variable whose correct value can be deduced from
 Even though such a variable violates the principle of normalization by definition, in some use cases it can be very practical to use a shadow variable, especially to express the constraints more naturally.
 For example in vehicle routing with time windows: the arrival time at a customer for a vehicle can be calculated based on the previously visited customers of that vehicle (and the known travel times between two locations).
 
-
 image::Chapter-Planner_configuration/planningVariableListener.png[align="center"]
-
 
 When the customers for a vehicle change, the arrival time for each customer is automatically adjusted.
 For more information, see the <<vehicleRoutingDomainModel,vehicle routing domain model>>.
@@ -1022,7 +983,6 @@ An genuine planning entity class has at least one genuine planning variable, but
 A shadow planning entity class has no genuine planning variables and at least one shadow planning variable.
 ====
 
-
 There are several build-in shadow variables:
 
 
@@ -1031,9 +991,7 @@ There are several build-in shadow variables:
 
 Two variables are bi-directional if their instances always point to each other (unless one side points to `null` and the other side does not exist). So if A references B, then B references A.
 
-
 image::Chapter-Planner_configuration/bidirectionalVariable.png[align="center"]
-
 
 For a non-chained planning variable, the bi-directional relationship must be a many to one relationship.
 To map a bi-directional relationship between two planning variables, annotate the master side (which is the genuine side) as a normal planning variable:
@@ -1052,7 +1010,6 @@ public class CloudProcess {
 }
 ----
 
-
 And then annotate the other side (which is the shadow side) with a `@InverseRelationShadowVariable` annotation on a `Collection` (usually a `Set` or ``List``) property:
 
 [source,java,options="nowrap"]
@@ -1068,7 +1025,6 @@ public class CloudComputer {
 }
 ----
 
-
 The `sourceVariableName` property is the name of the genuine planning variable on the return type of the getter (so the name of the genuine planning variable on the _other_ side).
 
 [NOTE]
@@ -1077,7 +1033,6 @@ The shadow property, which is a ``Collection``, can never be ``null``.
 If no genuine variable is referencing that shadow entity, then it is an empty ``Collection``.
 Furthermore it must be a mutable `Collection` because once the Solver starts initializing or changing genuine planning variables, it will add and remove to the ``Collection``s of those shadow variables accordingly.
 ====
-
 
 For a chained planning variable, the bi-directional relationship must be a one to one relationship.
 In that case, the genuine side looks like this:
@@ -1095,7 +1050,6 @@ public class Customer ... {
 
 }
 ----
-
 
 And the shadow side looks like this:
 
@@ -1141,7 +1095,6 @@ public class Customer {
 }
 ----
 
-
 The `sourceVariableName` property is the name of the chained variable on the same entity class.
 
 
@@ -1165,7 +1118,6 @@ To define a custom shadow variable, write a custom ``VariableListener``: impleme
     }
 ----
 
-
 The `variableName` is the variable that triggers changes in the shadow variable(s).
 
 [NOTE]
@@ -1173,7 +1125,6 @@ The `variableName` is the variable that triggers changes in the shadow variable(
 If the class of the trigger variable is different than the shadow variable, also specify the `entityClass` on ``@PlanningVariableReference``.
 In that case, make sure that that `entityClass` is also properly configured as a planning entity class in the solver config, or the `VariableListener` will simply never trigger.
 ====
-
 
 For example, the `VehicleUpdatingVariableListener` assures that every `Customer` in a chain has the same ``Vehicle``, namely the chain's anchor.
 
@@ -1217,7 +1168,6 @@ It must never change a genuine planning variable or a problem fact.
 Any change of a shadow variable must be told to the ``ScoreDirector``.
 ====
 
-
 If one `VariableListener` changes two shadow variables (because having two separate ``VariableListener``s would be inefficient), then annotate only the first shadow variable with the `variableListenerClass` and let the other shadow variable(s) reference the first shadow variable:
 
 [source,java,options="nowrap"]
@@ -1246,7 +1196,6 @@ If one `VariableListener` changes two shadow variables (because having two separ
 All shadow variables are triggered by a ``VariableListener``, regardless if it's a build-in or a custom shadow variable.
 The genuine and shadow variables form a graph, that determines the order in which the ``afterEntityAdded()``, `afterVariableChanged()` and `afterEntityRemoved()` methods are called:
 
-
 image::Chapter-Planner_configuration/shadowVariableOrder.png[align="center"]
 
 
@@ -1255,13 +1204,11 @@ image::Chapter-Planner_configuration/shadowVariableOrder.png[align="center"]
 In the example above, D could have also been ordered after E (or F) because there is no direct or indirect dependency between D and E (or F).
 ====
 
-
 Planner guarantees that:
 
 * The first ``VariableListener``'s `after*()` methods trigger _after_ the last genuine variable has changed. Therefore the genuine variables (A and B in the example above) are guaranteed to be in a consistent state across all its instances (with values A1, A2 and B1 in the example above) because the entire `Move` has been applied.
 * The second ``VariableListener``'s `after*()` methods trigger _after_ the last first shadow variable has changed. Therefore the first shadow variable (C in the example above) are guaranteed to be in consistent state across all its instances (with values C1 and C2 in the example above). And of course the genuine variables too.
 * And so forth.
-
 
 Planner does not guarantee the order in which the `after*()` methods are called for the _same_``VariableListener`` with different parameters (such as A1 and A2 in the example above), although they are likely to be in the order in which they were affected.
 
@@ -1328,7 +1275,6 @@ public class NQueens {
 }
 ----
 
-
 Without <<automaticScanningForAnnotations,automated scanning>>, the solver configuration also needs to declare the planning solution class:
 
 [source,java,options="nowrap"]
@@ -1363,7 +1309,6 @@ public class NQueens {
 }
 ----
 
-
 There can be multiple `@PlanningEntityCollectionProperty` annotated members.
 Those can even return a `Collection` with the same entity class type.
 
@@ -1372,7 +1317,6 @@ Those can even return a `Collection` with the same entity class type.
 A @PlanningEntityCollectionProperty annotation needs to be on a member in a class with a @PlanningSolution annotation.
 It is ignored on parent classes or subclasses without that annotation.
 ====
-
 
 In rare cases, a planning entity might be a singleton: use `@PlanningEntityProperty` on its getter (or field) instead.
 
@@ -1404,7 +1348,6 @@ public class NQueens {
 }
 ----
 
-
 Most use cases use a <<hardSoftScore,HardSoftScore>> instead:
 
 [source,java,options="nowrap"]
@@ -1426,7 +1369,6 @@ public class CloudBalance {
 
 }
 ----
-
 
 Some use cases use <<scoreType,other `Score` types>>.
 
@@ -1461,7 +1403,6 @@ public class NQueens {
 }
 ----
 
-
 All planning entities are automatically inserted into the Drools working memory.
 Do note add an annotation on their properties.
 
@@ -1469,7 +1410,6 @@ Do note add an annotation on their properties.
 ====
 The problem facts methods are not called often: at most only once per solver phase per solver thread.
 ====
-
 
 There can be multiple `@ProblemFactCollectionProperty` annotated members.
 Those can even return a `Collection` with the same class type, but they shouldn't return the same instance twice.
@@ -1479,7 +1419,6 @@ Those can even return a `Collection` with the same class type, but they shouldn'
 A @ProblemFactCollectionProperty annotation needs to be on a member in a class with a @PlanningSolution annotation.
 It is ignored on parent classes or subclasses without that annotation.
 ====
-
 
 In rare cases, a problem fact might be a singleton: use `@ProblemFactProperty` on its method (or field) instead.
 
@@ -1516,7 +1455,6 @@ For example in examination, a cached problem fact `TopicConflict` is created for
     }
 ----
 
-
 Where a score constraint needs to check that no two exams with a topic that shares a student are scheduled close together (depending on the constraint: at the same time, in a row, or in the same day), the `TopicConflict` instance can be used as a problem fact, rather than having to combine every two `Student` instances.
 
 
@@ -1529,7 +1467,6 @@ Most (if not all) optimization algorithms clone the solution each time they enco
 ====
 There are many ways to clone, such as a shallow clone, deep clone, ... This context focuses on __a planning clone__.
 ====
-
 
 A planning clone of a solution must fulfill these requirements:
 
@@ -1555,7 +1492,6 @@ or `TreeMap` (whichever is more applicable) .
 It recognizes most of the common JDK collection and map implementations.
 ====
 
-
 The `FieldAccessingSolutionCloner` does not clone problem facts by default.
 If any of your problem facts needs to be deep cloned for a planning clone, for example if the problem fact references a planning entity or the planning solution, mark it with a `@DeepPlanningClone` annotation:
 
@@ -1568,7 +1504,6 @@ public class SeatDesignationDependency {
     ...
 }
 ----
-
 
 In the example above, because `SeatDesignation` is a planning entity (which is deep planning cloned automatically), `SeatDesignationDependency` must also be deep planning cloned.
 
@@ -1671,7 +1606,6 @@ For example in n queens, an `NQueens` instance is created with the required `Col
 .Uninitialized Solution for the 4 Queens Puzzle
 image::Chapter-Planner_configuration/uninitializedNQueens04.png[align="left"]
 
-
 Usually, most of this data comes from your data layer, and your `Solution` implementation just aggregates that data and creates the uninitialized planning entity instances to plan:
 
 [source,java,options="nowrap"]
@@ -1715,7 +1649,6 @@ public interface Solver<Solution_> {
 }
 ----
 
-
 A `Solver` can only solve one planning problem instance at a time.
 A `Solver` should only be accessed from a single thread, except for the methods that are specifically javadocced as being thread-safe.
 It is built with a ``SolverFactory``, there is no need to implement it yourself.
@@ -1729,7 +1662,6 @@ Solving a problem is quite easy once you have:
 * A `Solver` built from a solver configuration
 * A `Solution` that represents the planning problem instance
 
-
 Just provide the planning problem as argument to the `solve()` method and it will return the best solution found:
 
 [source,java,options="nowrap"]
@@ -1737,12 +1669,10 @@ Just provide the planning problem as argument to the `solve()` method and it wil
     NQueens bestSolution = solver.solve(planningProblem);
 ----
 
-
 For example in n queens, the `solve()` method will return an `NQueens` instance with every `Queen` assigned to a ``Row``.
 
 .Best Solution for the 4 Queens Puzzle in 8ms (Also an Optimal Solution)
 image::Chapter-Planner_configuration/solvedNQueens04.png[align="left"]
-
 
 The `solve(Solution)` method can take a long time (depending on the problem size and the solver configuration). The `Solver` intelligently wades through <<searchSpaceSize,the search space>> of possible solutions and remembers the best solution it encounters during solving.
 Depending on a number factors (including problem size, how much time the `Solver` has, the solver configuration, ...), <<doesPlannerFindTheOptimalSolution,that best solution might or might not be an optimal
@@ -1777,7 +1707,6 @@ You can set the environment mode in the solver configuration XML file:
   ...
 </solver>
 ----
-
 
 A solver has a single `Random` instance.
 Some solver configurations use the `Random` instance a lot more than others.
@@ -1837,7 +1766,6 @@ Despite the reproducible mode, your application might still not be fully reprodu
 
 ====
 
-
 The reproducible mode can be slightly slower than the non-reproducible mode.
 If your production environment can benefit from reproducibility, use this mode in production.
 
@@ -1883,7 +1811,6 @@ However, it is invaluable during development to discover a bottleneck.
 Even debug logging can slow down performance considerably for fast stepping algorithms (such as Late Acceptance and Simulated Annealing), but not for slow stepping algorithms (such as Tabu Search).
 ====
 
-
 For example, set it to `debug` logging, to see when the phases end and how fast steps are taken:
 
 [source,options="nowrap"]
@@ -1899,7 +1826,6 @@ DEBUG     LS step (1), time spent (24), score (0), new best score (0), accepted/
 INFO  Local Search phase (1) ended: time spent (24), best score (0), score calculation speed (4000/sec), step total (2).
 INFO  Solving ended: time spent (24), best score (0), score calculation speed (7000/sec), phase total (2), environment mode (REPRODUCIBLE).
 ----
-
 
 All time spent values are in milliseconds.
 
@@ -1917,7 +1843,6 @@ If you are not using any logging framework yet, use Logback by adding this Maven
     </dependency>
 ----
 
-
 Configure the logging level on the `org.optaplanner` package in your [path]_logback.xml_
  file:
 
@@ -1932,7 +1857,6 @@ Configure the logging level on the `org.optaplanner` package in your [path]_logb
 <configuration>
 ----
 
-
 If instead, you are still using Log4J 1.x (and you do not want to switch to its faster successor, Logback), add the bridge dependency:
 
 [source,xml,options="nowrap"]
@@ -1943,7 +1867,6 @@ If instead, you are still using Log4J 1.x (and you do not want to switch to its 
       <version>1.x</version>
     </dependency>
 ----
-
 
 And configure the logging level on the package `org.optaplanner` in your [path]_log4j.xml_
  file:
@@ -2009,7 +1932,6 @@ To change the random seed of that `Random` instance, specify a ``randomSeed``:
 </solver>
 ----
 
-
 To change the pseudorandom number generator implementation, specify a ``randomType``:
 
 [source,xml,options="nowrap"]
@@ -2020,13 +1942,11 @@ To change the pseudorandom number generator implementation, specify a ``randomTy
 </solver>
 ----
 
-
 The following types are supported:
 
 * `JDK` (default): Standard implementation (``java.util.Random``).
 * ``MERSENNE_TWISTER``: Implementation by http://commons.apache.org/proper/commons-math/userguide/random.html[Commons Math].
 * ``WELL512A``, ``WELL1024A``, ``WELL19937A``, ``WELL19937C``, `WELL44497A` and ``WELL44497B``: Implementation by http://commons.apache.org/proper/commons-math/userguide/random.html[Commons Math].
-
 
 For most use cases, the randomType has no significant impact on the average quality of the best solution on multiple datasets.
 If you want to confirm this on your use case, use the <<benchmarker,benchmarker>>.

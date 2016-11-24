@@ -114,7 +114,6 @@ Choose the right representation type for your use case:
 ** It is faster in calculations, which is especially useful in the TimeGrain pattern.
 ** Do not use if timezones or DST affect the score constraints.
 
-
 There are also several designs for assigning a planning entity to a starting time (or date):
 
 * The starting time is fixed beforehand. It is not a planning variable (in such solver).
@@ -128,9 +127,7 @@ There are also several designs for assigning a planning entity to a starting tim
 ** If the duration differs and one task starts immediately after the previous task (assigned to the same executor) finishes, use the <<chainedThroughTimePattern,Chained Through Time pattern>>.
 *** For example in time windowed vehicle routing, each vehicle departs immediately to the next customer when the delivery for the previous customer finishes.
 
-
 Choose the right pattern depending on the use case:
-
 
 image::Chapter-Design_patterns/assigningTimeToPlanningEntities.png[align="center"]
 

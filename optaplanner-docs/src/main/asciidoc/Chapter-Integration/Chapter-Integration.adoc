@@ -18,8 +18,6 @@ For example:
 * To read a planning problem from an XML file (and store the best solution in it), annotate the domain POJO's with XStream or JAXB annotations.
 * To expose the Solver as a REST Service that reads the planning problem and responds with the best solution, annotate the domain POJO's with XStream, JAXB or Jackson annotations and hook the `Solver` in Camel or RESTEasy.
 
-
-
 image::Chapter-Integration/integrationOverview.png[align="center"]
 
 
@@ -45,7 +43,6 @@ public class Talk {...}
 ----
 ====
 
-
 Add a dependency to the `optaplanner-persistence-jpa` jar to take advantage of these extra integration features:
 
 
@@ -58,7 +55,6 @@ This has several disadvantages:
 * The Java serialization format of `Score` classes is currently not backwards compatible. Upgrading to a newer Planner version can break reading an existing database.
 * The score is not easily readable for a query executed in the database console. This is annoying during development.
 * The score cannot be used in a SQL or JPA-QL query to efficiently filter the results: for example to query all infeasible schedules.
-
 
 To avoid these issues, configure it to instead use INTEGER (or other) columns, by using the appropriate `*ScoreHibernateType` for your `Score` type, for example for a ``HardSoftScore``:
 
@@ -82,7 +78,6 @@ public class CloudBalance {
 Configure the same number of `@Column` annotations as the number of score levels in the score plus one (for the ``initScore``), otherwise Hibernate will fail fast because a property mapping has the wrong number of columns.
 ====
 
-
 In this case, the DDL will look like this:
 
 [source,sql]
@@ -94,7 +89,6 @@ CREATE TABLE CloudBalance(
     softScore INTEGER
 );
 ----
-
 
 When using a `BigDecimal` based ``Score``, specify the precision and scale of the columns to avoid silent rounding:
 
@@ -116,7 +110,6 @@ public class CloudBalance{
 }
 ----
 
-
 In this case, the DDL will look like this:
 
 [source,sql]
@@ -128,7 +121,6 @@ CREATE TABLE CloudBalance(
     softScore DECIMAL(10, 5)
 );
 ----
-
 
 When using any type of bendable ``Score``, specify the hard and soft level sizes as parameters:
 
@@ -154,7 +146,6 @@ public class Schedule {
     ...
 }
 ----
-
 
 All this support is Hibernate specific because currently JPA 2.1's converters do not support converting to multiple columns.
 
@@ -191,7 +182,6 @@ public class Room {
 }
 ----
 
-
 Neglecting to do this can lead to persisting duplicate solutions, JPA exceptions or other side effects.
 
 
@@ -223,7 +213,6 @@ public class CloudBalance {
 }
 ----
 
-
 For example, this will generate pretty XML:
 
 [source,xml,options="nowrap"]
@@ -233,7 +222,6 @@ For example, this will generate pretty XML:
    <score>0hard/-200soft</score>
 </CloudBalance>
 ----
-
 
 The same applies for a bendable score:
 
@@ -251,7 +239,6 @@ public class Schedule {
 }
 ----
 
-
 For example, this will generate:
 
 [source,xml,options="nowrap"]
@@ -261,7 +248,6 @@ For example, this will generate:
    <score>[0/0]hard/[-100/-20/-3]soft</score>
 </Schedule>
 ----
-
 
 The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score from an XML element, must always be in sync with those in the solver.
 
@@ -294,7 +280,6 @@ public class CloudBalance {
 }
 ----
 
-
 For example, this will generate pretty XML:
 
 [source,xml,options="nowrap"]
@@ -304,7 +289,6 @@ For example, this will generate pretty XML:
    <score>0hard/-200soft</score>
 </cloudBalance>
 ----
-
 
 The same applies for a bendable score:
 
@@ -322,7 +306,6 @@ public class Schedule {
 }
 ----
 
-
 For example, with a `hardLevelsSize` of `2` and a `softLevelsSize` of ``3``, that will generate:
 
 [source,xml,options="nowrap"]
@@ -332,7 +315,6 @@ For example, with a `hardLevelsSize` of `2` and a `softLevelsSize` of ``3``, tha
    <score>[0/0]hard/[-100/-20/-3]soft</score>
 </schedule>
 ----
-
 
 The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score from an XML element, must always be in sync with those in the solver.
 
@@ -365,7 +347,6 @@ public class CloudBalance {
 }
 ----
 
-
 For example, this will generate pretty JSON:
 
 [source,json]
@@ -375,7 +356,6 @@ For example, this will generate pretty JSON:
    "score":"0hard/-200soft"
 }
 ----
-
 
 The same applies for a bendable score:
 
@@ -393,7 +373,6 @@ public class Schedule {
 }
 ----
 
-
 For example, with a `hardLevelsSize` of `2` and a `softLevelsSize` of ``3``, that will generate:
 
 [source,json]
@@ -403,7 +382,6 @@ For example, with a `hardLevelsSize` of `2` and a `softLevelsSize` of ``3``, tha
    "score":"[0/0]hard/[-100/-20/-3]soft"
 }
 ----
-
 
 The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score from a JSON element, must always be in sync with those in the solver.
 
@@ -474,7 +452,6 @@ Let's create an module called __org.optaplanner__:
 </jboss-deployment-structure>
 ----
 
-
 Because of JBoss Modules' `ClassLoader` magic, you'll likely need to provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory
       creation>>, so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
 
@@ -534,13 +511,9 @@ But despite that, both can benefit if the human planner becomes the supervisor o
 ** As shown in the course scheduling example, the human planner can lock 1 or more planning variables to a specific planning value and make those immovable. Because they are <<immovablePlanningEntities,immovable>>, Planner does not change them: it optimizes the planning around the enforcements made by the human. If the human planner locks all planning variables, he/she sidelines Planner completely.
 ** In a prototype implementation, the human planner might use this occasionally. But as the implementation matures, it must become obsolete. But do keep the feature alive: as a reassurance for the humans. Or in case that one day the business changes dramatically before the score constraints can be adjusted.
 
-
 Therefore, it's often a good idea to involve the human planner in your project.
 
-
 image::Chapter-Integration/parameterizeTheScoreWeights.png[align="center"]
-
-
 
 image::Chapter-Integration/keepTheUserInControl.png[align="center"]
 
@@ -550,9 +523,7 @@ image::Chapter-Integration/keepTheUserInControl.png[align="center"]
 
 Before sizing a Planner service, first understand the typical behaviour of a `Solver.solve()` call:
 
-
 image::Chapter-Integration/sizingHardware.png[align="center"]
-
 
 Understand these guidelines to decide the hardware for a Planner service:
 
@@ -589,7 +560,6 @@ Understand these guidelines to decide the hardware for a Planner service:
 *** However, 24 active solver threads with 8 cores will cause each solver's <<scoreCalculationSpeed,score calculation speed>> to be 3 times slower, causing a big performance loss.
 ** Note that calling any I/O during solving, for example a remote service in your score calculation, causes a huge performance loss because it's called thousands of times per second, so it should complete in microseconds. So no good implementation does that.
 
-
 Keep these guidelines in mind when selecting and configuring the software.
 See https://www.optaplanner.org/blog/archive.html[our blog archive] for the details of our experiments, which use our diverse set of examples.
 Your mileage may vary.
@@ -604,6 +574,5 @@ Your mileage may vary.
 ** Debug logging `org.optaplanner` can be between 0% and 15% slower than info logging. Trace logging can be between 5% and 70% slower than info logging.
 ** Synchronous logging to a file has an additional significant impact for debug and trace logging (but not for info logging).
 * Avoid a cloud environment in which you share your CPU core(s) with other virtual machines or containers. Performance (and therefore solution quality) can be unreliable when the available CPU power varies greatly.
-
 
 Keep in mind that the perfect hardware/software environment will probably _not_ solve scaling issues (even Moore's law is too slow). There is no need to follow these guidelines to the letter.

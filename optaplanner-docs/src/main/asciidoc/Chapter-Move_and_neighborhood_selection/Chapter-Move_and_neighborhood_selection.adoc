@@ -18,17 +18,13 @@
 A `Move` is a change (or set of changes) from a solution A to a solution B.
 For example, the move below changes queen `C` from row `0` to row ``2``:
 
-
 image::Chapter-Move_and_neighborhood_selection/singleMoveNQueens04.png[align="center"]
-
 
 The new solution is called a _neighbor_ of the original solution, because it can be reached in a single ``Move``.
 Although a single move can change multiple queens, the neighbors of a solution should always be a very small subset of all possible solutions.
 For example, on that original solution, these are all possible ``changeMove``'s:
 
-
 image::Chapter-Move_and_neighborhood_selection/possibleMovesNQueens04.png[align="center"]
-
 
 If we ignore the 4 ``changeMove``'s that have not impact and are therefore not doable, we can see that number of moves is ``n * (n - 1) = 12``.
 This is far less than the number of possible solutions, which is ``n ^ n = 256``.
@@ -36,7 +32,6 @@ As the problem scales out, the number of possible moves increases far less than 
 
 Yet, in 4 ``changeMove``'s or less we can reach any solution.
 For example we can reach a very different solution in 3 ``changeMove``'s:
-
 
 image::Chapter-Move_and_neighborhood_selection/sequentialMovesNQueens04.png[align="center"]
 
@@ -49,7 +44,6 @@ Many move types are included out-of-the-box, but you can also implement custom m
 A `Move` can affect multiple entities or even create/delete entities.
 But it must not change the problem facts.
 ====
-
 
 All optimization algorithms use ``Move``'s to transition from one solution to a neighbor solution.
 Therefore, all the optimization algorithms are confronted with `Move` selection: the craft of creating and iterating moves efficiently and the art of finding the most promising subset of random moves to evaluate first.
@@ -70,7 +64,6 @@ Here's an example how to configure a `changeMoveSelector` for the optimization a
     ...
   </localSearch>
 ----
-
 
 Out of the box, this works and all properties of the `changeMoveSelector` are defaulted sensibly (unless that fails fast due to ambiguity). On the other hand, the configuration can be customized significantly for specific use cases.
 For example: you might want to configure a <<filteredSelection,filter>> to discard pointless moves.
@@ -102,12 +95,9 @@ A MoveSelector is often composed out of ``EntitySelector``s, ``ValueSelector``s 
     </unionMoveSelector>
 ----
 
-
 Together, this structure forms a `Selector` tree:
 
-
 image::Chapter-Move_and_neighborhood_selection/selectorTree.png[align="center"]
-
 
 The root of this tree is a `MoveSelector` which is injected into the optimization algorithm implementation to be (partially) iterated in every step.
 
@@ -121,9 +111,7 @@ The root of this tree is a `MoveSelector` which is injected into the optimizatio
 
 For 1 planning variable, the `ChangeMove` selects 1 planning entity and 1 planning value and assigns the entity's variable to that value.
 
-
 image::Chapter-Move_and_neighborhood_selection/changeMove.png[align="center"]
-
 
 Simplest configuration:
 
@@ -131,7 +119,6 @@ Simplest configuration:
 ----
     <changeMoveSelector/>
 ----
-
 
 If there are multiple entity classes or multiple planning variables for 1 entity class, a simple configuration will automatically unfold into a <<unionMoveSelector,union>> of `ChangeMove` selectors for every planning variable.
 
@@ -153,7 +140,6 @@ Advanced configuration:
     </changeMoveSelector>
 ----
 
-
 A `ChangeMove` is the finest grained move.
 
 [IMPORTANT]
@@ -168,9 +154,7 @@ This guarantees that every possible `Solution` can be reached through applying a
 
 The `SwapMove` selects 2 different planning entities and swaps the planning values of all their planning variables.
 
-
 image::Chapter-Move_and_neighborhood_selection/swapMove.png[align="center"]
-
 
 Although a `SwapMove` on a single variable is essentially just 2 ``ChangeMove``s, it's often the winning step where the first of the 2 ``ChangeMove``s would not be the winning step because it leaves the solution in a state with broken hard constraints.
 For example: swapping the room of 2 lectures doesn't bring the solution in a intermediate state where both lectures are in the same room which breaks a hard constraint.
@@ -181,7 +165,6 @@ Simplest configuration:
 ----
     <swapMoveSelector/>
 ----
-
 
 If there are multiple entity classes, a simple configuration will automatically unfold into a <<unionMoveSelector,union>> of `SwapMove` selectors for every entity class.
 
@@ -205,7 +188,6 @@ Advanced configuration:
     </swapMoveSelector>
 ----
 
-
 The `secondaryEntitySelector` is rarely needed: if it is not specified, entities from the same `entitySelector` are swapped.
 
 If one or more `variableNameInclude` properties are specified, not all planning variables will be swapped, but only those specified.
@@ -217,9 +199,7 @@ For example for course scheduling, specifying only `variableNameInclude` room wi
 
 A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarChangeMove` selects 1 entity pillar (or subset of those) and changes the value of 1 variable (which is the same for all entities) to another value.
 
-
 image::Chapter-Move_and_neighborhood_selection/pillarChangeMove.png[align="center"]
-
 
 In the example above, queen A and C have the same value (row 0) and are moved to row 2.
 Also the yellow and blue process have the same value (computer Y) and are moved to computer X.
@@ -230,7 +210,6 @@ Simplest configuration:
 ----
     <pillarChangeMoveSelector/>
 ----
-
 
 Advanced configuration:
 
@@ -254,7 +233,6 @@ Advanced configuration:
     </pillarSwapMoveSelector>
 ----
 
-
 A sub pillar is a subset of entities that share the same value(s) for their variable(s). For example if queen A, B, C and D are all located on row 0, they are a pillar and `[A, D]` is one of the many sub pillars.
 If `subPillarEnabled` (defaults to ``true``) is false, no sub pillars are selected.
 If sub pillars are enabled, the pillar itself is also included and the properties `minimumSubPillarSize` (defaults to ``1``) and `maximumSubPillarSize` (defaults to ``infinity``) limit the size of the selected (sub) pillar.
@@ -266,7 +244,6 @@ For example a pillar of size 32 has `(2^32 - 1)` subpillars.
 Therefore a `pillarSelector` only supports <<justInTimeRandomSelection,JIT random selection>> (which is the default).
 ====
 
-
 The other properties are explained in <<changeMoveSelector,changeMoveSelector>>.
 
 
@@ -275,9 +252,7 @@ The other properties are explained in <<changeMoveSelector,changeMoveSelector>>.
 
 A _pillar_ is a set of planning entities which have the same planning value(s) for their planning variable(s). The `PillarSwapMove` selects 2 different entity pillars and swaps the values of all their variables for all their entities.
 
-
 image::Chapter-Move_and_neighborhood_selection/pillarSwapMove.png[align="center"]
-
 
 Simplest configuration:
 
@@ -285,7 +260,6 @@ Simplest configuration:
 ----
     <pillarSwapMoveSelector/>
 ----
-
 
 Advanced configuration:
 
@@ -313,7 +287,6 @@ Advanced configuration:
     </pillarSwapMoveSelector>
 ----
 
-
 The `secondaryPillarSelector` is rarely needed: if it is not specified, entities from the same `pillarSelector` are swapped.
 
 The other properties are explained in <<swapMoveSelector,swapMoveSelector>> and <<pillarChangeMoveSelector,pillarChangeMoveSelector>>.
@@ -333,7 +306,6 @@ Simplest configuration:
     <tailChainSwapMoveSelector/>
 ----
 
-
 Advanced configuration:
 
 [source,xml,options="nowrap"]
@@ -351,7 +323,6 @@ Advanced configuration:
       </valueSelector>
     </subChainChangeMoveSelector>
 ----
-
 
 The `entitySelector` selects the start of the tail chain that is being moved.
 The valueSelector selects to where that tail chain is moved.
@@ -377,7 +348,6 @@ Simplest configuration:
     <subChainChangeMoveSelector/>
 ----
 
-
 Advanced configuration:
 
 [source,xml,options="nowrap"]
@@ -401,7 +371,6 @@ Advanced configuration:
     </subChainChangeMoveSelector>
 ----
 
-
 The `subChainSelector` selects a number of entities, no less than `minimumSubChainSize` (defaults to ``1``) and no more than `maximumSubChainSize` (defaults to ``infinity``).
 
 [NOTE]
@@ -410,7 +379,6 @@ If `minimumSubChainSize` is `1` (which is the default), this selector might sele
 
 Furthermore, in a ``SubChainSwapMoveSelector``, setting `minimumSubChainSize` prevents swapping a subchain of size `1` with a subchain of at least size ``2``.
 ====
-
 
 The `selectReversingMoveToo` property (defaults to true) enables selecting the reverse of every subchain too.
 
@@ -426,7 +394,6 @@ Simplest configuration:
 ----
     <subChainSwapMoveSelector/>
 ----
-
 
 Advanced configuration:
 
@@ -455,7 +422,6 @@ Advanced configuration:
     </subChainSwapMoveSelector>
 ----
 
-
 The `secondarySubChainSelector` is rarely needed: if it is not specified, entities from the same `subChainSelector` are swapped.
 
 The other properties are explained in <<subChainChangeMoveSelector,subChainChangeMoveSelector>>.
@@ -482,7 +448,6 @@ Simplest configuration:
     </unionMoveSelector>
 ----
 
-
 Advanced configuration:
 
 [source,xml,options="nowrap"]
@@ -506,13 +471,10 @@ Advanced configuration:
     </unionMoveSelector>
 ----
 
-
 The `selectorProbabilityWeightFactory` determines in `selectionOrder```RANDOM`` how often a `MoveSelector` child is selected to supply the next Move.
 By default, each `MoveSelector` child has the same chance of being selected.
 
-
 image::Chapter-Move_and_neighborhood_selection/selectorProbabilityInUnion.png[align="center"]
-
 
 Change the `fixedProbabilityWeight` of such a child to select it more often.
 For example, the `unionMoveSelector` can return a `SwapMove` twice as often as a ``ChangeMove``:
@@ -530,7 +492,6 @@ For example, the `unionMoveSelector` can return a `SwapMove` twice as often as a
       </swapMoveSelector>
     </unionMoveSelector>
 ----
-
 
 The number of possible ``ChangeMove``s is very different from the number of possible ``SwapMove``s and furthermore it's problem dependent.
 To give each individual `Move` the same selection chance (as opposed to each ``MoveSelector``), use the ``FairSelectorProbabilityWeightFactory``:
@@ -563,7 +524,6 @@ Simplest configuration:
     </cartesianProductMoveSelector>
 ----
 
-
 Advanced configuration:
 
 [source,xml,options="nowrap"]
@@ -584,7 +544,6 @@ Advanced configuration:
     </cartesianProductMoveSelector>
 ----
 
-
 The `ignoreEmptyChildIterators` property (true by default) will ignore every empty `childMoveSelector` to avoid returning no moves.
 For example: a cartesian product of `changeMoveSelector` A and B, for which B is empty (because all it's entities are immovable) returns no move if `ignoreEmptyChildIterators` is `false` and the moves of A if `ignoreEmptyChildIterators` is ``true``.
 
@@ -601,7 +560,6 @@ Simplest configuration:
       <entitySelector/>
 ----
 
-
 Advanced configuration:
 
 [source,xml,options="nowrap"]
@@ -611,7 +569,6 @@ Advanced configuration:
         <entityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</entityClass>
       </entitySelector>
 ----
-
 
 The `entityClass` property is only required if it cannot be deduced automatically because there are multiple entity classes.
 
@@ -626,7 +583,6 @@ Simplest configuration:
       <valueSelector/>
 ----
 
-
 Advanced configuration:
 
 [source,xml,options="nowrap"]
@@ -636,7 +592,6 @@ Advanced configuration:
         <variableName>room</variableName>
       </valueSelector>
 ----
-
 
 The `variableName` property is only required if it cannot be deduced automatically because there are multiple variables (for the related entity class).
 
@@ -649,7 +604,6 @@ In exotic Construction Heuristic configurations, the `entityClass` from the `Ent
         <variableName>period</variableName>
       </valueSelector>
 ----
-
 
 If a selected entity cannot be downcasted, the `ValueSelector` is empty for that entity.
 
@@ -673,14 +627,12 @@ Almost every `Selector` supports setting a ``cacheType``:
     </changeMoveSelector>
 ----
 
-
 The following ``cacheType``s are supported:
 
 * `JUST_IN_TIME` (default): Not cached. Construct each selection (``Move``, ...) just before it's used. This scales up well in memory footprint.
 * ``STEP``: Cached. Create each selection (``Move``, ...) at the beginning of a step and cache them in a list for the remainder of the step. This scales up badly in memory footprint.
 * ``PHASE``: Cached. Create each selection (``Move``, ...) at the beginning of a solver phase and cache them in a list for the remainder of the phase. Some selections cannot be phase cached because the list changes every step. This scales up badly in memory footprint, but has a slight performance gain.
 * ``SOLVER``: Cached. Create each selection (``Move``, ...) at the beginning of a `Solver` and cache them in a list for the remainder of the ``Solver``. Some selections cannot be solver cached because the list changes every step. This scales up badly in memory footprint, but has a slight performance gain.
-
 
 A `cacheType` can be set on composite selectors too:
 
@@ -693,7 +645,6 @@ A `cacheType` can be set on composite selectors too:
       ...
     </unionMoveSelector>
 ----
-
 
 Nested selectors of a cached selector cannot be configured to be cached themselves, unless it's a higher ``cacheType``.
 For example: a `STEP` cached `unionMoveSelector` can hold a `PHASE` cached ``changeMoveSelector``, but not a `STEP` cached ``changeMoveSelector``.
@@ -716,7 +667,6 @@ Almost every `Selector` supports setting a ``selectionOrder``:
     </changeMoveSelector>
 ----
 
-
 The following ``selectionOrder``s are supported:
 
 * ``ORIGINAL``: Select the selections (``Move``s, entities, values, ...) in default order. Each selection will be selected only once.
@@ -729,7 +679,6 @@ The following ``selectionOrder``s are supported:
 ** For example: C2, A3, B1, A0, C0, ...
 * PROBABILISTIC: Select the selections (``Move``s, entities, values, ...) in random order, based on the selection probability of each element. A selection with a higher probability has a higher chance to be selected than elements with a lower probability. A selection might be selected multiple times. Requires ``cacheType >= STEP``. Mostly used on an `entitySelector` or ``valueSelector``. See <<probabilisticSelection,probabilistic selection>>.
 ** For example: B1, B1, A1, B2, B1, C2, B1, B1, ...
-
 
 A `selectionOrder` can be set on composite selectors too.
 
@@ -763,13 +712,10 @@ It's the default, so this explicit configuration of `cacheType` and `selectionOr
     </unionMoveSelector>
 ----
 
-
 Here's how it works.
 When `Iterator<Move>.next()` is called, a child `MoveSelector` is randomly selected (1), which creates a random `Move` (2, 3, 4) and is then returned (5):
 
-
 image::Chapter-Move_and_neighborhood_selection/jitRandomSelection.png[align="center"]
-
 
 Notice that *it never creates a list of ``**Move**``s* and it generates random numbers only for ``Move``s that are actually selected.
 
@@ -790,12 +736,9 @@ This combination often wins for small and medium use cases (5000 entities or les
     </unionMoveSelector>
 ----
 
-
 Here's how it works: At the start of the phase (or step depending on the ``cacheType``), all moves are created (1) and cached (2). When `MoveSelector.iterator()` is called, the moves are shuffled (3). When `Iterator<Move>.next()` is called, the next element in the shuffled list is returned (4):
 
-
 image::Chapter-Move_and_neighborhood_selection/cachedShuffledSelection.png[align="center"]
-
 
 Notice that **each ``**Move**`` will only be selected once**, even though they are selected in random order.
 
@@ -852,12 +795,9 @@ For example if it's filters the change move of Local Search, it must also filter
 Furthermore, it must also filter the change moves of the Construction Heuristics (which requires an advanced configuration).
 ====
 
-
 If a move is unaccepted by the filter, it's not executed and the score isn't calculated.
 
-
 image::Chapter-Move_and_neighborhood_selection/filteredSelection.png[align="center"]
-
 
 Filtering uses the interface ``SelectionFilter``:
 
@@ -869,7 +809,6 @@ public interface SelectionFilter<Solution_, T> {
 
 }
 ----
-
 
 Implement the `accept` method to return `false` on a discarded `selection` (see below). Filtered selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
 It works with any `cacheType` and ``selectionOrder``.
@@ -899,7 +838,6 @@ public class DifferentCourseSwapMoveFilter implements SelectionFilter<SwapMove> 
 }
 ----
 
-
 Configure the `filterClass` on every targeted `moveSelector` (potentially both in the Local Search and the Construction Heuristics if it filters ``ChangeMove``s):
 
 [source,xml,options="nowrap"]
@@ -908,7 +846,6 @@ Configure the `filterClass` on every targeted `moveSelector` (potentially both i
       <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
     </swapMoveSelector>
 ----
-
 
 You can configure multiple `filterClass` elements on a single move selector.
 
@@ -929,7 +866,6 @@ public class LongLectureSelectionFilter implements SelectionFilter<Lecture> {
 }
 ----
 
-
 Configure the `filterClass` on every targeted `entitySelector` (potentially both in the Local Search and the Construction Heuristics):
 
 [source,xml,options="nowrap"]
@@ -940,7 +876,6 @@ Configure the `filterClass` on every targeted `entitySelector` (potentially both
       </entitySelector>
     </changeMoveSelector>
 ----
-
 
 If that filter should apply on all entities, configure it as a <<immovablePlanningEntities,global movableEntitySelectionFilter>> instead.
 
@@ -963,7 +898,6 @@ public class LongPeriodSelectionFilter implements SelectionFilter<Period> {
 }
 ----
 
-
 Configure the `filterClass` on every targeted `valueSelector` (potentially both in the Local Search and the Construction Heuristics):
 
 [source,xml,options="nowrap"]
@@ -974,7 +908,6 @@ Configure the `filterClass` on every targeted `valueSelector` (potentially both 
       </valueSelector>
     </changeMoveSelector>
 ----
-
 
 You can configure multiple `filterClass` elements on a single value selector.
 
@@ -1044,7 +977,6 @@ public class CloudProcessDifficultyComparator implements Comparator<CloudProcess
 }
 ----
 
-
 You 'll also need to configure it (unless it's annotated on the domain model and automatically applied by the optimization algorithm):
 
 [source,xml,options="nowrap"]
@@ -1107,7 +1039,6 @@ public class QueenDifficultyWeightFactory implements SelectionSorterWeightFactor
 }
 ----
 
-
 You 'll also need to configure it (unless it's annotated on the domain model and automatically applied by the optimization algorithm):
 
 [source,xml,options="nowrap"]
@@ -1151,9 +1082,7 @@ public interface SelectionSorter<Solution_, T> {
 Probabilistic selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
 It does not work with `cacheType```JUST_IN_TIME`` and it only works with ``selectionOrder PROBABILISTIC``.
 
-
 image::Chapter-Move_and_neighborhood_selection/probabilisticSelection.png[align="center"]
-
 
 Each selection has a ``probabilityWeight``, which determines the chance that selection will be selected:
 
@@ -1174,7 +1103,6 @@ public interface SelectionProbabilityWeightFactory<Solution_, T> {
       <probabilityWeightFactoryClass>...MyEntityProbabilityWeightFactoryClass</probabilityWeightFactoryClass>
     </entitySelector>
 ----
-
 
 For example, if there are 3 entities: process A (probabilityWeight 2.0), process B (probabilityWeight 0.5) and process C (probabilityWeight 0.5), then process A will be selected 4 times more than B and C.
 
@@ -1227,7 +1155,6 @@ A replaying selector must reference a recorder's id with a ``mimicSelectorRef``:
       </cartesianProductMoveSelector>
 ----
 
-
 Mimic selection is useful to create <<cartesianProductMoveSelector,a composite move>> from 2 moves that affect the same entity.
 
 
@@ -1236,15 +1163,11 @@ Mimic selection is useful to create <<cartesianProductMoveSelector,a composite m
 
 In some use cases (such as TSP and VRP, but also in non-chained variable cases), changing entities to nearby values or swapping nearby entities can *heavily increase scalability* and improve solution quality.
 
-
 image::Chapter-Move_and_neighborhood_selection/nearbySelectionMotivation.png[align="center"]
-
 
 Nearby selection increases the probability of selecting an entity or value which is nearby to the first entity being moved in that move.
 
-
 image::Chapter-Move_and_neighborhood_selection/nearbySelectionRandomDistribution.png[align="center"]
-
 
 The distance between 2 entities or values is domain specific.
 Therefore, implement the `NearbyDistanceMeter` interface:
@@ -1258,7 +1181,6 @@ public interface NearbyDistanceMeter<O, D> {
 }
 ----
 
-
 It returns a `double` which represents the distance:
 
 [source,java,options="nowrap"]
@@ -1271,7 +1193,6 @@ public class CustomerNearbyDistanceMeter implements NearbyDistanceMeter<Customer
 
 }
 ----
-
 
 To configure nearby selection, add a `nearbySelection` element in the `entitySelector` or `valueSelector` and use <<mimicSelection,mimic
       selection>> to specify which entity should be near by the selection.
@@ -1312,7 +1233,6 @@ To configure nearby selection, add a `nearbySelection` element in the `entitySel
     </unionMoveSelector>
 ----
 
-
 A `distributionSizeMaximum` parameter should not be 1 because if the nearest is already the planning value of the current entity, then the only move that is selectable is not doable.
 
 To allow every element to be selected, regardless of the number of entities, only set the distribution type (so without a `distributionSizeMaximum` parameter):
@@ -1323,7 +1243,6 @@ To allow every element to be selected, regardless of the number of entities, onl
     <nearbySelectionDistributionType>PARABOLIC_DISTRIBUTION</nearbySelectionDistributionType>
   </nearbySelection>
 ----
-
 
 The following ``NearbySelectionDistributionType``s are supported:
 
@@ -1364,7 +1283,6 @@ The following ``NearbySelectionDistributionType``s are supported:
     <betaDistributionBeta>5</betaDistributionBeta>
   </nearbySelection>
 ----
-
 
 As always, use the <<benchmarker,Benchmarker>> to tweak values if desired.
 
@@ -1417,7 +1335,6 @@ public interface Move {
 }
 ----
 
-
 Let's take a look at the `Move` implementation for 4 queens which moves a queen to a different row:
 
 [source,java,options="nowrap"]
@@ -1437,7 +1354,6 @@ public class RowChangeMove extends AbstractMove {
 }
 ----
 
-
 An instance of `RowChangeMove` moves a queen from its current row to a different row.
 
 Planner calls the `doMove(ScoreDirector)` method to do a move, which calls ``doMoveOnGenuineVariables(ScoreDirector)``.
@@ -1452,7 +1368,6 @@ The `Move` implementation must notify the `ScoreDirector` of any changes it make
     }
 ----
 
-
 You need to call the `scoreDirector.beforeVariableChanged(Object, String)` and `scoreDirector.afterVariableChanged(Object, String)` methods directly before and after modifying the entity.
 
 [NOTE]
@@ -1465,13 +1380,11 @@ You can alter multiple entities in a single move and effectively create a big mo
 A `Move` can only change/add/remove planning entities, it must not change any of the problem facts.
 ====
 
-
 Planner automatically filters out _non doable moves_ by calling the `isMoveDoable(ScoreDirector)` method on a move.
 A _non doable move_ is:
 
 * A move that changes nothing on the current solution. For example, moving queen B0 to row 0 is not doable, because it is already there.
 * A move that is impossible to do on the current solution. For example, moving queen B0 to row 10 is not doable because it would move it outside the board limits.
-
 
 In the n queens example, a move which moves the queen from its current row to the same row isn't doable:
 
@@ -1481,7 +1394,6 @@ In the n queens example, a move which moves the queen from its current row to th
         return !Objects.equals(queen.getRow(), toRow);
     }
 ----
-
 
 Because we won't generate a move which can move a queen outside the board limits, we don't need to check it.
 A move that is currently not doable could become doable on the working `Solution` of a later step.
@@ -1497,7 +1409,6 @@ An undo move is created from a ``Move``, before the `Move` has been done on the 
         return new RowChangeMove(queen, queen.getRow());
     }
 ----
-
 
 Notice that if C0 would have already been moved to C2, the undo move would create the move __C2 to
       C2__, instead of the move __C2 to C0__.
@@ -1520,7 +1431,6 @@ When they are called, the `Move` has already been done.
     }
 ----
 
-
 If your `Move` changes multiple planning entities, return all of them in `getPlanningEntities()` and return all their values (to which they are changing) in ``getPlanningValues()``.
 
 [source,java,options="nowrap"]
@@ -1533,7 +1443,6 @@ If your `Move` changes multiple planning entities, return all of them in `getPla
         return Arrays.asList(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
     }
 ----
-
 
 A `Move` must implement the `equals()` and `hashCode()` methods.
 2 moves which make the same change on a solution, should be equal.
@@ -1562,7 +1471,6 @@ A `Move` must implement the `equals()` and `hashCode()` methods.
     }
 ----
 
-
 Notice that it checks if the other move is an instance of the same move type.
 This `instanceof` check is important because a move will be compared to a move with another move type if you're using more than 1 move type.
 
@@ -1574,7 +1482,6 @@ Implement the `toString()` method to keep Planner's logs readable:
         return queen + " {" + queen.getRow() + " -> " + toRow + "}";
     }
 ----
-
 
 Now that we can implement a single custom ``Move``, let's take a look at generating such custom moves.
 
@@ -1592,7 +1499,6 @@ public interface MoveListFactory<Solution_> {
 
 }
 ----
-
 
 For example:
 
@@ -1613,7 +1519,6 @@ public class RowChangeMoveFactory implements MoveListFactory<NQueens> {
 }
 ----
 
-
 Simple configuration (which can be nested in a `unionMoveSelector` just like any other ``MoveSelector``):
 
 [source,xml,options="nowrap"]
@@ -1622,7 +1527,6 @@ Simple configuration (which can be nested in a `unionMoveSelector` just like any
       <moveListFactoryClass>org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>
     </moveListFactory>
 ----
-
 
 Advanced configuration:
 
@@ -1633,7 +1537,6 @@ Advanced configuration:
       <moveListFactoryClass>org.optaplanner.examples.nqueens.solver.move.factory.RowChangeMoveFactory</moveListFactoryClass>
     </moveListFactory>
 ----
-
 
 Because the `MoveListFactory` generates all moves at once in a ``List<Move>``, it does not support `cacheType```JUST_IN_TIME``.
 Therefore, `moveListFactory` uses `cacheType```STEP`` by default and it scales badly in memory footprint.
@@ -1657,7 +1560,6 @@ public interface MoveIteratorFactory<Solution_> {
 }
 ----
 
-
 The `getSize()` method must give an estimation of the size.
 It doesn't need to be correct.
 The `createOriginalMoveIterator` method is called if the `selectionOrder` is `ORIGINAL` or if it is cached.
@@ -1668,7 +1570,6 @@ The `createRandomMoveIterator` method is called for `selectionOrder```RANDOM`` c
 Don't create a collection (list, array, map, set) of ``Move``s when creating the ``Iterator<Move>``: the whole purpose of `MoveIteratorFactory` over `MoveListFactory` is giving you the ability to create a `Move` just in time in the ``Iterator``'s method ``next()``.
 ====
 
-
 Simple configuration (which can be nested in a `unionMoveSelector` just like any other ``MoveSelector``):
 
 [source,xml,options="nowrap"]
@@ -1677,7 +1578,6 @@ Simple configuration (which can be nested in a `unionMoveSelector` just like any
       <moveIteratorFactoryClass>...</moveIteratorFactoryClass>
     </moveIteratorFactory>
 ----
-
 
 Advanced configuration:
 

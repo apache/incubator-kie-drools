@@ -13,9 +13,7 @@
 
 The diagram below explains the overall structure of the OptaPlanner source code:
 
-
 image::Chapter-Development/methodologyOverview.png[align="center"]
-
 
 In the diagram above, it's important to understand the clear separation between the configuration and runtime classes.
 

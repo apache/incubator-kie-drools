@@ -20,16 +20,12 @@ For example:
 * 64 queens has more than `10^115` possible solutions (``64^64``).
 * Most real-life planning problems have an incredible number of possible solutions and only 1 or a few optimal solutions.
 
-
 For comparison: the minimal number of atoms in the known universe (10^80). As a planning problem gets bigger, the search space tends to blow up really fast.
 Adding only 1 extra planning entity or planning value can heavily multiply the running time of some algorithms.
 
-
 image::Chapter-Optimization_algorithms/cloudBalanceSearchSpaceSize.png[align="center"]
 
-
 Calculating the number of possible solutions depends on the design of the domain model:
-
 
 image::Chapter-Optimization_algorithms/searchSpaceSizeCalculation.png[align="center"]
 
@@ -43,7 +39,6 @@ This search space size calculation includes infeasible solutions (if they can be
 
 Even in cases were adding some of the hard constraints in the formula is practical, for example Course Scheduling, the resulting search space is still huge.
 ====
-
 
 An algorithm that checks every possible solution (even with pruning such as in <<branchAndBound,Branch And Bound>>) can easily run for billions of years on a single real-life planning problem.
 What we really want is to **find the best solution in the limited time at our
@@ -61,7 +56,6 @@ The business wants the optimal solution, but they also have other requirements:
 * Optimize the right problem: The constraints must match the actual business needs.
 * Available time: The solution must be found in time, before it becomes useless to execute.
 * Reliability: Every dataset must have at least a decent result (better than a human planner).
-
 
 Given these requirements, and despite the promises of some salesmen, it's usually impossible for anyone or anything to find the optimal solution.
 Therefore, Planner focuses on finding the best solution in available time.
@@ -81,8 +75,6 @@ Planner is the first framework to combine optimization algorithms (metaheuristic
 * A rule engine such as Drools Expert is *great for calculating the score* of a solution of a planning problem. It makes it easy and scalable to add additional soft or hard constraints such as "a teacher shouldn't teach more then 7 hours a day". It does delta based score calculation without any extra code. However it tends to be not suitable to actually find new solutions.
 * An optimization algorithm is *great at finding new improving solutions* for a planning problem, without necessarily brute-forcing every possibility. However it needs to know the score of a solution and offers no support in calculating that score efficiently.
 
-
-
 image::Chapter-Optimization_algorithms/architectureOverview.png[align="center"]
 
 
@@ -92,9 +84,7 @@ image::Chapter-Optimization_algorithms/architectureOverview.png[align="center"]
 Planner supports 3 _families_ of optimization algorithms: Exhaustive Search, Construction Heuristics and Metaheuristics.
 In practice, Metaheuristics (in combination with Construction Heuristics to initialize) are the recommended choice:
 
-
 image::Chapter-Optimization_algorithms/scalabilityOfOptimizationAlgorithms.png[align="center"]
-
 
 Each of these families of algorithms has multiple optimization algorithms:
 
@@ -238,7 +228,6 @@ Each of these families of algorithms has multiple optimization algorithms:
 |Yes
 |===
 
-
 If you want to learn more about metaheuristics, read the free books http://www.cs.gmu.edu/~sean/book/metaheuristics/[Essentials of Metaheuristics] or http://www.cleveralgorithms.com/[Clever Algorithms].
 
 
@@ -252,17 +241,14 @@ Start with a quick configuration that involves little or no configuration and op
 
 . <<firstFit,First Fit>>
 
-
 Next, implement <<planningEntityDifficulty,planning entity difficulty>> comparison and turn it into:
 
 . <<firstFitDecreasing,First Fit Decreasing>>
-
 
 Next, add Late Acceptance behind it:
 
 . First Fit Decreasing
 . <<lateAcceptance,Late Acceptance>>. A Late Acceptance size of 400 usually works well.
-
 
 At this point __the free lunch is over__.
 The return on invested time lowers.
@@ -273,7 +259,6 @@ Use the <<benchmarker,Benchmarker>> and try a couple of different Tabu Search, S
 
 . First Fit Decreasing
 . <<tabuSearch,Tabu Search>>. An entity tabu size of 7 usually works well.
-
 
 Use the <<benchmarker,Benchmarker>> to improve the values for those size parameters.
 
@@ -314,7 +299,6 @@ Some `Phase` implementations can combine techniques from multiple optimization a
 For example: a Local Search `Phase` can do Simulated Annealing with entity Tabu.
 ====
 
-
 Here's a configuration that runs 3 phases in sequence:
 
 [source,xml,options="nowrap"]
@@ -333,15 +317,12 @@ Here's a configuration that runs 3 phases in sequence:
 </solver>
 ----
 
-
 The solver phases are run in the order defined by solver configuration.
 When the first `Phase` terminates, the second `Phase` starts, and so on.
 When the last `Phase` terminates, the `Solver` terminates.
 Usually, a `Solver` will first run a construction heuristic and then run 1 or multiple metaheuristics:
 
-
 image::Chapter-Optimization_algorithms/generalPhaseSequence.png[align="center"]
-
 
 If no phases are configured, Planner will default to a Construction Heuristic phase followed by a Local Search phase.
 
@@ -367,7 +348,6 @@ Other phases (especially metaheuristics) will only terminate if the `Phase` is c
 </solver>
 ----
 
-
 If the `Solver` terminates (before the last `Phase` terminates itself),
 the current phase is terminated and all subsequent phases won't run.
 
@@ -380,9 +360,7 @@ Each phase will usually iteratively run steps.
 Each step, in turn, usually iteratively runs moves.
 These form 4 nested scopes: solver, phase, step and move.
 
-
 image::Chapter-Optimization_algorithms/scopeOverview.png[align="center"]
-
 
 Configure <<logging,logging>> to display the log messages of each scope.
 
@@ -403,7 +381,6 @@ The only thing that matters is finding the best solution in the available time.
 If no termination is configured (and a metaheuristic algorithm is used), the `Solver` will run forever, until <<asynchronousTermination,terminateEarly()>> is called from another thread.
 This is especially common during <<realTimePlanning,real-time planning>>.
 ====
-
 
 For synchronous termination, configure a `Termination` on a `Solver` or a `Phase` when it needs to stop.
 You can implement your own ``Termination``, but the built-in implementations should suffice for most needs.
@@ -450,7 +427,6 @@ Terminates when an amount of time has been used.
   </termination>
 ----
 
-
 Multiple time types can be used together, for example to configure 150 minutes, either configure it directly:
 
 [source,xml,options="nowrap"]
@@ -459,7 +435,6 @@ Multiple time types can be used together, for example to configure 150 minutes, 
     <minutesSpentLimit>150</minutesSpentLimit>
   </termination>
 ----
-
 
 Or use a combination that sums up to 150 minutes:
 
@@ -531,7 +506,6 @@ Terminates when the best score hasn't improved in an amount of time.
   </localSearch>
 ----
 
-
 This termination should not be applied to Construction Heuristics, because they only update the best solution at the end.
 Therefore it might be better to configure it on a specific `Phase` (such as ``<localSearch>``), instead of on the `Solver` itself.
 
@@ -558,7 +532,6 @@ Use this `Termination` if you know the perfect score, for example for 4 queens (
   </termination>
 ----
 
-
 For a planning problem with a <<hardSoftScore,HardSoftScore>>, it could look like this:
 
 [source,xml,options="nowrap"]
@@ -568,7 +541,6 @@ For a planning problem with a <<hardSoftScore,HardSoftScore>>, it could look lik
   </termination>
 ----
 
-
 For a planning problem with a <<bendableScore,BendableScore>> with 3 hard levels and 1 soft level, it could look like this:
 
 [source,xml,options="nowrap"]
@@ -577,7 +549,6 @@ For a planning problem with a <<bendableScore,BendableScore>> with 3 hard levels
     <bestScoreLimit>[0/0/0]hard/[-5000]soft</bestScoreLimit>
   </termination>
 ----
-
 
 To terminate once a feasible solution has been reached, this `Termination` isn't practical because it requires a `bestScoreLimit` such as ``0hard/-2147483648soft``.
 Instead, use the next termination.
@@ -595,7 +566,6 @@ Requires that the `Score` implementation implements ``FeasibilityScore``.
     <bestScoreFeasible>true</bestScoreFeasible>
   </termination>
 ----
-
 
 This `Termination` is usually combined with other terminations.
 
@@ -615,7 +585,6 @@ This is useful for hardware performance independent runs.
   </localSearch>
 ----
 
-
 This `Termination` can only be used for a `Phase` (such as ``<localSearch>``), not for the `Solver` itself.
 
 
@@ -633,7 +602,6 @@ This is useful for hardware performance independent runs.
     </termination>
   </localSearch>
 ----
-
 
 If the score hasn't improved recently, it's probably not going to improve soon anyway and it's not worth the effort to continue.
 We have observed that once a new best solution is found (even after a long time of no improvement on the best solution), the next few steps tend to improve the best solution too.
@@ -655,7 +623,6 @@ This is useful for benchmarking.
   </termination>
 ----
 
-
 Switching <<environmentMode,EnvironmentMode>> can heavily impact when this termination ends.
 
 
@@ -673,7 +640,6 @@ Terminations can be combined, for example: terminate after `100` steps or if a s
   </termination>
 ----
 
-
 Alternatively you can use AND, for example: terminate after reaching a feasible score of at least `-100` and no improvements in `5` steps:
 
 [source,xml,options="nowrap"]
@@ -684,7 +650,6 @@ Alternatively you can use AND, for example: terminate after reaching a feasible 
     <bestScoreLimit>-100</bestScoreLimit>
   </termination>
 ----
-
 
 This example ensures it doesn't just terminate after finding a feasible solution, but also completes any obvious improvements on that solution before terminating.
 
@@ -706,7 +671,6 @@ public interface Solver<Solution_> {
 
 }
 ----
-
 
 If you call the `terminateEarly()` method from another thread, the `Solver` will terminate at its earliest convenience and the `solve(Solution)` method will return (in the original `Solver` thread).
 
@@ -735,7 +699,6 @@ public interface Solver<Solution_> {
 }
 ----
 
-
 The ``BestSolutionChangedEvent``'s `newBestSolution` might not be initialized or feasible.
 Use the `isFeasible()` method on ``BestSolutionChangedEvent``'s new best `Score` to detect such cases:
 
@@ -750,7 +713,6 @@ Use the `isFeasible()` method on ``BestSolutionChangedEvent``'s new best `Score`
         }
     });
 ----
-
 
 Use `Score.isSolutionInitialized()` instead of `Score.isFeasible()` to only ignore uninitialized solutions, but do accept infeasible solutions too.
 
@@ -776,7 +738,6 @@ The supported <<constructionHeuristics,Constructions Heuristics>> are configurab
 `Termination` aware and support partially initialized solutions too.
 ====
 
-
 The `CustomPhaseCommand` interface looks like this:
 
 [source,java,options="nowrap"]
@@ -788,7 +749,6 @@ public interface CustomPhaseCommand<Solution_> {
 
 }
 ----
-
 
 For example, extend `AbstractCustomPhaseCommand` and implement the `changeWorkingSolution()` method:
 
@@ -821,7 +781,6 @@ That will corrupt the `Solver` because any previous score or solution was for a 
 To do that, read about <<repeatedPlanning,repeated planning>> and do it with a <<problemFactChange,ProblemFactChange>> instead.
 ====
 
-
 Configure your `CustomPhaseCommand` like this:
 
 [source,xml,options="nowrap"]
@@ -834,7 +793,6 @@ Configure your `CustomPhaseCommand` like this:
   ... <!-- Other phases -->
 </solver>
 ----
-
 
 Configure multiple `customPhaseCommandClass` instances to run them in sequence.
 
@@ -857,7 +815,6 @@ If the `Solver` or a `Phase` wants to terminate while a `CustomPhaseCommand` is 
 The build-in solver phases don't suffer from this problem.
 ====
 
-
 To configure values of your `CustomPhaseCommand` dynamically in the solver configuration (so you can tweak those parameters with the <<benchmarker,Benchmarker>>), use the `customProperties` element:
 
 [source,xml,options="nowrap"]
@@ -868,7 +825,6 @@ To configure values of your `CustomPhaseCommand` dynamically in the solver confi
     </customProperties>
   </customPhase>
 ----
-
 
 Then override the `applyCustomProperties()` method to parse and apply them when a `Solver` is build.
 

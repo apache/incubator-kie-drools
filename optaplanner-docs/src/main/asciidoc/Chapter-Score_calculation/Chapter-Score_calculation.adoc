@@ -25,7 +25,6 @@ The _best solution_ is the `Solution` with the highest `Score` that `Solver` has
 Planner cannot automatically know which `Solution` is best for your business, so you need to tell it how to calculate the score of a given `Solution` according to your business needs.
 If you forget or are unable to implement an important business constraint, the solution is probably useless:
 
-
 image::Chapter-Score_calculation/optimalWithIncompleteConstraints.png[align="center"]
 
 
@@ -40,7 +39,6 @@ Luckily, defining constraints in Planner is very flexible through the following 
 * **Score level (hard, soft, ...)**: prioritize a group of constraint types
 * *Pareto scoring* (rarely used)
 
-
 Take the time to acquaint yourself with the first 3 techniques.
 Once you understand them, formalizing most business constraints becomes straightforward.
 
@@ -53,9 +51,7 @@ A constraint can be a simple pattern (such as __Maximize the apple harvest in th
 A positive constraint is a constraint you want to maximize.
 A negative constraint is a constraint you want to minimize.
 
-
 image::Chapter-Score_calculation/positiveAndNegativeConstraints.png[align="center"]
-
 
 The image above illustrates that **the optimal solution always has the highest
       score**, regardless if the constraints are positive or negative.
@@ -72,7 +68,6 @@ Do not presume that your business knows all its score constraints in advance.
 Expect score constraints to be added or changed after the first releases.
 ====
 
-
 When a constraint activates (because the negative constraint is broken or the positive constraint is fulfilled) on a certain planning entity set, it is called a __constraint match__.
 
 
@@ -82,9 +77,7 @@ When a constraint activates (because the negative constraint is broken or the po
 Not all score constraints are equally important.
 If breaking one constraint is equally bad as breaking another constraint x times, then those two constraints have a different weight (but they are in the same score level). For example in vehicle routing, you can make one "unhappy driver" constraint match count as much as two "fuel tank usage" constraint matches:
 
-
 image::Chapter-Score_calculation/scoreWeighting.png[align="center"]
-
 
 Score weighting is easy in use cases where you can __put a price tag on everything__.
 In that case, the positive constraints maximize revenue and the negative constraints minimize expenses, so together they maximize profit.
@@ -98,7 +91,6 @@ Putting a good weight on a constraint can be a difficult analytical decision, be
 Don't spend too much time on it at the start of an implementation.
 A non-accurate weight is less damaging than mediocre algorithms:
 
-
 image::Chapter-Score_calculation/scoreTradeoffInPerspective.png[align="center"]
 
 
@@ -107,7 +99,6 @@ image::Chapter-Score_calculation/scoreTradeoffInPerspective.png[align="center"]
 When deciding the weights of some constraints is debatable, it's recommended to make them configurable at runtime, as demonstrated in the exam timetabling example with the `InstitutionParametrization` class.
 This allow the end-user to recalibrate constraint weights in the user interface and immediatly discover the impact of the new weights by running the solver again.
 ====
-
 
 Most use cases use a `Score` with `int` weights, such as <<hardSoftScore,HardSoftScore>>.
 
@@ -125,9 +116,7 @@ The first score level gets compared first.
 If those differ, the remaining score levels are ignored.
 For example, a score that breaks `0` hard constraints and `1000000` soft constraints is better than a score that breaks `1` hard constraint and `0` soft constraints.
 
-
 image::Chapter-Score_calculation/scoreLevels.png[align="center"]
-
 
 If there are two (or more) score levels, for example a hard and soft level, then a score is _feasible_ if no hard constraints are broken.
 
@@ -138,12 +127,10 @@ If there is no feasible solution, this means the best solution will be unfeasibl
 To instead leave some of the planning entities unassigned, apply <<overconstrainedPlanning,overconstrained planning>>.
 ====
 
-
 For each constraint, you need to pick a score level, a score weight and a score signum.
 For example: `-1soft` which has score level of ``soft``, a weight of `1` and a negative signum.
 Do not use a big constraint weight when your business actually wants different score levels.
 That hack, known as __score folding__, is broken:
-
 
 image::Chapter-Score_calculation/scoreFoldingIsBroken.png[align="center"]
 
@@ -157,7 +144,6 @@ Furthermore, it will likely create a <<scoreTrap,score trap>>.
 For example in cloud balance if a `Computer` has seven CPU too little for its ``Process``es, then it must be weighted seven times as much as if it had only one CPU too little.
 ====
 
-
 Three or more score levels are supported.
 For example: a company might decide that profit outranks employee satisfaction (or visa versa), while both are outranked by the constraints of physical reality.
 
@@ -166,7 +152,6 @@ For example: a company might decide that profit outranks employee satisfaction (
 To model fairness or load balancing, there is <<fairnessScoreConstraints,no need to use lots
         of score levels>> (even though Planner can handle many score levels).
 ====
-
 
 Most use cases use a `Score` with two weights, such as <<hardSoftScore,HardSoftScore>>.
 
@@ -186,9 +171,7 @@ Similarly, we can state that two apples and one orange are better than just one 
 So despite our inability to compare some Scores conclusively (at which point we declare them equal), we can find a set of optimal scores.
 Those are called pareto optimal.
 
-
 image::Chapter-Score_calculation/paretoOptimizationScoring.png[align="center"]
-
 
 Scores are considered equal far more often.
 It is left up to a human to choose the better out of a set of best solutions (with equal scores) found by Planner.
@@ -211,7 +194,6 @@ Yet, two apples are not greater than one orange (but actually equal). Pareto com
 
 All the score techniques mentioned above, can be combined seamlessly:
 
-
 image::Chapter-Score_calculation/scoreComposition.png[align="center"]
 
 
@@ -227,15 +209,12 @@ public interface Score<...> extends Comparable<...> {
 }
 ----
 
-
 The `Score` implementation to use depends on your use case.
 Your score might not efficiently fit in a single `long` value.
 Planner has several built-in `Score` implementations, but you can implement a custom `Score` too.
 Most use cases tend to use the built-in ``HardSoftScore``.
 
-
 image::Chapter-Score_calculation/scoreClassDiagram.png[align="center"]
-
 
 All Score implementations also have an `initScore` (which is an ``int``). It is mostly intended for internal use in Planner: it is the negative number of uninitialized planning variables.
 From a user's perspective this is ``0``, unless a Construction Heuristic is terminated before it could initialize all planning variables (in which case `Score.isSolutionInitialized()` returns ``false``).
@@ -267,9 +246,7 @@ For example: a `double` cannot hold the value `0.05` correctly.
 Instead, it holds the nearest representable value.
 Arithmetic (including addition and subtraction) with floating point numbers, especially for planning problems, leads to incorrect decisions:
 
-
 image::Chapter-Score_calculation/scoreWeightType.png[align="center"]
-
 
 Additionally, floating point number addition is not associative:
 
@@ -277,7 +254,6 @@ Additionally, floating point number addition is not associative:
 ----
 System.out.println( ((0.01 + 0.02) + 0.03) == (0.01 + (0.02 + 0.03)) ); // returns false
 ----
-
 
 This leads to __score corruption__.
 
@@ -317,7 +293,6 @@ It has a single score level.
     private SimpleScore score;
 ----
 
-
 Variants of this `Score` type:
 
 * `SimpleLongScore` uses a `long` value instead of an `int` value.
@@ -336,7 +311,6 @@ It has 2 score levels (hard and soft).
     @PlanningScore
     private HardSoftScore score;
 ----
-
 
 Variants of this `Score` type:
 
@@ -357,7 +331,6 @@ It has 3 score levels (hard, medium and soft).
     private HardMediumSoftScore score;
 ----
 
-
 Variants of this `Score` type:
 
 * `HardMediumSoftLongScore` uses `long` values instead of `int` values.
@@ -376,7 +349,6 @@ In that case, it has 5 score levels.
     private BendableScore score;
 ----
 
-
 The number of hard and soft score levels need to be set at compilation time.
 It is not flexible to change during solving.
 
@@ -388,7 +360,6 @@ It's extremely rare to use a different score level for each constraint, because 
 Usually, multiple constraints share the same level and are weighted against each other.
 Use <<explainingTheScore,explaining the score>> to get the weight of individual constraints in the same level.
 ====
-
 
 Variants of this `Score` type:
 
@@ -413,7 +384,6 @@ Then hook your custom `ScoreDefinition` in the domain:
     private MyCustomScore score;
 ----
 
-
 To have it integrate seamlessly with <<jpaAndHibernatePersistingAScore,JPA/Hibernate>>, <<integrationWithXStream,XStream>>, ..., you 'll need to write some glue code.
 
 
@@ -429,7 +399,6 @@ There are several ways to calculate the `Score` of a ``Solution``:
 * **Easy Java score calculation**: implement a single Java method
 * **Incremental Java score calculation**: implement multiple Java methods
 * *Drools score calculation* (recommended): implement score rules
-
 
 Every score calculation type can use any Score definition.
 For example, easy Java score calculation can output a ``HardSoftScore``.
@@ -460,7 +429,6 @@ An easy way to implement your score calculation in Java.
 ** Slower and less scalable
 *** Because there is no <<incrementalScoreCalculation,incremental score calculation>>
 
-
 Just implement one method of the interface ``EasyScoreCalculator``:
 
 [source,java,options="nowrap"]
@@ -471,7 +439,6 @@ public interface EasyScoreCalculator<Solution_> {
    
 }
 ----
-
 
 For example in n queens:
 
@@ -507,7 +474,6 @@ public class NQueensEasyScoreCalculator implements EasyScoreCalculator<NQueens> 
 }
 ----
 
-
 Configure it in your solver configuration:
 
 [source,xml,options="nowrap"]
@@ -516,7 +482,6 @@ Configure it in your solver configuration:
     <easyScoreCalculatorClass>org.optaplanner.examples.nqueens.solver.score.NQueensEasyScoreCalculator</easyScoreCalculatorClass>
   </scoreDirectorFactory>
 ----
-
 
 Alternatively, build a `EasyScoreCalculator` instance at runtime and set it with the programmatic API:
 
@@ -540,7 +505,6 @@ A way to implement your score calculation incrementally in Java.
 *** You have to learn, design, write and improve all these performance optimizations yourself
 ** Hard to read
 *** Regular score constraint changes can lead to a high maintenance cost
-
 
 Implement all the methods of the interface `IncrementalScoreCalculator` and extend the class ``AbstractIncrementalScoreCalculator``:
 
@@ -567,9 +531,7 @@ public interface IncrementalScoreCalculator<Solution_> {
 }
 ----
 
-
 image::Chapter-Score_calculation/incrementalScoreCalculatorSequenceDiagram.png[align="center"]
-
 
 For example in n queens:
 
@@ -665,7 +627,6 @@ public class NQueensAdvancedIncrementalScoreCalculator extends AbstractIncrement
 }
 ----
 
-
 Configure it in your solver configuration:
 
 [source,xml,options="nowrap"]
@@ -744,7 +705,6 @@ Just add the score rules DRL file in the solver configuration as a `<scoreDrl>` 
   </scoreDirectorFactory>
 ----
 
-
 In a typical project (following the Maven directory structure), that DRL file would be located at `$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl` (even for a war project).
 
 [NOTE]
@@ -752,7 +712,6 @@ In a typical project (following the Maven directory structure), that DRL file wo
 The `<scoreDrl>` element expects a classpath resource, as defined by ``ClassLoader.getResource(String)``, it does not accept a ``File``, nor an URL, nor a webapp resource.
 See below to use a `File` instead.
 ====
-
 
 Add multiple `<scoreDrl>` elements if the score rules are split across multiple DRL files.
 
@@ -788,7 +747,6 @@ An application build on one computer, but used on another computer, might not fi
 Worse, if they use a different Operating System, it is hard to choose a portable file path.
 ====
 
-
 Add multiple `<scoreDrlFile>` elements if the score rules are split across multiple DRL files.
 
 
@@ -810,7 +768,6 @@ The score rules still live in a DRL file, but the `KieContainer` finds that DRL 
 </kmodule>
 ----
 
-
 The kmodule above will pick up all the DRL files in the package ``org.optaplanner.examples.nqueens.solver``.
 A kbase can even extend another kbase.
 
@@ -822,7 +779,6 @@ Add the ksession name in the solver configuration as a `<ksessionName>` element:
     <ksessionName>nQueensKsession</ksessionName>
   </scoreDirectorFactory>
 ----
-
 
 In this approach, it's required to use a `SolverFactory.createFromKieContainerXmlResource(...)` method to <<solverConfigurationByXML,build the `SolverFactory`>>.
 If no `<ksessionName>` element is specified, the default ksession of the `kmodule.xml` is used.
@@ -844,13 +800,10 @@ rule "multipleQueensHorizontal"
 end
 ----
 
-
 This score rule will fire once for every 2 queens with the same ``rowIndex``.
 The `(id > $id)` condition is needed to assure that for 2 queens A and B, it can only fire for (A, B) and not for (B, A), (A, A) or (B, B). Let us take a closer look at this score rule on this solution of 4 queens:
 
-
 image::Chapter-Score_calculation/unsolvedNQueens04.png[align="center"]
-
 
 In this solution the multipleQueensHorizontal score rule will fire for 6 queen couples: (A, B), (A, C), (A, D), (B, C), (B, D) and (C, D). Because none of the queens are on the same vertical or diagonal line, this solution will have a score of ``-6``.
 An optimal solution of 4 queens has a score of ``0``.
@@ -912,7 +865,6 @@ end
 To learn more about the Drools rule language (DRL), consult http://drools.org/learn/documentation.html[the Drools documentation].
 ====
 
-
 Most use cases also weigh their constraint types or even their matches differently, by using a specific weight for each constraint match.
 For example in <<curriculumCourse,course scheduling>>, assigning a `Lecture` to a `Room` that is lacking two seats is weighted equally bad as having one isolated `Lecture` in a ``Curriculum``:
 
@@ -960,7 +912,6 @@ For the Score (or each <<scoreLevel,score level>> separately), specify a trend:
 ** There are only negative constraints
 ** And initializing the next variable can not unmatch a negative constraint that was matched by a previous initialized variable.
 
-
 Most use cases only have negative constraints.
 Many of those have an `InitializingScoreTrend` that only goes down:
 
@@ -971,7 +922,6 @@ Many of those have an `InitializingScoreTrend` that only goes down:
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 ----
-
 
 Alternatively, you can also specify the trend for each score level separately:
 
@@ -1055,7 +1005,6 @@ For example, if a single queen A moves from row `1` to ``2``, it will not bother
 .Incremental Score Calculation for the 4 Queens Puzzle
 image::Chapter-Score_calculation/incrementalScoreCalculationNQueens04.png[align="center"]
 
-
 This is a huge performance and scalability gain. *Drools score calculation gives you
       this huge scalability gain without forcing you to write a complicated incremental score calculation
       algorithm.* Just let the Drools rule engine do the hard work.
@@ -1120,14 +1069,11 @@ Some examples of score traps:
 * You need two doctors at each table, but you are only moving one doctor at a time. So the solver has no incentive to move a doctor to a table with no doctors. Punish a table with no doctors more then a table with only one doctor in that score constraint in the score function.
 * Two exams need to be conducted at the same time, but you are only moving one exam at a time. So the solver has to move one of those exams to another timeslot without moving the other in the same move. Add a coarse-grained move that moves both exams at the same time.
 
-
 For example, consider this score trap.
 If the blue item moves from an overloaded computer to an empty computer, the hard score should improve.
 The trapped score implementation fails to do that:
 
-
 image::Chapter-Score_calculation/scoreTrap.png[align="center"]
-
 
 The Solver should eventually get out of this trap, but it will take a lot of effort (especially if there are even more processes on the overloaded computer). Before they do that, they might actually start moving more processes into that overloaded computer, as there is no penalty for doing so.
 
@@ -1145,7 +1091,6 @@ Always specify the degree of infeasibility.
 The business will often say "if the solution is infeasible, it does not matter how infeasible it is." While that is true for the business, it is not true for score calculation as it benefits from knowing how infeasible it is.
 In practice, soft constraints usually do this naturally and it is just a matter of doing it for the hard constraints too.
 ====
-
 
 There are several ways to deal with a score trap:
 
@@ -1170,17 +1115,13 @@ Some use cases have a business requirement to provide a fair schedule (usually a
 * Fairly distribute the workload amongst the employees, to avoid envy.
 * Evenly distribute the workload amongst assets, to improve reliability.
 
-
 Implementing such a constraint can seem difficult (especially because there are different ways to formalize fairness), but usually the _squared workload_ implementation behaves most desirable.
 For each employee/asset, count the workload `w` and subtract `w²` from the score.
 
-
 image::Chapter-Score_calculation/fairnessScoreConstraint.png[align="center"]
-
 
 As shown above, the _squared workload_ implementation guarantees that if you select two employees from a given solution and make their distribution between those two employees fairer, then the resulting new solution will have a better overall score.
 Don not just use the difference from the average workload, as that can lead to unfairness, as demonstrated below.
-
 
 image::Chapter-Score_calculation/fairnessScoreConstraintPitfall.png[align="center"]
 
@@ -1190,7 +1131,6 @@ image::Chapter-Score_calculation/fairnessScoreConstraintPitfall.png[align="cente
 Instead of the __squared workload__, it is also possible to use the http://en.wikipedia.org/wiki/Variance[variance] (squared difference to the average) or the http://en.wikipedia.org/wiki/Standard_deviation[standard deviation] (square root of the variance). This has no effect on the score comparison, because the average will not change during planning.
 It is just more work to implement (because the average needs to be known) and trivially slower (because the calculation is a bit longer).
 ====
-
 
 When the workload is perfect balanced, the user often likes to see a `0` score, instead of the distracting `-34soft` in the image above (for the last solution which is almost perfectly balanced). To nullify this, either add the average multiplied by the number of entities to the score or instead show the variance or standard deviation in the UI.
 
@@ -1276,7 +1216,6 @@ rule "computerCost"
 end
 ----
 
-
 For each score rule, we have a separate `@Test` that only tests the effect of that score rule on the score:
 
 [source,java,options="nowrap"]
@@ -1332,7 +1271,6 @@ public class CloudBalancingScoreConstraintTest {
 
 }
 ----
-
 
 There is a `ScoreVerifier` implementation for each `Score` implementation.
 In the `assertHardWeight()` and `assertSoftWeight()` methods, the weight of the other score rules is ignored (even those of the same score level).

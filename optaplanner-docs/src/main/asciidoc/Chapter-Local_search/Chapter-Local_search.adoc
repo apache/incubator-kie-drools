@@ -35,7 +35,6 @@ Local Search tries a number of moves on the current solution and picks the best 
 .Decide the next step at step 0 (4 queens example)
 image::Chapter-Local_search/decideNextStepNQueens04.png[align="center"]
 
-
 Because the move _B0 to B3_ has the highest score (``-3``), it is picked as the next step.
 If multiple moves have the same highest score, one is picked randomly, in this case __B0
       to B3__.
@@ -48,7 +47,6 @@ It continually does this in a loop, and we get something like this:
 .All steps (4 queens example)
 image::Chapter-Local_search/allStepsNQueens04.png[align="center"]
 
-
 Notice that Local Search doesn't use a search tree, but a search path.
 The search path is highlighted by the green arrows.
 At each step it tries all selected moves, but unless it's the step, it doesn't investigate that solution further.
@@ -59,7 +57,6 @@ As shown above, Local Search solves the 4 queens problem by starting with the st
 . _B0 to B3_
 . _D0 to B2_
 . _A0 to B1_
-
 
 Turn on `debug` logging for the category `org.optaplanner` to show those steps in the log:
 
@@ -72,7 +69,6 @@ DEBUG     LS step (2), time spent (40), score (0), new best score (0), accepted/
 INFO  Local Search phase (0) ended: time spent (41), best score (0), score calculation speed (5000/sec), step total (3).
 INFO  Solving ended: time spent (41), best score (0), score calculation speed (5000/sec), phase total (1), environment mode (REPRODUCIBLE).
 ----
-
 
 Notice that a log message includes the `toString()` method of the `Move` implementation which returns for example $$"$$``Queen-1 {Row-0 -> Row-3}``".
 
@@ -89,7 +85,6 @@ Local Search decides the next step with the aid of 3 configurable components:
 * A `MoveSelector` which selects the possible moves of the current solution. See the chapter <<moveAndNeighborhoodSelection,move and neighborhood selection>>.
 * An `Acceptor` which filters out unacceptable moves.
 * A `Forager` which gathers accepted moves and picks the next step from them.
-
 
 The solver phase configuration looks like this:
 
@@ -108,10 +103,8 @@ The solver phase configuration looks like this:
   </localSearch>
 ----
 
-
 In the example below, the `MoveSelector` generated the moves shown with the blue lines, the `Acceptor` accepted all of them and the `Forager` picked the move __B0
       to B3__.
-
 
 image::Chapter-Local_search/decideNextStepNQueens04.png[align="center"]
 
@@ -135,10 +128,8 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
 ...
 ----
 
-
 Because the last solution can degrade (for example in Tabu Search), the `Solver` remembers the best solution it has encountered through the entire search path.
 Each time the current solution is better than the last best solution, the current solution is <<cloningASolution,cloned>> and referenced as the new best solution.
-
 
 image::Chapter-Local_search/localSearchScoreOverTime.png[align="center"]
 
@@ -187,7 +178,6 @@ To evaluate only a random subset of all the moves, use:
     <acceptedCountLimit>1000</acceptedCountLimit>
   </forager>
 ----
-
 
 Unlike the n queens problem, real world problems require the use of ``acceptedCountLimit``.
 Start from an `acceptedCountLimit` that takes a step in less then 2 seconds. <<logging,Turn on INFO logging>> to see the step times.
@@ -246,9 +236,7 @@ That best move is called the step move.
 From that new solution, it again tries all selected moves and takes the best move and continues like that iteratively.
 If multiple selected moves tie for the best move, one of them is randomly chosen as the best move.
 
-
 image::Chapter-Local_search/hillClimbingNQueens04.png[align="center"]
-
 
 Notice that once a queen has moved, it can be moved again later.
 This is a good thing, because in an NP-complete problem it's impossible to predict what will be the optimal final value for a planning variable.
@@ -261,9 +249,7 @@ Hill Climbing always takes improving moves.
 This may seem like a good thing, but it's not: *Hill Climbing can easily get stuck in a local optimum.* This happens when it reaches a solution for which all the moves deteriorate the score.
 Even if it picks one of those moves, the next step might go back to the original solution and which case chasing its own tail:
 
-
 image::Chapter-Local_search/hillClimbingGetsStuckInLocalOptimaNQueens04.png[align="center"]
-
 
 Improvements upon Hill Climbing (such as Tabu Search, Simulated Annealing and Late Acceptance) address the problem of being stuck in local optima.
 Therefore, it's recommend to never use Hill Climbing, unless you're absolutely sure there are no local optima in your planning problem.
@@ -280,7 +266,6 @@ Simplest configuration:
     <localSearchType>HILL_CLIMBING</localSearchType>
   </localSearch>
 ----
-
 
 Advanced configuration:
 
@@ -308,8 +293,8 @@ Advanced configuration:
 Tabu Search works like Hill Climbing, but it maintains a tabu list to avoid getting stuck in local optima.
 The tabu list holds recently used objects that are _taboo_ to use for now.
 Moves that involve an object in the tabu list, are not accepted.
-The tabu list objects can be anything related to the move, such as the planning entity, planning value, move, solution, ... Here's an example with entity tabu for 4 queens, so the queens are put in the tabu list:
-
+The tabu list objects can be anything related to the move, such as the planning entity, planning value, move, solution, ...
+Here's an example with entity tabu for 4 queens, so the queens are put in the tabu list:
 
 image::Chapter-Local_search/entityTabuSearch.png[align="center"]
 
@@ -319,7 +304,6 @@ image::Chapter-Local_search/entityTabuSearch.png[align="center"]
 It's called Tabu Search, not Taboo Search.
 There is no spelling error.
 ====
-
 
 Scientific paper: _Tabu Search - Part 1 and Part 2_ by Fred Glover (1989 - 1990)
 
@@ -335,7 +319,6 @@ Simplest configuration:
     <localSearchType>TABU_SEARCH</localSearchType>
   </localSearch>
 ----
-
 
 When Tabu Search takes steps it creates one or more tabu's.
 For a number of steps, it does not accept a move if that move breaks tabu.
@@ -359,7 +342,6 @@ Advanced configuration:
 ====
 A Tabu Search acceptor should be combined with a high ``acceptedCountLimit``, such as ``1000``.
 ====
-
 
 Planner implements several tabu types:
 
@@ -432,7 +414,6 @@ To avoid hard coding the tabu size, configure a tabu ratio, relative to the numb
 For non-trivial cases, solution tabu is usually useless because the <<searchSpaceSize,search space size>> makes it statistically highly unlikely to reach the same solution twice.
 Therefore its use is not recommended, except for small datasets.
 
-
 Sometimes it's useful to combine tabu types:
 
 [source,xml,options="nowrap"]
@@ -442,7 +423,6 @@ Sometimes it's useful to combine tabu types:
       <valueTabuSize>3</valueTabuSize>
     </acceptor>
 ----
-
 
 If the tabu size is too small, the solver can still get stuck in a local optimum.
 On the other hand, if the tabu size is too large, the solver can be inefficient by bouncing of the walls.
@@ -461,9 +441,7 @@ In the classic implementation, the first accepted move is the winning step.
 A move is accepted if it doesn't decrease the score or - in case it does decrease the score - it passes a random check.
 The chance that a decreasing move passes the random check decreases relative to the size of the score decrement and the time the phase has been running (which is represented as the temperature).
 
-
 image::Chapter-Local_search/simulatedAnnealing.png[align="center"]
-
 
 Simulated Annealing does not always pick the move with the highest score, neither does it evaluate many moves per step.
 At least at first.
@@ -490,7 +468,6 @@ Advanced configuration:
     </forager>
   </localSearch>
 ----
-
 
 Simulated Annealing should use a low ``acceptedCountLimit``.
 The classic algorithm uses an `acceptedCountLimit` of ``1``, but often `4` performs better.
@@ -524,9 +501,7 @@ Use a lower tabu size than in a pure Tabu Search configuration.
 Late Acceptance (also known as Late Acceptance Hill Climbing) also evaluates only a few moves per step.
 A move is accepted if it does not decrease the score, or if it leads to a score that is at least the late score (which is the winning score of a fixed number of steps ago).
 
-
 image::Chapter-Local_search/lateAcceptance.png[align="center"]
-
 
 Scientific paper: http://www.cs.stir.ac.uk/research/publications/techreps/pdf/TR192.pdf[The Late Acceptance Hill-Climbing Heuristic by Edmund K. Burke, Yuri Bykov (2012)]
 
@@ -542,7 +517,6 @@ Simplest configuration:
     <localSearchType>LATE_ACCEPTANCE</localSearchType>
   </localSearch>
 ----
-
 
 Late Acceptance accepts any move that has a score which is higher than the best score of a number of steps ago.
 That number of steps is the ``lateAcceptanceSize``.
@@ -560,7 +534,6 @@ Advanced configuration:
     </forager>
   </localSearch>
 ----
-
 
 Late Acceptance should use a low ``acceptedCountLimit``.
 
@@ -618,7 +591,6 @@ Every number of steps (specified by ``stepCountingHillClimbingSize``), the thres
   </localSearch>
 ----
 
-
 Step Counting Hill Climbing should use a low ``acceptedCountLimit``.
 
 Step Counting Hill Climbing can be combined with a tabu acceptor at the same time, similar as shown in <<lateAcceptance,the Late Acceptance section>>.
@@ -656,7 +628,6 @@ Configure a ``finalistPodiumType``, for example in a Tabu Search configuration:
   </localSearch>
 ----
 
-
 The following ``finalistPodiumType``s are supported:
 
 * `HIGHEST_SCORE` (default): Pick the accepted move with the highest score.
@@ -681,6 +652,5 @@ It's not possible to inject a ``Termination``, ... instance directly (to avoid e
 * A `Config` class is often easier and clearer to configure. For example: `TerminationConfig` translates `minutesSpentLimit` and `secondsSpentLimit` into ``timeMillisSpentLimit``.
 
 ====
-
 
 If you build a better implementation that's not domain specific, consider contributing it back as a pull request on github: we'll optimize it and take it along in future refactorings.

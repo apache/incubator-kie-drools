@@ -36,4 +36,3 @@ include::Chapter-Repeated_planning/Chapter-Repeated_planning.adoc[leveloffset=+1
 include::Chapter-Integration/Chapter-Integration.adoc[leveloffset=+1]
 include::Chapter-Design_patterns/Chapter-Design_patterns.adoc[leveloffset=+1]
 include::Chapter-Development/Chapter-Development.adoc[leveloffset=+1]
-

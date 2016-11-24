@@ -15,9 +15,7 @@ For very big datasets, it is sometimes worthwhile to partition the datasets into
 
 However, **partitioning leads to suboptimal results**, even if the pieces are solved optimally:
 
-
 image::Chapter-Partitioned_search/mapReduceIsTerribleForTsp.png[align="center"]
-
 
 A future version of Planner will have native support for several forms of partitioning.
 Meanwhile, you can implement it yourself as shown in the image above.
