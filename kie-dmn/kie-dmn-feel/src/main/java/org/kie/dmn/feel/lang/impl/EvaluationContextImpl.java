@@ -27,11 +27,14 @@ import java.util.Stack;
 
 public class EvaluationContextImpl implements EvaluationContext {
 
+    private final FEELEventListenersManager eventsManager;
     private       Stack<ExecutionFrame> stack;
 
-    public EvaluationContextImpl() {
+    public EvaluationContextImpl(FEELEventListenersManager eventsManager) {
+        this.eventsManager = eventsManager;
         this.stack = new Stack<>();
         // we create a rootFrame to hold all the built in functions
+        // TODO: can we cache/reuse the rootFrame to avoid recreating it all the time?
         ExecutionFrame rootFrame = new ExecutionFrame( null );
         for( FEELFunction f : BuiltInFunctions.getFunctions() ) {
             rootFrame.setValue( f.getName(), f );
@@ -91,5 +94,9 @@ public class EvaluationContextImpl implements EvaluationContext {
             values.putAll( stack.get( i ).getAllValues() );
         }
         return values;
+    }
+
+    public FEELEventListenersManager getEventsManager() {
+        return eventsManager;
     }
 }

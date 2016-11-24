@@ -23,8 +23,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CompilerContextImpl implements CompilerContext {
+    private final FEELEventListenersManager eventsManager;
     private Map<String, Object> inputVariables = new HashMap<>();
     private Map<String, Type> inputVariableTypes = new HashMap<>();
+
+    public CompilerContextImpl(FEELEventListenersManager eventsManager) {
+        this.eventsManager = eventsManager;
+    }
+
+    public FEELEventListenersManager getEventsManager() {
+        return eventsManager;
+    }
 
     @Override
     public CompilerContext addInputVariableType(String name, Type type) {

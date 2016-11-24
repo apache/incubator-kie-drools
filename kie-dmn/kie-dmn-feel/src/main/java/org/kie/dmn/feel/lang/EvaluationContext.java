@@ -16,6 +16,8 @@
 
 package org.kie.dmn.feel.lang;
 
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+
 import java.util.Map;
 
 public interface EvaluationContext {
@@ -31,4 +33,6 @@ public interface EvaluationContext {
     Object getValue(String[] name );
 
     Map<String, Object> getAllValues();
+
+    FEELEventListenersManager getEventsManager();
 }

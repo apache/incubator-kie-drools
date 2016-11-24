@@ -20,6 +20,7 @@ import org.kie.dmn.core.api.DMNContext;
 import org.kie.dmn.core.api.DMNDecisionResult;
 import org.kie.dmn.core.api.DMNMessage;
 import org.kie.dmn.core.api.DMNResult;
+import org.kie.dmn.feel.runtime.events.FEELEvent;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -71,6 +72,10 @@ public class DMNResultImpl implements DMNResult {
 
     public void addMessage( DMNMessage.Severity severity, String message, String sourceId, Throwable exception ) {
         this.messages.add( new DMNMessageImpl( severity, message, sourceId, exception ) );
+    }
+
+    public void addMessage( DMNMessage.Severity severity, String message, String sourceId, FEELEvent feelEvent ) {
+        this.messages.add( new DMNMessageImpl( severity, message, sourceId, feelEvent ) );
     }
 
     public List<DMNDecisionResult> getDecisionResults() {

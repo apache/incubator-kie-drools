@@ -367,6 +367,43 @@ public class DMNRuntimeTest {
         assertThat( result.get("Payment method"), is( "Check" ) );
     }
 
+    @Test
+    public void testDecisionTableU() {
+        DMNRuntime runtime = createRuntime( "BranchDistribution.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_cdf29af2-959b-4004-8271-82a9f5a62147", "Dessin 1" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Branches dispersion", "Province" );
+        context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat( dmnResult.hasErrors(), is( false ) );
+
+        DMNContext result = dmnResult.getContext();
+        System.out.println(result);
+        assertThat( result.get("Branches distribution"), is( "Medium" ) );
+    }
+
+    @Test @Ignore("Not working yet")
+    public void testInvalidInputDTErrorMessage() {
+        DMNRuntime runtime = createRuntime( "InvalidInput.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_cdf29af2-959b-4004-8271-82a9f5a62147", "Dessin 1" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Branches dispersion", "Province" );
+        context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        System.out.println(dmnResult.getMessages());
+        assertThat( dmnResult.hasErrors(), is( true ) );
+
+        DMNContext result = dmnResult.getContext();
+        System.out.println(result);
+        assertThat( result.isDefined("Branches distribution"), is( false ) );
+    }
+
     private DMNRuntimeEventListener createListener() {
         return new DMNRuntimeEventListener() {
             private final Logger logger = LoggerFactory.getLogger( DMNRuntimeEventListener.class );
