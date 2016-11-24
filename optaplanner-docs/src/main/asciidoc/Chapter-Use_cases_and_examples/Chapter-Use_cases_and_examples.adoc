@@ -7,6 +7,7 @@
 :experimental:
 :sourcedir: .
 
+
 [[examplesOverview]]
 == Examples Overview
 
@@ -467,11 +468,14 @@ A _realistic competition_ is **an official, independent
 
 These realistic competitions provide an objective comparison of Planner with competitive software and academic research.
 
+
 [[basicExamples]]
 == Basic Examples
 
+
 [[nQueens]]
 === N Queens
+
 
 [[nQueensProblemDescription]]
 ==== Problem Description
@@ -510,6 +514,7 @@ All the constraints have been met, so the solution is correct.
 Note that most n queens puzzles have multiple correct solutions.
 We'll focus on finding a single correct solution for a given n, not on finding the number of possible correct solutions for a given n.
 
+
 [[nQueensProblemSize]]
 ==== Problem Size
 
@@ -527,6 +532,7 @@ We'll focus on finding a single correct solution for a given n, not on finding t
 The implementation of the N queens example has not been optimized because it functions as a beginner example.
 Nevertheless, it can easily handle 64 queens.
 With a few changes it has been shown to easily handle 5000 queens and more.
+
 
 [[nQueensDomainModel]]
 ==== Domain Model
@@ -633,13 +639,16 @@ Notice that in the 4 queens example, NQueens's `getN()` method will always retur
 
 When 2 queens share the same column, row or diagonal line, such as ($$*$$) and ($$**$$), they can attack each other.
 
+
 [[cloudBalancing]]
 === Cloud Balancing
 
 This example is explained in <<cloudBalancingTutorial,a tutorial>>.
 
+
 [[tsp]]
 === Traveling Salesman (TSP - Traveling Salesman Problem)
+
 
 [[tspProblemDescription]]
 ==== Problem Description
@@ -649,6 +658,7 @@ Given a list of cities, find the shortest tour for a salesman that visits each c
 The problem is defined by http://en.wikipedia.org/wiki/Travelling_salesman_problem[Wikipedia].
 It is http://www.math.uwaterloo.ca/tsp/[one of the most intensively studied problems] in computational mathematics.
 Yet, in the real world, it's often only part of a planning problem, along with other constraints, such as employee shift rostering constraints.
+
 
 [[tspProblemSize]]
 ==== Problem Size
@@ -662,6 +672,7 @@ pcb442   has 442 cities with a search space of 10^1166.
 lu980    has 980 cities with a search space of 10^2927.
 ----
 
+
 [[tspProblemDifficulty]]
 ==== Problem Difficulty
 
@@ -674,6 +685,7 @@ image::Chapter-Use_cases_and_examples/tspOptimalSolutionVolatility.png[align="ce
 
 [[dinnerParty]]
 === Dinner Party
+
 
 [[dinnerPartyProblemDescription]]
 ==== Problem Description
@@ -690,6 +702,7 @@ Miss Manners is throwing another dinner party.
 Drools Expert also has the normal Miss Manners example (which is much smaller) and employs an exhaustive heuristic to solve it.
 Planner's implementation is far more scalable because it uses heuristics to find the best solution and Drools Expert to calculate the score of each solution.
 
+
 [[dinnerPartyProblemSize]]
 ==== Problem Size
 
@@ -698,8 +711,10 @@ Planner's implementation is far more scalable because it uses heuristics to find
 wedding01 has 18 jobs, 144 guests, 288 hobby practicians, 12 tables and 144 seats with a search space of 10^310.
 ----
 
+
 [[tennis]]
 === Tennis Club Scheduling
+
 
 [[tennisProblemDescription]]
 ==== Problem Description
@@ -731,6 +746,7 @@ Soft constraints:
 munich-7teams has 7 teams, 18 days, 12 unavailabilityPenalties and 72 teamAssignments with a search space of 10^60.
 ----
 
+
 [[tennisDomainModel]]
 ==== Domain Model
 
@@ -739,6 +755,7 @@ image::Chapter-Use_cases_and_examples/tennisClassDiagram.png[align="center"]
 
 [[meetingScheduling]]
 === Meeting Scheduling
+
 
 [[meetingSchedulingProblemDescription]]
 ==== Problem Description
@@ -771,11 +788,14 @@ Soft constraints:
 100meetings-320timegrains-5rooms has 100 meetings, 320 timeGrains and 5 rooms with a search space of 10^320.
 ----
 
+
 [[realExamples]]
 == Real Examples
 
+
 [[curriculumCourse]]
 === Course Timetabling (ITC 2007 Track 3 - Curriculum Course Scheduling)
+
 
 [[curriculumCourseProblemDescription]]
 ==== Problem Description
@@ -800,6 +820,7 @@ Soft constraints:
 
 The problem is defined by http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm[the International Timetabling Competition 2007 track 3].
 
+
 [[curriculumCourseProblemSize]]
 ==== Problem Size
 
@@ -821,6 +842,7 @@ comp13 has 77 teachers,  66 curricula,  82 courses, 308 lectures, 25 periods, 19
 comp14 has 68 teachers,  60 curricula,  85 courses, 275 lectures, 25 periods, 17 rooms and  486 unavailable period constraints with a search space of  10^722.
 ----
 
+
 [[curriculumCourseDomainModel]]
 ==== Domain Model
 
@@ -829,6 +851,7 @@ image::Chapter-Use_cases_and_examples/curriculumCourseClassDiagram.png[align="ce
 
 [[machineReassignment]]
 === Machine Reassignment (Google ROADEF 2012)
+
 
 [[machineReassignmentProblemDescription]]
 ==== Problem Description
@@ -859,10 +882,12 @@ The problem is defined by http://challenge.roadef.org/2012/en/[the Google ROADEF
 
 image::Chapter-Use_cases_and_examples/cloudOptimizationIsLikeTetris.png[align="center"]
 
+
 [[machineReassignmentValueProposition]]
 ==== Value Proposition
 
 See <<cloudBalancingValueProposition,the Cloud Balancing value proposition>>.
+
 
 [[machineReassignmentProblemSize]]
 ==== Problem Size
@@ -891,6 +916,7 @@ model_b_9  has  3 resources,  5 neighborhoods, 100 locations, 1000 machines,  46
 model_b_10 has  3 resources,  5 neighborhoods, 100 locations, 5000 machines,  4896 services, 50000 processes and 1 balancePenalties with a search space of 10^184948.
 ----
 
+
 [[machineReassignmentDomainModel]]
 ==== Domain Model
 
@@ -899,6 +925,7 @@ image::Chapter-Use_cases_and_examples/machineReassignmentClassDiagram.png[align=
 
 [[vehicleRouting]]
 === Vehicle Routing
+
 
 [[vehicleRoutingProblemDescription]]
 ==== Problem Description
@@ -928,6 +955,7 @@ Soft constraints:
 
 
 The capacitated vehicle routing problem (CVRP) and its timewindowed variant (CVRPTW) are defined by http://neo.lcc.uma.es/vrp/[the VRP web].
+
 
 [[vehicleRoutingValueProposition]]
 ==== Value Proposition
@@ -1023,6 +1051,7 @@ Homberger_1000_RC110_1 has 1 depots, 250 vehicles and 1000 customers with a sear
 Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a search space of 10^3000.
 ----
 
+
 [[vehicleRoutingDomainModel]]
 ==== Domain Model
 
@@ -1031,6 +1060,7 @@ image::Chapter-Use_cases_and_examples/vehicleRoutingClassDiagram.png[align="cent
 
 The vehicle routing with timewindows domain model makes heavily use of <<shadowVariable,shadow variables>>.
 This allows it to express its constraints more naturally, because properties such as `arrivalTime` and ``departureTime``, are directly available on the domain model.
+
 
 [[roadDistancesInsteadOfAirDistances]]
 ==== Road Distances Instead of Air Distances
@@ -1074,8 +1104,10 @@ They prefer highways over normal roads.
 They prefer normal roads over dirt roads.
 In the real world, the fastest and shortest route are rarely the same.
 
+
 [[projectJobScheduling]]
 === Project Job Scheduling
+
 
 [[projectJobSchedulingProblemDescription]]
 ==== Problem Description
@@ -1109,6 +1141,7 @@ Soft constraints:
 
 The problem is defined by http://gent.cs.kuleuven.be/mista2013challenge/[the MISTA 2013 challenge].
 
+
 [[projectJobSchedulingProblemSize]]
 ==== Problem Size
 
@@ -1136,8 +1169,10 @@ Schedule B-9  has 20 projects, 640 jobs, 1840 execution modes, 61 resources and 
 Schedule B-10 has 20 projects, 460 jobs, 1300 execution modes, 42 resources and 4260 resource requirements.
 ----
 
+
 [[bedAllocation]]
 === Hospital Bed Planning (PAS - Patient Admission Scheduling)
+
 
 [[bedAllocationProblemDescription]]
 ==== Problem Description
@@ -1176,6 +1211,7 @@ Soft constraints:
 
 The problem is a variant on https://people.cs.kuleuven.be/~wim.vancroonenburg/pas/[Kaho's Patient Scheduling] and the datasets come from real world hospitals.
 
+
 [[bedAllocationProblemSize]]
 ==== Problem Size
 
@@ -1196,6 +1232,7 @@ testdata12 has 4 specialisms, 4 equipments, 4 departments, 105 rooms, 310 beds, 
 testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 28 nights,  907 patients and 1109 admissions with a search space of 10^2845.
 ----
 
+
 [[bedAllocationDomainModel]]
 ==== Domain Model
 
@@ -1204,6 +1241,7 @@ image::Chapter-Use_cases_and_examples/hospitalBedAllocationClassDiagram.png[alig
 
 [[taskAssigning]]
 === Task assigning
+
 
 [[taskAssigningProblemDescription]]
 ==== Problem Description
@@ -1248,6 +1286,7 @@ Soft level 3 constraints:
 500tasks-20employees has 500 tasks, 6 skills, 20 employees, 100 task types and 60 customers with a search space of 10^1384.
 ----
 
+
 [[taskAssigningDomainModel]]
 ==== Domain Model
 
@@ -1257,8 +1296,10 @@ image::Chapter-Use_cases_and_examples/taskAssigningClassDiagram.png[align="cente
 [[difficultExamples]]
 == Difficult Examples
 
+
 [[examination]]
 === Exam Timetabling (ITC 2007 track 1 - Examination)
+
 
 [[examinationProblemDescription]]
 ==== Problem Description
@@ -1300,6 +1341,7 @@ The problem is defined by http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_i
 Geoffrey De Smet finished 4th in that competition with a very early version of Planner.
 Many improvements have been made since then.
 
+
 [[examinationProblemSize]]
 ==== Problem Size
 
@@ -1315,6 +1357,7 @@ exam_comp_set7 has 13795 students, 1096 exams, 80 periods, 15 rooms,  28 period 
 exam_comp_set8 has  7718 students,  598 exams, 80 periods,  8 rooms,  20 period constraints and  1 room constraints with a search space of 10^1678.
 ----
 
+
 [[examinationDomainModel]]
 ==== Domain Model
 
@@ -1328,8 +1371,10 @@ Notice that we've split up the exam concept into an `Exam` class and a `Topic` c
 The `Exam` instances change during solving (this is the planning entity class), when their period or room property changes.
 The ``Topic``, `Period` and `Room` instances never change during solving (these are problem facts, just like some other classes).
 
+
 [[employeeRostering]]
 === Employee Rostering (INRC 2010 - Nurse Rostering)
+
 
 [[employeeRosteringProblemDescription]]
 ==== Problem Description
@@ -1365,6 +1410,7 @@ Soft constraints:
 
 
 The problem is defined by http://www.kuleuven-kortrijk.be/nrpcompetition[the International Nurse Rostering Competition 2010].
+
 
 [[employeeRosteringValueProposition]]
 ==== Value Proposition
@@ -1440,6 +1486,7 @@ long_late04   has 2 skills, 5 shiftTypes, 9 patterns, 4 contracts, 50 employees,
 long_late05   has 2 skills, 5 shiftTypes, 9 patterns, 3 contracts, 50 employees, 28 shiftDates, 740 shiftAssignments and   0 requests with a search space of 10^1257.
 ----
 
+
 [[employeeRosteringDomainModel]]
 ==== Domain Model
 
@@ -1448,6 +1495,7 @@ image::Chapter-Use_cases_and_examples/employeeShiftRosteringClassDiagram.png[ali
 
 [[travelingTournament]]
 === Traveling Tournament Problem (TTP)
+
 
 [[travelingTournamentProblemDescription]]
 ==== Problem Description
@@ -1472,6 +1520,7 @@ Soft constraints:
 
 
 The problem is defined on http://mat.gsia.cmu.edu/TOURN/[Michael Trick's website (which contains the world records too)].
+
 
 [[travelingTournamentProblemSize]]
 ==== Problem Size
@@ -1522,8 +1571,10 @@ The problem is defined on http://mat.gsia.cmu.edu/TOURN/[Michael Trick's website
 5-galaxy40 has 78 days, 40 teams and 1560 matches with a search space of 10^2951.
 ----
 
+
 [[cheapTimeScheduling]]
 === Cheap Time Scheduling
+
 
 [[cheapTimeSchedulingProblemDescription]]
 ==== Problem Description
@@ -1553,6 +1604,7 @@ Soft constraints (addendum to the original problem definition):
 
 
 The problem is defined by http://iconchallenge.insight-centre.org/[the ICON challenge].
+
 
 [[cheapTimeSchedulingProblemSize]]
 ==== Problem Size
@@ -1620,8 +1672,10 @@ instance48 has 4 resources, 100 machines, 288 periods and 5000 tasks with a sear
 instance49 has 4 resources, 100 machines, 288 periods and 5000 tasks with a search space of 10^20078.
 ----
 
+
 [[investment]]
 === Investment asset class allocation (portfolio optimization)
+
 
 [[investmentProblemDescription]]
 ==== Problem Description

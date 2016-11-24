@@ -7,6 +7,7 @@
 :experimental:
 :sourcedir: .
 
+
 [[findTheBestSolverConfiguration]]
 == Find The Best `Solver` Configuration
 
@@ -22,6 +23,7 @@ image::Chapter-Benchmarking_and_tweaking/benchmarkOverview.png[align="center"]
 
 [[benchmarkConfiguration]]
 == Benchmark Configuration
+
 
 [[benchmarker.addDependency]]
 === Add Dependency On `optaplanner-benchmark`
@@ -44,6 +46,7 @@ The version must be exactly the same as the `optaplanner-core` version used (whi
 
 If you use ANT, you've probably already copied the required jars from the download zip's [path]_binaries_
  directory.
+
 
 [[buildAndRunAPlannerBenchmark]]
 === Build And Run A `PlannerBenchmark`
@@ -128,6 +131,7 @@ Usually that directory is called ``local``.
 
 If an `Exception` or `Error` occurs in a single benchmark, the entire Benchmarker will not fail-fast (unlike everything else in Planner). Instead, the Benchmarker will continue to run all other benchmarks, write the benchmark report and then fail (if there is at least 1 failing single benchmark). The failing benchmarks will be clearly marked as such in the benchmark report.
 
+
 [[inheritedSolverBenchmark]]
 ==== Inherited solver benchmark
 
@@ -135,8 +139,10 @@ To lower verbosity, the common parts of multiple `<solverBenchmark>` elements ar
 Every property can still be overwritten per `<solverBenchmark>` element.
 Note that inherited solver phases such as `<constructionHeuristic>` or `<localSearch>` are not overwritten but instead are added to the tail of the solver phases list.
 
+
 [[solutionFileIO]]
 === SolutionFileIO: Input And Output Of Solution Files
+
 
 [[solutionFileIOInterface]]
 ==== `SolutionFileIO` Interface
@@ -158,6 +164,7 @@ public interface SolutionFileIO<Solution_> {
 
 
 The `SolutionFileIO` interface is in the `optaplanner-persistence-common` jar (which is a dependency of the `optaplanner-benchmark` jar). There are several ways to serialize a solution:
+
 
 [[xStreamSolutionFileIO]]
 ==== ``XStreamSolutionFileIO``: Serialize To And From An XML Format
@@ -183,6 +190,7 @@ XML is a very verbose format.
 Reading or writing large datasets in this format can cause an `OutOfMemoryError` , `StackOverflowError` or large performance degradation.
 ====
 
+
 [[customSolutionFileIO]]
 ==== Custom ``SolutionFileIO``: Serialize To And From A Custom Format
 
@@ -205,6 +213,7 @@ It's recommended that output files can be read as input files, which implies tha
 A `SolutionFileIO` implementation must be thread-safe.
 ====
 
+
 [[readingAnInputSolutionFromADatabase]]
 ==== Reading An Input Solution From A Database (Or Other Repository)
 
@@ -220,6 +229,7 @@ There are 2 ways to deal with this if your dataset is in a relational database o
 Local files are always better: they allow for faster, more reliable, offline benchmarking.
 Otherwise, an unstable network connection can ruin a long running benchmark.
 ====
+
 
 [[warmingUpTheHotSpotCompiler]]
 === Warming Up The HotSpot Compiler
@@ -245,6 +255,7 @@ Generally, a warm up of 30 seconds suffices:
 The warm up time budget does not include the time it takes to load the datasets.
 With large datasets, this can cause the warm up to run considerably longer than specified in the configuration.
 ====
+
 
 [[benchmarkBlueprint]]
 === Benchmark Blueprint: A Predefined Configuration
@@ -313,6 +324,7 @@ To write those solutions in the ``benchmarkDirectory``, enable ``writeOutputSolu
     </problemBenchmarks>
 ----
 
+
 [[benchmarkLogging]]
 === Benchmark Logging
 
@@ -337,8 +349,10 @@ For example with Logback in ``logback.xml``:
   </appender>
 ----
 
+
 [[benchmarkReport]]
 == Benchmark Report
+
 
 [[benchmarkHtmlReport]]
 === HTML Report
@@ -373,6 +387,7 @@ If you share the benchmark report with people from another country, consider ove
   ...
 </plannerBenchmark>
 ----
+
 
 [[rankingTheSolvers]]
 === Ranking The ``Solver``s
@@ -424,8 +439,10 @@ Or by implementing a weight factory:
   </benchmarkReport>
 ----
 
+
 [[benchmarkReportSummaryStatistics]]
 == Summary Statistics
+
 
 [[benchmarkReportBestScoreSummary]]
 === Best Score Summary (Graph And Table)
@@ -450,6 +467,7 @@ Useful for visualizing the scalability of each solver configuration.
 The problem scale will report `0` if any `@ValueRangeProvider` method signature returns ValueRange (instead of `CountableValueRange` or ``Collection``).
 ====
 
+
 [[benchmarkReportBestScoreDistributionSummary]]
 === Best Score Distribution Summary (Graph)
 
@@ -463,6 +481,7 @@ image::Chapter-Benchmarking_and_tweaking/bestScoreDistributionSummary.png[align=
 
 Enable <<statisticalBenchmarking,statistical benchmarking>> to use this summary.
 
+
 [[benchmarkReportWinningScoreDifferenceSummary]]
 === Winning Score Difference Summary (Graph And Table)
 
@@ -471,6 +490,7 @@ The winning score difference is the score difference with the score of the winni
 
 Useful for zooming in on the results of the best score summary.
 
+
 [[benchmarkReportWorstScoreDifferencePercentageSummary]]
 === Worst Score Difference Percentage (ROI) Summary (Graph and Table)
 
@@ -478,12 +498,14 @@ Shows the return on investment (ROI) per `inputSolutionFile` for each solver con
 
 Useful for visualizing the return on investment (ROI) to decision makers.
 
+
 [[benchmarkReportScoreCalculationSpeedSummary]]
 === Score Calculation Speed Summary (Graph and Table)
 
 Shows the score calculation speed: a count per second per problem scale for each solver configuration.
 
 Useful for comparing different score calculators and/or score rule implementations (presuming that the solver configurations do not differ otherwise). Also useful to measure the scalability cost of an extra constraint.
+
 
 [[benchmarkReportTimeSpentSummary]]
 === Time Spent Summary (Graph And Table)
@@ -493,6 +515,7 @@ This is pointless if it's benchmarking against a fixed time limit.
 
 Useful for visualizing the performance of construction heuristics (presuming that no other solver phases are configured).
 
+
 [[benchmarkReportTimeSpentScalabilitySummary]]
 === Time Spent Scalability Summary (Graph)
 
@@ -500,6 +523,7 @@ Shows the time spent per problem scale for each solver configuration.
 This is pointless if it's benchmarking against a fixed time limit.
 
 Useful for extrapolating the scalability of construction heuristics (presuming that no other solver phases are configured).
+
 
 [[benchmarkReportBestScorePerTimeSpentSummary]]
 === Best Score Per Time Spent Summary (Graph)
@@ -509,8 +533,10 @@ This is pointless if it's benchmarking against a fixed time limit.
 
 Useful for visualizing trade-off between the best score versus the time spent for construction heuristics (presuming that no other solver phases are configured).
 
+
 [[benchmarkReportStatisticPerDataset]]
 == Statistic Per Dataset (Graph And CSV)
+
 
 [[enableAProblemStatistic]]
 === Enable A Problem Statistic
@@ -547,6 +573,7 @@ The non-optional summary statistics cannot slow down the solver noticeably.
 
 
 The following types are supported:
+
 
 [[benchmarkReportBestScoreOverTimeStatistic]]
 === Best Score Over Time Statistic (Graph And CSV)
@@ -605,6 +632,7 @@ But it shouldn't deteriorate too much either.
 The step score statistic has been seen to slow down the solver noticeably due to GC stress, especially for fast stepping algorithms (such as Simulated Annealing and Late Acceptance).
 ====
 
+
 [[benchmarkReportScoreCalculationSpeedtatistic]]
 === Score Calculation Speed Statistic (Graph And CSV)
 
@@ -629,6 +657,7 @@ The initial high calculation speed is typical during solution initialization: it
 After those few seconds of initialization, the calculation speed is relatively stable, apart from an occasional stop-the-world garbage collector disruption.
 ====
 
+
 [[benchmarkReportBestSolutionMutationOverTimeStatistic]]
 === Best Solution Mutation Over Time Statistic (Graph And CSV)
 
@@ -647,6 +676,7 @@ image::Chapter-Benchmarking_and_tweaking/bestSolutionMutationStatistic.png[align
 
 
 Use Tabu Search - an algorithm that behaves like a human - to get an estimation on how difficult it would be for a human to improve the previous best solution to that new best solution.
+
 
 [[benchmarkReportMoveCountPerStepStatistic]]
 === Move Count Per Step Statistic (Graph And CSV)
@@ -670,6 +700,7 @@ image::Chapter-Benchmarking_and_tweaking/moveCountPerStepStatistic.png[align="ce
 This statistic has been seen to slow down the solver noticeably due to GC stress, especially for fast stepping algorithms (such as Simulated Annealing and Late Acceptance).
 ====
 
+
 [[benchmarkReportMemoryUseStatistic]]
 === Memory Use Statistic (Graph And CSV)
 
@@ -692,8 +723,10 @@ image::Chapter-Benchmarking_and_tweaking/memoryUseStatistic.png[align="center"]
 The memory use statistic has been seen to affect the solver noticeably.
 ====
 
+
 [[benchmarkReportStatisticPerSingleBenchmark]]
 == Statistic Per Single Benchmark (Graph And CSV)
+
 
 [[enableASingleStatistic]]
 === Enable A Single Statistic
@@ -732,6 +765,7 @@ That's why they are optional and not enabled by default.
 
 The following types are supported:
 
+
 [[benchmarkReportConstraintMatchTotalBestScoreOverTimeStatistic]]
 === Constraint Match Total Best Score Over Time Statistic (Graph And CSV)
 
@@ -756,6 +790,7 @@ Requires the score calculation to support <<explainingTheScore,constraint matche
 The constraint match total statistics has been seen to affect the solver noticeably.
 ====
 
+
 [[benchmarkReportConstraintMatchTotalStepScoreOverTimeStatistic]]
 === Constraint Match Total Step Score Over Time Statistic (Graph And CSV)
 
@@ -779,6 +814,7 @@ Requires the score calculation to support <<explainingTheScore,constraint matche
 ====
 The constraint match total statistics has been seen to affect the solver noticeably.
 ====
+
 
 [[benchmarkReportPickedMoveTypeBestScoreDiffOverTimeStatistic]]
 === Picked Move Type Best Score Diff Over Time Statistic (Graph And CSV)
@@ -817,8 +853,10 @@ image::Chapter-Benchmarking_and_tweaking/pickedMoveTypeStepScoreDiffStatistic.pn
 [[advancedBenchmarking]]
 == Advanced Benchmarking
 
+
 [[benchmarkingPerformanceTricks]]
 === Benchmarking Performance Tricks
+
 
 [[parallelBenchmarkingOnMultipleThreads]]
 ==== Parallel Benchmarking On Multiple Threads
@@ -893,6 +931,7 @@ In the future, we will also support multi-JVM benchmarking.
 This feature is independent of https://issues.jboss.org/browse/PLANNER-76[multi-threaded solving] or multi-JVM solving.
 ====
 
+
 [[statisticalBenchmarking]]
 === Statistical Benchmarking
 
@@ -925,6 +964,7 @@ The `subSingleCount` defaults to `1` (so no statistical benchmarking).
 ====
 If `subSingleCount` is higher than ``1``, the benchmarker will automatically use a _different_<<randomNumberGenerator,`Random` seed>> for every sub single run, without losing reproducibility (for each sub single index) in <<environmentMode,EnvironmentMode>>``REPRODUCIBLE`` and lower.
 ====
+
 
 [[templateBasedBenchmarking]]
 === Template Based Benchmarking And Matrix Benchmarking
@@ -1006,6 +1046,7 @@ And build it with the class ``PlannerBenchmarkFactory``:
                 "org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
 ----
+
 
 [[benchmarkReportAggregation]]
 === Benchmark Report Aggregation

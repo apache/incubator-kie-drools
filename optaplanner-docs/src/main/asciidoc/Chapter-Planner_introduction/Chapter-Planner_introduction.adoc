@@ -7,6 +7,7 @@
 :experimental:
 :sourcedir: .
 
+
 [[whatIsOptaPlanner]]
 == What is OptaPlanner?
 
@@ -38,6 +39,7 @@ OptaPlanner helps normal Java^TM^
  programmers solve constraint satisfaction problems efficiently.
 Under the hood, it combines optimization heuristics and metaheuristics with very efficient score calculation.
 
+
 [[requirements]]
 == Requirements
 
@@ -57,6 +59,7 @@ image::Chapter-Planner_introduction/compatibility.png[align="center"]
 
 [[whatIsAPlanningProblem]]
 == What is a Planning Problem?
+
 
 [[aPlanningProblemIsNPCompleteOrNPHard]]
 === A Planning Problem is NP-complete or NP-hard
@@ -86,6 +89,7 @@ The implication of this is pretty dire: solving your problem is probably harder 
 By using advanced optimization algorithms, *OptaPlanner does find a good solution in
       reasonable time for such planning problems.*
 
+
 [[aPlanningProblemHasConstraints]]
 === A Planning Problem Has (Hard and Soft) Constraints
 
@@ -109,6 +113,7 @@ Each solution of a planning problem can be graded with a score. **With OptaPlann
       code or Drools rules**.
 Such code is easy, flexible and scalable.
 
+
 [[aPlanningProblemHasAHugeSearchSpace]]
 === A Planning Problem Has a Huge Search Space
 
@@ -128,8 +133,10 @@ OptaPlanner supports several optimization algorithms to efficiently wade through
 Depending on the use case, some optimization algorithms perform better than others, but it's impossible to tell in advance. **With OptaPlanner, it is easy to switch the
       optimization algorithm**, by changing the solver configuration in a few lines of XML or code.
 
+
 [[_downloadandruntheexamples]]
 == Download and Run the Examples
+
 
 [[getTheReleaseZipAndRunTheExamples]]
 === Get the Release .zip and Run the Examples
@@ -215,6 +222,7 @@ To run the examples in your favorite IDE:
 
 To run a specific example directly and skip the example selection window, run its `App` class (for example ``CloudBalancingApp``) instead of ``OptaPlannerExamplesApp``.
 
+
 [[useWithMavenGradleEtc]]
 === Use OptaPlanner with Maven, Gradle, Ivy, Buildr or ANT
 
@@ -267,6 +275,7 @@ It also contains the jars used by other modules, such as ``optaplanner-benchmark
 Check the maven repository [path]_pom.xml_
  files to determine the minimal dependency set of a specific module (for a specific version).
 ====
+
 
 [[buildFromSource]]
 === Build OptaPlanner from Source
@@ -328,6 +337,7 @@ $ mvn exec:java
 [[governance]]
 == Governance
 
+
 [[statusOfOptaPlanner]]
 === Status of OptaPlanner
 
@@ -343,6 +353,7 @@ OptaPlanner is:
 === Release Notes
 
 We release a `Beta` or `CR` version every few weeks and a `Final` version every few months. https://www.optaplanner.org/download/releaseNotes/[Read the release notes of each release on our website.]
+
 
 [[backwardsCompatibility]]
 === Backwards Compatibility
@@ -360,6 +371,7 @@ This documentation covers some `impl` classes too.
 Those documented `impl` classes are reliable and safe to use (unless explicitly marked as experimental in this documentation), but we're just not entirely comfortable yet to write their signatures in stone.
 ====
 
+
 [[communityAndSupport]]
 === Community and Support
 
@@ -372,6 +384,7 @@ Pull requests are very welcome on GitHub and get priority treatment! By open sou
 
 Red Hat sponsors OptaPlanner development by employing the core team.
 For enterprise support and consulting, take a look at https://www.optaplanner.org/community/product.html[the BRMS and BPM Suite products] (which contain OptaPlanner) or https://www.redhat.com/en/about/contact/sales[contact Red Hat].
+
 
 [[relationshipWithKie]]
 === Relationship with Drools and jBPM

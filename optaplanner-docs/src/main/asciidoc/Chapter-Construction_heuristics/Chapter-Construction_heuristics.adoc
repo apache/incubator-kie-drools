@@ -7,6 +7,7 @@
 :experimental:
 :sourcedir: .
 
+
 [[constructionHeuristicsOverview]]
 == Overview
 
@@ -15,8 +16,10 @@ Its solution isn't always feasible, but it finds it fast so metaheuristics can f
 
 Construction heuristics terminate automatically, so there's usually no need to configure a `Termination` on the construction heuristic phase specifically.
 
+
 [[firstFit]]
 == First Fit
+
 
 [[firstFitAlgorithm]]
 === Algorithm Description
@@ -32,6 +35,7 @@ image::Chapter-Construction_heuristics/firstFitNQueens04.png[align="center"]
 
 Notice that it starts with putting `Queen` A into row 0 (and never moving it later), which makes it impossible to reach the optimal solution.
 Suffixing this construction heuristic with metaheuristics can remedy that.
+
 
 [[firstFitConfiguration]]
 === Configuration
@@ -54,8 +58,10 @@ If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this 
 For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
       Queue>>.
 
+
 [[firstFitDecreasing]]
 == First Fit Decreasing
+
 
 [[firstFitDecreasingAlgorithm]]
 === Algorithm Description
@@ -75,6 +81,7 @@ image::Chapter-Construction_heuristics/firstFitDecreasingNQueens04.png[align="ce
 One would expect that this algorithm has better results than First Fit.
 That's usually the case, but not always.
 ====
+
 
 [[firstFitDecreasingConfiguration]]
 === Configuration
@@ -97,8 +104,10 @@ If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this 
 For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
       Queue>>.
 
+
 [[weakestFit]]
 == Weakest Fit
+
 
 [[weakestFitAlgorithm]]
 === Algorithm Description
@@ -114,6 +123,7 @@ Requires the model to support <<planningValueStrength,planning value strength
 Do not presume that this algorithm has better results than First Fit.
 That's often not the case.
 ====
+
 
 [[weakestFitConfiguration]]
 === Configuration
@@ -136,8 +146,10 @@ If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this 
 For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
       Queue>>.
 
+
 [[weakestFitDecreasing]]
 == Weakest Fit Decreasing
+
 
 [[weakestFitDecreasingAlgorithm]]
 === Algorithm Description
@@ -154,6 +166,7 @@ Do not presume that this algorithm has better results than First Fit Decreasing.
 That's often not the case.
 However, it is usually better than Weakest Fit.
 ====
+
 
 [[weakestFitDecreasingConfiguration]]
 === Configuration
@@ -176,8 +189,10 @@ If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this 
 For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
       Queue>>.
 
+
 [[strongestFit]]
 == Strongest Fit
+
 
 [[strongestFitAlgorithm]]
 === Algorithm Description
@@ -193,6 +208,7 @@ Requires the model to support <<planningValueStrength,planning value strength
 Do not presume that this algorithm has better results than First Fit or Weakest Fit.
 That's often not the case.
 ====
+
 
 [[strongestFitConfiguration]]
 === Configuration
@@ -215,8 +231,10 @@ If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this 
 For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
       Queue>>.
 
+
 [[strongestFitDecreasing]]
 == Strongest Fit Decreasing
+
 
 [[strongestFitDecreasingAlgorithm]]
 === Algorithm Description
@@ -233,6 +251,7 @@ Do not presume that this algorithm has better results than First Fit Decreasing 
 That's often not the case.
 However, it is usually better than Strongest Fit.
 ====
+
 
 [[strongestFitDecreasingConfiguration]]
 === Configuration
@@ -255,8 +274,10 @@ If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this 
 For advanced configuration, see <<allocateEntityFromQueue,Allocate Entity From
       Queue>>.
 
+
 [[allocateEntityFromQueue]]
 == Allocate Entity From Queue
+
 
 [[allocateEntityFromQueueAlgorithm]]
 === Algorithm Description
@@ -340,6 +361,7 @@ Per step, the `QueuedEntityPlacer` selects 1 uninitialized entity from the `Enti
 
 To customize the entity or value sorting, see <<sortedSelection,sorted selection>>.
 Other `Selector` customization (such as <<filteredSelection,filtering>> and <<limitedSelection,limiting>>) is supported too.
+
 
 [[allocateEntityFromQueueMultipleVariables]]
 === Multiple Variables
@@ -436,6 +458,7 @@ With 3 or more variables, it's possible to combine the cartesian product and seq
   </constructionHeuristic>
 ----
 
+
 [[allocateEntityFromQueueMultipleEntityClasses]]
 === Multiple Entity Classes
 
@@ -468,6 +491,7 @@ The easiest way to deal with multiple entity classes is to run a separate constr
     ...
   </constructionHeuristic>
 ----
+
 
 [[constructionHeuristicsPickEarlyType]]
 === Pick Early Type
@@ -536,6 +560,7 @@ If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, use `
 [[allocateToValueFromQueue]]
 == Allocate To Value From Queue
 
+
 [[allocateToValueFromQueueAlgorithm]]
 === Algorithm Description
 
@@ -595,8 +620,10 @@ For example, a configuration for a single entity class with a single variable:
   </constructionHeuristic>
 ----
 
+
 [[cheapestInsertion]]
 == Cheapest Insertion
+
 
 [[cheapestInsertionAlgorithm]]
 === Algorithm Description
@@ -614,6 +641,7 @@ image::Chapter-Construction_heuristics/cheapestInsertionNQueens04.png[align="cen
 ====
 Cheapest Insertion scales considerably worse than First Fit, etc.
 ====
+
 
 [[cheapestInsertionConfiguration]]
 === Configuration
@@ -635,8 +663,10 @@ If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, this 
 
 For advanced configuration, see <<allocateFromPool,Allocate from pool>>.
 
+
 [[regretInsertion]]
 == Regret Insertion
+
 
 [[regretInsertionAlgorithm]]
 === Algorithm Description
@@ -646,13 +676,16 @@ It also cycles through all the planning values for all the planning entities, in
 But instead of picking the entity-value combination with the best score, it picks the entity which has the largest score loss between its best and second best value assignment.
 It then assigns that entity to its best value, to avoid regretting not having done that.
 
+
 [[regretInsertionConfiguration]]
 === Configuration
 
 This algorithm has not been implemented yet.
 
+
 [[allocateFromPool]]
 == Allocate From Pool
+
 
 [[allocateFromPoolAlgorithm]]
 === Algorithm Description

@@ -7,8 +7,10 @@
 :experimental:
 :sourcedir: .
 
+
 [[scoreTerminology]]
 == Score Terminology
+
 
 [[whatIsAScore]]
 === What is a Score?
@@ -42,6 +44,7 @@ Luckily, defining constraints in Planner is very flexible through the following 
 Take the time to acquaint yourself with the first 3 techniques.
 Once you understand them, formalizing most business constraints becomes straightforward.
 
+
 [[scoreConstraintSignum]]
 === Score Constraint Signum (Positive or Negative)
 
@@ -71,6 +74,7 @@ Expect score constraints to be added or changed after the first releases.
 
 
 When a constraint activates (because the negative constraint is broken or the positive constraint is fulfilled) on a certain planning entity set, it is called a __constraint match__.
+
 
 [[scoreConstraintWeight]]
 === Score Constraint Weight
@@ -106,6 +110,7 @@ This allow the end-user to recalibrate constraint weights in the user interface 
 
 
 Most use cases use a `Score` with `int` weights, such as <<hardSoftScore,HardSoftScore>>.
+
 
 [[scoreLevel]]
 === Score Constraint Level (hard, soft, ...)
@@ -165,6 +170,7 @@ To model fairness or load balancing, there is <<fairnessScoreConstraints,no need
 
 Most use cases use a `Score` with two weights, such as <<hardSoftScore,HardSoftScore>>.
 
+
 [[paretoScoring]]
 === Pareto Scoring (AKA Multi-objective Optimization Scoring)
 
@@ -198,6 +204,7 @@ For example: having two apples is greater than one apple.
 One apple is equal to One orange.
 Yet, two apples are not greater than one orange (but actually equal). Pareto comparison violates the contract of the interface ``java.lang.Comparable``'s `compareTo` method, but Planners systems are __pareto comparison safe__, unless explicitly stated otherwise in this documentation.
 ====
+
 
 [[combiningScoreTechniques]]
 === Combining Score Techniques
@@ -248,6 +255,7 @@ public class CloudBalance {
 }
 ----
 
+
 [[avoidFloatingPointNumbersInScoreCalculation]]
 === Avoid Floating Point Numbers in Score Calculation
 
@@ -284,6 +292,7 @@ Therefore, in many cases, it can be worthwhile to multiply _all_ numbers for a s
 For example, if we multiple all weights by ``1000``, a fuelCost of `0.07` becomes a fuelCostMillis of `70` and no longer uses a decimal score weight.
 ====
 
+
 [[scoreType]]
 == Choose a Score Type
 
@@ -294,6 +303,7 @@ Most use cases use a ``HardSoftScore``.
 ====
 To properly write a `Score` to database (with JPA/Hibernate) or to XML/JSON (with XStream/JAXB/Jackson), see <<integration,the integration chapter>>.
 ====
+
 
 [[simpleScore]]
 === SimpleScore
@@ -406,8 +416,10 @@ Then hook your custom `ScoreDefinition` in the domain:
 
 To have it integrate seamlessly with <<jpaAndHibernatePersistingAScore,JPA/Hibernate>>, <<integrationWithXStream,XStream>>, ..., you 'll need to write some glue code.
 
+
 [[calculateTheScore]]
 == Calculate the `Score`
+
 
 [[scoreCalculationTypes]]
 === Score Calculation Types
@@ -434,6 +446,7 @@ This does not apply to _logically inserted_ objects, which can be changed by the
 Planner will not recalculate the score of a `Solution` if it can predict it (unless an <<environmentMode,environmentMode assertion>> is enabled). For example, after a winning step is done, there is no need to calculate the score because that move was done and undone earlier.
 As a result, there is no guarantee that such changes applied during score calculation are actually done.
 ====
+
 
 [[easyJavaScoreCalculation]]
 === Easy Java Score Calculation
@@ -511,6 +524,7 @@ Alternatively, build a `EasyScoreCalculator` instance at runtime and set it with
 ----
     solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setEasyScoreCalculator(easyScoreCalculator);
 ----
+
 
 [[incrementalJavaScoreCalculation]]
 === Incremental Java Score Calculation
@@ -680,8 +694,10 @@ public interface ConstraintMatchAwareIncrementalScoreCalculator<Solution_> {
 }
 ----
 
+
 [[droolsScoreCalculation]]
 === Drools Score Calculation
+
 
 [[droolsScoreCalculationOverview]]
 ==== Overview
@@ -712,6 +728,7 @@ Every score constraint is written as one or more score rules.
 ==== Drools Score Rules Configuration
 
 There are several ways to define where your score rules live.
+
 
 [[droolsScoreCalculationScoreDrl]]
 ===== A scoreDrl Resource on the Classpath
@@ -751,6 +768,7 @@ Optionally, you can also set drools configuration properties (but be careful of 
   </scoreDirectorFactory>
 ----
 
+
 [[droolsScoreCalculationScoreDrlFile]]
 ===== A scoreDrlFile
 
@@ -772,6 +790,7 @@ Worse, if they use a different Operating System, it is hard to choose a portable
 
 
 Add multiple `<scoreDrlFile>` elements if the score rules are split across multiple DRL files.
+
 
 [[droolsScoreCalculationKsessionName]]
 ===== A ksessionName in a Kjar from a Maven repository
@@ -807,6 +826,7 @@ Add the ksession name in the solver configuration as a `<ksessionName>` element:
 
 In this approach, it's required to use a `SolverFactory.createFromKieContainerXmlResource(...)` method to <<solverConfigurationByXML,build the `SolverFactory`>>.
 If no `<ksessionName>` element is specified, the default ksession of the `kmodule.xml` is used.
+
 
 [[implementingAScoreRule]]
 ==== Implementing a Score Rule
@@ -848,6 +868,7 @@ It would be a waste of time to write a score rule that only relates to problem f
 The `kcontext` variable is a magic variable in Drools Expert.
 The ``scoreHolder``'s method uses it to do incremental score calculation correctly and to create a `ConstraintMatch` instance.
 ====
+
 
 [[weighingScoreRules]]
 ==== Weighing Score Rules
@@ -923,6 +944,7 @@ rule "curriculumCompactness"
 end
 ----
 
+
 [[initializingScoreTrend]]
 === InitializingScoreTrend
 
@@ -961,6 +983,7 @@ Alternatively, you can also specify the trend for each score level separately:
   </scoreDirectorFactory>
 ----
 
+
 [[invalidScoreDetection]]
 === Invalid Score Detection
 
@@ -991,13 +1014,16 @@ but to verify that the score rules implement the real business needs,
 <<testingScoreConstraints, a unit test with a ScoreVerifier>> is usually better.
 ====
 
+
 [[scoreCalculationPerformanceTricks]]
 == Score Calculation Performance Tricks
+
 
 [[scoreCalculationPerformanceTricksOverview]]
 === Overview
 
 The `Solver` will normally spend most of its execution time running the score calculation (which is called in its deepest loops). Faster score calculation will return the same solution in less time with the same algorithm, which normally means a better solution in equal time.
+
 
 [[scoreCalculationSpeed]]
 === Score Calculation Speed
@@ -1018,6 +1044,7 @@ Furthermore, watching the calculation speed, allows you to remove or add score c
 Comparing the best score with the original would be wrong, because it is comparing apples and oranges.
 ====
 
+
 [[incrementalScoreCalculation]]
 === Incremental Score Calculation (with Deltas)
 
@@ -1035,6 +1062,7 @@ This is a huge performance and scalability gain. *Drools score calculation gives
 
 Notice that the speedup is relative to the size of your planning problem (your __n__), making incremental score calculation far more scalable.
 
+
 [[avoidCallingRemoteServicesDuringScoreCalculation]]
 === Avoid Calling Remote Services During Score Calculation
 
@@ -1042,6 +1070,7 @@ Do not call remote services in your score calculation (except if you are bridgin
 Cache the results of those remote services if possible.
 
 If some parts of a constraint can be calculated once, when the `Solver` starts, and never change during solving, then turn them into <<cachedProblemFact,cached problem facts>>.
+
 
 [[pointlessConstraints]]
 === Pointless Constraints
@@ -1055,6 +1084,7 @@ Do not go overboard with this.
 If some datasets do not use a specific constraint but others do, just return out of the constraint as soon as you can.
 There is no need to dynamically change your score calculation based on the dataset.
 ====
+
 
 [[buildInHardConstraint]]
 === Built-in Hard Constraint
@@ -1130,6 +1160,7 @@ There are several ways to deal with a score trap:
 Not all score constraints have the same performance cost.
 Sometimes one score constraint can kill the score calculation performance outright.
 Use the <<benchmarker,Benchmarker>> to do a one minute run and check what happens to the score calculation speed if you comment out all but one of the score constraints.
+
 
 [[fairnessScoreConstraints]]
 === Fairness Score Constraints
@@ -1215,6 +1246,7 @@ for (ConstraintMatchTotal constraintMatchTotal : guiScoreDirector.getConstraintM
 <<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically,
 but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires requires implementing an extra interface (see that section).
 ====
+
 
 [[testingScoreConstraints]]
 == Testing score constraints with JUnit

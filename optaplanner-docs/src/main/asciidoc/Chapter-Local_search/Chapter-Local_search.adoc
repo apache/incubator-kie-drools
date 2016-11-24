@@ -7,6 +7,7 @@
 :experimental:
 :sourcedir: .
 
+
 [[localSearchOverview]]
 == Overview
 
@@ -20,8 +21,10 @@ Therefore it's pretty natural to implement.
 
 **Local Search needs to start from an initialized solution**, therefore it's usually required to configure a Construction Heuristic phase before it.
 
+
 [[localSearchConcepts]]
 == Local Search Concepts
+
 
 [[localSearchStepByStep]]
 === Step by Step
@@ -76,6 +79,7 @@ Notice that a log message includes the `toString()` method of the `Move` impleme
 A naive Local Search configuration solves the 4 queens problem in 3 steps, by evaluating only 37 possible solutions (3 steps with 12 moves each + 1 starting solution), which is only fraction of all 256 possible solutions.
 It solves 16 queens in 31 steps, by evaluating only 7441 out of 18446744073709551616 possible solutions.
 By using a <<constructionHeuristics,Construction Heuristics>> phase first, it's even a lot more efficient.
+
 
 [[localSearchConceptsDecideTheNextStep]]
 === Decide the Next Step
@@ -149,6 +153,7 @@ By changing a few lines of configuration, you can easily switch from Tabu Search
 You can implement your own ``Acceptor``, but the build-in acceptors should suffice for most needs.
 You can also combine multiple acceptors.
 
+
 [[localSearchForager]]
 === Forager
 
@@ -165,6 +170,7 @@ It is possible to disable breaking ties randomly by explicitly setting `breakTie
 * Random tie breaking does not affect <<environmentMode,reproducibility>>.
 
 ====
+
 
 [[acceptedCountLimit]]
 ==== Accepted Count Limit
@@ -191,6 +197,7 @@ Use the <<benchmarker,Benchmarker>> to tweak the value.
 ====
 With a low `acceptedCountLimit` (so a fast stepping algorithm), it is recommended to avoid using `selectionOrder` SHUFFLED because the shuffling generates a random number for every element in the selector, taking up a lot of time, but only a few elements are actually selected.
 ====
+
 
 [[localSearchPickEarlyType]]
 ==== Pick Early Type
@@ -230,6 +237,7 @@ There are 3 pick early types for Local Search:
 [[hillClimbing]]
 == Hill Climbing (Simple Local Search)
 
+
 [[hillClimbingAlgorithm]]
 === Algorithm Description
 
@@ -245,6 +253,7 @@ image::Chapter-Local_search/hillClimbingNQueens04.png[align="center"]
 Notice that once a queen has moved, it can be moved again later.
 This is a good thing, because in an NP-complete problem it's impossible to predict what will be the optimal final value for a planning variable.
 
+
 [[hillClimbingStuckInLocalOptima]]
 === Stuck in Local Optima
 
@@ -258,6 +267,7 @@ image::Chapter-Local_search/hillClimbingGetsStuckInLocalOptimaNQueens04.png[alig
 
 Improvements upon Hill Climbing (such as Tabu Search, Simulated Annealing and Late Acceptance) address the problem of being stuck in local optima.
 Therefore, it's recommend to never use Hill Climbing, unless you're absolutely sure there are no local optima in your planning problem.
+
 
 [[hillClimbingConfigure]]
 === Configuration
@@ -287,8 +297,10 @@ Advanced configuration:
   </localSearch>
 ----
 
+
 [[tabuSearch]]
 == Tabu Search
+
 
 [[tabuSearchAlgorithm]]
 === Algorithm Description
@@ -310,6 +322,7 @@ There is no spelling error.
 
 
 Scientific paper: _Tabu Search - Part 1 and Part 2_ by Fred Glover (1989 - 1990)
+
 
 [[tabuSearchConfiguration]]
 === Configuration
@@ -435,8 +448,10 @@ If the tabu size is too small, the solver can still get stuck in a local optimum
 On the other hand, if the tabu size is too large, the solver can be inefficient by bouncing of the walls.
 Use the <<benchmarker,Benchmarker>> to fine tweak your configuration.
 
+
 [[simulatedAnnealing]]
 == Simulated Annealing
+
 
 [[simulatedAnnealingAlgorithm]]
 === Algorithm Description
@@ -454,6 +469,7 @@ Simulated Annealing does not always pick the move with the highest score, neithe
 At least at first.
 Instead, it gives non improving moves also a chance to be picked, depending on its score and the time gradient of the ``Termination``.
 In the end, it gradually turns into Hill Climbing, only accepting improving moves.
+
 
 [[simulatedAnnealingConfiguration]]
 === Configuration
@@ -497,8 +513,10 @@ Use a lower tabu size than in a pure Tabu Search configuration.
   </localSearch>
 ----
 
+
 [[lateAcceptance]]
 == Late Acceptance
+
 
 [[lateAcceptanceAlgorithm]]
 === Algorithm Description
@@ -511,6 +529,7 @@ image::Chapter-Local_search/lateAcceptance.png[align="center"]
 
 
 Scientific paper: http://www.cs.stir.ac.uk/research/publications/techreps/pdf/TR192.pdf[The Late Acceptance Hill-Climbing Heuristic by Edmund K. Burke, Yuri Bykov (2012)]
+
 
 [[lateAcceptanceConfiguration]]
 === Configuration
@@ -563,8 +582,10 @@ Use a lower tabu size than in a pure Tabu Search configuration.
   </localSearch>
 ----
 
+
 [[stepCountingHillClimbing]]
 == Step Counting Hill Climbing
+
 
 [[stepCountingHillClimbingAlgorithm]]
 === Algorithm Description
@@ -576,6 +597,7 @@ A move is accepted if it does not decrease the score, or if it leads to a score 
 Scientific paper: https://www.cs.nott.ac.uk/~yxb/SCHC/SCHC_mista2013_79.pdf[An
       initial study of a novel Step Counting Hill Climbing heuristic applied to timetabling problems by Yuri
       Bykov, Sanja Petrovic (2013)]
+
 
 [[stepCountingHillClimbingConfiguration]]
 === Configuration
@@ -601,8 +623,10 @@ Step Counting Hill Climbing should use a low ``acceptedCountLimit``.
 
 Step Counting Hill Climbing can be combined with a tabu acceptor at the same time, similar as shown in <<lateAcceptance,the Late Acceptance section>>.
 
+
 [[strategicOscillation]]
 == Strategic Oscillation
+
 
 [[strategicOscillationAlgorithm]]
 === Algorithm Description
@@ -611,6 +635,7 @@ Strategic Oscillation is an add-on, which works especially well with <<tabuSearc
       Search>>.
 Instead of picking the accepted move with the highest score, it employs a different mechanism: If there's an improving move, it picks it.
 If there's no improving move however, it prefers moves which improve a softer score level, over moves which break a harder score level less.
+
 
 [[strategicOscillationConfiguration]]
 === Configuration

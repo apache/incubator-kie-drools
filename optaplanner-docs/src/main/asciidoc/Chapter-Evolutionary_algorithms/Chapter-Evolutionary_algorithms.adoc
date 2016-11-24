@@ -7,15 +7,18 @@
 :experimental:
 :sourcedir: .
 
+
 [[evolutionaryAlgorithmsOverview]]
 == Overview
 
 Evolutionary Algorithms work on a population of solutions and evolve that population.
 
+
 [[evolutionaryStrategies]]
 == Evolutionary Strategies
 
 This algorithm has not been implemented yet.
+
 
 [[geneticAlgorithms]]
 == Genetic Algorithms

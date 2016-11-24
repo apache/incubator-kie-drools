@@ -7,6 +7,7 @@
 :experimental:
 :sourcedir: .
 
+
 [[integrationOverview]]
 == Overview
 
@@ -24,6 +25,7 @@ image::Chapter-Integration/integrationOverview.png[align="center"]
 
 [[integrationWithPersistentStorage]]
 == Persistent Storage
+
 
 [[integrationWithJpaAndHibernate]]
 === Database: JPA and Hibernate
@@ -45,6 +47,7 @@ public class Talk {...}
 
 
 Add a dependency to the `optaplanner-persistence-jpa` jar to take advantage of these extra integration features:
+
 
 [[jpaAndHibernatePersistingAScore]]
 ==== JPA and Hibernate: Persisting a `Score`
@@ -155,6 +158,7 @@ public class Schedule {
 
 All this support is Hibernate specific because currently JPA 2.1's converters do not support converting to multiple columns.
 
+
 [[jpaAndHibernatePlanningCloning]]
 ==== JPA and Hibernate: Planning Cloning
 
@@ -190,12 +194,14 @@ public class Room {
 
 Neglecting to do this can lead to persisting duplicate solutions, JPA exceptions or other side effects.
 
+
 [[integrationWithXStream]]
 === XML or JSON: XStream
 
 Enrich the domain POJO's (solution, entities and problem facts) with XStream annotations to serialize them to/from XML or JSON.
 
 Add a dependency to the `optaplanner-persistence-xstream` jar to take advantage of these extra integration features:
+
 
 [[xStreamMarshallingAScore]]
 ==== XStream: Marshalling a `Score`
@@ -259,12 +265,14 @@ For example, this will generate:
 
 The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score from an XML element, must always be in sync with those in the solver.
 
+
 [[integrationWithJaxb]]
 === XML or JSON: JAXB
 
 Enrich the domain POJO's (solution, entities and problem facts) with JAXB annotations to serialize them to/from XML or JSON.
 
 Add a dependency to the `optaplanner-persistence-jaxb` jar to take advantage of these extra integration features:
+
 
 [[jaxbMarshallingAScore]]
 ==== JAXB: Marshalling a `Score`
@@ -328,12 +336,14 @@ For example, with a `hardLevelsSize` of `2` and a `softLevelsSize` of ``3``, tha
 
 The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score from an XML element, must always be in sync with those in the solver.
 
+
 [[integrationWithJackson]]
 === JSON: Jackson
 
 Enrich the domain POJO's (solution, entities and problem facts) with Jackson annotations to serialize them to/from JSON.
 
 Add a dependency to the `optaplanner-persistence-jackson` jar to take advantage of these extra integration features:
+
 
 [[jacksonMarshallingAScore]]
 ==== JAXB: Marshalling a `Score`
@@ -397,8 +407,10 @@ For example, with a `hardLevelsSize` of `2` and a `softLevelsSize` of ``3``, tha
 
 The `hardLevelsSize` and `softLevelsSize` implied, when reading a bendable score from a JSON element, must always be in sync with those in the solver.
 
+
 [[integrationWithSoaAndEsb]]
 == SOA and ESB
+
 
 [[integrationWithCamel]]
 === Camel and Karaf
@@ -408,8 +420,10 @@ http://camel.apache.org/[Camel] is an enterprise integration framework which inc
 http://camel.apache.org/optaplanner.html[Read the documentation for the camel-optaplanner component.]
 That component works in Karaf too.
 
+
 [[integrationWithOtherEnvironments]]
 == Other Environments
+
 
 [[integrationWithJBossModules]]
 === JBoss Modules, WildFly and JBoss EAP
@@ -464,6 +478,7 @@ Let's create an module called __org.optaplanner__:
 Because of JBoss Modules' `ClassLoader` magic, you'll likely need to provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory
       creation>>, so it can find the classpath resources (such as the solver config, score DRL's and domain classes) in your jars.
 
+
 [[integrationWithOSGi]]
 === OSGi
 
@@ -478,6 +493,7 @@ Because of the OSGi's `ClassLoader` magic, you'll likely need to provide the `Cl
 Planner does _not_ require OSGi.
 It works perfectly fine in a normal Java environment too.
 ====
+
 
 [[integrationWithAndroid]]
 === Android

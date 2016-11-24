@@ -7,14 +7,17 @@
 :experimental:
 :sourcedir: .
 
+
 [[exhaustiveSearchOverview]]
 == Overview
 
 Exhaustive Search will always find the global optimum and recognize it too.
 That being said, it doesn't scale (not even beyond toy data sets) and is therefore mostly useless.
 
+
 [[bruteForce]]
 == Brute Force
+
 
 [[bruteForceAlgorithm]]
 === Algorithm Description
@@ -34,6 +37,7 @@ Notice that it creates a search tree that explodes exponentially as the problem 
         Search>>.
 ====
 
+
 [[bruteForceConfiguration]]
 === Configuration
 
@@ -49,8 +53,10 @@ Simplest configuration of Brute Force:
 </solver>
 ----
 
+
 [[branchAndBound]]
 == Branch And Bound
+
 
 [[branchAndBoundAlgorithm]]
 === Algorithm Description
@@ -84,6 +90,7 @@ So it hits the same scalability wall, only a little bit later.
         limitations**, as shown in <<scalabilityOfExhaustiveSearch,scalability of Exhaustive
         Search>>.
 ====
+
 
 [[branchAndBoundConfiguration]]
 === Configuration

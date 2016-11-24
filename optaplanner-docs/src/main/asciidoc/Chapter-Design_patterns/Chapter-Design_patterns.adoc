@@ -7,10 +7,12 @@
 :experimental:
 :sourcedir: .
 
+
 [[designPatternsIntroduction]]
 == Design Patterns Introduction
 
 These design patterns list and solve common design challenges.
+
 
 [[domainModelingGuide]]
 === Domain Modeling Guide
@@ -93,6 +95,7 @@ image::Chapter-Design_patterns/entityVariableAndValueExamples.png[align="center"
 Vehicle routing is special, because it uses a <<chainedPlanningVariable,chained planning variable>>.
 ====
 
+
 [[assigningTimeToPlanningEntities]]
 == Assigning Time to Planning Entities
 
@@ -150,6 +153,7 @@ Usually there is a second planning variable, for example the room.
 In course timetabling, two lectures are in conflict if they share the same room at the same timeslot.
 However, in exam timetabling, that is allowed, if there is enough seating capacity in the room (although mixed exam durations in the same room do inflict a soft score penalty).
 
+
 [[timeGrainPattern]]
 === TimeGrain Pattern: Assign to a Starting TimeGrain
 
@@ -166,6 +170,7 @@ Overlap of two entities is determined by comparing their start and end time grai
 This pattern also works well with a coarser time granularity (such as days, half days, hours, ...). With a finer time granularity (such as seconds, milliseconds, ...) and a long time window, the value range (and therefore <<searchSpaceSize,the search space>>) can become too high, which reduces efficiency and scalability.
 However, such solution is not impossible, as shown in <<cheapTimeScheduling,cheap time
       scheduling>>.
+
 
 [[chainedThroughTimePattern]]
 === Chained Through Time Pattern: Assign in a Chain that Determines Starting Time

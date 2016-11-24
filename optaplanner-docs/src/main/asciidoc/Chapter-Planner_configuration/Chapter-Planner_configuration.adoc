@@ -7,6 +7,7 @@
 :experimental:
 :sourcedir: .
 
+
 [[plannerConfigurationOverview]]
 == Overview
 
@@ -24,6 +25,7 @@ image::Chapter-Planner_configuration/inputOutputOverview.png[align="center"]
 
 [[solverConfiguration]]
 == Solver Configuration
+
 
 [[solverConfigurationByXML]]
 === Solver Configuration by XML
@@ -116,6 +118,7 @@ These various parts of a configuration are explained further in this manual.
 *Planner makes it relatively easy to switch optimization algorithm(s) just by changing
       the configuration.* There is even a <<benchmarker,Benchmarker>> which allows you to play out different configurations against each other and report the most appropriate configuration for your use case.
 
+
 [[solverConfigurationByJavaAPI]]
 === Solver Configuration by Java API
 
@@ -166,8 +169,10 @@ To configure a `SolverFactory` dynamically for each user request, build a `Solve
 ----
 ====
 
+
 [[annotationsConfiguration]]
 === Annotations Configuration
+
 
 [[automaticScanningForAnnotations]]
 ==== Automatic Scanning for Annotations
@@ -223,6 +228,7 @@ This finds all solution and entity classes in that package or its subpackages.
 If `scanAnnotatedClasses` is not specified, the `org.reflections` transitive maven dependency can be excluded.
 ====
 
+
 [[annotationAlternatives]]
 ==== Annotation Alternatives
 
@@ -236,8 +242,10 @@ There are several ways to deliver this information:
 
 This manual focuses on the first manner, but every features supports all 3 manners, even if it's not explicitly mentioned.
 
+
 [[modelAPlanningProblem]]
 == Model a Planning Problem
+
 
 [[isThisClassAProblemFactOrPlanningEntity]]
 === Is This Class a Problem Fact or Planning Entity?
@@ -263,6 +271,7 @@ In <<realTimePlanning,real-time planning>>, even though the problem itself chang
 To create a good domain model, read the <<domainModelingGuide,domain modeling guide>>.
 
 *In Planner, all problems facts and planning entities are plain old JavaBeans (POJOs).* Load them from a database, an XML file, a data repository, a REST service, a noSQL cloud, ... (see <<integration,integration>>): it doesn't matter.
+
 
 [[problemFact]]
 === Problem Fact
@@ -324,8 +333,10 @@ Alternatively, you can sometimes also introduce <<cachedProblemFact,_a cached
         problem fact_>> to enrich the domain model for planning only.
 ====
 
+
 [[planningEntity]]
 === Planning Entity
+
 
 [[planningEntityAnnotation]]
 ==== Planning Entity Annotation
@@ -401,6 +412,7 @@ Instead, calculate the free time in the score constraints (or as a <<shadowVaria
 If historic data needs to be considered too, then create problem fact to hold the total of the historic assignments up to, but __not including__, the planning window (so that it does not change when a planning entity changes) and let the score constraints take it into account.
 ====
 
+
 [[planningEntityDifficulty]]
 ==== Planning Entity Difficulty
 
@@ -466,8 +478,10 @@ Although most algorithms start with the more difficult entities first, they just
 _None of the current planning variable states should be used to compare planning entity difficulty._ During Construction Heuristics, those variables are likely to be `null` anyway.
 For example, a ``Queen``'s `row` variable should not be used.
 
+
 [[planningVariable]]
 === Planning Variable (genuine)
+
 
 [[planningVariableAnnotation]]
 ==== Planning Variable Annotation
@@ -525,6 +539,7 @@ public class Queen {
 }
 ----
 
+
 [[nullablePlanningVariable]]
 ==== Nullable Planning Variable
 
@@ -567,6 +582,7 @@ One way to deal with this, is to change when a planning entity should be reiniti
     }
 ----
 
+
 [[whenIsAPlanningVariableInitialized]]
 ==== When is a Planning Variable Considered Initialized?
 
@@ -577,8 +593,10 @@ A planning entity is initialized if all of its planning variables are initialize
 
 A `Solution` is initialized if all of its planning entities are initialized.
 
+
 [[planningValueAndPlanningValueRange]]
 === Planning Value and Planning Value Range
+
 
 [[planningValue]]
 ==== Planning Value
@@ -590,8 +608,10 @@ It can even be another planning entity or even a interface implemented by both a
 A planning value range is the set of possible planning values for a planning variable.
 This set can be a countable (for example row ``1``, ``2``, `3` or ``4``) or uncountable (for example any `double` between `0.0` and ``1.0``).
 
+
 [[planningValueRangeProvider]]
 ==== Planning Value Range Provider
+
 
 [[planningValueRangeProviderOverview]]
 ===== Overview
@@ -669,6 +689,7 @@ public class NQueens {
 }
 ----
 
+
 [[valueRangeProviderOnPlanningEntity]]
 ===== `ValueRangeProvider` on the Planning Entity
 
@@ -716,6 +737,7 @@ A `ValueRangeProvider` on the planning entity consumes more memory than `ValueRa
 ====
 A `ValueRangeProvider` on the planning entity is not currently compatible with a <<chainedPlanningVariable,chained>> variable.
 ====
+
 
 [[valueRangeFactory]]
 ===== `ValueRangeFactory`
@@ -788,6 +810,7 @@ Value range providers can be combined, for example:
     }
 ----
 
+
 [[planningValueStrength]]
 ==== Planning Value Strength
 
@@ -858,6 +881,7 @@ For example in bin packing: small container < medium container < big container.
 
 _None of the current planning variable state in any of the planning entities should be used to compare planning values._ During construction heuristics, those variables are likely to be ``null``.
 For example, none of the `row` variables of any `Queen` may be used to determine the strength of a ``Row``.
+
 
 [[chainedPlanningVariable]]
 ==== Chained Planning Variable (TSP, VRP, ...)
@@ -969,6 +993,7 @@ Notice how two value range providers are usually combined:
 [[shadowVariable]]
 === Shadow Variable
 
+
 [[shadowVariableIntroduction]]
 ==== Introduction
 
@@ -999,6 +1024,7 @@ A shadow planning entity class has no genuine planning variables and at least on
 
 
 There are several build-in shadow variables:
+
 
 [[bidirectionalVariable]]
 ==== Bi-directional Variable (Inverse Relation Shadow Variable)
@@ -1094,6 +1120,7 @@ If A points to B, then B must point to A.
 Planner will not violate that principle during planning, but the input must not violate it.
 ====
 
+
 [[anchorShadowVariable]]
 ==== Anchor Shadow Variable
 
@@ -1116,6 +1143,7 @@ public class Customer {
 
 
 The `sourceVariableName` property is the name of the chained variable on the same entity class.
+
 
 [[customVariableListener]]
 ==== Custom `VariableListener`
@@ -1211,6 +1239,7 @@ If one `VariableListener` changes two shadow variables (because having two separ
     }
 ----
 
+
 [[variableListenerTriggeringOrder]]
 ==== VariableListener triggering order
 
@@ -1253,8 +1282,10 @@ public class StartTimeUpdatingVariableListener implements VariableListener<Task>
 }
 ----
 
+
 [[planningProblemAndPlanningSolution]]
 === Planning Problem and Planning Solution
+
 
 [[planningProblemInstance]]
 ==== Planning Problem Instance
@@ -1268,6 +1299,7 @@ A planning problem is actually an unsolved planning solution or - stated differe
 For example in n queens, that `NQueens` class has the `@PlanningSolution` annotation, yet every `Queen` in an unsolved `NQueens` class is not yet assigned to a `Row` (their `row` property is ``null``). That's not a feasible solution.
 It's not even a possible solution.
 It's an uninitialized solution.
+
 
 [[solutionClass]]
 ==== Solution Class
@@ -1308,6 +1340,7 @@ Without <<automaticScanningForAnnotations,automated scanning>>, the solver confi
 </solver>
 ----
 
+
 [[planningEntitiesOfASolution]]
 ==== Planning Entities of a Solution (@PlanningEntityCollectionProperty)
 
@@ -1342,6 +1375,7 @@ It is ignored on parent classes or subclasses without that annotation.
 
 
 In rare cases, a planning entity might be a singleton: use `@PlanningEntityProperty` on its getter (or field) instead.
+
 
 [[scoreOfASolution]]
 ==== `Score` of a Solution (``@PlanningScore``)
@@ -1396,6 +1430,7 @@ public class CloudBalance {
 
 Some use cases use <<scoreType,other `Score` types>>.
 
+
 [[getProblemFacts]]
 ==== Problem Facts of a Solution (``@ProblemFactCollectionProperty``)
 
@@ -1448,6 +1483,7 @@ It is ignored on parent classes or subclasses without that annotation.
 
 In rare cases, a problem fact might be a singleton: use `@ProblemFactProperty` on its method (or field) instead.
 
+
 [[cachedProblemFact]]
 ===== Cached Problem Fact
 
@@ -1483,6 +1519,7 @@ For example in examination, a cached problem fact `TopicConflict` is created for
 
 Where a score constraint needs to check that no two exams with a topic that shares a student are scheduled close together (depending on the constraint: at the same time, in a row, or in the same day), the `TopicConflict` instance can be used as a problem fact, rather than having to combine every two `Student` instances.
 
+
 [[cloningASolution]]
 ==== Cloning a Solution
 
@@ -1502,6 +1539,7 @@ A planning clone of a solution must fulfill these requirements:
 image::Chapter-Planner_configuration/solutionCloning.png[align="center"]
 
 *Implementing a planning clone method is hard, therefore you do not need to implement it.*
+
 
 [[fieldAccessingSolutionCloner]]
 ===== `FieldAccessingSolutionCloner`
@@ -1535,6 +1573,7 @@ public class SeatDesignationDependency {
 In the example above, because `SeatDesignation` is a planning entity (which is deep planning cloned automatically), `SeatDesignationDependency` must also be deep planning cloned.
 
 Alternatively, the `@DeepPlanningClone` annotation can also be used on a getter method.
+
 
 [[customCloning]]
 ===== Custom Cloning with a SolutionCloner
@@ -1593,6 +1632,7 @@ For example, if you were to clone all `Row` instances, then each `Queen` clone a
 Cloning an entity with a <<chainedPlanningVariable,chained>> variable is devious: a variable of an entity A might point to another entity B.
 If A is cloned, then its variable must point to the clone of B, not the original B.
 ====
+
 
 [[createAnUninitializedSolution]]
 ==== Create an Uninitialized Solution
@@ -1655,8 +1695,10 @@ Usually, most of this data comes from your data layer, and your `Solution` imple
         }
 ----
 
+
 [[useTheSolver]]
 == Use the `Solver`
+
 
 [[theSolverInterface]]
 === The `Solver` Interface
@@ -1677,6 +1719,7 @@ public interface Solver<Solution_> {
 A `Solver` can only solve one planning problem instance at a time.
 A `Solver` should only be accessed from a single thread, except for the methods that are specifically javadocced as being thread-safe.
 It is built with a ``SolverFactory``, there is no need to implement it yourself.
+
 
 [[solvingAProblem]]
 === Solving a Problem
@@ -1718,6 +1761,7 @@ The `Solution` instance given to the `solve(Solution)` method does not need to b
 It can be partially or fully initialized, which is often the case in <<repeatedPlanning,repeated planning>>.
 ====
 
+
 [[environmentMode]]
 === Environment Mode: Are There Bugs in my Code?
 
@@ -1742,6 +1786,7 @@ The environment mode influences the seed of that `Random` instance.
 
 These are the environment modes:
 
+
 [[environmentModeFullAssert]]
 ==== FULL_ASSERT
 
@@ -1751,6 +1796,7 @@ This mode is reproducible (see the reproducible mode). It is also intrusive beca
 
 The FULL_ASSERT mode is horribly slow (because it does not rely on incremental score calculation).
 
+
 [[environmentModeNonIntrusiveFullAssert]]
 ==== NON_INTRUSIVE_FULL_ASSERT
 
@@ -1759,6 +1805,7 @@ The NON_INTRUSIVE_FULL_ASSERT turns on several assertions to fail-fast on a bug 
 This mode is reproducible (see the reproducible mode). It is non-intrusive because it does not call the method `calculateScore()` more frequently than a non assert mode.
 
 The NON_INTRUSIVE_FULL_ASSERT mode is horribly slow (because it does not rely on incremental score calculation).
+
 
 [[environmentModeFastAssert]]
 ==== FAST_ASSERT
@@ -1770,6 +1817,7 @@ This mode is reproducible (see the reproducible mode). It is also intrusive beca
 The FAST_ASSERT mode is slow.
 
 It is recommended to write a test case that does a short run of your planning problem with the FAST_ASSERT mode on.
+
 
 [[environmentModeReproducible]]
 ==== REPRODUCIBLE (default)
@@ -1795,6 +1843,7 @@ If your production environment can benefit from reproducibility, use this mode i
 
 In practice, this mode uses the default, fixed <<randomNumberGenerator,random seed>> if no seed is specified, and it also disables certain concurrency optimizations (such as work stealing).
 
+
 [[environmentModeProduction]]
 ==== NON_REPRODUCIBLE
 
@@ -1803,6 +1852,7 @@ Avoid using it during development as it makes debugging and bug fixing painful.
 If your production environment doesn't care about reproducibility, use this mode in production.
 
 In practice, this mode uses no fixed <<randomNumberGenerator,random seed>> if no seed is specified.
+
 
 [[logging]]
 === Logging Level: What is the `Solver` Doing?
@@ -1942,6 +1992,7 @@ For example in Logback, use a `SiftingAppender` in ``logback.xml``:
   </appender>
 ----
 ====
+
 
 [[randomNumberGenerator]]
 === Random Number Generator

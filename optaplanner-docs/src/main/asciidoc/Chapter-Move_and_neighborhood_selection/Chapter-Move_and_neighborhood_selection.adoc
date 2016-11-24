@@ -7,8 +7,10 @@
 :experimental:
 :sourcedir: .
 
+
 [[moveAndNeighborhoodSelectionIntroduction]]
 == `Move` and Neighborhood Introduction
+
 
 [[whatIsAMove]]
 === What is a ``Move``?
@@ -52,6 +54,7 @@ But it must not change the problem facts.
 All optimization algorithms use ``Move``'s to transition from one solution to a neighbor solution.
 Therefore, all the optimization algorithms are confronted with `Move` selection: the craft of creating and iterating moves efficiently and the art of finding the most promising subset of random moves to evaluate first.
 
+
 [[whatIsAMoveSelector]]
 === What is a ``MoveSelector``?
 
@@ -71,6 +74,7 @@ Here's an example how to configure a `changeMoveSelector` for the optimization a
 
 Out of the box, this works and all properties of the `changeMoveSelector` are defaulted sensibly (unless that fails fast due to ambiguity). On the other hand, the configuration can be customized significantly for specific use cases.
 For example: you might want to configure a <<filteredSelection,filter>> to discard pointless moves.
+
 
 [[subselectingOfEntitiesValuesAndOtherMoves]]
 === Subselecting of Entities, Values and Other Moves
@@ -107,8 +111,10 @@ image::Chapter-Move_and_neighborhood_selection/selectorTree.png[align="center"]
 
 The root of this tree is a `MoveSelector` which is injected into the optimization algorithm implementation to be (partially) iterated in every step.
 
+
 [[genericMoveSelectors]]
 == Generic MoveSelectors
+
 
 [[changeMoveSelector]]
 === changeMoveSelector
@@ -155,6 +161,7 @@ A `ChangeMove` is the finest grained move.
 Almost every `moveSelector` configuration injected into a metaheuristic algorithm should include a changeMoveSelector or a custom implementation.
 This guarantees that every possible `Solution` can be reached through applying a number of moves in sequence (not taking <<scoreTrap,score traps>> into account). Of course, normally it is unioned with other, more coarse grained move selectors.
 ====
+
 
 [[swapMoveSelector]]
 === swapMoveSelector
@@ -203,6 +210,7 @@ The `secondaryEntitySelector` is rarely needed: if it is not specified, entities
 
 If one or more `variableNameInclude` properties are specified, not all planning variables will be swapped, but only those specified.
 For example for course scheduling, specifying only `variableNameInclude` room will make it only swap room, not period.
+
 
 [[pillarChangeMoveSelector]]
 === pillarChangeMoveSelector
@@ -261,6 +269,7 @@ Therefore a `pillarSelector` only supports <<justInTimeRandomSelection,JIT rando
 
 The other properties are explained in <<changeMoveSelector,changeMoveSelector>>.
 
+
 [[pillarSwapMoveSelector]]
 === pillarSwapMoveSelector
 
@@ -309,6 +318,7 @@ The `secondaryPillarSelector` is rarely needed: if it is not specified, entities
 
 The other properties are explained in <<swapMoveSelector,swapMoveSelector>> and <<pillarChangeMoveSelector,pillarChangeMoveSelector>>.
 
+
 [[tailChainSwapMoveSelector]]
 === tailChainSwapMoveSelector or 2-opt (chained variables only)
 
@@ -352,6 +362,7 @@ It uses a `valueSelector` instead of a `secondaryEntitySelector` to be able to i
 ====
 Although `subChainChangeMoveSelector` and `subChainSwapMoveSelector` include almost every possible ``tailChainSwapMove``, experiments have shown that focusing on ``tailChainSwapMove``s increases efficiency.
 ====
+
 
 [[subChainChangeMoveSelector]]
 === subChainChangeMoveSelector (chained variables only)
@@ -403,6 +414,7 @@ Furthermore, in a ``SubChainSwapMoveSelector``, setting `minimumSubChainSize` pr
 
 The `selectReversingMoveToo` property (defaults to true) enables selecting the reverse of every subchain too.
 
+
 [[subChainSwapMoveSelector]]
 === subChainSwapMoveSelector (chained variables only)
 
@@ -448,8 +460,10 @@ The `secondarySubChainSelector` is rarely needed: if it is not specified, entiti
 
 The other properties are explained in <<subChainChangeMoveSelector,subChainChangeMoveSelector>>.
 
+
 [[combiningMultipleMoveSelectors]]
 == Combining Multiple ``MoveSelector``s
+
 
 [[unionMoveSelector]]
 === unionMoveSelector
@@ -530,6 +544,7 @@ To give each individual `Move` the same selection chance (as opposed to each ``M
     </unionMoveSelector>
 ----
 
+
 [[cartesianProductMoveSelector]]
 === cartesianProductMoveSelector
 
@@ -575,6 +590,7 @@ For example: a cartesian product of `changeMoveSelector` A and B, for which B is
 
 To enforce that 2 child selectors use the same entity or value efficiently, use <<mimicSelection,mimic selection>>, not move filtering.
 
+
 [[entitySelector]]
 == EntitySelector
 
@@ -598,6 +614,7 @@ Advanced configuration:
 
 
 The `entityClass` property is only required if it cannot be deduced automatically because there are multiple entity classes.
+
 
 [[valueSelector]]
 == ValueSelector
@@ -636,8 +653,10 @@ In exotic Construction Heuristic configurations, the `entityClass` from the `Ent
 
 If a selected entity cannot be downcasted, the `ValueSelector` is empty for that entity.
 
+
 [[generalSelectorFeatures]]
 == General `Selector` Features
+
 
 [[cacheType]]
 === ``CacheType``: Create Moves Ahead of Time or Just In Time
@@ -679,6 +698,7 @@ A `cacheType` can be set on composite selectors too:
 Nested selectors of a cached selector cannot be configured to be cached themselves, unless it's a higher ``cacheType``.
 For example: a `STEP` cached `unionMoveSelector` can hold a `PHASE` cached ``changeMoveSelector``, but not a `STEP` cached ``changeMoveSelector``.
 
+
 [[selectionOrder]]
 === SelectionOrder: Original, Sorted, Random, Shuffled or Probabilistic
 
@@ -719,8 +739,10 @@ When a `Selector` is cached, all of its nested ``Selector``s will naturally defa
 Avoid overwriting the `selectionOrder` of those nested ``Selector``s.
 ====
 
+
 [[recommendedCombinationsOfCacheTypeAndSelectionOrder]]
 === Recommended Combinations of `CacheType` and `SelectionOrder`
+
 
 [[justInTimeRandomSelection]]
 ==== Just in Time Random Selection (default)
@@ -750,6 +772,7 @@ image::Chapter-Move_and_neighborhood_selection/jitRandomSelection.png[align="cen
 
 
 Notice that *it never creates a list of ``**Move**``s* and it generates random numbers only for ``Move``s that are actually selected.
+
 
 [[cachedShuffledSelection]]
 ==== Cached Shuffled Selection
@@ -795,6 +818,7 @@ Otherwise, do something like this:
     </unionMoveSelector>
 ----
 
+
 [[cachedRandomSelection]]
 ==== Cached Random Selection
 
@@ -810,6 +834,7 @@ This combination is often a worthy competitor for medium use cases, especially w
       <swapMoveSelector/>
     </unionMoveSelector>
 ----
+
 
 [[filteredSelection]]
 === Filtered Selection
@@ -855,6 +880,7 @@ Apply the filter on the lowest level possible.
 In most cases, you'll need to know both the entity and the value involved so you'll have to apply it on the move selector.
 ====
 
+
 [[filteredMoveSelection]]
 ==== Filtered Move Selection
 
@@ -885,6 +911,7 @@ Configure the `filterClass` on every targeted `moveSelector` (potentially both i
 
 
 You can configure multiple `filterClass` elements on a single move selector.
+
 
 [[filteredEntitySelection]]
 ==== Filtered Entity Selection
@@ -919,6 +946,7 @@ If that filter should apply on all entities, configure it as a <<immovablePlanni
 
 You can configure multiple `filterClass` elements on a single entity selector.
 
+
 [[filteredValueSelection]]
 ==== Filtered Value Selection
 
@@ -950,6 +978,7 @@ Configure the `filterClass` on every targeted `valueSelector` (potentially both 
 
 You can configure multiple `filterClass` elements on a single value selector.
 
+
 [[sortedSelection]]
 === Sorted Selection
 
@@ -963,6 +992,7 @@ It's mostly used in construction heuristics.
 If the chosen construction heuristic implies sorting, for example `FIRST_FIT_DECREASING` implies that the `EntitySelector` is sorted, there is no need to explicitly configure a `Selector` with sorting.
 If you do explicitly configure the ``Selector``, it overwrites the default settings of that construction heuristic.
 ====
+
 
 [[sortedSelectionBySorterManner]]
 ==== Sorted Selection by `SorterManner`
@@ -1027,6 +1057,7 @@ You 'll also need to configure it (unless it's annotated on the domain model and
     </entitySelector>
 ----
 
+
 [[sortedSelectionBySelectionSorterWeightFactory]]
 ==== Sorted Selection by `SelectionSorterWeightFactory`
 
@@ -1089,6 +1120,7 @@ You 'll also need to configure it (unless it's annotated on the domain model and
     </entitySelector>
 ----
 
+
 [[sortedSelectionBySelectionSorter]]
 ==== Sorted Selection by `SelectionSorter`
 
@@ -1111,6 +1143,7 @@ public interface SelectionSorter<Solution_, T> {
       <sorterClass>...MyEntitySorter</sorterClass>
     </entitySelector>
 ----
+
 
 [[probabilisticSelection]]
 === Probabilistic Selection
@@ -1145,6 +1178,7 @@ public interface SelectionProbabilityWeightFactory<Solution_, T> {
 
 For example, if there are 3 entities: process A (probabilityWeight 2.0), process B (probabilityWeight 0.5) and process C (probabilityWeight 0.5), then process A will be selected 4 times more than B and C.
 
+
 [[limitedSelection]]
 === Limited Selection
 
@@ -1163,6 +1197,7 @@ To limit the number of selected selection per step, apply a `selectedCountLimit`
 ====
 To scale Local Search, setting <<acceptedCountLimit,acceptedCountLimit>> is usually better than using ``selectedCountLimit``.
 ====
+
 
 [[mimicSelection]]
 === Mimic Selection (Record/Replay)
@@ -1194,6 +1229,7 @@ A replaying selector must reference a recorder's id with a ``mimicSelectorRef``:
 
 
 Mimic selection is useful to create <<cartesianProductMoveSelector,a composite move>> from 2 moves that affect the same entity.
+
 
 [[nearbySelection]]
 === Nearby Selection
@@ -1332,8 +1368,10 @@ The following ``NearbySelectionDistributionType``s are supported:
 
 As always, use the <<benchmarker,Benchmarker>> to tweak values if desired.
 
+
 [[customMoves]]
 == Custom Moves
+
 
 [[whichMoveTypesMightBeMissing]]
 === Which Move Types Might be Missing in my Implementation?
@@ -1343,6 +1381,7 @@ Take a look at such a best solution: it will likely be a local optima.
 Try to figure out if there's a move that could get out of that local optima faster.
 
 If you find one, implement that coarse-grained move, mix it with the existing moves and benchmark it against the previous configurations to see if you want to keep it.
+
 
 [[_custommovesintroduction]]
 === Custom Moves Introduction
@@ -1356,6 +1395,7 @@ For example, in examination scheduling, changing the period of an exam A also ch
 A custom `Move` is also slightly faster than a generic ``Move``.
 However, it's far more work to implement and much harder to avoid bugs.
 After implementing a custom ``Move``, make sure to turn on `environmentMode```FULL_ASSERT`` to check for score corruptions.
+
 
 [[theInterfaceMove]]
 === The Interface `Move`
@@ -1538,6 +1578,7 @@ Implement the `toString()` method to keep Planner's logs readable:
 
 Now that we can implement a single custom ``Move``, let's take a look at generating such custom moves.
 
+
 [[moveListFactory]]
 === ``MoveListFactory``: the Easy Way to Generate Custom Moves
 
@@ -1596,6 +1637,7 @@ Advanced configuration:
 
 Because the `MoveListFactory` generates all moves at once in a ``List<Move>``, it does not support `cacheType```JUST_IN_TIME``.
 Therefore, `moveListFactory` uses `cacheType```STEP`` by default and it scales badly in memory footprint.
+
 
 [[moveIteratorFactory]]
 === ``MoveIteratorFactory``: Generate Custom Moves Just in Time

@@ -7,6 +7,7 @@
 :experimental:
 :sourcedir: .
 
+
 [[searchSpaceSize]]
 == Search Space Size in the Real World
 
@@ -50,6 +51,7 @@ What we really want is to **find the best solution in the limited time at our
 Planning competitions (such as the International Timetabling Competition) show that Local Search variations (<<tabuSearch,Tabu Search>>, <<simulatedAnnealing,Simulated
     Annealing>>, <<lateAcceptance,Late Acceptance>>, ...) usually perform best for real-world problems given real-world time limitations.
 
+
 [[doesPlannerFindTheOptimalSolution]]
 == Does Planner Find the Optimal Solution?
 
@@ -69,6 +71,7 @@ The nature of NP-complete problems make scaling a prime concern. *The result qua
     small dataset guarantees nothing about the result quality of a large dataset.* Scaling issues cannot be mitigated by hardware purchases later on.
 Start testing with a production sized dataset as soon as possible.
 Don't assess quality on small datasets (unless production encounters only such datasets). Instead, solve a production sized dataset and compare the results of longer executions, different algorithms and - if available - the human planner.
+
 
 [[architectureOverview]]
 == Architecture Overview
@@ -238,6 +241,7 @@ Each of these families of algorithms has multiple optimization algorithms:
 
 If you want to learn more about metaheuristics, read the free books http://www.cs.gmu.edu/~sean/book/metaheuristics/[Essentials of Metaheuristics] or http://www.cleveralgorithms.com/[Clever Algorithms].
 
+
 [[whichOptimizationAlgorithmsShouldIUse]]
 == Which Optimization Algorithms Should I Use?
 
@@ -296,6 +300,7 @@ The documentation for each optimization algorithm also declares its advanced con
 The default value of parameters will change between minor versions, to improve them for most users (but not necessary for you). To shield yourself from these changes, for better or worse, always use the advanced configuration.
 This is not recommended.
 ====
+
 
 [[solverPhase]]
 == Solver Phase
@@ -366,6 +371,7 @@ Other phases (especially metaheuristics) will only terminate if the `Phase` is c
 If the `Solver` terminates (before the last `Phase` terminates itself),
 the current phase is terminated and all subsequent phases won't run.
 
+
 [[scopeOverview]]
 == Scope Overview
 
@@ -379,6 +385,7 @@ image::Chapter-Optimization_algorithms/scopeOverview.png[align="center"]
 
 
 Configure <<logging,logging>> to display the log messages of each scope.
+
 
 [[termination]]
 == Termination
@@ -401,6 +408,7 @@ This is especially common during <<realTimePlanning,real-time planning>>.
 For synchronous termination, configure a `Termination` on a `Solver` or a `Phase` when it needs to stop.
 You can implement your own ``Termination``, but the built-in implementations should suffice for most needs.
 Every `Termination` can calculate a _time gradient_ (needed for some optimization algorithms), which is a ratio between the time already spent solving and the estimated entire solving time of the `Solver` or ``Phase``.
+
 
 [[timeMillisSpentTermination]]
 === TimeMillisSpentTermination
@@ -472,6 +480,7 @@ This `Termination` will most likely sacrifice perfect reproducibility (even with
 
 ====
 
+
 [[unimprovedTimeMillisSpentTermination]]
 === UnimprovedTimeMillisSpentTermination
 
@@ -535,6 +544,7 @@ This `Termination` will most likely sacrifice perfect reproducibility (even with
 
 ====
 
+
 [[bestScoreTermination]]
 === BestScoreTermination
 
@@ -572,6 +582,7 @@ For a planning problem with a <<bendableScore,BendableScore>> with 3 hard levels
 To terminate once a feasible solution has been reached, this `Termination` isn't practical because it requires a `bestScoreLimit` such as ``0hard/-2147483648soft``.
 Instead, use the next termination.
 
+
 [[bestScoreFeasibleTermination]]
 === BestScoreFeasibleTermination
 
@@ -587,6 +598,7 @@ Requires that the `Score` implementation implements ``FeasibilityScore``.
 
 
 This `Termination` is usually combined with other terminations.
+
 
 [[stepCountTermination]]
 === StepCountTermination
@@ -605,6 +617,7 @@ This is useful for hardware performance independent runs.
 
 
 This `Termination` can only be used for a `Phase` (such as ``<localSearch>``), not for the `Solver` itself.
+
 
 [[unimprovedStepCountTermination]]
 === UnimprovedStepCountTermination
@@ -627,6 +640,7 @@ We have observed that once a new best solution is found (even after a long time 
 
 This `Termination` can only be used for a `Phase` (such as ``<localSearch>``), not for the `Solver` itself.
 
+
 [[scoreCalculationCountTermination]]
 === ScoreCalculationCountTermination
 
@@ -643,6 +657,7 @@ This is useful for benchmarking.
 
 
 Switching <<environmentMode,EnvironmentMode>> can heavily impact when this termination ends.
+
 
 [[combiningMultipleTerminations]]
 === Combining Multiple Terminations
@@ -673,6 +688,7 @@ Alternatively you can use AND, for example: terminate after reaching a feasible 
 
 This example ensures it doesn't just terminate after finding a feasible solution, but also completes any obvious improvements on that solution before terminating.
 
+
 [[asynchronousTermination]]
 === Asynchronous Termination from Another Thread
 
@@ -699,6 +715,7 @@ If you call the `terminateEarly()` method from another thread, the `Solver` will
 Interrupting the Solver thread (which is the thread that called ``Solver.solve(Solution)``) has the same affect as calling `terminateEarly()` except that it leaves that thread in the interrupted state.
 This guarantees a graceful shutdown when an `ExecutorService` (such as a thread pool) is shutdown because that only interrupts all active threads in the pool.
 ====
+
 
 [[SolverEventListener]]
 == SolverEventListener
@@ -742,6 +759,7 @@ Use `Score.isSolutionInitialized()` instead of `Score.isFeasible()` to only igno
 The `bestSolutionChanged()` method is called in the solver's thread, as part of ``Solver.solve()``.
 So it should return quickly to avoid slowing down the solving.
 ====
+
 
 [[customSolverPhase]]
 == Custom Solver Phase
@@ -875,6 +893,7 @@ public class MySolutionInitializer extends AbstractCustomPhaseCommand<MySolution
     ...
 }
 ----
+
 
 [[noChangeSolverPhase]]
 == No Change Solver Phase

@@ -7,6 +7,7 @@
 :experimental:
 :sourcedir: .
 
+
 [[introductionToRepeatedPlanning]]
 == Introduction to Repeated Planning
 
@@ -26,6 +27,7 @@ An incomplete plan is better than no plan.
 
 Luckily, the optimization algorithms support planning a solution that's already (partially) planned, known as repeated planning.
 
+
 [[backupPlanning]]
 == Backup Planning
 
@@ -35,6 +37,7 @@ For example: try to assign an employee as the spare employee (1 for every 10 shi
 
 Then, when things go wrong (one of the employees calls in sick), change the problem facts on the original solution (delete the sick employee leave his/her shifts unassigned) and just restart the planning, starting from that solution, which has a different score now.
 The construction heuristics will fill in the newly created gaps (probably with the spare employee) and the metaheuristics will even improve it further.
+
 
 [[overconstrainedPlanning]]
 == Overconstrained Planning
@@ -121,6 +124,7 @@ image::Chapter-Repeated_planning/continuousPlanningPatientAdmissionSchedule.png[
 
 In the hospital bed planning example above, notice the difference between the original planning of November 1th and the new planning of November 5th: some problem facts (F, H, I, J, K) changed meanwhile, which results in unrelated planning entities (G) changing too.
 
+
 [[immovablePlanningEntities]]
 === Immovable Planning Entities
 
@@ -154,6 +158,7 @@ public class ShiftAssignment {
 ====
 Custom `MoveListFactory` and `MoveIteratorFactory` implementations must make sure that they don't move immovable entities.
 ====
+
 
 [[nonvolatileReplanning]]
 === Nonvolatile Replanning to minimize disruption (Semi-movable Planning Entities)
@@ -208,6 +213,7 @@ end
 
 The soft penalty of `-1000` means that a better solution is only accepted if it improves the soft score for at least `1000` points per variable changed (or if it improves the hard score).
 
+
 [[realTimePlanning]]
 == Real-time Planning
 
@@ -221,6 +227,7 @@ image::Chapter-Repeated_planning/realTimePlanningVehicleRouting.png[align="cente
 In the example above, 3 customers are added at different times (``07:56``, `08:02` and ``08:45``), after the original customer set finished solving at `07:55` and in some cases after the vehicles already left.
 Planner can handle such scenario's with `ProblemFactChange` (in combination with <<immovablePlanningEntities,immovable
     planning entities>>).
+
 
 [[problemFactChange]]
 === `ProblemFactChange`
@@ -324,6 +331,7 @@ This implies the construction heuristic runs again, but because little or no pla
 Each configured `Termination` resets (both in solver and phase configuration), but a previous call to `terminateEarly()` is not undone.
 Normally however, you won't configure any `Termination` (except in daemon mode), just call `Solver.terminateEarly()` when the results are needed.
 Alternatively, do configure a `Termination` and use the daemon mode in combination with `<<SolverEventListener,BestSolutionChangedEvent>>` as described below.
+
 
 [[daemon]]
 === Daemon: `solve()` Does Not Return
