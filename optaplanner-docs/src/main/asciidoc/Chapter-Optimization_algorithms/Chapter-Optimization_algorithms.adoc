@@ -92,141 +92,30 @@ Each of these families of algorithms has multiple optimization algorithms:
 .Optimization Algorithms Overview
 [cols="1,1,1,1,1,1", options="header"]
 |===
-| Algorithm
-| Scalable?
-| Optimal?
-| Easy to use?
-| Tweakable?
-| Requires CH?
+|Algorithm |Scalable? |Optimal? |Easy to use? |Tweakable? |Requires CH?
 
 6+|**Exhaustive Search (ES)**
-
-|  <<bruteForce,Brute Force>>
-|0/5
-|5/5
-|5/5
-|0/5
-|No
-
-|  <<branchAndBound,Branch And Bound>>
-|0/5
-|5/5
-|4/5
-|2/5
-|No
-
+|  <<bruteForce,Brute Force>> |0/5 |5/5 |5/5 |0/5 |No
+|  <<branchAndBound,Branch And Bound>> |0/5 |5/5 |4/5 |2/5 |No
 6+|**Construction heuristics (CH)**
-
-|  <<firstFit,First Fit>>
-|5/5
-|1/5
-|5/5
-|1/5
-|No
-
-|  <<firstFitDecreasing,First Fit Decreasing>>
-|5/5
-|2/5
-|4/5
-|2/5
-|No
-
-|  <<weakestFit,Weakest Fit>>
-|5/5
-|2/5
-|4/5
-|2/5
-|No
-
-|  <<weakestFitDecreasing,Weakest Fit Decreasing>>
-|5/5
-|2/5
-|4/5
-|2/5
-|No
-
-|  <<strongestFit,Strongest Fit>>
-|5/5
-|2/5
-|4/5
-|2/5
-|No
-
-|  <<strongestFitDecreasing,Strongest Fit Decreasing>>
-|5/5
-|2/5
-|4/5
-|2/5
-|No
-
-|  <<cheapestInsertion,Cheapest Insertion>>
-|3/5
-|2/5
-|5/5
-|2/5
-|No
-
-|  <<regretInsertion,Regret Insertion>>
-|3/5
-|2/5
-|5/5
-|2/5
-|No
-
+|  <<firstFit,First Fit>> |5/5 |1/5 |5/5 |1/5 |No
+|  <<firstFitDecreasing,First Fit Decreasing>> |5/5 |2/5 |4/5 |2/5 |No
+|  <<weakestFit,Weakest Fit>> |5/5 |2/5 |4/5 |2/5 |No
+|  <<weakestFitDecreasing,Weakest Fit Decreasing>> |5/5 |2/5 |4/5 |2/5 |No
+|  <<strongestFit,Strongest Fit>> |5/5 |2/5 |4/5 |2/5 |No
+|  <<strongestFitDecreasing,Strongest Fit Decreasing>> |5/5 |2/5 |4/5 |2/5 |No
+|  <<cheapestInsertion,Cheapest Insertion>> |3/5 |2/5 |5/5 |2/5 |No
+|  <<regretInsertion,Regret Insertion>> |3/5 |2/5 |5/5 |2/5 |No
 6+|**Metaheuristics (MH)**
-
-6+|  Local Search
-
-|    <<hillClimbing,Hill Climbing>>
-|5/5
-|2/5
-|4/5
-|3/5
-|Yes
-
-|    <<tabuSearch,Tabu Search>>
-|5/5
-|4/5
-|3/5
-|5/5
-|Yes
-
-|    <<simulatedAnnealing,Simulated Annealing>>
-|5/5
-|4/5
-|2/5
-|5/5
-|Yes
-
-|    <<lateAcceptance,Late Acceptance>>
-|5/5
-|4/5
-|3/5
-|5/5
-|Yes
-
-|    <<stepCountingHillClimbing,Step Counting Hill Climbing>>
-|5/5
-|4/5
-|3/5
-|5/5
-|Yes
-
-6+|  Evolutionary Algorithms
-
-|    <<evolutionaryStrategies,Evolutionary Strategies>>
-|4/5
-|3/5
-|2/5
-|5/5
-|Yes
-
-|    <<geneticAlgorithms,Genetic Algorithms>>
-|4/5
-|3/5
-|2/5
-|5/5
-|Yes
+6+|  Local Search (LS)
+|    <<hillClimbing,Hill Climbing>> |5/5 |2/5 |4/5 |3/5 |Yes
+|    <<tabuSearch,Tabu Search>> |5/5 |4/5 |3/5 |5/5 |Yes
+|    <<simulatedAnnealing,Simulated Annealing>> |5/5 |4/5 |2/5 |5/5 |Yes
+|    <<lateAcceptance,Late Acceptance>> |5/5 |4/5 |3/5 |5/5 |Yes
+|    <<stepCountingHillClimbing,Step Counting Hill Climbing>> |5/5 |4/5 |3/5 |5/5 |Yes
+6+|  Evolutionary Algorithms (EA)
+|    <<evolutionaryStrategies,Evolutionary Strategies>> |4/5 |3/5 |2/5 |5/5 |Yes
+|    <<geneticAlgorithms,Genetic Algorithms>> |4/5 |3/5 |2/5 |5/5|Yes
 |===
 
 If you want to learn more about metaheuristics, read the free books http://www.cs.gmu.edu/~sean/book/metaheuristics/[Essentials of Metaheuristics] or http://www.cleveralgorithms.com/[Clever Algorithms].
@@ -856,8 +745,8 @@ public class MySolutionInitializer extends AbstractCustomPhaseCommand<MySolution
 == No Change Solver Phase
 
 In rare cases it can be useful to configure that no solver phase should be run.
-By default, configuring no phase will trigger the use of the default phases.
-To avoid those, configure a `NoChangePhase`:
+But by default, configuring no phase will trigger the use of the default phases.
+So to avoid those, configure a `NoChangePhase`:
 
 [source,xml,options="nowrap"]
 ----

@@ -21,409 +21,208 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 .Examples Overview
 [cols="1,1a,1a,1a,1a", options="header"]
 |===
-| Example
-| Domain
-| Size
-| Competition?
-| Special features used
+|Example |Domain |Size |Competition? |Special features used
 
 |<<nQueens,N queens>>
-| 
-* 1 entity class
+|* 1 entity class
 * 1 variable
-
-|
-* Entity <= `256`
+|* Entity <= `256`
 * Value <= 256
 * Search space <= `10^616`
-
-|
-* Pointless (http://en.wikipedia.org/wiki/Eight_queens_puzzle#Explicit_solutions[cheatable])
-
-|
-None
+|* Pointless (http://en.wikipedia.org/wiki/Eight_queens_puzzle#Explicit_solutions[cheatable])
+|None
 
 |<<cloudBalancing,Cloud balancing>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 1 variable
-
-|
-
-* Entity <= `2400`
+|* Entity <= `2400`
 * Value <= 800
 * Search space <= `10^6967`
-
-|
-
-* No
+|* No
 * Defined by us
-
-|
-
-* <<realTimePlanning,Real-time planning>>
+|* <<realTimePlanning,Real-time planning>>
 
 |<<tsp,Traveling salesman>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 1 chained variable
-
-|
-
-* Entity <= `980`
+|* Entity <= `980`
 * Value <= 980
 * Search space <= `10^2927`
-
-|
-
-* Unrealistic
+|* Unrealistic
 * http://www.math.uwaterloo.ca/tsp/[TSP web]
-
-|
-
-* <<realTimePlanning,Real-time planning>>
+|* <<realTimePlanning,Real-time planning>>
 
 |<<dinnerParty,Dinner party>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 1 variable
-
-|
-
-* Entity <= `144`
+|* Entity <= `144`
 * Value <= 72
 * Search space <= `10^310`
-
-|
-
-* Unrealistic
-
-|
-
-* Decision Table spreadsheet (XLS) for score constraints
+|* Unrealistic
+|* Decision Table spreadsheet (XLS) for score constraints
 
 |<<tennis,Tennis club scheduling>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 1 variable
-
-|
-
-* Entity <= `72`
+|* Entity <= `72`
 * Value <= 7
 * Search space <= `10^60`
-
-|
-
-* No
+|* No
 * Defined by us
-
-|
-
-* <<fairnessScoreConstraints,Fairness score constraints>>
+|* <<fairnessScoreConstraints,Fairness score constraints>>
 * <<immovablePlanningEntities,Immovable entities>>
 
 |<<meetingScheduling,Meeting scheduling>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 2 variables
-
-|
-
-* Entity <= `10`
+|* Entity <= `10`
 * Value <= 320 and <= `5`
 * Search space <= `10^320`
-
-|
-
-* No
+|* No
 * Defined by us
-
-|
-
-* <<timeGrainPattern,TimeGrain pattern>>
+|* <<timeGrainPattern,TimeGrain pattern>>
 
 |<<curriculumCourse,Course timetabling>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 2 variables
-
-|
-
-* Entity <= `434`
+|* Entity <= `434`
 * Value <= 25 and <= `20`
 * Search space <= `10^1171`
-
-|
-
-* Realistic
+|* Realistic
 * http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm[ITC 2007 track 3]
-
-|
-
-* <<immovablePlanningEntities,Immovable entities>>
+|* <<immovablePlanningEntities,Immovable entities>>
 
 |<<machineReassignment,Machine reassignment>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 1 variable
-
-|
-
-* Entity <= `50000`
+|* Entity <= `50000`
 * Value <= 5000
 * Search space <= `10^184948`
-
-|
-
-* Nearly *realistic*
+|* Nearly realistic
 * http://challenge.roadef.org/2012/en/[ROADEF 2012]
-
-|
-
-* <<realTimePlanning,Real-time planning>>
+|* <<realTimePlanning,Real-time planning>>
 
 |<<vehicleRouting,Vehicle routing>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 1 chained variable
 * 1 shadow entity class
 * 1 automatic shadow variable
-
-|
-
-* Entity <= `134`
+|* Entity <= `134`
 * Value <= 141
 * Search space <= `10^285`
-
-|
-
-* Unrealistic
+|* Unrealistic
 * http://neo.lcc.uma.es/vrp/[VRP web]
-
-|
-
-* <<shadowVariable,Shadow variable>>
+|* <<shadowVariable,Shadow variable>>
 * <<realTimePlanning,Real-time planning>>
 * <<nearbySelection,Nearby selection>>
 * Real road distances
 
 |<<vehicleRouting,Vehicle routing>> with time windows
-|
-
-Extra on Vehicle routing:
-
+|* All of Vehicle routing
 * 1 shadow variable
-
-|
-
-* Entity <= `1000`
+|* Entity <= `1000`
 * Value <= 1250
 * Search space <= `10^3000`
-
-|
-
-* Unrealistic
+|* Unrealistic
 * http://neo.lcc.uma.es/vrp/[VRP web]
-
-|
-
-Extra on Vehicle routing:
-
+|* All of Vehicle routing
 * Custom <<customVariableListener,VariableListener>>
 
 |<<projectJobScheduling,Project job scheduling>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 2 variables
 * 1 shadow variable
-
-|
-
-* Entity <= `640`
+|* Entity <= `640`
 * Value <= ? and <= `?`
 * Search space <= `?`
-
-|
-
-* Nearly *realistic*
+|* Nearly realistic
 * http://gent.cs.kuleuven.be/mista2013challenge/[MISTA 2013]
-
-|
-
-* <<bendableScore,Bendable score>>
+|* <<bendableScore,Bendable score>>
 * Custom <<customVariableListener,VariableListener>>
 * <<valueRangeFactory,ValueRangeFactory>>
 
 |<<bedAllocation,Hospital bed planning>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 1 nullable variable
-
-|
-
-* Entity <= `2750`
+|* Entity <= `2750`
 * Value <= 471
 * Search space <= `10^6851`
-
-|
-
-* Unrealistic
+|* Unrealistic
 * https://people.cs.kuleuven.be/~wim.vancroonenburg/pas/[Kaho PAS]
-
-|
-
-* <<overconstrainedPlanning,Overconstrained planning>>
+|* <<overconstrainedPlanning,Overconstrained planning>>
 
 |<<taskAssigning,Task assigning>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 1 chained variable
 * 1 shadow entity class
 * 1 automatic shadow variable
 * 1 shadow variable
-
-|
-
-* Entity <= `500`
+|* Entity <= `500`
 * Value <= 520
 * Search space <= `10^1384`
-
-|
-
-* No
+|* No
 * Defined by us
-
-|
-
-* <<bendableScore,Bendable score>>
+|* <<bendableScore,Bendable score>>
 * <<chainedThroughTimePattern,Chained through time pattern>>
 * Custom <<customVariableListener,VariableListener>>
 * <<continuousPlanning,Continuous planning>>
 * <<realTimePlanning,Real-time planning>>
 
 |<<examination,Exam timetabling>>
-|
-
-* 2 entity classes (same hierarchy)
+|* 2 entity classes (same hierarchy)
 * 2 variables
-
-|
-
-* Entity <= `1096`
+|* Entity <= `1096`
 * Value <= 80 and <= `49`
 * Search space <= `10^3374`
-
-|
-
-* *Realistic*
+|* Realistic
 * http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm[ITC 2007 track 1]
-
-|
-
-* Custom <<customVariableListener,VariableListener>>
+|* Custom <<customVariableListener,VariableListener>>
 
 |<<employeeRostering,Employee rostering>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 1 variable
-
-|
-
-* Entity <= `752`
+|* Entity <= `752`
 * Value <= 50
 * Search space <= `10^1277`
-
-|
-
-* *Realistic*
+|* Realistic
 * http://www.kuleuven-kortrijk.be/nrpcompetition[INRC 2010]
-
-|
-
-* <<continuousPlanning,Continuous planning>>
+|* <<continuousPlanning,Continuous planning>>
 * <<realTimePlanning,Real-time planning>>
 
 |<<travelingTournament,Traveling tournament>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 1 variable
-
-|
-
-* Entity <= `1560`
+|* Entity <= `1560`
 * Value <= 78
 * Search space <= `10^2951`
-
-|
-
-* Unrealistic
+|* Unrealistic
 * http://mat.gsia.cmu.edu/TOURN/[TTP]
-
-|
-
-* Custom <<moveListFactory,MoveListFactory>>
+|* Custom <<moveListFactory,MoveListFactory>>
 
 |<<cheapTimeScheduling,Cheap time scheduling>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 2 variables
-
-|
-
-* Entity <= `500`
+|* Entity <= `500`
 * Value <= 100 and <= `288`
 * Search space <= `10^20078`
-
-|
-
-* Nearly *realistic*
+|* Nearly realistic
 * http://iconchallenge.insight-centre.org/challenge-energy[ICON Energy]
-
-|
-
-* <<annotationAlternatives,Field annotations>>
+|* <<annotationAlternatives,Field annotations>>
 * <<valueRangeFactory,ValueRangeFactory>>
 
 |<<investment,Investment>>
-|
-
-* 1 entity class
+|* 1 entity class
 * 1 variable
-
-|
-
-* Entity <= `11`
+|* Entity <= `11`
 * Value = 1000
 * Search space <= `10^4`
-
-|
-
-* No
+|* No
 * Defined by us
-
-|
-
-* <<valueRangeFactory,ValueRangeFactory>>
+|* <<valueRangeFactory,ValueRangeFactory>>
 
 |===
 
-A _realistic competition_ is **an official, independent
-    competition**:
+A _realistic competition_ is **an official, independent competition**:
 
 * that clearly defines a real-word use case
 * with real-world constraints
