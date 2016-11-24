@@ -450,7 +450,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                         + kieBaseConfigurationProperties + ") must be null.");
             }
             if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
-                return new TestGenLegacyDroolsScoreDirectorFactory<>(kieBase);
+                return new TestGenLegacyDroolsScoreDirectorFactory<>(kieBase, null, null);
             } else {
                 return new LegacyDroolsScoreDirectorFactory<>(kieBase);
             }
@@ -510,7 +510,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
             }
             KieBase kieBase = kieContainer.newKieBase(kieBaseConfiguration);
             if (BooleanUtils.isTrue(generateDroolsTestOnError)) {
-                return new TestGenLegacyDroolsScoreDirectorFactory<>(kieBase);
+                return new TestGenLegacyDroolsScoreDirectorFactory<>(kieBase, scoreDrlList, scoreDrlFileList);
             } else {
                 return new LegacyDroolsScoreDirectorFactory<>(kieBase);
             }

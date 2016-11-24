@@ -15,13 +15,23 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
+import java.util.Collections;
+import java.util.List;
+
 class TestGenExistingInstanceValueProvider extends TestGenAbstractValueProvider<Object> {
 
     private final String identifier;
+    private List<TestGenFact> facts;
 
-    public TestGenExistingInstanceValueProvider(Object value, String identifier) {
+    public TestGenExistingInstanceValueProvider(Object value, String identifier, TestGenFact fact) {
         super(value);
         this.identifier = identifier;
+        this.facts = Collections.singletonList(fact);
+    }
+
+    @Override
+    public List<TestGenFact> getRequiredFacts() {
+        return facts;
     }
 
     @Override

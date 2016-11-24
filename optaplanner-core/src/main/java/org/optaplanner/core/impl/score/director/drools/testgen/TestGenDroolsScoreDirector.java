@@ -17,6 +17,7 @@ package org.optaplanner.core.impl.score.director.drools.testgen;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
@@ -35,10 +36,19 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
 
     private final TestGenKieSessionJournal journal = new TestGenKieSessionJournal();
     private final File testFile = new File("DroolsReproducerTest.java");
+    private final TestGenTestWriter writer = new TestGenTestWriter();
 
-    public TestGenDroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
-            boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
+    public TestGenDroolsScoreDirector(
+            DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
+            boolean locatorEnabled,
+            boolean constraintMatchEnabledPreference,
+            List<String> scoreDrlList,
+            List<File> scoreDrlFileList) {
         super(scoreDirectorFactory, locatorEnabled, constraintMatchEnabledPreference);
+        writer.setScoreDefinition(scoreDirectorFactory.getScoreDefinition());
+        writer.setConstraintMatchEnabled(constraintMatchEnabledPreference);
+        writer.setScoreDrlList(scoreDrlList);
+        writer.setScoreDrlFileList(scoreDrlFileList);
     }
 
     public KieSession createKieSession() {
@@ -75,7 +85,7 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
             // TODO check the exception is coming from org.drools
             TestGenDroolsExceptionReproducer reproducer = new TestGenDroolsExceptionReproducer(e, this);
             TestGenKieSessionJournal minJournal = TestGenerator.minimize(journal, reproducer);
-            TestGenTestWriter.print(minJournal, testFile);
+            writer.print(minJournal, testFile);
             throw wrapOriginalException(e);
         }
     }
@@ -89,18 +99,13 @@ public class TestGenDroolsScoreDirector<Solution_> extends DroolsScoreDirector<S
             // TODO check it's really corrupted score
             TestGenCorruptedScoreReproducer reproducer = new TestGenCorruptedScoreReproducer(e.getMessage(), this);
             TestGenKieSessionJournal minJournal = TestGenerator.minimize(journal, reproducer);
-            Score<?> uncorruptedScore = workingScore;
             try {
                 minJournal.replay(createKieSession());
+                throw new IllegalStateException();
             } catch (TestGenCorruptedScoreException tgcse) {
-                uncorruptedScore = tgcse.getUncorruptedScore();
+                writer.setCorruptedScoreException(tgcse);
             }
-            TestGenTestWriter.printWithScoreAssert(
-                    minJournal,
-                    getScoreDefinition().getClass(),
-                    constraintMatchEnabledPreference,
-                    uncorruptedScore.toString(),
-                    testFile);
+            writer.print(minJournal, testFile);
             throw wrapOriginalException(e);
         }
     }

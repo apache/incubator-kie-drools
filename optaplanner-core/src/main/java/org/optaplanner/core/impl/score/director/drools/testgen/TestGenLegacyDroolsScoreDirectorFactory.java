@@ -15,20 +15,29 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen;
 
+import java.io.File;
+import java.util.List;
+
 import org.kie.api.KieBase;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.LegacyDroolsScoreDirectorFactory;
 
 public class TestGenLegacyDroolsScoreDirectorFactory<Solution_> extends LegacyDroolsScoreDirectorFactory<Solution_> {
 
-    public TestGenLegacyDroolsScoreDirectorFactory(KieBase kieBase) {
+    private final List<String> scoreDrlList;
+    private final List<File> scoreDrlFileList;
+
+    public TestGenLegacyDroolsScoreDirectorFactory(KieBase kieBase, List<String> scoreDrlList, List<File> scoreDrlFileList) {
         super(kieBase);
+        this.scoreDrlList = scoreDrlList;
+        this.scoreDrlFileList = scoreDrlFileList;
     }
 
     @Override
     public DroolsScoreDirector<Solution_> buildScoreDirector(
             boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
-        return new TestGenDroolsScoreDirector<>(this, locatorEnabled, constraintMatchEnabledPreference);
+        return new TestGenDroolsScoreDirector<>(
+                this, locatorEnabled, constraintMatchEnabledPreference, scoreDrlList, scoreDrlFileList);
     }
 
 }

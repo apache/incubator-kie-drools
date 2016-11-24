@@ -17,8 +17,42 @@ package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
 class TestGenPrimitiveValueProvider extends TestGenAbstractValueProvider<Object> {
 
+    private byte defBy;
+    private short defS;
+    private int defI;
+    private long defL;
+    private float defF;
+    private double defD;
+    private boolean defBo;
+    private char defC;
+    private final Object uninitialized;
+
     public TestGenPrimitiveValueProvider(Object value) {
         super(value);
+        if (value.getClass().equals(Byte.class)) {
+            uninitialized = defBy;
+        } else if (value.getClass().equals(Short.class)) {
+            uninitialized = defS;
+        } else if (value.getClass().equals(Integer.class)) {
+            uninitialized = defI;
+        } else if (value.getClass().equals(Long.class)) {
+            uninitialized = defL;
+        } else if (value.getClass().equals(Float.class)) {
+            uninitialized = defF;
+        } else if (value.getClass().equals(Double.class)) {
+            uninitialized = defD;
+        } else if (value.getClass().equals(Boolean.class)) {
+            uninitialized = defBo;
+        } else if (value.getClass().equals(Character.class)) {
+            uninitialized = defC;
+        } else {
+            throw new IllegalStateException("Unsupported type: " + value.getClass().getCanonicalName());
+        }
+    }
+
+    @Override
+    public Object getUninitialized() {
+        return uninitialized;
     }
 
     @Override

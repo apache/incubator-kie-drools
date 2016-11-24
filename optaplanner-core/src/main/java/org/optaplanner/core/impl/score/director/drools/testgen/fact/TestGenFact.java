@@ -22,16 +22,18 @@ public interface TestGenFact {
 
     void setUp(Map<Object, TestGenFact> existingInstances);
 
-    List<TestGenFact> getDependencies();
-
-    List<Class<?>> getImports();
-
     void reset();
 
     void printInitialization(StringBuilder sb);
 
     void printSetup(StringBuilder sb);
 
-    public Object getInstance();
+    Object getInstance();
+
+    List<TestGenFactField> getFields();
+
+    List<TestGenFact> getDependencies();
+
+    List<Class<?>> getImports();
 
 }

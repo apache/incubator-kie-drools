@@ -21,54 +21,34 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.lang.annotation.Annotation;
+import java.util.Collections;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.testgen.fact.TestGenFact;
 import org.optaplanner.core.impl.score.director.drools.testgen.operation.TestGenKieSessionOperation;
+import org.optaplanner.core.impl.score.director.drools.testgen.reproducer.TestGenCorruptedScoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 class TestGenTestWriter {
 
     private static final Logger logger = LoggerFactory.getLogger(TestGenTestWriter.class);
-    private final TestGenKieSessionJournal journal;
-    private final StringBuilder sb;
-    private final Class<?> scoreDefClass;
-    private final boolean constraintMatchEnabled;
-    private final String score;
+    private StringBuilder sb;
+    private TestGenKieSessionJournal journal;
+    private List<String> scoreDrlList;
+    private List<File> scoreDrlFileList;
+    private ScoreDefinition<?> scoreDefinition;
+    private boolean constraintMatchEnabled;
+    private TestGenCorruptedScoreException scoreEx;
 
-    public TestGenTestWriter(
-            TestGenKieSessionJournal journal,
-            Class<?> scoreDefClass,
-            boolean constraintMatchEnabled,
-            String score) {
+    public void print(TestGenKieSessionJournal journal, File testFile) {
         this.journal = journal;
         this.sb = new StringBuilder(1 << 15); // 2^15 initial capacity
-        this.scoreDefClass = scoreDefClass;
-        this.constraintMatchEnabled = constraintMatchEnabled;
-        this.score = score;
-    }
-
-    static void print(TestGenKieSessionJournal journal, File testFile) {
-        new TestGenTestWriter(journal, null, false, null).print(testFile);
-    }
-
-    static void printWithScoreAssert(
-            TestGenKieSessionJournal journal,
-            Class<?> scoreDefClass,
-            boolean constraintMatchEnabled,
-            String score,
-            File testFile) {
-        new TestGenTestWriter(journal, scoreDefClass, constraintMatchEnabled, score).print(testFile);
-    }
-
-    private void print(File testFile) {
         printInit();
         printSetup();
         printTest();
@@ -76,44 +56,27 @@ class TestGenTestWriter {
     }
 
     private void printInit() {
-        String domainPackage = null;
-        for (TestGenFact fact : journal.getFacts()) {
-            Class<? extends Object> factClass = fact.getInstance().getClass();
-            for (Annotation ann : factClass.getAnnotations()) {
-                if (PlanningEntity.class.equals(ann.annotationType())) {
-                    domainPackage = factClass.getPackage().getName();
-                }
-                break;
-            }
-            if (domainPackage != null) {
-                break;
-            }
-        }
-
-        if (domainPackage == null) {
-            throw new IllegalStateException("Cannot determine planning domain package.");
-        }
-
-        sb.append(String.format("package %s;%n%n", domainPackage));
+        sb.append("package org.optaplanner.testgen;").append(System.lineSeparator())
+                .append(System.lineSeparator());
         SortedSet<String> imports = new TreeSet<>();
         imports.add("org.junit.Before");
         imports.add("org.junit.Test");
         imports.add("org.kie.api.KieServices");
         imports.add("org.kie.api.builder.KieFileSystem");
-        imports.add("org.kie.api.builder.model.KieModuleModel");
-        imports.add("org.kie.api.io.ResourceType");
         imports.add("org.kie.api.runtime.KieContainer");
         imports.add("org.kie.api.runtime.KieSession");
-        if (scoreDefClass != null) {
+        if (!scoreDrlFileList.isEmpty()) {
+            imports.add("java.io.File");
+        }
+        if (scoreDefinition != null) {
             imports.add("org.junit.Assert");
-            imports.add(Score.class.getCanonicalName());
             imports.add(ScoreHolder.class.getCanonicalName());
-            imports.add(scoreDefClass.getCanonicalName());
+            imports.add(scoreDefinition.getClass().getCanonicalName());
         }
         for (TestGenFact fact : journal.getFacts()) {
             for (Class<?> cls : fact.getImports()) {
                 String pkgName = cls.getPackage().getName();
-                if (!pkgName.equals(domainPackage) && !pkgName.equals("java.lang")) {
+                if (!pkgName.equals("java.lang")) {
                     imports.add(cls.getCanonicalName());
                 }
             }
@@ -125,7 +88,17 @@ class TestGenTestWriter {
         sb.append(System.lineSeparator())
                 .append("public class DroolsReproducerTest {").append(System.lineSeparator())
                 .append(System.lineSeparator())
+                .append("    KieContainer kieContainer;").append(System.lineSeparator())
                 .append("    KieSession kieSession;").append(System.lineSeparator());
+        if (scoreDefinition != null) {
+            sb
+                    .append("    ScoreHolder scoreHolder = new ")
+                    .append(scoreDefinition.getClass().getSimpleName())
+                    .append("().buildScoreHolder(")
+                    .append(constraintMatchEnabled)
+                    .append(");").append(System.lineSeparator());
+        }
+
         for (TestGenFact fact : journal.getFacts()) {
             fact.printInitialization(sb);
         }
@@ -137,21 +110,27 @@ class TestGenTestWriter {
                 .append("    @Before").append(System.lineSeparator())
                 .append("    public void setUp() {").append(System.lineSeparator())
                 .append("        KieServices kieServices = KieServices.Factory.get();").append(System.lineSeparator())
-                .append("        KieModuleModel kieModuleModel = kieServices.newKieModuleModel();").append(System.lineSeparator())
-                .append("        KieFileSystem kfs = kieServices.newKieFileSystem();").append(System.lineSeparator())
-                .append("        kfs.writeKModuleXML(kieModuleModel.toXML());").append(System.lineSeparator())
-                // TODO don't hard-code score DRL
-                .append("        kfs.write(kieServices.getResources()").append(System.lineSeparator())
-                .append("                .newClassPathResource(\"org/optaplanner/examples/nurserostering/solver/nurseRosteringScoreRules.drl\")").append(System.lineSeparator())
-                .append("                .setResourceType(ResourceType.DRL));").append(System.lineSeparator())
+                .append("        KieFileSystem kfs = kieServices.newKieFileSystem();").append(System.lineSeparator());
+        scoreDrlFileList.forEach(file -> {
+            sb
+                    .append("        kfs.write(kieServices.getResources()").append(System.lineSeparator())
+                    .append("                .newFileSystemResource(new File(\"").append(file.getAbsoluteFile())
+                    .append("\"), \"UTF-8\"));").append(System.lineSeparator());
+        });
+        scoreDrlList.forEach(drl -> {
+            sb
+                    .append("        kfs.write(kieServices.getResources()").append(System.lineSeparator())
+                    .append("                .newClassPathResource(\"").append(drl).append("\"));")
+                    .append(System.lineSeparator());
+        });
+        sb
                 .append("        kieServices.newKieBuilder(kfs).buildAll();").append(System.lineSeparator())
-                .append("        KieContainer kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());").append(System.lineSeparator())
+                .append("        kieContainer = kieServices.newKieContainer(kieServices.getRepository().getDefaultReleaseId());").append(System.lineSeparator())
                 .append("        kieSession = kieContainer.newKieSession();").append(System.lineSeparator())
                 .append(System.lineSeparator());
-        if (scoreDefClass != null) {
+        if (scoreDefinition != null) {
             sb.append("        kieSession.setGlobal(\"").append(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY)
-                    .append("\", new ").append(scoreDefClass.getSimpleName()).append("().buildScoreHolder(")
-                    .append(constraintMatchEnabled).append("));")
+                    .append("\", scoreHolder);")
                     .append(System.lineSeparator())
                     .append(System.lineSeparator());
         }
@@ -174,12 +153,30 @@ class TestGenTestWriter {
         for (TestGenKieSessionOperation op : journal.getMoveOperations()) {
             op.print(sb);
         }
-        if (scoreDefClass != null) {
-            sb.append("        Score<?> score = ((ScoreHolder) kieSession.getGlobal(\"")
-                    .append(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY).append("\")).extractScore(0);")
+        if (scoreEx != null) {
+            sb
+                    .append("        // This is the corrupted score, just to make sure the bug is reproducible")
+                    .append(System.lineSeparator())
+                    .append("        Assert.assertEquals(\"").append(scoreEx.getWorkingScore())
+                    .append("\", scoreHolder.extractScore(0).toString());").append(System.lineSeparator());
+            // demonstrate the uncorrupted score
+            sb
+                    .append("        kieSession = kieContainer.newKieSession();").append(System.lineSeparator())
+                    .append("        scoreHolder = new ").append(scoreDefinition.getClass().getSimpleName())
+                    .append("().buildScoreHolder(").append(constraintMatchEnabled).append(");").append(System.lineSeparator())
+                    .append("        kieSession.setGlobal(\"").append(DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY)
+                    .append("\", scoreHolder);").append(System.lineSeparator());
+
+            sb.append(System.lineSeparator()).append(System.lineSeparator())
+                    .append("        // Insert everything into a fresh session to see the uncorrupted score")
                     .append(System.lineSeparator());
-            sb.append("        Assert.assertEquals(\"").append(score).append("\", score.toString());")
-                    .append(System.lineSeparator());
+            for (TestGenKieSessionOperation insert : journal.getInitialInserts()) {
+                insert.print(sb);
+            }
+            sb
+                    .append("        kieSession.fireAllRules();").append(System.lineSeparator())
+                    .append("        Assert.assertEquals(\"").append(scoreEx.getUncorruptedScore())
+                    .append("\", scoreHolder.extractScore(0).toString());").append(System.lineSeparator());
         }
         sb
                 .append("    }").append(System.lineSeparator())
@@ -187,6 +184,12 @@ class TestGenTestWriter {
     }
 
     private void writeTestFile(File file) {
+        File parent = file.getAbsoluteFile().getParentFile();
+        if (!parent.exists()) {
+            if (!parent.mkdirs()) {
+                logger.warn("Couldn't create directory: {}", parent);
+            }
+        }
         FileOutputStream fos;
         try {
             fos = new FileOutputStream(file);
@@ -213,4 +216,25 @@ class TestGenTestWriter {
             }
         }
     }
+
+    public void setScoreDrlList(List<String> scoreDrlList) {
+        this.scoreDrlList = scoreDrlList == null ? Collections.emptyList() : scoreDrlList;
+    }
+
+    public void setScoreDrlFileList(List<File> scoreDrlFileList) {
+        this.scoreDrlFileList = scoreDrlFileList == null ? Collections.emptyList() : scoreDrlFileList;
+    }
+
+    public void setScoreDefinition(ScoreDefinition<?> scoreDefinition) {
+        this.scoreDefinition = scoreDefinition;
+    }
+
+    public void setConstraintMatchEnabled(boolean constraintMatchEnabled) {
+        this.constraintMatchEnabled = constraintMatchEnabled;
+    }
+
+    public void setCorruptedScoreException(TestGenCorruptedScoreException ex) {
+        this.scoreEx = ex;
+    }
+
 }

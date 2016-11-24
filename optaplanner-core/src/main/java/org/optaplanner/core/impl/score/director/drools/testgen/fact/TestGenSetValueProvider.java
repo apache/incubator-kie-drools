@@ -17,34 +17,31 @@ package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-class TestGenMapValueProvider extends TestGenAbstractValueProvider<Map<?, ?>> {
+class TestGenSetValueProvider extends TestGenAbstractValueProvider<Set<?>> {
 
     private final String identifier;
-    private final Type[] typeArguments;
+    private final Type typeArgument;
     private final Map<Object, TestGenFact> existingInstances;
     private final List<Class<?>> imports = new ArrayList<>();
     private final List<TestGenFact> requiredFacts;
 
-    public TestGenMapValueProvider(Map<?, ?> value, String identifier, Type[] typeArguments,
+    public TestGenSetValueProvider(Set<?> value, String identifier, Type genericType,
             Map<Object, TestGenFact> existingInstances) {
         super(value);
         this.identifier = identifier;
-        this.typeArguments = typeArguments;
+        this.typeArgument = genericType;
         this.existingInstances = existingInstances;
-        imports.add(HashMap.class);
-        imports.add((Class<?>) typeArguments[0]);
-        imports.add((Class<?>) typeArguments[1]);
-        requiredFacts = value.entrySet().stream()
-                .flatMap(entry -> Stream.of(
-                        existingInstances.get(entry.getKey()),
-                        existingInstances.get(entry.getValue())))
+        imports.add(HashSet.class);
+        imports.add((Class<?>) genericType);
+        requiredFacts = value.stream()
+                .map(i -> existingInstances.get(i))
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
@@ -61,12 +58,11 @@ class TestGenMapValueProvider extends TestGenAbstractValueProvider<Map<?, ?>> {
 
     @Override
     public void printSetup(StringBuilder sb) {
-        String k = ((Class<?>) typeArguments[0]).getSimpleName();
-        String v = ((Class<?>) typeArguments[1]).getSimpleName();
-        sb.append(String.format("        HashMap<%s, %s> %s = new HashMap<%s, %s>();%n", k, v, identifier, k, v));
-        for (Map.Entry<? extends Object, ? extends Object> entry : value.entrySet()) {
-            sb.append(String.format("        //%s => %s%n", entry.getKey(), entry.getValue()));
-            sb.append(String.format("        %s.put(%s, %s);%n", identifier, existingInstances.get(entry.getKey()), existingInstances.get(entry.getValue())));
+        String e = ((Class<?>) typeArgument).getSimpleName();
+        sb.append(String.format("        HashSet<%s> %s = new HashSet<%s>();%n", e, identifier, e));
+        for (Object item : value) {
+            sb.append(String.format("        //%s%n", item));
+            sb.append(String.format("        %s.add(%s);%n", identifier, existingInstances.get(item)));
         }
     }
 

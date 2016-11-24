@@ -28,7 +28,7 @@ public class TestGenDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDir
     @Override
     public DroolsScoreDirector<Solution_> buildScoreDirector(
             boolean locatorEnabled, boolean constraintMatchEnabledPreference) {
-        return new TestGenDroolsScoreDirector<>(this, locatorEnabled, constraintMatchEnabledPreference);
+        return new TestGenDroolsScoreDirector<>(this, locatorEnabled, constraintMatchEnabledPreference, null, null);
     }
 
 }

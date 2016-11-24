@@ -26,6 +26,11 @@ public class TestGenNullFact implements TestGenFact {
     }
 
     @Override
+    public List<TestGenFactField> getFields() {
+        return Collections.emptyList();
+    }
+
+    @Override
     public List<TestGenFact> getDependencies() {
         return Collections.emptyList();
     }

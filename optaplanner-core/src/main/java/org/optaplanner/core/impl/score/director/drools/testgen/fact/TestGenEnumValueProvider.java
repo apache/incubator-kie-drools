@@ -15,10 +15,18 @@
  */
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
+import java.util.Collections;
+import java.util.List;
+
 class TestGenEnumValueProvider extends TestGenAbstractValueProvider<Enum<?>> {
 
     public TestGenEnumValueProvider(Enum<?> value) {
         super(value);
+    }
+
+    @Override
+    public List<Class<?>> getImports() {
+        return Collections.singletonList(value.getClass());
     }
 
     @Override

@@ -21,9 +21,11 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
@@ -31,22 +33,20 @@ import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccess
 public class TestGenValueFact implements TestGenFact {
 
     private final Object instance;
+    private final String instanceToString;
     private final String variableName;
-    private final HashMap<BeanPropertyMemberAccessor, TestGenValueProvider<?>> attributes = new HashMap<>();
-    private final List<TestGenFact> dependencies = new ArrayList<>();
-    private final List<Class<?>> imports = new ArrayList<>();
+    private final List<TestGenFactField> fields = new ArrayList<>();
 
     public TestGenValueFact(int id, Object instance) {
         this.instance = instance;
+        this.instanceToString = instance.toString();
         this.variableName = instance.getClass().getSimpleName().substring(0, 1).toLowerCase()
                 + instance.getClass().getSimpleName().substring(1) + "_" + id;
     }
 
     @Override
     public void setUp(Map<Object, TestGenFact> existingInstances) {
-        dependencies.clear();
-        imports.clear();
-        imports.add(instance.getClass());
+        fields.clear();
         Class<?> clazz = instance.getClass();
         while (clazz != null) {
             for (Field field : clazz.getDeclaredFields()) {
@@ -54,6 +54,7 @@ public class TestGenValueFact implements TestGenFact {
             }
             clazz = clazz.getSuperclass();
         }
+        Collections.sort(fields);
     }
 
     private void setUpField(Field field, Map<Object, TestGenFact> existingInstances) {
@@ -65,41 +66,44 @@ public class TestGenValueFact implements TestGenFact {
             Object value = accessor.executeGetter(instance);
             if (value != null) {
                 if (field.getType().equals(String.class)) {
-                    attributes.put(accessor, new TestGenStringValueProvider((String) value));
+                    fields.add(new TestGenFactField(this, accessor, new TestGenStringValueProvider((String) value)));
                 } else if (field.getType().isPrimitive()) {
-                    attributes.put(accessor, new TestGenPrimitiveValueProvider(value));
+                    fields.add(new TestGenFactField(this, accessor, new TestGenPrimitiveValueProvider(value)));
                 } else if (field.getType().isEnum()) {
-                    attributes.put(accessor, new TestGenEnumValueProvider((Enum) value));
-                    imports.add(field.getType());
+                    fields.add(new TestGenFactField(this, accessor, new TestGenEnumValueProvider((Enum) value)));
                 } else if (existingInstances.containsKey(value)) {
                     String id = existingInstances.get(value).toString();
-                    attributes.put(accessor, new TestGenExistingInstanceValueProvider(value, id));
-                    dependencies.add(existingInstances.get(value));
+                    TestGenExistingInstanceValueProvider instanceProvider = new TestGenExistingInstanceValueProvider(
+                            value, id, existingInstances.get(value));
+                    fields.add(new TestGenFactField(this, accessor, instanceProvider));
                 } else if (field.getType().equals(List.class)) {
                     String id = variableName + "_" + field.getName();
                     Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
-                    TestGenListValueProvider listValueProvider = new TestGenListValueProvider((List) value, id, typeArgs[0], existingInstances);
-                    attributes.put(accessor, listValueProvider);
-                    dependencies.addAll(listValueProvider.getFacts());
-                    imports.addAll(listValueProvider.getImports());
+                    TestGenListValueProvider listValueProvider = new TestGenListValueProvider(
+                            (List) value, id, typeArgs[0], existingInstances);
+                    fields.add(new TestGenFactField(this, accessor, listValueProvider));
+                } else if (field.getType().equals(Set.class)) {
+                    String id = variableName + "_" + field.getName();
+                    Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
+                    TestGenSetValueProvider setValueProvider = new TestGenSetValueProvider(
+                            (Set) value, id, typeArgs[0], existingInstances);
+                    fields.add(new TestGenFactField(this, accessor, setValueProvider));
                 } else if (field.getType().equals(Map.class)) {
                     String id = variableName + "_" + field.getName();
                     Type[] typeArgs = ((ParameterizedType) field.getGenericType()).getActualTypeArguments();
-                    TestGenMapValueProvider mapValueProvider = new TestGenMapValueProvider((Map) value, id, typeArgs, existingInstances);
-                    attributes.put(accessor, mapValueProvider);
-                    dependencies.addAll(mapValueProvider.getFacts());
-                    imports.addAll(mapValueProvider.getImports());
+                    TestGenMapValueProvider mapValueProvider = new TestGenMapValueProvider(
+                            (Map) value, id, typeArgs, existingInstances);
+                    fields.add(new TestGenFactField(this, accessor, mapValueProvider));
                 } else {
                     Method parseMethod = getParseMethod(field);
                     if (parseMethod != null) {
-                        attributes.put(accessor, new TestGenParsedValueProvider(parseMethod, value));
-                        imports.add(field.getType());
+                        fields.add(new TestGenFactField(this, accessor, new TestGenParsedValueProvider(parseMethod, value)));
                     } else {
                         throw new IllegalStateException("Unsupported type: " + field.getType());
                     }
                 }
             } else {
-                attributes.put(accessor, new TestGenNullValueProvider());
+                fields.add(new TestGenFactField(this, accessor, new TestGenNullValueProvider()));
             }
         }
     }
@@ -118,48 +122,58 @@ public class TestGenValueFact implements TestGenFact {
     }
 
     @Override
+    public Object getInstance() {
+        return instance;
+    }
+
+    public String getVariableName() {
+        return variableName;
+    }
+
+    @Override
+    public List<TestGenFactField> getFields() {
+        return fields;
+    }
+
+    @Override
     public List<TestGenFact> getDependencies() {
-        return dependencies;
+        return fields.stream()
+                .filter(TestGenFactField::isActive)
+                .flatMap(f -> f.getRequiredFacts().stream())
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Class<?>> getImports() {
+        List<Class<?>> imports = fields.stream()
+                .filter(TestGenFactField::isActive)
+                .flatMap(f -> f.getImports().stream())
+                .collect(Collectors.toList());
+        imports.add(instance.getClass());
         return imports;
     }
 
     @Override
     public void reset() {
-        for (Map.Entry<BeanPropertyMemberAccessor, TestGenValueProvider<?>> entry : attributes.entrySet()) {
-            BeanPropertyMemberAccessor accessor = entry.getKey();
-            TestGenValueProvider<?> value = entry.getValue();
-            accessor.executeSetter(instance, value.get());
-        }
+        fields.forEach(TestGenFactField::reset);
     }
 
     @Override
     public void printInitialization(StringBuilder sb) {
-        sb.append(String.format("    %s %s = new %s();%n",
-                instance.getClass().getSimpleName(), variableName, instance.getClass().getSimpleName()));
-    }
-
-    @Override
-    public void printSetup(StringBuilder sb) {
-        sb.append(String.format("        //%s%n", instance));
-        for (Map.Entry<BeanPropertyMemberAccessor, TestGenValueProvider<?>> entry : attributes.entrySet()) {
-            BeanPropertyMemberAccessor accessor = entry.getKey();
-            Method setter = ReflectionHelper.getSetterMethod(instance.getClass(), accessor.getType(), accessor.getName());
-            TestGenValueProvider<?> value = entry.getValue();
-            value.printSetup(sb);
-            // null original value means the field is uninitialized so there's no need to .set(null);
-            if (value.get() != null) {
-                sb.append(String.format("        %s.%s(%s);%n", variableName, setter.getName(), value.toString()));
-            }
+        if (instance.getClass().isEnum()) {
+            sb.append(String.format("    private final %s %s = %s.%s;%n",
+                    instance.getClass().getSimpleName(), variableName, instance.getClass().getSimpleName(),
+                    ((Enum) instance).name()));
+        } else {
+            sb.append(String.format("    private final %s %s = new %s();%n",
+                    instance.getClass().getSimpleName(), variableName, instance.getClass().getSimpleName()));
         }
     }
 
     @Override
-    public Object getInstance() {
-        return instance;
+    public void printSetup(StringBuilder sb) {
+        sb.append(String.format("        //%s%n", instanceToString));
+        fields.forEach(f -> f.print(sb));
     }
 
     @Override

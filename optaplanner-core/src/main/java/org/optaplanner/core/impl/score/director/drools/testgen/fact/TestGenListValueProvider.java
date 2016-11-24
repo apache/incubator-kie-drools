@@ -19,6 +19,8 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 class TestGenListValueProvider extends TestGenAbstractValueProvider<List<?>> {
 
@@ -26,27 +28,28 @@ class TestGenListValueProvider extends TestGenAbstractValueProvider<List<?>> {
     private final Type typeArgument;
     private final Map<Object, TestGenFact> existingInstances;
     private final List<Class<?>> imports = new ArrayList<>();
+    private final List<TestGenFact> requiredFacts;
 
-    public TestGenListValueProvider(List<?> value, String identifier, Type genericType, Map<Object, TestGenFact> existingInstances) {
+    public TestGenListValueProvider(List<?> value, String identifier, Type genericType,
+            Map<Object, TestGenFact> existingInstances) {
         super(value);
         this.identifier = identifier;
         this.typeArgument = genericType;
         this.existingInstances = existingInstances;
         imports.add(ArrayList.class);
         imports.add((Class<?>) genericType);
+        requiredFacts = value.stream()
+                .map(i -> existingInstances.get(i))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
-    public List<TestGenFact> getFacts() {
-        ArrayList<TestGenFact> facts = new ArrayList<>();
-        for (Object o : value) {
-            TestGenFact fact = existingInstances.get(o);
-            if (fact != null) {
-                facts.add(fact);
-            }
-        }
-        return facts;
+    @Override
+    public List<TestGenFact> getRequiredFacts() {
+        return requiredFacts;
     }
 
+    @Override
     public List<Class<?>> getImports() {
         return imports;
     }

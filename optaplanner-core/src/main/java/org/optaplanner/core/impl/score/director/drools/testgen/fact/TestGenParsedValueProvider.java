@@ -16,6 +16,8 @@
 package org.optaplanner.core.impl.score.director.drools.testgen.fact;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
 
 class TestGenParsedValueProvider extends TestGenAbstractValueProvider<Object> {
 
@@ -24,6 +26,11 @@ class TestGenParsedValueProvider extends TestGenAbstractValueProvider<Object> {
     public TestGenParsedValueProvider(Method parseMethod, Object value) {
         super(value);
         this.parseMethod = parseMethod;
+    }
+
+    @Override
+    public List<Class<?>> getImports() {
+        return Collections.singletonList(value.getClass());
     }
 
     @Override
