@@ -153,11 +153,11 @@ public class DroolsScoreDirector<Solution_>
 
     @Override
     public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
-        update(entity);
+        update(entity, variableDescriptor.getVariableName());
         super.afterVariableChanged(variableDescriptor, entity);
     }
 
-    private void update(Object entity) {
+    private void update(Object entity, String variableName) {
         FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {
             throw new IllegalArgumentException("The entity (" + entity
@@ -166,7 +166,7 @@ public class DroolsScoreDirector<Solution_>
                     + PlanningSolution.class.getSimpleName() + "'s entity members ("
                     + getSolutionDescriptor().getEntityMemberAndEntityCollectionMemberNames() + ").");
         }
-        kieSession.update(factHandle, entity);
+        kieSession.update(factHandle, entity, variableName);
     }
 
     // public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) // Do nothing
