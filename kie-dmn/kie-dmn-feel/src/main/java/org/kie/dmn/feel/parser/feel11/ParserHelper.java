@@ -100,16 +100,19 @@ public class ParserHelper {
         Scope s = this.currentScope.getChildScopes().get( name );
         if( s != null ) {
             currentScope = s;
-        } else {
-            pushScope();
+        } else { 
             Symbol resolved = this.currentScope.resolve(name);
             if ( resolved != null && resolved.getType() instanceof CustomType ) {
+                pushName(name);
+                pushScope();
                 CustomType type = (CustomType) resolved.getType();
                 for ( Property f : type.getProperties().values() ) {
                     this.currentScope.define(new VariableSymbol( f.getName(), f.getType() ));
                 }
                 LOG.trace(".. PUSHED, scope name {} with symbols {}", this.currentName.peek(), this.currentScope.getSymbols());
-            }
+            } else {
+                pushScope();
+            }  
         }
     }
 
