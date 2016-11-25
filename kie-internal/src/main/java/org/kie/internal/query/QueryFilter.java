@@ -26,15 +26,10 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.kie.internal.jaxb.StringKeyObjectValueMapXmlAdapter;
 
-
 public class QueryFilter extends QueryContext {
 
-    private static final long serialVersionUID = 4492868179938949915L;
-
-    @XmlElement
-    @XmlSchemaType(name="boolean")
-    private Boolean singleResult = false;
-
+    private static final long serialVersionUID = 2830463093685095275L;
+    
     @XmlElement
     @XmlSchemaType(name="string")
     private String language ="";
@@ -53,7 +48,6 @@ public class QueryFilter extends QueryContext {
 
     public QueryFilter(QueryFilter orig) {
         super((QueryContext) orig);
-        this.singleResult = orig.singleResult;
         this.language = orig.language;
         this.filterParams = orig.filterParams;
         for( Entry<String, Object> entry : params.entrySet() ) {
@@ -65,18 +59,12 @@ public class QueryFilter extends QueryContext {
         super(offset, count);
     }
 
-    public QueryFilter(int offset, int count, boolean singleResult) {
-        super(offset, count);
-        this.singleResult = singleResult;
-    }
-
     public QueryFilter(int offset, int count, String orderBy, boolean ascending) {
         super(offset, count, orderBy, ascending);
     }
 
-    public QueryFilter(int offset, int count, boolean singleResult, String filterParams, String language, String orderBy) {
+    public QueryFilter(int offset, int count, String filterParams, String language, String orderBy) {
         super(offset, count);
-        this.singleResult = singleResult;
         this.filterParams = filterParams;
         this.language = language;
         this.orderBy = orderBy;
@@ -94,14 +82,6 @@ public class QueryFilter extends QueryContext {
         this.filterParams = filterParams;
         this.params = params;
         this.orderBy = orderBy;
-    }
-
-    public Boolean isSingleResult() {
-        return singleResult;
-    }
-
-    public void setSingleResult( Boolean singleResult ) {
-        this.singleResult = singleResult;
     }
 
     public String getLanguage() {
