@@ -37,28 +37,28 @@ import static org.optaplanner.core.config.util.ConfigUtils.MemberAccessorType.FI
 /**
  * This class is thread-safe.
  */
-public class LocatorCache {
+public class LocationStrategyResolver {
 
     private final LocationStrategyType locationStrategyType;
 
-    private final ConcurrentMap<Class, LocationStrategy> decisionClassCache = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Class, LocationStrategy> decisionCache = new ConcurrentHashMap<>();
 
-    public LocatorCache(LocationStrategyType locationStrategyType) {
+    public LocationStrategyResolver(LocationStrategyType locationStrategyType) {
         this.locationStrategyType = locationStrategyType;
-        decisionClassCache.put(Boolean.class, new ImmutableLocationStrategy());
-        decisionClassCache.put(Byte.class, new ImmutableLocationStrategy());
-        decisionClassCache.put(Short.class, new ImmutableLocationStrategy());
-        decisionClassCache.put(Integer.class, new ImmutableLocationStrategy());
-        decisionClassCache.put(Long.class, new ImmutableLocationStrategy());
-        decisionClassCache.put(Float.class, new ImmutableLocationStrategy());
-        decisionClassCache.put(Double.class, new ImmutableLocationStrategy());
-        decisionClassCache.put(BigInteger.class, new ImmutableLocationStrategy());
-        decisionClassCache.put(BigDecimal.class, new ImmutableLocationStrategy());
-        decisionClassCache.put(Character.class, new ImmutableLocationStrategy());
-        decisionClassCache.put(String.class, new ImmutableLocationStrategy());
-        decisionClassCache.put(LocalDate.class, new ImmutableLocationStrategy());
-        decisionClassCache.put(LocalTime.class, new ImmutableLocationStrategy());
-        decisionClassCache.put(LocalDateTime.class, new ImmutableLocationStrategy());
+        decisionCache.put(Boolean.class, new ImmutableLocationStrategy());
+        decisionCache.put(Byte.class, new ImmutableLocationStrategy());
+        decisionCache.put(Short.class, new ImmutableLocationStrategy());
+        decisionCache.put(Integer.class, new ImmutableLocationStrategy());
+        decisionCache.put(Long.class, new ImmutableLocationStrategy());
+        decisionCache.put(Float.class, new ImmutableLocationStrategy());
+        decisionCache.put(Double.class, new ImmutableLocationStrategy());
+        decisionCache.put(BigInteger.class, new ImmutableLocationStrategy());
+        decisionCache.put(BigDecimal.class, new ImmutableLocationStrategy());
+        decisionCache.put(Character.class, new ImmutableLocationStrategy());
+        decisionCache.put(String.class, new ImmutableLocationStrategy());
+        decisionCache.put(LocalDate.class, new ImmutableLocationStrategy());
+        decisionCache.put(LocalTime.class, new ImmutableLocationStrategy());
+        decisionCache.put(LocalDateTime.class, new ImmutableLocationStrategy());
     }
 
     /**
@@ -66,9 +66,9 @@ public class LocatorCache {
      * @param object never null
      * @return never null
      */
-    public LocationStrategy retrieveLocationStrategy(Object object) {
+    public LocationStrategy determineLocationStrategy(Object object) {
         Class<?> objectClass = object.getClass();
-        return decisionClassCache.computeIfAbsent(objectClass, key -> {
+        return decisionCache.computeIfAbsent(objectClass, key -> {
             switch (locationStrategyType) {
                 case PLANNING_ID_OR_NONE:
                     MemberAccessor memberAccessor1 = findPlanningIdMemberAccessor(objectClass);

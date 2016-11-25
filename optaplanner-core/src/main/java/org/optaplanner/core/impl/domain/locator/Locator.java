@@ -32,12 +32,12 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  */
 public class Locator<Solution_> {
 
-    private final LocatorCache locatorCache;
+    private final LocationStrategyResolver locationStrategyResolver;
 
     private Map<Object, Object> idToWorkingObjectMap;
 
     public Locator(SolutionDescriptor<Solution_> solutionDescriptor) {
-        this.locatorCache = solutionDescriptor.getLocatorCache();
+        this.locationStrategyResolver = solutionDescriptor.getLocationStrategyResolver();
     }
 
     public void resetWorkingObjects(Collection<Object> allFacts) {
@@ -48,12 +48,12 @@ public class Locator<Solution_> {
     }
 
     public void addWorkingObject(Object workingObject) {
-        LocationStrategy locationStrategy = locatorCache.retrieveLocationStrategy(workingObject);
+        LocationStrategy locationStrategy = locationStrategyResolver.determineLocationStrategy(workingObject);
         locationStrategy.addWorkingObject(idToWorkingObjectMap, workingObject);
     }
 
     public void removeWorkingObject(Object workingObject) {
-        LocationStrategy locationStrategy = locatorCache.retrieveLocationStrategy(workingObject);
+        LocationStrategy locationStrategy = locationStrategyResolver.determineLocationStrategy(workingObject);
         locationStrategy.removeWorkingObject(idToWorkingObjectMap, workingObject);
     }
 
@@ -72,7 +72,7 @@ public class Locator<Solution_> {
         if (externalObject == null) {
             return null;
         }
-        LocationStrategy locationStrategy = locatorCache.retrieveLocationStrategy(externalObject);
+        LocationStrategy locationStrategy = locationStrategyResolver.determineLocationStrategy(externalObject);
         return locationStrategy.locateWorkingObject(idToWorkingObjectMap, externalObject);
     }
 
