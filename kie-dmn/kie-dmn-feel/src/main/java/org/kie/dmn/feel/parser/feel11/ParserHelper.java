@@ -190,10 +190,8 @@ public class ParserHelper {
             return BuiltInType.LIST;
         } else if( Map.class.isAssignableFrom(clazz) ) {     // TODO not so sure about this one..
             return BuiltInType.CONTEXT;
-        } else if (Stream.of(clazz.getMethods()).anyMatch(m->m.getAnnotation(FEELProperty.class)!=null)) {
-            return new JavaBackedType(clazz);
-        }
-        return BuiltInType.UNKNOWN;
+        } 
+        return JavaBackedType.of( clazz ); 
     }
 
 }
