@@ -82,7 +82,7 @@ public class HumanTaskQueryFilterTest extends JbpmTestCase {
         Assertions.assertThat(taskList).hasSize(2);
         logger.debug("### Potential owner task list: " + taskList);
 
-        taskList = taskService.getTasksOwned("john", null, new QueryFilter(0, 1, false, null, "en-UK", null));
+        taskList = taskService.getTasksOwned("john", null, new QueryFilter(0, 1, null, "en-UK", null));
         Assertions.assertThat(taskList).hasSize(1);
         logger.debug("### Owned task list: " + taskList);
 
@@ -129,7 +129,7 @@ public class HumanTaskQueryFilterTest extends JbpmTestCase {
         startHumanTaskProcess(4, "john's task", "john");
 
         List<TaskSummary> taskList = taskService.getTasksAssignedAsPotentialOwner("john", null, null,
-                new QueryFilter(0, 0, true));
+                new QueryFilter(0, 0));
         logger.debug("### Potential owner task list: " + taskList);
         Assertions.assertThat(taskList).hasSize(1);
 
