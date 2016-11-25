@@ -235,8 +235,9 @@ public class DMNCompilerImpl implements DMNCompiler {
                 outputs.add( new DTOutputClause(outputName, id, (List<String>) feel.evaluate("["+outputValuesText+"]") ) );         // TODO another hack to be revised
             }
             List<DTDecisionRule> rules = new ArrayList<>(  );
+            int index = 0;
             for( DecisionRule dr : dt.getRule() ) {
-                DTDecisionRule rule = new DTDecisionRule();
+                DTDecisionRule rule = new DTDecisionRule( index++ );
                 for( UnaryTests ut : dr.getInputEntry() ) {
                     List<UnaryTest> tests = textToUnaryTestList( ut.getText() );
                     rule.getInputEntry().add( x -> tests.stream().anyMatch( t -> t.apply( x ) ) );

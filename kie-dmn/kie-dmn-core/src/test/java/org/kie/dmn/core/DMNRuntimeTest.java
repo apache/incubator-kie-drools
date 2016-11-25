@@ -23,15 +23,13 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.api.event.*;
 import org.kie.dmn.core.ast.InputDataNode;
+import org.mockito.ArgumentCaptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasEntry;
@@ -350,6 +348,7 @@ public class DMNRuntimeTest {
 
         DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
 
+        ArgumentCaptor<AfterEvaluateDecisionTableEvent> argument = ArgumentCaptor.forClass( AfterEvaluateDecisionTableEvent.class);
         verify( listener, times(2) )
                 .beforeEvaluateDecision( any( BeforeEvaluateDecisionEvent.class ) );
         verify( listener, times(2) )
@@ -357,7 +356,15 @@ public class DMNRuntimeTest {
         verify( listener, times(2) )
                 .beforeEvaluateDecisionTable( any( BeforeEvaluateDecisionTableEvent.class ) );
         verify( listener, times(2) )
-                .afterEvaluateDecisionTable( any( AfterEvaluateDecisionTableEvent.class ) );
+                .afterEvaluateDecisionTable( argument.capture() );
+
+        AfterEvaluateDecisionTableEvent dte = argument.getAllValues().get( 0 );
+        assertThat( dte.getDecisionTableName(), is("Car Damage Responsibility_DT") );
+        assertThat( dte.getMatches(), is( Arrays.asList( 4 )) );
+
+        dte = argument.getAllValues().get( 1 );
+        assertThat( dte.getDecisionTableName(), is("Payment method_DT") );
+        assertThat( dte.getMatches(), is( Arrays.asList( 2 )) );
 
         assertThat( dmnResult.hasErrors(), is( false ) );
 

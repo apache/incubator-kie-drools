@@ -19,6 +19,8 @@ package org.kie.dmn.core.api.event;
 import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.core.impl.DMNResultImpl;
 
+import java.util.List;
+
 public interface InternalDMNRuntimeEventManager extends DMNRuntimeEventManager {
 
     void fireBeforeEvaluateDecision(DecisionNode decision, DMNResultImpl result);
@@ -27,5 +29,5 @@ public interface InternalDMNRuntimeEventManager extends DMNRuntimeEventManager {
 
     void fireBeforeEvaluateDecisionTable(String dtName, DMNResultImpl result);
 
-    void fireAfterEvaluateDecisionTable(String dtName, DMNResultImpl result);
+    void fireAfterEvaluateDecisionTable(String dtName, DMNResultImpl result, List<Integer> matches );
 }
