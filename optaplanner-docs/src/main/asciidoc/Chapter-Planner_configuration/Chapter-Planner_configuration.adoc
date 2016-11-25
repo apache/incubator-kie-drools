@@ -1817,7 +1817,8 @@ INFO  Solving ended: time spent (24), best score (0), score calculation speed (7
 
 All time spent values are in milliseconds.
 
-Everything is logged to http://www.slf4j.org/[SLF4J], which is a simple logging facade which delegates every log message to Logback, Apache Commons Logging, Log4j or java.util.logging.
+Everything is logged to http://www.slf4j.org/[SLF4J], which is a simple logging facade
+which delegates every log message to Logback, Apache Commons Logging, Log4j or java.util.logging.
 Add a dependency to the logging adaptor for your logging framework of choice.
 
 If you are not using any logging framework yet, use Logback by adding this Maven dependency (there is no need to add an extra bridge dependency):
@@ -1831,8 +1832,7 @@ If you are not using any logging framework yet, use Logback by adding this Maven
     </dependency>
 ----
 
-Configure the logging level on the `org.optaplanner` package in your [path]_logback.xml_
- file:
+Configure the logging level on the `org.optaplanner` package in your `logback.xml` file:
 
 [source,xml,options="nowrap"]
 ----
@@ -1845,6 +1845,8 @@ Configure the logging level on the `org.optaplanner` package in your [path]_logb
 <configuration>
 ----
 
+If it isn't picked up, temporarily add the system property `-Dlogback.debug=true` to figure out why.
+
 If instead, you are still using Log4J 1.x (and you do not want to switch to its faster successor, Logback), add the bridge dependency:
 
 [source,xml,options="nowrap"]
@@ -1856,8 +1858,7 @@ If instead, you are still using Log4J 1.x (and you do not want to switch to its 
     </dependency>
 ----
 
-And configure the logging level on the package `org.optaplanner` in your [path]_log4j.xml_
- file:
+And configure the logging level on the package `org.optaplanner` in your `log4j.xml` file:
 
 [source,xml,options="nowrap"]
 ----

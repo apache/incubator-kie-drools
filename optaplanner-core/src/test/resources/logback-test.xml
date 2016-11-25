@@ -10,6 +10,9 @@
   </appender>
 
   <logger name="org.optaplanner" level="info"/>
+  <!-- TODO This logback-test.xml overwrites optaplanner-example's logback-test.xml file because there is test-jar dependency -->
+  <!-- Don't pollute the test log with a stacktrace -->
+  <logger name="org.optaplanner.benchmark.impl.DefaultPlannerBenchmark.singleBenchmarkRunnerException" level="error"/>
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />
