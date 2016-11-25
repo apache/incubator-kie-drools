@@ -6,6 +6,7 @@ public class Person {
     private String firstName;
     private String lastName;
     private Address homeAddress;
+    private int age;
     
     public Person(String firstName, String lastName) {
         super();
@@ -18,6 +19,11 @@ public class Person {
         this.homeAddress = homeAddress;
     }
     
+    public Person(String firstName, String lastName, int age) {
+        this(firstName, lastName);
+        this.setAge(age);
+    }
+
     @FEELProperty("first name")
     public String getFirstName() {
         return firstName;
@@ -50,6 +56,14 @@ public class Person {
         StringBuilder builder = new StringBuilder();
         builder.append("Person [firstName=").append(firstName).append(", lastName=").append(lastName).append("]");
         return builder.toString();
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
     
 }
