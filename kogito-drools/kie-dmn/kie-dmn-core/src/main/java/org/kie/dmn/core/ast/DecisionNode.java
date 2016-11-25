@@ -26,6 +26,7 @@ import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.model.v1_1.Decision;
 import org.kie.dmn.feel.runtime.decisiontables.DTInvokerFunction;
+import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
 import org.kie.dmn.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.FEELEventListener;
 
@@ -116,6 +117,7 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
 
         @Override
         public Object evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+            EventResults r = null;
             try {
                 eventManager.fireBeforeEvaluateDecisionTable( dt.getName(), result );
                 List<String> paramNames = dt.getParameterNames().get( 0 );
@@ -126,19 +128,28 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
                     ctx.setValue( paramNames.get( i ), params[i] );
                 }
                 Object dtr = dt.apply( ctx, params );
-                processEvents( events, eventManager, result );
+                r = processEvents( events, eventManager, result );
                 return dtr;
             } finally {
-                eventManager.fireAfterEvaluateDecisionTable( dt.getName(), result );
+                eventManager.fireAfterEvaluateDecisionTable( dt.getName(), result, ( r != null ? r.matchedRules : null ) );
             }
         }
 
-        private void processEvents(List<FEELEvent> events, InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+        private EventResults processEvents(List<FEELEvent> events, InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+            EventResults r = new EventResults();
             for( FEELEvent e : events ) {
-                if( e.getSeverity() == FEELEvent.Severity.ERROR ) {
+                if( e instanceof DecisionTableRulesMatchedEvent ) {
+                    r.matchedRules = ((DecisionTableRulesMatchedEvent) e).getMatches();
+                } else if( e.getSeverity() == FEELEvent.Severity.ERROR ) {
                     result.addMessage( DMNMessage.Severity.ERROR, e.getMessage(), decision.getId(), e );
                 }
             }
+            events.clear();
+            return r;
+        }
+
+        private static class EventResults {
+            public List<Integer> matchedRules;
         }
 
         @Override

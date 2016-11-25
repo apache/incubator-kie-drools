@@ -18,11 +18,15 @@ package org.kie.dmn.feel.runtime.decisiontables;
 
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -96,6 +100,15 @@ public enum HitPolicy {
                 matchingDecisionRules.add( decisionRule );
             }
         }
+        if( ctx.getEventsManager() != null && !ctx.getEventsManager().getListeners().isEmpty() ) {
+            List<Integer> matches = matchingDecisionRules.stream().map( dr -> dr.getIndex() ).collect( Collectors.toList() );
+            DecisionTableRulesMatchedEvent rme = new DecisionTableRulesMatchedEvent( FEELEvent.Severity.INFO,
+                                                                                     "Rules matched for decision table '" + nodeName + "': "+matches.toString(),
+                                                                                     nodeName,
+                                                                                     matches );
+            ctx.getEventsManager().notifyListeners( rme );
+        }
+
         return matchingDecisionRules;
     }
 

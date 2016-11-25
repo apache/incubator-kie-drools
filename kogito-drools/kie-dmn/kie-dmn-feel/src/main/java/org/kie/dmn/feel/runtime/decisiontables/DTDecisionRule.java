@@ -49,8 +49,13 @@ th outputEntry SHALL be consistent with the typeRef of the i
 th OutputClause.
  */
 public class DTDecisionRule {
+    private int                     index;
     private List<UnaryTest>         inputEntry;
     private List<String>            outputEntry;
+
+    public DTDecisionRule(int index) {
+        this.index = index;
+    }
 
     /**
 The instances of UnaryTests that specify the input conditions
@@ -74,5 +79,9 @@ the output components of this DecisionRule.
             outputEntry = new ArrayList<>();
         }
         return this.outputEntry;
+    }
+
+    public int getIndex() {
+        return index;
     }
 }

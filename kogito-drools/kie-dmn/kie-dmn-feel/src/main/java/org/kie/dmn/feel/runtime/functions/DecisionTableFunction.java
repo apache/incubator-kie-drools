@@ -16,18 +16,16 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import org.kie.dmn.feel.model.v1_1.LiteralExpression;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.runtime.decisiontables.DTInvokerFunction;
-import org.kie.dmn.feel.runtime.decisiontables.DTOutputClause;
-import org.kie.dmn.feel.runtime.decisiontables.DTDecisionRule;
-import org.kie.dmn.feel.runtime.decisiontables.DTInputClause;
-import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
+import org.kie.dmn.feel.runtime.decisiontables.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -41,80 +39,78 @@ public class DecisionTableFunction
     }
 
     /**
-@param inputExpressionList a list of the N>=0 input expressions in display order
-@param inputValuesList * a list of N input values, corresponding to the input expressions. Each
-list element is a unary tests literal (see below).
-@param outputs * a name (a string matching grammar rule 27) or a list of M>0 names
-@param outputValues * if outputs is a list, then output values is a list of lists of values, one list
-per output; else output values is a list of values for the one output.
-Each value is a string.
-@param ruleList a list of R>0 rules. A rule is a list of N input entries followed by M
-output entries. An input entry is a unary tests literal. An output entry is
-an expression represented as a string.
-@param hitPolicy * one of: "U", "A", “P”, “F”, "R", "O", "C", "C+", "C#", "C<", “C>”
-(default is "U")
-@param defaultOutputValue * if outputs is a list, then default output value is a context with entries
-composed of outputs and output values; else default output value is one
-of the output values.
+     @param inputExpressionList a list of the N>=0 input expressions in display order
+     @param inputValuesList * a list of N input values, corresponding to the input expressions. Each
+     list element is a unary tests literal (see below).
+     @param outputs * a name (a string matching grammar rule 27) or a list of M>0 names
+     @param outputValues * if outputs is a list, then output values is a list of lists of values, one list
+     per output; else output values is a list of values for the one output.
+     Each value is a string.
+     @param ruleList a list of R>0 rules. A rule is a list of N input entries followed by M
+     output entries. An input entry is a unary tests literal. An output entry is
+     an expression represented as a string.
+     @param hitPolicy * one of: "U", "A", “P”, “F”, "R", "O", "C", "C+", "C#", "C<", “C>”
+     (default is "U")
+     @param defaultOutputValue * if outputs is a list, then default output value is a context with entries
+     composed of outputs and output values; else default output value is one
+     of the output values.
      */
     public Object apply(
             @ParameterName("outputs") Object outputs, @ParameterName("input expression list") Object inputExpressionList,
             @ParameterName("input values list") List<?> inputValuesList,
             @ParameterName("output values") Object outputValues,
             @ParameterName("rule list") List<List> ruleList, @ParameterName("hit policy") String hitPolicy,
-            @ParameterName("default output value") Object defaultOutputValue ) {
+            @ParameterName("default output value") Object defaultOutputValue) {
         // input expression list can have a single element or be a list
         // TODO isn't ^ conflicting with the specs page 136 "input expression list: a LIST of the"
         List<String> inputExpressions = inputExpressionList instanceof List ? (List) inputExpressionList : Collections.singletonList( (String) inputExpressionList );
 
         List<DTInputClause> inputs;
         if ( inputValuesList != null ) {
-            List<UnaryTest> inputValues = inputValuesList.stream().map( DecisionTableFunction::toUnaryTest ).collect(Collectors.toList());
-            if (inputValues.size() != inputExpressions.size()) {
+            List<UnaryTest> inputValues = inputValuesList.stream().map( DecisionTableFunction::toUnaryTest ).collect( Collectors.toList() );
+            if ( inputValues.size() != inputExpressions.size() ) {
                 // TODO handle compilation error
             }
             // zip inputExpression with its inputValue
-            inputs = IntStream.range( 0, inputExpressions.size() ) 
-                .mapToObj(i -> new DTInputClause(inputExpressions.get(i), Collections.singletonList(inputValues.get(i))))
-                .collect(Collectors.toList());
+            inputs = IntStream.range( 0, inputExpressions.size() )
+                    .mapToObj( i -> new DTInputClause( inputExpressions.get( i ), Collections.singletonList( inputValues.get( i ) ) ) )
+                    .collect( Collectors.toList() );
         } else {
-            inputs = inputExpressions.stream().map(ie -> new DTInputClause(ie, null)).collect(Collectors.toList());
+            inputs = inputExpressions.stream().map( ie -> new DTInputClause( ie, null ) ).collect( Collectors.toList() );
         }
-        
+
         List<String> parseOutputs = outputs instanceof List ? (List) outputs : Collections.singletonList( (String) outputs );
         List<DTOutputClause> outputClauses;
         if ( outputValues != null ) {
             if ( parseOutputs.size() == 1 ) {
                 outputClauses = new ArrayList<>();
-                outputClauses.add( new DTOutputClause(parseOutputs.get(0), (List<String>) outputValues) );
+                outputClauses.add( new DTOutputClause( parseOutputs.get( 0 ), (List<String>) outputValues ) );
             } else {
                 List<List<String>> listOfList = (List<List<String>>) outputValues;
                 // zip inputExpression with its inputValue
-                outputClauses = IntStream.range( 0, parseOutputs.size() ) 
-                      .mapToObj(i -> new DTOutputClause(parseOutputs.get(i), listOfList.get(i)))
-                      .collect(Collectors.toList());
+                outputClauses = IntStream.range( 0, parseOutputs.size() )
+                        .mapToObj( i -> new DTOutputClause( parseOutputs.get( i ), listOfList.get( i ) ) )
+                        .collect( Collectors.toList() );
             }
         } else {
-            outputClauses = parseOutputs.stream().map(out -> new DTOutputClause(out, null)).collect(Collectors.toList());
+            outputClauses = parseOutputs.stream().map( out -> new DTOutputClause( out, null ) ).collect( Collectors.toList() );
         }
-        
+
         // TODO parse default output value.
-        
-        
-        List<DTDecisionRule> decisionRules = ruleList.stream()
-                .map( o -> DecisionTableFunction.toDecisionRule( o, inputExpressions.size() ) )
+        List<DTDecisionRule> decisionRules = IntStream.range( 0, ruleList.size() )
+                .mapToObj( index -> DecisionTableFunction.toDecisionRule( index, ruleList.get( index ), inputExpressions.size() ) )
                 .collect( Collectors.toList() );
 
         return new DTInvokerFunction( UUID.randomUUID().toString(), inputs, decisionRules, outputClauses, HitPolicy.fromString( hitPolicy ) );
     }
 
-    public static DTDecisionRule toDecisionRule(List<?> rule, int inputSize) {
+    public static DTDecisionRule toDecisionRule(int index, List<?> rule, int inputSize) {
         // TODO should be check indeed block of inputSize n inputs, followed by block of outputs.
-        DTDecisionRule dr = new DTDecisionRule();
+        DTDecisionRule dr = new DTDecisionRule( index );
         for ( int i = 0; i < rule.size(); i++ ) {
             Object o = rule.get( i );
             if ( i < inputSize ) {
-                dr.getInputEntry().add( toUnaryTest(o) );
+                dr.getInputEntry().add( toUnaryTest( o ) );
             } else {
                 // TODO: should we pre-compile the expression? probably...
                 dr.getOutputEntry().add( (String) o );
@@ -125,13 +121,13 @@ of the output values.
 
     private static UnaryTest toUnaryTest(Object o) {
         if ( o instanceof UnaryTest ) {
-            return (UnaryTest) o ;
+            return (UnaryTest) o;
         } else if ( o instanceof Range ) {
-            return x -> ((Range) o).includes( (Comparable<?>) x ) ;
+            return x -> ((Range) o).includes( (Comparable<?>) x );
         } else if ( o instanceof List ) {
-            return x -> ((List<?>) o).contains( x ) ;
+            return x -> ((List<?>) o).contains( x );
         } else {
-            return x -> x.equals( o ) ;
+            return x -> x.equals( o );
         }
     }
 

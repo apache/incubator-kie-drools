@@ -14,45 +14,41 @@
  * limitations under the License.
  */
 
-package org.kie.dmn.core.impl;
-
-import org.kie.dmn.core.api.DMNResult;
-import org.kie.dmn.core.api.event.AfterEvaluateDecisionTableEvent;
+package org.kie.dmn.feel.runtime.events;
 
 import java.util.List;
 
-public class AfterEvaluateDecisionTableEventImpl
-        implements AfterEvaluateDecisionTableEvent {
+/**
+ * An event class to report all matches for a decision table
+ */
+public class DecisionTableRulesMatchedEvent
+        extends FEELEventBase
+        implements FEELEvent {
 
-    private String dtName;
-    private DMNResult result;
-    private List<Integer> matches;
+    private final String        nodeName;
+    private final List<Integer> matches;
 
-
-    public AfterEvaluateDecisionTableEventImpl(String dtName, DMNResultImpl result, List<Integer> matches) {
-        this.dtName = dtName;
-        this.result = result;
+    public DecisionTableRulesMatchedEvent(Severity severity, String msg, String nodeName, List<Integer> matches) {
+        super( severity, msg, null );
+        this.nodeName = nodeName;
         this.matches = matches;
     }
 
-    @Override
-    public String getDecisionTableName() {
-        return dtName;
+    public String getNodeName() {
+        return nodeName;
     }
 
-    @Override
-    public DMNResult getResult() {
-        return result;
-    }
-
-    @Override
     public List<Integer> getMatches() {
         return matches;
     }
 
     @Override
     public String toString() {
-        return "AfterEvaluateDecisionTableEvent{ name='"+dtName+"' matches="+matches+" }";
+        return "DecisionTableRulesMatchedEvent{" +
+               "severity=" + getSeverity() +
+               ", message='" + getMessage() + '\'' +
+               ", nodeName='" + nodeName + '\'' +
+               ", matches='" + matches + '\'' +
+               '}';
     }
-
 }

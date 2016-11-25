@@ -18,8 +18,12 @@ package org.kie.dmn.core.api.event;
 
 import org.kie.dmn.core.api.DMNResult;
 
+import java.util.List;
+
 public interface AfterEvaluateDecisionTableEvent {
     String getDecisionTableName();
 
     DMNResult getResult();
+
+    List<Integer> getMatches();
 }
