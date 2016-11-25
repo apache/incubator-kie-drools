@@ -190,4 +190,14 @@ public interface CaseRuntimeDataService {
      */
     List<TaskSummary> getCaseTasksAssignedAsBusinessAdmin(String caseId, String userId, List<Status> status, QueryContext queryContext);
     
+    /**
+     * Returns all tasks associated with given case id that are eligible for user to see in task stakeholder role.
+     * @param caseId unique id of the case 
+     * @param userId user id that the tasks should be available for
+     * @param status status of the task
+     * @param queryContext control parameters for the result e.g. sorting, paging 
+     * @return list of tasks found for given case id and user
+     */
+    List<TaskSummary> getCaseTasksAssignedAsStakeholder(String caseId, String userId, List<Status> status, QueryContext queryContext);
+    
 }

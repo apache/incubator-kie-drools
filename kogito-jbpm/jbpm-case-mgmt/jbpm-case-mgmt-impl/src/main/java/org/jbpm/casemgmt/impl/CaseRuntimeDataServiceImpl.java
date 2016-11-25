@@ -449,6 +449,18 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
         return tasks;
     }
     
+    @Override
+    public List<TaskSummary> getCaseTasksAssignedAsStakeholder(String caseId, String userId, List<Status> status, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("caseId", caseId + "%");
+        params.put("userId", userId);
+        params.put("status", adoptList(status, allActiveStatus));
+        params.put("groupIds", identityProvider.getRoles());
+        applyQueryContext(params, queryContext);
+        List<TaskSummary> tasks =  commandService.execute(new QueryNameCommand<List<TaskSummary>>("getCaseTasksAsStakeholder", params));
+        return tasks;
+    }
+    
     /*
      * Helper methods to parse process and extract case related information
      */
