@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -66,8 +67,8 @@ public class DMNRuntimeEventManagerImpl implements InternalDMNRuntimeEventManage
     }
 
     @Override
-    public void fireAfterEvaluateDecisionTable(String dtName, DMNResultImpl result) {
-        AfterEvaluateDecisionTableEvent event = new AfterEvaluateDecisionTableEventImpl( dtName, result );
+    public void fireAfterEvaluateDecisionTable(String dtName, DMNResultImpl result, List<Integer> matches ) {
+        AfterEvaluateDecisionTableEvent event = new AfterEvaluateDecisionTableEventImpl( dtName, result, matches );
         notifyListeners( l -> l.afterEvaluateDecisionTable( event ) );
     }
 
