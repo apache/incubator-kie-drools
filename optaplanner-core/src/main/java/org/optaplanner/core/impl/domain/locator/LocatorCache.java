@@ -34,6 +34,9 @@ import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 import static org.optaplanner.core.config.util.ConfigUtils.MemberAccessorType.FIELD_OR_READ_METHOD;
 
+/**
+ * This class is thread-safe.
+ */
 public class LocatorCache {
 
     private final LocationStrategyType locationStrategyType;
@@ -58,7 +61,12 @@ public class LocatorCache {
         decisionClassCache.put(LocalDateTime.class, new ImmutableLocationStrategy());
     }
 
-    protected LocationStrategy retrieveLocationStrategy(Object object) {
+    /**
+     * This method is thread-safe.
+     * @param object never null
+     * @return never null
+     */
+    public LocationStrategy retrieveLocationStrategy(Object object) {
         Class<?> objectClass = object.getClass();
         return decisionClassCache.computeIfAbsent(objectClass, key -> {
             switch (locationStrategyType) {
