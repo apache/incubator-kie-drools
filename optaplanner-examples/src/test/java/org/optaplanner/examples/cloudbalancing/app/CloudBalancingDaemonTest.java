@@ -46,6 +46,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
     private CountDownLatch stage3Latch = new CountDownLatch(1);
 
     private Queue<CloudProcess> notYetAddedProcessQueue = new ArrayDeque<>();
+    private volatile Throwable solverThreadException = null;
 
     @Test(timeout = 600000)
     public void daemon() throws InterruptedException {
@@ -102,7 +103,12 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         public void run() { // In solver thread
             solver.addEventListener(this);
             nextStage(); // For an empty entity list, there is no bestSolutionChanged() event currently
-            solver.solve(cloudBalance);
+            try {
+                solver.solve(cloudBalance);
+            } catch (Throwable e) {
+                solverThreadException = e;
+                nextStage();
+            }
         }
 
         @Override
@@ -172,6 +178,9 @@ public class CloudBalancingDaemonTest extends LoggingTest {
             }
         }
         latch.await();
+        if (solverThreadException != null) {
+            throw new RuntimeException("SolverThread threw an exception.", solverThreadException);
+        }
         // TODO Unlikely race condition: all bestSolutionChanged() could be processed before stageNumber is incremented
         int stage;
         synchronized (stageLock) {
