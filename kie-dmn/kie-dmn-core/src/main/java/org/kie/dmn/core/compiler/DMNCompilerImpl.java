@@ -111,15 +111,14 @@ public class DMNCompilerImpl implements DMNCompiler {
             if ( e instanceof InputData ) {
                 InputData input = (InputData) e;
                 String variableName = input.getVariable() != null ? input.getVariable().getName() : null;
-                if( variableNameIsValid( variableName ) ) {
-                    DMNType type = resolveSimpleTypeRef( model, e, input.getVariable().getTypeRef() );
-                    InputDataNode idn = new InputDataNode( input, type );
-                    model.addInput( idn );
-                    model.getTypeRegistry().put( input.getVariable().getTypeRef(), type );
-                } else {
+                if( ! variableNameIsValid( variableName ) ) {
                     logger.error( "Invalid variable name '"+variableName+"' in input data '"+input.getId()+"'" );
                     model.addMessage( DMNMessage.Severity.ERROR, "Invalid variable name '"+variableName+"' in input data '"+input.getId()+"'", input.getId() );
                 }
+                DMNType type = resolveSimpleTypeRef( model, e, input.getVariable().getTypeRef() );
+                InputDataNode idn = new InputDataNode( input, type );
+                model.addInput( idn );
+                model.getTypeRegistry().put( input.getVariable().getTypeRef(), type );
             } else if ( e instanceof Decision ) {
                 Decision decision = (Decision) e;
                 DMNType type = null;
