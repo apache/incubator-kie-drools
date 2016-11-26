@@ -38,6 +38,9 @@ public class DTInvokerFunction
     public Object apply(EvaluationContext ctx, Object[] params) {
         try {
             ctx.enterFrame();
+            for( int i = 0; i < params.length; i++ ) {
+                ctx.setValue( dt.getParameterNames().get( i ), params[i] );
+            }
             Object result = dt.evaluate( ctx, params );
             return result;
         } catch ( Exception e ) {
