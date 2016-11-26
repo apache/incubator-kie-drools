@@ -16,8 +16,6 @@
 
 package org.kie.dmn.feel.runtime.events;
 
-import java.util.List;
-
 /**
  * An event class to report a syntax error as returned by the parser
  */
@@ -25,11 +23,11 @@ public class InvalidInputEvent
         extends FEELEventBase
         implements FEELEvent {
 
-    private final String       nodeName;
-    private final String       inputName;
-    private final List<String> validInputs;
+    private final String nodeName;
+    private final String inputName;
+    private final String validInputs;
 
-    public InvalidInputEvent(Severity severity, String msg, String nodeName, String inputName, List<String> validInputs) {
+    public InvalidInputEvent(Severity severity, String msg, String nodeName, String inputName, String validInputs) {
         super( severity, msg, null );
         this.nodeName = nodeName;
         this.inputName = inputName;
@@ -44,7 +42,7 @@ public class InvalidInputEvent
         return inputName;
     }
 
-    public List<String> getValidInputs() {
+    public String getValidInputs() {
         return validInputs;
     }
 

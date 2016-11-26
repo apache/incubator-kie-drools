@@ -21,7 +21,6 @@ import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.FunctionSymbol;
-import org.kie.dmn.feel.runtime.decisiontables.DTInvokerFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

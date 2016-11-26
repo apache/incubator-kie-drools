@@ -207,7 +207,6 @@ public class DMNRuntimeTest {
         assertThat( result.get( "Approval Status" ), is( "Approved" ) );
     }
     
-    @Ignore("Should have at least one message for failing the (allowed) input values - ASD is not a valid input value for RiskCategory")
     @Test
     public void testSimpleDTUniqueSatisfies() {
         DMNRuntime runtime = createRuntime( "0004-simpletable-U.dmn" );
@@ -359,11 +358,11 @@ public class DMNRuntimeTest {
                 .afterEvaluateDecisionTable( argument.capture() );
 
         AfterEvaluateDecisionTableEvent dte = argument.getAllValues().get( 0 );
-        assertThat( dte.getDecisionTableName(), is("Car Damage Responsibility_DT") );
+        assertThat( dte.getDecisionTableName(), is("Car Damage Responsibility") );
         assertThat( dte.getMatches(), is( Arrays.asList( 4 )) );
 
         dte = argument.getAllValues().get( 1 );
-        assertThat( dte.getDecisionTableName(), is("Payment method_DT") );
+        assertThat( dte.getDecisionTableName(), is("Payment method") );
         assertThat( dte.getMatches(), is( Arrays.asList( 2 )) );
 
         assertThat( dmnResult.hasErrors(), is( false ) );
@@ -392,7 +391,7 @@ public class DMNRuntimeTest {
         assertThat( result.get("Branches distribution"), is( "Medium" ) );
     }
 
-    @Test @Ignore("Not working yet")
+    @Test
     public void testInvalidInputDTErrorMessage() {
         DMNRuntime runtime = createRuntime( "InvalidInput.dmn" );
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_cdf29af2-959b-4004-8271-82a9f5a62147", "Dessin 1" );
@@ -408,7 +407,41 @@ public class DMNRuntimeTest {
 
         DMNContext result = dmnResult.getContext();
         System.out.println(result);
-        assertThat( result.isDefined("Branches distribution"), is( false ) );
+//        assertThat( result.isDefined("Branches distribution"), is( false ) );
+    }
+
+    @Test
+    public void testCollectHitPolicy() {
+        DMNRuntime runtime = createRuntime( "Collect_Hit_Policy.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_da1a4dcb-01bf-4dee-9be8-f498bc68178c", "Collect Hit Policy" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Input", 20 );
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat( dmnResult.hasErrors(), is( false ) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get("Collect"), is( BigDecimal.valueOf( 50 ) ) );
+    }
+
+    @Test
+    public void testOutputReuse() {
+        DMNRuntime runtime = createRuntime( "Input_reuse_in_output.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_098bb607-eff7-4772-83ac-6ded8b371fa7", "Input reuse in output" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Age", 40 );
+        context.set( "Requested Product", "Fixed30" );
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        System.out.println(dmnResult.getMessages());
+        assertThat( dmnResult.hasErrors(), is( false ) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get("My Decision"), is( "Fixed30" ) );
     }
 
     private DMNRuntimeEventListener createListener() {

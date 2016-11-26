@@ -9,6 +9,15 @@
   </semantic:extensionElements>
   <semantic:decision id="_990f435f-d597-46d5-b80e-5fc71c7c21cd" name="Logique de décision 1">
     <semantic:variable id="_84905716-314d-489b-b6d7-a80f0837978d" name="Logique de décision 1" typeRef="feel:number"/>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_MonthlyDeptPmt"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_MonthlyIncome"/>
+    </semantic:informationRequirement>
+    <semantic:informationRequirement>
+      <semantic:requiredInput href="#_MonthlyPmt"/>
+    </semantic:informationRequirement>
     <semantic:decisionTable hitPolicy="UNIQUE" outputLabel="Logique de décision 1">
       <semantic:input id="_eb1b19d5-9014-417e-a09f-96fd141f88a6" label="MonthlyDeptPmt">
         <semantic:inputExpression typeRef="feel:number">
@@ -42,4 +51,13 @@
       </semantic:rule>
     </semantic:decisionTable>
   </semantic:decision>
+  <semantic:inputData id="_MonthlyDeptPmt" name="MonthlyDeptPmt">
+    <semantic:variable id="_MonthlyDeptPmtVar" name="MonthlyDeptPmt" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:inputData id="_MonthlyIncome" name="MonthlyIncome">
+    <semantic:variable id="_MonthlyIncomeVar" name="MonthlyIncome" typeRef="feel:number"/>
+  </semantic:inputData>
+  <semantic:inputData id="_MonthlyPmt" name="MonthlyPmt">
+    <semantic:variable id="_MonthlyPmtVar" name="MonthlyPmt" typeRef="feel:number"/>
+  </semantic:inputData>
 </semantic:definitions>

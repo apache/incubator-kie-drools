@@ -16,18 +16,15 @@
 
 package org.kie.dmn.feel.runtime.decisiontables;
 
-import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
-import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
-import org.kie.dmn.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
@@ -50,8 +47,6 @@ public enum HitPolicy {
     private final String longName;
     private final HitPolicyDTI dti;
 
-    private static final FEEL feel = FEEL.newInstance();
-
     HitPolicy(final String shortName, final String longName) {
         this( shortName, longName, HitPolicy::notImplemented );
     }
@@ -60,11 +55,6 @@ public enum HitPolicy {
         this.shortName = shortName;
         this.longName = longName;
         this.dti = dti;
-    }
-
-    @FunctionalInterface
-    public static interface HitPolicyDTI {
-        Object dti(EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs);
     }
 
     public String getShortName() {
@@ -89,129 +79,111 @@ public enum HitPolicy {
         throw new IllegalArgumentException( "Unknown hit policy: " + policy );
     }
 
-    public static Object notImplemented(EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
+    /* ---------------------------------------
+            HIT POLICY IMPLEMENTATION
+       --------------------------------------- */
+    @FunctionalInterface
+    public interface HitPolicyDTI {
+        Object dti(EvaluationContext ctx,
+                   DecisionTableImpl dt,
+                   Object[] params,
+                   List<DTDecisionRule> matches,
+                   List<Object> results);
+    }
+
+    public static Object notImplemented(EvaluationContext ctx,
+                                        DecisionTableImpl dt,
+                                        Object[] params,
+                                        List<DTDecisionRule> matches,
+                                        List<Object> results) {
         throw new RuntimeException( "Not implemented" );
-    }
-
-    public static List<DTDecisionRule> matchingDecisionRules(EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs) {
-        List<DTDecisionRule> matchingDecisionRules = new ArrayList<>();
-        for ( DTDecisionRule decisionRule : decisionRules ) {
-            if ( DTInvokerFunction.match( ctx, nodeName, params, decisionRule, inputs ) ) {
-                matchingDecisionRules.add( decisionRule );
-            }
-        }
-        if( ctx.getEventsManager() != null && !ctx.getEventsManager().getListeners().isEmpty() ) {
-            List<Integer> matches = matchingDecisionRules.stream().map( dr -> dr.getIndex() ).collect( Collectors.toList() );
-            DecisionTableRulesMatchedEvent rme = new DecisionTableRulesMatchedEvent( FEELEvent.Severity.INFO,
-                                                                                     "Rules matched for decision table '" + nodeName + "': "+matches.toString(),
-                                                                                     nodeName,
-                                                                                     matches );
-            ctx.getEventsManager().notifyListeners( rme );
-        }
-
-        return matchingDecisionRules;
-    }
-
-    /**
-     *  Each hit results in one output value (multiple outputs are collected into a single context value)
-     */
-    private static Object hitToOutput(EvaluationContext ctx, DTDecisionRule hit, List<DTOutputClause> outputs) {
-        List<String> outputEntry = hit.getOutputEntry();
-        Map<String, Object> values = ctx.getAllValues();
-        if ( outputEntry.size() == 1 ) {
-            Object value = feel.evaluate( outputEntry.get( 0 ), values );
-            return value;
-        } else {
-            // zip outputEntry with its name:
-            return IntStream.range( 0, outputs.size() ).boxed()
-                    .collect( toMap( i -> outputs.get( i ).getName(), i -> feel.evaluate( hit.getOutputEntry().get( i ), values ) ) );
-        }
     }
 
     /**
      * Unique – only a single rule can be matched
      */
-    public static Object unique(EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
-        List<DTDecisionRule> matchingDecisionRules = matchingDecisionRules( ctx, nodeName, params, decisionRules, inputs );
-
-        if ( matchingDecisionRules.size() > 1 ) {
+    public static Object unique(EvaluationContext ctx,
+                                DecisionTableImpl dt,
+                                Object[] params,
+                                List<DTDecisionRule> matches,
+                                List<Object> results) {
+        if ( matches.size() > 1 ) {
             throw new RuntimeException( "only a single rule can be matched" );
         }
-
-        if ( matchingDecisionRules.size() == 1 ) {
-            return hitToOutput( ctx, matchingDecisionRules.get( 0 ), outputs );
+        if ( matches.size() == 1 ) {
+            return results.get( 0 );
         }
-
         return null;
     }
 
     /**
      * First – return the first match in rule order 
      */
-    public static Object first(EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
-        List<DTDecisionRule> matchingDecisionRules = matchingDecisionRules( ctx, nodeName, params, decisionRules, inputs );
-
-        if ( matchingDecisionRules.size() >= 1 ) {
-            return hitToOutput( ctx, matchingDecisionRules.get( 0 ), outputs );
+    public static Object first(EvaluationContext ctx,
+                               DecisionTableImpl dt,
+                               Object[] params,
+                               List<DTDecisionRule> matches,
+                               List<Object> results) {
+        if ( matches.size() >= 1 ) {
+            return results.get( 0 );
         }
-
         return null;
     }
 
     /**
      * Any – multiple rules can match, but they all have the same output
      */
-    public static Object any(EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
-        List<DTDecisionRule> matchingDecisionRules = matchingDecisionRules( ctx, nodeName, params, decisionRules, inputs );
-
-        if ( matchingDecisionRules.size() > 1 ) {
-            // TODO revise.
-            long distinctOutputEntry = matchingDecisionRules.stream()
-                    .map( dr -> hitToOutput( ctx, dr, outputs ) )
+    public static Object any(EvaluationContext ctx,
+                             DecisionTableImpl dt,
+                             Object[] params,
+                             List<DTDecisionRule> matches,
+                             List<Object> results) {
+        if ( matches.size() > 1 ) {
+            long distinctOutputEntry = results.stream()
                     .distinct()
                     .count();
             if ( distinctOutputEntry > 1 ) {
                 throw new RuntimeException( "multiple rules can match, but they [must] all have the same output" );
             }
-        }
 
-        if ( matchingDecisionRules.size() >= 1 ) {
-            return hitToOutput( ctx, matchingDecisionRules.get( 0 ), outputs );
+            return results.get( 0 );
         }
-
         return null;
     }
 
     /**
      * Priority – multiple rules can match, with different outputs. The output that comes first in the supplied output values list is returned
      */
-    public static Object priority(EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
-        Object results = outputOrder( ctx, nodeName, params, decisionRules, inputs, outputs );
-        return results != null ? ((List) results).get( 0 ) : null;
+    public static Object priority(EvaluationContext ctx,
+                                  DecisionTableImpl dt,
+                                  Object[] params,
+                                  List<DTDecisionRule> matches,
+                                  List<Object> results) {
+        Object result = outputOrder( ctx, dt, params, matches, results );
+        return result != null ? ((List) result).get( 0 ) : null;
     }
 
     /**
      * Output order – return a list of outputs in the order of the output values list 
      */
-    public static Object outputOrder(EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
-        List<DTDecisionRule> matchingDecisionRules = matchingDecisionRules( ctx, nodeName, params, decisionRules, inputs );
-
-        if ( matchingDecisionRules.isEmpty() ) {
+    public static Object outputOrder(EvaluationContext ctx,
+                                     DecisionTableImpl dt,
+                                     Object[] params,
+                                     List<DTDecisionRule> matches,
+                                     List<Object> results) {
+        if ( matches.isEmpty() ) {
             return null;
         }
 
-        List<Object> results = matchingDecisionRules.stream().map( r -> hitToOutput( ctx, r, outputs ) )
-                .collect( toList() );
-
-        if ( outputs.size() == 1 && !outputs.get( 0 ).getOutputValues().isEmpty() ) {
+        if ( dt.getOutputs().size() == 1 && !dt.getOutputs().get( 0 ).getOutputValues().isEmpty() ) {
             // single output, just sort the results
-            List<String> outs = outputs.get( 0 ).getOutputValues();
+            List<String> outs = dt.getOutputs().get( 0 ).getOutputValues();
             results.sort( (r1, r2) -> {
                 return sortByOutputsOrder( outs, r1, r2 );
             } );
-        } else if ( outputs.size() > 1 ) {
+        } else if ( dt.getOutputs().size() > 1 ) {
             // multiple outputs, collect the ones that have values listed
-            List<DTOutputClause> priorities = outputs.stream().filter( o -> !o.getOutputValues().isEmpty() ).collect( toList() );
+            List<DTOutputClause> priorities = dt.getOutputs().stream().filter( o -> !o.getOutputValues().isEmpty() ).collect( toList() );
             results.sort( (r1, r2) -> {
                 Map<String, Object> m1 = (Map<String, Object>) r1;
                 Map<String, Object> m2 = (Map<String, Object>) r2;
@@ -246,16 +218,14 @@ public enum HitPolicy {
      * Rule order – return a list of outputs in rule order
      * Collect – return a list of the outputs in arbitrary order 
      */
-    public static Object ruleOrder(EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
-        List<DTDecisionRule> rules = matchingDecisionRules( ctx, nodeName, params, decisionRules, inputs );
-
-        if ( rules.isEmpty() ) {
+    public static Object ruleOrder(EvaluationContext ctx,
+                                   DecisionTableImpl dt,
+                                   Object[] params,
+                                   List<DTDecisionRule> matches,
+                                   List<Object> results) {
+        if ( matches.isEmpty() ) {
             return null;
         }
-
-        List<Object> results = rules.stream().map( r -> hitToOutput( ctx, r, outputs ) )
-                .collect( toList() );
-
         return results;
     }
 
@@ -263,48 +233,76 @@ public enum HitPolicy {
         return new SingleValueOrContextCollector<T>( outputs.stream().map( DTOutputClause::getName ).collect( toList() ) );
     }
 
-    public static Object generalizedCollect(
-            EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs,
-            Function<Stream<Object>, Object> resultCollector) {
-        Map<String, Object> variables = ctx.getAllValues();
-        List<List<Object>> raw = matchingDecisionRules( ctx, nodeName, params, decisionRules, inputs ).stream()
-                .map( DTDecisionRule::getOutputEntry )
-                .map( lle -> lle.stream().map( le -> feel.evaluate( le, variables ) ).collect( toList() ) )
-                .collect( toList() );
-        return range( 0, outputs.size() ).mapToObj( c ->
-                                                            resultCollector.apply( raw.stream().map( r -> r.get( c ) ) )
-        ).collect( singleValueOrContext( outputs ) );
+    public static Object generalizedCollect(EvaluationContext ctx,
+                                            DecisionTableImpl dt,
+                                            List<?> results,
+                                            Function<Stream<Object>, Object> resultCollector) {
+        final List<Map<String, Object>> raw;
+        final List<String> names = dt.getOutputs().stream().map( o -> o.getName() != null ? o.getName() : dt.getName() ).collect(toList());
+        if( names.size() > 1 ) {
+            raw = (List<Map<String, Object> >) results;
+        } else {
+            raw = results.stream().map( (Object r) -> Collections.singletonMap( names.get( 0 ), r ) ).collect( toList() );
+        }
+        return range( 0, names.size() )
+                .mapToObj( index -> names.get( index ) )
+                .map( name ->resultCollector.apply( raw.stream().map( r -> r.get( name ) ) ) )
+                .collect( singleValueOrContext( dt.getOutputs() ) );
     }
 
     /**
      * C# – return the count of the outputs
      */
-    public static Object countCollect(EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
-        return generalizedCollect( ctx, nodeName, params, decisionRules, inputs, outputs,
+    public static Object countCollect(EvaluationContext ctx,
+                                      DecisionTableImpl dt,
+                                      Object[] params,
+                                      List<DTDecisionRule> matches,
+                                      List<Object> results) {
+        return generalizedCollect( ctx,
+                                   dt,
+                                   results,
                                    x -> new BigDecimal( x.collect( toSet() ).size() ) );
     }
 
     /**
      * C< – return the minimum-valued output
      */
-    public static Object minCollect(EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
-        return generalizedCollect( ctx, nodeName, params, decisionRules, inputs, outputs,
+    public static Object minCollect(EvaluationContext ctx,
+                                    DecisionTableImpl dt,
+                                    Object[] params,
+                                    List<DTDecisionRule> matches,
+                                    List<Object> results) {
+        return generalizedCollect( ctx,
+                                   dt,
+                                   results,
                                    x -> x.map( y -> (Comparable) y ).collect( minBy( Comparator.naturalOrder() ) ).orElse( null ) );
     }
 
     /**
      * C> – return the maximum-valued output
      */
-    public static Object maxCollect(EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
-        return generalizedCollect( ctx, nodeName, params, decisionRules, inputs, outputs,
+    public static Object maxCollect(EvaluationContext ctx,
+                                    DecisionTableImpl dt,
+                                    Object[] params,
+                                    List<DTDecisionRule> matches,
+                                    List<Object> results) {
+        return generalizedCollect( ctx,
+                                   dt,
+                                   results,
                                    x -> x.map( y -> (Comparable) y ).collect( maxBy( Comparator.naturalOrder() ) ).orElse( null ) );
     }
 
     /**
      * C+ – return the sum of the outputs 
      */
-    public static Object sumCollect(EvaluationContext ctx, String nodeName, Object[] params, List<DTDecisionRule> decisionRules, List<DTInputClause> inputs, List<DTOutputClause> outputs) {
-        return generalizedCollect( ctx, nodeName, params, decisionRules, inputs, outputs,
+    public static Object sumCollect(EvaluationContext ctx,
+                                    DecisionTableImpl dt,
+                                    Object[] params,
+                                    List<DTDecisionRule> matches,
+                                    List<Object> results) {
+        return generalizedCollect( ctx,
+                                   dt,
+                                   results,
                                    x -> x.reduce( BigDecimal.ZERO, (a, b) -> {
                                        if ( !(a instanceof Number && b instanceof Number) ) {
                                            return null;
