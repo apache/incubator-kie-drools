@@ -78,8 +78,8 @@ public class DMNMessageImpl implements DMNMessage {
                " severity=" + severity +
                ", message='" + message + '\'' +
                ", sourceId='" + sourceId + '\'' +
-               ", exception='" + ( exception != null ? ( exception.getClass().getName() + " : " + exception.getMessage() ) : "" ) +
-               ", feelEvent='" + ( feelEvent != null ? ( feelEvent.getClass().getName() + " : " + feelEvent.getMessage() ) : "" ) +
-               "' }";
+               ", exception='" + ( exception != null ? ( exception.getClass().getSimpleName() + " : " + exception.getMessage() ) : "" ) + "'" +
+               ", feelEvent='" + ( feelEvent != null ? ( feelEvent.getClass().getSimpleName() + " : " + feelEvent.getMessage() ) : "" ) + "'" +
+               "}";
     }
 }

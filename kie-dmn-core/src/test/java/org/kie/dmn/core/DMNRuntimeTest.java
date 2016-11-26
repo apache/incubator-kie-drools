@@ -478,26 +478,25 @@ public class DMNRuntimeTest {
         assertThat( result.get("a"), is( "Is not a Student" ) );
     }
 
-    @Test @Ignore("work in progress")
+    @Test
     public void testDinner() {
         DMNRuntime runtime = createRuntime( "Dinner.dmn" );
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_0c45df24-0d57-4acc-b296-b4cba8b71a36", "Dinner" );
         assertThat( dmnModel, notNullValue() );
-
-        dmnModel.getMessages().forEach( m -> System.out.println(m) );
         assertThat( dmnModel.hasErrors(), is(false) );
 
         DMNContext context = DMNFactory.newContext();
         context.set( "Guests with children", true );
         context.set( "Season", "Fall" );
         context.set( "Number of guests", 4 );
-        context.set( "Temp (C)", 25 );
-        context.set( "Rain Probability (%)", 30 );
+        context.set( "Temp", 25 );
+        context.set( "Rain Probability", 30 );
 
         DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        dmnResult.getMessages(  ).forEach( m -> System.out.println( m ) );
-        dmnResult.getContext().getAll().forEach( (k,v) -> System.out.println( k + " -> " + v ) );
-        assertThat( dmnResult.hasErrors(), is( true ) );
+        assertThat( dmnResult.hasErrors(), is( false ) );
+        assertThat( dmnResult.getContext().get("Where to eat"), is( "Outside" ) );
+        assertThat( dmnResult.getContext().get("Dish"), is( "Spareribs" ) );
+        assertThat( dmnResult.getContext().get("Drinks"), is( Arrays.asList( "Apero", "Ale", "Juice Boxes" ) ) );
     }
 
     private DMNRuntimeEventListener createListener() {
