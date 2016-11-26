@@ -233,7 +233,8 @@ unaryExpression
 	;
 
 unaryExpressionNotPlusMinus
-	:	not_key unaryExpression        #logicalNegation
+	:   not_key '(' simpleUnaryTests ')'  #negatedUnaryTests
+	|	not_key unaryExpression           #logicalNegation
 	|   primary ('.' {helper.recoverScope();} qualifiedName {helper.dismissScope();} )?   #uenpmPrimary
 	;
 
@@ -275,6 +276,8 @@ simpleUnaryTest
     | op='>' endpoint    #positiveUnaryTestIneq
     | op='<=' endpoint   #positiveUnaryTestIneq
     | op='>=' endpoint   #positiveUnaryTestIneq
+    | op='=' endpoint    #positiveUnaryTestIneq
+    | op='!=' endpoint   #positiveUnaryTestIneq
     | interval           #positiveUnaryTestInterval
     | null_key           #positiveUnaryTestNull
     | '-'                #positiveUnaryTestDash

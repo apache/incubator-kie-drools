@@ -444,6 +444,40 @@ public class DMNRuntimeTest {
         assertThat( result.get("My Decision"), is( "Fixed30" ) );
     }
 
+    @Test
+    public void testSimpleNot() {
+        DMNRuntime runtime = createRuntime( "Simple_Not.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_98436ebb-7c42-48c0-8d11-d693e2a817c9", "Simple Not" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Occupation", "Student" );
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        System.out.println(dmnResult.getMessages());
+        assertThat( dmnResult.hasErrors(), is( false ) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get("a"), is( "Is Student" ) );
+    }
+
+    @Test
+    public void testSimpleNot2() {
+        DMNRuntime runtime = createRuntime( "Simple_Not.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_98436ebb-7c42-48c0-8d11-d693e2a817c9", "Simple Not" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Occupation", "Engineer" );
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        System.out.println(dmnResult.getMessages());
+        assertThat( dmnResult.hasErrors(), is( false ) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get("a"), is( "Is not a Student" ) );
+    }
+
     private DMNRuntimeEventListener createListener() {
         return new DMNRuntimeEventListener() {
             private final Logger logger = LoggerFactory.getLogger( DMNRuntimeEventListener.class );
