@@ -19,6 +19,7 @@ package org.kie.dmn.core.compiler;
 import org.kie.api.io.Resource;
 import org.kie.dmn.backend.marshalling.v1_1.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNCompiler;
+import org.kie.dmn.core.api.DMNMessage;
 import org.kie.dmn.core.api.DMNModel;
 import org.kie.dmn.core.api.DMNType;
 import org.kie.dmn.core.ast.DecisionNode;
@@ -48,6 +49,7 @@ import org.kie.dmn.feel.model.v1_1.LiteralExpression;
 import org.kie.dmn.feel.model.v1_1.NamedElement;
 import org.kie.dmn.feel.model.v1_1.OutputClause;
 import org.kie.dmn.feel.model.v1_1.UnaryTests;
+import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.*;
@@ -108,10 +110,16 @@ public class DMNCompilerImpl implements DMNCompiler {
         for ( DRGElement e : dmndefs.getDrgElement() ) {
             if ( e instanceof InputData ) {
                 InputData input = (InputData) e;
-                DMNType type = resolveSimpleTypeRef( model, e, input.getVariable().getTypeRef() );
-                InputDataNode idn = new InputDataNode( input, type );
-                model.addInput( idn );
-                model.getTypeRegistry().put( input.getVariable().getTypeRef(), type );
+                String variableName = input.getVariable() != null ? input.getVariable().getName() : null;
+                if( variableNameIsValid( variableName ) ) {
+                    DMNType type = resolveSimpleTypeRef( model, e, input.getVariable().getTypeRef() );
+                    InputDataNode idn = new InputDataNode( input, type );
+                    model.addInput( idn );
+                    model.getTypeRegistry().put( input.getVariable().getTypeRef(), type );
+                } else {
+                    logger.error( "Invalid variable name '"+variableName+"' in input data '"+input.getId()+"'" );
+                    model.addMessage( DMNMessage.Severity.ERROR, "Invalid variable name '"+variableName+"' in input data '"+input.getId()+"'", input.getId() );
+                }
             } else if ( e instanceof Decision ) {
                 Decision decision = (Decision) e;
                 DMNType type = null;
@@ -134,16 +142,32 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
     }
 
+    private boolean variableNameIsValid(String variableName) {
+        return FEELParser.isVariableNameValid( variableName );
+    }
+
     private void linkDecisionRequirements(DMNModelImpl model, DecisionNode decision) {
         for ( InformationRequirement ir : decision.getDecision().getInformationRequirement() ) {
             if ( ir.getRequiredInput() != null ) {
                 String id = getId( ir.getRequiredInput() );
                 InputDataNode input = model.getInputById( id );
-                decision.addDependency( input.getName(), input );
+                if( input != null ) {
+                    decision.addDependency( input.getName(), input );
+                } else {
+                    String message = "Required input '"+id+"' not found for decision '"+decision.getId()+"'";
+                    logger.error( message );
+                    model.addMessage( DMNMessage.Severity.ERROR, message, decision.getId() );
+                }
             } else if ( ir.getRequiredDecision() != null ) {
                 String id = getId( ir.getRequiredDecision() );
                 DecisionNode dn = model.getDecisionById( id );
-                decision.addDependency( dn.getName(), dn );
+                if( dn != null ) {
+                    decision.addDependency( dn.getName(), dn );
+                } else {
+                    String message = "Required decision '"+id+"' not found for decision '"+decision.getId()+"'";
+                    logger.error( message );
+                    model.addMessage( DMNMessage.Severity.ERROR, message, decision.getId() );
+                }
             }
         }
     }

@@ -51,7 +51,7 @@ public class SimpleDecisionTablesTest
         assertThat( (Map<?, ?>) context.get( "result4" ), hasEntry("Out2", "io2a" ));
     }
 
-    @Test 
+    @Test
     public void testDecisionTableFormulaOut() {
         String expression = loadExpression( "dt_formula_out.feel" );
         Map context = (Map) feel.evaluate( expression );

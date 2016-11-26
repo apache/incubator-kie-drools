@@ -16,12 +16,14 @@
 
 package org.kie.dmn.core.impl;
 
+import org.kie.dmn.core.api.DMNMessage;
 import org.kie.dmn.core.api.DMNModel;
 import org.kie.dmn.core.api.DMNType;
 import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.core.ast.InputDataNode;
 import org.kie.dmn.core.ast.ItemDefNode;
 import org.kie.dmn.feel.model.v1_1.Definitions;
+import org.kie.dmn.feel.runtime.events.FEELEvent;
 
 import javax.xml.namespace.QName;
 import java.util.*;
@@ -35,6 +37,9 @@ public class DMNModelImpl
     private Map<String, InputDataNode> inputs    = new HashMap<>();
     private Map<String, DecisionNode>  decisions = new HashMap<>();
     private Map<String, ItemDefNode>   itemDefs = new HashMap<>();
+
+    // these are messages created at loading/compilation time
+    private List<DMNMessage> messages = new ArrayList<>(  );
 
     public DMNModelImpl() {
     }
@@ -181,4 +186,40 @@ public class DMNModelImpl
     public DMNType resolveType(QName ref) {
         return typeRegistry.get( ref );
     }
+
+    @Override
+    public List<DMNMessage> getMessages() {
+        return messages;
+    }
+
+    @Override
+    public List<DMNMessage> getMessages(DMNMessage.Severity... sevs) {
+        List<DMNMessage.Severity> severities = Arrays.asList( sevs );
+        return messages.stream().filter( m -> severities.contains( m.getSeverity() ) ).collect( Collectors.toList());
+    }
+
+    @Override
+    public boolean hasErrors() {
+        return messages.stream().anyMatch( m -> DMNMessage.Severity.ERROR.equals( m.getSeverity() ) );
+    }
+
+    public void addMessage( DMNMessage msg ) {
+        this.messages.add( msg );
+    }
+
+    public DMNMessage addMessage( DMNMessage.Severity severity, String message, String sourceId ) {
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, sourceId );
+        this.messages.add( msg );
+        return msg;
+    }
+
+    public void addMessage( DMNMessage.Severity severity, String message, String sourceId, Throwable exception ) {
+        this.messages.add( new DMNMessageImpl( severity, message, sourceId, exception ) );
+    }
+
+    public void addMessage( DMNMessage.Severity severity, String message, String sourceId, FEELEvent feelEvent ) {
+        this.messages.add( new DMNMessageImpl( severity, message, sourceId, feelEvent ) );
+    }
+
+
 }

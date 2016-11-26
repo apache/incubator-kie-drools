@@ -25,6 +25,7 @@ import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FEELParser {
 
@@ -43,18 +44,33 @@ public class FEELParser {
         return parser;
     }
 
-    private static void defineVariables(Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables, FEEL_1_1Parser parser) {
+    public static boolean isVariableNameValid( String source ) {
+        if( source == null ) {
+            return false;
+        }
+        ANTLRInputStream input = new ANTLRInputStream(source);
+        FEEL_1_1Lexer lexer = new FEEL_1_1Lexer( input );
+        CommonTokenStream tokens = new CommonTokenStream( lexer );
+        FEEL_1_1Parser parser = new FEEL_1_1Parser( tokens );
+        parser.setErrorHandler( new FEELErrorHandler() );
+        FEELParserErrorChecker errorChecker = new FEELParserErrorChecker();
+        parser.removeErrorListeners(); // removes the error listener that prints to the console
+        parser.addErrorListener( errorChecker );
+        FEEL_1_1Parser.NameDefinitionContext nameDef = parser.nameDefinition();
 
-        // switched order:
-        
+        if( ! errorChecker.hasErrors() &&
+            nameDef != null &&
+            source.trim().equals( parser.getHelper().getOriginalText( nameDef ) ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    private static void defineVariables(Map<String, Type> inputVariableTypes, Map<String, Object> inputVariables, FEEL_1_1Parser parser) {
         inputVariableTypes.forEach( (name, type) -> {
-//          if( ! inputVariables.containsKey( name ) ) {
-//              parser.getHelper().defineVariable( name );
-//          }
             parser.getHelper().defineVariable( name, type );
         } );
         
-        // TODO the following may be no longer necessary:
         inputVariables.forEach( (name, value) -> {
             parser.getHelper().defineVariable( name );
             if( value instanceof Map ) {
@@ -97,6 +113,19 @@ public class FEELParser {
                                                                offendingSymbol );
                 eventsManager.notifyListeners( event );
             }
+        }
+    }
+
+    public static class FEELParserErrorChecker extends BaseErrorListener {
+        private final AtomicBoolean errors = new AtomicBoolean(false);
+
+        @Override
+        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+            this.errors.set( true );
+        }
+
+        public boolean hasErrors() {
+            return this.errors.get();
         }
     }
 

@@ -174,7 +174,13 @@ nameDefinition
     ;
 
 nameDefinitionTokens
-    : Identifier ( Identifier | additionalNameSymbol | IntegerLiteral | FloatingPointLiteral )*
+    : Identifier
+        ( Identifier
+        | additionalNameSymbol
+        | IntegerLiteral
+        | FloatingPointLiteral
+        | reusableKeywords
+        )*
     ;
 
 
@@ -322,6 +328,28 @@ nameRefOtherToken
 /********************************
  *      KEYWORDS
  ********************************/
+reusableKeywords
+    : for_key
+    | return_key
+    | if_key
+    | then_key
+    | else_key
+    | some_key
+    | every_key
+    | satisfies_key
+    | instance_key
+    | of_key
+    | function_key
+    | external_key
+    | or_key
+    | and_key
+    | between_key
+    | not_key
+    | null_key
+    | true_key
+    | false_key
+    ;
+
 for_key
     : 'for'
     ;
@@ -330,6 +358,7 @@ return_key
     : 'return'
     ;
 
+// can't be reused
 in_key
     : 'in'
     ;
@@ -739,4 +768,8 @@ COMMENT
 
 LINE_COMMENT
     :   '//' ~[\r\n]* -> skip
+    ;
+
+ANY_OTHER_CHAR
+    : .
     ;
