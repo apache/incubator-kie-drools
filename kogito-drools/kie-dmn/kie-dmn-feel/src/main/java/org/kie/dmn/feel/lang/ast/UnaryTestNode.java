@@ -18,7 +18,10 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+
+import java.util.List;
 
 public class UnaryTestNode
         extends BaseNode {
@@ -30,7 +33,10 @@ public class UnaryTestNode
         LTE( "<=" ),
         LT( "<" ),
         GT( ">" ),
-        GTE( ">=" );
+        GTE( ">=" ),
+        NE( "!=" ),
+        EQ( "=" ),
+        NOT( "not" );
 
         public final String symbol;
 
@@ -72,7 +78,7 @@ public class UnaryTestNode
 
     @Override
     public UnaryTest evaluate(EvaluationContext ctx) {
-        Comparable val = (Comparable) value.evaluate( ctx );
+        Object val = value.evaluate( ctx );
         switch ( operator ) {
             case LTE:
                 return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) <= 0;
@@ -82,6 +88,29 @@ public class UnaryTestNode
                 return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) > 0;
             case GTE:
                 return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) >= 0;
+            case EQ:
+                return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) == 0;
+            case NE:
+                return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) != 0;
+            case NOT:
+                return o -> {
+                    if( o == null || val == null ) {
+                        return null;
+                    }
+                    List<Object> tests = (List<Object>) val;
+                    for( Object test : tests ) {
+                        if( test instanceof UnaryTest ) {
+                            if( ((UnaryTest)test).apply( o ) ) {
+                                return false;
+                            }
+                        } else if( test instanceof Range ) {
+                            if( ((Range)test).includes( (Comparable) o ) ) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                };
         }
         return null;
     }

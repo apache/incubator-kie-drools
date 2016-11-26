@@ -78,10 +78,14 @@ public class DecisionTableImpl {
             }
 
             List<DTDecisionRule> matches = findMatches( ctx, actualInputs );
-            List<Object> results = evaluateResults( ctx, feel, actualInputs, matches );
-            Object result = hitPolicy.getDti().dti( ctx, this, actualInputs, matches, results );
+            if( !matches.isEmpty() ) {
+                List<Object> results = evaluateResults( ctx, feel, actualInputs, matches );
+                Object result = hitPolicy.getDti().dti( ctx, this, actualInputs, matches, results );
 
-            return result;
+                return result;
+            } else {
+                return null;
+            }
         } catch ( Exception e ) {
             logger.error( "Error invoking decision table '" + getName() + "'.", e );
             throw e;

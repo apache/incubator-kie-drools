@@ -427,4 +427,10 @@ public class ASTBuilderVisitor
     public BaseNode visitCompilation_unit(FEEL_1_1Parser.Compilation_unitContext ctx) {
         return visit( ctx.expression() );
     }
+
+    @Override
+    public BaseNode visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
+        BaseNode value = visit( ctx.simpleUnaryTests() );
+        return ASTBuilderFactory.newUnaryTestNode( ctx, "not", value );
+    }
 }
