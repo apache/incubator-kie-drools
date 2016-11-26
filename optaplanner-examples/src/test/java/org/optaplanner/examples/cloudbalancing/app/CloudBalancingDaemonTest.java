@@ -32,6 +32,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
+import org.optaplanner.examples.cloudbalancing.optional.realtime.AddProcessProblemFactChange;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 import org.optaplanner.examples.common.app.LoggingTest;
 
@@ -62,7 +63,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         Thread.sleep(500);
         for (int i = 0; i < 8; i++) {
             CloudProcess process = notYetAddedProcessQueue.poll();
-            solver.addProblemFactChange(new AddProcessChange(process));
+            solver.addProblemFactChange(new AddProcessProblemFactChange(process));
         }
         // Wait until those AddProcessChanges are processed
         waitForNextStage();
@@ -72,7 +73,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         Thread.sleep(1000);
         while (!notYetAddedProcessQueue.isEmpty()) {
             CloudProcess process = notYetAddedProcessQueue.poll();
-            solver.addProblemFactChange(new AddProcessChange(process));
+            solver.addProblemFactChange(new AddProcessProblemFactChange(process));
         }
         // Wait until those AddProcessChanges are processed
         waitForNextStage();
@@ -119,26 +120,6 @@ public class CloudBalancingDaemonTest extends LoggingTest {
                 // With another termination, a Solver can terminate before a feasible best solution event is fired
                 nextStage();
             }
-        }
-
-    }
-
-    private static class AddProcessChange implements ProblemFactChange<CloudBalance> {
-
-        private final CloudProcess process;
-
-        private AddProcessChange(CloudProcess process) {
-            this.process = process;
-        }
-
-        @Override
-        public void doChange(ScoreDirector<CloudBalance> scoreDirector) { // In solver thread
-            CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
-            // No need to clone the processList because planning cloning already does that
-            scoreDirector.beforeEntityAdded(process);
-            cloudBalance.getProcessList().add(process);
-            scoreDirector.afterEntityAdded(process);
-            scoreDirector.triggerVariableListeners();
         }
 
     }
