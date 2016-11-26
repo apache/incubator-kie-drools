@@ -145,7 +145,7 @@ public class ParserHelper {
         return follow;
     }
 
-    private String getOriginalText(ParserRuleContext ctx) {
+    public String getOriginalText(ParserRuleContext ctx) {
         int a = ctx.start.getStartIndex();
         int b = ctx.stop.getStopIndex();
         Interval interval = new Interval( a, b );

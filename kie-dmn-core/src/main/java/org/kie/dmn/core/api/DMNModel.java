@@ -23,6 +23,7 @@ import org.kie.dmn.feel.model.v1_1.Definitions;
 
 import javax.xml.namespace.QName;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 public interface DMNModel {
@@ -56,4 +57,10 @@ public interface DMNModel {
     Set<ItemDefNode> getItemDefinitions();
 
     DMNType resolveType(QName ref);
+
+    List<DMNMessage> getMessages();
+
+    List<DMNMessage> getMessages(DMNMessage.Severity... sevs);
+
+    boolean hasErrors();
 }
