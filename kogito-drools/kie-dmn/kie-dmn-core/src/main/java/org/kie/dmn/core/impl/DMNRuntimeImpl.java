@@ -21,12 +21,9 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.api.event.DMNRuntimeEventListener;
-import org.kie.dmn.core.api.event.DMNRuntimeEventManager;
 import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
 import org.kie.dmn.core.ast.DMNNode;
 import org.kie.dmn.core.ast.DecisionNode;
-import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.model.v1_1.*;
 import org.kie.internal.io.ResourceTypePackage;
 
 import java.util.*;
@@ -151,9 +148,11 @@ public class DMNRuntimeImpl
                 return false;
             }
             try {
-                Object val = decision.getEvaluator().evaluate( eventManager, result );
-                result.getContext().set( decision.getDecision().getVariable().getName(), val );
-                dr.setResult( val );
+                DecisionNode.DecisionEvaluator.EvaluatorResult er = decision.getEvaluator().evaluate( eventManager, result );
+                if( er.getResultType() == DecisionNode.DecisionEvaluator.ResultType.SUCCESS ) {
+                    result.getContext().set( decision.getDecision().getVariable().getName(), er.getResult() );
+                    dr.setResult( er.getResult() );
+                }
             } catch( Throwable t ) {
                 result.addMessage( DMNMessage.Severity.ERROR, "Error evaluating decision '"+decision.getName()+ "': "+t.getMessage(), decision.getId(), t );
             }

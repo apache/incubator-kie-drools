@@ -402,12 +402,10 @@ public class DMNRuntimeTest {
         context.set( "Number of Branches", BigDecimal.valueOf( 10 ) );
 
         DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        System.out.println(dmnResult.getMessages());
         assertThat( dmnResult.hasErrors(), is( true ) );
 
         DMNContext result = dmnResult.getContext();
-        System.out.println(result);
-//        assertThat( result.isDefined("Branches distribution"), is( false ) );
+        assertThat( result.isDefined("Branches distribution"), is( false ) );
     }
 
     @Test

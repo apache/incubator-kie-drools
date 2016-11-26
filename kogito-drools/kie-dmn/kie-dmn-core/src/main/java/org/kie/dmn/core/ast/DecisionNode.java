@@ -81,8 +81,30 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
         return resultType;
     }
 
-    public static interface DecisionEvaluator {
-        Object evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result);
+    public interface DecisionEvaluator {
+        EvaluatorResult evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result);
+
+        enum ResultType {
+            SUCCESS, FAILURE;
+        }
+
+        class EvaluatorResult {
+            private final Object result;
+            private final ResultType code;
+
+            public EvaluatorResult(Object result, ResultType code) {
+                this.result = result;
+                this.code = code;
+            }
+
+            public Object getResult() {
+                return result;
+            }
+
+            public ResultType getResultType() {
+                return code;
+            }
+        }
     }
 
     public static class LiteralExpressionFEELEvaluator implements DecisionEvaluator {
@@ -93,9 +115,9 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
         }
 
         @Override
-        public Object evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+        public EvaluatorResult evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
             Object val = FEEL.newInstance().evaluate( expression, result.getContext().getAll() );
-            return val;
+            return new EvaluatorResult( val, ResultType.SUCCESS );
         }
     }
 
@@ -114,7 +136,7 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
         }
 
         @Override
-        public Object evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
+        public EvaluatorResult evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
             EventResults r = null;
             try {
                 eventManager.fireBeforeEvaluateDecisionTable( dt.getName(), result );
@@ -127,7 +149,7 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
                 }
                 Object dtr = dt.apply( ctx, params );
                 r = processEvents( events, eventManager, result );
-                return dtr;
+                return new EvaluatorResult( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
             } finally {
                 eventManager.fireAfterEvaluateDecisionTable( dt.getName(), result, ( r != null ? r.matchedRules : null ) );
             }
@@ -140,13 +162,18 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
                     r.matchedRules = ((DecisionTableRulesMatchedEvent) e).getMatches();
                 } else if( e.getSeverity() == FEELEvent.Severity.ERROR ) {
                     result.addMessage( DMNMessage.Severity.ERROR, e.getMessage(), decision.getId(), e );
+                    r.hasErrors = true;
                 }
             }
             events.clear();
+            if( r.matchedRules.isEmpty() ) {
+                r.hasErrors = true;
+            }
             return r;
         }
 
         private static class EventResults {
+            public boolean hasErrors = false;
             public List<Integer> matchedRules;
         }
 
