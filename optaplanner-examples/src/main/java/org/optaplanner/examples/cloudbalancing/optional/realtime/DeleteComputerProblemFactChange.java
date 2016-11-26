@@ -36,9 +36,10 @@ public class DeleteComputerProblemFactChange implements ProblemFactChange<CloudB
 
     public void doChange(ScoreDirector<CloudBalance> scoreDirector) {
         CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
+        CloudComputer workingComputer = scoreDirector.locateWorkingObject(computer);
         // First remove the problem fact from all planning entities that use it
         for (CloudProcess process : cloudBalance.getProcessList()) {
-            if (Objects.equals(process.getComputer(), computer)) {
+            if (process.getComputer() == workingComputer) {
                 scoreDirector.beforeVariableChanged(process, "computer");
                 process.setComputer(null);
                 scoreDirector.afterVariableChanged(process, "computer");
@@ -47,17 +48,13 @@ public class DeleteComputerProblemFactChange implements ProblemFactChange<CloudB
         scoreDirector.triggerVariableListeners();
         // A SolutionCloner does not clone problem fact lists (such as computerList)
         // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
-        cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
+        ArrayList<CloudComputer> computerList = new ArrayList<>(cloudBalance.getComputerList());
+        cloudBalance.setComputerList(computerList);
         // Remove the problem fact itself
-        for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
-            CloudComputer workingComputer = it.next();
-            if (Objects.equals(workingComputer, computer)) {
-                scoreDirector.beforeProblemFactRemoved(workingComputer);
-                it.remove(); // remove from list
-                scoreDirector.afterProblemFactRemoved(workingComputer);
-                break;
-            }
-        }
+        scoreDirector.beforeProblemFactRemoved(workingComputer);
+        computerList.remove(workingComputer);
+        scoreDirector.afterProblemFactRemoved(workingComputer);
+        scoreDirector.triggerVariableListeners();
     }
 
 }

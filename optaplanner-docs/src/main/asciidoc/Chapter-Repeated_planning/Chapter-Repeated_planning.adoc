@@ -251,9 +251,10 @@ Here's an example:
     public void deleteComputer(final CloudComputer computer) {
         solver.addProblemFactChange(scoreDirector -> {
             CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
+            CloudComputer workingComputer = scoreDirector.locateWorkingObject(computer);
             // First remove the problem fact from all planning entities that use it
             for (CloudProcess process : cloudBalance.getProcessList()) {
-                if (Objects.equals(process.getComputer(), computer)) {
+                if (process.getComputer() == workingComputer) {
                     scoreDirector.beforeVariableChanged(process, "computer");
                     process.setComputer(null);
                     scoreDirector.afterVariableChanged(process, "computer");
@@ -262,17 +263,13 @@ Here's an example:
             scoreDirector.triggerVariableListeners();
             // A SolutionCloner does not clone problem fact lists (such as computerList)
             // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
-            cloudBalance.setComputerList(new ArrayList<>(cloudBalance.getComputerList()));
+            ArrayList<CloudComputer> computerList = new ArrayList<>(cloudBalance.getComputerList());
+            cloudBalance.setComputerList(computerList);
             // Remove the problem fact itself
-            for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
-                CloudComputer workingComputer = it.next();
-                if (Objects.equals(workingComputer, computer)) {
-                    scoreDirector.beforeProblemFactRemoved(workingComputer);
-                    it.remove(); // remove from list
-                    scoreDirector.afterProblemFactRemoved(workingComputer);
-                    break;
-                }
-            }
+            scoreDirector.beforeProblemFactRemoved(workingComputer);
+            computerList.remove(workingComputer);
+            scoreDirector.afterProblemFactRemoved(workingComputer);
+            scoreDirector.triggerVariableListeners();
         });
     }
 ----
@@ -284,14 +281,18 @@ Any change on the problem facts or planning entities in a `ProblemFactChange` mu
 
 image::Chapter-Repeated_planning/realTimePlanningConcurrencySequenceDiagram.png[align="center"]
 
-
 [IMPORTANT]
 ====
 To write a `ProblemFactChange` correctly, it's important to understand the behaviour of <<cloningASolution,a planning clone>>:
 
-* Any change in a `ProblemFactChange` must be done on the `Solution` instance of ``scoreDirector.getWorkingSolution()``. The `workingSolution` is <<cloningASolution,a planning clone>> of the ``BestSolutionChangedEvent``'s ``bestSolution``. So the `workingSolution` in the `Solver` is never the same instance as the `Solution` in the rest of your application.
-* A planning clone also clones the planning entities and planning entity collections. So any change on the planning entities must happen on the instances hold by ``scoreDirector.getWorkingSolution()``.
-* A planning clone does not clone the problem facts, nor the problem fact collections. _Therefore the ``__workingSolution__`` and the ``__bestSolution__`` share the same problem fact instances and the same problem fact list instances._
+* Any change in a `ProblemFactChange` must be done on the `Solution` instance of ``scoreDirector.getWorkingSolution()``.
+The `workingSolution` is <<cloningASolution,a planning clone>> of the ``BestSolutionChangedEvent``'s ``bestSolution``.
+So the `workingSolution` in the `Solver` is never the same instance as the `Solution` in the rest of your application: it is a planning clone.
+Use the method `ScoreDirector.locateWorkingObject()` to translate an retrieve the working solution's instance of an object.
+* A planning clone also clones the planning entities and planning entity collections.
+So any change on the planning entities must happen on the instances hold by ``scoreDirector.getWorkingSolution()``.
+* A planning clone does not clone the problem facts, nor the problem fact collections.
+_Therefore the ``__workingSolution__`` and the ``__bestSolution__`` share the same problem fact instances and the same problem fact list instances._
 + 
 Any problem fact or problem fact list changed by a `ProblemFactChange` must be problem cloned first (which can imply rerouting references in other problem facts and planning entities). Otherwise, if the `workingSolution` and `bestSolution` are used in different threads (for example a solver thread and a GUI event thread), a race condition can occur.
 

@@ -42,6 +42,7 @@ public class AddProcessProblemFactChange implements ProblemFactChange<CloudBalan
             }
         }
         process.setId(nextProcessId);
+        // A SolutionCloner clones planning entity lists (such as processList), so no need to clone the processList here
         // Add the planning entity itself
         scoreDirector.beforeEntityAdded(process);
         cloudBalance.getProcessList().add(process);

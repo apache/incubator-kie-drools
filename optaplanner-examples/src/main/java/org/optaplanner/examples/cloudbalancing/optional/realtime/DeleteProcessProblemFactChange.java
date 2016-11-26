@@ -34,16 +34,12 @@ public class DeleteProcessProblemFactChange implements ProblemFactChange<CloudBa
 
     public void doChange(ScoreDirector<CloudBalance> scoreDirector) {
         CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
+        // A SolutionCloner clones planning entity lists (such as processList), so no need to clone the processList here
+        CloudProcess workingProcess = scoreDirector.locateWorkingObject(process);
         // Remove the planning entity itself
-        for (Iterator<CloudProcess> it = cloudBalance.getProcessList().iterator(); it.hasNext(); ) {
-            CloudProcess workingProcess = it.next();
-            if (Objects.equals(workingProcess, process)) {
-                scoreDirector.beforeEntityRemoved(workingProcess);
-                it.remove(); // remove from list
-                scoreDirector.afterEntityRemoved(workingProcess);
-                break;
-            }
-        }
+        scoreDirector.beforeEntityRemoved(workingProcess);
+        cloudBalance.getProcessList().remove(workingProcess);
+        scoreDirector.afterEntityRemoved(workingProcess);
         scoreDirector.triggerVariableListeners();
     }
 
