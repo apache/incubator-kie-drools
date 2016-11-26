@@ -41,6 +41,12 @@ public class FEELExpressionsTest extends BaseFEELTest {
 
                 // unary test invocation
                 {"{ is minor : < 18, bob is minor : is minor(16) }.bob is minor", Boolean.TRUE },
+
+                // negated unary tests
+                {"10 in ( not( <5, >=20, =15 ) )", Boolean.TRUE},
+                {"10 in ( not( <5, >=20, =10 ) )", Boolean.FALSE},
+                {"10 in ( not( <5 ) )", Boolean.TRUE},
+                {"10 in ( not( (10..20] ) )", Boolean.TRUE}
         };
         return Arrays.asList( cases );
     }
