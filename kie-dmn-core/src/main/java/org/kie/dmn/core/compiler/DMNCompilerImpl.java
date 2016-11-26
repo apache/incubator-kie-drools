@@ -50,11 +50,8 @@ import org.kie.dmn.feel.model.v1_1.OutputClause;
 import org.kie.dmn.feel.model.v1_1.UnaryTests;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
-import org.kie.dmn.feel.runtime.decisiontables.DTDecisionRule;
-import org.kie.dmn.feel.runtime.decisiontables.DTInputClause;
-import org.kie.dmn.feel.runtime.decisiontables.DTInvokerFunction;
-import org.kie.dmn.feel.runtime.decisiontables.DTOutputClause;
-import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
+import org.kie.dmn.feel.runtime.decisiontables.*;
+import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -225,7 +222,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             for( InputClause ic : dt.getInput() ) {
                 String inputExpressionText = ic.getInputExpression().getText();
                 String inputValuesText =  Optional.ofNullable( ic.getInputValues() ).map(UnaryTests::getText).orElse(null);
-                inputs.add( new DTInputClause(inputExpressionText, textToUnaryTestList(inputValuesText) ) );
+                inputs.add( new DTInputClause(inputExpressionText, inputValuesText, textToUnaryTestList(inputValuesText) ) );
             }
             List<DTOutputClause> outputs = new ArrayList<>(  );
             for( OutputClause oc : dt.getOutput() ) {
@@ -248,7 +245,11 @@ public class DMNCompilerImpl implements DMNCompiler {
                 }
                 rules.add( rule );
             }
-            DTInvokerFunction dtf = new DTInvokerFunction( decision.getName()+"_DT", inputs, rules, outputs, HitPolicy.fromString( dt.getHitPolicy().value() ) );
+            String policy = dt.getHitPolicy().value() + (dt.getAggregation() != null ? " " + dt.getAggregation().value() : "");
+            HitPolicy hp = HitPolicy.fromString( policy );
+            List<String> parameterNames = new ArrayList<>( decisionNode.getDependencies().keySet() );
+            DecisionTableImpl dti = new DecisionTableImpl( decision.getName(), parameterNames, inputs, outputs, rules, hp );
+            DTInvokerFunction dtf = new DTInvokerFunction( dti );
             DecisionNode.DTExpressionEvaluator dtee = new DecisionNode.DTExpressionEvaluator( decision, dtf );
             return dtee;
         }

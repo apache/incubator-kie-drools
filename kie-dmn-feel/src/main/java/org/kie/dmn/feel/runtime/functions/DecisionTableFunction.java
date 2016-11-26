@@ -73,10 +73,10 @@ public class DecisionTableFunction
             }
             // zip inputExpression with its inputValue
             inputs = IntStream.range( 0, inputExpressions.size() )
-                    .mapToObj( i -> new DTInputClause( inputExpressions.get( i ), Collections.singletonList( inputValues.get( i ) ) ) )
+                    .mapToObj( i -> new DTInputClause( inputExpressions.get( i ), inputValuesList.toString(), Collections.singletonList( inputValues.get( i ) ) ) )
                     .collect( Collectors.toList() );
         } else {
-            inputs = inputExpressions.stream().map( ie -> new DTInputClause( ie, null ) ).collect( Collectors.toList() );
+            inputs = inputExpressions.stream().map( ie -> new DTInputClause( ie, null, null ) ).collect( Collectors.toList() );
         }
 
         List<String> parseOutputs = outputs instanceof List ? (List) outputs : Collections.singletonList( (String) outputs );
@@ -101,7 +101,8 @@ public class DecisionTableFunction
                 .mapToObj( index -> DecisionTableFunction.toDecisionRule( index, ruleList.get( index ), inputExpressions.size() ) )
                 .collect( Collectors.toList() );
 
-        return new DTInvokerFunction( UUID.randomUUID().toString(), inputs, decisionRules, outputClauses, HitPolicy.fromString( hitPolicy ) );
+        DecisionTableImpl dti = new DecisionTableImpl( UUID.randomUUID().toString(), inputExpressions, inputs, outputClauses, decisionRules, HitPolicy.fromString( hitPolicy ) );
+        return new DTInvokerFunction( dti );
     }
 
     public static DTDecisionRule toDecisionRule(int index, List<?> rule, int inputSize) {

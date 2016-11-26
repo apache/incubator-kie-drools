@@ -25,20 +25,18 @@ import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.model.v1_1.Decision;
-import org.kie.dmn.feel.runtime.decisiontables.DTInvokerFunction;
+import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
 import org.kie.dmn.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.FEELEventListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DecisionNode extends DMNBaseNode implements DMNNode {
 
     private Decision decision;
-    private Map<String, DMNNode> dependencies = new HashMap<>(  );
+    // need to retain dependencies order, so need to use LinkedHashMap
+    private Map<String, DMNNode> dependencies = new LinkedHashMap<>( );
     private DecisionEvaluator evaluator;
     private DMNType resultType;
 

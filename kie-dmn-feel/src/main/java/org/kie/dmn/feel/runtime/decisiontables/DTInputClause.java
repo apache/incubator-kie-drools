@@ -8,11 +8,13 @@ import org.kie.dmn.feel.runtime.UnaryTest;
 
 public class DTInputClause {
     private final String inputExpression;
+    private final String inputValuesText;
     private final List<UnaryTest> inputValues;
-    
-    public DTInputClause(String inputExpression, List<UnaryTest> inputValues) {
+
+    public DTInputClause(String inputExpression, String inputValuesText, List<UnaryTest> inputValues) {
         super();
         this.inputExpression = inputExpression;
+        this.inputValuesText = inputValuesText;
         if (inputValues != null) {
             this.inputValues = Collections.unmodifiableList(new ArrayList<UnaryTest>(inputValues));
         } else {
@@ -26,5 +28,9 @@ public class DTInputClause {
     
     public List<UnaryTest> getInputValues() {
         return inputValues;
+    }
+
+    public String getInputValuesText() {
+        return inputValuesText;
     }
 }
