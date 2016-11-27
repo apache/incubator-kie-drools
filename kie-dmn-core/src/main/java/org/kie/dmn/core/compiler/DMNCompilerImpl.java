@@ -33,26 +33,12 @@ import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-import org.kie.dmn.feel.model.v1_1.DMNElementReference;
-import org.kie.dmn.feel.model.v1_1.DMNModelInstrumentedBase;
-import org.kie.dmn.feel.model.v1_1.DRGElement;
-import org.kie.dmn.feel.model.v1_1.Decision;
-import org.kie.dmn.feel.model.v1_1.DecisionRule;
-import org.kie.dmn.feel.model.v1_1.DecisionTable;
-import org.kie.dmn.feel.model.v1_1.Definitions;
-import org.kie.dmn.feel.model.v1_1.Expression;
-import org.kie.dmn.feel.model.v1_1.InformationRequirement;
-import org.kie.dmn.feel.model.v1_1.InputClause;
-import org.kie.dmn.feel.model.v1_1.InputData;
-import org.kie.dmn.feel.model.v1_1.ItemDefinition;
-import org.kie.dmn.feel.model.v1_1.LiteralExpression;
-import org.kie.dmn.feel.model.v1_1.NamedElement;
-import org.kie.dmn.feel.model.v1_1.OutputClause;
-import org.kie.dmn.feel.model.v1_1.UnaryTests;
+import org.kie.dmn.feel.model.v1_1.*;
 import org.kie.dmn.feel.parser.feel11.FEELParser;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.decisiontables.*;
+import org.kie.dmn.feel.runtime.decisiontables.HitPolicy;
 import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,7 +122,7 @@ public class DMNCompilerImpl implements DMNCompiler {
 
         for ( DecisionNode d : model.getDecisions() ) {
             linkDecisionRequirements( model, d );
-            DecisionNode.DecisionEvaluator evaluator = compileDecision( d );
+            DecisionNode.DecisionEvaluator evaluator = compileDecision( model, d );
             d.setEvaluator( evaluator );
         }
     }
@@ -226,7 +212,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         return new FeelTypeImpl( model.getName(), model.getId(), BuiltInType.UNKNOWN, null );
     }
 
-    private DecisionNode.DecisionEvaluator compileDecision(DecisionNode decisionNode) {
+    private DecisionNode.DecisionEvaluator compileDecision(DMNModelImpl model, DecisionNode decisionNode) {
         Decision decision = decisionNode.getDecision();
         FEEL feel = FEEL.newInstance();
         Expression expression = decision.getExpression();
@@ -275,6 +261,14 @@ public class DMNCompilerImpl implements DMNCompiler {
             DTInvokerFunction dtf = new DTInvokerFunction( dti );
             DecisionNode.DTExpressionEvaluator dtee = new DecisionNode.DTExpressionEvaluator( decision, dtf );
             return dtee;
+//        } else if( expression instanceof Context ) {
+//
+        } else {
+            if( expression != null ) {
+                model.addMessage( DMNMessage.Severity.ERROR, "Expression type '"+expression.getClass().getSimpleName()+"' not supported in decision '"+decisionNode.getId()+"'", decisionNode.getId() );
+            } else {
+                model.addMessage( DMNMessage.Severity.ERROR, "No expression defined for decision '"+decisionNode.getId()+"'", decisionNode.getId() );
+            }
         }
         return null;
     }
