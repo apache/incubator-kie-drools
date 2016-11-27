@@ -497,6 +497,23 @@ public class DMNRuntimeTest {
         assertThat( dmnResult.getContext().get("Drinks"), is( Arrays.asList( "Apero", "Ale", "Juice Boxes" ) ) );
     }
 
+    @Test @Ignore("not implemented yet")
+    public void testBoxedContext() {
+        DMNRuntime runtime = createRuntime( "BoxedContext.dmn" );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_0de36357-fec0-4b4e-b7f1-382d381e06e9", "Dessin 1" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false) );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "a", 10 );
+        context.set( "b", 5 );
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat( dmnResult.hasErrors(), is( false ) );
+        assertThat( (Map<String, Object>) dmnResult.getContext().get( "Math" ), hasEntry( "Sum", BigDecimal.valueOf( 15 ) ) );
+        assertThat( (Map<String, Object>) dmnResult.getContext().get( "Math" ), hasEntry( "Product", BigDecimal.valueOf( 50 ) ) );
+    }
+
     private DMNRuntimeEventListener createListener() {
         return new DMNRuntimeEventListener() {
             private final Logger logger = LoggerFactory.getLogger( DMNRuntimeEventListener.class );
