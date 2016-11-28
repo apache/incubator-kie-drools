@@ -23,6 +23,7 @@ import org.kie.dmn.feel.runtime.events.SyntaxErrorEvent;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Supplier;
 
 public class FEELEventListenersManager {
 
@@ -69,5 +70,11 @@ public class FEELEventListenersManager {
                 // nothing to do
             }
         } );
+    }
+    
+    public static void notifyListeners(FEELEventListenersManager eventsManager, Supplier<FEELEvent> event) {
+        if( eventsManager != null && eventsManager.hasListeners() ) {
+            eventsManager.notifyListeners(event.get());
+        }
     }
 }

@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime.decisiontables;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
@@ -111,15 +112,15 @@ public enum HitPolicy {
                                 List<DTDecisionRule> matches,
                                 List<Object> results) {
         if ( matches.size() > 1 ) {
-            if ( ctx.getEventsManager() != null && !ctx.getEventsManager().getListeners().isEmpty() ) {
+            FEELEventListenersManager.notifyListeners(ctx.getEventsManager(), () -> {
                 List<Integer> ruleMatches = matches.stream().map( m -> m.getIndex() ).collect(toList());
-                HitPolicyViolationEvent iie = new HitPolicyViolationEvent( FEELEvent.Severity.ERROR,
-                                                                           "UNIQUE hit policy decision tables can only have one matching rule. "+
-                                                                           "Multiple matches found for decision table '"+dt.getName()+"'. Matched rules: "+ruleMatches,
-                                                                           dt.getName(),
-                                                                           ruleMatches );
-                ctx.getEventsManager().notifyListeners( iie );
-            }
+                return new HitPolicyViolationEvent( FEELEvent.Severity.ERROR,
+                                                    "UNIQUE hit policy decision tables can only have one matching rule. "+
+                                                    "Multiple matches found for decision table '"+dt.getName()+"'. Matched rules: "+ruleMatches,
+                                                    dt.getName(),
+                                                    ruleMatches );
+                }
+            );
             return null;
         }
         if ( matches.size() == 1 ) {
