@@ -71,6 +71,7 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         List<String> processes = new ArrayList<String>();
         processes.add("cases/EmptyCase.bpmn2");
         processes.add("cases/UserTaskCase.bpmn2");
+        processes.add("cases/UserTaskCaseBoundary.bpmn2");
         processes.add("cases/UserTaskWithStageCase.bpmn2");
         // add processes that can be used by cases but are not cases themselves
         processes.add("processes/DataVerificationProcess.bpmn2");
@@ -111,11 +112,12 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         units.add(deploymentUnit);
         Collection<CaseDefinition> cases = caseRuntimeDataService.getCases(new QueryContext());
         assertNotNull(cases);
-        assertEquals(3, cases.size());
+        assertEquals(4, cases.size());
 
         Map<String, CaseDefinition> mappedCases = mapCases(cases);        
         assertTrue(mappedCases.containsKey("EmptyCase"));
         assertTrue(mappedCases.containsKey("UserTaskCase"));
+        assertTrue(mappedCases.containsKey("UserTaskCaseBoundary"));
         assertTrue(mappedCases.containsKey("UserTaskWithStageCase"));
 
         // EmptyCase asserts
@@ -237,16 +239,17 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         cases = caseRuntimeDataService.getCases(new QueryContext(2, 1, SORT_BY_CASE_DEFINITION_NAME, true));
         assertNotNull(cases);
         assertEquals(1, cases.size());
-        assertEquals("UserTaskWithStageCase", cases.iterator().next().getId());
+        assertEquals("UserTaskCaseBoundary", cases.iterator().next().getId());
 
         cases = caseRuntimeDataService.getCases(new QueryContext(SORT_BY_CASE_DEFINITION_NAME, false));
         assertNotNull(cases);
-        assertEquals(3, cases.size());
+        assertEquals(4, cases.size());
 
         List<CaseDefinition> sortedCases = new ArrayList<>(cases);
-        assertEquals("UserTaskWithStageCase", sortedCases.get(0).getId());
-        assertEquals("UserTaskCase", sortedCases.get(1).getId());
-        assertEquals("EmptyCase", sortedCases.get(2).getId());
+        assertEquals("UserTaskWithStageCase", sortedCases.get(0).getId());        
+        assertEquals("UserTaskCaseBoundary", sortedCases.get(1).getId());
+        assertEquals("UserTaskCase", sortedCases.get(2).getId());
+        assertEquals("EmptyCase", sortedCases.get(3).getId());
     }
 
     @Test
@@ -258,11 +261,12 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         units.add(deploymentUnit);
         Collection<CaseDefinition> cases = caseRuntimeDataService.getCasesByDeployment(deploymentUnit.getIdentifier(), new QueryContext());
         assertNotNull(cases);
-        assertEquals(3, cases.size());
+        assertEquals(4, cases.size());
 
         Map<String, CaseDefinition> mappedCases = mapCases(cases);        
         assertTrue(mappedCases.containsKey("EmptyCase"));
         assertTrue(mappedCases.containsKey("UserTaskCase"));
+        assertTrue(mappedCases.containsKey("UserTaskCaseBoundary"));
         assertTrue(mappedCases.containsKey("UserTaskWithStageCase"));
 
         cases = caseRuntimeDataService.getCasesByDeployment("not-existing", new QueryContext());
@@ -291,16 +295,17 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         cases = caseRuntimeDataService.getCasesByDeployment(deploymentUnit.getIdentifier(), new QueryContext(2, 1, SORT_BY_CASE_DEFINITION_NAME, true));
         assertNotNull(cases);
         assertEquals(1, cases.size());
-        assertEquals("UserTaskWithStageCase", cases.iterator().next().getId());
+        assertEquals("UserTaskCaseBoundary", cases.iterator().next().getId());
 
         cases = caseRuntimeDataService.getCasesByDeployment(deploymentUnit.getIdentifier(), new QueryContext(SORT_BY_CASE_DEFINITION_NAME, false));
         assertNotNull(cases);
-        assertEquals(3, cases.size());
+        assertEquals(4, cases.size());
 
         List<CaseDefinition> sortedCases = new ArrayList<>(cases);
         assertEquals("UserTaskWithStageCase", sortedCases.get(0).getId());
-        assertEquals("UserTaskCase", sortedCases.get(1).getId());
-        assertEquals("EmptyCase", sortedCases.get(2).getId());
+        assertEquals("UserTaskCaseBoundary", sortedCases.get(1).getId());
+        assertEquals("UserTaskCase", sortedCases.get(2).getId());        
+        assertEquals("EmptyCase", sortedCases.get(3).getId());
     }
 
     @Test
@@ -319,10 +324,11 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
 
         cases = caseRuntimeDataService.getCases("User", new QueryContext());
         assertNotNull(cases);
-        assertEquals(2, cases.size());
+        assertEquals(3, cases.size());
 
         mappedCases = mapCases(cases);
         assertTrue(mappedCases.containsKey("UserTaskCase"));
+        assertTrue(mappedCases.containsKey("UserTaskCaseBoundary"));
         assertTrue(mappedCases.containsKey("UserTaskWithStageCase"));
 
         cases = caseRuntimeDataService.getCases("nomatch", new QueryContext());
@@ -346,15 +352,17 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         cases = caseRuntimeDataService.getCases("User", new QueryContext(1, 1, SORT_BY_CASE_DEFINITION_NAME, true));
         assertNotNull(cases);
         assertEquals(1, cases.size());
-        assertEquals("UserTaskWithStageCase", cases.iterator().next().getId());
+        assertEquals("UserTaskCaseBoundary", cases.iterator().next().getId());
 
         cases = caseRuntimeDataService.getCases("User", new QueryContext(SORT_BY_CASE_DEFINITION_NAME, false));
         assertNotNull(cases);
-        assertEquals(2, cases.size());
+        assertEquals(3, cases.size());
 
         List<CaseDefinition >sortedCases = new ArrayList<>(cases);
         assertEquals("UserTaskWithStageCase", sortedCases.get(0).getId());
-        assertEquals("UserTaskCase", sortedCases.get(1).getId());
+        assertEquals("UserTaskCaseBoundary", sortedCases.get(1).getId());
+        assertEquals("UserTaskCase", sortedCases.get(2).getId());
+        
     }
 
     @Test
@@ -392,6 +400,52 @@ public class CaseRuntimeDataServiceImplTest extends AbstractCaseServicesBaseTest
         assertEquals("HumanTaskNode", mappedFragments.get("Missing data").getType());
         assertTrue(mappedFragments.containsKey("Verification of data"));
         assertEquals("SubProcessNode", mappedFragments.get("Verification of data").getType());
+
+        assertNotNull(caseDef.getCaseRoles());
+        assertEquals(3, caseDef.getCaseRoles().size());
+
+        Map<String, CaseRole> mappedRoles = mapRoles(caseDef.getCaseRoles());
+        assertTrue(mappedRoles.containsKey("owner"));
+        assertTrue(mappedRoles.containsKey("contact"));
+        assertTrue(mappedRoles.containsKey("participant"));
+
+        assertEquals(1, mappedRoles.get("owner").getCardinality().intValue());
+        assertEquals(2, mappedRoles.get("contact").getCardinality().intValue());
+        assertEquals(-1, mappedRoles.get("participant").getCardinality().intValue());
+    }
+    
+    @Test
+    public void testGetCaseDefinitionByIdWithBoundaryEvent() {
+        assertNotNull(deploymentService);
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+
+        CaseDefinition caseDef = caseRuntimeDataService.getCase(deploymentUnit.getIdentifier(), "UserTaskCaseBoundary");
+        // UserTaskWithStageCase asserts        
+        assertNotNull(caseDef);
+        assertEquals("UserTaskCaseBoundary", caseDef.getId());
+        assertEquals("Simple Case with User Tasks and Boundary", caseDef.getName());
+        assertEquals("1.0", caseDef.getVersion());
+        assertEquals("HR", caseDef.getIdentifierPrefix());
+        assertEquals(2, caseDef.getCaseMilestones().size());
+        assertEquals(0, caseDef.getCaseStages().size());
+        assertEquals(3, caseDef.getAdHocFragments().size());
+        
+        assertEquals(deploymentUnit.getIdentifier(), caseDef.getDeploymentId());
+        
+        Map<String, CaseMilestone> mappedMilestones = mapMilestones(caseDef.getCaseMilestones());
+        assertTrue(mappedMilestones.containsKey("Milestone1"));
+        assertTrue(mappedMilestones.containsKey("Milestone2"));
+
+        Map<String, AdHocFragment> mappedFragments = mapAdHocFragments(caseDef.getAdHocFragments());
+        assertTrue(mappedFragments.containsKey("Hello2"));
+        assertEquals("HumanTaskNode", mappedFragments.get("Hello2").getType());
+        assertTrue(mappedFragments.containsKey("Milestone1"));
+        assertEquals("MilestoneNode", mappedFragments.get("Milestone1").getType());
+        assertTrue(mappedFragments.containsKey("Milestone2"));
+        assertEquals("MilestoneNode", mappedFragments.get("Milestone2").getType());
 
         assertNotNull(caseDef.getCaseRoles());
         assertEquals(3, caseDef.getCaseRoles().size());

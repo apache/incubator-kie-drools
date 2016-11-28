@@ -63,6 +63,7 @@ import org.jbpm.shared.services.impl.QueryManager;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
 import org.jbpm.workflow.core.WorkflowProcess;
+import org.jbpm.workflow.core.node.BoundaryEventNode;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.MilestoneNode;
 import org.jbpm.workflow.core.node.StartNode;
@@ -563,7 +564,7 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
     
     private void checkAdHoc(NodeContainer nodeContainer, List<AdHocFragment> result) {
         for (Node node : nodeContainer.getNodes()) {
-            if (node instanceof StartNode) {
+            if (node instanceof StartNode || node instanceof BoundaryEventNode) {
                 continue;
             }
             if (node.getIncomingConnections().isEmpty()) {
