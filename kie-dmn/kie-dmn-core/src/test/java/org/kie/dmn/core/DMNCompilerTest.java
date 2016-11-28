@@ -16,35 +16,27 @@
 
 package org.kie.dmn.core;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.*;
+
 import org.junit.Test;
-import org.kie.api.KieServices;
-import org.kie.api.runtime.KieContainer;
-import org.kie.dmn.core.api.*;
+import org.kie.dmn.core.api.DMNModel;
+import org.kie.dmn.core.api.DMNRuntime;
+import org.kie.dmn.core.api.DMNType;
 import org.kie.dmn.core.ast.ItemDefNode;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.FeelTypeImpl;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.lang.types.BuiltInType;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 
 public class DMNCompilerTest {
 
-    protected DMNRuntime createRuntime( String resourceName ) {
-        KieServices ks = KieServices.Factory.get();
-        KieContainer kieContainer = KieHelper.getKieContainer(
-                ks.newReleaseId( "org.kie", "dmn-test", "1.0" ),
-                ks.getResources().newClassPathResource( resourceName, DMNCompilerTest.class ) );
-
-        DMNRuntime runtime = kieContainer.newKieSession().getKieRuntime( DMNRuntime.class );
-        assertNotNull( runtime );
-        return runtime;
-    }
-
     @Test
     public void testItemDefAllowedValuesString() {
-        DMNRuntime runtime = createRuntime( "0003-input-data-string-allowed-values.dmn" );
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0003-input-data-string-allowed-values.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0003-input-data-string-allowed-values" );
         assertThat( dmnModel, notNullValue() );
 
@@ -72,7 +64,7 @@ public class DMNCompilerTest {
 
     @Test
     public void testCompositeItemDefinition() {
-        DMNRuntime runtime = createRuntime( "0008-LX-arithmetic.dmn" );
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0008-LX-arithmetic.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0008-LX-arithmetic" );
         assertThat( dmnModel, notNullValue() );
 
