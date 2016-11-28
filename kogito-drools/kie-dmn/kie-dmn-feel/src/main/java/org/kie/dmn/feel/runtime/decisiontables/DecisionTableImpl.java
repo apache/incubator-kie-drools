@@ -18,6 +18,7 @@ package org.kie.dmn.feel.runtime.decisiontables;
 
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
 import org.kie.dmn.feel.runtime.events.FEELEvent;
@@ -110,22 +111,22 @@ public class DecisionTableImpl {
     private boolean actualInputsMatchInputValues(EvaluationContext ctx, Object[] params) {
         // check that all the parameters match the input list values if they are defined
         for( int i = 0; i < params.length; i++ ) {
-            DTInputClause input = inputs.get( i );
+            final DTInputClause input = inputs.get( i );
             // if a list of values is defined, check the the parameter matches the value
             if ( input.getInputValues() != null && ! input.getInputValues().isEmpty() ) {
-                Object parameter = params[i];
+                final Object parameter = params[i];
                 boolean satisfies = input.getInputValues().stream().map( ut -> ut.apply( parameter ) ).filter( Boolean::booleanValue ).findAny().orElse( false );
 
                 if ( !satisfies ) {
-                    if ( ctx.getEventsManager() != null && !ctx.getEventsManager().getListeners().isEmpty() ) {
+                    FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
                         String values = input.getInputValuesText();
-                        InvalidInputEvent iie = new InvalidInputEvent( FEELEvent.Severity.ERROR,
-                                                                       inputs.get( i ).getInputExpression()+"='"+params[i] + "' does not match any of the valid values " + values + " for decision table '" + getName() + "'.",
-                                                                       getName(),
-                                                                       null,
-                                                                       values );
-                        ctx.getEventsManager().notifyListeners( iie );
-                    }
+                        return new InvalidInputEvent( FEELEvent.Severity.ERROR,
+                                                      input.getInputExpression()+"='" + parameter + "' does not match any of the valid values " + values + " for decision table '" + getName() + "'.",
+                                                      getName(),
+                                                      null,
+                                                      values );
+                        }
+                    );
                     return false;
                 }
             }
@@ -147,15 +148,14 @@ public class DecisionTableImpl {
                 matchingDecisionRules.add( decisionRule );
             }
         }
-        if ( ctx.getEventsManager() != null && !ctx.getEventsManager().getListeners().isEmpty() ) {
+        FEELEventListenersManager.notifyListeners( ctx.getEventsManager() , () -> {
             List<Integer> matches = matchingDecisionRules.stream().map( dr -> dr.getIndex() ).collect( Collectors.toList() );
-            DecisionTableRulesMatchedEvent rme = new DecisionTableRulesMatchedEvent(
-                    FEELEvent.Severity.INFO,
-                    "Rules matched for decision table '" + getName() + "': " + matches.toString(),
-                    getName(),
-                    matches );
-            ctx.getEventsManager().notifyListeners( rme );
-        }
+            return new DecisionTableRulesMatchedEvent(FEELEvent.Severity.INFO,
+                                                      "Rules matched for decision table '" + getName() + "': " + matches.toString(),
+                                                      getName(),
+                                                      matches );
+            }
+        );
         return matchingDecisionRules;
     }
 

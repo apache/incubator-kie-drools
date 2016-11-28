@@ -104,15 +104,15 @@ public class FEELParser {
 
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
-            if( eventsManager != null && eventsManager.hasListeners() ) {
-                SyntaxErrorEvent event = new SyntaxErrorEvent( FEELEvent.Severity.ERROR,
-                                                               msg,
-                                                               e,
-                                                               line,
-                                                               charPositionInLine,
-                                                               offendingSymbol );
-                eventsManager.notifyListeners( event );
-            }
+            FEELEventListenersManager.notifyListeners( eventsManager , () -> {
+                return new SyntaxErrorEvent( FEELEvent.Severity.ERROR,
+                                             msg,
+                                             e,
+                                             line,
+                                             charPositionInLine,
+                                             offendingSymbol );
+                }
+            );
         }
     }
 
