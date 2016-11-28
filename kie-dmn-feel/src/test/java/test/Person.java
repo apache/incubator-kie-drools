@@ -50,6 +50,13 @@ public class Person {
     public void setHomeAddress(Address homeAddress) {
         this.homeAddress = homeAddress;
     }
+    
+    /**
+     * Alias for {@link #getHomeAddress()}.
+     */
+    public Address getAddress() {
+        return homeAddress;
+    }
 
     @Override
     public String toString() {

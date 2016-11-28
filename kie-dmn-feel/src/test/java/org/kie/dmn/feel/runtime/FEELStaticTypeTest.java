@@ -112,6 +112,17 @@ public class FEELStaticTypeTest
                   }},
                   new HashMap<String,Object>() {{
                       put( "myFeelVar", "John zip code is: 12345" );
+                  }} },
+                
+                { "{ myFeelVar : person.first name + \"home street name is: \" + person.address.street name }",
+                  new HashMap<String, Type>() {{
+                      put( "person", JavaBackedType.of(Person.class) );
+                  }},
+                  new HashMap<String, Object>() {{
+                      put( "person", new Person("John ", "Doe", new Address("Lumbard St.", "12345")) ); 
+                  }},
+                  new HashMap<String,Object>() {{
+                      put( "myFeelVar", "John home street name is: Lumbard St." );
                   }} }
                 
                 
