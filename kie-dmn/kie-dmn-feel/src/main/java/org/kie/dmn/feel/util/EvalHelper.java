@@ -172,9 +172,32 @@ public class EvalHelper {
             }
         }
     }
+    
+    /**
+     * Inverse of {@link #getAccessor(Class, String)}
+     */
+    public static Optional<String> propertyFromAccessor(Method accessor) {
+        if ( accessor.getParameterCount() != 0 || accessor.getReturnType().equals(Void.class) ) {
+            return Optional.empty();
+        }
+        String methodName = accessor.getName();
+        if ( methodName.startsWith("get") ) {
+            return Optional.of( lcFirst( methodName.substring(3, methodName.length()) ) );
+        } else if ( methodName.startsWith("is") ) {
+            return Optional.of( lcFirst( methodName.substring(2, methodName.length()) ) );
+        } else {
+            return Optional.of( lcFirst( methodName ) );
+        }
+    }
 
     public static String ucFirst(final String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
+    
+    public static String lcFirst(final String name) {
+        return name.toLowerCase().charAt( 0 ) + name.substring( 1 );
+    }
+    
+    
 
 }
