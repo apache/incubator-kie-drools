@@ -54,7 +54,9 @@ public interface KieContainer {
     Results verify(String... kBaseNames);
 
     /**
-     * Updates this KieContainer to a KieModule with the given ReleaseId
+     * Updates this KieContainer to a KieModule with the given fixed ReleaseId (e.g. com.acme:acme-rules:1.0.0.Final).
+     * The new release id should not contain the placeholder versions like LATEST or RELEASE as that will not work as expected.
+     * The container will not automatically find and resolve the "latest" version and will keep the old one in place.
      */
     Results updateToVersion(ReleaseId version);
 
