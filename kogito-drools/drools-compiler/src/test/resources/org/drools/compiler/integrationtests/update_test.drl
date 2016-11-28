@@ -16,27 +16,49 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.core.test.model.Person;
+import org.drools.core.test.model.Cheese;
 import java.util.List;
+
+global java.util.List drivers;
+global java.util.List expensiveCheese;
+
 
 query countPerson
    $personCount : Long() from accumulate ($person: Person(), count( $person ))
 end
 
-query someQuery
+query names
    $names : List() from accumulate (Person($name : name), collectList( $name ))
 end
 
-query informationAboutPersons
-    accumulate (
-        Person( $age : age, $name : name );
-        $minimalAge : min( $age ),
-        $maximalAge : max( $age ),
-        $averageAge : average( $age ), 
-        $countOfPerson : count( $age ),
-        $sumOfAges : sum ( $age ),
-        $setOfNames : collectSet ( $name ),
-        $listOfNames : collectList( $name ),
-        $expr : average( $age * 1000 );
-        $minimalAge > 0, $maximalAge < 150
-    )
+query persons
+    $persons : List() from accumulate ($person : Person(), collectList( $person ))
 end
+
+query cheeseTypes
+    $cheeseTypes : List() from accumulate ($cheese : Cheese(), collectList ( $cheese ))
+end
+
+
+rule "driver"
+when
+    $p : Person(age >= 18)
+then
+    drivers.add($p);
+end
+
+
+rule "expensive cheese"
+when
+    $c : Cheese(price >= 40)
+then
+    expensiveCheese.add($c);
+end
+
+rule "price increase"
+when
+    $c : Cheese(price < 20)
+then
+    modify ($c) { setPrice($c.getPrice() + 2) };
+end
+
