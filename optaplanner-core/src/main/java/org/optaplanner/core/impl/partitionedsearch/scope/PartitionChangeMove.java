@@ -113,9 +113,17 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove {
             List<Pair<Object, Object>> destinationPairList = new ArrayList<>(originPairList.size());
             for (Pair<Object, Object> pair : originPairList) {
                 Object originEntity = pair.getKey();
-                Object originValue = pair.getValue();
                 Object destinationEntity = destinationScoreDirector.locateWorkingObject(originEntity);
+                if (destinationEntity == null && originEntity != null) {
+                    throw new IllegalStateException("The destinationEntity (" + destinationEntity
+                            + ") cannot be null if the originEntity (" + originEntity + ") is not null.");
+                }
+                Object originValue = pair.getValue();
                 Object destinationValue = destinationScoreDirector.locateWorkingObject(originValue);
+                if (destinationValue == null && originValue != null) {
+                    throw new IllegalStateException("The destinationValue (" + destinationValue
+                            + ") cannot be null if the originValue (" + originValue + ") is not null.");
+                }
                 destinationPairList.add(Pair.of(destinationEntity, destinationValue));
             }
             destinationChangeMap.put(variableDescriptor, destinationPairList);

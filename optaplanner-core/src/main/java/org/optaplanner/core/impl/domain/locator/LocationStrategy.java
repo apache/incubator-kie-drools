@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.domain.locator;
 
 import java.util.Map;
 
-interface LocationStrategy {
+public interface LocationStrategy {
 
     void addWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject);
     void removeWorkingObject(Map<Object, Object> idToWorkingObjectMap, Object workingObject);

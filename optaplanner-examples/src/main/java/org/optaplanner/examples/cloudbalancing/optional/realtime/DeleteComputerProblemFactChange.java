@@ -37,6 +37,10 @@ public class DeleteComputerProblemFactChange implements ProblemFactChange<CloudB
     public void doChange(ScoreDirector<CloudBalance> scoreDirector) {
         CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
         CloudComputer workingComputer = scoreDirector.locateWorkingObject(computer);
+        if (workingComputer == null) {
+            // The computer has already been deleted (the UI asked to changed the same computer twice), so do nothing
+            return;
+        }
         // First remove the problem fact from all planning entities that use it
         for (CloudProcess process : cloudBalance.getProcessList()) {
             if (process.getComputer() == workingComputer) {

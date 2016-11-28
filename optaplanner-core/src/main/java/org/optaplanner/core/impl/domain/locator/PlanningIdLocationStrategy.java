@@ -61,7 +61,7 @@ public class PlanningIdLocationStrategy implements LocationStrategy {
     protected Object extractPlanningId(Object externalObject) {
         Object planningId = planningIdMemberAccessor.executeGetter(externalObject);
         if (planningId == null) {
-            throw new IllegalStateException("The planningId (" + planningId
+            throw new IllegalArgumentException("The planningId (" + planningId
                     + ") of the member (" + planningIdMemberAccessor + ") of the class (" + externalObject.getClass()
                     + ") on externalObject (" + externalObject
                     + ") must not be null.\n"

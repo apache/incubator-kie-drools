@@ -38,6 +38,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
@@ -240,28 +241,28 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
         logger.info("Scheduling delete of employee ({}).", employee);
         doProblemFactChange(scoreDirector -> {
             NurseRoster nurseRoster = scoreDirector.getWorkingSolution();
+            Employee workingEmployee = scoreDirector.locateWorkingObject(employee);
+            if (workingEmployee == null) {
+                // The employee has already been deleted (the UI asked to changed the same employee twice), so do nothing
+                return;
+            }
             // First remove the problem fact from all planning entities that use it
             for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
-                if (Objects.equals(shiftAssignment.getEmployee(), employee)) {
+                if (shiftAssignment.getEmployee() == workingEmployee) {
                     scoreDirector.beforeVariableChanged(shiftAssignment, "employee");
                     shiftAssignment.setEmployee(null);
                     scoreDirector.afterVariableChanged(shiftAssignment, "employee");
                 }
             }
-            scoreDirector.triggerVariableListeners();
             // A SolutionCloner does not clone problem fact lists (such as employeeList)
             // Shallow clone the employeeList so only workingSolution is affected, not bestSolution or guiSolution
-            nurseRoster.setEmployeeList(new ArrayList<>(nurseRoster.getEmployeeList()));
+            ArrayList<Employee> employeeList = new ArrayList<>(nurseRoster.getEmployeeList());
+            nurseRoster.setEmployeeList(employeeList);
             // Remove it the problem fact itself
-            for (Iterator<Employee> it = nurseRoster.getEmployeeList().iterator(); it.hasNext(); ) {
-                Employee workingEmployee = it.next();
-                if (Objects.equals(workingEmployee, employee)) {
-                    scoreDirector.beforeProblemFactRemoved(workingEmployee);
-                    it.remove(); // remove from list
-                    scoreDirector.afterProblemFactRemoved(employee);
-                    break;
-                }
-            }
+            scoreDirector.beforeProblemFactRemoved(workingEmployee);
+            employeeList.remove(workingEmployee);
+            scoreDirector.afterProblemFactRemoved(workingEmployee);
+            scoreDirector.triggerVariableListeners();
         });
     }
 

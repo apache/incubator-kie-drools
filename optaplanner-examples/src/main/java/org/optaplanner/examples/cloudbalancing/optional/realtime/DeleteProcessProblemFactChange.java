@@ -36,6 +36,10 @@ public class DeleteProcessProblemFactChange implements ProblemFactChange<CloudBa
         CloudBalance cloudBalance = scoreDirector.getWorkingSolution();
         // A SolutionCloner clones planning entity lists (such as processList), so no need to clone the processList here
         CloudProcess workingProcess = scoreDirector.locateWorkingObject(process);
+        if (workingProcess == null) {
+            // The process has already been deleted (the UI asked to changed the same process twice), so do nothing
+            return;
+        }
         // Remove the planning entity itself
         scoreDirector.beforeEntityRemoved(workingProcess);
         cloudBalance.getProcessList().remove(workingProcess);
