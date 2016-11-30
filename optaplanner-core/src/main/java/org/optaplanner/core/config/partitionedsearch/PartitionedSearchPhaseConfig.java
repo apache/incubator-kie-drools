@@ -18,8 +18,6 @@ package org.optaplanner.core.config.partitionedsearch;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -37,6 +35,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.partitionedsearch.DefaultPartitionedSearchPhase;
 import org.optaplanner.core.impl.partitionedsearch.PartitionedSearchPhase;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ChildThreadType;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -56,7 +55,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     // and also because the input config file should match the output config file
 
     protected Class<? extends ThreadFactory> threadFactoryClass = null;
-    protected String activeThreadCount = null;
+    protected String runnablePartThreadLimit = null;
 
     private Class<SolutionPartitioner> solutionPartitionerClass = null;
 
@@ -76,17 +75,30 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     }
 
     /**
-     * If there aren't enough processors available, CPUs will be shared by threads in a round-robin matter,
-     * resulting in a slower score calculation speed per partition {@link Solver}.
+     * Similar to a thread pool size, but instead of limiting the number of {@link Thread}s,
+     * it limits the number of {@link Thread.State#RUNNABLE} {@link Thread}s to avoid consuming all CPU resources
+     * (which would starve UI, Servlets and REST threads).
+     * <p/>
+     * The number of {@link Thread}s is always equal to the number of partitions returned by {@link SolutionPartitioner#splitWorkingSolution(ScoreDirector)},
+     * because otherwise some partitions would never run (especially with {@link Solver#terminateEarly() asynchronous termination}).
+     * If this limit (or {@link Runtime#availableProcessors()) is lower than the number of partitions,
+     * this results in a slower score calculation speed per partition {@link Solver}.
+     * <p/>
+     * Defaults to {@value #ACTIVE_THREAD_COUNT_AUTO} which consumes the majority
+     * but not all of the CPU cores on multi-core machines, preventing other processes (including your IDE or SSH connection)
+     * on the machine from hanging.
+     * <p/>
+     * Use {@value #ACTIVE_THREAD_COUNT_UNLIMITED} to give it all CPU cores.
+     * This is usefull if you're handling the CPU consumption on an OS level.
      * @return null, a number, {@value #ACTIVE_THREAD_COUNT_AUTO}, {@value #ACTIVE_THREAD_COUNT_UNLIMITED}
      * or a JavaScript calculation using {@value ConfigUtils#AVAILABLE_PROCESSOR_COUNT}.
      */
-    public String getActiveThreadCount() {
-        return activeThreadCount;
+    public String getRunnablePartThreadLimit() {
+        return runnablePartThreadLimit;
     }
 
-    public void setActiveThreadCount(String activeThreadCount) {
-        this.activeThreadCount = activeThreadCount;
+    public void setRunnablePartThreadLimit(String runnablePartThreadLimit) {
+        this.runnablePartThreadLimit = runnablePartThreadLimit;
     }
 
     public Class<SolutionPartitioner> getSolutionPartitionerClass() {
@@ -117,7 +129,7 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
                 phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
                 buildPhaseTermination(phaseConfigPolicy, solverTermination));
         phase.setThreadPoolExecutor(buildThreadPoolExecutor());
-        phase.setActiveThreadCount(resolvedActiveThreadCount());
+        phase.setRunnablePartThreadLimit(resolvedActiveThreadCount());
         phase.setSolutionPartitioner(buildSolutionPartitioner());
         List<PhaseConfig> phaseConfigList_ = phaseConfigList;
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
@@ -155,16 +167,16 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     private Integer resolvedActiveThreadCount() {
         int availableProcessorCount = Runtime.getRuntime().availableProcessors();
         Integer resolvedActiveThreadCount;
-        if (activeThreadCount == null || activeThreadCount.equals(ACTIVE_THREAD_COUNT_AUTO)) {
+        if (runnablePartThreadLimit == null || runnablePartThreadLimit.equals(ACTIVE_THREAD_COUNT_AUTO)) {
             // Leave one for the Operating System and 1 for the solver thread, take the rest
             resolvedActiveThreadCount = availableProcessorCount <= 2 ? 1 : availableProcessorCount - 2;
-        } else if (activeThreadCount.equals(ACTIVE_THREAD_COUNT_UNLIMITED)) {
+        } else if (runnablePartThreadLimit.equals(ACTIVE_THREAD_COUNT_UNLIMITED)) {
             resolvedActiveThreadCount = null;
         } else {
             resolvedActiveThreadCount = ConfigUtils.resolveThreadPoolSizeScript(
-                    "activeThreadCount", activeThreadCount, ACTIVE_THREAD_COUNT_AUTO, ACTIVE_THREAD_COUNT_UNLIMITED);
+                    "runnablePartThreadLimit", runnablePartThreadLimit, ACTIVE_THREAD_COUNT_AUTO, ACTIVE_THREAD_COUNT_UNLIMITED);
             if (resolvedActiveThreadCount < 1) {
-                throw new IllegalArgumentException("The activeThreadCount (" + activeThreadCount
+                throw new IllegalArgumentException("The runnablePartThreadLimit (" + runnablePartThreadLimit
                         + ") resulted in a resolvedActiveThreadCount (" + resolvedActiveThreadCount
                         + ") that is lower than 1.");
             }
@@ -191,8 +203,8 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         super.inherit(inheritedConfig);
         threadFactoryClass = ConfigUtils.inheritOverwritableProperty(threadFactoryClass,
                 inheritedConfig.getThreadFactoryClass());
-        activeThreadCount = ConfigUtils.inheritOverwritableProperty(activeThreadCount,
-                inheritedConfig.getActiveThreadCount());
+        runnablePartThreadLimit = ConfigUtils.inheritOverwritableProperty(runnablePartThreadLimit,
+                inheritedConfig.getRunnablePartThreadLimit());
         solutionPartitionerClass = ConfigUtils.inheritOverwritableProperty(solutionPartitionerClass,
                 inheritedConfig.getSolutionPartitionerClass());
         phaseConfigList = ConfigUtils.inheritMergeableListConfig(

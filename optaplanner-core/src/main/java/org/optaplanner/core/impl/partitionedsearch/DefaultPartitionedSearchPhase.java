@@ -51,7 +51,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         implements PartitionedSearchPhase<Solution_>, PartitionedSearchPhaseLifecycleListener<Solution_> {
 
     protected ThreadPoolExecutor threadPoolExecutor;
-    protected Integer activeThreadCount;
+    protected Integer runnablePartThreadLimit;
     protected SolutionPartitioner<Solution_> solutionPartitioner;
 
     protected List<PhaseConfig> phaseConfigList;
@@ -98,18 +98,18 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                     "The threadPoolExecutor's maximumPoolSize (" + threadPoolExecutor.getMaximumPoolSize()
                     + ") is less than the partCount (" + partCount + "), so some partitions will starve.\n"
                     + "Normally this impossible because the threadPoolExecutor should be unbounded:"
-                    + " Use activeThreadCount (" + activeThreadCount
+                    + " Use runnablePartThreadLimit (" + runnablePartThreadLimit
                     + ") instead to avoid CPU hogging and live locks.");
         }
         ChildThreadPlumbingTermination childThreadPlumbingTermination = new ChildThreadPlumbingTermination();
         PartitionQueue<Solution_> partitionQueue = new PartitionQueue<>(partCount);
-        Semaphore activeThreadSemaphore = activeThreadCount == null ? null : new Semaphore(activeThreadCount);
+        Semaphore runnablePartThreadSemaphore = runnablePartThreadLimit == null ? null : new Semaphore(runnablePartThreadLimit);
         try {
             for (ListIterator<Solution_> it = partList.listIterator(); it.hasNext(); ) {
                 int partIndex = it.nextIndex();
                 Solution_ part = it.next();
                 PartitionSolver<Solution_> partitionSolver = buildPartitionSolver(
-                        childThreadPlumbingTermination, activeThreadSemaphore, solverScope);
+                        childThreadPlumbingTermination, runnablePartThreadSemaphore, solverScope);
                 partitionSolver.addEventListener(event -> {
                     InnerScoreDirector<Solution_> childScoreDirector = partitionSolver.solverScope.getScoreDirector();
                     PartitionChangeMove<Solution_> move = PartitionChangeMove.createMove(childScoreDirector);
@@ -146,7 +146,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     }
 
     public PartitionSolver<Solution_> buildPartitionSolver(
-            ChildThreadPlumbingTermination childThreadPlumbingTermination, Semaphore activeThreadSemaphore,
+            ChildThreadPlumbingTermination childThreadPlumbingTermination, Semaphore runnablePartThreadSemaphore,
             DefaultSolverScope<Solution_> solverScope) {
         Termination partTermination = new OrCompositeTermination(childThreadPlumbingTermination,
                 termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD));
@@ -160,12 +160,12 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         }
         // TODO create PartitionSolverScope alternative to deal with 3 layer terminations
         DefaultSolverScope<Solution_> partSolverScope = solverScope.createChildThreadSolverScope(ChildThreadType.PART_THREAD);
-        partSolverScope.setActiveThreadSemaphore(activeThreadSemaphore);
+        partSolverScope.setRunnableThreadSemaphore(runnablePartThreadSemaphore);
         return new PartitionSolver<>(partTermination, bestSolutionRecaller, phaseList, partSolverScope);
     }
 
-    public void setActiveThreadCount(Integer activeThreadCount) {
-        this.activeThreadCount = activeThreadCount;
+    public void setRunnablePartThreadLimit(Integer runnablePartThreadLimit) {
+        this.runnablePartThreadLimit = runnablePartThreadLimit;
     }
 
     protected void doStep(PartitionedSearchStepScope<Solution_> stepScope) {

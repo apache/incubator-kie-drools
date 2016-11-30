@@ -24,9 +24,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.partitionedsearch.PartitionSolver;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.ChildThreadType;
@@ -45,7 +43,7 @@ public class DefaultSolverScope<Solution_> {
     protected Random workingRandom;
     protected InnerScoreDirector<Solution_> scoreDirector;
     /** Used for capping CPU power usage in multi-threaded scenario's */
-    protected Semaphore activeThreadSemaphore = null;
+    protected Semaphore runnableThreadSemaphore = null;
 
     protected Long startingSystemTimeMillis;
     protected Long endingSystemTimeMillis;
@@ -84,8 +82,8 @@ public class DefaultSolverScope<Solution_> {
         this.scoreDirector = scoreDirector;
     }
 
-    public void setActiveThreadSemaphore(Semaphore activeThreadSemaphore) {
-        this.activeThreadSemaphore = activeThreadSemaphore;
+    public void setRunnableThreadSemaphore(Semaphore runnableThreadSemaphore) {
+        this.runnableThreadSemaphore = runnableThreadSemaphore;
     }
 
     public Long getStartingSystemTimeMillis() {
@@ -242,9 +240,9 @@ public class DefaultSolverScope<Solution_> {
     }
 
     public void initializeYielding() {
-        if (activeThreadSemaphore != null) {
+        if (runnableThreadSemaphore != null) {
             try {
-                activeThreadSemaphore.acquire();
+                runnableThreadSemaphore.acquire();
             } catch (InterruptedException e) {
                 // TODO it will take a while before the BasicPlumbingTermination is called
                 // The BasicPlumbingTermination will terminate the solver.
@@ -264,10 +262,10 @@ public class DefaultSolverScope<Solution_> {
      * Furthermore, this method will
      */
     public void checkYielding() {
-        if (activeThreadSemaphore != null) {
-            activeThreadSemaphore.release();
+        if (runnableThreadSemaphore != null) {
+            runnableThreadSemaphore.release();
             try {
-                activeThreadSemaphore.acquire();
+                runnableThreadSemaphore.acquire();
             } catch (InterruptedException e) {
                 // The BasicPlumbingTermination will terminate the solver.
                 Thread.currentThread().interrupt();
@@ -276,8 +274,8 @@ public class DefaultSolverScope<Solution_> {
     }
 
     public void destroyYielding() {
-        if (activeThreadSemaphore != null) {
-            activeThreadSemaphore.release();
+        if (runnableThreadSemaphore != null) {
+            runnableThreadSemaphore.release();
         }
     }
 
