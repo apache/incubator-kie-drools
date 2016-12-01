@@ -21,8 +21,12 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 
 public class FEELStringOperationsTest extends BaseFEELTest {
-
-    @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
+    
+    /**
+     * WARNING: do not use as JUNit's @Parameters name the index {1} within this test class, as this would result in invalid character in the XML surefire-report
+     * Original error was: An invalid XML character (Unicode: 0x8) was found in the value of attribute "name" and element is "testcase".
+     */
+    @Parameterized.Parameters(name = "{index}: {0} ")
     public static Collection<Object[]> data() {
         final Object[][] cases = new Object[][] {
                 // string concatenation
