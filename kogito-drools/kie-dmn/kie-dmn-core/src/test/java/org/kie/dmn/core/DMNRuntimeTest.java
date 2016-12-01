@@ -252,6 +252,25 @@ public class DMNRuntimeTest {
         assertThat( dmnResult.getContext().get("Drinks"), is( Arrays.asList( "Apero", "Ale", "Juice Boxes" ) ) );
     }
 
+    @Test
+    public void testNotificationsApproved2() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "NotificationsTest2.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "building-structure-rules" );
+        assertThat( dmnModel, notNullValue() );
+
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "existingActivityApplicability", true );
+        context.set( "Distance", new BigDecimal(9999) );
+        context.set( "willIncreaseTraffic", true );
+
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Notification Status" ), is( "Notification to Province Approved" ) );
+        assertThat( result.get( "Permit Status" ), is( "Building Activity Province Permit Required" ) );
+    }
+
     @Test @Ignore("not implemented yet")
     public void testBoxedContext() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "BoxedContext.dmn", this.getClass() );
