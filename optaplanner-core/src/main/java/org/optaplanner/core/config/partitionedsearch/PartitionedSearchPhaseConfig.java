@@ -54,10 +54,10 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
 
+    private Class<SolutionPartitioner> solutionPartitionerClass = null;
+
     protected Class<? extends ThreadFactory> threadFactoryClass = null;
     protected String runnablePartThreadLimit = null;
-
-    private Class<SolutionPartitioner> solutionPartitionerClass = null;
 
     @XStreamImplicit()
     protected List<PhaseConfig> phaseConfigList = null;
@@ -65,6 +65,14 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
+
+    public Class<SolutionPartitioner> getSolutionPartitionerClass() {
+        return solutionPartitionerClass;
+    }
+
+    public void setSolutionPartitionerClass(Class<SolutionPartitioner> solutionPartitionerClass) {
+        this.solutionPartitionerClass = solutionPartitionerClass;
+    }
 
     public Class<? extends ThreadFactory> getThreadFactoryClass() {
         return threadFactoryClass;
@@ -101,14 +109,6 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         this.runnablePartThreadLimit = runnablePartThreadLimit;
     }
 
-    public Class<SolutionPartitioner> getSolutionPartitionerClass() {
-        return solutionPartitionerClass;
-    }
-
-    public void setSolutionPartitionerClass(Class<SolutionPartitioner> solutionPartitionerClass) {
-        this.solutionPartitionerClass = solutionPartitionerClass;
-    }
-
     public List<PhaseConfig> getPhaseConfigList() {
         return phaseConfigList;
     }
@@ -128,9 +128,9 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         DefaultPartitionedSearchPhase phase = new DefaultPartitionedSearchPhase(
                 phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
                 buildPhaseTermination(phaseConfigPolicy, solverTermination));
+        phase.setSolutionPartitioner(buildSolutionPartitioner());
         phase.setThreadPoolExecutor(buildThreadPoolExecutor());
         phase.setRunnablePartThreadLimit(resolvedActiveThreadCount());
-        phase.setSolutionPartitioner(buildSolutionPartitioner());
         List<PhaseConfig> phaseConfigList_ = phaseConfigList;
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {
             phaseConfigList_ = Arrays.asList(
@@ -148,6 +148,15 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
             phase.setAssertShadowVariablesAreNotStaleAfterStep(true);
         }
         return phase;
+    }
+
+    private SolutionPartitioner buildSolutionPartitioner() {
+        if (solutionPartitionerClass != null) {
+            return ConfigUtils.newInstance(this, "solutionPartitionerClass", solutionPartitionerClass);
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+        }
     }
 
     private ThreadPoolExecutor buildThreadPoolExecutor() {
@@ -189,24 +198,15 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
         return resolvedActiveThreadCount;
     }
 
-    private SolutionPartitioner buildSolutionPartitioner() {
-        if (solutionPartitionerClass != null) {
-            return ConfigUtils.newInstance(this, "solutionPartitionerClass", solutionPartitionerClass);
-        } else {
-            // TODO
-            throw new UnsupportedOperationException();
-        }
-    }
-
     @Override
     public void inherit(PartitionedSearchPhaseConfig inheritedConfig) {
         super.inherit(inheritedConfig);
+        solutionPartitionerClass = ConfigUtils.inheritOverwritableProperty(solutionPartitionerClass,
+                inheritedConfig.getSolutionPartitionerClass());
         threadFactoryClass = ConfigUtils.inheritOverwritableProperty(threadFactoryClass,
                 inheritedConfig.getThreadFactoryClass());
         runnablePartThreadLimit = ConfigUtils.inheritOverwritableProperty(runnablePartThreadLimit,
                 inheritedConfig.getRunnablePartThreadLimit());
-        solutionPartitionerClass = ConfigUtils.inheritOverwritableProperty(solutionPartitionerClass,
-                inheritedConfig.getSolutionPartitionerClass());
         phaseConfigList = ConfigUtils.inheritMergeableListConfig(
                 phaseConfigList, inheritedConfig.getPhaseConfigList());
     }

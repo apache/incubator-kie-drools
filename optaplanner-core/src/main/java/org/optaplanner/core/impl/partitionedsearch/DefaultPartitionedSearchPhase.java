@@ -50,9 +50,9 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solution_>
         implements PartitionedSearchPhase<Solution_>, PartitionedSearchPhaseLifecycleListener<Solution_> {
 
+    protected SolutionPartitioner<Solution_> solutionPartitioner;
     protected ThreadPoolExecutor threadPoolExecutor;
     protected Integer runnablePartThreadLimit;
-    protected SolutionPartitioner<Solution_> solutionPartitioner;
 
     protected List<PhaseConfig> phaseConfigList;
     protected HeuristicConfigPolicy configPolicy;
@@ -62,12 +62,16 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
     }
 
+    public void setSolutionPartitioner(SolutionPartitioner<Solution_> solutionPartitioner) {
+        this.solutionPartitioner = solutionPartitioner;
+    }
+
     public void setThreadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
         this.threadPoolExecutor = threadPoolExecutor;
     }
 
-    public void setSolutionPartitioner(SolutionPartitioner<Solution_> solutionPartitioner) {
-        this.solutionPartitioner = solutionPartitioner;
+    public void setRunnablePartThreadLimit(Integer runnablePartThreadLimit) {
+        this.runnablePartThreadLimit = runnablePartThreadLimit;
     }
 
     public void setPhaseConfigList(List<PhaseConfig> phaseConfigList) {
@@ -164,10 +168,6 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         return new PartitionSolver<>(partTermination, bestSolutionRecaller, phaseList, partSolverScope);
     }
 
-    public void setRunnablePartThreadLimit(Integer runnablePartThreadLimit) {
-        this.runnablePartThreadLimit = runnablePartThreadLimit;
-    }
-
     protected void doStep(PartitionedSearchStepScope<Solution_> stepScope) {
         Move nextStep = stepScope.getStep();
         nextStep.doMove(stepScope.getScoreDirector());
@@ -206,13 +206,14 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         super.phaseEnded(phaseScope);
         phaseScope.endingNow();
         logger.info("{}Partitioned Search phase ({}) ended: time spent ({}), best score ({}),"
-                        + " score calculation speed ({}/sec), step total ({}).",
+                        + " score calculation speed ({}/sec), step total ({}), runnablePartThreadLimit({}).",
                 logIndentation,
                 phaseIndex,
                 phaseScope.calculateSolverTimeMillisSpentUpToNow(),
                 phaseScope.getBestScore(),
                 phaseScope.getPhaseScoreCalculationSpeed(),
-                phaseScope.getNextStepIndex());
+                phaseScope.getNextStepIndex(),
+                runnablePartThreadLimit);
     }
 
 }
