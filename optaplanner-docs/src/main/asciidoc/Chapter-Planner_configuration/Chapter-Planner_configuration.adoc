@@ -493,7 +493,7 @@ public class Queen {
 ----
 
 The `valueRangeProviderRefs` property defines what are the possible planning values for this planning variable.
-It references one or more `@ValueRangeProvider```id``'s.
+It references one or more ``@ValueRangeProvider`` ``id``'s.
 
 [NOTE]
 ====

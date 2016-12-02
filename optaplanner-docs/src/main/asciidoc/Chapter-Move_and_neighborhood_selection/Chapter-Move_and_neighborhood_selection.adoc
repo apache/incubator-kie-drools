@@ -471,7 +471,7 @@ Advanced configuration:
     </unionMoveSelector>
 ----
 
-The `selectorProbabilityWeightFactory` determines in `selectionOrder```RANDOM`` how often a `MoveSelector` child is selected to supply the next Move.
+The `selectorProbabilityWeightFactory` determines in `selectionOrder` ``RANDOM`` how often a `MoveSelector` child is selected to supply the next Move.
 By default, each `MoveSelector` child has the same chance of being selected.
 
 image::Chapter-Move_and_neighborhood_selection/selectorProbabilityInUnion.png[align="center"]
@@ -684,7 +684,7 @@ A `selectionOrder` can be set on composite selectors too.
 
 [NOTE]
 ====
-When a `Selector` is cached, all of its nested ``Selector``s will naturally default to `selectionOrder```ORIGINAL``.
+When a `Selector` is cached, all of its nested ``Selector``s will naturally default to `selectionOrder` ``ORIGINAL``.
 Avoid overwriting the `selectionOrder` of those nested ``Selector``s.
 ====
 
@@ -916,7 +916,7 @@ You can configure multiple `filterClass` elements on a single value selector.
 === Sorted Selection
 
 Sorted selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
-It does not work with `cacheType```JUST_IN_TIME`` and it only works with ``selectionOrder SORTED``.
+It does not work with `cacheType` ``JUST_IN_TIME`` and it only works with ``selectionOrder`` ``SORTED``.
 
 It's mostly used in construction heuristics.
 
@@ -1080,7 +1080,7 @@ public interface SelectionSorter<Solution_, T> {
 === Probabilistic Selection
 
 Probabilistic selection can happen on any Selector in the selector tree, including any ``MoveSelector``, `EntitySelector` or ``ValueSelector``.
-It does not work with `cacheType```JUST_IN_TIME`` and it only works with ``selectionOrder PROBABILISTIC``.
+It does not work with `cacheType` ``JUST_IN_TIME`` and it only works with ``selectionOrder`` ``PROBABILISTIC``.
 
 image::Chapter-Move_and_neighborhood_selection/probabilisticSelection.png[align="center"]
 
@@ -1312,7 +1312,7 @@ For example, in examination scheduling, changing the period of an exam A also ch
 
 A custom `Move` is also slightly faster than a generic ``Move``.
 However, it's far more work to implement and much harder to avoid bugs.
-After implementing a custom ``Move``, make sure to turn on `environmentMode```FULL_ASSERT`` to check for score corruptions.
+After implementing a custom ``Move``, make sure to turn on `environmentMode` ``FULL_ASSERT`` to check for score corruptions.
 
 
 [[theInterfaceMove]]
@@ -1538,8 +1538,8 @@ Advanced configuration:
     </moveListFactory>
 ----
 
-Because the `MoveListFactory` generates all moves at once in a ``List<Move>``, it does not support `cacheType```JUST_IN_TIME``.
-Therefore, `moveListFactory` uses `cacheType```STEP`` by default and it scales badly in memory footprint.
+Because the `MoveListFactory` generates all moves at once in a ``List<Move>``, it does not support `cacheType` ``JUST_IN_TIME``.
+Therefore, `moveListFactory` uses `cacheType` ``STEP`` by default and it scales badly in memory footprint.
 
 
 [[moveIteratorFactory]]
@@ -1563,7 +1563,7 @@ public interface MoveIteratorFactory<Solution_> {
 The `getSize()` method must give an estimation of the size.
 It doesn't need to be correct.
 The `createOriginalMoveIterator` method is called if the `selectionOrder` is `ORIGINAL` or if it is cached.
-The `createRandomMoveIterator` method is called for `selectionOrder```RANDOM`` combined with cacheType ``JUST_IN_TIME``.
+The `createRandomMoveIterator` method is called for `selectionOrder` ``RANDOM`` combined with cacheType ``JUST_IN_TIME``.
 
 [IMPORTANT]
 ====

@@ -338,7 +338,7 @@ Or use a combination that sums up to 150 minutes:
 
 [NOTE]
 ====
-This `Termination` will most likely sacrifice perfect reproducibility (even with `environmentMode```REPRODUCIBLE``) because the available CPU time differs frequently between runs:
+This `Termination` will most likely sacrifice perfect reproducibility (even with `environmentMode` ``REPRODUCIBLE``) because the available CPU time differs frequently between runs:
 
 * The available CPU time influences the number of steps that can be taken, which might be a few more or less.
 * The `Termination` might produce slightly different time gradient values, which will send time gradient based algorithms (such as Simulated Annealing) on a radically different path.
@@ -401,7 +401,7 @@ Therefore it might be better to configure it on a specific `Phase` (such as ``<l
 
 [NOTE]
 ====
-This `Termination` will most likely sacrifice perfect reproducibility (even with `environmentMode```REPRODUCIBLE``) because the available CPU time differs frequently between runs:
+This `Termination` will most likely sacrifice perfect reproducibility (even with `environmentMode` ``REPRODUCIBLE``) because the available CPU time differs frequently between runs:
 
 * The available CPU time influences the number of steps that can be taken, which might be a few more or less.
 * The `Termination` might produce slightly different time gradient values, which will send time gradient based algorithms (such as Simulated Annealing) on a radically different path.

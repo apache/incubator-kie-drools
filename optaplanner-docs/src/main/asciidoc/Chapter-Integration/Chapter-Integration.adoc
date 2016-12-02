@@ -575,4 +575,5 @@ Your mileage may vary.
 ** Synchronous logging to a file has an additional significant impact for debug and trace logging (but not for info logging).
 * Avoid a cloud environment in which you share your CPU core(s) with other virtual machines or containers. Performance (and therefore solution quality) can be unreliable when the available CPU power varies greatly.
 
-Keep in mind that the perfect hardware/software environment will probably _not_ solve scaling issues (even Moore's law is too slow). There is no need to follow these guidelines to the letter.
+Keep in mind that the perfect hardware/software environment will probably _not_ solve scaling issues (even Moore's law is too slow).
+There is no need to follow these guidelines to the letter.
