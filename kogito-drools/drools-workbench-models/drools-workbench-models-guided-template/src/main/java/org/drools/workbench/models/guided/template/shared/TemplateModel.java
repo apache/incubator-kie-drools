@@ -51,7 +51,7 @@ public class TemplateModel
         Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
         if ( row.length != vars.size() - 1 ) {
             throw new IllegalArgumentException( "Invalid numbers of columns: " + row.length + " expected: "
-                                                        + vars.size() );
+                                                        + (vars.size() - 1) );
         }
         if ( rowId == null || rowId.length() == 0 ) {
             rowId = getNewIdColValue();
