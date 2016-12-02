@@ -19,6 +19,7 @@ package org.kie.dmn.feel.runtime;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 
 public class FEELEventListenerTest {
 
@@ -28,11 +29,17 @@ public class FEELEventListenerTest {
     public void setup() {
         feel = FEEL.newInstance();
         feel.addListener( event -> System.out.println( event ) );
+        feel.addListener( (evt) -> { if (evt.getSeverity() == Severity.ERROR) System.err.println(evt); } );
     }
 
     @Test
     public void testParserError() {
         feel.evaluate( "10 + / 5" );
 
+    }
+    
+    @Test
+    public void testSomeBuiltinFunctions() {
+        System.out.println( feel.evaluate("append( null, 1, 2 )") );
     }
 }

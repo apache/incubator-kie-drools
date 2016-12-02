@@ -9,6 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.runtime.events.FEELEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,19 @@ public class SimpleDecisionTablesTest
     @BeforeClass
     public static void setupTest() {
         feel = FEEL.newInstance();
+        feel.addListener(evt -> { 
+            if (evt.getSeverity() == FEELEvent.Severity.ERROR) { 
+                logger.error("{}", evt);
+                if ( evt.getSourceException().getCause() != null ) {
+                    Throwable c = evt.getSourceException().getCause();
+                    while (c != null) {
+                        logger.error(" caused by: {} {}", c.getClass(), c.getMessage() != null ? c.getMessage() : "");
+                        c = c.getCause();
+                    }
+                    logger.error(" [stacktraces omitted.]");
+                }
+            }  
+        } );
     }
 
     @Test

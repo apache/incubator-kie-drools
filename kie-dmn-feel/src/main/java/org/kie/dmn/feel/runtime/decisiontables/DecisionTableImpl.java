@@ -88,7 +88,7 @@ public class DecisionTableImpl {
                 return null;
             }
         } catch ( Exception e ) {
-            logger.error( "Error invoking decision table '" + getName() + "'.", e );
+            // no longer needed as DTInvokerFunction support Either for wrapping the exception : logger.error( "Error invoking decision table '" + getName() + "'.", e );
             throw e;
         }
     }

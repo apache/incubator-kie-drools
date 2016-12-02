@@ -39,7 +39,7 @@ public class EvalHelper {
     }
 
     public static BigDecimal getBigDecimalOrNull(Object value) {
-        if ( !(value instanceof Number) ) {
+        if ( !(value instanceof Number || value instanceof String) ) {
             return null;
         }
         if ( !BigDecimal.class.isAssignableFrom( value.getClass() ) ) {
@@ -48,6 +48,8 @@ public class EvalHelper {
                 value = new BigDecimal( ((Number) value).longValue(), MathContext.DECIMAL128 );
             } else if ( value instanceof BigInteger ) {
                 value = new BigDecimal( ((BigInteger) value).toString(), MathContext.DECIMAL128 );
+            } else if ( value instanceof String ) {
+                value = new BigDecimal( (String) value, MathContext.DECIMAL128 );
             } else {
                 value = new BigDecimal( ((Number) value).doubleValue(), MathContext.DECIMAL128 );
             }

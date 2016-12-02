@@ -20,6 +20,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+
 public class MaxFunction
         extends BaseFEELFunction {
 
@@ -27,15 +32,20 @@ public class MaxFunction
         super( "max" );
     }
 
-    public Object apply(@ParameterName("list") List list) {
+    public FEELFnResult<Object> apply(@ParameterName("list") List list) {
         if ( list == null ) {
-            return null;
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         } else {
-            return Collections.max( list );
+            return FEELFnResult.ofResult( Collections.max( list ) );
         }
     }
 
-    public Object apply(@ParameterName("c") Object[] list) {
+    public FEELFnResult<Object> apply(@ParameterName("c") Object[] list) {
+        if ( list == null ) { 
+            // Arrays.asList does not accept null as parameter
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "c", "cannot be null"));
+        }
+        
         return apply( Arrays.asList( list ) );
     }
 

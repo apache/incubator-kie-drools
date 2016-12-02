@@ -20,6 +20,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+
 public class IndexOfFunction
         extends BaseFEELFunction {
 
@@ -27,9 +32,9 @@ public class IndexOfFunction
         super( "index of" );
     }
 
-    public List apply(@ParameterName( "list" ) List list, @ParameterName( "match" ) Object match) {
+    public FEELFnResult<List> apply(@ParameterName( "list" ) List list, @ParameterName( "match" ) Object match) {
         if ( list == null ) {
-            return null;
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
         List result = new ArrayList();
         for( int i = 0; i < list.size(); i++ ) {
@@ -39,6 +44,6 @@ public class IndexOfFunction
                 result.add( BigDecimal.valueOf( i+1 ) );
             }
         }
-        return result;
+        return FEELFnResult.ofResult( result );
     }
 }
