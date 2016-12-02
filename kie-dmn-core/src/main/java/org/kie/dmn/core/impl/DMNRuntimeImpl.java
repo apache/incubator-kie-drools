@@ -22,6 +22,7 @@ import org.kie.api.runtime.KieRuntime;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.api.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
+import org.kie.dmn.core.ast.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNNode;
 import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.internal.io.ResourceTypePackage;
@@ -148,8 +149,8 @@ public class DMNRuntimeImpl
                 return false;
             }
             try {
-                DecisionNode.DecisionEvaluator.EvaluatorResult er = decision.getEvaluator().evaluate( eventManager, result );
-                if( er.getResultType() == DecisionNode.DecisionEvaluator.ResultType.SUCCESS ) {
+                DMNExpressionEvaluator.EvaluatorResult er = decision.getEvaluator().evaluate( eventManager, result );
+                if( er.getResultType() == DMNExpressionEvaluator.ResultType.SUCCESS ) {
                     result.getContext().set( decision.getDecision().getVariable().getName(), er.getResult() );
                     dr.setResult( er.getResult() );
                 }
