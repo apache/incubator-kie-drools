@@ -17,6 +17,13 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.util.EvalHelper;
 
 public class NumberFunction
         extends BaseFEELFunction {
@@ -25,23 +32,29 @@ public class NumberFunction
         super( "number" );
     }
 
-    public BigDecimal apply(@ParameterName("from") String from, @ParameterName("grouping separator") String group, @ParameterName("decimal separator") String decimal) {
+    public FEELFnResult<BigDecimal> apply(@ParameterName("from") String from, @ParameterName("grouping separator") String group, @ParameterName("decimal separator") String decimal) {
         if ( from == null ) {
-            return null;
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
         if ( group != null && !group.equals( " " ) && !group.equals( "." ) && !group.equals( "," ) ) {
-            return null;
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "group", "not a valid one, can only be one of: dot ('.'), comma (','), space (' ') "));
         }
         if ( decimal != null && ((!decimal.equals( "." ) && !decimal.equals( "," )) || (group != null && decimal.equals( group ))) ) {
-            return null;
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "decimal", "invalid parameter 'decimal' used in conjuction with specified parameter 'group'"));
         }
+        
         if ( group != null ) {
             from = from.replaceAll( "\\" + group, "" );
         }
         if ( decimal != null ) {
             from = from.replaceAll( "\\" + decimal, "." );
         }
-        return new BigDecimal( from );
+        
+        try {
+            return FEELFnResult.ofResult( EvalHelper.getBigDecimalOrNull( from ) );
+        } catch (Exception e) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "unable to calculate final number result", e));
+        }
     }
 
 }

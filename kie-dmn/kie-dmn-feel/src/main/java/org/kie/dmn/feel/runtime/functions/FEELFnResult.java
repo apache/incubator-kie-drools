@@ -16,23 +16,23 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import java.util.Optional;
+
 import org.kie.dmn.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
-import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.util.Either;
 
-public class StringFunction
-        extends BaseFEELFunction {
+public class FEELFnResult<T> extends Either<FEELEvent, T> {
 
-    public StringFunction() {
-        super( "string" );
+    protected FEELFnResult(Optional<FEELEvent> left, Optional<T> right) {
+        super(left, right);
     }
 
-    public FEELFnResult<String> apply(@ParameterName("from") Object val) {
-        if ( val == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "val", "cannot be null"));
-        } else {
-            return FEELFnResult.ofResult( val.toString() );
-        }
+    public static <T> FEELFnResult<T> ofError(FEELEvent event) {
+        return new FEELFnResult<>(Optional.of(event), Optional.empty());
     }
+    
+    public static <T> FEELFnResult<T> ofResult(T value) {
+        return new FEELFnResult<>(Optional.empty(), Optional.of(value));
+    }
+    
 }

@@ -18,6 +18,12 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.util.EvalHelper;
+
 public class StringLengthFunction
         extends BaseFEELFunction {
 
@@ -25,11 +31,11 @@ public class StringLengthFunction
         super( "string length" );
     }
 
-    public Number apply(@ParameterName("string") String string) {
+    public FEELFnResult<BigDecimal> apply(@ParameterName("string") String string) {
         if ( string == null ) {
-            return null;
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "string", "cannot be null"));
         } else {
-            return BigDecimal.valueOf( string.length() );
+            return FEELFnResult.ofResult( EvalHelper.getBigDecimalOrNull( string.length() ) );
         }
     }
 }
