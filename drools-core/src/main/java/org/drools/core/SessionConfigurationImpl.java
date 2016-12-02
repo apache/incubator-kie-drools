@@ -327,11 +327,18 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     @SuppressWarnings("unchecked")
     private void initWorkItemManagerFactory() {
         String className = this.chainedProperties.getProperty( "drools.workItemManagerFactory",
-                                                               "org.drools.core.process.instance.impl.DefaultWorkItemManagerFactory" );
+                                                               "org.jbpm.process.instance.impl.ProcessInstanceWorkItemManagerFactory" );
+
         Class<WorkItemManagerFactory> clazz = null;
         try {
             clazz = (Class<WorkItemManagerFactory>) this.classLoader.loadClass( className );
         } catch ( ClassNotFoundException e ) {
+            String droolsClassName = "org.drools.core.process.instance.impl.DefaultWorkItemManagerFactory";
+            try {
+                clazz = (Class<WorkItemManagerFactory>) this.classLoader.loadClass( droolsClassName );
+            } catch ( ClassNotFoundException e2 ) {
+                /// Do nothing
+            }
         }
 
         if ( clazz != null ) {

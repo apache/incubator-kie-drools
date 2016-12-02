@@ -41,7 +41,7 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
 
     private AtomicLong workItemCounter = new AtomicLong(0);
     private Map<Long, WorkItem> workItems = new ConcurrentHashMap<Long, WorkItem>();
-    private InternalKnowledgeRuntime kruntime;
+    protected InternalKnowledgeRuntime kruntime;
     private Map<String, WorkItemHandler> workItemHandlers = new HashMap<String, WorkItemHandler>();
 
     public DefaultWorkItemManager(InternalKnowledgeRuntime kruntime) {
@@ -63,16 +63,19 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         out.writeObject(workItemHandlers);
     }
 
+    @Override
     public void internalExecuteWorkItem(WorkItem workItem) {
         ((WorkItemImpl) workItem).setId(workItemCounter.incrementAndGet());
         internalAddWorkItem(workItem);
         WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
         if (handler != null) {
             handler.executeWorkItem(workItem, this);
-        } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                    workItem.getName() );
+        } else {
+            throwWorkItemHandlerNotFoundException(workItem);
+        }
     }
 
+    @Override
     public void internalAddWorkItem(WorkItem workItem) {
         workItems.put(new Long(workItem.getId()), workItem);
         // fix to reset workItemCounter after deserialization
@@ -81,20 +84,28 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         }
     }
 
+    @Override
     public void internalAbortWorkItem(long id) {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
         // work item may have been aborted
         if (workItem != null) {
             WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
-            if (handler != null) {
-                handler.abortWorkItem(workItem, this);
-            } else {
-                workItems.remove( workItem.getId() );
-                throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                                 workItem.getName() );
-            }
-            workItems.remove(workItem.getId());
+            internalAbortAndRemoveWorkItem(handler, workItem);
         }
+    }
+
+    protected void internalAbortAndRemoveWorkItem( WorkItemHandler handler, WorkItem workItem ) {
+        if (handler != null) {
+            handler.abortWorkItem(workItem, this);
+        }
+        removeWorkItem(workItem.getId());
+        if( handler == null ) {
+            throwWorkItemHandlerNotFoundException(workItem);
+        }
+    }
+
+    protected void removeWorkItem(long workItemId) {
+        workItems.remove(workItemId);
     }
 
     public WorkItemHandler getWorkItemHandler(String name) {
@@ -121,8 +132,9 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
             WorkItemHandler handler = this.workItemHandlers.get(workItem.getName());
             if (handler != null) {
                 handler.executeWorkItem(workItem, this);
-            } else throw new WorkItemHandlerNotFoundException( "Could not find work item handler for " + workItem.getName(),
-                                                        workItem.getName() );
+            } else {
+                throwWorkItemHandlerNotFoundException(workItem);
+            }
         }
     }
     
@@ -130,52 +142,59 @@ public class DefaultWorkItemManager implements WorkItemManager, Externalizable {
         return new HashSet<WorkItem>(workItems.values());
     }
 
+    @Override
     public WorkItem getWorkItem(long id) {
         return workItems.get(id);
     }
 
+    @Override
     public void completeWorkItem(long id, Map<String, Object> results) {
         WorkItem workItem = workItems.get(new Long(id));
         // work item may have been aborted
         if (workItem != null) {
             (workItem).setResults(results);
-            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
             (workItem).setState(WorkItem.COMPLETED);
-            // process instance may have finished already
-            if (processInstance != null) {
-                processInstance.signalEvent("workItemCompleted", workItem);
-            }
-            workItems.remove(new Long(id));
+            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
+            signalEventAndRemoveWorkItem(processInstance, "workItemCompleted", workItem);
         }
     }
 
+    @Override
     public void abortWorkItem(long id) {
         WorkItemImpl workItem = (WorkItemImpl) workItems.get(new Long(id));
         // work item may have been aborted
         if (workItem != null) {
-            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
             workItem.setState(WorkItem.ABORTED);
-            // process instance may have finished already
-            if (processInstance != null) {
-                processInstance.signalEvent("workItemAborted", workItem);
-            }
-            workItems.remove(new Long(id));
+            ProcessInstance processInstance = kruntime.getProcessInstance(workItem.getProcessInstanceId());
+            signalEventAndRemoveWorkItem(processInstance, "workItemAborted", workItem);
         }
     }
 
+    protected void signalEventAndRemoveWorkItem(ProcessInstance processInstance, String event, WorkItem workItem) {
+        // process instance may have finished already
+        if (processInstance != null) {
+            processInstance.signalEvent(event, workItem);
+        }
+        removeWorkItem(workItem.getId());
+    }
+
+    @Override
     public void registerWorkItemHandler(String workItemName, WorkItemHandler handler) {
         this.workItemHandlers.put(workItemName, handler);
     }
 
+    @Override
     public void clear() {
         this.workItems.clear();
     }
-    
-    public void signalEvent(String type, Object event) { 
+
+    @Override
+    public void signalEvent(String type, Object event) {
         this.kruntime.signalEvent(type, event);
-    } 
-    
-    public void signalEvent(String type, Object event, long processInstanceId) { 
+    }
+
+    @Override
+    public void signalEvent(String type, Object event, long processInstanceId) {
         this.kruntime.signalEvent(type, event, processInstanceId);
     }
 

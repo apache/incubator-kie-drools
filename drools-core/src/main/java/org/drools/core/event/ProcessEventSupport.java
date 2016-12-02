@@ -156,6 +156,18 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         }
     }
 
+    public void fireBeforeNodeRemoved(final NodeInstance nodeInstance, KnowledgeRuntime kruntime) {
+        final Iterator<ProcessEventListener> iter = getEventListenersIterator();
+
+        if (iter.hasNext()) {
+            final ProcessNodeTriggeredEvent event = new ProcessNodeRemovedEventImpl(nodeInstance, kruntime);
+
+            do {
+                iter.next().beforeNodeRemoved(event);
+            } while (iter.hasNext());
+        }
+    }
+
     public void reset() {
         this.clear();
     }

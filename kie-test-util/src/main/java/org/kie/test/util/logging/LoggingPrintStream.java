@@ -195,7 +195,11 @@ public class LoggingPrintStream extends PrintStream {
     }
 
     public static void restoreSysOutAndSysErr() {
-        System.setOut(((LoggingPrintStream) System.out).originalOutputStream);
-        System.setErr(((LoggingPrintStream) System.err).originalOutputStream);
+        if( System.out instanceof LoggingPrintStream ) { 
+            System.setOut(((LoggingPrintStream) System.out).originalOutputStream);
+        }
+        if( System.err instanceof LoggingPrintStream ) { 
+            System.setErr(((LoggingPrintStream) System.err).originalOutputStream);
+        }
     }
 }

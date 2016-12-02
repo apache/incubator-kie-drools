@@ -47,7 +47,11 @@ public interface PersistenceContext {
     void remove(WorkItemInfo workItemInfo);
 
     /**
-     * This method pessimistically locks the {@link WorkItemInfo} instance
+     * This method pessimistically locks the {@link WorkItemInfo} instance.
+     * </p>
+     * There is no need to "unlock" an instance -- the lock is part of the transaction,
+     * and "ends" as soon as the transaction has been committed or rolled-back.
+     *
      * @param sessionInfo The persistent representation of a {@link WorkItem}
      */
     void lock(WorkItemInfo workItemInfo);
