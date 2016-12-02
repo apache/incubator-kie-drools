@@ -19,9 +19,8 @@ package org.kie.dmn.core.impl;
 import org.kie.dmn.core.api.DMNMessage;
 import org.kie.dmn.core.api.DMNModel;
 import org.kie.dmn.core.api.DMNType;
-import org.kie.dmn.core.ast.DecisionNode;
-import org.kie.dmn.core.ast.InputDataNode;
-import org.kie.dmn.core.ast.ItemDefNode;
+import org.kie.dmn.core.ast.*;
+import org.kie.dmn.feel.model.v1_1.BusinessKnowledgeModel;
 import org.kie.dmn.feel.model.v1_1.Definitions;
 import org.kie.dmn.feel.runtime.events.FEELEvent;
 
@@ -33,13 +32,14 @@ public class DMNModelImpl
         implements DMNModel {
 
     private Definitions definitions;
-    private Map<QName, DMNType>        typeRegistry = new HashMap<>();
-    private Map<String, InputDataNode> inputs    = new HashMap<>();
-    private Map<String, DecisionNode>  decisions = new HashMap<>();
-    private Map<String, ItemDefNode>   itemDefs = new HashMap<>();
+    private Map<QName, DMNType>                     typeRegistry = new HashMap<>();
+    private Map<String, InputDataNode>              inputs       = new HashMap<>();
+    private Map<String, DecisionNode>               decisions    = new HashMap<>();
+    private Map<String, BusinessKnowledgeModelNode> bkms         = new HashMap<>();
+    private Map<String, ItemDefNode>                itemDefs     = new HashMap<>();
 
     // these are messages created at loading/compilation time
-    private List<DMNMessage> messages = new ArrayList<>(  );
+    private List<DMNMessage> messages = new ArrayList<>();
 
     public DMNModelImpl() {
     }
@@ -77,11 +77,11 @@ public class DMNModelImpl
 
     @Override
     public InputDataNode getInputByName(String name) {
-        if( name == null ) {
+        if ( name == null ) {
             return null;
         }
-        for( InputDataNode in : this.inputs.values() ) {
-            if( in.getName() != null && name.equals( in.getName() ) ) {
+        for ( InputDataNode in : this.inputs.values() ) {
+            if ( in.getName() != null && name.equals( in.getName() ) ) {
                 return in;
             }
         }
@@ -90,12 +90,11 @@ public class DMNModelImpl
 
     @Override
     public Set<InputDataNode> getInputs() {
-        return this.inputs.values().stream().collect( Collectors.toSet());
+        return this.inputs.values().stream().collect( Collectors.toSet() );
     }
 
     public void addDecision(DecisionNode dn) {
         decisions.put( dn.getId(), dn );
-
     }
 
     @Override
@@ -105,11 +104,11 @@ public class DMNModelImpl
 
     @Override
     public DecisionNode getDecisionByName(String name) {
-        if( name == null ) {
+        if ( name == null ) {
             return null;
         }
-        for( DecisionNode dn : this.decisions.values() ) {
-            if( dn.getName() != null && name.equals( dn.getName() ) ) {
+        for ( DecisionNode dn : this.decisions.values() ) {
+            if ( dn.getName() != null && name.equals( dn.getName() ) ) {
                 return dn;
             }
         }
@@ -118,15 +117,15 @@ public class DMNModelImpl
 
     @Override
     public Set<DecisionNode> getDecisions() {
-        return this.decisions.values().stream().collect( Collectors.toSet());
+        return this.decisions.values().stream().collect( Collectors.toSet() );
     }
 
     @Override
     public Set<InputDataNode> getRequiredInputsForDecisionName(String decisionName) {
         DecisionNode decision = getDecisionByName( decisionName );
-        Set<InputDataNode> inputs = new HashSet<>(  );
-        if( decision != null ) {
-            collectInputsForDecision( decision, inputs );
+        Set<InputDataNode> inputs = new HashSet<>();
+        if ( decision != null ) {
+            collectRequiredInputs( decision.getDependencies().values(), inputs );
         }
         return inputs;
     }
@@ -134,19 +133,68 @@ public class DMNModelImpl
     @Override
     public Set<InputDataNode> getRequiredInputsForDecisionId(String decisionId) {
         DecisionNode decision = getDecisionById( decisionId );
-        Set<InputDataNode> inputs = new HashSet<>(  );
-        if( decision != null ) {
-            collectInputsForDecision( decision, inputs );
+        Set<InputDataNode> inputs = new HashSet<>();
+        if ( decision != null ) {
+            collectRequiredInputs( decision.getDependencies().values(), inputs );
         }
         return inputs;
     }
 
-    private void collectInputsForDecision(DecisionNode decision, Set<InputDataNode> inputs) {
-        decision.getDependencies().values().forEach( dep -> {
-            if( dep instanceof InputDataNode ) {
+    public void addBusinessKnowledgeModel(BusinessKnowledgeModelNode bkm) {
+        bkms.put( bkm.getId(), bkm );
+    }
+
+    @Override
+    public BusinessKnowledgeModelNode getBusinessKnowledgeModelById(String id) {
+        return this.bkms.get( id );
+    }
+
+    @Override
+    public BusinessKnowledgeModelNode getBusinessKnowledgeModelByName(String name) {
+        if ( name == null ) {
+            return null;
+        }
+        for ( BusinessKnowledgeModelNode bkm : this.bkms.values() ) {
+            if ( bkm.getName() != null && name.equals( bkm.getName() ) ) {
+                return bkm;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Set<BusinessKnowledgeModelNode> getBusinessKnowledgeModels() {
+        return this.bkms.values().stream().collect( Collectors.toSet() );
+    }
+
+    @Override
+    public Set<InputDataNode> getRequiredInputsForBusinessKnowledgeModelName(String bkmName) {
+        BusinessKnowledgeModelNode bkm = getBusinessKnowledgeModelByName( bkmName );
+        Set<InputDataNode> inputs = new HashSet<>();
+        if ( bkm != null ) {
+            collectRequiredInputs( bkm.getDependencies().values(), inputs );
+        }
+        return inputs;
+    }
+
+    @Override
+    public Set<InputDataNode> getRequiredInputsForBusinessKnowledgeModelId(String bkmId) {
+        BusinessKnowledgeModelNode bkm = getBusinessKnowledgeModelById( bkmId );
+        Set<InputDataNode> inputs = new HashSet<>();
+        if ( bkm != null ) {
+            collectRequiredInputs( bkm.getDependencies().values(), inputs );
+        }
+        return inputs;
+    }
+
+    private void collectRequiredInputs(Collection<DMNNode> deps, Set<InputDataNode> inputs) {
+        deps.forEach( dep -> {
+            if ( dep instanceof InputDataNode ) {
                 inputs.add( (InputDataNode) dep );
-            } else if( dep instanceof DecisionNode ) {
-                collectInputsForDecision( (DecisionNode) dep, inputs );
+            } else if ( dep instanceof DecisionNode ) {
+                collectRequiredInputs( ((DecisionNode) dep).getDependencies().values(), inputs );
+            } else if ( dep instanceof BusinessKnowledgeModelNode ) {
+                collectRequiredInputs( ((BusinessKnowledgeModelNode) dep).getDependencies().values(), inputs );
             }
         } );
     }
@@ -162,11 +210,11 @@ public class DMNModelImpl
 
     @Override
     public ItemDefNode getItemDefinitionByName(String name) {
-        if( name == null ) {
+        if ( name == null ) {
             return null;
         }
-        for( ItemDefNode in : this.itemDefs.values() ) {
-            if( in.getName() != null && name.equals( in.getName() ) ) {
+        for ( ItemDefNode in : this.itemDefs.values() ) {
+            if ( in.getName() != null && name.equals( in.getName() ) ) {
                 return in;
             }
         }
@@ -175,7 +223,7 @@ public class DMNModelImpl
 
     @Override
     public Set<ItemDefNode> getItemDefinitions() {
-        return this.itemDefs.values().stream().collect( Collectors.toSet());
+        return this.itemDefs.values().stream().collect( Collectors.toSet() );
     }
 
     public Map<QName, DMNType> getTypeRegistry() {
@@ -195,7 +243,7 @@ public class DMNModelImpl
     @Override
     public List<DMNMessage> getMessages(DMNMessage.Severity... sevs) {
         List<DMNMessage.Severity> severities = Arrays.asList( sevs );
-        return messages.stream().filter( m -> severities.contains( m.getSeverity() ) ).collect( Collectors.toList());
+        return messages.stream().filter( m -> severities.contains( m.getSeverity() ) ).collect( Collectors.toList() );
     }
 
     @Override
@@ -203,23 +251,22 @@ public class DMNModelImpl
         return messages.stream().anyMatch( m -> DMNMessage.Severity.ERROR.equals( m.getSeverity() ) );
     }
 
-    public void addMessage( DMNMessage msg ) {
+    public void addMessage(DMNMessage msg) {
         this.messages.add( msg );
     }
 
-    public DMNMessage addMessage( DMNMessage.Severity severity, String message, String sourceId ) {
+    public DMNMessage addMessage(DMNMessage.Severity severity, String message, String sourceId) {
         DMNMessageImpl msg = new DMNMessageImpl( severity, message, sourceId );
         this.messages.add( msg );
         return msg;
     }
 
-    public void addMessage( DMNMessage.Severity severity, String message, String sourceId, Throwable exception ) {
+    public void addMessage(DMNMessage.Severity severity, String message, String sourceId, Throwable exception) {
         this.messages.add( new DMNMessageImpl( severity, message, sourceId, exception ) );
     }
 
-    public void addMessage( DMNMessage.Severity severity, String message, String sourceId, FEELEvent feelEvent ) {
+    public void addMessage(DMNMessage.Severity severity, String message, String sourceId, FEELEvent feelEvent) {
         this.messages.add( new DMNMessageImpl( severity, message, sourceId, feelEvent ) );
     }
-
 
 }

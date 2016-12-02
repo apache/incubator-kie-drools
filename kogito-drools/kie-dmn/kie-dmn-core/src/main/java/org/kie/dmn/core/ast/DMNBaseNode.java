@@ -16,11 +16,21 @@
 
 package org.kie.dmn.core.ast;
 
+import org.kie.dmn.feel.model.v1_1.Decision;
+import org.kie.dmn.feel.model.v1_1.InformationRequirement;
 import org.kie.dmn.feel.model.v1_1.NamedElement;
 
-public abstract class DMNBaseNode {
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+public abstract class DMNBaseNode
+        implements DMNNode {
 
     private NamedElement source;
+    // need to retain dependencies order, so need to use LinkedHashMap
+    private Map<String, DMNNode> dependencies = new LinkedHashMap<>();
 
     public DMNBaseNode() {
     }
@@ -35,6 +45,26 @@ public abstract class DMNBaseNode {
 
     public String getName() {
         return source != null ? source.getName() : null;
+    }
+
+    public Map<String, DMNNode> getDependencies() {
+        return dependencies;
+    }
+
+    public void setDependencies(Map<String, DMNNode> dependencies) {
+        this.dependencies = dependencies;
+    }
+
+    public void addDependency(String name, DMNNode dependency) {
+        this.dependencies.put( name, dependency );
+    }
+
+    public List<InformationRequirement> getInformationRequirement() {
+        if ( source instanceof Decision ) {
+            return ((Decision) source).getInformationRequirement();
+        } else {
+            return Collections.emptyList();
+        }
     }
 
 }

@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.api;
 
+import org.kie.dmn.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.core.ast.InputDataNode;
 import org.kie.dmn.core.ast.ItemDefNode;
@@ -48,7 +49,17 @@ public interface DMNModel {
 
     Set<InputDataNode> getRequiredInputsForDecisionName(String decisionName );
 
-    Set<InputDataNode> getRequiredInputsForDecisionId( String decisionName );
+    Set<InputDataNode> getRequiredInputsForDecisionId( String decisionId );
+
+    BusinessKnowledgeModelNode getBusinessKnowledgeModelById(String id);
+
+    BusinessKnowledgeModelNode getBusinessKnowledgeModelByName(String name);
+
+    Set<BusinessKnowledgeModelNode> getBusinessKnowledgeModels();
+
+    Set<InputDataNode> getRequiredInputsForBusinessKnowledgeModelName(String bkmName );
+
+    Set<InputDataNode> getRequiredInputsForBusinessKnowledgeModelId( String bkmId );
 
     ItemDefNode getItemDefinitionById(String id);
 

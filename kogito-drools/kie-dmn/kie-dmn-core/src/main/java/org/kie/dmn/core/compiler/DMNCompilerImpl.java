@@ -22,9 +22,7 @@ import org.kie.dmn.core.api.DMNCompiler;
 import org.kie.dmn.core.api.DMNMessage;
 import org.kie.dmn.core.api.DMNModel;
 import org.kie.dmn.core.api.DMNType;
-import org.kie.dmn.core.ast.DecisionNode;
-import org.kie.dmn.core.ast.InputDataNode;
-import org.kie.dmn.core.ast.ItemDefNode;
+import org.kie.dmn.core.ast.*;
 import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.FeelTypeImpl;
@@ -117,12 +115,31 @@ public class DMNCompilerImpl implements DMNCompiler {
                 }
                 DecisionNode dn = new DecisionNode( decision, type );
                 model.addDecision( dn );
+            } else if ( e instanceof BusinessKnowledgeModel ) {
+                BusinessKnowledgeModel bkm = (BusinessKnowledgeModel) e;
+                DMNType type = null;
+                if( bkm.getVariable() != null && bkm.getVariable().getTypeRef() != null ) {
+                    type = resolveSimpleTypeRef( model, bkm, bkm.getVariable().getTypeRef() );
+                } else {
+                    // TODO: need to handle cases where the variable is not defined or does not have a type;
+                    // for now the call bellow will return type UNKNOWN
+                    type = resolveSimpleTypeRef( model, bkm, null );
+                }
+                BusinessKnowledgeModelNode bkmn = new BusinessKnowledgeModelNode( bkm, type );
+                model.addBusinessKnowledgeModel( bkmn );
+            } else {
+                model.addMessage( DMNMessage.Severity.ERROR, "Element "+e.getClass().getSimpleName()+" with id='"+e.getId()+"' not supported.", e.getId() );
             }
         }
 
+        for ( BusinessKnowledgeModelNode bkm : model.getBusinessKnowledgeModels() ) {
+            FunctionDefinition funcDef = bkm.getBusinessKnowledModel().getEncapsulatedLogic();
+            DMNExpressionEvaluator exprEvaluator = compileExpression( model, bkm, funcDef );
+            bkm.setEvaluator( exprEvaluator );
+        }
         for ( DecisionNode d : model.getDecisions() ) {
             linkDecisionRequirements( model, d );
-            DecisionNode.DecisionEvaluator evaluator = compileDecision( model, d );
+            DMNExpressionEvaluator evaluator = compileExpression( model, d, d.getDecision().getExpression() );
             d.setEvaluator( evaluator );
         }
     }
@@ -131,7 +148,7 @@ public class DMNCompilerImpl implements DMNCompiler {
         return FEELParser.isVariableNameValid( variableName );
     }
 
-    private void linkDecisionRequirements(DMNModelImpl model, DecisionNode decision) {
+    private void linkDecisionRequirements(DMNModelImpl model, DecisionNode decision ) {
         for ( InformationRequirement ir : decision.getDecision().getInformationRequirement() ) {
             if ( ir.getRequiredInput() != null ) {
                 String id = getId( ir.getRequiredInput() );
@@ -212,18 +229,16 @@ public class DMNCompilerImpl implements DMNCompiler {
         return new FeelTypeImpl( model.getName(), model.getId(), BuiltInType.UNKNOWN, null );
     }
 
-    private DecisionNode.DecisionEvaluator compileDecision(DMNModelImpl model, DecisionNode decisionNode) {
-        Decision decision = decisionNode.getDecision();
+    private DMNExpressionEvaluator compileExpression(DMNModelImpl model, DMNBaseNode node, Expression expression) {
         FEEL feel = FEEL.newInstance();
-        Expression expression = decision.getExpression();
         if( expression instanceof LiteralExpression ) {
             CompilerContext ctx = feel.newCompilerContext();
-            decisionNode.getDependencies().forEach( (name, node) -> {
+            node.getDependencies().forEach( (name, depNode) -> {
                 // TODO: need to properly resolve types here
                 ctx.addInputVariableType( name, BuiltInType.UNKNOWN );
             } );
             CompiledExpression compiledExpression = feel.compile( ((LiteralExpression) expression).getText(), ctx );
-            DecisionNode.LiteralExpressionFEELEvaluator evaluator = new DecisionNode.LiteralExpressionFEELEvaluator( compiledExpression );
+            DMNLiteralExpressionEvaluator evaluator = new DMNLiteralExpressionEvaluator( compiledExpression );
             return evaluator;
         } else if( expression instanceof DecisionTable ) {
             DecisionTable dt = (DecisionTable) expression;
@@ -256,18 +271,25 @@ public class DMNCompilerImpl implements DMNCompiler {
             }
             String policy = dt.getHitPolicy().value() + (dt.getAggregation() != null ? " " + dt.getAggregation().value() : "");
             HitPolicy hp = HitPolicy.fromString( policy );
-            List<String> parameterNames = new ArrayList<>( decisionNode.getDependencies().keySet() );
-            DecisionTableImpl dti = new DecisionTableImpl( decision.getName(), parameterNames, inputs, outputs, rules, hp );
+            List<String> parameterNames = new ArrayList<>( node.getDependencies().keySet() );
+            DecisionTableImpl dti = new DecisionTableImpl( node.getName(), parameterNames, inputs, outputs, rules, hp );
             DTInvokerFunction dtf = new DTInvokerFunction( dti );
-            DecisionNode.DTExpressionEvaluator dtee = new DecisionNode.DTExpressionEvaluator( decision, dtf );
+            DMNDTExpressionEvaluator dtee = new DMNDTExpressionEvaluator( node, dtf );
             return dtee;
-//        } else if( expression instanceof Context ) {
-//
+        } else if( expression instanceof FunctionDefinition ) {
+            FunctionDefinition funcDef = (FunctionDefinition) expression;
+            DMNExpressionEvaluatorInvokerFunction func = new DMNExpressionEvaluatorInvokerFunction( node.getName(), funcDef );
+            for( InformationItem p : funcDef.getFormalParameter() ) {
+                func.addParameter( p.getName(), resolveSimpleTypeRef( model, p, p.getTypeRef() ) );
+            }
+            DMNExpressionEvaluator eval = compileExpression( model, node, funcDef.getExpression() );
+            func.setEvaluator( eval );
+            return func;
         } else {
             if( expression != null ) {
-                model.addMessage( DMNMessage.Severity.ERROR, "Expression type '"+expression.getClass().getSimpleName()+"' not supported in decision '"+decisionNode.getId()+"'", decisionNode.getId() );
+                model.addMessage( DMNMessage.Severity.ERROR, "Expression type '"+expression.getClass().getSimpleName()+"' not supported in node '"+node.getId()+"'", node.getId() );
             } else {
-                model.addMessage( DMNMessage.Severity.ERROR, "No expression defined for decision '"+decisionNode.getId()+"'", decisionNode.getId() );
+                model.addMessage( DMNMessage.Severity.ERROR, "No expression defined for node '"+node.getId()+"'", node.getId() );
             }
         }
         return null;
