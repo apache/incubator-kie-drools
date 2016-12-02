@@ -16,8 +16,10 @@
 
 package org.kie.dmn.core.ast;
 
+import org.kie.dmn.core.api.DMNContext;
 import org.kie.dmn.core.api.DMNType;
 import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
+import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.model.v1_1.FunctionDefinition;
@@ -66,7 +68,7 @@ public class DMNExpressionEvaluatorInvokerFunction implements DMNExpressionEvalu
     public EvaluatorResult evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
         // when this evaluator is executed, it should return a "FEEL function" to register in the context
         DMNExpressionEvaluatorFunction function = new DMNExpressionEvaluatorFunction( name, parameters, evaluator, eventManager, result );
-        return new EvaluatorResult( this, ResultType.SUCCESS );
+        return new EvaluatorResult( function, ResultType.SUCCESS );
     }
 
     private static class FormalParameter {
@@ -94,18 +96,24 @@ public class DMNExpressionEvaluatorInvokerFunction implements DMNExpressionEvalu
         }
 
         public Object apply(EvaluationContext ctx, Object[] params) {
+            DMNContext previousContext = resultContext.getContext();
             try {
-                ctx.enterFrame();
+                DMNContextImpl dmnContext = new DMNContextImpl();
                 for( int i = 0; i < params.length; i++ ) {
-                    ctx.setValue( parameters.get( i ).name, params[i] );
+                    dmnContext.set( parameters.get( i ).name, params[i] );
                 }
-                Object result = evaluator.evaluate( eventManager, resultContext );
-                return result;
+                resultContext.setContext( dmnContext );
+                EvaluatorResult result = evaluator.evaluate( eventManager, resultContext );
+                if( result.getResultType() == ResultType.SUCCESS ) {
+                    return result.getResult();
+                }
+                // TODO: are errors reported in the resultContext already or do we need additional treatment?
+                return null;
             } catch ( Exception e ) {
                 logger.error( "Error invoking expression for node '" + getName() + "'.", e );
                 throw e;
             } finally {
-                ctx.exitFrame();
+                resultContext.setContext( previousContext );
             }
         }
 

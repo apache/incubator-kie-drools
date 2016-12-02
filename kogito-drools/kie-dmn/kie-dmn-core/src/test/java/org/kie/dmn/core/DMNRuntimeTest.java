@@ -296,16 +296,17 @@ public class DMNRuntimeTest {
         assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false) );
 
         Map<String, Object> loan = new HashMap<>(  );
-        loan.put( "amount", 600000 );
-        loan.put( "rate", 0.0375 );
-        loan.put( "term", 360 );
+        loan.put( "amount", BigDecimal.valueOf( 600000 ) );
+        loan.put( "rate", new BigDecimal( "0.0375" ) );
+        loan.put( "term", BigDecimal.valueOf( 360 ) );
         DMNContext context = DMNFactory.newContext();
         context.set( "fee", 100 );
         context.set( "Loan", loan );
 
         DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         assertThat( dmnResult.hasErrors(), is( false ) );
-        assertThat( dmnResult.getContext().get( "MonthlyPayment" ), is( new BigDecimal( "2878.69354943277" ) ) );
+        assertThat( ((BigDecimal) dmnResult.getContext().get( "MonthlyPayment" )).setScale( 8, BigDecimal.ROUND_DOWN ),
+                    is( new BigDecimal( "2878.69354943277" ).setScale( 8, BigDecimal.ROUND_DOWN ) ) );
     }
 
 }
