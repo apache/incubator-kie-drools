@@ -28,7 +28,7 @@ public class DMNContextImpl
     public DMNContextImpl() {
     }
 
-    protected DMNContextImpl(Map<String, Object> entries) {
+    public DMNContextImpl(Map<String, Object> entries) {
         this.entries = entries;
     }
 

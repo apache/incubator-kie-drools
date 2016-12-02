@@ -22,6 +22,7 @@ import org.kie.api.runtime.KieRuntime;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.api.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
+import org.kie.dmn.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.core.ast.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNNode;
 import org.kie.dmn.core.ast.DecisionNode;
@@ -64,6 +65,7 @@ public class DMNRuntimeImpl
     @Override
     public DMNResult evaluateAll(DMNModel model, DMNContext context) {
         DMNResultImpl result = createResult( context );
+        evaluateAllBKM( model, context, result );
         for( DecisionNode decision : model.getDecisions() ) {
             evaluateDecision( context, result, decision );
         }
@@ -75,6 +77,7 @@ public class DMNRuntimeImpl
         DMNResultImpl result = createResult( context );
         DecisionNode decision = model.getDecisionByName( decisionName );
         if( decision != null ) {
+            evaluateAllBKM( model, context, result );
             evaluateDecision( context, result, decision );
         } else {
             result.addMessage( DMNMessage.Severity.ERROR, "Decision not found for name '"+decisionName+"'", null );
@@ -87,6 +90,7 @@ public class DMNRuntimeImpl
         DMNResultImpl result = createResult( context );
         DecisionNode decision = model.getDecisionById( decisionId );
         if( decision != null ) {
+            evaluateAllBKM( model, context, result );
             evaluateDecision( context, result, decision );
         } else {
             result.addMessage( DMNMessage.Severity.ERROR, "Decision not found for id '"+decisionId+"'", decisionId );
@@ -113,6 +117,35 @@ public class DMNRuntimeImpl
         DMNResultImpl result = new DMNResultImpl();
         result.setContext( context.clone() );
         return result;
+    }
+
+    private void evaluateAllBKM(DMNModel model, DMNContext context, DMNResultImpl result) {
+        for( BusinessKnowledgeModelNode bkm : model.getBusinessKnowledgeModels() ) {
+            evaluateBKM( context, result, bkm );
+        }
+    }
+
+    private void evaluateBKM(DMNContext context, DMNResultImpl result, BusinessKnowledgeModelNode bkm) {
+        if( result.getContext().isDefined( bkm.getName() ) ) {
+            // already resolved
+            // TODO: do we need to check if the defined variable is a function as it should?
+            return;
+        }
+        // TODO: do we need to check/resolve dependencies?
+        if( bkm.getEvaluator() == null ) {
+            DMNMessage msg = result.addMessage( DMNMessage.Severity.WARN,
+                                                "Missing expression for Business Knowledge Model node '"+bkm.getName()+"'. Skipping evaluation.",
+                                                bkm.getId() );
+            return;
+        }
+        try {
+            DMNExpressionEvaluator.EvaluatorResult er = bkm.getEvaluator().evaluate( eventManager, result );
+            if( er.getResultType() == DMNExpressionEvaluator.ResultType.SUCCESS ) {
+                result.getContext().set( bkm.getBusinessKnowledModel().getVariable().getName(), er.getResult() );
+            }
+        } catch( Throwable t ) {
+            result.addMessage( DMNMessage.Severity.ERROR, "Error evaluating Business Knowledge Model node '"+bkm.getName()+ "': "+t.getMessage(), bkm.getId(), t );
+        }
     }
 
     private boolean evaluateDecision(DMNContext context, DMNResultImpl result, DecisionNode decision) {
