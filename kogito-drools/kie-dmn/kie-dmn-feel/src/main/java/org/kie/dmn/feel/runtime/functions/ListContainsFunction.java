@@ -18,6 +18,11 @@ package org.kie.dmn.feel.runtime.functions;
 
 import java.util.List;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+
 public class ListContainsFunction
         extends BaseFEELFunction {
 
@@ -25,11 +30,11 @@ public class ListContainsFunction
         super( "list contains" );
     }
 
-    public Boolean apply(@ParameterName("list") List list, @ParameterName("element") Object element) {
+    public FEELFnResult<Boolean> apply(@ParameterName("list") List list, @ParameterName("element") Object element) {
         if ( list == null ) {
-            return null;
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         } else {
-            return list.contains( element );
+            return FEELFnResult.ofResult( list.contains( element ) );
         }
     }
 

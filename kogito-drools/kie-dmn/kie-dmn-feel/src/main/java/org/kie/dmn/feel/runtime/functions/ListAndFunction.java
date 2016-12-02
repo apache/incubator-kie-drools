@@ -19,6 +19,11 @@ package org.kie.dmn.feel.runtime.functions;
 import java.util.Arrays;
 import java.util.List;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+
 public class ListAndFunction
         extends BaseFEELFunction {
 
@@ -26,7 +31,7 @@ public class ListAndFunction
         super( "list and" );
     }
 
-    public Boolean apply(@ParameterName( "list" ) List list) {
+    public FEELFnResult<Boolean> apply(@ParameterName( "list" ) List list) {
         boolean result = true;
         for ( Object element : list ) {
             if ( element instanceof Boolean ) {
@@ -35,17 +40,22 @@ public class ListAndFunction
                     break;
                 }
             } else {
-                return null;
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "an element in the list is not a Boolean"));
             }
         }
-        return result;
+        return FEELFnResult.ofResult( result );
     }
 
-    public Boolean apply(@ParameterName( "list" ) Boolean single) {
-        return single;
+    public FEELFnResult<Boolean> apply(@ParameterName( "list" ) Boolean single) {
+        return FEELFnResult.ofResult( single );
     }
 
-    public Boolean apply(@ParameterName( "b" ) Object[] list) {
+    public FEELFnResult<Boolean> apply(@ParameterName( "b" ) Object[] list) {
+        if ( list == null ) { 
+            // Arrays.asList does not accept null as parameter
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "b", "cannot be null"));
+        }
+        
         return apply( Arrays.asList( list ) );
     }
 }

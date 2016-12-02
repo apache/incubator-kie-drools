@@ -21,6 +21,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+
 public class DateTimeFunction
         extends BaseFEELFunction {
 
@@ -28,25 +33,41 @@ public class DateTimeFunction
         super( "date and time" );
     }
 
-    public TemporalAccessor apply(@ParameterName( "from" ) String val) {
-        if ( val != null ) {
-            try {
-                return DateTimeFormatter.ISO_DATE_TIME.parseBest( val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from );
-            } catch ( Exception e ) {
-                // no luck, return null
-            }
+    public FEELFnResult<TemporalAccessor> apply(@ParameterName( "from" ) String val) {
+        if ( val == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
-        return null;
+        
+        try {
+            return FEELFnResult.ofResult( DateTimeFormatter.ISO_DATE_TIME.parseBest( val, ZonedDateTime::from, OffsetDateTime::from, LocalDateTime::from ) );
+        } catch ( Exception e ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "date-parsing exception", e));
+        }
     }
 
-    public TemporalAccessor apply(@ParameterName( "date" ) Temporal date, @ParameterName( "time" ) Temporal time) {
-        if ( date != null && time != null ) {
-            if( date instanceof LocalDate && time instanceof LocalTime ) {
-                return LocalDateTime.of( (LocalDate) date, (LocalTime) time );
-            } else if( date instanceof LocalDate && time instanceof OffsetTime ) {
-                return ZonedDateTime.of( (LocalDate) date, LocalTime.from( time ), ZoneOffset.from( time ) );
-            }
+    public FEELFnResult<TemporalAccessor> apply(@ParameterName( "date" ) Temporal date, @ParameterName( "time" ) Temporal time) {
+        if ( date == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "cannot be null"));
         }
-        return null;
+        if ( !(date instanceof LocalDate) ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "must be an instance of LocalDate"));
+        }
+        if ( time == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "cannot be null"));
+        }
+        if ( !(time instanceof LocalTime || time instanceof OffsetTime) ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time", "must be an instance of LocalTime or OffsetTime"));
+        }
+        
+        try {
+            if( date instanceof LocalDate && time instanceof LocalTime ) {
+                return FEELFnResult.ofResult( LocalDateTime.of( (LocalDate) date, (LocalTime) time ) );
+            } else if( date instanceof LocalDate && time instanceof OffsetTime ) {
+                return FEELFnResult.ofResult( ZonedDateTime.of( (LocalDate) date, LocalTime.from( time ), ZoneOffset.from( time ) ) );
+            }
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot apply function for the input parameters"));
+        } catch (DateTimeException e) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
+        }
     }
 }

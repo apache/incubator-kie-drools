@@ -18,6 +18,12 @@ package org.kie.dmn.feel.runtime.functions;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.ast.BaseNode;
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.FEELEventBase;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,24 +49,25 @@ public class CustomFEELFunction
         return Arrays.asList( parameters );
     }
 
-    public Object apply(EvaluationContext ctx, Object[] params ) {
+    public FEELFnResult<Object> apply(EvaluationContext ctx, Object[] params ) {
         if( params.length != parameters.size() ) {
-            logger.error( "Illegal invocation of function. Expecting " + getSignature() + " but got " + getName() + "( " + Arrays.asList(params)+" )" );
-            return null;
+            return FEELFnResult.ofError(new InvalidInputEvent(Severity.ERROR, "Illegal invocation of function", getName(), getName() + "( " + Arrays.asList(params)+" )", getSignature()));
         }
+        
+        FEELEvent capturedException = null;
         try {
             ctx.enterFrame();
             for ( int i = 0; i < parameters.size(); i++ ) {
                 ctx.setValue( parameters.get( i ), params[i] );
             }
             Object result = this.body.evaluate( ctx );
-            return result;
+            return FEELFnResult.ofResult( result );
         } catch( Exception e ) {
-            logger.error( "Error invoking function " + getSignature() + ".", e );
+            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking function", new RuntimeException("Error invoking function " + getSignature() + ".", e));
         } finally {
             ctx.exitFrame();
         }
-        return null;
+        return FEELFnResult.ofError( capturedException );
     }
 
     private String getSignature() {

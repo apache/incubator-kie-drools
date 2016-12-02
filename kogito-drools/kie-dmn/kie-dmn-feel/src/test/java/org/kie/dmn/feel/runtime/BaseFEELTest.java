@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.dmn.feel.FEEL;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 
 @RunWith(Parameterized.class)
 public abstract class BaseFEELTest {
@@ -39,6 +40,7 @@ public abstract class BaseFEELTest {
 
     @Test
     public void testExpression() {
+        feel.addListener( (evt) -> { if (evt.getSeverity() == Severity.ERROR) System.err.println(evt); } );
         assertResult( expression, result );
     }
 

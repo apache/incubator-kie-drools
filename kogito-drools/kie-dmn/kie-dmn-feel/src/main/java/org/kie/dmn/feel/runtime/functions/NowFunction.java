@@ -19,6 +19,9 @@ package org.kie.dmn.feel.runtime.functions;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAccessor;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+
 public class NowFunction
         extends BaseFEELFunction {
 
@@ -26,8 +29,8 @@ public class NowFunction
         super( "now" );
     }
 
-    public TemporalAccessor apply() {
-        return ZonedDateTime.now();
+    public FEELFnResult<TemporalAccessor> apply() {
+        return FEELFnResult.ofResult( ZonedDateTime.now() );
     }
 
 }

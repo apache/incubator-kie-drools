@@ -20,6 +20,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+
 public class InsertBeforeFunction
         extends BaseFEELFunction {
 
@@ -27,10 +32,20 @@ public class InsertBeforeFunction
         super( "insert before" );
     }
 
-    public List apply(@ParameterName( "list" ) List list, @ParameterName( "position" ) BigDecimal position, @ParameterName( "newItem" ) Object newItem) {
-        if ( list == null || position == null || position.intValue() == 0 || position.abs().intValue() > list.size() ) {
-            return null;
+    public FEELFnResult<List> apply(@ParameterName( "list" ) List list, @ParameterName( "position" ) BigDecimal position, @ParameterName( "newItem" ) Object newItem) {
+        if ( list == null ) { 
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
+        if ( position == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "cannot be null"));
+        }
+        if ( position.intValue() == 0 ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "cannot be zero (parameter 'position' is 1-based)"));
+        }
+        if ( position.abs().intValue() > list.size() ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "position", "inconsistent with 'list' size"));
+        }
+
         // spec requires us to return a new list
         List result = new ArrayList( list );
         if( position.intValue() > 0 ) {
@@ -38,6 +53,6 @@ public class InsertBeforeFunction
         } else {
             result.add( list.size()+position.intValue(), newItem );
         }
-        return result;
+        return FEELFnResult.ofResult( result );
     }
 }

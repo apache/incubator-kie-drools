@@ -83,11 +83,13 @@ public class FeelTypeImpl
 
     @Override
     public Object parseValue(String value) {
+        // TODO we should add the EventListener here somehow?
         return feelType.fromString( value );
     }
 
     @Override
     public String toString(Object value) {
+        // TODO we should add the EventListener here somehow?
         return feelType.toString( value );
     }
 

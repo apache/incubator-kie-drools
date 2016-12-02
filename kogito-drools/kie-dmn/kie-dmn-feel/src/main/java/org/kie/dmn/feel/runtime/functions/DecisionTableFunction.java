@@ -101,6 +101,7 @@ public class DecisionTableFunction
                 .mapToObj( index -> DecisionTableFunction.toDecisionRule( index, ruleList.get( index ), inputExpressions.size() ) )
                 .collect( Collectors.toList() );
 
+        // TODO is there a way to avoid UUID and get from _evaluation_ ctx the name of the wrapping context? 
         DecisionTableImpl dti = new DecisionTableImpl( UUID.randomUUID().toString(), inputExpressions, inputs, outputClauses, decisionRules, HitPolicy.fromString( hitPolicy ) );
         return new DTInvokerFunction( dti );
     }

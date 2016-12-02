@@ -20,6 +20,13 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
+
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.util.EvalHelper;
 
 public class MeanFunction
         extends BaseFEELFunction {
@@ -30,22 +37,47 @@ public class MeanFunction
         super( "mean" );
     }
 
-    public BigDecimal apply(@ParameterName( "list" ) List list) {
-        BigDecimal s = sum.apply( list );
-        return s != null ? s.divide( BigDecimal.valueOf( list.size() ), MathContext.DECIMAL128 ) : null;
+    public FEELFnResult<BigDecimal> apply(@ParameterName( "list" ) List list) {
+        FEELFnResult<BigDecimal> s = sum.apply( list );
+        
+        Function<FEELEvent, FEELFnResult<BigDecimal>> ifLeft = (event) -> {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "unable to sum the elements which is required to calculate the mean"));
+        };
+        
+        Function<BigDecimal, FEELFnResult<BigDecimal>> ifRight = (sum) -> {
+            try {
+                return FEELFnResult.ofResult( sum.divide( BigDecimal.valueOf( list.size() ), MathContext.DECIMAL128 ) );
+            } catch (Exception e) {
+                return FEELFnResult.ofError( new InvalidParametersEvent(Severity.ERROR, "unable to perform division to calculate the mean", e) );
+            }
+        };
+        
+        return s.cata(ifLeft, ifRight);
     }
 
-    public BigDecimal apply(@ParameterName( "list" ) Number single) {
+    public FEELFnResult<BigDecimal> apply(@ParameterName( "list" ) Number single) {
+        if ( single == null ) { 
+            // Arrays.asList does not accept null as parameter
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "the single value list cannot be null"));
+        }
+        
         if( single instanceof BigDecimal ) {
-            return (BigDecimal) single;
-        } else if( single != null ) {
-            return new BigDecimal( ((Number)single).toString() );
+            return FEELFnResult.ofResult((BigDecimal) single );
+        } 
+        BigDecimal result = EvalHelper.getBigDecimalOrNull( single );
+        if ( result != null ) {
+            return FEELFnResult.ofResult( result );
         } else {
-            return null;
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "single element in list not a number"));
         }
     }
 
-    public BigDecimal apply(@ParameterName( "n" ) Object[] list) {
+    public FEELFnResult<BigDecimal> apply(@ParameterName( "n" ) Object[] list) {
+        if ( list == null ) { 
+            // Arrays.asList does not accept null as parameter
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "n", "cannot be null"));
+        }
+        
         return apply( Arrays.asList( list ) );
     }
 }

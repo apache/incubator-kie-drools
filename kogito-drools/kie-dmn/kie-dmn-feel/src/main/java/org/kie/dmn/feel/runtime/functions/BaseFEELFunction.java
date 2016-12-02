@@ -19,6 +19,13 @@ package org.kie.dmn.feel.runtime.functions;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.events.FEELEventBase;
+import org.kie.dmn.feel.util.Either;
+import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.lang.impl.NamedParameter;
 import org.kie.dmn.feel.lang.types.FunctionSymbol;
 import org.slf4j.Logger;
@@ -26,11 +33,16 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.math.BigDecimal;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public abstract class BaseFEELFunction implements FEELFunction {
@@ -39,7 +51,7 @@ public abstract class BaseFEELFunction implements FEELFunction {
 
     private String name;
     private Symbol symbol;
-
+    
     public BaseFEELFunction( String name ) {
         this.name = name;
         this.symbol = new FunctionSymbol( name, this );
@@ -77,10 +89,38 @@ public abstract class BaseFEELFunction implements FEELFunction {
 
                 if( cm != null ) {
                     Object result = cm.apply.invoke( this, cm.actualParams );
+                    
+                    if (result instanceof Either) {
+                        @SuppressWarnings("unchecked")
+                        Either<FEELEvent, Object> either = (Either<FEELEvent, Object>) result;
+                        
+                        Object eitherResult = either.cata((left) -> { 
+                            FEELEventListenersManager.notifyListeners(ctx.getEventsManager(), () -> {
+                                if (left instanceof InvalidParametersEvent ) {
+                                    InvalidParametersEvent invalidParametersEvent = (InvalidParametersEvent) left;
+                                    invalidParametersEvent.setNodeName(getName());
+                                    invalidParametersEvent.setActualParameters(
+                                            Stream.of( cm.apply.getParameters()).map(p->p.getAnnotation(ParameterName.class).value()).collect(Collectors.toList()), 
+                                            Arrays.asList( cm.actualParams ) 
+                                            );
+                                }
+                                return left;
+                            }
+                            );
+                            return null;
+                        }, Function.identity() );
+                        
+                        return eitherResult;
+                    }
+                    
                     return result;
                 } else {
                     String ps = Arrays.toString( classes );
                     logger.error( "Unable to find function '" + getName() + "( " + ps.substring( 1, ps.length()-1 ) +" )'" );
+                    FEELEventListenersManager.notifyListeners(ctx.getEventsManager(), () -> {
+                            return new FEELEventBase(Severity.ERROR, "Unable to find function '" + getName() + "( " + ps.substring( 1, ps.length()-1 ) +" )'", null);
+                        }
+                    );
                 }
             } else {
                 Object result = null;
@@ -101,11 +141,42 @@ public abstract class BaseFEELFunction implements FEELFunction {
                     result = ((DTInvokerFunction)this).apply( ctx, params );
                 } else {
                     logger.error( "Unable to find function '" + toString() +"'" );
+                    FEELEventListenersManager.notifyListeners(ctx.getEventsManager(), () -> {
+                            return new FEELEventBase(Severity.ERROR, "Unable to find function '" + toString() +"'", null);
+                        }
+                    );
                 }
+                
+                if (result instanceof Either) {
+                    @SuppressWarnings("unchecked")
+                    Either<FEELEvent, Object> either = (Either<FEELEvent, Object>) result;
+                    
+                    final Object[] usedParams = params;
+                    
+                    Object eitherResult = either.cata((left) -> { 
+                        FEELEventListenersManager.notifyListeners(ctx.getEventsManager(), () -> {
+                            if (left instanceof InvalidParametersEvent ) {
+                                InvalidParametersEvent invalidParametersEvent = (InvalidParametersEvent) left;
+                                invalidParametersEvent.setNodeName(getName());
+                                invalidParametersEvent.setActualParameters( IntStream.of(0, usedParams.length).mapToObj(i->"arg"+i).collect(Collectors.toList()), Arrays.asList( usedParams ) );
+                            }
+                            return left;
+                        }
+                        );
+                        return null;
+                    }, Function.identity() );
+                    
+                    return normalizeResult(eitherResult);
+                }
+                
                 return normalizeResult( result );
             }
         } catch ( Exception e ) {
             logger.error( "Error trying to call function "+getName()+".", e );
+            FEELEventListenersManager.notifyListeners(ctx.getEventsManager(), () -> {
+                    return new FEELEventBase(Severity.ERROR, "Error trying to call function "+getName()+".", e);
+                }
+            );
         }
         return null;
     }
@@ -203,7 +274,7 @@ public abstract class BaseFEELFunction implements FEELFunction {
 
     private Object normalizeResult(Object result) {
         // this is to normalize types returned by external functions
-        return result != null && result instanceof Number && !(result instanceof BigDecimal) ? new BigDecimal( result.toString() ) : result;
+        return result != null && result instanceof Number && !(result instanceof BigDecimal) ? EvalHelper.getBigDecimalOrNull( result.toString() ) : result;
     }
 
     protected boolean isCustomFunction() {

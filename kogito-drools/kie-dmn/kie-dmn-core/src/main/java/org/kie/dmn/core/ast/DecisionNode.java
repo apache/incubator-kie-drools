@@ -31,6 +31,7 @@ import org.kie.dmn.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.FEELEventListener;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class DecisionNode extends DMNBaseNode implements DMNNode {
 
@@ -147,7 +148,7 @@ public class DecisionNode extends DMNBaseNode implements DMNNode {
                     params[i] = feel.evaluate( paramNames.get( i ), result.getContext().getAll() );
                     ctx.setValue( paramNames.get( i ), params[i] );
                 }
-                Object dtr = dt.apply( ctx, params );
+                Object dtr = dt.apply( ctx, params ).cata(e -> { events.add(e); return null; }, Function.identity());
                 r = processEvents( events, eventManager, result );
                 return new EvaluatorResult( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
             } finally {

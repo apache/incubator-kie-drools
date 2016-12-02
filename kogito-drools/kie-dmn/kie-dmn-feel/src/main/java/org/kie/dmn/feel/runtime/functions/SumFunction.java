@@ -20,6 +20,12 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.util.EvalHelper;
+
 public class SumFunction
         extends BaseFEELFunction {
 
@@ -27,31 +33,43 @@ public class SumFunction
         super( "sum" );
     }
 
-    public BigDecimal apply(@ParameterName("list") List list) {
+    public FEELFnResult<BigDecimal> apply(@ParameterName("list") List list) {
         BigDecimal sum = BigDecimal.ZERO;
         for ( Object element : list ) {
             if ( element instanceof BigDecimal ) {
                 sum = sum.add( (BigDecimal) element );
             } else if ( element instanceof Number ) {
-                sum = sum.add( new BigDecimal( ((Number) element).toString() ) );
+                sum = sum.add( EvalHelper.getBigDecimalOrNull( element ) );
             } else {
-                return null;
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "an element in the list is not suitable for the sum"));
             }
         }
-        return sum;
+        return FEELFnResult.ofResult( sum );
     }
 
-    public BigDecimal apply(@ParameterName("list") Number single) {
-        if ( single instanceof BigDecimal ) {
-            return (BigDecimal) single;
-        } else if ( single != null ) {
-            return new BigDecimal( single.toString() );
+    public FEELFnResult<BigDecimal> apply(@ParameterName("list") Number single) {
+        if ( single == null ) { 
+            // Arrays.asList does not accept null as parameter
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "the single value list cannot be null"));
+        }
+        
+        if( single instanceof BigDecimal ) {
+            return FEELFnResult.ofResult((BigDecimal) single );
+        } 
+        BigDecimal result = EvalHelper.getBigDecimalOrNull( single );
+        if ( result != null ) {
+            return FEELFnResult.ofResult( result );
         } else {
-            return null;
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "single element in list not a number"));
         }
     }
 
-    public BigDecimal apply(@ParameterName("n") Object[] list) {
+    public FEELFnResult<BigDecimal> apply(@ParameterName("n") Object[] list) {
+        if ( list == null ) { 
+            // Arrays.asList does not accept null as parameter
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "n", "the single value list cannot be null"));
+        }
+        
         return apply( Arrays.asList( list ) );
     }
 }

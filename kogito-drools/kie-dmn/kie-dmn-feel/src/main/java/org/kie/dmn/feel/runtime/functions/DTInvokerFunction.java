@@ -18,6 +18,10 @@ package org.kie.dmn.feel.runtime.functions;
 
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.decisiontables.DecisionTableImpl;
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.FEELEventBase;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,20 +39,21 @@ public class DTInvokerFunction
         this.dt = dt;
     }
 
-    public Object apply(EvaluationContext ctx, Object[] params) {
+    public FEELFnResult<Object> apply(EvaluationContext ctx, Object[] params) {
+        FEELEvent capturedException = null;
         try {
             ctx.enterFrame();
             for( int i = 0; i < params.length; i++ ) {
                 ctx.setValue( dt.getParameterNames().get( i ), params[i] );
             }
             Object result = dt.evaluate( ctx, params );
-            return result;
+            return FEELFnResult.ofResult( result );
         } catch ( Exception e ) {
-            logger.error( "Error invoking decision table '" + getName() + "'.", e );
-            throw e;
+            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking decision table", new RuntimeException("Error invoking decision table '" + getName() + "'.", e));
         } finally {
             ctx.exitFrame();
         }
+        return FEELFnResult.ofError( capturedException );
     }
 
     @Override

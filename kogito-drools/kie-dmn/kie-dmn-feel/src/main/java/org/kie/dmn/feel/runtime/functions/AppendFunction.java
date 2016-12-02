@@ -20,6 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
+import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+
 public class AppendFunction
         extends BaseFEELFunction {
 
@@ -27,13 +34,16 @@ public class AppendFunction
         super( "append" );
     }
 
-    public List apply( @ParameterName( "list" ) List list, @ParameterName( "item" ) Object[] items ) {
-        if ( list == null || items == null ) {
-            return null;
+    public FEELFnResult<List> apply( @ParameterName( "list" ) List list, @ParameterName( "item" ) Object[] items ) {
+        if ( list == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
+        }
+        if ( items == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "item", "cannot be null"));
         }
         // spec requires us to return a new list
         List result = new ArrayList( list );
         Stream.of( items ).forEach( i -> result.add( i ) );
-        return result;
+        return FEELFnResult.ofResult( result );
     }
 }

@@ -20,6 +20,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+
 public class ReverseFunction
         extends BaseFEELFunction {
 
@@ -27,13 +32,13 @@ public class ReverseFunction
         super( "reverse" );
     }
 
-    public List apply(@ParameterName("list") List list) {
+    public FEELFnResult<List> apply(@ParameterName("list") List list) {
         if ( list == null ) {
-            return null;
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
         // spec requires us to return a new list
         List result = new ArrayList( list );
         Collections.reverse( result );
-        return result;
+        return FEELFnResult.ofResult( result );
     }
 }

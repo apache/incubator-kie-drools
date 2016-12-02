@@ -20,6 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+
 public class DistinctValuesFunction
         extends BaseFEELFunction {
 
@@ -27,9 +32,9 @@ public class DistinctValuesFunction
         super( "distinct values" );
     }
 
-    public List apply(@ParameterName( "list" ) Object list) {
+    public FEELFnResult<List> apply(@ParameterName( "list" ) Object list) {
         if ( list == null ) {
-            return null;
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
         // spec requires us to return a new list
         List result = new ArrayList();
@@ -38,6 +43,6 @@ public class DistinctValuesFunction
         } else {
             result.add( list );
         }
-        return result;
+        return FEELFnResult.ofResult( result );
     }
 }

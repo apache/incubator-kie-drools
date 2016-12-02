@@ -16,6 +16,11 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+
 public class SubstringFunction
         extends BaseFEELFunction {
 
@@ -23,31 +28,43 @@ public class SubstringFunction
         super( "substring" );
     }
 
-    public String apply(@ParameterName("string") String string, @ParameterName("start position") Number start) {
-        if ( string == null || start == null || Math.abs( start.intValue() ) > string.length() ) {
-            return null;
+    public FEELFnResult<String> apply(@ParameterName("string") String string, @ParameterName("start position") Number start) {
+        if ( string == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "string", "cannot be null"));
+        }
+        if ( start == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "start position", "cannot be null"));
+        }
+        if ( Math.abs( start.intValue() ) > string.length() ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "parameter 'start position' inconsistent with parameter 'string' length"));
+        }
+        
+        if ( start.intValue() > 0 ) {
+            return FEELFnResult.ofResult( string.substring( start.intValue() - 1 ) );
+        } else if ( start.intValue() < 0 ) {
+            return FEELFnResult.ofResult( string.substring( string.length() + start.intValue() ) );
         } else {
-            if ( start.intValue() > 0 ) {
-                return string.substring( start.intValue() - 1 );
-            } else if ( start.intValue() < 0 ) {
-                return string.substring( string.length() + start.intValue() );
-            } else {
-                return null;
-            }
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "start position", "cannot be zero"));
         }
     }
 
-    public String apply(@ParameterName("string") String string, @ParameterName("start position") Number start, @ParameterName("length") Number length) {
-        if ( string == null || start == null || Math.abs( start.intValue() ) > string.length() ) {
-            return null;
+    public FEELFnResult<String> apply(@ParameterName("string") String string, @ParameterName("start position") Number start, @ParameterName("length") Number length) {
+        if ( string == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "string", "cannot be null"));
+        }
+        if ( start == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "start position", "cannot be null"));
+        }
+        if ( Math.abs( start.intValue() ) > string.length() ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "parameter 'start position' inconsistent with parameter 'string' length"));
+        }
+        
+        if ( start.intValue() > 0 ) {
+            return FEELFnResult.ofResult( string.substring( start.intValue() - 1, Math.min( string.length(), start.intValue() + length.intValue() - 1 ) ) );
+        } else if ( start.intValue() < 0 ) {
+            return FEELFnResult.ofResult( string.substring( string.length() + start.intValue(), Math.min( string.length(), string.length() + start.intValue() + length.intValue() ) ) );
         } else {
-            if ( start.intValue() > 0 ) {
-                return string.substring( start.intValue() - 1, Math.min( string.length(), start.intValue() + length.intValue() - 1 ) );
-            } else if ( start.intValue() < 0 ) {
-                return string.substring( string.length() + start.intValue(), Math.min( string.length(), string.length() + start.intValue() + length.intValue() ) );
-            } else {
-                return null;
-            }
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "start position", "cannot be zero"));
         }
     }
 }

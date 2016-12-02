@@ -20,6 +20,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.functions.FEELFnResult;
+
 public class ConcatenateFunction
         extends BaseFEELFunction {
 
@@ -27,9 +32,9 @@ public class ConcatenateFunction
         super( "concatenate" );
     }
 
-    public List apply(@ParameterName("list") Object[] lists) {
+    public FEELFnResult<List> apply(@ParameterName("list") Object[] lists) {
         if ( lists == null ) {
-            return null;
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
         // spec requires us to return a new list
         List result = new ArrayList();
@@ -39,9 +44,10 @@ public class ConcatenateFunction
             } else if ( list != null ) {
                 result.add( list );
             } else {
-                return null;
+                // TODO review accordingly to spec, original behavior was: return null;
+                return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "on of the element in the list was null"));
             }
         }
-        return result;
+        return FEELFnResult.ofResult( result );
     }
 }
