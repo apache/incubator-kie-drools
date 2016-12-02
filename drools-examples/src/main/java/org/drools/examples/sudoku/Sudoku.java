@@ -72,14 +72,15 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
      * Nice printout of the grid.
      */
     public void dumpGrid() {
-        Formatter fmt = new Formatter(System.out);
+        StringBuilder dumpGridSb = new StringBuilder();
+        Formatter fmt = new Formatter(dumpGridSb);
         fmt.format("       ");
         for (int iCol = 0; iCol < 9; iCol++) {
             fmt.format("Col: %d     ", iCol);
         }
-        System.out.println();
+        fmt.format("\n");
         for (int iRow = 0; iRow < 9; iRow++) {
-            System.out.print("Row " + iRow + ": ");
+            fmt.format("Row " + iRow + ": ");
             for (int iCol = 0; iCol < 9; iCol++) {
                 if (cells[iRow][iCol].getValue() != null) {
                     fmt.format(" --- %d --- ", cells[iRow][iCol].getValue());
@@ -96,9 +97,10 @@ public class Sudoku extends AbstractSudokuGridModel implements SudokuGridModel {
                     fmt.format(" %-10s", sb.toString());
                 }
             }
-            System.out.println();
+            fmt.format("\n");
         }
         fmt.close();
+        System.out.println(dumpGridSb);
     }
     
     /**
