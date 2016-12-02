@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.jbpm</groupId>
+    <artifactId>jbpm-remote-ejb-test</artifactId>
+    <version>7.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>jbpm-remote-ejb-test-suite</artifactId>
+  <name>jBPM :: jBPM Remote EJB Test Suite</name>
+
+  <properties>
+    <!-- properties connected with EJB services application START -->
+    <container.port>8080</container.port>
+    <ejb-services-app.name>ejb-services-app</ejb-services-app.name>
+    <ejb-services-app.ctx.root>ejb-services-app</ejb-services-app.ctx.root>
+    <ejb-services-app.directory>${project.basedir}/../jbpm-remote-ejb-test-app</ejb-services-app.directory>
+    <ejb-services-app.war>${ejb-services-app.directory}/target/${ejb-services-app.name}.war</ejb-services-app.war>
+    <ejb-services-app.url>http://localhost:${container.port}/${ejb-services-app.ctx.root}/ping</ejb-services-app.url>
+    <!-- properties connected with EJB services application END -->
+
+    <!-- Container-related properties -->
+    <container.id>wildfly10x</container.id>
+
+    <!-- Default data source name applies to both supported containers -->
+    <org.jbpm.persistence.ds>java:/jdbc/jbpm</org.jbpm.persistence.ds>
+
+    <!-- Cargo internal references. -->
+    <configurations.dir>${project.build.directory}/configurations</configurations.dir>
+    <container.profile.dir>${configurations.dir}/cargo-profile</container.profile.dir>
+    <container.log.file>${container.profile.dir}/profile-log.txt</container.log.file>
+
+    <!-- Failsafe plugin-related properties -->
+    <failsafe.arg.line>
+      -Dfile.encoding=${project.build.sourceEncoding}
+      -Xms256m
+      -Xmx1024m
+    </failsafe.arg.line>
+    <it.test/>
+  </properties>
+
+  <!-- controls version of test resources only -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-container-test-suite</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>test-kjar-integration</artifactId>
+        <version>${version.test.kjar}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>test-kjar-evaluation</artifactId>
+        <version>${version.test.kjar}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>test-kjar-bpmn-build</artifactId>
+        <version>${version.test.kjar}</version>
+        <scope>runtime</scope>
+      </dependency>
+
+      <!-- test domain classes -->
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-remote-ejb-test-domain</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <!-- This is an artificial dependency to make sure the jbpm-container-test modules are executed one at a time during
+         parallel build (otherwise the tests fail because of conflicting port binding) -->
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-container-test-suite</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- test resources modules -->
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>test-kjar-integration</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>test-kjar-evaluation</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>test-kjar-bpmn-build</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- test domain classes -->
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-remote-ejb-test-domain</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-services-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-services-ejb-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-services-ejb-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-kie-services</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-test</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-ci</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-persistence-jpa</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-templates</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-workitems</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-bpmn2</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-remote-naming</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.xnio</groupId>
+      <artifactId>xnio-nio</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.marshalling</groupId>
+      <artifactId>jboss-marshalling-river</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sonatype.sisu</groupId>
+      <artifactId>sisu-guice</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <!-- Logging implementation (dynamic dependency) -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+    </dependency>
+
+    <!-- EJB -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+    </dependency>
+
+    <!-- In-memory web containers for WebService and REST WIH testing -->
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-transports-http-jetty</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>tjws</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <testResources>
+      <testResource>
+        <directory>${project.basedir}/src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <executions>
+            <!--To override kie-parent definition of executions we have to add our execution-->
+            <execution>
+              <id>integration-test-execution</id>
+              <goals>
+                <goal>integration-test</goal>
+              </goals>
+            </execution>
+            <execution>
+              <phase>none</phase>
+            </execution>
+          </executions>
+          <configuration>
+            <failIfNoTests>false</failIfNoTests>
+            <test>${it.test}</test>
+            <includes>
+              <include>**/*Test.java</include>
+            </includes>
+            <argLine>${failsafe.arg.line}</argLine>
+            <additionalClasspathElements>
+              <additionalClasspathElement>${project.build.directory}/jdbc_driver.jar</additionalClasspathElement>
+            </additionalClasspathElements>
+            <systemPropertyVariables>
+              <project.version>${project.version}</project.version>
+              <settings.localRepository>${settings.localRepository}</settings.localRepository>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.cargo</groupId>
+          <artifactId>cargo-maven2-plugin</artifactId>
+          <configuration>
+            <container>
+              <containerId>${container.id}</containerId>
+              <timeout>600000</timeout>
+              <dependencies>
+                <dependency>
+                  <groupId>com.h2database</groupId>
+                  <artifactId>h2</artifactId>
+                </dependency>
+              </dependencies>
+              <output>${container.log.file}</output>
+            </container>
+            <configuration>
+              <home>${container.profile.dir}</home>
+              <properties>
+                <cargo.jboss.configuration>standalone-full</cargo.jboss.configuration>
+                <cargo.jvmargs>-Xmx1024m</cargo.jvmargs>
+                <cargo.servlet.port>${container.port}</cargo.servlet.port>
+                <!-- Datasource -->
+                <cargo.datasource.datasource.jbpm>
+                  cargo.datasource.driver=${org.jbpm.datasource.driver.class}|
+                  cargo.datasource.url=${org.jbpm.datasource.connection.url}|
+                  cargo.datasource.jndi=${org.jbpm.persistence.ds}|
+                  cargo.datasource.username=${org.jbpm.datasource.username}|
+                  cargo.datasource.password=${org.jbpm.datasource.password}|
+                  cargo.datasource.transactionsupport=XA_TRANSACTION
+                </cargo.datasource.datasource.jbpm>
+              </properties>
+              <users combine.children="append">
+                <!-- users we use in tests-->
+                <user>
+                  <name>ibek</name>
+                  <password>ibek1234;</password>
+                  <roles>
+                    <role>admin</role>
+                    <role>rest-all</role>
+                    <role>rest-client</role>
+                    <role>guest</role>
+                  </roles>
+                </user>
+                <user>
+                  <name>john</name>
+                  <password>john1234-</password>
+                  <roles>
+                    <role>engineering</role>
+                    <role>admin</role>
+                    <role>analyst</role>
+                    <role>rest-all</role>
+                    <role>rest-client</role>
+                    <role>guest</role>
+                  </roles>
+                </user>
+              </users>
+            </configuration>
+            <deployables>
+              <deployable>
+                <groupId>org.jbpm</groupId>
+                <artifactId>jbpm-remote-eap-test-app</artifactId>
+                <type>war</type>
+                <properties>
+                  <context>${ejb-services-app.ctx.root}</context>
+                </properties>
+                <pingURL>${ejb-services-app.url}</pingURL>
+                <pingTimeout>30000</pingTimeout>
+                <location>${ejb-services-app.war}</location>
+              </deployable>
+            </deployables>
+          </configuration>
+          <executions>
+            <execution>
+              <id>start-container</id>
+              <phase>pre-integration-test</phase>
+              <goals>
+                <goal>start</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>stop-container</id>
+              <phase>post-integration-test</phase>
+              <goals>
+                <goal>stop</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.cargo</groupId>
+        <artifactId>cargo-maven2-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>wildfly10</id>
+      <activation>
+        <property>
+          <name>container.profile</name>
+          <value>wildfly10</value>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.cargo</groupId>
+              <artifactId>cargo-maven2-plugin</artifactId>
+              <configuration>
+                <container>
+                  <type>installed</type>
+                  <artifactInstaller>
+                    <groupId>org.wildfly</groupId>
+                    <artifactId>wildfly-dist</artifactId>
+                    <version>${version.wildfly10}</version>
+                  </artifactInstaller>
+                </container>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+    <profile>
+      <id>eap7</id>
+      <activation>
+        <property>
+          <name>container.profile</name>
+          <value>eap7</value>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.codehaus.cargo</groupId>
+              <artifactId>cargo-maven2-plugin</artifactId>
+              <configuration>
+                <container>
+                  <type>installed</type>
+                  <zipUrlInstaller>
+                    <url>${eap7.download.url}</url>
+                  </zipUrlInstaller>
+                </container>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
+</project>

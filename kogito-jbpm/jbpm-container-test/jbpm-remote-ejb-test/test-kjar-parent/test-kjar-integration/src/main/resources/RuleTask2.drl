@@ -1,0 +1,47 @@
+package defaultPackage;
+
+import org.kie.api.runtime.process.WorkflowProcessInstance;
+
+rule firstRule
+    ruleflow-group "MyRuleFlow"
+    when
+        processInstance : WorkflowProcessInstance()
+    then
+        System.out.println("firstRule");
+        java.util.List results = new java.util.ArrayList((java.util.List) processInstance.getVariable("results"));
+        results.add("firstRule");
+        processInstance.setVariable("results", results);
+end;
+
+rule secondRule
+    ruleflow-group "MyRuleFlow"
+    when
+        processInstance : WorkflowProcessInstance()
+    then
+        insert(new String("activateThird"));
+        System.out.println("secondRule");
+        java.util.List results = new java.util.ArrayList((java.util.List) processInstance.getVariable("results"));
+        results.add("secondRule");
+        processInstance.setVariable("results", results);
+end;
+
+rule thirdRule
+    when
+        str : String(this == "activateThird")
+        processInstance : WorkflowProcessInstance()
+    then
+        System.out.println("thirdRule");
+end;
+
+rule fourthRule
+    ruleflow-group "different-MyRuleFlow"
+    when
+        processInstance : WorkflowProcessInstance()
+    then
+        System.out.println("fourthRule");
+        java.util.List results = new java.util.ArrayList((java.util.List) processInstance.getVariable("results"));
+        results.add("fourthRule");
+        processInstance.setVariable("results", results);
+end;
+
+

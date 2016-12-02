@@ -189,7 +189,7 @@ public class RuntimeDataServiceTest extends AbstractKieServicesBaseTest {
         Collection<NodeInstanceDesc> nodeInstanceLogs = runtimeDataService.getProcessInstanceHistoryCompleted(
                 processInstance.getId(), new QueryContext());
 
-        // assert if logs are ordered by log.date DESC, log.id DESC
+        // assert if logs are ordered by log.id ASC
         Iterator<NodeInstanceDesc> iterator = nodeInstanceLogs.iterator();
         NodeInstanceDesc log0 = iterator.next();
         assertEquals("End", log0.getName());

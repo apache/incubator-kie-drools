@@ -481,11 +481,11 @@
       where
         log.nodeInstanceId in (select nodeInstanceId from NodeInstanceLog nid where nid.processInstanceId=:processId AND nid.type = 1 
         						GROUP BY nid.nodeInstanceId
-                    			HAVING sum(nid.type) &gt;= 1) 
+                    HAVING sum(nid.type) &gt;= 1)
        	and log.type = 1 
        	and log.processInstanceId=:processId  
       ORDER BY 
-        log.date ASC
+        log.id ASC
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>

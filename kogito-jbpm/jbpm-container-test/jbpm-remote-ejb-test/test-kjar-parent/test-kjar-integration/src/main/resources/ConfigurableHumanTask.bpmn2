@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn20="http://www.omg.org/bpmn20" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" xmlns="http://www.jboss.org/drools" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" id="_nEHY0JLBEeGv_P7SrDGEnA" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:itemDefinition id="_String" structureRef="String"/>
+  <bpmn2:process id="designer.human-task" drools:version="1" drools:packageName="org.jbpm" drools:adHoc="false" name="human-task" isExecutable="true">
+    <bpmn2:property id="assigneeName" itemSubjectRef="_String"/>
+    <bpmn2:property id="taskName" itemSubjectRef="_String"/>
+    <bpmn2:property id="localeName" itemSubjectRef="_String"/>
+    <bpmn2:startEvent id="_E2C748E7-A993-46C7-B8CD-AC6042A4931B" drools:bgcolor="#ffffff" name="start">
+      <bpmn2:outgoing>bpmn20:_B2922E55-53E6-4D2B-AD8B-E60085D0526A</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:userTask id="_C5F413C5-E92E-41BC-AA96-2BD52A474782" drools:taskName="user task" drools:scriptFormat="http://www.java.com/java" name="#{taskName}">
+      <bpmn2:extensionElements>
+        <drools:onEntry-script scriptFormat="http://www.java.com/java">
+          <drools:script>
+if (assigneeName == null || assigneeName.isEmpty()) {
+    System.out.println(&quot;### Setting assignee to:  'john'&quot;);
+    kcontext.setVariable(&quot;assigneeName&quot;, &quot;john&quot;);
+}
+if (taskName == null || taskName.isEmpty()) {
+    System.out.println(&quot;### Setting task to: 'user task'&quot;);
+    kcontext.setVariable(&quot;taskName&quot;, &quot;user task&quot;);
+}
+if (localeName == null || localeName.isEmpty()) {
+    System.out.println(&quot;### Setting locale to: 'en-UK'&quot;);
+    kcontext.setVariable(&quot;localeName&quot;, &quot;en-UK&quot;);
+}</drools:script>
+        </drools:onEntry-script>
+        <drools:onExit-script scriptFormat="http://www.java.com/java">
+          <drools:script></drools:script>
+        </drools:onExit-script>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>bpmn20:_B2922E55-53E6-4D2B-AD8B-E60085D0526A</bpmn2:incoming>
+      <bpmn2:outgoing>bpmn20:_923B162E-5192-456B-929F-F0D6DA7DED68</bpmn2:outgoing>
+      <bpmn2:ioSpecification id="_nEHY0ZLBEeGv_P7SrDGEnA">
+        <bpmn2:dataInput id="_C5F413C5-E92E-41BC-AA96-2BD52A474782_TaskNameInput" name="TaskName"/>
+        <bpmn2:dataInput id="_C5F413C5-E92E-41BC-AA96-2BD52A474782_SkippableInput" name="Skippable"/>
+        <bpmn2:dataInput id="DataInput_5" name="Locale"/>
+        <bpmn2:inputSet id="_nEHY0pLBEeGv_P7SrDGEnA">
+          <bpmn2:dataInputRefs>_C5F413C5-E92E-41BC-AA96-2BD52A474782_SkippableInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>_C5F413C5-E92E-41BC-AA96-2BD52A474782_TaskNameInput</bpmn2:dataInputRefs>
+          <bpmn2:dataInputRefs>DataInput_5</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="_nEHY05LBEeGv_P7SrDGEnA"/>
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_nEHY1JLBEeGv_P7SrDGEnA">
+        <bpmn2:targetRef>_C5F413C5-E92E-41BC-AA96-2BD52A474782_TaskNameInput</bpmn2:targetRef>
+        <bpmn2:assignment id="_nEHY1ZLBEeGv_P7SrDGEnA">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_nEHY1pLBEeGv_P7SrDGEnA">user task</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_nEHY15LBEeGv_P7SrDGEnA">_C5F413C5-E92E-41BC-AA96-2BD52A474782_TaskNameInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="_nEHY2JLBEeGv_P7SrDGEnA">
+        <bpmn2:targetRef>_C5F413C5-E92E-41BC-AA96-2BD52A474782_SkippableInput</bpmn2:targetRef>
+        <bpmn2:assignment id="_nEHY2ZLBEeGv_P7SrDGEnA">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_nEHY2pLBEeGv_P7SrDGEnA">false</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_nEHY25LBEeGv_P7SrDGEnA">_C5F413C5-E92E-41BC-AA96-2BD52A474782_SkippableInput</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:dataInputAssociation id="DataInputAssociation_5">
+        <bpmn2:targetRef>DataInput_5</bpmn2:targetRef>
+        <bpmn2:assignment id="Assignment_5">
+          <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="FormalExpression_10">#{localeName}</bpmn2:from>
+          <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="FormalExpression_9">DataInput_5</bpmn2:to>
+        </bpmn2:assignment>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:potentialOwner id="_nEHY3JLBEeGv_P7SrDGEnA">
+        <bpmn2:resourceAssignmentExpression id="_nEHY3ZLBEeGv_P7SrDGEnA">
+          <bpmn2:formalExpression id="_nEHY3pLBEeGv_P7SrDGEnA">#{assigneeName}</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:endEvent id="_816E3CC2-C5E2-43CA-9003-6068BF20CB4A" drools:bgcolor="#ffffff" name="end">
+      <bpmn2:incoming>bpmn20:_923B162E-5192-456B-929F-F0D6DA7DED68</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="_B2922E55-53E6-4D2B-AD8B-E60085D0526A" drools:priority="1" name="" sourceRef="_E2C748E7-A993-46C7-B8CD-AC6042A4931B" targetRef="_C5F413C5-E92E-41BC-AA96-2BD52A474782"/>
+    <bpmn2:sequenceFlow id="_923B162E-5192-456B-929F-F0D6DA7DED68" drools:priority="1" name="" sourceRef="_C5F413C5-E92E-41BC-AA96-2BD52A474782" targetRef="_816E3CC2-C5E2-43CA-9003-6068BF20CB4A"/>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_nEHY35LBEeGv_P7SrDGEnA">
+    <bpmndi:BPMNPlane id="_nEHY4JLBEeGv_P7SrDGEnA" bpmnElement="designer.human-task">
+      <bpmndi:BPMNShape id="_nEHY4ZLBEeGv_P7SrDGEnA" bpmnElement="_E2C748E7-A993-46C7-B8CD-AC6042A4931B">
+        <dc:Bounds height="30.0" width="30.0" x="180.0" y="153.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_nEHY4pLBEeGv_P7SrDGEnA" bpmnElement="_C5F413C5-E92E-41BC-AA96-2BD52A474782">
+        <dc:Bounds height="80.0" width="100.0" x="285.0" y="128.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_nEHY45LBEeGv_P7SrDGEnA" bpmnElement="_816E3CC2-C5E2-43CA-9003-6068BF20CB4A">
+        <dc:Bounds height="28.0" width="28.0" x="464.0" y="153.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_nEHY5JLBEeGv_P7SrDGEnA" bpmnElement="_B2922E55-53E6-4D2B-AD8B-E60085D0526A" sourceElement="_nEHY4ZLBEeGv_P7SrDGEnA" targetElement="_nEHY4pLBEeGv_P7SrDGEnA">
+        <di:waypoint xsi:type="dc:Point" x="195.0" y="168.0"/>
+        <di:waypoint xsi:type="dc:Point" x="335.0" y="168.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_nEHY5ZLBEeGv_P7SrDGEnA" bpmnElement="_923B162E-5192-456B-929F-F0D6DA7DED68" sourceElement="_nEHY4pLBEeGv_P7SrDGEnA" targetElement="_nEHY45LBEeGv_P7SrDGEnA">
+        <di:waypoint xsi:type="dc:Point" x="335.0" y="168.0"/>
+        <di:waypoint xsi:type="dc:Point" x="478.0" y="167.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

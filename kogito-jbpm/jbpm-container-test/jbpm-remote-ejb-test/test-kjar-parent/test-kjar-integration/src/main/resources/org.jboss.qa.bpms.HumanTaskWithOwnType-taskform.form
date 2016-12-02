@@ -1,0 +1,23 @@
+
+<form id="1568185041">
+<property name="subject" value=""/>
+<property name="name" value="org.jboss.qa.bpms.HumanTaskWithOwnType-taskform.form"/>
+<property name="displayMode" value="default"/>
+<property name="status" value="0"/>
+<field position="1" name="textContent" type="InputText" id="1530835070">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;textContent (textContent)quot;"/>
+<property name="inputBinding" value=""/>
+<property name="outputBinding" value="textContent"/>
+<property name="fieldClass" value="java.lang.String"/>
+</field>
+<field position="0" name="myObject_text" type="InputText" id="996486418">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;text (myObject)quot;"/>
+<property name="inputBinding" value=""/>
+<property name="outputBinding" value="myObject/text"/>
+<property name="fieldClass" value="java.lang.String"/>
+</field>
+<dataHolder inputId="" name="#0000A0" type="dataModelerEntry" outId="myObject" value="org.jboss.qa.bpms.jbpm.integration.MyType" id="myObject"/>
+<dataHolder inputId="" name="#FF54A7" type="basicType" outId="textContent" value="java.lang.String" id="textContent"/>
+</form>

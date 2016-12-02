@@ -1,0 +1,15 @@
+
+<form id="1868442646">
+<property name="subject" value=""/>
+<property name="name" value="MyObjectTask-taskform.form"/>
+<property name="displayMode" value="default"/>
+<property name="status" value="0"/>
+<field position="0" name="myObject_text" type="InputText" id="175362168">
+<property name="fieldRequired" value="false"/>
+<property name="label" value="quot;enquot;,quot;text (myObject)quot;"/>
+<property name="inputBinding" value="inputMyObject/text"/>
+<property name="outputBinding" value="outMyObject/text"/>
+<property name="fieldClass" value="java.lang.String"/>
+</field>
+<dataHolder inputId="inputMyObject" name="#0000A0" type="dataModelerEntry" outId="outMyObject" value="org.jboss.qa.bpms.remote.ejb.domain.MyType" id="myObject"/>
+</form>
