@@ -20,7 +20,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
 /**
  * Clones a {@link PlanningSolution} during planning.
- * Used to remember the state of a good {@link PlanningSolution} so it can be recalled at a later then
+ * Used to remember the state of a good {@link PlanningSolution} so it can be recalled at a later time
  * when the original {@link PlanningSolution} is already modified.
  * Also used in population based heuristics to increase or repopulate the population.
  * <p>
@@ -36,6 +36,8 @@ public interface SolutionCloner<Solution_> {
      * <ul>
      * <li>The clone must represent the same planning problem.
      * Usually it reuses the same instances of the problem facts and problem fact collections as the {@code original}.
+     * </li>
+     * <li>The clone must have the same (equal) score as the {@code original}.
      * </li>
      * <li>The clone must use different, cloned instances of the entities and entity collections.
      * If a cloned entity changes, the original must remain unchanged.
