@@ -24,6 +24,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataCorrectlyClonedSolution;
 import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataEntitiesNotClonedSolution;
+import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataScoreNotClonedSolution;
 import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataScoreNotEqualSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
@@ -40,6 +41,21 @@ public class CustomSolutionClonerTest {
         solverConfig.setEnvironmentMode(EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT);
 
         TestdataCorrectlyClonedSolution solution = new TestdataCorrectlyClonedSolution();
+        factory.buildSolver().solve(solution);
+    }
+
+    @Test
+    public void scoreNotCloned() {
+        // RHBRMS-1430 Possible NPE when custom cloner doesn't clone score
+        SolverFactory<TestdataScoreNotClonedSolution> factory = PlannerTestUtils.buildSolverFactory(
+                TestdataScoreNotClonedSolution.class, TestdataEntity.class);
+        SolverConfig solverConfig = factory.getSolverConfig();
+        solverConfig.setEnvironmentMode(EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT);
+
+        TestdataScoreNotClonedSolution solution = new TestdataScoreNotClonedSolution();
+
+        expectedException.expect(IllegalStateException.class);
+        expectedException.expectMessage("Cloning corruption: the original's score ");
         factory.buildSolver().solve(solution);
     }
 

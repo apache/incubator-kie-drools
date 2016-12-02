@@ -15,6 +15,7 @@
  */
 package org.optaplanner.core.impl.testdata.domain.customcloner;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
@@ -27,8 +28,8 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-@PlanningSolution(solutionCloner = TestdataEntitiesNotClonedSolution.class)
-public class TestdataEntitiesNotClonedSolution implements SolutionCloner<TestdataEntitiesNotClonedSolution> {
+@PlanningSolution(solutionCloner = TestdataScoreNotClonedSolution.class)
+public class TestdataScoreNotClonedSolution implements SolutionCloner<TestdataScoreNotClonedSolution> {
 
     @PlanningScore
     private SimpleScore score;
@@ -38,15 +39,13 @@ public class TestdataEntitiesNotClonedSolution implements SolutionCloner<Testdat
     @ValueRangeProvider(id = "valueRange")
     @ProblemFactCollectionProperty
     public List<TestdataValue> valueRange() {
-        // solver will never get to this point due to cloning corruption
-        throw new UnsupportedOperationException("Not supported yet.");
+        return Collections.singletonList(new TestdataValue());
     }
 
     @Override
-    public TestdataEntitiesNotClonedSolution cloneSolution(TestdataEntitiesNotClonedSolution original) {
-        TestdataEntitiesNotClonedSolution clone = new TestdataEntitiesNotClonedSolution();
-        clone.entity = original.entity;
-        clone.score = original.score;
+    public TestdataScoreNotClonedSolution cloneSolution(TestdataScoreNotClonedSolution original) {
+        TestdataScoreNotClonedSolution clone = new TestdataScoreNotClonedSolution();
+        clone.entity.setValue(original.entity.getValue());
         return clone;
     }
 

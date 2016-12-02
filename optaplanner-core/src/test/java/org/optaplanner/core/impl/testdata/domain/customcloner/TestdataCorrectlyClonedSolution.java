@@ -47,9 +47,8 @@ public class TestdataCorrectlyClonedSolution implements SolutionCloner<TestdataC
     public TestdataCorrectlyClonedSolution cloneSolution(TestdataCorrectlyClonedSolution original) {
         TestdataCorrectlyClonedSolution clone = new TestdataCorrectlyClonedSolution();
         clone.entity.setValue(original.entity.getValue());
-        if (original.score != null) {
-            clone.score = SimpleScore.valueOf(original.score.getInitScore(), original.score.getScore());
-        }
+        // score is immutable so no need to create a new instance
+        clone.score = original.score;
         return clone;
     }
 
