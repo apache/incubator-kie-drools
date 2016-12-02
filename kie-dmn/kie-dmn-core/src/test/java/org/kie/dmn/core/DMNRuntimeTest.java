@@ -287,4 +287,25 @@ public class DMNRuntimeTest {
         assertThat( (Map<String, Object>) dmnResult.getContext().get( "Math" ), hasEntry( "Sum", BigDecimal.valueOf( 15 ) ) );
         assertThat( (Map<String, Object>) dmnResult.getContext().get( "Math" ), hasEntry( "Product", BigDecimal.valueOf( 50 ) ) );
     }
+
+    @Test
+    public void testBKMNode() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0009-invocation-arithmetic.dmn", getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11", "literal invocation1" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false) );
+
+        Map<String, Object> loan = new HashMap<>(  );
+        loan.put( "amount", 600000 );
+        loan.put( "rate", 0.0375 );
+        loan.put( "term", 360 );
+        DMNContext context = DMNFactory.newContext();
+        context.set( "fee", 100 );
+        context.set( "Loan", loan );
+
+        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat( dmnResult.hasErrors(), is( false ) );
+        assertThat( dmnResult.getContext().get( "MonthlyPayment" ), is( new BigDecimal( "2878.69354943277" ) ) );
+    }
+
 }

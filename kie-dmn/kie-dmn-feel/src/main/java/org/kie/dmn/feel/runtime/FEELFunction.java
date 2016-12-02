@@ -19,12 +19,53 @@ package org.kie.dmn.feel.runtime;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Symbol;
 
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * An interface for all FEEL functions, custom or built-in
+ */
 public interface FEELFunction {
 
+    /**
+     * Returns the name of the function
+     * @return
+     */
     String getName();
 
+    /**
+     * Returns the Symbol of the function
+     * @return
+     */
     Symbol getSymbol();
 
+    /**
+     * Returns the parameter names for each supported signature.
+     *
+     * @return a List of Lists of Strings with the parameter names. For
+     *         a function with multiple signatures, each element of the
+     *         list returns the names of the parameters of one signature.
+     *         E.g.:
+     *
+     *         the substring function has 2 supported signatures:
+     *
+     *         substring( string, start position )
+     *         substring( string, start position, length )
+     *
+     *         So this method will return:
+     *
+     *         { { "string", "start position" },
+     *           { "string", "start position", "length" } }
+     */
+    List<List<String>> getParameterNames();
+
+    /**
+     * Invokes the function reflectively based on the parameters
+     *
+     * @param ctx
+     * @param params
+     * @return
+     */
     Object applyReflectively(EvaluationContext ctx, Object[] params);
 
 }

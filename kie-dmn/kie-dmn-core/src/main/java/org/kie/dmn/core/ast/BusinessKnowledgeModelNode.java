@@ -17,30 +17,31 @@
 package org.kie.dmn.core.ast;
 
 import org.kie.dmn.core.api.DMNType;
-import org.kie.dmn.feel.model.v1_1.Decision;
+import org.kie.dmn.feel.model.v1_1.BusinessKnowledgeModel;
 
-public class DecisionNode
-        extends DMNBaseNode {
+public class BusinessKnowledgeModelNode
+        extends DMNBaseNode
+        implements DMNNode {
 
-    private Decision               decision;
+    private BusinessKnowledgeModel bkm;
     private DMNExpressionEvaluator evaluator;
     private DMNType                resultType;
 
-    public DecisionNode() {
+    public BusinessKnowledgeModelNode() {
     }
 
-    public DecisionNode(Decision decision, DMNType resultType) {
-        super( decision );
-        this.decision = decision;
+    public BusinessKnowledgeModelNode(BusinessKnowledgeModel bkm, DMNType resultType) {
+        super( bkm );
+        this.bkm = bkm;
         this.resultType = resultType;
     }
 
-    public Decision getDecision() {
-        return decision;
+    public BusinessKnowledgeModel getBusinessKnowledModel() {
+        return bkm;
     }
 
-    public void setDecision(Decision decision) {
-        this.decision = decision;
+    public void setBusinessKnowledgeModel(BusinessKnowledgeModel bkm) {
+        this.bkm = bkm;
     }
 
     public DMNExpressionEvaluator getEvaluator() {
