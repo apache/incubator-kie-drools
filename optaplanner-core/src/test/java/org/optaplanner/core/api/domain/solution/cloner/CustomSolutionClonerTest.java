@@ -28,20 +28,23 @@ import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataScoreNotCl
 import org.optaplanner.core.impl.testdata.domain.customcloner.TestdataScoreNotEqualSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
+import static org.junit.Assert.assertTrue;
+
 public class CustomSolutionClonerTest {
 
     @Rule
     public final ExpectedException expectedException = ExpectedException.none();
 
     @Test
-    public void correctCloner() {
+    public void clonedUsingCustomCloner() {
         SolverFactory<TestdataCorrectlyClonedSolution> factory = PlannerTestUtils.buildSolverFactory(
                 TestdataCorrectlyClonedSolution.class, TestdataEntity.class);
         SolverConfig solverConfig = factory.getSolverConfig();
         solverConfig.setEnvironmentMode(EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT);
 
         TestdataCorrectlyClonedSolution solution = new TestdataCorrectlyClonedSolution();
-        factory.buildSolver().solve(solution);
+        TestdataCorrectlyClonedSolution solved = factory.buildSolver().solve(solution);
+        assertTrue("Custom solution cloner was not used", solved.isClonedByCustomCloner());
     }
 
     @Test

@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 @PlanningSolution(solutionCloner = TestdataCorrectlyClonedSolution.class)
 public class TestdataCorrectlyClonedSolution implements SolutionCloner<TestdataCorrectlyClonedSolution> {
 
+    private boolean clonedByCustomCloner = false;
     @PlanningScore
     private SimpleScore score;
     @PlanningEntityProperty
@@ -46,10 +47,15 @@ public class TestdataCorrectlyClonedSolution implements SolutionCloner<TestdataC
     @Override
     public TestdataCorrectlyClonedSolution cloneSolution(TestdataCorrectlyClonedSolution original) {
         TestdataCorrectlyClonedSolution clone = new TestdataCorrectlyClonedSolution();
-        clone.entity.setValue(original.entity.getValue());
+        clone.clonedByCustomCloner = true;
         // score is immutable so no need to create a new instance
         clone.score = original.score;
+        clone.entity.setValue(original.entity.getValue());
         return clone;
+    }
+
+    public boolean isClonedByCustomCloner() {
+        return clonedByCustomCloner;
     }
 
 }
