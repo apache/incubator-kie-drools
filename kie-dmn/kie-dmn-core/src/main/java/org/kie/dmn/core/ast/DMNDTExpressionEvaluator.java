@@ -29,6 +29,7 @@ import org.kie.dmn.feel.runtime.functions.DTInvokerFunction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * An evaluator for DMN Decision Table Expressions
@@ -60,7 +61,7 @@ public class DMNDTExpressionEvaluator
                 params[i] = feel.evaluate( paramNames.get( i ), result.getContext().getAll() );
                 ctx.setValue( paramNames.get( i ), params[i] );
             }
-            Object dtr = dt.apply( ctx, params );
+            Object dtr = dt.apply( ctx, params ).cata(e -> { events.add(e); return null; }, Function.identity());;
             r = processEvents( events, eventManager, result );
             return new EvaluatorResult( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } finally {
