@@ -99,6 +99,9 @@ public enum BuiltInType implements Type {
     }
 
     public static Type determineTypeFromName( String name ) {
+        if( name == null ) {
+            return UNKNOWN;
+        }
         for( BuiltInType t : BuiltInType.values() ) {
             if( t.getName().equals( name ) ) {
                 return t;

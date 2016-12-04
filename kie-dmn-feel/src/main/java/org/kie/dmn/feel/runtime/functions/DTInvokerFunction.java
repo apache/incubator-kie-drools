@@ -49,7 +49,7 @@ public class DTInvokerFunction
             Object result = dt.evaluate( ctx, params );
             return FEELFnResult.ofResult( result );
         } catch ( Exception e ) {
-            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking decision table", new RuntimeException("Error invoking decision table '" + getName() + "'.", e));
+            capturedException = new FEELEventBase(Severity.ERROR, "Error invoking decision table '"+getName()+"'.", e);
         } finally {
             ctx.exitFrame();
         }
