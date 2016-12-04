@@ -26,6 +26,7 @@ import org.kie.dmn.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.core.ast.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNNode;
 import org.kie.dmn.core.ast.DecisionNode;
+import org.kie.dmn.feel.model.v1_1.BusinessKnowledgeModel;
 import org.kie.internal.io.ResourceTypePackage;
 
 import java.util.*;
@@ -65,7 +66,6 @@ public class DMNRuntimeImpl
     @Override
     public DMNResult evaluateAll(DMNModel model, DMNContext context) {
         DMNResultImpl result = createResult( context );
-        evaluateAllBKM( model, context, result );
         for( DecisionNode decision : model.getDecisions() ) {
             evaluateDecision( context, result, decision );
         }
@@ -77,7 +77,6 @@ public class DMNRuntimeImpl
         DMNResultImpl result = createResult( context );
         DecisionNode decision = model.getDecisionByName( decisionName );
         if( decision != null ) {
-            evaluateAllBKM( model, context, result );
             evaluateDecision( context, result, decision );
         } else {
             result.addMessage( DMNMessage.Severity.ERROR, "Decision not found for name '"+decisionName+"'", null );
@@ -90,7 +89,6 @@ public class DMNRuntimeImpl
         DMNResultImpl result = createResult( context );
         DecisionNode decision = model.getDecisionById( decisionId );
         if( decision != null ) {
-            evaluateAllBKM( model, context, result );
             evaluateDecision( context, result, decision );
         } else {
             result.addMessage( DMNMessage.Severity.ERROR, "Decision not found for id '"+decisionId+"'", decisionId );
@@ -162,10 +160,12 @@ public class DMNRuntimeImpl
                 if( ! result.getContext().isDefined( dep.getName() ) ) {
                     if( dep instanceof DecisionNode ) {
                         evaluateDecision( context, result, (DecisionNode) dep );
+                    } else if( dep instanceof BusinessKnowledgeModelNode ) {
+                        evaluateBKM( context, result, (BusinessKnowledgeModelNode) dep );
                     } else {
                         missingInput = true;
                         DMNMessage msg = result.addMessage( DMNMessage.Severity.ERROR,
-                                                            "Missing input for decision '"+decision.getName()+"': input name='" + dep.getName() + "' input id='" + dep.getId() + "'",
+                                                            "Missing dependency for decision '"+decision.getName()+"': dependency name='" + dep.getName() + "' dependency id='" + dep.getId() + "'",
                                                             decision.getId() );
                         dr.getMessages().add( msg );
                     }

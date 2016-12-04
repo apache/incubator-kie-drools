@@ -151,7 +151,7 @@ public enum HitPolicy {
                              Object[] params,
                              List<DTDecisionRule> matches,
                              List<Object> results) {
-        if ( matches.size() > 1 ) {
+        if ( matches.size() >= 1 ) {
             long distinctOutputEntry = results.stream()
                     .distinct()
                     .count();
