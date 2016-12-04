@@ -42,7 +42,9 @@ public class DefaultSolverScope<Solution_> {
     protected int startingSolverCount;
     protected Random workingRandom;
     protected InnerScoreDirector<Solution_> scoreDirector;
-    /** Used for capping CPU power usage in multi-threaded scenario's */
+    /**
+     * Used for capping CPU power usage in multi-threaded scenarios.
+     */
     protected Semaphore runnableThreadSemaphore = null;
 
     protected Long startingSystemTimeMillis;

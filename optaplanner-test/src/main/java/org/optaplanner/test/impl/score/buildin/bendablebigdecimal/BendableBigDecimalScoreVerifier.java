@@ -43,7 +43,7 @@ public class BendableBigDecimalScoreVerifier<Solution_> extends AbstractScoreVer
 
     /**
      * Assert that the constraint (which is usually a score rule) of {@link PlanningSolution}
-     * has the expected weight for that score level
+     * has the expected weight for that score level.
      * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
      * @param hardLevel {@code 0 <= hardLevel <} {@code hardLevelSize}.
      * The {@code scoreLevel} is {@code hardLevel} for hard levels and {@code softLevel + hardLevelSize} for soft levels.

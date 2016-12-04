@@ -26,8 +26,8 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 /**
- * Delivered when the {@link PlanningSolution bets solution} changes during solving.
- * Delivered in the solver thread (which is the thread that calls {@link Solver#solve(Solution_)}).
+ * Delivered when the {@link PlanningSolution best solution} changes during solving.
+ * Delivered in the solver thread (which is the thread that calls {@link Solver#solve}).
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class BestSolutionChangedEvent<Solution_> extends EventObject {

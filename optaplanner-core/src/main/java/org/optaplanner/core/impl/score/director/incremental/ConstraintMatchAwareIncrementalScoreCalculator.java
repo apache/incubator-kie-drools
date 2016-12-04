@@ -35,17 +35,16 @@ public interface ConstraintMatchAwareIncrementalScoreCalculator<Solution_>
     /**
      * Allows for increased performance by tracking only if constraintMatchEnabled is true.
      * <p>
-     * Every implementation should call {@link #resetWorkingSolution(Solution_)}
+     * Every implementation should call {@link #resetWorkingSolution}
      * and only handle the constraintMatchEnabled parameter specifically (or ignore it).
-     * @param workingSolution never null, to pass to {@link #resetWorkingSolution(Solution_)}.
+     * @param workingSolution never null, to pass to {@link #resetWorkingSolution}.
      * @param constraintMatchEnabled true if {@link #getConstraintMatchTotals()} might be called.
      */
     void resetWorkingSolution(Solution_ workingSolution, boolean constraintMatchEnabled);
 
     /**
      * @return never null
-     * @throws IllegalStateException if {@link #resetWorkingSolution(Solution_, boolean)}'s
-     * constraintMatchEnabled parameter was false
+     * @throws IllegalStateException if {@link #resetWorkingSolution}'s constraintMatchEnabled parameter was false
      * @see ScoreDirector#getConstraintMatchTotals()
      */
     Collection<ConstraintMatchTotal> getConstraintMatchTotals();

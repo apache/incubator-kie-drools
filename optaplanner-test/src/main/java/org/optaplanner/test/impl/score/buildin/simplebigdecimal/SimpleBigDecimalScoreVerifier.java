@@ -39,7 +39,7 @@ public class SimpleBigDecimalScoreVerifier<Solution_> extends AbstractScoreVerif
 
     /**
      * Assert that the constraint (which is usually a score rule) of {@link PlanningSolution}
-     * has the expected weight for that score level
+     * has the expected weight for that score level.
      * @param constraintName never null, the name of the constraint, which is usually the name of the score rule
      * @param expectedWeight never null, the total weight for all matches of that 1 constraint
      * @param solution never null, the actual {@link PlanningSolution}

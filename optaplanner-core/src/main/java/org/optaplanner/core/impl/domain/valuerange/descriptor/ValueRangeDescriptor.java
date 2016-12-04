@@ -52,7 +52,7 @@ public interface ValueRangeDescriptor<Solution_> {
     /**
      * @param solution never null
      * @param entity never null. To avoid this parameter,
-     * use {@link EntityIndependentValueRangeDescriptor#extractValueRange(Solution_)} instead.
+     * use {@link EntityIndependentValueRangeDescriptor#extractValueRange} instead.
      * @return never null
      */
     ValueRange<?> extractValueRange(Solution_ solution, Object entity);

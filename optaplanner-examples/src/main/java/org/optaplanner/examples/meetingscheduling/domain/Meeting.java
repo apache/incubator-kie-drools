@@ -26,7 +26,7 @@ public class Meeting extends AbstractPersistable {
 
     private String topic;
     /**
-     * Multiply by {@link TimeGrain#GRAIN_LENGTH_IN_MINUTES} to get duration in minutes
+     * Multiply by {@link TimeGrain#GRAIN_LENGTH_IN_MINUTES} to get duration in minutes.
      */
     private int durationInGrains;
 

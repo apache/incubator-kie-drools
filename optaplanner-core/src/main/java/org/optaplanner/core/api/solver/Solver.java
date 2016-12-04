@@ -30,11 +30,11 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 
 /**
  * A Solver solves a planning problem.
- * Clients usually call {@link #solve(Solution_)} and then {@link #getBestSolution()}.
+ * Clients usually call {@link #solve} and then {@link #getBestSolution()}.
  * <p>
  * These methods are not thread-safe and should be called from the same thread,
  * except for the methods that are explicitly marked as thread-safe.
- * Note that despite that {@link #solve(Solution_)} is not thread-safe for clients of this class,
+ * Note that despite that {@link #solve} is not thread-safe for clients of this class,
  * that method is free to do multi-threading inside itself.
  * <p>
  * Build by a {@link SolverFactory}.
@@ -46,7 +46,7 @@ public interface Solver<Solution_> {
      * The best solution is the {@link PlanningSolution best solution} found during solving:
      * it might or might not be optimal, feasible or even initialized.
      * <p>
-     * The {@link #solve(Solution_)} method also returns the best solution,
+     * The {@link #solve} method also returns the best solution,
      * but this method is useful in rare asynchronous situations (although
      * {@link SolverEventListener#bestSolutionChanged(BestSolutionChangedEvent)} is often more appropriate).
      * <p>
@@ -84,14 +84,14 @@ public interface Solver<Solution_> {
 
     /**
      * This method is thread-safe.
-     * @return true if the {@link #solve(Solution_)} method is still running.
+     * @return true if the {@link #solve} method is still running.
      */
     boolean isSolving();
 
     /**
      * Notifies the solver that it should stop at its earliest convenience.
      * This method returns immediately, but it takes an undetermined time
-     * for the {@link #solve(Solution_)} to actually return.
+     * for the {@link #solve} to actually return.
      * <p>
      * This method is thread-safe.
      * @return true if successful

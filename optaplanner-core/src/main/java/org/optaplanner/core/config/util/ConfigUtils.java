@@ -183,7 +183,7 @@ public class ConfigUtils {
     }
 
     /**
-     * Name of the variable that represents {@link Runtime#availableProcessors()).
+     * Name of the variable that represents {@link Runtime#availableProcessors()}.
      */
     public static final String AVAILABLE_PROCESSOR_COUNT = "availableProcessorCount";
 

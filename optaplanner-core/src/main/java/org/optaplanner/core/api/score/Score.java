@@ -38,7 +38,7 @@ public interface Score<S extends Score> extends Comparable<S> {
     /**
      * The init score is the negative of the number of uninitialized genuine planning variables.
      * If it's 0 (which it usually is), the {@link PlanningSolution} is fully initialized
-     * and the score's {@link #toString()} does not mention it.
+     * and the score's {@link Object#toString()} does not mention it.
      * <p>
      * During {@link #compareTo(Object)}, it's even more important than the hard score:
      * if you don't want this behaviour, read about overconstrained planning in the reference manual.

@@ -43,7 +43,7 @@ public interface InnerScoreDirectorFactory<Solution_> extends ScoreDirectorFacto
 
     /**
      * Like {@link #buildScoreDirector()}, but optionally disables {@link ConstraintMatch} tracking and location
-     * for more performance (presuming the {@link ScoreDirector} implementation actually supports it to begin with)
+     * for more performance (presuming the {@link ScoreDirector} implementation actually supports it to begin with).
      * @param locatorEnabled true if a {@link ScoreDirector} implementation should track all working objects
      * for {@link ScoreDirector#locateWorkingObject(Object)}
      * @param constraintMatchEnabledPreference false if a {@link ScoreDirector} implementation

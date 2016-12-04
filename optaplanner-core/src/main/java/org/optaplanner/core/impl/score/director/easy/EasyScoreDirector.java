@@ -67,7 +67,7 @@ public class EasyScoreDirector<Solution_>
     /**
      * {@link ConstraintMatchTotal}s are not supported by this {@link ScoreDirector} implementation.
      * @throws IllegalStateException always
-     * @return
+     * @return throws exception
      */
     @Override
     public Collection<ConstraintMatchTotal> getConstraintMatchTotals() {

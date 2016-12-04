@@ -25,10 +25,10 @@ import org.optaplanner.core.api.domain.valuerange.ValueRange;
 public interface EntityIndependentValueRangeDescriptor<Solution_> extends ValueRangeDescriptor<Solution_> {
 
     /**
-     * As specified by {@link #extractValueRange(Solution_, Object)}.
+     * As specified by {@link ValueRangeDescriptor#extractValueRange}.
      * @param solution never null
      * @return never null
-     * @see #extractValueRange(Solution_, Object)
+     * @see ValueRangeDescriptor#extractValueRange
      */
     ValueRange<?> extractValueRange(Solution_ solution);
 
