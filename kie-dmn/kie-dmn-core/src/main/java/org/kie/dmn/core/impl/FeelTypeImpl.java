@@ -95,7 +95,7 @@ public class FeelTypeImpl
 
     @Override
     public boolean isComposite() {
-        return false;
+        return feelType == BuiltInType.CONTEXT;
     }
 
     @Override

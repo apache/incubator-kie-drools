@@ -271,7 +271,7 @@ public class DMNRuntimeTest {
         assertThat( result.get( "Permit Status" ), is( "Building Activity Province Permit Required" ) );
     }
 
-    @Test @Ignore("not implemented yet")
+    @Test
     public void testBoxedContext() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "BoxedContext.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_0de36357-fec0-4b4e-b7f1-382d381e06e9", "Dessin 1" );
