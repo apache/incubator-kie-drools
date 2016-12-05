@@ -16,17 +16,11 @@
 
 package org.kie.dmn.core.api.event;
 
-public interface DMNRuntimeEventListener {
+import org.kie.dmn.core.ast.BusinessKnowledgeModelNode;
 
-    void beforeEvaluateDecision(BeforeEvaluateDecisionEvent event);
+public interface BeforeEvaluateBKMEvent
+        extends DMNEvent {
 
-    void afterEvaluateDecision(AfterEvaluateDecisionEvent event);
+    BusinessKnowledgeModelNode getBusinessKnowledgeModel();
 
-    void beforeEvaluateBKM(BeforeEvaluateBKMEvent event);
-
-    void afterEvaluateBKM(AfterEvaluateBKMEvent event);
-
-    void beforeEvaluateDecisionTable(BeforeEvaluateDecisionTableEvent event);
-
-    void afterEvaluateDecisionTable(AfterEvaluateDecisionTableEvent event);
 }
