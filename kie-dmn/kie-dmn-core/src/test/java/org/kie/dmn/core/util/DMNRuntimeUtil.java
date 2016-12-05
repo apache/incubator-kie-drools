@@ -21,11 +21,7 @@ import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.core.KieHelper;
 import org.kie.dmn.core.api.DMNRuntime;
-import org.kie.dmn.core.api.event.AfterEvaluateDecisionEvent;
-import org.kie.dmn.core.api.event.AfterEvaluateDecisionTableEvent;
-import org.kie.dmn.core.api.event.BeforeEvaluateDecisionEvent;
-import org.kie.dmn.core.api.event.BeforeEvaluateDecisionTableEvent;
-import org.kie.dmn.core.api.event.DMNRuntimeEventListener;
+import org.kie.dmn.core.api.event.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +39,7 @@ public final class DMNRuntimeUtil {
     }
 
     public static DMNRuntimeEventListener createListener() {
-        return new DMNRuntimeEventListener() {
+        return new DefaultDMNRuntimeEventListener() {
             private final Logger logger = LoggerFactory.getLogger(DMNRuntimeEventListener.class);
 
             @Override
@@ -53,6 +49,16 @@ public final class DMNRuntimeUtil {
 
             @Override
             public void afterEvaluateDecision(AfterEvaluateDecisionEvent event) {
+                logger.info(event.toString());
+            }
+
+            @Override
+            public void beforeEvaluateBKM(BeforeEvaluateBKMEvent event) {
+                logger.info(event.toString());
+            }
+
+            @Override
+            public void afterEvaluateBKM(AfterEvaluateBKMEvent event) {
                 logger.info(event.toString());
             }
 
