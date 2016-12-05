@@ -17,6 +17,7 @@
 package org.kie.dmn.core.impl;
 
 import org.kie.dmn.core.api.event.*;
+import org.kie.dmn.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.core.ast.DecisionNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,18 @@ public class DMNRuntimeEventManagerImpl implements InternalDMNRuntimeEventManage
     public void fireAfterEvaluateDecision( DecisionNode decision, DMNResultImpl result) {
         AfterEvaluateDecisionEvent event = new AfterEvaluateDecisionEventImpl( decision, result );
         notifyListeners( l -> l.afterEvaluateDecision( event ) );
+    }
+
+    @Override
+    public void fireBeforeEvaluateBKM(BusinessKnowledgeModelNode bkm, DMNResultImpl result) {
+        BeforeEvaluateBKMEvent event = new BeforeEvaluateBKMEventImpl( bkm, result );
+        notifyListeners( l -> l.beforeEvaluateBKM( event ) );
+    }
+
+    @Override
+    public void fireAfterEvaluateBKM(BusinessKnowledgeModelNode bkm, DMNResultImpl result) {
+        AfterEvaluateBKMEvent event = new AfterEvaluateBKMEventImpl( bkm, result );
+        notifyListeners( l -> l.afterEvaluateBKM( event ) );
     }
 
     @Override

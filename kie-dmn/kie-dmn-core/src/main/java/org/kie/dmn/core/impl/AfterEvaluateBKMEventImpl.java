@@ -17,23 +17,26 @@
 package org.kie.dmn.core.impl;
 
 import org.kie.dmn.core.api.DMNResult;
-import org.kie.dmn.core.api.event.BeforeEvaluateDecisionEvent;
+import org.kie.dmn.core.api.event.AfterEvaluateBKMEvent;
+import org.kie.dmn.core.api.event.AfterEvaluateDecisionEvent;
+import org.kie.dmn.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.core.ast.DecisionNode;
+import org.kie.dmn.feel.model.v1_1.BusinessKnowledgeModel;
 
-public class BeforeEvaluateDecisionEventImpl
-        implements BeforeEvaluateDecisionEvent {
+public class AfterEvaluateBKMEventImpl
+        implements AfterEvaluateBKMEvent {
 
-    private DecisionNode  decision;
-    private DMNResultImpl result;
+    private BusinessKnowledgeModelNode bkm;
+    private DMNResultImpl              result;
 
-    public BeforeEvaluateDecisionEventImpl(DecisionNode decision, DMNResultImpl result) {
-        this.decision = decision;
+    public AfterEvaluateBKMEventImpl(BusinessKnowledgeModelNode bkm, DMNResultImpl result) {
+        this.bkm = bkm;
         this.result = result;
     }
 
     @Override
-    public DecisionNode getDecision() {
-        return this.decision;
+    public BusinessKnowledgeModelNode getBusinessKnowledgeModel() {
+        return this.bkm;
     }
 
     @Override
@@ -43,6 +46,7 @@ public class BeforeEvaluateDecisionEventImpl
 
     @Override
     public String toString() {
-        return "BeforeEvaluateDecisionEvent{ name='" + decision.getName() + "' id='" + decision.getId() + "' }";
+        return "AfterEvaluateBKMEvent{ name='"+bkm.getName()+"' id='"+bkm.getId()+"' }";
     }
+
 }
