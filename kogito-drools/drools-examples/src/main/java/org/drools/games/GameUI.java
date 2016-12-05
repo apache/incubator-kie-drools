@@ -56,8 +56,10 @@ public class GameUI extends Canvas{
         panel.add(this);
         setIgnoreRepaint(true);
 
+        panel.setFocusable(false); // GameUI is used in Canvas-based games only (Invaders, Pong) and only need keylistener on the external Swing JFrame 
+        setFocusable(false);
         KeyListener klistener = new GameKeyListener( ksession.getEntryPoint( "KeyPressedStream" ), ksession.getEntryPoint( "KeyReleasedStream" ) );
-        addKeyListener(klistener);
+        frame.addKeyListener(klistener);
 
         frame.setLocationRelativeTo(null); // Center in screen
         frame.pack();
