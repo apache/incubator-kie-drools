@@ -11,23 +11,28 @@
 [[partitionedSearchAlgorithm]]
 == Algorithm Description
 
-For big datasets, usually above 5000 planning entities,
-it is usually worthwhile to partition the datasets into smaller pieces and solve those separately.
-Partition Search is multi-threaded, leading to a performance boost due to more CPU utilization.
-Additionally, it finds an initial solution faster, even if it only uses only 1 CPU,
+It is often more efficient to partition large data sets (usually above 5000 planning entities)
+into smaller pieces and solve them separately.
+Partition Search is multi-threaded, so it provides a performance boost on multi-core machines
+due to higher CPU utilization.
+Additionally, even when only using one CPU, it finds an initial solution faster,
 because the search space sum of a partitioned Construction Heuristic is far less than its non-partitioned variant.
 
 However, **partitioning does lead to suboptimal results**, even if the pieces are solved optimally, as shown below:
 
 image::Chapter-Partitioned_search/mapReduceIsTerribleForTsp.png[align="center"]
 
-One way to deal with this is to run a non-partitioned Local Search after the Partitioned Search phase.
+It effectively trades a short term gain in solution quality for long term loss.
+One way to compensate for this loss,
+is to run a non-partitioned Local Search after the Partitioned Search phase.
 
 [NOTE]
 ====
 Not all use cases can be partitioned.
 It only works on use cases for which the planning entities and value ranges can be split into n partition,
 such that none of the constraints cross the boundaries between partitions.
+Partitioning only works for use cases where the planning entities and value ranges can be split into n partitions,
+without any of the constraints crossing boundaries between partitions.
 ====
 
 
@@ -61,17 +66,16 @@ Advanced configuration:
 ----
 
 The `threadFactoryClass` allows to plug in a custom `ThreadFactory` for environments
-that don't like arbitrary thread creation,
-such as most application servers, Android or Google App Engine.
+where arbitrary thread creation should be avoided, such as most application servers, Android, or Google App Engine.
 
 The `runnablePartThreadLimit` allows limiting CPU usage, see below.
 
-Just like a `<solver>` element, the `<partitionedSearch>` element can one or more <<solverPhase,phases>>.
+Just like a `<solver>` element, the `<partitionedSearch>` element can contain one or more <<solverPhase,phases>>.
 Each of those phases will be run on each partition.
 
-A popular configuration is to first run a Partitioned Search phase
+A common configuration is to first run a Partitioned Search phase
 (which includes a Construction Heuristic and a Local Search)
-and then do a non-partitioned Local Search phase:
+followed by a non-partitioned Local Search phase:
 
 [source,xml,options="nowrap"]
 ----
@@ -94,7 +98,7 @@ and then do a non-partitioned Local Search phase:
 [[customSolutionPartitioner]]
 === Custom SolutionPartitioner
 
-To use a custom partitioner, configure a partitioner on the Partitioned Search phase:
+To use a custom `SolutionPartitioner`, configure one on the Partitioned Search phase:
 
 [source,xml,options="nowrap"]
 ----
@@ -114,8 +118,8 @@ public interface SolutionPartitioner<Solution_> {
 }
 ----
 
-The `size()` of the returned `List` is the `partCount`, so the number of partitions.
-This can be decided dynamically, for example based on the size of the non-partitioned solution.
+The `size()` of the returned `List` is the `partCount` (the number of partitions).
+This can be decided dynamically, for example, based on the size of the non-partitioned solution.
 The `partCount` is unrelated to the `runnablePartThreadLimit`.
 
 For example:
@@ -170,24 +174,24 @@ public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance
 [[runnablePartThreadLimit]]
 == Runnable Part Thread Limit
 
-When running a multi-threaded solver, such as Partitioned Search, CPU power can quickly become a scare resource,
+When running a multi-threaded solver, such as Partitioned Search, CPU power can quickly become a scarce resource,
 which can cause other processes or threads to hang or freeze.
-Luckily, Planner has a system to prevent CPU starving of
+However, Planner has a system to prevent CPU starving of
 other processes (such as an SSH connection in production or your IDE in development)
 or other threads (such as the servlet threads that handle REST requests).
 
 As explained in <<sizingHardwareAndSoftware, sizing hardware and software>>,
 each solver (including each child solver) does no IO during `solve()` and therefore saturates 1 CPU core completely.
 In Partitioned Search, every partition always has its own thread, called a part thread.
-It is impossible for 2 partitions to share a thread,
+It is impossible for two partitions to share a thread,
 because of <<asynchronousTermination,asynchronous termination>>: the second thread would never run.
-Every part thread will try to consume 1 CPU core entirely, so if there are more partitions than CPU cores,
-this would hang the system.
+Every part thread will try to consume one CPU core entirely, so if there are more partitions than CPU cores,
+this will probably hang the system.
 `Thread.setPriority()` is often too weak to solve this hogging problem, so another approach is used.
 
 The `runnablePartThreadLimit` parameter specifies how many part threads are runnable at the same time.
-The other part threads will temporarily block and therefore temporarily won't consume any CPU power.
-So *it basically specifies how many CPU cores are donated to Planner*.
+The other part threads will temporarily block and therefore will not consume any CPU power.
+*This parameter basically specifies how many CPU cores are donated to Planner.*
 All part threads share the CPU cores in a round-robin manner
 to consume (more or less) the same number of CPU cycles:
 
@@ -198,7 +202,7 @@ The following `runnablePartThreadLimit` options are supported:
 * `UNLIMITED`: Allow Planner to occupy all CPU cores, do not avoid hogging.
 Useful if a no hogging CPU policy is configured on the OS level.
 * `AUTO` (default): Let Planner decide how many CPU cores to occupy. This formula is based on experience.
-It doesn't hog all CPU cores on a multi-core machine.
+It does not hog all CPU cores on a multi-core machine.
 * Static number: The number of CPU cores to consume. For example:
 +
 [source,xml,options="nowrap"]
