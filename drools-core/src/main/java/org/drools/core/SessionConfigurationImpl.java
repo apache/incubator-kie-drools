@@ -16,13 +16,13 @@
 
 package org.drools.core;
 
-import org.drools.core.command.CommandService;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.ConfFileUtils;
 import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
@@ -83,11 +83,11 @@ public class SessionConfigurationImpl extends SessionConfiguration {
 
     private Map<String, WorkItemHandler>   workItemHandlers;
     private WorkItemManagerFactory         workItemManagerFactory;
-    private CommandService                 commandService;
+    private ExecutableRunner runner;
 
     private transient ClassLoader          classLoader;
     
-    private TimerJobFactoryType              timerJobFactoryType;
+    private TimerJobFactoryType            timerJobFactoryType;
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( chainedProperties );
@@ -356,13 +356,12 @@ public class SessionConfigurationImpl extends SessionConfiguration {
                                                    "org.jbpm.process.instance.event.DefaultSignalManagerFactory" );
     }
 
-    public CommandService getCommandService(KnowledgeBase kbase,
-                                            Environment environment) {
-        if ( this.commandService == null ) {
+    public ExecutableRunner getRunner( KnowledgeBase kbase, Environment environment ) {
+        if ( this.runner == null ) {
             initCommandService( kbase,
                                 environment );
         }
-        return this.commandService;
+        return this.runner;
     }
 
     @SuppressWarnings("unchecked")
@@ -374,19 +373,19 @@ public class SessionConfigurationImpl extends SessionConfiguration {
             return;
         }
 
-        Class<CommandService> clazz = null;
+        Class<ExecutableRunner> clazz = null;
         try {
-            clazz = (Class<CommandService>) this.classLoader.loadClass( className );
+            clazz = (Class<ExecutableRunner>) this.classLoader.loadClass( className );
         } catch ( ClassNotFoundException e ) {
         }
 
         if ( clazz != null ) {
             try {
-                this.commandService = clazz.getConstructor( KnowledgeBase.class,
-                                                            KieSessionConfiguration.class,
-                                                            Environment.class ).newInstance( kbase,
-                                                                                             this,
-                                                                                             environment );
+                this.runner = clazz.getConstructor( KnowledgeBase.class,
+                                                    KieSessionConfiguration.class,
+                                                    Environment.class ).newInstance( kbase,
+                                                                                     this,
+                                                                                     environment );
             } catch ( Exception e ) {
                 throw new IllegalArgumentException( "Unable to instantiate command service '" + className + "'",
                                                     e );

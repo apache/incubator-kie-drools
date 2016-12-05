@@ -22,7 +22,7 @@ import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.command.ProcessInstanceIdCommand;
 
 import javax.xml.bind.annotation.XmlAccessType;

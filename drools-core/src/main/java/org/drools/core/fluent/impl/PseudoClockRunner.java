@@ -19,13 +19,14 @@ package org.drools.core.fluent.impl;
 import org.drools.core.command.ConversationContextManager;
 import org.drools.core.command.RequestContextImpl;
 import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.runtime.InternalLocalRunner;
 import org.drools.core.time.SessionPseudoClock;
 import org.drools.core.world.impl.ContextManagerImpl;
 import org.kie.api.command.Command;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.Executable;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.command.Context;
-import org.kie.internal.fluent.Batch;
-import org.kie.internal.fluent.Executable;
+import org.kie.api.runtime.RequestContext;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -35,15 +36,17 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public class PseudoClockRunner {
-    private PriorityQueue<Batch>          queue = new PriorityQueue<Batch>(BatchSorter.instance);
-    private Set<KieSession>               ksessions = new HashSet<KieSession>();
+public class PseudoClockRunner implements InternalLocalRunner {
 
-    private final Map<String, Context>    appContexts = new HashMap<String, Context>();
+    private final Map<String, Context>    appContexts = new HashMap<>();
     private ConversationContextManager    cvnManager = new ConversationContextManager();
     private long                          counter;
 
-    private long                          startTime;
+    private Set<KieSession> ksessions = new HashSet<>();
+
+    private PriorityQueue<Batch> queue = new PriorityQueue<>( BatchSorter.instance);
+
+    private final long startTime;
 
     public PseudoClockRunner() {
         this(System.currentTimeMillis());
@@ -53,15 +56,14 @@ public class PseudoClockRunner {
         this.startTime = startTime;
     }
 
-    public Map<String, Context> getAppContexts() {
-        return appContexts;
+    @Override
+    public RequestContext execute( Executable executable, RequestContext ctx ) {
+        executeBatches( ( (InternalExecutable) executable ), ctx );
+        executeQueue( ctx );
+        return ctx;
     }
 
-    public Context execute(Executable executable) {
-        return execute( executable, createContext() );
-    }
-
-    public Context execute( Executable executable, Context ctx ) {
+    private void executeBatches( InternalExecutable executable, RequestContext ctx ) {
         for (Batch batch : executable.getBatches()) {
             if ( batch.getDistance() == 0L ) {
                 executeBatch( batch, ctx );
@@ -69,7 +71,9 @@ public class PseudoClockRunner {
                 queue.add( batch );
             }
         }
+    }
 
+    private void executeQueue( RequestContext ctx ) {
         while ( !queue.isEmpty() ) {
             Batch batch = queue.remove();
             long timeNow = startTime + batch.getDistance();
@@ -80,9 +84,7 @@ public class PseudoClockRunner {
             for (Command cmd : batch.getCommands() ) {
                 Object returned = ((ExecutableCommand)cmd).execute( ctx );
                 if ( returned != null ) {
-                    if (ctx instanceof RequestContextImpl) {
-                        ( (RequestContextImpl) ctx ).setLastReturned( returned );
-                    }
+                    ctx.setResult( returned );
                     if ( returned instanceof KieSession ) {
                         KieSession ksession = ( KieSession ) returned;
                         updateKieSessionTime(timeNow, batch.getDistance(), ksession); // make sure all sessions are set to timeNow
@@ -91,33 +93,22 @@ public class PseudoClockRunner {
                 }
             }
         }
-
-        return ctx;
     }
 
-    private void executeBatch( Batch batch, Context ctx ) {
-        long timeNow = startTime;
+    private void executeBatch( Batch batch, RequestContext ctx ) {
         // anything with a temporal distance of 0 is executed now
         // everything else must be handled by a priority queue and timer afterwards.
         for (Command cmd : batch.getCommands() ) {
             Object returned = ((ExecutableCommand)cmd).execute( ctx );
             if ( returned != null ) {
-                if (ctx instanceof RequestContextImpl) {
-                    ( (RequestContextImpl) ctx ).setLastReturned( returned );
-                }
+                ctx.setResult( returned );
                 if ( returned instanceof KieSession ) {
                     KieSession ksession = ( KieSession ) returned;
-                    updateKieSessionTime(timeNow, 0, ksession); // make sure all sessions are set to timeNow
+                    updateKieSessionTime( startTime, 0, ksession ); // make sure all sessions are set to timeNow
                     ksessions.add((KieSession)returned);
                 }
             }
         }
-    }
-
-    public RequestContextImpl createContext() {
-        return new RequestContextImpl( counter++,
-                                       new ContextManagerImpl( appContexts ),
-                                       cvnManager );
     }
 
     private void updateKieSessionTime(long timeNow, long distance, KieSession ksession) {
@@ -127,10 +118,9 @@ public class PseudoClockRunner {
             long               newTime     = startTime + distance;
             long               currentTime = clock.getCurrentTime();
             clock.advanceTime( newTime - currentTime,
-                               TimeUnit.MILLISECONDS);
+                               TimeUnit.MILLISECONDS );
         }
     }
-
 
     private static class BatchSorter implements Comparator<Batch> {
         public static BatchSorter instance = new BatchSorter();
@@ -147,6 +137,11 @@ public class PseudoClockRunner {
 
             return 0;
         }
+    }
 
+    public RequestContext createContext() {
+        return new RequestContextImpl( counter++,
+                                       new ContextManagerImpl( appContexts ),
+                                       cvnManager );
     }
 }

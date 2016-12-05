@@ -21,7 +21,7 @@ import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.KieBase;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 public class KnowledgeBaseAddKnowledgePackagesCommand
     implements

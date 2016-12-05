@@ -159,7 +159,7 @@ public abstract class WorkingMemoryLogger
             statelessSession.getKnowledgeBase().addEventListener( (KieBaseEventListener) this );
         } else if (session instanceof CommandBasedStatefulKnowledgeSession) {
             StatefulKnowledgeSessionImpl statefulSession =
-                    ((StatefulKnowledgeSessionImpl)(( RegistryContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).lookup( KieSession.class));
+                    ((StatefulKnowledgeSessionImpl)(( RegistryContext)((CommandBasedStatefulKnowledgeSession) session).getRunner().createContext()).lookup( KieSession.class ));
             isPhreak = statefulSession.getKnowledgeBase().getConfiguration().isPhreakEnabled();
             InternalWorkingMemory eventManager = statefulSession;
             eventManager.addEventListener( (RuleRuntimeEventListener) this );
