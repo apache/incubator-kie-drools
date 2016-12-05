@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.api.event;
 
+import org.kie.dmn.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.core.ast.DecisionNode;
 import org.kie.dmn.core.impl.DMNResultImpl;
 
@@ -26,6 +27,10 @@ public interface InternalDMNRuntimeEventManager extends DMNRuntimeEventManager {
     void fireBeforeEvaluateDecision(DecisionNode decision, DMNResultImpl result);
 
     void fireAfterEvaluateDecision(DecisionNode decision, DMNResultImpl result);
+
+    void fireBeforeEvaluateBKM(BusinessKnowledgeModelNode bkm, DMNResultImpl result);
+
+    void fireAfterEvaluateBKM(BusinessKnowledgeModelNode bkm, DMNResultImpl result);
 
     void fireBeforeEvaluateDecisionTable(String dtName, DMNResultImpl result);
 
