@@ -24,9 +24,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.RequestContext;
 import org.kie.internal.command.ContextManager;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class RequestContextImpl extends ContextImpl implements RequestContext {
 
     private Context appContext;
@@ -34,11 +31,9 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
 
     private ConversationContextManager cvnManager;
 
-    private Object lastReturned;
+    private Object result;
 
     private String lastSet;
-
-    private final Map<String, Object> out = new HashMap<String, Object>();
 
     private Exception exception;
 
@@ -90,13 +85,14 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
         return object;
     }
 
-    public Object getLastReturned() {
-        return lastReturned;
+    @Override
+    public Object getResult() {
+        return result;
     }
 
     @Override
-    public Object getResult() {
-        return getLastReturned();
+    public void setResult( Object result ) {
+        this.result = result;
     }
 
     @Override
@@ -111,21 +107,12 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
         return this;
     }
 
-    public void setLastReturned( Object lastReturned ) {
-        this.lastReturned = lastReturned;
-    }
-
     public String getLastSet() {
         return lastSet;
     }
 
     public void setLastSetOrGet(String lastSet) {
         this.lastSet = lastSet;
-    }
-
-    @Override
-    public Map<String, Object> getOut() {
-        return out;
     }
 
     public Exception getException() {

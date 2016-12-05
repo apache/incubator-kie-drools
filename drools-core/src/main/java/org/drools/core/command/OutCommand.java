@@ -29,7 +29,7 @@ public class OutCommand<T> implements ExecutableCommand<T> {
             }
         }
 
-        ((RequestContextImpl)context).getOut().put(actualName, returned);
+        context.set(actualName, returned);
 
         return returned;
     }

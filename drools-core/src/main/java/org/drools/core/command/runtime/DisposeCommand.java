@@ -32,7 +32,7 @@ public class DisposeCommand
     ExecutableCommand<Void> {
 
     public Void execute(Context context) {
-        KieSession ksession = ((RegistryContext)context).lookup( KieSession.class );
+        KieSession ksession = ( (RegistryContext) context ).lookup( KieSession.class );
         ksession.dispose();
         return null;
     }
@@ -41,4 +41,7 @@ public class DisposeCommand
         return "ksession.dispose();";
     }
 
+    public boolean canRunInTransaction() {
+        return false;
+    }
 }

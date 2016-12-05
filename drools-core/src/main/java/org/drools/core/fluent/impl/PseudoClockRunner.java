@@ -16,10 +16,10 @@
 
 package org.drools.core.fluent.impl;
 
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.runtime.InternalLocalRunner;
 import org.drools.core.command.ConversationContextManager;
 import org.drools.core.command.RequestContextImpl;
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.runtime.InternalLocalRunner;
 import org.drools.core.time.SessionPseudoClock;
 import org.drools.core.world.impl.ContextManagerImpl;
 import org.kie.api.command.Command;
@@ -38,13 +38,13 @@ import java.util.concurrent.TimeUnit;
 
 public class PseudoClockRunner implements InternalLocalRunner {
 
-    private final Map<String, Context>    appContexts = new HashMap<String, Context>();
+    private final Map<String, Context>    appContexts = new HashMap<>();
     private ConversationContextManager    cvnManager = new ConversationContextManager();
     private long                          counter;
 
-    private Set<KieSession> ksessions = new HashSet<KieSession>();
+    private Set<KieSession> ksessions = new HashSet<>();
 
-    private PriorityQueue<Batch> queue = new PriorityQueue<Batch>( BatchSorter.instance);
+    private PriorityQueue<Batch> queue = new PriorityQueue<>( BatchSorter.instance);
 
     private final long startTime;
 
@@ -56,10 +56,6 @@ public class PseudoClockRunner implements InternalLocalRunner {
         this.startTime = startTime;
     }
 
-    public Map<String, Context> getAppContexts() {
-        return appContexts;
-    }
-
     @Override
     public RequestContext execute( Executable executable, RequestContext ctx ) {
         executeBatches( ( (InternalExecutable) executable ), ctx );
@@ -67,7 +63,7 @@ public class PseudoClockRunner implements InternalLocalRunner {
         return ctx;
     }
 
-    private void executeBatches( InternalExecutable executable, Context ctx ) {
+    private void executeBatches( InternalExecutable executable, RequestContext ctx ) {
         for (Batch batch : executable.getBatches()) {
             if ( batch.getDistance() == 0L ) {
                 executeBatch( batch, ctx );
@@ -77,7 +73,7 @@ public class PseudoClockRunner implements InternalLocalRunner {
         }
     }
 
-    private void executeQueue( Context ctx ) {
+    private void executeQueue( RequestContext ctx ) {
         while ( !queue.isEmpty() ) {
             Batch batch = queue.remove();
             long timeNow = startTime + batch.getDistance();
@@ -88,9 +84,7 @@ public class PseudoClockRunner implements InternalLocalRunner {
             for (Command cmd : batch.getCommands() ) {
                 Object returned = ((ExecutableCommand)cmd).execute( ctx );
                 if ( returned != null ) {
-                    if (ctx instanceof RequestContextImpl ) {
-                        ( (RequestContextImpl) ctx ).setLastReturned( returned );
-                    }
+                    ctx.setResult( returned );
                     if ( returned instanceof KieSession ) {
                         KieSession ksession = ( KieSession ) returned;
                         updateKieSessionTime(timeNow, batch.getDistance(), ksession); // make sure all sessions are set to timeNow
@@ -101,19 +95,16 @@ public class PseudoClockRunner implements InternalLocalRunner {
         }
     }
 
-    private void executeBatch( Batch batch, Context ctx ) {
-        long timeNow = startTime;
+    private void executeBatch( Batch batch, RequestContext ctx ) {
         // anything with a temporal distance of 0 is executed now
         // everything else must be handled by a priority queue and timer afterwards.
         for (Command cmd : batch.getCommands() ) {
             Object returned = ((ExecutableCommand)cmd).execute( ctx );
             if ( returned != null ) {
-                if (ctx instanceof RequestContextImpl) {
-                    ( (RequestContextImpl) ctx ).setLastReturned( returned );
-                }
+                ctx.setResult( returned );
                 if ( returned instanceof KieSession ) {
                     KieSession ksession = ( KieSession ) returned;
-                    updateKieSessionTime(timeNow, 0, ksession); // make sure all sessions are set to timeNow
+                    updateKieSessionTime( startTime, 0, ksession ); // make sure all sessions are set to timeNow
                     ksessions.add((KieSession)returned);
                 }
             }

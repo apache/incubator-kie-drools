@@ -21,6 +21,7 @@ import org.drools.core.command.impl.AbstractInterceptor;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.fluent.impl.InternalExecutable;
 import org.drools.core.fluent.impl.PseudoClockRunner;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -374,7 +375,7 @@ public class PersistableRunner implements SingleSessionCommandService {
     }
 
     @Override
-    public RequestContext execute( Executable executable, RequestContext ctx ) {
+    public synchronized RequestContext execute( Executable executable, RequestContext ctx ) {
         runner.execute( executable, ctx );
         return ctx;
     }
@@ -537,6 +538,12 @@ public class PersistableRunner implements SingleSessionCommandService {
 
         @Override
         public RequestContext execute( Executable executable, RequestContext context ) {
+            if ( !( (InternalExecutable) executable ).canRunInTransaction() ) {
+                executeNext(executable, context);
+                jpm.dispose();
+                return context;
+            }
+
             // Open the entity manager before the transaction begins.
             PersistenceContext persistenceContext = jpm.getApplicationScopedPersistenceContext();
 

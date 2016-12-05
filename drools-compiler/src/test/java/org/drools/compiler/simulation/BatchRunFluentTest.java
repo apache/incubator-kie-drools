@@ -59,7 +59,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
         RequestContext requestContext = ExecutableRunner.create().execute( f.getExecutable() );
 
-        assertEquals("h1", requestContext.getOut().get("outS"));
+        assertEquals("h1", requestContext.get("outS"));
     }
 
 
@@ -76,7 +76,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
-        assertEquals("h1", requestContext.getOut().get("outS"));
+        assertEquals("h1", requestContext.get("outS"));
         assertEquals("h1", requestContext.get("outS"));
     }
 
@@ -94,7 +94,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         try {
             RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
-            assertEquals("h1", requestContext.getOut().get("out1"));
+            assertEquals("h1", requestContext.get("out1"));
             fail("Must throw Exception, as no prior set was called and no name given to out");
         } catch ( Exception e ) {
 
@@ -127,8 +127,8 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
-        assertEquals("h1", requestContext.getOut().get("outS1"));
-        assertEquals("h2", requestContext.getOut().get("outS2"));
+        assertEquals("h1", requestContext.get("outS1"));
+        assertEquals("h2", requestContext.get("outS2"));
     }
 
     @Test
@@ -157,8 +157,8 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
-        assertEquals("h1", requestContext.getOut().get("outS1"));
-        assertEquals("h2", requestContext.getOut().get("outS2"));
+        assertEquals("h1", requestContext.get("outS1"));
+        assertEquals("h2", requestContext.get("outS2"));
     }
 
 
@@ -198,7 +198,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
-        assertNull(requestContext.getOut().get("outS"));
+        assertNull(requestContext.get("outS"));
         assertNull(requestContext.getApplicationContext().get("outS1") );
         assertNull(requestContext.getConversationContext() );
         assertEquals("h1", requestContext.get("outS1") );
@@ -220,7 +220,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         RequestContext requestContext = runner.execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
-        assertEquals(null, requestContext.getOut().get("outS"));
+        assertEquals(null, requestContext.get("outS"));
         assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
 
         // Make another request, add to application context, assert old and new values are there.
@@ -255,7 +255,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         RequestContextImpl requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
 
         // check that nothing went to the 'out'
-        assertEquals(null, requestContext.getOut().get("outS"));
+        assertEquals(null, requestContext.get("outS"));
 
         String conversationId = requestContext.getConversationContext().getName();
 
@@ -300,7 +300,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .dispose();
         RequestContext requestContext = runner.execute(f.getExecutable());
 
-        assertEquals("h1", requestContext.getOut().get("outS1"));
+        assertEquals("h1", requestContext.get("outS1"));
         assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
         assertEquals("h1", requestContext.get("outS1") );
 
@@ -316,7 +316,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .dispose();
         requestContext = runner.execute(f.getExecutable());
 
-        assertEquals("h2", requestContext.getOut().get("outS1"));
+        assertEquals("h2", requestContext.get("outS1"));
         assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
         assertEquals("h2", requestContext.getConversationContext().get("outS1") );
         assertEquals("h2", requestContext.get("outS1") );
@@ -334,7 +334,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .dispose();
         requestContext = runner.execute(f.getExecutable());
 
-        assertEquals("h3", requestContext.getOut().get("outS1"));
+        assertEquals("h3", requestContext.get("outS1"));
         assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
         assertEquals("h2", requestContext.getConversationContext().get("outS1") );
         assertEquals("h3", requestContext.get("outS1") );
@@ -366,8 +366,8 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
         RequestContext requestContext = runner.execute(f.getExecutable());
 
-        assertEquals(1000l, requestContext.getOut().get("timeNow1"));
-        assertEquals(2000l, requestContext.getOut().get("timeNow2"));
+        assertEquals(1000l, requestContext.get("timeNow1"));
+        assertEquals(2000l, requestContext.get("timeNow2"));
     }
 
     public static KieModule createAndDeployJar( KieServices ks,

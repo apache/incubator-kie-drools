@@ -22,4 +22,7 @@ public interface ExecutableCommand<T> extends org.kie.api.command.Command<T> {
 
     T execute(Context context);
 
+    default boolean canRunInTransaction() {
+        return true;
+    }
 }
