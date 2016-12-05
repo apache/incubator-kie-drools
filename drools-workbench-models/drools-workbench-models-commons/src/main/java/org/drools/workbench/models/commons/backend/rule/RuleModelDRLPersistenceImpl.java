@@ -1181,7 +1181,7 @@ public class RuleModelDRLPersistenceImpl
                                                buf );
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE:
-                    buildTemplateFieldValue( type,
+                    buildTemplateFieldValue( operator,type,
                                              fieldType,
                                              value,
                                              buf );
@@ -1253,7 +1253,7 @@ public class RuleModelDRLPersistenceImpl
             buf.append( " " );
         }
 
-        private void populateValueList( final StringBuilder buf,
+        protected void populateValueList( final StringBuilder buf,
                                         final int type,
                                         final String fieldType,
                                         final String value ) {
@@ -1297,16 +1297,26 @@ public class RuleModelDRLPersistenceImpl
             }
         }
 
-        protected void buildTemplateFieldValue( final int type,
+        protected void buildTemplateFieldValue( final String operator,
+        										final int type,
                                                 final String fieldType,
                                                 final String value,
                                                 final StringBuilder buf ) {
-            buf.append( " " );
-            constraintValueBuilder.buildLHSFieldValue( buf,
+        	if ( OperatorsOracle.operatorRequiresList( operator ) ) {
+        		buf.append( " " );
+            	constraintValueBuilder.buildLHSFieldValue( buf,
+                                                       type,
+                                                       DataType.TYPE_COLLECTION,
+                                                       "@{makeValueList(" + value + ")}" );
+            	buf.append( " " );
+            }  else {
+            	buf.append( " " );
+            	constraintValueBuilder.buildLHSFieldValue( buf,
                                                        type,
                                                        fieldType,
                                                        "@{removeDelimitingQuotes(" + value + ")}" );
-            buf.append( " " );
+            	buf.append( " " );
+            }
         }
 
         private void buildEnumFieldValue( final String operator,
