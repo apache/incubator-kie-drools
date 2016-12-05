@@ -137,12 +137,15 @@ public class DMNRuntimeImpl
             return;
         }
         try {
+            eventManager.fireBeforeEvaluateBKM( bkm, result );
             DMNExpressionEvaluator.EvaluatorResult er = bkm.getEvaluator().evaluate( eventManager, result );
             if( er.getResultType() == DMNExpressionEvaluator.ResultType.SUCCESS ) {
                 result.getContext().set( bkm.getBusinessKnowledModel().getVariable().getName(), er.getResult() );
             }
         } catch( Throwable t ) {
             result.addMessage( DMNMessage.Severity.ERROR, "Error evaluating Business Knowledge Model node '"+bkm.getName()+ "': "+t.getMessage(), bkm.getId(), t );
+        } finally {
+            eventManager.fireAfterEvaluateBKM( bkm, result );
         }
     }
 
