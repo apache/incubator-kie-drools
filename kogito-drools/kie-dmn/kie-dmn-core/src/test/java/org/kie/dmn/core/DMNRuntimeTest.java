@@ -291,6 +291,8 @@ public class DMNRuntimeTest {
     @Test
     public void testBKMNode() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0009-invocation-arithmetic.dmn", getClass() );
+        runtime.addListener( DMNRuntimeUtil.createListener() );
+        
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11", "literal invocation1" );
         assertThat( dmnModel, notNullValue() );
         assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false) );
