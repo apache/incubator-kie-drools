@@ -77,8 +77,7 @@ public class FilterExpressionNode
                 for( Object v : list ) {
                     evaluateExpressionInContext( ctx, results, v );
                 }
-                // if it is a singleton, return the element, otherwise return a list
-                return results.size() == 1 ? results.get( 0 ) : results;
+                return results;
             }
         } catch ( Exception e ) {
             logger.error( "Error executing list filter: " + getText(), e );

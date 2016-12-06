@@ -69,7 +69,7 @@ public class FEELRangesTest extends BaseFEELTest {
                 {"[1..\"cheese\"]", null},
                 {"[1..date(\"1978-09-12\")]", null},
 
-                {"[([1, 2, 3, 4][item = 4])..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(4), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED)},
+                {"[([1, 2, 3, 4][4])..8]", new RangeImpl(Range.RangeBoundary.CLOSED, BigDecimal.valueOf(4), BigDecimal.valueOf(8), Range.RangeBoundary.CLOSED)},
 
                 {"{ x: 3, numberrange: [1+x..8]}", new HashMap<String, Object>() {{
                     put("x", BigDecimal.valueOf(3));

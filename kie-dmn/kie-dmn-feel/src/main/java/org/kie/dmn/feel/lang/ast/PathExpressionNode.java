@@ -71,7 +71,7 @@ public class PathExpressionNode
                         results.add( r );
                     }
                 }
-                return results.size() == 1 ? results.get( 0 ) : results;
+                return results;
             } else {
                 return fetchValue( o );
             }
