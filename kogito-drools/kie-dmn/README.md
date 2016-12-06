@@ -38,7 +38,7 @@ according to the FEEL grammar, these are not valid function names, as "and" and 
  notation for numbers. E.g.: 1.2e5 (scientific notation), 0xD5 (hexadecimal notation).
  
 2. __Support for expressions as end points in ranges__: this implementation supports expressions as endpoints 
-for ranges. E.g: `[date("2016-11-24")..date("2016-11-27")`
+for ranges. E.g: `[date("2016-11-24")..date("2016-11-27")]`
 
 3. __Support for additional types__: the specification only defines the following as basic types of the language:
 
@@ -67,6 +67,11 @@ unary test invocation analogously as functions. E.g.:
     Bob is minor : is minor( bob.age )
 }
 ```
+
+5. __Support for additional built-in functions__: additional functions are supported out of the box: 
+
+* `now()` : returns the current date and time
+* `decision table()` : returns a decision table function. Although the spec mentions a decision table function on page 114, it is not implementable as defined. 
 
 # DMN engine implementation notes
 

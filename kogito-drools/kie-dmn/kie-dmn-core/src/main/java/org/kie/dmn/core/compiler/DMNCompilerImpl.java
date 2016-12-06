@@ -323,6 +323,13 @@ public class DMNCompilerImpl implements DMNCompiler {
                                   compileExpression( model, node, ce.getExpression() ) );
             }
             return ctxEval;
+        } else if( expression instanceof org.kie.dmn.feel.model.v1_1.List ) {
+            org.kie.dmn.feel.model.v1_1.List listDef = (org.kie.dmn.feel.model.v1_1.List) expression;
+            DMNListEvaluator listEval = new DMNListEvaluator( node.getName(), node.getId(), listDef );
+            for( Expression expr : listDef.getExpression() ) {
+                listEval.addElement( compileExpression( model, node, expr ) );
+            }
+            return listEval;
         } else if( expression instanceof Invocation ) {
             Invocation invocation = (Invocation) expression;
             // expression must be a literal text with the name of the function
