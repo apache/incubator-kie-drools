@@ -286,6 +286,39 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         assertEquals("KBase1", kbaseName);
     }
 
+    @Test
+    public void testResourceTypeInKieModuleReleaseId() throws Exception {
+        final KieServices ks = new KieServicesImpl() {
+
+            @Override
+            public KieRepository getRepository() {
+                return new KieRepositoryImpl(); // override repository to not store the artifact on deploy to trigger load from maven repo
+            }
+        };
+
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "maven-test.drl", "1.0-SNAPSHOT");
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, true, "rule1", "rule2");
+        String pomText = getPom(releaseId);
+        File pomFile = new File(System.getProperty("java.io.tmpdir"), MavenRepository.toFileName(releaseId, null) + ".pom");
+        try {
+            FileOutputStream fos = new FileOutputStream(pomFile);
+            fos.write(pomText.getBytes());
+            fos.flush();
+            fos.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        MavenRepository.getMavenRepository().installArtifact(releaseId, kJar1, pomFile);
+
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
+        KieBase kieBase = kieContainer.getKieBase("KBase1");
+        assertNotNull(kieBase);
+
+        assertEquals("There must be one package built", 1, kieBase.getKiePackages().size());
+
+
+    }
+
     public static String generatePomXml(ReleaseId releaseId, ReleaseId... dependencies) {
         StringBuilder sBuilder = new StringBuilder();
         sBuilder.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n");
