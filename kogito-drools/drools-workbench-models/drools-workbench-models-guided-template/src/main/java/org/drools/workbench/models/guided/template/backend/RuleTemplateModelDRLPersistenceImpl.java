@@ -17,6 +17,7 @@
 package org.drools.workbench.models.guided.template.backend;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +30,8 @@ import org.drools.core.util.IoUtils;
 import org.drools.template.DataProvider;
 import org.drools.template.DataProviderCompiler;
 import org.drools.template.objects.ArrayDataProvider;
+import org.drools.template.parser.DefaultTemplateContainer;
+import org.drools.template.parser.TemplateDataListener;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.commons.backend.rule.RuleModelPersistence;
 import org.drools.workbench.models.commons.backend.rule.context.LHSGeneratorContext;
@@ -543,9 +546,11 @@ public class RuleTemplateModelDRLPersistenceImpl
 
         final DataProvider dataProvider = chooseDataProvider( model );
         final DataProviderCompiler tplCompiler = new DataProviderCompiler();
+        final InputStream templateStream = new ByteArrayInputStream( ruleTemplate.getBytes( IoUtils.UTF8_CHARSET ) );
+        final DefaultTemplateContainer tc = new DefaultTemplateContainer( templateStream, false );
+        final TemplateDataListener listener = new TemplateDataListener( tc, false );
         final String generatedDrl = tplCompiler.compile( dataProvider,
-                                                         new ByteArrayInputStream( ruleTemplate.getBytes( IoUtils.UTF8_CHARSET ) ),
-                                                         false );
+                                                         listener );
 
         log.debug( "generated drl:\n{}", generatedDrl );
 

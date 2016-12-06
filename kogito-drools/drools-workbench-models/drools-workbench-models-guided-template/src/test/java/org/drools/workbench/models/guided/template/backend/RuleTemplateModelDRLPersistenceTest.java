@@ -4457,7 +4457,7 @@ public class RuleTemplateModelDRLPersistenceTest {
         p2sfc1.setFactType( "Smurf" );
         p2sfc1.setFieldName( "field3" );
         p2sfc1.setFieldType( DataType.TYPE_STRING );
-        p2sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE);
+        p2sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
         p2sfc1.setValue( "$key" );
 
         fp2.addConstraint( p2sfc1 );
@@ -4498,6 +4498,122 @@ public class RuleTemplateModelDRLPersistenceTest {
 
         checkMarshall( expected2,
                        m2 );
+    }
+
+    @Test
+    public void checkPattern1StrictlyLiteralPattern2StrictlyTemplate() {
+        FactPattern fp1 = new FactPattern( "Smurf" );
+        fp1.setBoundName( "p1" );
+
+        SingleFieldConstraint p1sfc1 = new SingleFieldConstraint();
+        p1sfc1.setOperator( "==" );
+        p1sfc1.setFactType( "Smurf" );
+        p1sfc1.setFieldName( "field1" );
+        p1sfc1.setFieldType( DataType.TYPE_STRING );
+        p1sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p1sfc1.setValue( "value1" );
+
+        SingleFieldConstraint p1sfc2 = new SingleFieldConstraint();
+        p1sfc2.setOperator( "==" );
+        p1sfc2.setFactType( "Smurf" );
+        p1sfc2.setFieldName( "field2" );
+        p1sfc2.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        p1sfc2.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p1sfc2.setValue( "123" );
+
+        ActionUpdateField p1auf1 = new ActionUpdateField( "p1" );
+        p1auf1.addFieldValue( new ActionFieldValue( "field1",
+                                                    "newValue",
+                                                    DataType.TYPE_STRING ) );
+        p1auf1.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
+        ActionUpdateField p1auf2 = new ActionUpdateField( "p1" );
+        p1auf2.addFieldValue( new ActionFieldValue( "field2",
+                                                    "12345",
+                                                    DataType.TYPE_NUMERIC_INTEGER ) );
+        p1auf2.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_LITERAL );
+
+        fp1.addConstraint( p1sfc1 );
+        fp1.addConstraint( p1sfc2 );
+
+        FactPattern fp2 = new FactPattern( "Smurf" );
+        fp2.setBoundName( "p2" );
+
+        SingleFieldConstraint p2sfc1 = new SingleFieldConstraint();
+        p2sfc1.setOperator( "==" );
+        p2sfc1.setFactType( "Smurf" );
+        p2sfc1.setFieldName( "field1" );
+        p2sfc1.setFieldType( DataType.TYPE_STRING );
+        p2sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        p2sfc1.setValue( "$oldField1" );
+
+        SingleFieldConstraint p2sfc2 = new SingleFieldConstraint();
+        p2sfc2.setOperator( "==" );
+        p2sfc2.setFactType( "Smurf" );
+        p2sfc2.setFieldName( "field2" );
+        p2sfc2.setFieldType( DataType.TYPE_NUMERIC_INTEGER );
+        p2sfc2.setConstraintValueType( SingleFieldConstraint.TYPE_TEMPLATE );
+        p2sfc2.setValue( "$oldField2" );
+
+        ActionUpdateField p2auf1 = new ActionUpdateField( "p2" );
+        p2auf1.addFieldValue( new ActionFieldValue( "field1",
+                                                    "$newField1",
+                                                    DataType.TYPE_STRING ) );
+        p2auf1.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+        ActionUpdateField p2auf2 = new ActionUpdateField( "p2" );
+        p2auf2.addFieldValue( new ActionFieldValue( "field2",
+                                                    "$newField2",
+                                                    DataType.TYPE_NUMERIC_INTEGER ) );
+        p2auf2.getFieldValues()[ 0 ].setNature( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+
+        fp2.addConstraint( p2sfc1 );
+        fp2.addConstraint( p2sfc2 );
+
+        //Test 1
+        TemplateModel m1 = new TemplateModel();
+        m1.addLhsItem( fp1 );
+        m1.addLhsItem( fp2 );
+        m1.addRhsItem( p1auf1 );
+        m1.addRhsItem( p1auf2 );
+        m1.addRhsItem( p2auf1 );
+        m1.addRhsItem( p2auf2 );
+        m1.name = "r1";
+
+        m1.addRow( new String[]{ null, null, null, null } );
+
+        final String expected1 = "rule \"r1_0\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf( field1 == \"value1\", field2 == 123 )\n" +
+                "  then\n" +
+                "    modify( p1 ) {" +
+                "       setField1( \"newValue\" )," +
+                "       setField2( 12345 )" +
+                "    }" +
+                "end";
+
+        checkMarshall( expected1,
+                       m1 );
+
+        m1.addRow( new String[]{ "abc", "0", "def", "1" } );
+
+        final String expected2 = "rule \"r1_1\"\n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    p1 : Smurf( field1 == \"value1\", field2 == 123 )\n" +
+                "    p2 : Smurf( field1 == \"abc\", field2 == 0 )\n" +
+                "  then\n" +
+                "    modify( p1 ) {" +
+                "       setField1( \"newValue\" )," +
+                "       setField2( 12345 )" +
+                "    }" +
+                "    modify( p2 ) {" +
+                "       setField1( \"def\" )," +
+                "       setField2( 1 )" +
+                "    }" +
+                "end";
+
+        checkMarshall( expected2 + expected1,
+                       m1 );
     }
 
     private void assertEqualsIgnoreWhitespace( final String expected,
