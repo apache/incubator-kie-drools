@@ -15,13 +15,13 @@
 
 package org.jbpm.services.task.commands;
 
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.Group;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.kie.api.task.model.Group;
-import org.kie.internal.command.Context;
 
 @XmlRootElement(name="get-group-command")
 @XmlAccessorType(XmlAccessType.NONE)

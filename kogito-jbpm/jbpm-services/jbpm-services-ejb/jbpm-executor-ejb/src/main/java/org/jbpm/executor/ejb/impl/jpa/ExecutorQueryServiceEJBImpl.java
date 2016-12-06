@@ -15,12 +15,12 @@
 
 package org.jbpm.executor.ejb.impl.jpa;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-
-import org.drools.core.command.CommandService;
 import org.jbpm.executor.impl.jpa.ExecutorQueryServiceImpl;
 import org.kie.api.executor.ExecutorQueryService;
+import org.kie.api.runtime.CommandExecutor;
+
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 
 
 @Stateless
@@ -32,7 +32,7 @@ public class ExecutorQueryServiceEJBImpl extends ExecutorQueryServiceImpl implem
 
 	@EJB(beanInterface=TransactionalCommandServiceExecutorEJBImpl.class)
 	@Override
-	public void setCommandService(CommandService commandService) {
+	public void setCommandService(CommandExecutor commandService ) {
 		super.setCommandService(commandService);
 	}
 

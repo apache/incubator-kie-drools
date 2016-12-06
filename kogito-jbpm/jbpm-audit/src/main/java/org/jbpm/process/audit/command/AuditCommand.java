@@ -21,7 +21,7 @@ import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.strategy.PersistenceStrategyType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

@@ -16,7 +16,6 @@
 
 package org.jbpm.workflow.instance.node;
 
-import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
@@ -34,13 +33,14 @@ import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.ProcessInstanceResolverFactory;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.definition.process.Process;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.internal.KieInternalServices;
-import org.kie.internal.command.Context;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
@@ -117,8 +117,8 @@ public class DynamicUtils {
             workItemNodeInstance.addEventListeners();
     		executeWorkItem((StatefulKnowledgeSessionImpl) ksession, workItem, workItemNodeInstance);
 		} else if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-    		CommandService commandService = ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
-    		commandService.execute(new ExecutableCommand<Void>() {
+			ExecutableRunner runner = ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
+    		runner.execute(new ExecutableCommand<Void>() {
 				private static final long serialVersionUID = 5L;
 				public Void execute(Context context) {
                     StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((RegistryContext) context).lookup( KieSession.class );
@@ -181,7 +181,7 @@ public class DynamicUtils {
     	if (ksession instanceof StatefulKnowledgeSessionImpl) {
     		return executeSubProcess((StatefulKnowledgeSessionImpl) ksession, processId, parameters, processInstance, subProcessNodeInstance);
     	} else if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-    		CommandService commandService = ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
+			ExecutableRunner commandService = ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
     		return commandService.execute(new ExecutableCommand<Long>() {
 				private static final long serialVersionUID = 5L;
 				public Long execute(Context context) {

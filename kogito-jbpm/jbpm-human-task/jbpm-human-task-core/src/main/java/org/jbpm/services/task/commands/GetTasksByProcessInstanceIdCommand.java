@@ -15,16 +15,15 @@
 
 package org.jbpm.services.task.commands;
 
-import java.util.List;
+import org.kie.api.runtime.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-
-import org.kie.internal.command.Context;
-import org.kie.internal.command.ProcessInstanceIdCommand;
+import java.util.List;
 
 @XmlRootElement(name="get-tasks-by-process-instance-id-command")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -53,7 +52,7 @@ public class GetTasksByProcessInstanceIdCommand extends TaskCommand<List<Long>> 
 		this.processInstanceId = processInstanceId;
 	}
 
-	public List<Long> execute(Context cntxt) {
+	public List<Long> execute(Context cntxt ) {
         TaskContext context = (TaskContext) cntxt;
     	return context.getTaskQueryService().getTasksByProcessInstanceId(processInstanceId);
     }

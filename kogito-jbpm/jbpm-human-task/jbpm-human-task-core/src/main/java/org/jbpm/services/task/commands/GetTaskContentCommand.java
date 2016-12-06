@@ -15,21 +15,20 @@
 
 package org.jbpm.services.task.commands;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.kie.api.runtime.Context;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Task;
-import org.kie.internal.command.Context;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.TaskContentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.HashMap;
+import java.util.Map;
 
 @XmlRootElement(name="get-task-content-command")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -46,7 +45,7 @@ public class GetTaskContentCommand extends TaskCommand<Map<String, Object>> {
     }
 
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> execute(Context cntxt) {
+	public Map<String, Object> execute(Context cntxt ) {
         TaskContext context = (TaskContext) cntxt;
         Task taskById = context.getTaskQueryService().getTaskInstanceById(taskId);
         if (taskById == null) {

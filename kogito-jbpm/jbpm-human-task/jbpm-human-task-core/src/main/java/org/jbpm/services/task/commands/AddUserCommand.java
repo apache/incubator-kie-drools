@@ -15,14 +15,14 @@
  */
 package org.jbpm.services.task.commands;
 
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.kie.api.task.model.User;
-import org.kie.internal.command.Context;
-import org.kie.internal.task.api.TaskModelProvider;
-import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 
 
 @XmlRootElement(name="add-user-command")

@@ -15,20 +15,19 @@
  */
 package org.jbpm.services.task.commands;
 
-import java.util.Date;
+import org.jbpm.services.task.impl.model.xml.JaxbComment;
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.Comment;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalComment;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
-import org.jbpm.services.task.impl.model.xml.JaxbComment;
-import org.kie.api.task.model.Comment;
-import org.kie.api.task.model.User;
-import org.kie.internal.command.Context;
-import org.kie.internal.task.api.TaskModelProvider;
-import org.kie.internal.task.api.model.InternalComment;
+import java.util.Date;
 
 
 @XmlRootElement(name="add-comment-command")

@@ -15,6 +15,7 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
+import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
@@ -65,7 +66,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
@@ -421,11 +422,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                 "BPMN2-RuleTask3.drl");
         ksession = createKnowledgeSession(kbase);
 
-        ((RegistryContext)
-                ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext())
-                .lookup( KieSession.class )
-                .addEventListener(new TriggerRulesEventListener(ksession));
+        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
+                                                                                                         .addEventListener(new TriggerRulesEventListener(ksession));
         ksession.addEventListener(new DebugAgendaEventListener());
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("x", "SomeString");

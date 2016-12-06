@@ -15,13 +15,13 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
+import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.process.instance.WorkItemHandler;
-import org.drools.persistence.SingleSessionCommandService;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.objects.Person;
@@ -49,6 +49,7 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
@@ -59,7 +60,6 @@ import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.command.Context;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
@@ -118,8 +118,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
     private TimerManager getTimerManager(KieSession ksession) {
         KieSession internal = ksession;
         if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-            internal =  ((RegistryContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                    .getCommandService().getContext()).lookup( KieSession.class );
+            internal = ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession();;
         }
 
         return ((InternalProcessRuntime)((StatefulKnowledgeSessionImpl)internal).getProcessRuntime()).getTimerManager();
@@ -1742,8 +1741,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         int signalListSize = ksession.execute(new ExecutableCommand<Integer>() {
             public Integer execute(Context context) {
-                SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession)
-                        .getCommandService();
+                SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
                 InternalKnowledgeRuntime kruntime = (InternalKnowledgeRuntime) commandService.getKieSession();
                 ProcessPersistenceContextManager contextManager = (ProcessPersistenceContextManager) kruntime
                         .getEnvironment().get(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER);
@@ -1761,8 +1759,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         signalListSize = ksession.execute(new ExecutableCommand<Integer>() {
             public Integer execute(Context context) {
-                SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession)
-                        .getCommandService();
+                SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
                 InternalKnowledgeRuntime kruntime = (InternalKnowledgeRuntime) commandService.getKieSession();
                 ProcessPersistenceContextManager contextManager = (ProcessPersistenceContextManager) kruntime
                         .getEnvironment().get(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER);
@@ -1780,8 +1777,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
         signalListSize = ksession.execute(new ExecutableCommand<Integer>() {
             public Integer execute(Context context) {
-                SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession)
-                        .getCommandService();
+                SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
                 InternalKnowledgeRuntime kruntime = (InternalKnowledgeRuntime) commandService.getKieSession();
                 ProcessPersistenceContextManager contextManager = (ProcessPersistenceContextManager) kruntime
                         .getEnvironment().get(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER);
@@ -1798,6 +1794,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().completeWorkItem(2, null);
 
         ksession.dispose();
+        ksession = null;
         separateEmf.close();
     }
 

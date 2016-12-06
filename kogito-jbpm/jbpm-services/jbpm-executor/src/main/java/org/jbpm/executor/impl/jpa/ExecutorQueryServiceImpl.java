@@ -16,7 +16,6 @@
 
 package org.jbpm.executor.impl.jpa;
 
-import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.shared.services.impl.JpaPersistenceContext;
 import org.jbpm.shared.services.impl.QueryManager;
@@ -24,8 +23,9 @@ import org.kie.api.executor.ErrorInfo;
 import org.kie.api.executor.ExecutorService;
 import org.kie.api.executor.RequestInfo;
 import org.kie.api.executor.STATUS;
+import org.kie.api.runtime.CommandExecutor;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.query.QueryContext;
-import org.kie.internal.command.Context;
 import org.kie.internal.executor.api.ExecutorQueryService;
 
 import javax.persistence.NoResultException;
@@ -43,13 +43,13 @@ import java.util.Map;
  */
 public class ExecutorQueryServiceImpl implements ExecutorQueryService {
 
-    private CommandService commandService;
+    private CommandExecutor commandService;
    
     public ExecutorQueryServiceImpl(boolean active) {
         QueryManager.get().addNamedQueries("META-INF/Executor-orm.xml");
     }
 
-    public void setCommandService(CommandService commandService) {
+    public void setCommandService(CommandExecutor commandService) {
         this.commandService = commandService;
     }
 

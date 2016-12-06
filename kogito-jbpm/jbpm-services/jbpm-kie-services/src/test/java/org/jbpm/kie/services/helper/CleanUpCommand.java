@@ -17,7 +17,7 @@
 package org.jbpm.kie.services.helper;
 
 import org.jbpm.services.task.commands.TaskCommand;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
 

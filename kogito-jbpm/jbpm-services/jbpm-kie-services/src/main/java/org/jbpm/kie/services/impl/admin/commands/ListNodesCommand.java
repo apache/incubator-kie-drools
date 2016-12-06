@@ -23,7 +23,7 @@ import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.services.api.admin.ProcessNode;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.command.ProcessInstanceIdCommand;
 
 import java.util.List;

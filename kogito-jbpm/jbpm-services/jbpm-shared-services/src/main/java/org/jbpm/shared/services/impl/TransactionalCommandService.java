@@ -15,20 +15,20 @@
 
 package org.jbpm.shared.services.impl;
 
-import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerFactory;
 import org.kie.api.command.Command;
+import org.kie.api.runtime.CommandExecutor;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.internal.command.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-public class TransactionalCommandService implements CommandService {
+public class TransactionalCommandService implements CommandExecutor {
 	
 	private static final Logger logger = LoggerFactory.getLogger(TransactionalCommandService.class);
 	

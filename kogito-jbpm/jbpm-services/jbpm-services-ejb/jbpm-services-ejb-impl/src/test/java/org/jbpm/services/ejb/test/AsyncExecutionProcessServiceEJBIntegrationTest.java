@@ -36,7 +36,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.scanner.MavenRepository;
 
 import javax.ejb.EJB;

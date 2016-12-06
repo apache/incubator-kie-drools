@@ -15,14 +15,14 @@
 
 package org.jbpm.services.task.audit.commands;
 
+import org.jbpm.services.task.commands.TaskCommand;
+import org.kie.api.runtime.Context;
+import org.kie.internal.task.api.TaskContext;
+import org.kie.internal.task.api.TaskPersistenceContext;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.jbpm.services.task.commands.TaskCommand;
-import org.kie.internal.command.Context;
-import org.kie.internal.task.api.TaskContext;
-import org.kie.internal.task.api.TaskPersistenceContext;
 
 @XmlRootElement(name="delete-bam-task-summaries-for-task-command")
 @XmlAccessorType(XmlAccessType.NONE)

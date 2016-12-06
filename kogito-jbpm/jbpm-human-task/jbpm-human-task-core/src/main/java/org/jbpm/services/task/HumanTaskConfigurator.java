@@ -16,15 +16,8 @@
 
 package org.jbpm.services.task;
 
-import java.lang.reflect.Constructor;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.persistence.EntityManagerFactory;
-
-import org.drools.core.command.Interceptor;
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.runtime.ChainableRunner;
 import org.jbpm.services.task.commands.TaskCommandExecutorImpl;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.identity.DefaultUserInfo;
@@ -40,6 +33,12 @@ import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManagerFactory;
+import java.lang.reflect.Constructor;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Task service configurator that provides fluent API approach to building <code>TaskService</code>
@@ -74,7 +73,7 @@ public class HumanTaskConfigurator {
     private Set<PriorityInterceptor> interceptors = new TreeSet<PriorityInterceptor>();
     private Set<TaskLifeCycleEventListener> listeners = new HashSet<TaskLifeCycleEventListener>();
     
-    public HumanTaskConfigurator interceptor(int priority, Interceptor interceptor) {
+    public HumanTaskConfigurator interceptor(int priority, ChainableRunner interceptor ) {
     	if (interceptor == null) {
             return this;
         }
@@ -164,10 +163,10 @@ public class HumanTaskConfigurator {
 	protected void addDefaultInterceptor() {
     	// add default interceptor if present
     	try {
-    		Class<Interceptor> defaultInterceptorClass = (Class<Interceptor>) Class.forName(DEFAULT_INTERCEPTOR);
-    		Constructor<Interceptor> constructor = defaultInterceptorClass.getConstructor(new Class[] {Environment.class});
-    		
-    		Interceptor defaultInterceptor = constructor.newInstance(this.environment);
+    		Class<ChainableRunner> defaultInterceptorClass = (Class<ChainableRunner>) Class.forName(DEFAULT_INTERCEPTOR);
+    		Constructor<ChainableRunner> constructor = defaultInterceptorClass.getConstructor(new Class[] {Environment.class});
+
+			ChainableRunner defaultInterceptor = constructor.newInstance(this.environment);
     		interceptor(5, defaultInterceptor);
     	} catch (Exception e) {
     		logger.warn("No default interceptor found of type {} might be mssing jbpm-human-task-jpa module on classpath (error {}",
@@ -179,10 +178,10 @@ public class HumanTaskConfigurator {
 	protected void addTransactionLockInterceptor() {
     	// add default interceptor if present
     	try {
-    		Class<Interceptor> defaultInterceptorClass = (Class<Interceptor>) Class.forName(TX_LOCK_INTERCEPTOR);
-    		Constructor<Interceptor> constructor = defaultInterceptorClass.getConstructor(new Class[] {Environment.class, String.class});
-    		
-    		Interceptor defaultInterceptor = constructor.newInstance(this.environment, "task-service-tx-unlock");
+    		Class<ChainableRunner> defaultInterceptorClass = (Class<ChainableRunner>) Class.forName(TX_LOCK_INTERCEPTOR);
+    		Constructor<ChainableRunner> constructor = defaultInterceptorClass.getConstructor(new Class[] {Environment.class, String.class});
+
+			ChainableRunner defaultInterceptor = constructor.newInstance(this.environment, "task-service-tx-unlock");
     		interceptor(6, defaultInterceptor);
     	} catch (Exception e) {
     		logger.warn("No tx lock interceptor found of type {} might be mssing drools-persistence-jpa module on classpath (error {}",
@@ -194,10 +193,10 @@ public class HumanTaskConfigurator {
 	protected void addOptimisticLockInterceptor() {
     	// add default interceptor if present
     	try {
-    		Class<Interceptor> defaultInterceptorClass = (Class<Interceptor>) Class.forName(OPTIMISTIC_LOCK_INTERCEPTOR);
-    		Constructor<Interceptor> constructor = defaultInterceptorClass.getConstructor(new Class[] {});
-    		
-    		Interceptor defaultInterceptor = constructor.newInstance();
+    		Class<ChainableRunner> defaultInterceptorClass = (Class<ChainableRunner>) Class.forName(OPTIMISTIC_LOCK_INTERCEPTOR);
+    		Constructor<ChainableRunner> constructor = defaultInterceptorClass.getConstructor(new Class[] {});
+
+			ChainableRunner defaultInterceptor = constructor.newInstance();
     		interceptor(7, defaultInterceptor);
     	} catch (Exception e) {
     		logger.warn("No optimistic lock interceptor found of type {} might be mssing drools-persistence-jpa module on classpath (error {}",
@@ -207,9 +206,9 @@ public class HumanTaskConfigurator {
    
     private static class PriorityInterceptor implements Comparable<PriorityInterceptor> {
     	private Integer priority;
-    	private Interceptor interceptor;
+    	private ChainableRunner interceptor;
     	
-    	PriorityInterceptor(Integer priority, Interceptor interceptor) {
+    	PriorityInterceptor(Integer priority, ChainableRunner interceptor) {
     		this.priority = priority;
     		this.interceptor = interceptor;
     	}
@@ -218,7 +217,7 @@ public class HumanTaskConfigurator {
 			return priority;
 		}
 
-		public Interceptor getInterceptor() {
+		public ChainableRunner getInterceptor() {
 			return interceptor;
 		}
 

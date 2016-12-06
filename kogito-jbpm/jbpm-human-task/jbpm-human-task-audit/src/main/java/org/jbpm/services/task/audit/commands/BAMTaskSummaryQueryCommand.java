@@ -15,22 +15,18 @@
 
 package org.jbpm.services.task.audit.commands;
 
-import java.util.List;
+import org.jbpm.query.jpa.data.QueryWhere;
+import org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl;
+import org.jbpm.services.task.audit.service.TaskAuditQueryCriteriaUtil;
+import org.jbpm.services.task.commands.TaskCommand;
+import org.jbpm.services.task.commands.TaskContext;
+import org.kie.api.runtime.Context;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.jbpm.query.jpa.data.QueryWhere;
-import org.jbpm.query.jpa.impl.QueryCriteriaUtil;
-import org.jbpm.services.task.audit.impl.model.AuditTaskImpl;
-import org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl;
-import org.jbpm.services.task.audit.service.TaskAuditQueryCriteriaUtil;
-import org.jbpm.services.task.commands.TaskCommand;
-import org.jbpm.services.task.commands.TaskContext;
-import org.kie.internal.command.Context;
-import org.kie.internal.task.api.AuditTask;
+import java.util.List;
 
 @XmlRootElement(name="audit-task-query-command")
 @XmlAccessorType(XmlAccessType.FIELD)

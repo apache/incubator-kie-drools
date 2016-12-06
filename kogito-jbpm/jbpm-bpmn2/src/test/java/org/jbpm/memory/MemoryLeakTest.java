@@ -15,18 +15,9 @@
 
 package org.jbpm.memory;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
-
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-
 import org.drools.core.event.KieBaseEventSupport;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.persistence.SingleSessionCommandService;
+import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
@@ -51,6 +42,15 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.*;
 
 public class MemoryLeakTest {
 
@@ -184,7 +184,7 @@ public class MemoryLeakTest {
     private KieSessionConfiguration getKnowledgeSessionConfiguration() {
         Properties ksessionProperties;
         ksessionProperties = new Properties();
-        ksessionProperties.put("drools.commandService", SingleSessionCommandService.class.getName());
+        ksessionProperties.put("drools.commandService", PersistableRunner.class.getName() );
         ksessionProperties.put("drools.processInstanceManagerFactory",
                 "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");
         ksessionProperties.setProperty("drools.workItemManagerFactory", JPAWorkItemManagerFactory.class.getName());

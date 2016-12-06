@@ -16,23 +16,23 @@
 
 package org.jbpm.kie.services.impl.admin.commands;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.kie.api.runtime.Context;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Task;
-import org.kie.internal.command.Context;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.InternalContent;
 import org.kie.internal.task.api.model.InternalTaskData;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class RemoveTaskDataCommand extends UserGroupCallbackTaskCommand<Void> {

@@ -15,16 +15,15 @@
 
 package org.jbpm.services.task.commands;
 
-import java.util.Date;
-import java.util.List;
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.TaskSummary;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.command.Context;
+import java.util.Date;
+import java.util.List;
 
 @XmlRootElement(name="get-active-tasks-command")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -50,7 +49,7 @@ public class GetActiveTasksCommand extends TaskCommand<List<TaskSummary>> {
 		this.date = date;
 	}
 
-	public List<TaskSummary> execute(Context cntxt) {
+	public List<TaskSummary> execute(Context cntxt ) {
         TaskContext context = (TaskContext) cntxt;
         if (date == null) {
         	return context.getTaskAdminService().getActiveTasks();

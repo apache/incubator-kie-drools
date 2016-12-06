@@ -24,7 +24,7 @@ import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.process.core.Work;
 import org.drools.core.process.core.impl.WorkImpl;
-import org.drools.persistence.SingleSessionCommandService;
+import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.jpa.JpaJDKTimerService;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManagerFactory;
 import org.jbpm.compiler.ProcessBuilderImpl;
@@ -112,7 +112,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
 
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
-                                SingleSessionCommandService.class.getName() );
+                                PersistableRunner.class.getName() );
         properties.setProperty( "drools.processInstanceManagerFactory",
                                 JPAProcessInstanceManagerFactory.class.getName() );
         properties.setProperty( "drools.workItemManagerFactory",
@@ -123,7 +123,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
                                 JpaJDKTimerService.class.getName() );
         SessionConfiguration config = SessionConfiguration.newInstance( properties );
 
-        SingleSessionCommandService service = new SingleSessionCommandService( kbase,
+        PersistableRunner service = new PersistableRunner( kbase,
                                                                                config,
                                                                                env );
         Long sessionId = service.getSessionId();
@@ -138,7 +138,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -148,7 +148,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( processInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -160,7 +160,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -170,7 +170,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( processInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -182,7 +182,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -192,7 +192,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( processInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -204,7 +204,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -226,7 +226,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
 
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
-                                SingleSessionCommandService.class.getName() );
+                                PersistableRunner.class.getName() );
         properties.setProperty( "drools.processInstanceManagerFactory",
                                 JPAProcessInstanceManagerFactory.class.getName() );
         properties.setProperty( "drools.workItemManagerFactory",
@@ -237,7 +237,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
                                 JpaJDKTimerService.class.getName() );
         SessionConfiguration config = SessionConfiguration.newInstance( properties );
 
-        SingleSessionCommandService service = new SingleSessionCommandService( kbase,
+        PersistableRunner service = new PersistableRunner( kbase,
                                                                                config,
                                                                                env );
         Long sessionId = service.getSessionId();
@@ -255,7 +255,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -267,7 +267,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         ut.commit();
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -281,7 +281,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -293,7 +293,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( processInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -307,7 +307,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -319,7 +319,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( processInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -333,7 +333,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -424,7 +424,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
-                                SingleSessionCommandService.class.getName() );
+                                PersistableRunner.class.getName() );
         properties.setProperty( "drools.processInstanceManagerFactory",
                                 JPAProcessInstanceManagerFactory.class.getName() );
         properties.setProperty( "drools.workItemManagerFactory",
@@ -439,7 +439,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         KnowledgePackage pkg = getProcessSubProcess();
         ruleBase.addKnowledgePackages( (Collection) Arrays.asList(pkg) );
 
-        SingleSessionCommandService service = new SingleSessionCommandService( ruleBase,
+        PersistableRunner service = new PersistableRunner( ruleBase,
                                                                                config,
                                                                                env );
         Long sessionId = service.getSessionId();
@@ -454,7 +454,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( workItem );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
         		                                   ruleBase,
                                                    config,
                                                    env );
@@ -474,7 +474,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( subProcessInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    ruleBase,
                                                    config,
                                                    env );
@@ -483,7 +483,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         service.execute( completeWorkItemCommand );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    ruleBase,
                                                    config,
                                                    env );
@@ -611,7 +611,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
-                                SingleSessionCommandService.class.getName() );
+                                PersistableRunner.class.getName() );
         properties.setProperty( "drools.processInstanceManagerFactory",
                                 JPAProcessInstanceManagerFactory.class.getName() );
         properties.setProperty( "drools.workItemManagerFactory",
@@ -626,7 +626,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         Collection<KnowledgePackage> kpkgs = getProcessTimer();
         kbase.addKnowledgePackages( kpkgs );
 
-        SingleSessionCommandService service = new SingleSessionCommandService( kbase,
+        PersistableRunner service = new PersistableRunner( kbase,
                                                                                config,
                                                                                env );
         Long sessionId = service.getSessionId();
@@ -639,7 +639,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         Thread.sleep( 500 );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -649,7 +649,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         assertNotNull( processInstance );
         service.dispose();
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );
@@ -716,7 +716,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         
         Properties properties = new Properties();
         properties.setProperty( "drools.commandService",
-                                SingleSessionCommandService.class.getName() );
+                                PersistableRunner.class.getName() );
         properties.setProperty( "drools.processInstanceManagerFactory",
                                 JPAProcessInstanceManagerFactory.class.getName() );
         properties.setProperty( "drools.workItemManagerFactory",
@@ -731,7 +731,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         Collection<KnowledgePackage> kpkgs = getProcessTimer2();
         kbase.addKnowledgePackages( kpkgs );
 
-        SingleSessionCommandService service = new SingleSessionCommandService( kbase,
+        PersistableRunner service = new PersistableRunner( kbase,
                                                                                config,
                                                                                env );
         Long sessionId = service.getSessionId();
@@ -742,7 +742,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
 
         Thread.sleep( 2000 );
 
-        service = new SingleSessionCommandService( sessionId,
+        service = new PersistableRunner( sessionId,
                                                    kbase,
                                                    config,
                                                    env );

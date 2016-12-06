@@ -16,6 +16,7 @@
 
 package org.jbpm.kie.services.impl.admin.commands;
 
+import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
@@ -29,9 +30,9 @@ import org.jbpm.services.api.admin.TimerInstance;
 import org.jbpm.workflow.instance.NodeInstanceContainer;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.internal.command.Context;
 import org.kie.internal.command.ProcessInstanceIdCommand;
 
 import java.util.ArrayList;
@@ -53,7 +54,7 @@ public class ListTimersCommand implements ExecutableCommand<List<TimerInstance>>
         this.processInstanceId = processInstanceId;
     }
 
-    public List<TimerInstance> execute(Context context) {
+    public List<TimerInstance> execute(Context context ) {
     	List<TimerInstance> timers = new ArrayList<TimerInstance>();
     	
     	KieSession kieSession = ((RegistryContext) context).lookup( KieSession.class );
@@ -73,7 +74,7 @@ public class ListTimersCommand implements ExecutableCommand<List<TimerInstance>>
     private TimerManager getTimerManager(KieSession ksession) {
         KieSession internal = ksession;
         if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-            internal = ((RegistryContext) ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().getContext()).lookup( KieSession.class );
+            internal = ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession();
         }
 
         return ((InternalProcessRuntime) ((StatefulKnowledgeSessionImpl) internal).getProcessRuntime()).getTimerManager();

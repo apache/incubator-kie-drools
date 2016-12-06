@@ -24,7 +24,6 @@ import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
-import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerHelper;
 import org.drools.persistence.jpa.JpaPersistenceContext;
@@ -86,7 +85,7 @@ public class JpaProcessPersistenceContext extends JpaPersistenceContext
      * Unfortunately, with regards to locking, the method is not always called during a transaction, which means 
      * that including logic to lock the query will cause exceptions and is not feasible. 
      * </p>
-     * Because the {@link SingleSessionCommandService} design is based around a synchronized execute(...) method, 
+     * Because the {@link org.drools.core.command.SingleSessionCommandService} design is based around a synchronized execute(...) method,
      * it's not possible for one thread to create a process instance while another thread simultaneously tries to 
      * signal it. That means that a 
      * <a href="http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Phantom_reads">phantom read</a> 

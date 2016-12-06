@@ -15,22 +15,11 @@
 
 package org.jbpm.runtime.manager.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import org.drools.core.command.CommandService;
+import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.persistence.SingleSessionCommandService;
+import org.drools.core.runtime.ChainableRunner;
+import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;
 import org.drools.persistence.jta.TransactionLockInterceptor;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
@@ -48,6 +37,7 @@ import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeEnvironment;
@@ -65,7 +55,14 @@ import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.UserGroupCallback;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.junit.Assert.*;
 
 public class SingletonRuntimeManagerTest extends AbstractBaseTest {
     
@@ -760,11 +757,11 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
 
         ProcessInstance processInstance = ksession.startProcess("UserTaskWithRollback");
 
-        CommandService commandService = ((CommandBasedStatefulKnowledgeSession)ksession).getCommandService();
-        assertEquals(SingleSessionCommandService.class, commandService.getClass());
+        ExecutableRunner commandService = ((CommandBasedStatefulKnowledgeSession)ksession).getRunner();
+        assertEquals( PersistableRunner.class, commandService.getClass() );
 
-     
-        CommandService internalCommandService = ((SingleSessionCommandService)commandService).getCommandService();
+
+        ChainableRunner internalCommandService = ((PersistableRunner)commandService).getChainableRunner();
         assertEquals(TransactionLockInterceptor.class, internalCommandService.getClass());
 
         TaskService taskService = runtime.getTaskService();
@@ -783,14 +780,14 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         taskService.complete(taskIds.get(0), "john", result); // this time, execute normally
 
         
-        internalCommandService =  ((SingleSessionCommandService)commandService).getCommandService();
+        internalCommandService =  ((PersistableRunner)commandService).getChainableRunner();
         assertEquals(TransactionLockInterceptor.class, internalCommandService.getClass());
         
-        internalCommandService = ((TransactionLockInterceptor) internalCommandService).getNext();
+        internalCommandService = (ChainableRunner) ((TransactionLockInterceptor) internalCommandService).getNext();
         assertEquals(OptimisticLockRetryInterceptor.class, internalCommandService.getClass());
         
-        internalCommandService = ((OptimisticLockRetryInterceptor) internalCommandService).getNext();
-        assertEquals("org.drools.persistence.SingleSessionCommandService$TransactionInterceptor", internalCommandService.getClass().getName());
+        internalCommandService = (ChainableRunner) ((OptimisticLockRetryInterceptor) internalCommandService).getNext();
+        assertEquals("org.drools.persistence.PersistableRunner$TransactionInterceptor", internalCommandService.getClass().getName());
 
         // close manager which will close session maintained by the manager
         manager.close();

@@ -15,8 +15,8 @@
 
 package org.jbpm.bpmn2.persistence;
 
+import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.RegistryContext;
 import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
@@ -31,7 +31,6 @@ import org.kie.api.KieBase;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.KieSession;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
@@ -84,9 +83,8 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
             }
         });
 
-        ((RegistryContext) ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext()).lookup( KieSession.class )
-                .addEventListener(new TriggerRulesEventListener(ksession));
+        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
+                                                                                                         .addEventListener(new TriggerRulesEventListener(ksession));
 
         
 
@@ -110,10 +108,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
             }
         });
 
-        ((RegistryContext)
-                ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext())
-                .lookup( KieSession.class )
+        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
                 .addEventListener(new TriggerRulesEventListener(ksession));
 
         countDownListener.waitTillCompleted();
@@ -139,10 +134,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
             }
         });
 
-        ((RegistryContext)
-                ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext())
-                .lookup( KieSession.class )
+        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
                 .addEventListener(new TriggerRulesEventListener(ksession));
 
         countDownListener.waitTillCompleted();
@@ -164,10 +156,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
             }
         });
 
-        ((RegistryContext)
-                ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext())
-                .lookup( KieSession.class )
+        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
                 .addEventListener(new TriggerRulesEventListener(ksession));
 
         countDownListener.waitTillCompleted();
@@ -186,10 +175,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
-        ((RegistryContext)
-                ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext())
-                .lookup( KieSession.class )
+        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
                 .addEventListener(new TriggerRulesEventListener(ksession));
 
         ksession.fireAllRules();
@@ -207,10 +193,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         final List<String> list2 = new ArrayList<String>();
         ksession.setGlobal("list", list2);
 
-        ((RegistryContext)
-                ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext())
-                .lookup( KieSession.class )
+        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
                 .addEventListener(new TriggerRulesEventListener(ksession));
 
         ksession.fireAllRules();
@@ -231,10 +214,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
-        ((RegistryContext)
-                ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext())
-                .lookup( KieSession.class )
+        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
                 .addEventListener(new TriggerRulesEventListener(ksession));
 
         ksession.fireAllRules();
@@ -252,10 +232,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         final List<String> list2 = new ArrayList<String>();
         ksession.setGlobal("list", list2);
 
-        ((RegistryContext)
-                ((CommandBasedStatefulKnowledgeSession) ksession)
-                .getCommandService().getContext())
-                .lookup( KieSession.class )
+        ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession()
                 .addEventListener(new TriggerRulesEventListener(ksession));
 
         ksession.fireAllRules();

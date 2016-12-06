@@ -16,11 +16,6 @@
 
 package org.jbpm.services.cdi.test.humantaskservice;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-import javax.inject.Inject;
-
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.Archive;
@@ -32,8 +27,13 @@ import org.jbpm.services.cdi.test.humantaskservice.CustomHumanTaskServiceProduce
 import org.jbpm.services.task.commands.TaskCommand;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.api.runtime.Context;
 import org.kie.api.task.TaskService;
-import org.kie.internal.command.Context;
+
+import javax.inject.Inject;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * This test demonstrates subclassing the HumanTaskServiceProducer to inject

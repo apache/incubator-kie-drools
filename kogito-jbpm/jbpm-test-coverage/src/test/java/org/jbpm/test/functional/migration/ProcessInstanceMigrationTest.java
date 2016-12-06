@@ -282,7 +282,7 @@ public class ProcessInstanceMigrationTest extends JbpmTestCase {
             this.toProcessId = toProcessId;
         }
 
-        public Object execute(org.kie.internal.command.Context arg0) {
+        public Object execute(org.kie.api.runtime.Context arg0) {
             KieSession ksession = ((RegistryContext) arg0).lookup( KieSession.class );
 
             WorkflowProcessInstanceUpgrader.upgradeProcessInstance(ksession,
@@ -306,7 +306,7 @@ public class ProcessInstanceMigrationTest extends JbpmTestCase {
             this.toProcessId = toProcessId;
         }
 
-        public Object execute(org.kie.internal.command.Context arg0) {
+        public Object execute(org.kie.api.runtime.Context arg0) {
             KieSession ksession = ((RegistryContext) arg0).lookup( KieSession.class );
 
             WorkflowProcessInstanceUpgrader.upgradeProcessInstanceByNodeNames(

@@ -67,10 +67,10 @@ public class CommandBasedAuditLogServiceTest extends AbstractAuditLogServiceTest
 
     @After
     public void tearDown() throws Exception {
-        cleanUp(context);
         session.dispose();
         session = null;
         auditLogService = null;
+        cleanUp(context);
     }
 
     @Test

@@ -15,16 +15,15 @@
 
 package org.jbpm.process.audit.command;
 
-import java.util.List;
+import org.jbpm.query.jpa.data.QueryWhere;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.manager.audit.VariableInstanceLog;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.jbpm.query.jpa.data.QueryWhere;
-import org.kie.api.runtime.manager.audit.VariableInstanceLog;
-import org.kie.internal.command.Context;
+import java.util.List;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

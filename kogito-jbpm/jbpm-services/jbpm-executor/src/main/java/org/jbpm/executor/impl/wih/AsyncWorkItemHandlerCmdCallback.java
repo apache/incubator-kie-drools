@@ -31,7 +31,7 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;

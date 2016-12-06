@@ -15,29 +15,17 @@
 
 package org.jbpm.services.task.commands;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-
 import org.jbpm.services.task.deadlines.notifications.impl.NotificationListenerManager;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskData;
-import org.kie.internal.command.Context;
 import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.TaskDeadlinesService.DeadlineType;
 import org.kie.internal.task.api.TaskModelProvider;
@@ -55,6 +43,17 @@ import org.kie.internal.task.api.model.NotificationType;
 import org.mvel2.templates.TemplateRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @XmlRootElement(name="execute-reminder-command")
 @XmlAccessorType(XmlAccessType.NONE)

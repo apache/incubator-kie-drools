@@ -15,10 +15,10 @@
  */
 package org.jbpm.process.core.timer.impl;
 
-import org.drools.core.command.CommandService;
+import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.runtime.InternalLocalRunner;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -33,12 +33,12 @@ import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.NamedJobContext;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
-import org.kie.api.command.Command;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.Executable;
+import org.kie.api.runtime.ExecutableRunner;
+import org.kie.api.runtime.RequestContext;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
-import org.kie.internal.command.Context;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
@@ -182,8 +182,8 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
     public void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager) {
     	if (jobFactoryManager instanceof CommandServiceTimerJobFactoryManager &&
             timerJobFactoryManager instanceof CommandServiceTimerJobFactoryManager &&
-            getCommandService() == null) {
-            ( (CommandServiceTimerJobFactoryManager) jobFactoryManager ).setCommandService( ( (CommandServiceTimerJobFactoryManager) timerJobFactoryManager ).getCommandService() );
+            getRunner() == null) {
+            ( (CommandServiceTimerJobFactoryManager) jobFactoryManager ).setRunner( ( (CommandServiceTimerJobFactoryManager) timerJobFactoryManager ).getRunner() );
     	}
     }
 
@@ -192,7 +192,7 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         return this.jobFactoryManager;
     }
     
-    public CommandService getCommandService(JobContext jobContext) {
+    public ExecutableRunner getRunner( JobContext jobContext ) {
         JobContext ctxorig = jobContext;
         if (ctxorig instanceof SelfRemovalJobContext) {
             ctxorig = ((SelfRemovalJobContext) ctxorig).getJobContext();
@@ -201,12 +201,12 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         if (ctxorig instanceof ProcessJobContext) {
             ctx = (ProcessJobContext) ctxorig;
         } else if(ctxorig instanceof NamedJobContext){
-        	return getCommandService(((NamedJobContext)ctxorig).getProcessInstanceId(), ctx);
+        	return getRunner( ((NamedJobContext)ctxorig).getProcessInstanceId(), ctx );
         } else {
-            return getCommandService();
+            return getRunner();
         }
         
-        return getCommandService(ctx.getProcessInstanceId(), ctx);
+        return getRunner( ctx.getProcessInstanceId(), ctx );
     }
     
     public String getTimerServiceId() {
@@ -225,7 +225,7 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
     	return (InternalRuntimeManager) manager;
     }
     
-    protected CommandService getCommandService(Long processInstanceId, ProcessJobContext ctx) {
+    protected ExecutableRunner getRunner( Long processInstanceId, ProcessJobContext ctx ) {
     	RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
         if (runtime == null) {
             throw new RuntimeException("No runtime engine found, could not be initialized yet");
@@ -234,19 +234,19 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         if (runtime.getKieSession() instanceof CommandBasedStatefulKnowledgeSession) {
             CommandBasedStatefulKnowledgeSession cmd = (CommandBasedStatefulKnowledgeSession) runtime.getKieSession();
             if (ctx != null) {
-            	ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) ((RegistryContext) cmd.getCommandService().getContext()).lookup( KieSession.class ) );
+                ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) ( (SingleSessionCommandService) cmd.getRunner() ).getKieSession() );
             }
-            return new DisposableCommandService(cmd.getCommandService(), manager, runtime, schedulerService.retryEnabled());
+            return new DisposableCommandService(cmd.getRunner(), manager, runtime, schedulerService.retryEnabled());
         } else if (runtime.getKieSession() instanceof InternalKnowledgeRuntime && ctx != null) {
             ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) runtime.getKieSession());
         }
         
-        return new DisposableCommandService(getCommandService(), manager, runtime, schedulerService.retryEnabled());
+        return new DisposableCommandService(getRunner(), manager, runtime, schedulerService.retryEnabled());
     }
 
-    private CommandService getCommandService() {
+    private ExecutableRunner<RequestContext> getRunner() {
         return jobFactoryManager instanceof CommandServiceTimerJobFactoryManager ?
-               ( (CommandServiceTimerJobFactoryManager) jobFactoryManager ).getCommandService() :
+               ( (CommandServiceTimerJobFactoryManager) jobFactoryManager ).getRunner() :
                null;
     }
 
@@ -283,15 +283,15 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
 
     }
     
-    public static class DisposableCommandService implements CommandService {
+    public static class DisposableCommandService implements InternalLocalRunner {
 
-        private CommandService delegate;
+        private ExecutableRunner<RequestContext> delegate;
         private RuntimeManager manager;
         private RuntimeEngine runtime;
         private boolean retry = false;
         
         
-        public DisposableCommandService(CommandService delegate, RuntimeManager manager, RuntimeEngine runtime, boolean retry) {
+        public DisposableCommandService(ExecutableRunner<RequestContext> delegate, RuntimeManager manager, RuntimeEngine runtime, boolean retry) {
             this.delegate = delegate;
             this.manager = manager;
             this.runtime = runtime;
@@ -299,15 +299,17 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         }
 
         @Override
-        public <T> T execute(Command<T> command) {
+        public RequestContext execute( Executable executable, RequestContext ctx ) {
         	try {
         		if (delegate == null) {
-        			return runtime.getKieSession().execute(command);
+                    ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
+                    RequestContext context = runner.createContext().with( runtime.getKieSession() );
+                    runner.execute( executable, context );
         		}
-        		return delegate.execute(command);
+        		return delegate.execute(executable);
         	} catch (RuntimeException e) {
         		if (retry) {
-        			return delegate.execute(command);
+        			return delegate.execute(executable, ctx);
         		} else {
         			throw e;
         		}
@@ -315,8 +317,8 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         }
 
         @Override
-        public Context getContext() {
-            return delegate.getContext();
+        public RequestContext createContext() {
+            return delegate.createContext();
         }
         
         public void dispose() {

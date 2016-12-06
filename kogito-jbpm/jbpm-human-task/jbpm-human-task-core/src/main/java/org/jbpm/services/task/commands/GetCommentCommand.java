@@ -15,14 +15,14 @@
 
 package org.jbpm.services.task.commands;
 
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.Comment;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-
-import org.kie.api.task.model.Comment;
-import org.kie.internal.command.Context;
 
 @XmlRootElement(name="get-comment-command")
 @XmlAccessorType(XmlAccessType.NONE)

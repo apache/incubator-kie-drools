@@ -15,23 +15,22 @@
 
 package org.jbpm.services.task.commands;
 
-import java.util.List;
-import java.util.Map;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.TaskQueryService;
+import org.kie.internal.task.api.model.InternalTask;
+import org.kie.internal.task.api.model.SubTasksStrategy;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.kie.api.task.model.Task;
-import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.command.Context;
-import org.kie.internal.task.api.TaskInstanceService;
-import org.kie.internal.task.api.TaskQueryService;
-import org.kie.internal.task.api.model.InternalTask;
-import org.kie.internal.task.api.model.SubTasksStrategy;
+import java.util.List;
+import java.util.Map;
 
 @XmlRootElement(name="process-sub-task-command")
 @XmlAccessorType(XmlAccessType.NONE)

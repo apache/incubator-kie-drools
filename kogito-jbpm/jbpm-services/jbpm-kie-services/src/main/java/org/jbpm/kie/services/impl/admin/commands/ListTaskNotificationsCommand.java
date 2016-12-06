@@ -16,18 +16,14 @@
 
 package org.jbpm.kie.services.impl.admin.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.jbpm.kie.services.impl.admin.TaskNotificationImpl;
 import org.jbpm.services.api.admin.TaskNotification;
 import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
 import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.kie.api.runtime.Context;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.Task;
-import org.kie.internal.command.Context;
 import org.kie.internal.task.api.TaskModelFactory;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.Deadlines;
@@ -38,6 +34,10 @@ import org.kie.internal.task.api.model.Language;
 import org.kie.internal.task.api.model.Notification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ListTaskNotificationsCommand extends UserGroupCallbackTaskCommand<List<TaskNotification>> {

@@ -22,7 +22,7 @@ import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.PersistObjectCommand;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
 import org.jbpm.shared.services.impl.commands.RemoveObjectCommand;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

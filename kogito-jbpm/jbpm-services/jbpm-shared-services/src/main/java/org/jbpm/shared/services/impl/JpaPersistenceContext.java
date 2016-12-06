@@ -15,7 +15,7 @@
 
 package org.jbpm.shared.services.impl;
 
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
@@ -224,33 +224,28 @@ public class JpaPersistenceContext implements Context {
 		}
 	}
 
-
-	@Override
-	public org.kie.internal.command.ContextManager getContextManager() {
-		return null;
-	}
-
-
 	@Override
 	public String getName() {
 		return this.getClass().getName();
 	}
-
 
 	@Override
 	public Object get(String identifier) {
 		return null;
 	}
 
-
 	@Override
 	public void set(String identifier, Object value) {
 
 	}
 
-
 	@Override
 	public void remove(String identifier) {
 
+	}
+
+	@Override
+	public boolean has( String identifier ) {
+		return false;
 	}
 }

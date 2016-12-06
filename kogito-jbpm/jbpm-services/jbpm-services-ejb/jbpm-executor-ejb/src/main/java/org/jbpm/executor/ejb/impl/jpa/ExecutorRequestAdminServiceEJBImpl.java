@@ -15,11 +15,11 @@
 
 package org.jbpm.executor.ejb.impl.jpa;
 
+import org.jbpm.executor.impl.jpa.ExecutorRequestAdminServiceImpl;
+import org.kie.api.runtime.CommandExecutor;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-
-import org.drools.core.command.CommandService;
-import org.jbpm.executor.impl.jpa.ExecutorRequestAdminServiceImpl;
 
 @Stateless
 public class ExecutorRequestAdminServiceEJBImpl extends
@@ -27,7 +27,7 @@ public class ExecutorRequestAdminServiceEJBImpl extends
 
 	@EJB(beanInterface=TransactionalCommandServiceExecutorEJBImpl.class)
 	@Override
-	public void setCommandService(CommandService commandService) {
+	public void setCommandService(CommandExecutor commandService ) {
 		super.setCommandService(commandService);
 	}
 }

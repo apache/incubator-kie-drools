@@ -15,14 +15,14 @@
 
 package org.jbpm.services.task.audit.commands;
 
-import java.util.List;
-
 import org.jbpm.query.jpa.data.QueryWhere;
 import org.jbpm.query.jpa.impl.QueryCriteriaUtil;
 import org.jbpm.services.task.audit.service.TaskAuditQueryCriteriaUtil;
 import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.TaskContext;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
+
+import java.util.List;
 
 public abstract class AbstractTaskAuditQueryCommand<R,Q> extends TaskCommand<List<R>> {
 

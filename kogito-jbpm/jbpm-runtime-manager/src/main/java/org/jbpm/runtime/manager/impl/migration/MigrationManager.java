@@ -16,8 +16,8 @@
 
 package org.jbpm.runtime.manager.impl.migration;
 
+import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.persistence.SessionNotFoundException;
 import org.drools.persistence.TransactionManager;
@@ -442,7 +442,7 @@ public class MigrationManager {
     
     private  KieRuntime extractIfNeeded(KieRuntime ksession) {
     	if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-    		return ((RegistryContext)((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().getContext()).lookup( KieSession.class );
+    		return ((SingleSessionCommandService)((CommandBasedStatefulKnowledgeSession) ksession).getRunner()).getKieSession();
     	}
     	
     	return ksession;

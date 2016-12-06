@@ -23,7 +23,7 @@ import org.jbpm.runtime.manager.impl.PerCaseRuntimeManager;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeManager;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 import java.util.Collections;
 

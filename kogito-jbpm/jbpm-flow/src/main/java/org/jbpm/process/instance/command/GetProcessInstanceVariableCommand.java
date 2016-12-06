@@ -18,10 +18,10 @@ package org.jbpm.process.instance.command;
 
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.internal.command.Context;
 import org.kie.internal.command.ProcessInstanceIdCommand;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -60,7 +60,7 @@ public class GetProcessInstanceVariableCommand implements ExecutableCommand<Obje
         this.variableId = variableId;
     }
 
-    public Object execute(Context context) {
+    public Object execute(Context context ) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
         if (processInstanceId == null) {
             return null;

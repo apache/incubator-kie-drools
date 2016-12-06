@@ -15,13 +15,13 @@
  */
 package org.jbpm.runtime.manager.impl.tx;
 
-import org.drools.core.command.CommandService;
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.persistence.OrderedTransactionSynchronization;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 /**
  * Transaction synchronization implementation that destroys the <code>KieSession</code> instance
@@ -44,7 +44,7 @@ public class DestroySessionTransactionSynchronization extends OrderedTransaction
             @Override
             public Void execute(Context context) {
                 if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-                    CommandService commandService = ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
+                    ExecutableRunner commandService = ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
                     ((SingleSessionCommandService) commandService).destroy();
                  }
                 return null;

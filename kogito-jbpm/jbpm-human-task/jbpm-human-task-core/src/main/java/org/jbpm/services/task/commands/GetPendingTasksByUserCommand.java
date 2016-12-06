@@ -15,11 +15,12 @@
 
 package org.jbpm.services.task.commands;
 
+import org.kie.api.runtime.Context;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.kie.internal.command.Context;
 
 @XmlRootElement(name="get-pending-tasks-by-user-command")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -34,7 +35,7 @@ public class GetPendingTasksByUserCommand extends TaskCommand<Integer> {
 		this.userId = userId;
     }
 
-    public Integer execute(Context cntxt) {
+    public Integer execute(Context cntxt ) {
         TaskContext context = (TaskContext) cntxt;
 
         return context.getTaskQueryService().getPendingTaskByUserId(userId);

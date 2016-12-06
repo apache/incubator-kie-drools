@@ -39,7 +39,7 @@ import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
@@ -118,7 +118,7 @@ public class DynamicProcessTest extends JbpmBpmn2TestCase {
 		node.setId(4);
 		insertNodeInBetween(process, 2, 3, node);
 		
-		((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().execute(new ExecutableCommand<Void>() {
+		((CommandBasedStatefulKnowledgeSession) ksession).getRunner().execute(new ExecutableCommand<Void>() {
 			public Void execute(Context context) {
 				StatefulKnowledgeSession ksession = (StatefulKnowledgeSession) ((RegistryContext) context).lookup( KieSession.class );
 				((ProcessInstanceImpl) ksession.getProcessInstance(processInstance.getId())).updateProcess(process);

@@ -24,7 +24,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.CaseAssignment;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 import java.util.Collection;
 

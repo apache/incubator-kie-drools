@@ -54,6 +54,7 @@ import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -61,7 +62,6 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.command.Context;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.manager.context.CaseContext;
@@ -482,7 +482,7 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 		}
 		
 		@Override
-		public Void execute(Context context) {
+		public Void execute(Context context ) {
             KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 			((ProcessRuntimeImpl)((InternalKnowledgeRuntime)ksession).getProcessRuntime()).startProcess( processId,
                       params, type );

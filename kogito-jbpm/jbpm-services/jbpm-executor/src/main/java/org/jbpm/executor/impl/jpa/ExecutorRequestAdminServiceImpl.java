@@ -16,14 +16,14 @@
 
 package org.jbpm.executor.impl.jpa;
 
-import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.executor.RequeueAware;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
 import org.kie.api.executor.ExecutorAdminService;
 import org.kie.api.executor.STATUS;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.CommandExecutor;
+import org.kie.api.runtime.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,12 +38,12 @@ import java.util.List;
 public class ExecutorRequestAdminServiceImpl implements ExecutorAdminService, RequeueAware  {
 
     
-    private CommandService commandService;
+    private CommandExecutor commandService;
    
     public ExecutorRequestAdminServiceImpl() {
     }
 
-    public void setCommandService(CommandService commandService) {
+    public void setCommandService(CommandExecutor commandService ) {
         this.commandService = commandService;
     }
 

@@ -16,7 +16,6 @@
 
 package org.jbpm.executor.impl.jpa;
 
-import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.impl.event.ExecutorEventSupport;
@@ -24,7 +23,8 @@ import org.kie.api.executor.ErrorInfo;
 import org.kie.api.executor.ExecutorStoreService;
 import org.kie.api.executor.RequestInfo;
 import org.kie.api.executor.STATUS;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.CommandExecutor;
+import org.kie.api.runtime.Context;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
@@ -39,7 +39,7 @@ import java.util.Map;
 public class JPAExecutorStoreService implements ExecutorStoreService{
 	
 	private EntityManagerFactory emf;
-    private CommandService commandService;
+    private CommandExecutor commandService;
     
     private ExecutorEventSupport eventSupport = new ExecutorEventSupport();
 
@@ -52,7 +52,7 @@ public class JPAExecutorStoreService implements ExecutorStoreService{
         this.eventSupport = eventSupport;
     }
     
-    public void setCommandService(CommandService commandService) {
+    public void setCommandService(CommandExecutor commandService ) {
         this.commandService = commandService;
     }
 

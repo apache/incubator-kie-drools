@@ -15,20 +15,19 @@
 
 package org.jbpm.services.task.commands;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.jbpm.services.task.utils.ClassUtil;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.task.api.TaskDeadlinesService;
 import org.kie.internal.task.api.TaskDeadlinesService.DeadlineType;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.DeadlineSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 @XmlRootElement(name="init-deadlines-command")
 @XmlAccessorType(XmlAccessType.NONE)

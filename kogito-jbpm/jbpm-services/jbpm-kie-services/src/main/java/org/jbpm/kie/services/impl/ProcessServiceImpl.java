@@ -326,7 +326,7 @@ public class ProcessServiceImpl implements ProcessService, VariablesAware {
                 private static final long serialVersionUID = -2693525229757876896L;
 
                 @Override
-                public Object execute(org.kie.internal.command.Context context) {
+                public Object execute(org.kie.api.runtime.Context context) {
                     KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
                     WorkflowProcessInstance pi = (WorkflowProcessInstance) ksession.getProcessInstance(processInstanceId, true);
                     if (pi == null) {

@@ -15,22 +15,21 @@
 
 package org.jbpm.services.task.audit.commands;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.jbpm.services.task.commands.TaskContext;
+import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
+import org.jbpm.services.task.utils.ClassUtil;
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.query.QueryFilter;
+import org.kie.internal.task.api.TaskPersistenceContext;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.jbpm.services.task.commands.TaskContext;
-import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
-import org.jbpm.services.task.utils.ClassUtil;
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.command.Context;
-import org.kie.internal.query.QueryFilter;
-import org.kie.internal.task.api.TaskPersistenceContext;
+import java.util.ArrayList;
+import java.util.List;
 
 @XmlRootElement(name = "get-tasks-by-variable-name-command")
 @XmlAccessorType(XmlAccessType.NONE)

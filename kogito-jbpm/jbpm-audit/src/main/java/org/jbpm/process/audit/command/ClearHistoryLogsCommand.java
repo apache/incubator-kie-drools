@@ -15,12 +15,12 @@
  */
 package org.jbpm.process.audit.command;
 
+import org.jbpm.process.audit.AuditLogService;
+import org.kie.api.runtime.Context;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.jbpm.process.audit.AuditLogService;
-import org.kie.internal.command.Context;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)

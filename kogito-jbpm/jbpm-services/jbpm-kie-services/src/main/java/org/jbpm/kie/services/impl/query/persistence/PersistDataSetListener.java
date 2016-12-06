@@ -23,7 +23,7 @@ import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.services.api.query.model.QueryDefinition.Target;
 import org.jbpm.shared.services.impl.JpaPersistenceContext;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

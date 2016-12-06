@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.core.command.CommandService;
 import org.jbpm.services.task.commands.ActivateTaskCommand;
 import org.jbpm.services.task.commands.AddAttachmentCommand;
 import org.jbpm.services.task.commands.AddCommentCommand;
@@ -108,6 +107,7 @@ import org.jbpm.services.task.impl.TaskContentRegistry;
 import org.jbpm.services.task.impl.TaskSummaryQueryBuilderImpl;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.CommandExecutor;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
@@ -133,7 +133,7 @@ import org.kie.internal.task.query.TaskSummaryQueryBuilder;
 
 public class CommandBasedTaskService implements InternalTaskService, EventService<TaskLifeCycleEventListener> {
 
-	private CommandService executor;
+	private ExecutableRunner executor;
 	private TaskEventSupport taskEventSupport;
 
 	private QueryFilter addLanguageFilter(String language) {
@@ -147,7 +147,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	   return filter;
 	}
 
-	public CommandBasedTaskService(CommandService executor, TaskEventSupport taskEventSupport) {
+	public CommandBasedTaskService(ExecutableRunner executor, TaskEventSupport taskEventSupport) {
 		this.executor = executor;
 		this.taskEventSupport = taskEventSupport;
 	}

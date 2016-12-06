@@ -16,7 +16,7 @@
 package org.jbpm.runtime.manager.impl.factory;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.persistence.SingleSessionCommandService;
+import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;
 import org.drools.persistence.jta.TransactionLockInterceptor;
 import org.kie.api.runtime.KieSession;
@@ -62,12 +62,12 @@ public class JPASessionFactory implements SessionFactory {
     }
     
     protected void addInterceptors(KieSession ksession) {
-        
-        SingleSessionCommandService sscs = (SingleSessionCommandService)
-                ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
-        sscs.addInterceptor(new OptimisticLockRetryInterceptor());
+
+        PersistableRunner runner = (PersistableRunner)
+                ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
+        runner.addInterceptor(new OptimisticLockRetryInterceptor());
         // even though it's added always TransactionLockInterceptor is by default disabled so won't do anything
-        sscs.addInterceptor(new TransactionLockInterceptor(ksession.getEnvironment()));
+        runner.addInterceptor(new TransactionLockInterceptor(ksession.getEnvironment()));
     }
     
 }

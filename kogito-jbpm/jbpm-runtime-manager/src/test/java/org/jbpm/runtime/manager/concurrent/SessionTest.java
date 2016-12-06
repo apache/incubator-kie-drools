@@ -15,23 +15,9 @@
 
 package org.jbpm.runtime.manager.concurrent;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
-
-import javax.naming.InitialContext;
-import javax.persistence.OptimisticLockException;
-import javax.transaction.UserTransaction;
-
+import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.persistence.SingleSessionCommandService;
 import org.hibernate.StaleObjectStateException;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.exception.PermissionDeniedException;
@@ -64,7 +50,16 @@ import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.UserGroupCallback;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import javax.naming.InitialContext;
+import javax.persistence.OptimisticLockException;
+import javax.transaction.UserTransaction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Properties;
+
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class SessionTest extends AbstractBaseTest {
@@ -556,7 +551,7 @@ public class SessionTest extends AbstractBaseTest {
 	private void testStartProcess(RuntimeEngine runtime) throws Exception {
 		
 		long taskId; 
-		synchronized((SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) runtime.getKieSession()).getCommandService()) {
+		synchronized((SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) runtime.getKieSession()).getRunner()) {
 			UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
 			ut.begin();
 			logger.debug("Starting process on ksession {}", runtime.getKieSession().getIdentifier());

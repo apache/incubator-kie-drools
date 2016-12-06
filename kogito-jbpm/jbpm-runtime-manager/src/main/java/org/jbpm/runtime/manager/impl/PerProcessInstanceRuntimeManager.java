@@ -15,7 +15,6 @@
  */
 package org.jbpm.runtime.manager.impl;
 
-import org.drools.core.command.CommandService;
 import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
@@ -36,6 +35,7 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.Context;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -392,7 +392,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
                 private static final long serialVersionUID = 1L;
 
                 @Override
-                public Void execute(org.kie.internal.command.Context context) {
+                public Void execute(org.kie.api.runtime.Context context) {
                     KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
                     ((InternalKnowledgeRuntime) ksession).getProcessRuntime();
                     return null;
@@ -449,11 +449,11 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         }
         
         @Override
-        public Void execute(org.kie.internal.command.Context context) {
+        public Void execute(org.kie.api.runtime.Context context) {
         	TransactionManager tm = (TransactionManager) initialKsession.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER);
             if (manager.hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
             	if (initialKsession instanceof CommandBasedStatefulKnowledgeSession) {
-                    CommandService commandService = ((CommandBasedStatefulKnowledgeSession) initialKsession).getCommandService();
+                    ExecutableRunner commandService = ((CommandBasedStatefulKnowledgeSession) initialKsession).getRunner();
                     ((SingleSessionCommandService) commandService).destroy();
                  } else {
                     ((RegistryContext) context).lookup( KieSession.class ).destroy();
@@ -469,7 +469,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
                     @Override
                     public void beforeCompletion() {
                         if (initialKsession instanceof CommandBasedStatefulKnowledgeSession) {
-                            CommandService commandService = ((CommandBasedStatefulKnowledgeSession) initialKsession).getCommandService();
+                            ExecutableRunner commandService = ((CommandBasedStatefulKnowledgeSession) initialKsession).getRunner();
                             ((SingleSessionCommandService) commandService).destroy();
                          }                            
                     }
@@ -499,7 +499,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         }
         
         @Override
-        public Void execute(org.kie.internal.command.Context context) {
+        public Void execute(org.kie.api.runtime.Context context) {
             
             if (manager.hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
             	initialKsession.dispose();

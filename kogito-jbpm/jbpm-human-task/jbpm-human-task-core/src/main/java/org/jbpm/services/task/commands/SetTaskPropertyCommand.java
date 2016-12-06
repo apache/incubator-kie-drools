@@ -15,22 +15,21 @@
 
 package org.jbpm.services.task.commands;
 
-import java.util.Date;
-import java.util.List;
+import org.jbpm.services.task.impl.model.xml.JaxbFaultData;
+import org.jbpm.services.task.impl.model.xml.JaxbI18NText;
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.I18NText;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.model.FaultData;
+import org.kie.internal.task.api.model.SubTasksStrategy;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-
-import org.jbpm.services.task.impl.model.xml.JaxbFaultData;
-import org.jbpm.services.task.impl.model.xml.JaxbI18NText;
-import org.kie.api.task.model.I18NText;
-import org.kie.internal.command.Context;
-import org.kie.internal.task.api.TaskInstanceService;
-import org.kie.internal.task.api.model.FaultData;
-import org.kie.internal.task.api.model.SubTasksStrategy;
+import java.util.Date;
+import java.util.List;
 
 @XmlRootElement(name="set-task-property-command")
 @XmlAccessorType(XmlAccessType.NONE)

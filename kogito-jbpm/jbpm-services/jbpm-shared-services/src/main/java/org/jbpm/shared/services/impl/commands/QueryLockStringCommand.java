@@ -17,7 +17,7 @@ package org.jbpm.shared.services.impl.commands;
 
 import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.shared.services.impl.JpaPersistenceContext;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 import java.util.Map;
 
@@ -37,7 +37,7 @@ public class QueryLockStringCommand<T> implements ExecutableCommand<T> {
 	}
 	
 	@Override
-	public T execute(Context context) {
+	public T execute(Context context ) {
 		JpaPersistenceContext ctx = (JpaPersistenceContext) context;
 		return ctx.queryAndLockStringWithParametersInTransaction(queryString, params, singleResult, resultType);		
 	}

@@ -15,7 +15,9 @@
 
 package org.jbpm.services.task.commands;
 
-import java.util.Map;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.Task;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -23,10 +25,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.kie.api.task.model.Task;
-import org.kie.internal.command.Context;
+import java.util.Map;
 
 @XmlRootElement(name="execute-task-rules-command")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -60,7 +59,7 @@ public class ExecuteTaskRulesCommand extends TaskCommand<Void> {
 	}
 	
 	@Override
-	public Void execute(Context ctx) {
+	public Void execute(Context ctx ) {
 		
 		TaskContext context = (TaskContext) ctx;
 		Task task = context.getTaskQueryService().getTaskInstanceById(taskId);

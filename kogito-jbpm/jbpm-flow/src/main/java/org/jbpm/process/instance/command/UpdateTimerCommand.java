@@ -16,6 +16,7 @@
 
 package org.jbpm.process.instance.command;
 
+import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
@@ -26,9 +27,9 @@ import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.internal.command.Context;
 import org.kie.internal.command.ProcessInstanceIdCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +106,7 @@ public class UpdateTimerCommand implements ExecutableCommand<Void>, ProcessInsta
     }
 
     @Override
-    public Void execute(Context context) {
+    public Void execute(Context context ) {
         logger.debug("About to cancel timer in process instance {} by name '{}' or id {}", processInstanceId, timerName, timerId);
         KieSession kieSession = ((RegistryContext) context).lookup( KieSession.class );
         TimerManager tm = getTimerManager(kieSession);
@@ -166,7 +167,7 @@ public class UpdateTimerCommand implements ExecutableCommand<Void>, ProcessInsta
     protected TimerManager getTimerManager(KieSession ksession) {
         KieSession internal = ksession;
         if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
-            internal = ((RegistryContext) ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService().getContext()).lookup( KieSession.class );
+            internal = ( (SingleSessionCommandService) ( (CommandBasedStatefulKnowledgeSession) ksession ).getRunner() ).getKieSession();
         }
 
         return ((InternalProcessRuntime) ((StatefulKnowledgeSessionImpl) internal).getProcessRuntime()).getTimerManager();

@@ -15,21 +15,19 @@
 
 package org.jbpm.process.audit.query;
 
-import static org.kie.internal.query.QueryParameterIdentifiers.DATE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
-
-import java.sql.Timestamp;
-import java.util.Date;
-
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.command.AuditCommand;
 import org.jbpm.query.jpa.builder.impl.AbstractDeleteBuilderImpl;
 import org.jbpm.query.jpa.data.QueryWhere;
 import org.kie.api.runtime.CommandExecutor;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.query.ParametrizedUpdate;
 import org.kie.internal.runtime.manager.audit.query.AuditDeleteBuilder;
+
+import java.sql.Timestamp;
+import java.util.Date;
+
+import static org.kie.internal.query.QueryParameterIdentifiers.*;
 
 public abstract class AbstractAuditDeleteBuilderImpl<T> extends AbstractDeleteBuilderImpl<T> implements AuditDeleteBuilder<T> {
 

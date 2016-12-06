@@ -15,13 +15,13 @@
  */
 package org.jbpm.services.task.commands;
 
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.EnvironmentName;
+import org.kie.internal.task.api.UserInfo;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.kie.api.runtime.EnvironmentName;
-import org.kie.internal.command.Context;
-import org.kie.internal.task.api.UserInfo;
 
 @XmlRootElement(name="get-user-info-command")
 @XmlAccessorType(XmlAccessType.NONE)

@@ -15,13 +15,13 @@
  */
 package org.jbpm.services.task.commands;
 
+import org.kie.api.runtime.Context;
+import org.kie.internal.task.api.model.TaskDef;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
-import org.kie.internal.command.Context;
-import org.kie.internal.task.api.model.TaskDef;
 
 
 
@@ -42,7 +42,7 @@ public class DeployTaskDefCommand extends TaskCommand<Void> {
         this.taskDef = taskDef;
     }
 
-    public Void execute(Context cntxt) {
+    public Void execute(Context cntxt ) {
         TaskContext context = (TaskContext) cntxt;
         context.getTaskDefService().deployTaskDef(taskDef);
     	return null;

@@ -15,15 +15,14 @@
  */
 package org.jbpm.services.task.commands;
 
-import java.util.List;
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.TaskSummary;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.command.Context;
+import java.util.List;
 
 @XmlRootElement(name="remove-tasks-command")
 @XmlAccessorType(XmlAccessType.NONE)

@@ -15,7 +15,6 @@
  */
 package org.jbpm.persistence.timer;
 
-import org.drools.core.command.CommandService;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -32,6 +31,7 @@ import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.DisposableCommandService;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.ExecutableRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
 
     @Override
     public Void call() throws Exception {
-        CommandService commandService = null;
+        ExecutableRunner runner = null;
         TransactionManager jtaTm = null;
         boolean success = false;
         try { 
@@ -71,10 +71,10 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
             	throw new RuntimeException("No scheduler found for " + timerServiceId);
             }
             jtaTm = startTxIfNeeded(((GlobalTimerService) scheduler).getRuntimeManager().getEnvironment().getEnvironment());
-            
-            commandService = ((GlobalTimerService) scheduler).getCommandService(getJobContext());
-            
-            commandService.execute( command );
+
+			runner = ((GlobalTimerService) scheduler).getRunner( getJobContext() );
+
+			runner.execute( command );
             GlobalJPATimerJobFactoryManager timerService = ((GlobalJPATimerJobFactoryManager)((GlobalTimerService) scheduler).getTimerJobFactoryManager());
             timerService.removeTimerJobInstance(((DefaultJobHandle)getJobHandle()).getTimerJobInstance());
             success = true;
@@ -84,10 +84,10 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
         	success = false;
             throw e;
         } finally {
-            if (commandService != null && commandService instanceof DisposableCommandService) {
-            	if (allowedToDispose(((DisposableCommandService) commandService).getEnvironment())) {
+            if (runner != null && runner instanceof DisposableCommandService) {
+            	if (allowedToDispose(((DisposableCommandService) runner).getEnvironment())) {
             		logger.debug("Allowed to dispose command service from global timer job instance");
-            		((DisposableCommandService) commandService).dispose();
+            		((DisposableCommandService) runner).dispose();
             	}
             }
             closeTansactionIfNeeded(jtaTm, success);

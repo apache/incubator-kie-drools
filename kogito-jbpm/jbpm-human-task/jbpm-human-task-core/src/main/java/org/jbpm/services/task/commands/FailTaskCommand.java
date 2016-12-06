@@ -15,16 +15,15 @@
  */
 package org.jbpm.services.task.commands;
 
-import java.util.Map;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.kie.api.runtime.Context;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.kie.internal.command.Context;
+import java.util.Map;
 
 /**
  * Operation.Fail : [ new OperationCommand().{ status = [ Status.InProgress ],

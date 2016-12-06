@@ -19,9 +19,9 @@ import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionSynchronization;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.command.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +45,7 @@ public class ContainerManagedTransactionDisposeCommand implements ExecutableComm
     private static final Logger logger = LoggerFactory.getLogger(ContainerManagedTransactionDisposeCommand.class);
 
     @Override
-    public Void execute(Context context) {
+    public Void execute(Context context ) {
         final KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
 
         logger.debug("Trying to dispose KieSession ({}). Checking for active transactions.", ksession);

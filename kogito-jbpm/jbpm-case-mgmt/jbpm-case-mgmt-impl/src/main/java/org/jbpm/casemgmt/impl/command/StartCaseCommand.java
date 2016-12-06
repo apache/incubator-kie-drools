@@ -30,7 +30,7 @@ import org.kie.api.command.KieCommands;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KieInternalServices;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.runtime.KnowledgeRuntime;

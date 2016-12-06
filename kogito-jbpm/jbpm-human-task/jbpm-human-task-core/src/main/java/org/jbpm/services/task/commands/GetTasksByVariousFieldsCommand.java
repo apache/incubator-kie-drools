@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 /**
  * This command will be deleted as of jBPM 7.x.

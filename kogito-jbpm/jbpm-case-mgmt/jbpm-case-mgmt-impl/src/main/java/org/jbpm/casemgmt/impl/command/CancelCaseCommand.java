@@ -16,27 +16,27 @@
 
 package org.jbpm.casemgmt.impl.command;
 
-import static java.util.stream.Collectors.toList;
-
-import java.util.Collection;
-import java.util.List;
-
 import org.jbpm.casemgmt.api.CaseNotFoundException;
 import org.jbpm.casemgmt.impl.event.CaseEventSupport;
 import org.jbpm.runtime.manager.impl.PerCaseRuntimeManager;
 import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
+import org.kie.api.runtime.Context;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.KieInternalServices;
-import org.kie.internal.command.Context;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationKeyFactory;
 import org.kie.internal.runtime.manager.context.CaseContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 public class CancelCaseCommand extends CaseCommand<Void> {
     

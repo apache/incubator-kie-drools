@@ -1,21 +1,16 @@
 package org.jbpm.services.task.audit.service;
 
-import static org.kie.internal.query.QueryParameterIdentifiers.DATE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
-
-import java.util.Date;
-import java.util.List;
-
 import org.jbpm.query.jpa.builder.impl.AbstractQueryBuilderImpl;
 import org.jbpm.query.jpa.data.QueryWhere;
 import org.jbpm.query.jpa.impl.QueryCriteriaUtil;
 import org.jbpm.services.task.commands.TaskCommand;
-import org.kie.internal.command.Context;
 import org.kie.internal.query.ParametrizedQuery;
 import org.kie.internal.task.api.InternalTaskService;
-import org.kie.internal.task.api.TaskContext;
-import org.kie.internal.task.api.TaskPersistenceContext;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.kie.internal.query.QueryParameterIdentifiers.*;
 
 /**
  *

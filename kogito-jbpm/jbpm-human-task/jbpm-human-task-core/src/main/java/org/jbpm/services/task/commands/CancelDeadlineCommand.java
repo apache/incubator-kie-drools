@@ -15,20 +15,19 @@
 
 package org.jbpm.services.task.commands;
 
-import java.util.Iterator;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.task.api.TaskDeadlinesService;
 import org.kie.internal.task.api.TaskDeadlinesService.DeadlineType;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.InternalTask;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Iterator;
 
 @XmlRootElement(name="cancel-deadline-command")
 @XmlAccessorType(XmlAccessType.NONE)

@@ -15,19 +15,18 @@
 
 package org.jbpm.services.task.audit.commands;
 
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.utils.ClassUtil;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.TaskVariable;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.List;
 
 @XmlRootElement(name="get-task-input-variables-command")
 @XmlAccessorType(XmlAccessType.NONE)

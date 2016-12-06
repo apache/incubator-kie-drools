@@ -24,7 +24,7 @@ import org.jbpm.services.api.ProcessInstanceNotFoundException;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.command.ProcessInstanceIdCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

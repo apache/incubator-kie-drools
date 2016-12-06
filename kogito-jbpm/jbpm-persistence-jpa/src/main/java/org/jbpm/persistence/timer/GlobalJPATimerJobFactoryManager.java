@@ -15,7 +15,6 @@
  */
 package org.jbpm.persistence.timer;
 
-import org.drools.core.command.CommandService;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -26,6 +25,7 @@ import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
+import org.kie.api.runtime.ExecutableRunner;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -36,12 +36,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GlobalJPATimerJobFactoryManager implements CommandServiceTimerJobFactoryManager {
 
     private Map<Long, TimerJobInstance> emptyStore = new HashMap<Long,TimerJobInstance>();
-    private CommandService commandService;
+    private ExecutableRunner runner;
     private Map<Long, Map<Long, TimerJobInstance>> timerInstances;
     private Map<Long, TimerJobInstance> singleTimerInstances;
     
-    public void setCommandService(CommandService commandService) {
-        this.commandService = commandService;
+    public void setRunner( ExecutableRunner runner ) {
+        this.runner = runner;
     }
     
     public GlobalJPATimerJobFactoryManager() {
@@ -128,8 +128,8 @@ public class GlobalJPATimerJobFactoryManager implements CommandServiceTimerJobFa
         return sessionTimerJobs.values();
     }
     
-    public CommandService getCommandService() {
-        return this.commandService;
+    public ExecutableRunner getRunner() {
+        return this.runner;
     }
     
 }

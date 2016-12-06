@@ -15,64 +15,78 @@
  */
 package org.jbpm.services.task.commands;
 
-import org.drools.core.command.CommandService;
-import org.drools.core.command.Interceptor;
 import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.fluent.impl.Batch;
+import org.drools.core.fluent.impl.InternalExecutable;
+import org.drools.core.runtime.ChainableRunner;
+import org.drools.core.runtime.InternalLocalRunner;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.Environment;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Executable;
+import org.kie.api.runtime.RequestContext;
 
 
-
-public class TaskCommandExecutorImpl implements CommandService {
+public class TaskCommandExecutorImpl implements InternalLocalRunner {
 	
 	private Environment environment;
 	private TaskEventSupport taskEventSupport;
-	private CommandService commandService = new SelfExecutionCommandService(this);
+	private InternalLocalRunner commandService = new SelfExecutionCommandService(this);
 	
 	public TaskCommandExecutorImpl(Environment environment, TaskEventSupport taskEventSupport) {
 		this.environment = environment;
 		this.taskEventSupport = taskEventSupport;
 	}
-    
+
+	@Override
+	public RequestContext execute( Executable executable, RequestContext ctx ) {
+		return this.commandService.execute(executable, ctx);
+	}
+
 	public <T> T execute(Command<T> command) {
     	return this.commandService.execute(command);
     }
 	
-	public void addInterceptor(Interceptor interceptor) {
+	public void addInterceptor(ChainableRunner interceptor) {
         interceptor.setNext( this.commandService );
         this.commandService = interceptor;
     }
 
 	@Override
-	public Context getContext() {
+	public RequestContext createContext() {
 		if (this.commandService instanceof SelfExecutionCommandService) {
 			return new TaskContext();
 		}
-		return new TaskContext(commandService.getContext(), environment, taskEventSupport);
+		return new TaskContext(commandService.createContext(), environment, taskEventSupport);
 	}
-	
-	private class SelfExecutionCommandService implements CommandService {
+
+	private class SelfExecutionCommandService implements InternalLocalRunner {
 		private TaskCommandExecutorImpl owner;
 		
 		SelfExecutionCommandService(TaskCommandExecutorImpl owner) {
 			this.owner = owner;
 		}
+
 		@Override
-		public <T> T execute(Command<T> command) {
-			if (command instanceof TaskCommand) {
-	    		return (T)((ExecutableCommand<T>) command).execute( getContext() );
-	    	} else {
-	    		throw new IllegalArgumentException("Task service can only execute task commands");
-	    	}
+		public RequestContext execute(Executable executable, RequestContext context) {
+
+			for (Batch batch : ( (InternalExecutable) executable ).getBatches()) {
+				for (Command command : batch.getCommands()) {
+					if (command instanceof TaskCommand) {
+					    Object result = ((ExecutableCommand) command).execute( new TaskContext(context, environment, taskEventSupport) );
+					    context.set("Result", result);
+					} else {
+						throw new IllegalArgumentException("Task service can only execute task commands");
+					}
+				}
+			}
+			return context;
 		}
 
 		@Override
-		public Context getContext() {
-			return owner.getContext();
+		public RequestContext createContext() {
+			return owner.createContext();
 		}
-		
 	}
     
 }

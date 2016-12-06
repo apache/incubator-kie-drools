@@ -16,14 +16,12 @@
 
 package org.jbpm.kie.services.impl.admin.commands;
 
-import java.util.Date;
-
 import org.jbpm.process.core.timer.DateTimeUtils;
 import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
 import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.kie.api.runtime.Context;
 import org.kie.api.task.model.Task;
-import org.kie.internal.command.Context;
 import org.kie.internal.task.api.TaskDeadlinesService;
 import org.kie.internal.task.api.TaskDeadlinesService.DeadlineType;
 import org.kie.internal.task.api.TaskPersistenceContext;
@@ -32,6 +30,8 @@ import org.kie.internal.task.api.model.Deadlines;
 import org.kie.internal.task.api.model.InternalTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 
 public class ScheduleTaskDeadlineCommand extends UserGroupCallbackTaskCommand<Long> {

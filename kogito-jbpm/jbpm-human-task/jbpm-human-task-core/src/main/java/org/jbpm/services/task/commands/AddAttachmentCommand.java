@@ -15,24 +15,24 @@
  */
 package org.jbpm.services.task.commands;
 
+import org.jbpm.services.task.impl.TaskContentRegistry;
+import org.jbpm.services.task.impl.model.xml.JaxbAttachment;
+import org.jbpm.services.task.impl.model.xml.JaxbContent;
+import org.jbpm.services.task.utils.ContentMarshallerHelper;
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.Attachment;
+import org.kie.api.task.model.Content;
+import org.kie.api.task.model.Task;
+import org.kie.internal.task.api.ContentMarshallerContext;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalAttachment;
+import org.kie.internal.task.api.model.InternalContent;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-
-import org.jbpm.services.task.impl.TaskContentRegistry;
-import org.jbpm.services.task.impl.model.xml.JaxbAttachment;
-import org.jbpm.services.task.impl.model.xml.JaxbContent;
-import org.jbpm.services.task.utils.ContentMarshallerHelper;
-import org.kie.api.task.model.Attachment;
-import org.kie.api.task.model.Content;
-import org.kie.api.task.model.Task;
-import org.kie.internal.command.Context;
-import org.kie.internal.task.api.ContentMarshallerContext;
-import org.kie.internal.task.api.TaskModelProvider;
-import org.kie.internal.task.api.model.InternalAttachment;
-import org.kie.internal.task.api.model.InternalContent;
 
 
 @XmlRootElement(name="add-attachment-command")

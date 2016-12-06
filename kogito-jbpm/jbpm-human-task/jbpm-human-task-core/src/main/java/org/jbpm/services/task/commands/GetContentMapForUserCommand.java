@@ -15,13 +15,12 @@
 
 package org.jbpm.services.task.commands;
 
-import java.util.Map;
+import org.kie.api.runtime.Context;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.kie.internal.command.Context;
+import java.util.Map;
 
 @XmlRootElement(name="get-content-map-for-user-command")
 @XmlAccessorType(XmlAccessType.NONE)

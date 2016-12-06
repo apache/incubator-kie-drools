@@ -15,16 +15,15 @@
 
 package org.jbpm.services.task.commands;
 
-import java.util.List;
-import java.util.Map;
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.OrganizationalEntity;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.kie.api.task.model.OrganizationalEntity;
-import org.kie.internal.command.Context;
+import java.util.List;
+import java.util.Map;
 
 @XmlRootElement(name="get-potential-owners-for-task-command")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -50,7 +49,7 @@ public class GetPotentialOwnersForTaskCommand extends TaskCommand<Map<Long, List
 		this.taskIds = taskIds;
 	}
 
-	public Map<Long, List<OrganizationalEntity>> execute(Context cntxt) {
+	public Map<Long, List<OrganizationalEntity>> execute(Context cntxt ) {
         TaskContext context = (TaskContext) cntxt;
 
         return context.getTaskQueryService().getPotentialOwnersForTaskIds(taskIds);

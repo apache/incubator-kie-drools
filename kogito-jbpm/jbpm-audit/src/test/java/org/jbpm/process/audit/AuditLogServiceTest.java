@@ -70,11 +70,11 @@ public class AuditLogServiceTest extends AbstractAuditLogServiceTest {
     }
 
     @After
-    public void tearDown() throws Exception {
-        cleanUp(context);
+    public void tearDown() throws Exception {        
         session.dispose();
         session = null;
         auditLogService = null;
+        cleanUp(context);
         System.clearProperty("org.jbpm.var.log.length");
     }
 

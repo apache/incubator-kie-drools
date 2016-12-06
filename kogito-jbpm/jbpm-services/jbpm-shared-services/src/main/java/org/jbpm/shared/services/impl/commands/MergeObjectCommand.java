@@ -17,7 +17,7 @@ package org.jbpm.shared.services.impl.commands;
 
 import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.shared.services.impl.JpaPersistenceContext;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 public class MergeObjectCommand implements ExecutableCommand<Void> {
 

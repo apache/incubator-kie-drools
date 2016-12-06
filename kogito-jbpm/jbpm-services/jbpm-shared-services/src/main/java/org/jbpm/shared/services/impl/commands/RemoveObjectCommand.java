@@ -17,7 +17,7 @@ package org.jbpm.shared.services.impl.commands;
 
 import org.drools.core.command.impl.ExecutableCommand;
 import org.jbpm.shared.services.impl.JpaPersistenceContext;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 public class RemoveObjectCommand implements ExecutableCommand<Void> {
 
@@ -30,7 +30,7 @@ public class RemoveObjectCommand implements ExecutableCommand<Void> {
 	}
 	
 	@Override
-	public Void execute(Context context) {
+	public Void execute(Context context ) {
 		JpaPersistenceContext ctx = (JpaPersistenceContext) context;
 		if (objectsToRemove != null) {
 			for (Object object : objectsToRemove) {

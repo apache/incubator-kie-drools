@@ -15,19 +15,18 @@
  */
 package org.jbpm.services.task.commands;
 
-import java.util.Map;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.Group;
+import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskIdentityService;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.kie.api.task.model.Group;
-import org.kie.api.task.model.User;
-import org.kie.internal.command.Context;
-import org.kie.internal.task.api.TaskIdentityService;
+import java.util.Map;
 
 
 @XmlRootElement(name="add-users-groups-command")

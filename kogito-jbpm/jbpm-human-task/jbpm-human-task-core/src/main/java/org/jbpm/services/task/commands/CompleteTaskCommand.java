@@ -15,20 +15,19 @@
  */
 package org.jbpm.services.task.commands;
 
-import java.util.Map;
+import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.jbpm.services.task.rule.TaskRuleService;
+import org.kie.api.runtime.Context;
+import org.kie.api.task.model.Task;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.model.InternalTaskData;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-
-import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
-import org.jbpm.services.task.rule.TaskRuleService;
-import org.kie.api.task.model.Task;
-import org.kie.internal.command.Context;
-import org.kie.internal.task.api.TaskInstanceService;
-import org.kie.internal.task.api.model.InternalTaskData;
+import java.util.Map;
 
 
 /**
@@ -64,7 +63,7 @@ public class CompleteTaskCommand extends UserGroupCallbackTaskCommand<Void> {
 		this.data = data;
 	}
 
-	public Void execute(Context cntxt) {
+	public Void execute(Context cntxt ) {
         TaskContext context = (TaskContext) cntxt;
         doCallbackUserOperation(userId, context);
         groupIds = doUserGroupCallbackOperation(userId, null, context);

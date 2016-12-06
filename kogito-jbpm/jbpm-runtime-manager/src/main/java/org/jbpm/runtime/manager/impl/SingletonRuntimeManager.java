@@ -119,7 +119,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
             private static final long serialVersionUID = 4698203316007668876L;
 
             @Override
-            public Void execute(org.kie.internal.command.Context context) {
+            public Void execute(org.kie.api.runtime.Context context) {
                 KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
                 ksession.getEnvironment().set("Active", true);
                 
@@ -140,7 +140,7 @@ public class SingletonRuntimeManager extends AbstractRuntimeManager {
             private static final long serialVersionUID = 8099201526203340191L;
 
             @Override
-            public Void execute(org.kie.internal.command.Context context) {
+            public Void execute(org.kie.api.runtime.Context context) {
                 KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
                 ksession.getEnvironment().set("Active", false);
                 

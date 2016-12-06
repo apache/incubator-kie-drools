@@ -25,7 +25,7 @@ import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 import java.util.Map;
 

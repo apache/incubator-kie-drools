@@ -15,14 +15,14 @@
 
 package org.jbpm.executor.ejb.impl.jpa;
 
+import org.jbpm.executor.impl.jpa.JPAExecutorStoreService;
+import org.kie.api.executor.ExecutorStoreService;
+import org.kie.api.runtime.CommandExecutor;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
-
-import org.drools.core.command.CommandService;
-import org.jbpm.executor.impl.jpa.JPAExecutorStoreService;
-import org.kie.api.executor.ExecutorStoreService;
 
 @Stateless
 public class JPAExecutorStoreServiceEJBImpl extends JPAExecutorStoreService implements ExecutorStoreService {
@@ -33,7 +33,7 @@ public class JPAExecutorStoreServiceEJBImpl extends JPAExecutorStoreService impl
 
 	@EJB(beanInterface=TransactionalCommandServiceExecutorEJBImpl.class)
 	@Override
-	public void setCommandService(CommandService commandService) {
+	public void setCommandService(CommandExecutor commandService ) {
 		super.setCommandService(commandService);
 	}
 

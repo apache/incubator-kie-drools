@@ -16,17 +16,17 @@
 
 package org.jbpm.kie.services.impl.admin.commands;
 
-import static org.jbpm.kie.services.impl.admin.UserTaskAdminServiceImpl.*;
-
-import java.util.Arrays;
-
 import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
 import org.jbpm.services.task.exception.PermissionDeniedException;
+import org.kie.api.runtime.Context;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
-import org.kie.internal.command.Context;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
+
+import java.util.Arrays;
+
+import static org.jbpm.kie.services.impl.admin.UserTaskAdminServiceImpl.*;
 
 
 public class RemovePeopleAssignmentsCommand extends UserGroupCallbackTaskCommand<Void> {

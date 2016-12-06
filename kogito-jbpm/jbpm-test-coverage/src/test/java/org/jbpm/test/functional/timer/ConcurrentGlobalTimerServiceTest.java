@@ -15,21 +15,8 @@
 
 package org.jbpm.test.functional.timer;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.naming.InitialContext;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.OptimisticLockException;
-import javax.persistence.Persistence;
-import javax.transaction.UserTransaction;
-
+import org.drools.core.command.SingleSessionCommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.persistence.SingleSessionCommandService;
 import org.hibernate.StaleObjectStateException;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
@@ -62,6 +49,18 @@ import org.kie.internal.task.api.UserGroupCallback;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.naming.InitialContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.OptimisticLockException;
+import javax.persistence.Persistence;
+import javax.transaction.UserTransaction;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 public class ConcurrentGlobalTimerServiceTest extends TimerBaseTest {
     
@@ -174,7 +173,7 @@ public class ConcurrentGlobalTimerServiceTest extends TimerBaseTest {
 	
 	private void testStartProcess(RuntimeEngine runtime) throws Exception {
 		
-		synchronized((SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) runtime.getKieSession()).getCommandService()) {
+		synchronized((SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) runtime.getKieSession()).getRunner()) {
 			UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
             try {
                 ut.begin();

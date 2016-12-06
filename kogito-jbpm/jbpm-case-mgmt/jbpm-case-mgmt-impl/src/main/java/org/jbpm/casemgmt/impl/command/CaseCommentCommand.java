@@ -26,7 +26,7 @@ import org.jbpm.casemgmt.impl.model.instance.CaseFileInstanceImpl;
 import org.jbpm.casemgmt.impl.model.instance.CommentInstanceImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 import java.util.Collection;
 
