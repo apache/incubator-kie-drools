@@ -49,11 +49,11 @@ public class FEELListsTest extends BaseFEELTest {
                 {"{ a list : [10, 20, 30, 40], second : a list[2] }.second", BigDecimal.valueOf( 20 ) },
 
                 // Filtering by boolean expression
-                {"[1, 2, 3, 4][item = 4]", BigDecimal.valueOf( 4 ) },
+                {"[1, 2, 3, 4][item = 4]", Arrays.asList( BigDecimal.valueOf( 4 ) ) },
                 {"[1, 2, 3, 4][item > 2]", Arrays.asList( BigDecimal.valueOf( 3 ), BigDecimal.valueOf( 4 ) ) },
                 {"[1, 2, 3, 4][item > 5]", Collections.emptyList() },
-                {"[ {x:1, y:2}, {x:2, y:3} ][x = 1]", new HashMap<String, Object>() {{ put("x", BigDecimal.valueOf( 1 )); put("y", BigDecimal.valueOf( 2 ));}} },
-                {"[ {x:1, y:2}, {x:2, y:3} ][x > 1]", new HashMap<String, Object>() {
+                {"[ {x:1, y:2}, {x:2, y:3} ][x = 1]", Arrays.asList( new HashMap<String, Object>() {{ put("x", BigDecimal.valueOf( 1 )); put("y", BigDecimal.valueOf( 2 ));}} ) },
+                {"[ {x:1, y:2}, {x:2, y:3} ][x > 1]", Arrays.asList( new HashMap<String, Object>() {
                     {
                         put("x", BigDecimal.valueOf( 1 ));
                         put("y", BigDecimal.valueOf( 2 ));
@@ -62,12 +62,12 @@ public class FEELListsTest extends BaseFEELTest {
                         put("x", BigDecimal.valueOf( 2 ));
                         put("y", BigDecimal.valueOf( 3 ));
                     }
-                } },
+                } ) },
                 {"[ {x:1, y:2}, {x:2, y:3} ][x = 0]", Collections.emptyList() },
 
                 // Selection
                 {"[ {x:1, y:2}, {x:2, y:3} ].y", Arrays.asList( BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ) ) },
-                {"[ {x:1, y:2}, {x:2} ].y", BigDecimal.valueOf( 2 ) },
+                {"[ {x:1, y:2}, {x:2} ].y", Arrays.asList( BigDecimal.valueOf( 2 ) ) },
                 {"[ {x:1, y:2}, {x:2, y:3} ].z", Collections.emptyList() }
         };
         return Arrays.asList( cases );
