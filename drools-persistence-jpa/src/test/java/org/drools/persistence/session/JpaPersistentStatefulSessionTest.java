@@ -18,12 +18,11 @@ package org.drools.persistence.session;
 import org.drools.compiler.Address;
 import org.drools.compiler.Person;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.command.CommandService;
-import org.drools.core.command.Interceptor;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.FireAllRulesInterceptor;
 import org.drools.core.command.impl.LoggingInterceptor;
-import org.drools.persistence.SingleSessionCommandService;
+import org.drools.core.runtime.ChainableRunner;
+import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -58,13 +57,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
-import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
-import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static org.drools.persistence.util.DroolsPersistenceUtil.*;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class JpaPersistentStatefulSessionTest {
@@ -321,8 +315,8 @@ public class JpaPersistentStatefulSessionTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        SingleSessionCommandService sscs = (SingleSessionCommandService)
-            ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
+        PersistableRunner sscs = (PersistableRunner)
+            ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
         sscs.addInterceptor(new LoggingInterceptor());
         sscs.addInterceptor(new FireAllRulesInterceptor());
         sscs.addInterceptor(new LoggingInterceptor());
@@ -360,19 +354,19 @@ public class JpaPersistentStatefulSessionTest {
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
-        SingleSessionCommandService sscs = (SingleSessionCommandService)
-                ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
+        PersistableRunner sscs = (PersistableRunner)
+                ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
         sscs.addInterceptor(new LoggingInterceptor());
         sscs.addInterceptor(new FireAllRulesInterceptor());
         sscs.addInterceptor(new LoggingInterceptor());
 
-        CommandService internalCommandService = sscs.getCommandService();
+        ChainableRunner runner = sscs.getChainableRunner();
 
-        assertEquals(LoggingInterceptor.class, internalCommandService.getClass());
-        internalCommandService = ((Interceptor) internalCommandService).getNext();
-        assertEquals(FireAllRulesInterceptor.class, internalCommandService.getClass());
-        internalCommandService = ((Interceptor) internalCommandService).getNext();
-        assertEquals(LoggingInterceptor.class, internalCommandService.getClass());
+        assertEquals(LoggingInterceptor.class, runner.getClass());
+        runner = (ChainableRunner)runner.getNext();
+        assertEquals(FireAllRulesInterceptor.class, runner.getClass());
+        runner = (ChainableRunner)runner.getNext();
+        assertEquals(LoggingInterceptor.class, runner.getClass());
 
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
         ut.begin();
@@ -383,13 +377,13 @@ public class JpaPersistentStatefulSessionTest {
 
         ksession.insert( 3 );
 
-        internalCommandService = sscs.getCommandService();
+        runner = sscs.getChainableRunner();
 
-        assertEquals(LoggingInterceptor.class, internalCommandService.getClass());
-        internalCommandService = ((Interceptor) internalCommandService).getNext();
-        assertEquals(FireAllRulesInterceptor.class, internalCommandService.getClass());
-        internalCommandService = ((Interceptor) internalCommandService).getNext();
-        assertEquals(LoggingInterceptor.class, internalCommandService.getClass());
+        assertEquals(LoggingInterceptor.class, runner.getClass());
+        runner = (ChainableRunner)runner.getNext();
+        assertEquals(FireAllRulesInterceptor.class, runner.getClass());
+        runner = (ChainableRunner)runner.getNext();
+        assertEquals(LoggingInterceptor.class, runner.getClass());
 
     }
     

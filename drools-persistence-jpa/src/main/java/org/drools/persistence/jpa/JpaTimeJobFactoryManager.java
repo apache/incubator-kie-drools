@@ -15,7 +15,7 @@
 
 package org.drools.persistence.jpa;
 
-import org.drools.core.command.CommandService;
+import org.kie.api.runtime.ExecutableRunner;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -30,14 +30,14 @@ public class JpaTimeJobFactoryManager
         extends ThreadSafeTrackableTimeJobFactoryManager
         implements CommandServiceTimerJobFactoryManager {
 
-    private CommandService commandService;
+    private ExecutableRunner runner;
 
-    public void setCommandService(CommandService commandService) {
-        this.commandService = commandService;
+    public void setRunner(ExecutableRunner runner ) {
+        this.runner = runner;
     }
 
-    public CommandService getCommandService() {
-        return commandService;
+    public ExecutableRunner getRunner() {
+        return runner;
     }
 
     public TimerJobInstance createTimerJobInstance(Job job,

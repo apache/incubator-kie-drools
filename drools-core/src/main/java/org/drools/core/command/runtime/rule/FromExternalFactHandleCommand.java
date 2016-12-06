@@ -20,7 +20,7 @@ import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalFactHandle;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 import java.util.Collection;
 

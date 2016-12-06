@@ -15,25 +15,25 @@
  */
 package org.drools.core.command.runtime;
 
-import org.drools.core.command.CommandService;
+import org.kie.api.runtime.ExecutableRunner;
 import org.drools.core.command.SingleSessionCommandService;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 public class DestroySessionCommand extends DisposeCommand {
 
-    private CommandService commandService;
+    private ExecutableRunner runner;
 
     public DestroySessionCommand() {
 
     }
 
-    public DestroySessionCommand(CommandService commandService) {
-        this.commandService = commandService;
+    public DestroySessionCommand(ExecutableRunner runner ) {
+        this.runner = runner;
     }
 
     public Void execute(Context context) {
-        if (commandService != null && commandService instanceof SingleSessionCommandService) {
-           ((SingleSessionCommandService) commandService).destroy();
+        if (runner != null && runner instanceof SingleSessionCommandService) {
+           ((SingleSessionCommandService) runner).destroy();
         }
         super.execute(context);
         return null;

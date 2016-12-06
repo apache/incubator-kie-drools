@@ -15,8 +15,7 @@
 
 package org.drools.core.command.runtime.rule;
 
-import org.drools.core.command.impl.ContextImpl;
-import org.drools.core.command.impl.DefaultCommandService;
+import org.kie.api.runtime.ExecutableRunner;
 import org.drools.core.command.impl.RegistryContext;
 import org.drools.core.common.InternalFactHandle;
 import org.junit.After;
@@ -26,6 +25,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.runtime.Context;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.Collection;
@@ -39,16 +39,16 @@ import static org.junit.Assert.*;
 public class GetFactHandlesCommandTest {
 
     private StatefulKnowledgeSession ksession;
-    private DefaultCommandService commandService;
+    private ExecutableRunner runner;
+    private Context context;
     private Random random = new Random();
     
     @Before
     public void setup() { 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         ksession = kbase.newStatefulKnowledgeSession();
-        RegistryContext context = new ContextImpl().register( KieSession.class, ksession );
-        commandService = new DefaultCommandService(context);
-        
+        runner = ExecutableRunner.create();
+        context = ( (RegistryContext) runner.createContext() ).register( KieSession.class, ksession );
     }
     
     @After
@@ -59,7 +59,7 @@ public class GetFactHandlesCommandTest {
     @Test
     public void getEmptyFactHandlesTest() { 
         GetFactHandlesCommand command = new GetFactHandlesCommand();
-        Object result = commandService.execute(command);
+        Object result = runner.execute(command, context);
         if( result instanceof Collection<?> ) { 
             assertNotNull(result);
             assertTrue(((Collection<?>) result).isEmpty());
@@ -74,7 +74,7 @@ public class GetFactHandlesCommandTest {
         String randomFact = "" + random.nextLong();
         ksession.insert(randomFact);
         GetFactHandlesCommand command = new GetFactHandlesCommand();
-        Object result = commandService.execute(command);
+        Object result = runner.execute(command, context);
         
         verifyThatCollectionContains1FactHandleWithThisFact(randomFact, result);
     }
@@ -91,7 +91,7 @@ public class GetFactHandlesCommandTest {
         }
         
         GetFactHandlesCommand command = new GetFactHandlesCommand();
-        Object result = commandService.execute(command);
+        Object result = runner.execute(command, context);
         
         verifyThatCollectionContainsTheseFactHandle(factSet, result);
     }
@@ -99,7 +99,7 @@ public class GetFactHandlesCommandTest {
     @Test
     public void getEmptyDisconnectedFactHandlesTest() { 
         GetFactHandlesCommand command = new GetFactHandlesCommand(true);
-        Object result = commandService.execute(command);
+        Object result = runner.execute(command, context);
         if( result instanceof Collection<?> ) { 
             assertNotNull(result);
             assertTrue(((Collection<?>) result).isEmpty());
@@ -117,17 +117,17 @@ public class GetFactHandlesCommandTest {
         
         // Retrieve and verify fact handle collections
         GetFactHandlesCommand command = new GetFactHandlesCommand(false);
-        Object result = commandService.execute(command);
+        Object result = runner.execute(command, context);
         verifyThatCollectionContains1FactHandleWithThisFact(randomFact, result);
         FactHandle factHandle = (FactHandle) ((Collection<FactHandle>) result).toArray()[0];
         
         command = new GetFactHandlesCommand(false);
-        result = commandService.execute(command);
+        result = runner.execute(command, context);
         verifyThatCollectionContains1FactHandleWithThisFact(randomFact, result);
         FactHandle connectedFactHandle = (FactHandle) ((Collection<FactHandle>) result).toArray()[0];
         
         command = new GetFactHandlesCommand(true);
-        result = commandService.execute(command);
+        result = runner.execute(command, context);
         verifyThatCollectionContains1FactHandleWithThisFact(randomFact, result);
         FactHandle disconnectedFactHandle = (FactHandle) ((Collection<FactHandle>) result).toArray()[0];
       
@@ -149,17 +149,17 @@ public class GetFactHandlesCommandTest {
         }
         
         GetFactHandlesCommand command = new GetFactHandlesCommand(false);
-        Object result = commandService.execute(command);
+        Object result = runner.execute(command, context);
         verifyThatCollectionContainsTheseFactHandle(factSet, result);
         Collection<FactHandle> factHandles = ((Collection<FactHandle>) result);
         
         command = new GetFactHandlesCommand(false);
-        result = commandService.execute(command);
+        result = runner.execute(command, context);
         verifyThatCollectionContainsTheseFactHandle(factSet, result);
         Collection<FactHandle> connectedFactHandles = ((Collection<FactHandle>) result);
         
         command = new GetFactHandlesCommand(true);
-        result = commandService.execute(command);
+        result = runner.execute(command, context);
         verifyThatCollectionContainsTheseFactHandle(factSet, result);
         Collection<FactHandle> disconnectedFactHandles = ((Collection<FactHandle>) result);
        

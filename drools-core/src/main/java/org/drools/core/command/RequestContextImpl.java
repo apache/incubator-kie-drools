@@ -17,34 +17,34 @@
 package org.drools.core.command;
 
 import org.drools.core.command.impl.ContextImpl;
-import org.kie.internal.command.Context;
+import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.RequestContext;
 import org.kie.internal.command.ContextManager;
-import org.kie.internal.fluent.RequestContext;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class RequestContextImpl extends ContextImpl implements RequestContext {
 
-    private ContextImpl         appContext;
-    private ConversationContext conversationContext;
+    private Context appContext;
+    private Context conversationContext;
 
     private ConversationContextManager cvnManager;
 
-    private final long requestId;
-
-    private Object lastReturned;
+    private Object result;
 
     private String lastSet;
 
-    private final Map<String, Object> out = new HashMap<String, Object>();
-
     private Exception exception;
+
+    public RequestContextImpl() {
+        register( ExecutionResultImpl.class, new ExecutionResultImpl() );
+    }
 
     public RequestContextImpl(long requestId, ContextManager ctxManager, ConversationContextManager cvnManager) {
         super(Long.toString(requestId), ctxManager);
-        this.requestId = requestId;
         this.cvnManager = cvnManager;
+        register( ExecutionResultImpl.class, new ExecutionResultImpl() );
     }
 
     public Context getApplicationContext() {
@@ -55,11 +55,11 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
         this.appContext = (ContextImpl)appContext;
     }
 
-    public ConversationContext getConversationContext() {
+    public Context getConversationContext() {
         return conversationContext;
     }
 
-    public void setConversationContext(ConversationContext conversationContext) {
+    public void setConversationContext(Context conversationContext ) {
         this.conversationContext = conversationContext;
     }
 
@@ -86,21 +86,25 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
     }
 
     @Override
-    public long getRequestId() {
-        return requestId;
+    public Object getResult() {
+        return result;
     }
 
     @Override
-    public long getConversationId() {
-        return conversationContext.getConversationId();
+    public void setResult( Object result ) {
+        this.result = result;
     }
 
-    public Object getLastReturned() {
-        return lastReturned;
+    @Override
+    public RequestContext with( KieBase kieBase ) {
+        register( KieBase.class, kieBase );
+        return this;
     }
 
-    public void setLastReturned(Object lastReturned) {
-        this.lastReturned = lastReturned;
+    @Override
+    public RequestContext with( KieSession kieSession ) {
+        register( KieSession.class, kieSession );
+        return this;
     }
 
     public String getLastSet() {
@@ -109,11 +113,6 @@ public class RequestContextImpl extends ContextImpl implements RequestContext {
 
     public void setLastSetOrGet(String lastSet) {
         this.lastSet = lastSet;
-    }
-
-    @Override
-    public Map<String, Object> getOut() {
-        return out;
     }
 
     public Exception getException() {

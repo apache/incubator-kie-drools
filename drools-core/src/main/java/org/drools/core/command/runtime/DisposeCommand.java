@@ -19,7 +19,7 @@ package org.drools.core.command.runtime;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.command.impl.RegistryContext;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -32,7 +32,7 @@ public class DisposeCommand
     ExecutableCommand<Void> {
 
     public Void execute(Context context) {
-        KieSession ksession = ((RegistryContext)context).lookup( KieSession.class );
+        KieSession ksession = ( (RegistryContext) context ).lookup( KieSession.class );
         ksession.dispose();
         return null;
     }
@@ -41,4 +41,7 @@ public class DisposeCommand
         return "ksession.dispose();";
     }
 
+    public boolean canRunInTransaction() {
+        return false;
+    }
 }

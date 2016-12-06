@@ -21,7 +21,7 @@ import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.CommandExecutor;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.command.ContextManager;
 
 import java.util.HashMap;

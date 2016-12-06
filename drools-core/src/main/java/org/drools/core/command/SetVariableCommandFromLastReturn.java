@@ -16,14 +16,15 @@
 
 package org.drools.core.command;
 
+import org.drools.core.command.impl.ExecutableCommand;
+import org.drools.core.command.impl.RegistryContext;
+import org.drools.core.common.InternalFactHandle;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.api.runtime.Context;
+import org.kie.internal.fluent.Scope;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.kie.api.runtime.rule.FactHandle;
-import org.drools.core.command.impl.ExecutableCommand;
-import org.drools.core.common.InternalFactHandle;
-import org.kie.internal.command.Context;
-import org.kie.internal.fluent.Scope;
 
 public class SetVariableCommandFromLastReturn
     implements
@@ -55,7 +56,7 @@ public class SetVariableCommandFromLastReturn
         if ( this.contextName == null ) {
             targetCtx = context;
         } else {
-            targetCtx = context.getContextManager().getContext( this.contextName );
+            targetCtx = ( (RegistryContext) context ).getContextManager().getContext( this.contextName );
         }
 
         GetDefaultValue sim = (GetDefaultValue) context.get( "simulator" );
