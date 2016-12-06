@@ -60,8 +60,6 @@ public interface InternalWorkingMemory
 
     ObjectStore getObjectStore();
 
-    void executeQueuedActionsForRete();
-
     void queueWorkingMemoryAction(final WorkingMemoryAction action);
 
     FactHandleFactory getFactHandleFactory();

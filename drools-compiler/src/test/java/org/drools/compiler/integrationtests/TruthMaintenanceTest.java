@@ -48,7 +48,6 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.logger.KnowledgeRuntimeLogger;
@@ -1035,10 +1034,6 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
     @Test(timeout=10000)
     public void testTMSWithLateUpdate() {
         //  JBRULES-3416
-        if( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
-            return;  // Feature can never work in Rete mode.
-        }
-
         String str =""+
                 "package org.drools.compiler.test;\n" +
                 "\n" +

@@ -20,7 +20,6 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -248,11 +247,6 @@ public abstract class ObjectSource extends BaseNode
     protected boolean doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
-        if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled()  && !this.isInUse() && this instanceof MemoryFactory ) {
-            for( InternalWorkingMemory workingMemory : workingMemories ) {
-                workingMemory.clearNodeMemory( (MemoryFactory) this );
-            }
-        }
         if ( !isInUse() && this instanceof ObjectSink ) {
             this.source.removeObjectSink((ObjectSink) this);
             return true;

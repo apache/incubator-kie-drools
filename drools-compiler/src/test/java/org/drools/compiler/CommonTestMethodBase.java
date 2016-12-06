@@ -47,7 +47,6 @@ import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
@@ -66,7 +65,6 @@ import java.util.function.Predicate;
  * drools-persistence-jpa.
  */
 public class CommonTestMethodBase extends Assert {
-	public static RuleEngineOption phreak = RuleEngineOption.PHREAK;
 
 	protected KieSession createKieSession(KieBase kbase) {
 		return kbase.newKieSession();
@@ -100,32 +98,28 @@ public class CommonTestMethodBase extends Assert {
 		return kbase.newStatelessKnowledgeSession();
 	}
 
-	protected KnowledgeBase loadKnowledgeBaseFromString(String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, null, phreak, drlContentStrings);
-	}
-
 	protected KnowledgeBase loadKnowledgeBaseFromString(NodeFactory nodeFactory, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, null, phreak, nodeFactory, drlContentStrings);
+		return loadKnowledgeBaseFromString(null, null, nodeFactory, drlContentStrings);
 	}
 
-	protected KnowledgeBase loadKnowledgeBaseFromString(RuleEngineOption phreak, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, null, phreak, drlContentStrings);
+	protected KnowledgeBase loadKnowledgeBaseFromString(String... drlContentStrings) {
+		return loadKnowledgeBaseFromString(null, null, drlContentStrings);
 	}
 
 	protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(config, null, phreak, drlContentStrings);
+		return loadKnowledgeBaseFromString(config, null, drlContentStrings);
 	}
 
 	protected KnowledgeBase loadKnowledgeBaseFromString(
 			KieBaseConfiguration kBaseConfig, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, kBaseConfig, phreak, drlContentStrings);
+		return loadKnowledgeBaseFromString(null, kBaseConfig, drlContentStrings);
 	}
 
-	protected KnowledgeBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, RuleEngineOption phreak, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString( config, kBaseConfig, phreak, (NodeFactory)null, drlContentStrings);
+	protected KnowledgeBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, String... drlContentStrings) {
+		return loadKnowledgeBaseFromString( config, kBaseConfig, (NodeFactory)null, drlContentStrings);
 	}
 
-	protected KnowledgeBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, RuleEngineOption phreak, NodeFactory nodeFactory, String... drlContentStrings) {
+	protected KnowledgeBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, NodeFactory nodeFactory, String... drlContentStrings) {
 		KnowledgeBuilder kbuilder = config == null ? KnowledgeBuilderFactory.newKnowledgeBuilder() : KnowledgeBuilderFactory.newKnowledgeBuilder(config);
 		for (String drlContentString : drlContentStrings) {
 			kbuilder.add(ResourceFactory.newByteArrayResource(drlContentString
@@ -138,7 +132,6 @@ public class CommonTestMethodBase extends Assert {
 		if (kBaseConfig == null) {
 			kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 		}
-		kBaseConfig.setOption(phreak);
 		KnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
 		if (nodeFactory != null) {
 			((KnowledgeBaseImpl) kbase).getConfiguration().getComponentFactory().setNodeFactoryProvider( nodeFactory);
@@ -153,7 +146,6 @@ public class CommonTestMethodBase extends Assert {
 		if (kbaseConf == null) {
 			kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 		}
-		kbaseConf.setOption(phreak);
 		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
 		kbase.addKnowledgePackages(knowledgePackages);
 		try {
@@ -174,7 +166,6 @@ public class CommonTestMethodBase extends Assert {
 		if (kbaseConf == null) {
 			kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
 		}
-		kbaseConf.setOption(phreak);
 		KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
 		kbase.addKnowledgePackages(knowledgePackages);
 		try {
@@ -267,12 +258,10 @@ public class CommonTestMethodBase extends Assert {
 
     protected KnowledgeBase getKnowledgeBase() {
         KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kBaseConfig.setOption(phreak);
         return getKnowledgeBase(kBaseConfig);
     }
 
     protected KnowledgeBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
-        kBaseConfig.setOption(phreak);
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
         try {
             kbase = SerializationHelper.serializeObject(kbase, ((InternalKnowledgeBase) kbase).getRootClassLoader());

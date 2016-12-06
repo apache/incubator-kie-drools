@@ -128,8 +128,7 @@ public class WorkingMemoryFileLogger extends WorkingMemoryLogger {
             final XStream xstream = new XStream();
             WorkingMemoryLog log = null;
             synchronized ( this.events ) {
-                log = new WorkingMemoryLog(new ArrayList<LogEvent>( this.events ),
-                                           isPhreak ? "PHREAK" : "RETEOO");
+                log = new WorkingMemoryLog(new ArrayList<LogEvent>( this.events ));
                 clear();
             }
             writer.write( xstream.toXML( log ) + "\n" );

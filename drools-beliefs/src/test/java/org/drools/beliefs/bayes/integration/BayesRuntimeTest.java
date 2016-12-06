@@ -24,12 +24,9 @@ import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 
-import static org.drools.beliefs.bayes.JunctionTreeTest.scaleDouble;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class BayesRuntimeTest {
 
@@ -51,16 +48,10 @@ public class BayesRuntimeTest {
     }
 
     protected KnowledgeBase getKnowledgeBase() {
-        KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kBaseConfig.setOption(RuleEngineOption.PHREAK);
-        return getKnowledgeBase(kBaseConfig);
+        return KnowledgeBaseFactory.newKnowledgeBase();
     }
 
     protected KnowledgeBase getKnowledgeBase(KieBaseConfiguration kBaseConfig) {
-        kBaseConfig.setOption(RuleEngineOption.PHREAK);
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
-        return kbase;
+        return KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
     }
-
-
 }

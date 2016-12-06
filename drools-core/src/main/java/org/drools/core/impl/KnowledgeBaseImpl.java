@@ -192,12 +192,6 @@ public class KnowledgeBaseImpl
         this.config = (config != null) ? config : new RuleBaseConfiguration();
         this.config.makeImmutable();
 
-        if ( this.config.isPhreakEnabled() ) {
-            logger.debug("Starting Engine in PHREAK mode");
-        } else {
-            logger.debug("Starting Engine in RETEOO mode");
-        }
-
         createRulebaseId(id);
 
         this.rootClassLoader = this.config.getClassLoader();
@@ -218,11 +212,7 @@ public class KnowledgeBaseImpl
         setupRete();
 
         if ( this.config.getSessionCacheOption().isEnabled() ) {
-            if ( this.config.isPhreakEnabled() ) {
-                sessionsCache = new SessionsCache(this.config.getSessionCacheOption().isAsync());
-            } else {
-                logger.warn("Session cache can be enabled only in PHREAK mode");
-            }
+            sessionsCache = new SessionsCache(this.config.getSessionCacheOption().isAsync());
         }
     }
 

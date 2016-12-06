@@ -43,7 +43,6 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -1424,10 +1423,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
     
     @Test(timeout=10000) @Ignore
     public void testHaltAfterSomeTimeThenRestart() throws Exception {
-        if ( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
-            return; // fails randomly for Rete
-        }
-
         String drl = "package org.kie.test;" +
                 "global java.util.List list; \n" +
                 "\n" +
@@ -1494,10 +1489,6 @@ public class TimerAndCalendarTest extends CommonTestMethodBase {
 
     @Test (timeout=10000)
     public void testHaltAfterSomeTimeThenRestartButNoLongerHolding() throws Exception {
-        if ( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
-            return; // fails randomly for Rete
-        }
-
         String drl = "package org.kie.test;" +
                 "global java.util.List list; \n" +
                 "\n" +

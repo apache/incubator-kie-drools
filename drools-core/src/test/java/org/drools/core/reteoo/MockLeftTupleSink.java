@@ -80,11 +80,6 @@ public class MockLeftTupleSink extends LeftTupleSource
         return new PathMemory(null, null);
     }
 
-    public void updateSink(final LeftTupleSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
-    }
-
     protected boolean doRemove(final RuleRemovalContext context,
                                final ReteooBuilder builder,
                                final InternalWorkingMemory[] workingMemories) {
@@ -144,17 +139,6 @@ public class MockLeftTupleSink extends LeftTupleSource
         return NodeTypeEnums.RuleTerminalNode;
     }
 
-    public void modifyLeftTuple(InternalFactHandle factHandle,
-                                ModifyPreviousTuples modifyPreviousTuples,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-    }
-
-    public void modifyLeftTuple(LeftTuple leftTuple,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-    }
-    
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {

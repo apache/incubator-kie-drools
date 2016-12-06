@@ -181,17 +181,9 @@ public class ReteooBuilder
     }
 
     public void removeTerminalNode(RuleRemovalContext context, TerminalNode tn, InternalWorkingMemory[] workingMemories)  {
-        if ( this.kBase.getConfiguration().isPhreakEnabled() ) {
-            AddRemoveRule.removeRule( tn, workingMemories, kBase );
-        }
+        AddRemoveRule.removeRule( tn, workingMemories, kBase );
 
         RuleRemovalContext.CleanupAdapter adapter = null;
-        if ( !this.kBase.getConfiguration().isPhreakEnabled() ) {
-            if ( tn instanceof RuleTerminalNode) {
-                adapter = new RuleTerminalNode.RTNCleanupAdapter( (RuleTerminalNode) tn );
-            }
-            context.setCleanupAdapter( adapter );
-        }
 
         BaseNode node = (BaseNode) tn;
         removeNodeAssociation(node, context.getRule());
@@ -228,7 +220,7 @@ public class ReteooBuilder
                 removed = removeLeftTupleNode(wms, context, stillInUse, node);
             }
 
-            if ( removed || !kBase.getConfiguration().isPhreakEnabled() ) {
+            if ( removed ) {
                 // reteoo requires to call remove on the OTN for tuples cleanup
                 if (NodeTypeEnums.isBetaNode(node) && !((BetaNode) node).isRightInputIsRiaNode()) {
                     alphas.add(((BetaNode) node).getRightInput());
@@ -251,11 +243,9 @@ public class ReteooBuilder
 
         if (removed) {
             stillInUse.remove( node.getId() );
-            if (kBase.getConfiguration().isPhreakEnabled()) {
-                // phreak must clear node memories, although this should ideally be pushed into AddRemoveRule
-                for (InternalWorkingMemory workingMemory : wms) {
-                    workingMemory.clearNodeMemory((MemoryFactory) node);
-                }
+            // phreak must clear node memories, although this should ideally be pushed into AddRemoveRule
+            for (InternalWorkingMemory workingMemory : wms) {
+                workingMemory.clearNodeMemory((MemoryFactory) node);
             }
         } else {
             stillInUse.put( node.getId(), node );
@@ -274,19 +264,12 @@ public class ReteooBuilder
 
         if ( !removed ) {
             stillInUse.put( node.getId(), node );
-            if (!kBase.getConfiguration().isPhreakEnabled()) {
-                // reteoo requires to call remove on the OTN for tuples cleanup
-                if (parent != null && parent.getType() != NodeTypeEnums.EntryPointNode) {
-                    removeObjectSource(wms, stillInUse, removedNodes, parent, context);
-                }
-            }
         } else {
             stillInUse.remove(node.getId());
             removedNodes.add(node.getId());
 
             if ( node.getType() != NodeTypeEnums.ObjectTypeNode &&
-                 node.getType() != NodeTypeEnums.AlphaNode &&
-                 kBase.getConfiguration().isPhreakEnabled() ) {
+                 node.getType() != NodeTypeEnums.AlphaNode ) {
                 // phreak must clear node memories, although this should ideally be pushed into AddRemoveRule
                 for (InternalWorkingMemory workingMemory : wms) {
                     workingMemory.clearNodeMemory( (MemoryFactory) node);

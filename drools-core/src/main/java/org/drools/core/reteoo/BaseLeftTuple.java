@@ -641,11 +641,6 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     }
 
     @Override
-    public void modifyTuple( PropagationContext context, InternalWorkingMemory workingMemory) {
-        getTupleSink().modifyLeftTuple( this, context, workingMemory );
-    }
-
-    @Override
     public void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory ) {
         getTupleSink().retractLeftTuple( this, context, workingMemory );
     }

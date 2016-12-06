@@ -25,8 +25,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.common.ScheduledAgendaItem;
 import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
@@ -372,13 +370,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
             final Activation activation = (Activation) leftTuple.getContextObject();
 
-            // this is to catch a race condition as activations are activated and unactivated on timers
-            if ( activation instanceof ScheduledAgendaItem ) {
-                ScheduledAgendaItem scheduled = (ScheduledAgendaItem) activation;
-                workingMemory.getTimerService().removeJob( scheduled.getJobHandle() );
-                scheduled.getJobHandle().setCancel( true );
-            }
-
             if ( activation.isQueued() ) {
                 activation.remove();
                 ((EventSupport) workingMemory).getAgendaEventSupport().fireActivationCancelled( activation,
@@ -458,9 +449,4 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     public void retractLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
         throw new UnsupportedOperationException("Rete Only");
     }
-
-    public void modifyLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("Rete Only");
-    }
-
 }

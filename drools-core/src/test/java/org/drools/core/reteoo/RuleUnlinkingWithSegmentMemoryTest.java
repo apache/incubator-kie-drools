@@ -31,7 +31,6 @@ import org.drools.core.spi.PropagationContext;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 
 import java.util.List;
 
@@ -105,7 +104,6 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     
     public void setUp(int type) {
         KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
         kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
 
         buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
@@ -167,7 +165,6 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         setUp( JOIN_NODE );
 
         KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
         StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1L, kBase );
         
@@ -190,7 +187,6 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         setUp( JOIN_NODE );
 
         KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
         StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
@@ -294,9 +290,7 @@ public class RuleUnlinkingWithSegmentMemoryTest {
     public void testRuleSegmentLinking() {
         setUp( JOIN_NODE );
 
-        KieBaseConfiguration kconf = org.kie.internal.KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         StatefulKnowledgeSessionImpl wm = new StatefulKnowledgeSessionImpl( 1L, kBase );
 
         BetaMemory bm = null;

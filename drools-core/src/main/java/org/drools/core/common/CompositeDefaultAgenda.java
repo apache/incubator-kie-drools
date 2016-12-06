@@ -16,13 +16,11 @@
 
 package org.drools.core.common;
 
-import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
@@ -34,7 +32,6 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.CompositeIterator;
-import org.drools.core.util.LinkedList;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 import org.slf4j.Logger;
@@ -164,12 +161,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     @Override
     public AgendaItem createAgendaItem( RuleTerminalNodeLeftTuple rtnLeftTuple, int salience, PropagationContext context, RuleAgendaItem ruleAgendaItem, InternalAgendaGroup agendaGroup ) {
         return getPartitionedAgendaForNode(ruleAgendaItem.getTerminalNode()).createAgendaItem( rtnLeftTuple, salience, context, ruleAgendaItem, agendaGroup );
-    }
-
-    @Override
-    public int unstageActivations() {
-        // Not used by phreak, but still called by some generic code.
-        return 0;
     }
 
     @Override
@@ -380,11 +371,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public Activation[] getScheduledActivations() {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getScheduledActivations -> TODO" );
-    }
-
-    @Override
     public void clearAndCancel() {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.clearAndCancel -> TODO" );
     }
@@ -420,48 +406,13 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public boolean fireTimedActivation( Activation activation ) throws ConsequenceException {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.fireTimedActivation -> TODO" );
-    }
-
-    @Override
-    public void removeScheduleItem( ScheduledAgendaItem item ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.removeScheduleItem -> TODO" );
-    }
-
-    @Override
-    public <T extends ModedAssertion<T>> LinkedList<ScheduledAgendaItem<T>> getScheduledActivationsLinkedList() {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getScheduledActivationsLinkedList -> TODO" );
-    }
-
-    @Override
     public int fireNextItem( AgendaFilter filter, int fireCount, int fireLimit ) throws ConsequenceException {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.fireNextItem -> TODO" );
     }
 
     @Override
-    public void scheduleItem( ScheduledAgendaItem item, InternalWorkingMemory workingMemory ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.scheduleItem -> TODO" );
-    }
-
-    @Override
-    public boolean createActivation( Tuple tuple, PropagationContext context, InternalWorkingMemory workingMemory, TerminalNode rtn ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.createActivation -> TODO" );
-    }
-
-    @Override
     public void cancelActivation( Tuple leftTuple, PropagationContext context, Activation activation, TerminalNode rtn ) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.cancelActivation -> TODO" );
-    }
-
-    @Override
-    public boolean addActivation( AgendaItem activation ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.addActivation -> TODO" );
-    }
-
-    @Override
-    public void removeActivation( AgendaItem activation ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.removeActivation -> TODO" );
     }
 
     @Override
@@ -541,11 +492,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void addAgendaItemToGroup( AgendaItem item ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.addAgendaItemToGroup -> TODO" );
-    }
-
-    @Override
     public void addEagerRuleAgendaItem( RuleAgendaItem item ) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.addEagerRuleAgendaItem -> TODO" );
     }
@@ -613,11 +559,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     @Override
     public void addItemToActivationGroup( AgendaItem item ) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.addItemToActivationGroup -> TODO" );
-    }
-
-    @Override
-    public boolean createPostponedActivation( LeftTuple postponedTuple, PropagationContext propagationContext, InternalWorkingMemory workingMemory, TerminalNode terminalNode ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.createPostponedActivation -> TODO" );
     }
 
     @Override
