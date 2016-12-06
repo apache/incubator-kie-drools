@@ -1533,4 +1533,40 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 2, list.size() );
     }
+
+    @Test
+    public void testSetterInConcreteClass() {
+        // DROOLS-1368
+        String drl = "import " + BaseFact.class.getCanonicalName() + ";\n"
+                     + "import " + MyFact.class.getCanonicalName() + ";\n"
+                     + "rule R when\n"
+                     + "    $b : BaseFact( $n : name, name != null )\n"
+                     + "then end\n";
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        MyFact f = new MyFact();
+        FactHandle fh = ksession.insert(f);
+        assertEquals( 0, ksession.fireAllRules() );
+        f.setName("hello");
+        ksession.update(fh, f, "name");
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    public abstract class BaseFact {
+        public abstract String getName();
+    }
+
+    public class MyFact extends BaseFact {
+
+        private String name;
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 }
