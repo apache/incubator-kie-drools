@@ -24,10 +24,7 @@ import org.kie.dmn.feel.runtime.FEELFunction;
 import org.mockito.ArgumentCaptor;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -317,4 +314,33 @@ public class DMNRuntimeTest {
                 is( new BigDecimal( "2878.69354943277" ).setScale( 8, BigDecimal.ROUND_DOWN ) ) );
     }
 
+    @Test
+    public void testItemDefCollection() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-filter.dmn", getClass() );
+        runtime.addListener( DMNRuntimeUtil.createListener() );
+
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_f52ca843-504b-4c3b-a6bc-4d377bffef7a", "filter01" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
+
+        Object[][] data = new Object[][] {
+                { 1, "Finances", "John" },
+                { 2, "Engineering", "Mary" },
+                { 3, "Sales", "Kevin" }
+        };
+        List<Map<String,Object>> employees = new ArrayList<>(  );
+        for( int i = 0; i < data.length; i++ ) {
+            Map<String, Object> e = new HashMap<>(  );
+            e.put( "id", data[i][0] );
+            e.put( "dept", data[i][1] );
+            e.put( "name", data[i][2] );
+            employees.add( e );
+        }
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Employee", employees );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( dmnResult.hasErrors(), is( false ) );
+        assertThat( dmnResult.getContext().get( "filter01" ), is( Arrays.asList( "Mary" ) ) );
+    }
 }
