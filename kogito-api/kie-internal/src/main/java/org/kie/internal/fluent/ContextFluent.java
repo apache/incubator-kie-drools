@@ -46,11 +46,11 @@ public interface ContextFluent<T, E>{
 
     T startConversation();
 
-    T joinConversation(long id);
+    T joinConversation(String uuid);
 
     T leaveConversation();
 
-    T endConversation(long id);
+    T endConversation(String uuid);
 
     /**
      * End the scope of the current Command set
