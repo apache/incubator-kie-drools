@@ -17,6 +17,7 @@ package org.drools.core.phreak;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -132,23 +133,90 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
     public int lastIndexOf(Object o) {
         return wrapped.lastIndexOf(o);
     }
+    
+    @Override
+    public List<T> subList(int fromIndex, int toIndex) {
+        ReactiveList<T> result = new ReactiveList<T>( wrapped.subList(fromIndex, toIndex) );
+        for ( Tuple lts : getLeftTuples() ) {
+            result.addLeftTuple( lts );
+        }
+        return result;
+    }
 
     @Override
     public ListIterator<T> listIterator() {
-        // TODO wrap the iterator to avoid calling remove while iterating?
-        return wrapped.listIterator();
+        return new ReactiveListIterator( wrapped.listIterator() );
     }
 
     @Override
     public ListIterator<T> listIterator(int index) {
-        // TODO wrap the iterator to avoid calling remove while iterating?
-        return wrapped.listIterator(index);
+        return new ReactiveListIterator( wrapped.listIterator(index) );
     }
 
-    @Override
-    public List<T> subList(int fromIndex, int toIndex) {
-        return wrapped.subList(fromIndex, toIndex);
-    }
+    private class ReactiveListIterator extends ReactiveIterator<ListIterator<T>> implements ListIterator<T> {
 
-    
+        public ReactiveListIterator(ListIterator<T> wrapped) {
+            super(wrapped);
+        }
+
+        @Override
+        public int nextIndex() {
+            return wrapped.nextIndex();
+        }
+
+        @Override
+        public int previousIndex() {
+            return wrapped.previousIndex();
+        }
+        
+        @Override
+        public boolean hasPrevious() {
+            return wrapped.hasPrevious();
+        }
+
+        @Override
+        public T previous() {
+            last = wrapped.previous();
+            return last;
+        }
+
+        @Override
+        public void set(T e) {
+            if ( last != null ) {
+                wrapped.set(e);
+                if ( last != e ) { // TODO review == by ref.
+                    ReactiveObjectUtil.notifyModification(e, getLeftTuples(), ModificationType.ADD);
+                    if ( e instanceof ReactiveObject ) {
+                        for (Tuple lts : getLeftTuples()) {
+                            ((ReactiveObject) e).addLeftTuple(lts);
+                        }
+                    }
+                    
+                    if (last instanceof ReactiveObject) {
+                        for (Tuple lts : getLeftTuples()) {
+                            ((ReactiveObject) last).removeLeftTuple(lts);
+                        }
+                    }
+                    ReactiveObjectUtil.notifyModification(last, getLeftTuples(), ModificationType.REMOVE);
+                }
+                last = e;
+            }
+        }
+
+        @Override
+        public void add(T e) {
+            wrapped.add(e);
+            // the line above either throws UnsupportedOperationException or follows with:
+            if (last != null) {
+                ReactiveObjectUtil.notifyModification(e, getLeftTuples(), ModificationType.ADD);
+                if ( e instanceof ReactiveObject ) {
+                    for (Tuple lts : getLeftTuples()) {
+                        ((ReactiveObject) e).addLeftTuple(lts);
+                    }
+                }
+                last = null;
+            }
+        }
+        
+    }
 }

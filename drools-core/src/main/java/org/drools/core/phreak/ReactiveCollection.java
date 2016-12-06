@@ -30,12 +30,6 @@ public abstract class ReactiveCollection<T, W extends Collection<T>> extends Abs
     }
 
     @Override
-    public Iterator<T> iterator() {
-        // TODO wrap the iterator to avoid calling remove while iterating?
-        return wrapped.iterator();
-    }
-
-    @Override
     public Object[] toArray() {
         return wrapped.toArray();
     }
@@ -98,6 +92,47 @@ public abstract class ReactiveCollection<T, W extends Collection<T>> extends Abs
             ReactiveObjectUtil.notifyModification(o, getLeftTuples(), ModificationType.REMOVE);
         }
         return result;
+    }
+    
+    @Override
+    public Iterator<T> iterator() {
+        return new ReactiveIterator<>( wrapped.iterator() );
+    }
+    
+    protected class ReactiveIterator<WI extends Iterator<T>> implements Iterator<T> {
+        protected WI wrapped;
+        protected T last;
+
+        public ReactiveIterator(WI wrapped) {
+            this.wrapped = wrapped;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return wrapped.hasNext();
+        }
+
+        @Override
+        public T next() {
+            last = wrapped.next();
+            return last;
+        }
+
+        @Override
+        public void remove() {
+            wrapped.remove();
+            // the line above either throws UnsupportedOperationException or follows with:
+            if (last != null) {
+                if (last instanceof ReactiveObject) {
+                    for (Tuple lts : getLeftTuples()) {
+                        ((ReactiveObject) last).removeLeftTuple(lts);
+                    }
+                }
+                ReactiveObjectUtil.notifyModification(last, getLeftTuples(), ModificationType.REMOVE);
+                last = null;
+            }
+        }
+
     }
 
 }
