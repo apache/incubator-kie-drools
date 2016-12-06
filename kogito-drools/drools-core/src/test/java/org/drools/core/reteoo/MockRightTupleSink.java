@@ -58,10 +58,6 @@ public class MockRightTupleSink
     public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
     }
 
-    @Override
-    public void assertRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-    }
-
     public short getType() {
         return NodeTypeEnums.JoinNode;
     }

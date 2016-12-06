@@ -17,7 +17,6 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.spi.PropagationContext;
@@ -41,44 +40,8 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
         // constructor needed for serialisation
     }
 
-    public void propagateAssertLeftTuple(final LeftTuple leftTuple,
-                                         final RightTuple rightTuple,
-                                         final LeftTuple currentLeftChild,
-                                         final LeftTuple currentRightChild,
-                                         final PropagationContext context,
-                                         final InternalWorkingMemory workingMemory,
-                                         final boolean leftTupleMemoryEnabled) {
-    }
-
-    public void propagateAssertLeftTuple(final LeftTuple tuple,
-                                         final PropagationContext context,
-                                         final InternalWorkingMemory workingMemory,
-                                         final boolean leftTupleMemoryEnabled) {
-    }
-
-    public void createAndPropagateAssertLeftTuple(final InternalFactHandle factHandle,
-                                                  final PropagationContext context,
-                                                  final InternalWorkingMemory workingMemory,
-                                                  final boolean leftTupleMemoryEnabled, LeftInputAdapterNode liaNode) {
-    }
-
-    public void propagateRetractLeftTuple(final LeftTuple tuple,
-                                          final PropagationContext context,
-                                          final InternalWorkingMemory workingMemory) {
-    }
-
-    public void propagateRetractRightTuple(RightTuple tuple,
-                                           PropagationContext context,
-                                           InternalWorkingMemory workingMemory) {
-    }
-
     public BaseNode getMatchingNode(BaseNode candidate) {
         return null;
-    }
-
-    public void propagateRetractLeftTupleDestroyRightTuple(LeftTuple tuple,
-                                                           PropagationContext context,
-                                                           InternalWorkingMemory workingMemory) {
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -103,76 +66,4 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     public int size() {
         return 0;
     }
-    
-    // related to true modify
-    public LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,
-                                                   RightTuple parentRightTuple,
-                                                   PropagationContext context,
-                                                   InternalWorkingMemory workingMemory,
-                                                   boolean tupleMemoryEnabled) {
-        return null;
-    }
-
-    public LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,
-                                                   LeftTuple parentLeftTuple,
-                                                   PropagationContext context,
-                                                   InternalWorkingMemory workingMemory,
-                                                   boolean tupleMemoryEnabled) {
-        return null;
-    }
-
-    public LeftTuple propagateRetractChildLeftTuple(LeftTuple childLeftTuple,
-                                                    RightTuple parentRightTuple,
-                                                    PropagationContext context,
-                                                    InternalWorkingMemory workingMemory) {
-        return null;
-    }
-
-    public LeftTuple propagateRetractChildLeftTuple(LeftTuple childLeftTuple,
-                                                    LeftTuple parentLeftTuple,
-                                                    PropagationContext context,
-                                                    InternalWorkingMemory workingMemory) {
-        return null;
-    }
-
-    public void propagateModifyChildLeftTuple(LeftTuple leftTuple,
-                                              PropagationContext context,
-                                              InternalWorkingMemory workingMemory,
-                                              boolean tupleMemoryEnabled) {
-    }
-
-    public void propagateModifyObject(InternalFactHandle factHandle,
-                                      ModifyPreviousTuples modifyPreviousTuples,
-                                      PropagationContext context,
-                                      InternalWorkingMemory workingMemory) {
-    }
-
-    public void createChildLeftTuplesforQuery(LeftTuple leftTuple,
-                                              RightTuple rightTuple,
-                                              boolean leftTupleMemoryEnabled) {
-    }
-
-    public void doPropagateAssertLeftTuple(PropagationContext context,
-                                           InternalWorkingMemory workingMemory,
-                                           LeftTuple leftTuple,
-                                           LeftTupleSink sink) {
-    }
-
-    public void createChildLeftTuplesforQuery(LeftTuple leftTuple,
-                                              RightTuple rightTuple,
-                                              boolean leftTupleMemoryEnabled,
-                                              boolean linkRightTuple) {
-    }
-
-    public void byPassModifyToLeftTupleSink(ModifyPreviousTuples modifyPreviousTuples) {
-    }
-
-    public void byPassModifyToBetaNode(InternalFactHandle factHandle,
-                                       ModifyPreviousTuples modifyPreviousTuples,
-                                       PropagationContext context,
-                                       InternalWorkingMemory workingMemory) {        
-    }
-
-
-
 }

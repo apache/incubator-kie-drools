@@ -137,8 +137,6 @@ public class ProtobufOutputMarshaller {
                 }
             }
 
-            wm.getAgenda().unstageActivations();
-
             evaluateRuleActivations( wm );
 
             ProtobufMessages.RuleData.Builder _ruleData = ProtobufMessages.RuleData.newBuilder();
@@ -280,13 +278,11 @@ public class ProtobufOutputMarshaller {
                 }
             }
             dirty = false;
-            if ( wm.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
-                // network evaluation with phreak and TMS may make previous processed rules dirty again, so need to reprocess until all is flushed.
-                for ( Activation activation : wm.getAgenda().getActivations() ) {
-                    if ( activation.isRuleAgendaItem() && ((RuleAgendaItem)activation).getRuleExecutor().isDirty() ) {
-                        dirty = true;
-                        break;
-                    }
+            // network evaluation with phreak and TMS may make previous processed rules dirty again, so need to reprocess until all is flushed.
+            for ( Activation activation : wm.getAgenda().getActivations() ) {
+                if ( activation.isRuleAgendaItem() && ((RuleAgendaItem)activation).getRuleExecutor().isDirty() ) {
+                    dirty = true;
+                    break;
                 }
             }
             wm.flushPropagations();

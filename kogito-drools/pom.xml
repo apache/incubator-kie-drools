@@ -52,7 +52,6 @@
     <module>kie-test-util</module>
     <module>drools-beliefs</module>
     <module>drools-core</module>
-    <module>drools-reteoo</module>
     <module>drools-compiler</module>
     <module>drools-jsr94</module>
     <module>drools-verifier</module>

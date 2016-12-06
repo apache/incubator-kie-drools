@@ -91,11 +91,6 @@ public class TimerNode extends LeftTupleSource
 
     public void attach(BuildContext context) {
         this.leftInput.addTupleSink(this, context);
-        if (context == null || context.getKnowledgeBase().getConfiguration().isPhreakEnabled()) {
-            return;
-        }
-
-        throw new UnsupportedOperationException("Phreak Only Node");
     }
 
     public void networkUpdated(UpdateContext updateContext) {
@@ -327,13 +322,6 @@ public class TimerNode extends LeftTupleSource
     }
 
     @Override
-    public void updateSink(final LeftTupleSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
@@ -344,18 +332,6 @@ public class TimerNode extends LeftTupleSource
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void modifyLeftTuple(LeftTuple leftTuple,
-                                PropagationContext context,
-                                InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void modifyLeftTuple(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
         throw new UnsupportedOperationException();
     }
 }

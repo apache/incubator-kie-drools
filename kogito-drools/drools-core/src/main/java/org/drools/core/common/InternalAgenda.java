@@ -16,12 +16,10 @@
 
 package org.drools.core.common;
 
-import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
@@ -85,8 +83,6 @@ public interface InternalAgenda
 
     AgendaGroup[] getStack();
 
-    int unstageActivations();
-
     /**
      * Iterates all the <code>AgendGroup<code>s in the focus stack returning the total number of <code>Activation</code>s
      * @return
@@ -102,8 +98,6 @@ public interface InternalAgenda
     int agendaSize();
 
     Activation[] getActivations();
-
-    Activation[] getScheduledActivations();
 
     /**
      * Clears all Activations from the Agenda
@@ -142,26 +136,13 @@ public interface InternalAgenda
      */
     String getFocusName();
 
-    boolean fireTimedActivation(final Activation activation) throws ConsequenceException;
-
-    void removeScheduleItem(final ScheduledAgendaItem item);
-
-    <T extends ModedAssertion<T>> org.drools.core.util.LinkedList<ScheduledAgendaItem<T>> getScheduledActivationsLinkedList();
-
     int fireNextItem(AgendaFilter filter, int fireCount, int fireLimit) throws ConsequenceException;
-
-    void scheduleItem(final ScheduledAgendaItem item, InternalWorkingMemory workingMemory);
 
     AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
                                 int salience,
                                 PropagationContext context,
                                 RuleAgendaItem ruleAgendaItem,
                                 InternalAgendaGroup agendaGroup);
-
-    boolean createActivation(final Tuple tuple,
-                             final PropagationContext context,
-                             final InternalWorkingMemory workingMemory,
-                             final TerminalNode rtn );
 
     void cancelActivation(final Tuple leftTuple,
                           final PropagationContext context,
@@ -175,10 +156,6 @@ public interface InternalAgenda
      *
      * @return true if the activation was really added, and not ignored in cases of lock-on-active or no-loop
      */
-    boolean addActivation(final AgendaItem activation);
-
-    void removeActivation(final AgendaItem activation);
-
     void modifyActivation(final AgendaItem activation, boolean previouslyActive);
 
     void addAgendaGroup(final AgendaGroup agendaGroup);
@@ -273,8 +250,6 @@ public interface InternalAgenda
 
     void insertAndStageActivation(AgendaItem activation);
 
-    void addAgendaItemToGroup(AgendaItem item);
-
     void addEagerRuleAgendaItem(RuleAgendaItem item);
     void removeEagerRuleAgendaItem(RuleAgendaItem item);
 
@@ -302,8 +277,6 @@ public interface InternalAgenda
     int sizeOfRuleFlowGroup(String s);
 
     void addItemToActivationGroup(AgendaItem item);
-
-    boolean createPostponedActivation(LeftTuple postponedTuple, PropagationContext propagationContext, InternalWorkingMemory workingMemory, TerminalNode terminalNode);
 
     boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId);
 

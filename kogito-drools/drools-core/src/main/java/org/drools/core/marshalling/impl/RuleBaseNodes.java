@@ -24,7 +24,6 @@ import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PropagationQueuingNode;
-import org.drools.core.reteoo.QueryRiaFixerNode;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.WindowNode;
@@ -83,13 +82,7 @@ public class RuleBaseNodes {
     private static void addLeftTupleSink(InternalKnowledgeBase kBase,
                                         LeftTupleSink sink,
                                         Map<Integer, BaseNode> nodes) {
-        if ( sink instanceof QueryRiaFixerNode ) {
-            nodes.put( sink.getId(),
-                       (LeftTupleSource) sink );
-            addLeftTupleSink( kBase,
-                              ((QueryRiaFixerNode)sink).getBetaNode(),
-                              nodes );
-        } else if ( sink instanceof LeftTupleSource ) {
+        if ( sink instanceof LeftTupleSource ) {
             nodes.put( sink.getId(),
                        (LeftTupleSource) sink );
             for ( LeftTupleSink leftTupleSink : ((LeftTupleSource) sink).getSinkPropagator().getSinks() ) {

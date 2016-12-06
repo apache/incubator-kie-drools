@@ -15,7 +15,6 @@
  */
 package org.drools.compiler.conf;
 
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.util.MemoryUtil;
 import org.junit.Assume;
@@ -57,8 +56,6 @@ public class KnowledgeBaseConfigurationTest {
 
     @Test
     public void testSequentialConfiguration() {
-        ((RuleBaseConfiguration)config).setPhreakEnabled(false);
-
         // setting the option using the type safe method
         config.setOption( SequentialOption.YES );
 

@@ -31,7 +31,7 @@ public class NamedConsequenceBuilder implements ReteooComponentBuilder {
         NamedConsequence namedConsequence = (NamedConsequence) rce;
 
         Timer timer = context.getRule().getTimer();
-        if  ( context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && timer != null ) {
+        if  ( timer != null ) {
             ReteooComponentBuilder builder = utils.getBuilderFor( Timer.class );
             builder.build( context, utils, context.getRule().getTimer() );
         }
@@ -45,7 +45,7 @@ public class NamedConsequenceBuilder implements ReteooComponentBuilder {
         // adds the terminal node to the list of nodes created/added by this sub-rule
         context.getNodes().add( terminalNode );
 
-        if  ( context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && timer != null ) {
+        if  ( timer != null ) {
             context.setTupleSource( context.getTupleSource().getLeftTupleSource() );
         }
 

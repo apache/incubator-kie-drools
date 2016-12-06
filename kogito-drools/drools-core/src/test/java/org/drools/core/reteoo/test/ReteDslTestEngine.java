@@ -350,10 +350,6 @@ public class ReteDslTestEngine {
                           Map<String, Object> context,
                           InternalWorkingMemory wm) {
         
-        final boolean lrUnlinkingEnabled = ((BuildContext) context
-                .get( BUILD_CONTEXT )).getKnowledgeBase().getConfiguration()
-                .isPhreakEnabled();
-
         try {
             List<String[]> cmds = step.getCommands();
             List<InternalFactHandle> handles = (List<InternalFactHandle>) context.get( "Handles" );
@@ -382,7 +378,7 @@ public class ReteDslTestEngine {
                         throw new AssertionFailedError( "line " + step.getLine()
                                                         + ": left Memory expected [] actually "
                                                         + print( leftMemory,
-                                                                 lrUnlinkingEnabled ) );
+                                                                 true ) );
                     } else if ( expectedLeftTuples.isEmpty()
                                 && leftMemory.size() == 0 ) {
                         continue;
@@ -407,20 +403,17 @@ public class ReteDslTestEngine {
                         leftTuples.add( leftTuple );
                     }
                     
-                    if ( lrUnlinkingEnabled ) {
-                        // When L&R Unlinking is active, we need to sort the
-                        // tuples here,
-                        // because we might have asserted things in the wrong
-                        // order,
-                        // since linking a node's side means populating its
-                        // memory
-                        // from the OTN which stores things in a hash-set, so
-                        // insertion order is not kept.
-                        Collections.sort( leftTuples,
-                                          new TupleComparator() );
+                    // When L&R Unlinking is active, we need to sort the
+                    // tuples here,
+                    // because we might have asserted things in the wrong
+                    // order,
+                    // since linking a node's side means populating its
+                    // memory
+                    // from the OTN which stores things in a hash-set, so
+                    // insertion order is not kept.
+                    Collections.sort( leftTuples,
+                                      new TupleComparator() );
 
-                    }
-                    
                     List<List<InternalFactHandle>> actualLeftTuples = getHandlesList( leftTuples );
 
 
@@ -875,9 +868,6 @@ public class ReteDslTestEngine {
                             }
                             PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
                                                                                                null, tuple, new DefaultFactHandle(1, ""));
-                            ((LeftTupleSink) sink).modifyLeftTuple( tuple,
-                                                                    pContext,
-                                                                    wm );
                             pContext.evaluateActionQueue( wm );
                         }
                     }

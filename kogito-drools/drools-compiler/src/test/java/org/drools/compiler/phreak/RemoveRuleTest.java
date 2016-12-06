@@ -30,14 +30,12 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.junit.Test;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 
@@ -54,10 +52,7 @@ public class RemoveRuleTest {
 
     @Test
     public void testPopulatedSingleRuleNoSharing() throws Exception {
-        KieBaseConfiguration kconf = ( KieBaseConfiguration ) KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         wm.insert(new A(1));
@@ -106,10 +101,7 @@ public class RemoveRuleTest {
 
     @Test
     public void testPopulatedSingleRuleNoSharingWithSubnetworkAtStart() throws Exception {
-        KieBaseConfiguration kconf = ( KieBaseConfiguration ) KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         wm.insert(new A(1));
@@ -694,10 +686,7 @@ public class RemoveRuleTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         return kbase;
     }

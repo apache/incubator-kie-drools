@@ -58,15 +58,6 @@ public interface LeftTupleSink
 
     void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled);
     
-    void modifyLeftTuple(InternalFactHandle factHandle,
-                         ModifyPreviousTuples modifyPreviousTuples,
-                         PropagationContext context,
-                         InternalWorkingMemory workingMemory);
-    
-    void modifyLeftTuple(LeftTuple leftTuple,
-                         PropagationContext context,
-                         InternalWorkingMemory workingMemory);
-
     LeftTuple createPeer(LeftTuple original);
     
     LeftTuple createLeftTuple(final InternalFactHandle factHandle,

@@ -41,7 +41,6 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
@@ -55,12 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
-import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
-import static org.drools.persistence.util.DroolsPersistenceUtil.cleanUp;
-import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
-import static org.drools.persistence.util.DroolsPersistenceUtil.setupWithPoolingDataSource;
+import static org.drools.persistence.util.DroolsPersistenceUtil.*;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarTest {
@@ -295,9 +289,7 @@ public class TimerAndCalendarTest {
     public void testTimerWithRemovingRule() throws Exception {
         // DROOLS-576
         // Only reproducible with RETEOO
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.RETEOO );
-        KnowledgeBase kbase1  = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase1  = KnowledgeBaseFactory.newKnowledgeBase();
 
         String str1 = "package org.test; " +
                 "import java.util.*; " +
@@ -334,7 +326,7 @@ public class TimerAndCalendarTest {
         Thread.sleep(5000);
 
         // A new kbase without the timer's activated rule
-        KnowledgeBase kbase2  = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase2  = KnowledgeBaseFactory.newKnowledgeBase();
 
         String str2 = "package org.test; " +
                 "import java.util.*; " +

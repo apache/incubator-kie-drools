@@ -314,12 +314,6 @@ public class PatternBuilder
         NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
         
         if ( context.getCurrentEntryPoint() != EntryPointId.DEFAULT && context.isAttachPQN() ) {
-            if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
-                context.setObjectSource( utils.attachNode( context,
-                                                           nfactory.buildPropagationQueuingNode( context.getNextId(),
-                                                                                                                context.getObjectSource(),
-                                                                                                                context ) ) );
-            }
             // the entry-point specific network nodes are attached, so, set context to default entry-point
             context.setCurrentEntryPoint( EntryPointId.DEFAULT );
         }

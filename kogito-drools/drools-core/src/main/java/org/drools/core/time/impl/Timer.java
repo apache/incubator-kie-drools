@@ -19,7 +19,6 @@ package org.drools.core.time.impl;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.RuleConditionElement;
-import org.drools.core.spi.Activation;
 import org.drools.core.spi.RuleComponent;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.Trigger;
@@ -38,6 +37,4 @@ public interface Timer extends Serializable, RuleComponent, RuleConditionElement
                                  Calendars calendars,
                                  Declaration[][] declrs,
                                  InternalWorkingMemory wm);
-
-    Trigger createTrigger( Activation schedulableActivation, InternalWorkingMemory workingMemory );
 }

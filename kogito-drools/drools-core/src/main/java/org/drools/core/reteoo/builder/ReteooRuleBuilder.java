@@ -167,7 +167,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
             return ((TerminalNode) context.getLastNode());
         }
 
-        if  ( context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && rule.getTimer() != null ) {
+        if  ( rule.getTimer() != null ) {
             builder = this.utils.getBuilderFor( Timer.class );
             builder.build( context, this.utils, rule.getTimer() );
         }
@@ -186,9 +186,7 @@ public class ReteooRuleBuilder implements RuleBuilder {
 
         setPathEndNodes(context);
 
-        if ( context.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
-            AddRemoveRule.addRule( terminal, context.getWorkingMemories(), context.getKnowledgeBase() );
-        }
+        AddRemoveRule.addRule( terminal, context.getWorkingMemories(), context.getKnowledgeBase() );
 
         // adds the terminal node to the list of nodes created/added by this sub-rule
         context.getNodes().add( baseTerminalNode );

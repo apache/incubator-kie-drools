@@ -285,11 +285,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public void modifyLeftTuple(LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
     public void attach( BuildContext context ) {
         getLeftTupleSource().addTupleSink( this, context );
         addAssociation( context, context.getRule() );

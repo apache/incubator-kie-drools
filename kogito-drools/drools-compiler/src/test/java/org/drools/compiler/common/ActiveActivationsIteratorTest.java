@@ -80,8 +80,6 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
             ksession.insert( new String( "" + i ) );
         }
 
-        ((InternalAgenda)ksession.getAgenda()).unstageActivations();
-
         ((InternalWorkingMemory) ksession).flushPropagations();
         ((InternalAgenda) ksession.getAgenda()).evaluateEagerList();
 

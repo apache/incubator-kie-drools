@@ -271,8 +271,6 @@ public class NamedEntryPoint
                         PropagationContext pctx) {
         this.kBase.executeQueuedActions();
 
-        this.wm.executeQueuedActionsForRete();
-
         if ( activation != null ) {
             // release resources so that they can be GC'ed
             activation.getPropagationContext().releaseResources();
@@ -291,13 +289,6 @@ public class NamedEntryPoint
                                                                 handle,
                                                                 object,
                                                                 this.wm);
-
-        this.wm.executeQueuedActionsForRete();
-
-        if ( rule == null ) {
-            // This is not needed for internal WM actions as the firing rule will unstage
-            wm.getAgenda().unstageActivations();
-        }
     }
 
     public FactHandle insertAsync(Object object) {
@@ -450,13 +441,6 @@ public class NamedEntryPoint
                                                                originalObject,
                                                                object,
                                                                this.wm);
-
-        this.wm.executeQueuedActionsForRete();
-
-        if ( rule == null ) {
-            // This is not needed for internal WM actions as the firing rule will unstage
-            wm.getAgenda().unstageActivations();
-        }
     }
 
     public void retract(final FactHandle handle) {
@@ -599,15 +583,6 @@ public class NamedEntryPoint
                                                                  handle,
                                                                  object,
                                                                  this.wm);
-
-        this.wm.executeQueuedActionsForRete();
-
-
-        if ( rule == null ) {
-            // This is not needed for internal WM actions as the firing rule will unstage
-            wm.getAgenda().unstageActivations();
-        }
-
         return propagationContext;
     }
 

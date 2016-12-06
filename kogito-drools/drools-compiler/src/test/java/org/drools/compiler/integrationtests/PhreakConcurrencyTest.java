@@ -27,16 +27,13 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
@@ -58,19 +55,6 @@ import static java.util.Arrays.asList;
 public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
     private Executor executor;
-
-    private static RuleEngineOption wasRunningPhreak;
-
-    @BeforeClass
-    public static void setPhreak() {
-        wasRunningPhreak = phreak;
-        phreak = RuleEngineOption.PHREAK;
-    }
-
-    @AfterClass
-    public static void unsetPhreak() {
-        phreak = wasRunningPhreak;
-    }
 
     @Before
     public void setUp() {

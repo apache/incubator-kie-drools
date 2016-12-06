@@ -20,14 +20,11 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.RuleBaseConfiguration.AssertBehaviour;
 import org.drools.core.RuleBaseConfiguration.SequentialAgenda;
 import org.drools.core.common.PriorityQueueAgendaGroupFactory;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class RuleBaseConfigurationTest {
 
@@ -105,21 +102,4 @@ public class RuleBaseConfigurationTest {
         assertEquals( SequentialAgenda.DYNAMIC, cfg.getSequentialAgenda() );
         assertTrue( cfg.getAgendaGroupFactory() instanceof PriorityQueueAgendaGroupFactory );
     }
-
-    @Test @Ignore("phreak is still not the default but it will be")
-    public void testLRUnlinking() {
-        RuleBaseConfiguration cfg = new RuleBaseConfiguration();
-        assertEquals( true,
-                      cfg.isPhreakEnabled() );
-
-        Properties properties = new Properties();
-        properties.setProperty( "drools.phreakEnabled",
-                                "false" );
-        cfg = new RuleBaseConfiguration( properties );
-
-        assertEquals( false,
-                      cfg.isPhreakEnabled() );
-    }
-
-    
 }

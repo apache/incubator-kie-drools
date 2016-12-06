@@ -16,20 +16,16 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.Declaration;
-import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryArgument;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.test.model.DroolsTestCase;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
 
@@ -78,71 +74,6 @@ public class QueryElementNodeTest extends DroolsTestCase {
                       source.getAttached() );
 
     }
-
-    @Test
-    @Ignore
-    public void test1() {
-        Pattern p = new Pattern();
-        QueryElement qe = new QueryElement( p,
-                                            "queryName1",
-                                            new QueryArgument[]{QueryArgument.VAR, new QueryArgument.Literal( "x1" ), QueryArgument.VAR,
-                                                    new QueryArgument.Literal( "x3" ), new QueryArgument.Literal( "x4" ), QueryArgument.VAR, new QueryArgument.Literal( "x6" ),},
-                                            new int[] { 0, 2, 5 },
-                                            new Declaration[0],
-                                            false,
-                                            false );
-       
-
-        final MockTupleSource source = new MockTupleSource( 12 );
-
-        final QueryElementNode node = new QueryElementNode( 18,
-                                                            source,
-                                                            qe,
-                                                            true,
-                                                            false,
-                                                            buildContext );
-      
-        MockLeftTupleSink sink = new MockLeftTupleSink(12);
-        node.addTupleSink( sink );
-        sink.attach(buildContext);
-        
-        
-        InternalFactHandle s1 = (InternalFactHandle) this.workingMemory.insert( "string" );
-
-        node.assertLeftTuple( new LeftTupleImpl( s1,
-                                             node,
-                                             true ),
-                              context,
-                              workingMemory );
-        
-        assertEquals(3, sink.getAsserted().size() );
-        
-        LeftTupleImpl leftTuple = (LeftTupleImpl)((Object[])sink.getAsserted().get( 2 ))[0];
-        assertEquals(2, leftTuple.size());
-        assertEquals("string", leftTuple.getParent().getFactHandle().getObject() );
-        Object[] variables = (Object[]) leftTuple.getFactHandle().getObject();
-        assertEquals( "string_0_2", variables[0] );
-        assertEquals( "string_2_2", variables[1] );
-        assertEquals( "string_5_2", variables[2] );
-        
-        leftTuple = (LeftTupleImpl)((Object[])sink.getAsserted().get( 1 ))[0];
-        assertEquals(2, leftTuple.size());
-        assertEquals("string", leftTuple.getParent().getFactHandle().getObject() );
-        variables = (Object[]) leftTuple.getFactHandle().getObject();
-        assertEquals( "string_0_1", variables[0] );
-        assertEquals( "string_2_1", variables[1] );
-        assertEquals( "string_5_1", variables[2] );
-        
-        leftTuple = (LeftTupleImpl)((Object[])sink.getAsserted().get( 0 ))[0];
-        assertEquals(2, leftTuple.size());
-        assertEquals("string", leftTuple.getParent().getFactHandle().getObject() );
-        variables = (Object[]) leftTuple.getFactHandle().getObject();
-        assertEquals( "string_0_0", variables[0] );
-        assertEquals( "string_2_0", variables[1] );
-        assertEquals( "string_5_0", variables[2] );
-        
-    }
-
 
     public static class InstrumentedWorkingMemory extends StatefulKnowledgeSessionImpl {
 

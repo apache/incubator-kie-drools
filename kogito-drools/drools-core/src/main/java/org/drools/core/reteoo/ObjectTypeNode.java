@@ -40,7 +40,6 @@ import org.drools.core.marshalling.impl.ProtobufMessages.Timers.ExpireTimer;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.core.marshalling.impl.TimersInputMarshaller;
 import org.drools.core.marshalling.impl.TimersOutputMarshaller;
-import org.drools.core.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
 import org.drools.core.rule.EntryPointId;
@@ -504,18 +503,6 @@ public class ObjectTypeNode extends ObjectSource
     protected boolean doRemove(final RuleRemovalContext context,
                                final ReteooBuilder builder,
                                final InternalWorkingMemory[] workingMemories) {
-        if (!context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && context.getCleanupAdapter() != null) {
-            for (InternalWorkingMemory workingMemory : workingMemories) {
-                CleanupAdapter adapter = context.getCleanupAdapter();
-                final ObjectTypeNodeMemory memory = workingMemory.getNodeMemory(this);
-                Iterator<InternalFactHandle> it = memory.iterator();
-                while (it.hasNext()) {
-                    InternalFactHandle handle = it.next();
-                    handle.forEachLeftTuple( lt -> adapter.cleanUp(lt, workingMemory) );
-                }
-            }
-            context.setCleanupAdapter(null);
-        }
         return false;
     }
 

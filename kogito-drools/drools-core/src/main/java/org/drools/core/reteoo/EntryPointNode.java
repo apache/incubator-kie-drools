@@ -21,7 +21,6 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -388,20 +387,8 @@ public class EntryPointNode extends ObjectSource
         if (context == null ) {
             return;
         }
-        if ( context.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
-            for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-                workingMemory.updateEntryPointsCache();
-            }
-            return;
-        }
-
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             workingMemory.updateEntryPointsCache();
-            PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
-            this.source.updateSink( this,
-                                    propagationContext,
-                                    workingMemory );
         }
     }
 

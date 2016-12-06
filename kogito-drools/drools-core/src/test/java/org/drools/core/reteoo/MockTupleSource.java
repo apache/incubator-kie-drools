@@ -45,12 +45,6 @@ public class MockTupleSource extends LeftTupleSource {
         return this.updated;
     }
 
-    public void updateSink(final LeftTupleSink sink,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
-        this.updated++;
-    }
-
     protected boolean doRemove(final RuleRemovalContext context,
                                final ReteooBuilder builder,
                                final InternalWorkingMemory[] workingMemories) {

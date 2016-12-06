@@ -15,7 +15,6 @@
 
 package org.drools.core.common;
 
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.spi.Activation;
 import org.drools.core.util.Iterator;
 import org.kie.api.runtime.KieSession;
@@ -58,20 +57,12 @@ public class ActiveActivationIterator
     }
 
     public static Iterator iterator(InternalWorkingMemory wm) {
-        if (wm.getKnowledgeBase().getConfiguration().isPhreakEnabled()) {
-            return PhreakActiveActivationIterator.iterator(wm);
-        } else {
-            return new ActiveActivationIterator( wm );
-        }
+        return PhreakActiveActivationIterator.iterator(wm);
     }
     
     public static Iterator iterator(KieSession ksession) {
         InternalWorkingMemory wm = ((InternalWorkingMemoryEntryPoint) ksession).getInternalWorkingMemory();
-        if (wm.getKnowledgeBase().getConfiguration().isPhreakEnabled()) {
-            return PhreakActiveActivationIterator.iterator(wm);
-        } else {
-            return new ActiveActivationIterator( ((StatefulKnowledgeSessionImpl) ksession).getInternalWorkingMemory() );
-        }
+        return PhreakActiveActivationIterator.iterator(wm);
     }
 
     public Object next() {

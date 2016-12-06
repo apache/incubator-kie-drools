@@ -53,7 +53,6 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.utils.KieHelper;
 
 import javax.xml.bind.JAXBContext;
@@ -703,9 +702,6 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testOpenQuery() throws Exception {
-        if( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
-            return;  //Disbaled due to phreak, as tests is order specific
-        }
         String str = "";
         str += "package org.drools.compiler.test  \n";
         str += "import org.drools.compiler.Cheese \n";

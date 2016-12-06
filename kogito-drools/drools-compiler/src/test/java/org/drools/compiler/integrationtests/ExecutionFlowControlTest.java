@@ -42,7 +42,6 @@ import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
@@ -455,54 +454,35 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
         final InternalAgenda agenda = (InternalAgenda) ksession.getAgenda();
         final AgendaGroup group1 = agenda.getAgendaGroup( "group1" );
-        if ( phreak == RuleEngineOption.RETEOO ) {
-            agenda.setFocus( group1 );
-            assertEquals( 3, group1.size() );
-            agenda.fireNextItem( null, 0, 0 );
-            assertEquals( 2, group1.size() );
-            ksession.update( brieHandle, brie );
-            assertEquals( 2, group1.size() );
+        agenda.setFocus( group1 );
+        assertEquals( 1, group1.size() );
+        RuleAgendaItem ruleItem1 = (RuleAgendaItem) group1.getActivations()[0];
+        ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
+        assertEquals(3, ruleItem1.getRuleExecutor().getLeftTupleList().size());
 
-            AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
-            assertEquals( 3, group2.size() );
-            agenda.setFocus( group2 );
+        agenda.fireNextItem( null, 0, 0 );
+        assertEquals( 1, group1.size() );
+        assertEquals( 2, ruleItem1.getRuleExecutor().getLeftTupleList().size() );
 
-            agenda.activateRuleFlowGroup( "ruleflow2" );
-            agenda.fireNextItem( null, 0, 0 );
-            assertEquals( 2, group2.size() );
-            ksession.update( brieHandle, brie );
-            assertEquals( 2, group2.size() );
-        } else {
-            agenda.setFocus( group1 );
-            assertEquals( 1, group1.size() );
-            RuleAgendaItem ruleItem1 = (RuleAgendaItem) group1.getActivations()[0];
-            ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
-            assertEquals(3, ruleItem1.getRuleExecutor().getLeftTupleList().size());
+        ksession.update( brieHandle, brie );
+        assertEquals( 1, group1.size() );
+        ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
+        assertEquals(2, ruleItem1.getRuleExecutor().getLeftTupleList().size());
 
-            agenda.fireNextItem( null, 0, 0 );
-            assertEquals( 1, group1.size() );
-            assertEquals( 2, ruleItem1.getRuleExecutor().getLeftTupleList().size() );
+        AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
+        agenda.setFocus( group2);
+        assertEquals( 1, group2.size() );
+        RuleAgendaItem ruleItem2 = (RuleAgendaItem) group2.getActivations()[0];
+        ruleItem2.getRuleExecutor().evaluateNetwork(wm.getAgenda());
+        assertEquals(3, ruleItem2.getRuleExecutor().getLeftTupleList().size());
 
-            ksession.update( brieHandle, brie );
-            assertEquals( 1, group1.size() );
-            ruleItem1.getRuleExecutor().evaluateNetwork(wm.getAgenda());
-            assertEquals(2, ruleItem1.getRuleExecutor().getLeftTupleList().size());
+        agenda.fireNextItem( null, 0, 0 );
+        assertEquals( 1, group2.size() );
+        assertEquals( 2, ruleItem2.getRuleExecutor().getLeftTupleList().size() );
 
-            AgendaGroup group2 = agenda.getAgendaGroup( "group2" );
-            agenda.setFocus( group2);
-            assertEquals( 1, group2.size() );
-            RuleAgendaItem ruleItem2 = (RuleAgendaItem) group2.getActivations()[0];
-            ruleItem2.getRuleExecutor().evaluateNetwork(wm.getAgenda());
-            assertEquals(3, ruleItem2.getRuleExecutor().getLeftTupleList().size());
-
-            agenda.fireNextItem( null, 0, 0 );
-            assertEquals( 1, group2.size() );
-            assertEquals( 2, ruleItem2.getRuleExecutor().getLeftTupleList().size() );
-
-            ksession.update( brieHandle, brie );
-            assertEquals( 1, group2.size() );
-            assertEquals( 2, ruleItem2.getRuleExecutor().getLeftTupleList().size() );
-        }
+        ksession.update( brieHandle, brie );
+        assertEquals( 1, group2.size() );
+        assertEquals( 2, ruleItem2.getRuleExecutor().getLeftTupleList().size() );
     }
 
     @Test
@@ -668,21 +648,6 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
         assertEquals( 8, list.size() );
         assertEquals( "group2", list.get( 7 ) );
-
-        if ( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
-            // clear only works for Rete, as while Phreak can be eager, it'll still result in rule firing
-
-            // clear main only the auto focus related ones should fire
-            list.clear();
-            ksession.insert( new Cheese( "cheddar" ) );
-            ksession.getAgenda().getAgendaGroup( "MAIN" ).clear();
-            ksession.fireAllRules();
-            assertEquals( 3, list.size() );
-            assertEquals( "group3", list.get( 0 ) );
-            assertEquals( "group4", list.get( 1 ) );
-            assertEquals( "group3", list.get( 2 ) );
-        }
-
     }
 
     @Test

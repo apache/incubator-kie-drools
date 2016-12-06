@@ -17,55 +17,12 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.spi.PropagationContext;
 
 import java.io.Externalizable;
 
 public interface LeftTupleSinkPropagator
     extends
     Externalizable {
-    
-    void createChildLeftTuplesforQuery(final LeftTuple leftTuple,
-                                       final RightTuple rightTuple,
-                                       boolean leftTupleMemoryEnabled, boolean linkRightTuple);
-    
-    void propagateAssertLeftTuple(LeftTuple leftTuple,
-                                  RightTuple rightTuple,
-                                  LeftTuple currentLeftChild, // insert new tuple before this child in the child list
-                                  LeftTuple currentRightChild, // insert new tuple before this child in the child list
-                                  PropagationContext context,
-                                  InternalWorkingMemory workingMemory,
-                                  boolean leftTupleMemoryEnabled);
-
-    void propagateAssertLeftTuple(LeftTuple tuple,
-                                  PropagationContext context,
-                                  InternalWorkingMemory workingMemory,
-                                  boolean leftTupleMemoryEnabled);
-
-    void createAndPropagateAssertLeftTuple(InternalFactHandle factHandle,
-                                           PropagationContext context,
-                                           InternalWorkingMemory workingMemory,
-                                           boolean leftTupleWorkingMemoryEnabled,
-                                           LeftInputAdapterNode liaNode);
-
-    void propagateRetractLeftTuple(LeftTuple tuple,
-                                   PropagationContext context,
-                                   InternalWorkingMemory workingMemory);
-
-    void propagateRetractLeftTupleDestroyRightTuple(LeftTuple tuple,
-                                                    PropagationContext context,
-                                                    InternalWorkingMemory workingMemory);
-
-    void propagateRetractRightTuple(RightTuple tuple,
-                                    PropagationContext context,
-                                    InternalWorkingMemory workingMemory);
-
-    void doPropagateAssertLeftTuple(PropagationContext context,
-                                    InternalWorkingMemory workingMemory,
-                                    LeftTuple leftTuple,
-                                    LeftTupleSink sink);
     
     BaseNode getMatchingNode(BaseNode candidate);
 
@@ -75,44 +32,5 @@ public interface LeftTupleSinkPropagator
     
     LeftTupleSink[] getSinks();
     
-    void byPassModifyToBetaNode (final InternalFactHandle factHandle,
-                                 final ModifyPreviousTuples modifyPreviousTuples,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory);
-
     int size();
-    
-    // related to true modify
-    
-    void propagateModifyObject(InternalFactHandle factHandle,
-                               ModifyPreviousTuples modifyPreviousTuples,
-                               PropagationContext context,
-                               InternalWorkingMemory workingMemory);
-
-    LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,
-                                            RightTuple parentRightTuple,
-                                            PropagationContext context,
-                                            InternalWorkingMemory workingMemory,
-                                            boolean tupleMemoryEnabled);
-
-    LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,
-                                            LeftTuple parentLeftTuple,
-                                            PropagationContext context,
-                                            InternalWorkingMemory workingMemory,
-                                            boolean tupleMemoryEnabled);
-    
-    void propagateModifyChildLeftTuple(LeftTuple leftTuple,
-                                       PropagationContext context,
-                                       InternalWorkingMemory workingMemory,
-                                       boolean tupleMemoryEnabled);
-
-    LeftTuple propagateRetractChildLeftTuple(LeftTuple childLeftTuple,
-                                             RightTuple parentRightTuple,
-                                             PropagationContext context,
-                                             InternalWorkingMemory workingMemory);
-
-    LeftTuple propagateRetractChildLeftTuple(LeftTuple childLeftTuple,
-                                             LeftTuple parentLeftTuple,
-                                             PropagationContext context,
-                                             InternalWorkingMemory workingMemory);
 }

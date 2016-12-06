@@ -49,7 +49,6 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -1506,9 +1505,6 @@ public class BackwardChainingTest extends CommonTestMethodBase {
 
     @Test(timeout = 10000)
     public void testSubNetworksAndQueries() throws Exception {
-        if( CommonTestMethodBase.phreak == RuleEngineOption.RETEOO ) {
-            return;  //Disbaled due to phreak, as tests is order specific
-        }
         String str = "" +
                      "package org.drools.compiler.test  \n" +
 

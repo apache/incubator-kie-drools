@@ -106,7 +106,6 @@ import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -180,9 +179,7 @@ public class Misc2Test extends CommonTestMethodBase {
         if ( builder.hasErrors() ) {
             throw new RuntimeException( builder.getErrors().toString() );
         }
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
         knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
@@ -2761,9 +2758,7 @@ public class Misc2Test extends CommonTestMethodBase {
         kbuilder.buildAll();
         assertEquals( 0, kbuilder.getResults().getMessages().size() );
 
-        KieBaseConfiguration conf = ks.newKieBaseConfiguration();
-        conf.setOption( RuleEngineOption.RETEOO );
-        KieBase kbase = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieBase( conf );
+        KieBase kbase = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).getKieBase();
         KieSession ksession = kbase.newKieSession();
         ksession.fireAllRules();
     }
