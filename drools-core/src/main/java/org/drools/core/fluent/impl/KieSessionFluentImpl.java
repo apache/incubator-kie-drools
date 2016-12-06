@@ -20,14 +20,14 @@ import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.command.runtime.GetGlobalCommand;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
-import org.kie.internal.fluent.runtime.FluentBuilder;
+import org.kie.api.runtime.builder.ExecutableBuilder;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.fluent.runtime.KieSessionFluent;
-import org.kie.internal.fluent.runtime.WorkItemManagerFluent;
+import org.kie.api.runtime.builder.KieSessionFluent;
+import org.kie.api.runtime.builder.WorkItemManagerFluent;
 
 import java.util.Map;
 
-public class KieSessionFluentImpl extends BaseBatchFluent<KieSessionFluent, FluentBuilder> implements KieSessionFluent {
+public class KieSessionFluentImpl extends BaseBatchFluent<KieSessionFluent, ExecutableBuilder> implements KieSessionFluent {
 
 
     public KieSessionFluentImpl(ExecutableImpl fluentCtx) {
@@ -70,7 +70,7 @@ public class KieSessionFluentImpl extends BaseBatchFluent<KieSessionFluent, Flue
     }
 
     @Override
-    public WorkItemManagerFluent<WorkItemManagerFluent, KieSessionFluent, FluentBuilder> getWorkItemManager() {
+    public WorkItemManagerFluent<WorkItemManagerFluent, KieSessionFluent, ExecutableBuilder> getWorkItemManager() {
         return null;
     }
 
@@ -108,9 +108,9 @@ public class KieSessionFluentImpl extends BaseBatchFluent<KieSessionFluent, Flue
     }
 
     @Override
-    public FluentBuilder dispose() {
+    public ExecutableBuilder dispose() {
         fluentCtx.addCommand( new DisposeCommand());
-        return fluentCtx.getFluentBuilder();
+        return fluentCtx.getExecutableBuilder();
     }
 
 }

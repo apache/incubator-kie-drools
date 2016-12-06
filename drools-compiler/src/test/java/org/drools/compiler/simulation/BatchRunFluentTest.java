@@ -19,7 +19,7 @@ package org.drools.compiler.simulation;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.core.command.RequestContextImpl;
-import org.drools.core.fluent.impl.FluentBuilderImpl;
+import org.drools.core.fluent.impl.ExecutableBuilderImpl;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -27,9 +27,9 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.RequestContext;
-import org.kie.internal.fluent.Scope;
-import org.kie.internal.fluent.runtime.FluentBuilder;
-import org.kie.internal.fluent.runtime.KieSessionFluent;
+import org.kie.api.runtime.builder.Scope;
+import org.kie.api.runtime.builder.ExecutableBuilder;
+import org.kie.api.runtime.builder.KieSessionFluent;
 
 public class BatchRunFluentTest extends CommonTestMethodBase {
     String header = "package org.drools.compiler\n" +
@@ -48,7 +48,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testOutName() {
-        FluentBuilder f = FluentBuilder.create();
+        ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
          .getKieContainer(releaseId).newSession()
@@ -65,7 +65,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testOutWithPriorSetAndNoName() {
-        FluentBuilder f = FluentBuilder.create();
+        ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
          .getKieContainer(releaseId).newSession()
@@ -82,7 +82,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testOutWithoutPriorSetAndNoName() {
-        FluentBuilder f = FluentBuilder.create();
+        ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
          .getKieContainer(releaseId).newSession()
@@ -103,7 +103,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testSetAndGetWithCommandRegisterWithEnds() {
-        FluentBuilder f = FluentBuilder.create();
+        ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
          // create two sessions, and assign names
@@ -133,7 +133,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testSetAndGetWithCommandRegisterWithoutEnds() {
-        FluentBuilder f = FluentBuilder.create();
+        ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
          // create two sessions, and assign names
@@ -167,7 +167,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
         RequestContext requestContext = runner.createContext();
 
-        FluentBuilder f = FluentBuilder.create();
+        ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1").startConversation()
          .getKieContainer(releaseId).newSession()
@@ -186,7 +186,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testRequestScope() {
-        FluentBuilder f = FluentBuilder.create();
+        ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
          .getKieContainer(releaseId).newSession()
@@ -208,7 +208,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
     public void testApplicationScope() {
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
 
-        FluentBuilder f = FluentBuilder.create();
+        ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1")
          .getKieContainer(releaseId).newSession()
@@ -224,7 +224,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
 
         // Make another request, add to application context, assert old and new values are there.
-        f         = new FluentBuilderImpl();
+        f         = new ExecutableBuilderImpl();
 
         f.getApplicationContext("app1")
          .getKieContainer(releaseId).newSession()
@@ -243,7 +243,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
     public void testConversationScope() {
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
 
-        FluentBuilder f = FluentBuilder.create();
+        ExecutableBuilder f = ExecutableBuilder.create();
 
         f.newApplicationContext("app1").startConversation()
          .getKieContainer(releaseId).newSession()
@@ -262,7 +262,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         assertEquals("h1", requestContext.getConversationContext().get("outS1") );
 
         // Make another request, add to conversation context, assert old and new values are there.
-        f         = new FluentBuilderImpl();
+        f         = new ExecutableBuilderImpl();
 
         f.getApplicationContext("app1").joinConversation(conversationId)
          .getKieContainer(releaseId).newSession()
@@ -276,7 +276,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         assertEquals("h2", requestContext.getConversationContext().get("outS2") );
 
         // End the conversation, check it's now null
-        f         = new FluentBuilderImpl();
+        f         = new ExecutableBuilderImpl();
 
         f.endConversation(conversationId);
 
@@ -288,7 +288,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
     public void testContextScopeSearching() {
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
 
-        FluentBuilder f = FluentBuilder.create();
+        ExecutableBuilder f = ExecutableBuilder.create();
 
         // Check that get() will search up to Application, when no request or conversation values
         f.newApplicationContext("app1")
@@ -305,7 +305,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         assertEquals("h1", requestContext.get("outS1") );
 
         // Check that get() will search up to Conversation, thus over-riding Application scope and ignoring Request when it has no value
-        f         = new FluentBuilderImpl();
+        f         = new ExecutableBuilderImpl();
 
         f.getApplicationContext("app1").startConversation()
          .getKieContainer(releaseId).newSession()
@@ -323,7 +323,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
 
         // Check that get() will search directly to Request, thus over-riding Application and Conversation scoped values
-        f         = new FluentBuilderImpl();
+        f         = new ExecutableBuilderImpl();
 
         f.getApplicationContext("app1").joinConversation(requestContext.getConversationContext().getName())
          .getKieContainer(releaseId).newSession()
@@ -346,7 +346,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
     public void testAfter() {
         ExecutableRunner<RequestContext> runner = ExecutableRunner.create(0L);
 
-        FluentBuilder f = FluentBuilder.create();
+        ExecutableBuilder f = ExecutableBuilder.create();
 
         // Check that get() will search up to Application, when no request or conversation values
         f.after(1000).newApplicationContext("app1")

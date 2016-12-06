@@ -16,11 +16,11 @@
 
 package org.drools.core.fluent.impl;
 
-import org.kie.internal.fluent.runtime.FluentBuilder;
-import org.kie.internal.fluent.runtime.KieContainerFluent;
+import org.kie.api.runtime.builder.ExecutableBuilder;
+import org.kie.api.runtime.builder.KieContainerFluent;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.fluent.runtime.KieSessionFluent;
+import org.kie.api.runtime.builder.KieSessionFluent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class FluentComponentFactory {
 
         set(KieContainerFluent.class.getName(), KieContainerFluentImpl.class, KieContainer.class.getName());
         set(KieSessionFluent.class.getName(), KieSessionFluentImpl.class, KieSession.class.getName());
-        set(FluentBuilder.class.getName(), FluentBuilderImpl.class, null);
+        set( ExecutableBuilder.class.getName(), ExecutableBuilderImpl.class, null );
 
     }
 
