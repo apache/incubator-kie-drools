@@ -201,9 +201,12 @@ public class DMNCompilerImpl implements DMNCompiler {
                 java.util.List<?> allowedValues = av instanceof java.util.List ? (java.util.List) av : Collections.singletonList( av );
                 ((FeelTypeImpl)type).setAllowedValues( allowedValues );
             }
+            if( itemDef.isIsCollection() ) {
+                ((FeelTypeImpl)type).setCollection( itemDef.isIsCollection() );
+            }
         } else {
             // this is a composite type
-            CompositeTypeImpl compType = new CompositeTypeImpl( itemDef.getName(), itemDef.getId() );
+            CompositeTypeImpl compType = new CompositeTypeImpl( itemDef.getName(), itemDef.getId(), itemDef.isIsCollection() );
             for( ItemDefinition fieldDef : itemDef.getItemComponent() ) {
                 DMNType field = buildTypeDef( dmnModel, fieldDef );
                 compType.getFields().put( field.getName(), field );
@@ -234,7 +237,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                         }
                     }
                 }
-                return new FeelTypeImpl( model.getName(), model.getId(), feelType, null );
+                return new FeelTypeImpl( model.getName(), model.getId(), feelType, false, null );
             } else if( dmnModel.getNamespace() != null && namespace != null && dmnModel.getNamespace().equals( namespace ) ) {
                 // locally defined type
                 List<ItemDefNode> itemDefs = dmnModel.getItemDefinitions().stream()
@@ -252,7 +255,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             }
             return null;
         }
-        return new FeelTypeImpl( model.getName(), model.getId(), BuiltInType.UNKNOWN, null );
+        return new FeelTypeImpl( model.getName(), model.getId(), BuiltInType.UNKNOWN, false, null );
     }
 
     private DMNExpressionEvaluator compileExpression(DMNModelImpl model, DMNBaseNode node, Expression expression) {
