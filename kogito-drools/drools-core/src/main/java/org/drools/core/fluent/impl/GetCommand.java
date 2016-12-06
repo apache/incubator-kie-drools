@@ -19,7 +19,7 @@ package org.drools.core.fluent.impl;
 import org.drools.core.command.RequestContextImpl;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.kie.api.runtime.Context;
-import org.kie.internal.fluent.Scope;
+import org.kie.api.runtime.builder.Scope;
 
 public class GetCommand<T> implements ExecutableCommand<T> {
     private String name;

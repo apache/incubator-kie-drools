@@ -19,15 +19,15 @@ package org.drools.core.fluent.impl;
 import org.drools.core.command.GetKieContainerCommand;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.Executable;
-import org.kie.internal.fluent.runtime.FluentBuilder;
-import org.kie.internal.fluent.runtime.KieContainerFluent;
+import org.kie.api.runtime.builder.ExecutableBuilder;
+import org.kie.api.runtime.builder.KieContainerFluent;
 
-public class FluentBuilderImpl extends BaseBatchFluent<FluentBuilder, FluentBuilder> implements FluentBuilder {
+public class ExecutableBuilderImpl extends BaseBatchFluent<ExecutableBuilder, ExecutableBuilder> implements ExecutableBuilder {
 
 
-    public FluentBuilderImpl() {
+    public ExecutableBuilderImpl() {
         super(new ExecutableImpl());
-        getFluentContext().setFluentBuilder(this);
+        getFluentContext().setExecutableBuilder( this );
 
     }
 
