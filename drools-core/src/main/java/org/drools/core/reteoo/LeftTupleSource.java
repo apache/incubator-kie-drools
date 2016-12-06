@@ -18,13 +18,11 @@ package org.drools.core.reteoo;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;
-import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
@@ -213,10 +211,6 @@ public abstract class LeftTupleSource extends BaseNode
             sink.setPartitionIdWithSinks( partitionId );
         }
     }
-
-    public abstract void updateSink(LeftTupleSink sink,
-                                    PropagationContext context,
-                                    InternalWorkingMemory workingMemory);
 
     public boolean isInUse() {
         return this.sink.size() > 0;

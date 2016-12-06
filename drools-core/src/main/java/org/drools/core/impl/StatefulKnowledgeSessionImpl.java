@@ -1544,10 +1544,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                       activation);
     }
 
-    public void executeQueuedActionsForRete() {
-        // NO-OP: this is necessary only for rete
-    }
-
     public void executeQueuedActions() {
         flushPropagations();
     }
@@ -1595,12 +1591,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public void setAsyncExceptionHandler(final AsyncExceptionHandler handler) {
         // this.agenda.setAsyncExceptionHandler( handler );
     }
-
-    /*
-     * public void dumpMemory() { Iterator it = this.joinMemories.keySet(
-     * ).iterator( ); while ( it.hasNext( ) ) { ((JoinMemory)
-     * this.joinMemories.get( it.next( ) )).dump( ); } }
-     */
 
     public long getNextPropagationIdCounter() {
         return this.propagationIdCounter.incrementAndGet();
@@ -2042,7 +2032,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public void flushPropagations() {
         agenda.flushPropagations();
-        executeQueuedActionsForRete();
     }
 
     @Override

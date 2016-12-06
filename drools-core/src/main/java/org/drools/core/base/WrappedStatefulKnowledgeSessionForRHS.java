@@ -457,10 +457,6 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		return delegate.don(activation, core, trait, b, modes);
 	}
 
-	public void executeQueuedActionsForRete() {
-		delegate.executeQueuedActionsForRete();
-	}
-
 	public void queueWorkingMemoryAction(WorkingMemoryAction action) {
 		delegate.queueWorkingMemoryAction(action);
 	}

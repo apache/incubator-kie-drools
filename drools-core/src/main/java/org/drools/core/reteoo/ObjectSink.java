@@ -30,17 +30,17 @@ public interface ObjectSink
     extends
     Sink {
 
-    public void assertObject(InternalFactHandle factHandle,
-                             PropagationContext propagationContext,
-                             InternalWorkingMemory workingMemory);
+    void assertObject(InternalFactHandle factHandle,
+                      PropagationContext propagationContext,
+                      InternalWorkingMemory workingMemory);
 
-    public void modifyObject(InternalFactHandle factHandle,
-                             ModifyPreviousTuples modifyPreviousTuples,
-                             PropagationContext context,
-                             InternalWorkingMemory workingMemory);
+    void modifyObject(InternalFactHandle factHandle,
+                      ModifyPreviousTuples modifyPreviousTuples,
+                      PropagationContext context,
+                      InternalWorkingMemory workingMemory);
     
-    public void byPassModifyToBetaNode (final InternalFactHandle factHandle,
-                                        final ModifyPreviousTuples modifyPreviousTuples,
-                                        final PropagationContext context,
-                                        final InternalWorkingMemory workingMemory);
+    void byPassModifyToBetaNode (InternalFactHandle factHandle,
+                                 ModifyPreviousTuples modifyPreviousTuples,
+                                 PropagationContext context,
+                                 InternalWorkingMemory workingMemory);
 }

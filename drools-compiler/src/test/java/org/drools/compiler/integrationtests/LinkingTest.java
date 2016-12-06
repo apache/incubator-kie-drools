@@ -40,14 +40,12 @@ import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.junit.Test;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
@@ -238,9 +236,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
@@ -311,9 +307,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
@@ -416,9 +410,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
@@ -511,9 +503,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
@@ -579,9 +569,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
@@ -643,9 +631,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
@@ -729,9 +715,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
@@ -906,10 +890,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
@@ -994,10 +975,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
@@ -1048,10 +1026,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
 
@@ -1118,10 +1093,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
@@ -1205,10 +1177,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
@@ -1267,10 +1236,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
@@ -1322,10 +1288,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
@@ -1395,9 +1358,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
@@ -1458,9 +1419,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
@@ -1522,10 +1481,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
@@ -1598,10 +1554,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
@@ -1651,10 +1604,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         StatefulKnowledgeSession wm = kbase.newStatefulKnowledgeSession();
@@ -1708,10 +1658,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
@@ -1773,10 +1720,7 @@ public class LinkingTest {
 
         assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
 
-        KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kconf.setOption( RuleEngineOption.PHREAK );
-        
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );

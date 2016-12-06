@@ -17,12 +17,9 @@
 package org.drools.core.time.impl;
 
 import org.drools.core.base.mvel.MVELObjectExpression;
-import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.ScheduledAgendaItem;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.Activation;
 import org.drools.core.spi.Tuple;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
@@ -98,22 +95,6 @@ public class    IntervalTimer extends BaseTimer
 
     public long getPeriod() {
         return period;
-    }
-
-    public Trigger createTrigger( Activation item, InternalWorkingMemory wm ) {
-        long timestamp = wm.getTimerService().getCurrentTime();
-        String[] calendarNames = item.getRule().getCalendars();
-        Calendars calendars = wm.getCalendars();
-
-        Declaration[][] timerDeclrs = ((AgendaItem)item).getTerminalNode().getTimerDeclarations();
-
-        ScheduledAgendaItem schItem = ( ScheduledAgendaItem ) item;
-        DefaultJobHandle jh = null;
-        if ( schItem.getJobHandle() != null ) {
-            jh = ( DefaultJobHandle) schItem.getJobHandle();
-        }
-
-        return createTrigger( timestamp, item.getTuple(), jh, calendarNames, calendars, timerDeclrs, wm );
     }
 
     public Trigger createTrigger(long timestamp,

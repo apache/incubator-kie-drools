@@ -444,11 +444,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return null;
     }
 
-    @Override
-    public void updateSink(LeftTupleSink sink, PropagationContext context, InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException();
-    }
-
     /**
      * Returns the next node
      * @return

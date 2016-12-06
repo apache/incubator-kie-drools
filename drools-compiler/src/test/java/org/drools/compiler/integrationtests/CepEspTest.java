@@ -76,7 +76,6 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -2559,9 +2558,6 @@ public class CepEspTest extends CommonTestMethodBase {
 
     @Test(timeout=10000)
     public void testEventExpirationDuringAccumulate() throws Exception {
-        if ( phreak == RuleEngineOption.RETEOO ) {
-            return; // this test is failing for Rete
-        }
         // DROOLS-70
         String str =
                 "package org.drools.integrationtests\n" +
@@ -3871,7 +3867,6 @@ public class CepEspTest extends CommonTestMethodBase {
                      "end";
         final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
-        kbconf.setOption( RuleEngineOption.PHREAK );
 
         KieSessionConfiguration knowledgeSessionConfiguration = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         knowledgeSessionConfiguration.setOption( TimerJobFactoryOption.get( "trackable" ) );
@@ -3923,7 +3918,6 @@ public class CepEspTest extends CommonTestMethodBase {
                      "end";
         final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
-        kbconf.setOption( RuleEngineOption.PHREAK );
 
         KieSessionConfiguration knowledgeSessionConfiguration = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
 
@@ -3975,7 +3969,6 @@ public class CepEspTest extends CommonTestMethodBase {
 
         KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
-        kbconf.setOption( RuleEngineOption.PHREAK );
 
         KieSessionConfiguration knowledgeSessionConfiguration = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         knowledgeSessionConfiguration.setOption( TimerJobFactoryOption.get( "trackable" ) );
@@ -4013,7 +4006,6 @@ public class CepEspTest extends CommonTestMethodBase {
                      "";
         final KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kbconf.setOption( EventProcessingOption.STREAM );
-        kbconf.setOption( RuleEngineOption.PHREAK );
         KnowledgeBase kb = loadKnowledgeBaseFromString( kbconf, drl );
         StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession( );
 
@@ -4082,7 +4074,6 @@ public class CepEspTest extends CommonTestMethodBase {
         //configure knowledge base
         KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         baseConfig.setOption( EventProcessingOption.STREAM );
-        baseConfig.setOption( RuleEngineOption.PHREAK );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(baseConfig);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -4153,7 +4144,6 @@ public class CepEspTest extends CommonTestMethodBase {
         //configure knowledge base
         KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         baseConfig.setOption( EventProcessingOption.CLOUD );
-        baseConfig.setOption( RuleEngineOption.PHREAK );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(baseConfig);
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -4220,7 +4210,6 @@ public class CepEspTest extends CommonTestMethodBase {
             fail( kbuilder.getErrors().toString() );
         }
         KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        baseConfig.setOption( RuleEngineOption.PHREAK );
         baseConfig.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -4341,7 +4330,6 @@ public class CepEspTest extends CommonTestMethodBase {
         }
         KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         baseConfig.setOption( EventProcessingOption.STREAM );
-        baseConfig.setOption( RuleEngineOption.PHREAK );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
@@ -4427,7 +4415,6 @@ public class CepEspTest extends CommonTestMethodBase {
         }
         KieBaseConfiguration baseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         baseConfig.setOption( EventProcessingOption.STREAM );
-        baseConfig.setOption( RuleEngineOption.PHREAK );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( baseConfig );
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 

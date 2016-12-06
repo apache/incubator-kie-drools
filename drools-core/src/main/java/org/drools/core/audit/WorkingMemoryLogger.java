@@ -114,8 +114,6 @@ public abstract class WorkingMemoryLogger
 
     private List<ILogEventFilter>    filters = new ArrayList<ILogEventFilter>();
 
-    protected boolean isPhreak;
-
     public WorkingMemoryLogger() {
     }
 
@@ -145,7 +143,6 @@ public abstract class WorkingMemoryLogger
     public WorkingMemoryLogger(final KnowledgeRuntimeEventManager session) {
         if (session instanceof StatefulKnowledgeSessionImpl) {
             StatefulKnowledgeSessionImpl statefulSession = ((StatefulKnowledgeSessionImpl) session);
-            isPhreak = statefulSession.getKnowledgeBase().getConfiguration().isPhreakEnabled();
             WorkingMemoryEventManager eventManager = statefulSession;
             eventManager.addEventListener( (RuleRuntimeEventListener) this );
             eventManager.addEventListener( (AgendaEventListener) this );
@@ -153,14 +150,12 @@ public abstract class WorkingMemoryLogger
             setProcessRuntimeEventListener( (InternalWorkingMemory) session );
         } else if (session instanceof StatelessKnowledgeSessionImpl) {
             StatelessKnowledgeSessionImpl statelessSession = ((StatelessKnowledgeSessionImpl) session);
-            isPhreak = statelessSession.getKnowledgeBase().getConfiguration().isPhreakEnabled();
             statelessSession.addEventListener((RuleRuntimeEventListener) this);
             statelessSession.addEventListener( (AgendaEventListener) this );
             statelessSession.getKnowledgeBase().addEventListener( (KieBaseEventListener) this );
         } else if (session instanceof CommandBasedStatefulKnowledgeSession) {
             StatefulKnowledgeSessionImpl statefulSession =
                     ((StatefulKnowledgeSessionImpl)(( RegistryContext)((CommandBasedStatefulKnowledgeSession) session).getRunner().createContext()).lookup( KieSession.class ));
-            isPhreak = statefulSession.getKnowledgeBase().getConfiguration().isPhreakEnabled();
             InternalWorkingMemory eventManager = statefulSession;
             eventManager.addEventListener( (RuleRuntimeEventListener) this );
             eventManager.addEventListener( (AgendaEventListener) this );
@@ -177,12 +172,10 @@ public abstract class WorkingMemoryLogger
     @SuppressWarnings("unchecked")
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         filters = (List<ILogEventFilter>) in.readObject();
-        isPhreak = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(filters);
-        out.writeBoolean(isPhreak);
     }
 
     /**

@@ -91,14 +91,6 @@ public interface NodeFactory {
                                     final EvalCondition eval,
                                     final BuildContext context);
 
-    LeftTupleSource buildQueryRiaFixerNode( final int id,
-                                            final LeftTupleSource tupleSource,
-                                            final BuildContext context);
-
-    ObjectSource buildPropagationQueuingNode( final int id,
-                                              final ObjectSource objectSource,
-                                              final BuildContext context);
-
     RightInputAdapterNode buildRightInputNode( int id,
                                                LeftTupleSource leftInput,
                                                LeftTupleSource startTupleSource,

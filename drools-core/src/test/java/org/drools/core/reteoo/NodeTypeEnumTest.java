@@ -15,11 +15,11 @@
 
 package org.drools.core.reteoo;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import static org.drools.core.reteoo.NodeTypeEnums.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class NodeTypeEnumTest {
     EntryPointNode         epNode     = new EntryPointNode();
@@ -39,7 +39,6 @@ public class NodeTypeEnumTest {
     EvalConditionNode      evalNode   = new EvalConditionNode();
     FromNode               fromNode   = new FromNode();
 
-    QueryRiaFixerNode      qrfNode    = new QueryRiaFixerNode();
     QueryElementNode       uNode      = new QueryElementNode();
 
     NotNode                notNode    = new NotNode();
@@ -65,7 +64,6 @@ public class NodeTypeEnumTest {
         assertFalse( isObjectSource( evalNode ) );
         assertFalse( isObjectSource( fromNode ) );
         
-        assertFalse( isObjectSource( qrfNode ) );
         assertFalse( isObjectSource( uNode ) );
         
         assertFalse( isObjectSource( notNode ) );
@@ -92,7 +90,6 @@ public class NodeTypeEnumTest {
         assertFalse( isObjectSink( evalNode ) );
         assertFalse( isObjectSink( fromNode ) );
         
-        assertFalse( isObjectSink( qrfNode ) );
         assertFalse( isObjectSink( uNode ) );
         
         assertFalse( isObjectSink( notNode ) );
@@ -118,7 +115,6 @@ public class NodeTypeEnumTest {
         assertTrue( isLeftTupleSource( evalNode ) );
         assertTrue( isLeftTupleSource( fromNode ) );
         
-        assertTrue( isLeftTupleSource( qrfNode ) );
         assertTrue( isLeftTupleSource( uNode ) );
         
         assertTrue( isLeftTupleSource( notNode ) );
@@ -145,7 +141,6 @@ public class NodeTypeEnumTest {
         assertTrue( isLeftTupleSink( evalNode ) );
         assertTrue( isLeftTupleSink( fromNode ) );
         
-        assertTrue( isLeftTupleSink( qrfNode ) );
         assertTrue( isLeftTupleSink( uNode ) );
         
         assertTrue( isLeftTupleSink( notNode ) );
@@ -172,7 +167,6 @@ public class NodeTypeEnumTest {
         assertFalse( isBetaNode( evalNode ) );
         assertFalse( isBetaNode( fromNode ) );
         
-        assertFalse( isBetaNode( qrfNode ) );
         assertFalse( isBetaNode( uNode ) );
         
         assertTrue( isBetaNode( notNode ) );
