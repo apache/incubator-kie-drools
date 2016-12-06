@@ -132,6 +132,7 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
     boolean removeObjectsGeneratedFromResource(Resource resource);
 
     TypeDeclaration getTypeDeclaration( Class<?> clazz );
+    TypeDeclaration getExactTypeDeclaration( Class<?> clazz );
     Collection<TypeDeclaration> getTypeDeclarations();
 
 	ReleaseId getResolvedReleaseId();

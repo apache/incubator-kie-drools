@@ -124,7 +124,7 @@ public class PropertySpecificUtil {
         if (nodeClass == null) {
             return null;
         }
-        TypeDeclaration typeDeclaration = kBase.getTypeDeclaration(nodeClass);
+        TypeDeclaration typeDeclaration = kBase.getExactTypeDeclaration(nodeClass);
         if (typeDeclaration == null) {
             return ClassUtils.getSettableProperties(nodeClass);
         }
