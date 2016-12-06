@@ -30,16 +30,21 @@ public class CompositeTypeImpl
     private Map<String, DMNType> fields;
 
     public CompositeTypeImpl() {
-        this( null, null, new HashMap<>(  ) );
+        this( null, null, false, new HashMap<>(  ) );
     }
 
     public CompositeTypeImpl(String name, String id) {
-        this( name, id, new HashMap<>(  ) );
+        this( name, id, false, new HashMap<>(  ) );
     }
 
-    public CompositeTypeImpl(String name, String id, Map<String, DMNType> fields) {
+    public CompositeTypeImpl(String name, String id, boolean isCollection) {
+        this( name, id, isCollection, new HashMap<>(  ) );
+    }
+
+    public CompositeTypeImpl(String name, String id, boolean isCollection, Map<String, DMNType> fields) {
         this.name = name;
         this.id = id;
+        this.collection = isCollection;
         this.fields = fields;
     }
 

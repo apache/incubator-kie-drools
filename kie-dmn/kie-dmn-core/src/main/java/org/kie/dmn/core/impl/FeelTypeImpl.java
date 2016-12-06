@@ -31,19 +31,21 @@ public class FeelTypeImpl
     private String  id;
     private Type    feelType;
     private List<?> allowedValues;
+    private boolean collection;
 
     public FeelTypeImpl() {
-        this( null, null, null, null );
+        this( null, null, null, false, null );
     }
 
     public FeelTypeImpl(String name, String id) {
-        this( name, id, null, null );
+        this( name, id, null, false, null );
     }
 
-    public FeelTypeImpl(String name, String id, Type feelType, List<?> allowedValues) {
+    public FeelTypeImpl(String name, String id, Type feelType, boolean isCollection, List<?> allowedValues) {
         this.name = name;
         this.id = id;
         this.feelType = feelType;
+        this.collection = isCollection;
         this.allowedValues = allowedValues;
     }
 
@@ -99,6 +101,11 @@ public class FeelTypeImpl
     }
 
     @Override
+    public boolean isCollection() {
+        return collection;
+    }
+
+    @Override
     public Map<String, DMNType> getFields() {
         return Collections.emptyMap();
     }
@@ -106,5 +113,9 @@ public class FeelTypeImpl
     @Override
     public DMNType getField(String typeName) {
         return null;
+    }
+
+    public void setCollection(boolean collection) {
+        this.collection = collection;
     }
 }
