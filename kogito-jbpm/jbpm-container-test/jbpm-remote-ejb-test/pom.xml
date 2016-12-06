@@ -14,10 +14,6 @@
   <name>jBPM :: jBPM Remote EJB tests and resources</name>
   <description>Test suite for jBPM Remote EJB</description>
 
-  <properties>
-    <version.test.kjar>1.0.0</version.test.kjar>
-  </properties>
-
   <modules>
     <module>jbpm-remote-ejb-test-domain</module>
     <module>test-kjar-parent</module>

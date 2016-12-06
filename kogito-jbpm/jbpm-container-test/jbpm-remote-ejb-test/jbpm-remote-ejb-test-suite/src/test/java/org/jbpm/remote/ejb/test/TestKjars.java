@@ -21,7 +21,9 @@ import org.jbpm.remote.ejb.test.maven.MavenProject;
 
 public class TestKjars {
 
-    public static final MavenProject INTEGRATION = new MavenProject("org.jbpm:test-kjar-integration:1.0.0");
-    public static final MavenProject BPMN_BUILD_TEST = new MavenProject("org.jbpm:test-kjar-bpmn-build:1.0.0");
-    public static final MavenProject EVALUATION = new MavenProject("org.jbpm:test-kjar-evaluation:1.0.0");
+    private static final String KJAR_VERSION = System.getProperty("project.version");
+
+    public static final MavenProject INTEGRATION = new MavenProject("org.jbpm:test-kjar-integration:" + KJAR_VERSION);
+    public static final MavenProject BPMN_BUILD_TEST = new MavenProject("org.jbpm:test-kjar-bpmn-build:" + KJAR_VERSION);
+    public static final MavenProject EVALUATION = new MavenProject("org.jbpm:test-kjar-evaluation:" + KJAR_VERSION);
 }

@@ -54,19 +54,19 @@
       <dependency>
         <groupId>org.jbpm</groupId>
         <artifactId>test-kjar-integration</artifactId>
-        <version>${version.test.kjar}</version>
+        <version>${project.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.jbpm</groupId>
         <artifactId>test-kjar-evaluation</artifactId>
-        <version>${version.test.kjar}</version>
+        <version>${project.version}</version>
         <scope>runtime</scope>
       </dependency>
       <dependency>
         <groupId>org.jbpm</groupId>
         <artifactId>test-kjar-bpmn-build</artifactId>
-        <version>${version.test.kjar}</version>
+        <version>${project.version}</version>
         <scope>runtime</scope>
       </dependency>
 
