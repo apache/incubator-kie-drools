@@ -20,7 +20,7 @@ spec to better support use cases, without prejudice to strict models.
 These lists are as comprehensive as possible, but the spec is an ambiguous document by itself and there
 might be other differences that were not found yet. Feel free to point them out if you find any.
 
-# FEEL language differences
+# FEEL language implementation notes
 
 ## a. Fixes to bugs and changes
 
@@ -61,14 +61,14 @@ For completeness and orthogonality, this implementation also supports the follow
 4. __Support for unary test invocation__: for completeness and orthogonality, this implementation supports
 unary test invocation analogously as functions. E.g.:
 
-```json
+```
 {
     is minor : < 18,
     Bob is minor : is minor( bob.age )
 }
 ```
 
-# DMN engine differences
+# DMN engine implementation notes
 
 ## a. Fixes to bugs
 
