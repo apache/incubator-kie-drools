@@ -16,7 +16,7 @@
 package org.kie.internal.task.api;
 
 import org.kie.api.task.UserGroupCallback;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 public interface TaskContext extends Context, org.kie.api.task.TaskContext {
 

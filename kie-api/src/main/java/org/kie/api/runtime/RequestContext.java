@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-package org.kie.internal.fluent.runtime;
+package org.kie.api.runtime;
 
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.runtime.Executable;
-import org.kie.internal.fluent.ContextFluent;
+import org.kie.api.KieBase;
 
-public interface FluentBuilder extends TimeFluent<FluentBuilder>, ContextFluent<FluentBuilder, FluentBuilder> {
+public interface RequestContext extends Context {
+    Object getResult();
+    void setResult(Object result);
 
-    KieContainerFluent getKieContainer(ReleaseId releaseId);
+    RequestContext with(KieBase kieBase);
+    RequestContext with(KieSession kieSession);
 
-    Executable getExecutable();
+    Context getConversationContext();
 
-    static FluentBuilder create() {
+    Context getApplicationContext();
+
+    static RequestContext create() {
         try {
-            return (FluentBuilder) Class.forName( "org.drools.core.fluent.impl.FluentBuilderImpl" ).newInstance();
+            return (RequestContext) Class.forName( "org.drools.core.command.RequestContextImpl" ).newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("Unable to instance ExecutableRunner", e);
+            throw new RuntimeException("Unable to instance RequestContext", e);
         }
     }
 }
