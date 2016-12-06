@@ -320,6 +320,17 @@ public class DMNCompilerImpl implements DMNCompiler {
                                   compileExpression( model, node, ce.getExpression() ) );
             }
             return ctxEval;
+        } else if( expression instanceof Invocation ) {
+            Invocation invocation = (Invocation) expression;
+            // expression must be a literal text with the name of the function
+            String functionName = ((LiteralExpression) invocation.getExpression()).getText();
+            DMNInvocationEvaluator invEval = new DMNInvocationEvaluator( node.getName(), node.getId(), functionName, invocation );
+            for( Binding binding : invocation.getBinding() ) {
+                invEval.addParameter( binding.getParameter().getName(),
+                                      resolveSimpleTypeRef( model, binding.getParameter(), binding.getParameter().getTypeRef() ),
+                                      compileExpression( model, node, binding.getExpression() ) );
+            }
+            return invEval;
         } else {
             if( expression != null ) {
                 model.addMessage( DMNMessage.Severity.ERROR, "Expression type '"+expression.getClass().getSimpleName()+"' not supported in node '"+node.getId()+"'", node.getId() );
