@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.0" 
-             xmlns="http://java.sun.com/xml/ns/persistence" 
-             xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" 
-             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd 
-                                 http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd">
+<persistence version="2.1"
+             xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
 
     <persistence-unit name="org.drools.persistence.jpa" transaction-type="JTA">
-      <provider>org.hibernate.ejb.HibernatePersistence</provider>
+      <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
       <jta-data-source>jdbc/testDS1</jta-data-source>        
       <class>org.drools.persistence.info.SessionInfo</class>
       <class>org.drools.persistence.info.WorkItemInfo</class>
@@ -23,11 +21,6 @@
         <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
         <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
          
-        <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
-        <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
-        <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
-        <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
-        
         <!-- The following line is what's used in Hibernate 4 instead of a TransactionManagerLookup class -->
         <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
       </properties>
