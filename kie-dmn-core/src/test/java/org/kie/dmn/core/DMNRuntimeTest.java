@@ -16,37 +16,28 @@
 
 package org.kie.dmn.core;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.hasEntry;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
+import org.junit.Test;
+import org.kie.dmn.core.api.*;
+import org.kie.dmn.core.api.event.*;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.feel.runtime.FEELFunction;
+import org.mockito.ArgumentCaptor;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.dmn.core.api.DMNContext;
-import org.kie.dmn.core.api.DMNFactory;
-import org.kie.dmn.core.api.DMNMessage;
-import org.kie.dmn.core.api.DMNModel;
-import org.kie.dmn.core.api.DMNResult;
-import org.kie.dmn.core.api.DMNRuntime;
-import org.kie.dmn.core.api.event.AfterEvaluateDecisionEvent;
-import org.kie.dmn.core.api.event.AfterEvaluateDecisionTableEvent;
-import org.kie.dmn.core.api.event.BeforeEvaluateDecisionEvent;
-import org.kie.dmn.core.api.event.BeforeEvaluateDecisionTableEvent;
-import org.kie.dmn.core.api.event.DMNRuntimeEventListener;
-import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.mockito.ArgumentCaptor;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class DMNRuntimeTest {
 
@@ -57,7 +48,7 @@ public class DMNRuntimeTest {
         assertThat( dmnModel, notNullValue() );
 
         DMNContext context = DMNFactory.newContext();
-        Map loan = new HashMap(  );
+        Map loan = new HashMap();
         loan.put( "principal", 600000 );
         loan.put( "rate", 0.0375 );
         loan.put( "termMonths", 360 );
@@ -78,11 +69,11 @@ public class DMNRuntimeTest {
 
         DMNContext context = DMNFactory.newContext();
         context.set( "IsDoubleHulled", true );
-        context.set("Residual Cargo Size", new BigDecimal( 0.1 ) );
-        context.set("Ship Size", new BigDecimal( 50 ) );
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        context.set( "Residual Cargo Size", new BigDecimal( 0.1 ) );
+        context.set( "Ship Size", new BigDecimal( 50 ) );
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         DMNContext result = dmnResult.getContext();
-        assertThat( result.get("Ship can enter a Dutch port"), is( true ) );
+        assertThat( result.get( "Ship can enter a Dutch port" ), is( true ) );
     }
 
     @Test
@@ -92,7 +83,7 @@ public class DMNRuntimeTest {
         assertThat( dmnModel, notNullValue() );
 
         DMNContext context = DMNFactory.newContext();
-        Map shipInfo = new HashMap(  );
+        Map shipInfo = new HashMap();
         shipInfo.put( "Size", BigDecimal.valueOf( 70 ) );
         shipInfo.put( "Is Double Hulled", Boolean.FALSE );
         shipInfo.put( "Residual Cargo Size", BigDecimal.valueOf( 0.1 ) );
@@ -100,10 +91,10 @@ public class DMNRuntimeTest {
 
         // Test that even if one decision is empty or missing input data,
         // the other decisions in the model are still evaluated
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         DMNContext result = dmnResult.getContext();
         assertThat( dmnResult.hasErrors(), is( true ) );
-        assertThat( result.get("Ship Can Enter v2"), is( true ) );
+        assertThat( result.get( "Ship Can Enter v2" ), is( true ) );
     }
 
     @Test
@@ -113,7 +104,7 @@ public class DMNRuntimeTest {
         assertThat( dmnModel, notNullValue() );
 
         DMNContext context = DMNFactory.newContext();
-        Map shipInfo = new HashMap(  );
+        Map shipInfo = new HashMap();
         shipInfo.put( "Size", BigDecimal.valueOf( 70 ) );
         shipInfo.put( "Is Double Hulled", Boolean.FALSE );
         shipInfo.put( "Residual Cargo Size", BigDecimal.valueOf( 0.1 ) );
@@ -124,7 +115,7 @@ public class DMNRuntimeTest {
 
         // check that if all the input data is available, but the
         // decision expression is empty, the model returns a warning
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
 
         List<DMNMessage> messages = dmnResult.getMessages( DMNMessage.Severity.WARN );
         assertThat( messages.size(), is( 1 ) );
@@ -132,7 +123,7 @@ public class DMNRuntimeTest {
         assertThat( messages.get( 0 ).getSourceId(), is( "_42806504-8ed5-488f-b274-de98c1bc67b9" ) );
 
         DMNContext result = dmnResult.getContext();
-        assertThat( result.get("Ship Can Enter v2"), is( true ) );
+        assertThat( result.get( "Ship Can Enter v2" ), is( true ) );
     }
 
     @Test
@@ -151,32 +142,32 @@ public class DMNRuntimeTest {
         context.set( "Damage Types", "Body" );
         context.set( "Responsible", "Driver" );
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
 
-        ArgumentCaptor<AfterEvaluateDecisionTableEvent> argument = ArgumentCaptor.forClass( AfterEvaluateDecisionTableEvent.class);
-        verify( listener, times(2) )
+        ArgumentCaptor<AfterEvaluateDecisionTableEvent> argument = ArgumentCaptor.forClass( AfterEvaluateDecisionTableEvent.class );
+        verify( listener, times( 2 ) )
                 .beforeEvaluateDecision( any( BeforeEvaluateDecisionEvent.class ) );
-        verify( listener, times(2) )
+        verify( listener, times( 2 ) )
                 .afterEvaluateDecision( any( AfterEvaluateDecisionEvent.class ) );
-        verify( listener, times(2) )
+        verify( listener, times( 2 ) )
                 .beforeEvaluateDecisionTable( any( BeforeEvaluateDecisionTableEvent.class ) );
-        verify( listener, times(2) )
+        verify( listener, times( 2 ) )
                 .afterEvaluateDecisionTable( argument.capture() );
 
         AfterEvaluateDecisionTableEvent dte = argument.getAllValues().get( 0 );
-        assertThat( dte.getDecisionTableName(), is("Car Damage Responsibility") );
-        assertThat( dte.getMatches(), is( Arrays.asList( 4 )) );
+        assertThat( dte.getDecisionTableName(), is( "Car Damage Responsibility" ) );
+        assertThat( dte.getMatches(), is( Arrays.asList( 4 ) ) );
 
         dte = argument.getAllValues().get( 1 );
-        assertThat( dte.getDecisionTableName(), is("Payment method") );
-        assertThat( dte.getMatches(), is( Arrays.asList( 2 )) );
+        assertThat( dte.getDecisionTableName(), is( "Payment method" ) );
+        assertThat( dte.getMatches(), is( Arrays.asList( 2 ) ) );
 
         assertThat( dmnResult.hasErrors(), is( false ) );
 
         DMNContext result = dmnResult.getContext();
-        assertThat( (Map<String,Object>)result.get("Car Damage Responsibility"), hasEntry( is( "EU Rent" ), is( BigDecimal.valueOf( 40 )) ));
-        assertThat( (Map<String,Object>)result.get("Car Damage Responsibility"), hasEntry( is( "Renter" ), is( BigDecimal.valueOf( 60 )) ));
-        assertThat( result.get("Payment method"), is( "Check" ) );
+        assertThat( (Map<String, Object>) result.get( "Car Damage Responsibility" ), hasEntry( is( "EU Rent" ), is( BigDecimal.valueOf( 40 ) ) ) );
+        assertThat( (Map<String, Object>) result.get( "Car Damage Responsibility" ), hasEntry( is( "Renter" ), is( BigDecimal.valueOf( 60 ) ) ) );
+        assertThat( result.get( "Payment method" ), is( "Check" ) );
     }
 
     @Test
@@ -189,12 +180,12 @@ public class DMNRuntimeTest {
         context.set( "Age", 40 );
         context.set( "Requested Product", "Fixed30" );
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        System.out.println(dmnResult.getMessages());
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        System.out.println( dmnResult.getMessages() );
         assertThat( dmnResult.hasErrors(), is( false ) );
 
         DMNContext result = dmnResult.getContext();
-        assertThat( result.get("My Decision"), is( "Fixed30" ) );
+        assertThat( result.get( "My Decision" ), is( "Fixed30" ) );
     }
 
     @Test
@@ -206,12 +197,12 @@ public class DMNRuntimeTest {
         DMNContext context = DMNFactory.newContext();
         context.set( "Occupation", "Student" );
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        System.out.println(dmnResult.getMessages());
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        System.out.println( dmnResult.getMessages() );
         assertThat( dmnResult.hasErrors(), is( false ) );
 
         DMNContext result = dmnResult.getContext();
-        assertThat( result.get("a"), is( "Is Student" ) );
+        assertThat( result.get( "a" ), is( "Is Student" ) );
     }
 
     @Test
@@ -223,12 +214,12 @@ public class DMNRuntimeTest {
         DMNContext context = DMNFactory.newContext();
         context.set( "Occupation", "Engineer" );
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        System.out.println(dmnResult.getMessages());
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        System.out.println( dmnResult.getMessages() );
         assertThat( dmnResult.hasErrors(), is( false ) );
 
         DMNContext result = dmnResult.getContext();
-        assertThat( result.get("a"), is( "Is not a Student" ) );
+        assertThat( result.get( "a" ), is( "Is not a Student" ) );
     }
 
     @Test
@@ -236,7 +227,7 @@ public class DMNRuntimeTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "Dinner.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_0c45df24-0d57-4acc-b296-b4cba8b71a36", "Dinner" );
         assertThat( dmnModel, notNullValue() );
-        assertThat( dmnModel.hasErrors(), is(false) );
+        assertThat( dmnModel.hasErrors(), is( false ) );
 
         DMNContext context = DMNFactory.newContext();
         context.set( "Guests with children", true );
@@ -245,11 +236,11 @@ public class DMNRuntimeTest {
         context.set( "Temp", 25 );
         context.set( "Rain Probability", 30 );
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         assertThat( dmnResult.hasErrors(), is( false ) );
-        assertThat( dmnResult.getContext().get("Where to eat"), is( "Outside" ) );
-        assertThat( dmnResult.getContext().get("Dish"), is( "Spareribs" ) );
-        assertThat( dmnResult.getContext().get("Drinks"), is( Arrays.asList( "Apero", "Ale", "Juice Boxes" ) ) );
+        assertThat( dmnResult.getContext().get( "Where to eat" ), is( "Outside" ) );
+        assertThat( dmnResult.getContext().get( "Dish" ), is( "Spareribs" ) );
+        assertThat( dmnResult.getContext().get( "Drinks" ), is( Arrays.asList( "Apero", "Ale", "Juice Boxes" ) ) );
     }
 
     @Test
@@ -258,12 +249,10 @@ public class DMNRuntimeTest {
         DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "building-structure-rules" );
         assertThat( dmnModel, notNullValue() );
 
-
         DMNContext context = DMNFactory.newContext();
         context.set( "existingActivityApplicability", true );
-        context.set( "Distance", new BigDecimal(9999) );
+        context.set( "Distance", new BigDecimal( 9999 ) );
         context.set( "willIncreaseTraffic", true );
-
 
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         DMNContext result = dmnResult.getContext();
@@ -276,28 +265,44 @@ public class DMNRuntimeTest {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "BoxedContext.dmn", this.getClass() );
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_0de36357-fec0-4b4e-b7f1-382d381e06e9", "Dessin 1" );
         assertThat( dmnModel, notNullValue() );
-        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false) );
+        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
 
         DMNContext context = DMNFactory.newContext();
         context.set( "a", 10 );
         context.set( "b", 5 );
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         assertThat( dmnResult.hasErrors(), is( false ) );
         assertThat( (Map<String, Object>) dmnResult.getContext().get( "Math" ), hasEntry( "Sum", BigDecimal.valueOf( 15 ) ) );
         assertThat( (Map<String, Object>) dmnResult.getContext().get( "Math" ), hasEntry( "Product", BigDecimal.valueOf( 50 ) ) );
     }
 
     @Test
+    public void testFunctionDefAndInvocation() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "FunctionDefinition.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/dmn/definitions/_0de36357-fec0-4b4e-b7f1-382d381e06e9", "Dessin 1" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "a", 10 );
+        context.set( "b", 5 );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( dmnResult.hasErrors(), is( false ) );
+        assertThat( (Map<String, Object>) dmnResult.getContext().get( "Math" ), hasEntry( "Sum", BigDecimal.valueOf( 15 ) ) );
+    }
+
+    @Test
     public void testBKMNode() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0009-invocation-arithmetic.dmn", getClass() );
         runtime.addListener( DMNRuntimeUtil.createListener() );
-        
+
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11", "literal invocation1" );
         assertThat( dmnModel, notNullValue() );
-        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false) );
+        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
 
-        Map<String, Object> loan = new HashMap<>(  );
+        Map<String, Object> loan = new HashMap<>();
         loan.put( "amount", BigDecimal.valueOf( 600000 ) );
         loan.put( "rate", new BigDecimal( "0.0375" ) );
         loan.put( "term", BigDecimal.valueOf( 360 ) );
@@ -305,10 +310,11 @@ public class DMNRuntimeTest {
         context.set( "fee", 100 );
         context.set( "Loan", loan );
 
-        DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         assertThat( dmnResult.hasErrors(), is( false ) );
-        assertThat( ((BigDecimal) dmnResult.getContext().get( "MonthlyPayment" )).setScale( 8, BigDecimal.ROUND_DOWN ),
-                    is( new BigDecimal( "2878.69354943277" ).setScale( 8, BigDecimal.ROUND_DOWN ) ) );
+        assertThat(
+                ((BigDecimal) dmnResult.getContext().get( "MonthlyPayment" )).setScale( 8, BigDecimal.ROUND_DOWN ),
+                is( new BigDecimal( "2878.69354943277" ).setScale( 8, BigDecimal.ROUND_DOWN ) ) );
     }
 
 }
