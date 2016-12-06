@@ -24,6 +24,8 @@ public interface DMNType {
 
     String getId();
 
+    boolean isCollection();
+
     Object parseValue( String value );
 
     String toString( Object value );
