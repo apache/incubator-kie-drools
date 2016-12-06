@@ -13,10 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.api.runtime.builder;
 
-package org.kie.internal.fluent.runtime;
+import org.kie.api.task.TaskService;
 
-public interface KieContainerFluent {
-    KieSessionFluent newSession();
-    KieSessionFluent newSession(String id);
+/**
+ * See {@link TaskService}
+ *
+ */
+public interface TaskFluent<T> {
+
 }

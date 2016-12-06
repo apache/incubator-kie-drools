@@ -1,11 +1,11 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package org.kie.internal.fluent.runtime;
-
-import org.kie.internal.fluent.ContextFluent;
-import org.kie.internal.fluent.runtime.process.ProcessFluent;
-import org.kie.internal.fluent.runtime.rule.RuleFluent;
+package org.kie.api.runtime.builder;
 
 public interface KieSessionFluent
-    extends RuleFluent<KieSessionFluent, FluentBuilder>,
-    ProcessFluent<KieSessionFluent, FluentBuilder>,
-    ContextFluent<KieSessionFluent, FluentBuilder>,
+    extends RuleFluent<KieSessionFluent, ExecutableBuilder>,
+    ProcessFluent<KieSessionFluent, ExecutableBuilder>,
+    ContextFluent<KieSessionFluent, ExecutableBuilder>,
     TimeFluent<KieSessionFluent> {
 
 }
