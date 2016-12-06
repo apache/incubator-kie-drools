@@ -17,14 +17,14 @@
 package org.drools.core.fluent.impl;
 
 import org.kie.api.command.Command;
-import org.kie.internal.fluent.runtime.FluentBuilder;
+import org.kie.api.runtime.builder.ExecutableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExecutableImpl implements InternalExecutable {
     private FluentComponentFactory factory;
-    private FluentBuilder          fluentBuilder;
+    private ExecutableBuilder executableBuilder;
 
     private Batch batch;
 
@@ -34,12 +34,12 @@ public class ExecutableImpl implements InternalExecutable {
         batches = new ArrayList<Batch>();
     }
 
-    public FluentBuilder getFluentBuilder() {
-        return fluentBuilder;
+    public ExecutableBuilder getExecutableBuilder() {
+        return executableBuilder;
     }
 
-    public void setFluentBuilder(FluentBuilder fluentBuilder) {
-        this.fluentBuilder = fluentBuilder;
+    public void setExecutableBuilder( ExecutableBuilder executableBuilder ) {
+        this.executableBuilder = executableBuilder;
     }
 
     public FluentComponentFactory getFactory() {

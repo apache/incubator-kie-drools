@@ -17,11 +17,11 @@
 package org.drools.core.fluent.impl;
 
 import org.drools.core.command.NewKieSessionCommand;
-import org.kie.internal.fluent.runtime.FluentBuilder;
-import org.kie.internal.fluent.runtime.KieContainerFluent;
-import org.kie.internal.fluent.runtime.KieSessionFluent;
+import org.kie.api.runtime.builder.ExecutableBuilder;
+import org.kie.api.runtime.builder.KieContainerFluent;
+import org.kie.api.runtime.builder.KieSessionFluent;
 
-public class KieContainerFluentImpl extends BaseBatchFluent<FluentBuilder, FluentBuilder> implements KieContainerFluent {
+public class KieContainerFluentImpl extends BaseBatchFluent<ExecutableBuilder, ExecutableBuilder> implements KieContainerFluent {
 
     private ExecutableImpl ctx;
 

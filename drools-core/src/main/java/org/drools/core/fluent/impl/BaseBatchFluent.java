@@ -18,8 +18,8 @@ package org.drools.core.fluent.impl;
 
 import org.drools.core.command.*;
 import org.kie.api.command.Command;
-import org.kie.internal.fluent.ContextFluent;
-import org.kie.internal.fluent.Scope;
+import org.kie.api.runtime.builder.ContextFluent;
+import org.kie.api.runtime.builder.Scope;
 
 public class BaseBatchFluent<T, E> implements ContextFluent<T, E> {
     protected ExecutableImpl fluentCtx;
@@ -141,7 +141,7 @@ public class BaseBatchFluent<T, E> implements ContextFluent<T, E> {
 
     @Override
     public E end() {
-        return (E) fluentCtx.getFluentBuilder();
+        return (E) fluentCtx.getExecutableBuilder();
     }
 
 }
