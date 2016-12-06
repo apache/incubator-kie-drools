@@ -16,9 +16,8 @@
 
 package org.drools.core.command.impl;
 
-import org.drools.core.command.CommandService;
+import org.kie.api.runtime.ExecutableRunner;
 import org.drools.core.command.GetSessionClockCommand;
-import org.drools.core.command.Interceptor;
 import org.drools.core.command.runtime.AddEventListenerCommand;
 import org.drools.core.command.runtime.DestroySessionCommand;
 import org.drools.core.command.runtime.DisposeCommand;
@@ -111,12 +110,12 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     implements
     StatefulKnowledgeSession, CorrelationAwareProcessRuntime {
 
-    private CommandService            commandService;
+    private ExecutableRunner runner;
     private transient WorkItemManager workItemManager;
     private transient Agenda          agenda;
 
-    public CommandBasedStatefulKnowledgeSession(CommandService commandService) {
-        this.commandService = commandService;
+    public CommandBasedStatefulKnowledgeSession(ExecutableRunner runner ) {
+        this.runner = runner;
     }
 
     /**
@@ -124,37 +123,37 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
      */
     @Deprecated
     public int getId() {
-        return commandService.execute( new GetIdCommand() ).intValue();
+        return runner.execute( new GetIdCommand() ).intValue();
     }
     public long getIdentifier() {
-        return commandService.execute( new GetIdCommand() );
+        return runner.execute( new GetIdCommand() );
     }
 
     public ProcessInstance getProcessInstance(long id) {
         GetProcessInstanceCommand command = new GetProcessInstanceCommand();
         command.setProcessInstanceId( id );
-        return commandService.execute( command );
+        return runner.execute( command );
     }
 
     public ProcessInstance getProcessInstance(long id, boolean readOnly) {
         GetProcessInstanceCommand command = new GetProcessInstanceCommand();
         command.setProcessInstanceId( id );
         command.setReadOnly( readOnly );
-        return commandService.execute( command );
+        return runner.execute( command );
     }
 
     public void abortProcessInstance(long id) {
         AbortProcessInstanceCommand command = new AbortProcessInstanceCommand();
         command.setProcessInstanceId( id );
-        commandService.execute( command );
+        runner.execute( command );
     }
 
-    public CommandService getCommandService() {
-        return commandService;
+    public ExecutableRunner getRunner() {
+        return runner;
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
-        return this.commandService.execute( new GetProcessInstancesCommand() );
+        return runner.execute( new GetProcessInstancesCommand() );
     }
 
     public WorkItemManager getWorkItemManager() {
@@ -165,13 +164,13 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                     CompleteWorkItemCommand command = new CompleteWorkItemCommand();
                     command.setWorkItemId( id );
                     command.setResults( results );
-                    commandService.execute( command );
+                    runner.execute( command );
                 }
 
                 public void abortWorkItem(long id) {
                     AbortWorkItemCommand command = new AbortWorkItemCommand();
                     command.setWorkItemId( id );
-                    commandService.execute( command );
+                    runner.execute( command );
                 }
 
                 public void registerWorkItemHandler(String workItemName,
@@ -179,13 +178,13 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                     RegisterWorkItemHandlerCommand command = new RegisterWorkItemHandlerCommand();
                     command.setWorkItemName( workItemName );
                     command.setHandler( handler );
-                    commandService.execute( command );
+                    runner.execute( command );
                 }
 
                 public WorkItem getWorkItem(long id) {
                     GetWorkItemCommand command = new GetWorkItemCommand();
                     command.setWorkItemId( id );
-                    return commandService.execute( command );
+                    return runner.execute( command );
                 }
 
                 public void clear() {
@@ -211,13 +210,13 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                 @Override
                 public void signalEvent(String type, Object event) {
                     SignalEventCommand command = new SignalEventCommand(type, event);
-                    commandService.execute(command);
+                    runner.execute(command);
                 }
 
                 @Override
                 public void signalEvent(String type, Object event, long processInstanceId) {
                     SignalEventCommand command = new SignalEventCommand(processInstanceId, type, event);
-                    commandService.execute(command);
+                    runner.execute(command);
                 }
 
                 @Override
@@ -228,7 +227,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                 @Override
                 public void retryWorkItem( Long workItemID, Map<String, Object> params ) {
                    ReTryWorkItemCommand command = new ReTryWorkItemCommand(workItemID,params);
-                   commandService.execute( command );
+                    runner.execute( command );
                 }
             };
         }
@@ -239,7 +238,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                             Object event) {
         SignalEventCommand command = new SignalEventCommand( type,
                                                              event );
-        commandService.execute( command );
+        runner.execute( command );
     }
 
     public void signalEvent(String type,
@@ -248,7 +247,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         SignalEventCommand command = new SignalEventCommand( processInstanceId,
                                                              type,
                                                              event );
-        commandService.execute( command );
+        runner.execute( command );
     }
 
     public ProcessInstance startProcess(String processId) {
@@ -261,7 +260,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         StartProcessCommand command = new StartProcessCommand();
         command.setProcessId( processId );
         command.setParameters( parameters );
-        return commandService.execute( command );
+        return runner.execute( command );
     }
 
 	public ProcessInstance createProcessInstance(String processId,
@@ -269,64 +268,64 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         CreateProcessInstanceCommand command = new CreateProcessInstanceCommand();
         command.setProcessId( processId );
         command.setParameters( parameters );
-        return commandService.execute( command );
+        return runner.execute( command );
 	}
 
 	public ProcessInstance startProcessInstance(long processInstanceId) {
         StartProcessInstanceCommand command = new StartProcessInstanceCommand();
         command.setProcessInstanceId( processInstanceId );
-        return commandService.execute( command );
+        return runner.execute( command );
 	}
 
     public void dispose() {
-        commandService.execute( new DisposeCommand() );
+        runner.execute( new DisposeCommand() );
     }
 
     public void destroy() {
-        commandService.execute( new DestroySessionCommand(commandService));
+        runner.execute( new DestroySessionCommand(runner));
     }
 
     public int fireAllRules() {
-        return this.commandService.execute( new FireAllRulesCommand() );
+        return this.runner.execute( new FireAllRulesCommand() );
     }
 
     public int fireAllRules(int max) {
-        return this.commandService.execute( new FireAllRulesCommand( max ) );
+        return this.runner.execute( new FireAllRulesCommand( max ) );
     }
 
     public int fireAllRules(AgendaFilter agendaFilter) {
-        return this.commandService.execute( new FireAllRulesCommand( agendaFilter ) );
+        return this.runner.execute( new FireAllRulesCommand( agendaFilter ) );
     }
 
     public int fireAllRules(AgendaFilter agendaFilter, int max) {
-        return this.commandService.execute( new FireAllRulesCommand( agendaFilter, max ) );
+        return this.runner.execute( new FireAllRulesCommand( agendaFilter, max ) );
     }
 
     public void fireUntilHalt() {
-        this.commandService.execute( new FireUntilHaltCommand() );
+        this.runner.execute( new FireUntilHaltCommand() );
     }
 
     public void fireUntilHalt(AgendaFilter agendaFilter) {
-        this.commandService.execute( new FireUntilHaltCommand( agendaFilter ) );
+        this.runner.execute( new FireUntilHaltCommand( agendaFilter ) );
     }
 
     public KnowledgeBase getKieBase() {
-        return this.commandService.execute( new GetKnowledgeBaseCommand() );
+        return this.runner.execute( new GetKnowledgeBaseCommand() );
     }
 
     public void registerChannel(String name,
                                 Channel channel) {
-        this.commandService.execute( new RegisterChannelCommand( name,
+        this.runner.execute( new RegisterChannelCommand( name,
                                                                  channel ) );
     }
 
     public void unregisterChannel(String name) {
-        this.commandService.execute( new UnregisterChannelCommand( name ) );
+        this.runner.execute( new UnregisterChannelCommand( name ) );
     }
 
     @SuppressWarnings("unchecked")
     public Map<String, Channel> getChannels() {
-        return (Map<String, Channel>) this.commandService.execute( new GetChannelsCommand() );
+        return (Map<String, Channel>) this.runner.execute( new GetChannelsCommand() );
     }
 
     public Agenda getAgenda() {
@@ -334,7 +333,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
             agenda = new Agenda() {
                 public void clear() {
                     ClearAgendaCommand command = new ClearAgendaCommand();
-                    commandService.execute( command );
+                    runner.execute( command );
                 }
 
                 public ActivationGroup getActivationGroup(final String name) {
@@ -342,7 +341,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                         public void clear() {
                             ClearActivationGroupCommand command = new ClearActivationGroupCommand();
                             command.setName( name );
-                            commandService.execute( command );
+                            runner.execute( command );
                         }
 
                         public String getName() {
@@ -356,7 +355,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                         public void clear() {
                             ClearAgendaGroupCommand command = new ClearAgendaGroupCommand();
                             command.setName( name );
-                            commandService.execute( command );
+                            runner.execute( command );
                         }
 
                         public String getName() {
@@ -366,7 +365,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                         public void setFocus() {
                             AgendaGroupSetFocusCommand command = new AgendaGroupSetFocusCommand();
                             command.setName( name );
-                            commandService.execute( command );
+                            runner.execute( command );
                         }
                     };
                 }
@@ -376,7 +375,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
                         public void clear() {
                             ClearRuleFlowGroupCommand command = new ClearRuleFlowGroupCommand();
                             command.setName( name );
-                            commandService.execute( command );
+                            runner.execute( command );
                         }
 
                         public String getName() {
@@ -390,16 +389,16 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     }
 
     public FactHandle getFactHandle(Object object) {
-        return this.commandService.execute( new GetFactHandleCommand( object ) );
+        return this.runner.execute( new GetFactHandleCommand( object ) );
     }
 
     public <T extends FactHandle> Collection<T> getFactHandles() {
-        return (Collection<T>) this.commandService.execute( new GetFactHandlesCommand() );
+        return (Collection<T>) this.runner.execute( new GetFactHandlesCommand() );
 
     }
 
     public <T extends FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
-        return (Collection<T>) this.commandService.execute( new GetFactHandlesCommand( filter ) );
+        return (Collection<T>) this.runner.execute( new GetFactHandlesCommand( filter ) );
     }
 
     public Collection<? extends Object> getObjects() {
@@ -407,29 +406,29 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     }
 
     public Collection<? extends Object> getObjects(ObjectFilter filter) {
-        Collection result = commandService.execute( new GetObjectsCommand( filter ) );
+        Collection result = runner.execute( new GetObjectsCommand( filter ) );
         return result;
     }
 
     @SuppressWarnings("unchecked")
     public <T extends SessionClock> T getSessionClock() {
-        return (T) this.commandService.execute( new GetSessionClockCommand() );
+        return (T) this.runner.execute( new GetSessionClockCommand() );
     }
 
     public EntryPoint getEntryPoint(String name) {
-        return this.commandService.execute( new GetEntryPointCommand( name ) );
+        return this.runner.execute( new GetEntryPointCommand( name ) );
     }
 
     public Collection< ? extends EntryPoint> getEntryPoints() {
-        return this.commandService.execute( new GetEntryPointsCommand() );
+        return this.runner.execute( new GetEntryPointsCommand() );
     }
 
     public void halt() {
-        this.commandService.execute( new HaltCommand() );
+        this.runner.execute( new HaltCommand() );
     }
 
     public FactHandle insert(Object object) {
-        return commandService.execute( new InsertObjectCommand( object ) );
+        return runner.execute( new InsertObjectCommand( object ) );
     }
 
     public void submit( AtomicAction action ) {
@@ -437,100 +436,100 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     }
 
     @Override
-    public <T> T getKieRuntime(Class<T> cls) {
+    public <T> T getKieRuntime( Class<T> cls ) {
         throw new UnsupportedOperationException( "Retrieving runtimes is not supported  throught the command based session at this time." );
     }
 
     public void retract(FactHandle handle) {
-        commandService.execute( new DeleteCommand( handle ) );
+        runner.execute( new DeleteCommand( handle ) );
     }
 
     public void delete(FactHandle handle) {
-        commandService.execute( new DeleteCommand( handle ) );
+        runner.execute( new DeleteCommand( handle ) );
     }
 
     public void delete(FactHandle handle, FactHandle.State fhState) {
-        commandService.execute( new DeleteCommand( handle, fhState ) );
+        runner.execute( new DeleteCommand( handle, fhState ) );
     }
 
     public void update(FactHandle handle,
                        Object object) {
-        commandService.execute( new UpdateCommand( handle,
+        runner.execute( new UpdateCommand( handle,
                                                    object ) );
     }
 
     public void update(FactHandle handle,
                        Object object,
                        String... modifiedProperties) {
-        commandService.execute( new UpdateCommand( handle,
+        runner.execute( new UpdateCommand( handle,
                                                    object,
                                                    modifiedProperties ) );
     }
 
     public void addEventListener(RuleRuntimeEventListener listener) {
-        commandService.execute(new AddEventListenerCommand(listener));
+        runner.execute(new AddEventListenerCommand(listener));
     }
 
     public void addEventListener(AgendaEventListener listener) {
-        commandService.execute( new AddEventListenerCommand( listener ) );
+        runner.execute( new AddEventListenerCommand( listener ) );
     }
 
     public Collection<AgendaEventListener> getAgendaEventListeners() {
-        return commandService.execute( new GetAgendaEventListenersCommand() );
+        return runner.execute( new GetAgendaEventListenersCommand() );
     }
 
     public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
-        return commandService.execute( new GetRuleRuntimeEventListenersCommand() );
+        return runner.execute( new GetRuleRuntimeEventListenersCommand() );
     }
 
     public void removeEventListener(RuleRuntimeEventListener listener) {
-        commandService.execute( new RemoveEventListenerCommand( listener ) );
+        runner.execute( new RemoveEventListenerCommand( listener ) );
     }
 
     public void removeEventListener(AgendaEventListener listener) {
-        commandService.execute( new RemoveEventListenerCommand( listener ) );
+        runner.execute( new RemoveEventListenerCommand( listener ) );
     }
 
     public void addEventListener(ProcessEventListener listener) {
-        commandService.execute( new AddEventListenerCommand( listener ) );
+        runner.execute( new AddEventListenerCommand( listener ) );
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
-        return commandService.execute( new GetProcessEventListenersCommand() );
+        return runner.execute( new GetProcessEventListenersCommand() );
     }
 
     public void removeEventListener(ProcessEventListener listener) {
-        commandService.execute( new RemoveEventListenerCommand( listener ) );
+        runner.execute( new RemoveEventListenerCommand( listener ) );
     }
 
     public Object getGlobal(String identifier) {
-        return commandService.execute( new GetGlobalCommand( identifier ) );
+        return runner.execute( new GetGlobalCommand( identifier ) );
     }
 
     public void setGlobal(String identifier,
                           Object object) {
-        this.commandService.execute( new SetGlobalCommand( identifier,
+        this.runner.execute( new SetGlobalCommand( identifier,
                                                            object ) );
     }
 
     public Globals getGlobals() {
-        return commandService.execute( new GetGlobalsCommand() );
+        return runner.execute( new GetGlobalsCommand() );
     }
 
     public Calendars getCalendars() {
-        return commandService.execute( new GetCalendarsCommand() );
+        return runner.execute( new GetCalendarsCommand() );
     }
 
     public Object getObject(FactHandle factHandle) {
-        return commandService.execute( new GetObjectCommand( factHandle ) );
+        return runner.execute( new GetObjectCommand( factHandle ) );
     }
 
     public Environment getEnvironment() {
-        return commandService.execute( new GetEnvironmentCommand() );
+        return runner.execute( new GetEnvironmentCommand() );
     }
 
     public <T> T execute(Command<T> command) {
-        return (T) this.commandService.execute( command );
+        return (T) this.runner.execute( command );
     }
 
     public QueryResults getQueryResults(String query,
@@ -538,7 +537,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
         QueryCommand cmd = new QueryCommand( (String)null,
                                              query,
                                              arguments );
-        return this.commandService.execute( cmd );
+        return this.runner.execute( cmd );
     }
 
     public String getEntryPointId() {
@@ -546,7 +545,7 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     }
 
     public long getFactCount() {
-        return commandService.execute( new GetFactCountCommand() );
+        return runner.execute( new GetFactCountCommand() );
     }
 
     public LiveQuery openLiveQuery(String query,
@@ -557,32 +556,27 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     }
     
     public KieSessionConfiguration getSessionConfiguration() {
-        return ((RegistryContext) commandService.getContext()).lookup( KieSession.class ).getSessionConfiguration();
-    }
-
-    public void addInterceptor(Interceptor interceptor) {
-    	interceptor.setNext(this.commandService);
-    	this.commandService = interceptor;
+        return ((RegistryContext) runner.createContext()).lookup( KieSession.class ).getSessionConfiguration();
     }
 
     @Override
     public ProcessInstance startProcess(String processId,
             CorrelationKey correlationKey, Map<String, Object> parameters) {
         
-        return this.commandService.execute(new StartCorrelatedProcessCommand(processId, correlationKey, parameters));
+        return this.runner.execute(new StartCorrelatedProcessCommand(processId, correlationKey, parameters));
     }
 
     @Override
     public ProcessInstance createProcessInstance(String processId,
             CorrelationKey correlationKey, Map<String, Object> parameters) {
         
-        return this.commandService.execute(
+        return this.runner.execute(
                 new CreateCorrelatedProcessInstanceCommand(processId, correlationKey, parameters));
     }
 
     @Override
     public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
         
-        return this.commandService.execute(new GetProcessInstanceByCorrelationKeyCommand(correlationKey));
+        return this.runner.execute(new GetProcessInstanceByCorrelationKeyCommand(correlationKey));
     }
 }

@@ -22,7 +22,7 @@ import org.drools.core.command.impl.FireAllRulesInterceptor;
 import org.drools.core.command.impl.LoggingInterceptor;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.time.SessionPseudoClock;
-import org.drools.persistence.SingleSessionCommandService;
+import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -308,8 +308,8 @@ public class JpaPersistentStatefulSessionTest {
         KieBase kbase = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).getKieBase();
 
         KieSession ksession = ks.getStoreServices().newKieSession( kbase, null, env );
-        SingleSessionCommandService sscs = (SingleSessionCommandService)
-            ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
+        PersistableRunner sscs = (PersistableRunner)
+            ((CommandBasedStatefulKnowledgeSession) ksession).getRunner();
         sscs.addInterceptor(new LoggingInterceptor());
         sscs.addInterceptor(new FireAllRulesInterceptor());
         sscs.addInterceptor(new LoggingInterceptor());

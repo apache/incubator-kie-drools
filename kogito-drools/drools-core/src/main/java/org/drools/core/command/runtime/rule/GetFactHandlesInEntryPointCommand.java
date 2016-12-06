@@ -23,7 +23,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 import java.util.ArrayList;
 import java.util.Collection;

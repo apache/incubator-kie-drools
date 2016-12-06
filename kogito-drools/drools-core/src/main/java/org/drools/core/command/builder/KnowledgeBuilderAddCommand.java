@@ -22,7 +22,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 public class KnowledgeBuilderAddCommand
     implements

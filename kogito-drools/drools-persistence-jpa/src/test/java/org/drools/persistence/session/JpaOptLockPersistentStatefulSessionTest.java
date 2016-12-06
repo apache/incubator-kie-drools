@@ -16,7 +16,7 @@
 package org.drools.persistence.session;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.persistence.SingleSessionCommandService;
+import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;
 import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.hibernate.StaleObjectStateException;
@@ -119,7 +119,7 @@ public class JpaOptLockPersistentStatefulSessionTest {
         @Override
         public void run() {
             StatefulKnowledgeSession ksession2 = JPAKnowledgeService.loadStatefulKnowledgeSession(ksessionId, kbase, null, createEnvironment(context) );
-            SingleSessionCommandService sscs = (SingleSessionCommandService)((CommandBasedStatefulKnowledgeSession) ksession2).getCommandService();
+            PersistableRunner sscs = (PersistableRunner)((CommandBasedStatefulKnowledgeSession) ksession2).getRunner();
             OptimisticLockRetryInterceptor interceptor = new OptimisticLockRetryInterceptor();
             // set higher delay so that the interceptor is not invoked multiple times on slow machines
             interceptor.setDelay(500);

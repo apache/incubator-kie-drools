@@ -16,29 +16,26 @@
 
 package org.drools.core.command.impl;
 
-import org.drools.core.command.CommandService;
-import org.drools.core.command.Interceptor;
-import org.kie.api.command.Command;
-import org.kie.internal.command.Context;
+import org.drools.core.fluent.impl.PseudoClockRunner;
+import org.drools.core.runtime.ChainableRunner;
+import org.kie.api.runtime.Context;
+import org.kie.api.runtime.Executable;
+import org.kie.api.runtime.ExecutableRunner;
+import org.kie.api.runtime.RequestContext;
 
-public abstract class AbstractInterceptor implements Interceptor {
+public abstract class AbstractInterceptor extends PseudoClockRunner implements ChainableRunner {
 
-    private CommandService next;
+    private ExecutableRunner next;
 
-    public Context getContext() {
-        return next.getContext();
+    public void setNext(ExecutableRunner runner) {
+        this.next = runner;
     }
 
-    public void setNext(CommandService commandService) {
-        this.next = commandService;
-    }
-
-    public CommandService getNext() {
+    public ExecutableRunner getNext() {
         return next;
     }
 
-    protected <T> T executeNext(Command<T> command) {
-        return next.execute(command);
+    protected void executeNext( Executable executable, Context ctx ) {
+        next.execute(executable, ( (RequestContext) ctx ) );
     }
-
 }

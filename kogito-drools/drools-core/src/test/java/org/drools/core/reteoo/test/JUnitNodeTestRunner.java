@@ -59,7 +59,7 @@ public class JUnitNodeTestRunner extends Runner {
     }
 
     /* (non-Javadoc)
-     * @see org.junit.runner.Runner#getDescription()
+     * @see org.junit.runner.ExecutableRunner#getDescription()
      */
     @Override
     public Description getDescription() {
@@ -67,7 +67,7 @@ public class JUnitNodeTestRunner extends Runner {
     }
 
     /* (non-Javadoc)
-     * @see org.junit.runner.Runner#run(org.junit.runner.notification.RunNotifier)
+     * @see org.junit.runner.ExecutableRunner#run(org.junit.runner.notification.RunNotifier)
      */
     @Override
     public void run(RunNotifier notifier) {

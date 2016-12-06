@@ -16,18 +16,19 @@
 
 package org.drools.core.command.impl;
 
-import org.kie.api.command.Command;
+import org.kie.api.runtime.Executable;
+import org.kie.api.runtime.RequestContext;
 
 
 public class AsynchronousInterceptor extends AbstractInterceptor {
 
-    public <T> T execute(final Command<T> command) {
+    public RequestContext execute( Executable executable, RequestContext ctx ) {
         new Thread(new Runnable() {
             public void run() {
-                executeNext(command);
+                executeNext(executable, ctx);
             }
         }).start();
-        return null;
+        return ctx;
     }
 
 }

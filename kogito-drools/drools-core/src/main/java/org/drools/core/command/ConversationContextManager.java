@@ -1,44 +1,43 @@
 package org.drools.core.command;
 
-import org.drools.core.command.RequestContextImpl;
-import org.kie.internal.command.Context;
-
 import org.drools.core.command.impl.ContextImpl;
+import org.kie.api.runtime.Context;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 public class ConversationContextManager {
 
-    private Map<Long, Context> conversationContexts;
+    private Map<String, Context> conversationContexts;
 
     private long counter;
 
     public ConversationContextManager() {
-        conversationContexts = new HashMap<Long, Context>();
+        conversationContexts = new HashMap<String, Context>();
     }
 
     public void startConversation(RequestContextImpl requestContext) {
-        long conversationId = counter++;
-        ConversationContext ctx = new ConversationContext(conversationId, null);
+        String conversationId = UUID.randomUUID().toString();
+        ContextImpl ctx = new ContextImpl( conversationId, null);
         conversationContexts.put(conversationId, ctx);
         requestContext.setConversationContext(ctx);
     }
 
-    public void joinConversation(RequestContextImpl requestContext, long conversationId) {
-        ConversationContext ctx = (ConversationContext) conversationContexts.get(conversationId);
+    public void joinConversation(RequestContextImpl requestContext, String conversationId) {
+        Context ctx = conversationContexts.get( conversationId );
         if ( ctx == null ) {
             throw new RuntimeException("Conversation cannot be found");
         }
         requestContext.setConversationContext(ctx);
     }
 
-    public void leaveConversation(RequestContextImpl requestContext, long conversationId) {
+    public void leaveConversation(RequestContextImpl requestContext, String conversationId) {
         throw new UnsupportedOperationException("Need to implement");
     }
 
-    public void endConversation(RequestContextImpl requestContext, long conversationId) {
+    public void endConversation(RequestContextImpl requestContext, String conversationId) {
         conversationContexts.remove(conversationId);
         requestContext.setConversationContext(null);
     }

@@ -150,7 +150,7 @@ public class ExternalSheetListenerTest {
                 public void submit( AtomicAction action ) { }
 
                 @Override
-                public <T> T getKieRuntime(Class<T> cls) {
+                public <T> T getKieRuntime( Class<T> cls ) {
                     return null;
                 }
 

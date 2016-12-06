@@ -16,11 +16,14 @@
 
 package org.drools.core.command.impl;
 
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
+import org.kie.internal.command.ContextManager;
 
 public interface RegistryContext extends Context {
 
     <T> RegistryContext register(Class<T> clazz, T instance);
 
     <T> T lookup(Class<T> clazz);
+
+    ContextManager getContextManager();
 }

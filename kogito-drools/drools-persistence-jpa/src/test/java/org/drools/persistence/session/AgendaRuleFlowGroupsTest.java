@@ -37,7 +37,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.utils.KieHelper;
 
@@ -163,7 +163,7 @@ public class AgendaRuleFlowGroupsTest {
     private KieSession stripSession(KieSession ksession) {
         if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
             return ((RegistryContext)((CommandBasedStatefulKnowledgeSession) ksession).
-                    getCommandService().getContext()).lookup( KieSession.class );
+                    getRunner().createContext()).lookup( KieSession.class );
         }
         
         return ksession;

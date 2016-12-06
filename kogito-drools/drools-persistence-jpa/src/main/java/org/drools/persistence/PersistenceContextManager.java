@@ -15,12 +15,12 @@
 
 package org.drools.persistence;
 
-import javax.persistence.EntityManager;
-import javax.transaction.Synchronization;
-
-import org.drools.core.command.CommandService;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.KieSession;
+
+import javax.persistence.EntityManager;
+import javax.transaction.Synchronization;
 
 public interface PersistenceContextManager {
     
@@ -35,9 +35,9 @@ public interface PersistenceContextManager {
     PersistenceContext getCommandScopedPersistenceContext();
    
     /**
-     * This method should be called at the beginning of a {@link CommandService#execute(org.kie.api.command.Command)} method, 
-     * when the given {@link CommandService} instance is responsible for handling persistence. 
-     * See the {@link SingleSessionCommandService} class.
+     * This method should be called at the beginning of a {@link ExecutableRunner#execute(org.kie.api.command.Command)} method,
+     * when the given {@link ExecutableRunner} instance is responsible for handling persistence.
+     * See the {@link PersistableRunner} class.
      * </p>
      * The first responsibility of this method is to make sure that the Command Scoped {@link EntityManager} (CSEM) joins
      * the ongoing transaction.

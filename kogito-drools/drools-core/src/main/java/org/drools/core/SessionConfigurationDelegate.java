@@ -16,10 +16,10 @@
 
 package org.drools.core;
 
-import org.drools.core.command.CommandService;
 import org.drools.core.process.instance.WorkItemManagerFactory;
 import org.drools.core.time.TimerService;
 import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.conf.TimedRuleExecutionFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -204,8 +204,8 @@ public class SessionConfigurationDelegate extends SessionConfiguration {
     }
 
     @Override
-    public CommandService getCommandService( KnowledgeBase kbase, Environment environment ) {
-        return delegate.getCommandService( kbase, environment );
+    public ExecutableRunner getRunner( KnowledgeBase kbase, Environment environment ) {
+        return delegate.getRunner( kbase, environment );
     }
 
     @Override

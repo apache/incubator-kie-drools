@@ -17,7 +17,7 @@ package org.drools.persistence.jta;
 
 import bitronix.tm.internal.BitronixRollbackException;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
-import org.drools.persistence.SingleSessionCommandService;
+import org.drools.persistence.PersistableRunner;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
 import org.drools.persistence.util.DroolsPersistenceUtil;
@@ -259,7 +259,7 @@ public class JtaTransactionManagerTest {
         KnowledgeBase kbase = initializeKnowledgeBase(simpleRule);
         StatefulKnowledgeSession commandKSession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
         commandKSession.getIdentifier(); // initialize CSEM
-        SingleSessionCommandService commandService = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) commandKSession).getCommandService();
+        PersistableRunner commandService = (PersistableRunner) ((CommandBasedStatefulKnowledgeSession) commandKSession).getRunner();
         JpaPersistenceContextManager jpm = (JpaPersistenceContextManager) getValueOfField("jpm", commandService);
         
         TransactionTestObject mainObject = new TransactionTestObject();

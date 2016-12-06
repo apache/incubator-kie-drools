@@ -15,7 +15,7 @@
 
 package org.drools.persistence.jpa;
 
-import org.drools.core.command.CommandService;
+import org.kie.api.runtime.ExecutableRunner;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -46,8 +46,8 @@ public class JpaTimerJobInstance extends DefaultTimerJobInstance {
     public Void call() throws Exception {
         try { 
             JDKCallableJobCommand command = new JDKCallableJobCommand( this );
-            CommandService commandService = ( (CommandServiceTimerJobFactoryManager) ( (TimerService) scheduler ).getTimerJobFactoryManager() ).getCommandService();
-            commandService.execute( command );
+            ExecutableRunner runner = ( (CommandServiceTimerJobFactoryManager) ( (TimerService) scheduler ).getTimerJobFactoryManager() ).getRunner();
+            runner.execute( command );
             return null;
         } catch( Exception e ) { 
             logger.error("Unable to execute timer job!", e);

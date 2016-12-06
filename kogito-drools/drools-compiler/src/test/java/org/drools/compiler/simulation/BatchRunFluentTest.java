@@ -1,16 +1,32 @@
+/*
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.compiler.simulation;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Message;
 import org.drools.core.command.RequestContextImpl;
 import org.drools.core.fluent.impl.FluentBuilderImpl;
-import org.drools.core.fluent.impl.PseudoClockRunner;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.ResourceType;
-import org.kie.internal.fluent.RequestContext;
+import org.kie.api.runtime.ExecutableRunner;
+import org.kie.api.runtime.RequestContext;
 import org.kie.internal.fluent.Scope;
 import org.kie.internal.fluent.runtime.FluentBuilder;
 import org.kie.internal.fluent.runtime.KieSessionFluent;
@@ -32,9 +48,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testOutName() {
-        PseudoClockRunner runner = new PseudoClockRunner();
-
-        FluentBuilder f          = new FluentBuilderImpl();
+        FluentBuilder f = FluentBuilder.create();
 
         f.newApplicationContext("app1")
          .getKieContainer(releaseId).newSession()
@@ -43,17 +57,15 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .getGlobal("outS").out("outS")
          .dispose();
 
-        RequestContext requestContext = (RequestContext) runner.execute( f.getExecutable() );
+        RequestContext requestContext = ExecutableRunner.create().execute( f.getExecutable() );
 
-        assertEquals("h1", requestContext.getOut().get("outS"));
+        assertEquals("h1", requestContext.get("outS"));
     }
 
 
     @Test
     public void testOutWithPriorSetAndNoName() {
-        PseudoClockRunner runner = new PseudoClockRunner();
-
-        FluentBuilder f         = new FluentBuilderImpl();
+        FluentBuilder f = FluentBuilder.create();
 
         f.newApplicationContext("app1")
          .getKieContainer(releaseId).newSession()
@@ -62,17 +74,15 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .getGlobal("outS").set("outS").out()
          .dispose();
 
-        RequestContextImpl requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
+        RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
-        assertEquals("h1", requestContext.getOut().get("outS"));
+        assertEquals("h1", requestContext.get("outS"));
         assertEquals("h1", requestContext.get("outS"));
     }
 
     @Test
     public void testOutWithoutPriorSetAndNoName() {
-        PseudoClockRunner runner = new PseudoClockRunner();
-
-        FluentBuilder f         = new FluentBuilderImpl();
+        FluentBuilder f = FluentBuilder.create();
 
         f.newApplicationContext("app1")
          .getKieContainer(releaseId).newSession()
@@ -82,9 +92,9 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .dispose();
 
         try {
-            RequestContextImpl requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
+            RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
-            assertEquals("h1", requestContext.getOut().get("out1"));
+            assertEquals("h1", requestContext.get("out1"));
             fail("Must throw Exception, as no prior set was called and no name given to out");
         } catch ( Exception e ) {
 
@@ -93,9 +103,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testSetAndGetWithCommandRegisterWithEnds() {
-        PseudoClockRunner runner = new PseudoClockRunner();
-
-        FluentBuilder f         = new FluentBuilderImpl();
+        FluentBuilder f = FluentBuilder.create();
 
         f.newApplicationContext("app1")
          // create two sessions, and assign names
@@ -116,18 +124,16 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .get("s2", KieSessionFluent.class)
          .getGlobal("outS").out("outS2").dispose();
 
-        RequestContextImpl requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
+        RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
-        assertEquals("h1", requestContext.getOut().get("outS1"));
-        assertEquals("h2", requestContext.getOut().get("outS2"));
+        assertEquals("h1", requestContext.get("outS1"));
+        assertEquals("h2", requestContext.get("outS2"));
     }
 
     @Test
     public void testSetAndGetWithCommandRegisterWithoutEnds() {
-        PseudoClockRunner runner = new PseudoClockRunner();
-
-        FluentBuilder f         = new FluentBuilderImpl();
+        FluentBuilder f = FluentBuilder.create();
 
         f.newApplicationContext("app1")
          // create two sessions, and assign names
@@ -148,19 +154,20 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .get("s2", KieSessionFluent.class)
          .getGlobal("outS").out("outS2").dispose();
 
-        RequestContextImpl requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
+        RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
-        assertEquals("h1", requestContext.getOut().get("outS1"));
-        assertEquals("h2", requestContext.getOut().get("outS2"));
+        assertEquals("h1", requestContext.get("outS1"));
+        assertEquals("h2", requestContext.get("outS2"));
     }
 
 
     @Test
-    public void testConversationIdIncreases() {
-        PseudoClockRunner runner = new PseudoClockRunner();
+    public void testDifferentConversationIds() {
+        ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
+        RequestContext requestContext = runner.createContext();
 
-        FluentBuilder f         = new FluentBuilderImpl();
+        FluentBuilder f = FluentBuilder.create();
 
         f.newApplicationContext("app1").startConversation()
          .getKieContainer(releaseId).newSession()
@@ -168,22 +175,18 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .fireAllRules()
          .dispose();
 
-        RequestContextImpl requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
+        runner.execute(f.getExecutable(), requestContext);
 
-        long conversationId = requestContext.getConversationContext().getConversationId();
-        assertEquals(0, conversationId);
+        String conversationId = requestContext.getConversationContext().getName();
 
-        requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
+        runner.execute(f.getExecutable(), requestContext);
 
-        conversationId = requestContext.getConversationContext().getConversationId();
-        assertEquals(1, conversationId);
+        assertNotEquals(conversationId, requestContext.getConversationContext().getName());
     }
 
     @Test
     public void testRequestScope() {
-        PseudoClockRunner runner = new PseudoClockRunner();
-
-        FluentBuilder f         = new FluentBuilderImpl();
+        FluentBuilder f = FluentBuilder.create();
 
         f.newApplicationContext("app1")
          .getKieContainer(releaseId).newSession()
@@ -192,10 +195,10 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .getGlobal("outS").set("outS1") // Request is default
          .dispose();
 
-        RequestContextImpl requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
+        RequestContext requestContext = ExecutableRunner.create().execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
-        assertNull(requestContext.getOut().get("outS"));
+        assertNull(requestContext.get("outS"));
         assertNull(requestContext.getApplicationContext().get("outS1") );
         assertNull(requestContext.getConversationContext() );
         assertEquals("h1", requestContext.get("outS1") );
@@ -203,9 +206,9 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testApplicationScope() {
-        PseudoClockRunner runner = new PseudoClockRunner();
+        ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
 
-        FluentBuilder f         = new FluentBuilderImpl();
+        FluentBuilder f = FluentBuilder.create();
 
         f.newApplicationContext("app1")
          .getKieContainer(releaseId).newSession()
@@ -214,10 +217,10 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .getGlobal("outS").set("outS1", Scope.APPLICATION)
          .dispose();
 
-        RequestContextImpl requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
+        RequestContext requestContext = runner.execute(f.getExecutable());
 
         // Check that nothing went to the 'out'
-        assertEquals(null, requestContext.getOut().get("outS"));
+        assertEquals(null, requestContext.get("outS"));
         assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
 
         // Make another request, add to application context, assert old and new values are there.
@@ -238,9 +241,9 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testConversationScope() {
-        PseudoClockRunner runner = new PseudoClockRunner();
+        ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
 
-        FluentBuilder f         = new FluentBuilderImpl();
+        FluentBuilder f = FluentBuilder.create();
 
         f.newApplicationContext("app1").startConversation()
          .getKieContainer(releaseId).newSession()
@@ -252,9 +255,9 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         RequestContextImpl requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
 
         // check that nothing went to the 'out'
-        assertEquals(null, requestContext.getOut().get("outS"));
+        assertEquals(null, requestContext.get("outS"));
 
-        long conversationId = requestContext.getConversationContext().getConversationId();
+        String conversationId = requestContext.getConversationContext().getName();
 
         assertEquals("h1", requestContext.getConversationContext().get("outS1") );
 
@@ -283,9 +286,9 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testContextScopeSearching() {
-        PseudoClockRunner runner = new PseudoClockRunner();
+        ExecutableRunner<RequestContext> runner = ExecutableRunner.create();
 
-        FluentBuilder f         = new FluentBuilderImpl();
+        FluentBuilder f = FluentBuilder.create();
 
         // Check that get() will search up to Application, when no request or conversation values
         f.newApplicationContext("app1")
@@ -295,9 +298,9 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .getGlobal("outS").set("outS1", Scope.APPLICATION)
          .get("outS1").out()
          .dispose();
-        RequestContextImpl requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
+        RequestContext requestContext = runner.execute(f.getExecutable());
 
-        assertEquals("h1", requestContext.getOut().get("outS1"));
+        assertEquals("h1", requestContext.get("outS1"));
         assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
         assertEquals("h1", requestContext.get("outS1") );
 
@@ -311,9 +314,9 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .getGlobal("outS").set("outS1", Scope.CONVERSATION)
          .get("outS1").out()
          .dispose();
-        requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
+        requestContext = runner.execute(f.getExecutable());
 
-        assertEquals("h2", requestContext.getOut().get("outS1"));
+        assertEquals("h2", requestContext.get("outS1"));
         assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
         assertEquals("h2", requestContext.getConversationContext().get("outS1") );
         assertEquals("h2", requestContext.get("outS1") );
@@ -322,16 +325,16 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         // Check that get() will search directly to Request, thus over-riding Application and Conversation scoped values
         f         = new FluentBuilderImpl();
 
-        f.getApplicationContext("app1").joinConversation(requestContext.getConversationContext().getConversationId())
+        f.getApplicationContext("app1").joinConversation(requestContext.getConversationContext().getName())
          .getKieContainer(releaseId).newSession()
          .insert("h3")
          .fireAllRules()
          .getGlobal("outS").set("outS1", Scope.REQUEST)
          .get("outS1").out()
          .dispose();
-        requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
+        requestContext = runner.execute(f.getExecutable());
 
-        assertEquals("h3", requestContext.getOut().get("outS1"));
+        assertEquals("h3", requestContext.get("outS1"));
         assertEquals("h1", requestContext.getApplicationContext().get("outS1") );
         assertEquals("h2", requestContext.getConversationContext().get("outS1") );
         assertEquals("h3", requestContext.get("outS1") );
@@ -341,9 +344,9 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
     @Test
     public void testAfter() {
-        PseudoClockRunner runner = new PseudoClockRunner( 0);
+        ExecutableRunner<RequestContext> runner = ExecutableRunner.create(0L);
 
-        FluentBuilder f         = new FluentBuilderImpl();
+        FluentBuilder f = FluentBuilder.create();
 
         // Check that get() will search up to Application, when no request or conversation values
         f.after(1000).newApplicationContext("app1")
@@ -361,10 +364,10 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
          .getGlobal("timeNow").out("timeNow2")
          .dispose();
 
-        RequestContextImpl requestContext = (RequestContextImpl) runner.execute(f.getExecutable());
+        RequestContext requestContext = runner.execute(f.getExecutable());
 
-        assertEquals(1000l, requestContext.getOut().get("timeNow1"));
-        assertEquals(2000l, requestContext.getOut().get("timeNow2"));
+        assertEquals(1000l, requestContext.get("timeNow1"));
+        assertEquals(2000l, requestContext.get("timeNow2"));
     }
 
     public static KieModule createAndDeployJar( KieServices ks,

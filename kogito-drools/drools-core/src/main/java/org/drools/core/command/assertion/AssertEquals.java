@@ -23,7 +23,7 @@ import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.core.util.StringUtils;
 import org.kie.api.command.Command;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 
 public class AssertEquals
     implements

@@ -16,9 +16,9 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.command.CommandService;
+import org.kie.api.runtime.ExecutableRunner;
 
 public interface CommandServiceTimerJobFactoryManager extends TimerJobFactoryManager {
-    void setCommandService(CommandService commandService);
-    CommandService getCommandService();
+    void setRunner(ExecutableRunner runner );
+    ExecutableRunner getRunner();
 }

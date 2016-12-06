@@ -16,12 +16,7 @@
 
 package org.drools.persistence.jpa;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.drools.core.command.CommandService;
+import org.kie.api.runtime.ExecutableRunner;
 import org.drools.core.command.impl.ExecutableCommand;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
@@ -32,9 +27,14 @@ import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.DefaultTimerJobInstance;
 import org.drools.core.time.impl.JDKTimerService;
 import org.drools.core.time.impl.TimerJobInstance;
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A default Scheduler implementation that uses the
@@ -45,12 +45,12 @@ public class JpaJDKTimerService extends JDKTimerService {
 
     private static Logger logger = LoggerFactory.getLogger( JpaTimerJobInstance.class );
     
-    private CommandService              commandService;
+    private ExecutableRunner runner;
 
     private Map<Long, TimerJobInstance> timerInstances;
 
-    public void setCommandService(CommandService commandService) {
-        this.commandService = commandService;
+    public void setCommandService(ExecutableRunner runner ) {
+        this.runner = runner;
     }
 
     public JpaJDKTimerService() {
@@ -101,7 +101,7 @@ public class JpaJDKTimerService extends JDKTimerService {
         public Void call() throws Exception {
             try { 
                 JDKCallableJobCommand command = new JDKCallableJobCommand( this );
-                commandService.execute( command );
+                runner.execute( command );
             } catch(Exception e ) { 
                 logger.error("Unable to execute job!", e);
                 throw e;

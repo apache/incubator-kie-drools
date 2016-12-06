@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.kie.internal.command.Context;
+import org.kie.api.runtime.Context;
 import org.kie.internal.command.ContextManager;
 
 public class ContextImplWithEviction extends ContextImpl{
