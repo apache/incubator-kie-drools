@@ -70,22 +70,43 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
     public T set(int index, T element) {
         T previous = wrapped.set(index, element);
         if ( previous != element ) { // TODO review == by ref.
-            ReactiveObjectUtil.notifyModification(element, getLeftTuples(), ModificationType.ADD);
+            
+            ReactiveObjectUtil.notifyModification(element, getLeftTuples(), ModificationType.NONE);
             if ( element instanceof ReactiveObject ) {
                 for (Tuple lts : getLeftTuples()) {
                     ((ReactiveObject) element).addLeftTuple(lts);
                 }
             }
+            
             if (previous instanceof ReactiveObject) {
                 for (Tuple lts : getLeftTuples()) {
                     ((ReactiveObject) previous).removeLeftTuple(lts);
                 }
             }
             ReactiveObjectUtil.notifyModification(previous, getLeftTuples(), ModificationType.REMOVE);
+            
+            
+
+            
+            
+
         }
         return previous;
     }
 
+//    @Override
+//    public T set(int index, T element) {
+//        add(index, element);
+//        return remove(index+1);
+//    }
+    
+//    @Override
+//    public T set(int index, T element) {
+//        T remove = remove(index);
+//        add(index, element);
+//        return remove;
+//    }
+    
     @Override
     public void add(int index, T element) {
         wrapped.add(index, element);

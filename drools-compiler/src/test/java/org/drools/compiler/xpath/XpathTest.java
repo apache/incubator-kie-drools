@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -556,6 +557,115 @@ public class XpathTest {
         assertTrue  (factsCollection(ksession).contains("X.Ada"));
         assertTrue  (factsCollection(ksession).contains("X.Bea"));
         assertTrue  (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+    }
+    
+    @Test
+    public void testAddAllRemoveAll() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "  Group( $id: name, $p: /members{age >= 20} )\n" +
+                "then\n" +
+                "  System.out.println( $id + \".\" + $p.getName() );\n" +
+                "  insertLogical(      $id + \".\" + $p.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+        
+        Group x = new Group("X");
+        Group y = new Group("Y");
+        ksession.insert( x );
+        ksession.insert( y );
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertFalse (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        
+        Adult ada = new Adult("Ada", 20);
+        Adult bea = new Adult("Bea", 20);
+        x.getMembers().addAll(Arrays.asList(new Adult[]{ada, bea}));
+        y.getMembers().addAll(Arrays.asList(new Adult[]{ada, bea}));
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.Ada"));
+        assertTrue  (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
+        assertTrue  (factsCollection(ksession).contains("Y.Bea"));
+        
+        x.getMembers().removeAll(Arrays.asList(new Adult[]{ada, bea}));
+        y.getMembers().removeAll(Arrays.asList(new Adult[]{ada, bea}));
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertFalse (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+    }
+    
+    @Test
+    public void testRemoveAndAddForReplaceFromReactiveList() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "  Group( $id: name, $p: /members{age >= 20} )\n" +
+                "then\n" +
+                "  System.out.println( $id + \".\" + $p.getName() );\n" +
+                "  insertLogical(      $id + \".\" + $p.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+        
+        Adult ada = new Adult("Ada", 19);
+        Adult bea = new Adult("Bea", 19);
+        Group x = new Group("X");
+        Group y = new Group("Y");
+        x.addPerson(ada);
+        x.addPerson(bea);
+        y.addPerson(ada);
+        y.addPerson(bea);
+        ksession.insert( x );
+        ksession.insert( y );
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertFalse (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+
+        ada.setAge( 20 );        
+        ksession.fireAllRules();
+        ksession.getObjects().forEach(System.out::println);
+        assertTrue  (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        
+        Adult zelda = new Adult("Zelda", 47);  
+        x.getMembers().remove(ada);
+        x.getMembers().add(zelda);
+        y.getMembers().remove(ada);
+        y.getMembers().add(zelda);
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Ada"));
+        assertTrue  (factsCollection(ksession).contains("X.Zelda"));    
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Zelda"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        
+        y.removePerson(bea);
+        bea.setAge( 20 );        
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Ada"));
+        assertTrue  (factsCollection(ksession).contains("X.Zelda"));
+        assertTrue  (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Zelda"));
         assertFalse (factsCollection(ksession).contains("Y.Bea"));
     }
 
@@ -1259,5 +1369,140 @@ public class XpathTest {
         assertFalse (factsCollection(ksession).contains("X.Bea"));
         assertFalse (factsCollection(ksession).contains("Y.Ada"));
         assertFalse (factsCollection(ksession).contains("Y.Bea"));
+    }
+
+    @Test
+    public void testAddAllRemoveIdx() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "  Group( $id: name, $p: /members{age >= 30} )\n" +
+                "then\n" +
+                "  System.out.println( $id + \".\" + $p.getName() );\n" +
+                "  insertLogical(      $id + \".\" + $p.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+        
+        Group x = new Group("X");
+        Group y = new Group("Y");
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertFalse (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        
+        Adult ada = new Adult("Ada", 29);
+        Adult bea = new Adult("Bea", 29);
+        List<Person> bothList = Arrays.asList(new Person[]{ada, bea});
+        x.getMembers().addAll(bothList);
+        y.getMembers().addAll(bothList);
+        ksession.insert( x );
+        ksession.insert( y );
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertFalse (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+
+        ada.setAge( 30 );        
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        
+        y.getMembers().remove(1); // removing Bea from Y
+        bea.setAge( 30 );        
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.Ada"));
+        assertTrue  (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+    }
+    
+    @Test
+    public void testMiscListMethods() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "  TMDirectory( $id: name, $p: /files{size >= 100} )\n" +
+                "then\n" +
+                "  System.out.println( $id + \".\" + $p.getName() );\n" +
+                "  insertLogical(      $id + \".\" + $p.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+        
+        TMDirectory x = new TMDirectory("X");
+        TMDirectory y = new TMDirectory("Y");
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.File0"));
+        assertFalse (factsCollection(ksession).contains("X.File1"));
+        assertFalse (factsCollection(ksession).contains("Y.File0"));
+        assertFalse (factsCollection(ksession).contains("Y.File1"));
+        
+        TMFile file0 = new TMFile("File0", 47);
+        TMFile file1 = new TMFile("File1", 47);
+        TMFile file2 = new TMFile("File2", 47);
+        x.getFiles().add(file2);
+        x.getFiles().addAll(0, Arrays.asList(new TMFile[]{file0, file1}));
+        y.getFiles().add(0, file2);
+        y.getFiles().add(0, file0);
+        y.getFiles().add(1, file1);
+        ksession.insert( x );
+        ksession.insert( y );
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.File0"));
+        assertFalse (factsCollection(ksession).contains("X.File1"));
+        assertFalse (factsCollection(ksession).contains("X.File2"));
+        assertFalse (factsCollection(ksession).contains("Y.File0"));
+        assertFalse (factsCollection(ksession).contains("Y.File1"));
+        assertFalse (factsCollection(ksession).contains("Y.File2"));
+
+        file0.setSize( 999 );        
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.File0"));
+        assertFalse (factsCollection(ksession).contains("X.File1"));
+        assertFalse (factsCollection(ksession).contains("X.File2"));
+        assertTrue  (factsCollection(ksession).contains("Y.File0"));
+        assertFalse (factsCollection(ksession).contains("Y.File1"));
+        assertFalse (factsCollection(ksession).contains("Y.File2"));
+        
+        y.getFiles().remove(1); // removing File1 from Y
+        file1.setSize( 999 );        
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.File0"));
+        assertTrue  (factsCollection(ksession).contains("X.File1"));
+        assertFalse (factsCollection(ksession).contains("X.File2"));
+        assertTrue  (factsCollection(ksession).contains("Y.File0"));
+        assertFalse (factsCollection(ksession).contains("Y.File1"));
+        assertFalse (factsCollection(ksession).contains("Y.File2"));
+        
+        file2.setSize( 999 );        
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.File0"));
+        assertTrue  (factsCollection(ksession).contains("X.File1"));
+        assertTrue  (factsCollection(ksession).contains("X.File2"));
+        assertTrue  (factsCollection(ksession).contains("Y.File0"));
+        assertFalse (factsCollection(ksession).contains("Y.File1"));
+        assertTrue  (factsCollection(ksession).contains("Y.File2"));
+        
+        TMFile file0R = new TMFile("File0R", 999);
+        x.getFiles().set(0, file0R);
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.File0"));
+        assertTrue  (factsCollection(ksession).contains("X.File0R"));
+        assertTrue  (factsCollection(ksession).contains("X.File1"));
+        assertTrue  (factsCollection(ksession).contains("X.File2"));
+        assertTrue  (factsCollection(ksession).contains("Y.File0"));
+        assertFalse (factsCollection(ksession).contains("Y.File1"));
+        assertTrue  (factsCollection(ksession).contains("Y.File2"));
     }
 }
