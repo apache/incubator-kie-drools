@@ -130,7 +130,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
                     }
                 });
             }
-            for (PartitionChangeMove step : partitionQueue) {
+            for (PartitionChangeMove<Solution_> step : partitionQueue) {
                 PartitionedSearchStepScope<Solution_> stepScope = new PartitionedSearchStepScope<>(phaseScope);
                 stepStarted(stepScope);
                 stepScope.setStep(step);
@@ -188,7 +188,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     @Override
     public void stepEnded(PartitionedSearchStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
-        PartitionedSearchPhaseScope phaseScope = stepScope.getPhaseScope();
+        PartitionedSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
             logger.debug("{}    PS step ({}), time spent ({}), score ({}), {} best score ({})," +
                     " picked move ({}).",

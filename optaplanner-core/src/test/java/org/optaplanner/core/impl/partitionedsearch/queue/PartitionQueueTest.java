@@ -33,8 +33,8 @@ public class PartitionQueueTest {
 
     @Test
     public void addMove() throws ExecutionException, InterruptedException {
-        PartitionQueue partitionQueue = new PartitionQueue(3);
-        Iterator it = partitionQueue.iterator();
+        PartitionQueue<TestdataSolution> partitionQueue = new PartitionQueue<>(3);
+        Iterator<PartitionChangeMove<TestdataSolution>> it = partitionQueue.iterator();
 
         PartitionChangeMove<TestdataSolution> moveA1 = buildMove();
         executorService.submit(() -> partitionQueue.addMove(0, moveA1)).get();
@@ -86,8 +86,8 @@ public class PartitionQueueTest {
 
     @Test
     public void addFinishWithNonEmptyQueue() throws ExecutionException, InterruptedException {
-        PartitionQueue partitionQueue = new PartitionQueue(3);
-        Iterator it = partitionQueue.iterator();
+        PartitionQueue<TestdataSolution> partitionQueue = new PartitionQueue<>(3);
+        Iterator<PartitionChangeMove<TestdataSolution>> it = partitionQueue.iterator();
 
         PartitionChangeMove<TestdataSolution> moveA1 = buildMove();
         executorService.submit(() -> partitionQueue.addMove(0, moveA1)).get();
@@ -107,8 +107,8 @@ public class PartitionQueueTest {
 
     @Test()
     public void addExceptionWithNonEmptyQueue() throws ExecutionException, InterruptedException {
-        PartitionQueue partitionQueue = new PartitionQueue(3);
-        Iterator it = partitionQueue.iterator();
+        PartitionQueue<TestdataSolution> partitionQueue = new PartitionQueue<>(3);
+        Iterator<PartitionChangeMove<TestdataSolution>> it = partitionQueue.iterator();
 
         PartitionChangeMove<TestdataSolution> moveA1 = buildMove();
         executorService.submit(() -> partitionQueue.addMove(0, moveA1)).get();

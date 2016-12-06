@@ -32,8 +32,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is thread-safe.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
-public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove> {
+public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove<Solution_>> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -105,15 +106,15 @@ public class PartitionQueue<Solution_> implements Iterable<PartitionChangeMove> 
     }
 
     @Override
-    public Iterator<PartitionChangeMove> iterator() {
+    public Iterator<PartitionChangeMove<Solution_>> iterator() {
         // TODO Currently doesn't be support to be called twice on the same instance
         return new PartitionQueueIterator();
     }
 
-    private class PartitionQueueIterator extends UpcomingSelectionIterator<PartitionChangeMove> {
+    private class PartitionQueueIterator extends UpcomingSelectionIterator<PartitionChangeMove<Solution_>> {
 
         @Override
-        protected PartitionChangeMove createUpcomingSelection() {
+        protected PartitionChangeMove<Solution_> createUpcomingSelection() {
             while (true) {
                 PartitionChangedEvent<Solution_> triggerEvent;
                 try {
