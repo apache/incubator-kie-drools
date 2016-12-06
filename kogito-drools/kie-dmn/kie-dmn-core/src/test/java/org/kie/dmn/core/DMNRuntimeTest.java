@@ -21,6 +21,7 @@ import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.api.event.*;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.feel.runtime.FEELFunction;
+import org.kie.dmn.feel.runtime.functions.MaxFunction;
 import org.mockito.ArgumentCaptor;
 
 import java.math.BigDecimal;
@@ -359,4 +360,29 @@ public class DMNRuntimeTest {
         assertThat( dmnResult.getContext().get( "Name list" ), is( Arrays.asList( "John", "Mary" ) ) );
     }
 
+    @Test
+    public void testRelation() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "relation-expression.dmn", getClass() );
+        runtime.addListener( DMNRuntimeUtil.createListener() );
+
+        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "relation-expression" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = DMNFactory.newContext();
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( dmnResult.hasErrors(), is( false ) );
+        assertThat( dmnResult.getContext().get( "Employee Relation" ), is( instanceOf( List.class ) ) );
+
+        List<Map<String,Object>> employees = (List<Map<String,Object>>) dmnResult.getContext().get( "Employee Relation" );
+        Map<String,Object> e = employees.get( 0 );
+        assertThat( e.get( "Name" ), is("John") );
+        assertThat( e.get( "Dept" ), is("Sales") );
+        assertThat( e.get( "Salary" ), is( BigDecimal.valueOf( 100000 ) ) );
+
+        e = employees.get( 1 );
+        assertThat( e.get( "Name" ), is("Mary") );
+        assertThat( e.get( "Dept" ), is("Finances") );
+        assertThat( e.get( "Salary" ), is( BigDecimal.valueOf( 120000 ) ) );
+    }
 }

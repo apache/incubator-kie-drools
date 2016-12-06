@@ -330,6 +330,20 @@ public class DMNCompilerImpl implements DMNCompiler {
                 listEval.addElement( compileExpression( model, node, expr ) );
             }
             return listEval;
+        } else if( expression instanceof Relation ) {
+            Relation relationDef = (Relation) expression;
+            DMNRelationEvaluator relationEval = new DMNRelationEvaluator( node.getName(), node.getId(), relationDef );
+            for( InformationItem col : relationDef.getColumn() ) {
+                relationEval.addColumn( col.getName() );
+            }
+            for( org.kie.dmn.feel.model.v1_1.List row : relationDef.getRow() ) {
+                List<DMNExpressionEvaluator> values = new ArrayList<>(  );
+                for( Expression expr : row.getExpression() ) {
+                    values.add( compileExpression( model, node, expr ) );
+                }
+                relationEval.addRow( values );
+            }
+            return relationEval;
         } else if( expression instanceof Invocation ) {
             Invocation invocation = (Invocation) expression;
             // expression must be a literal text with the name of the function
