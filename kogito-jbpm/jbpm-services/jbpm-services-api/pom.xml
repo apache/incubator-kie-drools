@@ -49,40 +49,6 @@
       <plugin>
         <groupId>org.revapi</groupId>
         <artifactId>revapi-maven-plugin</artifactId>
-        <configuration>
-          <oldArtifacts>
-            <artifact>${project.groupId}:${project.artifactId}:${version.org.kie.latestFinal.release}</artifact>
-          </oldArtifacts>
-          <!-- By default revapi will check the oldArtifact against the currently executed build -->
-          <analysisConfigurationFiles>
-            <configurationFile>
-              <path>src/build/revapi-config.json</path>
-            </configurationFile>
-          </analysisConfigurationFiles>
-          <reportSeverity>nonBreaking</reportSeverity>
-        </configuration>
-        <!-- Running two executions is a workaround to make sure we get a HTML report in case revapi finds
-             some incompatible changes. The "check" goal will simply fail the whole build before it could get
-             to the report. To make sure we always get a HTML report, the "report" goal needs to be executed
-             before the "check" goal.
-             Once https://github.com/revapi/revapi/issues/11 is fixed it should be possible to use single execution. -->
-        <executions>
-          <execution>
-            <id>check</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <phase>verify</phase>
-          </execution>
-          <execution>
-            <!-- report can be found in ${build.directory}/site/revapi-report.html -->
-            <id>report</id>
-            <goals>
-              <goal>report</goal>
-            </goals>
-            <phase>package</phase>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

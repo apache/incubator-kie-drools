@@ -1,6 +1,17 @@
 {
   "revapi": {
-    "_comment": "Changes between 6.4.0.Final and master. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
+    "java": {
+      "filter": {
+        "_comment": "We don't want to check transitive classes, e.g. from kie-api, since we already check them in their own module.",
+        "packages": {
+          "regex": true,
+          "include": [
+            "org\\.jbpm\\.services\\.api.*"
+          ]
+        }
+      }
+    },
+    "_comment": "Changes between 6.5.0.Final and master. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
     "ignore": [
       {
         "code": "java.method.addedToInterface",
@@ -42,6 +53,18 @@
         "old": "field org.jbpm.services.api.query.QueryResultMapper<T>.COLUMN_ORGANIZATIONAL_ENTITY",
         "new": "field org.jbpm.services.api.query.QueryResultMapper<T>.COLUMN_ORGANIZATIONAL_ENTITY",
         "justification": "Fix for some of dbs with query aliases"
+      },
+      {
+        "code": "java.field.enumConstantOrderChanged",
+        "old": "field org.jbpm.services.api.query.model.QueryDefinition.Target.CUSTOM",
+        "new": "field org.jbpm.services.api.query.model.QueryDefinition.Target.CUSTOM",
+        "justification": "Included more out of the box targets for query definition that are more specific than custom and thus placed higher in the enum"
+      },
+      {
+        "code": "java.field.serialVersionUIDUnchanged",
+        "old": "field org.jbpm.services.api.query.model.QueryParam.serialVersionUID",
+        "new": "field org.jbpm.services.api.query.model.QueryParam.serialVersionUID",
+        "justification": "Not an issue, only static methods were added so there is no need to change serial version."
       }
     ]
   }
