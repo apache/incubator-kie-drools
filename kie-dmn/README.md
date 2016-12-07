@@ -58,8 +58,9 @@ For completeness and orthogonality, this implementation also supports the follow
 * function
 * unary test
 
-4. __Support for unary test invocation__: for completeness and orthogonality, this implementation supports
-unary test invocation analogously as functions. E.g.:
+4. __Support for unary test __: for completeness and orthogonality, unary tests are supported
+as first class citizens in the language. They are effectively functions with an implicit single 
+parameter, and can be invoked in the same way as functions are. E.g.:
 
 ```
 {

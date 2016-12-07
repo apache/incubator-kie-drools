@@ -447,8 +447,6 @@ false_key
 IntegerLiteral
 	:	DecimalIntegerLiteral
 	|	HexIntegerLiteral
-	|	OctalIntegerLiteral
-	|	BinaryIntegerLiteral
 	;
 
 fragment
@@ -462,24 +460,13 @@ HexIntegerLiteral
 	;
 
 fragment
-OctalIntegerLiteral
-	:	OctalNumeral IntegerTypeSuffix?
-	;
-
-fragment
-BinaryIntegerLiteral
-	:	BinaryNumeral IntegerTypeSuffix?
-	;
-
-fragment
 IntegerTypeSuffix
 	:	[lL]
 	;
 
 fragment
 DecimalNumeral
-	:	'0'
-	|	NonZeroDigit (Digits? | Underscores Digits)
+	:	Digit (Digits? | Underscores Digits)
 	;
 
 fragment
@@ -489,8 +476,7 @@ Digits
 
 fragment
 Digit
-	:	'0'
-	|	NonZeroDigit
+	:	[0-9]
 	;
 
 fragment
@@ -537,58 +523,6 @@ HexDigitsAndUnderscores
 fragment
 HexDigitOrUnderscore
 	:	HexDigit
-	|	'_'
-	;
-
-fragment
-OctalNumeral
-	:	'0' Underscores? OctalDigits
-	;
-
-fragment
-OctalDigits
-	:	OctalDigit (OctalDigitsAndUnderscores? OctalDigit)?
-	;
-
-fragment
-OctalDigit
-	:	[0-7]
-	;
-
-fragment
-OctalDigitsAndUnderscores
-	:	OctalDigitOrUnderscore+
-	;
-
-fragment
-OctalDigitOrUnderscore
-	:	OctalDigit
-	|	'_'
-	;
-
-fragment
-BinaryNumeral
-	:	'0' [bB] BinaryDigits
-	;
-
-fragment
-BinaryDigits
-	:	BinaryDigit (BinaryDigitsAndUnderscores? BinaryDigit)?
-	;
-
-fragment
-BinaryDigit
-	:	[01]
-	;
-
-fragment
-BinaryDigitsAndUnderscores
-	:	BinaryDigitOrUnderscore+
-	;
-
-fragment
-BinaryDigitOrUnderscore
-	:	BinaryDigit
 	|	'_'
 	;
 
@@ -674,15 +608,7 @@ StringCharacter
 fragment
 EscapeSequence
 	:	'\\' [btnfr"'\\]
-	|	OctalEscape
     |   UnicodeEscape // This is not in the spec but prevents having to preprocess the input
-	;
-
-fragment
-OctalEscape
-	:	'\\' OctalDigit
-	|	'\\' OctalDigit OctalDigit
-	|	'\\' ZeroToThree OctalDigit OctalDigit
 	;
 
 fragment
