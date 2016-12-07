@@ -59,10 +59,10 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
 
     protected final SolutionDescriptor<Solution_> solutionDescriptor;
 
-    protected final ConcurrentMap<Class, Constructor> constructorCache = new ConcurrentHashMap<>();
-    protected final ConcurrentMap<Class, List<Field>> fieldListCache = new ConcurrentHashMap<>();
-    protected final ConcurrentMap<Pair<Field, Class>, Boolean> deepCloneDecisionFieldCache = new ConcurrentHashMap<>();
-    protected final ConcurrentMap<Class, Boolean> deepCloneDecisionActualValueClassCache = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<Class<?>, Constructor<?>> constructorCache = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<Class<?>, List<Field>> fieldListCache = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<Pair<Field, Class<?>>, Boolean> deepCloneDecisionFieldCache = new ConcurrentHashMap<>();
+    protected final ConcurrentMap<Class<?>, Boolean> deepCloneDecisionActualValueClassCache = new ConcurrentHashMap<>();
 
     public FieldAccessingSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
@@ -83,9 +83,10 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
      * @param <C> type
      * @return never null
      */
-    protected <C> Constructor retrieveCachedConstructor(Class<C> clazz) {
-        return constructorCache.computeIfAbsent(clazz, key -> {
-            Constructor constructor;
+    @SuppressWarnings("unchecked")
+    protected <C> Constructor<C> retrieveCachedConstructor(Class<C> clazz) {
+        return (Constructor<C>) constructorCache.computeIfAbsent(clazz, key -> {
+            Constructor<C> constructor;
             try {
                 constructor = clazz.getDeclaredConstructor();
             } catch (ReflectiveOperationException e) {
@@ -124,20 +125,20 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
      * @param actualValueClass never null
      * @return never null
      */
-    protected boolean retrieveDeepCloneDecision(Field field, Class fieldInstanceClass, Class<?> actualValueClass) {
-        Pair<Field, Class> pair = Pair.of(field, fieldInstanceClass);
+    protected boolean retrieveDeepCloneDecision(Field field, Class<?> fieldInstanceClass, Class<?> actualValueClass) {
+        Pair<Field, Class<?>> pair = Pair.of(field, fieldInstanceClass);
         Boolean deepCloneDecision = deepCloneDecisionFieldCache.computeIfAbsent(pair,
                 key -> isFieldDeepCloned(field, fieldInstanceClass));
         return deepCloneDecision || retrieveDeepCloneDecisionForActualValueClass(actualValueClass);
     }
 
-    private boolean isFieldDeepCloned(Field field, Class fieldInstanceClass) {
+    private boolean isFieldDeepCloned(Field field, Class<?> fieldInstanceClass) {
         return isFieldAnEntityPropertyOnSolution(field, fieldInstanceClass)
                 || isFieldAnEntityOrSolution(field, fieldInstanceClass)
                 || isFieldADeepCloneProperty(field, fieldInstanceClass);
     }
 
-    protected boolean isFieldAnEntityPropertyOnSolution(Field field, Class fieldInstanceClass) {
+    protected boolean isFieldAnEntityPropertyOnSolution(Field field, Class<?> fieldInstanceClass) {
         // field.getDeclaringClass() is a superclass of or equal to the fieldInstanceClass
         if (solutionDescriptor.getSolutionClass().isAssignableFrom(fieldInstanceClass)) {
             String fieldName = field.getName();
@@ -155,7 +156,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
         return false;
     }
 
-    protected boolean isFieldAnEntityOrSolution(Field field, Class fieldInstanceClass) {
+    protected boolean isFieldAnEntityOrSolution(Field field, Class<?> fieldInstanceClass) {
         Class<?> type = field.getType();
         if (isClassDeepCloned(type)) {
             return true;
@@ -186,7 +187,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
         return false;
     }
 
-    private boolean isFieldADeepCloneProperty(Field field, Class fieldInstanceClass) {
+    private boolean isFieldADeepCloneProperty(Field field, Class<?> fieldInstanceClass) {
         if (field.isAnnotationPresent(DeepPlanningClone.class)) {
             return true;
         }
@@ -271,7 +272,7 @@ public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<S
             }
         }
 
-        protected boolean isDeepCloneField(Field field, Class fieldInstanceClass, Object originalValue) {
+        protected boolean isDeepCloneField(Field field, Class<?> fieldInstanceClass, Object originalValue) {
             if (originalValue == null) {
                 return false;
             }

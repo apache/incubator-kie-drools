@@ -107,7 +107,7 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
                 // with the variableDescriptor's generic type's type arguments
                 typeArgument = ((ParameterizedType) typeArgument).getRawType();
             }
-            Class collectionElementClass;
+            Class<?> collectionElementClass;
             if (typeArgument instanceof Class) {
                 collectionElementClass = ((Class) typeArgument);
             } else {

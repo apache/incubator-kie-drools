@@ -79,7 +79,7 @@ public class XStreamXmlSolverFactory<Solution_> extends AbstractSolverFactory<So
      * @param xStreamAnnotations never null
      * @see XStream#processAnnotations(Class[])
      */
-    public void addXStreamAnnotations(Class... xStreamAnnotations) {
+    public void addXStreamAnnotations(Class<?>... xStreamAnnotations) {
         xStream.processAnnotations(xStreamAnnotations);
     }
 

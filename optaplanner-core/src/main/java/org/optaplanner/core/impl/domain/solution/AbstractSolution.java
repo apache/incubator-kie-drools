@@ -103,7 +103,7 @@ public abstract class AbstractSolution<S extends Score> implements Serializable 
     }
 
     private boolean isFieldAPlanningEntityPropertyOrPlanningEntityCollectionProperty(Field field,
-            Class fieldInstanceClass) {
+            Class<?> fieldInstanceClass) {
         if (field.isAnnotationPresent(PlanningEntityProperty.class)
                 || field.isAnnotationPresent(PlanningEntityCollectionProperty.class)) {
             return true;

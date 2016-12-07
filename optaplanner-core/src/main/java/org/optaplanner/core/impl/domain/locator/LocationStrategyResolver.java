@@ -41,7 +41,7 @@ public class LocationStrategyResolver {
 
     private final LocationStrategyType locationStrategyType;
 
-    private final ConcurrentMap<Class, LocationStrategy> decisionCache = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Class<?>, LocationStrategy> decisionCache = new ConcurrentHashMap<>();
 
     public LocationStrategyResolver(LocationStrategyType locationStrategyType) {
         this.locationStrategyType = locationStrategyType;

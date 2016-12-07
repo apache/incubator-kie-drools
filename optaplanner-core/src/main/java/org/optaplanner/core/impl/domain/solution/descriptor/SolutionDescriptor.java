@@ -451,7 +451,7 @@ public class SolutionDescriptor<Solution_> {
                             "The solutionClass (" + solutionClass + ") cannot be directly a "
                             + AbstractSolution.class.getSimpleName() + ", but a subclass would be ok.");
                 }
-                Class baseClass = solutionClass;
+                Class<?> baseClass = solutionClass;
                 while (baseClass.getSuperclass() != AbstractSolution.class) {
                     baseClass = baseClass.getSuperclass();
                     if (baseClass == null) {

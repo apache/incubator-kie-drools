@@ -63,11 +63,11 @@ public class PlannerAssert extends Assert {
     // Missing JUnit methods
     // ************************************************************************
 
-    public static void assertInstanceOf(Class expectedClass, Object actualInstance) {
+    public static void assertInstanceOf(Class<?> expectedClass, Object actualInstance) {
         assertInstanceOf(null, expectedClass, actualInstance);
     }
 
-    public static void assertInstanceOf(String message, Class expectedClass, Object actualInstance) {
+    public static void assertInstanceOf(String message, Class<?> expectedClass, Object actualInstance) {
         if (!expectedClass.isInstance(actualInstance)) {
             String cleanMessage = message == null ? "" : message;
             throw new ComparisonFailure(cleanMessage, expectedClass.getName(),
@@ -75,11 +75,11 @@ public class PlannerAssert extends Assert {
         }
     }
 
-    public static void assertNotInstanceOf(Class expectedClass, Object actualInstance) {
+    public static void assertNotInstanceOf(Class<?> expectedClass, Object actualInstance) {
         assertNotInstanceOf(null, expectedClass, actualInstance);
     }
 
-    public static void assertNotInstanceOf(String message, Class expectedClass, Object actualInstance) {
+    public static void assertNotInstanceOf(String message, Class<?> expectedClass, Object actualInstance) {
         if (expectedClass.isInstance(actualInstance)) {
             String cleanMessage = message == null ? "" : message;
             throw new ComparisonFailure(cleanMessage, "not " + expectedClass.getName(),

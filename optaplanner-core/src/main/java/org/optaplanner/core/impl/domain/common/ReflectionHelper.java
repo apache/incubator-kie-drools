@@ -98,7 +98,7 @@ public final class ReflectionHelper {
      * @param propertyName never null
      * @return true if that getter exists
      */
-    public static boolean hasGetterMethod(Class containingClass, String propertyName) {
+    public static boolean hasGetterMethod(Class<?> containingClass, String propertyName) {
         return getGetterMethod(containingClass, propertyName) != null;
     }
 
@@ -107,7 +107,7 @@ public final class ReflectionHelper {
      * @param propertyName never null
      * @return true if that getter exists
      */
-    public static Method getGetterMethod(Class containingClass, String propertyName) {
+    public static Method getGetterMethod(Class<?> containingClass, String propertyName) {
         String getterName = PROPERTY_ACCESSOR_PREFIX_GET
                 + (propertyName.isEmpty() ? "" : propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1));
         try {
@@ -134,7 +134,7 @@ public final class ReflectionHelper {
      * @param propertyName never null
      * @return null if it doesn't exist
      */
-    public static Method getSetterMethod(Class containingClass, Class propertyType, String propertyName) {
+    public static Method getSetterMethod(Class<?> containingClass, Class<?> propertyType, String propertyName) {
         String setterName = PROPERTY_MUTATOR_PREFIX
                 + (propertyName.isEmpty() ? "" : propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1));
         try {

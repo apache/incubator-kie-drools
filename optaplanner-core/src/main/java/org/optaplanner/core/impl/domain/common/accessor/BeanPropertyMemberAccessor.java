@@ -36,7 +36,7 @@ public final class BeanPropertyMemberAccessor implements MemberAccessor {
     public BeanPropertyMemberAccessor(Method getterMethod) {
         this.getterMethod = getterMethod;
         getterMethod.setAccessible(true); // Performance hack by avoiding security checks
-        Class declaringClass = getterMethod.getDeclaringClass();
+        Class<?> declaringClass = getterMethod.getDeclaringClass();
         if (!ReflectionHelper.isGetterMethod(getterMethod)) {
             throw new IllegalArgumentException("The getterMethod (" + getterMethod + ") is not a valid getter.");
         }
