@@ -9,14 +9,5 @@
   </parent>
 
   <artifactId>test-kjar-bpmn-build</artifactId>
-  <packaging>kjar</packaging>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 </project>

@@ -9,16 +9,6 @@
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
-
   <artifactId>test-kjar-evaluation</artifactId>
-  <packaging>kjar</packaging>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
 </project>

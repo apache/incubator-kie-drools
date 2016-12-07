@@ -27,16 +27,4 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-maven-plugin</artifactId>
-          <version>${version.org.kie}</version>
-          <extensions>true</extensions>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
 </project>
