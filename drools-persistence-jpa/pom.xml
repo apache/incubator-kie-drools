@@ -192,11 +192,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-reteoo</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.eclipse.jdt.core.compiler</groupId>
       <artifactId>ecj</artifactId>
       <scope>test</scope>

@@ -918,41 +918,6 @@ public class RuleBaseConfiguration
         return componentFactory;
     }
 
-    private void configureReteComponentFactory() {
-        if (!(componentFactory.getWorkingMemoryFactory().getClass().getName().endsWith("ReteWorkingMemory"))) {
-            try {
-                componentFactory.setWorkingMemoryFactory( (WorkingMemoryFactory) getStaticInstance( "org.drools.reteoo.common.ReteWorkingMemoryFactory" ) );
-            } catch (ClassNotFoundException e) {
-                logger.warn("Cannot find drools-reteoo.jar on the classpath, switching to phreak");
-                phreakEnabled = true;
-                return;
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        try {
-            if (!(componentFactory.getNodeFactoryService().getClass().getName().endsWith("ReteNodeFactory"))) {
-                componentFactory.setNodeFactoryProvider( (NodeFactory) getStaticInstance( "org.drools.reteoo.builder.ReteNodeFactory" ) );
-            }
-            if (!(componentFactory.getPropagationContextFactory().getClass().getName().endsWith("RetePropagationContextFactory"))) {
-                componentFactory.setPropagationContextFactory( (PropagationContextFactory) getStaticInstance( "org.drools.reteoo.common.RetePropagationContextFactory" ) );
-            }
-            if (!(componentFactory.getAgendaFactory().getClass().getName().endsWith("ReteAgendaFactory"))) {
-                componentFactory.setAgendaFactory( (AgendaFactory) getStaticInstance("org.drools.reteoo.common.ReteAgendaFactory") );
-            }
-            if (!(componentFactory.getAgendaGroupFactory().getClass().getName().endsWith( "RetePriorityQueueAgendaGroupFactory"))) {
-                componentFactory.setAgendaGroupFactory((AgendaGroupFactory) getStaticInstance( "org.drools.reteoo.common.RetePriorityQueueAgendaGroupFactory" ));
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Object getStaticInstance(String className) throws Exception {
-        return Class.forName( className ).getMethod( "getInstance" ).invoke( null );
-    }
-
     public void setComponentFactory(KieComponentFactory componentFactory) {
         this.componentFactory = componentFactory;
     }
