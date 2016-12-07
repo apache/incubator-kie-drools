@@ -26,7 +26,8 @@ might be other differences that were not found yet. Feel free to point them out 
 
 1. __Space Sensitivity__: this implementation of the FEEL language is space insensitive. The goal is to avoid 
 nondeterministic behavior based on the context and differences in behavior based on invisible characters (e.g., 
- white spaces). 
+ white spaces). This means that for this implementation, a variable named `first name` with one space is exactly
+ the same as `first  name` with two spaces in it. 
 
 2. __List functions "or()" and "and()"__: the spec defines two list functions named "or()" and "and()", but 
 according to the FEEL grammar, these are not valid function names, as "and" and "or" are reserved keywords.
@@ -58,7 +59,7 @@ For completeness and orthogonality, this implementation also supports the follow
 * function
 * unary test
 
-4. __Support for unary test __: for completeness and orthogonality, unary tests are supported
+4. __Support for unary tests__: for completeness and orthogonality, unary tests are supported
 as first class citizens in the language. They are effectively functions with an implicit single 
 parameter, and can be invoked in the same way as functions are. E.g.:
 
