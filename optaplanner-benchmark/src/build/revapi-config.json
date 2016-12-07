@@ -1,0 +1,95 @@
+{
+  "revapi": {
+    "java": {
+      "filter": {
+        "packages": {
+          "comment": "We don't want to check transitive classes, since we already check them in their own module.",
+          "regex": true,
+          "include": [
+            "org\\.optaplanner\\.benchmark\\.api.*",
+            "org\\.optaplanner\\.benchmark\\.config.*"
+          ]
+        }
+      }
+    },
+    "_comment": "Changes between 6.5.0.Final and master. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
+    "ignore": [
+      {
+        "code": "java.field.removedWithConstant",
+        "old": "field org.optaplanner.benchmark.config.PlannerBenchmarkConfig.AVAILABLE_PROCESSOR_COUNT",
+        "justification": "PLANNER-491 empty classes for Partitioned Search POC + extract CofnigUtils.resolveThreadPoolSizeScript()."
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method long org.optaplanner.benchmark.config.PlannerBenchmarkConfig::calculateWarmUpTimeMillisSpentLimit()",
+        "new": "method java.lang.Long org.optaplanner.benchmark.config.PlannerBenchmarkConfig::calculateWarmUpTimeMillisSpentLimit()",
+        "justification": "PLANNER-712 Benchmark should warm up for 30 seconds by default"
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method void org.optaplanner.benchmark.config.ProblemBenchmarksConfig::buildProblemBenchmarkList(org.optaplanner.benchmark.impl.result.SolverBenchmarkResult)",
+        "new": "method void org.optaplanner.benchmark.config.ProblemBenchmarksConfig::buildProblemBenchmarkList(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.benchmark.impl.result.SolverBenchmarkResult)",
+        "justification": "PLANNER-448 Benchmark report should state 'Hard score' and 'Soft score' instead of 'Score level 0' and 'Score level 1' by using ScoreDefinition.getLevelLabels()"
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method void org.optaplanner.benchmark.config.SolverBenchmarkConfig::buildSolverBenchmark(org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult)",
+        "new": "method void org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_>::buildSolverBenchmark(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult)",
+        "justification": "PLANNER-448 Benchmark report should state 'Hard score' and 'Soft score' instead of 'Score level 0' and 'Score level 1' by using ScoreDefinition.getLevelLabels()"
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig",
+        "new": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_ extends java.lang.Object>",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig",
+        "new": "class org.optaplanner.benchmark.config.SolverBenchmarkConfig<Solution_ extends java.lang.Object>",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.field.removed",
+        "old": "field org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType.ALL_CONSTRUCTION_HEURISTIC_TYPES",
+        "justification": "PLANNER-383 The deprecated 'SolverBenchmarkBluePrintType.ALL_CONSTRUCTION_HEURISTIC_TYPES' has been removed."
+      },
+      {
+        "code": "java.field.enumConstantOrderChanged",
+        "old": "field org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType.EVERY_CONSTRUCTION_HEURISTIC_TYPE",
+        "new": "field org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType.EVERY_CONSTRUCTION_HEURISTIC_TYPE",
+        "justification": "PLANNER-383 The deprecated 'SolverBenchmarkBluePrintType.ALL_CONSTRUCTION_HEURISTIC_TYPES' has been removed."
+      },
+      {
+        "code": "java.field.enumConstantOrderChanged",
+        "old": "field org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType.EVERY_CONSTRUCTION_HEURISTIC_TYPE_WITH_EVERY_LOCAL_SEARCH_TYPE",
+        "new": "field org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType.EVERY_CONSTRUCTION_HEURISTIC_TYPE_WITH_EVERY_LOCAL_SEARCH_TYPE",
+        "justification": "PLANNER-383 The deprecated 'SolverBenchmarkBluePrintType.ALL_CONSTRUCTION_HEURISTIC_TYPES' has been removed."
+      },
+      {
+        "code": "java.field.enumConstantOrderChanged",
+        "old": "field org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType.EVERY_LOCAL_SEARCH_TYPE",
+        "new": "field org.optaplanner.benchmark.config.blueprint.SolverBenchmarkBluePrintType.EVERY_LOCAL_SEARCH_TYPE",
+        "justification": "PLANNER-383 The deprecated 'SolverBenchmarkBluePrintType.ALL_CONSTRUCTION_HEURISTIC_TYPES' has been removed."
+      },
+      {
+        "code": "java.field.enumConstantOrderChanged",
+        "old": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.BEST_SOLUTION_MUTATION",
+        "new": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.BEST_SOLUTION_MUTATION",
+        "justification": "PLANNER-578 BZ-1335084 Output score calculation speed at end of phases too (and rename name it from average calculate count)"
+      },
+      {
+        "code": "java.field.enumConstantOrderChanged",
+        "old": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.MEMORY_USE",
+        "new": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.MEMORY_USE",
+        "justification": "PLANNER-578 BZ-1335084 Output score calculation speed at end of phases too (and rename name it from average calculate count)"
+      },
+      {
+        "code": "java.field.enumConstantOrderChanged",
+        "old": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.MOVE_COUNT_PER_STEP",
+        "new": "field org.optaplanner.benchmark.config.statistic.ProblemStatisticType.MOVE_COUNT_PER_STEP",
+        "justification": "PLANNER-578 BZ-1335084 Output score calculation speed at end of phases too (and rename name it from average calculate count)"
+      }
+    ]
+  }
+}

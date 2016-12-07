@@ -1,0 +1,853 @@
+{
+  "revapi": {
+    "java": {
+      "filter": {
+        "packages": {
+          "comment": "We don't want to check transitive classes, since we already check them in their own module.",
+          "regex": true,
+          "include": [
+            "org\\.optaplanner\\.core\\.api.*",
+            "org\\.optaplanner\\.core\\.config.*"
+          ]
+        }
+      }
+    },
+    "_comment": "Changes between 6.5.0.Final and master. These changes are desired and thus ignored. They should be removed when 7.0.0.Final is available.",
+    "ignore": [
+      {
+        "code": "java.class.removed",
+        "old": "interface org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable<T extends java.lang.Object>",
+        "justification": "The interface PlanningCloneable has been removed, use a SolutionCloner instead."
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method Solution_ org.optaplanner.core.api.domain.solution.cloner.SolutionCloner<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::cloneSolution(Solution_)",
+        "new": "method Solution_ org.optaplanner.core.api.domain.solution.cloner.SolutionCloner<Solution_>::cloneSolution(Solution_)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "interface org.optaplanner.core.api.domain.solution.cloner.SolutionCloner<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>",
+        "new": "interface org.optaplanner.core.api.domain.solution.cloner.SolutionCloner<Solution_ extends java.lang.Object>",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.annotation.noLongerPresent",
+        "old": "@interface org.optaplanner.core.api.domain.variable.CustomShadowVariable.Source",
+        "justification": "A shadow variable annotated with @CustomShadowVariable now expects that the sources parameter is of type @PlanningVariableReference instead of @CustomShadowVariable.Source."
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method org.optaplanner.core.api.domain.variable.CustomShadowVariable.Source[] org.optaplanner.core.api.domain.variable.CustomShadowVariable::sources()",
+        "new": "method org.optaplanner.core.api.domain.variable.PlanningVariableReference[] org.optaplanner.core.api.domain.variable.CustomShadowVariable::sources()",
+        "justification": "A shadow variable annotated with @CustomShadowVariable now expects that the sources parameter is of type @PlanningVariableReference instead of @CustomShadowVariable.Source."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method void org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>::<init>()",
+        "new": "method void org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>::<init>(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.visibilityReduced",
+        "old": "method void org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>::<init>()",
+        "new": "method void org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>::<init>(int)",
+        "oldVisibility": "public",
+        "newVisibility": "protected",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method java.lang.String org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>::buildScorePattern(java.lang.String[])",
+        "new": "method java.lang.String org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>::buildScorePattern(boolean, java.lang.String[])",
+        "justification": "PLANNER-526 BendableScore.toString() must include 'hard' 'soft' separation"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.String org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>::buildScorePattern(int)",
+        "justification": "PLANNER-526 BendableScore.toString() must include 'hard' 'soft' separation"
+      },
+      {
+        "code": "java.method.nowAbstract",
+        "old": "method boolean org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>::isCompatibleArithmeticArgument(org.optaplanner.core.api.score.Score)",
+        "new": "method boolean org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score>::isCompatibleArithmeticArgument(org.optaplanner.core.api.score.Score) @ org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>",
+        "oldModifiers": "public",
+        "newModifiers": "public abstract",
+        "justification": "PLANNER-580 Make org.optaplanner.core.api.score.Score class hierarchy JavaScript-compile friendly."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.String[] org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>::parseLevelStrings(java.lang.Class<? extends org.optaplanner.core.api.score.Score>, java.lang.String, int)",
+        "justification": "PLANNER-526 BendableScore.toString() must include 'hard' 'soft' separation"
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.String[] org.optaplanner.core.api.score.AbstractScore<S extends org.optaplanner.core.api.score.Score>::parseLevelStrings(java.lang.Class<? extends org.optaplanner.core.api.score.Score>, java.lang.String, java.lang.String[])",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method int org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score>::getInitScore()",
+        "justification": "A solution’s Score now also contains the number of uninitialized variables (usually 0) as a negative getInitScore()."
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method boolean org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score>::isSolutionInitialized()",
+        "justification": "With Score.isSolutionInitialized(), it’s now possible to quickly and reliably determine if a solution is fully initialized."
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method S org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score>::toInitializedScore()",
+        "justification": "Used to get initialized score, connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method S org.optaplanner.core.api.score.Score<S extends org.optaplanner.core.api.score.Score>::withInitScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method void org.optaplanner.core.api.score.buildin.bendable.BendableScore::<init>(int[], int[])",
+        "new": "method void org.optaplanner.core.api.score.buildin.bendable.BendableScore::<init>(int, int[], int[])",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.buildin.bendable.BendableScore org.optaplanner.core.api.score.buildin.bendable.BendableScore::parseScore(int, int, java.lang.String)",
+        "new": "method org.optaplanner.core.api.score.buildin.bendable.BendableScore org.optaplanner.core.api.score.buildin.bendable.BendableScore::parseScore(java.lang.String)",
+        "justification": "PLANNER-526 BendableScore.toString() must include 'hard' 'soft' separation"
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder::setHardScore(int, int)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder::setSoftScore(int, int)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method void org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore::<init>(java.math.BigDecimal[], java.math.BigDecimal[])",
+        "new": "method void org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore::<init>(int, java.math.BigDecimal[], java.math.BigDecimal[])",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore::parseScore(int, int, java.lang.String)",
+        "new": "method org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore::parseScore(java.lang.String)",
+        "justification": "PLANNER-526 BendableScore.toString() must include 'hard' 'soft' separation"
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreHolder::setHardScore(int, java.math.BigDecimal)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreHolder::setSoftScore(int, java.math.BigDecimal)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method void org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore::<init>(long[], long[])",
+        "new": "method void org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore::<init>(int, long[], long[])",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore::parseScore(int, int, java.lang.String)",
+        "new": "method org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore::parseScore(java.lang.String)",
+        "justification": "PLANNER-526 BendableScore.toString() must include 'hard' 'soft' separation"
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScoreHolder::setHardScore(int, long)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScoreHolder::setSoftScore(int, long)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder::setHardScore(int)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder::setMediumScore(int)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder::setSoftScore(int)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreHolder::setHardScore(long)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreHolder::setMediumScore(long)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreHolder::setSoftScore(long)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder::setHardScore(int)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder::setSoftScore(int)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder::setHardScore(java.math.BigDecimal)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder::setSoftScore(java.math.BigDecimal)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreHolder::setHardScore(double)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardsoftdouble.HardSoftDoubleScoreHolder::setSoftScore(double)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder::setHardScore(long)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder::setSoftScore(long)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder::setScore(int)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreHolder::setScore(java.math.BigDecimal)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScoreHolder::setScore(double)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScoreHolder::setScore(long)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.holder.ScoreHolder::extractScore()",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.score.holder.ScoreHolder::extractScore(int)",
+        "justification": "Connected with the introduction of init score."
+      },
+      {
+        "code": "java.method.addedToInterface",
+        "new": "method org.optaplanner.core.api.score.Score org.optaplanner.core.api.solver.Solver<Solution_>::getBestScore()",
+        "justification": "Added as a convenience to retrieve the Score from the getBestSolution() easily."
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method Solution_ org.optaplanner.core.api.solver.Solver<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::getBestSolution()",
+        "new": "method Solution_ org.optaplanner.core.api.solver.Solver<Solution_>::getBestSolution()",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.optaplanner.core.impl.score.director.ScoreDirectorFactory org.optaplanner.core.api.solver.Solver<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::getScoreDirectorFactory()",
+        "new": "method org.optaplanner.core.impl.score.director.ScoreDirectorFactory<Solution_> org.optaplanner.core.api.solver.Solver<Solution_>::getScoreDirectorFactory()",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method Solution_ org.optaplanner.core.api.solver.Solver<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::solve(Solution_)",
+        "new": "method Solution_ org.optaplanner.core.api.solver.Solver<Solution_>::solve(Solution_)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "interface org.optaplanner.core.api.solver.Solver<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>",
+        "new": "interface org.optaplanner.core.api.solver.Solver<Solution_ extends java.lang.Object>",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::buildSolver()",
+        "new": "method org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::buildSolver()",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::cloneSolverFactory()",
+        "new": "method org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::cloneSolverFactory()",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createEmpty()",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createEmpty()",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createEmpty()",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createEmpty()",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createEmpty(java.lang.ClassLoader)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createEmpty(java.lang.ClassLoader)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createEmpty(java.lang.ClassLoader)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createEmpty(java.lang.ClassLoader)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromKieContainerXmlResource(java.lang.String)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromKieContainerXmlResource(java.lang.String)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromKieContainerXmlResource(java.lang.String)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromKieContainerXmlResource(java.lang.String)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromKieContainerXmlResource(org.kie.api.builder.ReleaseId, java.lang.String)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromKieContainerXmlResource(org.kie.api.builder.ReleaseId, java.lang.String)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromKieContainerXmlResource(org.kie.api.builder.ReleaseId, java.lang.String)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromKieContainerXmlResource(org.kie.api.builder.ReleaseId, java.lang.String)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromKieContainerXmlResource(org.kie.api.runtime.KieContainer, java.lang.String)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromKieContainerXmlResource(org.kie.api.runtime.KieContainer, java.lang.String)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromKieContainerXmlResource(org.kie.api.runtime.KieContainer, java.lang.String)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromKieContainerXmlResource(org.kie.api.runtime.KieContainer, java.lang.String)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlFile(java.io.File)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlFile(java.io.File)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlFile(java.io.File)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlFile(java.io.File)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlFile(java.io.File, java.lang.ClassLoader)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlFile(java.io.File, java.lang.ClassLoader)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlFile(java.io.File, java.lang.ClassLoader)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlFile(java.io.File, java.lang.ClassLoader)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlInputStream(java.io.InputStream)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlInputStream(java.io.InputStream)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlInputStream(java.io.InputStream)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlInputStream(java.io.InputStream)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlInputStream(java.io.InputStream, java.lang.ClassLoader)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlInputStream(java.io.InputStream, java.lang.ClassLoader)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlInputStream(java.io.InputStream, java.lang.ClassLoader)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlInputStream(java.io.InputStream, java.lang.ClassLoader)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlReader(java.io.Reader)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlReader(java.io.Reader)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlReader(java.io.Reader)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlReader(java.io.Reader)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlReader(java.io.Reader, java.lang.ClassLoader)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlReader(java.io.Reader, java.lang.ClassLoader)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlReader(java.io.Reader, java.lang.ClassLoader)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlReader(java.io.Reader, java.lang.ClassLoader)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlResource(java.lang.String)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlResource(java.lang.String)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlResource(java.lang.String)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlResource(java.lang.String)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlResource(java.lang.String, java.lang.ClassLoader)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlResource(java.lang.String, java.lang.ClassLoader)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::createFromXmlResource(java.lang.String, java.lang.ClassLoader)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_> org.optaplanner.core.api.solver.SolverFactory<Solution_>::createFromXmlResource(java.lang.String, java.lang.ClassLoader)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "class org.optaplanner.core.api.solver.SolverFactory<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>",
+        "new": "class org.optaplanner.core.api.solver.SolverFactory<Solution_ extends java.lang.Object>",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.returnTypeChanged",
+        "old": "method Solution_ org.optaplanner.core.api.solver.event.BestSolutionChangedEvent<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>::getNewBestSolution()",
+        "new": "method Solution_ org.optaplanner.core.api.solver.event.BestSolutionChangedEvent<Solution_>::getNewBestSolution()",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "class org.optaplanner.core.api.solver.event.BestSolutionChangedEvent<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>",
+        "new": "class org.optaplanner.core.api.solver.event.BestSolutionChangedEvent<Solution_ extends java.lang.Object>",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "interface org.optaplanner.core.api.solver.event.SolverEventListener<Solution_ extends org.optaplanner.core.api.domain.solution.Solution>",
+        "new": "interface org.optaplanner.core.api.solver.event.SolverEventListener<Solution_ extends java.lang.Object>",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType::newEntityPlacerConfig()",
+        "justification": "PLANNER-580: Make org.optaplanner.core.api.score.Score class hierarchy JavaScript-compile friendly."
+      },
+      {
+        "code": "java.method.numberOfParametersChanged",
+        "old": "method org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor org.optaplanner.core.config.domain.ScanAnnotatedClassesConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
+        "new": "method org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor org.optaplanner.core.config.domain.ScanAnnotatedClassesConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.impl.score.definition.ScoreDefinition)",
+        "justification": "PLANNER-602 Remove <scoreDefinitionType> from the solver configuration."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method java.lang.Class<? extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.config.domain.ScanAnnotatedClassesConfig::loadSolutionClass(org.reflections.Reflections)",
+        "new": "method java.lang.Class<?> org.optaplanner.core.config.domain.ScanAnnotatedClassesConfig::loadSolutionClass(org.reflections.Reflections)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner::determineSorter(org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor)",
+        "justification": "PLANNER-580: Make org.optaplanner.core.api.score.Score class hierarchy JavaScript-compile friendly."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method boolean org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner::hasSorter(org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor)",
+        "justification": "PLANNER-580: Make org.optaplanner.core.api.score.Score class hierarchy JavaScript-compile friendly."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner::determineSorter(org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor)",
+        "justification": "PLANNER-580: Make org.optaplanner.core.api.score.Score class hierarchy JavaScript-compile friendly."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method boolean org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner::hasSorter(org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor)",
+        "justification": "PLANNER-580: Make org.optaplanner.core.api.score.Score class hierarchy JavaScript-compile friendly."
+      },
+      {
+        "code": "java.field.removed",
+        "old": "field org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig.lateSimulatedAnnealingSize",
+        "justification": "The experimental, deprecated, hybrid metaheuristic called LATE_SIMULATED_ANNEALING (which was inspired by both Late Acceptance and Simulated Annealing) has been removed."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method java.lang.Integer org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig::getLateSimulatedAnnealingSize()",
+        "justification": "The experimental, deprecated, hybrid metaheuristic called LATE_SIMULATED_ANNEALING (which was inspired by both Late Acceptance and Simulated Annealing) has been removed."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig::setLateSimulatedAnnealingSize(java.lang.Integer)",
+        "justification": "The experimental, deprecated, hybrid metaheuristic called LATE_SIMULATED_ANNEALING (which was inspired by both Late Acceptance and Simulated Annealing) has been removed."
+      },
+      {
+        "code": "java.field.removed",
+        "old": "field org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType.LATE_SIMULATED_ANNEALING",
+        "justification": "The experimental, deprecated, hybrid metaheuristic called LATE_SIMULATED_ANNEALING (which was inspired by both Late Acceptance and Simulated Annealing) has been removed."
+      },
+      {
+        "code": "java.class.removed",
+        "old": "class org.optaplanner.core.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryConfig",
+        "justification": "The dead, deprecated code of DeciderScoreComparatorFactory has been removed."
+      },
+      {
+        "code": "java.class.removed",
+        "old": "enum org.optaplanner.core.config.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactoryType",
+        "justification": "The dead, deprecated code of DeciderScoreComparatorFactory has been removed."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method void org.optaplanner.core.config.phase.PhaseConfig<C extends org.optaplanner.core.config.phase.PhaseConfig>::configurePhase(org.optaplanner.core.impl.phase.AbstractPhase, int, org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
+        "justification": "PLANNER-491 Ident logging."
+      },
+      {
+        "code": "java.annotation.attributeValueChanged",
+        "old": "class org.optaplanner.core.config.phase.PhaseConfig<C extends org.optaplanner.core.config.phase.PhaseConfig>",
+        "new": "class org.optaplanner.core.config.phase.PhaseConfig<C extends org.optaplanner.core.config.phase.PhaseConfig>",
+        "attribute": "value",
+        "oldValue": "{org.optaplanner.core.config.phase.custom.CustomPhaseConfig.class, org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.class, org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.class, org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig.class}",
+        "newValue": "{org.optaplanner.core.config.phase.custom.CustomPhaseConfig.class, org.optaplanner.core.config.phase.NoChangePhaseConfig.class, org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchPhaseConfig.class, org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig.class, org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig.class, org.optaplanner.core.config.partitionedsearch.PartitionedSearchPhaseConfig.class}",
+        "annotationType": "com.thoughtworks.xstream.annotations.XStreamInclude",
+        "justification": "Add support for <noChangePhase/>."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildDroolsScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext)",
+        "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildDroolsScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext)",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildDroolsScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext)",
+        "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildDroolsScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext)",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildDroolsScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext)",
+        "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildDroolsScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext)",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildEasyScoreDirectorFactory()",
+        "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildEasyScoreDirectorFactory()",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildEasyScoreDirectorFactory()",
+        "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildEasyScoreDirectorFactory()",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildEasyScoreDirectorFactory()",
+        "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildEasyScoreDirectorFactory()",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildIncrementalScoreDirectorFactory()",
+        "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildIncrementalScoreDirectorFactory()",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildIncrementalScoreDirectorFactory()",
+        "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildIncrementalScoreDirectorFactory()",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "method org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildIncrementalScoreDirectorFactory()",
+        "new": "method <Solution_> org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildIncrementalScoreDirectorFactory()",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.optaplanner.core.impl.score.definition.ScoreDefinition org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDefinition()",
+        "justification": "PLANNER-602 Remove <scoreDefinitionType> from the solver configuration. Method renamed to buildDeprecatedScoreDefinition()."
+      },
+      {
+        "code": "java.method.parameterTypeParameterChanged",
+        "old": "parameter org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, ===org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor===)",
+        "new": "parameter <Solution_> org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, ===org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_>===)",
+        "parameterIndex": "2",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor)",
+        "new": "method <Solution_> org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_>)",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "method org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor)",
+        "new": "method <Solution_> org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_>)",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "method org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor)",
+        "new": "method <Solution_> org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory<Solution_> org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_>)",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig::buildScoreDirectorFactory(org.optaplanner.core.config.SolverConfigContext, org.optaplanner.core.config.solver.EnvironmentMode, org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor, org.optaplanner.core.impl.score.definition.ScoreDefinition)",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method double org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel::getOptimisticBoundDouble()",
+        "justification": "Remove unused getOptimisticBoundInt etc methods."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel::getOptimisticBoundInt()",
+        "justification": "Remove unused getOptimisticBoundInt etc methods."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method long org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel::getOptimisticBoundLong()",
+        "justification": "Remove unused getOptimisticBoundInt etc methods."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method double org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel::getPessimisticBoundDouble()",
+        "justification": "Remove unused getOptimisticBoundInt etc methods."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method int org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel::getPessimisticBoundInt()",
+        "justification": "Remove unused getOptimisticBoundInt etc methods."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method long org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel::getPessimisticBoundLong()",
+        "justification": "Remove unused getOptimisticBoundInt etc methods."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller org.optaplanner.core.config.solver.SolverConfig::buildBestSolutionRecaller(org.optaplanner.core.config.solver.EnvironmentMode)",
+        "justification": "PLANNER-491 first partitioned solving proof, before PartSolver is introduced."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method java.util.List<org.optaplanner.core.impl.phase.Phase> org.optaplanner.core.config.solver.SolverConfig::buildPhaseList(org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
+        "new": "method <Solution_> java.util.List<org.optaplanner.core.impl.phase.Phase<Solution_>> org.optaplanner.core.config.solver.SolverConfig::buildPhaseList(org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "method java.util.List<org.optaplanner.core.impl.phase.Phase> org.optaplanner.core.config.solver.SolverConfig::buildPhaseList(org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
+        "new": "method <Solution_> java.util.List<org.optaplanner.core.impl.phase.Phase<Solution_>> org.optaplanner.core.config.solver.SolverConfig::buildPhaseList(org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "method java.util.List<org.optaplanner.core.impl.phase.Phase> org.optaplanner.core.config.solver.SolverConfig::buildPhaseList(org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
+        "new": "method <Solution_> java.util.List<org.optaplanner.core.impl.phase.Phase<Solution_>> org.optaplanner.core.config.solver.SolverConfig::buildPhaseList(org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy, org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller, org.optaplanner.core.impl.solver.termination.Termination)",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor org.optaplanner.core.config.solver.SolverConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
+        "new": "method <Solution_> org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.generics.elementNowParameterized",
+        "old": "method org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor org.optaplanner.core.config.solver.SolverConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
+        "new": "method <Solution_> org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.generics.formalTypeParameterAdded",
+        "old": "method org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor org.optaplanner.core.config.solver.SolverConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
+        "new": "method <Solution_> org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolutionDescriptor(org.optaplanner.core.config.SolverConfigContext)",
+        "justification": "Consistency: Make all Scope classes generic + make config classes method's generic."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolver(org.optaplanner.core.config.SolverConfigContext)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolver(org.optaplanner.core.config.SolverConfigContext)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.generics.formalTypeParameterChanged",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolver(org.optaplanner.core.config.SolverConfigContext)",
+        "new": "method <Solution_> org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolver(org.optaplanner.core.config.SolverConfigContext)",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolver()",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method <Solution_ extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.api.solver.Solver<Solution_> org.optaplanner.core.config.solver.SolverConfig::buildSolver(java.lang.ClassLoader)",
+        "justification": "Removed previously deprecated API."
+      },
+      {
+        "code": "java.method.returnTypeTypeParametersChanged",
+        "old": "method java.lang.Class<? extends org.optaplanner.core.api.domain.solution.Solution> org.optaplanner.core.config.solver.SolverConfig::getSolutionClass()",
+        "new": "method java.lang.Class<?> org.optaplanner.core.config.solver.SolverConfig::getSolutionClass()",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.parameterTypeParameterChanged",
+        "old": "parameter void org.optaplanner.core.config.solver.SolverConfig::setSolutionClass(===java.lang.Class<? extends org.optaplanner.core.api.domain.solution.Solution>===)",
+        "new": "parameter void org.optaplanner.core.config.solver.SolverConfig::setSolutionClass(===java.lang.Class<?>===)",
+        "parameterIndex": "0",
+        "justification": "Solution interface removed since it was deprecated."
+      },
+      {
+        "code": "java.method.removed",
+        "old": "method long org.optaplanner.core.config.util.ConfigUtils::floorDivide(long, long)",
+        "justification": "Upgrade to java 8: replace ConfigUtils.floorDivide() with Math.floorDiv()"
+      }
+    ]
+  }
+}
