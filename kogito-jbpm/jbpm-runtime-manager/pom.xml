@@ -220,6 +220,7 @@
               org.drools.core.common,
               org.drools.core.impl,
               org.drools.core.marshalling.impl,
+              org.drools.core.runtime,
               org.drools.core.time,
               org.drools.core.time.impl,
               org.drools.core.util,
