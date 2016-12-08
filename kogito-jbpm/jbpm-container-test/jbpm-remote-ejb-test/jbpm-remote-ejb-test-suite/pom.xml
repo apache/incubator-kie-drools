@@ -463,5 +463,18 @@
         </pluginManagement>
       </build>
     </profile>
+
+    <profile>
+      <id>skipTests</id>
+      <activation>
+        <property>
+          <name>skipTests</name>
+        </property>
+      </activation>
+      <properties>
+        <cargo.maven.skip>true</cargo.maven.skip>
+      </properties>
+    </profile>
   </profiles>
+
 </project>
