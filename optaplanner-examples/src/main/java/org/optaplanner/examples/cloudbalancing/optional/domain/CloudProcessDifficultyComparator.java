@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cloudbalancing.domain.solver;
+package org.optaplanner.examples.cloudbalancing.optional.domain;
 
 import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
+import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
-public class CloudComputerStrengthComparator implements Comparator<CloudComputer>, Serializable {
+public class CloudProcessDifficultyComparator implements Comparator<CloudProcess>, Serializable {
 
     @Override
-    public int compare(CloudComputer a, CloudComputer b) {
+    public int compare(CloudProcess a, CloudProcess b) {
         return new CompareToBuilder()
-                .append(a.getMultiplicand(), b.getMultiplicand())
-                .append(b.getCost(), a.getCost()) // Descending (but this is debatable)
+                .append(a.getRequiredMultiplicand(), b.getRequiredMultiplicand())
                 .append(a.getId(), b.getId())
                 .toComparison();
     }

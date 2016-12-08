@@ -19,6 +19,7 @@ package org.optaplanner.examples.cloudbalancing.app;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
+import org.optaplanner.examples.cloudbalancing.optional.benchmark.CloudBalancingBenchmarkApp;
 import org.optaplanner.examples.common.app.AbstractBenchmarkConfigTest;
 import org.optaplanner.examples.common.app.CommonBenchmarkApp;
 

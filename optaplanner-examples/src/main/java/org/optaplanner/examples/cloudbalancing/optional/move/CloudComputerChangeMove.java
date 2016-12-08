@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cloudbalancing.solver.move;
+package org.optaplanner.examples.cloudbalancing.optional.move;
 
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -28,52 +28,51 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 
-public class CloudProcessSwapMove extends AbstractMove {
+public class CloudComputerChangeMove extends AbstractMove {
 
-    private CloudProcess leftCloudProcess;
-    private CloudProcess rightCloudProcess;
+    private CloudProcess cloudProcess;
+    private CloudComputer toCloudComputer;
 
-    public CloudProcessSwapMove(CloudProcess leftCloudProcess, CloudProcess rightCloudProcess) {
-        this.leftCloudProcess = leftCloudProcess;
-        this.rightCloudProcess = rightCloudProcess;
+    public CloudComputerChangeMove(CloudProcess cloudProcess, CloudComputer toCloudComputer) {
+        this.cloudProcess = cloudProcess;
+        this.toCloudComputer = toCloudComputer;
     }
 
     @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        return !Objects.equals(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
+        return !Objects.equals(cloudProcess.getComputer(), toCloudComputer);
     }
 
     @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new CloudProcessSwapMove(rightCloudProcess, leftCloudProcess);
+        return new CloudComputerChangeMove(cloudProcess, cloudProcess.getComputer());
     }
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
-        CloudComputer oldLeftCloudComputer = leftCloudProcess.getComputer();
-        CloudComputer oldRightCloudComputer = rightCloudProcess.getComputer();
-        CloudBalancingMoveHelper.moveCloudComputer(scoreDirector, leftCloudProcess, oldRightCloudComputer);
-        CloudBalancingMoveHelper.moveCloudComputer(scoreDirector, rightCloudProcess, oldLeftCloudComputer);
+        scoreDirector.beforeVariableChanged(cloudProcess, "computer");
+        cloudProcess.setComputer(toCloudComputer);
+        scoreDirector.afterVariableChanged(cloudProcess, "computer");
     }
 
     @Override
     public Collection<? extends Object> getPlanningEntities() {
-        return Arrays.asList(leftCloudProcess, rightCloudProcess);
+        return Collections.singletonList(cloudProcess);
     }
 
     @Override
     public Collection<? extends Object> getPlanningValues() {
-        return Arrays.asList(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
+        return Collections.singletonList(toCloudComputer);
     }
 
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        } else if (o instanceof CloudProcessSwapMove) {
-            CloudProcessSwapMove other = (CloudProcessSwapMove) o;
+        } else if (o instanceof CloudComputerChangeMove) {
+            CloudComputerChangeMove other = (CloudComputerChangeMove) o;
             return new EqualsBuilder()
-                    .append(leftCloudProcess, other.leftCloudProcess)
-                    .append(rightCloudProcess, other.rightCloudProcess)
+                    .append(cloudProcess, other.cloudProcess)
+                    .append(toCloudComputer, other.toCloudComputer)
                     .isEquals();
         } else {
             return false;
@@ -82,14 +81,13 @@ public class CloudProcessSwapMove extends AbstractMove {
 
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(leftCloudProcess)
-                .append(rightCloudProcess)
+                .append(cloudProcess)
+                .append(toCloudComputer)
                 .toHashCode();
     }
 
     public String toString() {
-        return leftCloudProcess + " {" + leftCloudProcess.getComputer() +  "} <-> "
-                + rightCloudProcess + " {" + rightCloudProcess.getComputer() + "}";
+        return cloudProcess + " {" + cloudProcess.getComputer() + " -> " + toCloudComputer + "}";
     }
 
 }

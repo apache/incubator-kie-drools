@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cloudbalancing.variants.solver.partitioner;
+package org.optaplanner.examples.cloudbalancing.optional.partitioner;
 
 import java.util.ArrayList;
 import java.util.List;

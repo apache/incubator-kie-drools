@@ -126,7 +126,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
 
     protected Solver<CloudBalance> buildSolver() {
         SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
-                "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+                CloudBalancingApp.SOLVER_CONFIG);
         solverFactory.getSolverConfig().setDaemon(true);
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setBestScoreFeasible(true);

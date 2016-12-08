@@ -44,7 +44,7 @@ Simplest configuration:
 [source,xml,options="nowrap"]
 ----
   <partitionedSearch>
-    <solutionPartitionerClass>org.optaplanner.examples.cloudbalancing.variants.solver.partitioner.CloudBalancePartitioner</solutionPartitionerClass>
+    <solutionPartitionerClass>org.optaplanner.examples.cloudbalancing.optional.partitioner.CloudBalancePartitioner</solutionPartitionerClass>
   </partitionedSearch>
 ----
 
@@ -56,7 +56,7 @@ Advanced configuration:
 ----
   <partitionedSearch>
     ...
-    <solutionPartitionerClass>org.optaplanner.examples.cloudbalancing.variants.solver.partitioner.CloudBalancePartitioner</solutionPartitionerClass>
+    <solutionPartitionerClass>org.optaplanner.examples.cloudbalancing.optional.partitioner.CloudBalancePartitioner</solutionPartitionerClass>
     <threadFactoryClass>...MyAppServerThreadFactory</threadFactoryClass>
     <runnablePartThreadLimit>4</runnablePartThreadLimit>
 
@@ -80,7 +80,7 @@ followed by a non-partitioned Local Search phase:
 [source,xml,options="nowrap"]
 ----
   <partitionedSearch>
-    <solutionPartitionerClass>org.optaplanner.examples.cloudbalancing.variants.solver.partitioner.CloudBalancePartitioner</solutionPartitionerClass>
+    <solutionPartitionerClass>...CloudBalancePartitioner</solutionPartitionerClass>
 
     <constructionHeuristic/>
     <localSearch>
@@ -103,7 +103,7 @@ To use a custom `SolutionPartitioner`, configure one on the Partitioned Search p
 [source,xml,options="nowrap"]
 ----
   <partitionedSearch>
-    <solutionPartitionerClass>org.optaplanner.examples.cloudbalancing.variants.solver.partitioner.CloudBalancePartitioner</solutionPartitionerClass>
+    <solutionPartitionerClass>org.optaplanner.examples.cloudbalancing.optional.partitioner.CloudBalancePartitioner</solutionPartitionerClass>
   </partitionedSearch>
 ----
 
