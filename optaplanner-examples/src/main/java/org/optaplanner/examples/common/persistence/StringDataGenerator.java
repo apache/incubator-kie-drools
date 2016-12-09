@@ -24,16 +24,16 @@ public class StringDataGenerator {
     public static StringDataGenerator build10kFullNames() {
         return new StringDataGenerator()
                 .addPart(
-                        "Geoff",
-                        "Mark",
-                        "Edson",
-                        "Ondrej",
-                        "Lukas",
-                        "Vicky",
-                        "Shelly",
-                        "Peter",
-                        "Micha",
-                        "Steph")
+                        "Amy",
+                        "Beth",
+                        "Chad",
+                        "Dan",
+                        "Elsa",
+                        "Flo",
+                        "Gus",
+                        "Hugo",
+                        "Ivy",
+                        "Jay")
                 .addPart(
                         "A.",
                         "B.",
@@ -57,16 +57,16 @@ public class StringDataGenerator {
                         "W.",
                         "X.")
                 .addPart(
-                        "Smet",
-                        "Proc",
-                        "Fusco",
-                        "Skop",
-                        "Davis",
+                        "Cole",
+                        "Fox",
+                        "Green",
+                        "Jones",
+                        "King",
+                        "Li",
+                        "Poe",
+                        "Rye",
                         "Smith",
-                        "Gowan",
-                        "Siro",
-                        "Kief",
-                        "Snos");
+                        "Watt");
     }
 
     public static StringDataGenerator build1kCompanyNames() {
@@ -104,6 +104,54 @@ public class StringDataGenerator {
                         "BR",
                         "IN",
                         "ES");
+    }
+
+    public static StringDataGenerator build10kLocationNames() {
+        return new StringDataGenerator()
+                .addPart(
+                        "Los",
+                        "San",
+                        "Las",
+                        "Santa",
+                        "New",
+                        "Fort",
+                        "Mount",
+                        "Saint",
+                        "Little",
+                        "El")
+                .addPart(
+                        "Angeles",
+                        "Francisco",
+                        "Vegas",
+                        "Barbara",
+                        "York",
+                        "Collins",
+                        "Vernon",
+                        "Peter",
+                        "Rock",
+                        "Paso")
+                .addPart(
+                        "Town",
+                        "City",
+                        "Falls",
+                        "Ville",
+                        "Field",
+                        "Polis",
+                        "Shire",
+                        "Berg",
+                        "Borough",
+                        "Island")
+                .addPart(
+                        "AL",
+                        "CA",
+                        "DE",
+                        "FL",
+                        "GA",
+                        "HI",
+                        "IN",
+                        "KS",
+                        "LA",
+                        "ME");
     }
 
     private final String delimiter;
