@@ -31,7 +31,7 @@
       </semantic:rule>
       <semantic:rule id="_7000e1c6-a218-49c6-854b-e9df218aeeac">
         <semantic:inputEntry id="_7000e1c6-a218-49c6-854b-e9df218aeeac-0">
-          <semantic:text>not(="Student")</semantic:text>
+          <semantic:text>not("Student")</semantic:text>
         </semantic:inputEntry>
         <semantic:outputEntry id="_7000e1c6-a218-49c6-854b-e9df218aeeac-1">
           <semantic:text>"Is not a Student"</semantic:text>

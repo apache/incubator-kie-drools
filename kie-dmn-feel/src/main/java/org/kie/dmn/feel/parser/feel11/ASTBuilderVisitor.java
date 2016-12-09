@@ -16,11 +16,16 @@
 
 package org.kie.dmn.feel.parser.feel11;
 
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.kie.dmn.feel.lang.ast.*;
+import org.kie.dmn.feel.runtime.UnaryTest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class ASTBuilderVisitor
         extends FEEL_1_1BaseVisitor<BaseNode> {
@@ -58,8 +63,11 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitLogicalNegation(FEEL_1_1Parser.LogicalNegationContext ctx) {
+        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key() );
         BaseNode node = visit( ctx.unaryExpression() );
-        return ASTBuilderFactory.newNotNode( ctx, node );
+        ListNode params = ASTBuilderFactory.newListNode( ctx.unaryExpression(), Arrays.asList( node ) );
+
+        return buildFunctionCall( ctx, name, params );
     }
 
     @Override
@@ -132,7 +140,8 @@ public class ASTBuilderVisitor
     public BaseNode visitSimpleUnaryTests(FEEL_1_1Parser.SimpleUnaryTestsContext ctx) {
         List<BaseNode> tests = new ArrayList<>();
         for ( int i = 0; i < ctx.getChildCount(); i++ ) {
-            if ( ctx.getChild( i ) instanceof FEEL_1_1Parser.SimpleUnaryTestContext ) {
+            if ( ctx.getChild( i ) instanceof FEEL_1_1Parser.SimpleUnaryTestContext ||
+                    ctx.getChild( i ) instanceof FEEL_1_1Parser.PrimaryContext) {
                 tests.add( visit( ctx.getChild( i ) ) );
             }
         }
@@ -310,31 +319,10 @@ public class ASTBuilderVisitor
         return ASTBuilderFactory.newQuantifiedExpression( ctx, QuantifiedExpressionNode.Quantifier.EVERY, list, expr );
     }
 
-//    @Override
-//    public BaseNode visitPathExpression(FEEL_1_1Parser.PathExpressionContext ctx) {
-//        BaseNode expr = visit( ctx.expr );
-//        BaseNode name = visit( ctx.name );
-//        return ASTBuilderFactory.newPathExpressionNode( ctx, expr, name );
-//    }
-
     @Override
     public BaseNode visitNameRef(FEEL_1_1Parser.NameRefContext ctx) {
         return ASTBuilderFactory.newNameRefNode( ctx );
     }
-
-//    @Override
-//    public BaseNode visitExpressionBoxed(FEEL_1_1Parser.ExpressionBoxedContext ctx) {
-//        BaseNode expr = visit( ctx.expr );
-//        if ( ctx.filter != null ) {
-//            BaseNode filter = visit( ctx.filter );
-//            expr = ASTBuilderFactory.newFilterExpressionNode( ctx, expr, filter );
-//            if( ctx.qualifiedName() != null ) {
-//                BaseNode path = visit( ctx.qualifiedName() );
-//                expr = ASTBuilderFactory.newPathExpressionNode( ctx, expr, path );
-//            }
-//        }
-//        return expr;
-//    }
 
     @Override
     public BaseNode visitPositionalParameters(FEEL_1_1Parser.PositionalParametersContext ctx) {
@@ -381,9 +369,64 @@ public class ASTBuilderVisitor
         BaseNode name = visit( ctx.qualifiedName() );
         if( ctx.parameters() != null ) {
             ListNode params = (ListNode) visit( ctx.parameters() );
-            return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
+            return buildFunctionCall( ctx, name, params );
         } else {
             return name;
+        }
+    }
+
+    private String getFunctionName(BaseNode name) {
+        String functionName = null;
+        if ( name instanceof NameRefNode ) {
+            // simple name
+            functionName = name.getText();
+        } else {
+            QualifiedNameNode qn = (QualifiedNameNode) name;
+            functionName = qn.getParts().stream().map( p -> p.getText() ).collect( Collectors.joining( " ") );
+        }
+        return functionName;
+    }
+
+    private BaseNode buildFunctionCall(ParserRuleContext ctx, BaseNode name, ListNode params) {
+        String functionName = getFunctionName( name );
+        if( "not".equals( functionName ) ) {
+            return buildNotCall( ctx, name, params );
+        } else {
+            return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
+        }
+    }
+
+    private BaseNode buildNotCall(ParserRuleContext ctx, BaseNode name, ListNode params) {
+        // if a not() call is found, we have to differentiate between the boolean function
+        // and the unary tests operator
+        if( params.getElements().size() == 1 ) {
+            // if it is a single parameter, we need to check if the type is boolean
+            BaseNode param = params.getElements().get( 0 );
+            if( param instanceof UnaryTestNode ) {
+                return ASTBuilderFactory.newUnaryTestNode( ctx, "not", params );
+            } else if( param instanceof BooleanNode ) {
+                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
+            } else if( param instanceof NameRefNode ) {
+                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
+            } else if( param instanceof QuantifiedExpressionNode ) {
+                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
+            } else if( param instanceof InstanceOfNode ) {
+                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
+            } else if( param instanceof BetweenNode ) {
+                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
+            } else if( param instanceof InNode ) {
+                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
+            } else if( param instanceof InfixOpNode && ((InfixOpNode)param).isBoolean() ) {
+                return ASTBuilderFactory.newFunctionInvocationNode( ctx, name, params );
+            } else if( param instanceof RangeNode ) {
+                return ASTBuilderFactory.newUnaryTestNode( ctx, "not", params );
+            } else if( param instanceof DashNode ) {
+                return ASTBuilderFactory.newUnaryTestNode( ctx, "not", params );
+            } else {
+                return ASTBuilderFactory.newUnaryTestNode( ctx, "not", params );
+            }
+        } else {
+            return ASTBuilderFactory.newUnaryTestNode( ctx, "not", params );
         }
     }
 
@@ -430,7 +473,8 @@ public class ASTBuilderVisitor
 
     @Override
     public BaseNode visitNegatedUnaryTests(FEEL_1_1Parser.NegatedUnaryTestsContext ctx) {
-        BaseNode value = visit( ctx.simpleUnaryTests() );
-        return ASTBuilderFactory.newUnaryTestNode( ctx, "not", value );
+        BaseNode name = ASTBuilderFactory.newNameRefNode( ctx.not_key() );
+        ListNode value = (ListNode) visit( ctx.simpleUnaryTests() );
+        return buildFunctionCall( ctx, name, value );
     }
 }

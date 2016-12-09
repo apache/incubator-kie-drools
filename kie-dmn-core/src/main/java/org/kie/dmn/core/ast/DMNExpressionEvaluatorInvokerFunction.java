@@ -95,7 +95,7 @@ public class DMNExpressionEvaluatorInvokerFunction implements DMNExpressionEvalu
             this.resultContext = result;
         }
 
-        public Object apply(EvaluationContext ctx, Object[] params) {
+        public Object invoke(EvaluationContext ctx, Object[] params) {
             DMNContext previousContext = resultContext.getContext();
             try {
                 DMNContextImpl dmnContext = new DMNContextImpl();

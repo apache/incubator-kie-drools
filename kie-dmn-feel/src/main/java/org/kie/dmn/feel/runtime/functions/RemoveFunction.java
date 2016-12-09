@@ -32,7 +32,7 @@ public class RemoveFunction
         super( "remove" );
     }
 
-    public FEELFnResult<List> apply(@ParameterName( "list" ) List list, @ParameterName( "position" ) BigDecimal position) {
+    public FEELFnResult<List> invoke(@ParameterName( "list" ) List list, @ParameterName( "position" ) BigDecimal position) {
         if ( list == null ) { 
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }

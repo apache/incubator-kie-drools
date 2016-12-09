@@ -34,7 +34,7 @@ public class AppendFunction
         super( "append" );
     }
 
-    public FEELFnResult<List> apply( @ParameterName( "list" ) List list, @ParameterName( "item" ) Object[] items ) {
+    public FEELFnResult<List> invoke( @ParameterName( "list" ) List list, @ParameterName( "item" ) Object[] items ) {
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }

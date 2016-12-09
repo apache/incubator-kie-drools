@@ -33,7 +33,7 @@ public class DateTimeFunction
         super( "date and time" );
     }
 
-    public FEELFnResult<TemporalAccessor> apply(@ParameterName( "from" ) String val) {
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "from" ) String val) {
         if ( val == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
@@ -45,7 +45,7 @@ public class DateTimeFunction
         }
     }
 
-    public FEELFnResult<TemporalAccessor> apply(@ParameterName( "date" ) Temporal date, @ParameterName( "time" ) Temporal time) {
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "date" ) Temporal date, @ParameterName( "time" ) Temporal time) {
         if ( date == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "date", "cannot be null"));
         }
@@ -65,7 +65,7 @@ public class DateTimeFunction
             } else if( date instanceof LocalDate && time instanceof OffsetTime ) {
                 return FEELFnResult.ofResult( ZonedDateTime.of( (LocalDate) date, LocalTime.from( time ), ZoneOffset.from( time ) ) );
             }
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot apply function for the input parameters"));
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "cannot invoke function for the input parameters"));
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "input parameters date-parsing exception", e));
         }

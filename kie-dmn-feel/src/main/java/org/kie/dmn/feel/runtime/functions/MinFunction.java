@@ -32,7 +32,7 @@ public class MinFunction
         super( "min" );
     }
 
-    public FEELFnResult<Object> apply(@ParameterName("list") List list) {
+    public FEELFnResult<Object> invoke(@ParameterName("list") List list) {
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         } else {
@@ -40,13 +40,13 @@ public class MinFunction
         }
     }
 
-    public FEELFnResult<Object> apply(@ParameterName("c") Object[] list) {
+    public FEELFnResult<Object> invoke(@ParameterName("c") Object[] list) {
         if ( list == null ) { 
             // Arrays.asList does not accept null as parameter
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "c", "cannot be null"));
         }
         
-        return apply( Arrays.asList( list ) );
+        return invoke( Arrays.asList( list ) );
     }
 
 }

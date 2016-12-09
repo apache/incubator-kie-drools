@@ -32,7 +32,7 @@ public class CountFunction
         super( "count" );
     }
 
-    public FEELFnResult<BigDecimal> apply(@ParameterName( "list" ) List list) {
+    public FEELFnResult<BigDecimal> invoke(@ParameterName( "list" ) List list) {
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
@@ -40,11 +40,11 @@ public class CountFunction
         return FEELFnResult.ofResult( BigDecimal.valueOf( list.size() ) );
     }
 
-    public FEELFnResult<BigDecimal> apply(@ParameterName( "c" ) Object[] list) {
+    public FEELFnResult<BigDecimal> invoke(@ParameterName( "c" ) Object[] list) {
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "c", "cannot be null"));
         }
         
-        return apply( Arrays.asList( list ) );
+        return invoke( Arrays.asList( list ) );
     }
 }

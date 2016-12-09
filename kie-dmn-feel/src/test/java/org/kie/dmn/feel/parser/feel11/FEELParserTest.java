@@ -164,12 +164,12 @@ public class FEELParserTest {
         String inputExpression = "not ( true )";
         BaseNode neg = parse( inputExpression );
 
-        assertThat( neg, is( instanceOf( NotNode.class ) ) );
+        assertThat( neg, is( instanceOf( FunctionInvocationNode.class ) ) );
         assertThat( neg.getText(), is( "not ( true )" ) );
 
-        NotNode not = (NotNode) neg;
-        assertThat( not.getExpression(), is( instanceOf( BooleanNode.class ) ) );
-        assertThat( not.getExpression().getText(), is( "true" ) );
+        FunctionInvocationNode not = (FunctionInvocationNode) neg;
+        assertThat( not.getParams().getElements().get( 0 ), is( instanceOf( BooleanNode.class ) ) );
+        assertThat( not.getParams().getElements().get( 0 ).getText(), is( "true" ) );
     }
 
     @Test
