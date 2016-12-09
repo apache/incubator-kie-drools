@@ -32,7 +32,7 @@ public class UnionFunction
         super( "union" );
     }
 
-    public FEELFnResult<List> apply(@ParameterName("list") Object[] lists) {
+    public FEELFnResult<List> invoke(@ParameterName("list") Object[] lists) {
         if ( lists == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "lists", "cannot be null"));
         }

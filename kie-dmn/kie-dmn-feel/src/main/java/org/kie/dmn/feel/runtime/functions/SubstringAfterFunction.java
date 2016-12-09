@@ -28,7 +28,7 @@ public class SubstringAfterFunction
         super( "substring after" );
     }
 
-    public FEELFnResult<String> apply(@ParameterName( "string" ) String string, @ParameterName( "match" ) String match) {
+    public FEELFnResult<String> invoke(@ParameterName( "string" ) String string, @ParameterName( "match" ) String match) {
         if ( string == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "string", "cannot be null"));
         }

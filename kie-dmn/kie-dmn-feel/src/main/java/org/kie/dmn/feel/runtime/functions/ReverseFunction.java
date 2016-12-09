@@ -32,7 +32,7 @@ public class ReverseFunction
         super( "reverse" );
     }
 
-    public FEELFnResult<List> apply(@ParameterName("list") List list) {
+    public FEELFnResult<List> invoke(@ParameterName("list") List list) {
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }

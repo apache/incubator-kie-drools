@@ -29,7 +29,7 @@ public class NowFunction
         super( "now" );
     }
 
-    public FEELFnResult<TemporalAccessor> apply() {
+    public FEELFnResult<TemporalAccessor> invoke() {
         return FEELFnResult.ofResult( ZonedDateTime.now() );
     }
 

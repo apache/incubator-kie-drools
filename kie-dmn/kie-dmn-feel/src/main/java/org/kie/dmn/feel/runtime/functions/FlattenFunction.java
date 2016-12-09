@@ -32,7 +32,7 @@ public class FlattenFunction
         super( "flatten" );
     }
 
-    public FEELFnResult<List> apply(@ParameterName( "list" ) Object list) {
+    public FEELFnResult<List> invoke(@ParameterName( "list" ) Object list) {
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }

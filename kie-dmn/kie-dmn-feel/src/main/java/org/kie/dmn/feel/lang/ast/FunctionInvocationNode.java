@@ -69,7 +69,7 @@ public class FunctionInvocationNode
             function = (FEELFunction) value;
             if ( function != null ) {
                 Object[] p = params.getElements().stream().map( e -> e.evaluate( ctx ) ).toArray( Object[]::new );
-                Object result = function.applyReflectively( ctx, p );
+                Object result = function.invokeReflectively( ctx, p );
                 return result;
             } else {
                 logger.error( "Function not found: '" + name.getText() + "'" );

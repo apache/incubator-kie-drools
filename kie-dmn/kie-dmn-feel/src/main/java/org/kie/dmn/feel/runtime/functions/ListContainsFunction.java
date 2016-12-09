@@ -30,7 +30,7 @@ public class ListContainsFunction
         super( "list contains" );
     }
 
-    public FEELFnResult<Boolean> apply(@ParameterName("list") List list, @ParameterName("element") Object element) {
+    public FEELFnResult<Boolean> invoke(@ParameterName("list") List list, @ParameterName("element") Object element) {
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         } else {

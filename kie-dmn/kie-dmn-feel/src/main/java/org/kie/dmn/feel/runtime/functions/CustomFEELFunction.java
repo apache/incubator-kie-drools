@@ -49,7 +49,7 @@ public class CustomFEELFunction
         return Arrays.asList( parameters );
     }
 
-    public FEELFnResult<Object> apply(EvaluationContext ctx, Object[] params ) {
+    public FEELFnResult<Object> invoke(EvaluationContext ctx, Object[] params ) {
         if( params.length != parameters.size() ) {
             return FEELFnResult.ofError(new InvalidInputEvent(Severity.ERROR, "Illegal invocation of function", getName(), getName() + "( " + Arrays.asList(params)+" )", getSignature()));
         }

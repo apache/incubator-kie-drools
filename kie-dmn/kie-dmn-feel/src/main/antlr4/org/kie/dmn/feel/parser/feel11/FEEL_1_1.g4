@@ -273,7 +273,7 @@ booleanLiteral
  **************************/
 // #13
 simpleUnaryTests
-    : simpleUnaryTest ( ',' simpleUnaryTest )*
+    : (simpleUnaryTest|primary) ( ',' (simpleUnaryTest|primary) )*
     ;
 
 // #7

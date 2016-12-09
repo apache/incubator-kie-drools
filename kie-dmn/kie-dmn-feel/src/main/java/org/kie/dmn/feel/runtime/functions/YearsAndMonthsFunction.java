@@ -32,7 +32,7 @@ public class YearsAndMonthsFunction
         super( "years and months duration" );
     }
 
-    public FEELFnResult<TemporalAmount> apply(@ParameterName("from") LocalDate from, @ParameterName("to") LocalDate to) {
+    public FEELFnResult<TemporalAmount> invoke(@ParameterName("from") LocalDate from, @ParameterName("to") LocalDate to) {
         if ( from == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }

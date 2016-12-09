@@ -55,7 +55,7 @@ public class DecisionTableFunction
      composed of outputs and output values; else default output value is one
      of the output values.
      */
-    public Object apply(
+    public Object invoke(
             @ParameterName("outputs") Object outputs, @ParameterName("input expression list") Object inputExpressionList,
             @ParameterName("input values list") List<?> inputValuesList,
             @ParameterName("output values") Object outputValues,

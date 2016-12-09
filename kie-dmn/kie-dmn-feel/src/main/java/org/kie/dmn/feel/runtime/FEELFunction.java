@@ -66,6 +66,6 @@ public interface FEELFunction {
      * @param params
      * @return
      */
-    Object applyReflectively(EvaluationContext ctx, Object[] params);
+    Object invokeReflectively(EvaluationContext ctx, Object[] params);
 
 }

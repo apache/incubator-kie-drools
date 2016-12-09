@@ -36,7 +36,7 @@ public class TimeFunction
         super( "time" );
     }
 
-    public FEELFnResult<TemporalAccessor> apply(@ParameterName("from") String val) {
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName("from") String val) {
         if ( val == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
@@ -48,7 +48,7 @@ public class TimeFunction
         }
     }
 
-    public FEELFnResult<TemporalAccessor> apply(
+    public FEELFnResult<TemporalAccessor> invoke(
             @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
             @ParameterName("second") Number seconds, @ParameterName("offset") Duration offset) {
         if ( hour == null ) {
@@ -72,7 +72,7 @@ public class TimeFunction
         }
     }
 
-    public FEELFnResult<TemporalAccessor> apply(@ParameterName("from") TemporalAccessor date) {
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName("from") TemporalAccessor date) {
         if ( date == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }

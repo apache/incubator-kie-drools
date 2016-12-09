@@ -30,7 +30,7 @@ public class CeilingFunction
         super( "ceiling" );
     }
 
-    public FEELFnResult<BigDecimal> apply(@ParameterName( "n" ) BigDecimal n) {
+    public FEELFnResult<BigDecimal> invoke(@ParameterName( "n" ) BigDecimal n) {
         if ( n == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "n", "cannot be null"));
         }

@@ -16,26 +16,26 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
-import java.math.BigDecimal;
-
-import org.kie.dmn.feel.runtime.events.FEELEvent;
-import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
-import org.kie.dmn.feel.runtime.functions.FEELFnResult;
-import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
-public class StringLengthFunction
+/**
+ * The not() function is a special case because
+ * it doubles both as a function and as a unary
+ * test.
+ */
+public class NotFunction
         extends BaseFEELFunction {
 
-    public StringLengthFunction() {
-        super( "string length" );
+    public NotFunction() {
+        super( "not" );
     }
 
-    public FEELFnResult<BigDecimal> invoke(@ParameterName("string") String string) {
-        if ( string == null ) {
-            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "string", "cannot be null"));
-        } else {
-            return FEELFnResult.ofResult( EvalHelper.getBigDecimalOrNull( string.length() ) );
+    public FEELFnResult<Boolean> invoke(@ParameterName("negand") Object negand) {
+        if ( negand != null && !(negand instanceof Boolean) ) {
+            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "negand", "must be a boolean value" ) );
         }
+        return FEELFnResult.ofResult( negand == null ? null : !((Boolean) negand).booleanValue() );
     }
+
 }
