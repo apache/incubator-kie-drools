@@ -46,6 +46,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import static org.drools.core.util.DroolsAssert.assertEnumerationSize;
 import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
 import static org.junit.Assert.*;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
@@ -316,7 +317,10 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
 
         assertEquals("There must be one package built", 1, kieBase.getKiePackages().size());
 
+        ClassLoader classLoader = kieContainer.getClassLoader();
 
+        assertEnumerationSize(1, classLoader.getResources("KBase1/org/test"));
+        assertEnumerationSize(1, classLoader.getResources("META-INF/maven/org.kie/maven-test.drl"));
     }
 
     public static String generatePomXml(ReleaseId releaseId, ReleaseId... dependencies) {
