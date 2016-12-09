@@ -79,6 +79,7 @@
   
   <persistence-unit name="org.jbpm.persistence.patient.example" transaction-type="JTA">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <jta-data-source>jdbc/jbpm-ds</jta-data-source>
     <class>org.jbpm.test.entity.Patient</class>
     <class>org.jbpm.test.entity.MedicalRecord</class>
     <class>org.jbpm.test.entity.RecordRow</class>
@@ -92,11 +93,6 @@
         
         <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->      
         <property name="hibernate.id.new_generator_mappings" value="false" />                    
-        
-        <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
-        <property name="hibernate.connection.url" value="jdbc:h2:mem:mydb" />
-        <property name="hibernate.connection.username" value="sa" />
-        <property name="hibernate.connection.password" value="sasa" />
         
         <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" /> 
       </properties>        

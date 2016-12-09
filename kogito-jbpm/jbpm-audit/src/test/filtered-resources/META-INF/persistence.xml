@@ -26,12 +26,6 @@
       <property name="hibernate.show_sql" value="false" />
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}" />
 
-      <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
-      <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
-      <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
-      <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
-      <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
-
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->
       <property name="hibernate.id.new_generator_mappings" value="false" />
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
@@ -40,6 +34,7 @@
 
   <persistence-unit name="org.jbpm.logging.jta" transaction-type="JTA">
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <jta-data-source>jdbc/testDS1</jta-data-source>
 
     <class>org.jbpm.process.audit.ProcessInstanceLog</class>
     <class>org.jbpm.process.audit.NodeInstanceLog</class>
@@ -50,12 +45,6 @@
       <property name="hibernate.hbm2ddl.auto" value="update" />
       <property name="hibernate.show_sql" value="false" />
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}" />
-
-      <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
-      <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
-      <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
-      <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
-      <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->
       <property name="hibernate.id.new_generator_mappings" value="false" />

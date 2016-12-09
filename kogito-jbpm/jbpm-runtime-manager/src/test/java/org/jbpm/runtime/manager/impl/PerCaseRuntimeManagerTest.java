@@ -421,10 +421,12 @@ public class PerCaseRuntimeManagerTest extends AbstractBaseTest {
         ProcessInstance pi1 = ksession.startProcess("IntermediateCatchEvent");
         // both processes started 
         assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
+        manager.disposeRuntimeEngine(runtime);
 
         // wait a bit for some timers to fire
         countDownListener.waitTillCompleted();
-        
+        runtime = manager.getRuntimeEngine(CaseContext.get("Case-1"));
+        ksession = runtime.getKieSession();
         ksession.abortProcessInstance(pi1.getId());
 
         manager.disposeRuntimeEngine(runtime);

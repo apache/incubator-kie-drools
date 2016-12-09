@@ -46,7 +46,9 @@ import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.task.TaskService;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.TaskServiceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -239,6 +241,19 @@ public class JPAWorkItemHandlerTest {
         RuntimeEnvironment env = 
              RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
              .entityManagerFactory(emf) 
+             .addEnvironmentEntry("org.kie.internal.runtime.manager.TaskServiceFactory", new TaskServiceFactory(){
+
+                @Override
+                public TaskService newTaskService() {
+                    return null;
+                }
+
+                @Override
+                public void close() {
+                    
+                }
+                 
+             })
              .addAsset(ResourceFactory.newClassPathResource("JPAWIH.bpmn2"),ResourceType.BPMN2)
              .get();        
         RuntimeManager manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(env);
