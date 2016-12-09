@@ -137,7 +137,7 @@ public class PersistableRunner implements SingleSessionCommandService {
 
         ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl(this.txm, this.sessionInfo ) );
 
-        this.sessionContext = RequestContext.create().with( this.ksession );
+        this.sessionContext = RequestContext.create(ksession.getClass().getClassLoader()).with(this.ksession);
 
         this.runner = new TransactionInterceptor();
 
@@ -248,7 +248,7 @@ public class PersistableRunner implements SingleSessionCommandService {
 
         if ( this.sessionContext == null ) {
             // this should only happen when this class is first constructed
-            this.sessionContext = RequestContext.create().with( this.ksession );
+            this.sessionContext = RequestContext.create(ksession.getClass().getClassLoader()).with( this.ksession );
         }
 
         this.runner = new TransactionInterceptor();
@@ -367,7 +367,7 @@ public class PersistableRunner implements SingleSessionCommandService {
     }
 
     public RequestContext createContext() {
-        return RequestContext.create().with( this.ksession );
+        return RequestContext.create(ksession.getClass().getClassLoader()).with( this.ksession );
     }
 
     public ChainableRunner getChainableRunner() {
