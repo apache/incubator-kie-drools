@@ -20,12 +20,14 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.drools.core.phreak.ReactiveObjectUtil.ModificationType.REMOVE;
 
 public class ReactiveFromNodeLeftTuple extends FromNodeLeftTuple {
 
-    private ModificationType modificationType = ModificationType.NONE;
+    private Map<Object, ModificationType> modificationTypeMap = new HashMap<>(); 
 
     private final Object[] objects;
     private final int hash;
@@ -70,10 +72,12 @@ public class ReactiveFromNodeLeftTuple extends FromNodeLeftTuple {
         return other instanceof ReactiveFromNodeLeftTuple && Arrays.equals( objects, ( (ReactiveFromNodeLeftTuple) other ).objects );
     }
 
-    public boolean updateModificationState(ModificationType newState ) {
-        switch (modificationType) {
+    public boolean updateModificationState(Object object, ModificationType newState ) {
+        ModificationType modificationType = modificationTypeMap.computeIfAbsent(object, (k) -> ModificationType.NONE);
+        switch ( modificationType ) {
             case NONE:
                 modificationType = newState;
+                modificationTypeMap.put(object, modificationType);
                 return true;
             case ADD:
                 if (newState == REMOVE) {
@@ -86,14 +90,11 @@ public class ReactiveFromNodeLeftTuple extends FromNodeLeftTuple {
                 }
                 break;
         }
+        modificationTypeMap.put(object, modificationType);
         return false;
     }
 
-    public void resetModificationState() {
-        modificationType = ModificationType.NONE;
-    }
-
-    public ModificationType getModificationType() {
-        return modificationType;
+    public ModificationType resetModificationState(Object object) {
+        return modificationTypeMap.remove(object);
     }
 }

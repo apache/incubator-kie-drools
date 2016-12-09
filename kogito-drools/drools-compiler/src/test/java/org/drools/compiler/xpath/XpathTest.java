@@ -1166,4 +1166,98 @@ public class XpathTest {
         System.out.println(list);
         assertEquals( 1, list.size() );
     }
+    
+    @Test   
+    public void testDoubleAdd() {
+        // DROOLS-1376
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "  Group( $id: name, $p: /members{age >= 20} )\n" +
+                "then\n" +
+                "  System.out.println( $id + \".\" + $p.getName() );\n" +
+                "  insertLogical(      $id + \".\" + $p.getName() );\n" +
+                "end\n";
+ 
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+        
+        Group x = new Group("X");
+        Group y = new Group("Y");
+        ksession.insert( x );
+        ksession.insert( y );
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertFalse (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        
+        Adult ada = new Adult("Ada", 20);
+        Adult bea = new Adult("Bea", 20);
+        x.addPerson(ada);
+        x.addPerson(bea);
+        y.addPerson(ada);
+        y.addPerson(bea);
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.Ada"));
+        assertTrue  (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
+        assertTrue  (factsCollection(ksession).contains("Y.Bea"));
+        
+        x.removePerson(ada);
+        x.removePerson(bea);
+        y.removePerson(ada);
+        y.removePerson(bea);  
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertFalse (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+    }
+    
+    @Test
+    public void testDoubleRemove() {
+        // DROOLS-1376
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "  Group( $id: name, $p: /members{age >= 20} )\n" +
+                "then\n" +
+                "  System.out.println( $id + \".\" + $p.getName() );\n" +
+                "  insertLogical(      $id + \".\" + $p.getName() );\n" +
+                "end\n";
+ 
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+        
+        Adult ada = new Adult("Ada", 20);
+        Adult bea = new Adult("Bea", 20);
+        Group x = new Group("X");
+        Group y = new Group("Y");
+        x.addPerson(ada);
+        x.addPerson(bea);
+        y.addPerson(ada);
+        y.addPerson(bea);
+        ksession.insert( x );
+        ksession.insert( y );
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.Ada"));
+        assertTrue  (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
+        assertTrue  (factsCollection(ksession).contains("Y.Bea"));
+        
+        x.removePerson(ada);
+        x.removePerson(bea);
+        y.removePerson(ada);
+        y.removePerson(bea);  
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertFalse (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+    }
 }
