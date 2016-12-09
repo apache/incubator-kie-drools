@@ -42,7 +42,7 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
     protected boolean assertShadowVariablesAreNotStale = false;
     protected boolean assertBestScoreIsUnmodified = false;
 
-    protected SolverEventSupport solverEventSupport;
+    protected SolverEventSupport<Solution_> solverEventSupport;
 
     public void setAssertInitialScoreFromScratch(boolean assertInitialScoreFromScratch) {
         this.assertInitialScoreFromScratch = assertInitialScoreFromScratch;
@@ -56,7 +56,7 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         this.assertBestScoreIsUnmodified = assertBestScoreIsUnmodified;
     }
 
-    public void setSolverEventSupport(SolverEventSupport solverEventSupport) {
+    public void setSolverEventSupport(SolverEventSupport<Solution_> solverEventSupport) {
         this.solverEventSupport = solverEventSupport;
     }
 

@@ -27,6 +27,7 @@ import static org.junit.Assert.*;
 public class SolverFactoryTest {
 
     @Test
+    @SuppressWarnings("rawtypes")
     public void testdataSolverConfigWithoutGenericsForBackwardsCompatibility() {
         SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml");

@@ -213,7 +213,7 @@ public class PlannerAssert extends Assert {
                     + "->" + convertToCodeAssertable(changeMove.getToPlanningValue()).getCode();
             return () -> code;
         } else if (o instanceof SwapMove) {
-            SwapMove swapMove = (SwapMove) o;
+            SwapMove<?> swapMove = (SwapMove) o;
             final String code = convertToCodeAssertable(swapMove.getLeftEntity()).getCode()
                     + "<->" + convertToCodeAssertable(swapMove.getRightEntity()).getCode();
             return () -> code;
@@ -226,7 +226,7 @@ public class PlannerAssert extends Assert {
             final String code = codeBuilder.substring(1);
             return () -> code;
         } else if (o instanceof List) {
-            List list = (List) o;
+            List<?> list = (List) o;
             StringBuilder codeBuilder = new StringBuilder("[");
             boolean firstElement = true;
             for (Object element : list) {

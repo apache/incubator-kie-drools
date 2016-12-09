@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.holder;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
 import org.kie.api.definition.rule.Rule;
@@ -29,9 +30,14 @@ import static org.mockito.Mockito.*;
 
 public abstract class AbstractScoreHolderTest {
 
+    private static interface TestModedAssertion extends ModedAssertion<TestModedAssertion> {
+    }
+
     protected RuleContext mockRuleContext(String ruleName) {
         RuleContext kcontext = mock(RuleContext.class);
-        AgendaItem agendaItem = new AgendaItemImpl() {
+        AgendaItemImpl<TestModedAssertion> agendaItem = new AgendaItemImpl<TestModedAssertion>() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public List<Object> getObjects() {
                 return Collections.emptyList();
@@ -46,7 +52,7 @@ public abstract class AbstractScoreHolderTest {
     }
 
     protected void callUnMatch(RuleContext ruleContext) {
-        AgendaItem agendaItem = (AgendaItem) ruleContext.getMatch();
+        AgendaItem<?> agendaItem = (AgendaItem) ruleContext.getMatch();
         agendaItem.getActivationUnMatchListener().unMatch(mock(RuleRuntime.class), agendaItem);
     }
 

@@ -234,7 +234,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
     }
 
     private void putConstraintUndoListener(RuleContext kcontext, int scoreLevel, ConstraintUndoListener constraintUndoListener) {
-        AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
+        AgendaItem<?> agendaItem = (AgendaItem) kcontext.getMatch();
         ActivationUnMatchListener activationUnMatchListener = agendaItem.getActivationUnMatchListener();
         if (activationUnMatchListener != null) {
             MultiLevelActivationUnMatchListener multiLevelActivationUnMatchListener = (MultiLevelActivationUnMatchListener) activationUnMatchListener;
