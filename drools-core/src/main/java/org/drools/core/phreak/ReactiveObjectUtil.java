@@ -44,7 +44,7 @@ public class ReactiveObjectUtil {
 
     public static void notifyModification( Object object, Collection<Tuple> leftTuples, ModificationType type ) {
         for (Tuple leftTuple : leftTuples) {
-            if (!( (ReactiveFromNodeLeftTuple) leftTuple ).updateModificationState( type )) {
+            if (!( (ReactiveFromNodeLeftTuple) leftTuple ).updateModificationState( object, type )) {
                 continue;
             }
             PropagationContext propagationContext = leftTuple.getPropagationContext();
@@ -82,7 +82,7 @@ public class ReactiveObjectUtil {
 
         @Override
         public void execute( InternalWorkingMemory wm ) {
-            if ( leftTuple.getModificationType() == ModificationType.NONE ) {
+            if ( leftTuple.resetModificationState( object ) == ModificationType.NONE ) {
                 return;
             }
 
@@ -117,8 +117,6 @@ public class ReactiveObjectUtil {
             }
 
             mem.getBetaMemory().setNodeDirty(wm);
-
-            leftTuple.resetModificationState();
         }
     }
 }
