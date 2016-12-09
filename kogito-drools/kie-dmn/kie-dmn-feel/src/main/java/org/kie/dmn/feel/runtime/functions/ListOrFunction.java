@@ -31,7 +31,7 @@ public class ListOrFunction
         super( "list or" );
     }
 
-    public FEELFnResult<Boolean> apply(@ParameterName( "list" ) List list) {
+    public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) List list) {
         boolean result = false;
         for ( Object element : list ) {
             if ( element instanceof Boolean ) {
@@ -46,16 +46,16 @@ public class ListOrFunction
         return FEELFnResult.ofResult( result );
     }
 
-    public FEELFnResult<Boolean> apply(@ParameterName( "list" ) Boolean single) {
+    public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) Boolean single) {
         return FEELFnResult.ofResult( single );
     }
 
-    public FEELFnResult<Boolean> apply(@ParameterName( "b" ) Object[] list) {
+    public FEELFnResult<Boolean> invoke(@ParameterName( "b" ) Object[] list) {
         if ( list == null ) { 
             // Arrays.asList does not accept null as parameter
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "b", "cannot be null"));
         }
         
-        return apply( Arrays.asList( list ) );
+        return invoke( Arrays.asList( list ) );
     }
 }

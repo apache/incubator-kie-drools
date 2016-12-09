@@ -28,7 +28,7 @@ public class StringLowerCaseFunction
         super( "lower case" );
     }
 
-    public FEELFnResult<String> apply(@ParameterName("string") String string) {
+    public FEELFnResult<String> invoke(@ParameterName("string") String string) {
         if ( string == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "string", "cannot be null"));
         } else {

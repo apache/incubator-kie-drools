@@ -32,7 +32,7 @@ public class NumberFunction
         super( "number" );
     }
 
-    public FEELFnResult<BigDecimal> apply(@ParameterName("from") String from, @ParameterName("grouping separator") String group, @ParameterName("decimal separator") String decimal) {
+    public FEELFnResult<BigDecimal> invoke(@ParameterName("from") String from, @ParameterName("grouping separator") String group, @ParameterName("decimal separator") String decimal) {
         if ( from == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }

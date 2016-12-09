@@ -29,7 +29,7 @@ public class FEELOperatorsTest extends BaseFEELTest {
                 { "not( true )", Boolean.FALSE },
                 { "not( false )", Boolean.TRUE },
                 { "not( 10 = 3 )", Boolean.TRUE },
-                { "not( \"foo\" )", null },
+                { "not( \"foo\" )", UnaryTest.class },
 
                 // between
                 { "10 between 5 and 12", Boolean.TRUE },

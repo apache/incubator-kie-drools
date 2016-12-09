@@ -31,11 +31,11 @@ public class SublistFunction
         super( "sublist" );
     }
 
-    public FEELFnResult<List> apply(@ParameterName("list") List list, @ParameterName("start position") BigDecimal start) {
-        return apply( list, start, null );
+    public FEELFnResult<List> invoke(@ParameterName("list") List list, @ParameterName("start position") BigDecimal start) {
+        return invoke( list, start, null );
     }
 
-    public FEELFnResult<List> apply(@ParameterName("list") List list, @ParameterName("start position") BigDecimal start, @ParameterName("length") BigDecimal length) {
+    public FEELFnResult<List> invoke(@ParameterName("list") List list, @ParameterName("start position") BigDecimal start, @ParameterName("length") BigDecimal length) {
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }

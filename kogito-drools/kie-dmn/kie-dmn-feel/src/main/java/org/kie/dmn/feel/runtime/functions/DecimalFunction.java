@@ -30,7 +30,7 @@ public class DecimalFunction
         super( "decimal" );
     }
 
-    public FEELFnResult<BigDecimal> apply(@ParameterName( "n" ) BigDecimal n, @ParameterName( "scale" ) BigDecimal scale) {
+    public FEELFnResult<BigDecimal> invoke(@ParameterName( "n" ) BigDecimal n, @ParameterName( "scale" ) BigDecimal scale) {
         if ( n == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "n", "cannot be null"));
         }

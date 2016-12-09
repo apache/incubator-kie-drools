@@ -72,8 +72,8 @@ public abstract class BaseFEELFunction
     }
 
     @Override
-    public Object applyReflectively(EvaluationContext ctx, Object[] params) {
-        // use reflection to call the appropriate apply method
+    public Object invokeReflectively(EvaluationContext ctx, Object[] params) {
+        // use reflection to call the appropriate invoke method
         try {
             boolean isNamedParams = params.length > 0 && params[0] instanceof NamedParameter;
             if ( !isCustomFunction() ) {
@@ -125,7 +125,7 @@ public abstract class BaseFEELFunction
                 if ( isNamedParams ) {
                     params = rearrangeParameters( params, this.getParameterNames().get( 0 ) );
                 }
-                Object result = apply( ctx, params );
+                Object result = invoke( ctx, params );
                 if ( result instanceof Either ) {
                     @SuppressWarnings("unchecked")
                     Either<FEELEvent, Object> either = (Either<FEELEvent, Object>) result;
@@ -165,7 +165,7 @@ public abstract class BaseFEELFunction
      * @param params
      * @return
      */
-    public Object apply(EvaluationContext ctx, Object[] params) {
+    public Object invoke(EvaluationContext ctx, Object[] params) {
         throw new RuntimeException( "This method should be overriden by classes that implement custom feel functions" );
     }
 
@@ -189,7 +189,7 @@ public abstract class BaseFEELFunction
         CandidateMethod candidate = null;
         // first, look for exact matches
         for ( Method m : getClass().getDeclaredMethods() ) {
-            if ( !m.getName().equals( "apply" ) ) {
+            if ( !m.getName().equals( "invoke" ) ) {
                 continue;
             }
             CandidateMethod cm = new CandidateMethod( isNamedParams ? calculateActualParams( m, params, available ) : params );

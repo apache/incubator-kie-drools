@@ -61,6 +61,7 @@ public class BuiltInFunctions {
             new FloorFunction(),
             new CeilingFunction(),
             new DecisionTableFunction(),
+            new NotFunction(),
 
             // additional functions not part of the spec version 1.1
             new NowFunction()

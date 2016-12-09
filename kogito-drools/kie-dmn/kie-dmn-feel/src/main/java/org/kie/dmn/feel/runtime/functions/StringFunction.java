@@ -28,7 +28,7 @@ public class StringFunction
         super( "string" );
     }
 
-    public FEELFnResult<String> apply(@ParameterName("from") Object val) {
+    public FEELFnResult<String> invoke(@ParameterName("from") Object val) {
         if ( val == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "val", "cannot be null"));
         } else {

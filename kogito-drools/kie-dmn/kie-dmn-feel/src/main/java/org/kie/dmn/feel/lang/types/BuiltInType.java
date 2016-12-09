@@ -25,7 +25,6 @@ import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.functions.*;
 
-import java.math.BigDecimal;
 import java.time.*;
 import java.util.List;
 import java.util.Map;
@@ -62,12 +61,12 @@ public enum BuiltInType implements Type {
     @Override
     public Object fromString(String value) {
         switch ( this ) {
-            case NUMBER: return BuiltInFunctions.getFunction( NumberFunction.class).apply( value, null, null ).cata(BuiltInType.justNull(), Function.identity());
+            case NUMBER: return BuiltInFunctions.getFunction( NumberFunction.class).invoke( value, null, null ).cata(BuiltInType.justNull(), Function.identity());
             case STRING: return value;
-            case DATE: return BuiltInFunctions.getFunction( DateFunction.class ).apply( value ).cata(BuiltInType.justNull(), Function.identity());
-            case TIME: return BuiltInFunctions.getFunction( TimeFunction.class ).apply( value ).cata(BuiltInType.justNull(), Function.identity());
-            case DATE_TIME: return BuiltInFunctions.getFunction( DateTimeFunction.class ).apply( value ).cata(BuiltInType.justNull(), Function.identity());
-            case DURATION: return BuiltInFunctions.getFunction( DurationFunction.class ).apply( value ).cata(BuiltInType.justNull(), Function.identity());
+            case DATE: return BuiltInFunctions.getFunction( DateFunction.class ).invoke( value ).cata(BuiltInType.justNull(), Function.identity());
+            case TIME: return BuiltInFunctions.getFunction( TimeFunction.class ).invoke( value ).cata(BuiltInType.justNull(), Function.identity());
+            case DATE_TIME: return BuiltInFunctions.getFunction( DateTimeFunction.class ).invoke( value ).cata(BuiltInType.justNull(), Function.identity());
+            case DURATION: return BuiltInFunctions.getFunction( DurationFunction.class ).invoke( value ).cata(BuiltInType.justNull(), Function.identity());
             case BOOLEAN: return Boolean.parseBoolean( value );
             case RANGE:
             case FUNCTION:
@@ -81,7 +80,7 @@ public enum BuiltInType implements Type {
 
     @Override
     public String toString(Object value) {
-        return BuiltInFunctions.getFunction( StringFunction.class ).apply( value ).cata(BuiltInType.justNull(), Function.identity());
+        return BuiltInFunctions.getFunction( StringFunction.class ).invoke( value ).cata(BuiltInType.justNull(), Function.identity());
     }
     
     static <T> Function<FEELEvent, T> justNull() {

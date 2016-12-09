@@ -33,7 +33,7 @@ public class SumFunction
         super( "sum" );
     }
 
-    public FEELFnResult<BigDecimal> apply(@ParameterName("list") List list) {
+    public FEELFnResult<BigDecimal> invoke(@ParameterName("list") List list) {
         BigDecimal sum = BigDecimal.ZERO;
         for ( Object element : list ) {
             if ( element instanceof BigDecimal ) {
@@ -47,7 +47,7 @@ public class SumFunction
         return FEELFnResult.ofResult( sum );
     }
 
-    public FEELFnResult<BigDecimal> apply(@ParameterName("list") Number single) {
+    public FEELFnResult<BigDecimal> invoke(@ParameterName("list") Number single) {
         if ( single == null ) { 
             // Arrays.asList does not accept null as parameter
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "the single value list cannot be null"));
@@ -64,12 +64,12 @@ public class SumFunction
         }
     }
 
-    public FEELFnResult<BigDecimal> apply(@ParameterName("n") Object[] list) {
+    public FEELFnResult<BigDecimal> invoke(@ParameterName("n") Object[] list) {
         if ( list == null ) { 
             // Arrays.asList does not accept null as parameter
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "n", "the single value list cannot be null"));
         }
         
-        return apply( Arrays.asList( list ) );
+        return invoke( Arrays.asList( list ) );
     }
 }

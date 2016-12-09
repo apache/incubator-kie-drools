@@ -46,7 +46,11 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"10 in ( not( <5, >=20, =15 ) )", Boolean.TRUE},
                 {"10 in ( not( <5, >=20, =10 ) )", Boolean.FALSE},
                 {"10 in ( not( <5 ) )", Boolean.TRUE},
-                {"10 in ( not( (10..20] ) )", Boolean.TRUE}
+                {"10 in ( not( (10..20] ) )", Boolean.TRUE},
+                {"10 in ( not( 10 ) )", Boolean.FALSE},
+                {"10 in ( not( 5 ) )", Boolean.TRUE},
+                {"10 in ( not( 5, (5+5), (20+10) ) )", Boolean.FALSE},
+                {"10 in ( not( 5, (20+10) ) )", Boolean.TRUE}
         };
         return Arrays.asList( cases );
     }

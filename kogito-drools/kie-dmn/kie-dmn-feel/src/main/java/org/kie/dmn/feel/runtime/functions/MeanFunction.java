@@ -37,8 +37,8 @@ public class MeanFunction
         super( "mean" );
     }
 
-    public FEELFnResult<BigDecimal> apply(@ParameterName( "list" ) List list) {
-        FEELFnResult<BigDecimal> s = sum.apply( list );
+    public FEELFnResult<BigDecimal> invoke(@ParameterName( "list" ) List list) {
+        FEELFnResult<BigDecimal> s = sum.invoke( list );
         
         Function<FEELEvent, FEELFnResult<BigDecimal>> ifLeft = (event) -> {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "unable to sum the elements which is required to calculate the mean"));
@@ -55,7 +55,7 @@ public class MeanFunction
         return s.cata(ifLeft, ifRight);
     }
 
-    public FEELFnResult<BigDecimal> apply(@ParameterName( "list" ) Number single) {
+    public FEELFnResult<BigDecimal> invoke(@ParameterName( "list" ) Number single) {
         if ( single == null ) { 
             // Arrays.asList does not accept null as parameter
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "the single value list cannot be null"));
@@ -72,12 +72,12 @@ public class MeanFunction
         }
     }
 
-    public FEELFnResult<BigDecimal> apply(@ParameterName( "n" ) Object[] list) {
+    public FEELFnResult<BigDecimal> invoke(@ParameterName( "n" ) Object[] list) {
         if ( list == null ) { 
             // Arrays.asList does not accept null as parameter
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "n", "cannot be null"));
         }
         
-        return apply( Arrays.asList( list ) );
+        return invoke( Arrays.asList( list ) );
     }
 }

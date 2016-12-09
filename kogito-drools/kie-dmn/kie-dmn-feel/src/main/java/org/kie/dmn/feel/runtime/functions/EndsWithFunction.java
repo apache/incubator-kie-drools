@@ -28,7 +28,7 @@ public class EndsWithFunction
         super( "ends with" );
     }
 
-    public FEELFnResult<Boolean> apply(@ParameterName( "string" ) String string, @ParameterName( "match" ) String match) {
+    public FEELFnResult<Boolean> invoke(@ParameterName( "string" ) String string, @ParameterName( "match" ) String match) {
         if ( string == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "string", "cannot be null"));
         }

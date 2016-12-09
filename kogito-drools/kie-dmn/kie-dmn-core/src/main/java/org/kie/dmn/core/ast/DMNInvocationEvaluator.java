@@ -112,7 +112,7 @@ public class DMNInvocationEvaluator
             }
 
             EvaluationContextImpl ctx = new EvaluationContextImpl( feel.getEventsManager() );
-            invocationResult = function.applyReflectively( ctx, namedParams );
+            invocationResult = function.invokeReflectively( ctx, namedParams );
 
             boolean hasErrors = hasErrors( events, eventManager, result );
             return new EvaluatorResult( invocationResult, hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );

@@ -33,7 +33,7 @@ public class DateFunction
         super( "date" );
     }
 
-    public FEELFnResult<TemporalAccessor> apply(@ParameterName( "from" ) String val) {
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "from" ) String val) {
         if ( val == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
@@ -45,7 +45,7 @@ public class DateFunction
         }
     }
 
-    public FEELFnResult<TemporalAccessor> apply(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day" ) Number day) {
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "year" ) Number year, @ParameterName( "month" ) Number month, @ParameterName( "day" ) Number day) {
         if ( year == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "year", "cannot be null"));
         }
@@ -63,7 +63,7 @@ public class DateFunction
         }
     }
 
-    public FEELFnResult<TemporalAccessor> apply(@ParameterName( "from" ) TemporalAccessor date) {
+    public FEELFnResult<TemporalAccessor> invoke(@ParameterName( "from" ) TemporalAccessor date) {
         if ( date == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }

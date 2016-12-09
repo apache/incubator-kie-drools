@@ -39,7 +39,7 @@ public class DTInvokerFunction
         this.dt = dt;
     }
 
-    public FEELFnResult<Object> apply(EvaluationContext ctx, Object[] params) {
+    public FEELFnResult<Object> invoke(EvaluationContext ctx, Object[] params) {
         FEELEvent capturedException = null;
         try {
             ctx.enterFrame();

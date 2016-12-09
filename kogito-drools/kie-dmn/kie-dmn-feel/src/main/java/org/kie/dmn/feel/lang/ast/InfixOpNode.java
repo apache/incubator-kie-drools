@@ -63,6 +63,10 @@ public class InfixOpNode
             }
             throw new IllegalArgumentException( "No operator found for symbol '" + symbol + "'" );
         }
+
+        public boolean isBoolean() {
+            return this == LTE || this == LT || this == GT || this == GTE || this == EQ || this == NE || this == AND || this == OR;
+        }
     }
 
     private InfixOperator operator;
@@ -82,6 +86,10 @@ public class InfixOpNode
 
     public void setOperator(InfixOperator operator) {
         this.operator = operator;
+    }
+
+    public boolean isBoolean() {
+        return this.operator.isBoolean();
     }
 
     public BaseNode getLeft() {

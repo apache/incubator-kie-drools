@@ -107,6 +107,11 @@ public class UnaryTestNode
                             if( ((Range)test).includes( (Comparable) o ) ) {
                                 return false;
                             }
+                        } else {
+                            // test is a constant, so return false if it is equal to "o"
+                            if( test.equals( o ) ) {
+                                return false;
+                            }
                         }
                     }
                     return true;

@@ -43,10 +43,6 @@ public class ASTBuilderFactory {
         return new StringNode( ctx );
     }
 
-    public static NotNode newNotNode(ParserRuleContext ctx, BaseNode expr) {
-        return new NotNode( ctx, expr );
-    }
-
     public static InfixOpNode newInfixOpNode(ParserRuleContext ctx, BaseNode left, String op, BaseNode right) {
         return new InfixOpNode( ctx, left, op, right );
     }

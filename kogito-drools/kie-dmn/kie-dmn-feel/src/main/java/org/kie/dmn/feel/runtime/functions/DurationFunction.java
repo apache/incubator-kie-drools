@@ -35,7 +35,7 @@ public class DurationFunction
         super( "duration" );
     }
 
-    public FEELFnResult<TemporalAmount> apply(@ParameterName( "from" ) String val) {
+    public FEELFnResult<TemporalAmount> invoke(@ParameterName( "from" ) String val) {
         if ( val == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
