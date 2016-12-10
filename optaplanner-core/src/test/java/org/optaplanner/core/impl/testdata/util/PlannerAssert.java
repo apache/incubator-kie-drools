@@ -87,10 +87,12 @@ public class PlannerAssert extends Assert {
         }
     }
 
+    @SafeVarargs
     public static <C extends Comparable<C>> void assertCompareToOrder(C... comparables) {
         assertCompareToOrder(Comparator.naturalOrder(), comparables);
     }
 
+    @SafeVarargs
     public static <T> void assertCompareToOrder(Comparator<T> comperator, T... objects) {
         for (int i = 0; i < objects.length; i++) {
             for (int j = i + 1; j < objects.length; j++) {
@@ -102,10 +104,12 @@ public class PlannerAssert extends Assert {
         }
     }
 
+    @SafeVarargs
     public static <C extends Comparable<C>> void assertCompareToEquals(C... comparables) {
         assertCompareToEquals(Comparator.naturalOrder(), comparables);
     }
 
+    @SafeVarargs
     public static <T> void assertCompareToEquals(Comparator<T> comperator, T... objects) {
         for (int i = 0; i < objects.length; i++) {
             for (int j = i + 1; j < objects.length; j++) {
@@ -117,11 +121,13 @@ public class PlannerAssert extends Assert {
         }
     }
 
+    @SafeVarargs
     public static <E> void assertCollectionContainsExactly(Collection<E> collection, E... elements) {
         assertCollectionContains(collection, elements);
         assertEquals(elements.length, collection.size());
     }
 
+    @SafeVarargs
     public static <E> void assertCollectionContains(Collection<E> collection, E... elements) {
         for (int i = 0; i < elements.length; i++) {
             if (!collection.contains(elements[i])) {
@@ -131,11 +137,13 @@ public class PlannerAssert extends Assert {
         }
     }
 
+    @SafeVarargs
     public static <K, V> void assertMapContainsKeysExactly(Map<K, V> map, K... keys) {
         assertMapContainsKeys(map, keys);
         assertEquals(keys.length, map.size());
     }
 
+    @SafeVarargs
     public static <K, V> void assertMapContainsKeys(Map<K, V> map, K... keys) {
         for (int i = 0; i < keys.length; i++) {
             if (!map.containsKey(keys[i])) {
@@ -179,6 +187,7 @@ public class PlannerAssert extends Assert {
         verify(phaseLifecycleListener, times(solvingCount)).solvingEnded(Matchers.<DefaultSolverScope>any());
     }
 
+    @SafeVarargs
     public static <O> void assertElementsOfIterator(Iterator<O> iterator, O... elements) {
         assertNotNull(iterator);
         for (O element : elements) {
@@ -187,6 +196,7 @@ public class PlannerAssert extends Assert {
         }
     }
 
+    @SafeVarargs
     public static <O> void assertAllElementsOfIterator(Iterator<O> iterator, O... elements) {
         assertElementsOfIterator(iterator, elements);
         assertFalse(iterator.hasNext());

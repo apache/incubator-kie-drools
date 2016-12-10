@@ -32,7 +32,8 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
 
 public class CompositeCountableValueRangeTest {
 
-    private <T> CompositeCountableValueRange<T> createValueRange(List<T>... lists) {
+    @SafeVarargs
+    private static <T> CompositeCountableValueRange<T> createValueRange(List<T>... lists) {
         List<ListValueRange<T>> childValueRangeList = new ArrayList<>(lists.length);
         for (List<T> list : lists) {
             childValueRangeList.add(new ListValueRange<>(list));

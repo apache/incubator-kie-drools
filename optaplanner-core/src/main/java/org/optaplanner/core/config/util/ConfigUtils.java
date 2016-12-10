@@ -261,6 +261,7 @@ public class ConfigUtils {
         return memberStream.collect(Collectors.toList());
     }
 
+    @SafeVarargs
     public static Class<? extends Annotation> extractAnnotationClass(Member member,
             Class<? extends Annotation>... annotations) {
         Class<? extends Annotation> annotationClass = null;
