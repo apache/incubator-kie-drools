@@ -93,13 +93,13 @@ public class PlannerAssert extends Assert {
     }
 
     @SafeVarargs
-    public static <T> void assertCompareToOrder(Comparator<T> comperator, T... objects) {
+    public static <T> void assertCompareToOrder(Comparator<T> comparator, T... objects) {
         for (int i = 0; i < objects.length; i++) {
             for (int j = i + 1; j < objects.length; j++) {
                 T a = objects[i];
                 T b = objects[j];
-                assertTrue("Object (" + a + ") must be lesser than object (" + b + ").", comperator.compare(a, b) < 0);
-                assertTrue("Object (" + b + ") must be greater than object (" + a + ").", comperator.compare(b, a) > 0);
+                assertTrue("Object (" + a + ") must be lesser than object (" + b + ").", comparator.compare(a, b) < 0);
+                assertTrue("Object (" + b + ") must be greater than object (" + a + ").", comparator.compare(b, a) > 0);
             }
         }
     }
@@ -110,13 +110,13 @@ public class PlannerAssert extends Assert {
     }
 
     @SafeVarargs
-    public static <T> void assertCompareToEquals(Comparator<T> comperator, T... objects) {
+    public static <T> void assertCompareToEquals(Comparator<T> comparator, T... objects) {
         for (int i = 0; i < objects.length; i++) {
             for (int j = i + 1; j < objects.length; j++) {
                 T a = objects[i];
                 T b = objects[j];
-                assertTrue("Object (" + a + ") must compare equal to object (" + b + ").", comperator.compare(a, b) == 0);
-                assertTrue("Object (" + b + ") must compare equal to object (" + a + ").", comperator.compare(b, a) == 0);
+                assertTrue("Object (" + a + ") must compare equal to object (" + b + ").", comparator.compare(a, b) == 0);
+                assertTrue("Object (" + b + ") must compare equal to object (" + a + ").", comparator.compare(b, a) == 0);
             }
         }
     }
