@@ -63,10 +63,8 @@ public abstract class AbstractXmlSolutionImporter<Solution_> extends AbstractSol
                 Solution_ solution = xmlInputBuilder.readSolution();
                 logger.info("Imported: {}", inputFile);
                 return solution;
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException | IllegalStateException e) {
                 throw new IllegalArgumentException("Exception in inputFile (" + inputFile + ")", e);
-            } catch (IllegalStateException e) {
-                throw new IllegalStateException("Exception in inputFile (" + inputFile + ")", e);
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not read the file (" + inputFile.getName() + ").", e);
