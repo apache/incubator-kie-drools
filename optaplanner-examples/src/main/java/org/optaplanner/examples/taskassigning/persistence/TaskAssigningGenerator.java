@@ -44,7 +44,22 @@ import org.optaplanner.examples.taskassigning.domain.TaskType;
 
 public class TaskAssigningGenerator extends LoggingMain {
 
-    private static final StringDataGenerator skillNameGenerator = new StringDataGenerator()
+    public static final int BASE_DURATION_MINIMUM = 30;
+    public static final int BASE_DURATION_MAXIMUM = 90;
+    public static final int BASE_DURATION_AVERAGE = BASE_DURATION_MINIMUM + BASE_DURATION_MAXIMUM / 2;
+    private static final int SKILL_SET_SIZE_MINIMUM = 2;
+    private static final int SKILL_SET_SIZE_MAXIMUM = 4;
+
+    public static void main(String[] args) {
+        TaskAssigningGenerator generator = new TaskAssigningGenerator();
+        generator.writeTaskAssigningSolution(24, 8);
+        generator.writeTaskAssigningSolution(50, 5);
+        generator.writeTaskAssigningSolution(100, 5);
+        generator.writeTaskAssigningSolution(500, 20);
+        // For more tasks, switch to BendableLongScore to avoid overflow in the score.
+    }
+
+    private final StringDataGenerator skillNameGenerator = new StringDataGenerator()
             .addPart(
                     "Problem",
                     "Team",
@@ -67,7 +82,7 @@ public class TaskAssigningGenerator extends LoggingMain {
                     "Resolution",
                     "Engineering",
                     "Research");
-    private static final StringDataGenerator taskTypeNameGenerator = new StringDataGenerator()
+    private final StringDataGenerator taskTypeNameGenerator = new StringDataGenerator()
             .addPart(
                     "Improve",
                     "Expand",
@@ -101,17 +116,8 @@ public class TaskAssigningGenerator extends LoggingMain {
                     "Lobbying",
                     "Engineering",
                     "Research");
-    private static final StringDataGenerator customerNameGenerator = StringDataGenerator.build1kCompanyNames();
-    private static final StringDataGenerator employeeNameGenerator = StringDataGenerator.build10kFullNames();
-    public static final int BASE_DURATION_MINIMUM = 30;
-    public static final int BASE_DURATION_MAXIMUM = 90;
-    public static final int BASE_DURATION_AVERAGE = BASE_DURATION_MINIMUM + BASE_DURATION_MAXIMUM / 2;
-    private static final int SKILL_SET_SIZE_MINIMUM = 2;
-    private static final int SKILL_SET_SIZE_MAXIMUM = 4;
-
-    public static void main(String[] args) {
-        new TaskAssigningGenerator().generate();
-    }
+    private final StringDataGenerator customerNameGenerator = StringDataGenerator.build1kCompanyNames();
+    private final StringDataGenerator employeeNameGenerator = StringDataGenerator.build10kFullNames();
 
     protected final SolutionDao solutionDao;
     protected final File outputDir;
@@ -120,14 +126,6 @@ public class TaskAssigningGenerator extends LoggingMain {
     public TaskAssigningGenerator() {
         solutionDao = new TaskAssigningDao();
         outputDir = new File(solutionDao.getDataDir(), "unsolved");
-    }
-
-    public void generate() {
-        writeTaskAssigningSolution(24, 8);
-        writeTaskAssigningSolution(50, 5);
-        writeTaskAssigningSolution(100, 5);
-        writeTaskAssigningSolution(500, 20);
-        // For more tasks, switch to BendableLongScore to avoid overflow in the score.
     }
 
     private void writeTaskAssigningSolution(int taskListSize, int employeeListSize) {

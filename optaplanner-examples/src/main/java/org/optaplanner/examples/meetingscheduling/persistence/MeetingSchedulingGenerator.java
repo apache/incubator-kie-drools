@@ -39,7 +39,16 @@ import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 
 public class MeetingSchedulingGenerator extends LoggingMain {
 
-    private static final StringDataGenerator topicGenerator = new StringDataGenerator()
+    public static void main(String[] args) {
+        MeetingSchedulingGenerator generator = new MeetingSchedulingGenerator();
+        generator.writeMeetingSchedule(50, 5);
+        generator.writeMeetingSchedule(100, 5);
+//        generator.writeMeetingSchedule(200, 5);
+//        generator.writeMeetingSchedule(400, 5);
+//        generator.writeMeetingSchedule(800, 5);
+    }
+
+    private final StringDataGenerator topicGenerator = new StringDataGenerator()
             .addPart(
                     "Strategize",
                     "Fast track",
@@ -85,7 +94,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
                     "out of the box",
                     "in the new economy");
 
-    private static final int[] durationInGrainsOptions = {
+    private final int[] durationInGrainsOptions = {
             1, // 15 mins
             2, // 30 mins
             3, // 45 mins
@@ -95,7 +104,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             16, // 4 hours
     };
 
-    private static final int[] personsPerMeetingOptions = {
+    private final int[] personsPerMeetingOptions = {
             2,
             3,
             4,
@@ -110,7 +119,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             30,
     };
 
-    private static final int[] startingMinuteOfDayOptions = {
+    private final int[] startingMinuteOfDayOptions = {
             8 * 60, // 08:00
             8 * 60 + 15, // 08:15
             8 * 60 + 30, // 08:30
@@ -149,11 +158,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             17 * 60 + 45, // 17:45
     };
 
-    private static final StringDataGenerator fullNameGenerator = StringDataGenerator.build10kFullNames();
-
-    public static void main(String[] args) {
-        new MeetingSchedulingGenerator().generate();
-    }
+    private final StringDataGenerator fullNameGenerator = StringDataGenerator.build10kFullNames();
 
     protected final SolutionDao solutionDao;
     protected final File outputDir;
@@ -162,14 +167,6 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     public MeetingSchedulingGenerator() {
         solutionDao = new MeetingSchedulingDao();
         outputDir = new File(solutionDao.getDataDir(), "unsolved");
-    }
-
-    public void generate() {
-        writeMeetingSchedule(50, 5);
-        writeMeetingSchedule(100, 5);
-//        writeMeetingSchedule(200, 5);
-//        writeMeetingSchedule(400, 5);
-//        writeMeetingSchedule(800, 5);
     }
 
     private void writeMeetingSchedule(int meetingListSize, int roomListSize) {
