@@ -39,4 +39,10 @@ public class CompiledExpressionImpl implements CompiledExpression {
         return expression.evaluate( ctx );
     }
 
+    @Override
+    public String toString() {
+        return "CompiledExpressionImpl{" +
+               "expression=" + expression +
+               '}';
+    }
 }
