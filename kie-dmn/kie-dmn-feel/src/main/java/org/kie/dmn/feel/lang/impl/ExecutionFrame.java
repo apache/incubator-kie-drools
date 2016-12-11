@@ -51,7 +51,22 @@ public class ExecutionFrame {
     }
 
     public Object getValue(String[] symbol) {
-        return null;
+        throw new UnsupportedOperationException( "needs implementation?" );
+    }
+
+    public boolean isDefined( String symbol ) {
+        symbol = EvalHelper.normalizeVariableName( symbol );
+        if ( variables.containsKey( symbol ) ) {
+            return true;
+        }
+        if ( parentFrame != null ) {
+            return parentFrame.isDefined( symbol );
+        }
+        return false;
+    }
+
+    public boolean isDefined( String[] name ) {
+        throw new UnsupportedOperationException( "needs implementation?" );
     }
 
     public void setValue(String symbol, Object value) {

@@ -27,16 +27,18 @@ public class DMNDecisionResultImpl
     private String           decisionName;
     private Object           result;
     private List<DMNMessage> messages;
+    private DecisionEvaluationStatus status;
 
     public DMNDecisionResultImpl(String decisionId, String decisionName) {
-        this( decisionId, decisionName, null, new ArrayList<>(  ) );
+        this( decisionId, decisionName, DecisionEvaluationStatus.NOT_EVALUATED, null, new ArrayList<>(  ) );
     }
 
-    public DMNDecisionResultImpl(String decisionId, String decisionName, Object result, List<DMNMessage> messages) {
+    public DMNDecisionResultImpl(String decisionId, String decisionName, DecisionEvaluationStatus status, Object result, List<DMNMessage> messages) {
         this.decisionId = decisionId;
         this.decisionName = decisionName;
         this.result = result;
         this.messages = messages;
+        this.status = status;
     }
 
     @Override
@@ -58,6 +60,15 @@ public class DMNDecisionResultImpl
     }
 
     @Override
+    public DecisionEvaluationStatus getEvaluationStatus() {
+        return status;
+    }
+
+    public void setEvaluationStatus(DecisionEvaluationStatus status) {
+        this.status = status;
+    }
+
+    @Override
     public Object getResult() {
         return result;
     }
@@ -73,5 +84,10 @@ public class DMNDecisionResultImpl
 
     public void setMessages(List<DMNMessage> messages) {
         this.messages = messages;
+    }
+
+    @Override
+    public boolean hasErrors() {
+        return messages != null && messages.stream().anyMatch( m -> m.getSeverity() == DMNMessage.Severity.ERROR );
     }
 }

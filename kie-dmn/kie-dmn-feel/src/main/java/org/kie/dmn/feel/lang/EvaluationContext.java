@@ -32,6 +32,10 @@ public interface EvaluationContext {
 
     Object getValue(String[] name );
 
+    boolean isDefined( String name );
+
+    boolean isDefined( String[] name );
+
     Map<String, Object> getAllValues();
 
     FEELEventListenersManager getEventsManager();

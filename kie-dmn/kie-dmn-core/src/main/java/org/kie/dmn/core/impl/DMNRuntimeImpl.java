@@ -65,7 +65,7 @@ public class DMNRuntimeImpl
 
     @Override
     public DMNResult evaluateAll(DMNModel model, DMNContext context) {
-        DMNResultImpl result = createResult( context );
+        DMNResultImpl result = createResult( model, context );
         for( DecisionNode decision : model.getDecisions() ) {
             evaluateDecision( context, result, decision );
         }
@@ -74,7 +74,7 @@ public class DMNRuntimeImpl
 
     @Override
     public DMNResult evaluateDecisionByName(DMNModel model, String decisionName, DMNContext context) {
-        DMNResultImpl result = createResult( context );
+        DMNResultImpl result = createResult( model, context );
         DecisionNode decision = model.getDecisionByName( decisionName );
         if( decision != null ) {
             evaluateDecision( context, result, decision );
@@ -86,7 +86,7 @@ public class DMNRuntimeImpl
 
     @Override
     public DMNResult evaluateDecisionById(DMNModel model, String decisionId, DMNContext context) {
-        DMNResultImpl result = createResult( context );
+        DMNResultImpl result = createResult( model, context );
         DecisionNode decision = model.getDecisionById( decisionId );
         if( decision != null ) {
             evaluateDecision( context, result, decision );
@@ -111,9 +111,13 @@ public class DMNRuntimeImpl
         return this.eventManager.getListeners();
     }
 
-    private DMNResultImpl createResult(DMNContext context) {
+    private DMNResultImpl createResult(DMNModel model, DMNContext context) {
         DMNResultImpl result = new DMNResultImpl();
         result.setContext( context.clone() );
+
+        for( DecisionNode decision : model.getDecisions() ) {
+            result.setDecisionResult( decision.getId(), new DMNDecisionResultImpl( decision.getId(), decision.getName() ) );
+        }
         return result;
     }
 
@@ -153,24 +157,32 @@ public class DMNRuntimeImpl
         if( result.getContext().isDefined( decision.getName() ) ) {
             // already resolved
             return true;
+        } else {
+            // check if the decision was already evaluated before and returned error
+            DMNDecisionResult dr = result.getDecisionResultById( decision.getId() );
+            if( dr.getEvaluationStatus() == DMNDecisionResult.DecisionEvaluationStatus.FAILED ||
+                dr.getEvaluationStatus() == DMNDecisionResult.DecisionEvaluationStatus.SKIPPED ) {
+                return false;
+            }
         }
         try {
             eventManager.fireBeforeEvaluateDecision( decision, result );
             boolean missingInput = false;
-            DMNDecisionResultImpl dr = new DMNDecisionResultImpl( decision.getId(), decision.getName() );
-            result.setDecisionResult( decision.getId(), dr );
+            DMNDecisionResultImpl dr = (DMNDecisionResultImpl) result.getDecisionResultById( decision.getId() );
             for( DMNNode dep : decision.getDependencies().values() ) {
                 if( ! result.getContext().isDefined( dep.getName() ) ) {
                     if( dep instanceof DecisionNode ) {
-                        evaluateDecision( context, result, (DecisionNode) dep );
+                        if( ! evaluateDecision( context, result, (DecisionNode) dep ) ) {
+                            missingInput = true;
+                            String message = "Unable to evaluate decision '" + decision.getName() + "' as it depends on decision '" + dep.getName() + "' with id '" + dep.getId() + "'";
+                            reportFailure( result, decision, dr, null, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
+                        }
                     } else if( dep instanceof BusinessKnowledgeModelNode ) {
                         evaluateBKM( context, result, (BusinessKnowledgeModelNode) dep );
                     } else {
                         missingInput = true;
-                        DMNMessage msg = result.addMessage( DMNMessage.Severity.ERROR,
-                                                            "Missing dependency for decision '"+decision.getName()+"': dependency name='" + dep.getName() + "' dependency id='" + dep.getId() + "'",
-                                                            decision.getId() );
-                        dr.getMessages().add( msg );
+                        String message = "Missing dependency for decision '" + decision.getName() + "': dependency name='" + dep.getName() + "' dependency id='" + dep.getId() + "'";
+                        reportFailure( result, decision, dr, null, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
                     }
                 }
             }
@@ -182,6 +194,7 @@ public class DMNRuntimeImpl
                                                     "Missing expression for decision '"+decision.getName()+"'. Skipping evaluation.",
                                                     decision.getId() );
                 dr.getMessages().add( msg );
+                dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
                 return false;
             }
             try {
@@ -189,14 +202,28 @@ public class DMNRuntimeImpl
                 if( er.getResultType() == DMNExpressionEvaluator.ResultType.SUCCESS ) {
                     result.getContext().set( decision.getDecision().getVariable().getName(), er.getResult() );
                     dr.setResult( er.getResult() );
+                    dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED );
+                } else {
+                    dr.setEvaluationStatus( DMNDecisionResult.DecisionEvaluationStatus.FAILED );
                 }
             } catch( Throwable t ) {
-                result.addMessage( DMNMessage.Severity.ERROR, "Error evaluating decision '"+decision.getName()+ "': "+t.getMessage(), decision.getId(), t );
+                String message = "Error evaluating decision '" + decision.getName() + "': " + t.getMessage();
+                reportFailure( result, decision, dr, t, message, DMNDecisionResult.DecisionEvaluationStatus.FAILED );
             }
             return true;
         } finally {
             eventManager.fireAfterEvaluateDecision( decision, result );
         }
+    }
+
+    private void reportFailure(DMNResultImpl result, DecisionNode decision, DMNDecisionResultImpl dr, Throwable t, String message, DMNDecisionResult.DecisionEvaluationStatus status) {
+        result.addMessage( DMNMessage.Severity.ERROR, message, decision.getId(), t );
+        DMNMessage msg = result.addMessage( DMNMessage.Severity.ERROR,
+                                            message,
+                                            decision.getId(),
+                                            t );
+        dr.getMessages().add( msg );
+        dr.setEvaluationStatus( status );
     }
 
 }
