@@ -24,12 +24,7 @@ import java.math.BigDecimal;
 import java.util.Set;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.dmn.core.api.DMNContext;
-import org.kie.dmn.core.api.DMNFactory;
-import org.kie.dmn.core.api.DMNMessage;
-import org.kie.dmn.core.api.DMNModel;
-import org.kie.dmn.core.api.DMNResult;
-import org.kie.dmn.core.api.DMNRuntime;
+import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.ast.InputDataNode;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 
@@ -73,13 +68,16 @@ public class DMNInputRuntimeTest {
         assertThat( result.get( "Greeting Message" ), is( "Hello John Doe" ) );
 
         dmnResult = runtime.evaluateDecisionByName( dmnModel, "nonExistantName", context );
-        assertThat( dmnResult.getDecisionResults().size(), is(0) );
+        assertThat( dmnResult.getDecisionResults().size(), is(1) );
+        assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus(), is( DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED ) );
 
         dmnResult = runtime.evaluateDecisionByName( dmnModel, "", context );
-        assertThat( dmnResult.getDecisionResults().size(), is(0) );
+        assertThat( dmnResult.getDecisionResults().size(), is(1) );
+        assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus(), is( DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED ) );
 
         dmnResult = runtime.evaluateDecisionByName( dmnModel, null, context );
-        assertThat( dmnResult.getDecisionResults().size(), is(0) );
+        assertThat( dmnResult.getDecisionResults().size(), is(1) );
+        assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus(), is( DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED ) );
     }
 
     @Test
@@ -101,13 +99,16 @@ public class DMNInputRuntimeTest {
         assertThat( result.get( "Greeting Message" ), is( "Hello John Doe" ) );
 
         dmnResult = runtime.evaluateDecisionById( dmnModel, "nonExistantId", context );
-        assertThat( dmnResult.getDecisionResults().size(), is(0) );
+        assertThat( dmnResult.getDecisionResults().size(), is(1) );
+        assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus(), is( DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED ) );
 
         dmnResult = runtime.evaluateDecisionById( dmnModel, "", context );
-        assertThat( dmnResult.getDecisionResults().size(), is(0) );
+        assertThat( dmnResult.getDecisionResults().size(), is(1) );
+        assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus(), is( DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED ) );
 
         dmnResult = runtime.evaluateDecisionById( dmnModel, null, context );
-        assertThat( dmnResult.getDecisionResults().size(), is(0) );
+        assertThat( dmnResult.getDecisionResults().size(), is(1) );
+        assertThat( dmnResult.getDecisionResultByName( "Greeting Message" ).getEvaluationStatus(), is( DMNDecisionResult.DecisionEvaluationStatus.NOT_EVALUATED ) );
     }
 
     @Test

@@ -82,4 +82,29 @@ public class DMNMessageImpl implements DMNMessage {
                ", feelEvent='" + ( feelEvent != null ? ( feelEvent.getClass().getSimpleName() + " : " + feelEvent.getMessage() ) : "" ) + "'" +
                "}";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( !(o instanceof DMNMessageImpl) ) return false;
+
+        DMNMessageImpl that = (DMNMessageImpl) o;
+
+        if ( severity != that.severity ) return false;
+        if ( message != null ? !message.equals( that.message ) : that.message != null ) return false;
+        if ( sourceId != null ? !sourceId.equals( that.sourceId ) : that.sourceId != null ) return false;
+        if ( exception != null ? !exception.equals( that.exception ) : that.exception != null ) return false;
+        return feelEvent != null ? feelEvent.equals( that.feelEvent ) : that.feelEvent == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = severity != null ? severity.hashCode() : 0;
+        result = 31 * result + (message != null ? message.hashCode() : 0);
+        result = 31 * result + (sourceId != null ? sourceId.hashCode() : 0);
+        result = 31 * result + (exception != null ? exception.hashCode() : 0);
+        result = 31 * result + (feelEvent != null ? feelEvent.hashCode() : 0);
+        return result;
+    }
 }

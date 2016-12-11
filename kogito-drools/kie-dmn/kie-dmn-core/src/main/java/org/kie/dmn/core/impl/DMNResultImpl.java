@@ -70,8 +70,13 @@ public class DMNResultImpl implements DMNResult {
         return msg;
     }
 
-    public void addMessage( DMNMessage.Severity severity, String message, String sourceId, Throwable exception ) {
-        this.messages.add( new DMNMessageImpl( severity, message, sourceId, exception ) );
+    public DMNMessage addMessage( DMNMessage.Severity severity, String message, String sourceId, Throwable exception ) {
+        DMNMessageImpl msg = new DMNMessageImpl( severity, message, sourceId, exception );
+        if( this.messages.contains( msg ) ) {
+            return this.messages.get( this.messages.indexOf( msg ) );
+        }
+        this.messages.add( msg );
+        return msg;
     }
 
     public void addMessage( DMNMessage.Severity severity, String message, String sourceId, FEELEvent feelEvent ) {

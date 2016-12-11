@@ -24,6 +24,10 @@ import java.util.List;
  */
 public interface DMNDecisionResult {
 
+    enum DecisionEvaluationStatus {
+        NOT_EVALUATED, SUCCEEDED, SKIPPED, FAILED;
+    }
+
     /**
      * Returns the decision ID
      *
@@ -37,6 +41,15 @@ public interface DMNDecisionResult {
      * @return the decision name
      */
     String getDecisionName();
+
+    /**
+     * Returns the evaluation status
+     * of this decision.
+     *
+     * @return SUCCEEDED if the evaluation completed
+     *         without errors.
+     */
+    DecisionEvaluationStatus getEvaluationStatus();
 
     /**
      * Returns the result of the evaluation
@@ -54,4 +67,12 @@ public interface DMNDecisionResult {
      *         no message was generated
      */
     List<DMNMessage> getMessages();
+
+    /**
+     * Returns true if any error occurred during evaluation.
+     *
+     * @return true if any error ocurred during evaluation.
+     */
+    boolean hasErrors();
+
 }

@@ -88,6 +88,16 @@ public class EvaluationContextImpl implements EvaluationContext {
     }
 
     @Override
+    public boolean isDefined(String name) {
+        return peek().isDefined( name );
+    }
+
+    @Override
+    public boolean isDefined(String[] name) {
+        return peek().isDefined( name );
+    }
+
+    @Override
     public Map<String, Object> getAllValues() {
         Map<String, Object> values = new HashMap<>(  );
         for( int i = 0; i < stack.size(); i++ ) {

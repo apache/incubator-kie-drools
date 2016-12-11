@@ -26,6 +26,7 @@ import org.mockito.ArgumentCaptor;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -385,4 +386,27 @@ public class DMNRuntimeTest {
         assertThat( e.get( "Dept" ), is("Finances") );
         assertThat( e.get( "Salary" ), is( BigDecimal.valueOf( 120000 ) ) );
     }
+
+    @Test
+    public void testMissingInputData() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "missing_input_data.dmn", getClass() );
+        runtime.addListener( DMNRuntimeUtil.createListener() );
+
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_4047acf3-fce2-42f3-abf2-fb06282c1ea0", "Upgrade Based On Promotions" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Requested Vehicle Class", "Compact" );
+        context.set( "Membership Level", "Silver" );
+        context.set( "Calendar Promotion", "None" );
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        // work in progress... later we will check the actual messages...
+        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getMessages( DMNMessage.Severity.ERROR ).size(), is( 4 ) );
+    }
+
+    private String formatMessages( List<DMNMessage> messages ) {
+        return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
+    }
+
 }

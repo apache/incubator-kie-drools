@@ -125,6 +125,9 @@ public class DMNCompilerImpl implements DMNCompiler {
                 }
                 BusinessKnowledgeModelNode bkmn = new BusinessKnowledgeModelNode( bkm, type );
                 model.addBusinessKnowledgeModel( bkmn );
+            } else if ( e instanceof KnowledgeSource ) {
+                // don't do anything as KnowledgeSource is a documentation element
+                // without runtime semantics
             } else {
                 model.addMessage( DMNMessage.Severity.ERROR, "Element "+e.getClass().getSimpleName()+" with id='"+e.getId()+"' not supported.", e.getId() );
             }
