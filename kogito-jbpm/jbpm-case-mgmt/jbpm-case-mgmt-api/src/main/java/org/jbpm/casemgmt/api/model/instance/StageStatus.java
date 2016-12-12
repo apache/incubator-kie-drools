@@ -21,6 +21,7 @@ package org.jbpm.casemgmt.api.model.instance;
  */
 public enum StageStatus {
 
+    Available,
     Active,
     Completed,
     Canceled;

@@ -183,8 +183,8 @@ public class DynamicNodeInstance extends CompositeContextNodeInstance implements
             String milestoneName = "RuleFlow-AdHocComplete-" + getProcessInstance().getProcessId() + "-" + getNodeId();
             if (milestoneName.equals(ruleName) && checkProcessInstance((Activation) event.getMatch())) {
                 synchronized(getProcessInstance()) {
-                    removeEventListeners();
-                    triggerCompleted();
+                    DynamicNodeInstance.this.removeEventListeners();
+                    DynamicNodeInstance.this.triggerCompleted(NodeImpl.CONNECTION_DEFAULT_TYPE);
                 }
             }
         }

@@ -42,6 +42,7 @@ import org.jbpm.casemgmt.api.model.CaseStage;
 import org.jbpm.casemgmt.api.model.instance.CaseInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseMilestoneInstance;
 import org.jbpm.casemgmt.api.model.instance.CaseStageInstance;
+import org.jbpm.casemgmt.api.model.instance.StageStatus;
 import org.jbpm.casemgmt.impl.model.AdHocFragmentImpl;
 import org.jbpm.casemgmt.impl.model.CaseDefinitionComparator;
 import org.jbpm.casemgmt.impl.model.CaseDefinitionImpl;
@@ -473,21 +474,42 @@ public class CaseRuntimeDataServiceImpl implements CaseRuntimeDataService, Deplo
                                                                                             Arrays.asList(ProcessInstance.STATE_ACTIVE), 
                                                                                             Arrays.asList("DynamicNode"), 
                                                                                             queryContext);
-
+        Collection<Long> completedNodes = nodes.stream().filter(n -> ((NodeInstanceDesc)n).getType() == 1).map(n -> n.getId()).collect(toList());
+        
         Map<String, CaseStage> stagesByName = caseDef.getCaseStages().stream()
         .collect(toMap(CaseStage::getId, c -> c)); 
         Predicate<org.jbpm.services.api.model.NodeInstanceDesc> filterNodes = null;
         if (activeOnly) {
-            Collection<Long> completedNodes = nodes.stream().filter(n -> ((NodeInstanceDesc)n).getType() == 1).map(n -> n.getId()).collect(toList());
+            
             filterNodes = n -> ((NodeInstanceDesc)n).getType() == 0 && !completedNodes.contains(((NodeInstanceDesc)n).getId());             
         } else {
             filterNodes = n -> ((NodeInstanceDesc)n).getType() == 0;
         }
         
-        Collection<CaseStageInstance> stages = nodes.stream()
+        List<String> triggeredStages = new ArrayList<>();
+        Collection<CaseStageInstance> stages = new ArrayList<>();
+        nodes.stream()
         .filter(filterNodes)
-        .map(n -> new CaseStageInstanceImpl(n.getNodeId(), n.getName(), stagesByName.get(n.getNodeId()).getAdHocFragments(), Collections.emptyList()))
-        .collect(toList());
+        .map(n -> {
+            StageStatus status = StageStatus.Active;
+            if (completedNodes.contains(((NodeInstanceDesc)n).getId())) {
+                status = StageStatus.Completed;
+            }
+            return new CaseStageInstanceImpl(n.getNodeId(), n.getName(), stagesByName.get(n.getNodeId()).getAdHocFragments(), Collections.emptyList(), status);
+            })
+        .forEach(csi -> {
+            stages.add(csi);
+            triggeredStages.add(csi.getName());
+        });
+        
+        
+        if (!activeOnly) {
+            // add other stages that are present in the definition            
+            caseDef.getCaseStages().stream()
+            .filter(cs -> !triggeredStages.contains(cs.getName()))
+            .map(cs -> new CaseStageInstanceImpl(cs.getId(), cs.getName(), cs.getAdHocFragments(), Collections.emptyList(), StageStatus.Available))
+            .forEach(csi -> stages.add(csi));
+        }
         
         return stages;
     }

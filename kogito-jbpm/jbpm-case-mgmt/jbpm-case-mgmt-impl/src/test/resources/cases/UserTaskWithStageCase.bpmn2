@@ -88,7 +88,7 @@
       </bpmn2:userTask>
       <bpmn2:sequenceFlow id="_59C8EAE4-4B58-4002-8236-5EBA5BB1F423" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_88CD21B4-11DD-41DA-8248-8D7CBC55AB27" targetRef="_D0BEE540-1820-47EB-A88C-D7374BB1562F"/>
       <bpmn2:sequenceFlow id="_ADB2DD52-3A32-4D6E-AD90-72528A37DFBE" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_D0BEE540-1820-47EB-A88C-D7374BB1562F" targetRef="_6FED15B1-42A9-46CB-8804-73255F56D4EB"/>
-      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_jvALFlAKEeafR5ATvnlHeA"><![CDATA[return dataComplete == true;]]></bpmn2:completionCondition>
+      <bpmn2:completionCondition xsi:type="bpmn2:tFormalExpression" id="_jvALFlAKEeafR5ATvnlHeA" language="http://www.jboss.org/drools/rule"><![CDATA[org.kie.api.runtime.process.CaseData(data.get("dataComplete") == true);]]></bpmn2:completionCondition>
     </bpmn2:adHocSubProcess>
     <bpmn2:sequenceFlow id="_67625E63-4A05-4B40-8F4A-5823A0130242" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="processStartEvent" targetRef="_098AE30C-D548-4082-9F62-26FED6521539"/>
     <bpmn2:endEvent id="_7780E1CE-2105-4624-9A33-246862D633C7" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="">

@@ -51,6 +51,14 @@ public class CaseStageInstanceImpl implements CaseStageInstance, Serializable {
         this.activeNodes = activeNodes;
         this.status = StageStatus.Active;
     }
+    
+    public CaseStageInstanceImpl(String id, String name, Collection<AdHocFragment> adHocFragments, Collection<NodeInstanceDesc> activeNodes, StageStatus status) {
+        this.id = id;
+        this.name = name;
+        this.adHocFragments = adHocFragments;
+        this.activeNodes = activeNodes;
+        this.status = status;
+    }
 
     @Override
     public String getName() {
