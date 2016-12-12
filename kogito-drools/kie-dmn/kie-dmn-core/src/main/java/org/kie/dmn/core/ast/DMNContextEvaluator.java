@@ -22,30 +22,30 @@ import org.kie.dmn.core.api.DMNType;
 import org.kie.dmn.core.api.event.InternalDMNRuntimeEventManager;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
-import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.model.v1_1.Context;
-import org.kie.dmn.feel.model.v1_1.FunctionDefinition;
-import org.kie.dmn.feel.runtime.functions.BaseFEELFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DMNContextEvaluator
         implements DMNExpressionEvaluator {
-    private static final Logger logger = LoggerFactory.getLogger( DMNContextEvaluator.class );
+    private static final Logger logger       = LoggerFactory.getLogger( DMNContextEvaluator.class );
+    public static final  String RESULT_ENTRY = "__RESULT__";
 
     private final String  name;
     private final Context contextDef;
-    private List<ContextEntryDef> entries = new ArrayList<>(  );
+    private List<ContextEntryDef> entries = new ArrayList<>();
 
-    public DMNContextEvaluator(String name, Context contextDef ) {
+    public DMNContextEvaluator(String name, Context contextDef) {
         this.name = name;
         this.contextDef = contextDef;
     }
 
-    public void addEntry( String name, DMNType type, DMNExpressionEvaluator evaluator ) {
+    public void addEntry(String name, DMNType type, DMNExpressionEvaluator evaluator) {
         this.entries.add( new ContextEntryDef( name, type, evaluator ) );
     }
 
@@ -55,26 +55,28 @@ public class DMNContextEvaluator
 
     @Override
     public EvaluatorResult evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
-        // when this evaluator is executed, it should return a Map of key/value pairs
+        // when this evaluator is executed, it should either return a Map of key/value pairs
         // where keys are the name of the entries and values are the result of the evaluations
-        Map<String, Object> results = new HashMap<>(  );
+        // OR if a default result is implemented, it should return the result instead
+        Map<String, Object> results = new HashMap<>();
         DMNContext previousContext = result.getContext();
         DMNContextImpl dmnContext = (DMNContextImpl) previousContext.clone();
         result.setContext( dmnContext );
 
         try {
-            for( ContextEntryDef ed : entries ) {
+            for ( ContextEntryDef ed : entries ) {
                 try {
                     EvaluatorResult er = ed.getEvaluator().evaluate( eventManager, result );
-                    if( er.getResultType() == ResultType.SUCCESS ) {
+                    if ( er.getResultType() == ResultType.SUCCESS ) {
                         results.put( ed.getName(), er.getResult() );
                         dmnContext.set( ed.getName(), er.getResult() );
                     } else {
                         String message = "Error evaluating context extry '" + ed.getName() + "' on context '" + name + "'";
                         logger.error( message );
-                        result.addMessage( DMNMessage.Severity.ERROR,
-                                           message,
-                                           null ); // can we retrieve the source ID here?
+                        result.addMessage(
+                                DMNMessage.Severity.ERROR,
+                                message,
+                                null ); // can we retrieve the source ID here?
                         return new EvaluatorResult( results, ResultType.FAILURE );
                     }
                 } catch ( Exception e ) {
@@ -85,12 +87,16 @@ public class DMNContextEvaluator
         } finally {
             result.setContext( previousContext );
         }
-        return new EvaluatorResult( results, ResultType.SUCCESS );
+        if( results.containsKey( RESULT_ENTRY ) ) {
+            return new EvaluatorResult( results.get( RESULT_ENTRY ), ResultType.SUCCESS );
+        } else {
+            return new EvaluatorResult( results, ResultType.SUCCESS );
+        }
     }
 
     public static class ContextEntryDef {
-        private String name;
-        private DMNType type;
+        private String                 name;
+        private DMNType                type;
         private DMNExpressionEvaluator evaluator;
 
         public ContextEntryDef(String name, DMNType type, DMNExpressionEvaluator evaluator) {

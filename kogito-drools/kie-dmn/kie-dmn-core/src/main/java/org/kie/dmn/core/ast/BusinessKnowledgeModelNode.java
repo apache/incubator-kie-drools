@@ -30,6 +30,10 @@ public class BusinessKnowledgeModelNode
     public BusinessKnowledgeModelNode() {
     }
 
+    public BusinessKnowledgeModelNode(BusinessKnowledgeModel bkm) {
+        this( bkm, null );
+    }
+
     public BusinessKnowledgeModelNode(BusinessKnowledgeModel bkm, DMNType resultType) {
         super( bkm );
         this.bkm = bkm;
@@ -56,4 +60,7 @@ public class BusinessKnowledgeModelNode
         return resultType;
     }
 
+    public void setResultType(DMNType resultType) {
+        this.resultType = resultType;
+    }
 }

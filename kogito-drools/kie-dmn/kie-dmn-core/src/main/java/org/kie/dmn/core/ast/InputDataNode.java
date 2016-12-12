@@ -28,6 +28,10 @@ public class InputDataNode extends DMNBaseNode
     public InputDataNode() {
     }
 
+    public InputDataNode(InputData inputData ) {
+        this( inputData, null );
+    }
+
     public InputDataNode(InputData inputData, DMNType dmnType ) {
         super( inputData );
         this.inputData = inputData;
