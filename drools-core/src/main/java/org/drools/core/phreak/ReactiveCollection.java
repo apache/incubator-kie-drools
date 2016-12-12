@@ -135,5 +135,6 @@ public abstract class ReactiveCollection<T, W extends Collection<T>> extends Abs
 
     }
 
-    // TODO removeIf support ??
+    // Reminder: no need to override boolean removeIf(Predicate<? super E> filter)
+    // as it uses the collection's Iterator which in this case is already opportunely wrapped.
 }
