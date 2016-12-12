@@ -39,6 +39,8 @@ public class BuiltInFunctions {
             new ContainsFunction(),
             new StartsWithFunction(),
             new EndsWithFunction(),
+            new MatchesFunction(),
+            new ReplaceFunction(),
             new ListContainsFunction(),
             new CountFunction(),
             new MinFunction(),
