@@ -152,6 +152,15 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
     public ListIterator<T> listIterator(int index) {
         return new ReactiveListIterator( wrapped.listIterator(index) );
     }
+    
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("ReactiveList [").append(wrapped).append("]");
+        return builder.toString();
+    }
+
+
 
     private class ReactiveListIterator extends ReactiveIterator<ListIterator<T>> implements ListIterator<T> {
 
@@ -184,7 +193,7 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
         public void set(T e) {
             if ( last != null ) {
                 wrapped.set(e);
-                if ( last != e ) { // TODO review == by ref.
+                if ( last != e ) { // TODO review == is by ref.
                     ReactiveObjectUtil.notifyModification(e, getLeftTuples(), ModificationType.ADD);
                     if ( e instanceof ReactiveObject ) {
                         for (Tuple lts : getLeftTuples()) {
@@ -207,15 +216,13 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
         public void add(T e) {
             wrapped.add(e);
             // the line above either throws UnsupportedOperationException or follows with:
-            if (last != null) {
-                ReactiveObjectUtil.notifyModification(e, getLeftTuples(), ModificationType.ADD);
-                if ( e instanceof ReactiveObject ) {
-                    for (Tuple lts : getLeftTuples()) {
-                        ((ReactiveObject) e).addLeftTuple(lts);
-                    }
+            ReactiveObjectUtil.notifyModification(e, getLeftTuples(), ModificationType.ADD);
+            if ( e instanceof ReactiveObject ) {
+                for (Tuple lts : getLeftTuples()) {
+                    ((ReactiveObject) e).addLeftTuple(lts);
                 }
-                last = null;
             }
+            last = null;
         }
         
     }
