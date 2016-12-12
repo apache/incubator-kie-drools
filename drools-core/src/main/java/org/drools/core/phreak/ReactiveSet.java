@@ -45,4 +45,11 @@ public class ReactiveSet<T> extends ReactiveCollection<T, Set<T>> implements Set
         return result;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("ReactiveSet[").append(wrapped).append("]");
+        return builder.toString();
+    }
+
 }

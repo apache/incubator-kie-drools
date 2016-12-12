@@ -37,6 +37,7 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
     @Override
     public boolean add(T t) {
         boolean result = wrapped.add(t);
+        // reminder: list.add() always returns true accordingly to spec.
         ReactiveObjectUtil.notifyModification(t, getLeftTuples(), ModificationType.ADD);
         if (t instanceof ReactiveObject) {
             for (Tuple lts : getLeftTuples()) {
@@ -87,19 +88,6 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
         }
         return previous;
     }
-
-//    @Override
-//    public T set(int index, T element) {
-//        add(index, element);
-//        return remove(index+1);
-//    }
-    
-//    @Override
-//    public T set(int index, T element) {
-//        T remove = remove(index);
-//        add(index, element);
-//        return remove;
-//    }
     
     @Override
     public void add(int index, T element) {
@@ -156,11 +144,9 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ReactiveList [").append(wrapped).append("]");
+        builder.append("ReactiveList[").append(wrapped).append("]");
         return builder.toString();
     }
-
-
 
     private class ReactiveListIterator extends ReactiveIterator<ListIterator<T>> implements ListIterator<T> {
 
@@ -193,7 +179,7 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
         public void set(T e) {
             if ( last != null ) {
                 wrapped.set(e);
-                if ( last != e ) { // TODO review == is by ref.
+                if ( last != e ) { // this is indeed intended != to check by reference
                     ReactiveObjectUtil.notifyModification(e, getLeftTuples(), ModificationType.ADD);
                     if ( e instanceof ReactiveObject ) {
                         for (Tuple lts : getLeftTuples()) {
