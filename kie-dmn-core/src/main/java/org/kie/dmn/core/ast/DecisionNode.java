@@ -29,6 +29,10 @@ public class DecisionNode
     public DecisionNode() {
     }
 
+    public DecisionNode(Decision decision) {
+        this( decision, null );
+    }
+
     public DecisionNode(Decision decision, DMNType resultType) {
         super( decision );
         this.decision = decision;
@@ -55,4 +59,7 @@ public class DecisionNode
         return resultType;
     }
 
+    public void setResultType(DMNType resultType) {
+        this.resultType = resultType;
+    }
 }
