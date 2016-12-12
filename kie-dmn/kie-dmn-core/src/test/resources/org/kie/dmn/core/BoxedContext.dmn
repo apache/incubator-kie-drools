@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_0de36357-fec0-4b4e-b7f1-382d381e06e9" xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns="http://www.trisotech.com/dmn/definitions/_0de36357-fec0-4b4e-b7f1-382d381e06e9"
+                      xmlns:feel="http://www.omg.org/spec/FEEL/20140401"
                       xmlns:rss="http://purl.org/rss/2.0/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
                       exporter="DMN Modeler" exporterVersion="5.0.35.201611211744"
                       id="_0de36357-fec0-4b4e-b7f1-382d381e06e9" name="Dessin 1"

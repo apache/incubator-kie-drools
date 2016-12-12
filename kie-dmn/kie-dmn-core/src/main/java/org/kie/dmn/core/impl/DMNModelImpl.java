@@ -200,7 +200,8 @@ public class DMNModelImpl
     }
 
     public void addItemDefinition(ItemDefNode idn) {
-        this.itemDefs.put( idn.getId(), idn );
+        // if ID is null, generate an ID for it
+        this.itemDefs.put( idn.getId() != null ? idn.getId() : "_"+this.itemDefs.size(), idn );
     }
 
     @Override

@@ -136,7 +136,7 @@ public class DMNRuntimeImpl
         // TODO: do we need to check/resolve dependencies?
         if( bkm.getEvaluator() == null ) {
             DMNMessage msg = result.addMessage( DMNMessage.Severity.WARN,
-                                                "Missing expression for Business Knowledge Model node '"+bkm.getName()+"'. Skipping evaluation.",
+                                                "Missing expression for Business Knowledge Model node '"+getIdentifier( bkm )+"'. Skipping evaluation.",
                                                 bkm.getId() );
             return;
         }
@@ -147,7 +147,7 @@ public class DMNRuntimeImpl
                 result.getContext().set( bkm.getBusinessKnowledModel().getVariable().getName(), er.getResult() );
             }
         } catch( Throwable t ) {
-            result.addMessage( DMNMessage.Severity.ERROR, "Error evaluating Business Knowledge Model node '"+bkm.getName()+ "': "+t.getMessage(), bkm.getId(), t );
+            result.addMessage( DMNMessage.Severity.ERROR, "Error evaluating Business Knowledge Model node '"+getIdentifier( bkm )+ "': "+t.getMessage(), bkm.getId(), t );
         } finally {
             eventManager.fireAfterEvaluateBKM( bkm, result );
         }
@@ -174,14 +174,14 @@ public class DMNRuntimeImpl
                     if( dep instanceof DecisionNode ) {
                         if( ! evaluateDecision( context, result, (DecisionNode) dep ) ) {
                             missingInput = true;
-                            String message = "Unable to evaluate decision '" + decision.getName() + "' as it depends on decision '" + dep.getName() + "' with id '" + dep.getId() + "'";
+                            String message = "Unable to evaluate decision '" + getIdentifier( decision ) + "' as it depends on decision '" + getIdentifier( dep ) + "'";
                             reportFailure( result, decision, dr, null, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
                         }
                     } else if( dep instanceof BusinessKnowledgeModelNode ) {
                         evaluateBKM( context, result, (BusinessKnowledgeModelNode) dep );
                     } else {
                         missingInput = true;
-                        String message = "Missing dependency for decision '" + decision.getName() + "': dependency name='" + dep.getName() + "' dependency id='" + dep.getId() + "'";
+                        String message = "Missing dependency for decision '" + getIdentifier( decision ) + "': dependency='" + getIdentifier( dep ) + "'";
                         reportFailure( result, decision, dr, null, message, DMNDecisionResult.DecisionEvaluationStatus.SKIPPED );
                     }
                 }
@@ -214,6 +214,10 @@ public class DMNRuntimeImpl
         } finally {
             eventManager.fireAfterEvaluateDecision( decision, result );
         }
+    }
+
+    private String getIdentifier(DMNNode node) {
+        return node.getName() != null ? node.getName() : node.getId();
     }
 
     private void reportFailure(DMNResultImpl result, DecisionNode decision, DMNDecisionResultImpl dr, Throwable t, String message, DMNDecisionResult.DecisionEvaluationStatus status) {

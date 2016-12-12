@@ -30,10 +30,14 @@ import org.kie.dmn.core.impl.DMNPackageImpl;
 import org.kie.internal.assembler.KieAssemblerService;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.io.ResourceTypePackage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 public class DMNAssemblerService implements KieAssemblerService {
+
+    private static final Logger logger = LoggerFactory.getLogger( DMNAssemblerService.class );
 
     @Override
     public ResourceType getResourceType() {
@@ -46,23 +50,27 @@ public class DMNAssemblerService implements KieAssemblerService {
 
         DMNCompiler dmnCompiler = DMNFactory.newCompiler();
         DMNModel model = dmnCompiler.compile( resource );
-        String namespace = model.getNamespace();
+        if( model != null ) {
+            String namespace = model.getNamespace();
 
-        KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
-        PackageRegistry pkgReg = kbuilderImpl.getPackageRegistry( namespace );
-        if ( pkgReg == null ) {
-            pkgReg = kbuilderImpl.newPackage( new PackageDescr( namespace ) );
+            KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
+            PackageRegistry pkgReg = kbuilderImpl.getPackageRegistry( namespace );
+            if ( pkgReg == null ) {
+                pkgReg = kbuilderImpl.newPackage( new PackageDescr( namespace ) );
+            }
+            InternalKnowledgePackage kpkgs = pkgReg.getPackage();
+
+            Map<ResourceType, ResourceTypePackage> rpkg = kpkgs.getResourceTypePackages();
+
+            DMNPackageImpl dmnpkg = (DMNPackageImpl) rpkg.get( ResourceType.DMN );
+            if ( dmnpkg == null ) {
+                dmnpkg = new DMNPackageImpl( namespace );
+                rpkg.put(ResourceType.DMN, dmnpkg);
+            }
+            dmnpkg.addModel( model.getName(), model );
+        } else {
+            logger.error( "Unable to compile DMN model for resource {}", resource.getSourcePath() );
         }
-        InternalKnowledgePackage kpkgs = pkgReg.getPackage();
-
-        Map<ResourceType, ResourceTypePackage> rpkg = kpkgs.getResourceTypePackages();
-
-        DMNPackageImpl dmnpkg = (DMNPackageImpl) rpkg.get( ResourceType.DMN );
-        if ( dmnpkg == null ) {
-            dmnpkg = new DMNPackageImpl( namespace );
-            rpkg.put(ResourceType.DMN, dmnpkg);
-        }
-        dmnpkg.addModel( model.getName(), model );
     }
 
     @Override
