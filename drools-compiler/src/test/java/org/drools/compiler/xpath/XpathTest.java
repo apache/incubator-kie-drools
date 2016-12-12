@@ -1856,4 +1856,75 @@ public class XpathTest {
         assertFalse  (factsCollection(ksession).contains("Y.File1"));
         assertTrue   (factsCollection(ksession).contains("Y.File2"));
     }
+    
+    @Test
+    public void testMiscSetMethods() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "  TMFileSet( $id: name, $p: /files{size >= 100} )\n" +
+                "then\n" +
+                "  System.out.println( $id + \".\" + $p.getName() );\n" +
+                "  insertLogical(      $id + \".\" + $p.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+        
+        TMFileSet x = new TMFileSet("X");
+        TMFileSet y = new TMFileSet("Y");
+        ksession.insert( x );
+        ksession.insert( y );
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.File0"));
+        assertFalse (factsCollection(ksession).contains("X.File1"));
+        assertFalse (factsCollection(ksession).contains("Y.File0"));
+        assertFalse (factsCollection(ksession).contains("Y.File1"));
+        
+        TMFile file0 = new TMFile("File0", 47);
+        TMFile file1 = new TMFile("File1", 47);
+        TMFile file2 = new TMFile("File2", 47);
+        x.getFiles().add(file2);
+        x.getFiles().addAll(Arrays.asList(new TMFile[]{file0, file1}));
+        y.getFiles().add(file2);
+        y.getFiles().add(file0);
+        y.getFiles().add(file1);
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.File0"));
+        assertFalse (factsCollection(ksession).contains("X.File1"));
+        assertFalse (factsCollection(ksession).contains("X.File2"));
+        assertFalse (factsCollection(ksession).contains("Y.File0"));
+        assertFalse (factsCollection(ksession).contains("Y.File1"));
+        assertFalse (factsCollection(ksession).contains("Y.File2"));
+
+        file0.setSize( 999 );        
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.File0"));
+        assertFalse (factsCollection(ksession).contains("X.File1"));
+        assertFalse (factsCollection(ksession).contains("X.File2"));
+        assertTrue  (factsCollection(ksession).contains("Y.File0"));
+        assertFalse (factsCollection(ksession).contains("Y.File1"));
+        assertFalse (factsCollection(ksession).contains("Y.File2"));
+        
+        y.getFiles().remove( file1 ); // removing File1 from Y
+        file1.setSize( 999 );        
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.File0"));
+        assertTrue  (factsCollection(ksession).contains("X.File1"));
+        assertFalse (factsCollection(ksession).contains("X.File2"));
+        assertTrue  (factsCollection(ksession).contains("Y.File0"));
+        assertFalse (factsCollection(ksession).contains("Y.File1"));
+        assertFalse (factsCollection(ksession).contains("Y.File2"));
+        
+        file2.setSize( 999 );        
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.File0"));
+        assertTrue  (factsCollection(ksession).contains("X.File1"));
+        assertTrue  (factsCollection(ksession).contains("X.File2"));
+        assertTrue  (factsCollection(ksession).contains("Y.File0"));
+        assertFalse (factsCollection(ksession).contains("Y.File1"));
+        assertTrue  (factsCollection(ksession).contains("Y.File2"));
+    }
 }
