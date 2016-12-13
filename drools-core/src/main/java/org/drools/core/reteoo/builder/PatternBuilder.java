@@ -180,13 +180,15 @@ public class PatternBuilder
 
                 Declaration declaration = xpathConstraint.getDeclaration();
 
-                Pattern clonedPattern = new Pattern( pattern.getIndex(),
-                                                     context.getCurrentPatternOffset(),
-                                                     new ClassObjectType( xpathConstraint.getResultClass() ),
-                                                     declaration.getIdentifier(),
-                                                     declaration.isInternalFact() );
-
-                declaration.setPattern( clonedPattern );
+                if ( declaration != null ) { // oopath actually have the binding
+                    Pattern clonedPattern = new Pattern( pattern.getIndex(),
+                                                         context.getCurrentPatternOffset(),
+                                                         new ClassObjectType( xpathConstraint.getResultClass() ),
+                                                         declaration.getIdentifier(),
+                                                         declaration.isInternalFact() );
+    
+                    declaration.setPattern( clonedPattern );
+                }
             }
 
             context.popRuleComponent();
