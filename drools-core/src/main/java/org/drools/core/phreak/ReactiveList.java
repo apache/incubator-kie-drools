@@ -71,7 +71,7 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
     @Override
     public T set(int index, T element) {
         T previous = wrapped.set(index, element);
-        if ( previous != element ) { // TODO review == by ref.
+        if ( previous != element ) { // this is indeed intended != to check by reference
             ReactiveObjectUtil.notifyModification(element, getLeftTuples(), ModificationType.ADD);
             if ( element instanceof ReactiveObject ) {
                 for (Tuple lts : getLeftTuples()) {
@@ -177,6 +177,7 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
 
         @Override
         public void set(T e) {
+            // As per ListIterator spec, This call can be made only if neither remove nor add have been called after the last call to next or previous:
             if ( last != null ) {
                 wrapped.set(e);
                 if ( last != e ) { // this is indeed intended != to check by reference
