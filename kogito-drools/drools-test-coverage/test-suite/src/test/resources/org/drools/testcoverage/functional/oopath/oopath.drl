@@ -20,9 +20,8 @@ import org.drools.testcoverage.common.model.Address
 import org.drools.testcoverage.common.model.Person
 
 rule "Basic expression"
-	when
-        person: Person( /address{ street == "Some Street" } )
-	then
-		//consequences
+when
+    person: Person( /address{ street == "Some Street" } )
+then
+    //consequences
 end
-
