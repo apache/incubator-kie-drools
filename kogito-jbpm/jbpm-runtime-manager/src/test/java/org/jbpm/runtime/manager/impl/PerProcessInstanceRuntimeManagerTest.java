@@ -1455,4 +1455,66 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         assertEquals(ProcessInstance.STATE_COMPLETED, pi1.getState());        
         manager.close();
     }
+    
+    @Test(timeout=20000)
+    public void testTimersOnMultiInstanceSubprocess() throws Exception {
+        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("MIDelayTimer", 2);
+        final List<Long> timerExpirations = new ArrayList<Long>();
+         
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory(){
+
+                    @Override
+                    public List<ProcessEventListener> getProcessEventListeners(
+                            RuntimeEngine runtime) {
+                        List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+                        listeners.add(new DefaultProcessEventListener(){
+                             @Override
+                             public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                                 if (event.getNodeInstance().getNodeName().equals("MIDebugScript")) {
+                                     timerExpirations.add(event.getProcessInstance().getId());
+                                 }
+                             }
+                             
+                         });
+                        listeners.add(countDownListener);
+                        return listeners;
+                    }                   
+                })
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-MultiInstanceProcess.bpmn2"), ResourceType.BPMN2)
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);        
+        assertNotNull(manager);
+        // ksession for process instance #1
+        // since there is no process instance yet we need to get new session
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+        ProcessInstance pi1 = ksession.startProcess("defaultPackage.MultiInstanceProcess");
+        // both processes started 
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
+        manager.disposeRuntimeEngine(runtime);
+        
+        // wait a bit for some timers to fire
+        countDownListener.waitTillCompleted();
+        
+        // now make sure nothing else is triggered
+        countDownListener.reset(4);
+        countDownListener.waitTillCompleted(3000);
+        
+        assertEquals(2, timerExpirations.size());
+        
+        runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
+        ksession = runtime.getKieSession();
+        
+        pi1 = ksession.getProcessInstance(pi1.getId());        
+        assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
+        
+        ksession.abortProcessInstance(pi1.getId());
+        manager.disposeRuntimeEngine(runtime);
+                
+        manager.close();
+    }
 }

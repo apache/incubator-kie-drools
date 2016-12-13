@@ -258,7 +258,7 @@ public class TimerManager {
                 if (date != null) {
                     long then = date.getTime();
                     long now = pctx.getKnowledgeRuntime().getSessionClock().getCurrentTime();
-                    // overdue timer
+                    // overdue timer                    
                     if (then < now) {
                         trigger = new OverdueTrigger(trigger, pctx.getKnowledgeRuntime());
                     }
@@ -283,6 +283,7 @@ public class TimerManager {
             Long processInstanceId = ctx.getProcessInstanceId();
             InternalKnowledgeRuntime kruntime = ctx.getKnowledgeRuntime();
             try {
+                kruntime.startOperation();
                 if (processInstanceId == null) {
                     throw new IllegalArgumentException("Could not find process instance for timer ");
                 }
@@ -308,6 +309,8 @@ public class TimerManager {
 
             } catch (Throwable e) {
                 logger.error("Error when executing timer job", e);
+            } finally {
+                kruntime.endOperation();
             }
         }
 
@@ -333,7 +336,7 @@ public class TimerManager {
                 return;
             }
             try {
-
+                kruntime.startOperation();
                 ctx.getTimer().setLastTriggered(
                         new Date(ctx.getKnowledgeRuntime().<SessionClock> getSessionClock().getCurrentTime()));
 
@@ -351,6 +354,8 @@ public class TimerManager {
             } catch (Throwable e) {
                 logger.error("Error when executing start process " + ctx.getProcessId() + " timer job", e);
 
+            } finally {
+                kruntime.endOperation();
             }
         }
 
