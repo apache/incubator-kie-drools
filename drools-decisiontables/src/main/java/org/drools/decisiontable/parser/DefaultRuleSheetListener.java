@@ -74,6 +74,7 @@ implements RuleSheetListener {
     public static final String            IMPORT_TAG             = "Import";
     public static final String            SEQUENTIAL_FLAG        = "Sequential";
     public static final String            ESCAPE_QUOTES_FLAG     = "EscapeQuotes";
+    public static final String            NUMERIC_DISABLED_FLAG  = "NumericDisabled";
     public static final String            VARIABLES_TAG          = "Variables";
     public static final String            RULE_TABLE_TAG         = "ruletable";
     public static final String            RULESET_TAG            = "RuleSet";
@@ -91,7 +92,8 @@ implements RuleSheetListener {
     private String                        _currentRulePrefix;
     private boolean                       _currentSequentialFlag   = false;                       // indicates that we are in sequential mode
     private boolean                       _currentEscapeQuotesFlag = true;                        // indicates that we are escaping quotes
-    
+    private boolean                       _currentNumericDisabledFlag = false;                    // indicates that we use String instead of double
+
     //accumulated output
     private Map<Integer, ActionType>       _actions;
     private final HashMap<Integer, String> _cellComments          = new HashMap<Integer, String>();
@@ -362,6 +364,7 @@ implements RuleSheetListener {
         }
         this._currentSequentialFlag = getSequentialFlag();
         this._currentEscapeQuotesFlag = getEscapeQuotesFlag();
+        this._currentNumericDisabledFlag = getNumericDisabledFlag();
 
         String headCell = RuleSheetParserUtil.rc2name( this._ruleStartRow, this._ruleStartColumn );
         String ruleCell = RuleSheetParserUtil.rc2name( this._ruleRow, this._ruleStartColumn );
@@ -402,6 +405,11 @@ implements RuleSheetListener {
     private boolean getEscapeQuotesFlag() {
         final String escFlag = getProperties().getSingleProperty( ESCAPE_QUOTES_FLAG, "true" );
         return RuleSheetParserUtil.isStringMeaningTrue( escFlag );
+    }
+
+    private boolean getNumericDisabledFlag() {
+        final String numFlag = getProperties().getSingleProperty( NUMERIC_DISABLED_FLAG, "false" );
+        return RuleSheetParserUtil.isStringMeaningTrue( numFlag );
     }
 
     private void finishRuleTable() {
@@ -687,4 +695,7 @@ implements RuleSheetListener {
         return value == null || "".equals( value.trim() );
     }
 
+    public boolean isNumericDisabled() {
+        return _currentNumericDisabledFlag;
+    }
 }

@@ -515,6 +515,25 @@ public class RuleWorksheetParseTest {
         assertEquals( 1, rule.getConsequences().size() );
     }
 
+    @Test
+    public void testNumericDisabled() throws Exception {
+        // DROOLS-1378
+        final InputStream stream = RuleWorksheetParseTest.class.getResourceAsStream( "/data/NumericDisabled.xls" );
+        final RuleSheetListener listener = getRuleSheetListener( stream );
+
+        final Package ruleset = listener.getRuleSet();
+        assertNotNull( ruleset );
+        DRLOutput dout = new DRLOutput();
+        ruleset.renderDRL( dout );
+        String drl = dout.getDRL();
+        System.out.println( drl );
+
+        // check rules
+        Rule rule = (Rule) ruleset.getRules().get( 0 );
+        Condition cond = (Condition) rule.getConditions().get( 0 );
+        assertEquals( "Cheese(price == 6600)", cond.getSnippet() );
+    }
+
     /**
      * Utility method showing how to get a rule sheet listener from a stream.
      */
