@@ -28,6 +28,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.drools.decisiontable.parser.DecisionTableParser;
+import org.drools.decisiontable.parser.DefaultRuleSheetListener;
 import org.drools.template.parser.DataListener;
 import org.drools.template.parser.DecisionTableParseException;
 import org.slf4j.Logger;
@@ -194,7 +195,11 @@ public class ExcelParser
                         }
                         break;
                     case Cell.CELL_TYPE_NUMERIC:
-                        num = cell.getNumericCellValue();
+                        if ( isNumericDisabled(listeners) ) {
+                            // don't get a double value. rely on DataFormatter
+                        } else {
+                            num = cell.getNumericCellValue();
+                        }
                     default:
                         if (num - Math.round(num) != 0) {
                             newCell(listeners,
@@ -303,4 +308,12 @@ public class ExcelParser
         }
     }
 
+    private boolean isNumericDisabled( List<? extends DataListener> listeners ) {
+        for ( DataListener listener : listeners ) {
+            if (listener instanceof DefaultRuleSheetListener) {
+                return ((DefaultRuleSheetListener)listener).isNumericDisabled();
+            }
+        }
+        return false;
+    }
 }
