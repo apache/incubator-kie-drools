@@ -49,7 +49,6 @@ public class DeleteComputerProblemFactChange implements ProblemFactChange<CloudB
                 scoreDirector.afterVariableChanged(process, "computer");
             }
         }
-        scoreDirector.triggerVariableListeners();
         // A SolutionCloner does not clone problem fact lists (such as computerList)
         // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
         ArrayList<CloudComputer> computerList = new ArrayList<>(cloudBalance.getComputerList());
