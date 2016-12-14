@@ -164,6 +164,14 @@ public class ReactiveCollection<T, W extends Collection<T>> extends AbstractReac
 
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("ReactiveCollection [").append(wrapped).append("]");
+        return builder.toString();
+    }
+
     // Reminder: no need to override boolean removeIf(Predicate<? super E> filter)
     // as it uses the collection's Iterator which in this case is already opportunely wrapped.
+    
 }
