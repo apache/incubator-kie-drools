@@ -32,20 +32,6 @@ public class ReactiveSet<T> extends ReactiveCollection<T, Set<T>> implements Set
     }
 
     @Override
-    public boolean add(T t) {
-        boolean result = wrapped.add(t);
-        if (result) {
-            ReactiveObjectUtil.notifyModification(t, getLeftTuples(), ModificationType.ADD);
-            if (t instanceof ReactiveObject) {
-                for (Tuple lts : getLeftTuples()) {
-                    ((ReactiveObject) t).addLeftTuple(lts);
-                }
-            }
-        }
-        return result;
-    }
-
-    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("ReactiveSet[").append(wrapped).append("]");

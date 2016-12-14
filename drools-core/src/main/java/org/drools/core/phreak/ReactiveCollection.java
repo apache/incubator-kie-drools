@@ -21,7 +21,7 @@ import java.util.Iterator;
 import org.drools.core.phreak.ReactiveObjectUtil.ModificationType;
 import org.drools.core.spi.Tuple;
 
-public abstract class ReactiveCollection<T, W extends Collection<T>> extends AbstractReactiveObject implements Collection<T> {
+public class ReactiveCollection<T, W extends Collection<T>> extends AbstractReactiveObject implements Collection<T> {
 
     protected final W wrapped;
 
@@ -57,6 +57,20 @@ public abstract class ReactiveCollection<T, W extends Collection<T>> extends Abs
     @Override
     public boolean containsAll(Collection<?> c) {
         return wrapped.containsAll(c);
+    }
+    
+    @Override
+    public boolean add(T t) {
+        boolean result = wrapped.add(t);
+        if (result) {
+            ReactiveObjectUtil.notifyModification(t, getLeftTuples(), ModificationType.ADD);
+            if (t instanceof ReactiveObject) {
+                for (Tuple lts : getLeftTuples()) {
+                    ((ReactiveObject) t).addLeftTuple(lts);
+                }
+            }
+        }
+        return result;
     }
     
     @Override

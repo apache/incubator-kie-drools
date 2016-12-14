@@ -35,19 +35,6 @@ public class ReactiveList<T> extends ReactiveCollection<T, List<T>> implements L
     }
 
     @Override
-    public boolean add(T t) {
-        boolean result = wrapped.add(t);
-        // reminder: list.add() always returns true accordingly to spec.
-        ReactiveObjectUtil.notifyModification(t, getLeftTuples(), ModificationType.ADD);
-        if (t instanceof ReactiveObject) {
-            for (Tuple lts : getLeftTuples()) {
-                ((ReactiveObject) t).addLeftTuple(lts);
-            }
-        }
-        return result;
-    }
-
-    @Override
     public boolean addAll(int index, Collection<? extends T> c) {
         boolean result = wrapped.addAll(index, c);
         if (result) {
