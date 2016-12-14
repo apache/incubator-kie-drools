@@ -24,6 +24,7 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
     private static final int    INDENT_STEP   = 4;
 
     public Node<K>        root;
+    public Node<K>        nullNode;
 
     public void verifyProperties() {
         if ( VERIFY_RBTREE ) {
@@ -85,6 +86,9 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
     }
 
     public Node<K> lookup(K key) {
+        if (key == null) {
+            return nullNode;
+        }
         Node<K> n = root;
         while ( n != null ) {
             int compResult = key.compareTo( n.key );
@@ -229,6 +233,10 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
     }
 
     public Node<K> findNearestNode(K key, boolean allowEqual, Boundary boundary) {
+        if (key == null) {
+            return allowEqual ? nullNode : null;
+        }
+
         Node<K> nearest = null;
         Node<K> n = root;
 
@@ -293,8 +301,15 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
     }
 
     public Node<K> insert(K key) {
-        Node<K> insertedNode = new Node<K>( key );
+        if (key == null) {
+            if (nullNode == null) {
+                nullNode = new Node<K>( key );
+            }
+            return nullNode;
+        }
+        Node<K> insertedNode;
         if ( root == null ) {
+            insertedNode = new Node<K>( key );
             root = insertedNode;
         } else {
             Node<K> n = root;
@@ -304,6 +319,7 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
                     return n;
                 } else if ( compResult < 0 ) {
                     if ( n.left == null ) {
+                        insertedNode = new Node<K>( key );
                         n.left = insertedNode;
                         break;
                     } else {
@@ -311,6 +327,7 @@ public class TupleRBTree<K extends Comparable< ? super K>> {
                     }
                 } else {
                     if ( n.right == null ) {
+                        insertedNode = new Node<K>( key );
                         n.right = insertedNode;
                         break;
                     } else {

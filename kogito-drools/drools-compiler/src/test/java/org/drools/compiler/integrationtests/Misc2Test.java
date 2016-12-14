@@ -8998,4 +8998,73 @@ public class Misc2Test extends CommonTestMethodBase {
             assertTrue( e.getMessage().contains( "name.startsWith(\"A\")" ) );
         }
     }
+
+    public static class TestObject {
+
+        private final Integer value;
+
+        public TestObject(Integer value) {
+            this.value = value;
+        }
+
+        public Integer getValue() {
+            return value;
+        }
+
+    }
+
+    @Test
+    public void testNpeInLessThanComparison() {
+        // RHBRMS-2462
+        String drl = "package com.sample\n"
+                     + "import " + TestObject.class.getCanonicalName() + ";\n"
+                     + "global java.util.List list\n"
+                     + "rule LessThanCompare when\n"
+                     + "    TestObject( $value : value )"
+                     + "    TestObject( value < $value )"
+                     + "then\n"
+                     + "    list.add(drools.getRule().getName() + \":\" + $value);\n"
+                     + "end\n"
+                     + "\n"
+                     + "rule GreaterThanCompare when\n"
+                     + "    TestObject( $value : value )\n"
+                     + "    TestObject( $value > value )\n"
+                     + "then\n"
+                     + "    list.add(drools.getRule().getName() + \":\" + $value);\n"
+                     + "end\n"
+                     + "\n"
+                     + "rule NotLessThanCompare when\n"
+                     + "    TestObject( $value : value )"
+                     + "    not ( TestObject( value < $value ) )"
+                     + "then\n"
+                     + "    list.add(drools.getRule().getName() + \":\" + $value);\n"
+                     + "end\n"
+                     + "\n"
+                     + "rule NotGreaterThanCompare when\n"
+                     + "    TestObject( $value : value )\n"
+                     + "    not ( TestObject( $value > value ) )\n"
+                     + "then\n"
+                     + "    list.add(drools.getRule().getName() + \":\" + $value);\n"
+                     + "end";
+
+        KieSession kSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        kSession.setGlobal( "list", list );
+
+        kSession.insert(new TestObject(null));
+        kSession.insert(new TestObject(5));
+
+        kSession.fireAllRules();
+
+        assertEquals( 4, list.size() );
+        assertTrue( list.contains( "NotLessThanCompare:5" ) );
+        assertTrue( list.contains( "NotLessThanCompare:null" ) );
+        assertTrue( list.contains( "NotGreaterThanCompare:5" ) );
+        assertTrue( list.contains( "NotGreaterThanCompare:null" ) );
+        assertFalse( list.contains( "LessThanCompare:5" ) );
+        assertFalse( list.contains( "LessThanCompare:null" ) );
+        assertFalse( list.contains( "GreaterThanCompare:5" ) );
+        assertFalse( list.contains( "GreaterThanCompare:null" ) );
+    }
 }
