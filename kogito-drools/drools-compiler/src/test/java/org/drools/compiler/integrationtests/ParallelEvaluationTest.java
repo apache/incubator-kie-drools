@@ -522,12 +522,14 @@ public class ParallelEvaluationTest {
 
     private String getRuleWithEventForExpiration(int i) {
         return  "rule R" + i + " when\n" +
-                "    $i : MyEvent( id == " + i + " )" +
+                "    $i : MyEvent( id == " + i + " )\n" +
                 "then\n" +
                 "    list.add($i);\n" +
+                "    insert(" + i + ");\n" +
                 "end\n" +
                 "rule R" + i + "not when\n" +
-                "    not MyEvent( id == " + i + " )" +
+                "    Integer( this == " + i + " )\n" +
+                "    not MyEvent( id == " + i + " )\n" +
                 "then\n" +
                 "    list.add(" + i + ");\n" +
                 "end\n";
@@ -574,24 +576,28 @@ public class ParallelEvaluationTest {
             throw new RuntimeException( e );
         }
 
-        assertEquals(10, list.size());
-        assertEquals( 10L, ksession.getFactCount() );
+        assertEquals( 10, list.size() );
+        list.clear();
 
         CountDownLatch done2 = new CountDownLatch(1);
-        list.onItemAdded = ( l -> { if (l.size() == 15) {
+        list.onItemAdded = ( l -> { if (l.size() == 5) {
             done2.countDown();
         }} );
 
+        ksession.insert( 1 );
         sessionClock.advanceTime( 29, TimeUnit.MILLISECONDS );
+
         try {
             done2.await();
         } catch (InterruptedException e) {
             throw new RuntimeException( e );
         }
-        assertEquals( 5L, ksession.getFactCount() );
+
+        assertEquals( 5, list.size() );
+        list.clear();
 
         CountDownLatch done3 = new CountDownLatch(1);
-        list.onItemAdded = ( l -> { if (l.size() == 20) {
+        list.onItemAdded = ( l -> { if (l.size() == 5) {
             done3.countDown();
         }} );
 
@@ -601,7 +607,8 @@ public class ParallelEvaluationTest {
         } catch (InterruptedException e) {
             throw new RuntimeException( e );
         }
-        assertEquals( 0L, ksession.getFactCount() );
+
+        assertEquals( 5, list.size() );
 
         ksession.halt();
         ksession.dispose();
