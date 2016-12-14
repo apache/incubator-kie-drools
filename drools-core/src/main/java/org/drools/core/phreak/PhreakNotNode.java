@@ -48,12 +48,6 @@ public class PhreakNotNode {
         }
 
 
-        if (srcLeftTuples.getUpdateFirst() != null) {
-            // must happen before right inserts, so it can find left tuples to block.
-            RuleNetworkEvaluator.doUpdatesExistentialReorderLeftMemory(bm,
-                                                                       srcLeftTuples);
-        }
-
         if ( srcRightTuples.getUpdateFirst() != null) {
             RuleNetworkEvaluator.doUpdatesExistentialReorderRightMemory(bm,
                                                                         notNode,
@@ -64,7 +58,6 @@ public class PhreakNotNode {
             // must come before right updates and inserts, as they might cause insert propagation, while this causes delete propagations, resulting in staging clash.
             doRightInserts(notNode, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
         }
-
 
 
         if (srcRightTuples.getUpdateFirst() != null) {

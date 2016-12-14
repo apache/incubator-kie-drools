@@ -771,52 +771,6 @@ public class RuleNetworkEvaluator {
         }
     }
 
-    public static void doUpdatesReorderLeftMemory(BetaMemory bm,
-                                                  TupleSets<LeftTuple> srcLeftTuples) {
-        TupleMemory ltm = bm.getLeftTupleMemory();
-
-        // sides must first be re-ordered, to ensure iteration integrity
-        for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
-            ltm.remove(leftTuple);
-        }
-
-        for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
-            ltm.add(leftTuple);
-            for (LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; ) {
-                LeftTuple childNext = childLeftTuple.getHandleNext();
-                childLeftTuple.reAddRight();
-                childLeftTuple = childNext;
-            }
-        }
-    }
-
-    public static void doUpdatesExistentialReorderLeftMemory(BetaMemory bm,
-                                                             TupleSets<LeftTuple> srcLeftTuples) {
-        TupleMemory ltm = bm.getLeftTupleMemory();
-
-        // sides must first be re-ordered, to ensure iteration integrity
-        for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
-            if ( leftTuple.getMemory() != null ) {
-                ltm.remove(leftTuple);
-            }
-        }
-
-        for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
-            RightTuple blocker = leftTuple.getBlocker();
-            if ( blocker == null ) {
-                ltm.add(leftTuple);
-                for (LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; ) {
-                    LeftTuple childNext = childLeftTuple.getHandleNext();
-                    childLeftTuple.reAddRight();
-                    childLeftTuple = childNext;
-                }
-            } else if ( blocker.getStagedType() != LeftTuple.NONE ) {
-                // it's blocker is also being updated, so remove to force it to start from the beginning
-                blocker.removeBlocked( leftTuple );
-            }
-        }
-    }
-
     public static void doUpdatesReorderRightMemory(BetaMemory bm,
                                                    TupleSets<RightTuple> srcRightTuples) {
         TupleMemory rtm = bm.getRightTupleMemory();
