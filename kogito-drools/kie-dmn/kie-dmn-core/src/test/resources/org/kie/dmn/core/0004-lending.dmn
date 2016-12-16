@@ -1076,7 +1076,7 @@
             <text>EmploymentStatus</text>
           </inputExpression>
           <inputValues>
-            <text>"UNEMPLOYED", " EMPLOYED", " SELF-EMPLOYED", " STUDENT"</text>
+            <text>"UNEMPLOYED", "EMPLOYED", "SELF-EMPLOYED", "STUDENT"</text>
           </inputValues>
         </input>
         <output id="_79391b75-39ec-44d1-8104-c2d0b09b2523"/>
@@ -1236,7 +1236,7 @@
         </rule>
       </decisionTable>
     </encapsulatedLogic>
-    <variable name="ApplicationRiskScoreModel" typeRef="feel:string"/>
+    <variable name="ApplicationRiskScoreModel" typeRef="feel:number"/>
   </businessKnowledgeModel>
   <businessKnowledgeModel id="b_InstallmentCalculation" name="InstallmentCalculation">
     <encapsulatedLogic>
