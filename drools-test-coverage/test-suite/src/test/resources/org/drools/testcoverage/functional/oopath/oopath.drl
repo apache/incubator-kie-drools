@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jboss.qa.brms.bre.functional.oopath
+package org.drools.testcoverage.functional.oopath
 
 import org.drools.testcoverage.common.model.Address
 import org.drools.testcoverage.common.model.Person
