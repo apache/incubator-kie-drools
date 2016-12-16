@@ -19,16 +19,23 @@ package org.drools.testcoverage.functional.oopath;
 import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.junit.After;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
 /**
  * Tests basic usage of OOPath expressions.
  */
 public class OOPathSmokeTest {
+    private static final KieServices KIE_SERVICES = KieServices.Factory.get();
+    private static final ReleaseId RELEASE_ID = KIE_SERVICES.newReleaseId("org.drools.testcoverage.oopath", "marshalling-test", "1.0");
 
     private KieSession kieSession;
 
@@ -44,6 +51,19 @@ public class OOPathSmokeTest {
     public void testBuildKieBase() {
         final KieBase kieBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), true, "oopath.drl");
         Assertions.assertThat(kieBase).isNotNull();
+    }
+
+    @Test
+    public void testBuildTwoKieBases() throws Exception {
+        final Resource drlResource = KIE_SERVICES.getResources().newUrlResource(this.getClass().getResource("oopath.drl"));
+        KieBaseUtil.buildAndInstallKieModuleIntoRepo(RELEASE_ID, KieBaseTestConfiguration.CLOUD_IDENTITY, drlResource);
+
+        // creating two KieContainers and KieBases may trigger deep cloning
+        for (int i = 0; i < 2; i++) {
+            final KieContainer kieContainer = KIE_SERVICES.newKieContainer(RELEASE_ID);
+            final KieBase kieBase = kieContainer.getKieBase();
+            Assertions.assertThat(kieBase).isNotNull();
+        }
     }
 
     @Test
