@@ -20,17 +20,13 @@ import org.junit.Test;
 import org.kie.dmn.core.api.*;
 import org.kie.dmn.core.api.event.*;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.kie.dmn.feel.runtime.FEELFunction;
-import org.kie.dmn.feel.runtime.functions.MaxFunction;
 import org.mockito.ArgumentCaptor;
 
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -155,11 +151,11 @@ public class DMNRuntimeTest {
 
         AfterEvaluateDecisionTableEvent dte = argument.getAllValues().get( 0 );
         assertThat( dte.getDecisionTableName(), is( "Car Damage Responsibility" ) );
-        assertThat( dte.getMatches(), is( Arrays.asList( 4 ) ) );
+        assertThat( dte.getMatches(), is( Arrays.asList( 5 ) ) ); // rows are 1-based
 
         dte = argument.getAllValues().get( 1 );
         assertThat( dte.getDecisionTableName(), is( "Payment method" ) );
-        assertThat( dte.getMatches(), is( Arrays.asList( 2 ) ) );
+        assertThat( dte.getMatches(), is( Arrays.asList( 3 ) ) ); // rows are 1-based
 
         assertThat( dmnResult.hasErrors(), is( false ) );
 
@@ -325,14 +321,14 @@ public class DMNRuntimeTest {
         assertThat( dmnModel, notNullValue() );
         assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is( false ) );
 
-        Object[][] data = new Object[][] {
-                { 1, "Finances", "John" },
-                { 2, "Engineering", "Mary" },
-                { 3, "Sales", "Kevin" }
+        Object[][] data = new Object[][]{
+                {1, "Finances", "John"},
+                {2, "Engineering", "Mary"},
+                {3, "Sales", "Kevin"}
         };
-        List<Map<String,Object>> employees = new ArrayList<>(  );
-        for( int i = 0; i < data.length; i++ ) {
-            Map<String, Object> e = new HashMap<>(  );
+        List<Map<String, Object>> employees = new ArrayList<>();
+        for ( int i = 0; i < data.length; i++ ) {
+            Map<String, Object> e = new HashMap<>();
             e.put( "id", data[i][0] );
             e.put( "dept", data[i][1] );
             e.put( "name", data[i][2] );
@@ -375,15 +371,15 @@ public class DMNRuntimeTest {
         assertThat( dmnResult.hasErrors(), is( false ) );
         assertThat( dmnResult.getContext().get( "Employee Relation" ), is( instanceOf( List.class ) ) );
 
-        List<Map<String,Object>> employees = (List<Map<String,Object>>) dmnResult.getContext().get( "Employee Relation" );
-        Map<String,Object> e = employees.get( 0 );
-        assertThat( e.get( "Name" ), is("John") );
-        assertThat( e.get( "Dept" ), is("Sales") );
+        List<Map<String, Object>> employees = (List<Map<String, Object>>) dmnResult.getContext().get( "Employee Relation" );
+        Map<String, Object> e = employees.get( 0 );
+        assertThat( e.get( "Name" ), is( "John" ) );
+        assertThat( e.get( "Dept" ), is( "Sales" ) );
         assertThat( e.get( "Salary" ), is( BigDecimal.valueOf( 100000 ) ) );
 
         e = employees.get( 1 );
-        assertThat( e.get( "Name" ), is("Mary") );
-        assertThat( e.get( "Dept" ), is("Finances") );
+        assertThat( e.get( "Name" ), is( "Mary" ) );
+        assertThat( e.get( "Dept" ), is( "Finances" ) );
         assertThat( e.get( "Salary" ), is( BigDecimal.valueOf( 120000 ) ) );
     }
 
@@ -401,9 +397,9 @@ public class DMNRuntimeTest {
         context.set( "Membership Level", "Silver" );
         context.set( "Calendar Promotion", "None" );
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-//        System.out.println(formatMessages( dmnResult.getMessages() ));
+        //        System.out.println(formatMessages( dmnResult.getMessages() ));
         // work in progress... later we will check the actual messages...
-//        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getMessages( DMNMessage.Severity.ERROR ).size(), is( 4 ) );
+        //        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getMessages( DMNMessage.Severity.ERROR ).size(), is( 4 ) );
     }
 
     @Test
@@ -416,13 +412,48 @@ public class DMNRuntimeTest {
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 
         DMNContext context = DMNFactory.newContext();
-//        context.set( "Requested Vehicle Class", "Compact" );
+        Map applicant = new HashMap();
+        Map monthly = new HashMap();
+        monthly.put( "Income", 6000 );
+        monthly.put( "Expenses", 2000 );
+        monthly.put( "Repayments", 0 );
+        applicant.put( "Monthly", monthly );
+        applicant.put( "Age", 35 );
+        applicant.put( "ExistingCustomer", true );
+        applicant.put( "MaritalStatus", "M" );
+        applicant.put( "EmploymentStatus", "EMPLOYED" );
+        Map product = new HashMap();
+        product.put( "ProductType", "STANDARD LOAN" );
+        product.put( "Amount", 350000 );
+        product.put( "Rate", new BigDecimal( "0.0395" ) );
+        product.put( "Term", 360 );
+        Map bureau = new HashMap();
+        bureau.put( "CreditScore", 649 );
+        bureau.put( "Bankrupt", false );
+
+        context.set( "ApplicantData", applicant );
+        context.set( "RequestedProduct", product );
+        context.set( "BureauData", bureau );
+        context.set( "SupportingDocuments", "yes" );
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
-        //        System.out.println(formatMessages( dmnResult.getMessages() ));
-        // work in progress... later we will check the actual messages...
-        //        assertThat( formatMessages( dmnResult.getMessages() ), dmnResult.getMessages( DMNMessage.Severity.ERROR ).size(), is( 4 ) );
+        System.out.println( formatMessages( dmnResult.getMessages() ) );
+        DMNContext ctx = dmnResult.getContext();
+        System.out.println( ctx );
+
+        assertThat( ctx.get( "ApplicationRiskScore" ), is( BigDecimal.valueOf( 130 ) ) );
+        assertThat( ctx.get( "Pre-bureauRiskCategory" ), is( "LOW" ) );
+        assertThat( ctx.get( "BureauCallType" ), is( "MINI" ) );
+        assertThat( ctx.get( "Post-bureauRiskCategory" ), is( "LOW" ) );
+        assertThat( ((BigDecimal)ctx.get( "RequiredMonthlyInstallment" )).setScale( 5, BigDecimal.ROUND_DOWN ),
+                    is( new BigDecimal( "1680.880325608555" ).setScale( 5, BigDecimal.ROUND_DOWN ) ) );
+        assertThat( ctx.get( "Pre-bureauAffordability" ), is( true ) );
+        assertThat( ctx.get( "Eligibility" ), is( "ELIGIBLE" ) );
+        assertThat( ctx.get( "Strategy" ), is( "BUREAU" ) );
+        assertThat( ctx.get( "Post-bureauAffordability" ), is( true ) );
+        assertThat( ctx.get( "Routing" ), is( "ACCEPT" ) );
     }
-    private String formatMessages( List<DMNMessage> messages ) {
+
+    private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
 

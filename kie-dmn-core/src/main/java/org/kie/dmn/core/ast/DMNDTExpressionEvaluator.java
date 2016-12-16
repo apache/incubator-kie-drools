@@ -80,9 +80,6 @@ public class DMNDTExpressionEvaluator
             }
         }
         events.clear();
-        if ( r.matchedRules.isEmpty() ) {
-            r.hasErrors = true;
-        }
         return r;
     }
 

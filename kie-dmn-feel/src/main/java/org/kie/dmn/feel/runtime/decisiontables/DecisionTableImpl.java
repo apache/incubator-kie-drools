@@ -149,7 +149,7 @@ public class DecisionTableImpl {
             }
         }
         FEELEventListenersManager.notifyListeners( ctx.getEventsManager() , () -> {
-            List<Integer> matches = matchingDecisionRules.stream().map( dr -> dr.getIndex() ).collect( Collectors.toList() );
+            List<Integer> matches = matchingDecisionRules.stream().map( dr -> dr.getIndex() + 1 ).collect( Collectors.toList() );
             return new DecisionTableRulesMatchedEvent(FEELEvent.Severity.INFO,
                                                       "Rules matched for decision table '" + getName() + "': " + matches.toString(),
                                                       getName(),
