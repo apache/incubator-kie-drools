@@ -23,7 +23,9 @@ import java.util.Map;
 
 public class DMNContextImpl
         implements DMNContext {
-    private Map<String, Object> entries = new LinkedHashMap<String, Object>();
+    private static final String DEFAULT_IDENT = "    ";
+
+    private Map<String, Object> entries    = new LinkedHashMap<String, Object>();
 
     public DMNContextImpl() {
     }
@@ -59,8 +61,26 @@ public class DMNContextImpl
 
     @Override
     public String toString() {
-        return "DMNContext{" +
-               "entries=" + entries +
-               '}';
+        return printContext( entries, "" );
     }
+
+    private String printContext(Map<String, Object> context, String ident ) {
+        StringBuilder builder = new StringBuilder(  );
+        builder.append( "{\n" );
+        for( Map.Entry e : context.entrySet() ) {
+            builder.append( ident )
+                    .append( DEFAULT_IDENT )
+                    .append( e.getKey() )
+                    .append( ": " );
+            if( e.getValue() instanceof Map ) {
+                builder.append( printContext( (Map<String, Object>) e.getValue(), ident + DEFAULT_IDENT ) );
+            } else {
+                builder.append( e.getValue() )
+                        .append( "\n" );
+            }
+        }
+        builder.append( ident+"}\n" );
+        return builder.toString();
+    }
+
 }

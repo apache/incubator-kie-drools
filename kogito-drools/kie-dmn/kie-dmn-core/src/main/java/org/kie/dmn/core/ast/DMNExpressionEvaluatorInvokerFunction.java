@@ -98,7 +98,9 @@ public class DMNExpressionEvaluatorInvokerFunction implements DMNExpressionEvalu
         public Object invoke(EvaluationContext ctx, Object[] params) {
             DMNContext previousContext = resultContext.getContext();
             try {
-                DMNContextImpl dmnContext = new DMNContextImpl();
+                // we could be more strict and only set the parameters and the dependencies as values in the new
+                // context, but for now, cloning the original context
+                DMNContextImpl dmnContext = (DMNContextImpl) previousContext.clone();
                 for( int i = 0; i < params.length; i++ ) {
                     dmnContext.set( parameters.get( i ).name, params[i] );
                 }
@@ -128,6 +130,10 @@ public class DMNExpressionEvaluatorInvokerFunction implements DMNExpressionEvalu
 
         public List<List<DMNType>> getParameterTypes() {
             return Collections.singletonList( parameters.stream().map( p -> p.type ).collect( Collectors.toList()) );
+        }
+
+        public String toString() {
+            return "function "+getName()+"( "+parameters.stream().map( p -> p.name ).collect( Collectors.joining( ", " ) )+" )";
         }
     }
 

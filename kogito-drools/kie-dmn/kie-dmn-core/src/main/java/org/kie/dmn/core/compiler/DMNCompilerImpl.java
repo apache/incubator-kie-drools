@@ -138,12 +138,13 @@ public class DMNCompilerImpl implements DMNCompiler {
         }
 
         for ( BusinessKnowledgeModelNode bkm : model.getBusinessKnowledgeModels() ) {
+            linkRequirements( model, bkm );
             FunctionDefinition funcDef = bkm.getBusinessKnowledModel().getEncapsulatedLogic();
             DMNExpressionEvaluator exprEvaluator = compileExpression( model, bkm, funcDef );
             bkm.setEvaluator( exprEvaluator );
         }
         for ( DecisionNode d : model.getDecisions() ) {
-            linkDecisionRequirements( model, d );
+            linkRequirements( model, d );
             DMNExpressionEvaluator evaluator = compileExpression( model, d, d.getDecision().getExpression() );
             d.setEvaluator( evaluator );
         }
@@ -153,40 +154,40 @@ public class DMNCompilerImpl implements DMNCompiler {
         return FEELParser.isVariableNameValid( variableName );
     }
 
-    private void linkDecisionRequirements(DMNModelImpl model, DecisionNode decision ) {
-        for ( InformationRequirement ir : decision.getDecision().getInformationRequirement() ) {
+    private void linkRequirements(DMNModelImpl model, DMNBaseNode node ) {
+        for ( InformationRequirement ir : node.getInformationRequirement() ) {
             if ( ir.getRequiredInput() != null ) {
                 String id = getId( ir.getRequiredInput() );
                 InputDataNode input = model.getInputById( id );
                 if( input != null ) {
-                    decision.addDependency( input.getName(), input );
+                    node.addDependency( input.getName(), input );
                 } else {
-                    String message = "Required input '"+id+"' not found for decision '"+decision.getId()+"'";
+                    String message = "Required input '"+id+"' not found for node '"+node.getName()+"'";
                     logger.error( message );
-                    model.addMessage( DMNMessage.Severity.ERROR, message, decision.getId() );
+                    model.addMessage( DMNMessage.Severity.ERROR, message, node.getId() );
                 }
             } else if ( ir.getRequiredDecision() != null ) {
                 String id = getId( ir.getRequiredDecision() );
                 DecisionNode dn = model.getDecisionById( id );
                 if( dn != null ) {
-                    decision.addDependency( dn.getName(), dn );
+                    node.addDependency( dn.getName(), dn );
                 } else {
-                    String message = "Required decision '"+id+"' not found for decision '"+decision.getId()+"'";
+                    String message = "Required decision '"+id+"' not found for node '"+node.getName()+"'";
                     logger.error( message );
-                    model.addMessage( DMNMessage.Severity.ERROR, message, decision.getId() );
+                    model.addMessage( DMNMessage.Severity.ERROR, message, node.getId() );
                 }
             }
         }
-        for ( KnowledgeRequirement kr : decision.getDecision().getKnowledgeRequirement() ) {
+        for ( KnowledgeRequirement kr : node.getKnowledgeRequirement() ) {
             if ( kr.getRequiredKnowledge() != null ) {
                 String id = getId( kr.getRequiredKnowledge() );
                 BusinessKnowledgeModelNode bkmn = model.getBusinessKnowledgeModelById( id );
                 if( bkmn != null ) {
-                    decision.addDependency( bkmn.getName(), bkmn );
+                    node.addDependency( bkmn.getName(), bkmn );
                 } else {
-                    String message = "Required Business Knowledge Model '"+id+"' not found for decision '"+decision.getId()+"'";
+                    String message = "Required Business Knowledge Model '"+id+"' not found for node '"+node.getName()+"'";
                     logger.error( message );
-                    model.addMessage( DMNMessage.Severity.ERROR, message, decision.getId() );
+                    model.addMessage( DMNMessage.Severity.ERROR, message, node.getId() );
                 }
             }
         }
@@ -307,7 +308,14 @@ public class DMNCompilerImpl implements DMNCompiler {
             }
             String policy = dt.getHitPolicy().value() + (dt.getAggregation() != null ? " " + dt.getAggregation().value() : "");
             HitPolicy hp = HitPolicy.fromString( policy );
-            List<String> parameterNames = new ArrayList<>( node.getDependencies().keySet() );
+            List<String> parameterNames = new ArrayList<>( );
+            if( node instanceof BusinessKnowledgeModelNode ) {
+                // need to break this statement down and check for nulls
+                parameterNames.addAll( ((BusinessKnowledgeModelNode) node).getBusinessKnowledModel().getEncapsulatedLogic().getFormalParameter().stream().map( f -> f.getName() ).collect(toList()) );
+            } else {
+                parameterNames.addAll( node.getDependencies().keySet() );
+            }
+
             DecisionTableImpl dti = new DecisionTableImpl( node.getName(), parameterNames, inputs, outputs, rules, hp );
             DTInvokerFunction dtf = new DTInvokerFunction( dti );
             DMNDTExpressionEvaluator dtee = new DMNDTExpressionEvaluator( node, dtf );

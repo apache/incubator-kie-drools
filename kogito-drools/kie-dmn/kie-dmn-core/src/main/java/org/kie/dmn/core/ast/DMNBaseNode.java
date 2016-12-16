@@ -16,9 +16,7 @@
 
 package org.kie.dmn.core.ast;
 
-import org.kie.dmn.feel.model.v1_1.Decision;
-import org.kie.dmn.feel.model.v1_1.InformationRequirement;
-import org.kie.dmn.feel.model.v1_1.NamedElement;
+import org.kie.dmn.feel.model.v1_1.*;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -67,4 +65,13 @@ public abstract class DMNBaseNode
         }
     }
 
+    public List<KnowledgeRequirement> getKnowledgeRequirement() {
+        if ( source instanceof Decision ) {
+            return ((Decision) source).getKnowledgeRequirement();
+        } else if( source instanceof BusinessKnowledgeModel ) {
+            return ((BusinessKnowledgeModel) source).getKnowledgeRequirement();
+        } else {
+            return Collections.emptyList();
+        }
+    }
 }

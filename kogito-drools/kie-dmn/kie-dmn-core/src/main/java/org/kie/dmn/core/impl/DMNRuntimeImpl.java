@@ -142,6 +142,18 @@ public class DMNRuntimeImpl
         }
         try {
             eventManager.fireBeforeEvaluateBKM( bkm, result );
+            for( DMNNode dep : bkm.getDependencies().values() ) {
+                if( ! result.getContext().isDefined( dep.getName() ) ) {
+                    if( dep instanceof BusinessKnowledgeModelNode ) {
+                        evaluateBKM( context, result, (BusinessKnowledgeModelNode) dep );
+                    } else {
+                        String message = "Missing dependency for Business Knowledge Model node '" + getIdentifier( bkm ) + "': dependency='" + getIdentifier( dep ) + "'";
+                        result.addMessage( DMNMessage.Severity.ERROR, message, bkm.getId() );
+                        return;
+                    }
+                }
+            }
+
             DMNExpressionEvaluator.EvaluatorResult er = bkm.getEvaluator().evaluate( eventManager, result );
             if( er.getResultType() == DMNExpressionEvaluator.ResultType.SUCCESS ) {
                 result.getContext().set( bkm.getBusinessKnowledModel().getVariable().getName(), er.getResult() );
