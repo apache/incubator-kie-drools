@@ -73,7 +73,7 @@ public class ASTBuilderVisitor
     @Override
     public BaseNode visitPowExpression(FEEL_1_1Parser.PowExpressionContext ctx) {
         BaseNode left = visit( ctx.powerExpression() );
-        BaseNode right = visit( ctx.unaryExpression() );
+        BaseNode right = visit( ctx.filterPathExpression() );
         String op = ctx.op.getText();
         return ASTBuilderFactory.newInfixOpNode( ctx, left, op, right );
     }
@@ -443,16 +443,24 @@ public class ASTBuilderVisitor
     }
 
     @Override
-    public BaseNode visitExpressionTextual(FEEL_1_1Parser.ExpressionTextualContext ctx) {
-        BaseNode expr = visit( ctx.expr );
+    public BaseNode visitFilterPathExpression(FEEL_1_1Parser.FilterPathExpressionContext ctx) {
         if( ctx.filter != null ) {
+            BaseNode expr = visit( ctx.filterPathExpression() );
             BaseNode filter = visit( ctx.filter );
             expr = ASTBuilderFactory.newFilterExpressionNode( ctx, expr, filter );
-            if( ctx.qualifiedName() != null ) {
-                BaseNode path = visit( ctx.qualifiedName() );
-                expr = ASTBuilderFactory.newPathExpressionNode( ctx, expr, path );
-            }
+            return expr;
+        } else if( ctx.qualifiedName() != null ) {
+            BaseNode expr = visit( ctx.filterPathExpression() );
+            BaseNode path = visit( ctx.qualifiedName() );
+            return ASTBuilderFactory.newPathExpressionNode( ctx, expr, path );
+        } else {
+            return visit( ctx.unaryExpression() );
         }
+    }
+
+    @Override
+    public BaseNode visitExpressionTextual(FEEL_1_1Parser.ExpressionTextualContext ctx) {
+        BaseNode expr = visit( ctx.expr );
         return expr;
     }
 

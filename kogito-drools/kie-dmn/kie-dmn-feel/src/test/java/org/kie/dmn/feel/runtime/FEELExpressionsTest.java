@@ -36,6 +36,19 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 // path expressions
                 {"{ full name: { first name: \"John\", last name: \"Doe\" } }.full name.last name", "Doe" },
 
+                // filter expressions with proper precedence
+                {"{ EmployeeTable : [ \n"+
+                 "    { id : \"333\", dept : 1, name : \"Aaron\" },\n" +
+                 "    { id : \"444\", dept : 1, name : \"Bob\" }, \n" +
+                 "    { id : \"555\", dept : 2, name : \"Clark\" } ],\n" +
+                 "  DeptTable : [ \n" +
+                 "    { number : 1, name : \"Sales\", manager : \"Jack\" },\n" +
+                 "    { number : 2, name : \"Engineering\", manager : \"Susie\" } ],\n" +
+                 "  Dept : EmployeeTable[ name = \"Clark\" ].dept[1],\n" +
+                 "  Manager : DeptTable[ number = Dept ].manager[1],\n" +
+                 "  ManagerInline : DeptTable[ number = EmployeeTable[ name = \"Clark\" ].dept[1] ].manager[1]\n"+
+                 "}.ManagerInline", "Susie" },
+
                 // named parameters: in this case foo is null
                 {"{ is minor : function( foo, person's age ) foo = null and person's age < 18, bob is minor : is minor( person's age : 16 ) }.bob is minor", Boolean.TRUE },
 
@@ -54,6 +67,8 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"10 in ( not( >5*20 ) )", Boolean.TRUE },
                 {"\"Boston\" in ( not( \"Toronto\", \"Montreal\" ) )", Boolean.TRUE },
                 {"\"Boston\" in ( not( \"Toronto\", \"Boston\" ) )", Boolean.FALSE }
+
+
         };
         return Arrays.asList( cases );
     }

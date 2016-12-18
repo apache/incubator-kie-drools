@@ -41,7 +41,7 @@ compilation_unit
 
 // #1
 expression
-    : expr=textualExpression ( '[' filter=expression ']' ('.' qualifiedName)? )?  #expressionTextual
+    : expr=textualExpression  #expressionTextual
     ;
 
 // #2
@@ -228,8 +228,14 @@ multiplicativeExpression
 	;
 
 powerExpression
-    :   unaryExpression                           #powExpressionUnary
-    |   powerExpression op='**' unaryExpression   #powExpression
+    :   filterPathExpression                           #powExpressionUnary
+    |   powerExpression op='**' filterPathExpression   #powExpression
+    ;
+
+filterPathExpression
+    :   unaryExpression
+    |   filterPathExpression '[' filter=expression ']'
+    |   filterPathExpression '.' qualifiedName
     ;
 
 unaryExpression
