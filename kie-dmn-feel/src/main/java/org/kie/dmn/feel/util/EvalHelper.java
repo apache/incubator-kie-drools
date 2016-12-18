@@ -16,23 +16,29 @@
 
 package org.kie.dmn.feel.util;
 
+import org.kie.dmn.feel.lang.FEELProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
+import java.time.Duration;
+import java.time.Period;
+import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalField;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
-import org.kie.dmn.feel.lang.FEELProperty;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class EvalHelper {
-    public static final Logger LOG = LoggerFactory.getLogger(EvalHelper.class);
+    public static final Logger LOG = LoggerFactory.getLogger( EvalHelper.class );
 
     public static String normalizeVariableName(String name) {
         return name.replaceAll( "\\s+", " " );
@@ -56,10 +62,10 @@ public class EvalHelper {
         }
         return (BigDecimal) value;
     }
-    
+
     public static Object coerceNumber(Object value) {
-        if ( value instanceof Number && !( value instanceof BigDecimal )  ) {
-            return getBigDecimalOrNull(value);
+        if ( value instanceof Number && !(value instanceof BigDecimal) ) {
+            return getBigDecimalOrNull( value );
         } else {
             return value;
         }
@@ -80,31 +86,47 @@ public class EvalHelper {
             // remove the quotes
             text = text.substring( 1, text.length() - 1 );
         }
-        if( text.indexOf( '\\' ) >= 0 ) {
+        if ( text.indexOf( '\\' ) >= 0 ) {
             // might require un-escaping
-            StringBuilder r = new StringBuilder(  );
-            for( int i = 0; i < text.length(); i++ ) {
+            StringBuilder r = new StringBuilder();
+            for ( int i = 0; i < text.length(); i++ ) {
                 char c = text.charAt( i );
-                if( c == '\\' ) {
-                    if( text.length() > i+1 ) {
+                if ( c == '\\' ) {
+                    if ( text.length() > i + 1 ) {
                         i++;
                         char cn = text.charAt( i );
                         switch ( cn ) {
-                            case 'b' : r.append( '\b' ); break;
-                            case 't' : r.append( '\t' ); break;
-                            case 'n' : r.append( '\n' ); break;
-                            case 'f' : r.append( '\f' ); break;
-                            case 'r' : r.append( '\r' ); break;
-                            case '"' : r.append( '"' ); break;
-                            case '\'' : r.append( '\'' ); break;
-                            case '\\' : r.append( '\\' ); break;
-                            case 'u' : {
-                                if( text.length() >= i+5 ) {
+                            case 'b':
+                                r.append( '\b' );
+                                break;
+                            case 't':
+                                r.append( '\t' );
+                                break;
+                            case 'n':
+                                r.append( '\n' );
+                                break;
+                            case 'f':
+                                r.append( '\f' );
+                                break;
+                            case 'r':
+                                r.append( '\r' );
+                                break;
+                            case '"':
+                                r.append( '"' );
+                                break;
+                            case '\'':
+                                r.append( '\'' );
+                                break;
+                            case '\\':
+                                r.append( '\\' );
+                                break;
+                            case 'u': {
+                                if ( text.length() >= i + 5 ) {
                                     // escape unicode
-                                    String hex = text.substring( i+1, i+5 );
+                                    String hex = text.substring( i + 1, i + 5 );
                                     char[] chars = Character.toChars( Integer.parseInt( hex, 16 ) );
                                     r.append( chars );
-                                    i+=4;
+                                    i += 4;
                                 } else {
                                     // not really unicode
                                     r.append( "\\" ).append( cn );
@@ -128,9 +150,67 @@ public class EvalHelper {
             return null;
         } else if ( current instanceof Map ) {
             current = ((Map) current).get( property );
+        } else if ( current instanceof Period ) {
+            switch ( property ) {
+                case "years":
+                    current = ((Period) current).getYears();
+                    break;
+                case "months":
+                    current = ((Period) current).getMonths();
+                    break;
+                case "days":
+                    current = ((Period) current).getDays();
+                    break;
+                default:
+                    return null;
+            }
+        } else if ( current instanceof Duration ) {
+            switch ( property ) {
+                case "days":
+                    current = ((Duration) current).toDays();
+                    break;
+                case "hours":
+                    current = ((Duration) current).toHours();
+                    break;
+                case "minutes":
+                    current = ((Duration) current).toMinutes();
+                    break;
+                case "seconds":
+                    current = ((Duration) current).getSeconds();
+                    break;
+                default:
+                    return null;
+            }
+        } else if ( current instanceof Temporal ) {
+            switch ( property ) {
+                case "year":
+                    current = ((Temporal) current).get( ChronoField.YEAR );
+                    break;
+                case "month":
+                    current = ((Temporal) current).get( ChronoField.MONTH_OF_YEAR );
+                    break;
+                case "day":
+                    current = ((Temporal) current).get( ChronoField.DAY_OF_MONTH );
+                    break;
+                case "hour":
+                    current = ((Temporal) current).get( ChronoField.HOUR_OF_DAY );
+                    break;
+                case "minute":
+                    current = ((Temporal) current).get( ChronoField.MINUTE_OF_HOUR );
+                    break;
+                case "second":
+                    current = ((Temporal) current).get( ChronoField.SECOND_OF_MINUTE );
+                    break;
+                case "time offset":
+                case "timezone":
+                    current = Duration.ofSeconds( ((Temporal) current).get( ChronoField.OFFSET_SECONDS ) );
+                    break;
+                default:
+                    return null;
+            }
         } else {
             Method getter = getGenericAccessor( current.getClass(), property );
-            if( getter != null ) {
+            if ( getter != null ) {
                 current = getter.invoke( current );
             } else {
                 return null;
@@ -138,7 +218,7 @@ public class EvalHelper {
         }
         return coerceNumber( current );
     }
-    
+
     /**
      * FEEL annotated or else Java accessor.
      * @param clazz
@@ -146,16 +226,16 @@ public class EvalHelper {
      * @return
      */
     public static Method getGenericAccessor(Class<?> clazz, String field) {
-        LOG.trace("getGenericAccessor({}, {})", clazz, field);
-        return Stream.of(clazz.getMethods())
-                .filter( m -> Optional.ofNullable( m.getAnnotation(FEELProperty.class) )
-                                .map( ann -> ann.value().equals(field) )
-                                .orElse( false ) 
-                        )
+        LOG.trace( "getGenericAccessor({}, {})", clazz, field );
+        return Stream.of( clazz.getMethods() )
+                .filter( m -> Optional.ofNullable( m.getAnnotation( FEELProperty.class ) )
+                        .map( ann -> ann.value().equals( field ) )
+                        .orElse( false )
+                )
                 .findFirst()
                 .orElse( getAccessor( clazz, field ) );
     }
-    
+
     /**
      * JavaBean -spec compliant accessor.
      * @param clazz
@@ -163,7 +243,7 @@ public class EvalHelper {
      * @return
      */
     public static Method getAccessor(Class<?> clazz, String field) {
-        LOG.trace("getAccessor({}, {})", clazz, field);
+        LOG.trace( "getAccessor({}, {})", clazz, field );
         try {
             return clazz.getMethod( "get" + ucFirst( field ) );
         } catch ( NoSuchMethodException e ) {
@@ -178,19 +258,19 @@ public class EvalHelper {
             }
         }
     }
-    
+
     /**
      * Inverse of {@link #getAccessor(Class, String)}
      */
     public static Optional<String> propertyFromAccessor(Method accessor) {
-        if ( accessor.getParameterCount() != 0 || accessor.getReturnType().equals(Void.class) ) {
+        if ( accessor.getParameterCount() != 0 || accessor.getReturnType().equals( Void.class ) ) {
             return Optional.empty();
         }
         String methodName = accessor.getName();
-        if ( methodName.startsWith("get") ) {
-            return Optional.of( lcFirst( methodName.substring(3, methodName.length()) ) );
-        } else if ( methodName.startsWith("is") ) {
-            return Optional.of( lcFirst( methodName.substring(2, methodName.length()) ) );
+        if ( methodName.startsWith( "get" ) ) {
+            return Optional.of( lcFirst( methodName.substring( 3, methodName.length() ) ) );
+        } else if ( methodName.startsWith( "is" ) ) {
+            return Optional.of( lcFirst( methodName.substring( 2, methodName.length() ) ) );
         } else {
             return Optional.of( lcFirst( methodName ) );
         }
@@ -199,11 +279,9 @@ public class EvalHelper {
     public static String ucFirst(final String name) {
         return name.toUpperCase().charAt( 0 ) + name.substring( 1 );
     }
-    
+
     public static String lcFirst(final String name) {
         return name.toLowerCase().charAt( 0 ) + name.substring( 1 );
     }
-    
-    
 
 }
