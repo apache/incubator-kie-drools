@@ -28,9 +28,7 @@ import java.math.MathContext;
 import java.time.Duration;
 import java.time.Period;
 import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
-import java.time.temporal.TemporalField;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -55,7 +53,8 @@ public class EvalHelper {
             } else if ( value instanceof BigInteger ) {
                 value = new BigDecimal( ((BigInteger) value).toString(), MathContext.DECIMAL128 );
             } else if ( value instanceof String ) {
-                value = new BigDecimal( (String) value, MathContext.DECIMAL128 );
+                // we need to remove leading zeros to prevent octal conversion
+                value = new BigDecimal( ((String) value).replaceFirst("^0+(?!$)", ""), MathContext.DECIMAL128 );
             } else {
                 value = new BigDecimal( ((Number) value).doubleValue(), MathContext.DECIMAL128 );
             }
