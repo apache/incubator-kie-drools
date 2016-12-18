@@ -130,7 +130,11 @@ public class EvalHelper {
             current = ((Map) current).get( property );
         } else {
             Method getter = getGenericAccessor( current.getClass(), property );
-            current = getter.invoke( current );
+            if( getter != null ) {
+                current = getter.invoke( current );
+            } else {
+                return null;
+            }
         }
         return coerceNumber( current );
     }
