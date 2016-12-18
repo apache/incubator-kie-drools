@@ -38,7 +38,7 @@ public enum BuiltInType implements Type {
     DATE("date"),
     TIME("time"),
     DATE_TIME("date and time"),
-    DURATION("duration"),
+    DURATION("duration", "days and time duration", "years and months duration"),
     BOOLEAN("boolean"),
     RANGE("range"),
     FUNCTION("function"),
@@ -46,16 +46,20 @@ public enum BuiltInType implements Type {
     CONTEXT("context"),
     UNARY_TEST("unary test");
 
-    private final String name;
+    private final String[] names;
     private final BuiltInTypeSymbol symbol;
 
-    BuiltInType(String name) {
-        this.name = name;
-        this.symbol = new BuiltInTypeSymbol( name, this );
+    BuiltInType(String... names) {
+        this.names = names;
+        this.symbol = new BuiltInTypeSymbol( names[0], this );
     }
 
     public String getName() {
-        return name;
+        return names[0];
+    }
+
+    public String[] getNames() {
+        return names;
     }
 
     @Override
@@ -93,7 +97,7 @@ public enum BuiltInType implements Type {
     @Override
     public String toString() {
         return "Type{ " +
-               name +
+               names[0] +
                " }";
     }
 
@@ -102,8 +106,10 @@ public enum BuiltInType implements Type {
             return UNKNOWN;
         }
         for( BuiltInType t : BuiltInType.values() ) {
-            if( t.getName().equals( name ) ) {
-                return t;
+            for( String n : t.getNames() ) {
+                if( n.equals( name ) ) {
+                    return t;
+                }
             }
         }
         return UNKNOWN;
