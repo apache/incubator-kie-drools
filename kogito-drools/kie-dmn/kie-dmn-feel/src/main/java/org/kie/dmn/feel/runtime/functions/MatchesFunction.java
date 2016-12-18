@@ -19,6 +19,10 @@ package org.kie.dmn.feel.runtime.functions;
 import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 public class MatchesFunction
         extends BaseFEELFunction {
 
@@ -26,28 +30,43 @@ public class MatchesFunction
         super( "matches" );
     }
 
-    public FEELFnResult<Object> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern) {
-        if ( input == null ) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "input", "cannot be null" ) );
-        }
-        if ( pattern == null ) {
-            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "cannot be null" ) );
-        }
-
-        // for now, using standard java matches function
-        return FEELFnResult.ofResult( input.matches( pattern ) );
+    public FEELFnResult<Boolean> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern) {
+        return invoke( input, pattern, null );
     }
 
-    public FEELFnResult<Object> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern, @ParameterName("flags") String flags) {
+    public FEELFnResult<Boolean> invoke(@ParameterName("input") String input, @ParameterName("pattern") String pattern, @ParameterName("flags") String flags) {
         if ( input == null ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "input", "cannot be null" ) );
         }
         if ( pattern == null ) {
             return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "cannot be null" ) );
         }
+        try {
+            int f = processFlags( flags );
+            Pattern p = Pattern.compile( pattern, f );
+            Matcher m = p.matcher( input );
+            return FEELFnResult.ofResult( m.find() );
+        } catch ( PatternSyntaxException e ) {
+            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "is invalid and can not be compiled", e ) );
+        } catch ( Throwable t ) {
+            return FEELFnResult.ofError( new InvalidParametersEvent( Severity.ERROR, "pattern", "is invalid and can not be compiled", t ) );
+        }
+    }
 
-        // for now, using standard java matches function... needs fixing to support flags
-        return FEELFnResult.ofResult( input.matches( pattern ) );
+    private int processFlags(String flags) {
+        int f = 0;
+        if( flags != null ) {
+            if( flags.contains( "s" ) ) {
+                f |= Pattern.DOTALL;
+            }
+            if( flags.contains( "m" ) ) {
+                f |= Pattern.MULTILINE;
+            }
+            if( flags.contains( "i" ) ) {
+                f |= Pattern.CASE_INSENSITIVE;
+            }
+        }
+        return f;
     }
 
 }
