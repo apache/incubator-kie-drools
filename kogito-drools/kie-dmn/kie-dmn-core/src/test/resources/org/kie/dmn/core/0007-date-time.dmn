@@ -153,7 +153,7 @@
 			<requiredInput href="#_b133cbd3-884d-4cf9-a750-81d949d17e31"/>
 		</informationRequirement>
 		<literalExpression>
-			<text>time(Hours,Minutes,Seconds,Timezone)</text>
+			<text>time(Hours,Minutes,Seconds,duration(Timezone))</text>
 		</literalExpression>
 	</decision>
 	<inputData id="_6f8bf858-eed1-4f41-93f2-73431540f91f" name="durationString">
@@ -177,7 +177,7 @@
 			<requiredDecision href="#_dfbb843a-bd34-4099-b700-0d9ca5b38d6a"/>
 		</informationRequirement>
 		<literalExpression>
-			<text>date and time(Date-Time) - date and time(Date-Time2)</text>
+			<text>Date-Time - Date-Time2</text>
 		</literalExpression>
 	</decision>
 	<inputData id="_d96a8f03-5cee-42ca-8646-4383ad5ecee2" name="oneHour">
@@ -192,7 +192,7 @@
 			<requiredDecision href="#_a2c48b03-6e72-4846-99cc-02f3747c6867"/>
 		</informationRequirement>
 		<literalExpression>
-			<text>duration(dtDuration2) / duration(oneHour)</text>
+			<text>dtDuration2.hours</text>
 		</literalExpression>
 	</decision>
 	<decision id="_14f9f361-8c3c-455b-9c97-fe15201e3b5e" name="sumDurations">
@@ -204,7 +204,7 @@
 			<requiredDecision href="#_972ecd98-1c70-4f0c-909c-786f23c61dbb"/>
 		</informationRequirement>
 		<literalExpression>
-			<text>duration(dtDuration1) + duration(dtDuration2)</text>
+			<text>dtDuration1 + dtDuration2</text>
 		</literalExpression>
 	</decision>
 	<decision id="_cbac111e-ca71-4fac-a921-175ffd767055" name="ymDuration2">
@@ -220,12 +220,12 @@
 		</literalExpression>
 	</decision>
 	<decision id="_04c6bedc-bc63-464f-8e61-c039d24a47bf" name="cDay">
-		<variable name="cDay" typeRef="feel:string"/>
+		<variable name="cDay" typeRef="feel:number"/>
 		<informationRequirement>
 			<requiredDecision href="#_bd547a08-c157-47ca-84d4-ac6f3d5bdeda"/>
 		</informationRequirement>
 		<literalExpression>
-			<text>Date.day</text>
+			<text>Date.fromString.day</text>
 		</literalExpression>
 	</decision>
 	<decision id="_dc18ebe0-6762-4734-aeb3-ed4fb861865c" name="cYear">
@@ -234,7 +234,7 @@
 			<requiredDecision href="#_bd547a08-c157-47ca-84d4-ac6f3d5bdeda"/>
 		</informationRequirement>
 		<literalExpression>
-			<text>Date.year</text>
+			<text>Date.fromString.year</text>
 		</literalExpression>
 	</decision>
 	<decision id="_2cf37ed0-590d-4f97-b58b-46eaa424b965" name="cMonth">
@@ -243,7 +243,7 @@
 			<requiredDecision href="#_bd547a08-c157-47ca-84d4-ac6f3d5bdeda"/>
 		</informationRequirement>
 		<literalExpression>
-			<text>Date.month</text>
+			<text>Date.fromString.month</text>
 		</literalExpression>
 	</decision>
 	<decision id="_087e3f57-8ea6-4857-a080-fadc5a1dd9e8" name="cHour">
@@ -285,10 +285,10 @@
 	<decision id="_91fb395d-8173-4ed3-95f7-f790bd3967ab" name="years">
 		<variable name="years" typeRef="feel:number"/>
 		<informationRequirement>
-			<requiredDecision href="#_972ecd98-1c70-4f0c-909c-786f23c61dbb"/>
+			<requiredDecision href="#_cbac111e-ca71-4fac-a921-175ffd767055"/>
 		</informationRequirement>
 		<literalExpression>
-			<text>dtDuration1.years</text>
+			<text>ymDuration2.years</text>
 		</literalExpression>
 	</decision>
 	<decision id="_c2f1a1ae-1403-43a2-b176-dedf3da51e6b" name="seconds">

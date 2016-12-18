@@ -16,6 +16,7 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import java.math.BigDecimal;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -48,6 +49,8 @@ public class TimeFunction
         }
     }
 
+    private static final BigDecimal NANO_MULT = BigDecimal.valueOf( 1000000000 );
+
     public FEELFnResult<TemporalAccessor> invoke(
             @ParameterName("hour") Number hour, @ParameterName("minute") Number minute,
             @ParameterName("second") Number seconds, @ParameterName("offset") Duration offset) {
@@ -62,10 +65,19 @@ public class TimeFunction
         }
         
         try {
+            int nanosecs = 0;
+            if( seconds instanceof BigDecimal ) {
+                BigDecimal secs = (BigDecimal) seconds;
+                nanosecs = secs.subtract( secs.setScale( 0, BigDecimal.ROUND_DOWN ) ).multiply( NANO_MULT ).intValue();
+            }
+
             if ( offset == null ) {
-                return FEELFnResult.ofResult( LocalTime.of( hour.intValue(), minute.intValue(), seconds.intValue() ) );
+                return FEELFnResult.ofResult( LocalTime.of( hour.intValue(), minute.intValue(), seconds.intValue(),
+                                                            nanosecs ) );
             } else {
-                return FEELFnResult.ofResult( OffsetTime.of( hour.intValue(), minute.intValue(), seconds.intValue(), 0, ZoneOffset.ofTotalSeconds( (int) offset.getSeconds() ) ) );
+                return FEELFnResult.ofResult( OffsetTime.of( hour.intValue(), minute.intValue(), seconds.intValue(),
+                                                             nanosecs,
+                                              ZoneOffset.ofTotalSeconds( (int) offset.getSeconds() ) ) );
             }
         } catch (DateTimeException e) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "time-parsing exception", e));
