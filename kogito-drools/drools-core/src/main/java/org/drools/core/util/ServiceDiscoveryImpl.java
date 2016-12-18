@@ -63,7 +63,7 @@ public class ServiceDiscoveryImpl implements ServiceDiscovery {
                         log.error( "Unable to build kie service url={}\n", url.toExternalForm() );
                     }
                 } catch (IOException e1) {
-                    log.warn( "Unable to close Stream for url={} reason={}", url, e1.getMessage() );
+                    log.warn( "Unable to close Stream for url={} reason={}\n", url, e1.getMessage() );
                 }
             }
         }
@@ -98,7 +98,7 @@ public class ServiceDiscoveryImpl implements ServiceDiscovery {
             KieRuntimes runtimes = serviceRegistry.get(KieRuntimes.class);
 
             for ( KieRuntimeService runtime : runtimeList ) {
-                log.info("Adding Runtime {} ", runtime.getServiceInterface().getName());
+                log.info("Adding Runtime {}\n", runtime.getServiceInterface().getName());
                 runtimes.getRuntimes().put( runtime.getServiceInterface().getName(),
                                             runtime);
             }
@@ -111,7 +111,7 @@ public class ServiceDiscoveryImpl implements ServiceDiscovery {
         if ( assemblerList != null && assemblerList.size() > 0 ) {
             KieAssemblers assemblers = serviceRegistry.get(KieAssemblers.class);
             for ( KieAssemblerService assemblerFactory : assemblerList ) {
-                log.info( "Adding Assembler {} ", assemblerFactory.getClass().getName() );
+                log.info( "Adding Assembler {}\n", assemblerFactory.getClass().getName() );
                 assemblers.getAssemblers().put(assemblerFactory.getResourceType(),
                                                assemblerFactory);
             }
@@ -123,7 +123,7 @@ public class ServiceDiscoveryImpl implements ServiceDiscovery {
         if ( weaverList != null && weaverList.size() > 0 ) {
             KieWeavers weavers = serviceRegistry.get(KieWeavers.class);
             for ( KieWeaverService weaver : weaverList ) {
-                log.info("Adding Weaver {} ", weavers.getClass().getName());
+                log.info("Adding Weaver {}\n", weavers.getClass().getName());
                 weavers.getWeavers().put( weaver.getResourceType(),
                                           weaver );
             }
@@ -135,7 +135,7 @@ public class ServiceDiscoveryImpl implements ServiceDiscovery {
         if ( beliefsList != null && beliefsList.size() > 0 ) {
             KieBeliefs beliefs = serviceRegistry.get(KieBeliefs.class);
             for ( KieBeliefService belief : beliefsList ) {
-                log.info("Adding Belief {} ", beliefs.getClass().getName());
+                log.info("Adding Belief {}\n", beliefs.getClass().getName());
                 beliefs.getBeliefs().put( belief.getBeliefType(),
                                           belief );
             }
@@ -146,7 +146,7 @@ public class ServiceDiscoveryImpl implements ServiceDiscovery {
         List<KieService> servicesList = map.get( "services" );
         if ( servicesList != null && servicesList.size() > 0 ) {
             for ( KieService service : servicesList ) {
-                log.info( "Adding Service {} ", service.getClass().getName() );
+                log.info( "Adding Service {}\n", service.getClass().getName() );
                 serviceRegistry.registerLocator(service.getServiceInterface(), new ServiceRegistryImpl.ReturnInstance(service));
             }
         }
