@@ -24,7 +24,7 @@
 		<itemComponent id="_02d44cc2-24ac-4f64-a61f-7044684dc438" name="fromString">
 			<typeRef>feel:string</typeRef>
 		</itemComponent>
-		<itemComponent id="_13da5f5e-8fdd-4a33-9500-ceeaaeaccc91" name="fromDateAndTime">
+		<itemComponent id="_13da5f5e-8fdd-4a33-9500-ceeaaeaccc91" name="fromDateTime">
 			<typeRef>feel:string</typeRef>
 		</itemComponent>
 		<itemComponent id="_c4e03aa1-d8f3-4ffa-aab2-42a17a4fb707" name="fromYearMonthDay">
