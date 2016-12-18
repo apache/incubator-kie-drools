@@ -116,11 +116,11 @@ public class InfixOpNode
             case ADD:
                 return add( left, right, ctx );
             case SUB:
-                return sub( left, right, ctx);
+                return sub( left, right, ctx );
             case MULT:
-                return math( left, right, ctx, (l, r) -> l.multiply( r, MathContext.DECIMAL128 ) );
+                return mult( left, right, ctx );
             case DIV:
-                return math( left, right, ctx, (l, r) -> l.divide( r, MathContext.DECIMAL128 ) );
+                return div( left, right, ctx );
             case POW:
                 return math( left, right, ctx, (l, r) -> l.pow( r.intValue(), MathContext.DECIMAL128 ) );
             case AND:
@@ -193,16 +193,13 @@ public class InfixOpNode
     private Object sub(Object left, Object right, EvaluationContext ctx) {
         if ( left == null || right == null ) {
             return null;
-        } else if ( left instanceof ZonedDateTime && right instanceof ZonedDateTime ) {
-            return Duration.between( (ZonedDateTime)left, (ZonedDateTime) right);
-        } else if ( left instanceof OffsetDateTime && right instanceof OffsetDateTime ) {
-            return Duration.between( (OffsetDateTime)left, (OffsetDateTime) right);
-        } else if ( left instanceof LocalDateTime && right instanceof LocalDateTime ) {
-            return Duration.between( (LocalDateTime)left, (LocalDateTime) right);
-        } else if ( left instanceof LocalTime && right instanceof LocalTime ) {
-            return Duration.between( (LocalTime)left, (LocalTime) right);
-        } else if ( left instanceof OffsetTime && right instanceof OffsetTime ) {
-            return Duration.between( (OffsetTime)left, (OffsetTime) right);
+        } else if ( left instanceof Temporal && right instanceof Temporal ) {
+            if( left instanceof ZonedDateTime || left instanceof OffsetDateTime ) {
+                if( right instanceof LocalDateTime ) {
+                    right = ZonedDateTime.of( (LocalDateTime) right, ZoneOffset.ofHours( 0 ) );
+                }
+            }
+            return Duration.between( (Temporal) left, (Temporal) right);
         } else if ( left instanceof Period && right instanceof Period ) {
             return ((Period) left).minus( (Period) right);
         } else if ( left instanceof Duration && right instanceof Duration ) {
@@ -225,6 +222,30 @@ public class InfixOpNode
             return ((OffsetTime) left).minus( (Duration) left);
         } else {
             return math( left, right, ctx, (l, r) -> l.subtract( r, MathContext.DECIMAL128 )  );
+        }
+    }
+
+    private Object mult(Object left, Object right, EvaluationContext ctx) {
+        if ( left == null || right == null ) {
+            return null;
+        } else if ( left instanceof Duration && right instanceof Number ) {
+            return ((Duration)left).multipliedBy( ((Number) right).longValue() );
+        } else if ( left instanceof Number && right instanceof Duration ) {
+            return ((Duration)right).multipliedBy( ((Number) left).longValue() );
+        } else {
+            return math( left, right, ctx, (l, r) -> l.multiply( r, MathContext.DECIMAL128 ) );
+        }
+    }
+
+    private Object div(Object left, Object right, EvaluationContext ctx) {
+        if ( left == null || right == null ) {
+            return null;
+        } else if ( left instanceof Duration && right instanceof Number ) {
+            return ((Duration)left).dividedBy( ((Number) right).longValue() );
+        } else if ( left instanceof Number && right instanceof Duration ) {
+            return ((Duration)right).dividedBy( ((Number) left).longValue() );
+        } else {
+            return math( left, right, ctx, (l, r) -> l.divide( r, MathContext.DECIMAL128 ) );
         }
     }
 

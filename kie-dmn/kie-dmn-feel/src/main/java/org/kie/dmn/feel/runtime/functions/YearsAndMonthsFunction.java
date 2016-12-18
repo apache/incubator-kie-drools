@@ -17,7 +17,9 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAmount;
 
 import org.kie.dmn.feel.runtime.events.FEELEvent;
@@ -32,15 +34,21 @@ public class YearsAndMonthsFunction
         super( "years and months duration" );
     }
 
-    public FEELFnResult<TemporalAmount> invoke(@ParameterName("from") LocalDate from, @ParameterName("to") LocalDate to) {
+    public FEELFnResult<TemporalAmount> invoke(@ParameterName("from") Temporal from, @ParameterName("to") Temporal to) {
         if ( from == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
         if ( to == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
         }
-        
-        return FEELFnResult.ofResult( Period.between( from, to ).withDays( 0 ) );
+        if( ! ( from instanceof LocalDate ) ) {
+            from = LocalDate.from( from );
+        }
+        if( ! ( to instanceof LocalDate ) ) {
+            to = LocalDate.from( to );
+        }
+
+        return FEELFnResult.ofResult( Period.between( (LocalDate)from, (LocalDate)to ).withDays( 0 ) );
     }
 
 }

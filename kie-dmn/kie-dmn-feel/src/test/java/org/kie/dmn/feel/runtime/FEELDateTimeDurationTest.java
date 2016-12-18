@@ -61,6 +61,8 @@ public class FEELDateTimeDurationTest extends BaseFEELTest {
                 { "duration( \"P2Y2M\" )", Period.parse( "P2Y2M" ) },
                 { "duration( \"P26M\" )", Period.parse( "P26M" ) },
                 { "years and months duration( date(\"2011-12-22\"), date(\"2013-08-24\") )", Period.parse( "P1Y8M" ) }
+
+                // TODO: test properties as per page 126 of the spec
         };
         return Arrays.asList( cases );
     }

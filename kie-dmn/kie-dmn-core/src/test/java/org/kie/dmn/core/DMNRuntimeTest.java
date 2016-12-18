@@ -23,6 +23,7 @@ import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.mockito.ArgumentCaptor;
 
 import java.math.BigDecimal;
+import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -291,7 +292,7 @@ public class DMNRuntimeTest {
     @Test
     public void testBKMNode() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0009-invocation-arithmetic.dmn", getClass() );
-        runtime.addListener( DMNRuntimeUtil.createListener() );
+//        runtime.addListener( DMNRuntimeUtil.createListener() );
 
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_cb28c255-91cd-4c01-ac7b-1a9cb1ecdb11", "literal invocation1" );
         assertThat( dmnModel, notNullValue() );
@@ -315,7 +316,7 @@ public class DMNRuntimeTest {
     @Test
     public void testItemDefCollection() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0001-filter.dmn", getClass() );
-        runtime.addListener( DMNRuntimeUtil.createListener() );
+//        runtime.addListener( DMNRuntimeUtil.createListener() );
 
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_f52ca843-504b-4c3b-a6bc-4d377bffef7a", "filter01" );
         assertThat( dmnModel, notNullValue() );
@@ -345,7 +346,7 @@ public class DMNRuntimeTest {
     @Test
     public void testList() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "list-expression.dmn", getClass() );
-        runtime.addListener( DMNRuntimeUtil.createListener() );
+//        runtime.addListener( DMNRuntimeUtil.createListener() );
 
         DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "list-expression" );
         assertThat( dmnModel, notNullValue() );
@@ -360,7 +361,7 @@ public class DMNRuntimeTest {
     @Test
     public void testRelation() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "relation-expression.dmn", getClass() );
-        runtime.addListener( DMNRuntimeUtil.createListener() );
+//        runtime.addListener( DMNRuntimeUtil.createListener() );
 
         DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "relation-expression" );
         assertThat( dmnModel, notNullValue() );
@@ -386,7 +387,7 @@ public class DMNRuntimeTest {
     @Test
     public void testMissingInputData() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "missing_input_data.dmn", getClass() );
-        runtime.addListener( DMNRuntimeUtil.createListener() );
+//        runtime.addListener( DMNRuntimeUtil.createListener() );
 
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_4047acf3-fce2-42f3-abf2-fb06282c1ea0", "Upgrade Based On Promotions" );
         assertThat( dmnModel, notNullValue() );
@@ -405,7 +406,7 @@ public class DMNRuntimeTest {
     @Test
     public void testLendingExample() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0004-lending.dmn", getClass() );
-        runtime.addListener( DMNRuntimeUtil.createListener() );
+//        runtime.addListener( DMNRuntimeUtil.createListener() );
 
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_4e0f0b70-d31c-471c-bd52-5ca709ed362b", "Lending1" );
         assertThat( dmnModel, notNullValue() );
@@ -463,11 +464,47 @@ public class DMNRuntimeTest {
         assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
 
         DMNContext context = DMNFactory.newContext();
-//        context.set( "SupportingDocuments", "yes" );
+        context.set( "dateString", "2015-12-24" );
+        context.set( "timeString", "00:00:01-01:00" );
+        context.set( "dateTimeString", "2016-12-24T23:59:00" );
+        context.set( "Hours", 12 );
+        context.set( "Minutes", 59 );
+        context.set( "Seconds", new BigDecimal( "1.3" ) );
+        context.set( "Timezone", "PT-1H" );
+        context.set( "Year", 1999 );
+        context.set( "Month", 11 );
+        context.set( "Day", 22 );
+        context.set( "oneHour", "PT1H" );
+        context.set( "durationString", "P13DT2H14S" );
         DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
         System.out.println( formatMessages( dmnResult.getMessages() ) );
         DMNContext ctx = dmnResult.getContext();
         System.out.println( ctx );
+
+        assertThat( ctx.get("Date-Time"), is( LocalDateTime.of( 2016, 12, 24, 23, 59, 0 ) ) );
+        assertThat( ctx.get("Date"), is( new HashMap<String, Object>(  ) {{
+            put( "fromString", LocalDate.of( 2015, 12, 24 ) );
+            put( "fromDateTime", LocalDate.of( 2016, 12, 24 ) );
+            put( "fromYearMonthDay", LocalDate.of( 1999, 11, 22 ) );
+        }} ) );
+        assertThat( ctx.get("Time"), is( OffsetTime.of( 00, 00, 01, 00, ZoneOffset.ofHours( -1 ) ) ) );
+        assertThat( ctx.get("Date-Time2"), is( ZonedDateTime.of( 2015, 12, 24, 00, 00, 01, 00, ZoneOffset.ofHours( -1 ) ) ) );
+        assertThat( ctx.get("Time2"), is( OffsetTime.of( 00, 00, 01, 00, ZoneOffset.ofHours( -1 ) ) ) );
+        assertThat( ctx.get("Time3"), is( OffsetTime.of( 12, 59, 1, 300000000, ZoneOffset.ofHours( -1 ) )) );
+        assertThat( ctx.get("dtDuration1"), is( Duration.parse( "P13DT2H14S" ) ) );
+        assertThat( ctx.get("dtDuration2"), is( Duration.parse( "P-366DT-23H-58M-59S" ) ) );
+        assertThat( ctx.get("hoursInDuration"), is( new BigDecimal( "-8807" ) ) );
+        assertThat( ctx.get("sumDurations"), is( Duration.parse( "PT-8493H-58M-45S" ) ) );
+        assertThat( ctx.get("ymDuration2"), is( Period.parse( "P1Y" ) ) );
+        assertThat( ctx.get("cDay"), is( BigDecimal.valueOf( 24 ) ) );
+        assertThat( ctx.get("cYear"), is( BigDecimal.valueOf( 2015 ) ) );
+        assertThat( ctx.get("cMonth"), is( BigDecimal.valueOf( 12 ) ) );
+        assertThat( ctx.get("cHour"), is( BigDecimal.valueOf( 0 ) ) );
+        assertThat( ctx.get("cMinute"), is( BigDecimal.valueOf( 0 ) ) );
+        assertThat( ctx.get("cSecond"), is( BigDecimal.valueOf( 1 ) ) );
+        assertThat( ctx.get("cTimezone"), is( Duration.parse( "PT-1H" ) ) );
+        assertThat( ctx.get("years"), is( BigDecimal.valueOf( 1 ) ) );
+        assertThat( ctx.get("seconds"), is( BigDecimal.valueOf( 1130414 ) ) );
 
     }
     private String formatMessages(List<DMNMessage> messages) {
@@ -475,3 +512,4 @@ public class DMNRuntimeTest {
     }
 
 }
+
