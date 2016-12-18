@@ -58,6 +58,13 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "ends with(\"foobar\", \"of\")", Boolean.FALSE },
                 { "ends with(\"foobar\", \"bar\")", Boolean.TRUE },
                 { "matches(\"foo\", \"[a-z]{3}\")", Boolean.TRUE },
+                { "matches(\"banana\", \"[a-z]{3}\")", Boolean.TRUE },
+                { "matches(\"two \\n lines\", \"two.*lines\")", Boolean.FALSE },
+                { "matches(\"two \\n lines\", \"two.*lines\", \"s\")", Boolean.TRUE }, // DOT_ALL flag set by "s"
+                { "matches(\"one\\ntwo\\nthree\", \"^two$\")", Boolean.FALSE },
+                { "matches(\"one\\ntwo\\nthree\", \"^two$\", \"m\")", Boolean.TRUE }, // MULTILINE flag set by "m"
+                { "matches(\"FoO\", \"foo\")", Boolean.FALSE },
+                { "matches(\"FoO\", \"foo\", \"i\")", Boolean.TRUE }, // CASE_INSENSITIVE flag set by "i"
                 { "replace(\"banana\",\"a\",\"o\")", "bonono" },
                 { "replace(\"banana\",\"(an)+\", \"**\")", "b**a" },
                 { "replace(\"banana\",\"[aeiouy]\",\"[$0]\")", "b[a]n[a]n[a]" },
