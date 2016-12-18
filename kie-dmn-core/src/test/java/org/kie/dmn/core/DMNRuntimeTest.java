@@ -453,6 +453,23 @@ public class DMNRuntimeTest {
         assertThat( ctx.get( "Routing" ), is( "ACCEPT" ) );
     }
 
+    @Test
+    public void testDateAndTime() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0007-date-time.dmn", getClass() );
+        runtime.addListener( DMNRuntimeUtil.createListener() );
+
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_69430b3e-17b8-430d-b760-c505bf6469f9", "dateTime Table 58" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( formatMessages( dmnModel.getMessages() ), dmnModel.hasErrors(), is( false ) );
+
+        DMNContext context = DMNFactory.newContext();
+//        context.set( "SupportingDocuments", "yes" );
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        System.out.println( formatMessages( dmnResult.getMessages() ) );
+        DMNContext ctx = dmnResult.getContext();
+        System.out.println( ctx );
+
+    }
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
