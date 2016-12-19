@@ -115,7 +115,7 @@ public class DecisionTableImpl {
             // if a list of values is defined, check the the parameter matches the value
             if ( input.getInputValues() != null && ! input.getInputValues().isEmpty() ) {
                 final Object parameter = params[i];
-                boolean satisfies = input.getInputValues().stream().map( ut -> ut.apply( parameter ) ).filter( Boolean::booleanValue ).findAny().orElse( false );
+                boolean satisfies = input.getInputValues().stream().map( ut -> ut.apply( ctx, parameter ) ).filter( Boolean::booleanValue ).findAny().orElse( false );
 
                 if ( !satisfies ) {
                     FEELEventListenersManager.notifyListeners( ctx.getEventsManager(), () -> {
@@ -183,7 +183,7 @@ public class DecisionTableImpl {
      * @return
      */
     private boolean satisfies(EvaluationContext ctx, Object param, UnaryTest test ) {
-        return test.apply( param );
+        return test.apply( ctx, param );
     }
 
     private List<Object> evaluateResults(EvaluationContext ctx, FEEL feel, Object[] params, List<DTDecisionRule> matchingDecisionRules) {
