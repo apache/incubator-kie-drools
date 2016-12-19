@@ -58,25 +58,25 @@ public class InNode
                 // evaluate in the collection
                 for ( Object e : ((Iterable) expr) ) {
                     // have to compare to Boolean.TRUE because in() might return null
-                    if ( in( value, e ) == Boolean.TRUE ) {
+                    if ( in( ctx, value, e ) == Boolean.TRUE ) {
                         return true;
                     }
                 }
                 return false;
             } else {
                 // evaluate single entity
-                return in( value, expr );
+                return in( ctx, value, expr );
             }
         }
         return null;
     }
 
-    private Boolean in(Object value, Object expr) {
+    private Boolean in(EvaluationContext ctx, Object value, Object expr) {
         // need to improve this to work with unary tests
         if ( expr == null ) {
             return value == expr;
         } else if ( expr instanceof UnaryTest ) {
-            return ((UnaryTest) expr).apply( value );
+            return ((UnaryTest) expr).apply( ctx, value );
         } else if ( expr instanceof Range ) {
             if( !( value instanceof Comparable ) ) {
                 return null;

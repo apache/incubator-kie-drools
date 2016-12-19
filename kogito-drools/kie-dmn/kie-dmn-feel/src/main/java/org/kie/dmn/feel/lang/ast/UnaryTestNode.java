@@ -78,29 +78,47 @@ public class UnaryTestNode
 
     @Override
     public UnaryTest evaluate(EvaluationContext ctx) {
-        Object val = value.evaluate( ctx );
         switch ( operator ) {
             case LTE:
-                return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) <= 0;
+                return (c, o) -> {
+                    Object val = value.evaluate( c );
+                    return o == null || val == null ? null : ((Comparable) o).compareTo( val ) <= 0;
+                };
             case LT:
-                return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) < 0;
+                return (c, o) -> {
+                    Object val = value.evaluate( c );
+                    return o == null || val == null ? null : ((Comparable) o).compareTo( val ) < 0;
+                };
             case GT:
-                return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) > 0;
+                return (c, o) -> {
+                    Object val = value.evaluate( c );
+                    return o == null || val == null ? null : ((Comparable) o).compareTo( val ) > 0;
+                };
             case GTE:
-                return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) >= 0;
+                return (c, o) -> {
+                    Object val = value.evaluate( c );
+                    return o == null || val == null ? null : ((Comparable) o).compareTo( val ) >= 0;
+                };
             case EQ:
-                return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) == 0;
+                return (c, o) -> {
+                    Object val = value.evaluate( c );
+                    return o == null || val == null ? null : ((Comparable) o).compareTo( val ) == 0;
+                };
             case NE:
-                return o -> o == null || val == null ? null : ((Comparable) o).compareTo( val ) != 0;
+                return (c, o) -> {
+                    Object val = value.evaluate( c );
+                    return o == null || val == null ? null : ((Comparable) o).compareTo( val ) != 0;
+                };
             case NOT:
-                return o -> {
+                return (c, o) -> {
+                    Object val = value.evaluate( c );
                     if( o == null || val == null ) {
                         return null;
                     }
                     List<Object> tests = (List<Object>) val;
                     for( Object test : tests ) {
                         if( test instanceof UnaryTest ) {
-                            if( ((UnaryTest)test).apply( o ) ) {
+                            if( ((UnaryTest)test).apply( c, o ) ) {
                                 return false;
                             }
                         } else if( test instanceof Range ) {

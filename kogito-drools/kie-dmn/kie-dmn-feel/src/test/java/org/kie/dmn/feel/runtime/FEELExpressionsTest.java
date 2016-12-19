@@ -66,7 +66,11 @@ public class FEELExpressionsTest extends BaseFEELTest {
                 {"10 in ( not( 5, (20+10) ) )", Boolean.TRUE},
                 {"10 in ( not( >5*20 ) )", Boolean.TRUE },
                 {"\"Boston\" in ( not( \"Toronto\", \"Montreal\" ) )", Boolean.TRUE },
-                {"\"Boston\" in ( not( \"Toronto\", \"Boston\" ) )", Boolean.FALSE }
+                {"\"Boston\" in ( not( \"Toronto\", \"Boston\" ) )", Boolean.FALSE },
+
+                // unary tests with context evaluation, i.e., the test is defined before the variable "x"
+                {"{ test : > x, y : 20, x : 10, result : y in ( test ) }.result", Boolean.TRUE },
+                {"{ test : > x, y : 20, x : 10, result : test( y ) }.result", Boolean.TRUE }
 
 
         };

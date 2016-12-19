@@ -77,7 +77,7 @@ public class FunctionInvocationNode
         } else if( value instanceof UnaryTest ) {
             if( params.getElements().size() == 1 ) {
                 Object p = params.getElements().get( 0 ).evaluate( ctx );
-                return ((UnaryTest) value).apply( p );
+                return ((UnaryTest) value).apply( ctx, p );
             } else {
                 logger.error( "Can't invoke an unary test with "+params.getElements().size()+ " parameters. Unary tests require 1 single parameter." );
             }

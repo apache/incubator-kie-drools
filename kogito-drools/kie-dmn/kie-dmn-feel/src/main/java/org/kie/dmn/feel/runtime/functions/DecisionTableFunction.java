@@ -125,11 +125,11 @@ public class DecisionTableFunction
         if ( o instanceof UnaryTest ) {
             return (UnaryTest) o;
         } else if ( o instanceof Range ) {
-            return x -> ((Range) o).includes( (Comparable<?>) x );
+            return (c, x) -> ((Range) o).includes( (Comparable<?>) x );
         } else if ( o instanceof List ) {
-            return x -> ((List<?>) o).contains( x );
+            return (c, x) -> ((List<?>) o).contains( x );
         } else {
-            return x -> x.equals( o );
+            return (c, x) -> x.equals( o );
         }
     }
 
