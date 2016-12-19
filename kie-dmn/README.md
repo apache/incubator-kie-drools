@@ -31,7 +31,7 @@ nondeterministic behavior based on the context and differences in behavior based
 
 2. __List functions "or()" and "and()"__: the spec defines two list functions named "or()" and "and()", but 
 according to the FEEL grammar, these are not valid function names, as "and" and "or" are reserved keywords.
- This implementation renamed these functions to "list or()" and "list and()" respectively.
+ This implementation renamed these functions to "any()" and "all()" respectively, in antecipation for DMN 1.2.
 
 ## b. Extensions
 
