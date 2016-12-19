@@ -298,7 +298,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                 DTDecisionRule rule = new DTDecisionRule( index++ );
                 for( UnaryTests ut : dr.getInputEntry() ) {
                     List<UnaryTest> tests = textToUnaryTestList( ut.getText() );
-                    rule.getInputEntry().add( x -> tests.stream().anyMatch( t -> t.apply( x ) ) );
+                    rule.getInputEntry().add( (c, x) -> tests.stream().anyMatch( t -> t.apply( c, x ) ) );
                 }
                 for( LiteralExpression le : dr.getOutputEntry() ) {
                     // we might want to compile and save the compiled expression here
@@ -410,9 +410,9 @@ public class DMNCompilerImpl implements DMNCompiler {
             if ( o instanceof UnaryTest ) {
                 tests.add( (UnaryTest) o );
             } else if ( o instanceof Range ) {
-                tests.add( x -> x != null && ((Range) o).includes( (Comparable<?>) x ) );
+                tests.add( (c, x) -> x != null && ((Range) o).includes( (Comparable<?>) x ) );
             } else {
-                tests.add( x -> x != null && x.equals( o ) );
+                tests.add( (c, x) -> x != null && x.equals( o ) );
             }
         }
         return tests;

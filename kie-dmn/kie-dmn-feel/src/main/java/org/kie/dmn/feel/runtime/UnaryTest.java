@@ -16,9 +16,11 @@
 
 package org.kie.dmn.feel.runtime;
 
-import java.util.function.Function;
+import org.kie.dmn.feel.lang.EvaluationContext;
+
+import java.util.function.BiFunction;
 
 @FunctionalInterface
-public interface UnaryTest extends Function<Object, Boolean> {
+public interface UnaryTest extends BiFunction<EvaluationContext, Object, Boolean> {
 
 }
