@@ -24,11 +24,11 @@ import org.kie.dmn.feel.runtime.events.InvalidParametersEvent;
 import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
-public class ListAndFunction
+public class AllFunction
         extends BaseFEELFunction {
 
-    public ListAndFunction() {
-        super( "list and" );
+    public AllFunction() {
+        super( "all" );
     }
 
     public FEELFnResult<Boolean> invoke(@ParameterName( "list" ) List list) {
