@@ -16,10 +16,14 @@
 
 package org.kie.dmn.feel.lang.ast;
 
+import java.util.function.Supplier;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.FEELFunction;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,16 +76,19 @@ public class FunctionInvocationNode
                 Object result = function.invokeReflectively( ctx, p );
                 return result;
             } else {
-                logger.error( "Function not found: '" + name.getText() + "'" );
+                ctx.notifyEvt( astEvent(Severity.ERROR,
+                        String.format("Function not found: '%s'", name.getText())) );
             }
         } else if( value instanceof UnaryTest ) {
             if( params.getElements().size() == 1 ) {
                 Object p = params.getElements().get( 0 ).evaluate( ctx );
                 return ((UnaryTest) value).apply( ctx, p );
             } else {
-                logger.error( "Can't invoke an unary test with "+params.getElements().size()+ " parameters. Unary tests require 1 single parameter." );
+                ctx.notifyEvt( astEvent(Severity.ERROR, 
+                        String.format("Can't invoke an unary test with %s parameters. Unary tests require 1 single parameter.", params.getElements().size()) ) );
             }
         }
         return null;
     }
+
 }

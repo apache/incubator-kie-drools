@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,6 +71,7 @@ public class FilterExpressionNode
                 } else if ( i < 0 && Math.abs( i ) <= list.size() ) {
                     return list.get( list.size() + i );
                 } else {
+                    ctx.notifyEvt( astEvent(Severity.ERROR, "Index out of bound") );
                     return null;
                 }
             } else {
@@ -80,7 +82,9 @@ public class FilterExpressionNode
                 return results;
             }
         } catch ( Exception e ) {
-            logger.error( "Error executing list filter: " + getText(), e );
+            ctx.notifyEvt( astEvent(Severity.ERROR,
+                                    String.format("Error executing list filter: %s", getText()), 
+                                    e) );
         }
 
         return null;

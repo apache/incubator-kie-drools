@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
 import org.kie.dmn.feel.runtime.functions.JavaFunction;
 import org.slf4j.Logger;
@@ -110,16 +111,20 @@ public class FunctionDefNode
                                     Method method = clazz.getMethod( methodName, paramTypes );
                                     return new JavaFunction( ANONYMOUS, params, clazz, method );
                                 } else {
-                                    logger.error( "Parameter count mismatch on function definition: "+getText() );
+                                    ctx.notifyEvt( astEvent(Severity.ERROR, 
+                                                            String.format("Parameter count mismatch on function definition: %s", getText())) );
                                     return null;
                                 }
                             }
                         }
                     }
                 }
-                logger.error("Unable to find external function as defined by "+getText() );
+                ctx.notifyEvt( astEvent(Severity.ERROR,
+                                        String.format("Unable to find external function as defined by: %s", getText()) ) );
             } catch( Exception e ) {
-                logger.error("Error resolving external function as defined by "+getText(), e );
+                ctx.notifyEvt( astEvent(Severity.ERROR,
+                                        String.format("Error resolving external function as defined by: %s", getText()),
+                                        e) );
             }
             return null;
         } else {

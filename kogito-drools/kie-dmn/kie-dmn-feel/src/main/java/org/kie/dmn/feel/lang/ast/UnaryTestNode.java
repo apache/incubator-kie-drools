@@ -20,6 +20,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 
 import java.util.List;
 
@@ -135,6 +136,7 @@ public class UnaryTestNode
                     return true;
                 };
         }
+        ctx.notifyEvt( astEvent(Severity.ERROR, "Null or unknown operator"));
         return null;
     }
 }
