@@ -64,6 +64,8 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
     private static final Logger logger = LoggerFactory.getLogger(QuartzSchedulerService.class);
     
     private static final Integer START_DELAY = Integer.parseInt(System.getProperty("org.jbpm.timer.delay", "2"));
+    private static final Integer FAILED_JOB_RETRIES = Integer.parseInt(System.getProperty("org.jbpm.timer.quartz.retries", "5"));
+    private static final Integer FAILED_JOB_DELAY = Integer.parseInt(System.getProperty("org.jbpm.timer.quartz.delay", "1000"));
 
     private AtomicLong idCounter = new AtomicLong();
     private TimerService globalTimerService;
@@ -328,13 +330,13 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
                 }
                 failedCount++;
                 quartzContext.getJobDetail().getJobDataMap().put("failedCount", failedCount);
-                if (failedCount > 5) {
-                    logger.error("Timer execution failed 5 times in a roll, unscheduling ({})", quartzContext.getJobDetail().getFullName());
+                if (failedCount > FAILED_JOB_RETRIES) {
+                    logger.error("Timer execution failed {} times in a roll, unscheduling ({})", FAILED_JOB_RETRIES, quartzContext.getJobDetail().getFullName());
                     reschedule = false;
                 }
                 // let's give it a bit of time before failing/retrying
                 try {
-                    Thread.sleep(failedCount * 1000);
+                    Thread.sleep(failedCount * FAILED_JOB_DELAY);
                 } catch (InterruptedException e1) {
                     logger.debug("Got interrupted", e1);
                 }

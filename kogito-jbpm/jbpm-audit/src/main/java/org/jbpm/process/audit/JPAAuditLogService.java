@@ -295,18 +295,14 @@ public class JPAAuditLogService extends JPAService implements AuditLogService {
         EntityManager em = getEntityManager();
         Object newTx = joinTransaction(em);
         try {
-	        List<ProcessInstanceLog> processInstances = em.createQuery("FROM ProcessInstanceLog").getResultList();
-	        for (ProcessInstanceLog processInstance: processInstances) {
-	            em.remove(processInstance);
-	        }
-	        List<NodeInstanceLog> nodeInstances = em.createQuery("FROM NodeInstanceLog").getResultList();
-	        for (NodeInstanceLog nodeInstance: nodeInstances) {
-	            em.remove(nodeInstance);
-	        }
-	        List<VariableInstanceLog> variableInstances = em.createQuery("FROM VariableInstanceLog").getResultList();
-	        for (VariableInstanceLog variableInstance: variableInstances) {
-	            em.remove(variableInstance);
-	        }
+            int deletedProcesses = em.createQuery("delete FROM ProcessInstanceLog").executeUpdate();
+	        logger.debug("CLEAR:: deleted process instances {}", deletedProcesses);
+	        
+	        int deletedNodes = em.createQuery("delete FROM NodeInstanceLog").executeUpdate();
+	        logger.debug("CLEAR:: deleted node instances {}", deletedNodes);
+	        
+	        int deletedVariables = em.createQuery("delete FROM VariableInstanceLog").executeUpdate();
+	        logger.debug("CLEAR:: deleted variable instances {}", deletedVariables);
         } finally {
         	closeEntityManager(em, newTx);
         }

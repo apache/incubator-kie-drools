@@ -15,6 +15,7 @@
  */
 package org.jbpm.services.task.audit.service;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -56,4 +57,9 @@ public class LocalTaskAuditTest extends TaskAuditBaseTest {
 			pds.close();
 		}
 	}
+
+    @Override
+    protected EntityManager getEntityManager() {
+        return emf.createEntityManager();
+    }
 }

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 import org.assertj.core.api.Assertions;
 import org.jbpm.services.task.HumanTaskServicesBaseTest;
@@ -1003,6 +1004,73 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
             System.clearProperty("org.jbpm.task.var.log.length");
         }
     }
+    
+    @Test
+    public void testLifeCycleWithBAM() {
+        Task task = new TaskFluent().setName("This is my task name")
+                .addPotentialGroup("Knights Templer")
+                .setAdminUser("Administrator")
+                .getTask();
+
+        taskService.addTask(task, new HashMap<String, Object>());
+        long taskId = task.getId();
+
+        List<AuditTask> allGroupAuditTasks = taskAuditService.getAllGroupAuditTasksByUser("Knights Templer", new QueryFilter());
+        assertEquals(1, allGroupAuditTasks.size());
+        assertTrue(allGroupAuditTasks.get(0).getStatus().equals("Ready"));
+        assertBAMTask(taskId, "Ready");
+
+        taskService.claim(taskId, "Darth Vader");
+
+        allGroupAuditTasks = taskAuditService.getAllAuditTasksByUser("Darth Vader", new QueryFilter());
+        assertEquals(1, allGroupAuditTasks.size());
+        assertEquals("Reserved", allGroupAuditTasks.get(0).getStatus());
+        assertBAMTask(taskId, "Reserved");
+
+        taskService.release(taskId, "Darth Vader");
+
+        allGroupAuditTasks = taskAuditService.getAllGroupAuditTasksByUser("Knights Templer", new QueryFilter());
+        assertEquals(1, allGroupAuditTasks.size());
+        assertTrue(allGroupAuditTasks.get(0).getStatus().equals("Ready"));
+        assertBAMTask(taskId, "Ready");
+
+        taskService.claim(taskId, "Darth Vader");
+
+        allGroupAuditTasks = taskAuditService.getAllAuditTasksByUser("Darth Vader", new QueryFilter());;
+        assertEquals(1, allGroupAuditTasks.size());
+        assertEquals("Reserved", allGroupAuditTasks.get(0).getStatus());
+        assertBAMTask(taskId, "Reserved");
+
+        // Go straight from Ready to Inprogress
+        taskService.start(taskId, "Darth Vader");
+
+        allGroupAuditTasks = taskAuditService.getAllAuditTasksByUser("Darth Vader", new QueryFilter());;
+        assertEquals(1, allGroupAuditTasks.size());
+        assertEquals("InProgress", allGroupAuditTasks.get(0).getStatus());
+        assertBAMTask(taskId, "InProgress");
+        
+        taskService.stop(taskId, "Darth Vader");
+        
+        allGroupAuditTasks = taskAuditService.getAllAuditTasksByUser("Darth Vader", new QueryFilter());;
+        assertEquals(1, allGroupAuditTasks.size());
+        assertEquals("Reserved", allGroupAuditTasks.get(0).getStatus());
+        assertBAMTask(taskId, "Reserved");
+        
+        taskService.start(taskId, "Darth Vader");
+
+        allGroupAuditTasks = taskAuditService.getAllAuditTasksByUser("Darth Vader", new QueryFilter());;
+        assertEquals(1, allGroupAuditTasks.size());
+        assertEquals("InProgress", allGroupAuditTasks.get(0).getStatus());
+        assertBAMTask(taskId, "InProgress");
+
+        // Check is Complete
+        taskService.complete(taskId, "Darth Vader", null);
+
+        allGroupAuditTasks = taskAuditService.getAllAuditTasksByUser("Darth Vader", new QueryFilter());;
+        assertEquals(1, allGroupAuditTasks.size());        
+        assertEquals("Completed", allGroupAuditTasks.get(0).getStatus());
+        assertBAMTask(taskId, "Completed");
+    }
 
     protected Map<String, String> collectVariableNameAndValue(List<TaskVariable> variables) {
         Map<String, String> nameValue = new HashMap<String, String>();
@@ -1013,5 +1081,21 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
 
         return nameValue;
     }
-
+    
+    protected void assertBAMTask(long taskId, String expectedStatus) {
+        EntityManager em = getEntityManager();
+        
+        BAMTaskSummaryImpl task = (BAMTaskSummaryImpl) em.createQuery("select bt from BAMTaskSummaryImpl bt where bt.taskId = :taskId")
+                .setParameter("taskId", taskId)
+                .getSingleResult();
+        
+        assertNotNull(task);
+        assertEquals(taskId, task.getTaskId());
+        assertEquals(expectedStatus, task.getStatus());
+        
+        em.close();
+    }
+    
+    protected abstract EntityManager getEntityManager();
+    
 }

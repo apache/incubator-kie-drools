@@ -131,13 +131,8 @@ public class BAMTaskEventListener extends PersistableEventListener  {
         createOrUpdateTask(event, Status.Exited);
     }
 
-    /**
-     * When a task is stopped, the status for dashbuilder integration task must be Exited.
-     *
-     * @param ti The task.
-     */
     public void afterTaskStoppedEvent(TaskEvent event) {
-        createOrUpdateTask(event, Status.Exited);
+        updateTask(event);
     }
 
     /**

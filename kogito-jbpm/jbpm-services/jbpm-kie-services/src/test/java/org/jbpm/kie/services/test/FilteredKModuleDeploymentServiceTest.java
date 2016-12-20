@@ -447,7 +447,7 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractKieServicesBas
         KieServices ks = KieServices.Factory.get();
         ReleaseId pojoReleaseId = ks.newReleaseId( groupId, pojoArtifactId, VERSION );
         File pojojar = new File( "src/test/resources/multi-remotable/pojo.jar" ); // contains two @Remotable classes MyPojo, MyPojo2
-        File pojopom = new File( "src/test/resources/multi-remotable/pojo-pom.xml" );
+        File pojopom = new File( this.getClass().getResource("/multi-remotable/pojo-pom.xml").getFile());
         MavenRepository.getMavenRepository().installArtifact( pojoReleaseId, pojojar, pojopom );
 
         FluentKieModuleDeploymentHelper.newFluentInstance()
