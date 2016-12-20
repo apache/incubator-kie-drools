@@ -35,6 +35,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.ClassUtils;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -53,7 +54,7 @@ import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 
 public class XpathConstraint extends MutableTypeConstraint {
 
-    private final LinkedList<XpathChunk> chunks;
+    private LinkedList<XpathChunk> chunks;
 
     private Declaration declaration;
     private Declaration xpathStartDeclaration;
@@ -130,12 +131,16 @@ public class XpathConstraint extends MutableTypeConstraint {
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException();
+        chunks =  (LinkedList<XpathChunk>) in.readObject();
+        declaration = (Declaration) in.readObject();
+        xpathStartDeclaration = (Declaration) in.readObject();
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        throw new UnsupportedOperationException();
+        out.writeObject(chunks);
+        out.writeObject(declaration);
+        out.writeObject(xpathStartDeclaration);
     }
 
     public LinkedList<XpathChunk> getChunks() {
@@ -233,19 +238,54 @@ public class XpathConstraint extends MutableTypeConstraint {
         }
     }
 
-    public static class XpathChunk implements AcceptsClassObjectType {
+    public static class XpathChunk implements AcceptsClassObjectType, Externalizable {
 
-        private final String field;
-        private final int index;
-        private final boolean iterate;
-        private final boolean lazy;
-        private final boolean array;
+        private String field;
+        private int index;
+        private boolean iterate;
+        private boolean lazy;
+        private boolean array;
 
         private List<Constraint> constraints;
         private Declaration declaration;
         private ClassObjectType classObjectType;
         private ClassObjectType returnedType;
         private Method accessor;
+        
+        @Override
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(field);
+            out.writeInt(index);
+            out.writeBoolean(iterate);
+            out.writeBoolean(lazy);
+            out.writeBoolean(array);
+            
+            out.writeObject(constraints);
+            out.writeObject(declaration);
+            out.writeObject(classObjectType);
+            out.writeObject(returnedType);
+        }
+
+        @Override
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            field = (String) in.readObject();
+            index = in.readInt();
+            iterate = in.readBoolean();
+            lazy = in.readBoolean();
+            array = in.readBoolean();
+            
+            constraints = (List<Constraint>) in.readObject();
+            declaration = (Declaration) in.readObject();
+            classObjectType = (ClassObjectType) in.readObject();
+            returnedType = (ClassObjectType) in.readObject();
+        }
+        
+        /**
+         * NOT INTENDED FOR ACTUAL USE, only for Java Serialization mechanism purpose only.
+         */
+        public XpathChunk() {
+            // for serialization only purposes.
+        }
 
         private XpathChunk(String field, int index, boolean iterate, boolean lazy, boolean array) {
             this.field = field;
