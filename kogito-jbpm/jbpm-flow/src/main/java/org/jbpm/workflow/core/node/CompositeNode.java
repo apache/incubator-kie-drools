@@ -112,7 +112,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
 	}
     
     public void linkIncomingConnections(String inType, long inNodeId, String inNodeType) {
-        linkIncomingConnections(inType, new NodeAndType(inNodeId, inNodeType));
+        linkIncomingConnections(inType, new NodeAndType(nodeContainer, inNodeId, inNodeType));
     }
     
     public void linkIncomingConnections(String inType, CompositeNode.NodeAndType inNode) {
@@ -138,7 +138,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         if (inNode != null) {
 	        List<Connection> connections = getIncomingConnections(inType);
 	        for (Connection connection: connections) {
-	        	CompositeNodeStart start = new CompositeNodeStart(connection.getFrom(), inType);
+	        	CompositeNodeStart start = new CompositeNodeStart(this, connection.getFrom(), inType);
 		        internalAddNode(start);
 		        if (inNode.getNode() != null) {
 			        new ConnectionImpl(
@@ -150,7 +150,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
     }
     
     public void linkOutgoingConnections(long outNodeId, String outNodeType, String outType) {
-        linkOutgoingConnections(new NodeAndType(outNodeId, outNodeType), outType);
+        linkOutgoingConnections(new NodeAndType(this, outNodeId, outNodeType), outType);
     }
     
     public void linkOutgoingConnections(CompositeNode.NodeAndType outNode, String outType) {
@@ -174,7 +174,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         if (outNode != null) {
 	        List<Connection> connections = getOutgoingConnections(outType);
 	        for (Connection connection: connections) {
-		        CompositeNodeEnd end = new CompositeNodeEnd(connection.getTo(), outType);
+		        CompositeNodeEnd end = new CompositeNodeEnd(this, connection.getTo(), outType);
 		        internalAddNode(end);
 		        if (outNode.getNode() != null) {
 			        new ConnectionImpl(
@@ -232,7 +232,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
 	        super.addIncomingConnection(type, connection);
 	        CompositeNode.NodeAndType inNode = internalGetLinkedIncomingNode(type);
 	        if (inNode != null) {
-		        CompositeNodeStart start = new CompositeNodeStart(connection.getFrom(), type);
+		        CompositeNodeStart start = new CompositeNodeStart(this, connection.getFrom(), type);
 		        internalAddNode(start);
 		        NodeImpl node = (NodeImpl) inNode.getNode();
 	        	if (node != null) {
@@ -269,7 +269,7 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
 	        super.addOutgoingConnection(type, connection);
 	        CompositeNode.NodeAndType outNode = internalGetLinkedOutgoingNode(type);
 	        if (outNode != null) {
-		        CompositeNodeEnd end = new CompositeNodeEnd(connection.getTo(), type);
+		        CompositeNodeEnd end = new CompositeNodeEnd(this, connection.getTo(), type);
 		        internalAddNode(end);
 		        NodeImpl node = (NodeImpl) outNode.getNode();
 	        	if (node != null) {
@@ -359,21 +359,23 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         this.autoComplete = autoComplete;
     }
 
-    public class NodeAndType implements Serializable {
+    public static class NodeAndType implements Serializable {
 
-		private static final long serialVersionUID = 510l;
+        private static final long serialVersionUID = 510l;
 		
-		private long nodeId;
+        private NodeContainer nodeContainer;
+        private long nodeId;
         private String type;
         private transient Node node;
         
-        public NodeAndType(long nodeId, String type) {
+        public NodeAndType(NodeContainer nodeContainer, long nodeId, String type) {
             if (type == null) {
                 throw new IllegalArgumentException(
                     "Node or type may not be null!");
             }
             this.nodeId = nodeId;
             this.type = type;
+            this.nodeContainer = nodeContainer;
         }
         
         public NodeAndType(Node node, String type) {
@@ -419,25 +421,27 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         
     }
     
-    public class CompositeNodeStart extends NodeImpl {
+    public static class CompositeNodeStart extends NodeImpl {
 
         private static final long serialVersionUID = 510l;
         
+        private CompositeNode parentNode;
         private long inNodeId;
         private transient Node inNode;
         private String inType;
         
-        public CompositeNodeStart(Node outNode, String outType) {
+        public CompositeNodeStart(CompositeNode parentNode, Node outNode, String outType) {
             setName("Composite node start");
             this.inNodeId = outNode.getId();
             this.inNode = outNode;
             this.inType = outType;
+            this.parentNode = parentNode;
             setMetaData("hidden", true);
        }
         
         public Node getInNode() {
             if (inNode == null) {
-                inNode = ((NodeContainer) CompositeNode.this.getNodeContainer()).internalGetNode(inNodeId);
+                inNode = ((NodeContainer) parentNode.getNodeContainer()).internalGetNode(inNodeId);
             }
             return inNode;
         }
@@ -452,25 +456,27 @@ public class CompositeNode extends StateBasedNode implements NodeContainer, Even
         
     }
     
-    public class CompositeNodeEnd extends NodeImpl {
+    public static class CompositeNodeEnd extends NodeImpl {
 
         private static final long serialVersionUID = 510l;
         
+        private CompositeNode parentNode;
         private long outNodeId;
         private transient Node outNode;
         private String outType;
         
-        public CompositeNodeEnd(Node outNode, String outType) {
+        public CompositeNodeEnd(CompositeNode parentNode, Node outNode, String outType) {
             setName("Composite node end");
             this.outNodeId = outNode.getId();
             this.outNode = outNode;
             this.outType = outType;
+            this.parentNode = parentNode;
             setMetaData("hidden", true);
         }
         
         public Node getOutNode() {
             if (outNode == null) {
-                outNode = ((NodeContainer) CompositeNode.this.getNodeContainer()).internalGetNode(outNodeId);
+                outNode = ((NodeContainer) parentNode.getNodeContainer()).internalGetNode(outNodeId);
             }
             return outNode;
         }

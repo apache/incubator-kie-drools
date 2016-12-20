@@ -242,11 +242,11 @@ public class ForEachNode extends CompositeContextNode {
         this.waitForCompletion = waitForCompletion;
     }
 
-   public class ForEachSplitNode extends ExtendedNodeImpl {
+   public static class ForEachSplitNode extends ExtendedNodeImpl {
         private static final long serialVersionUID = 510l;
     }
 
-    public class ForEachJoinNode extends ExtendedNodeImpl {
+    public static class ForEachJoinNode extends ExtendedNodeImpl {
         private static final long serialVersionUID = 510l;
     }
 
