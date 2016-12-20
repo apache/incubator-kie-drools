@@ -15,6 +15,7 @@
 
 package org.drools.compiler.xpath;
 
+import org.drools.compiler.integrationtests.SerializationHelper;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.BetaMemory;
@@ -50,6 +51,7 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class XpathTest {
     public static final Logger LOG = LoggerFactory.getLogger(XpathTest.class);
@@ -531,6 +533,65 @@ public class XpathTest {
         KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
+        
+        Adult ada = new Adult("Ada", 19);
+        Adult bea = new Adult("Bea", 19);
+        Group x = new Group("X");
+        Group y = new Group("Y");
+        x.addPerson(ada);
+        x.addPerson(bea);
+        y.addPerson(ada);
+        y.addPerson(bea);
+        ksession.insert( x );
+        ksession.insert( y );
+        ksession.fireAllRules();
+        assertFalse (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertFalse (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+
+        ada.setAge( 20 );        
+        ksession.fireAllRules();
+        ksession.getObjects().forEach(System.out::println);
+        assertTrue  (factsCollection(ksession).contains("X.Ada"));
+        assertFalse (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+        
+        y.removePerson(bea);
+        bea.setAge( 20 );        
+        ksession.fireAllRules();
+        assertTrue  (factsCollection(ksession).contains("X.Ada"));
+        assertTrue  (factsCollection(ksession).contains("X.Bea"));
+        assertTrue  (factsCollection(ksession).contains("Y.Ada"));
+        assertFalse (factsCollection(ksession).contains("Y.Bea"));
+    }
+    
+    /**
+     * Same test as above but with serialization.
+     */
+    @Test
+    public void testRemoveFromReactiveListExtendedWithSerialization() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "  Group( $id: name, $p: /members{age >= 20} )\n" +
+                "then\n" +
+                "  System.out.println( $id + \".\" + $p.getName() );\n" +
+                "  insertLogical(      $id + \".\" + $p.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+        
+        try {
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true, false );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
         
         Adult ada = new Adult("Ada", 19);
         Adult bea = new Adult("Bea", 19);
