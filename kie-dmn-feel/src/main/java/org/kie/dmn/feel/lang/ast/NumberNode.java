@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.util.EvalHelper;
 
 import java.math.BigDecimal;
 
@@ -28,7 +29,7 @@ public class NumberNode
 
     public NumberNode(ParserRuleContext ctx) {
         super( ctx );
-        value = new BigDecimal( ctx.getText() );
+        value = EvalHelper.getBigDecimalOrNull( ctx.getText() );
     }
 
     public BigDecimal getValue() {

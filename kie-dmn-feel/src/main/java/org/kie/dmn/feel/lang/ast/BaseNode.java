@@ -16,12 +16,17 @@
 
 package org.kie.dmn.feel.lang.ast;
 
+import java.util.function.Supplier;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.misc.Interval;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.runtime.events.ASTEventBase;
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 
 public class BaseNode
         implements ASTNode {
@@ -119,9 +124,17 @@ public class BaseNode
     public Type getResultType() {
         return BuiltInType.UNKNOWN;
     }
+    
+    protected Supplier<FEELEvent> astEvent(Severity severity, String message) {
+        return () -> new ASTEventBase(severity, message, this) ;    
+    }
+    protected Supplier<FEELEvent> astEvent(Severity severity, String message, Throwable throwable) {
+        return () -> new ASTEventBase(severity, message, this, throwable) ;    
+    }
 
     @Override
     public Object evaluate(EvaluationContext ctx) {
+        ctx.notifyEvt( astEvent(Severity.ERROR, "BaseNode evaluate called") );
         return null;
     }
 

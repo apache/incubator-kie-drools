@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,7 +77,9 @@ public class PathExpressionNode
                 return fetchValue( o );
             }
         } catch ( Exception e ) {
-            logger.error( "Error evaluating path expression: " + expression.getText() + "." + name.getText(), e );
+            ctx.notifyEvt( astEvent(Severity.ERROR, 
+                                    String.format("Error evaluating path expression: %s. %s", expression.getText(), name.getText()),
+                                    e) );
         }
         return null;
     }

@@ -21,6 +21,7 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.runtime.UnaryTest;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.impl.RangeImpl;
 
 public class RangeNode
@@ -79,10 +80,15 @@ public class RangeNode
     public Range evaluate(EvaluationContext ctx) {
         Comparable s = (Comparable) start.evaluate( ctx );
         Comparable e = (Comparable) end.evaluate( ctx );
-
-        if( s == null || e == null ||
-            ( BuiltInType.determineTypeFromInstance( s ) != BuiltInType.determineTypeFromInstance( e ) &&
-              ! s.getClass().isAssignableFrom( e.getClass() ) ) ) {
+        
+        boolean problem = false;
+        if ( s == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, "Start is null")); problem = true; }
+        if ( e == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, "End is null")); problem = true; }
+        if (problem) { return null; }
+        
+        if ( BuiltInType.determineTypeFromInstance( s ) != BuiltInType.determineTypeFromInstance( e ) 
+                && !s.getClass().isAssignableFrom( e.getClass() ) ) {
+            ctx.notifyEvt( astEvent(Severity.ERROR, "Start and End are not of compatible types"));
             return null;
         }
 
