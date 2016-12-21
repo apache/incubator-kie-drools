@@ -22,16 +22,19 @@ import org.kie.dmn.feel.lang.impl.FEELEventListenersManager;
 import org.kie.dmn.feel.runtime.UnaryTest;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
 import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 public class DecisionTableImpl {
@@ -43,6 +46,7 @@ public class DecisionTableImpl {
     private List<DTOutputClause> outputs;
     private List<DTDecisionRule> decisionRules;
     private HitPolicy            hitPolicy;
+    private boolean              hasDefaultValues;
 
     public DecisionTableImpl(String name,
                              List<String> parameterNames,
@@ -56,6 +60,7 @@ public class DecisionTableImpl {
         this.outputs = outputs;
         this.decisionRules = decisionRules;
         this.hitPolicy = hitPolicy;
+        this.hasDefaultValues = outputs.stream().allMatch( o -> o.getDefaultValue() != null );
     }
 
     /**
@@ -85,9 +90,20 @@ public class DecisionTableImpl {
 
                 return result;
             } else {
+                // check if there is a default value set for the outputs
+                if( hasDefaultValues ) {
+                    Object result = defaultToOutput( ctx, feel );
+                    return result;
+                } else {
+                    FEELEventListenersManager.notifyListeners(ctx.getEventsManager(), () -> new HitPolicyViolationEvent(
+                            FEELEvent.Severity.ERROR,
+                            "No rule matched for decision table '" + name + "' and no default values were defined.",
+                            name,
+                            Collections.EMPTY_LIST ) );
+                }
                 return null;
             }
-        } catch ( Exception e ) {
+        } catch ( Throwable e ) {
             // no longer needed as DTInvokerFunction support Either for wrapping the exception : logger.error( "Error invoking decision table '" + getName() + "'.", e );
             throw e;
         }
@@ -207,6 +223,20 @@ public class DecisionTableImpl {
         }
     }
 
+    /**
+     *  No hits matched for the DT, so calculate result based on default outputs
+     */
+    private Object defaultToOutput(EvaluationContext ctx, FEEL feel) {
+        Map<String, Object> values = ctx.getAllValues();
+        if ( outputs.size() == 1 ) {
+            Object value = feel.evaluate( outputs.get( 0 ).getDefaultValue(), values );
+            return value;
+        } else {
+            // zip outputEntries with its name:
+            return IntStream.range( 0, outputs.size() ).boxed()
+                    .collect( toMap( i -> outputs.get( i ).getName(), i -> feel.evaluate( outputs.get( i ).getDefaultValue(), values ) ) );
+        }
+    }
 
 
 
