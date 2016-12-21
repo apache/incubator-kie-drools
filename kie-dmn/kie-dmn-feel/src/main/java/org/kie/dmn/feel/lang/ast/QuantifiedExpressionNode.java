@@ -19,6 +19,7 @@ package org.kie.dmn.feel.lang.ast;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.util.Msg;
 
 import java.util.*;
 
@@ -88,7 +89,7 @@ public class QuantifiedExpressionNode
         if( quantifier == Quantifier.SOME || quantifier == Quantifier.EVERY ) {
             return iterateContexts( ctx, iterationContexts, expression, quantifier );
         }
-        ctx.notifyEvt( astEvent(Severity.ERROR, "Quantifier is null") );
+        ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "Quantifier")) );
         return null;
     }
 

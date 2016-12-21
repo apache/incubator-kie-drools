@@ -20,18 +20,14 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.util.EvalHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.dmn.feel.util.Msg;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class PathExpressionNode
         extends BaseNode {
-
-    private static final Logger logger = LoggerFactory.getLogger( PathExpressionNode.class );
 
     private BaseNode expression;
     private BaseNode name;
@@ -77,9 +73,7 @@ public class PathExpressionNode
                 return fetchValue( o );
             }
         } catch ( Exception e ) {
-            ctx.notifyEvt( astEvent(Severity.ERROR, 
-                                    String.format("Error evaluating path expression: %s. %s", expression.getText(), name.getText()),
-                                    e) );
+            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.ERROR_EVALUATING_PATH_EXPRESSION, expression.getText(), name.getText()), e) );
         }
         return null;
     }
