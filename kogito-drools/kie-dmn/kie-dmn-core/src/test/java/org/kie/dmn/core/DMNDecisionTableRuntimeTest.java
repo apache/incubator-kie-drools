@@ -161,4 +161,25 @@ public class DMNDecisionTableRuntimeTest {
         DMNContext result = dmnResult.getContext();
         assertThat( result.isDefined("Branches distribution"), is( false ) );
     }
+
+    @Test
+    public void testDecisionTableDefaultValue() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "decisiontable-default-value.dmn", this.getClass() );
+        runtime.addListener( DMNRuntimeUtil.createListener() );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "decisiontable-default-value" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false) );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Age", new BigDecimal( 16 ) );
+        context.set( "RiskCategory", "Medium" );
+        context.set( "isAffordable", true );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( dmnResult.getMessages().toString(), dmnResult.hasErrors(), is(false) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( result.get( "Approval Status" ), is( "Declined" ) );
+    }
+
 }
