@@ -1,0 +1,49 @@
+package org.drools.testcoverage.regression
+
+import java.util.Map
+
+declare Event
+    @role( event )
+    id : long
+end
+
+declare Absence
+	id   : long
+end
+
+rule "detect absence"
+when
+	$event : Event(  )
+    not (
+        Event(
+        	this != $event,
+            id == $event.id,
+            this after[0ms, 3100ms] $event
+        )
+    )
+    not (Absence( 
+            id == $event.id
+    	)
+    )
+    
+then
+    delete($event);
+    insert(new Absence($event.getId()));
+end
+
+rule "clear absence"
+when
+	$event : Event( )
+    $absence : Absence (
+        id == $event.id
+    )
+then
+	delete($absence);
+end
+
+
+
+
+
+
+
