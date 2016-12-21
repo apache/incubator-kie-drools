@@ -18,17 +18,14 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.util.EvalHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.dmn.feel.util.Msg;
 
 import java.util.List;
-import java.util.Map;
 
 public class QualifiedNameNode
         extends BaseNode {
-
-    private static final Logger logger = LoggerFactory.getLogger( QualifiedNameNode.class );
 
     private List<NameRefNode> parts;
 
@@ -61,7 +58,7 @@ public class QualifiedNameNode
                 return current;
             }
         } catch ( Exception e ) {
-            logger.error( "Error accessing qualified name: " + getText(), e );
+            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.ERROR_ACCESSING_QUALIFIED_NAME, getText()), e) );
             return null;
         }
         return null;
