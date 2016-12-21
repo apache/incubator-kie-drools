@@ -19,6 +19,7 @@ package org.kie.dmn.feel.lang.ast;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.util.Msg;
 
 public class IfExpressionNode
         extends BaseNode {
@@ -68,7 +69,7 @@ public class IfExpressionNode
                 return this.elseExpression.evaluate( ctx );
             }
         }
-        ctx.notifyEvt( astEvent(Severity.ERROR, "Condition was not a Boolean") );
+        ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.CONDITION_WAS_NOT_A_BOOLEAN)) );
         return null;
     }
 }

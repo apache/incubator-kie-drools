@@ -20,6 +20,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.feel.util.Msg;
 
 import java.math.BigDecimal;
 
@@ -60,7 +61,7 @@ public class SignedUnaryNode
     public Object evaluate(EvaluationContext ctx) {
         BigDecimal result = EvalHelper.getBigDecimalOrNull( expression.evaluate( ctx ) );
         if ( result == null ) {
-            ctx.notifyEvt( astEvent(Severity.WARN, "Negating a null"));
+            ctx.notifyEvt( astEvent(Severity.WARN, Msg.createMessage(Msg.NEGATING_A_NULL)));
             return null;
         } else if ( Sign.NEGATIVE == sign ) {
             return BigDecimal.valueOf( -1 ).multiply( result );

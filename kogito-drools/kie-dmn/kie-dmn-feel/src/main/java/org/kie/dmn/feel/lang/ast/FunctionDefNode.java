@@ -21,8 +21,7 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.runtime.functions.CustomFEELFunction;
 import org.kie.dmn.feel.runtime.functions.JavaFunction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.kie.dmn.feel.util.Msg;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ import java.util.stream.Collectors;
 public class FunctionDefNode
         extends BaseNode {
 
-    private static final Logger logger = LoggerFactory.getLogger( FunctionDefNode.class );
     private static final String ANONYMOUS = "<anonymous>";
     private final Pattern METHOD_PARSER = Pattern.compile( "(.+)\\((.*)\\)" );
     private final Pattern PARAMETER_PARSER = Pattern.compile( "([^, ]+)" );
@@ -111,20 +109,16 @@ public class FunctionDefNode
                                     Method method = clazz.getMethod( methodName, paramTypes );
                                     return new JavaFunction( ANONYMOUS, params, clazz, method );
                                 } else {
-                                    ctx.notifyEvt( astEvent(Severity.ERROR, 
-                                                            String.format("Parameter count mismatch on function definition: %s", getText())) );
+                                    ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.PARAMETER_COUNT_MISMATCH_ON_FUNCTION_DEFINITION, getText()) ) );
                                     return null;
                                 }
                             }
                         }
                     }
                 }
-                ctx.notifyEvt( astEvent(Severity.ERROR,
-                                        String.format("Unable to find external function as defined by: %s", getText()) ) );
+                ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.UNABLE_TO_FIND_EXTERNAL_FUNCTION_AS_DEFINED_BY, getText()) ) );
             } catch( Exception e ) {
-                ctx.notifyEvt( astEvent(Severity.ERROR,
-                                        String.format("Error resolving external function as defined by: %s", getText()),
-                                        e) );
+                ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.ERROR_RESOLVING_EXTERNAL_FUNCTION_AS_DEFINED_BY, getText()), e) );
             }
             return null;
         } else {

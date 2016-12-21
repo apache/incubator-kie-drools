@@ -19,6 +19,7 @@ package org.kie.dmn.feel.lang.ast;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.util.Msg;
 
 public class BetweenNode
         extends BaseNode {
@@ -61,27 +62,27 @@ public class BetweenNode
     @Override
     public Object evaluate(EvaluationContext ctx) {
         boolean problem = false;
-        if ( value == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, "value is null") ); problem = true; }
-        if ( start == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, "start is null") ); problem = true; }
-        if ( end == null )   { ctx.notifyEvt( astEvent(Severity.ERROR, "end is null") ); problem = true; }
+        if ( value == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "value")) ); problem = true; }
+        if ( start == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "start")) ); problem = true; }
+        if ( end == null )   { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.IS_NULL, "end")) ); problem = true; }
         if (problem) return null;
 
         Comparable val = (Comparable) value.evaluate( ctx );
         Comparable s = (Comparable) start.evaluate( ctx );
         Comparable e = (Comparable) end.evaluate( ctx );
         
-        if ( val == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, "value evaluated to null") ); problem = true; }
-        if ( s == null )   { ctx.notifyEvt( astEvent(Severity.ERROR, "start evaluated to null") ); problem = true; }
-        if ( e == null )   { ctx.notifyEvt( astEvent(Severity.ERROR, "end evaluated to null") ); problem = true; }
+        if ( val == null ) { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EVALUATED_TO_NULL, "value")) ); problem = true; }
+        if ( s == null )   { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EVALUATED_TO_NULL, "start")) ); problem = true; }
+        if ( e == null )   { ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EVALUATED_TO_NULL, "end")) ); problem = true; }
         if (problem) return null;
         
         if ( !val.getClass().isAssignableFrom( s.getClass() ) ) {
-            ctx.notifyEvt( astEvent(Severity.ERROR, "value type incompatible with start type") );
+            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "start")) );
             return null;
         }
         
         if ( !val.getClass().isAssignableFrom( e.getClass() ) ) {
-            ctx.notifyEvt( astEvent(Severity.ERROR, "value type incompatible with end types") );
+            ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.X_TYPE_INCOMPATIBLE_WITH_Y_TYPE, "value", "end")) );
             return null;
         }
         
