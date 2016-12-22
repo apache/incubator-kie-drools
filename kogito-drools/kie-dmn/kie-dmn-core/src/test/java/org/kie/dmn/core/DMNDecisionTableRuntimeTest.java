@@ -19,12 +19,16 @@ package org.kie.dmn.core;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.Map;
 import org.junit.Test;
 import org.kie.dmn.core.api.DMNContext;
@@ -32,7 +36,11 @@ import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.DMNModel;
 import org.kie.dmn.core.api.DMNResult;
 import org.kie.dmn.core.api.DMNRuntime;
+import org.kie.dmn.core.api.event.AfterEvaluateDecisionTableEvent;
+import org.kie.dmn.core.api.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 public class DMNDecisionTableRuntimeTest {
 
@@ -94,6 +102,9 @@ public class DMNDecisionTableRuntimeTest {
     @Test
     public void testDecisionTableMultipleResults() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "car_damage_responsibility.dmn", this.getClass() );
+        DMNRuntimeEventListener listener = Mockito.mock( DMNRuntimeEventListener.class );
+        runtime.addListener( listener );
+
         DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_820611e9-c21c-47cd-8e52-5cba2be9f9cc", "Car Damage Responsibility" );
         assertThat( dmnModel, notNullValue() );
 
@@ -109,6 +120,17 @@ public class DMNDecisionTableRuntimeTest {
         assertThat( (Map<String,Object>)result.get("Car Damage Responsibility"), hasEntry( is( "EU Rent" ), is( BigDecimal.valueOf( 40 )) ));
         assertThat( (Map<String,Object>)result.get("Car Damage Responsibility"), hasEntry( is( "Renter" ), is( BigDecimal.valueOf( 60 )) ));
         assertThat( result.get("Payment method"), is( "Check" ) );
+
+        ArgumentCaptor<AfterEvaluateDecisionTableEvent> captor = ArgumentCaptor.forClass(AfterEvaluateDecisionTableEvent.class);
+        verify( listener, times(2) ).afterEvaluateDecisionTable( captor.capture() );
+
+        AfterEvaluateDecisionTableEvent first = captor.getAllValues().get( 0 );
+        assertThat( first.getMatches(), is( Arrays.asList( 5 ) ) );
+        assertThat( first.getSelected(), is( Arrays.asList( 5 ) ) );
+
+        AfterEvaluateDecisionTableEvent second = captor.getAllValues().get( 1 );
+        assertThat( second.getMatches(), is( Arrays.asList( 3 ) ) );
+        assertThat( second.getSelected(), is( Arrays.asList( 3 ) ) );
     }
 
     @Test
@@ -165,7 +187,9 @@ public class DMNDecisionTableRuntimeTest {
     @Test
     public void testDecisionTableDefaultValue() {
         DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "decisiontable-default-value.dmn", this.getClass() );
-        runtime.addListener( DMNRuntimeUtil.createListener() );
+        DMNRuntimeEventListener listener = Mockito.mock( DMNRuntimeEventListener.class );
+        runtime.addListener( listener );
+
         DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "decisiontable-default-value" );
         assertThat( dmnModel, notNullValue() );
         assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false) );
@@ -180,6 +204,12 @@ public class DMNDecisionTableRuntimeTest {
 
         DMNContext result = dmnResult.getContext();
         assertThat( result.get( "Approval Status" ), is( "Declined" ) );
+
+        ArgumentCaptor<AfterEvaluateDecisionTableEvent> captor = ArgumentCaptor.forClass(AfterEvaluateDecisionTableEvent.class);
+        verify( listener ).afterEvaluateDecisionTable( captor.capture() );
+
+        assertThat( captor.getValue().getMatches(), is( empty() ) );
+        assertThat( captor.getValue().getSelected(), is( empty() ) );
     }
 
 }

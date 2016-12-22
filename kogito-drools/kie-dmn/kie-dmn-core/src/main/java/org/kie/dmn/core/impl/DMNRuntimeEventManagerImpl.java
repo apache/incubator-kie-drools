@@ -80,8 +80,8 @@ public class DMNRuntimeEventManagerImpl implements InternalDMNRuntimeEventManage
     }
 
     @Override
-    public void fireAfterEvaluateDecisionTable(String dtName, DMNResultImpl result, List<Integer> matches ) {
-        AfterEvaluateDecisionTableEvent event = new AfterEvaluateDecisionTableEventImpl( dtName, result, matches );
+    public void fireAfterEvaluateDecisionTable(String dtName, DMNResultImpl result, List<Integer> matches, List<Integer> fired ) {
+        AfterEvaluateDecisionTableEvent event = new AfterEvaluateDecisionTableEventImpl( dtName, result, matches, fired );
         notifyListeners( l -> l.afterEvaluateDecisionTable( event ) );
     }
 

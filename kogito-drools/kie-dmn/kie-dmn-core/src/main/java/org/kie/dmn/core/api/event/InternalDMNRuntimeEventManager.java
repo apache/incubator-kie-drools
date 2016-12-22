@@ -34,5 +34,5 @@ public interface InternalDMNRuntimeEventManager extends DMNRuntimeEventManager {
 
     void fireBeforeEvaluateDecisionTable(String dtName, DMNResultImpl result);
 
-    void fireAfterEvaluateDecisionTable(String dtName, DMNResultImpl result, List<Integer> matches );
+    void fireAfterEvaluateDecisionTable(String dtName, DMNResultImpl result, List<Integer> matches, List<Integer> fired );
 }

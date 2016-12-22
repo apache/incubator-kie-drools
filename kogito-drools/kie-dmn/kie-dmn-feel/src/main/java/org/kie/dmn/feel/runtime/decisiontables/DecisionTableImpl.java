@@ -169,6 +169,7 @@ public class DecisionTableImpl {
             return new DecisionTableRulesMatchedEvent(FEELEvent.Severity.INFO,
                                                       "Rules matched for decision table '" + getName() + "': " + matches.toString(),
                                                       getName(),
+                                                      getName(),
                                                       matches );
             }
         );

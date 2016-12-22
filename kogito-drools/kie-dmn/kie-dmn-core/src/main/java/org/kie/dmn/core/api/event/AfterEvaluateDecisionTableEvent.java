@@ -26,4 +26,6 @@ public interface AfterEvaluateDecisionTableEvent {
     DMNResult getResult();
 
     List<Integer> getMatches();
+
+    List<Integer> getSelected();
 }

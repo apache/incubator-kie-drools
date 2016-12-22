@@ -19,33 +19,35 @@ package org.kie.dmn.feel.runtime.events;
 import java.util.List;
 
 /**
- * An event class to report all matches for a decision table
+ * An event class to report all rules selected as a result for a decision table.
+ *
+ * For a unique hit decision table, the same rule will be matched and selected,
+ * but for decision tables with different hit policies, the rules actually
+ * selected might be a subset of the rules matched.
  */
-public class DecisionTableRulesMatchedEvent
+public class DecisionTableRulesSelectedEvent
         extends FEELEventBase
         implements FEELEvent {
 
     private final String        nodeName;
     private final String        dtName;
-    private final List<Integer> matches;
+    private final List<Integer> fired;
 
-    public DecisionTableRulesMatchedEvent(Severity severity, String msg, String nodeName, String dtName, List<Integer> matches) {
+    public DecisionTableRulesSelectedEvent(Severity severity, String msg, String nodeName, String dtName, List<Integer> fired) {
         super( severity, msg, null );
         this.nodeName = nodeName;
         this.dtName = dtName;
-        this.matches = matches;
+        this.fired = fired;
     }
 
     public String getNodeName() {
         return nodeName;
     }
 
-    public String getDecisionTableName() {
-        return dtName;
-    }
+    public String getDecisionTableName() { return dtName; }
 
-    public List<Integer> getMatches() {
-        return matches;
+    public List<Integer> getFired() {
+        return fired;
     }
 
     @Override
@@ -55,7 +57,7 @@ public class DecisionTableRulesMatchedEvent
                ", message='" + getMessage() + '\'' +
                ", nodeName='" + nodeName + '\'' +
                ", dtName='" + dtName + '\'' +
-               ", matches='" + matches + '\'' +
+               ", fired='" + fired + '\'' +
                '}';
     }
 }
