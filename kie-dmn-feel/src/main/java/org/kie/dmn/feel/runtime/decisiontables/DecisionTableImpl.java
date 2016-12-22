@@ -96,8 +96,8 @@ public class DecisionTableImpl {
                     return result;
                 } else {
                     FEELEventListenersManager.notifyListeners(ctx.getEventsManager(), () -> new HitPolicyViolationEvent(
-                            FEELEvent.Severity.ERROR,
-                            "No rule matched for decision table '" + name + "' and no default values were defined.",
+                            FEELEvent.Severity.WARN,
+                            "No rule matched for decision table '" + name + "' and no default values were defined. Setting result to null.",
                             name,
                             Collections.EMPTY_LIST ) );
                 }
