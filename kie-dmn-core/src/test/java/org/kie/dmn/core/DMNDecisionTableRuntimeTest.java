@@ -33,12 +33,17 @@ import java.util.Map;
 import org.junit.Test;
 import org.kie.dmn.core.api.DMNContext;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.api.DMNMessage;
 import org.kie.dmn.core.api.DMNModel;
 import org.kie.dmn.core.api.DMNResult;
 import org.kie.dmn.core.api.DMNRuntime;
 import org.kie.dmn.core.api.event.AfterEvaluateDecisionTableEvent;
+import org.kie.dmn.core.api.event.DMNEvent;
 import org.kie.dmn.core.api.event.DMNRuntimeEventListener;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
@@ -79,6 +84,28 @@ public class DMNDecisionTableRuntimeTest {
 
         assertThat( result.get( "Approval Status" ), nullValue() );
         assertTrue( dmnResult.getMessages().size() > 0 );
+    }
+    
+    @Test
+    public void testSimpleDecisionTableUniqueHitPolicyNullWarn() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "0004-simpletable-U-noinputvalues.dmn", this.getClass() );
+        DMNModel dmnModel = runtime.getModel( "https://github.com/droolsjbpm/kie-dmn", "0004-simpletable-U-noinputvalues" );
+        assertThat( dmnModel, notNullValue() );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Age", new BigDecimal( 18 ) );
+        context.set( "RiskCategory", "ASD" );
+        context.set( "isAffordable", false );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+
+        DMNContext result = dmnResult.getContext();
+
+        assertThat( result.get( "Approval Status" ), nullValue() );
+        assertTrue( dmnResult.getMessages().size() > 0 );
+        assertTrue( dmnResult.getMessages().stream().anyMatch( dm -> dm.getSeverity().equals(DMNMessage.Severity.WARN)
+                                                                     && dm.getFeelEvent() instanceof HitPolicyViolationEvent
+                                                                     && dm.getFeelEvent().getSeverity().equals(FEELEvent.Severity.WARN) ) );
     }
 
     @Test
