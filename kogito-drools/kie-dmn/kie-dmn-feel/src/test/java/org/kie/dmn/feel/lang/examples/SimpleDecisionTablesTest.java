@@ -10,10 +10,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.runtime.events.FEELEvent;
+import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
+import org.kie.dmn.feel.runtime.events.FEELEventListener;
+import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -44,12 +48,18 @@ public class SimpleDecisionTablesTest
                     }
                     logger.error(" [stacktraces omitted.]");
                 }
-            }  
+            } else if (evt.getSeverity() == FEELEvent.Severity.WARN) { 
+                logger.warn("{}", evt);
+            }
         } );
     }
 
     @Test
     public void testMain() {
+        List<FEELEvent> events = new ArrayList<>();
+        FEELEventListener listener = evt -> events.add(evt);
+        feel.addListener(listener);
+        
         String expression = loadExpression( "simple_decision_tables.feel" );
         Map context = (Map) feel.evaluate( expression );
         
@@ -63,6 +73,11 @@ public class SimpleDecisionTablesTest
         assertThat( (Map<?, ?>) context.get( "result4" ), hasSize(2));
         assertThat( (Map<?, ?>) context.get( "result4" ), hasEntry("Out1", "io1a" ));
         assertThat( (Map<?, ?>) context.get( "result4" ), hasEntry("Out2", "io2a" ));
+        assertThat( context.get( "result5" ), nullValue() );
+        assertTrue( events.stream().anyMatch(e -> e instanceof HitPolicyViolationEvent
+                                                  && e.getSeverity().equals(Severity.WARN) ) );
+        
+        feel.removeListener(listener);
     }
 
     @Test

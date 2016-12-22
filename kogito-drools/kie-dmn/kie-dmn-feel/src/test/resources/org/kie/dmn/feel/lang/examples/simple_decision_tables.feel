@@ -41,9 +41,20 @@
                                 ],
                                 hit policy: "U"
                             ),
+                            
+   checkNull : decision table (
+                               outputs: "Adult",
+                               input expression list: ["Age"],
+                               rule list: [
+                                   [ <18,       "\"Young\""],
+                                   [ [>18, <99],       "\"Adult\""]
+                               ],
+                               hit policy: "U"
+                           ),
 
    result1: myDecisionTable( 34 ),
    result2: biggerDecisionTable( 35, "good" ),
    result3: multipleOutputs(2),
-   result4: multipleInOut(In2: 47, In1:2)
+   result4: multipleInOut(In2: 47, In1:2),
+   result5: checkNull(9999)
 }

@@ -46,8 +46,7 @@ public class DTInvokerFunction
             for( int i = 0; i < params.length; i++ ) {
                 ctx.setValue( dt.getParameterNames().get( i ), params[i] );
             }
-            Object result = dt.evaluate( ctx, params );
-            return FEELFnResult.ofResult( result );
+            return dt.evaluate( ctx, params );
         } catch ( Exception e ) {
             capturedException = new FEELEventBase(Severity.ERROR, "Error invoking decision table '"+getName()+"'.", e);
         } finally {

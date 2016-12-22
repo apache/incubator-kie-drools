@@ -80,6 +80,8 @@ public class DMNDTExpressionEvaluator
             } else if ( e.getSeverity() == FEELEvent.Severity.ERROR ) {
                 result.addMessage( DMNMessage.Severity.ERROR, e.getMessage(), node.getId(), e );
                 r.hasErrors = true;
+            } else if ( e.getSeverity() == FEELEvent.Severity.WARN ) {
+                result.addMessage( DMNMessage.Severity.WARN, e.getMessage(), node.getId(), e );
             }
         }
         events.clear();
