@@ -244,6 +244,10 @@ public class DecisionTableImpl {
     public HitPolicy getHitPolicy() {
         return hitPolicy;
     }
+    
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;
@@ -256,4 +260,9 @@ public class DecisionTableImpl {
     public List<String> getParameterNames() {
         return parameterNames;
     }
+
+    public String getSignature() {
+        return getName() + "( " + parameterNames.stream().collect( Collectors.joining( ", " ) ) + " )";
+    }
+
 }

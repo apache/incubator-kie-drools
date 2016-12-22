@@ -68,4 +68,15 @@ public class DTInvokerFunction
     public List<List<String>> getParameterNames() {
         return Collections.singletonList( dt.getParameterNames() );
     }
+
+    @Override
+    public void setName(String name) {
+        super.setName(name);
+        dt.setName(name);
+    }
+    
+    @Override
+    public String toString() {
+        return "decision table " + dt.getSignature();
+    }
 }
