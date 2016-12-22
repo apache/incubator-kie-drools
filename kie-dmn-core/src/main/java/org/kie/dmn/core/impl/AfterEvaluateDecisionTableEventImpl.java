@@ -19,20 +19,22 @@ package org.kie.dmn.core.impl;
 import org.kie.dmn.core.api.DMNResult;
 import org.kie.dmn.core.api.event.AfterEvaluateDecisionTableEvent;
 
+import java.util.Collections;
 import java.util.List;
 
 public class AfterEvaluateDecisionTableEventImpl
         implements AfterEvaluateDecisionTableEvent {
 
-    private String dtName;
-    private DMNResult result;
-    private List<Integer> matches;
+    private final String        dtName;
+    private final DMNResult     result;
+    private final List<Integer> matches;
+    private final List<Integer> fired;
 
-
-    public AfterEvaluateDecisionTableEventImpl(String dtName, DMNResultImpl result, List<Integer> matches) {
+    public AfterEvaluateDecisionTableEventImpl(String dtName, DMNResultImpl result, List<Integer> matches, List<Integer> fired) {
         this.dtName = dtName;
         this.result = result;
         this.matches = matches;
+        this.fired = fired;
     }
 
     @Override
@@ -47,12 +49,17 @@ public class AfterEvaluateDecisionTableEventImpl
 
     @Override
     public List<Integer> getMatches() {
-        return matches;
+        return matches == null ? Collections.emptyList() : matches;
+    }
+
+    @Override
+    public List<Integer> getSelected() {
+        return fired == null ? Collections.emptyList() : fired;
     }
 
     @Override
     public String toString() {
-        return "AfterEvaluateDecisionTableEvent{ name='"+dtName+"' matches="+matches+" }";
+        return "AfterEvaluateDecisionTableEvent{ name='" + dtName + "' matches=" + getMatches() + " fired=" + getSelected() + " }";
     }
 
 }

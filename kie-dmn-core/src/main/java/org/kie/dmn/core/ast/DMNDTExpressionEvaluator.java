@@ -22,6 +22,7 @@ import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
+import org.kie.dmn.feel.runtime.events.DecisionTableRulesSelectedEvent;
 import org.kie.dmn.feel.runtime.events.DecisionTableRulesMatchedEvent;
 import org.kie.dmn.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.runtime.events.FEELEventListener;
@@ -65,7 +66,7 @@ public class DMNDTExpressionEvaluator
             r = processEvents( events, eventManager, result );
             return new EvaluatorResult( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } finally {
-            eventManager.fireAfterEvaluateDecisionTable( dt.getName(), result, (r != null ? r.matchedRules : null) );
+            eventManager.fireAfterEvaluateDecisionTable( dt.getName(), result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
         }
     }
 
@@ -74,6 +75,8 @@ public class DMNDTExpressionEvaluator
         for ( FEELEvent e : events ) {
             if ( e instanceof DecisionTableRulesMatchedEvent ) {
                 r.matchedRules = ((DecisionTableRulesMatchedEvent) e).getMatches();
+            } else if ( e instanceof DecisionTableRulesSelectedEvent ) {
+                r.fired = ((DecisionTableRulesSelectedEvent) e).getFired();
             } else if ( e.getSeverity() == FEELEvent.Severity.ERROR ) {
                 result.addMessage( DMNMessage.Severity.ERROR, e.getMessage(), node.getId(), e );
                 r.hasErrors = true;
@@ -86,6 +89,7 @@ public class DMNDTExpressionEvaluator
     private static class EventResults {
         public boolean hasErrors = false;
         public List<Integer> matchedRules;
+        public List<Integer> fired;
     }
 
     @Override
