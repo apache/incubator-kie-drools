@@ -239,4 +239,31 @@ public class DMNDecisionTableRuntimeTest {
         assertThat( captor.getValue().getSelected(), is( empty() ) );
     }
 
+    @Test
+    public void testTwoDecisionTables() {
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime( "two_decision_tables.dmn", this.getClass() );
+        DMNRuntimeEventListener listener = Mockito.mock( DMNRuntimeEventListener.class );
+        runtime.addListener( listener );
+
+        DMNModel dmnModel = runtime.getModel( "http://www.trisotech.com/definitions/_bbb692e7-3d95-407a-bf39-353085bf57f0", "Invocation with two decision table as parameters" );
+        assertThat( dmnModel, notNullValue() );
+        assertThat( dmnModel.getMessages().toString(), dmnModel.hasErrors(), is(false) );
+
+        DMNContext context = DMNFactory.newContext();
+        context.set( "Number", 50 );
+
+        DMNResult dmnResult = runtime.evaluateAll( dmnModel, context );
+        assertThat( dmnResult.getMessages().toString(), dmnResult.hasErrors(), is(false) );
+
+        DMNContext result = dmnResult.getContext();
+        assertThat( (Map<String, Object>)result.get( "Decision Logic 2" ), hasEntry( "5 analysis", "A number greater than 5" ) );
+        assertThat( (Map<String, Object>)result.get( "Decision Logic 2" ), hasEntry( "100 analysis", "A number smaller than 100" ) );
+
+        ArgumentCaptor<AfterEvaluateDecisionTableEvent> captor = ArgumentCaptor.forClass(AfterEvaluateDecisionTableEvent.class);
+        verify( listener, times(2) ).afterEvaluateDecisionTable( captor.capture() );
+
+        assertThat( captor.getAllValues().get( 0 ).getDecisionTableName(), is( "a" ) );
+        assertThat( captor.getAllValues().get( 1 ).getDecisionTableName(), is( "b" ) );
+    }
+
 }

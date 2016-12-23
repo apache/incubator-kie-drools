@@ -74,14 +74,14 @@ public class DMNRuntimeEventManagerImpl implements InternalDMNRuntimeEventManage
     }
 
     @Override
-    public void fireBeforeEvaluateDecisionTable(String dtName, DMNResultImpl result) {
-        BeforeEvaluateDecisionTableEvent event = new BeforeEvaluateDecisionTableEventImpl( dtName, result );
+    public void fireBeforeEvaluateDecisionTable(String nodeName, String dtName, DMNResultImpl result) {
+        BeforeEvaluateDecisionTableEvent event = new BeforeEvaluateDecisionTableEventImpl( nodeName, dtName, result );
         notifyListeners( l -> l.beforeEvaluateDecisionTable( event ) );
     }
 
     @Override
-    public void fireAfterEvaluateDecisionTable(String dtName, DMNResultImpl result, List<Integer> matches, List<Integer> fired ) {
-        AfterEvaluateDecisionTableEvent event = new AfterEvaluateDecisionTableEventImpl( dtName, result, matches, fired );
+    public void fireAfterEvaluateDecisionTable(String nodeName, String dtName, DMNResultImpl result, List<Integer> matches, List<Integer> fired ) {
+        AfterEvaluateDecisionTableEvent event = new AfterEvaluateDecisionTableEventImpl( nodeName, dtName, result, matches, fired );
         notifyListeners( l -> l.afterEvaluateDecisionTable( event ) );
     }
 

@@ -19,6 +19,8 @@ package org.kie.dmn.core.api.event;
 import org.kie.dmn.core.api.DMNResult;
 
 public interface BeforeEvaluateDecisionTableEvent {
+    String getNodeName();
+
     String getDecisionTableName();
 
     DMNResult getResult();

@@ -140,12 +140,12 @@ public class DMNCompilerImpl implements DMNCompiler {
         for ( BusinessKnowledgeModelNode bkm : model.getBusinessKnowledgeModels() ) {
             linkRequirements( model, bkm );
             FunctionDefinition funcDef = bkm.getBusinessKnowledModel().getEncapsulatedLogic();
-            DMNExpressionEvaluator exprEvaluator = compileExpression( model, bkm, funcDef );
+            DMNExpressionEvaluator exprEvaluator = compileExpression( model, bkm, bkm.getName(), funcDef );
             bkm.setEvaluator( exprEvaluator );
         }
         for ( DecisionNode d : model.getDecisions() ) {
             linkRequirements( model, d );
-            DMNExpressionEvaluator evaluator = compileExpression( model, d, d.getDecision().getExpression() );
+            DMNExpressionEvaluator evaluator = compileExpression( model, d, d.getName(), d.getDecision().getExpression() );
             d.setEvaluator( evaluator );
         }
     }
@@ -266,20 +266,20 @@ public class DMNCompilerImpl implements DMNCompiler {
         return new FeelTypeImpl( model.getName(), model.getId(), BuiltInType.UNKNOWN, false, null );
     }
 
-    private DMNExpressionEvaluator compileExpression(DMNModelImpl model, DMNBaseNode node, Expression expression) {
+    private DMNExpressionEvaluator compileExpression(DMNModelImpl model, DMNBaseNode node, String exprName, Expression expression) {
         FEEL feel = FEEL.newInstance();
         if( expression instanceof LiteralExpression ) {
             return compileLiteralExpression( node, (LiteralExpression) expression, feel );
         } else if( expression instanceof DecisionTable ) {
-            return compileDecisionTable( node, (DecisionTable) expression, feel );
+            return compileDecisionTable( node, exprName, (DecisionTable) expression, feel );
         } else if( expression instanceof FunctionDefinition ) {
-            return compileFunctionDefinition( model, node, (FunctionDefinition) expression );
+            return compileFunctionDefinition( model, node, exprName, (FunctionDefinition) expression );
         } else if( expression instanceof Context ) {
-            return compileContext( model, node, (Context) expression );
+            return compileContext( model, node, exprName, (Context) expression );
         } else if( expression instanceof org.kie.dmn.feel.model.v1_1.List ) {
-            return compileList( model, node, (org.kie.dmn.feel.model.v1_1.List) expression );
+            return compileList( model, node, exprName, (org.kie.dmn.feel.model.v1_1.List) expression );
         } else if( expression instanceof Relation ) {
-            return compileRelation( model, node, (Relation) expression );
+            return compileRelation( model, node, exprName, (Relation) expression );
         } else if( expression instanceof Invocation ) {
             return compileInvocation( model, node, (Invocation) expression );
         } else {
@@ -300,12 +300,12 @@ public class DMNCompilerImpl implements DMNCompiler {
         for( Binding binding : invocation.getBinding() ) {
             invEval.addParameter( binding.getParameter().getName(),
                                   resolveSimpleTypeRef( model, node, binding.getParameter(), binding.getParameter().getTypeRef() ),
-                                  compileExpression( model, node, binding.getExpression() ) );
+                                  compileExpression( model, node, binding.getParameter().getName(), binding.getExpression() ) );
         }
         return invEval;
     }
 
-    private DMNExpressionEvaluator compileRelation(DMNModelImpl model, DMNBaseNode node, Relation expression) {
+    private DMNExpressionEvaluator compileRelation(DMNModelImpl model, DMNBaseNode node, String relationName, Relation expression) {
         Relation relationDef = expression;
         DMNRelationEvaluator relationEval = new DMNRelationEvaluator( node.getName(), node.getId(), relationDef );
         for( InformationItem col : relationDef.getColumn() ) {
@@ -314,30 +314,30 @@ public class DMNCompilerImpl implements DMNCompiler {
         for( org.kie.dmn.feel.model.v1_1.List row : relationDef.getRow() ) {
             List<DMNExpressionEvaluator> values = new ArrayList<>(  );
             for( Expression expr : row.getExpression() ) {
-                values.add( compileExpression( model, node, expr ) );
+                values.add( compileExpression( model, node, relationName, expr ) );
             }
             relationEval.addRow( values );
         }
         return relationEval;
     }
 
-    private DMNExpressionEvaluator compileList(DMNModelImpl model, DMNBaseNode node, org.kie.dmn.feel.model.v1_1.List expression) {
+    private DMNExpressionEvaluator compileList(DMNModelImpl model, DMNBaseNode node, String listName, org.kie.dmn.feel.model.v1_1.List expression) {
         org.kie.dmn.feel.model.v1_1.List listDef = expression;
         DMNListEvaluator listEval = new DMNListEvaluator( node.getName(), node.getId(), listDef );
         for( Expression expr : listDef.getExpression() ) {
-            listEval.addElement( compileExpression( model, node, expr ) );
+            listEval.addElement( compileExpression( model, node, listName, expr ) );
         }
         return listEval;
     }
 
-    private DMNExpressionEvaluator compileContext(DMNModelImpl model, DMNBaseNode node, Context expression) {
+    private DMNExpressionEvaluator compileContext(DMNModelImpl model, DMNBaseNode node, String contextName, Context expression) {
         Context ctxDef = expression;
         DMNContextEvaluator ctxEval = new DMNContextEvaluator( node.getName(), ctxDef );
         for( ContextEntry ce : ctxDef.getContextEntry() ) {
             if( ce.getVariable() != null ) {
                 ctxEval.addEntry( ce.getVariable().getName(),
                                   resolveSimpleTypeRef( model, node, ce.getVariable(), ce.getVariable().getTypeRef() ),
-                                  compileExpression( model, node, ce.getExpression() ) );
+                                  compileExpression( model, node, ce.getVariable().getName(), ce.getExpression() ) );
             } else {
                 // if the variable is not defined, then it should be the last
                 // entry in the context and the result of this context evaluation is the
@@ -350,24 +350,24 @@ public class DMNCompilerImpl implements DMNCompiler {
                 }
                 ctxEval.addEntry( DMNContextEvaluator.RESULT_ENTRY,
                                   type,
-                                  compileExpression( model, node, ce.getExpression() ) );
+                                  compileExpression( model, node, contextName, ce.getExpression() ) );
             }
         }
         return ctxEval;
     }
 
-    private DMNExpressionEvaluator compileFunctionDefinition(DMNModelImpl model, DMNBaseNode node, FunctionDefinition expression) {
+    private DMNExpressionEvaluator compileFunctionDefinition(DMNModelImpl model, DMNBaseNode node, String functionName, FunctionDefinition expression) {
         FunctionDefinition funcDef = expression;
         DMNExpressionEvaluatorInvokerFunction func = new DMNExpressionEvaluatorInvokerFunction( node.getName(), funcDef );
         for( InformationItem p : funcDef.getFormalParameter() ) {
             func.addParameter( p.getName(), resolveSimpleTypeRef( model, node, p, p.getTypeRef() ) );
         }
-        DMNExpressionEvaluator eval = compileExpression( model, node, funcDef.getExpression() );
+        DMNExpressionEvaluator eval = compileExpression( model, node, functionName, funcDef.getExpression() );
         func.setEvaluator( eval );
         return func;
     }
 
-    private DMNExpressionEvaluator compileDecisionTable(DMNBaseNode node, DecisionTable expression, FEEL feel) {
+    private DMNExpressionEvaluator compileDecisionTable(DMNBaseNode node, String dtName, DecisionTable expression, FEEL feel) {
         DecisionTable dt = expression;
         List<DTInputClause> inputs = new ArrayList<>(  );
         for( InputClause ic : dt.getInput() ) {
@@ -407,7 +407,7 @@ public class DMNCompilerImpl implements DMNCompiler {
             parameterNames.addAll( node.getDependencies().keySet() );
         }
 
-        DecisionTableImpl dti = new DecisionTableImpl( node.getName(), parameterNames, inputs, outputs, rules, hp );
+        DecisionTableImpl dti = new DecisionTableImpl( dtName, parameterNames, inputs, outputs, rules, hp );
         DTInvokerFunction dtf = new DTInvokerFunction( dti );
         DMNDTExpressionEvaluator dtee = new DMNDTExpressionEvaluator( node, dtf );
         return dtee;

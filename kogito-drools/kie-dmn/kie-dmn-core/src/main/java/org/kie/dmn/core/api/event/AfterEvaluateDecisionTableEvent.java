@@ -21,6 +21,9 @@ import org.kie.dmn.core.api.DMNResult;
 import java.util.List;
 
 public interface AfterEvaluateDecisionTableEvent {
+
+    String getNodeName();
+
     String getDecisionTableName();
 
     DMNResult getResult();

@@ -54,7 +54,7 @@ public class DMNDTExpressionEvaluator
     public EvaluatorResult evaluate(InternalDMNRuntimeEventManager eventManager, DMNResultImpl result) {
         EventResults r = null;
         try {
-            eventManager.fireBeforeEvaluateDecisionTable( dt.getName(), result );
+            eventManager.fireBeforeEvaluateDecisionTable( node.getName(), dt.getName(), result );
             List<String> paramNames = dt.getParameterNames().get( 0 );
             Object[] params = new Object[paramNames.size()];
             EvaluationContextImpl ctx = new EvaluationContextImpl( feel.getEventsManager() );
@@ -66,7 +66,7 @@ public class DMNDTExpressionEvaluator
             r = processEvents( events, eventManager, result );
             return new EvaluatorResult( dtr, r.hasErrors ? ResultType.FAILURE : ResultType.SUCCESS );
         } finally {
-            eventManager.fireAfterEvaluateDecisionTable( dt.getName(), result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
+            eventManager.fireAfterEvaluateDecisionTable( node.getName(), dt.getName(), result, (r != null ? r.matchedRules : null), (r != null ? r.fired : null) );
         }
     }
 

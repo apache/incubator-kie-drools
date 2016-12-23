@@ -223,7 +223,7 @@ public class SimpleDecisionTablesTest
         assertThat( (Map<?, ?>) context.get( "DTmax11" ), hasEntry("Out1", new BigDecimal(3) ));
         assertThat( (Map<?, ?>) context.get( "DTmax11" ), hasEntry("Out2", "C"               ));
     }
-    
+
     public static <K, V> Matcher<Map<K, V>> hasSize(final int z) {
         return new TypeSafeMatcher<Map<K, V>>() {
             public boolean matchesSafely(Map<K, V> arg0) {
