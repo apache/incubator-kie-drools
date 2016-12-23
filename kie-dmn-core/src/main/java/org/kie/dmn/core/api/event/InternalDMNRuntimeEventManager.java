@@ -32,7 +32,7 @@ public interface InternalDMNRuntimeEventManager extends DMNRuntimeEventManager {
 
     void fireAfterEvaluateBKM(BusinessKnowledgeModelNode bkm, DMNResultImpl result);
 
-    void fireBeforeEvaluateDecisionTable(String dtName, DMNResultImpl result);
+    void fireBeforeEvaluateDecisionTable(String nodeName, String dtName, DMNResultImpl result);
 
-    void fireAfterEvaluateDecisionTable(String dtName, DMNResultImpl result, List<Integer> matches, List<Integer> fired );
+    void fireAfterEvaluateDecisionTable(String nodeName, String dtName, DMNResultImpl result, List<Integer> matches, List<Integer> fired );
 }
