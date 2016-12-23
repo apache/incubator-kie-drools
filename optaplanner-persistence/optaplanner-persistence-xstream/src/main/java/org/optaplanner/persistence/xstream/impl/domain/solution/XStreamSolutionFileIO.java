@@ -37,12 +37,16 @@ public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution
 
     public static final String FILE_EXTENSION = "xml";
 
-    private XStream xStream;
+    protected XStream xStream;
 
     public XStreamSolutionFileIO(Class... xStreamAnnotatedClasses) {
         xStream = new XStream();
         xStream.setMode(XStream.ID_REFERENCES);
         xStream.processAnnotations(xStreamAnnotatedClasses);
+    }
+
+    public XStream getXStream() {
+        return xStream;
     }
 
     @Override
