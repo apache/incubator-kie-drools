@@ -22,12 +22,19 @@ import org.kie.dmn.core.api.event.BeforeEvaluateDecisionTableEvent;
 public class BeforeEvaluateDecisionTableEventImpl
         implements BeforeEvaluateDecisionTableEvent {
 
-    private String dtName;
-    private DMNResultImpl result;
+    private final String nodeName;
+    private final String dtName;
+    private final DMNResultImpl result;
 
-    public BeforeEvaluateDecisionTableEventImpl(String dtName, DMNResultImpl result) {
+    public BeforeEvaluateDecisionTableEventImpl(String nodeName, String dtName, DMNResultImpl result) {
+        this.nodeName = nodeName;
         this.dtName = dtName;
         this.result = result;
+    }
+
+    @Override
+    public String getNodeName() {
+        return nodeName;
     }
 
     @Override
@@ -42,7 +49,7 @@ public class BeforeEvaluateDecisionTableEventImpl
 
     @Override
     public String toString() {
-        return "BeforeEvaluateDecisionTableEvent{ name='"+dtName+"' }";
+        return "BeforeEvaluateDecisionTableEvent{ nodeName='"+nodeName+"' decisionTableName='"+dtName+"' }";
     }
 
 }
