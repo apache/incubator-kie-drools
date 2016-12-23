@@ -14,14 +14,14 @@
 The number of possible solutions for a planning problem can be mind blowing.
 For example:
 
-* 4 queens has `256` possible solutions (``4^4``) and 2 optimal solutions.
-* 5 queens has `3125` possible solutions (``5^5``) and 1 optimal solution.
-* 8 queens has `16777216` possible solutions (``8^8``) and 92 optimal solutions.
+* Four queens has `256` possible solutions (``4^4``) and two optimal solutions.
+* Five queens has `3125` possible solutions (``5^5``) and one optimal solution.
+* Eight queens has `16777216` possible solutions (``8^8``) and 92 optimal solutions.
 * 64 queens has more than `10^115` possible solutions (``64^64``).
-* Most real-life planning problems have an incredible number of possible solutions and only 1 or a few optimal solutions.
+* Most real-life planning problems have an incredible number of possible solutions and only one or a few optimal solutions.
 
 For comparison: the minimal number of atoms in the known universe (10^80). As a planning problem gets bigger, the search space tends to blow up really fast.
-Adding only 1 extra planning entity or planning value can heavily multiply the running time of some algorithms.
+Adding only one extra planning entity or planning value can heavily multiply the running time of some algorithms.
 
 image::Chapter-Optimization_algorithms/cloudBalanceSearchSpaceSize.png[align="center"]
 
@@ -35,14 +35,13 @@ image::Chapter-Optimization_algorithms/searchSpaceSizeCalculation.png[align="cen
 This search space size calculation includes infeasible solutions (if they can be represented by the model), because:
 
 * The optimal solution might be infeasible.
-* There are many types of hard constraints which cannot be incorporated in the formula practically. For example in Cloud Balancing, try incorporating the CPU capacity constraint in the formula.
+* There are many types of hard constraints that cannot be incorporated in the formula practically. For example, in Cloud Balancing, try incorporating the CPU capacity constraint in the formula.
 
-Even in cases were adding some of the hard constraints in the formula is practical, for example Course Scheduling, the resulting search space is still huge.
+Even in cases where adding some of the hard constraints in the formula is practical (for example, Course Scheduling), the resulting search space is still huge.
 ====
 
-An algorithm that checks every possible solution (even with pruning such as in <<branchAndBound,Branch And Bound>>) can easily run for billions of years on a single real-life planning problem.
-What we really want is to **find the best solution in the limited time at our
-    disposal**.
+An algorithm that checks every possible solution (even with pruning, such as in <<branchAndBound,Branch And Bound>>) can easily run for billions of years on a single real-life planning problem.
+The aim is to find the best solution in the available timeframe.
 Planning competitions (such as the International Timetabling Competition) show that Local Search variations
 (<<tabuSearch,Tabu Search>>, <<simulatedAnnealing,Simulated Annealing>>, <<lateAcceptance,Late Acceptance>>, ...)
 usually perform best for real-world problems given real-world time limitations.
@@ -53,28 +52,34 @@ usually perform best for real-world problems given real-world time limitations.
 
 The business wants the optimal solution, but they also have other requirements:
 
-* Scale out: Large production datasets must not crash and have good results too.
+* Scale out: Large production data sets must not crash and have also good results.
 * Optimize the right problem: The constraints must match the actual business needs.
 * Available time: The solution must be found in time, before it becomes useless to execute.
-* Reliability: Every dataset must have at least a decent result (better than a human planner).
+* Reliability: Every data set must have at least a decent result (better than a human planner).
 
-Given these requirements, and despite the promises of some salesmen, it's usually impossible for anyone or anything to find the optimal solution.
+Given these requirements, and despite the promises of some salesmen, it is usually impossible for anyone or anything to find the optimal solution.
 Therefore, Planner focuses on finding the best solution in available time.
 In <<examplesOverview,"realistic, independent competitions">>, it often comes out as the best _reusable_ software.
 
-The nature of NP-complete problems make scaling a prime concern. *The result quality of a
-    small dataset guarantees nothing about the result quality of a large dataset.* Scaling issues cannot be mitigated by hardware purchases later on.
-Start testing with a production sized dataset as soon as possible.
-Don't assess quality on small datasets (unless production encounters only such datasets). Instead, solve a production sized dataset and compare the results of longer executions, different algorithms and - if available - the human planner.
+The nature of NP-complete problems make scaling a prime concern. 
+
+[NOTE]
+====
+The quality of a result from a small data set is no indication of the quality of a result from a large data set.
+====
+
+Scaling issues cannot be mitigated by hardware purchases later on.
+Start testing with a production sized data set as soon as possible.
+Do not assess quality on small data sets (unless production encounters only such data sets). Instead, solve a production sized data set and compare the results of longer executions, different algorithms and - if available - the human planner.
 
 
 [[architectureOverview]]
 == Architecture Overview
 
-Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score calculation by a rule engine (such as Drools Expert). This combination turns out to be a very efficient, because:
+Planner is the first framework to combine optimization algorithms (metaheuristics, ...) with score calculation by a rule engine (such as Drools Expert). This combination is very efficient, because:
 
-* A rule engine such as Drools Expert is *great for calculating the score* of a solution of a planning problem. It makes it easy and scalable to add additional soft or hard constraints such as "a teacher shouldn't teach more then 7 hours a day". It does delta based score calculation without any extra code. However it tends to be not suitable to actually find new solutions.
-* An optimization algorithm is *great at finding new improving solutions* for a planning problem, without necessarily brute-forcing every possibility. However it needs to know the score of a solution and offers no support in calculating that score efficiently.
+* A rule engine, such as Drools Expert, is *great for calculating the score* of a solution of a planning problem. It makes it easy and scalable to add additional soft or hard constraints such as, "a teacher should not teach more then seven hours a day". It does delta-based score calculation without any extra code. However it tends to be not suitable to actually find new solutions.
+* An optimization algorithm is *great at finding new improving solutions* for a planning problem, without necessarily brute-forcing every possibility. However, it needs to know the score of a solution and offers no support in calculating that score efficiently.
 
 image::Chapter-Optimization_algorithms/architectureOverview.png[align="center"]
 
@@ -82,12 +87,12 @@ image::Chapter-Optimization_algorithms/architectureOverview.png[align="center"]
 [[optimizationAlgorithmsOverview]]
 == Optimization Algorithms Overview
 
-Planner supports 3 _families_ of optimization algorithms: Exhaustive Search, Construction Heuristics and Metaheuristics.
+Planner supports three _families_ of optimization algorithms: Exhaustive Search, Construction Heuristics and Metaheuristics.
 In practice, Metaheuristics (in combination with Construction Heuristics to initialize) are the recommended choice:
 
 image::Chapter-Optimization_algorithms/scalabilityOfOptimizationAlgorithms.png[align="center"]
 
-Each of these families of algorithms has multiple optimization algorithms:
+Each of these algorithm families have multiple optimization algorithms:
 
 .Optimization Algorithms Overview
 [cols="1,1,1,1,1,1", options="header"]
@@ -118,42 +123,34 @@ Each of these families of algorithms has multiple optimization algorithms:
 |    <<geneticAlgorithms,Genetic Algorithms>> |4/5 |3/5 |2/5 |5/5|Yes
 |===
 
-If you want to learn more about metaheuristics, read the free books http://www.cs.gmu.edu/~sean/book/metaheuristics/[Essentials of Metaheuristics] or http://www.cleveralgorithms.com/[Clever Algorithms].
+To learn more about metaheuristics, see  http://www.cs.gmu.edu/~sean/book/metaheuristics/[Essentials of Metaheuristics] or http://www.cleveralgorithms.com/[Clever Algorithms].
 
 
 [[whichOptimizationAlgorithmsShouldIUse]]
 == Which Optimization Algorithms Should I Use?
 
-The _best_ optimization algorithms configuration for your use case depends heavily on your use case.
-Nevertheless, this vanilla recipe will get you into the game with a pretty good configuration, probably much better than what you're used to.
+The best optimization algorithms configuration to use depends heavily on your use case.
+However, this basic procedure provides a good starting configuration that will produce better than average results.
 
-Start with a quick configuration that involves little or no configuration and optimization code:
+. Start with a quick configuration that involves little or no configuration and optimization code:
+ See <<firstFit,First Fit>>.
 
-. <<firstFit,First Fit>>
+. Next, implement <<planningEntityDifficulty,planning entity difficulty>> comparison and turn it into <<firstFitDecreasing,First Fit Decreasing>>.
 
-Next, implement <<planningEntityDifficulty,planning entity difficulty>> comparison and turn it into:
+. Next, add Late Acceptance behind it:
+.. First Fit Decreasing.
+.. <<lateAcceptance,Late Acceptance>>. 
 
-. <<firstFitDecreasing,First Fit Decreasing>>
+At this point, the return on invested time lowers and the result is likely to be sufficient.
 
-Next, add Late Acceptance behind it:
-
-. First Fit Decreasing
-. <<lateAcceptance,Late Acceptance>>. A Late Acceptance size of 400 usually works well.
-
-At this point __the free lunch is over__.
-The return on invested time lowers.
-The result is probably already more than good enough.
-
-But you can do even better, at a lower return on invested time.
+However, this can be improved at a lower return on invested time.
 Use the <<benchmarker,Benchmarker>> and try a couple of different Tabu Search, Simulated Annealing and Late Acceptance configurations, for example:
 
-. First Fit Decreasing
-. <<tabuSearch,Tabu Search>>. An entity tabu size of 7 usually works well.
+. First Fit Decreasing: <<tabuSearch,Tabu Search>>. 
 
-Use the <<benchmarker,Benchmarker>> to improve the values for those size parameters.
+Use the <<benchmarker,Benchmarker>> to improve the values for the size parameters.
 
-If it's worth your time, continue experimenting further.
-For example, try combining multiple algorithms together:
+Other experiments can also be run. For example, the following multiple algorithms can be combined together:
 
 . First Fit Decreasing
 . Late Acceptance (relatively long time)
@@ -163,33 +160,35 @@ For example, try combining multiple algorithms together:
 [[powerTweaking]]
 == Power tweaking or default parameter values
 
-Many optimization algorithms have parameters which affect results and scalability.
+Many optimization algorithms have parameters that affect results and scalability.
 Planner applies __configuration by exception__, so all optimization algorithms have default parameter values.
-This is very similar to the Garbage Collection parameters in a JVM: most users have no need to tweak them, but power users do tweak them.
+This is very similar to the Garbage Collection parameters in a JVM: most users have no need to tweak them, but power users often do.
 
-The default parameter values are good enough for many cases (and especially for prototypes), but if development time allows, it can be well worth to power tweak them with the <<benchmarker,benchmarker>> for better results and scalability on a specific use case.
-The documentation for each optimization algorithm also declares its advanced configuration for power tweaking.
+The default parameter values are sufficient for many cases (and especially for prototypes), but if development time allows, it may be beneficial to power tweak them with the <<benchmarker,benchmarker>> for better results and scalability on a specific use case.
+The documentation for each optimization algorithm also declares the advanced configuration for power tweaking.
 
 [WARNING]
 ====
-The default value of parameters will change between minor versions, to improve them for most users (but not necessary for you). To shield yourself from these changes, for better or worse, always use the advanced configuration.
-This is not recommended.
+The default value of parameters will change between minor versions, to improve them for most users. The advanced configuration can be used to prevent unwanted changes, however, this is not recommended.
 ====
 
 
 [[solverPhase]]
 == Solver Phase
 
-A `Solver` can use multiple optimization algorithms in sequence. *Each
-    optimization algorithm is represented by a solver ``**Phase**``.* There is never more than 1 `Phase` solving at the same time.
+A `Solver` can use multiple optimization algorithms in sequence. 
+[NOTE]
+====
+Each optimization algorithm is represented by a solver `Phase`. There is never more than one `Phase` solving at the same time.
+====
 
 [NOTE]
 ====
-Some `Phase` implementations can combine techniques from multiple optimization algorithms, but it is still just 1 ``Phase``.
+Some `Phase` implementations can combine techniques from multiple optimization algorithms, but it is still just one `Phase`.
 For example: a Local Search `Phase` can do Simulated Annealing with entity Tabu.
 ====
 
-Here's a configuration that runs 3 phases in sequence:
+Here is a configuration that runs three phases in sequence:
 
 [source,xml,options="nowrap"]
 ----
@@ -208,9 +207,11 @@ Here's a configuration that runs 3 phases in sequence:
 ----
 
 The solver phases are run in the order defined by solver configuration.
-When the first `Phase` terminates, the second `Phase` starts, and so on.
-When the last `Phase` terminates, the `Solver` terminates.
-Usually, a `Solver` will first run a construction heuristic and then run 1 or multiple metaheuristics:
+
+* When the first `Phase` terminates, the second `Phase` starts, and so on.
+* When the last `Phase` terminates, the `Solver` terminates.
+
+Usually, a `Solver` will first run a construction heuristic and then run one or multiple metaheuristics:
 
 image::Chapter-Optimization_algorithms/generalPhaseSequence.png[align="center"]
 
@@ -238,17 +239,20 @@ Other phases (especially metaheuristics) will only terminate if the `Phase` is c
 </solver>
 ----
 
-If the `Solver` terminates (before the last `Phase` terminates itself),
-the current phase is terminated and all subsequent phases won't run.
+If the `Solver` terminates (before the last `Phase` terminates itself,
+the current phase is terminated and all subsequent phases will not run.
 
 
 [[scopeOverview]]
 == Scope Overview
 
-A solver will iteratively run phases.
-Each phase will usually iteratively run steps.
-Each step, in turn, usually iteratively runs moves.
-These form 4 nested scopes: solver, phase, step and move.
+A solver will iteratively run phases. Each phase will usually iteratively run steps. Each step, in turn, usually iteratively runs moves.
+These form four nested scopes: 
+
+. Solver
+. Phase
+. Step
+. Move
 
 image::Chapter-Optimization_algorithms/scopeOverview.png[align="center"]
 
@@ -258,13 +262,15 @@ Configure <<logging,logging>> to display the log messages of each scope.
 [[termination]]
 == Termination
 
-Not all phases terminate automatically and sometimes you don't want to wait that long anyway.
-A `Solver` can be terminated synchronously by up-front configuration or asynchronously from another thread.
+Not all phases terminate automatically and may take a significant amount of time.
+A `Solver` can be terminated synchronously by up-front configuration, or asynchronously from another thread.
 
-Especially metaheuristic phases will need to be told when to stop solving.
-This can be because of a number of reasons: the time is up, the perfect score has been reached, just before its solution is used, ... The only thing you can't depend on, is on finding the optimal solution (unless you know the optimal score), because a metaheuristic algorithm generally doesn't know it when it finds the optimal solution.
-For real-life problems this doesn't turn out to be much of a problem, because finding the optimal solution could take years, so you'll want to terminate sooner anyway.
-The only thing that matters is finding the best solution in the available time.
+Metaheuristic phases in particular need to be instructed to stop solving.
+This can be because of a number of reasons, for example, if the time is up, or the perfect score has been reached just before its solution is used.
+Finding the optimal solution cannot be relied on (unless you know the optimal score), because a metaheuristic algorithm is generally unaware of the optimal solution.
+
+This is not an issue for real-life problems, as finding the optimal solution may take more time than is available. 
+Finding the best solution in the available time is the most important outcome.
 
 [IMPORTANT]
 ====
@@ -273,8 +279,8 @@ This is especially common during <<realTimePlanning,real-time planning>>.
 ====
 
 For synchronous termination, configure a `Termination` on a `Solver` or a `Phase` when it needs to stop.
-You can implement your own ``Termination``, but the built-in implementations should suffice for most needs.
-Every `Termination` can calculate a _time gradient_ (needed for some optimization algorithms), which is a ratio between the time already spent solving and the estimated entire solving time of the `Solver` or ``Phase``.
+The built-in implementations of these should be sufficient, however a custom `Termination` can also be used.
+Every `Termination` can calculate a _time gradient_ (needed for some optimization algorithms), which is a ratio between the time already spent solving and the estimated entire solving time of the `Solver` or `Phase`.
 
 
 [[timeMillisSpentTermination]]
@@ -338,10 +344,10 @@ Or use a combination that sums up to 150 minutes:
 
 [NOTE]
 ====
-This `Termination` will most likely sacrifice perfect reproducibility (even with `environmentMode` ``REPRODUCIBLE``) because the available CPU time differs frequently between runs:
+This `Termination` will most likely sacrifice perfect reproducibility (even with `environmentMode` `REPRODUCIBLE`) because the available CPU time differs frequently between runs:
 
 * The available CPU time influences the number of steps that can be taken, which might be a few more or less.
-* The `Termination` might produce slightly different time gradient values, which will send time gradient based algorithms (such as Simulated Annealing) on a radically different path.
+* The `Termination` might produce slightly different time gradient values, which will send time gradient-based algorithms (such as Simulated Annealing) on a radically different path.
 
 ====
 
@@ -349,7 +355,7 @@ This `Termination` will most likely sacrifice perfect reproducibility (even with
 [[unimprovedTimeMillisSpentTermination]]
 === UnimprovedTimeMillisSpentTermination
 
-Terminates when the best score hasn't improved in an amount of time.
+Terminates when the best score has not improved in a specified amount of time.
 
 [source,xml,options="nowrap"]
 ----
@@ -396,12 +402,12 @@ Terminates when the best score hasn't improved in an amount of time.
   </localSearch>
 ----
 
-This termination should not be applied to Construction Heuristics, because they only update the best solution at the end.
-Therefore it might be better to configure it on a specific `Phase` (such as ``<localSearch>``), instead of on the `Solver` itself.
+This termination should not be applied to Construction Heuristics as they only update the best solution at the end.
+Configuring it on a specific `Phase` (such as ``<localSearch>``), instead of on the `Solver` itself may be a better option.
 
 [NOTE]
 ====
-This `Termination` will most likely sacrifice perfect reproducibility (even with `environmentMode` ``REPRODUCIBLE``) because the available CPU time differs frequently between runs:
+This `Termination` will most likely sacrifice perfect reproducibility (even with `environmentMode` ``REPRODUCIBLE``) as the available CPU time differs frequently between runs:
 
 * The available CPU time influences the number of steps that can be taken, which might be a few more or less.
 * The `Termination` might produce slightly different time gradient values, which will send time gradient based algorithms (such as Simulated Annealing) on a radically different path.
@@ -412,8 +418,8 @@ This `Termination` will most likely sacrifice perfect reproducibility (even with
 [[bestScoreTermination]]
 === BestScoreTermination
 
-Terminates when a certain score has been reached.
-Use this `Termination` if you know the perfect score, for example for 4 queens (which uses a <<simpleScore,SimpleScore>>):
+`BestScoreTermination` terminates when a certain score has been reached.
+Use this `Termination` where the perfect score is known, for example for four queens (which uses a <<simpleScore,SimpleScore>>):
 
 [source,xml,options="nowrap"]
 ----
@@ -422,7 +428,7 @@ Use this `Termination` if you know the perfect score, for example for 4 queens (
   </termination>
 ----
 
-For a planning problem with a <<hardSoftScore,HardSoftScore>>, it could look like this:
+A planning problem with a <<hardSoftScore,HardSoftScore>> may look like this:
 
 [source,xml,options="nowrap"]
 ----
@@ -431,7 +437,7 @@ For a planning problem with a <<hardSoftScore,HardSoftScore>>, it could look lik
   </termination>
 ----
 
-For a planning problem with a <<bendableScore,BendableScore>> with 3 hard levels and 1 soft level, it could look like this:
+A planning problem with a <<bendableScore,BendableScore>> with three hard levels and one soft level may look like this:
 
 [source,xml,options="nowrap"]
 ----
@@ -440,15 +446,14 @@ For a planning problem with a <<bendableScore,BendableScore>> with 3 hard levels
   </termination>
 ----
 
-To terminate once a feasible solution has been reached, this `Termination` isn't practical because it requires a `bestScoreLimit` such as ``0hard/-2147483648soft``.
-Instead, use the next termination.
+In this instance, `Termination` once a feasible solution has been reached is not practical because it requires a `bestScoreLimit` such as ``0hard/-2147483648soft``. Use the next termination instead.
 
 
 [[bestScoreFeasibleTermination]]
 === BestScoreFeasibleTermination
 
 Terminates when a certain score is feasible.
-Requires that the `Score` implementation implements ``FeasibilityScore``.
+Requires that `Score` implements `FeasibilityScore`.
 
 [source,xml,options="nowrap"]
 ----
@@ -481,7 +486,7 @@ This `Termination` can only be used for a `Phase` (such as ``<localSearch>``), n
 [[unimprovedStepCountTermination]]
 === UnimprovedStepCountTermination
 
-Terminates when the best score hasn't improved in a number of steps.
+Terminates when the best score has not improved in a number of steps.
 This is useful for hardware performance independent runs.
 
 [source,xml,options="nowrap"]
@@ -493,8 +498,8 @@ This is useful for hardware performance independent runs.
   </localSearch>
 ----
 
-If the score hasn't improved recently, it's probably not going to improve soon anyway and it's not worth the effort to continue.
-We have observed that once a new best solution is found (even after a long time of no improvement on the best solution), the next few steps tend to improve the best solution too.
+If the score has not improved recently, it is unlikely to improve in a reasonable timeframe.
+It has been observed that once a new best solution is found (even after a long time without improvement on the best solution), the next few steps tend to improve the best solution.
 
 This `Termination` can only be used for a `Phase` (such as ``<localSearch>``), not for the `Solver` itself.
 
@@ -502,8 +507,8 @@ This `Termination` can only be used for a `Phase` (such as ``<localSearch>``), n
 [[scoreCalculationCountTermination]]
 === ScoreCalculationCountTermination
 
-Terminates when a number of score calculations have been reached.
-That's usually the sum of the number of moves and the number of steps.
+`ScoreCalculationCountTermination` terminates when a number of score calculations have been reached.
+This is often the sum of the number of moves and the number of steps.
 This is useful for benchmarking.
 
 [source,xml,options="nowrap"]
@@ -530,7 +535,7 @@ Terminations can be combined, for example: terminate after `100` steps or if a s
   </termination>
 ----
 
-Alternatively you can use AND, for example: terminate after reaching a feasible score of at least `-100` and no improvements in `5` steps:
+Alternatively you can use `AND`, for example: terminate after reaching a feasible score of at least `-100` and no improvements in `5` steps:
 
 [source,xml,options="nowrap"]
 ----
@@ -541,15 +546,15 @@ Alternatively you can use AND, for example: terminate after reaching a feasible 
   </termination>
 ----
 
-This example ensures it doesn't just terminate after finding a feasible solution, but also completes any obvious improvements on that solution before terminating.
+This example ensures it does not just terminate after finding a feasible solution, but also completes any obvious improvements on that solution before terminating.
 
 
 [[asynchronousTermination]]
 === Asynchronous Termination from Another Thread
 
-Sometimes you'll want to terminate a Solver early from another thread, for example because a user action or a server restart.
-This cannot be configured by a `Termination` as it's impossible to predict when and if it will occur.
-Therefore the `Solver` interface has these 2 thread-safe methods:
+Asychronous termination from another thread occurs when a `Solver` needs to be terminated early from another thread, for example, due to a user action or a server restart.
+This cannot be configured by a `Termination` as it is impossible to predict when and if it will occur.
+Therefore the `Solver` interface has the following thread-safe methods:
 
 [source,java,options="nowrap"]
 ----
@@ -562,11 +567,11 @@ public interface Solver<Solution_> {
 }
 ----
 
-If you call the `terminateEarly()` method from another thread, the `Solver` will terminate at its earliest convenience and the `solve(Solution)` method will return (in the original `Solver` thread).
+When calling the `terminateEarly()` method from another thread, the `Solver` will terminate at its earliest convenience and the `solve(Solution)` method will return (in the original `Solver` thread).
 
 [NOTE]
 ====
-Interrupting the Solver thread (which is the thread that called ``Solver.solve(Solution)``) has the same affect as calling `terminateEarly()` except that it leaves that thread in the interrupted state.
+Interrupting the Solver thread (which is the thread that called `Solver.solve(Solution)`) has the same affect as calling `terminateEarly()` except that it leaves that thread in the interrupted state.
 This guarantees a graceful shutdown when an `ExecutorService` (such as a thread pool) is shutdown because that only interrupts all active threads in the pool.
 ====
 
@@ -574,7 +579,7 @@ This guarantees a graceful shutdown when an `ExecutorService` (such as a thread 
 [[SolverEventListener]]
 == SolverEventListener
 
-Each time a new best solution is found, the `Solver` fires a ``BestSolutionChangedEvent``, in the solver's thread.
+Each time a new best solution is found, a new `BestSolutionChangedEvent` is fired in the `Solver` thread.
 
 To listen to such events, add a `SolverEventListener` to the ``Solver``:
 
@@ -589,8 +594,8 @@ public interface Solver<Solution_> {
 }
 ----
 
-The ``BestSolutionChangedEvent``'s `newBestSolution` might not be initialized or feasible.
-Use the `isFeasible()` method on ``BestSolutionChangedEvent``'s new best `Score` to detect such cases:
+The `BestSolutionChangedEvent`'s' `newBestSolution` may not be initialized or feasible.
+Use the `isFeasible()` method on `BestSolutionChangedEvent`'s new best `Score` to detect such cases:
 
 [source,java,options="nowrap"]
 ----
@@ -604,11 +609,11 @@ Use the `isFeasible()` method on ``BestSolutionChangedEvent``'s new best `Score`
     });
 ----
 
-Use `Score.isSolutionInitialized()` instead of `Score.isFeasible()` to only ignore uninitialized solutions, but do accept infeasible solutions too.
+Use `Score.isSolutionInitialized()` instead of `Score.isFeasible()` to only ignore uninitialized solutions, but also accept infeasible solutions.
 
 [WARNING]
 ====
-The `bestSolutionChanged()` method is called in the solver's thread, as part of ``Solver.solve()``.
+The `bestSolutionChanged()` method is called in the solver's thread, as part of `Solver.solve()`.
 So it should return quickly to avoid slowing down the solving.
 ====
 
@@ -616,19 +621,18 @@ So it should return quickly to avoid slowing down the solving.
 [[customSolverPhase]]
 == Custom Solver Phase
 
-Between phases or before the first phase, you might want to run a custom optmization algorithm to initialize the `Solution`
-or to take some low hanging fruit to get a better score quickly.
-Yet you'll still want to reuse the score calculation.
-For example, to implement a custom Construction Heuristic without implementing an entire ``Phase``.
+Run a custom optmization algorithm etween phases or before the first phase to initialize the `Solution`, or to get a better score quickly.
+You will still want to reuse the score calculation.
+For example, to implement a custom Construction Heuristic without implementing an entire `Phase`.
 
 [NOTE]
 ====
-Most of the time, a custom solver phase is not worth the hassle.
+Most of the time, a custom solver phase is not worth the development time investment.
 The supported <<constructionHeuristics,Constructions Heuristics>> are configurable (use the <<benchmarker,Benchmarker>> to tweak them),
 `Termination` aware and support partially initialized solutions too.
 ====
 
-The `CustomPhaseCommand` interface looks like this:
+The `CustomPhaseCommand` interface appears as follows:
 
 [source,java,options="nowrap"]
 ----
@@ -666,12 +670,12 @@ Any change on the planning entities in a `CustomPhaseCommand` must be notified t
 
 [WARNING]
 ====
-Do not change any of the problem facts in a ``CustomPhaseCommand``.
+Do not change any of the problem facts in a `CustomPhaseCommand`.
 That will corrupt the `Solver` because any previous score or solution was for a different problem.
 To do that, read about <<repeatedPlanning,repeated planning>> and do it with a <<problemFactChange,ProblemFactChange>> instead.
 ====
 
-Configure your `CustomPhaseCommand` like this:
+`CustomPhaseCommand` can be configured using the following:
 
 [source,xml,options="nowrap"]
 ----
@@ -688,7 +692,7 @@ Configure multiple `customPhaseCommandClass` instances to run them in sequence.
 
 [IMPORTANT]
 ====
-If the changes of a `CustomPhaseCommand` don't result in a better score, the best solution won't be changed (so effectively nothing will have changed for the next `Phase` or ``CustomPhaseCommand``). To force such changes anyway, use ``forceUpdateBestSolution``:
+If the changes of a `CustomPhaseCommand` do not result in a better score, the best solution will not be changed (so effectively nothing will have changed for the next `Phase` or `CustomPhaseCommand`). To force such changes anyway, use `forceUpdateBestSolution`:
 
 [source,xml,options="nowrap"]
 ----
@@ -701,8 +705,8 @@ If the changes of a `CustomPhaseCommand` don't result in a better score, the bes
 
 [NOTE]
 ====
-If the `Solver` or a `Phase` wants to terminate while a `CustomPhaseCommand` is still running, it will wait to terminate until the `CustomPhaseCommand` is done, however long that takes.
-The build-in solver phases don't suffer from this problem.
+If the `Solver` or a `Phase` wants to terminate while a `CustomPhaseCommand` is still running, it will wait to terminate until the `CustomPhaseCommand` is complete. This may take a significant amount of time.
+The build-in solver phases do not have this issue.
 ====
 
 To configure values of your `CustomPhaseCommand` dynamically in the solver configuration (so you can tweak those parameters with the <<benchmarker,Benchmarker>>), use the `customProperties` element:
@@ -744,9 +748,9 @@ public class MySolutionInitializer extends AbstractCustomPhaseCommand<MySolution
 [[noChangeSolverPhase]]
 == No Change Solver Phase
 
-In rare cases it can be useful to configure that no solver phase should be run.
+In rare cases, it can be useful to configure that no solver phase should be run.
 But by default, configuring no phase will trigger the use of the default phases.
-So to avoid those, configure a `NoChangePhase`:
+To avoid those, configure a `NoChangePhase`:
 
 [source,xml,options="nowrap"]
 ----
