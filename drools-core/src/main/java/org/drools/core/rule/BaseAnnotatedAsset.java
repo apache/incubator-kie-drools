@@ -23,7 +23,6 @@ import java.util.Map;
 /**
  * A base class for all annotated assets
  * 
- * @author etirelli
  */
 public class BaseAnnotatedAsset implements AnnotatedElement {
 

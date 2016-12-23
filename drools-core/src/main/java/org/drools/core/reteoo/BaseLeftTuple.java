@@ -25,7 +25,6 @@ import java.util.Arrays;
 
 /**
  * A parent class for all specific LeftTuple specializations
- * @author etirelli
  *
  */
 public class BaseLeftTuple extends BaseTuple implements LeftTuple {

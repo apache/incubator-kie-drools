@@ -46,7 +46,6 @@ import java.util.Map;
  * framework in order to support backward compatibility with
  * marshalled sessions
  * 
- * @author etirelli
  */
 public class ProtobufMarshaller
         implements
