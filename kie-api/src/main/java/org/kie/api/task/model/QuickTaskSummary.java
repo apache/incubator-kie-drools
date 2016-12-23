@@ -19,10 +19,6 @@ package org.kie.api.task.model;
 import java.io.Externalizable;
 import java.util.Date;
 
-/**
- *
- * @author salaboy
- */
 public interface QuickTaskSummary extends Externalizable {
 
     Long getId();
