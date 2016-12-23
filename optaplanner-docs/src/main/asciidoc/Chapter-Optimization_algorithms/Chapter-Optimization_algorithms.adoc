@@ -176,11 +176,9 @@ The default value of parameters will change between minor versions, to improve t
 [[solverPhase]]
 == Solver Phase
 
-A `Solver` can use multiple optimization algorithms in sequence. 
-[NOTE]
-====
-Each optimization algorithm is represented by a solver `Phase`. There is never more than one `Phase` solving at the same time.
-====
+A `Solver` can use multiple optimization algorithms in sequence.
+*Each optimization algorithm is represented by one solver `Phase`.*
+There is never more than one `Phase` solving at the same time.
 
 [NOTE]
 ====
