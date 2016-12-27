@@ -22,11 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CompositeTypeImpl
-        implements DMNType {
+        extends BaseDMNTypeImpl {
 
-    private String               name;
-    private String               id;
-    private boolean              collection;
     private Map<String, DMNType> fields;
 
     public CompositeTypeImpl() {
@@ -42,36 +39,8 @@ public class CompositeTypeImpl
     }
 
     public CompositeTypeImpl(String name, String id, boolean isCollection, Map<String, DMNType> fields) {
-        this.name = name;
-        this.id = id;
-        this.collection = isCollection;
+        super( name, id, isCollection);
         this.fields = fields;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public boolean isCollection() {
-        return collection;
-    }
-
-    public void setCollection(boolean collection) {
-        this.collection = collection;
     }
 
     public Map<String, DMNType> getFields() {

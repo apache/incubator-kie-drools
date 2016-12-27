@@ -25,13 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 public class FeelTypeImpl
+        extends BaseDMNTypeImpl
         implements DMNType {
 
-    private String  name;
-    private String  id;
     private Type    feelType;
-    private List<?> allowedValues;
-    private boolean collection;
 
     public FeelTypeImpl() {
         this( null, null, null, false, null );
@@ -42,29 +39,9 @@ public class FeelTypeImpl
     }
 
     public FeelTypeImpl(String name, String id, Type feelType, boolean isCollection, List<?> allowedValues) {
-        this.name = name;
-        this.id = id;
+        super( name, id, isCollection );
         this.feelType = feelType;
-        this.collection = isCollection;
-        this.allowedValues = allowedValues;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+        setAllowedValues( allowedValues );
     }
 
     public Type getFeelType() {
@@ -73,14 +50,6 @@ public class FeelTypeImpl
 
     public void setFeelType(Type feelType) {
         this.feelType = feelType;
-    }
-
-    public List<?> getAllowedValues() {
-        return allowedValues;
-    }
-
-    public void setAllowedValues(List<?> allowedValues) {
-        this.allowedValues = allowedValues;
     }
 
     @Override
@@ -100,22 +69,4 @@ public class FeelTypeImpl
         return feelType == BuiltInType.CONTEXT;
     }
 
-    @Override
-    public boolean isCollection() {
-        return collection;
-    }
-
-    @Override
-    public Map<String, DMNType> getFields() {
-        return Collections.emptyMap();
-    }
-
-    @Override
-    public DMNType getField(String typeName) {
-        return null;
-    }
-
-    public void setCollection(boolean collection) {
-        this.collection = collection;
-    }
 }
