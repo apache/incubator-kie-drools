@@ -155,10 +155,10 @@ public class EvalHelper {
                     current = ((Period) current).getYears();
                     break;
                 case "months":
-                    current = ((Period) current).getMonths();
+                    current = ((Period) current).getMonths()%12;
                     break;
                 case "days":
-                    current = ((Period) current).getDays();
+                    current = ((Period) current).getDays()%30;
                     break;
                 default:
                     return null;
@@ -169,13 +169,13 @@ public class EvalHelper {
                     current = ((Duration) current).toDays();
                     break;
                 case "hours":
-                    current = ((Duration) current).toHours();
+                    current = ((Duration) current).toHours()%24;
                     break;
                 case "minutes":
-                    current = ((Duration) current).toMinutes();
+                    current = ((Duration) current).toMinutes()%60;
                     break;
                 case "seconds":
-                    current = ((Duration) current).getSeconds();
+                    current = ((Duration) current).getSeconds()%60;
                     break;
                 default:
                     return null;

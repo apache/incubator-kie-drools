@@ -25,6 +25,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.*;
 import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -198,6 +200,10 @@ public class InfixOpNode
                 if( right instanceof LocalDateTime ) {
                     right = ZonedDateTime.of( (LocalDateTime) right, ZoneOffset.ofHours( 0 ) );
                 }
+            } else if( right instanceof ZonedDateTime || right instanceof OffsetDateTime ) {
+                if( left instanceof LocalDateTime ) {
+                    left = ZonedDateTime.of( (LocalDateTime) left, ZoneOffset.ofHours( 0 ) );
+                }
             }
             return Duration.between( (Temporal) left, (Temporal) right);
         } else if ( left instanceof Period && right instanceof Period ) {
@@ -243,7 +249,9 @@ public class InfixOpNode
         } else if ( left instanceof Duration && right instanceof Number ) {
             return ((Duration)left).dividedBy( ((Number) right).longValue() );
         } else if ( left instanceof Number && right instanceof Duration ) {
-            return ((Duration)right).dividedBy( ((Number) left).longValue() );
+            return ((Duration) right).dividedBy( ((Number) left).longValue() );
+        } else if ( left instanceof Duration && right instanceof Duration ) {
+            return EvalHelper.getBigDecimalOrNull( ((Duration) left).toMillis() ).divide( EvalHelper.getBigDecimalOrNull( ((Duration)right).toMillis() ), MathContext.DECIMAL128 );
         } else {
             return math( left, right, ctx, (l, r) -> l.divide( r, MathContext.DECIMAL128 ) );
         }
