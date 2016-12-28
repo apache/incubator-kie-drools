@@ -84,7 +84,7 @@ public abstract class BaseFEELFunction
 
                 Class[] classes = Stream.of( params ).map( p -> p != null ? p.getClass() : null ).toArray( Class[]::new );
 
-                CandidateMethod cm = getCandidateMethod( params, isNamedParams, available, classes );
+                CandidateMethod cm = getCandidateMethod( ctx, params, isNamedParams, available, classes );
 
                 if ( cm != null ) {
                     Object result = cm.apply.invoke( this, cm.actualParams );
@@ -185,14 +185,59 @@ public abstract class BaseFEELFunction
         return params;
     }
 
-    private CandidateMethod getCandidateMethod(Object[] params, boolean isNamedParams, List<String> available, Class[] classes) {
+    private CandidateMethod getCandidateMethod(EvaluationContext ctx, Object[] params, boolean isNamedParams, List<String> available, Class[] classes) {
         CandidateMethod candidate = null;
         // first, look for exact matches
         for ( Method m : getClass().getDeclaredMethods() ) {
             if ( !m.getName().equals( "invoke" ) ) {
                 continue;
             }
-            CandidateMethod cm = new CandidateMethod( isNamedParams ? calculateActualParams( m, params, available ) : params );
+
+            Object[] actualParams = null;
+            boolean injectCtx = Arrays.stream( m.getParameterTypes() ).anyMatch( p -> EvaluationContext.class.isAssignableFrom( p ) );
+            if( injectCtx ) {
+                actualParams = new Object[ params.length + 1 ];
+                int j = 0;
+                for( int i = 0; i < m.getParameterCount() && j < params.length; i++ ) {
+                    if( EvaluationContext.class.isAssignableFrom( m.getParameterTypes()[i] ) ) {
+                        if( isNamedParams ) {
+                            actualParams[i] = new NamedParameter( "ctx", ctx );
+                        } else {
+                            actualParams[i] = ctx;
+                        }
+//                        if( available != null ) {
+//                            // if there is a list of available parameter names, add the injected context parameter into the list
+//                            Annotation[][] annotations = m.getParameterAnnotations();
+//                            boolean foundName = false;
+//                            for( int k = 0; k < annotations[i].length; k++ ) {
+//                                if( annotations[i][k] instanceof NamedParameter ) {
+//                                    available = new ArrayList<>( available );
+//                                    available.add( ((NamedParameter)annotations[i][k]).getName() );
+//                                    foundName = true;
+//                                    break;
+//                                }
+//                            }
+//                            if( ! foundName ) {
+//                                // use default name
+//                                available.add( "ctx" );
+//                            }
+//                        }
+                    } else {
+                        actualParams[i] = params[j];
+                        j++;
+                    }
+                }
+            } else {
+                actualParams = params;
+            }
+            if( isNamedParams ) {
+                actualParams = calculateActualParams( ctx, m, actualParams, available );
+                if( actualParams == null ) {
+                    // incompatible method
+                    continue;
+                }
+            }
+            CandidateMethod cm = new CandidateMethod( actualParams );
 
             Class<?>[] parameterTypes = m.getParameterTypes();
             adjustForVariableParameters( cm, parameterTypes );
@@ -239,7 +284,7 @@ public abstract class BaseFEELFunction
         }
     }
 
-    private Object[] calculateActualParams(Method m, Object[] params, List<String> available) {
+    private Object[] calculateActualParams(EvaluationContext ctx, Method m, Object[] params, List<String> available) {
         Annotation[][] pas = m.getParameterAnnotations();
         List<String> names = new ArrayList<>( m.getParameterCount() );
         for ( int i = 0; i < m.getParameterCount(); i++ ) {
