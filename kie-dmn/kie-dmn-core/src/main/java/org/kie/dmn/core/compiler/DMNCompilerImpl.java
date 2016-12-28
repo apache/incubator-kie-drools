@@ -223,8 +223,8 @@ public class DMNCompilerImpl implements DMNCompiler {
             // this is a composite type
             CompositeTypeImpl compType = new CompositeTypeImpl( itemDef.getName(), itemDef.getId(), itemDef.isIsCollection() );
             for( ItemDefinition fieldDef : itemDef.getItemComponent() ) {
-                DMNType field = buildTypeDef( dmnModel, node, fieldDef );
-                compType.getFields().put( field.getName(), field );
+                DMNType fieldType = buildTypeDef( dmnModel, node, fieldDef );
+                compType.getFields().put( fieldDef.getName(), fieldType );
             }
             type = compType;
         }
