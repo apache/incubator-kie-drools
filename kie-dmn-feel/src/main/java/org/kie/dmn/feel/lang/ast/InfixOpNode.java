@@ -237,7 +237,15 @@ public class InfixOpNode
         } else if ( left instanceof Duration && right instanceof Number ) {
             return ((Duration)left).multipliedBy( ((Number) right).longValue() );
         } else if ( left instanceof Number && right instanceof Duration ) {
-            return ((Duration)right).multipliedBy( ((Number) left).longValue() );
+            return Duration.ofSeconds( EvalHelper.getBigDecimalOrNull( left ).multiply( EvalHelper.getBigDecimalOrNull( ((Duration)right).getSeconds() ), MathContext.DECIMAL128 ).longValue() );
+        } else if ( left instanceof Duration && right instanceof Duration ) {
+            return EvalHelper.getBigDecimalOrNull( ((Duration) left).getSeconds() ).multiply( EvalHelper.getBigDecimalOrNull( ((Duration)right).getSeconds() ), MathContext.DECIMAL128 );
+        } else if ( left instanceof Period && right instanceof Number ) {
+            return Period.ofMonths( EvalHelper.getBigDecimalOrNull( ((Period)left).getMonths() ).multiply( EvalHelper.getBigDecimalOrNull( ((Number) right).longValue() ), MathContext.DECIMAL128 ).intValue() );
+        } else if ( left instanceof Number && right instanceof Period ) {
+            return Period.ofMonths( EvalHelper.getBigDecimalOrNull( left ).multiply( EvalHelper.getBigDecimalOrNull( ((Period)right).getMonths() ), MathContext.DECIMAL128 ).intValue() );
+        } else if ( left instanceof Period && right instanceof Period ) {
+            return EvalHelper.getBigDecimalOrNull( ((Period) left).getMonths() ).multiply( EvalHelper.getBigDecimalOrNull( ((Period)right).getMonths() ), MathContext.DECIMAL128 );
         } else {
             return math( left, right, ctx, (l, r) -> l.multiply( r, MathContext.DECIMAL128 ) );
         }
@@ -249,9 +257,15 @@ public class InfixOpNode
         } else if ( left instanceof Duration && right instanceof Number ) {
             return ((Duration)left).dividedBy( ((Number) right).longValue() );
         } else if ( left instanceof Number && right instanceof Duration ) {
-            return ((Duration) right).dividedBy( ((Number) left).longValue() );
+            return Duration.ofSeconds( EvalHelper.getBigDecimalOrNull( left ).divide( EvalHelper.getBigDecimalOrNull( ((Duration)right).getSeconds() ), MathContext.DECIMAL128 ).longValue() );
         } else if ( left instanceof Duration && right instanceof Duration ) {
-            return EvalHelper.getBigDecimalOrNull( ((Duration) left).toMillis() ).divide( EvalHelper.getBigDecimalOrNull( ((Duration)right).toMillis() ), MathContext.DECIMAL128 );
+            return EvalHelper.getBigDecimalOrNull( ((Duration) left).getSeconds() ).divide( EvalHelper.getBigDecimalOrNull( ((Duration)right).getSeconds() ), MathContext.DECIMAL128 );
+        } else if ( left instanceof Period && right instanceof Number ) {
+            return Period.ofMonths( EvalHelper.getBigDecimalOrNull( ((Period)left).getMonths() ).divide( EvalHelper.getBigDecimalOrNull( ((Number) right).longValue() ), MathContext.DECIMAL128 ).intValue() );
+        } else if ( left instanceof Number && right instanceof Period ) {
+            return Period.ofMonths( EvalHelper.getBigDecimalOrNull( left ).divide( EvalHelper.getBigDecimalOrNull( ((Period)right).getMonths() ), MathContext.DECIMAL128 ).intValue() );
+        } else if ( left instanceof Period && right instanceof Period ) {
+            return EvalHelper.getBigDecimalOrNull( ((Period) left).getMonths() ).divide( EvalHelper.getBigDecimalOrNull( ((Period)right).getMonths() ), MathContext.DECIMAL128 );
         } else {
             return math( left, right, ctx, (l, r) -> l.divide( r, MathContext.DECIMAL128 ) );
         }
