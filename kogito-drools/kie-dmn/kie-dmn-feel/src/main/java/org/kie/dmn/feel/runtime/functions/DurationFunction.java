@@ -56,4 +56,16 @@ public class DurationFunction
         
     }
 
+    /**
+     * This is the identity function implementation
+     *
+     * @param val
+     * @return
+     */
+    public FEELFnResult<TemporalAmount> invoke(@ParameterName( "from" ) TemporalAmount val) {
+        if ( val == null ) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "from", "cannot be null"));
+        }
+        return FEELFnResult.ofResult( val );
+    }
 }
