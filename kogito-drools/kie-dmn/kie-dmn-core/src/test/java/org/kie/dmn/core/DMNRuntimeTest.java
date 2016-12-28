@@ -492,9 +492,9 @@ public class DMNRuntimeTest {
         assertThat( ctx.get("Time2"), is( OffsetTime.of( 00, 00, 01, 00, ZoneOffset.ofHours( -1 ) ) ) );
         assertThat( ctx.get("Time3"), is( OffsetTime.of( 12, 59, 1, 300000000, ZoneOffset.ofHours( -1 ) )) );
         assertThat( ctx.get("dtDuration1"), is( Duration.parse( "P13DT2H14S" ) ) );
-        assertThat( ctx.get("dtDuration2"), is( Duration.parse( "P-366DT-22H-58M-59S" ) ) );
-        assertThat( ctx.get("hoursInDuration"), is( new BigDecimal( "-22" ) ) );
-        assertThat( ctx.get("sumDurations"), is( Duration.parse( "PT-8492H-58M-45S" ) ) );
+        assertThat( ctx.get("dtDuration2"), is( Duration.parse( "P366DT22H58M59S" ) ) );
+        assertThat( ctx.get("hoursInDuration"), is( new BigDecimal( "22" ) ) );
+        assertThat( ctx.get("sumDurations"), is( Duration.parse( "PT9120H59M13S" ) ) );
         assertThat( ctx.get("ymDuration2"), is( Period.parse( "P1Y" ) ) );
         assertThat( ctx.get("cDay"), is( BigDecimal.valueOf( 24 ) ) );
         assertThat( ctx.get("cYear"), is( BigDecimal.valueOf( 2015 ) ) );
