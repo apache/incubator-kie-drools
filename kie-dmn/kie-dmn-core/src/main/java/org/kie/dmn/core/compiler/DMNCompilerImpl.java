@@ -204,14 +204,20 @@ public class DMNCompilerImpl implements DMNCompiler {
         if( itemDef.getTypeRef() != null ) {
             // this is a reference to an existing type, so resolve the reference
             type = (BaseDMNTypeImpl) resolveTypeRef( dmnModel, node, itemDef, itemDef.getTypeRef() );
-            UnaryTests allowedValuesStr = itemDef.getAllowedValues();
-            if( allowedValuesStr != null ) {
-                Object av = FEEL.newInstance().evaluate( "[" + allowedValuesStr.getText() + "]" );
-                java.util.List<?> allowedValues = av instanceof java.util.List ? (java.util.List) av : Collections.singletonList( av );
-                type.setAllowedValues( allowedValues );
-            }
-            if( itemDef.isIsCollection() ) {
-                type.setCollection( itemDef.isIsCollection() );
+            if( type != null ) {
+                UnaryTests allowedValuesStr = itemDef.getAllowedValues();
+                if( allowedValuesStr != null ) {
+                    Object av = FEEL.newInstance().evaluate( "[" + allowedValuesStr.getText() + "]" );
+                    java.util.List<?> allowedValues = av instanceof java.util.List ? (java.util.List) av : Collections.singletonList( av );
+                    type.setAllowedValues( allowedValues );
+                }
+                if( itemDef.isIsCollection() ) {
+                    type.setCollection( itemDef.isIsCollection() );
+                }
+            } else {
+                String message = "Unknown type reference '"+itemDef.getTypeRef()+"' on node '"+node.getName()+"'";
+                logger.error( message );
+                dmnModel.addMessage( DMNMessage.Severity.ERROR, message, node.getId() );
             }
         } else {
             // this is a composite type
@@ -255,12 +261,24 @@ public class DMNCompilerImpl implements DMNCompiler {
                 if( itemDefs.size() == 1 ) {
                     return itemDefs.get( 0 ).getType();
                 } else if( itemDefs.isEmpty() ) {
-                    logger.error( "No '"+typeRef.toString()+"' type definition found for element '"+ model.getName()+"' on node '"+node.getName()+"'");
+                    if( model.getName() != null && node.getName() != null && model.getName().equals( node.getName() ) ) {
+                        logger.error( "No '"+typeRef.toString()+"' type definition found for node '"+node.getName()+"'");
+                    } else {
+                        logger.error( "No '"+typeRef.toString()+"' type definition found for element '"+ model.getName()+"' on node '"+node.getName()+"'");
+                    }
                 } else {
-                    logger.error( "Multiple types found for type reference '"+typeRef.toString()+"' on element '"+ model.getName()+"' on node '"+node.getName()+"'");
+                    if( model.getName() != null && node.getName() != null && model.getName().equals( node.getName() ) ) {
+                        logger.error( "Multiple types found for type reference '" + typeRef.toString() + "' on node '" + node.getName() + "'" );
+                    } else {
+                        logger.error( "Multiple types found for type reference '" + typeRef.toString() + "' on element '" + model.getName() + "' on node '" + node.getName() + "'" );
+                    }
                 }
             } else {
-                logger.error( "Unknown namespace for type reference prefix '"+prefix+"' on element '"+ model.getName()+"' on node '"+node.getName()+"'" );
+                if( model.getName() != null && node.getName() != null && model.getName().equals( node.getName() ) ) {
+                    logger.error( "Unknown namespace for type reference prefix '" + prefix + "' on node '" + node.getName() + "'" );
+                } else {
+                    logger.error( "Unknown namespace for type reference prefix '" + prefix + "' on element '" + model.getName() + "' on node '" + node.getName() + "'" );
+                }
             }
             return null;
         }

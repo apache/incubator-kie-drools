@@ -466,7 +466,7 @@ public class DMNRuntimeTest {
         DMNContext context = DMNFactory.newContext();
         context.set( "dateString", "2015-12-24" );
         context.set( "timeString", "00:00:01-01:00" );
-        context.set( "dateTimeString", "2016-12-24T23:59:00" );
+        context.set( "dateTimeString", "2016-12-24T23:59:00-05:00" );
         context.set( "Hours", 12 );
         context.set( "Minutes", 59 );
         context.set( "Seconds", new BigDecimal( "1.3" ) );
@@ -481,7 +481,7 @@ public class DMNRuntimeTest {
         DMNContext ctx = dmnResult.getContext();
         System.out.println( ctx );
 
-        assertThat( ctx.get("Date-Time"), is( LocalDateTime.of( 2016, 12, 24, 23, 59, 0 ) ) );
+        assertThat( ctx.get("Date-Time"), is( ZonedDateTime.of( 2016, 12, 24, 23, 59, 0, 0, ZoneOffset.ofHours( -5 ) ) ) );
         assertThat( ctx.get("Date"), is( new HashMap<String, Object>(  ) {{
             put( "fromString", LocalDate.of( 2015, 12, 24 ) );
             put( "fromDateTime", LocalDate.of( 2016, 12, 24 ) );
@@ -492,9 +492,9 @@ public class DMNRuntimeTest {
         assertThat( ctx.get("Time2"), is( OffsetTime.of( 00, 00, 01, 00, ZoneOffset.ofHours( -1 ) ) ) );
         assertThat( ctx.get("Time3"), is( OffsetTime.of( 12, 59, 1, 300000000, ZoneOffset.ofHours( -1 ) )) );
         assertThat( ctx.get("dtDuration1"), is( Duration.parse( "P13DT2H14S" ) ) );
-        assertThat( ctx.get("dtDuration2"), is( Duration.parse( "P366DT22H58M59S" ) ) );
-        assertThat( ctx.get("hoursInDuration"), is( new BigDecimal( "22" ) ) );
-        assertThat( ctx.get("sumDurations"), is( Duration.parse( "PT9120H59M13S" ) ) );
+        assertThat( ctx.get("dtDuration2"), is( Duration.parse( "P367DT3H58M59S" ) ) );
+        assertThat( ctx.get("hoursInDuration"), is( new BigDecimal( "3" ) ) );
+        assertThat( ctx.get("sumDurations"), is( Duration.parse( "PT9125H59M13S" ) ) );
         assertThat( ctx.get("ymDuration2"), is( Period.parse( "P1Y" ) ) );
         assertThat( ctx.get("cDay"), is( BigDecimal.valueOf( 24 ) ) );
         assertThat( ctx.get("cYear"), is( BigDecimal.valueOf( 2015 ) ) );
@@ -510,6 +510,7 @@ public class DMNRuntimeTest {
     private String formatMessages(List<DMNMessage> messages) {
         return messages.stream().map( m -> m.toString() ).collect( Collectors.joining( "\n" ) );
     }
+
 
 }
 
