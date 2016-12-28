@@ -30,6 +30,7 @@ import java.time.temporal.TemporalUnit;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 
@@ -198,11 +199,11 @@ public class InfixOpNode
         } else if ( left instanceof Temporal && right instanceof Temporal ) {
             if( left instanceof ZonedDateTime || left instanceof OffsetDateTime ) {
                 if( right instanceof LocalDateTime ) {
-                    right = ZonedDateTime.of( (LocalDateTime) right, ZoneOffset.ofHours( 0 ) );
+                    right = ZonedDateTime.of( (LocalDateTime) right, ZoneId.systemDefault() );
                 }
             } else if( right instanceof ZonedDateTime || right instanceof OffsetDateTime ) {
                 if( left instanceof LocalDateTime ) {
-                    left = ZonedDateTime.of( (LocalDateTime) left, ZoneOffset.ofHours( 0 ) );
+                    left = ZonedDateTime.of( (LocalDateTime) left, ZoneId.systemDefault() );
                 }
             }
             return Duration.between( (Temporal) right, (Temporal) left);
