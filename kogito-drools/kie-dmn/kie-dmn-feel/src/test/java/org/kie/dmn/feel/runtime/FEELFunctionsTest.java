@@ -143,7 +143,16 @@ public class FEELFunctionsTest extends BaseFEELTest {
                 { "ceiling( -1.5 )", new BigDecimal("-1") },
                 { "ceiling( null )", null },
                 { "ceiling( n : 1.5 )", new BigDecimal("2") },
-                { "now()", ZonedDateTime.class }
+                { "now()", ZonedDateTime.class },
+                { "sort( [3, 1, 4, 5, 2], function(x,y) x < y )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ),
+                                                                                 BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ) },
+                { "sort( [3, 1, 4, 5, 2] )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ),
+                                                                                 BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ) },
+                { "sort( list : [3, 1, 4, 5, 2] )", Arrays.asList( BigDecimal.valueOf( 1 ), BigDecimal.valueOf( 2 ), BigDecimal.valueOf( 3 ),
+                                                                                 BigDecimal.valueOf( 4 ), BigDecimal.valueOf( 5 ) ) },
+                { "sort( [\"c\", \"e\", \"d\", \"a\", \"b\"], function(x,y) x < y )", Arrays.asList( "a", "b", "c", "d", "e" ) },
+                { "sort( list : [\"c\", \"e\", \"d\", \"a\", \"b\"], precedes : function(x,y) x < y )", Arrays.asList( "a", "b", "c", "d", "e" ) },
+                { "sort( precedes : function(x,y) x < y, list : [\"c\", \"e\", \"d\", \"a\", \"b\"] )", Arrays.asList( "a", "b", "c", "d", "e" ) }
         };
         return Arrays.asList( cases );
     }
