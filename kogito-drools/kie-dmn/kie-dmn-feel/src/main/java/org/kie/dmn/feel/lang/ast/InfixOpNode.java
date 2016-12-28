@@ -205,7 +205,7 @@ public class InfixOpNode
                     left = ZonedDateTime.of( (LocalDateTime) left, ZoneOffset.ofHours( 0 ) );
                 }
             }
-            return Duration.between( (Temporal) left, (Temporal) right);
+            return Duration.between( (Temporal) right, (Temporal) left);
         } else if ( left instanceof Period && right instanceof Period ) {
             return ((Period) left).minus( (Period) right);
         } else if ( left instanceof Duration && right instanceof Duration ) {
