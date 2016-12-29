@@ -18,6 +18,7 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.events.FEELEvent.Severity;
 import org.kie.dmn.feel.util.Msg;
 
@@ -58,18 +59,26 @@ public class FilterExpressionNode
         List list = value instanceof List ? (List) value : Arrays.asList( value );
 
         try {
-            // check if index
-            Object f = filter.evaluate( ctx );
-            if ( f != null && f instanceof Number ) {
-                // what to do if Number is not an integer??
-                int i = ((Number) f).intValue();
-                if ( i > 0 && i <= list.size() ) {
-                    return list.get( i - 1 );
-                } else if ( i < 0 && Math.abs( i ) <= list.size() ) {
-                    return list.get( list.size() + i );
+            if( filter.getResultType() != BuiltInType.BOOLEAN ) {
+                // check if index
+                Object f = filter.evaluate( ctx );
+                if ( f != null && f instanceof Number ) {
+                    // what to do if Number is not an integer??
+                    int i = ((Number) f).intValue();
+                    if ( i > 0 && i <= list.size() ) {
+                        return list.get( i - 1 );
+                    } else if ( i < 0 && Math.abs( i ) <= list.size() ) {
+                        return list.get( list.size() + i );
+                    } else {
+                        ctx.notifyEvt( astEvent( Severity.ERROR, Msg.createMessage( Msg.INDEX_OUT_OF_BOUND ) ) );
+                        return null;
+                    }
                 } else {
-                    ctx.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.INDEX_OUT_OF_BOUND)) );
-                    return null;
+                    List results = new ArrayList(  );
+                    for( Object v : list ) {
+                        evaluateExpressionInContext( ctx, results, v );
+                    }
+                    return results;
                 }
             } else {
                 List results = new ArrayList(  );
