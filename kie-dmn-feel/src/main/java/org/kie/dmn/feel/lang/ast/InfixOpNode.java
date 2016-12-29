@@ -18,6 +18,8 @@ package org.kie.dmn.feel.lang.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.kie.dmn.feel.lang.EvaluationContext;
+import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.runtime.Range;
 import org.kie.dmn.feel.util.EvalHelper;
 
@@ -109,6 +111,13 @@ public class InfixOpNode
 
     public void setRight(BaseNode right) {
         this.right = right;
+    }
+
+    @Override
+    public Type getResultType() {
+        // bellow is not exactly correct, as the result type depends on both
+        // left and right
+        return operator.isBoolean() ? BuiltInType.BOOLEAN : this.left.getResultType();
     }
 
     @Override
