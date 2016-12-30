@@ -24,14 +24,14 @@ might be other differences that were not found yet. Feel free to point them out 
 
 ## a. Fixes to bugs and changes
 
-1. __Space Sensitivity__: this implementation of the FEEL language is space insensitive. The goal is to avoid 
+1. __Space Sensitivity__: this implementation of the FEEL language is space *__insensitive__*. The goal is to avoid 
 nondeterministic behavior based on the context and differences in behavior based on invisible characters (e.g., 
  white spaces). This means that for this implementation, a variable named `first name` with one space is exactly
  the same as `first  name` with two spaces in it. 
 
-2. __List functions "or()" and "and()"__: the spec defines two list functions named "or()" and "and()", but 
-according to the FEEL grammar, these are not valid function names, as "and" and "or" are reserved keywords.
- This implementation renamed these functions to "any()" and "all()" respectively, in antecipation for DMN 1.2.
+2. __List functions `or()` and `and()`__: the spec defines two list functions named `or()` and `and()`, but 
+according to the FEEL grammar, these are not valid function names, as `and` and `or` are reserved keywords.
+ This implementation renamed these functions to `any()` and `all()` respectively, in antecipation for DMN 1.2.
 
 ## b. Extensions
 
