@@ -85,11 +85,13 @@ according to the FEEL grammar, these are not valid function names, as "and" and 
   `days and time duration` or `years and months duration`. This implementation does parse such
   typerefs as strings and allows type names with spaces, but in order to comply with the XML schema,
   it also added the following aliases to such types that can be used instead:
+
   ```
   "date and time" = "dateTime"
   "days and time duration" = "duration" or "dayTimeDuration" 
   "years and months duration" = "duration" or "yearMonthDuration" 
   ```
+  
   Please note that for the "duration" types, the user can simply use `duration` and the engine will
   infer the proper duration, either `days and time duration` or `years and months duration`.
 
